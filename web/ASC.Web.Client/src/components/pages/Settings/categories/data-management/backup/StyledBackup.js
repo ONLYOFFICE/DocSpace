@@ -41,6 +41,7 @@ const commonStyles = css`
 
   .backup_combo {
     margin-top: 16px;
+    margin-bottom: 16px;
     width: 100%;
     max-width: ${INPUT_LENGTH};
     .combo-button-label {
@@ -49,17 +50,26 @@ const commonStyles = css`
     }
   }
   .backup_text-input {
-    margin: 10px 0;
+    margin: 4px 0 10px 0;
+
     width: 100%;
     max-width: ${INPUT_LENGTH};
     font-size: 13px;
   }
 
-  .backup-description {
+  .backup_checkbox {
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+  .backup_radio-button-settings {
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+
+  .backup_radio-button {
     max-width: ${TEXT_LENGTH};
     font-size: 12px;
     line-height: 15px;
-    margin-left: 24px;
   }
 `;
 
@@ -219,7 +229,8 @@ const StyledModules = styled.div`
   margin-bottom: 24px;
 
   .backup-description {
-    ${(props) => props.isDisabled && `color: #A3A9AE`}
+    ${(props) => props.isDisabled && `color: #A3A9AE`};
+    margin-left: 24px;
   }
 `;
 

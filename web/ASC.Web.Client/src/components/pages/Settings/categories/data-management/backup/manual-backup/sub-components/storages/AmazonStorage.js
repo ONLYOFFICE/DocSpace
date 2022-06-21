@@ -10,7 +10,7 @@ class AmazonStorage extends React.Component {
     const formSettings = {};
 
     // this.namesArray = AmazonSettings.formNames();
-    // this.namesArray.forEach((elem) => (formSettings[elem] = "")); 
+    // this.namesArray.forEach((elem) => (formSettings[elem] = ""));
 
     for (const [key, value] of Object.entries(AmazonSettings.formNames())) {
       formSettings[key] = value;
@@ -27,15 +27,40 @@ class AmazonStorage extends React.Component {
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }
 
-  onChange = (event) => {
+  onChangeTextInput = (event) => {
     const { formSettings } = this.state;
     const { target } = event;
-    const value = target.value || target.checked;
+    const value = target.value;
     const name = target.name;
-    console.log("target.value", target.value, target.checked);
+    console.log("name", name, "value", value);
     this.setState({ formSettings: { ...formSettings, [name]: value } });
   };
 
+  onChangeCheckbox = (e) => {
+    const { formSettings } = this.state;
+    const { target } = e;
+    const value = target.checked;
+    const name = target.name;
+    this.setState({ formSettings: { ...formSettings, [name]: value } });
+  };
+
+  onSelectSSEMode = (name, nonCheckName) => {
+    const { formSettings } = this.state;
+    console.log("name", name, "nonCheckName", nonCheckName);
+    this.setState({
+      formSettings: {
+        ...formSettings,
+        [name]: true,
+        [nonCheckName]: false,
+      },
+    });
+  };
+
+  onSelectAdditionalInfo = (name, value) => {
+    const { formSettings } = this.state;
+
+    this.setState({ formSettings: { ...formSettings, [name]: value } });
+  };
   onMakeCopy = () => {
     const { formSettings } = this.state;
     const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
@@ -45,6 +70,22 @@ class AmazonStorage extends React.Component {
       (el) => (requiredSettings[el] = formSettings[el])
     );
 
+    if (formSettings.region !== "0") {
+      const optional = this.requiredFields[0];
+      delete requiredSettings[optional];
+    }
+
+    if (
+      (formSettings.kms && formSettings.managedkeys === "0") ||
+      formSettings.sse === "2" ||
+      formSettings.sse === "0"
+    ) {
+      delete requiredSettings["customKey"];
+    }
+    if (formSettings.sse !== "2") {
+      delete requiredSettings["clientKey"];
+    }
+    console.log("requiredSettings", requiredSettings);
     const isInvalid = isInvalidForm(requiredSettings);
 
     const hasError = isInvalid[0];
@@ -54,10 +95,16 @@ class AmazonStorage extends React.Component {
       this.setState({ formErrors: errors });
       return;
     }
+    let newSettings = { ...formSettings };
 
-    const arraySettings = Object.entries(formSettings);
+    if (newSettings.sse === "0") {
+      delete newSettings["kms"];
+      delete newSettings["s3"];
+    }
 
-    onMakeCopyIntoStorage(arraySettings);
+    const arraySettings = Object.entries(newSettings);
+    console.log("arraySettings", arraySettings);
+    // onMakeCopyIntoStorage(arraySettings);
     this.setState({ formErrors: {} });
   };
   render() {
@@ -69,12 +116,15 @@ class AmazonStorage extends React.Component {
       selectedStorage,
       buttonSize,
     } = this.props;
-
+    console.log("formSettings", formSettings);
     return (
       <>
         <AmazonSettings
           formSettings={formSettings}
-          onChange={this.onChange}
+          onChange={this.onChangeTextInput}
+          onChangeCheckbox={this.onChangeCheckbox}
+          onSelectAdditionalInfo={this.onSelectAdditionalInfo}
+          onSelectSSEMode={this.onSelectSSEMode}
           isLoadingData={isLoadingData}
           isError={formErrors}
           selectedStorage={selectedStorage}

@@ -109,6 +109,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     for (let key in formSettings) {
       const elem = formSettings[key];
+
+      if (typeof elem == "boolean") continue;
+
       errors[key] = !elem.trim();
 
       if (!elem.trim() && !firstError) {
