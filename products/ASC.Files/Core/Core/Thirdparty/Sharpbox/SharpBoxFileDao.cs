@@ -569,12 +569,12 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         return false;
     }
 
-    public Task<Stream> GetThumbnailAsync(string fileid)
+    public Task<Stream> GetThumbnailAsync(string fileid, int width, int height)
     {
         return null;
     }
 
-    public Task<Stream> GetThumbnailAsync(File<string> file)
+    public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
     {
         return null;
     }

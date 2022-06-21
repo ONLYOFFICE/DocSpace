@@ -131,9 +131,10 @@ internal class DropboxProviderInfo : IProviderInfo
         return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile);
     }
 
-    internal Task<Stream> GetThumbnailsAsync(string filePath)
+    internal async Task<Stream> GetThumbnailsAsync(string filePath)
     {
-        return _dropboxProviderInfoHelper.GetThumbnailsAsync(Storage, filePath);
+        var storage = await StorageAsync;
+        return await _dropboxProviderInfoHelper.GetThumbnailsAsync(storage, filePath);
     }
 }
 

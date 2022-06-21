@@ -476,12 +476,12 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         return file;
     }
 
-    public Task<Stream> GetThumbnailAsync(string fileid)
+    public Task<Stream> GetThumbnailAsync(string fileid, int width, int height)
     {
         return null;
     }
 
-    public Task<Stream> GetThumbnailAsync(File<string> file)
+    public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
     {
         return null;
     }

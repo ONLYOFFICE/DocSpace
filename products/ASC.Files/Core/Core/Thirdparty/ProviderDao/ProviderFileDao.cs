@@ -521,17 +521,17 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         return file;
     }
 
-    public Task<Stream> GetThumbnailAsync(string fileId)
+    public Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
     {
         var selector = GetSelector(fileId);
         var fileDao = selector.GetFileDao(fileId);
-        return fileDao.GetThumbnailAsync(fileId);
+        return fileDao.GetThumbnailAsync(fileId, width, height);
     }
 
-    public Task<Stream> GetThumbnailAsync(File<string> file)
+    public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
     {
         var fileDao = GetFileDao(file);
-        return fileDao.GetThumbnailAsync(file);
+        return fileDao.GetThumbnailAsync(file, width, height);
     }
 
     #endregion
