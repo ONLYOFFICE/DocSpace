@@ -1,5 +1,5 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
@@ -11,8 +11,9 @@ import DisableSsoConfirmationModal from "./DisableSsoConfirmationModal";
 
 const borderProp = { radius: "4px" };
 
-const ToggleSSO = () => {
+const ToggleSSO = (props) => {
   const { t } = useTranslation("SingleSignOn");
+  const { theme } = props;
 
   return (
     <>
@@ -21,7 +22,9 @@ const ToggleSSO = () => {
       </Text>
 
       <Box
-        backgroundProp="#F8F9F9 "
+        backgroundProp={
+          theme.studio.settings.integration.sso.toggleContentBackground
+        }
         borderProp={borderProp}
         displayProp="flex"
         flexDirection="row"
@@ -50,4 +53,10 @@ const ToggleSSO = () => {
   );
 };
 
-export default observer(ToggleSSO);
+export default inject(({ auth }) => {
+  const { theme } = auth.settingsStore;
+
+  return {
+    theme,
+  };
+})(observer(ToggleSSO));
