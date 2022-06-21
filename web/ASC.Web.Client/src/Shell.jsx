@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Router, Switch, Route, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
@@ -198,10 +198,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     roomsMode,
     setSnackbarExist,
     userTheme,
-    currentProductId,
   } = rest;
-
-  const [isDocuments, setIsDocuments] = useState(false);
 
   useEffect(() => {
     try {
@@ -429,14 +426,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (userTheme) setTheme(userTheme);
   }, [userTheme]);
 
-  useEffect(() => {
-    if (window.location.pathname.toLowerCase().includes("files")) {
-      setIsDocuments(true);
-    } else {
-      setIsDocuments(false);
-    }
-  }, [currentProductId]);
-
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
 
@@ -522,7 +511,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       <Router history={history}>
         <>
-          {isDocuments ? <ReactSmartBanner t={t} ready={ready} /> : <></>}
+          <ReactSmartBanner t={t} ready={ready} />
           {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
           <Main isDesktop={isDesktop}>
@@ -585,7 +574,6 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
-    currentProductId,
   } = settingsStore;
   const { setPreparationPortalDialogVisible } = backup;
 
@@ -614,7 +602,6 @@ const ShellWrapper = inject(({ auth, backup }) => {
     roomsMode,
     setSnackbarExist,
     userTheme: auth?.userStore?.user?.theme,
-    currentProductId,
   };
 })(observer(Shell));
 

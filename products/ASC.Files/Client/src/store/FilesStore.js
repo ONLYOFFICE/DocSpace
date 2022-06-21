@@ -505,6 +505,7 @@ class FilesStore {
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
+    this.setFilterUrl(filter);
     this.filter = filter;
 
     runInAction(() => {
@@ -1491,7 +1492,7 @@ class FilesStore {
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
 
-    const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
+    const iconSize = this.viewAs === "table" ? 24 : 32;
     const icon = extension
       ? getFileIcon(`.${extension}`, iconSize)
       : getFolderIcon(null, iconSize);

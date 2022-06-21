@@ -153,14 +153,11 @@ Checkbox.propTypes = {
   truncate: PropTypes.bool,
   /** Help button render */
   helpButton: PropTypes.any,
-
-  isLogin: PropTypes.bool,
 };
 
 Checkbox.defaultProps = {
   isChecked: false,
   truncate: false,
-  isLogin: false,
 };
 
 export default React.memo(Checkbox);

@@ -133,22 +133,22 @@ const FilesRowContent = ({
           {updatedDate && updatedDate}
         </Text>
 
-        {!isMobileOnly && (
-          <Text
-            containerMinWidth="90px"
-            containerWidth="10%"
-            as="div"
-            className="row-content-text"
-            fontSize="12px"
-            fontWeight={400}
-            title=""
-            truncate={true}
-          >
-            {!fileExst && !contentLength && !providerKey
-              ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
-              : ""}
-          </Text>
-        )}
+        <Text
+          containerMinWidth="90px"
+          containerWidth="10%"
+          as="div"
+          className="row-content-text"
+          fontSize="12px"
+          fontWeight={400}
+          title=""
+          truncate={true}
+        >
+          {!fileExst && !contentLength && !providerKey && !isMobileOnly
+            ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
+            : fileExst
+            ? `${fileExst.toUpperCase().replace(/^\./, "")}`
+            : ""}
+        </Text>
       </SimpleFilesRowContent>
     </>
   );
