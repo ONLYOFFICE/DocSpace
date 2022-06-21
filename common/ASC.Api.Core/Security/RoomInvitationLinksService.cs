@@ -68,7 +68,7 @@ public class RoomInvitationLinksService
 
         var postifx = (int)employeeType + fileShare + id.ToString();
 
-        var link = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.RoomInvite, postifx, guid)
+        var link = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.LinkInvite, postifx, guid)
             + $"&emplType={employeeType:d}&roomId={id}&access={fileShare}";
 
         return link;
@@ -101,7 +101,7 @@ public class RoomInvitationLinksService
     private void SaveVisitLinkInfo(string id, string email, string key)
     {
         var headers = _httpContextAccessor?.HttpContext?.Request?.Headers;
-        var target = _messageTarget.Create(email != null ? new[] { id, email } : new[] { id });
+        var target = _messageTarget.CreateFromGroupValues(email != null ? new[] { id, email } : new[] { id });
 
         _messageService.Send(headers, MessageAction.RoomInviteLinkUsed, target, key);
     }
@@ -109,7 +109,7 @@ public class RoomInvitationLinksService
     private AuditEvent GetLinkInfo(string id, string email, string key)
     {
         var context = _messagesContext.Value;
-        var target = _messageTarget.Create(email != null ? new[] { id, email } : new[] { id });
+        var target = _messageTarget.CreateFromGroupValues(email != null ? new[] { id, email } : new[] { id });
         var description = JsonConvert.SerializeObject(new[] { key },
             new JsonSerializerSettings
             {

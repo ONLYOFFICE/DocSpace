@@ -55,5 +55,4 @@ public enum ConfirmType
     TfaActivation,
     TfaAuth,
     Wizard,
-    RoomInvite
 }

@@ -106,16 +106,18 @@ public class EmailValidationKeyModelHelper
                 break;
 
             case ConfirmType.LinkInvite:
-                checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)emplType, key, _provider.ValidEmailKeyInterval);
-                break;
-
-            case ConfirmType.RoomInvite:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + ((int)emplType + (int)fileShare + roomId), key, _provider.ValidEmailKeyInterval);
-                if (checkKeyResult == ValidationResult.Ok && 
-                    !_roomLinksService.VisitProcess(roomId, email, key, _provider.ValidVisitLinkInterval))
+                if (fileShare != default && !string.IsNullOrEmpty(roomId))
                 {
-                    checkKeyResult = ValidationResult.Expired;
+                    checkKeyResult = _provider.ValidateEmailKey(email + type + ((int)emplType + (int)fileShare + roomId), key, _provider.ValidEmailKeyInterval);
+                    if (checkKeyResult == ValidationResult.Ok &&
+                        !_roomLinksService.VisitProcess(roomId, email, key, _provider.ValidVisitLinkInterval))
+                    {
+                        checkKeyResult = ValidationResult.Expired;
+                    }
+                    break;
                 }
+
+                checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)emplType, key, _provider.ValidEmailKeyInterval);
                 break;
 
             case ConfirmType.PortalOwnerChange:

@@ -543,7 +543,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
 
     private async Task<IEnumerable<FileShareDto>> SetRoomSecurityByLinkAsync(T id, Guid userId, FileShare access, string key)
     {
-        var result = _emailValidationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.RoomInvite + ((int)EmployeeType.User + (int)access + id.ToString()), key,
+        var result = _emailValidationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.LinkInvite + ((int)EmployeeType.User + (int)access + id.ToString()), key,
                 _emailValidationKeyProvider.ValidEmailKeyInterval);
 
         if (result != EmailValidationKeyProvider.ValidationResult.Ok)

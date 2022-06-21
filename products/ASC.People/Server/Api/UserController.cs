@@ -213,9 +213,9 @@ public class UserController : PeopleControllerBase
         if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
         {
             var employeeType = inDto.IsVisitor ? EmployeeType.Visitor : EmployeeType.User;
-            var resultWithEmail = _validationKeyProvider.ValidateEmailKey(inDto.Email + ConfirmType.RoomInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
+            var resultWithEmail = _validationKeyProvider.ValidateEmailKey(inDto.Email + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
                 _validationKeyProvider.ValidEmailKeyInterval);
-            var resultWithoutEmail = _validationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.RoomInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
+            var resultWithoutEmail = _validationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
                 _validationKeyProvider.ValidEmailKeyInterval);
 
             if (resultWithEmail != EmailValidationKeyProvider.ValidationResult.Ok && resultWithoutEmail != EmailValidationKeyProvider.ValidationResult.Ok)
