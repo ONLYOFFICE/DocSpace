@@ -8,6 +8,7 @@
     frameId: "ds-frame",
     showHeader: false,
     showArticle: false,
+    showTitle: true,
     showFilter: false,
     destroyText: "Frame container",
     filter: {
@@ -93,6 +94,8 @@
       target.parentNode && target.parentNode.replaceChild(iframe, target);
       msgDispatcher = new MessageDispatcher(onMessage, this);
 
+      localStorage.setItem("dsFrameConfig", JSON.stringify(config));
+
       postMessage(window.parent, {
         source: config.frameId,
         message: "Frame inserted!",
@@ -108,6 +111,8 @@
       if (iframe) {
         msgDispatcher && msgDispatcher.unbindEvents();
         iframe.parentNode && iframe.parentNode.replaceChild(target, iframe);
+
+        localStorage.removeItem("dsFrameConfig");
       }
     };
 
