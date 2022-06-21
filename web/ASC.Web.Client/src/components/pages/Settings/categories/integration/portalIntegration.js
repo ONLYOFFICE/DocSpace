@@ -74,6 +74,7 @@ const PortalIntegration = (props) => {
   const [config, setConfig] = useState({
     withSubfolders: true,
     showHeader: false,
+    showTitle: true,
     showArticle: false,
     showFilter: false,
   });
@@ -165,6 +166,12 @@ const PortalIntegration = (props) => {
     });
   };
 
+  const onChangeShowTitle = () => {
+    setConfig((config) => {
+      return { ...config, showTitle: !config.showTitle };
+    });
+  };
+
   const onChangeShowArticle = (e) => {
     setConfig((config) => {
       return { ...config, showArticle: !config.showArticle };
@@ -213,6 +220,12 @@ const PortalIntegration = (props) => {
           label="Show header"
           onChange={onChangeShowHeader}
           isChecked={config.showHeader}
+        />
+
+        <ParameterCheckbox
+          label="Show title"
+          onChange={onChangeShowTitle}
+          isChecked={config.showTitle}
         />
 
         <ParameterCheckbox
