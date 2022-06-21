@@ -74,14 +74,7 @@ const StyledButton = styled(Button)`
     }
   }
 
-  @media ${hugeMobile} {
-    padding: 0 16px;
-    height: 60px;
-    font-size: 0;
-    line-height: 0;
-  }
-
-  @media ${mobile} {
+  @media ${mobile}, ${hugeMobile} {
     padding: 0 16px;
     height: 50px;
     font-size: 0;
