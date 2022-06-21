@@ -60,6 +60,7 @@ class MediaViewer extends React.Component {
       playlist: props.playlist,
       playlistPos,
       fileUrl: item.src,
+      canSwipeImage: true,
     };
 
     this.detailsContainer = React.createRef();
@@ -346,6 +347,9 @@ class MediaViewer extends React.Component {
         ? playlist.find((file) => file.id === playlistPos).fileId
         : 0;
     this.props.onDelete && this.props.onDelete(currentFileId);
+    this.setState({
+      canSwipeImage: false,
+    });
   };
 
   onDownload = () => {
@@ -376,22 +380,26 @@ class MediaViewer extends React.Component {
     if (isActionKey) {
       switch (e.keyCode) {
         case ButtonKeys.leftArrow:
-          ctrIsPressed
-            ? document.getElementsByClassName("iconContainer rotateLeft")
-                .length > 0 &&
-              document
-                .getElementsByClassName("iconContainer rotateLeft")[0]
-                .click()
-            : this.prevMedia();
+          this.state.canSwipeImage
+            ? ctrIsPressed
+              ? document.getElementsByClassName("iconContainer rotateLeft")
+                  .length > 0 &&
+                document
+                  .getElementsByClassName("iconContainer rotateLeft")[0]
+                  .click()
+              : this.prevMedia()
+            : null;
           break;
         case ButtonKeys.rightArrow:
-          ctrIsPressed
-            ? document.getElementsByClassName("iconContainer rotateRight")
-                .length > 0 &&
-              document
-                .getElementsByClassName("iconContainer rotateRight")[0]
-                .click()
-            : this.nextMedia();
+          this.state.canSwipeImage
+            ? ctrIsPressed
+              ? document.getElementsByClassName("iconContainer rotateRight")
+                  .length > 0 &&
+                document
+                  .getElementsByClassName("iconContainer rotateRight")[0]
+                  .click()
+              : this.nextMedia()
+            : null;
           break;
         case ButtonKeys.esc:
           if (!this.props.deleteDialogVisible) this.props.onClose();

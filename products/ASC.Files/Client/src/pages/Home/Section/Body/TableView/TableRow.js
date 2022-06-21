@@ -190,7 +190,16 @@ const StyledBadgesContainer = styled.div`
 
   .badge-version {
     width: max-content;
-    margin: 0 6px -2px -2px;
+    margin: 0 5px -2px -2px;
+
+    > div {
+      padding: 0 3.3px 0 4px;
+      p {
+        letter-spacing: 0.5px;
+        font-size: 8px;
+        font-weight: 800;
+      }
+    }
   }
 
   .badge-new-version {

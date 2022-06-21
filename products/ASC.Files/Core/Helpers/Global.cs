@@ -28,6 +28,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -593,9 +594,10 @@ namespace ASC.Web.Files.Classes
 
         private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
         {
-            await foreach (var file in storeTemplate.ListFilesRelativeAsync("", path, "*", false))
+            var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false).ToListAsync();
+            foreach (var file in files)
             {
-                await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate);
+                await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files);
             }
 
             await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
@@ -610,15 +612,18 @@ namespace ASC.Web.Files.Classes
             }
         }
 
-        private async Task SaveFileAsync(FileMarker fileMarker, FileDao fileDao, int folder, string filePath, IDataStore storeTemp)
+        private async Task SaveFileAsync(FileMarker fileMarker, FileDao fileDao, int folder, string filePath, IDataStore storeTemp, IEnumerable<string> files)
         {
             try
             {
-                if (FileUtility.GetFileExtension(filePath) == "." + Global.ThumbnailExtension
-                    && await storeTemp.IsFileAsync("", Regex.Replace(filePath, "\\." + Global.ThumbnailExtension + "$", "")))
-                    return;
-
                 var fileName = Path.GetFileName(filePath);
+                foreach (var ext in Enum.GetValues<ThumbnailExtension>())
+                {
+                    if (FileUtility.GetFileExtension(filePath) == "." + ext
+                        && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
+                        return;
+                }
+
                 var file = ServiceProvider.GetService<File<int>>();
 
                 file.Title = fileName;
@@ -630,21 +635,6 @@ namespace ASC.Web.Files.Classes
                     file.ContentLength = stream.CanSeek ? stream.Length : await storeTemp.GetFileSizeAsync("", filePath);
                     file = await fileDao.SaveFileAsync(file, stream, false);
                 }
-
-
-                foreach (var size in _thumbnailSettings.Sizes)
-                {
-                    var pathThumb = $"{filePath}.{size.Width}x{size.Height}.{Global.ThumbnailExtension}";
-                    if (await storeTemp.IsFileAsync("", pathThumb))
-                    {
-                        using (var streamThumb = await storeTemp.GetReadStreamAsync("", pathThumb))
-                        {
-                            await fileDao.SaveThumbnailAsync(file, streamThumb, size.Width, size.Height);
-                        }
-                    }
-                }
-
-                file.ThumbnailStatus = Thumbnail.Created;
 
                 await fileMarker.MarkAsNewAsync(file);
             }

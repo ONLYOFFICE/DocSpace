@@ -842,33 +842,34 @@ class UpdateUserForm extends React.Component {
               maxLabelWidth={maxLabelWidth}
             />
             {!personal && (
-              <DateField
-                calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-                labelText={`${t("Translations:Birthdate")}:`}
-                inputName="birthday"
-                inputClassName="date-picker_input-birthday"
-                inputValue={birthdayDateValue}
-                inputIsDisabled={isLoading}
-                inputOnChange={this.onBirthdayDateChange}
-                inputTabIndex={6}
-                locale={language}
-                maxLabelWidth={maxLabelWidth}
-              />
-            )}
-            <RadioField
-              labelText={`${t("Translations:Sex")}:`}
-              radioName="sex"
-              radioValue={profile.sex}
-              radioOptions={[
-                { value: "male", label: t("Translations:MaleSexStatus") },
-                { value: "female", label: t("Translations:FemaleSexStatus") },
-              ]}
-              radioIsDisabled={isLoading}
-              radioOnChange={this.onInputChange}
-              maxLabelWidth={maxLabelWidth}
-            />
-            {!personal && (
               <>
+                <DateField
+                  calendarHeaderContent={`${t("CalendarSelectDate")}:`}
+                  labelText={`${t("Translations:Birthdate")}:`}
+                  inputName="birthday"
+                  inputClassName="date-picker_input-birthday"
+                  inputValue={birthdayDateValue}
+                  inputIsDisabled={isLoading}
+                  inputOnChange={this.onBirthdayDateChange}
+                  inputTabIndex={6}
+                  locale={language}
+                  maxLabelWidth={maxLabelWidth}
+                />
+                <RadioField
+                  labelText={`${t("Translations:Sex")}:`}
+                  radioName="sex"
+                  radioValue={profile.sex}
+                  radioOptions={[
+                    { value: "male", label: t("Translations:MaleSexStatus") },
+                    {
+                      value: "female",
+                      label: t("Translations:FemaleSexStatus"),
+                    },
+                  ]}
+                  radioIsDisabled={isLoading}
+                  radioOnChange={this.onInputChange}
+                  maxLabelWidth={maxLabelWidth}
+                />
                 <RadioField
                   labelText={`${t("Common:Type")}:`}
                   radioName="isVisitor"
