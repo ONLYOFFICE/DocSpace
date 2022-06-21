@@ -31,16 +31,15 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
     right: 0;
   }
 
-  /* ${(props) =>
-    (props.isRowView || isMobile) &&
-    css`
-      z-index: 309;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    `} */
+  ${isMobile &&
+  css`
+    z-index: 309;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  `}
 `;
 
 const StyledInfoPanel = styled.div`
@@ -62,6 +61,15 @@ const StyledInfoPanel = styled.div`
     width: 480px;
     max-width: calc(100vw - 69px);
   }
+
+  ${isMobile &&
+  css`
+    position: absolute;
+    border: none;
+    right: 0;
+    width: 480px;
+    max-width: calc(100vw - 69px);
+  `}
 
   /* ${(props) =>
     (props.isRowView || isMobile) &&
@@ -102,6 +110,14 @@ const StyledControlContainer = styled.div`
     top: 16px;
     left: -34px;
   }
+
+  ${isMobile &&
+  css`
+    display: flex;
+
+    top: 16px;
+    left: -34px;
+  `}
 
   /* ${(props) =>
     (props.isRowView || isMobile) &&

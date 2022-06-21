@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
-import { mobile, tablet } from "../utils/device";
+import { mobile, tablet, hugeMobile } from "../utils/device";
 import Scrollbar from "../scrollbar";
 import { isMobile } from "react-device-detect";
 
@@ -99,7 +99,7 @@ const StyledTableGroupMenu = styled.div`
     height: 60px;
   }
 
-  @media ${mobile} {
+  @media ${mobile}, ${hugeMobile} {
     height: 52px;
   }
 
