@@ -158,8 +158,8 @@ class NavMenu extends React.Component {
 
     const frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
 
-    const isFrame = window.name === frameConfig.name;
-    const showFrameHeader = !JSON.parse(frameConfig.showHeader);
+    const isFrame = frameConfig && window.name === frameConfig.name;
+    const showFrameHeader = frameConfig && !JSON.parse(frameConfig.showHeader);
 
     const isAsideAvailable = !!asideContent;
     const hideHeader =

@@ -316,6 +316,8 @@ class PureHome extends React.Component {
     const frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
 
     const isFrame = frameConfig && window.name === frameConfig.name;
+    const showTitle = frameConfig && JSON.parse(frameConfig.showTitle);
+    const showFilter = frameConfig && JSON.parse(frameConfig.showFilter);
 
     return (
       <>
@@ -350,7 +352,7 @@ class PureHome extends React.Component {
         >
           <Section.SectionHeader>
             {isFrame ? (
-              JSON.parse(frameConfig.showTitle) && <SectionHeaderContent />
+              showTitle && <SectionHeaderContent />
             ) : (
               <SectionHeaderContent />
             )}
@@ -368,7 +370,7 @@ class PureHome extends React.Component {
 
           <Section.SectionFilter>
             {isFrame ? (
-              JSON.parse(frameConfig.showFilter) && <SectionFilterContent />
+              showFilter && <SectionFilterContent />
             ) : (
               <SectionFilterContent />
             )}

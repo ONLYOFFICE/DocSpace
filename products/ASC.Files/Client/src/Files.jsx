@@ -169,8 +169,8 @@ class FilesContent extends React.Component {
     //const { /*, isDesktop*/ } = this.props;
 
     const frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
-    const isFrame = window.name === frameConfig.name;
-    const showArticle = JSON.parse(frameConfig.showArticle);
+    const isFrame = frameConfig && window.name === frameConfig.name;
+    const showArticle = frameConfig && JSON.parse(frameConfig.showArticle);
 
     return (
       <>
