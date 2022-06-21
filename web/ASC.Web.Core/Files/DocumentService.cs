@@ -173,9 +173,11 @@ public static class DocumentService
                         { "payload", body }
                     };
 
+#pragma warning disable CS0618 // Type or member is obsolete
             var encoder = new JwtEncoder(new HMACSHA256Algorithm(),
                                              new JsonNetSerializer(),
                                              new JwtBase64UrlEncoder());
+#pragma warning restore CS0618 // Type or member is obsolete
 
             var token = encoder.Encode(payload, signatureSecret);
             //todo: remove old scheme
@@ -302,9 +304,11 @@ public static class DocumentService
                     { "payload", body }
                 };
 
+#pragma warning disable CS0618 // Type or member is obsolete
             var encoder = new JwtEncoder(new HMACSHA256Algorithm(),
                                                               new JsonNetSerializer(),
                                                               new JwtBase64UrlEncoder());
+#pragma warning restore CS0618 // Type or member is obsolete
 
             var token = encoder.Encode(payload, signatureSecret);
             //todo: remove old scheme

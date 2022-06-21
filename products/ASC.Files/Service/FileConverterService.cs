@@ -101,6 +101,8 @@ internal class FileConverterService<T> : BackgroundService
 
             foreach (var converter in filesIsConverting)
             {
+                converter.Processed = "1";
+
                 var fileId = JsonDocument.Parse(converter.Source).RootElement.GetProperty("id").Deserialize<T>();
                 var fileVersion = JsonDocument.Parse(converter.Source).RootElement.GetProperty("version").Deserialize<int>();
 
@@ -183,7 +185,7 @@ internal class FileConverterService<T> : BackgroundService
                 {
                     var operationResult = converter;
 
-                    if (DateTime.Now - operationResult.StartDateTime > TimeSpan.FromMinutes(10))
+                    if (DateTime.UtcNow - operationResult.StartDateTime > TimeSpan.FromMinutes(10))
                     {
                         operationResult.StopDateTime = DateTime.UtcNow;
                         operationResult.Error = FilesCommonResource.ErrorMassage_ConvertTimeout;

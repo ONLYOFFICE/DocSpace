@@ -69,7 +69,7 @@ public class FileConverterQueue<T>
                 TenantId = tenantId,
                 Account = account.ID,
                 Delete = deleteAfter,
-                StartDateTime = DateTime.Now,
+                StartDateTime = DateTime.UtcNow,
                 Url = url,
                 Password = password,
                 ServerRootPath = serverRootPath
@@ -185,6 +185,8 @@ public class FileConverterQueue<T>
 
     private bool Contains(FileConverterOperationResult val)
     {
+        if (val == null) return false;
+
         var queueTasks = LoadFromCache();
 
         return queueTasks.Any(x =>
@@ -478,7 +480,7 @@ public class FileConverter
             TenantId = _tenantManager.GetCurrentTenant().Id,
             Account = _authContext.CurrentAccount.ID,
             Delete = false,
-            StartDateTime = DateTime.Now,
+            StartDateTime = DateTime.UtcNow,
             Url = _httpContextAccesor?.HttpContext != null ? _httpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null,
             Password = null,
             ServerRootPath = _baseCommonLinkUtility.ServerRootPath
