@@ -277,32 +277,32 @@ export default function withContent(WrappedContent) {
             })
             .then(() => this.completeAction(itemId))
             .catch((err) => {
-              console.log("err", err);
-              const isPasswordError = new RegExp(/\(password\)*$/);
-
-              if (isPasswordError.test(err)) {
-                toastr.error(
-                  t("Translations:FileProtected"),
-                  t("Common:Warning")
-                );
-                setIsUpdatingRowItem(false);
-
-                setFormCreationInfo({
-                  newTitle: `${title}.${item.fileExst}`,
-                  fromExst: ".docx",
-                  toExst: item.fileExst,
-                  open,
-                  actionId: itemId,
-                  fileInfo: {
-                    id: fileActionTemplateId,
-                    folderId: item.parentId,
-                    fileExst: item.fileExst,
-                  },
-                });
-                setConvertPasswordDialogVisible(true);
-
-                open && openDocEditor(null, null, tab);
+              if (err.indexOf("password") == -1) {
+                toastr.error(err, t("Common:Warning"));
+                return;
               }
+
+              toastr.error(
+                t("Translations:FileProtected"),
+                t("Common:Warning")
+              );
+              setIsUpdatingRowItem(false);
+
+              setFormCreationInfo({
+                newTitle: `${title}.${item.fileExst}`,
+                fromExst: ".docx",
+                toExst: item.fileExst,
+                open,
+                actionId: itemId,
+                fileInfo: {
+                  id: fileActionTemplateId,
+                  folderId: item.parentId,
+                  fileExst: item.fileExst,
+                },
+              });
+              setConvertPasswordDialogVisible(true);
+
+              open && openDocEditor(null, null, tab);
             })
             .finally(() => {
               const fileIds = [+itemId];
