@@ -288,8 +288,7 @@ export default function withFileActions(WrappedFileItem) {
         (x) => x.id === item.id && x.fileExst === item.fileExst
       );
 
-      const draggable =
-        !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
+      const draggable = !isRecycleBinFolder && selectedItem;
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
       const canWebEdit = settingsStore.canWebEdit(item.fileExst);
