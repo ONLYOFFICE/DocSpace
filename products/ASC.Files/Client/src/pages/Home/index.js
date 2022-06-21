@@ -313,6 +313,10 @@ class PureHome extends React.Component {
       snackbarExist,
     } = this.props;
 
+    const frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
+
+    const isFrame = frameConfig && window.name === frameConfig.name;
+
     return (
       <>
         <MediaViewer />
@@ -345,7 +349,11 @@ class PureHome extends React.Component {
           firstLoad={firstLoad}
         >
           <Section.SectionHeader>
-            <SectionHeaderContent />
+            {isFrame ? (
+              JSON.parse(frameConfig.showTitle) && <SectionHeaderContent />
+            ) : (
+              <SectionHeaderContent />
+            )}
           </Section.SectionHeader>
 
           <Section.SectionBar>
@@ -359,7 +367,11 @@ class PureHome extends React.Component {
           </Section.SectionBar>
 
           <Section.SectionFilter>
-            <SectionFilterContent />
+            {isFrame ? (
+              JSON.parse(frameConfig.showFilter) && <SectionFilterContent />
+            ) : (
+              <SectionFilterContent />
+            )}
           </Section.SectionFilter>
 
           <Section.SectionBody>

@@ -29,6 +29,7 @@ import {
   ArticleMainButtonContent,
 } from "./components/Article";
 import FormGallery from "./pages/FormGallery";
+import ConvertPasswordDialog from "./components/dialogs/ConvertPasswordDialog";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -167,10 +168,18 @@ class FilesContent extends React.Component {
   render() {
     //const { /*, isDesktop*/ } = this.props;
 
+    const frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
+    const isFrame = window.name === frameConfig.name;
+    const showArticle = JSON.parse(frameConfig.showArticle);
+
     return (
       <>
         <Panels />
-        <FilesArticle history={this.props.history} />
+        {isFrame ? (
+          showArticle && <FilesArticle history={this.props.history} />
+        ) : (
+          <FilesArticle history={this.props.history} />
+        )}
         <FilesSection />
       </>
     );
