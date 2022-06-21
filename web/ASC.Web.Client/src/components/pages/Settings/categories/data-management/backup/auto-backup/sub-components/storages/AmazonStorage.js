@@ -30,7 +30,10 @@ class AmazonStorage extends React.Component {
         this.defaultFormSettings[elem] = value;
       }
     } else {
-      this.namesArray.forEach((elem) => (this.defaultFormSettings[elem] = ""));
+      //this.namesArray.forEach((elem) => (this.defaultFormSettings[elem] = ""));
+      for (const [key, value] of Object.entries(AmazonSettings.formNames())) {
+        this.defaultFormSettings[key] = value;
+      }
     }
 
     onSetFormSettings(null, null, this.defaultFormSettings);

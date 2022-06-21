@@ -7,6 +7,8 @@ import { getPortalPasswordSettings } from "@appserver/common/api/settings";
 import { thirdParty } from "@appserver/common/api/files";
 import Text from "@appserver/components/text";
 import styled, { css } from "styled-components";
+import HelpButton from "@appserver/components/help-button";
+import { Trans, withTranslation } from "react-i18next";
 
 const bucketInput = "bucket";
 const regionInput = "region";
@@ -20,6 +22,14 @@ const clientKey = "clientKey";
 
 const StyledBody = styled.div`
   margin-bottom: 16px;
+
+  .backup_storage-tooltip {
+    display: flex;
+    align-items: center;
+    p {
+      margin-right: 8px;
+    }
+  }
 `;
 class AmazonSettings extends React.Component {
   static formNames = () => {
@@ -178,6 +188,7 @@ class AmazonSettings extends React.Component {
       onChange,
       formSettings,
       onChangeCheckbox,
+      t,
     } = this.props;
     const {
       selectedEncryption,
@@ -186,11 +197,29 @@ class AmazonSettings extends React.Component {
       managedKeys,
     } = this.state;
     console.log("formSettings", formSettings);
-
+    const renderTooltip = (helpInfo) => {
+      return (
+        <>
+          <HelpButton
+            iconName={"/static/images/help.react.svg"}
+            tooltipContent={
+              <>
+                <Trans t={t} i18nKey={`${helpInfo}`} ns="Settings">
+                  {helpInfo}
+                </Trans>
+              </>
+            }
+          />
+        </>
+      );
+    };
     return (
       <>
         <StyledBody>
-          <Text isBold>{this.bucketPlaceholder}</Text>
+          <div className="backup_storage-tooltip">
+            <Text isBold>{this.bucketPlaceholder}</Text>
+            {renderTooltip(t("AmazonServiceTip"))}
+          </div>
           <TextInput
             name={bucketInput}
             className="backup_text-input"
@@ -203,7 +232,10 @@ class AmazonSettings extends React.Component {
           />
         </StyledBody>
         <StyledBody>
-          <Text isBold>{this.regionPlaceholder}</Text>
+          <div className="backup_storage-tooltip">
+            <Text isBold>{this.regionPlaceholder}</Text>
+            {renderTooltip(t("AmazonBucketTip"))}
+          </div>
           <ComboBox
             className="backup_text-input"
             options={this.region}
@@ -222,7 +254,10 @@ class AmazonSettings extends React.Component {
         </StyledBody>
 
         <StyledBody>
-          <Text isBold>{this.serviceUrlPlaceholder}</Text>
+          <div className="backup_storage-tooltip">
+            <Text isBold>{this.serviceUrlPlaceholder}</Text>
+            {renderTooltip(t("AmazonRegionTip"))}
+          </div>
           <TextInput
             name={urlInput}
             className="backup_text-input"
