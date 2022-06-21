@@ -1,4 +1,4 @@
-﻿{
+{
   "ActivationLink": "Activatielink",
   "AddContact": "Contact toevoegen",
   "AddPhoto": "Foto toevoegen",
@@ -8,7 +8,7 @@
   "ChangesSavedSuccessfully": "Wijzigingen met succes opgeslagen",
   "ContactInformation": "Contactinformatie",
   "CopiedResourceText": "Gekopieerd",
-  "CustomCreation": "{{user}} (creation)",
+  "CustomCreation": "{{user}} (gemaakt)",
   "EditPhoto": "Bewerk Foto",
   "EditUserDialogTitle": "Bewerk profiel",
   "EmailPopupHelper": "De primaire e-mail wordt gebruikt voor meldingen en het herstellen van de toegang. <1> U kunt een nieuwe e-mail op dit domein voor de gebruiker aanmaken en een eenmalig wachtwoord instellen voor de eerste login.</1>",

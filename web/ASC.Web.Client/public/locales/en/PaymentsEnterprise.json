@@ -1,4 +1,4 @@
-﻿{
+{
   "AccessSubscription": "Your subscription for support and updates expires on",
   "AdvantageEditor": "{{organizationName}} editors with pro features",
   "AdvantagePrivateRooom": "Private Room for encrypted collaboration",
@@ -7,7 +7,7 @@
   "AdvantageWebEditors": "Mobile web editors",
   "ButtonBuyLicense": "Buy now",
   "ButtonUploadLicense": "Upload license",
-  "ContactEmail": "For any purchase questions, contact us at ",
+  "ContactEmail": "For any purchase questions, contact us at",
   "ContactUrl": "For solving technical issues, use",
   "ErrorLoadingLicense": "Make sure you choose the right file",
   "ExpiryPaidLicense": "Support is no longer available for your license since",

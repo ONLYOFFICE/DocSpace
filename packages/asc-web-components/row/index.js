@@ -70,7 +70,7 @@ class Row extends React.Component {
     };
 
     const onContextMenu = (e) => {
-      rowContextClick && rowContextClick();
+      rowContextClick && rowContextClick(e.button === 2);
       if (!this.cm.current.menuRef.current) {
         this.row.current.click(e); //TODO: need fix context menu to global
       }

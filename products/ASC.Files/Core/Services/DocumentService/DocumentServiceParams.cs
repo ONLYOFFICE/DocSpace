@@ -39,6 +39,7 @@ public class DocumentServiceParams
     public bool OpenHistory { get; set; }
     public string OpeninigDate { get; set; }
     public string ServerErrorMessage { get; set; }
+    public string DefaultType { get; set; }
     public string ShareLinkParam { get; set; }
     public string TabId { get; set; }
     public bool ThirdPartyApp { get; set; }

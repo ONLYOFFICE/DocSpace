@@ -1,10 +1,10 @@
-﻿{
+{
+  "Clouds": "Đám mây",
   "CommonSettings": "Cài đặt chung",
-  "ConnectAccounts": "Kết nối tài khoản",
-  "ConnectAccountsSubTitle": "Không có tài khoản được kết nối",
   "ConnectAdminDescription": "Để kết nối thành công, hãy nhập dữ liệu cần thiết trên <1>trang này</1>.",
   "ConnectDescription": "Bạn có thể kết nối các tài khoản sau với Tài liệu ONLYOFFICE. Bạn sẽ thấy những tài liệu từ các tài khoản này để chỉnh sửa trong phần 'Tài liệu của tôi'.",
-  "ConnectedCloud": "Đám mây được kết nối",
+  "ConnectDescriptionText": "Bạn chưa kết nối bất kỳ đám mây của bên thứ ba nào.",
+  "ConnectEmpty": "Không có gì ở đây cả",
   "ConnectMakeShared": "Chia sẻ và đưa vào thư mục 'Chung'",
   "ConnextOtherAccount": "Tài khoản khác",
   "DisplayFavorites": "Hiển thị Yêu thích",

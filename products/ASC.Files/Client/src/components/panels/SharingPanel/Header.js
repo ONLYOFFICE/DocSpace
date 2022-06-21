@@ -88,7 +88,7 @@ const Header = ({
               clickOutsideAction={onCloseActionPanel}
             >
               <DropDownItem
-                label={t("LinkText")}
+                label={t("Common:AddUsers")}
                 onClick={onShowUsersPanelAction}
               />
 

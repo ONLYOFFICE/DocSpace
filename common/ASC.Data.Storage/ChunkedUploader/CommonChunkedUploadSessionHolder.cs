@@ -136,11 +136,14 @@ public class CommonChunkedUploadSessionHolder
     {
         var tempPath = uploadSession.TempPath;
         var uploadId = uploadSession.UploadId;
-        var chunkNumber = uploadSession.GetItemOrDefault<int>("ChunksUploaded") + 1;
+
+        int chunkNumber;
+        int.TryParse(uploadSession.GetItemOrDefault<string>("ChunksUploaded"), out chunkNumber);
+        chunkNumber++;
 
         var eTag = await DataStore.UploadChunkAsync(_domain, tempPath, uploadId, stream, _maxChunkUploadSize, chunkNumber, length);
 
-        uploadSession.Items["ChunksUploaded"] = chunkNumber;
+        uploadSession.Items["ChunksUploaded"] = chunkNumber.ToString();
         uploadSession.BytesUploaded += length;
 
         var eTags = uploadSession.GetItemOrDefault<List<string>>("ETag") ?? new List<string>();

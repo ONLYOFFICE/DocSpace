@@ -17,7 +17,8 @@ const StyledHeadline = styled(Headline)`
 
 const StyledContainer = styled.div`
   width: 100%;
-  padding: 14px 0 0px;
+  height: 32px;
+  padding: 10px 0 0px;
   display: grid;
 
   grid-template-columns: ${(props) =>
@@ -55,6 +56,11 @@ const StyledContainer = styled.div`
 
 const StyledInfoPanelToggleWrapper = styled.div`
   margin-left: auto;
+
+  display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+  @media ${tablet} {
+    display: none;
+  }
 
   .info-panel-toggle-bg {
     height: 32px;

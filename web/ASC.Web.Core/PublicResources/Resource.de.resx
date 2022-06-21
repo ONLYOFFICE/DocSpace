@@ -257,7 +257,7 @@
     <value>Bucket</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Geben Sie den Namen des Google Cloud-Buckets ein, in dem Sie Ihre Backups speichern möchten.</value>
+    <value>Für das Speichern von Sicherungskopien, geben Sie den Namen des Google Cloud-Buckets ein.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Stellen Sie eine Verbindung mit dem Google Cloud Storage, um Daten Ihres Portals zu sichern und zu speichern.</value>
@@ -324,13 +324,13 @@
     <value>Der private Container</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Geben Sie die URL-Adresse des privaten Rackspace-Containers ein, in dem Sie Ihre Backups speichern möchten.</value>
+    <value>Für das Speichern von Sicherungskopien, geben Sie die URL-Adresse des privaten Rackspace-Containers ein.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Der öffentliche Container</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Geben Sie die URL-Adresse des öffentlichen Rackspace-Containers ein, in dem Sie Ihre Backups speichern möchten.</value>
+    <value>Für das Speichern von Sicherungskopien, geben Sie die URL-Adresse des öffentlichen Rackspace-Containers ein.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Bereich</value>
@@ -345,7 +345,7 @@
     <value>Bucket</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Geben Sie den eindeutigen Namen des Amazon-Buckets ein, in dem Sie Ihre Backups speichern möchten.</value>
+    <value>Für das Speichern von Sicherungskopien, geben Sie den eindeutigen Namen des Amazon-Buckets ein.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Stellen Sie eine Verbindung mit dem Amazon AWS S3, um Daten Ihres Portals zu sichern und zu speichern.</value>
@@ -381,13 +381,13 @@
     <value>Der private Container</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Geben Sie den Namen des privaten Selectel-Containers ein, in dem Sie Ihre Backups speichern möchten.</value>
+    <value>Für das Speichern von Sicherungskopien, geben Sie den Namen des privaten Selectel-Containers ein.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Der öffentliche Container</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Geben Sie den Namen des öffentlichen Selectel-Containers ein, in dem Sie Ihre Backups speichern möchten.</value>
+    <value>Für das Speichern von Sicherungskopien, geben Sie den Namen des öffentlichen Selectel-Containers ein.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -614,17 +614,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Das Kennwort muss enthalten:</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Das Kennwort muss enthalten</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>Zahlen</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>Keine Leerzeichen</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>spezielle Zeichen</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>Großbuchstaben</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>Nur lateinische Buchstaben</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Anforderungslimit wurde überschritten</value>
@@ -642,7 +645,7 @@
     <value>Der Benutzer mit der Adresse {0} wurde nicht gefunden</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Region EU (Irland)</value>
+    <value>Region EU (Frankfurt)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>Die maximale Dateigröße ist überschritten</value>
@@ -701,9 +704,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Der verfügbare Speicherplatz ist überschritten</value>
   </data>
-  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
-    <value>Diese Funktion ist nur für den kostenlosen Tarif verfügbar</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Zugang zum Portal</value>
   </data>
@@ -745,9 +745,6 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Ungültige Feldzuordnung</value>
-  </data>
-  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
-    <value>Portal wurde erfolgreich umbenannt </value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Die Begrüßungseinstellungen wurden erfolgreich gespeichert</value>

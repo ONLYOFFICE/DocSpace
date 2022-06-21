@@ -1,6 +1,5 @@
-﻿{
+{
   "DeleteGroupUsersMessage": "Deaktivovaní používatelia, ktorých ste vybrali, budú odstránené.",
   "DeleteGroupUsersMessageHeader": "Odstrániť používateľov z portálu ",
-  "DeleteGroupUsersSuccessMessage": "Používatelia boli úspešne odstránení.",
-  "DeleteUserDataConfirmation": "Dokumenty používateľov zdieľané s ostatnými budú odstránené. Aby ste tomu zabránili, znova priraďte údaje."
+  "DeleteGroupUsersSuccessMessage": "Používatelia boli úspešne odstránení."
 }

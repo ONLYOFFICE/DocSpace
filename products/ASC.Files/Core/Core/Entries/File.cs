@@ -56,10 +56,17 @@ public class File<T> : FileEntry<T>, IFileEntry<T>, IMapFrom<DbFileQuery>
         FileEntryType = FileEntryType.File;
     }
 
-    public File(FileHelper fileHelper, Global global) : this()
+    public File(
+        FileHelper fileHelper,
+        Global global,
+        GlobalFolderHelper globalFolderHelper,
+        SettingsManager settingsManager,
+        FilesSettingsHelper filesSettingsHelper,
+        FileDateTime fileDateTime) : base(fileHelper, global, globalFolderHelper, settingsManager, filesSettingsHelper, fileDateTime)
     {
-        FileHelper = fileHelper;
-        Global = global;
+        Version = 1;
+        VersionGroup = 1;
+        FileEntryType = FileEntryType.File;
     }
 
     public int Version { get; set; }

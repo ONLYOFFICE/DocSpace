@@ -254,7 +254,7 @@
     <value>Bucket</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Enter the name of the Google Cloud bucket where you want to store your backups.</value>
+    <value>Enter the name of the Google Cloud bucket for storing backups.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Connect Google Cloud Storage service to backup and store data from your portal.</value>
@@ -320,13 +320,13 @@
     <value>Private Container</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Enter the URL address of the Rackspace private container where you want to store your backups.</value>
+    <value>Enter the URL address of the Rackspace private container for storing backups.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Public Container</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Enter the URL address of the Rackspace public container where you want to store your backups.</value>
+    <value>Enter the URL address of the Rackspace public container for storing backups.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Region</value>
@@ -341,7 +341,7 @@
     <value>Bucket</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Enter the unique name of the Amazon bucket where you want to store your backups.</value>
+    <value>Enter the unique name of the Amazon bucket for storing backups.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Connect Amazon AWS S3 to backup and store data from your portal.</value>
@@ -377,13 +377,13 @@
     <value>Private container</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Enter the name of the Selectel private container where you want to store your backups.</value>
+    <value>Enter the name of the Selectel private container for storing backups.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Public container</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Enter the name of the Selectel public container where you want to store your backups.</value>
+    <value>Enter the name of the Selectel public container for storing backups.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -610,17 +610,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Password must contain</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>The password must contain</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>digits</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>no spaces</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>special characters</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>capital letters</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>only latin letters</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Request limit is exceeded</value>
@@ -638,7 +641,7 @@
     <value>The user with "{0}" email could not be found</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>EU (Ireland) Region</value>
+    <value>EU (Frankfurt) Region</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>The maximum file size is exceeded</value>
@@ -697,9 +700,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Disk space quota exceeded</value>
   </data>
-  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
-    <value>This feature enabled on free tariff only</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portal Access</value>
   </data>
@@ -741,9 +741,6 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Invalid fields mapping</value>
-  </data>
-  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
-    <value>Portal has been renamed successfully</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Welcome Page settings have been successfully saved</value>

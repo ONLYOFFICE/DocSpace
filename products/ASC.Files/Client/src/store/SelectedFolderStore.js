@@ -52,6 +52,10 @@ class SelectedFolderStore {
     this.providerItem = null;
   };
 
+  setParentId = (parentId) => {
+    this.parentId = parentId;
+  };
+
   setSelectedFolder = (selectedFolder) => {
     const { socketHelper } = this.settingsStore;
 

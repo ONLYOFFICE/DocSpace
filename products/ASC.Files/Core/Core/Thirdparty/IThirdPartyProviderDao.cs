@@ -71,10 +71,20 @@ internal abstract class ThirdPartyProviderDao
         return Task.FromResult(false);
     }
 
-    public Task SaveThumbnailAsync(File<string> file, Stream thumbnail)
+        public Task SaveThumbnailAsync(File<string> file, Stream thumbnail, int width, int height)
     {
         //Do nothing
         return Task.CompletedTask;
+    }
+
+    public Task<EntryProperties> GetProperties(string fileId)
+    {
+        return Task.FromResult<EntryProperties>(null);
+    }
+
+    public Task SaveProperties(string fileId, EntryProperties entryProperties)
+    {
+        return null;
     }
 
     public virtual Task<Stream> GetFileStreamAsync(File<string> file)
@@ -366,11 +376,10 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
-    public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+        public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
     {
         List<FileShareRecord> result = null;
-
-        return new ValueTask<List<FileShareRecord>>(result);
+            return Task<List<FileShareRecord>>.FromResult(result);
     }
 
     public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entry)
@@ -403,9 +412,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
-    public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
+    public Task<bool> IsSharedAsync(string entryId, FileEntryType type)
     {
-        throw new NotImplementedException();
+        return null;
     }
 
     #endregion

@@ -25,19 +25,24 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 global using System.Collections.Concurrent;
+global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Reflection;
+global using System.Text.Json;
 
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
+global using ASC.Common.Log;
 global using ASC.Common.Mapping;
 global using ASC.Common.Utils;
 global using ASC.Core;
 global using ASC.Core.Common;
 global using ASC.Core.Common.EF;
+global using ASC.Core.Common.Hosting;
+global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Core.Tenants;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Service;
@@ -47,10 +52,13 @@ global using ASC.Feed;
 global using ASC.Feed.Aggregator.Service;
 global using ASC.Feed.Core;
 global using ASC.Feed.Data;
+global using ASC.Files.AutoCleanUp;
 global using ASC.Files.Core;
 global using ASC.Files.Core.Core.Entries;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.IntegrationEvents.Events;
+global using ASC.Files.Core.Log;
+global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Service.Log;
 global using ASC.Files.ThumbnailBuilder;
@@ -63,6 +71,8 @@ global using ASC.Web.Files.Core;
 global using ASC.Web.Files.Core.Search;
 global using ASC.Web.Files.Services.DocumentService;
 global using ASC.Web.Files.Services.FFmpegService;
+global using ASC.Web.Files.Utils;
+global using ASC.Web.Studio.Core;
 
 global using Autofac;
 
@@ -72,3 +82,5 @@ global using Microsoft.Extensions.Logging;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Formats.Png;
+
+global using static ASC.Web.Core.Files.DocumentService;

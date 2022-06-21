@@ -32,16 +32,16 @@ internal class DropboxProviderInfo : IProviderInfo
 {
     public OAuth20Token Token { get; set; }
 
-    internal DropboxStorage Storage
+    internal Task<DropboxStorage> StorageAsync
     {
         get
         {
             if (_wrapper.Storage == null || !_wrapper.Storage.IsOpened)
             {
-                return _wrapper.CreateStorage(Token);
+                return _wrapper.CreateStorageAsync(Token, ID);
             }
 
-            return _wrapper.Storage;
+            return Task.FromResult(_wrapper.Storage);
         }
     }
 
@@ -70,7 +70,7 @@ internal class DropboxProviderInfo : IProviderInfo
     {
         if (StorageOpened)
         {
-            Storage.Close();
+            StorageAsync.Result.Close();
         }
     }
 
@@ -78,7 +78,7 @@ internal class DropboxProviderInfo : IProviderInfo
     {
         try
         {
-            await Storage.GetUsedSpaceAsync().ConfigureAwait(false);
+            await (await StorageAsync).GetUsedSpaceAsync().ConfigureAwait(false);
         }
         catch (AggregateException)
         {
@@ -103,19 +103,22 @@ internal class DropboxProviderInfo : IProviderInfo
         CustomerTitle = newtitle;
     }
 
-    internal Task<FolderMetadata> GetDropboxFolderAsync(string dropboxFolderPath)
+    internal async Task<FolderMetadata> GetDropboxFolderAsync(string dropboxFolderPath)
     {
-        return _dropboxProviderInfoHelper.GetDropboxFolderAsync(Storage, ID, dropboxFolderPath);
+        var storage = await StorageAsync;
+        return await _dropboxProviderInfoHelper.GetDropboxFolderAsync(storage, ID, dropboxFolderPath);
     }
 
-    internal ValueTask<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
+    internal async Task<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
     {
-        return _dropboxProviderInfoHelper.GetDropboxFileAsync(Storage, ID, dropboxFilePath);
+        var storage = await StorageAsync;
+        return await _dropboxProviderInfoHelper.GetDropboxFileAsync(storage, ID, dropboxFilePath);
     }
 
-    internal Task<List<Metadata>> GetDropboxItemsAsync(string dropboxFolderPath)
+    internal async Task<List<Metadata>> GetDropboxItemsAsync(string dropboxFolderPath)
     {
-        return _dropboxProviderInfoHelper.GetDropboxItemsAsync(Storage, ID, dropboxFolderPath);
+        var storage = await StorageAsync;
+        return await _dropboxProviderInfoHelper.GetDropboxItemsAsync(storage, ID, dropboxFolderPath);
     }
 
     internal Task CacheResetAsync(Metadata dropboxItem)
@@ -139,23 +142,58 @@ internal class DropboxStorageDisposableWrapper : IDisposable
 {
     public DropboxStorage Storage { get; private set; }
     private readonly TempStream _tempStream;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+    private readonly ConsumerFactory _consumerFactory;
 
-    public DropboxStorageDisposableWrapper(TempStream tempStream)
+    public DropboxStorageDisposableWrapper(TempStream tempStream, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper, ConsumerFactory consumerFactory)
     {
         _tempStream = tempStream;
+        _serviceProvider = serviceProvider;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
+        _consumerFactory = consumerFactory;
     }
 
-    public DropboxStorage CreateStorage(OAuth20Token token)
+    public Task<DropboxStorage> CreateStorageAsync(OAuth20Token token, int id)
     {
         if (Storage != null && Storage.IsOpened)
         {
-            return Storage;
+            return Task.FromResult(Storage);
         }
 
-        var dropboxStorage = new DropboxStorage(_tempStream);
+        return InternalCreateStorageAsync(token, id);
+    }
+
+    public async Task<DropboxStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
+    {
+        var dropboxStorage = _serviceProvider.GetService<DropboxStorage>();
+
+        await CheckTokenAsync(token, id).ConfigureAwait(false);
+
         dropboxStorage.Open(token);
 
         return Storage = dropboxStorage;
+    }
+
+    private Task CheckTokenAsync(OAuth20Token token, int id)
+    {
+        if (token == null)
+        {
+            throw new UnauthorizedAccessException("Cannot create Dropbox session with given token");
+        }
+
+        return InternalCheckTokenAsync(token, id);
+    }
+
+    private async Task InternalCheckTokenAsync(OAuth20Token token, int id)
+    {
+        if (token.IsExpired)
+        {
+            token = _oAuth20TokenHelper.RefreshToken<DropboxLoginProvider>(_consumerFactory, token);
+            var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
+            var authData = new AuthData(token: token.ToJson());
+            await dbDao.UpdateProviderInfoAsync(id, authData).ConfigureAwait(false);
+        }
     }
 
     public void Dispose()

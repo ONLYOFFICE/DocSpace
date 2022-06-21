@@ -256,7 +256,6 @@ const SectionFilterContent = ({
       isMobile={isMobileOnly}
       viewAs={viewAs}
       viewSelectorVisible={false}
-      style={{ marginBottom: "2px" }}
     />
   ) : (
     <Loaders.Filter />

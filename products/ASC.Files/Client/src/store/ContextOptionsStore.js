@@ -2,7 +2,6 @@ import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
-import history from "@appserver/common/history";
 import config from "../../package.json";
 import toastr from "studio/toastr";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
@@ -22,7 +21,7 @@ class ContextOptionsStore {
   uploadDataStore;
   versionHistoryStore;
   settingsStore;
-  infoPanelStore;
+  filesSettingsStore;
 
   constructor(
     authStore,
@@ -33,8 +32,7 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore,
-    infoPanelStore
+    settingsStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -46,13 +44,12 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
-    this.infoPanelStore = infoPanelStore;
   }
 
   onOpenFolder = (item) => {
     const { id, folderId, fileExst } = item;
     const locationId = !fileExst ? id : folderId;
-    this.filesActionsStore.openLocationAction(locationId, !fileExst);
+    this.filesActionsStore.openLocationAction(locationId);
   };
 
   onClickLinkFillForm = (item) => {
@@ -90,7 +87,7 @@ class ContextOptionsStore {
   onOpenLocation = (item) => {
     const { parentId, folderId, fileExst } = item;
     const locationId = !fileExst ? parentId : folderId;
-    this.filesActionsStore.openLocationAction(locationId, !fileExst);
+    this.filesActionsStore.openLocationAction(locationId);
   };
 
   onOwnerChange = () => {
@@ -113,14 +110,8 @@ class ContextOptionsStore {
 
     if (this.treeFoldersStore.isRecycleBinFolder) return;
 
-    if (!this.authStore.settingsStore.isTabletView) {
-      fetchFileVersions(id + "");
-      setIsVerHistoryPanel(true);
-    } else {
-      history.push(
-        combineUrl(AppServerConfig.proxyURL, config.homepage, `/${id}/history`)
-      );
-    }
+    fetchFileVersions(id + "");
+    setIsVerHistoryPanel(true);
   };
 
   finalizeVersion = (id) => {
@@ -143,11 +134,16 @@ class ContextOptionsStore {
       .catch((err) => toastr.error(err));
   };
 
-  lockFile = (item) => {
+  lockFile = (item, t) => {
     const { id, locked } = item;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
+      .then(() =>
+        locked
+          ? toastr.success(t("Translations:FileUnlocked"))
+          : toastr.success(t("Translations:FileLocked"))
+      )
       .catch((err) => toastr.error(err));
   };
 
@@ -339,7 +335,7 @@ class ContextOptionsStore {
   };
 
   onShowInfoPanel = () => {
-    const { setIsVisible } = this.infoPanelStore;
+    const { setIsVisible } = this.authStore.infoPanelStore;
     setIsVisible(true);
   };
 
@@ -350,8 +346,21 @@ class ContextOptionsStore {
 
     const isShareable = item.canShare;
 
-    const versionActions =
-      !isMobile && !isMobileUtils() && !isTabletUtils()
+    const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
+    const isCanWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+
+    const blockAction = isCanWebEdit
+      ? {
+          key: "block-unblock-version",
+          label: t("UnblockVersion"),
+          icon: "/static/images/locked.react.svg",
+          onClick: () => this.lockFile(item, t),
+          disabled: false,
+        }
+      : false;
+
+    const versionActions = !isMedia
+      ? !isMobile && !isMobileUtils() && !isTabletUtils()
         ? [
             {
               key: "version",
@@ -388,7 +397,8 @@ class ContextOptionsStore {
               onClick: () => this.showVersionHistory(item.id),
               disabled: false,
             },
-          ];
+          ]
+      : [];
 
     const moveActions =
       !isMobile && !isMobileUtils() && !isTabletUtils()
@@ -447,7 +457,7 @@ class ContextOptionsStore {
       {
         key: "open",
         label: t("Open"),
-        icon: "images/catalog.folder.react.svg",
+        icon: "images/folder.react.svg",
         onClick: () => this.onOpenFolder(item),
         disabled: false,
       },
@@ -493,7 +503,7 @@ class ContextOptionsStore {
       {
         key: "sharing-settings",
         label: t("SharingSettings"),
-        icon: "/static/images/catalog.share.react.svg",
+        icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !isShareable,
       },
@@ -525,13 +535,7 @@ class ContextOptionsStore {
         onClick: this.onShowInfoPanel,
         disabled: false,
       },
-      {
-        key: "block-unblock-version",
-        label: t("UnblockVersion"),
-        icon: "images/lock.react.svg",
-        onClick: () => this.lockFile(item),
-        disabled: false,
-      },
+      blockAction,
       {
         key: "separator1",
         isSeparator: true,
@@ -620,7 +624,7 @@ class ContextOptionsStore {
         label: isRootThirdPartyFolder
           ? t("Translations:DeleteThirdParty")
           : t("Common:Delete"),
-        icon: "/static/images/catalog.trash.react.svg",
+        icon: "images/trash.react.svg",
         onClick: () => this.onClickDelete(item, t),
         disabled: false,
       },
@@ -631,7 +635,159 @@ class ContextOptionsStore {
     return options;
   };
 
+  getGroupContextOptions = (t) => {
+    const { personal } = this.authStore.settingsStore;
+    const { selection } = this.filesStore;
+    const { setDeleteDialogVisible } = this.dialogsStore;
+    const { isRecycleBinFolder } = this.treeFoldersStore;
+
+    const downloadAs =
+      selection.findIndex((k) => k.contextOptions.includes("download-as")) !==
+      -1;
+
+    const sharingItems =
+      selection.filter(
+        (k) => k.contextOptions.includes("sharing-settings") && k.canShare
+      ).length && !personal;
+
+    const favoriteItems = selection.filter((k) =>
+      k.contextOptions.includes("mark-as-favorite")
+    );
+
+    const moveItems = selection.filter((k) =>
+      k.contextOptions.includes("move-to")
+    ).length;
+
+    const copyItems = selection.filter((k) =>
+      k.contextOptions.includes("copy-to")
+    ).length;
+
+    const restoreItems = selection.filter((k) =>
+      k.contextOptions.includes("restore")
+    ).length;
+
+    const removeFromFavoriteItems = selection.filter((k) =>
+      k.contextOptions.includes("remove-from-favorites")
+    );
+
+    const deleteItems = selection.filter((k) =>
+      k.contextOptions.includes("delete")
+    ).length;
+
+    const isRootThirdPartyFolder = selection.some(
+      (x) => x.providerKey && x.id === x.rootFolderId
+    );
+
+    const favoriteItemsIds = favoriteItems.map((item) => item.id);
+
+    const removeFromFavoriteItemsIds = removeFromFavoriteItems.map(
+      (item) => item.id
+    );
+
+    const options = [
+      {
+        key: "sharing-settings",
+        label: t("SharingSettings"),
+        icon: "/static/images/share.react.svg",
+        onClick: this.onClickShare,
+        disabled: !sharingItems,
+      },
+      {
+        key: "separator0",
+        isSeparator: true,
+        disabled: !sharingItems,
+      },
+      {
+        key: "mark-as-favorite",
+        label: t("MarkAsFavorite"),
+        icon: "images/favorites.react.svg",
+        onClick: (e) => this.onClickFavorite(e, favoriteItemsIds, t),
+        disabled: !favoriteItems.length,
+        "data-action": "mark",
+        action: "mark",
+      },
+      {
+        key: "remove-from-favorites",
+        label: t("RemoveFromFavorites"),
+        icon: "images/favorites.react.svg",
+        onClick: (e) => this.onClickFavorite(e, removeFromFavoriteItemsIds, t),
+        disabled: favoriteItems.length || !removeFromFavoriteItems.length,
+        "data-action": "remove",
+        action: "remove",
+      },
+      {
+        key: "download",
+        label: t("Common:Download"),
+        icon: "images/download.react.svg",
+        onClick: () =>
+          this.filesActionsStore
+            .downloadAction(t("Translations:ArchivingData"))
+            .catch((err) => toastr.error(err)),
+        disabled: false,
+      },
+      {
+        key: "download-as",
+        label: t("Translations:DownloadAs"),
+        icon: "images/download-as.react.svg",
+        onClick: this.onClickDownloadAs,
+        disabled: !downloadAs,
+      },
+      {
+        key: "move-to",
+        label: t("MoveTo"),
+        icon: "images/move.react.svg",
+        onClick: this.onMoveAction,
+        disabled: isRecycleBinFolder || !moveItems,
+      },
+      {
+        key: "copy-to",
+        label: t("Translations:Copy"),
+        icon: "/static/images/copy.react.svg",
+        onClick: this.onCopyAction,
+        disabled: isRecycleBinFolder || !copyItems,
+      },
+      {
+        key: "restore",
+        label: t("Common:Restore"),
+        icon: "images/move.react.svg",
+        onClick: this.onMoveAction,
+        disabled: !isRecycleBinFolder || !restoreItems,
+      },
+      {
+        key: "separator1",
+        isSeparator: true,
+        disabled: !deleteItems || isRootThirdPartyFolder,
+      },
+      {
+        key: "delete",
+        label: t("Common:Delete"),
+        icon: "images/trash.react.svg",
+        onClick: () => {
+          if (this.settingsStore.confirmDelete) {
+            setDeleteDialogVisible(true);
+          } else {
+            const translations = {
+              deleteOperation: t("Translations:DeleteOperation"),
+              deleteFromTrash: t("Translations:DeleteFromTrash"),
+              deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+              FileRemoved: t("Home:FileRemoved"),
+              FolderRemoved: t("Home:FolderRemoved"),
+            };
+
+            this.filesActionsStore
+              .deleteAction(translations)
+              .catch((err) => toastr.error(err));
+          }
+        },
+        disabled: !deleteItems || isRootThirdPartyFolder,
+      },
+    ];
+
+    return options;
+  };
+
   getModel = (item, t) => {
+    const { selection } = this.filesStore;
     const { type, id, extension } = this.filesStore.fileActionStore;
     const { fileExst, contextOptions } = item;
 
@@ -639,7 +795,9 @@ class ContextOptionsStore {
 
     const contextOptionsProps =
       !isEdit && contextOptions && contextOptions.length > 0
-        ? this.getFilesContextOptions(item, t)
+        ? selection.length > 1
+          ? this.getGroupContextOptions(t)
+          : this.getFilesContextOptions(item, t)
         : [];
 
     return contextOptionsProps;

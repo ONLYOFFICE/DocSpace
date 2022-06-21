@@ -168,7 +168,7 @@ public class SsoHandlerService
                     {
                         var loginName = authenticatedUserInfo.DisplayUserName(false, _displayUserSettingsHelper);
                         _messageService.Send(loginName, MessageAction.Logout);
-                        _cookiesManager.ResetUserCookie();
+                        await _cookiesManager.ResetUserCookie();
                         _securityContext.Logout();
                     }
                     else
@@ -179,9 +179,7 @@ public class SsoHandlerService
 
                 userInfo = AddUser(userInfo);
 
-                var authKey = _securityContext.AuthenticateMe(userInfo.Id);
-                _cookiesManager.SetCookies(CookiesType.AuthKey, authKey);
-                _messageService.Send(MessageAction.LoginSuccessViaSSO);
+                var authKey = _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSSO);
 
                 await context.Response.WriteAsync($"Authenticated with token: {authKey}");
             }
@@ -212,7 +210,7 @@ public class SsoHandlerService
                 var loginName = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
                 _messageService.Send(loginName, MessageAction.Logout);
 
-                _cookiesManager.ResetUserCookie();
+                await _cookiesManager.ResetUserCookie();
                 _securityContext.Logout();
             }
         }

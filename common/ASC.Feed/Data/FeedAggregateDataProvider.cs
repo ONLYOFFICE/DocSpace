@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
+
 namespace ASC.Feed.Data;
 
 [Scope]
@@ -311,6 +313,7 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
     public string GroupId { get; private set; }
     public bool IsToday { get; private set; }
     public bool IsYesterday { get; private set; }
+    public bool IsTomorrow { get; private set; }
     public DateTime CreatedDate { get; private set; }
     public DateTime ModifiedDate { get; private set; }
     public DateTime AggregatedDate { get; private set; }
@@ -338,11 +341,19 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
 
         GroupId = groupId;
 
-        if (now.Year == createdDate.Year && now.Date == createdDate.Date)
+        var compareDate = JsonNode.Parse(Json)["IsAllDayEvent"].GetValue<bool>()
+                ? tenantUtil.DateTimeToUtc(createdDate).Date
+                : createdDate.Date;
+
+        if (now.Date == compareDate.AddDays(-1))
+        {
+            IsTomorrow = true;
+        }
+        else if (now.Date == compareDate)
         {
             IsToday = true;
         }
-        else if (now.Year == createdDate.Year && now.Date == createdDate.Date.AddDays(1))
+        else if (now.Date == compareDate.AddDays(1))
         {
             IsYesterday = true;
         }

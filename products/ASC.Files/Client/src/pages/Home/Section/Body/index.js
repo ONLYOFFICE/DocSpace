@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./RowsView/FilesRowContainer";
@@ -11,6 +11,7 @@ import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
 import withHotkeys from "../../../../HOCs/withHotkeys";
 import { Consumer } from "@appserver/components/utils/context";
+import { isElementInViewport } from "@appserver/common/utils";
 
 let currentDroppable = null;
 let isDragActive = false;
@@ -36,6 +37,9 @@ const SectionBodyContent = (props) => {
     tooltipPageY,
     setHotkeyCaretStart,
     setHotkeyCaret,
+    scrollToItem,
+    setScrollToItem,
+    filesList,
   } = props;
 
   useEffect(() => {
@@ -47,7 +51,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    !isMobile && window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
 
@@ -65,6 +69,31 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("drop", onDropEvent);
     };
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
+
+  useEffect(() => {
+    if (scrollToItem) {
+      const { type, id } = scrollToItem;
+
+      const targetElement = document.getElementById(`${type}_${id}`);
+
+      if (!targetElement) return;
+
+      let isInViewport = isElementInViewport(targetElement);
+
+      if (!isInViewport || viewAs === "table") {
+        const bodyScroll = isMobileOnly
+          ? document.querySelector("#customScrollBar > .scroll-body")
+          : document.querySelector(".section-scroll");
+
+        const count =
+          filesList.findIndex((elem) => elem.id === scrollToItem.id) *
+          (isMobileOnly ? 57 : viewAs === "table" ? 40 : 48);
+
+        bodyScroll.scrollTo(0, count);
+      }
+      setScrollToItem(null);
+    }
+  }, [scrollToItem]);
 
   const onMouseDown = (e) => {
     if (
@@ -125,8 +154,12 @@ const SectionBodyContent = (props) => {
           const value = currentDroppable.getAttribute("value");
           const classElements = document.getElementsByClassName(value);
 
+          // add check for column with width = 0, because without it dark theme d`n`d have bug color
+          // 30 - it`s column padding
           for (let cl of classElements) {
-            cl.classList.add("droppable-hover");
+            if (cl.clientWidth - 30) {
+              cl.classList.add("droppable-hover");
+            }
           }
         } else {
           currentDroppable.classList.add("droppable-hover");
@@ -247,8 +280,10 @@ export default inject(
       setBufferSelection,
       setHotkeyCaretStart,
       setHotkeyCaret,
+      scrollToItem,
+      setScrollToItem,
+      filesList,
     } = filesStore;
-
     return {
       dragging,
       startDrag,
@@ -267,6 +302,9 @@ export default inject(
       tooltipPageY,
       setHotkeyCaretStart,
       setHotkeyCaret,
+      scrollToItem,
+      setScrollToItem,
+      filesList,
     };
   }
 )(

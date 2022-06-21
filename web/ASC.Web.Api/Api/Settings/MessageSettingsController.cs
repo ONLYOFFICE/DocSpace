@@ -96,7 +96,7 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     [HttpPut("cookiesettings")]
-    public object UpdateCookieSettings(CookieSettingsRequestsDto model)
+    public async Task<object> UpdateCookieSettings(CookieSettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -105,7 +105,7 @@ public class MessageSettingsController : BaseSettingsController
             throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
         }
 
-        _cookiesManager.SetLifeTime(model.LifeTime);
+        await _cookiesManager.SetLifeTime(model.LifeTime);
 
         _messageService.Send(MessageAction.CookieSettingsUpdated);
 

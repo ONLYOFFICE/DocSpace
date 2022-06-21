@@ -27,7 +27,7 @@
 namespace ASC.AuditTrail.Models.Mappings;
 
 [Scope]
-public class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDto>,
+internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDto>,
                                   ITypeConverter<AuditEventQuery, AuditEventDto>
 {
     private readonly UserFormatter _userFormatter;
@@ -57,15 +57,32 @@ public class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDto>
                 });
         }
 
-        result.UserName = (!string.IsNullOrEmpty(source.FirstName) && !string.IsNullOrEmpty(source.LastName))
-                        ? _userFormatter.GetUserName(source.FirstName, source.LastName)
-                        : !string.IsNullOrWhiteSpace(source.Event.Login)
-                                ? source.Event.Login
-                                : source.Event.UserId == Core.Configuration.Constants.Guest.ID
-                                    ? AuditReportResource.GuestAccount
-                                    : AuditReportResource.UnknownAccount;
+        if (!(string.IsNullOrEmpty(source.FirstName) || string.IsNullOrEmpty(source.LastName)))
+        {
+            result.UserName = _userFormatter.GetUserName(source.FirstName, source.LastName);
+        }
+        else if (!string.IsNullOrEmpty(source.FirstName))
+        {
+            result.UserName = source.FirstName;
+        }
+        else if (!string.IsNullOrEmpty(source.LastName))
+        {
+            result.UserName = source.LastName;
+        }
+        else if (!string.IsNullOrWhiteSpace(result.Login))
+        {
+            result.UserName = result.Login;
+        }
+        else if (result.UserId == Core.Configuration.Constants.Guest.ID)
+        {
+            result.UserName = AuditReportResource.GuestAccount;
+        }
+        else
+        {
+            result.UserName = AuditReportResource.UnknownAccount;
+        }
 
-        result.ActionText = _auditActionMapper.GetActionText(result);
+        result.ActionText = _auditActionMapper.GetActionText(_auditActionMapper.GetMessageMaps(result.Action), result);
 
         return result;
     }
@@ -86,15 +103,39 @@ public class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDto>
 
         result.Target = _messageTarget.Parse(source.Event.Target);
 
-        result.UserName = (source.FirstName != null && source.LastName != null) ? _userFormatter.GetUserName(source.FirstName, source.LastName) :
-                source.Event.UserId == Core.Configuration.Constants.CoreSystem.ID ? AuditReportResource.SystemAccount :
-                    source.Event.UserId == Core.Configuration.Constants.Guest.ID ? AuditReportResource.GuestAccount :
-                        source.Event.Initiator ?? AuditReportResource.UnknownAccount;
+        if (result.UserId == Core.Configuration.Constants.CoreSystem.ID)
+        {
+            result.UserName = AuditReportResource.SystemAccount;
+        }
+        else if (result.UserId == Core.Configuration.Constants.Guest.ID)
+        {
+            result.UserName = AuditReportResource.GuestAccount;
+        }
+        else if (!(string.IsNullOrEmpty(source.FirstName) || string.IsNullOrEmpty(source.LastName)))
+        {
+            result.UserName = _userFormatter.GetUserName(source.FirstName, source.LastName);
+        }
+        else if (!string.IsNullOrEmpty(source.FirstName))
+        {
+            result.UserName = source.FirstName;
+        }
+        else if (!string.IsNullOrEmpty(source.LastName))
+        {
+            result.UserName = source.LastName;
+        }
+        else
+        {
+            result.UserName = result.Initiator ?? AuditReportResource.UnknownAccount;
+        }
 
-        result.ActionText = _auditActionMapper.GetActionText(result);
-        result.ActionTypeText = _auditActionMapper.GetActionTypeText(result);
-        result.Product = _auditActionMapper.GetProductText(result);
-        result.Module = _auditActionMapper.GetModuleText(result);
+        var map = _auditActionMapper.GetMessageMaps(result.Action);
+        if (map != null)
+        {
+            result.ActionText = _auditActionMapper.GetActionText(map, result);
+            result.ActionTypeText = _auditActionMapper.GetActionTypeText(map);
+            result.Product = _auditActionMapper.GetProductText(map);
+            result.Module = _auditActionMapper.GetModuleText(map);
+        }
 
         return result;
     }

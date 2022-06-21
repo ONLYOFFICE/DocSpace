@@ -163,11 +163,6 @@ public class StorageController : BaseSettingsController
 
         _tenantExtra.DemandControlPanelPermission();
 
-        if (!_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).DiscEncryption)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
-        }
-
         var storages = GetAllStorages();
 
         if (storages.Any(s => s.Current))
@@ -241,9 +236,9 @@ public class StorageController : BaseSettingsController
         _eventBus.Publish(new EncryptionDataStorageRequestedIntegration
         (
               encryptionSettings: new EncryptionSettings
-        {
-            NotifyUsers = settings.NotifyUsers,
-            Password = settings.Password,
+              {
+                  NotifyUsers = settings.NotifyUsers,
+                  Password = settings.Password,
                   Status = settings.Status
               },
               serverRootPath: serverRootPath,
@@ -282,11 +277,6 @@ public class StorageController : BaseSettingsController
 
             _tenantExtra.DemandControlPanelPermission();
 
-            if (!_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).DiscEncryption)
-            {
-                throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
-            }
-
             var settings = _encryptionSettingsHelper.Load();
 
             settings.Password = string.Empty; // Don't show password
@@ -316,11 +306,6 @@ public class StorageController : BaseSettingsController
         if (!_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException();
-        }
-
-        if (!_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).DiscEncryption)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
         }
 
         return _encryptionWorker.GetEncryptionProgress();

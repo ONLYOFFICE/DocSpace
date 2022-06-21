@@ -18,6 +18,11 @@ class FilesListWrapper extends React.Component {
       hasNextPage: true,
       files: [],
     };
+    this._isMount = false;
+  }
+
+  componentDidMount() {
+    this._isMount = true;
   }
 
   componentDidUpdate(prevProps) {
@@ -41,6 +46,9 @@ class FilesListWrapper extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this._isMount = false;
+  }
   _loadNextPage = () => {
     const { files, page } = this.state;
     const {
@@ -88,12 +96,14 @@ class FilesListWrapper extends React.Component {
         const newFilesList = [...files].concat(finalData);
         const hasNextPage = newFilesList.length < data.total - 1;
         this._isLoadNextPage = false;
-        this.setState((state) => ({
-          hasNextPage: hasNextPage,
-          isNextPageLoading: false,
-          page: state.page + 1,
-          files: newFilesList,
-        }));
+
+        this._isMount &&
+          this.setState((state) => ({
+            hasNextPage: hasNextPage,
+            isNextPageLoading: false,
+            page: state.page + 1,
+            files: newFilesList,
+          }));
       } catch (e) {
         toastr.error(e);
       }

@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Administrator",
   "ChangeToGuest": "Spremeni na {{guestCaption}}",
   "ChangeToUser": "Spremeni na {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Tukaj še ni sodelavcev",
   "LblInviteAgain": "Povabi znova",
   "LblInvited": "Povabljen",
-  "LblOther": "Drugo",
   "LblSendEmail": "Pošlji email",
   "LblSendMessage": "Pošlji sporočilo",
   "LblSetActive": "Nastavi aktivno",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <1>{{email}}</1> email naslov",
   "NotFoundDescription": "Poskusite z drugim filtrom ali filter počistite, če si želite ogledati vse osebe v razdelku.",
   "NotFoundTitle": "Ni najdenih predlog",
+  "ReassignmentData": "Prerazporeditev podatkov",
   "SuccessfullyRemovedGroup": "Skupina je bila uspešno odstranjena",
   "UserStatus": "Status"
 }

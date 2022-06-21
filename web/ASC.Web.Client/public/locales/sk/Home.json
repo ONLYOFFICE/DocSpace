@@ -1,0 +1,6 @@
+{
+  "GoodAfternoon": "Dobrý deň, {{displayName}}!",
+  "GoodEvening": "Dobrý večer, {{displayName}}",
+  "GoodMorning": "Dobré ráno, {{displayName}}!",
+  "NoOneModulesAvailable": "Žiadne moduly nie sú dostupné"
+}

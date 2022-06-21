@@ -464,7 +464,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         var selector = GetSelector(file.Id);
         var fileDao = selector.GetFileDao(file.Id);
 
-        return UseTrashForRemove(file);
+            return fileDao.UseTrashForRemove(file);
     }
 
     #region chunking

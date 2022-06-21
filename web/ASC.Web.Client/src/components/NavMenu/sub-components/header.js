@@ -61,7 +61,7 @@ const Header = styled.header`
     position: relative;
     padding-right: 20px;
     padding-left: ${(props) =>
-      !props.needNavMenu || props.isPersonal || props.isDesktopView
+      !props.needNavMenu || props.isPersonal || props.isDesktopView || isMobile
         ? "20px"
         : "4px"};
     cursor: pointer;
@@ -224,7 +224,8 @@ const HeaderComponent = ({
         needNavMenu={needNavMenu}
         isDesktopView={isDesktopView}
       >
-        {currentProductId !== "home" && (
+        {((isPersonal && location.pathname.includes("files")) ||
+          (!isPersonal && currentProductId !== "home")) && (
           <HeaderCatalogBurger onClick={toggleArticleOpen} />
         )}
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>

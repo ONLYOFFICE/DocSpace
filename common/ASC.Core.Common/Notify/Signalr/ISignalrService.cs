@@ -51,5 +51,5 @@ public interface ISignalrService
     void SendUnreadUser(int tenant, string userId);
 
     [OperationContract(IsOneWay = true)]
-    void SendMailNotification(int tenant, string userId, int state);
+    void SendMailNotification(int tenant, string userId, MailNotificationState state);
 }

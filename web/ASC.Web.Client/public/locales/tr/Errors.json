@@ -1,0 +1,9 @@
+{
+  "Error401Text": "Üzgünüz, kaynak şu anda ulaşılabilir değil.",
+  "Error403Text": "Üzgünüz, erişim reddedildi.",
+  "Error404Text": "Üzgünüz, kaynak bulunamadı.",
+  "ErrorEmptyResponse": "Boş yanıt",
+  "ErrorInvalidHeader": "Yanlış e-posta veya süresi dolmuş bağlantı",
+  "ErrorInvalidText": "10 saniye içinde <1>giriş sayfasına</1> yönlendirileceksiniz",
+  "ErrorOfflineText": "İnternet bağlantısı bulunamadı."
+}

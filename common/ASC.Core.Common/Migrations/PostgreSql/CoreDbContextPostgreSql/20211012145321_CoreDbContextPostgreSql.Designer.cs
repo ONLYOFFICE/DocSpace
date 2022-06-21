@@ -100,7 +100,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                             Tenant = -1,
                             ActiveUsers = 10000,
                             AvangateId = "0",
-                            Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore",
+                            Features = "update",
                             MaxFileSize = 102400L,
                             MaxTotalSize = 10995116277760L,
                             Name = "default",
