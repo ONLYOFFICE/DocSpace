@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { withTranslation } from "react-i18next";
 
 import { inject, observer } from "mobx-react";
-
+import Button from "@appserver/components/button";
 import withLoading from "../../../../../HOCs/withLoading";
 import globalColors from "@appserver/components/utils/globalColors";
 import styled from "styled-components";
@@ -18,58 +18,98 @@ const StyledComponent = styled.div`
     height: 46px;
     margin-right: 12px;
   }
-  .first-color-scheme {
-    background: ${globalColors.firstDefaultСolorScheme};
+  #color-scheme_1 {
+    background: ${globalColors.colorSchemeDefault_1};
   }
-  .second-color-scheme {
-    background: ${globalColors.secondDefaultСolorScheme};
+  #color-scheme_2 {
+    background: ${globalColors.colorSchemeDefault_2};
   }
-  .third-color-scheme {
-    background: ${globalColors.thirdDefaultСolorScheme};
+  #color-scheme_3 {
+    background: ${globalColors.colorSchemeDefault_3};
   }
-  .fourth-color-scheme {
-    background: ${globalColors.fourthDefaultСolorScheme};
+  #color-scheme_4 {
+    background: ${globalColors.colorSchemeDefault_4};
   }
-  .fifth-color-scheme {
-    background: ${globalColors.fifthDefaultСolorScheme};
+  #color-scheme_5 {
+    background: ${globalColors.colorSchemeDefault_5};
   }
-  .sixth-color-scheme {
-    background: ${globalColors.sixthDefaultСolorScheme};
+  #color-scheme_6 {
+    background: ${globalColors.colorSchemeDefault_6};
   }
-  .sevent-color-scheme {
-    background: ${globalColors.seventhDefaultСolorScheme};
+  #color-scheme_7 {
+    background: ${globalColors.colorSchemeDefault_7};
   }
 `;
 
 const Appearance = (props) => {
-  const array_items = [
-    {
-      key: "0",
-      title: "Light theme",
-      content: <Preview />,
-    },
-    {
-      key: "1",
-      title: "Dark theme",
-      content: <div>Tab 2 content</div>,
-    },
-  ];
+  const [selectedColor, setSelectedColor] = useState(1);
+
+  const checkImg = <img src="/static/images/check.white.svg" />;
+
+  const array_items = useMemo(
+    () => [
+      {
+        key: "0",
+        title: "Light theme",
+        content: <Preview selectedColor={selectedColor} />,
+      },
+      {
+        key: "1",
+        title: "Dark theme",
+        content: <Preview selectedColor={selectedColor} />,
+      },
+    ],
+    [selectedColor]
+  );
+
+  useEffect(() => {}, [selectedColor]);
+
+  const onColorSelection = (e) => {
+    if (!e.target.id) return;
+
+    const colorNumber = e.target.id[e.target.id.length - 1];
+    setSelectedColor(+colorNumber);
+  };
+
+  const onShowCheck = (colorNumber) => {
+    return selectedColor && selectedColor === colorNumber && checkImg;
+  };
 
   return (
     <StyledComponent>
       <div>Color</div>
       <div>Header color is displayed only when light theme is applied</div>
       <div className="container">
-        <div className="box first-color-scheme"></div>
-        <div className="box second-color-scheme"></div>
-        <div className="box third-color-scheme"></div>
-        <div className="box fourth-color-scheme"></div>
-        <div className="box fifth-color-scheme"></div>
-        <div className="box sixth-color-scheme"></div>
-        <div className="box sevent-color-scheme"></div>
+        <div id="color-scheme_1" className="box" onClick={onColorSelection}>
+          {onShowCheck(1)}
+        </div>
+        <div id="color-scheme_2" className="box" onClick={onColorSelection}>
+          {onShowCheck(2)}
+        </div>
+        <div id="color-scheme_3" className="box" onClick={onColorSelection}>
+          {onShowCheck(3)}
+        </div>
+        <div id="color-scheme_4" className="box" onClick={onColorSelection}>
+          {onShowCheck(4)}
+        </div>
+        <div id="color-scheme_5" className="box" onClick={onColorSelection}>
+          {onShowCheck(5)}
+        </div>
+        <div id="color-scheme_6" className="box" onClick={onColorSelection}>
+          {onShowCheck(6)}
+        </div>
+        <div id="color-scheme_7" className="box" onClick={onColorSelection}>
+          {onShowCheck(7)}
+        </div>
       </div>
       <div>Preview</div>
       <TabContainer elements={array_items} />
+      <Button
+        label="Save"
+        onClick={function noRefCheck() {}}
+        primary
+        size="small"
+      />
     </StyledComponent>
   );
 };

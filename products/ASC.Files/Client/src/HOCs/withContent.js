@@ -258,6 +258,7 @@ export default function withContent(WrappedContent) {
             const folderIds = [+itemId];
             createdFolderId && folderIds.push(createdFolderId);
 
+            setIsUpdatingRowItem(false);
             clearActiveOperations(null, folderIds);
 
             return setIsLoading(false);
@@ -286,7 +287,6 @@ export default function withContent(WrappedContent) {
                 t("Translations:FileProtected"),
                 t("Common:Warning")
               );
-              setIsUpdatingRowItem(false);
 
               setFormCreationInfo({
                 newTitle: `${title}.${item.fileExst}`,
@@ -308,6 +308,7 @@ export default function withContent(WrappedContent) {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
 
+              setIsUpdatingRowItem(false);
               clearActiveOperations(fileIds);
 
               return setIsLoading(false);
@@ -336,6 +337,7 @@ export default function withContent(WrappedContent) {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
 
+              setIsUpdatingRowItem(false);
               clearActiveOperations(fileIds);
 
               return setIsLoading(false);
@@ -373,6 +375,7 @@ export default function withContent(WrappedContent) {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
 
+              setIsUpdatingRowItem(false);
               clearActiveOperations(fileIds);
 
               return setIsLoading(false);
