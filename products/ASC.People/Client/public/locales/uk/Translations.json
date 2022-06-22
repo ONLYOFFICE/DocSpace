@@ -1,6 +1,7 @@
 {
   "AddMembers": "Додати учасників",
   "Birthdate": "Дата народження",
+  "DeleteUserDataConfirmation": "Документи користувача, до яких надано спільний доступ, будуть видалені. Щоб цього уникнути, перепризначте дані.",
   "DeleteSelfProfile": "Видалити профіль",
   "DisableUserButton": "Відключити",
   "DisabledEmployeeStatus": "Відключено",

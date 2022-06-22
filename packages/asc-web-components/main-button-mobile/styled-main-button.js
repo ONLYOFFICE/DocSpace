@@ -177,6 +177,7 @@ StyledButtonWrapper.defaultProps = { theme: Base };
 
 const StyledProgressBarContainer = styled.div`
   display: ${(props) => (props.isUploading ? "flex" : "none")};
+
   align-items: center;
 
   flex-wrap: wrap;
@@ -188,27 +189,47 @@ const StyledProgressBarContainer = styled.div`
   height: 60px;
   padding-top: 26px;
 
-  .progress-header {
-    width: 50%;
-    line-height: 16px;
-    color: ${(props) => props.theme.mainButtonMobile.textColor};
-    &:hover {
-      cursor: pointer;
+  .progress-container {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    .progress-header {
+      width: 50%;
+
+      line-height: 16px;
+
+      color: ${(props) => props.theme.mainButtonMobile.textColor};
+      &:hover {
+        cursor: pointer;
+      }
     }
-  }
 
-  .progress_count {
-    line-height: 16px;
-    color: ${(props) => props.theme.mainButtonMobile.textColor};
-    width: 42%;
-    text-align: right;
-    margin-right: 12px;
-  }
+    .progress_info-container {
+      width: 50%;
 
-  .progress_icon {
-    svg {
-      path {
-        fill: ${(props) => props.theme.mainButtonMobile.bar.icon};
+      display: flex;
+      align-items: center;
+
+      .progress_count {
+        width: calc(100% - 26px);
+
+        line-height: 16px;
+        color: ${(props) => props.theme.mainButtonMobile.textColor};
+
+        text-align: right;
+        margin-right: 12px;
+      }
+
+      .progress_icon {
+        svg {
+          path {
+            fill: ${(props) => props.theme.mainButtonMobile.bar.icon};
+          }
+        }
       }
     }
   }

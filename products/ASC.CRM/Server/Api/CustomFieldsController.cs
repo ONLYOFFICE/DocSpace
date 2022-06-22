@@ -36,8 +36,8 @@ using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
+using ASC.MessagingSystem.Core;
+using ASC.MessagingSystem.Models;
 
 using AutoMapper;
 
@@ -72,7 +72,7 @@ namespace ASC.CRM.Api
         ///    User field list
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/definitions")]
+        [HttpGet(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/definitions")]
         public IEnumerable<CustomFieldDto> GetCustomFieldDefinitions(string entityType)
         {
             return _mapper.Map<List<CustomField>, List<CustomFieldDto>>(_daoFactory.GetCustomFieldDao().GetFieldsDescription(ToEntityType(entityType)));
@@ -86,7 +86,7 @@ namespace ASC.CRM.Api
         /// <short>Get user field values</short> 
         /// <category>User fields</category>
         /// <returns></returns>
-        [Read(@"{entityType:regex(contact|person|company|opportunity|case)}/{entityid:int}/customfield")]
+        [HttpGet(@"{entityType:regex(contact|person|company|opportunity|case)}/{entityid:int}/customfield")]
         public IEnumerable<CustomFieldBaseDto> GetCustomFieldForSubject(string entityType, int entityid)
         {
             return _mapper.Map<List<CustomField>, List<CustomFieldDto>>(_daoFactory.GetCustomFieldDao().GetEnityFields(ToEntityType(entityType), entityid, false));
@@ -104,7 +104,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    User field
         /// </returns>
-        [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/{entityid:int}/customfield/{fieldid:int}")]
+        [HttpPost(@"{entityType:regex(contact|person|company|opportunity|case)}/{entityid:int}/customfield/{fieldid:int}")]
         public CustomFieldBaseDto SetEntityCustomFieldValue(
             [FromRoute] string entityType,
             [FromRoute] int entityid,
@@ -215,7 +215,7 @@ namespace ASC.CRM.Api
         /// 
         /// ]]>
         /// </example>
-        [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield")]
+        [HttpPost(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield")]
         public CustomFieldDto CreateCustomFieldValue(
             [FromRoute] string entityType,
             [FromBody] CreateOrUpdateCustomFieldValueRequestDto inDto
@@ -263,7 +263,7 @@ namespace ASC.CRM.Api
         /// </remarks>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/{id:int}")]
+        [HttpPut(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/{id:int}")]
         public CustomFieldDto UpdateCustomFieldValue(int id, string entityType, string label, int fieldType, int position, string mask)
         {
             if (id <= 0) throw new ArgumentException();
@@ -303,7 +303,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    User field
         /// </returns>
-        [Delete(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/{fieldid:int}")]
+        [HttpDelete(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/{fieldid:int}")]
         public CustomFieldDto DeleteCustomField(string entityType, int fieldid)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -334,7 +334,7 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/reorder")]
+        [HttpPut(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/reorder")]
         public IEnumerable<CustomFieldBaseDto> UpdateCustomFieldsOrder(IEnumerable<int> fieldids, string entityType)
         {
             if (fieldids == null) throw new ArgumentException();

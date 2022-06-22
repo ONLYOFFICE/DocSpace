@@ -116,7 +116,8 @@ const EditingWrapper = styled.div`
       props.viewAs === "tile" &&
       !props.isUpdatingRowItem &&
       css`
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
@@ -125,6 +126,8 @@ const EditingWrapper = styled.div`
             `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
         }
       `};
+
+    ${({ isDisabled }) => isDisabled && "background-color: #fff"}
   }
 
   .edit-button {
@@ -136,7 +139,8 @@ const EditingWrapper = styled.div`
       props.viewAs === "tile" &&
       css`
         margin-left: 0px;
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
@@ -245,6 +249,7 @@ const EditingWrapperComponent = (props) => {
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
       isFolder={isFolder}
+      isDisabled={isLoading}
     >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (

@@ -23,66 +23,55 @@
  *
 */
 
+namespace ASC.ApiSystem.Classes;
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.ApiSystem.Classes
+[Singletone]
+public class CommonConstants
 {
-    [Singletone]
-    public class CommonConstants
+    public CommonConstants(IConfiguration configuration)
     {
-        public CommonConstants(IConfiguration configuration)
+        DefaultCulture = new CultureInfo(DefaultLanguage);
+
+        RecaptchaRequired = Convert.ToBoolean(configuration["recaptcha:required"] ?? "true");
+
+        var appKeys = configuration["web:app:keys"];
+
+        if (!string.IsNullOrEmpty(appKeys))
         {
-            DefaultCulture = new CultureInfo(DefaultLanguage);
-
-            RecaptchaRequired = Convert.ToBoolean(configuration["recaptcha:required"] ?? "true");
-
-            var appKeys = configuration["web:app:keys"];
-
-            if (!string.IsNullOrEmpty(appKeys))
-            {
-                AppSecretKeys = appKeys.Split(',', ';')
-                              .Select(x => x.Trim().ToLower())
-                              .ToList();
-            }
-            else
-            {
-                AppSecretKeys = new List<string>();
-            }
-
-            AutotestSecretEmails = (configuration["web:autotest:secret-email"] ?? "").Trim();
-
-            MaxAttemptsCount = Convert.ToInt32(configuration["max-attempts-count"] ?? "10");
-
-            MaxAttemptsTimeInterval = TimeSpan.Parse(configuration["max-attempts-interval"] ?? "00:05:00");
-
-            WebApiBaseUrl = configuration["api:url"] ?? "/api/2.0/";
-
+            AppSecretKeys = appKeys.Split(',', ';')
+                          .Select(x => x.Trim().ToLower())
+                          .ToList();
+        }
+        else
+        {
+            AppSecretKeys = new List<string>();
         }
 
-        public const string BaseDbConnKeyString = "core";
+        AutotestSecretEmails = (configuration["web:autotest:secret-email"] ?? "").Trim();
 
-        public const string DefaultLanguage = "en-US";
+        MaxAttemptsCount = Convert.ToInt32(configuration["max-attempts-count"] ?? "10");
 
-        public CultureInfo DefaultCulture { get; }
+        MaxAttemptsTimeInterval = TimeSpan.Parse(configuration["max-attempts-interval"] ?? "00:05:00");
 
-        public bool RecaptchaRequired { get; }
+        WebApiBaseUrl = configuration["api:url"] ?? "/api/2.0/";
 
-        public List<string> AppSecretKeys { get; }
-
-        public string AutotestSecretEmails { get; }
-
-        public int MaxAttemptsCount { get; }
-
-        public TimeSpan MaxAttemptsTimeInterval { get; }
-
-        public string WebApiBaseUrl { get; }
     }
+
+    public const string BaseDbConnKeyString = "core";
+
+    public const string DefaultLanguage = "en-US";
+
+    public CultureInfo DefaultCulture { get; }
+
+    public bool RecaptchaRequired { get; }
+
+    public List<string> AppSecretKeys { get; }
+
+    public string AutotestSecretEmails { get; }
+
+    public int MaxAttemptsCount { get; }
+
+    public TimeSpan MaxAttemptsTimeInterval { get; }
+
+    public string WebApiBaseUrl { get; }
 }

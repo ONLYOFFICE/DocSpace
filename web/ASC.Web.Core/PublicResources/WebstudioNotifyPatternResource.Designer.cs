@@ -322,6 +322,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Room Invite.
+        /// </summary>
+        public static string ButtonConfirmRoomInvite {
+            get {
+                return ResourceManager.GetString("ButtonConfirmRoomInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm account termination.
         /// </summary>
         public static string ButtonConfirmTermination {
@@ -515,38 +524,26 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1.Password change request for the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
-        ///
-        ///There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
-        ///
-        ///Please follow the link below to change your password:
+        ///   Looks up a localized string similar to Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
         ///
         ///$GreenButton
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
+        ///The link is valid for 7 days.
         ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it or contact your &quot;${__Virtual [rest of string was truncated]&quot;;.
+        ///Don’t want to change your password? Just ignore this message&lt;/value&gt;
+        ///  &lt;/data&gt;
+        ///  &lt;data name=&quot;pattern_personal_change_password_v115&quot; xml:space=&quot;preserve&quot;&gt;
+        ///    &lt;value&gt;Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
+        ///
+        ///$GreenButton 
+        ///
+        ///The link is valid for 7 days.
+        ///
+        ///Don’t want to change your password? Just ignore  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_change_password {
+        public static string pattern_change_password_v115 {
             get {
-                return ResourceManager.GetString("pattern_change_password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to h1.Mobile phone change request
-        ///
-        ///You have requested to change your mobile phone used to enter the ${LetterLogoText} portal.
-        ///
-        ///Please follow the link below to change your mobile phone:
-        ///
-        ///$GreenButton
-        ///
-        ///If you do not want to change your mobile phone or received this email by mistake, please ignore it or contact your portal administrator to find out the details..
-        /// </summary>
-        public static string pattern_change_phone {
-            get {
-                return ResourceManager.GetString("pattern_change_phone", resourceCulture);
+                return ResourceManager.GetString("pattern_change_password_v115", resourceCulture);
             }
         }
         
@@ -631,7 +628,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Configure Right Now
         ///$GreenButton
-        ///
+        ///   
         ///Done. It&apos;s time to invite teammates to your web-office!
         ///
         ///More information in our &quot;Help Center&quot;:&quot;${__HelpLink}&quot;..
@@ -755,7 +752,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Click on the link below to start the renewal process:
         ///&quot;Pricing page&quot;:&quot;$PricingPage&quot;
         ///
-        ///For any further ONLYOFFICE installation, activation and technical support issues, please contact our support team at &quot;https://support.onlyoffice.com/&quot;:&quot;https://support.onlyoffice.com/&quot;.
+        ///For any further ONLYOFFICE installation, activation and technical support issues, please contact our support team  at &quot;https://support.onlyoffice.com/&quot;:&quot;https://support.onlyoffice.com/&quot;.
         /// </summary>
         public static string pattern_enterprise_admin_payment_warning_before7_v10 {
             get {
@@ -1548,26 +1545,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
-        ///
-        ///Please follow the link below to change your password:
-        ///
-        ///$GreenButton
-        ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-        ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it.
-        ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
-        /// </summary>
-        public static string pattern_personal_change_password {
-            get {
-                return ResourceManager.GetString("pattern_personal_change_password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hello,
         ///
         ///You&apos;ve just registered an account at the ONLYOFFICE solution for personal use. Click &quot;here&quot;:&quot;$InviteLink&quot; to confirm the registration and create a password.
@@ -1963,7 +1940,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///We have prepared several tips to make your work with ONLYOFFICE more comfortable.
+        ///We have prepared several tips to make your work with ONLYOFFICE  more comfortable.
         ///
         ///*#1 Get quick answers*
         ///Browse &quot;Help Center&quot;:&quot;${__HelpLink}&quot; when you are not sure how to perform your task. Contact &quot;our support team&quot;:&quot;https://helpdesk.onlyoffice.com&quot; if you face tech problems.
@@ -2070,7 +2047,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The trial period for your portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; is due to expire today. To continue using ONLYOFFICE Business, &quot;buy subscription&quot;:&quot;$PricingPage&quot;.
         ///
-        ///To extend your trial, contact our &quot;sales team&quot;:&quot;mailto:sales@onlyoffice.com&quot;.
+        ///To extend your trial, contact our &quot;sales team&quot;:&quot;mailto:sales@onlyoffice.com&quot;. 
         ///
         ///You can switch to free Startup plan on &quot;Payments page&quot;:&quot;$PricingPage&quot;. Free plan has up to 10 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. &quot;Compare plan [rest of string was truncated]&quot;;.
         /// </summary>
@@ -2299,7 +2276,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Test ONLYOFFICE Business cloud for 30 days for free:
         ///
         ///# *Edit unlimited number of docs*, sheets, slides, and forms simultaneously.
-        ///# *Customize your online office* style to match your branding. 
+        ///# *Customize your online office* style to match your branding.
         ///# *Ensure security:* enable 2FA, configure automatic backups, track user actions.
         ///# *Integrate with your infrastructure:* use LDAP, SSO, and your domain name for portal address.
         ///# *Connect apps for productive work:* Twilio, DocuSign, etc.
@@ -2334,7 +2311,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.  Now you can:
         ///
         ///1. Edit your &quot;profile&quot;:&quot;$MyStaffLink&quot;.
         ///2. View and comment the content available in the &quot;Community&quot;:&quot;${__VirtualRootPath}/Products/Community/&quot; and &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot;.
@@ -2594,11 +2571,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ${LetterLogoText} password assistance.
+        ///   Looks up a localized string similar to Confirm changing your password.
         /// </summary>
-        public static string subject_change_password {
+        public static string subject_change_password_v115 {
             get {
-                return ResourceManager.GetString("subject_change_password", resourceCulture);
+                return ResourceManager.GetString("subject_change_password_v115", resourceCulture);
             }
         }
         
@@ -3049,15 +3026,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_personal_already_exist {
             get {
                 return ResourceManager.GetString("subject_personal_already_exist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE Personal password assistance.
-        /// </summary>
-        public static string subject_personal_change_password {
-            get {
-                return ResourceManager.GetString("subject_personal_change_password", resourceCulture);
             }
         }
         

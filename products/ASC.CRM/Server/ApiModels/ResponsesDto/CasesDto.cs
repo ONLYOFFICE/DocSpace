@@ -46,12 +46,12 @@ namespace ASC.CRM.ApiModels
 
         public int Id { get; set; }
         public IEnumerable<ContactBaseDto> Members { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
+        public EmployeeDto CreateBy { get; set; }
         public ApiDateTime Created { get; set; }
         public String Title { get; set; }
         public bool IsClosed { get; set; }
         public bool IsPrivate { get; set; }
-        public IEnumerable<EmployeeWraper> AccessList { get; set; }
+        public IEnumerable<EmployeeDto> AccessList { get; set; }
         public bool CanEdit { get; set; }
         public IEnumerable<CustomFieldBaseDto> CustomFields { get; set; }
         public static CasesDto GetSample()
@@ -61,7 +61,7 @@ namespace ASC.CRM.ApiModels
                 IsClosed = false,
                 Title = "Exhibition organization",
                 Created = ApiDateTime.GetSample(),
-                CreateBy = EmployeeWraper.GetSample(),
+                CreateBy = EmployeeDto.GetSample(),
                 IsPrivate = false,
                 CustomFields = new[] { CustomFieldBaseDto.GetSample() },
                 CanEdit = true

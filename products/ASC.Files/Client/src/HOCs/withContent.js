@@ -118,7 +118,10 @@ export default function withContent(WrappedContent) {
                 })
               )
             )
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              toastr.error(err);
+              this.completeAction(fileActionId);
+            })
             .finally(() => {
               clearTimeout(timerId);
               timerId = null;
@@ -136,7 +139,10 @@ export default function withContent(WrappedContent) {
                 })
               )
             )
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              toastr.error(err);
+              this.completeAction(fileActionId);
+            })
             .finally(() => {
               clearTimeout(timerId);
               timerId = null;
@@ -198,7 +204,7 @@ export default function withContent(WrappedContent) {
         fileCopyAs,
         fromTemplate,
         gallerySelected,
-        setCreatedFolderId,
+        setCreatedItem,
       } = this.props;
       const { itemTitle } = this.state;
       const { parentId, fileExst } = item;
@@ -241,10 +247,13 @@ export default function withContent(WrappedContent) {
           .then((folder) => {
             createdFolderId = folder.id;
             addActiveItems(null, [folder.id]);
-            setCreatedFolderId(createdFolderId);
+            setCreatedItem({ id: createdFolderId, type: "folder" });
           })
           .then(() => this.completeAction(itemId))
-          .catch((e) => toastr.error(e))
+          .catch((e) => {
+            toastr.error(e);
+            this.completeAction(itemId);
+          })
           .finally(() => {
             const folderIds = [+itemId];
             createdFolderId && folderIds.push(createdFolderId);
@@ -312,12 +321,17 @@ export default function withContent(WrappedContent) {
           )
             .then((file) => {
               createdFileId = file.id;
+              setCreatedItem({ id: createdFileId, type: "file" });
               addActiveItems([file.id]);
 
               return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
-            .catch((e) => toastr.error(e))
+            .catch((e) => {
+              toastr.error(e);
+              tab && tab.close();
+              this.completeAction(itemId);
+            })
             .finally(() => {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
@@ -330,6 +344,7 @@ export default function withContent(WrappedContent) {
           createFile(item.parentId, `${title}.${item.fileExst}`)
             .then((file) => {
               createdFileId = file.id;
+              setCreatedItem({ id: createdFileId, type: "file" });
               addActiveItems([file.id]);
 
               if (isPrivacy) {
@@ -349,7 +364,11 @@ export default function withContent(WrappedContent) {
               return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
-            .catch((e) => toastr.error(e))
+            .catch((e) => {
+              toastr.error(e);
+              tab && tab.close();
+              this.completeAction(itemId);
+            })
             .finally(() => {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
@@ -504,7 +523,7 @@ export default function withContent(WrappedContent) {
         passwordEntryProcess,
         addActiveItems,
         gallerySelected,
-        setCreatedFolderId,
+        setCreatedItem,
       } = filesStore;
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -571,7 +590,7 @@ export default function withContent(WrappedContent) {
         titleWithoutExt,
         fromTemplate,
         gallerySelected,
-        setCreatedFolderId,
+        setCreatedItem,
         personal,
       };
     }

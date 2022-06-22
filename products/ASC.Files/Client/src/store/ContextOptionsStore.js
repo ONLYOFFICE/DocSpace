@@ -399,6 +399,17 @@ class ContextOptionsStore {
     const isShareable = item.canShare;
 
     const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
+    const isCanWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+
+    const blockAction = isCanWebEdit
+      ? {
+          key: "block-unblock-version",
+          label: t("UnblockVersion"),
+          icon: "/static/images/locked.react.svg",
+          onClick: () => this.lockFile(item, t),
+          disabled: false,
+        }
+      : false;
 
     const versionActions = !isMedia
       ? !isMobile && !isMobileUtils() && !isTabletUtils()
@@ -576,13 +587,7 @@ class ContextOptionsStore {
         onClick: this.onShowInfoPanel,
         disabled: false,
       },
-      {
-        key: "block-unblock-version",
-        label: t("UnblockVersion"),
-        icon: "/static/images/locked.react.svg",
-        onClick: () => this.lockFile(item, t),
-        disabled: false,
-      },
+      blockAction,
       {
         key: "separator1",
         isSeparator: true,

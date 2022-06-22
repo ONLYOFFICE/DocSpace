@@ -115,6 +115,8 @@ class SettingsStore {
   folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', "gim");
 
   tenantStatus = null;
+  helpLink = null;
+  hotkeyPanelVisible = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -125,9 +127,7 @@ class SettingsStore {
   };
 
   get urlAuthKeys() {
-    const splitted = this.culture.split("-");
-    const lang = splitted.length > 0 ? splitted[0] : "en";
-    return `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`;
+    return `${this.helpLink}/installation/groups-authorization-keys.aspx`;
   }
 
   get wizardCompleted() {
@@ -135,16 +135,11 @@ class SettingsStore {
   }
 
   get helpUrlCommonSettings() {
-    const substring = this.culture.substring(0, this.culture.indexOf("-"));
-    const lang = substring.length > 0 ? substring : "en";
-
-    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
+    return `${this.helpLink}/administration/configuration.aspx#CustomizingPortal_block`;
   }
 
   get helpUrlCreatingBackup() {
-    const splitted = this.culture.split("-");
-    const lang = splitted.length > 0 ? splitted[0] : "en";
-    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CreatingBackup_block`;
+    return `${this.helpLink}/administration/configuration.aspx#CreatingBackup_block`;
   }
 
   setValue = (key, value) => {
@@ -334,8 +329,6 @@ class SettingsStore {
           : `${homepage}/`
         : "/";
 
-      console.log("SET base URL", baseUrl);
-
       baseElm[0].setAttribute("href", baseUrl);
     }
   };
@@ -477,6 +470,10 @@ class SettingsStore {
 
   setIsBurgerLoading = (isBurgerLoading) => {
     this.isBurgerLoading = isBurgerLoading;
+  };
+
+  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
+    this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 }
 

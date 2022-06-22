@@ -5,6 +5,7 @@
 	  <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
 	  <RazorCompileOnBuild>false</RazorCompileOnBuild>
 	  <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+	  <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyTitle>ASC.Files</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Files</Product>
@@ -18,12 +19,9 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
-    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
-    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<InternalsVisibleTo Include="ASC.Files.Tests" />
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\Core\ASC.Files.Core.csproj" />

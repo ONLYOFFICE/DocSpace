@@ -1,6 +1,40 @@
 {
   "components": [
     {
+      "type": "ASC.FederatedLogin.LoginProviders.AppleIdLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.AppleIdLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "appleID",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "appleID",
+		  "type": "ASC.FederatedLogin.LoginProviders.AppleIdLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "appleID",
+		  "order": "13",
+		  "props": {
+			"appleIdClientId": "",
+			"appleIdClientIdMobile": "",
+			"appleIdTeamId": "",
+			"appleIdKeyId": "",
+			"appleIdPrivateKey": ""
+		  },
+		  "additional": {
+			"appleIdRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },    
+    {
       "type": "ASC.FederatedLogin.LoginProviders.BitlyLoginProvider, ASC.FederatedLogin",
       "services": [
         {
@@ -23,11 +57,7 @@
 		  "name": "bitly",
 		  "order": "13",
 		  "props": {
-			"bitlyClientId": "",
-			"bitlyClientSecret": ""
-		  },
-		  "additional": {
-			"bitlyUrl" : "https://api-ssl.bitly.com/v3/shorten?format=xml&amp;login={0}&amp;apiKey={1}&amp;longUrl={2}"
+			"bitlyToken": ""
 		  }
 	  }
     },    
@@ -372,6 +402,37 @@
 	  }
     },
 	{
+      "type": "ASC.FederatedLogin.LoginProviders.MicrosoftLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.MicrosoftLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "microsoft",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "microsoft",
+		  "type": "ASC.FederatedLogin.LoginProviders.MicrosoftLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "microsoft",
+		  "order": "4",
+		  "props": {
+			"microsoftClientId": "",
+			"microsoftClientSecret": ""
+		  },
+		  "additional": {
+			"microsoftRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
       "type": "ASC.Web.Core.Sms.SmscProvider, ASC.Web.Core",
       "services": [
         {
@@ -395,11 +456,8 @@
 		  "order": "11",
 		  "props": {
 			"smsclogin": "",
-			"smscpsw": ""
-		  },
-		  "additional": {
-			"smscsender" : "",
-			"smsccis": ""
+			"smscpsw": "",
+			"smscsender": ""
 		  }
 	  }
     },
@@ -429,37 +487,6 @@
 			"twilioAccountSid": "",
 			"twilioAuthToken": "",
 			"twiliosender": ""
-		  }
-	  }
-    },
-	{
-      "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "yahoo",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "yahoo",
-		  "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "yahoo",
-		  "order": "14",
-		  "props": {
-			"yahooClientId": "",
-			"yahooClientSecret": ""
-		  },
-		  "additional": {
-			"yahooRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },

@@ -1,1628 +1,559 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+namespace ASC.AuditTrail.Mappers;
 
-
-using System.Collections.Generic;
-
-using ASC.MessagingSystem;
-
-namespace ASC.AuditTrail.Mappers
+internal class CrmActionMapper : IProductActionMapper
 {
-    internal static class CrmActionMapper
+    public List<IModuleActionMapper> Mappers { get; }
+    public ProductType Product { get; }
+    public CrmActionMapper()
     {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps()
+        Product = ProductType.CRM;
+
+        Mappers = new List<IModuleActionMapper>()
         {
-            return new Dictionary<MessageAction, MessageMaps>
+            new CompaniesActionMapper(),
+            new PersonsActionMapper(),
+            new ContactsActionMapper(),
+            new CrmTasksActionMapper(),
+            new OpportunitiesActionMapper(),
+            new InvoicesActionMapper(),
+            new CasesActionMapper(),
+            new CommonCrmSettingsActionMapper(),
+            new ContactsSettingsActionMapper(),
+            new ContactTypesActionMapper(),
+            new InvoiceSettingsActionMapper(),
+            new OtherCrmSettingsActionMapper()
+        };
+    }
+}
+
+internal class CompaniesActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
+
+    public CompaniesActionMapper()
+    {
+        Module = ModuleType.Companies;
+
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.Contact, new Dictionary<ActionType, MessageAction[]>()
                 {
-                    #region companies
+                    {
+                        ActionType.Create, new []
+                        {
+                            MessageAction.CompanyCreated, MessageAction.CompanyCreatedWithWebForm, MessageAction.CompanyCreatedTag, MessageAction.CompanyCreatedPersonsTag
+                        }
+                    },
+                    {
+                        ActionType.Update, new []
+                        {
+                            MessageAction.CompanyUpdated, MessageAction.CompanyUpdatedPrincipalInfo, MessageAction.CompanyUpdatedPhoto, MessageAction.CompanyUpdatedTemperatureLevel, MessageAction.CompanyUpdatedPersonsTemperatureLevel
+                        }
+                    },
+                    {
+                        ActionType.Delete, new []
+                        {
+                            MessageAction.CompanyDeleted, MessageAction.CompanyDeletedTag
+                        }
+                    }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Attach, MessageAction.CompanyAttachedFiles },
+                    { ActionType.Detach, MessageAction.CompanyDetachedFile }
+                }
+            },
+            {
+                EntryType.Relationship, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create,  MessageAction.CompanyCreatedHistoryEvent },
+                    { ActionType.Delete,  MessageAction.CompanyDeletedHistoryEvent },
+                }
+            },
+            {
+                EntryType.Project, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Link,  MessageAction.CompanyLinkedProject },
+                    { ActionType.Unlink,  MessageAction.CompanyUnlinkedProject },
+                }
+            },
+            {
+                EntryType.Contact, EntryType.Contact, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Link,  MessageAction.CompanyLinkedPerson },
+                    { ActionType.Unlink,  MessageAction.CompanyUnlinkedPerson },
+                    { ActionType.Update,  MessageAction.CompaniesMerged }
+                }
+            }
+        };
+    }
+}
 
+internal class PersonsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
+
+    public PersonsActionMapper()
+    {
+        Module = ModuleType.Persons;
+
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.Contact, new Dictionary<ActionType, MessageAction[]>()
+                {
                     {
-                        MessageAction.CompanyCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CompanyCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
+                        ActionType.Create, new []
+                        {
+                            MessageAction.PersonCreated, MessageAction.PersonCreatedWithWebForm, MessageAction.PersonsCreated, MessageAction.PersonCreatedTag, MessageAction.PersonCreatedCompanyTag
+                        }
                     },
                     {
-                        MessageAction.CompanyCreatedWithWebForm, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CompanyCreatedWithWebForm",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
+                        ActionType.Update, new []
+                        {
+                            MessageAction.CompanyUpdated, MessageAction.PersonUpdated, MessageAction.PersonUpdatedPrincipalInfo, MessageAction.PersonUpdatedPhoto, MessageAction.PersonUpdatedTemperatureLevel, MessageAction.PersonUpdatedCompanyTemperatureLevel
+                        }
                     },
                     {
-                        MessageAction.CompanyUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CompanyUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUpdatedPrincipalInfo, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CompanyUpdatedPrincipalInfo",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUpdatedPhoto, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CompanyUpdatedPhoto",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUpdatedTemperatureLevel, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CompanyUpdatedTemperatureLevel",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUpdatedPersonsTemperatureLevel, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CompanyUpdatedPersonsTemperatureLevel",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyCreatedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CompanyCreatedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyCreatedPersonsTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CompanyCreatedPersonsTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyDeletedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CompanyDeletedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyCreatedHistoryEvent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CompanyCreatedHistoryEvent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyDeletedHistoryEvent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CompanyDeletedHistoryEvent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyLinkedPerson, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "CompanyLinkedPerson",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUnlinkedPerson, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "CompanyUnlinkedPerson",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyLinkedProject, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "CompanyLinkedProject",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUnlinkedProject, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "CompanyUnlinkedProject",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyAttachedFiles, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "AttachActionType",
-                                ActionTextResourceName = "CompanyAttachedFiles",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyDetachedFile, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DetachActionType",
-                                ActionTextResourceName = "CompanyDetachedFile",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompaniesMerged, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CompaniesMerged",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CompanyDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CompaniesModule"
-                            }
+                        ActionType.Delete, new []
+                        {
+                            MessageAction.PersonDeleted, MessageAction.PersonDeletedTag
+                        }
                     },
 
-                    #endregion
+                }, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Attach, MessageAction.PersonAttachedFiles },
+                    { ActionType.Detach, MessageAction.PersonDetachedFile },
+                }
+            },
+            {
+                EntryType.Relationship, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create,  MessageAction.PersonCreatedHistoryEvent },
+                    { ActionType.Delete,  MessageAction.PersonDeletedHistoryEvent },
+                }
+            },
+            {
+                EntryType.Project, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Link,  MessageAction.PersonLinkedProject },
+                    { ActionType.Unlink,  MessageAction.PersonUnlinkedProject },
+                }
+            },
+            {
+                EntryType.Contact, EntryType.Contact, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Update,  MessageAction.PersonsMerged }
+                }
+            }
+        };
+    }
+}
 
-                    #region persons
-                
-                    {
-                        MessageAction.PersonCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "PersonCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonCreatedWithWebForm, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "PersonCreatedWithWebForm",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonsCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "PersonsCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "PersonUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUpdatedPrincipalInfo, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "PersonUpdatedPrincipalInfo",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUpdatedPhoto, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "PersonUpdatedPhoto",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUpdatedTemperatureLevel, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "PersonUpdatedTemperatureLevel",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUpdatedCompanyTemperatureLevel, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "PersonUpdatedCompanyTemperatureLevel",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonCreatedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "PersonCreatedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonCreatedCompanyTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "PersonCreatedCompanyTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonDeletedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "PersonDeletedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonCreatedHistoryEvent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "PersonCreatedHistoryEvent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonDeletedHistoryEvent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "PersonDeletedHistoryEvent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonLinkedProject, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "PersonLinkedProject",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUnlinkedProject, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "PersonUnlinkedProject",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonAttachedFiles, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "AttachActionType",
-                                ActionTextResourceName = "PersonAttachedFiles",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonDetachedFile, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DetachActionType",
-                                ActionTextResourceName = "PersonDetachedFile",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonsMerged, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "PersonsMerged",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "PersonDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "PersonsModule"
-                            }
-                    },
+internal class ContactsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public ContactsActionMapper()
+    {
+        Module = ModuleType.Contacts;
 
-                    #region contacts
-                    
-                    {
-                        MessageAction.ContactsDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "ContactsDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmSmtpMailSent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "SendActionType",
-                                ActionTextResourceName = "CrmSmtpMailSent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactsModule"
-                            }
-                    },
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.Contact, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Delete,  MessageAction.ContactsDeleted },
+                    { ActionType.Send,  MessageAction.CrmSmtpMailSent }
+                }
+            },
+            { MessageAction.ContactsExportedToCsv, ActionType.Export },
+            { MessageAction.ContactsImportedFromCSV, ActionType.Import }
+        };
+    }
+}
 
-                    #endregion
+internal class CrmTasksActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #region tasks
+    public CrmTasksActionMapper()
+    {
+        Module = ModuleType.CrmTasks;
 
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.CRMTask, new Dictionary<ActionType, MessageAction[]>()
+                {
                     {
-                        MessageAction.CrmTaskCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CrmTaskCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CrmTasksModule"
-                            }
+                        ActionType.Create,  new[]
+                        {
+                            MessageAction.CrmTaskCreated, MessageAction.ContactsCreatedCrmTasks
+                        }
                     },
                     {
-                        MessageAction.ContactsCreatedCrmTasks, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "ContactsCreatedCrmTasks",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CrmTasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTaskUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CrmTaskUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CrmTasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTaskOpened, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CrmTaskOpened",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CrmTasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTaskClosed, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CrmTaskClosed",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CrmTasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTaskDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CrmTaskDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CrmTasksModule"
-                            }
-                    },
+                        ActionType.Update,  new[]
+                        {
+                            MessageAction.CrmTaskUpdated, MessageAction.CrmTaskOpened, MessageAction.CrmTaskClosed
+                        }
+                    }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Delete, MessageAction.CrmTaskDeleted }
+                }
+            },
+            { MessageAction.CrmTasksImportedFromCSV, ActionType.Import },
+            { MessageAction.CrmTasksExportedToCsv, ActionType.Export }
+        };
+    }
+}
 
-                    #endregion
+internal class OpportunitiesActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #region opportunities
+    public OpportunitiesActionMapper()
+    {
+        Module = ModuleType.Opportunities;
 
-                    {
-                        MessageAction.OpportunityCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "OpportunityCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OpportunityUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityUpdatedStage, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OpportunityUpdatedStage",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityCreatedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "OpportunityCreatedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityDeletedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "OpportunityDeletedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityCreatedHistoryEvent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "OpportunityCreatedHistoryEvent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityDeletedHistoryEvent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "OpportunityDeletedHistoryEvent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityLinkedCompany, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "OpportunityLinkedCompany",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityUnlinkedCompany, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "OpportunityUnlinkedCompany",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityLinkedPerson, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "OpportunityLinkedPerson",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityUnlinkedPerson, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "OpportunityUnlinkedPerson",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityAttachedFiles, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "AttachActionType",
-                                ActionTextResourceName = "OpportunityAttachedFiles",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityDetachedFile, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DetachActionType",
-                                ActionTextResourceName = "OpportunityDetachedFile",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityOpenedAccess, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateAccessActionType",
-                                ActionTextResourceName = "OpportunityOpenedAccess",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityRestrictedAccess, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateAccessActionType",
-                                ActionTextResourceName = "OpportunityRestrictedAccess",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "OpportunityDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunitiesDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "OpportunitiesDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.Opportunity, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Create, new[] { MessageAction.OpportunityCreated, MessageAction.OpportunityCreatedTag } },
+                    { ActionType.Update, new[] { MessageAction.OpportunityUpdated, MessageAction.OpportunityUpdatedStage } },
+                    { ActionType.Delete, new[] { MessageAction.OpportunityDeleted, MessageAction.OpportunitiesDeleted, MessageAction.OpportunityDeletedTag } },
+                    { ActionType.Link, new[] { MessageAction.OpportunityLinkedCompany, MessageAction.OpportunityLinkedPerson } },
+                    { ActionType.Unlink, new[] { MessageAction.OpportunityUnlinkedCompany, MessageAction.OpportunityUnlinkedPerson } },
+                    { ActionType.UpdateAccess, new[] { MessageAction.OpportunityOpenedAccess, MessageAction.OpportunityRestrictedAccess } }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Attach, MessageAction.OpportunityAttachedFiles },
+                    { ActionType.Detach, MessageAction.OpportunityDetachedFile }
+                }
+            },
+            {
+                EntryType.Relationship, new Dictionary<ActionType, MessageAction>
+                {
+                    { ActionType.Create, MessageAction.OpportunityCreatedHistoryEvent },
+                    { ActionType.Delete, MessageAction.OpportunityDeletedHistoryEvent }
+                }
+            },
+            { MessageAction.OpportunitiesImportedFromCSV, ActionType.Import },
+            { MessageAction.OpportunitiesExportedToCsv, ActionType.Export }
+        };
+    }
+}
 
-                    #endregion
+internal class InvoicesActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #region invoices
+    public InvoicesActionMapper()
+    {
+        Module = ModuleType.Invoices;
 
-                    {
-                        MessageAction.InvoiceCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "InvoiceCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoicesModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "InvoiceUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoicesModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoicesUpdatedStatus, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "InvoicesUpdatedStatus",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoicesModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "InvoiceDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoicesModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoicesDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "InvoicesDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoicesModule"
-                            }
-                    },
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.Invoice, new Dictionary<ActionType, MessageAction[]>
+                {
+                    { ActionType.Update, new [] { MessageAction.InvoiceUpdated, MessageAction.InvoicesUpdatedStatus } },
+                    { ActionType.Delete, new [] { MessageAction.InvoiceDeleted, MessageAction.InvoicesDeleted } }
+                },
+                new Dictionary<ActionType, MessageAction>
+                {
+                    { ActionType.Create, MessageAction.InvoiceCreated },
+                    { ActionType.Download, MessageAction.InvoiceDownloaded }
+                }
+            },
+            { MessageAction.CurrencyRateUpdated, ActionType.Update },
+            { MessageAction.InvoiceDefaultTermsUpdated, ActionType.Update },
+        };
+    }
+}
 
-                    {
-                        MessageAction.CurrencyRateUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CurrencyRateUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoicesModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceDefaultTermsUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "InvoiceDefaultTermsUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoicesModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceDownloaded, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DownloadActionType",
-                                ActionTextResourceName = "InvoiceDownloaded",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoicesModule"
-                            }
-                    },
+internal class CasesActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public CasesActionMapper()
+    {
+        Module = ModuleType.Cases;
 
-                    #region cases
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.Case, new Dictionary<ActionType, MessageAction[]>
+                {
+                    { ActionType.Create, new [] { MessageAction.CaseCreated, MessageAction.CaseCreatedTag } },
+                    { ActionType.Update, new [] { MessageAction.CaseUpdated, MessageAction.CaseOpened, MessageAction.CaseClosed } },
+                    { ActionType.Delete, new [] { MessageAction.CaseDeleted, MessageAction.CasesDeleted, MessageAction.CaseDeletedTag } },
+                    { ActionType.Link, new [] { MessageAction.CaseLinkedCompany, MessageAction.CaseLinkedPerson } },
+                    { ActionType.Unlink, new [] { MessageAction.CaseUnlinkedCompany, MessageAction.CaseUnlinkedPerson } },
+                    { ActionType.UpdateAccess, new [] { MessageAction.CaseOpenedAccess, MessageAction.CaseRestrictedAccess } },
+                },
+                new Dictionary<ActionType, MessageAction>
+                {
+                    { ActionType.Attach, MessageAction.CaseAttachedFiles },
+                    { ActionType.Detach, MessageAction.CaseDetachedFile }
+                }
+            },
+            {
+                EntryType.Relationship, new Dictionary<ActionType, MessageAction>
+                {
+                    { ActionType.Create, MessageAction.CaseCreatedHistoryEvent },
+                    { ActionType.Delete, MessageAction.CaseDeletedHistoryEvent },
+                }
+            },
+            { MessageAction.CasesImportedFromCSV, ActionType.Import },
+            { MessageAction.CasesExportedToCsv, ActionType.Export },
+        };
+    }
+}
 
-                    {
-                        MessageAction.CaseCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CaseCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CaseUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseOpened, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CaseOpened",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseClosed, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CaseClosed",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseCreatedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CaseCreatedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseDeletedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CaseDeletedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseCreatedHistoryEvent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CaseCreatedHistoryEvent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseDeletedHistoryEvent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CaseDeletedHistoryEvent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseLinkedCompany, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "CaseLinkedCompany",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseUnlinkedCompany, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "CaseUnlinkedCompany",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseLinkedPerson, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "CaseLinkedPerson",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseUnlinkedPerson, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "CaseUnlinkedPerson",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseAttachedFiles, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "AttachActionType",
-                                ActionTextResourceName = "CaseAttachedFiles",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseDetachedFile, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DetachActionType",
-                                ActionTextResourceName = "CaseDetachedFile",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseOpenedAccess, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateAccessActionType",
-                                ActionTextResourceName = "CaseOpenedAccess",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseRestrictedAccess, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateAccessActionType",
-                                ActionTextResourceName = "CaseRestrictedAccess",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CaseDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CasesDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CasesDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
+internal class CommonCrmSettingsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public CommonCrmSettingsActionMapper()
+    {
+        Module = ModuleType.CommonCrmSettings;
 
-                    #region common settings
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            { MessageAction.CrmSmtpSettingsUpdated, ActionType.Update },
+            { MessageAction.CrmTestMailSent, ActionType.Send },
+            { MessageAction.CrmDefaultCurrencyUpdated, ActionType.Update },
+            { MessageAction.CrmAllDataExported, ActionType.Export }
+        };
+    }
+}
 
-                    {
-                        MessageAction.CrmSmtpSettingsUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CrmSmtpSettingsUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CommonCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTestMailSent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "SendActionType",
-                                ActionTextResourceName = "CrmTestMailSent",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CommonCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmDefaultCurrencyUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CrmDefaultCurrencyUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CommonCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmAllDataExported, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ExportActionType",
-                                ActionTextResourceName = "CrmAllDataExported",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CommonCrmSettingsModule"
-                            }
-                    },
+internal class ContactsSettingsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public ContactsSettingsActionMapper()
+    {
+        Module = ModuleType.ContactsSettings;
 
-                    #region contact settings
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.ListItem,
+                new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Update, new[]
+                        {
+                            MessageAction.ContactTemperatureLevelUpdated, MessageAction.ContactTemperatureLevelUpdatedColor,
+                            MessageAction.ContactTemperatureLevelsUpdatedOrder, MessageAction.ContactTemperatureLevelSettingsUpdated
+                        }
+                    }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.ContactTemperatureLevelCreated },
+                    { ActionType.Delete, MessageAction.ContactTemperatureLevelDeleted }
+                }
+            }
+        };
+    }
+}
 
-                    {
-                        MessageAction.ContactTemperatureLevelCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "ContactTemperatureLevelCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactsSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactTemperatureLevelUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ContactTemperatureLevelUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactsSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactTemperatureLevelUpdatedColor, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ContactTemperatureLevelUpdatedColor",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactsSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactTemperatureLevelsUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ContactTemperatureLevelsUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactsSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactTemperatureLevelDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "ContactTemperatureLevelDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactsSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactTemperatureLevelSettingsUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ContactTemperatureLevelSettingsUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CommonCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactTypeCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "ContactTypeCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactTypesModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactTypeUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ContactTypeUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactTypesModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactTypesUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ContactTypesUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactTypesModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactTypeDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "ContactTypeDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactTypesModule"
-                            }
-                    },
+internal class ContactTypesActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public ContactTypesActionMapper()
+    {
+        Module = ModuleType.ContactTypes;
 
-                    #region invoice settings
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.ListItem, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Update, new [] { MessageAction.ContactTypeUpdated, MessageAction.ContactTypesUpdatedOrder } }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.ContactTypeCreated },
+                    { ActionType.Delete, MessageAction.ContactTypeDeleted },
+                }
+            }
+        };
+    }
+}
 
-                    {
-                        MessageAction.InvoiceItemCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "InvoiceItemCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceItemUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "InvoiceItemUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceItemDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "InvoiceItemDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceItemsDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "InvoiceItemsDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceTaxCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "InvoiceTaxCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceTaxUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "InvoiceTaxUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceTaxDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "InvoiceTaxDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OrganizationProfileUpdatedCompanyName, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OrganizationProfileUpdatedCompanyName",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OrganizationProfileUpdatedInvoiceLogo, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OrganizationProfileUpdatedInvoiceLogo",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OrganizationProfileUpdatedAddress, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OrganizationProfileUpdatedAddress",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.InvoiceNumberFormatUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "InvoiceNumberFormatUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "InvoiceSettingsModule"
-                            }
-                    },
+internal class InvoiceSettingsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public InvoiceSettingsActionMapper()
+    {
+        Module = ModuleType.InvoiceSettings;
 
-                    #region user fields settings
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.InvoiceItem, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Delete, new [] { MessageAction.InvoiceItemDeleted, MessageAction.InvoiceItemsDeleted } }
+                }, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.InvoiceItemCreated },
+                    { ActionType.Update, MessageAction.InvoiceItemUpdated }
+                }
+            },
+            {
+                EntryType.InvoiceTax, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.InvoiceTaxCreated },
+                    { ActionType.Update, MessageAction.InvoiceTaxUpdated },
+                    { ActionType.Delete, MessageAction.InvoiceTaxDeleted }
+                }
+            },
+            {
+                ActionType.Update,
+                new[]
+                {
+                    MessageAction.OrganizationProfileUpdatedCompanyName, MessageAction.OrganizationProfileUpdatedInvoiceLogo,
+                    MessageAction.OrganizationProfileUpdatedAddress, MessageAction.InvoiceNumberFormatUpdated
+                }
+            }
+        };
+    }
+}
 
-                    {
-                        MessageAction.ContactUserFieldCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "ContactUserFieldCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactUserFieldUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ContactUserFieldUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactUserFieldsUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ContactUserFieldsUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactUserFieldDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "ContactUserFieldDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUserFieldCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CompanyUserFieldCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUserFieldUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CompanyUserFieldUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUserFieldsUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CompanyUserFieldsUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CompanyUserFieldDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CompanyUserFieldDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUserFieldCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "PersonUserFieldCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUserFieldUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "PersonUserFieldUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUserFieldsUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "PersonUserFieldsUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.PersonUserFieldDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "PersonUserFieldDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityUserFieldCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "OpportunityUserFieldCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityUserFieldUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OpportunityUserFieldUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityUserFieldsUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OpportunityUserFieldsUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityUserFieldDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "OpportunityUserFieldDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseUserFieldCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CaseUserFieldCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseUserFieldUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CaseUserFieldUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseUserFieldsUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CaseUserFieldsUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CaseUserFieldDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CaseUserFieldDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
+internal class OtherCrmSettingsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public OtherCrmSettingsActionMapper()
+    {
+        Module = ModuleType.OtherCrmSettings;
 
-                    #region history events categories settings
-
+        Actions = new MessageMapsDictionary(ProductType.CRM, Module)
+        {
+            {
+                EntryType.FieldDescription, new Dictionary<ActionType, MessageAction[]>()
+                {
                     {
-                        MessageAction.HistoryEventCategoryCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "HistoryEventCategoryCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
+                        ActionType.Create, new[]
+                        {
+                            MessageAction.ContactUserFieldCreated, MessageAction.CompanyUserFieldCreated,
+                            MessageAction.PersonUserFieldCreated, MessageAction.OpportunityUserFieldCreated,
+                            MessageAction.CaseUserFieldCreated
+                        }
                     },
                     {
-                        MessageAction.HistoryEventCategoryUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "HistoryEventCategoryUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
+                        ActionType.Update, new[]
+                        {
+                            MessageAction.ContactUserFieldUpdated, MessageAction.ContactUserFieldsUpdatedOrder,
+                            MessageAction.CompanyUserFieldUpdated, MessageAction.CompanyUserFieldsUpdatedOrder,
+                            MessageAction.PersonUserFieldUpdated, MessageAction.PersonUserFieldsUpdatedOrder,
+                            MessageAction.OpportunityUserFieldUpdated, MessageAction.OpportunityUserFieldsUpdatedOrder,
+                            MessageAction.CaseUserFieldUpdated, MessageAction.CaseUserFieldsUpdatedOrder
+                        }
                     },
                     {
-                        MessageAction.HistoryEventCategoryUpdatedIcon, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "HistoryEventCategoryUpdatedIcon",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
+                        ActionType.Delete, new[]
+                        {
+                            MessageAction.ContactUserFieldDeleted, MessageAction.CompanyUserFieldDeleted,
+                            MessageAction.PersonUserFieldDeleted, MessageAction.OpportunityUserFieldDeleted,
+                            MessageAction.CaseUserFieldDeleted
+                        }
                     },
-                    {
-                        MessageAction.HistoryEventCategoriesUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "HistoryEventCategoriesUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
+                }
+            },
+            {
+                EntryType.ListItem, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Create, new[] { MessageAction.HistoryEventCategoryCreated, MessageAction.CrmTaskCategoryCreated } },
+                    { ActionType.Update, new[]
+                        {
+                            MessageAction.HistoryEventCategoryUpdated, MessageAction.HistoryEventCategoryUpdatedIcon, MessageAction.HistoryEventCategoriesUpdatedOrder,
+                            MessageAction.CrmTaskCategoryUpdated, MessageAction.CrmTaskCategoryUpdatedIcon, MessageAction.CrmTaskCategoriesUpdatedOrder
+                        }
                     },
-                    {
-                        MessageAction.HistoryEventCategoryDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "HistoryEventCategoryDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-
-                    #endregion
-
-                    #region task actegories settings
-
-                    {
-                        MessageAction.CrmTaskCategoryCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CrmTaskCategoryCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTaskCategoryUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CrmTaskCategoryUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTaskCategoryUpdatedIcon, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CrmTaskCategoryUpdatedIcon",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTaskCategoriesUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "CrmTaskCategoriesUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTaskCategoryDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CrmTaskCategoryDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-
-                    #endregion
-
-                    #region opportunity stages settings
-
-                    {
-                        MessageAction.OpportunityStageCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "OpportunityStageCreated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityStageUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OpportunityStageUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityStageUpdatedColor, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OpportunityStageUpdatedColor",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityStagesUpdatedOrder, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "OpportunityStagesUpdatedOrder",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunityStageDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "OpportunityStageDeleted",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-
-                    #endregion
-
-                    #region tags settings
-
-                    {
-                        MessageAction.ContactsCreatedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "ContactsCreatedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactsDeletedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "ContactsDeletedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunitiesCreatedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "OpportunitiesCreatedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunitiesDeletedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "OpportunitiesDeletedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CasesCreatedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "CasesCreatedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CasesDeletedTag, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "CasesDeletedTag",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ContactsTagSettingsUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ContactsTagSettingsUpdated",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CommonCrmSettingsModule"
-                            }
-                    },
-
-                    #endregion
-
-                    #region other settings
-
-                    {
-                        MessageAction.WebsiteContactFormUpdatedKey, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "WebsiteContactFormUpdatedKey",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OtherCrmSettingsModule"
-                            }
-                    },
-
-                    #endregion
-
-                    #region import
-
-                    {
-                        MessageAction.ContactsImportedFromCSV, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ImportActionType",
-                                ActionTextResourceName = "ContactsImportedFromCSV",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTasksImportedFromCSV, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ImportActionType",
-                                ActionTextResourceName = "CrmTasksImportedFromCSV",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CrmTasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunitiesImportedFromCSV, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ImportActionType",
-                                ActionTextResourceName = "OpportunitiesImportedFromCSV",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CasesImportedFromCSV, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ImportActionType",
-                                ActionTextResourceName = "CasesImportedFromCSV",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-
-                    #endregion
-
-                    #region export
-
-                    {
-                        MessageAction.ContactsExportedToCsv, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ExportActionType",
-                                ActionTextResourceName = "ContactsExportedToCsv",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "ContactsModule"
-                            }
-                    },
-                    {
-                        MessageAction.CrmTasksExportedToCsv, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ExportActionType",
-                                ActionTextResourceName = "CrmTasksExportedToCsv",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CrmTasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.OpportunitiesExportedToCsv, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ExportActionType",
-                                ActionTextResourceName = "OpportunitiesExportedToCsv",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "OpportunitiesModule"
-                            }
-                    },
-                    {
-                        MessageAction.CasesExportedToCsv, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ExportActionType",
-                                ActionTextResourceName = "CasesExportedToCsv",
-                                ProductResourceName = "CrmProduct",
-                                ModuleResourceName = "CasesModule"
-                            }
-                    },
-
-                    #endregion
-                };
-        }
+                    { ActionType.Delete, new[] { MessageAction.HistoryEventCategoryDeleted, MessageAction.CrmTaskCategoryDeleted } }
+                }
+            },
+            {
+                EntryType.OpportunityMilestone, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Update, new[] { MessageAction.OpportunityStageUpdated, MessageAction.OpportunityStageUpdatedColor, MessageAction.OpportunityStagesUpdatedOrder } }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.OpportunityStageCreated },
+                    { ActionType.Delete, MessageAction.OpportunityStageDeleted },
+                }
+            },
+            {
+                ActionType.Create, new[]
+                {
+                    MessageAction.ContactsCreatedTag, MessageAction.OpportunitiesCreatedTag, MessageAction.CasesCreatedTag
+                }
+            },
+            {
+                ActionType.Update, new[]
+                {
+                    MessageAction.ContactsTagSettingsUpdated, MessageAction.WebsiteContactFormUpdatedKey
+                }
+            },
+            {
+                ActionType.Delete, new[]
+                {
+                    MessageAction.ContactsDeletedTag, MessageAction.OpportunitiesDeletedTag, MessageAction.CasesDeletedTag
+                }
+            },
+        };
     }
 }

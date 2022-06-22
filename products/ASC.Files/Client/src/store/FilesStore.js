@@ -62,13 +62,12 @@ class FilesStore {
   firstElemChecked = false;
   headerBorder = false;
 
-  isPrevSettingsModule = false;
   enabledHotkeys = true;
   oformFiles = null;
   gallerySelected = null;
 
-  createdFolderId = null;
-  scrollToFolderId = null;
+  createdItem = null;
+  scrollToItem = null;
 
   isLoadingFilesFind = false;
   pageItemsLength = null;
@@ -232,10 +231,6 @@ class FilesStore {
       this.selection[index].fileStatus = status;
       this.selection[index].isEditing = isEditing;
     }
-  };
-
-  setIsPrevSettingsModule = (isSettings) => {
-    this.isPrevSettingsModule = isSettings;
   };
 
   addActiveItems = (files, folders) => {
@@ -505,12 +500,11 @@ class FilesStore {
   };
 
   //TODO: FILTER
-  setFilesFilter = (filter, isPrefSettings) => {
+  setFilesFilter = (filter) => {
     const key = `UserFilter=${this.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
-    !isPrefSettings && this.setFilterUrl(filter);
     this.filter = filter;
 
     runInAction(() => {
@@ -569,7 +563,8 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false
+    withSubfolders = false,
+    clearSelection = true
   ) => {
     const {
       treeFolders,
@@ -578,9 +573,6 @@ class FilesStore {
       selectedTreeNode,
     } = this.treeFoldersStore;
     const { id } = this.selectedFolderStore;
-
-    const isPrefSettings = isNaN(+selectedTreeNode) && !id;
-    isPrefSettings && this.setIsPrevSettingsModule(true);
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -637,7 +629,7 @@ class FilesStore {
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
-          this.setFilesFilter(filterData, isPrefSettings); //TODO: FILTER
+          this.setFilesFilter(filterData); //TODO: FILTER
 
           runInAction(() => {
             this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
@@ -646,7 +638,9 @@ class FilesStore {
 
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
-            this.setSelected("close");
+            if (clearSelection) {
+              this.setSelected("close");
+            }
           }
 
           const navigationPath = await Promise.all(
@@ -675,17 +669,20 @@ class FilesStore {
 
           this.viewAs === "tile" && this.createThumbnails();
 
-          if (this.createdFolderId) {
-            const newFolder = this.filesList.find(
-              (item) => item.id === this.createdFolderId
+          if (this.createdItem) {
+            const newItem = this.filesList.find(
+              (item) => item.id === this.createdItem.id
             );
 
-            if (newFolder) {
-              this.setSelection([newFolder]);
-              this.setScrollToFolderId(newFolder.id);
+            if (newItem) {
+              this.setBufferSelection(newItem);
+              this.setScrollToItem({
+                id: newItem.id,
+                type: this.createdItem.type,
+              });
             }
 
-            this.setCreatedFolderId(null);
+            this.setCreatedItem(null);
           }
           return Promise.resolve(selectedFolder);
         })
@@ -2077,12 +2074,12 @@ class FilesStore {
     this.enabledHotkeys = enabledHotkeys;
   };
 
-  setCreatedFolderId = (createdFolderId) => {
-    this.createdFolderId = createdFolderId;
+  setCreatedItem = (createdItem) => {
+    this.createdItem = createdItem;
   };
 
-  setScrollToFolderId = (folderId) => {
-    this.scrollToFolderId = folderId;
+  setScrollToItem = (item) => {
+    this.scrollToItem = item;
   };
 }
 

@@ -76,6 +76,8 @@ const HeaderNav = ({
   buildVersionInfo,
   debugInfo,
   settingsModule,
+  setHotkeyPanelVisible,
+  currentProductId,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -93,6 +95,10 @@ const HeaderNav = ({
     } else {
       history.push(ABOUT_URL);
     }
+  }, []);
+
+  const onHotkeysClick = useCallback(() => {
+    setHotkeyPanelVisible(true);
   }, []);
 
   const onCloseDialog = () => setVisibleDialog(false);
@@ -131,6 +137,23 @@ const HeaderNav = ({
           }
         : null;
 
+    let hotkeys = null;
+    if (modules) {
+      const moduleIndex = modules.findIndex((m) => m.appName === "files");
+
+      if (
+        moduleIndex !== -1 &&
+        modules[moduleIndex].id === currentProductId &&
+        !isMobile
+      ) {
+        hotkeys = {
+          key: "HotkeysBtn",
+          label: t("Common:Hotkeys"),
+          onClick: onHotkeysClick,
+        };
+      }
+    }
+
     const actions = [
       {
         key: "ProfileBtn",
@@ -148,6 +171,7 @@ const HeaderNav = ({
           target: "_self",
         }),
       },
+      hotkeys,
       {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),
@@ -171,7 +195,7 @@ const HeaderNav = ({
     }
 
     return actions;
-  }, [onProfileClick, onAboutClick, onLogoutClick]);
+  }, [onProfileClick, onAboutClick, onLogoutClick, currentProductId]);
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
@@ -241,6 +265,7 @@ export default withRouter(
       toggleArticleOpen,
       buildVersionInfo,
       debugInfo,
+      setHotkeyPanelVisible,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
@@ -264,6 +289,7 @@ export default withRouter(
       buildVersionInfo,
       debugInfo,
       settingsModule,
+      setHotkeyPanelVisible,
     };
   })(observer(HeaderNav))
 );

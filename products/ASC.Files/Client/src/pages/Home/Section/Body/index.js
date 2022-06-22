@@ -37,8 +37,8 @@ const SectionBodyContent = (props) => {
     tooltipPageY,
     setHotkeyCaretStart,
     setHotkeyCaret,
-    scrollToFolderId,
-    setScrollToFolderId,
+    scrollToItem,
+    setScrollToItem,
     filesList,
   } = props;
 
@@ -71,29 +71,29 @@ const SectionBodyContent = (props) => {
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
 
   useEffect(() => {
-    if (scrollToFolderId) {
-      const newFolder = document.querySelector(
-        `div[value='folder_${scrollToFolderId}_draggable']`
-      );
+    if (scrollToItem) {
+      const { type, id } = scrollToItem;
 
-      let isInViewport = isElementInViewport(newFolder);
+      const targetElement = document.getElementById(`${type}_${id}`);
+
+      if (!targetElement) return;
+
+      let isInViewport = isElementInViewport(targetElement);
 
       if (!isInViewport || viewAs === "table") {
         const bodyScroll = isMobileOnly
-          ? document.querySelector("#customScrollBar > div")
+          ? document.querySelector("#customScrollBar > .scroll-body")
           : document.querySelector(".section-scroll");
 
-        const rectNewFolder = newFolder.getBoundingClientRect();
         const count =
-          viewAs === "table"
-            ? filesList.findIndex((elem) => elem.id === scrollToFolderId) * 40
-            : rectNewFolder.bottom - window.innerHeight + 300;
+          filesList.findIndex((elem) => elem.id === scrollToItem.id) *
+          (isMobileOnly ? 57 : viewAs === "table" ? 40 : 48);
 
         bodyScroll.scrollTo(0, count);
       }
-      setScrollToFolderId(null);
+      setScrollToItem(null);
     }
-  }, [scrollToFolderId]);
+  }, [scrollToItem]);
 
   const onMouseDown = (e) => {
     if (
@@ -280,11 +280,10 @@ export default inject(
       setBufferSelection,
       setHotkeyCaretStart,
       setHotkeyCaret,
-      scrollToFolderId,
-      setScrollToFolderId,
+      scrollToItem,
+      setScrollToItem,
       filesList,
     } = filesStore;
-
     return {
       dragging,
       startDrag,
@@ -303,8 +302,8 @@ export default inject(
       tooltipPageY,
       setHotkeyCaretStart,
       setHotkeyCaret,
-      scrollToFolderId,
-      setScrollToFolderId,
+      scrollToItem,
+      setScrollToItem,
       filesList,
     };
   }
