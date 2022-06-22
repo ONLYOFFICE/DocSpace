@@ -83,6 +83,8 @@ export const FolderType = Object.freeze({
   Recent: 11,
   Templates: 12,
   Privacy: 13,
+  Rooms: 14,
+  Archive: 20,
 });
 export const ShareAccessRights = Object.freeze({
   None: 0,
