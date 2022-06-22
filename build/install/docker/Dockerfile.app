@@ -199,7 +199,7 @@ WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/ .
 
-CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
+CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.Data.Backup ##
 FROM builder AS backup
@@ -226,7 +226,7 @@ WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Files/server/ .
 
-CMD ["ASC.Files.dll", "ASC.Files"]
+CMD ["ASC.Files.dll", "ASC.Files", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.Files.Service ##
 FROM builder AS files_services
@@ -317,7 +317,7 @@ WORKDIR ${BUILD_PATH}/studio/ASC.Web.Api/
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Api/service/ .
 
-CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
+CMD ["ASC.Web.Api.dll", "ASC.Web.Api", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.Web.Studio ##
 FROM builder AS studio
@@ -326,7 +326,7 @@ WORKDIR ${BUILD_PATH}/studio/ASC.Web.Studio/
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
-CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
+CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.SsoAuth ##
 FROM nodeBuild AS ssoauth
