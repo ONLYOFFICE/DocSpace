@@ -166,6 +166,12 @@ const Items = ({
       case FolderType.USER:
         iconUrl = "/static/images/catalog.user.react.svg";
         break;
+      case FolderType.Rooms:
+        iconUrl = "/static/images/catalog.folder.react.svg";
+        break;
+      case FolderType.Archive:
+        iconUrl = "/static/images/catalog.archive.react.svg";
+        break;
       case FolderType.SHARE:
         iconUrl = "/static/images/catalog.shared.react.svg";
         break;
@@ -348,6 +354,8 @@ export default inject(
       commonFolderId,
       isPrivacyFolder,
     } = treeFoldersStore;
+
+    console.log(auth.settingsStore.docspace);
 
     const { id } = selectedFolderStore;
     const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
