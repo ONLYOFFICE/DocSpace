@@ -265,7 +265,6 @@
     <ROW Name="SoftwareDetector.dll" SourcePath="&lt;AI_CUSTACTS&gt;SoftwareDetector.dll"/>
     <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
     <ROW Name="Utils.CA.dll" SourcePath="Utils.CA.dll"/>
-    <ROW Name="Utils.CA.dll_1" SourcePath="..\..\..\..\portals\build\install\win\Utils.CA.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="jsonCfg.dll" SourcePath="&lt;AI_CUSTACTS&gt;jsonCfg.dll"/>
     <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
@@ -614,8 +613,8 @@
     <ROW Action="TestKafkaConnection" Type="1" Source="Utils.CA.dll" Target="CheckTCPAvailability" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_15"/>
     <ROW Action="TestKafkaConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_16"/>
     <ROW Action="TestRabbitMQConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_18"/>
-    <ROW Action="TestRabbitMQServerConnection" Type="1" Source="Utils.CA.dll_1" Target="TestRabbitMQConnection" WithoutSeq="true"/>
-    <ROW Action="TestRedisServerConnection" Type="1" Source="Utils.CA.dll_1" Target="TestRedisServerConnection" WithoutSeq="true"/>
+    <ROW Action="TestRabbitMQServerConnection" Type="1" Source="Utils.CA.dll" Target="TestRabbitMQConnection" WithoutSeq="true"/>
+    <ROW Action="TestRedisServerConnection" Type="1" Source="Utils.CA.dll" Target="TestRedisServerConnection" WithoutSeq="true"/>
     <ROW Action="TestRedisServerConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_17"/>
     <ROW Action="TestSQLConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_5"/>
     <ROW Action="TestSqlConnection" Type="6" Source="utils.vbs" Target="TestSqlConnection" WithoutSeq="true"/>
