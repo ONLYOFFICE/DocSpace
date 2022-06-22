@@ -45,7 +45,9 @@ const UploadXML = () => {
           tabIndex={2}
         />
 
-        <Text className="or-text">{t("Or")}</Text>
+        <Text className="or-text" noSelect>
+          {t("Or")}
+        </Text>
 
         <FileInput
           accept=".xml"

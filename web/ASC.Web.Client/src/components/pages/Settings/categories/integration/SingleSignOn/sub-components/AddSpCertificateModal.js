@@ -41,7 +41,7 @@ const AddSpCertificateModal = () => {
           </Link>
         </Box>
 
-        <Text isBold className="text-area-label">
+        <Text isBold className="text-area-label" noSelect>
           {t("OpenCertificate")}
         </Text>
 
@@ -52,7 +52,7 @@ const AddSpCertificateModal = () => {
           value={FormStore.sp_certificate}
         />
 
-        <Text isBold className="text-area-label">
+        <Text isBold className="text-area-label" noSelect>
           {t("PrivateKey")}
         </Text>
 

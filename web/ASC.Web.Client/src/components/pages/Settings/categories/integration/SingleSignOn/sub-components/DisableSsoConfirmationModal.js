@@ -29,7 +29,7 @@ const DisableSsoConfirmationModal = () => {
       <ModalDialog.Header>{t("Common:Confirmation")}</ModalDialog.Header>
 
       <ModalDialog.Body>
-        <Text>{t("ConfirmationText")}</Text>
+        <Text noSelect>{t("ConfirmationText")}</Text>
       </ModalDialog.Body>
 
       <ModalDialog.Footer>

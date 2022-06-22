@@ -28,7 +28,7 @@ const AddIdpCertificateModal = () => {
       <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
 
       <ModalDialog.Body>
-        <Text isBold className="text-area-label">
+        <Text isBold className="text-area-label" noSelect>
           {t("OpenCertificate")}
         </Text>
 

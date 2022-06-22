@@ -17,7 +17,7 @@ const ToggleSSO = (props) => {
 
   return (
     <>
-      <Text className="intro-text" lineHeight="20px" color="#657077">
+      <Text className="intro-text" lineHeight="20px" color="#657077" noSelect>
         {t("SsoIntro")}
       </Text>
 
@@ -41,10 +41,12 @@ const ToggleSSO = (props) => {
         />
 
         <Box>
-          <Text as="span" fontWeight={600} lineHeight="20px">
+          <Text as="span" fontWeight={600} lineHeight="20px" noSelect>
             {t("TurnOnSSO")}
           </Text>
-          <Text lineHeight="16px">{t("TurnOnSSOCaption")}</Text>
+          <Text lineHeight="16px" noSelect>
+            {t("TurnOnSSOCaption")}
+          </Text>
         </Box>
       </Box>
 

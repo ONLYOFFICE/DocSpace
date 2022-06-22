@@ -29,7 +29,7 @@ const HideButton = ({ label, isAdditionalParameters }) => {
       marginProp={marginProp}
     >
       {!isAdditionalParameters && (
-        <Text as="h2" fontSize="16px" fontWeight={600}>
+        <Text as="h2" fontSize="16px" fontWeight={600} noSelect>
           {t(label)}
         </Text>
       )}

@@ -51,16 +51,16 @@ const CertificatesTable = ({ prefix }) => {
         <IconButton iconName="/static/images/icons/24/file.svg" />
         <div className="column">
           <div className="column-row">
-            <Text fontWeight={600} fontSize="14px">
+            <Text fontWeight={600} fontSize="14px" noSelect>
               Self-Signed,{" "}
             </Text>
-            <Text color="#a3a9ae">
+            <Text color="#a3a9ae" noSelect>
               {getFullDate(certificate.startDate)} -{" "}
               {getFullDate(certificate.expiredDate)}
             </Text>
           </div>
           <div className="column-row">
-            <Text color="#a3a9ae" fontSize="12px" fontWeight={600}>
+            <Text color="#a3a9ae" fontSize="12px" fontWeight={600} noSelect>
               {certificate.action}
             </Text>
           </div>

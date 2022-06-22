@@ -42,7 +42,7 @@ const Certificates = ({ provider }) => {
         flexDirection="row"
         marginProp="24px 0"
       >
-        <Text as="h2" fontSize="14px" fontWeight={600}>
+        <Text as="h2" fontSize="14px" fontWeight={600} noSelect>
           {t(`${prefix}Certificates`)}
         </Text>
 
