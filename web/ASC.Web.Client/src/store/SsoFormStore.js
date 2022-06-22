@@ -93,8 +93,10 @@ class SsoFormStore {
   spLoginLabelHasError = false;
 
   entityIdHasError = false;
-  ssoUrlHasError = false;
-  sloUrlHasError = false;
+  ssoUrlPostHasError = false;
+  ssoUrlRedirectHasError = false;
+  sloUrlPostHasError = false;
+  sloUrlRedirectHasError = false;
 
   firstNameHasError = false;
   lastNameHasError = false;
