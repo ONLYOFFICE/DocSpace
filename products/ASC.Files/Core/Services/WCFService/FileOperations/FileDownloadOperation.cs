@@ -355,7 +355,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     //Take from converter
                                     using (var readStream = await fileConverter.ExecAsync(file, convertToExt))
                                     {
-                                        compressTo.PutStream(readStream);
+                                        await compressTo.PutStream(readStream);
 
                                         if (!string.IsNullOrEmpty(convertToExt))
                                         {
@@ -371,7 +371,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 {
                                     using (var readStream = await FileDao.GetFileStreamAsync(file))
                                     {
-                                        compressTo.PutStream(readStream);
+                                        await compressTo.PutStream(readStream);
 
                                         filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                                     }

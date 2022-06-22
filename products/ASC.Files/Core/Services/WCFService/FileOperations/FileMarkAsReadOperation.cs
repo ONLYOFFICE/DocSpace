@@ -105,7 +105,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                await fileMarker.RemoveMarkAsNewAsync(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+                await fileMarker.RemoveMarkAsNewAsync(x, ((IAccount)(principal ?? Thread.CurrentPrincipal).Identity).ID);
 
                 if (x.FileEntryType == FileEntryType.File)
                 {

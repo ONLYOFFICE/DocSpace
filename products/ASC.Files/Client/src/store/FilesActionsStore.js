@@ -36,6 +36,8 @@ class FilesActionStore {
   dialogsStore;
   mediaViewerDataStore;
 
+  isBulkDownload = false;
+
   constructor(
     authStore,
     uploadDataStore,
@@ -56,6 +58,10 @@ class FilesActionStore {
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
   }
+
+  setIsBulkDownload = (isBulkDownload) => {
+    this.isBulkDownload = isBulkDownload;
+  };
 
   isMediaOpen = () => {
     const { visible, setMediaViewerData, playlist } = this.mediaViewerDataStore;
@@ -344,6 +350,13 @@ class FilesActionStore {
     const { addActiveItems } = this.filesStore;
     const { label } = translations;
 
+    if (this.isBulkDownload) {
+      //toastr.error(); TODO: new add cancel download operation and new translation "ErrorMassage_SecondDownload"
+      return;
+    }
+
+    this.setIsBulkDownload(true);
+
     setSecondaryProgressBarData({
       icon: "file",
       visible: true,
@@ -373,6 +386,7 @@ class FilesActionStore {
               );
 
         clearActiveOperations(fileIds, folderIds);
+        this.setIsBulkDownload(false);
 
         if (item.url) {
           window.location.href = item.url;
@@ -387,6 +401,7 @@ class FilesActionStore {
         !item.url && toastr.error(translations.error, null, 0, true);
       });
     } catch (err) {
+      this.setIsBulkDownload(false);
       clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({
         visible: true,
@@ -1192,6 +1207,7 @@ class FilesActionStore {
 
   openFileAction = (item) => {
     const {
+      isLoading,
       setIsLoading,
       fetchFiles,
       openDocEditor,
@@ -1213,7 +1229,7 @@ class FilesActionStore {
     const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
     if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);
 
-    if (isRecycleBinFolder) return;
+    if (isRecycleBinFolder || isLoading) return;
 
     if (isFolder) {
       setIsLoading(true);
