@@ -23,6 +23,8 @@ class SsoFormStore {
 
   spLoginLabel = "";
 
+  onLoadXML = false;
+
   // idpSettings
   entityId = "";
   ssoUrlPost = "";
@@ -224,9 +226,12 @@ class SsoFormStore {
     const data = { url: this.uploadXmlUrl };
 
     try {
+      this.onLoadXML = true;
       const response = await loadXmlMetadata(data);
       this.setFieldsFromMetaData(response.meta);
+      this.onLoadXML = false;
     } catch (err) {
+      this.onLoadXML = false;
       console.log(err);
     }
   };
@@ -238,9 +243,12 @@ class SsoFormStore {
     data.append("file", file);
 
     try {
+      this.onLoadXML = true;
       const response = await uploadXmlMetadata(data);
       this.setFieldsFromObject(response);
+      this.onLoadXML = false;
     } catch (err) {
+      this.onLoadXML = false;
       console.log(err);
     }
   };

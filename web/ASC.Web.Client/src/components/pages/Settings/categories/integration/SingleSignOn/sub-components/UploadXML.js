@@ -36,7 +36,9 @@ const UploadXML = () => {
           className="upload-button"
           icon={uploadIcon}
           isDisabled={
-            !FormStore.enableSso || FormStore.uploadXmlUrl.trim().length === 0
+            !FormStore.enableSso ||
+            FormStore.uploadXmlUrl.trim().length === 0 ||
+            FormStore.onLoadXML
           }
           onClick={FormStore.onLoadXmlMetadata}
           size="small"
@@ -49,7 +51,7 @@ const UploadXML = () => {
           accept=".xml"
           buttonLabel={t("ChooseFile")}
           className="xml-upload-file"
-          isDisabled={!FormStore.enableSso}
+          isDisabled={!FormStore.enableSso || FormStore.onLoadXML}
           onInput={FormStore.onUploadXmlMetadata}
           size="middle"
           tabIndex={3}
