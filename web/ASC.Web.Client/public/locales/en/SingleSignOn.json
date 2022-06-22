@@ -33,7 +33,6 @@
   "ProviderCertificates": "SP Certificates",
   "ProviderURL": "IdP Entity Id",
   "ProviderURLTooltip": "Identity Provider Entity Id (Issuer URL)",
-  "ResetSettings": "Restore default settings",
   "SPAssertionConsumerURL": "SP Assertion Consumer URL (support POST and Redirect binding)",
   "SPAssertionConsumerURLTooltip": "The Service provider URL address where it receives and processes assertions from the Identity provider",
   "SPEntityId": "SP Entity Id (link to metadata XML)",
