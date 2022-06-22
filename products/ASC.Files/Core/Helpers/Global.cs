@@ -342,6 +342,57 @@ public class GlobalFolder
         return (T)Convert.ChangeType(await GetFolderProjectsAsync(daoFactory), typeof(T));
     }
 
+    internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache = 
+        new ConcurrentDictionary<string, int>();
+
+    public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory)
+    {
+        if (_coreBaseSettings.DisableDocSpace)
+        {
+            return default;
+        }
+
+        var key = $"vrooms/{_tenantManager.GetCurrentTenant().Id}";
+
+        if (!DocSpaceFolderCache.TryGetValue(key, out var result))
+        {
+            result = await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(true);
+
+            DocSpaceFolderCache[key] = result;
+        }
+
+        return result;
+    }
+
+    public async ValueTask<T> GetFolderVirtualRoomsAsync<T>(IDaoFactory daoFactory)
+    {
+        return (T)Convert.ChangeType(await GetFolderVirtualRoomsAsync(daoFactory), typeof(T));
+    }
+
+    public async ValueTask<int> GetFolderArchiveAsync(IDaoFactory daoFactory)
+    {
+        if (_coreBaseSettings.DisableDocSpace)
+        {
+            return default;
+        }
+
+        var key = $"archive/{_tenantManager.GetCurrentTenant().Id}";
+
+        if (!DocSpaceFolderCache.TryGetValue(key, out var result))
+        {
+            result = await daoFactory.GetFolderDao<int>().GetFolderIDArchive(true);
+
+            DocSpaceFolderCache[key] = result;
+        }
+
+        return result;
+    }
+
+    public async ValueTask<T> GetFolderArchive<T>(IDaoFactory daoFactory)
+    {
+        return (T)Convert.ChangeType(await GetFolderArchiveAsync(daoFactory), typeof(T));
+    }
+
     internal static readonly ConcurrentDictionary<string, Lazy<int>> UserRootFolderCache =
         new ConcurrentDictionary<string, Lazy<int>>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
@@ -739,6 +790,8 @@ public class GlobalFolderHelper
     public ValueTask<int> FolderRecentAsync => _globalFolder.GetFolderRecentAsync(_daoFactory);
     public ValueTask<int> FolderFavoritesAsync => _globalFolder.GetFolderFavoritesAsync(_daoFactory);
     public ValueTask<int> FolderTemplatesAsync => _globalFolder.GetFolderTemplatesAsync(_daoFactory);
+    public ValueTask<int> FolderVirtualRoomsAsync => _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
+    public ValueTask<int> FolderArchiveAsync => _globalFolder.GetFolderArchiveAsync(_daoFactory);
 
     public T GetFolderMy<T>()
     {
@@ -763,6 +816,16 @@ public class GlobalFolderHelper
     public async ValueTask<T> GetFolderPrivacyAsync<T>()
     {
         return (T)Convert.ChangeType(await FolderPrivacyAsync, typeof(T));
+    }
+
+    public async ValueTask<T> GetFolderVirtualRooms<T>()
+    {
+        return (T)Convert.ChangeType(await FolderVirtualRoomsAsync, typeof(T));
+    }
+
+    public async ValueTask<T> GetFolderArchive<T>()
+    {
+        return (T)Convert.ChangeType(await FolderArchiveAsync, typeof(T));
     }
 
     public void SetFolderMy<T>(T val)

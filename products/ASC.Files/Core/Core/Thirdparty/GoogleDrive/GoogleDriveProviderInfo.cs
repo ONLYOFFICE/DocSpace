@@ -57,6 +57,8 @@ internal class GoogleDriveProviderInfo : IProviderInfo
     public string RootFolderId => "drive-" + ID;
     public string ProviderKey { get; set; }
     public FolderType RootFolderType { get; set; }
+    public FolderType FolderType { get; set; }
+    public string FolderId { get; set; }
     public string DriveRootId
     {
         get

@@ -34,6 +34,9 @@ public class FolderDto<T> : FileEntryDto<T>
     public bool? IsShareable { get; set; }
     public bool? IsFavorite { get; set; }
     public int New { get; set; }
+    public IEnumerable<string> Tags { get; set; }
+    public Logo Logo { get; set; }
+    public bool Pinned { get; set; }
 
     public FolderDto() { }
 
@@ -65,6 +68,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
     private readonly AuthContext _authContext;
     private readonly IDaoFactory _daoFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly RoomLogoManager _roomLogoManager;
 
     public FolderDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
@@ -73,12 +77,14 @@ public class FolderDtoHelper : FileEntryDtoHelper
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
         GlobalFolderHelper globalFolderHelper,
-        FileSharingHelper fileSharingHelper)
+        FileSharingHelper fileSharingHelper, 
+        RoomLogoManager roomLogoManager)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
         _authContext = authContext;
         _daoFactory = daoFactory;
         _globalFolderHelper = globalFolderHelper;
+        _roomLogoManager = roomLogoManager;
     }
 
     public async Task<FolderDto<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -86,6 +92,24 @@ public class FolderDtoHelper : FileEntryDtoHelper
         var result = await GetFolderWrapperAsync(folder);
 
         result.ParentId = folder.ParentId;
+
+        if (DocSpaceHelper.IsRoom(folder.FolderType))
+        {
+            if (folder.Tags == null)
+            {
+                var tagDao = _daoFactory.GetTagDao<T>();
+
+                var tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).ToListAsync();
+
+                result.Tags = tags.Select(t => t.Name);
+            }
+            else
+            {
+                result.Tags = folder.Tags.Select(t => t.Name);
+            }
+
+            result.Logo = await _roomLogoManager.GetLogo(folder.Id);
+        }
 
         if (folder.RootFolderType == FolderType.USER
             && !Equals(folder.RootCreateBy, _authContext.CurrentAccount.ID))
@@ -125,6 +149,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         result.IsShareable = folder.Shareable.NullIfDefault();
         result.IsFavorite = folder.IsFavorite.NullIfDefault();
         result.New = folder.NewForMe;
+        result.Pinned = folder.Pinned;
 
         return result;
     }

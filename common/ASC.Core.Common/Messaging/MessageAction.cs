@@ -479,6 +479,21 @@ public enum MessageAction
 
     FolderMarkedAsRead = 5065,
 
+    RoomCreated = 5066,
+    RoomRenamed = 5067,
+    RoomArchived = 5068,
+    RoomUnarchived = 5069,
+    RoomDeleted = 5070,
+    RoomUpdateAccess = 5071,
+
+    TagCreated = 5072,
+    TagsDeleted = 5073,
+    AddedRoomTags = 5074,
+    DeletedRoomTags = 5075,
+
+    RoomLogoCreated = 5076,
+    RoomLogoDeleted = 5077,
+
     #endregion
 
     #region Settings
@@ -560,6 +575,9 @@ public enum MessageAction
     #region others
 
     ContactAdminMailSent = 7000,
+    RoomInviteLinkUsed = 7001,
+    UserCreatedAndAddedToRoom = 7002,
+    GuestCreatedAndAddedToRoom = 7003,
 
     #endregion
 

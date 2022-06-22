@@ -53,6 +53,8 @@ internal class DropboxProviderInfo : IProviderInfo
     public string RootFolderId => "dropbox-" + ID;
     public string ProviderKey { get; set; }
     public FolderType RootFolderType { get; set; }
+    public FolderType FolderType { get; set; }
+    public string FolderId { get; set; }
 
     private readonly DropboxStorageDisposableWrapper _wrapper;
     private readonly DropboxProviderInfoHelper _dropboxProviderInfoHelper;

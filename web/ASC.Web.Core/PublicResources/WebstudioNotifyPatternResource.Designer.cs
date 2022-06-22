@@ -322,6 +322,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Room Invite.
+        /// </summary>
+        public static string ButtonConfirmRoomInvite {
+            get {
+                return ResourceManager.GetString("ButtonConfirmRoomInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm account termination.
         /// </summary>
         public static string ButtonConfirmTermination {

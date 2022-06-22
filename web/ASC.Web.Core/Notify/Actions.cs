@@ -163,4 +163,6 @@ public static class Actions
     public static readonly INotifyAction StorageDecryptionStart = new NotifyAction("storage_decryption_start");
     public static readonly INotifyAction StorageDecryptionSuccess = new NotifyAction("storage_decryption_success");
     public static readonly INotifyAction StorageDecryptionError = new NotifyAction("storage_decryption_error");
+
+    public static readonly INotifyAction RoomInvite = new NotifyAction("room_invite");
 }

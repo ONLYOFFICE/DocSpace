@@ -243,7 +243,8 @@ public class ThirdpartyController : ApiControllerBase
         var thirdPartyParams = new ThirdPartyParams
         {
             AuthData = new AuthData(inDto.Url, inDto.Login, inDto.Password, inDto.Token),
-            Corporate = inDto.IsCorporate,
+            Corporate = inDto.IsRoomsStorage ? false : inDto.IsCorporate,
+            RoomsStorage = inDto.IsCorporate ? false : inDto.IsRoomsStorage,
             CustomerTitle = inDto.CustomerTitle,
             ProviderId = inDto.ProviderId,
             ProviderKey = inDto.ProviderKey,

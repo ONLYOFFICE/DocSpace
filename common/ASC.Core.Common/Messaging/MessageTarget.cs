@@ -53,7 +53,7 @@ public class MessageTarget
         };
     }
 
-    public MessageTarget Create(IEnumerable<string> value)
+    public MessageTarget CreateFromGroupValues(IEnumerable<string> value)
     {
         var res = new MessageTarget(_option)
         {
