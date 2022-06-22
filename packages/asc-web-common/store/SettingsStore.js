@@ -72,6 +72,7 @@ class SettingsStore {
   encryptionKeys = null;
 
   personal = false;
+  docspace = true;
 
   roomsMode = false;
 
