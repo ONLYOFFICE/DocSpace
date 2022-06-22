@@ -36,6 +36,8 @@ class FilesActionStore {
   dialogsStore;
   mediaViewerDataStore;
 
+  isBulkDownload = false;
+
   constructor(
     authStore,
     uploadDataStore,
@@ -56,6 +58,10 @@ class FilesActionStore {
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
   }
+
+  setIsBulkDownload = (isBulkDownload) => {
+    this.isBulkDownload = isBulkDownload;
+  };
 
   isMediaOpen = () => {
     const { visible, setMediaViewerData, playlist } = this.mediaViewerDataStore;
@@ -343,6 +349,13 @@ class FilesActionStore {
 
     const { addActiveItems } = this.filesStore;
 
+    if (this.isBulkDownload) {
+      //toastr.error(); TODO: new add cancel download operation and new translation "ErrorMassage_SecondDownload"
+      return;
+    }
+
+    this.setIsBulkDownload(true);
+
     setSecondaryProgressBarData({
       icon: "file",
       visible: true,
@@ -368,6 +381,7 @@ class FilesActionStore {
             : await this.uploadDataStore.loopFilesOperations(data, pbData);
 
         clearActiveOperations(fileIds, folderIds);
+        this.setIsBulkDownload(false);
 
         if (item.url) {
           window.location.href = item.url;
@@ -381,6 +395,7 @@ class FilesActionStore {
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
     } catch (err) {
+      this.setIsBulkDownload(false);
       clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({
         visible: true,
