@@ -196,6 +196,14 @@ class SsoFormStore {
     this.setErrors(field, value);
   };
 
+  onFocus = (e) => {
+    const field = e.target.name;
+    const fieldError = `${field}HasError`;
+    const fieldErrorMessage = `${field}ErrorMessage`;
+    this[fieldError] = false;
+    this[fieldErrorMessage] = null;
+  };
+
   disableSso = () => {
     this.isSsoEnabled = false;
   };

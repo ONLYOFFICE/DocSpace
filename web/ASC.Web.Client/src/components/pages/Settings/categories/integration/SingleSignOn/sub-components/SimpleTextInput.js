@@ -22,6 +22,7 @@ const SimpleTextInput = ({
         isDisabled={isDisabled ?? !FormStore.enableSso}
         name={name}
         onBlur={FormStore.onBlur}
+        onFocus={FormStore.onFocus}
         onChange={FormStore.onTextInputChange}
         placeholder={placeholder}
         scale
