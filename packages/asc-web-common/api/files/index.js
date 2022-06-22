@@ -109,6 +109,18 @@ const sortInDisplayOrder = (folders) => {
   );
   myFolder && sorted.push(myFolder);
 
+  const shareRoom = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.Rooms
+  );
+  shareRoom && sorted.push(shareRoom);
+
+  const archiveRoom = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.Archive
+  );
+  archiveRoom && sorted.push(archiveRoom);
+
   const shareFolder = find(
     folders,
     (folder) => folder.current.rootFolderType == FolderType.SHARE
@@ -158,6 +170,7 @@ export function getFoldersTree() {
   return request({ method: "get", url: "/files/@root?filterType=2" }).then(
     (response) => {
       const folders = sortInDisplayOrder(response);
+
       return folders.map((data, index) => {
         const type = +data.current.rootFolderType;
         const name = getFolderClassNameByType(type);
