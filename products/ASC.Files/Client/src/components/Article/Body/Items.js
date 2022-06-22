@@ -355,8 +355,6 @@ export default inject(
       isPrivacyFolder,
     } = treeFoldersStore;
 
-    console.log(auth.settingsStore.docspace);
-
     const { id } = selectedFolderStore;
     const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
     return {

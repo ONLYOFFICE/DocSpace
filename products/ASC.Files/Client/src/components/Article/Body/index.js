@@ -8,7 +8,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@appserver/components/utils/device";
 import FilesFilter from "@appserver/common/api/files/filter";
-import SettingsItems from "./SettingsItems";
+import SettingsItem from "./SettingsItem";
 import { combineUrl } from "@appserver/common/utils";
 import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
 import ThirdPartyList from "./ThirdPartyList";
@@ -100,7 +100,7 @@ const ArticleBodyContent = (props) => {
         onBadgeClick={onShowNewFilesPanel}
         showText={showText}
       />
-      {!personal && !firstLoad && <SettingsItems />}
+      {!personal && !firstLoad && <SettingsItem />}
       {!isDesktopClient && showText && !docspace && (
         <StyledBlock showText={showText}>
           {enableThirdParty && !isVisitor && <ThirdPartyList />}
