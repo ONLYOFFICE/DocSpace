@@ -196,7 +196,7 @@ StyledMenuIcon.defaultProps = { theme: Base };
 
 const StyledArticleMainButton = styled.div`
   padding: 0px 0px 16px;
-  max-width: 216px;
+  max-width: 100%;
 
   @media ${tablet} {
     padding: 0;

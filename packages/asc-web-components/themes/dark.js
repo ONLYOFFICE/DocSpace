@@ -1828,11 +1828,11 @@ const Dark = {
     container: {
       width: "100%",
       height: "36px",
-      padding: "0 20px",
+      padding: "0 12px",
       marginBottom: "16px",
       tablet: {
         height: "44px",
-        padding: "0 16px",
+        padding: "0 8px",
         marginBottom: "24px",
       },
     },
