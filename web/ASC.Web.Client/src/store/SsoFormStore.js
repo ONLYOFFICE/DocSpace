@@ -295,7 +295,7 @@ class SsoFormStore {
         : this.sloUrlRedirect;
 
     const data = {
-      enableSso: true,
+      enableSso: this.enableSso,
       spLoginLabel: this.spLoginLabel,
       idpSettings: {
         entityId: this.entityId,
