@@ -1186,6 +1186,7 @@ class FilesActionStore {
 
   openFileAction = (item) => {
     const {
+      isLoading,
       setIsLoading,
       fetchFiles,
       openDocEditor,
@@ -1207,7 +1208,7 @@ class FilesActionStore {
     const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
     if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);
 
-    if (isRecycleBinFolder) return;
+    if (isRecycleBinFolder || isLoading) return;
 
     if (isFolder) {
       setIsLoading(true);
