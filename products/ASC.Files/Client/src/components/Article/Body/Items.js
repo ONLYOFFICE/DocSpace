@@ -84,8 +84,6 @@ const Item = ({
     setIsDragActive(false);
   }, []);
 
-  console.log(item);
-
   return (
     <StyledDragAndDrop
       key={item.id}
