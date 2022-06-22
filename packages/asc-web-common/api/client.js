@@ -68,7 +68,7 @@ export const request = function (options) {
 
     if (response.request.responseType === "text") return response.data;
 
-    return response.data.response;
+    return response.data.response ? response.data.response : response.data;
   };
 
   const onError = function (error) {
