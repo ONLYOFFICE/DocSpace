@@ -39,6 +39,7 @@ const StyledArticle = styled.article`
 
   @media ${mobile} {
     display: ${(props) => (props.articleOpen ? "flex" : "none")};
+    flex-direction: column;
     min-width: 100%;
     width: 100%;
     position: fixed;
@@ -53,6 +54,8 @@ const StyledArticle = styled.article`
   ${isMobileOnly &&
   css`
     display: ${(props) => (props.articleOpen ? "flex" : "none")} !important;
+    flex-direction: column;
+
     min-width: 100% !important;
     width: 100%;
     position: fixed;
