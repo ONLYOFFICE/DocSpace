@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-
 import {
   generateCerts,
   getCurrentSsoSettings,
@@ -9,6 +8,7 @@ import {
   uploadXmlMetadata,
   validateCerts,
 } from "@appserver/common/api/settings";
+import toastr from "../helpers/toastr";
 
 class SsoFormStore {
   isSsoEnabled = false;
@@ -240,7 +240,8 @@ class SsoFormStore {
       this.onLoadXML = false;
     } catch (err) {
       this.onLoadXML = false;
-      console.log(err);
+      toastr.error(err);
+      console.error(err);
     }
   };
 
@@ -257,7 +258,8 @@ class SsoFormStore {
       this.onLoadXML = false;
     } catch (err) {
       this.onLoadXML = false;
-      console.log(err);
+      toastr.error(err);
+      console.error(err);
     }
   };
 
@@ -267,7 +269,8 @@ class SsoFormStore {
     try {
       return await validateCerts(data);
     } catch (err) {
-      console.log(err);
+      toastr.error(err);
+      console.error(err);
     }
   };
 
@@ -276,7 +279,8 @@ class SsoFormStore {
       const response = await generateCerts();
       this.setGeneratedCertificate(response);
     } catch (err) {
-      console.log(err);
+      toastr.error(err);
+      console.error(err);
     }
   };
 
@@ -336,7 +340,8 @@ class SsoFormStore {
       const response = await submitSsoForm(data);
       console.log("success");
     } catch (err) {
-      console.log(err);
+      toastr.error(err);
+      console.error(err);
     }
   };
 
@@ -346,7 +351,8 @@ class SsoFormStore {
 
       this.setFieldsFromObject(response);
     } catch (err) {
-      console.log(err);
+      toastr.error(err);
+      console.error(err);
     }
   };
 
@@ -440,7 +446,8 @@ class SsoFormStore {
         newCertificate,
       ];
     } catch (err) {
-      console.log(err);
+      toastr.error(err);
+      console.error(err);
     }
   };
 
