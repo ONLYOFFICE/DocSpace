@@ -23,6 +23,7 @@ const CatalogItem = (props) => {
   const {
     className,
     id,
+    type,
     style,
     icon,
     text,
@@ -43,7 +44,7 @@ const CatalogItem = (props) => {
   } = props;
 
   const onClickAction = () => {
-    onClick && onClick(id);
+    onClick && onClick(id, type);
   };
 
   const onClickBadgeAction = (e) => {
