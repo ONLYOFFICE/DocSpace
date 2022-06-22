@@ -758,7 +758,7 @@ class FilesActionStore {
     else updateFolderBadge(id, item.new);
   };
 
-  markAsRead = (folderIds, fileId, item) => {
+  markAsRead = (folderIds, fileIds, item) => {
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -771,13 +771,22 @@ class FilesActionStore {
       visible: true,
     });
 
-    return markAsRead(folderIds, fileId)
+    return markAsRead(folderIds, fileIds)
       .then(async (res) => {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "file" };
         await this.uploadDataStore.loopFilesOperations(data, pbData);
       })
-      .then(() => item && this.setNewBadgeCount(item))
+      .then(() => {
+        if (!item) return;
+
+        this.setNewBadgeCount(item);
+
+        const { getFileIndex, updateFileStatus } = this.filesStore;
+
+        const index = getFileIndex(item.id);
+        updateFileStatus(index, item.fileStatus & ~FileStatus.IsNew);
+      })
       .catch((err) => toastr.error(err))
       .finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
