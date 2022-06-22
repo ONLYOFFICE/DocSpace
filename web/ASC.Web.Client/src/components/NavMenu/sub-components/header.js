@@ -146,9 +146,6 @@ const HeaderComponent = ({
   ...props
 }) => {
   const { t } = useTranslation("Common");
-
-  console.log(isFormGallery);
-
   const isNavAvailable = mainModules.length > 0;
 
   const onLogoClick = () => {
