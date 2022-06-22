@@ -512,11 +512,6 @@ public class DiscDataStore : BaseStorage
         throw new NotSupportedException("This operation supported only on s3 storage");
     }
 
-    public override Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
-    {
-        throw new NotSupportedException("This operation supported only on s3 storage");
-    }
-
     public override string GetUploadUrl()
     {
         throw new NotSupportedException("This operation supported only on s3 storage");

@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Администратор",
   "ChangeToGuest": "Изменить на {{guestCaption}}",
   "ChangeToUser": "Изменить на {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Здесь пока нет сотрудников",
   "LblInviteAgain": "Выслать приглашение ещё раз",
   "LblInvited": "Приглашен",
-  "LblOther": "Другое",
   "LblSendEmail": "Отправить email",
   "LblSendMessage": "Отправить сообщение",
   "LblSetActive": "Разблокировать",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
   "NotFoundDescription": "Попробуйте изменить или очистить настройки фильтра, чтобы увидеть всех людей в разделе.",
   "NotFoundTitle": "Сотрудников не найдено",
+  "ReassignmentData": "Переназначение данных",
   "SuccessfullyRemovedGroup": "Группа была успешно удалена",
   "UserStatus": "Статус"
 }

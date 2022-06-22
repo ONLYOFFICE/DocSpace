@@ -27,7 +27,7 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-public class MyDocuments : BaseFilesTests
+public partial class BaseFilesTests
 {
     [TestCase(DataTests.MyId, DataTests.NewTitle)]
     [Category("Folder")]

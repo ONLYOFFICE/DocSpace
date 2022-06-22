@@ -254,7 +254,7 @@ public class BackupAjaxHandler
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Backup)))
+        if (!_coreBaseSettings.Standalone && !SetupInfo.IsVisibleSettings(nameof(ManagementType.Backup)))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Backup");
         }
@@ -309,6 +309,14 @@ public class BackupAjaxHandler
 
         if (!SetupInfo.IsVisibleSettings("Restore") ||
             (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
+        {
+            throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
+        }
+
+
+        if (!_coreBaseSettings.Standalone
+            && (!SetupInfo.IsVisibleSettings("Restore")
+                || !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }

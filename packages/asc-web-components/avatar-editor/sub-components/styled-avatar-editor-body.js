@@ -2,6 +2,13 @@ import styled, { css } from "styled-components";
 import { Base } from "../../themes";
 import { tablet, desktop, mobile } from "../../utils/device";
 
+const StyledAvatarEditorBodyContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const StyledAvatarEditorBody = styled.div`
   max-width: ${(props) => props.theme.avatarEditorBody.maxWidth};
   ${(props) => !props.useModalDialog && "margin-bottom: 40px;"}

@@ -152,7 +152,7 @@ public class BaseCommonLinkUtility
                     var mapped = tenant.MappedDomain.ToLowerInvariant();
                     if (!mapped.Contains(Uri.SchemeDelimiter))
                     {
-                        mapped = Uri.UriSchemeHttp + Uri.SchemeDelimiter + mapped;
+                        mapped = result.Scheme + Uri.SchemeDelimiter + mapped;
                     }
                     result = new UriBuilder(mapped);
                 }

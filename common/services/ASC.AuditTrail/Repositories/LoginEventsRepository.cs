@@ -32,37 +32,28 @@ public class LoginEventsRepository
     private MessagesContext MessagesContext => _lazyMessagesContext.Value;
 
     private readonly Lazy<MessagesContext> _lazyMessagesContext;
+    private readonly TenantManager _tenantManager;
     private readonly IMapper _mapper;
 
     public LoginEventsRepository(
+        TenantManager tenantManager,
         DbContextManager<MessagesContext> dbMessagesContext,
         IMapper mapper)
     {
         _lazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
+        _tenantManager = tenantManager;
         _mapper = mapper;
     }
 
-    public IEnumerable<LoginEventDto> GetLast(int tenant, int chunk)
+    public IEnumerable<LoginEventDto> GetByFilter(
+        Guid? login = null,
+        MessageAction? action = null,
+        DateTime? fromDate = null,
+        DateTime? to = null,
+        int startIndex = 0,
+        int limit = 0)
     {
-        var query =
-            (from b in MessagesContext.LoginEvents
-             from p in MessagesContext.Users.Where(p => b.UserId == p.Id).DefaultIfEmpty()
-             where b.TenantId == tenant
-             orderby b.Date descending
-             select new LoginEventQuery
-             {
-                 Event = b,
-                 UserName = p.UserName,
-                 FirstName = p.FirstName,
-                 LastName = p.LastName
-             })
-             .Take(chunk);
-
-        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEventDto>>(query.ToList());
-    }
-
-    public IEnumerable<LoginEventDto> Get(int tenant, DateTime fromDate, DateTime to)
-    {
+        var tenant = _tenantManager.GetCurrentTenant().Id;
         var query =
             from q in MessagesContext.LoginEvents
             from p in MessagesContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
@@ -77,6 +68,47 @@ public class LoginEventsRepository
                 FirstName = p.FirstName,
                 LastName = p.LastName
             };
+
+        if (startIndex > 0)
+        {
+            query = query.Skip(startIndex);
+        }
+        if (limit > 0)
+        {
+            query = query.Take(limit);
+        }
+
+        if (login.HasValue && login.Value != Guid.Empty)
+        {
+            query = query.Where(r => r.Event.UserId == login.Value);
+        }
+
+        if (action.HasValue && action.Value != MessageAction.None)
+        {
+            query = query.Where(r => r.Event.Action == (int)action);
+        }
+
+        var hasFromFilter = (fromDate.HasValue && fromDate.Value != DateTime.MinValue);
+        var hasToFilter = (to.HasValue && to.Value != DateTime.MinValue);
+
+        if (hasFromFilter || hasToFilter)
+        {
+            if (hasFromFilter)
+            {
+                if (hasToFilter)
+                {
+                    query = query.Where(q => q.Event.Date >= fromDate.Value & q.Event.Date <= to.Value);
+                }
+                else
+                {
+                    query = query.Where(q => q.Event.Date >= fromDate.Value);
+                }
+            }
+            else if (hasToFilter)
+            {
+                query = query.Where(q => q.Event.Date <= to.Value);
+            }
+        }
 
         return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEventDto>>(query.ToList());
     }

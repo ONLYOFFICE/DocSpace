@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Router, Switch, Route, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
@@ -23,6 +23,7 @@ import System from "./components/System";
 import { AppServerConfig } from "@appserver/common/constants";
 import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
+import ReactSmartBanner from "./components/SmartBanner";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -61,9 +62,10 @@ const About = React.lazy(() => import("./components/pages/About"));
 const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
-const Confirm = React.lazy(() => import("./components/pages/Confirm"));
+const Confirm =
+  !IS_PERSONAL && React.lazy(() => import("./components/pages/Confirm"));
 const MyProfile = React.lazy(() => import("people/MyProfile"));
-const EnterCode = React.lazy(() => import("login/codeLogin"));
+const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
 const InvalidError = React.lazy(() =>
   import("./components/pages/Errors/Invalid")
 );
@@ -109,13 +111,15 @@ const HomeRoute = (props) => (
   </React.Suspense>
 );
 
-const ConfirmRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Confirm {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const ConfirmRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <Confirm {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
 
 const PreparationPortalRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -157,13 +161,15 @@ const MyProfileRoute = (props) => (
   </React.Suspense>
 );
 
-const EnterCodeRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <EnterCode {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const EnterCodeRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <EnterCode {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
 
 const InvalidRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -192,7 +198,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     roomsMode,
     setSnackbarExist,
     userTheme,
+    currentProductId,
   } = rest;
+
+  const [isDocuments, setIsDocuments] = useState(false);
 
   useEffect(() => {
     try {
@@ -229,7 +238,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     });
   }, [socketHelper]);
 
-  const { t } = useTranslation("Common");
+  const { t, ready } = useTranslation(["Common", "SmartBanner"]);
 
   let snackTimer = null;
   let fbInterval = null;
@@ -320,7 +329,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const barConfig = {
       parentElementId: "main-bar",
-      headerText: "Atention",
+      headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
@@ -357,7 +366,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             return;
           }
 
-          setTimeout(() => showSnackBar(campaign), 10000);
+          setTimeout(() => showSnackBar(campaign), 1000);
         })
         .catch((err) => {
           console.error(err);
@@ -420,6 +429,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (userTheme) setTheme(userTheme);
   }, [userTheme]);
 
+  useEffect(() => {
+    if (window.location.pathname.toLowerCase().includes("files")) {
+      setIsDocuments(true);
+    } else {
+      setIsDocuments(false);
+    }
+  }, [currentProductId]);
+
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
 
@@ -469,7 +486,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const loginRoutes = [];
 
-  if (isLoaded && !personal) {
+  if (isLoaded && !IS_PERSONAL) {
     let module;
     if (roomsMode) {
       module = "./roomsLogin";
@@ -495,7 +512,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const roomsRoutes = [];
 
-  if (roomsMode) {
+  if (!IS_PERSONAL && roomsMode) {
     roomsRoutes.push(
       <Route path={ENTER_CODE_URL} component={EnterCodeRoute} />
     );
@@ -505,6 +522,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       <Router history={history}>
         <>
+          {isDocuments ? <ReactSmartBanner t={t} ready={ready} /> : <></>}
           {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
           <Main isDesktop={isDesktop}>
@@ -514,7 +532,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
               {loginRoutes}
               {roomsRoutes}
-              <Route path={CONFIRM_URL} component={ConfirmRoute} />
+              {!IS_PERSONAL && (
+                <Route path={CONFIRM_URL} component={ConfirmRoute} />
+              )}
               <Route path={INVALID_URL} component={InvalidRoute} />
               <PrivateRoute
                 path={COMING_SOON_URLS}
@@ -565,6 +585,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
+    currentProductId,
   } = settingsStore;
   const { setPreparationPortalDialogVisible } = backup;
 
@@ -593,6 +614,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     roomsMode,
     setSnackbarExist,
     userTheme: auth?.userStore?.user?.theme,
+    currentProductId,
   };
 })(observer(Shell));
 

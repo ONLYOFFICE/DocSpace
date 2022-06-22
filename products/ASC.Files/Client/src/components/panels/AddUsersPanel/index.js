@@ -139,9 +139,11 @@ class AddUsersPanelComponent extends React.Component {
               t={t}
               access={accessRight}
               directionX="right"
+              directionY="top"
               onAccessChange={this.onAccessChange}
               accessOptions={accessOptions}
               arrowIconColor={theme.filesPanels.addUsers.arrowColor}
+              isEmbedded={true}
             />
           ),
         }
@@ -157,7 +159,11 @@ class AddUsersPanelComponent extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel">
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          onClose={this.onClosePanels}
+        >
           <StyledContent>
             <StyledBody ref={this.scrollRef}>
               <PeopleSelector
@@ -177,7 +183,9 @@ class AddUsersPanelComponent extends React.Component {
                 showCounter
                 onArrowClick={this.onArrowClick}
                 headerLabel={
-                  isMultiSelect ? t("LinkText") : t("Translations:OwnerChange")
+                  isMultiSelect
+                    ? t("Common:AddUsers")
+                    : t("Translations:OwnerChange")
                 }
                 //onCancel={onClose}
               />
@@ -199,7 +207,7 @@ export default inject(({ auth }) => {
   return { theme: auth.settingsStore.theme };
 })(
   observer(
-    withTranslation(["SharingPanel", "Translations"])(
+    withTranslation(["SharingPanel", "Translations", "Common"])(
       withLoader(AddUsersPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
     )
   )

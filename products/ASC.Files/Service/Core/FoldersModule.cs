@@ -31,9 +31,9 @@ namespace ASC.Files.Service.Core;
 public class FoldersModule : FeedModule
 {
     public override Guid ProductID => WebItemManager.DocumentsProductID;
-    public override string Name => Constants.FoldersModule;
+    public override string Name => Feed.Constants.FoldersModule;
     public override string Product => "documents";
-    protected override string DbId => Constants.FilesDbId;
+    protected override string DbId => Feed.Constants.FilesDbId;
 
     private const string FolderItem = "folder";
     private const string SharedFolderItem = "sharedFolder";

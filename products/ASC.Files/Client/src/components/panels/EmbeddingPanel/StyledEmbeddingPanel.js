@@ -52,6 +52,12 @@ const StyledBody = styled.div`
     margin: 8px;
     right: 16px;
   }
+
+  .embedding-panel_copy-textarea {
+    textarea {
+      width: 330px;
+    }
+  }
 `;
 
 export default StyledBody;

@@ -75,10 +75,7 @@ public class WhitelabelController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (!_tenantLogoManager.WhiteLabelEnabled || !_tenantLogoManager.WhiteLabelPaid)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
-        }
+        DemandWhiteLabelPermission();
 
         if (inQueryDto.IsDefault)
         {
@@ -132,10 +129,7 @@ public class WhitelabelController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (!_tenantLogoManager.WhiteLabelEnabled || !_tenantLogoManager.WhiteLabelPaid)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
-        }
+        DemandWhiteLabelPermission();
 
         if (HttpContext.Request.Form?.Files == null || HttpContext.Request.Form.Files.Count == 0)
         {
@@ -189,10 +183,7 @@ public class WhitelabelController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (!_tenantLogoManager.WhiteLabelEnabled)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
-        }
+        DemandWhiteLabelPermission();
 
         return
         new[]
@@ -214,10 +205,7 @@ public class WhitelabelController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (!_tenantLogoManager.WhiteLabelEnabled)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
-        }
+        DemandWhiteLabelPermission();
 
         Dictionary<string, string> result;
 
@@ -253,10 +241,9 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("whitelabel/logotext")]
     public object GetWhiteLabelLogoText([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        if (!_tenantLogoManager.WhiteLabelEnabled)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
-        }
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        DemandWhiteLabelPermission();
 
         var settings = inDto.IsDefault ? _settingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>() : _settingsManager.Load<TenantWhiteLabelSettings>();
 
@@ -270,10 +257,8 @@ public class WhitelabelController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (!_tenantLogoManager.WhiteLabelEnabled || !_tenantLogoManager.WhiteLabelPaid)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
-        }
+        DemandWhiteLabelPermission();
+
         if (inDto.IsDefault)
         {
             DemandRebrandingPermission();
@@ -459,11 +444,19 @@ public class WhitelabelController : BaseSettingsController
         return defaultSettings;
     }
 
+    private void DemandWhiteLabelPermission()
+    {
+        if (!_coreBaseSettings.Standalone && (!_tenantLogoManager.WhiteLabelEnabled || !_tenantLogoManager.WhiteLabelPaid))
+        {
+            throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
+        }
+    }
+
     private void DemandRebrandingPermission()
     {
         _tenantExtra.DemandControlPanelPermission();
 
-        if (!_tenantManager.GetTenantQuota(Tenant.Id).SSBranding)
+        if (!_coreBaseSettings.Standalone)
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "SSBranding");
         }

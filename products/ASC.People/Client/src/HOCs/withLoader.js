@@ -4,7 +4,14 @@ import { observer, inject } from "mobx-react";
 let loadTimeout = null;
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
-    const { tReady, isLoaded, isLoading, firstLoad, profileLoaded } = props;
+    const {
+      tReady,
+      isLoaded,
+      isLoading,
+      firstLoad,
+      profileLoaded,
+      setIsBurgerLoading,
+    } = props;
     const [inLoad, setInLoad] = useState(true);
 
     const cleanTimer = () => {
@@ -30,6 +37,14 @@ const withLoader = (WrappedComponent) => (Loader) => {
       };
     }, [isLoading]);
 
+    useEffect(() => {
+      if (firstLoad || !isLoaded || inLoad || !profileLoaded) {
+        setIsBurgerLoading(true);
+      } else {
+        setIsBurgerLoading(false);
+      }
+    }, [firstLoad, isLoaded, inLoad, profileLoaded]);
+
     return firstLoad || !isLoaded || inLoad || !tReady || !profileLoaded ? (
       Loader
     ) : (
@@ -38,14 +53,16 @@ const withLoader = (WrappedComponent) => (Loader) => {
   };
 
   return inject(({ auth, peopleStore }) => {
-    const { isLoaded } = auth;
+    const { isLoaded, settingsStore } = auth;
     const { loadingStore } = peopleStore;
     const { isLoading, firstLoad, profileLoaded } = loadingStore;
+    const { setIsBurgerLoading } = settingsStore;
     return {
       isLoaded,
       isLoading,
       firstLoad,
       profileLoaded,
+      setIsBurgerLoading,
     };
   })(observer(withLoader));
 };

@@ -76,6 +76,7 @@ public class DocumentServiceConnector
                                       string toExtension,
                                       string documentRevisionId,
                                       string password,
+                                      string region,
                                       ThumbnailData thumbnail,
                                       SpreadsheetLayout spreadsheetLayout,
                                       bool isAsync)
@@ -91,6 +92,7 @@ public class DocumentServiceConnector
                 toExtension,
                 GenerateRevisionId(documentRevisionId),
                 password,
+                region,
                 thumbnail,
                 spreadsheetLayout,
                 isAsync,
@@ -245,7 +247,7 @@ public class DocumentServiceConnector
                 var fileUri = ReplaceCommunityAdress(url);
 
                 var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                var uriTuple = await Web.Core.Files.DocumentService.GetConvertedUriAsync(_fileUtility, _filesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, _fileUtility.SignatureSecret, _clientFactory);
+                var uriTuple = await Web.Core.Files.DocumentService.GetConvertedUriAsync(_fileUtility, _filesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, null, false, _fileUtility.SignatureSecret, _clientFactory);
                 convertedFileUri = uriTuple.ConvertedDocumentUri;
             }
             catch (Exception ex)

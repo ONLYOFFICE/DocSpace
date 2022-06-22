@@ -83,12 +83,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("open", value);
     }
 
-    public bool ControlPanel
-    {
-        get => GetFeature("controlpanel");
-        set => SetFeature("controlpanel", value);
-    }
-
     public bool Update
     {
         get => GetFeature("update");
@@ -119,12 +113,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("domain", value);
     }
 
-    public bool HealthCheck
-    {
-        get => GetFeature("healthcheck");
-        set => SetFeature("healthcheck", value);
-    }
-
     public bool HasMigration
     {
         get => GetFeature("migration");
@@ -143,18 +131,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("sso", value);
     }
 
-    public bool Branding
-    {
-        get => GetFeature("branding");
-        set => SetFeature("branding", value);
-    }
-
-    public bool SSBranding
-    {
-        get => GetFeature("ssbranding");
-        set => SetFeature("ssbranding", value);
-    }
-
     public bool WhiteLabel
     {
         get => GetFeature("whitelabel");
@@ -167,22 +143,16 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("customization", value);
     }
 
-    public bool DiscEncryption
-    {
-        get => GetFeature("discencryption");
-        set => SetFeature("discencryption", value);
-    }
-
-    public bool PrivacyRoom
-    {
-        get => GetFeature("privacyroom");
-        set => SetFeature("privacyroom", value);
-    }
-
     public bool EnableMailServer
     {
         get => GetFeature("mailserver");
         set => SetFeature("mailserver", value);
+    }
+
+    public bool Custom
+    {
+        get => GetFeature("custom");
+        set => SetFeature("custom", value);
     }
 
     public int CountAdmin
@@ -235,34 +205,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
     {
         get => GetFeature("contentsearch");
         set => SetFeature("contentsearch", value);
-    }
-
-
-    public int CountPortals
-    {
-        get
-        {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var portals = features.FirstOrDefault(f => f.StartsWith("portals:"));
-            if (portals == null || !int.TryParse(portals.Replace("portals:", ""), out var countPortals) || countPortals <= 0)
-            {
-                countPortals = 0;
-            }
-
-            return countPortals;
-        }
-        set
-        {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var portals = features.FirstOrDefault(f => f.StartsWith("portals:"));
-            features.Remove(portals);
-            if (value > 0)
-            {
-                features.Add("portals:" + value);
-            }
-
-            Features = string.Join(",", features.ToArray());
-        }
     }
 
     public bool ThirdParty

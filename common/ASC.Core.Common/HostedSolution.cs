@@ -242,7 +242,7 @@ public class HostedSolution
         var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
         var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, user.Id);
 
-        return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index);
+        return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index, 0);
     }
 
     public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true)

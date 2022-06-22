@@ -1,6 +1,7 @@
-import styled from "styled-components";
-
+import styled, { css } from "styled-components";
+import Base from "../themes/base";
 import { tablet } from "../utils/device";
+import { isMobileOnly } from "react-device-detect";
 
 export const StyledSubmenu = styled.div`
   display: flex;
@@ -16,14 +17,36 @@ export const StyledSubmenu = styled.div`
     display: inline-block;
     position: absolute;
   }
+
+  .sticky {
+    position: sticky;
+    top: 0;
+    background: ${(props) => props.theme.submenu.backgroundColor};
+    z-index: 1;
+  }
+
+  ${isMobileOnly &&
+  css`
+    .sticky {
+      top: 52px;
+    }
+  `}
+
+  .sticky-indent {
+    height: 15px;
+  }
 `;
+
+StyledSubmenu.defaultProps = { theme: Base };
 
 export const StyledSubmenuBottomLine = styled.div`
   height: 1px;
   width: 100%;
-  margin: -1px 0 15px 0;
+  margin-top: -1px;
   background: ${(props) => props.theme.submenu.lineColor};
 `;
+
+StyledSubmenuBottomLine.defaultProps = { theme: Base };
 
 export const StyledSubmenuContentWrapper = styled.div`
   width: 100%;
@@ -59,7 +82,14 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
 export const StyledSubmenuItemText = styled.div`
   width: 100%;
   display: flex;
+
+  .item-text {
+    color: ${(props) =>
+      props.isActive ? props.theme.submenu.textColor : "#657077"};
+  }
 `;
+
+StyledSubmenuItemText.defaultProps = { theme: Base };
 
 export const StyledSubmenuItemLabel = styled.div`
   z-index: 1;
@@ -68,5 +98,8 @@ export const StyledSubmenuItemLabel = styled.div`
   height: 4px;
   bottom: 0px;
   border-radius: 4px 4px 0 0;
-  background-color: ${(props) => props.color};
+  background-color: ${(props) =>
+    props.isActive ? props.theme.submenu.bottomLineColor : "none"};
 `;
+
+StyledSubmenuItemLabel.defaultProps = { theme: Base };

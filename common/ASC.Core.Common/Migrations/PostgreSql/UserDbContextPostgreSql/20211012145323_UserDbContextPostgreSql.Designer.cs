@@ -495,7 +495,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|ea942538e68e49079394035336ee0ba8",
-                            AceType = 0
+                            AceType = AceType.Deny
                         },
                         new
                         {
@@ -535,7 +535,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|28b10049dd204f54b986873bc14ccfc7",
-                            AceType = 0
+                            AceType = AceType.Deny
                         },
                         new
                         {
@@ -543,7 +543,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|3cfd481b46f24a4ab55cb8c0c9def02c",
-                            AceType = 0
+                            AceType = AceType.Deny
                         },
                         new
                         {
@@ -551,7 +551,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6a598c7491ae437da5f4ad339bd11bb2",
-                            AceType = 0
+                            AceType = AceType.Deny
                         },
                         new
                         {
@@ -559,7 +559,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca",
-                            AceType = 0
+                            AceType = AceType.Deny
                         },
                         new
                         {
@@ -567,7 +567,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234",
-                            AceType = 0
+                            AceType = AceType.Deny
                         },
                         new
                         {
@@ -575,6 +575,14 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|46cfa73af32046cf8d5bcd82e1d67f26",
+                            AceType = 0
+                        },
+                        new
+                        {
+                            Tenant = -1,
+                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
+                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|37620ae5c40b45ce855a39dd7d76a1fa",
                             AceType = 0
                         });
                 });
@@ -1425,12 +1433,6 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<string>("PwdHashSha512")
-                        .HasColumnType("varchar(512)")
-                        .HasColumnName("pwdhashsha512")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
                     b.Property<int>("Tenant")
                         .HasColumnType("int")
                         .HasColumnName("tenant");
@@ -1452,7 +1454,6 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
                             LastModified = new DateTime(2021, 10, 12, 14, 53, 21, 367, DateTimeKind.Utc).AddTicks(6524),
                             PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                            PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
                             Tenant = 1
                         });
                 });
