@@ -9,7 +9,7 @@ import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import ResetConfirmationModal from "./sub-components/ResetConfirmationModal";
 
 const SubmitResetButtons = () => {
-  const { t } = useTranslation(["SingleSignOn", "Common"]);
+  const { t } = useTranslation(["SingleSignOn", "Settings", "Common"]);
 
   return (
     <Box alignItems="center" displayProp="flex" flexDirection="row">
@@ -22,7 +22,7 @@ const SubmitResetButtons = () => {
         tabIndex={23}
       />
       <Button
-        label={t("ResetSettings")}
+        label={t("Settings:RestoreDefaultButton")}
         onClick={
           FormStore.isSsoEnabled
             ? FormStore.openResetModal
