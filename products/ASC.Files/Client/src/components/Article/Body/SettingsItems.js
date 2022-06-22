@@ -9,7 +9,9 @@ import { AppServerConfig } from "@appserver/common/constants";
 import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "@appserver/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
-const iconUrl = "/static/images/settings.react.svg";
+
+const iconUrl = "/static/images/catalog.settings.react.svg";
+
 const PureSettingsItems = ({
   match,
   expandedSetting,
