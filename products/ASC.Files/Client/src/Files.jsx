@@ -46,7 +46,7 @@ const FORM_GALLERY_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/form-gallery/:folderId"
 );
-const VIRTUAL_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/virtual-rooms");
+const ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/rooms");
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -59,6 +59,7 @@ window.AppServer.files = {
   PRIVATE_ROOMS_URL,
   FILTER_URL,
   MEDIA_VIEW_URL,
+  ROOMS_URL,
 };
 
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -95,7 +96,7 @@ const FilesSection = React.memo(() => {
       <PrivateRoute path={FILTER_URL} component={Home} />
       <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
       <PrivateRoute path={FORM_GALLERY_URL} component={FormGallery} />
-      <PrivateRoute path={VIRTUAL_ROOMS_URL} component={VirtualRooms} />
+      <PrivateRoute path={ROOMS_URL} component={VirtualRooms} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
