@@ -523,6 +523,15 @@ export function generateCerts() {
   return request(options);
 }
 
+export function getMetadata() {
+  const options = {
+    method: "get",
+    url: "/sso/metadata",
+  };
+
+  return request(options);
+}
+
 export function getOforms(url) {
   return axios.get(url);
 }
