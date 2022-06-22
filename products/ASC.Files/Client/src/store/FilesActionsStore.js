@@ -331,7 +331,7 @@ class FilesActionStore {
     }
   };
 
-  downloadFiles = async (fileConvertIds, folderIds, label) => {
+  downloadFiles = async (fileConvertIds, folderIds, translations) => {
     const {
       clearActiveOperations,
       secondaryProgressDataStore,
@@ -342,6 +342,7 @@ class FilesActionStore {
     } = secondaryProgressDataStore;
 
     const { addActiveItems } = this.filesStore;
+    const { label } = translations;
 
     setSecondaryProgressBarData({
       icon: "file",
@@ -379,6 +380,7 @@ class FilesActionStore {
         }
 
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        toastr.error(translations.error, null, 0, true);
       });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);

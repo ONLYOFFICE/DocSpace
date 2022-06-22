@@ -93,7 +93,10 @@ class DownloadDialogComponent extends React.Component {
       this.onClose();
     } else if (fileConvertIds.length || folderIds.length) {
       this.onClose();
-      downloadFiles(fileConvertIds, folderIds, t("Translations:ArchivingData"));
+      downloadFiles(fileConvertIds, folderIds, {
+        label: t("Translations:ArchivingData"),
+        error: t("Common:Error404Text"),
+      });
     }
   };
 
@@ -126,6 +129,14 @@ class DownloadDialogComponent extends React.Component {
       const newState = { ...prevState };
       newState[type].files = this.getNewArrayFiles(fileId, files, format);
       newState[type].format = !fileId ? format : this.props.t("CustomFormat");
+
+      const index = newState[type].files.findIndex(
+        (f) => f.format && f.format !== this.props.t("OriginalFormat")
+      );
+
+      if (index === -1) {
+        newState[type].format = this.props.t("OriginalFormat");
+      }
 
       return { ...prevState, ...newState };
     });
@@ -230,20 +241,12 @@ class DownloadDialogComponent extends React.Component {
         other.filter((f) => f.checked).length <=
       1;
 
-    const showHeader =
-      documents.length +
-        spreadsheets.length +
-        presentations.length +
-        other.length >
-      1;
-
     const downloadContentProps = {
       t,
       extsConvertible,
       onSelectFormat: this.onSelectFormat,
       onRowSelect: this.onRowSelect,
       getItemIcon: this.getItemIcon,
-      showHeader,
     };
 
     return (

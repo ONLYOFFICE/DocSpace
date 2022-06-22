@@ -166,5 +166,6 @@
   "View": "Afficher",
   "ViewWeb": "Voir la version web",
   "Warning": "Attention",
-  "Hotkeys": "Raccourcis clavier"
+  "Hotkeys": "Raccourcis clavier",
+  "Error404Text": "Désolé, la ressource n'a pu être trouvée."
 }

@@ -166,5 +166,6 @@
   "View": "Zobrazit",
   "ViewWeb": "Zobrazit webovou verzi",
   "Warning": "Varování",
-  "Hotkeys": "Klávesové zkratky"
+  "Hotkeys": "Klávesové zkratky",
+  "Error404Text": "Omlouváme se, zdroj nelze najít."
 }

@@ -166,5 +166,6 @@
   "View": "Näkymä",
   "ViewWeb": "Näytä verkkoversio",
   "Warning": "Varoitus",
-  "Hotkeys": "Pikanäppäimet"
+  "Hotkeys": "Pikanäppäimet",
+  "Error404Text": "Valitettavasti resurssia ei löydy."
 }
