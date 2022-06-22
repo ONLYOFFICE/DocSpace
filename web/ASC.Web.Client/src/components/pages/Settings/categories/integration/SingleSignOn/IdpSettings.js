@@ -37,7 +37,11 @@ const IdpSettings = () => {
 
       <SimpleFormField
         labelText={t("SignOnEndpointUrl")}
-        name="ssoUrl"
+        name={
+          FormStore.ssoBinding.includes("POST")
+            ? "ssoUrlPost"
+            : "ssoUrlRedirect"
+        }
         placeholder="https://www.test.com/saml/login"
         tabIndex={7}
         tooltipContent={t("SignOnEndpointUrlTooltip")}
@@ -60,7 +64,11 @@ const IdpSettings = () => {
 
       <SimpleFormField
         labelText={t("LogoutEndpointUrl")}
-        name="sloUrl"
+        name={
+          FormStore.sloBinding.includes("POST")
+            ? "sloUrlPost"
+            : "sloUrlRedirect"
+        }
         placeholder="https://www.test.com/saml/logout"
         tabIndex={9}
         tooltipContent={t("LogoutEndpointUrlTooltip")}

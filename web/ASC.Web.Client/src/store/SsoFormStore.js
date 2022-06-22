@@ -25,9 +25,11 @@ class SsoFormStore {
 
   // idpSettings
   entityId = "";
-  ssoUrl = "";
+  ssoUrlPost = "";
+  ssoUrlRedirect = "";
   ssoBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
-  sloUrl = "";
+  sloUrlPost = "";
+  sloUrlRedirect = "";
   sloBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
   nameIdFormat = "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
 
@@ -221,7 +223,7 @@ class SsoFormStore {
 
     try {
       const response = await loadXmlMetadata(data);
-      this.setFieldsFromObject(response);
+      this.setFieldsFromMetaData(response.meta);
     } catch (err) {
       console.log(err);
     }
@@ -261,14 +263,23 @@ class SsoFormStore {
   };
 
   onSubmit = async () => {
+    const ssoUrl =
+      this.ssoBinding === "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+        ? this.ssoUrlPost
+        : this.ssoUrlRedirect;
+    const sloUrl =
+      this.sloBinding === "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+        ? this.sloUrlPost
+        : this.sloUrlRedirect;
+
     const data = {
       enableSso: true,
       spLoginLabel: this.spLoginLabel,
       idpSettings: {
         entityId: this.entityId,
-        ssoUrl: this.ssoUrl,
+        ssoUrl: ssoUrl,
         ssoBinding: this.ssoBinding,
-        sloUrl: this.sloUrl,
+        sloUrl: sloUrl,
         sloBinding: this.sloBinding,
         nameIdFormat: this.nameIdFormat,
       },
@@ -344,6 +355,44 @@ class SsoFormStore {
           }
         }
       }
+    }
+  };
+
+  setFieldsFromMetaData = (meta) => {
+    console.log(meta);
+    if (meta.entityID) {
+      this.entityId = meta.entityID;
+    }
+
+    if (meta.singleSignOnService) {
+      this.ssoUrlPost =
+        meta.singleSignOnService[
+          "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+        ];
+      this.ssoUrlRedirect =
+        meta.singleSignOnService[
+          "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+        ];
+    }
+
+    if (meta.singleLogoutService) {
+      if (
+        meta.singleLogoutService.binding ===
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+      ) {
+        this.sloUrlRedirect = meta.singleLogoutService.location;
+      }
+
+      if (
+        meta.singleLogoutService.binding ===
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      ) {
+        this.sloUrlPost = meta.singleLogoutService.location;
+      }
+    }
+
+    if (meta.nameIDFormat) {
+      this.nameIdFormat = meta.nameIDFormat;
     }
   };
 
