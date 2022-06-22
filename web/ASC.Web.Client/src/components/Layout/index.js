@@ -109,7 +109,7 @@ const Layout = (props) => {
 
       if (isMobileOnly && isIOS && isChrome) {
         if (window.innerHeight < window.innerWidth && isPortrait) {
-          height = window.screen.availWidth - correctorMobileChrome;
+          height = window.screen.availWidth - correctorMobileChrome + "px";
         }
       }
 
