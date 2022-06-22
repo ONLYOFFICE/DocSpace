@@ -674,7 +674,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
+                var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
 
                 var tmpFiles = await FileSecurity.FilterReadAsync(files);
                 files = tmpFiles.ToList();
