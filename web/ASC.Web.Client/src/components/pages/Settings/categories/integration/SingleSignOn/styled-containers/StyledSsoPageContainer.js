@@ -12,7 +12,7 @@ const StyledSsoPage = styled.div`
 
   .toggle {
     position: static;
-    margin-top: 3px;
+    margin-top: 2px;
   }
 
   .tooltip-button,
