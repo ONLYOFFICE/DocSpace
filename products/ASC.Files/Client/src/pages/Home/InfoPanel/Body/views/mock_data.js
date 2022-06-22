@@ -31,6 +31,7 @@ const people = [
     id: "2af62a34-b6c8-11ec-b1d9-b42e99bd46a3",
     displayName: "Мушка Никита",
     profileUrl: "http://localhost:8092/products/people/view/administrator",
+    role: "Owner",
   },
   {
     email: "yoshiko05@rohan.biz",
@@ -39,6 +40,7 @@ const people = [
     id: "1231234",
     displayName: "Rebecca Holt",
     profileUrl: "asdasd",
+    role: "Room manager",
   },
   {
     email: "yoshiko05@rohan.biz",
@@ -48,6 +50,7 @@ const people = [
     id: "345970",
     displayName: "Angela Garcia",
     profileUrl: "",
+    role: "Viewer",
   },
   {
     email: "kk@mail.ru",
@@ -57,6 +60,7 @@ const people = [
     displayName:
       "Some random guy with a really long name, like i mean some dumb long one",
     profileUrl: "http://localhost:8092/products/people/view/kk",
+    role: "Viewer",
   },
   {
     email: "ycummerata@yahoo.com",
@@ -65,6 +69,7 @@ const people = [
     id: "389457",
     displayName: "",
     profileUrl: "",
+    role: "Viewer",
   },
 ];
 

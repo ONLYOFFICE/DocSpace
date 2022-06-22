@@ -1,5 +1,7 @@
 import Avatar from "@appserver/components/avatar";
 import ContextMenuButton from "@appserver/components/context-menu-button";
+import DropDownItem from "@appserver/components/drop-down-item";
+import GroupButton from "@appserver/components/group-button";
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
 import React from "react";
@@ -60,6 +62,31 @@ const Members = ({ t, selfId }) => {
                 </span>
               )}
             </div>
+            {/* <div
+              style={{
+                height: "200px",
+                position: "relative",
+              }}
+            >
+              <GroupButton
+                isDropdown
+                label={user.role}
+                style={{
+                  left: 0,
+                  top: 0,
+                }}
+              >
+                <DropDownItem label="Button 1" onClick={() => {}} />
+                <DropDownItem
+                  label="Button 2"
+                  onClick={function noRefCheck() {}}
+                />
+                <DropDownItem
+                  label="Button 3"
+                  onClick={function noRefCheck() {}}
+                />
+              </GroupButton>
+            </div> */}
           </StyledUser>
         ))}
       </StyledUserList>
