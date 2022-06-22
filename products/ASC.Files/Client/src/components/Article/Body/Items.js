@@ -84,6 +84,8 @@ const Item = ({
     setIsDragActive(false);
   }, []);
 
+  console.log(item);
+
   return (
     <StyledDragAndDrop
       key={item.id}
@@ -97,6 +99,7 @@ const Item = ({
       <CatalogItem
         key={item.id}
         id={item.id}
+        type={item.rootFolderType}
         className={`tree-drag ${item.folderClassName}`}
         icon={getFolderIcon(item)}
         showText={showText}
