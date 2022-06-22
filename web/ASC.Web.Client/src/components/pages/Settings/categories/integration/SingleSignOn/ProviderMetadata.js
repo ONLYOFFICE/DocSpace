@@ -6,6 +6,7 @@ import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 
 import MetadataUrlField from "./sub-components/MetadataUrlField";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 const ProviderMetadata = () => {
   const { t } = useTranslation("SingleSignOn");
@@ -40,6 +41,7 @@ const ProviderMetadata = () => {
           primary
           size="small"
           tabIndex={25}
+          onClick={FormStore.downloadMetadata}
         />
       </Box>
     </>

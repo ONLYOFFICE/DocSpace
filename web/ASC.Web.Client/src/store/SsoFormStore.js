@@ -7,6 +7,7 @@ import {
   submitSsoForm,
   uploadXmlMetadata,
   validateCerts,
+  getMetadata,
 } from "@appserver/common/api/settings";
 import toastr from "../helpers/toastr";
 
@@ -475,6 +476,10 @@ class SsoFormStore {
   validate = (string) => {
     if (string.trim().length === 0) throw new Error("EmptyFieldErrorMessage");
     else return true;
+  };
+
+  downloadMetadata = async () => {
+    return await getMetadata();
   };
 }
 
