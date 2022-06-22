@@ -380,7 +380,7 @@ class FilesActionStore {
         }
 
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        toastr.error(translations.error, null, 0, true);
+        !item.url && toastr.error(translations.error, null, 0, true);
       });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);
