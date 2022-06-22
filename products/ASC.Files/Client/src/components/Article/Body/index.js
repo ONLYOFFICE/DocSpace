@@ -30,6 +30,7 @@ const StyledBlock = styled.div`
 const ArticleBodyContent = (props) => {
   const {
     personal,
+    docspace,
     firstLoad,
     showText,
     isDesktopClient,
@@ -100,7 +101,7 @@ const ArticleBodyContent = (props) => {
         showText={showText}
       />
       {!personal && !firstLoad && <SettingsItems />}
-      {!isDesktopClient && showText && (
+      {!isDesktopClient && showText && !docspace && (
         <StyledBlock showText={showText}>
           {enableThirdParty && !isVisitor && <ThirdPartyList />}
           <DownloadAppList theme={theme} />
@@ -140,7 +141,10 @@ export default inject(
       articleOpen,
 
       toggleArticleOpen,
+
       personal,
+      docspace,
+
       isDesktopClient,
       FirebaseHelper,
       theme,
@@ -160,7 +164,9 @@ export default inject(
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
       homepage: config.homepage,
+
       personal,
+      docspace,
 
       isArticleLoading,
       setIsLoading,
