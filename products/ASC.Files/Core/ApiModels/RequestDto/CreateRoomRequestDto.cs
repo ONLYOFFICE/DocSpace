@@ -39,4 +39,5 @@ public class CreateRoomRequestDto
 {
     public string Title { get; set; }
     public RoomType RoomType { get; set; }
+    public bool Private { get; set; }
 }
