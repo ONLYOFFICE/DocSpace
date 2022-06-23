@@ -60,6 +60,18 @@ export const FileType = Object.freeze({
   Document: 7,
 });
 /**
+ * Enum for file type.
+ * @readonly
+ */
+export const RoomsType = Object.freeze({
+  FillingFormsRoom: 1,
+  EditingRoom: 2,
+  ReviewRoom: 3,
+  ReadOnlyRoom: 4,
+  CustomRoom: 5,
+});
+
+/**
  * Enum for file action.
  * @readonly
  */
