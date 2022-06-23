@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Helpers;
 using ASC.Web.Files.ThirdPartyApp;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
@@ -40,8 +41,9 @@ public class EditorControllerInternal : EditorController<int>
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
         EntryManager entryManager,
-        IHttpContextAccessor httpContextAccessor)
-        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IDaoFactory daoFactory)
+        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, daoFactory)
     {
     }
 }
@@ -60,8 +62,9 @@ public class EditorControllerThirdparty : EditorController<string>
         EntryManager entryManager,
         IHttpContextAccessor httpContextAccessor,
         ThirdPartySelector thirdPartySelector,
-        FilesControllerHelper<string> filesControllerHelper)
-        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor)
+        FilesControllerHelper<string> filesControllerHelper,
+        IDaoFactory daoFactory)
+        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, daoFactory)
     {
         _thirdPartySelector = thirdPartySelector;
         _filesControllerHelper = filesControllerHelper;
@@ -83,7 +86,7 @@ public class EditorControllerThirdparty : EditorController<string>
         configuration.EditorConfig.Customization.GobackUrl = string.Empty;
         configuration.EditorType = EditorType.External;
 
-        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))
+        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager) || docParams.LocatedInPrivateRoom)
         {
             var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
             if (keyPair != null)
@@ -110,6 +113,7 @@ public class EditorControllerThirdparty : EditorController<string>
 public abstract class EditorController<T> : ApiControllerBase
 {
     protected readonly FileStorageService<T> _fileStorageService;
+    protected readonly IDaoFactory _daoFactory;
     protected readonly FileDtoHelper _fileDtoHelper;
     protected readonly DocumentServiceHelper _documentServiceHelper;
     protected readonly EncryptionKeyPairDtoHelper _encryptionKeyPairDtoHelper;
@@ -124,7 +128,8 @@ public abstract class EditorController<T> : ApiControllerBase
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
         EntryManager entryManager,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IDaoFactory daoFactory)
     {
         _fileStorageService = fileStorageService;
         _fileDtoHelper = fileDtoHelper;
@@ -133,6 +138,7 @@ public abstract class EditorController<T> : ApiControllerBase
         _settingsManager = settingsManager;
         _entryManager = entryManager;
         _httpContextAccessor = httpContextAccessor;
+        _daoFactory = daoFactory;
     }
 
     /// <summary>
@@ -209,7 +215,7 @@ public abstract class EditorController<T> : ApiControllerBase
         var file = docParams.File;
         configuration.EditorType = EditorType.External;
 
-        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))
+        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager) || docParams.LocatedInPrivateRoom)
         {
             var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
             if (keyPair != null)
