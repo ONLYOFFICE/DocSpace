@@ -19,6 +19,8 @@ import { showLoader, hideLoader } from "@appserver/common/utils";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import { withTranslation } from "react-i18next";
+import { FolderType } from "@appserver/common/constants";
+import RoomsFilter from "@appserver/common/api/rooms/filter";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
@@ -45,11 +47,12 @@ const ArticleBodyContent = (props) => {
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  const onClick = React.useCallback((data) => {
+  const onClick = React.useCallback((data, type) => {
     const {
       toggleArticleOpen,
       setIsLoading,
       fetchFiles,
+      fetchRooms,
       homepage,
       history,
     } = props;
@@ -62,32 +65,64 @@ const ArticleBodyContent = (props) => {
       showLoader();
     }
 
-    fetchFiles(data, null, true, false)
-      .then(() => {
-        if (!filesSection) {
-          const filter = FilesFilter.getDefault();
+    if (type === FolderType.Rooms || type === FolderType.Archive) {
+      fetchRooms(data, null, true, false)
+        .then(() => {
+          if (filesSection) {
+            const filter = RoomsFilter.getDefault();
 
-          filter.folder = data;
+            const urlFilter = filter.toUrlParams();
 
-          const urlFilter = filter.toUrlParams();
+            history.push(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                `/rooms?${urlFilter}`
+              )
+            );
+          }
+        })
+        .finally(() => {
+          if (isMobileOnly || isMobile()) {
+            toggleArticleOpen();
+          }
+          if (filesSection) {
+            setIsLoading(false);
+          } else {
+            hideLoader();
+          }
+        });
+    } else {
+      fetchFiles(data, null, true, false)
+        .then(() => {
+          if (!filesSection) {
+            const filter = FilesFilter.getDefault();
 
-          history.push(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              `/filter?${urlFilter}`
-            )
-          );
-        }
-      })
-      .catch((err) => toastr.error(err))
-      .finally(() => {
-        if (isMobileOnly || isMobile()) {
-          toggleArticleOpen();
-        }
-        if (filesSection) setIsLoading(false);
-        else hideLoader();
-      });
+            filter.folder = data;
+
+            const urlFilter = filter.toUrlParams();
+
+            history.push(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                `/filter?${urlFilter}`
+              )
+            );
+          }
+        })
+        .catch((err) => toastr.error(err))
+        .finally(() => {
+          if (isMobileOnly || isMobile()) {
+            toggleArticleOpen();
+          }
+          if (filesSection) {
+            setIsLoading(false);
+          } else {
+            hideLoader();
+          }
+        });
+    }
   }, []);
 
   const onShowNewFilesPanel = React.useCallback((folderId) => {
@@ -121,6 +156,7 @@ export default inject(
   ({
     auth,
     filesStore,
+    roomsStore,
     treeFoldersStore,
     selectedFolderStore,
     dialogsStore,
@@ -134,6 +170,9 @@ export default inject(
       isLoading,
       isLoaded,
     } = filesStore;
+
+    const { fetchRooms } = roomsStore;
+
     const { treeFolders, setTreeFolders } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
@@ -166,6 +205,8 @@ export default inject(
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
       homepage: config.homepage,
+
+      fetchRooms,
 
       personal,
       docspace,
