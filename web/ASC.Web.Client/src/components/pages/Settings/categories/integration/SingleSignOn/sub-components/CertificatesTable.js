@@ -52,7 +52,7 @@ const CertificatesTable = ({ prefix }) => {
         <div className="column">
           <div className="column-row">
             <Text fontWeight={600} fontSize="14px" noSelect>
-              Self-Signed,{" "}
+              {certificate.domainName},{" "}
             </Text>
             <Text color="#a3a9ae" noSelect>
               {getFullDate(certificate.startDate)} -{" "}
@@ -73,7 +73,9 @@ const CertificatesTable = ({ prefix }) => {
   return (
     <StyledCertificatesTable>
       <div className="body">
-        {FormStore[`${prefix}_certificates`].map(renderRow)}
+        {FormStore[`${prefix}_certificates`].map((cert, index) =>
+          renderRow(cert[0], index)
+        )}
       </div>
     </StyledCertificatesTable>
   );
