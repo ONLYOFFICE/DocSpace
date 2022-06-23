@@ -30,7 +30,6 @@ public class WhitelabelController : BaseSettingsController
 {
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
-    private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
@@ -43,7 +42,6 @@ public class WhitelabelController : BaseSettingsController
 
     public WhitelabelController(
         ApiContext apiContext,
-        TenantManager tenantManager,
         TenantExtra tenantExtra,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
@@ -57,7 +55,6 @@ public class WhitelabelController : BaseSettingsController
         StorageFactory storageFactory,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
