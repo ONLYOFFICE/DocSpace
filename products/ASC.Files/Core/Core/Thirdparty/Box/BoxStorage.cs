@@ -271,8 +271,8 @@ internal class BoxStorage
         return Math.Min(max, MaxChunkedUploadFileSize);
     }
 
-    public Task<Stream> GetThumbnailAsync(string fileId)
+    public Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
     {
-        return _boxClient.FilesManager.GetThumbnailAsync(fileId, 320, 320, 320, 320, extension: "jpg");
+        return _boxClient.FilesManager.GetThumbnailAsync(fileId, width, height, extension: "jpg");
     }
 }

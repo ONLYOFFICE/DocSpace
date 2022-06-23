@@ -77,11 +77,6 @@ internal abstract class ThirdPartyProviderDao
         return Task.CompletedTask;
     }
 
-    public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
-    {
-        return Task.FromResult<Stream>(null);
-    }
-
     public Task<EntryProperties> GetProperties(string fileId)
     {
         return Task.FromResult<EntryProperties>(null);

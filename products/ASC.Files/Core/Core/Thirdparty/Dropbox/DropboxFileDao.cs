@@ -556,7 +556,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
 
     public Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
     {
-        return ProviderInfo.GetThumbnailsAsync(_dropboxDaoSelector.ConvertId(fileId));
+        return ProviderInfo.GetThumbnailsAsync(_dropboxDaoSelector.ConvertId(fileId), width, height);
     }
 
     #region chunking

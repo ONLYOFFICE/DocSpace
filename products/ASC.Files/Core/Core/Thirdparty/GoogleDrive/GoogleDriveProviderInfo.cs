@@ -159,10 +159,10 @@ internal class GoogleDriveProviderInfo : IProviderInfo
         return _googleDriveProviderInfoHelper.CacheResetChildsAsync(ID, parentDriveId, childFolder);
     }
 
-    internal async Task<Stream> GetThumbnail(string fileId)
+    internal async Task<Stream> GetThumbnail(string fileId, int width, int height)
     {
         var storage = await StorageAsync;
-        return await storage.GetThumbnail(fileId);
+        return await storage.GetThumbnail(fileId, width, height);
     }
 }
 

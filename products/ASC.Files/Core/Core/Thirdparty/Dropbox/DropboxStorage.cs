@@ -28,6 +28,7 @@ using ThumbnailSize = Dropbox.Api.Files.ThumbnailSize;
 
 namespace ASC.Files.Thirdparty.Dropbox;
 
+[Scope]
 internal class DropboxStorage : IDisposable
 {
     public bool IsOpened { get; private set; }
@@ -140,12 +141,12 @@ internal class DropboxStorage : IDisposable
         return new List<Metadata>(data.Entries);
     }
 
-    public async Task<Stream> GetThumbnailsAsync(string filePath)
+    public async Task<Stream> GetThumbnailsAsync(string filePath, int width, int height)
     {
         try
         {
             var path = new PathOrLink.Path(filePath);
-            var size = ThumbnailSize.W256h256.Instance;
+            var size = Convert(width, height);
             var arg = new ThumbnailV2Arg(path, size: size);
 
             var responce = await _dropboxClient.Files.GetThumbnailV2Async(arg);
@@ -154,6 +155,18 @@ internal class DropboxStorage : IDisposable
         catch
         {
             return null;
+        }
+    }
+
+    private ThumbnailSize Convert(int width, int height)
+    {
+        if (height > 320)
+        {
+            return ThumbnailSize.W480h320.Instance;
+        }
+        else
+        {
+            return ThumbnailSize.W256h256.Instance;
         }
     }
 

@@ -169,12 +169,19 @@ internal class GoogleDriveStorage : IDisposable
         }
     }
 
-    public async Task<Stream> GetThumbnail(string fileId)
+    public async Task<Stream> GetThumbnail(string fileId, int width, int height)
     {
-        var entry = await GetEntryAsync(fileId);
-        var httpClient = _driveService.HttpClient;
-        var response = await httpClient.GetAsync(entry.ThumbnailLink);
-        return await response.Content.ReadAsStreamAsync();
+        try
+        {
+            var url = $"https://lh3.google.com/u/0/d/{fileId}=w{width}-h{height}-p-k-nu-iv1";
+            var httpClient = _driveService.HttpClient;
+            var response = await httpClient.GetAsync(url);
+            return await response.Content.ReadAsStreamAsync();
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     public List<DriveFile> GetEntries(string folderId, bool? folders = null)

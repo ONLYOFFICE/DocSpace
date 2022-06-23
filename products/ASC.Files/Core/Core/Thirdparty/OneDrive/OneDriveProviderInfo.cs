@@ -124,10 +124,10 @@ internal class OneDriveProviderInfo : IProviderInfo
         return _oneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId);
     }
 
-    internal async Task<Stream> GetThumbnailAsync(string onedriveId)
+    internal async Task<Stream> GetThumbnailAsync(string onedriveId, int width, int height)
     {
         var storage = await StorageAsync;
-        return await _oneDriveProviderInfoHelper.GetThumbnailAsync(storage, onedriveId);
+        return await _oneDriveProviderInfoHelper.GetThumbnailAsync(storage, onedriveId, width, height);
     }
 }
 
@@ -291,9 +291,9 @@ public class OneDriveProviderInfoHelper
         }
     }
 
-    internal async Task<Stream> GetThumbnailAsync(OneDriveStorage storage, string onedriveId)
+    internal async Task<Stream> GetThumbnailAsync(OneDriveStorage storage, string onedriveId, int width, int height)
     {
-        return await storage.GetThumbnailAsync(onedriveId).ConfigureAwait(false);
+        return await storage.GetThumbnailAsync(onedriveId, width, height).ConfigureAwait(false);
     }
 }
 public static class OneDriveProviderInfoExtention

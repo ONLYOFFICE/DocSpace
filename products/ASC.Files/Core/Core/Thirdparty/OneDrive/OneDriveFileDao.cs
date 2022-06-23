@@ -569,7 +569,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     public Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
     {
         var oneDriveId = MakeOneDriveId(_oneDriveDaoSelector.ConvertId(fileId));
-        return ProviderInfo.GetThumbnailAsync(oneDriveId);
+        return ProviderInfo.GetThumbnailAsync(oneDriveId, width, height);
     }
 
     #region chunking
