@@ -94,6 +94,7 @@ const roomsStore = new RoomsStore(
   store.auth.settingsStore,
   store.auth.userStore,
   filesStore,
+  selectedFolderStore,
   treeFoldersStore,
   settingsStore
 );
