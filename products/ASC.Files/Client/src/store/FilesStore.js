@@ -1737,11 +1737,13 @@ class FilesStore {
       other: [],
     };
 
-    const selection = this.selection.length
+    let selection = this.selection.length
       ? this.selection
       : this.bufferSelection
       ? [this.bufferSelection]
       : [];
+
+    selection = JSON.parse(JSON.stringify(selection));
 
     for (let item of selection) {
       item.checked = true;

@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Preparing file for encryption",
   "EncryptionKeysReload": "Encryption keys must be re-entered",
   "Error": "Error",
+  "ErrorInternalServer": "Internal server error. Try again later.",
   "FillFormButton": "Fill in the form",
   "FullAccess": "Full access",
   "Guest": "Guest",
