@@ -4,7 +4,6 @@ import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
-import SystemThemeDetector from "@appserver/common/components/SystemThemeDetector";
 import PublicRoute from "@appserver/common/components/PublicRoute";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Layout from "./components/Layout";
