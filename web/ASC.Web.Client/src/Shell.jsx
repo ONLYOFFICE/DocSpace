@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
+import SystemThemeDetector from "@appserver/common/components/SystemThemeDetector";
 import PublicRoute from "@appserver/common/components/PublicRoute";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Layout from "./components/Layout";
@@ -24,6 +25,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
+import { useThemeDetector } from "./helpers/utils";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -193,6 +195,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     setCheckedMaintenance,
     socketHelper,
     setPreparationPortalDialogVisible,
+    isBase,
     setTheme,
     setMaintenanceExist,
     roomsMode,
@@ -507,54 +510,56 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     );
   }
 
+  const currentTheme = isBase ? "Base" : "Dark";
+  const systemTheme = useThemeDetector();
+  useEffect(() => {
+    if (userTheme === "System" && currentTheme !== systemTheme)
+      setTheme(systemTheme);
+  }, [systemTheme]);
+
   return (
     <Layout>
       <Router history={history}>
-        <>
-          <ReactSmartBanner t={t} ready={ready} />
-          {isEditor ? <></> : <NavMenu />}
-          <ScrollToTop />
-          <Main isDesktop={isDesktop}>
-            <Switch>
-              <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
-              <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
-              <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
-              {loginRoutes}
-              {roomsRoutes}
-              {!IS_PERSONAL && (
-                <Route path={CONFIRM_URL} component={ConfirmRoute} />
-              )}
-              <Route path={INVALID_URL} component={InvalidRoute} />
+        <ReactSmartBanner t={t} ready={ready} />
+        {isEditor ? <></> : <NavMenu />}
+        <ScrollToTop />
+        <Main isDesktop={isDesktop}>
+          <Switch>
+            <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
+            <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
+            <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
+            {loginRoutes}
+            {roomsRoutes}
+            {!IS_PERSONAL && (
+              <Route path={CONFIRM_URL} component={ConfirmRoute} />
+            )}
+            <Route path={INVALID_URL} component={InvalidRoute} />
+            <PrivateRoute path={COMING_SOON_URLS} component={ComingSoonRoute} />
+            <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
+            {!personal && (
               <PrivateRoute
-                path={COMING_SOON_URLS}
-                component={ComingSoonRoute}
+                restricted
+                path={SETTINGS_URL}
+                component={SettingsRoute}
               />
-              <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
-              {!personal && (
-                <PrivateRoute
-                  restricted
-                  path={SETTINGS_URL}
-                  component={SettingsRoute}
-                />
-              )}
-              <PrivateRoute
-                exact
-                allowForMe
-                path={PROFILE_MY_URL}
-                component={MyProfileRoute}
-              />
-              <PrivateRoute
-                path={PREPARATION_PORTAL}
-                component={PreparationPortalRoute}
-              />
-              {dynamicRoutes}
-              <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
-              <PrivateRoute
-                component={!personal ? Error404Route : RedirectToHome}
-              />
-            </Switch>
-          </Main>
-        </>
+            )}
+            <PrivateRoute
+              exact
+              allowForMe
+              path={PROFILE_MY_URL}
+              component={MyProfileRoute}
+            />
+            <PrivateRoute
+              path={PREPARATION_PORTAL}
+              component={PreparationPortalRoute}
+            />
+            {dynamicRoutes}
+            <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
+            <PrivateRoute
+              component={!personal ? Error404Route : RedirectToHome}
+            />
+          </Switch>
+        </Main>
       </Router>
     </Layout>
   );
@@ -575,6 +580,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     socketHelper,
     setTheme,
   } = settingsStore;
+  const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
 
   return {
@@ -598,6 +604,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setMaintenanceExist,
     socketHelper,
     setPreparationPortalDialogVisible,
+    isBase,
     setTheme,
     roomsMode,
     setSnackbarExist,

@@ -1,6 +1,7 @@
 import authStore from "@appserver/common/store/AuthStore";
 import { toCommunityHostname } from "@appserver/common/utils";
 import history from "@appserver/common/history";
+import { useEffect, useState } from "react";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
@@ -76,4 +77,22 @@ export const getPasswordErrorMessage = (t, settings) => {
   } ${settings.digits ? t("Common:PasswordLimitDigits") : ""} ${
     settings.upperCase ? t("Common:PasswordLimitUpperCase") : ""
   } ${settings.specSymbols ? t("Common:PasswordLimitSpecialSymbols") : ""}`;
+};
+
+export const useThemeDetector = () => {
+  const [systemTheme, setSystemTheme] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "Dark" : "Base"
+  );
+
+  const systemThemeListener = (e) => {
+    setSystemTheme(e.matches ? "Dark" : "Base");
+  };
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addListener(systemThemeListener);
+    return () => mediaQuery.removeListener(systemThemeListener);
+  }, []);
+
+  return systemTheme;
 };
