@@ -1244,7 +1244,6 @@ class FilesActionStore {
           const newExpandedKeys = createNewExpandedKeys(pathParts);
           setExpandedKeys(newExpandedKeys);
 
-          this.setNewBadgeCount(item);
         })
         .catch((err) => {
           toastr.error(err);
