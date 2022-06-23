@@ -404,12 +404,13 @@ class FilesStore {
     this.folders = folders;
   };
 
-  updateFileStatus = (index, status, file) => {
-    if (index < 0) return;
+  getFileIndex = (id) => {
+    const index = this.files.findIndex((x) => x.id === id);
+    return index;
+  };
 
-    if (file) {
-      this.files[index] = file;
-    }
+  updateFileStatus = (index, status) => {
+    if (index < 0) return;
 
     this.files[index].fileStatus = status;
   };
