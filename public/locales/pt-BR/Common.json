@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Preparando o arquivo para a criptografia",
   "EncryptionKeysReload": "As chaves de criptografia devem ser inseridas novamente",
   "Error": "Erro",
+  "ErrorInternalServer": "Erro do servidor interno. Tente novamente depois.",
   "FillFormButton": "Preencher o formulário",
   "FullAccess": "Acesso total",
   "Guest": "Convidado",

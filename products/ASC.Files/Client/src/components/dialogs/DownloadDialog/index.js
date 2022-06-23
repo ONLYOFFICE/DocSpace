@@ -95,7 +95,7 @@ class DownloadDialogComponent extends React.Component {
       this.onClose();
       downloadFiles(fileConvertIds, folderIds, {
         label: t("Translations:ArchivingData"),
-        error: t("Common:Error404Text"),
+        error: t("Common:ErrorInternalServer"),
       });
     }
   };

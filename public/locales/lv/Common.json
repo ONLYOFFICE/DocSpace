@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Sagatavo failu šifrēšanai",
   "EncryptionKeysReload": "Šifrēšanas atslēgas jāievada atkārtoti",
   "Error": "Kļūda",
+  "ErrorInternalServer": "Iekšējā servera kļūda. Mēģiniet vēlāk vēlreiz.",
   "FillFormButton": "Aizpildiet veidlapu",
   "FullAccess": "Pilna piekļuve",
   "Guest": "Viesis",

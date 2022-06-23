@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "准备加密文件",
   "EncryptionKeysReload": "必须重新输入加密密钥",
   "Error": "错误",
+  "ErrorInternalServer": "内部服务器错误。稍后再试。",
   "FillFormButton": "\"填写表单,",
   "FullAccess": "完全访问权限",
   "Guest": "访客",
