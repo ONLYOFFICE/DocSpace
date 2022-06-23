@@ -3,12 +3,12 @@ import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import FormStore from "@appserver/studio/src/store/SsoFormStore";
-import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
 import { ContextMenuButton } from "@appserver/components";
 
 import StyledCertificatesTable from "../styled-containers/StyledCertificatesTable";
 import { addArguments } from "../../../../utils/addArguments";
+import { ReactSVG } from "react-svg";
 
 const CertificatesTable = ({ prefix }) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
@@ -48,7 +48,7 @@ const CertificatesTable = ({ prefix }) => {
 
     return (
       <div key={`certificate-${index}`} className="row">
-        <IconButton iconName="/static/images/icons/24/file.svg" />
+        <ReactSVG src="/static/images/icons/24/file.svg" />
         <div className="column">
           <div className="column-row">
             <Text fontWeight={600} fontSize="14px" noSelect>
