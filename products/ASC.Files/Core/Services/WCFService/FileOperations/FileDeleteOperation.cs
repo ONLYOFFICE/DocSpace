@@ -113,18 +113,23 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope, bool isNeedSendActions = false)
     {
         var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
-        var (fileMarker, filesMessageService) = scopeClass;
+        var (fileMarker, filesMessageService, roomLogoManager) = scopeClass;
         foreach (var folderId in folderIds)
         {
             CancellationToken.ThrowIfCancellationRequested();
 
             var folder = await FolderDao.GetFolderAsync(folderId);
+            var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
+
             T canCalculate = default;
             if (folder == null)
             {
                 Error = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
-            else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH)
+            else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH
+                && folder.FolderType != FolderType.FillingFormsRoom && folder.FolderType != FolderType.EditingRoom
+                && folder.FolderType != FolderType.ReviewRoom && folder.FolderType != FolderType.ReadOnlyRoom 
+                && folder.FolderType != FolderType.CustomRoom)
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
@@ -143,6 +148,16 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 {
                     if (ProviderDao != null)
                     {
+                        if (folder.RootFolderType == FolderType.VirtualRooms || folder.RootFolderType == FolderType.Archive)
+                        {
+                            var providerInfo = await ProviderDao.GetProviderInfoAsync(folder.ProviderId);
+
+                            if (providerInfo.FolderId != null)
+                            {
+                                await roomLogoManager.DeleteAsync(providerInfo.FolderId);
+                            }
+                        }
+
                         await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
                         if (isNeedSendActions)
                         {
@@ -165,8 +180,26 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                         if (await FolderDao.IsEmptyAsync(folder.Id))
                         {
+                            if (isRoom)
+                            {
+                                await roomLogoManager.DeleteAsync(folder.Id);
+                            }
+
                             await FolderDao.DeleteFolderAsync(folder.Id);
-                            filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+
+                            if (isRoom)
+                            {
+                                if (folder.ProviderEntry)
+                                {
+                                    await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT);
+                                }
+                                
+                                filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
+                            }
+                            else
+                            {
+                                filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                            }
 
                             ProcessedFolder(folderId);
                         }
@@ -184,9 +217,18 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             if (immediately)
                             {
                                 await FolderDao.DeleteFolderAsync(folder.Id);
+
                                 if (isNeedSendActions)
                                 {
-                                    filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                                    if (isRoom)
+                                    {
+                                        await roomLogoManager.DeleteAsync(folder.Id);
+                                        filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
+                                    }
+                                    else
+                                    {
+                                        filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                                    }
                                 }
                             }
                             else
@@ -212,7 +254,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
         var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
-        var (fileMarker, filesMessageService) = scopeClass;
+        var (fileMarker, filesMessageService, _) = scopeClass;
         foreach (var fileId in fileIds)
         {
             CancellationToken.ThrowIfCancellationRequested();
@@ -322,16 +364,20 @@ public class FileDeleteOperationScope
 {
     private readonly FileMarker _fileMarker;
     private readonly FilesMessageService _filesMessageService;
+    private readonly RoomLogoManager _roomLogoManager;
 
-    public FileDeleteOperationScope(FileMarker fileMarker, FilesMessageService filesMessageService)
+    public FileDeleteOperationScope(FileMarker fileMarker, FilesMessageService filesMessageService, RoomLogoManager roomLogoManager)
     {
         _fileMarker = fileMarker;
         _filesMessageService = filesMessageService;
+        _roomLogoManager = roomLogoManager;
+        _roomLogoManager.EnableAudit = false;
     }
 
-    public void Deconstruct(out FileMarker fileMarker, out FilesMessageService filesMessageService)
+    public void Deconstruct(out FileMarker fileMarker, out FilesMessageService filesMessageService, out RoomLogoManager roomLogoManager)
     {
         fileMarker = _fileMarker;
         filesMessageService = _filesMessageService;
+        roomLogoManager = _roomLogoManager;
     }
 }

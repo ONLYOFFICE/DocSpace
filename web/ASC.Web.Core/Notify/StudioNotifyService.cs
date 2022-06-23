@@ -227,6 +227,18 @@ public class StudioNotifyService
                     new TagValue(Tags.UserDisplayName, (user.DisplayUserName(_displayUserSettingsHelper) ?? string.Empty).Trim()));
     }
 
+    public void SendEmailRoomInvite(string email, string confirmationUrl)
+    {
+        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmRoomInvite;
+
+        _client.SendNoticeToAsync(
+            Actions.RoomInvite,
+                _studioNotifyHelper.RecipientFromEmail(email, false),
+                new[] { EMailSenderName },
+                new TagValue(Tags.InviteLink, confirmationUrl),
+                TagValues.GreenButton(greenButtonText, confirmationUrl));
+    }
+
     #endregion
 
     #region MailServer

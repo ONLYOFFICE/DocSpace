@@ -105,9 +105,9 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         return GetSecurityInfoAsync(new List<T> { }, new List<T> { folderId });
     }
 
-    public async Task<IEnumerable<FileShareDto>> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
+    public async Task<IEnumerable<FileShareDto>> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, bool invite = false)
     {
-        var fileShares = await _fileStorageService.GetSharedInfoAsync(fileIds, folderIds);
+        var fileShares = await _fileStorageService.GetSharedInfoAsync(fileIds, folderIds, invite);
 
         return fileShares.Select(_fileShareDtoHelper.Get).ToList();
     }
@@ -124,12 +124,12 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         return SetSecurityInfoAsync(new List<T> { fileId }, new List<T>(), share, notify, sharingMessage);
     }
 
-    public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoAsync(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoAsync(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage, bool invite = false)
     {
-        return SetSecurityInfoAsync(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage);
+        return SetSecurityInfoAsync(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage, invite);
     }
 
-    public async Task<IEnumerable<FileShareDto>> SetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async Task<IEnumerable<FileShareDto>> SetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage, bool invite = false)
     {
         if (share != null && share.Any())
         {
@@ -143,9 +143,9 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
                 Message = sharingMessage
             };
 
-            await _fileStorageService.SetAceObjectAsync(aceCollection, notify);
+            await _fileStorageService.SetAceObjectAsync(aceCollection, notify, invite);
         }
 
-        return await GetSecurityInfoAsync(fileIds, folderIds);
+        return await GetSecurityInfoAsync(fileIds, folderIds, invite);
     }
 }
