@@ -264,8 +264,8 @@ class SsoFormStore {
     }
   };
 
-  validateCertificate = async (action, crt, key) => {
-    const data = { action, crt, key };
+  validateCertificate = async (crts) => {
+    const data = { certs: crts };
 
     try {
       return await validateCerts(data);
@@ -383,8 +383,7 @@ class SsoFormStore {
     }
   };
 
-  setFieldsFromMetaData = (meta) => {
-    console.log(meta);
+  setFieldsFromMetaData = async (meta) => {
     if (meta.entityID) {
       this.entityId = meta.entityID;
     }
@@ -420,6 +419,42 @@ class SsoFormStore {
     if (meta.nameIDFormat) {
       this.nameIdFormat = meta.nameIDFormat;
     }
+
+    if (meta.certificate) {
+      let data = [];
+
+      if (meta.certificate.signing) {
+        if (Array.isArray(meta.certificate.signing)) {
+          meta.certificate.signing = this.getUniqueItems(
+            meta.certificate.signing
+          ).reverse();
+          meta.certificate.signing.forEach((signingCrt) => {
+            data.push({
+              crt: signingCrt.trim(),
+              key: null,
+              action: "verification",
+            });
+          });
+        } else {
+          data.push({
+            crt: meta.certificate.signing.trim(),
+            key: null,
+            action: "verification",
+          });
+        }
+      }
+
+      const newCertificate = await this.validateCertificate(data);
+      this.setIDP(newCertificate);
+    }
+  };
+
+  setIDP = (newCert) => {
+    this.idp_certificates = [...this.idp_certificates, newCert];
+  };
+
+  getUniqueItems = (array) => {
+    return array.filter((item, index, array) => array.indexOf(item) == index);
   };
 
   onEditClick = (e, certificate, prefix) => {
@@ -440,8 +475,14 @@ class SsoFormStore {
     const crt = this[`${prefix}_certificate`];
     const key = this[`${prefix}_privateKey`];
 
+    const cert = {
+      crt: crt,
+      key: key,
+      action: action,
+    };
+
     try {
-      const newCertificate = this.validateCertificate(action, crt, key);
+      const newCertificate = this.validateCertificate(cert);
       this[`${prefix}_certificates`] = [
         ...this[`${prefix}_certificates`],
         newCertificate,
