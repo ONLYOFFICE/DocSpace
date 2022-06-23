@@ -412,6 +412,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 ModifiedOn = _tenantUtil.DateTimeToUtc(folder.ModifiedOn),
                 ModifiedBy = folder.ModifiedBy,
                 FolderType = folder.FolderType,
+                Private = folder.Private,
                 TenantId = TenantID
             };
 

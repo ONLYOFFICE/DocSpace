@@ -43,6 +43,7 @@ public class DbFolder : IDbFile, IDbSearch, ISearchItem
     public int TenantId { get; set; }
     public int FoldersCount { get; set; }
     public int FilesCount { get; set; }
+    public bool Private { get; set; }
 
     [Ignore]
     public string IndexName => Tables.Folder;
@@ -118,6 +119,9 @@ public static class DbFolderExtension
                 .HasColumnType("varchar(400)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
+
+            entity.Property(e => e.Private)
+                .HasColumnType("private");
         });
     }
     public static void PgSqlAddDbFolder(this ModelBuilder modelBuilder)

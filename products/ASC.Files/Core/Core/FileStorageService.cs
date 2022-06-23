@@ -420,7 +420,7 @@ public class FileStorageService<T> //: IFileStorageService
         return InternalCreateNewFolderAsync(parentId, title, FolderType.DEFAULT);
     }
 
-    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType)
+    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool privacy)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
@@ -428,16 +428,16 @@ public class FileStorageService<T> //: IFileStorageService
 
         return roomType switch
         {
-            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId),
-            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId),
-            RoomType.EditingRoom => await CreateEditingRoom(title, parentId),
-            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId),
-            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId),
-            _ => await CreateCustomRoomAsync(title, parentId),
+            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, privacy),
+            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, privacy),
+            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, privacy),
+            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId, privacy),
+            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, privacy),
+            _ => await CreateCustomRoomAsync(title, parentId, privacy),
         };
     }
 
-    public async Task<Folder<T>> CreateThirdpartyRoomAsync(string title, RoomType roomType, T parentId)
+    public async Task<Folder<T>> CreateThirdpartyRoomAsync(string title, RoomType roomType, T parentId, bool privacy)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
         ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
@@ -450,7 +450,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (providerInfo.RootFolderType != FolderType.VirtualRooms)
         {
-            throw new InvalidOperationException("Invalid provider type");
+            throw new InvalidDataException("Invalid provider type");
         }
 
         if (providerInfo.FolderId != null)
@@ -460,12 +460,12 @@ public class FileStorageService<T> //: IFileStorageService
 
         var room = roomType switch
         {
-            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId),
-            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId),
-            RoomType.EditingRoom => await CreateEditingRoom(title, parentId),
-            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId),
-            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId),
-            _ => await CreateCustomRoomAsync(title, parentId),
+            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, privacy),
+            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, privacy),
+            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, privacy),
+            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId, privacy),
+            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, privacy),
+            _ => await CreateCustomRoomAsync(title, parentId, privacy),
         };
 
         var folderType = roomType switch
@@ -483,32 +483,32 @@ public class FileStorageService<T> //: IFileStorageService
         return room;
     }
 
-    private async Task<Folder<T>> CreateCustomRoomAsync(string title, T parentId)
+    private async Task<Folder<T>> CreateCustomRoomAsync(string title, T parentId, bool privacy)
     {
-        return await InternalCreateNewFolderAsync(parentId, title, FolderType.CustomRoom);
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.CustomRoom, privacy);
     }
 
-    private async Task<Folder<T>> CreateFillingFormsRoom(string title, T parentId)
+    private async Task<Folder<T>> CreateFillingFormsRoom(string title, T parentId, bool privacy)
     {
-        return await InternalCreateNewFolderAsync(parentId, title, FolderType.FillingFormsRoom);
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.FillingFormsRoom, privacy);
     }
 
-    private async Task<Folder<T>> CreateReviewRoom(string title, T parentId)
+    private async Task<Folder<T>> CreateReviewRoom(string title, T parentId, bool privacy)
     {
-        return await InternalCreateNewFolderAsync(parentId, title, FolderType.ReviewRoom);
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.ReviewRoom, privacy);
     }
 
-    private async Task<Folder<T>> CreateReadOnlyRoom(string title, T parentId)
+    private async Task<Folder<T>> CreateReadOnlyRoom(string title, T parentId, bool privacy)
     {
-        return await InternalCreateNewFolderAsync(parentId, title, FolderType.ReadOnlyRoom);
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.ReadOnlyRoom, privacy);
     }
 
-    private async Task<Folder<T>> CreateEditingRoom(string title, T parentId)
+    private async Task<Folder<T>> CreateEditingRoom(string title, T parentId, bool privacy)
     {
-        return await InternalCreateNewFolderAsync(parentId, title, FolderType.EditingRoom);
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.EditingRoom, privacy);
     }
 
-    public async Task<Folder<T>> InternalCreateNewFolderAsync(T parentId, string title, FolderType folderType = FolderType.DEFAULT)
+    public async Task<Folder<T>> InternalCreateNewFolderAsync(T parentId, string title, FolderType folderType = FolderType.DEFAULT, bool privacy = false)
     {
         var folderDao = GetFolderDao();
 
@@ -527,6 +527,7 @@ public class FileStorageService<T> //: IFileStorageService
             newFolder.Title = title;
             newFolder.ParentId = parent.Id;
             newFolder.FolderType = folderType;
+            newFolder.Private = privacy;
 
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
@@ -1006,7 +1007,7 @@ public class FileStorageService<T> //: IFileStorageService
                 return _documentServiceHelper.GetDocKey(fileId, -1, DateTime.MinValue);
             }
 
-            (File<string> File, Configuration<string> Configuration) fileOptions;
+            (File<string> File, Configuration<string> Configuration, bool LocatedInPrivateRoom) fileOptions;
 
             app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
@@ -1980,7 +1981,7 @@ public class FileStorageService<T> //: IFileStorageService
 
     public async Task<string> CheckFillFormDraftAsync(T fileId, int version, string doc, bool editPossible, bool view)
     {
-        var (file, _configuration) = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, editPossible, !view, true);
+        var (file, _configuration, locatedInPrivateRoom) = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, editPossible, !view, true);
         var _valideShareLink = !string.IsNullOrEmpty(_fileShareLink.Parse(doc));
 
         if (_valideShareLink)
