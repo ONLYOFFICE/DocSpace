@@ -74,7 +74,7 @@ const CertificatesTable = ({ prefix }) => {
     <StyledCertificatesTable>
       <div className="body">
         {FormStore[`${prefix}_certificates`].map((cert, index) =>
-          renderRow(cert[0], index)
+          renderRow(cert, index)
         )}
       </div>
     </StyledCertificatesTable>

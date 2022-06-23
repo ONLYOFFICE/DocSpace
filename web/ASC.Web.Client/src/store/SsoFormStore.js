@@ -447,7 +447,7 @@ class SsoFormStore {
       }
 
       const newCertificate = await this.validateCertificate(data);
-      this.idp_certificates = [...this.idp_certificates, newCertificate];
+      this.idp_certificates = [...this.idp_certificates, newCertificate[0]];
     }
   };
 
