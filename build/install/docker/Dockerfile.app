@@ -262,7 +262,7 @@ WORKDIR ${BUILD_PATH}/products/ASC.People/server/
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.People/server/ .
 
-CMD ["ASC.People.dll", "ASC.People"]
+CMD ["ASC.People.dll", "ASC.People", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.Socket.IO ##
 FROM nodeBuild AS socket
