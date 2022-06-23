@@ -42,41 +42,49 @@ class RoomsFilter {
 
     const defaultFilter = RoomsFilter.getDefault();
 
-    const filterType =
-      (urlFilter[FILTER_TYPE] && +urlFilter[FILTER_TYPE]) ||
-      defaultFilter.filterType;
-    const authorType =
-      (urlFilter[AUTHOR_TYPE] &&
-        urlFilter[AUTHOR_TYPE].includes("_") &&
-        urlFilter[AUTHOR_TYPE]) ||
-      defaultFilter.authorType;
-    const withSubfolders =
-      (urlFilter[SEARCH_TYPE] && urlFilter[SEARCH_TYPE]) ||
-      defaultFilter.withSubfolders;
-    const search = urlFilter[SEARCH] || defaultFilter.search;
-    const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
-    const viewAs = urlFilter[VIEW_AS] || defaultFilter.viewAs;
-    const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
     const page =
       (urlFilter[PAGE] && +urlFilter[PAGE] - 1) || defaultFilter.page;
+
     const pageCount =
       (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
       defaultFilter.pageCount;
-    const folder = urlFilter[FOLDER] || defaultFilter.folder;
+
+    const filterValue =
+      (urlFilter[FILTER_VALUE] && +urlFilter[FILTER_VALUE]) ||
+      defaultFilter.filterValue;
+
+    const types = (urlFilter[TYPES] && urlFilter[TYPES]) || defaultFilter.types;
+
+    const subjectId =
+      (urlFilter[SUBJECT_ID] && +urlFilter[SUBJECT_ID]) ||
+      defaultFilter.subjectId;
+
+    const searchInContent =
+      (urlFilter[SEARCH_IN_CONTENT] && +urlFilter[SEARCH_IN_CONTENT]) ||
+      defaultFilter.searchInContent;
+
+    const withSubfolders =
+      (urlFilter[SEARCH_TYPE] && urlFilter[SEARCH_TYPE]) ||
+      defaultFilter.withSubfolders;
+
+    const searchArea =
+      (urlFilter[SEARCH_AREA] && urlFilter[SEARCH_AREA]) ||
+      defaultFilter.searchArea;
+
+    const tags = (urlFilter[TAGS] && urlFilter[TAGS]) || defaultFilter.tags;
 
     const newFilter = new RoomsFilter(
       page,
       pageCount,
       defaultFilter.total,
-      sortBy,
-      sortOrder,
-      viewAs,
-      filterType,
+      filterValue,
+      types,
+      subjectId,
+      searchInContent,
       withSubfolders,
-      search,
-      authorType,
-      defaultFilter.selectedItem,
-      folder
+      withSubfolders,
+      searchArea,
+      tags
     );
 
     return newFilter;
