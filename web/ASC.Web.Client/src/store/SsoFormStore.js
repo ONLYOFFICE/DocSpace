@@ -285,7 +285,7 @@ class SsoFormStore {
     }
   };
 
-  onSubmit = async () => {
+  getSettings = () => {
     const ssoUrl =
       this.ssoBinding === "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
         ? this.ssoUrlPost
@@ -295,7 +295,7 @@ class SsoFormStore {
         ? this.sloUrlPost
         : this.sloUrlRedirect;
 
-    const data = {
+    return {
       enableSso: this.enableSso,
       spLoginLabel: this.spLoginLabel,
       idpSettings: {
@@ -313,7 +313,6 @@ class SsoFormStore {
         verifyLogoutRequestsSign: this.idp_verifyLogoutRequestsSign,
         verifyLogoutResponsesSign: this.idp_verifyLogoutResponsesSign,
         decryptAlgorithm: this.idp_decryptAlgorithm,
-        // ?
         decryptAssertions: false,
       },
       spCertificates: this.sp_certificates,
@@ -336,10 +335,13 @@ class SsoFormStore {
       },
       hideAuthPage: this.hideAuthPage,
     };
+  };
+  onSubmit = async () => {
+    const settings = this.getSettings();
+    const data = { serializeSettings: JSON.stringify(settings) };
 
     try {
-      const response = await submitSsoForm(data);
-      console.log("success");
+      await submitSsoForm(data);
     } catch (err) {
       toastr.error(err);
       console.error(err);
@@ -445,12 +447,8 @@ class SsoFormStore {
       }
 
       const newCertificate = await this.validateCertificate(data);
-      this.setIDP(newCertificate);
+      this.idp_certificates = [...this.idp_certificates, newCertificate];
     }
-  };
-
-  setIDP = (newCert) => {
-    this.idp_certificates = [...this.idp_certificates, newCert];
   };
 
   getUniqueItems = (array) => {
