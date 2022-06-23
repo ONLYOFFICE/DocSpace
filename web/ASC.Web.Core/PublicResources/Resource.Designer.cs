@@ -1942,6 +1942,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Virtual room {0} invitations sent successfully..
+        /// </summary>
+        public static string MessageRoomInvitationsSentOnEmail {
+            get {
+                return ResourceManager.GetString("MessageRoomInvitationsSentOnEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If a user with the {0} email exists, the password change instruction has been sent to this email address..
         /// </summary>
         public static string MessageYourPasswordSendedToEmail {

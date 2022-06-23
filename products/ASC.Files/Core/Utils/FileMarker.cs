@@ -257,6 +257,11 @@ public class FileMarker
                     });
                 }
             }
+            else if (obj.FileEntry.RootFolderType == FolderType.VirtualRooms)
+            {
+                var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
+                userIDs.ForEach(userID => RemoveFromCahce(virtualRoomsFolderId, userID));
+            }
             else if (obj.FileEntry.RootFolderType == FolderType.Privacy)
             {
                 foreach (var userID in userIDs)
@@ -457,6 +462,10 @@ public class FileMarker
         int cacheFolderId = default;
         if (rootFolder == null)
         {
+        }
+        else if (rootFolder.RootFolderType == FolderType.VirtualRooms)
+        {
+            cacheFolderId = rootFolderId = await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
         }
         else if (rootFolder.RootFolderType == FolderType.BUNCH)
         {
