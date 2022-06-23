@@ -62,13 +62,13 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
 
     internal string LogoLeftMenuExt { get; set; }
 
-    [JsonPropertyName("DefaultLeftMenu")]
-    internal bool IsDefaultLeftMenu { get; set; }
+    [JsonPropertyName("DefaultLogoLeftMenu")]
+    internal bool IsDefaultLogoLeftMenu { get; set; }
 
     internal string LogoAboutPageExt { get; set; }
 
-    [JsonPropertyName("DefaultAboutPage")]
-    internal bool IsDefaultAboutPage { get; set; }
+    [JsonPropertyName("DefaultLogoAboutPage")]
+    internal bool IsDefaultLogoAboutPage { get; set; }
 
     public string LogoText { get; set; }
 
@@ -113,12 +113,16 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
             LogoFaviconExt = null,
             LogoDocsEditorExt = null,
             LogoDocsEditorEmbedExt = null,
+            LogoLeftMenuExt = null,
+            LogoAboutPageExt = null,
 
             IsDefaultLogoLightSmall = true,
             IsDefaultLogoDark = true,
             IsDefaultLogoFavicon = true,
             IsDefaultLogoDocsEditor = true,
             IsDefaultLogoDocsEditorEmbed = true,
+            IsDefaultLogoLeftMenu = true,
+            IsDefaultLogoAboutPage = true,
 
             LogoText = null
         };
@@ -141,8 +145,8 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
             WhiteLabelLogoTypeEnum.Favicon => IsDefaultLogoFavicon,
             WhiteLabelLogoTypeEnum.DocsEditor => IsDefaultLogoDocsEditor,
             WhiteLabelLogoTypeEnum.DocsEditorEmbed => IsDefaultLogoDocsEditorEmbed,
-            WhiteLabelLogoTypeEnum.LeftMenu => IsDefaultLeftMenu,
-            WhiteLabelLogoTypeEnum.AboutPage => IsDefaultAboutPage,
+            WhiteLabelLogoTypeEnum.LeftMenu => IsDefaultLogoLeftMenu,
+            WhiteLabelLogoTypeEnum.AboutPage => IsDefaultLogoAboutPage,
             _ => true,
         };
     }
@@ -167,10 +171,10 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
                 IsDefaultLogoDocsEditorEmbed = value;
                 break;
             case WhiteLabelLogoTypeEnum.LeftMenu:
-                IsDefaultLeftMenu = value;
+                IsDefaultLogoLeftMenu = value;
                 break;
             case WhiteLabelLogoTypeEnum.AboutPage:
-                IsDefaultAboutPage = value;
+                IsDefaultLogoAboutPage = value;
                 break;
         }
     }
@@ -263,12 +267,16 @@ public class TenantWhiteLabelSettingsHelper
                 tenantWhiteLabelSettings.LogoFaviconExt == defaultSettings.LogoFaviconExt &&
                 tenantWhiteLabelSettings.LogoDocsEditorExt == defaultSettings.LogoDocsEditorExt &&
                 tenantWhiteLabelSettings.LogoDocsEditorEmbedExt == defaultSettings.LogoDocsEditorEmbedExt &&
+                tenantWhiteLabelSettings.LogoLeftMenuExt == defaultSettings.LogoLeftMenuExt &&
+                tenantWhiteLabelSettings.LogoAboutPageExt == defaultSettings.LogoAboutPageExt &&
 
                 tenantWhiteLabelSettings.IsDefaultLogoLightSmall == defaultSettings.IsDefaultLogoLightSmall &&
                 tenantWhiteLabelSettings.IsDefaultLogoDark == defaultSettings.IsDefaultLogoDark &&
                 tenantWhiteLabelSettings.IsDefaultLogoFavicon == defaultSettings.IsDefaultLogoFavicon &&
                 tenantWhiteLabelSettings.IsDefaultLogoDocsEditor == defaultSettings.IsDefaultLogoDocsEditor &&
                 tenantWhiteLabelSettings.IsDefaultLogoDocsEditorEmbed == defaultSettings.IsDefaultLogoDocsEditorEmbed &&
+                tenantWhiteLabelSettings.IsDefaultLogoLeftMenu == defaultSettings.IsDefaultLogoLeftMenu &&
+                tenantWhiteLabelSettings.IsDefaultLogoAboutPage == defaultSettings.IsDefaultLogoAboutPage &&
 
                 tenantWhiteLabelSettings.LogoText == defaultSettings.LogoText;
     }
@@ -280,12 +288,16 @@ public class TenantWhiteLabelSettingsHelper
         tenantWhiteLabelSettings.LogoFaviconExt = null;
         tenantWhiteLabelSettings.LogoDocsEditorExt = null;
         tenantWhiteLabelSettings.LogoDocsEditorEmbedExt = null;
+        tenantWhiteLabelSettings.LogoLeftMenuExt = null;
+        tenantWhiteLabelSettings.LogoAboutPageExt = null;
 
         tenantWhiteLabelSettings.IsDefaultLogoLightSmall = true;
         tenantWhiteLabelSettings.IsDefaultLogoDark = true;
         tenantWhiteLabelSettings.IsDefaultLogoFavicon = true;
         tenantWhiteLabelSettings.IsDefaultLogoDocsEditor = true;
         tenantWhiteLabelSettings.IsDefaultLogoDocsEditorEmbed = true;
+        tenantWhiteLabelSettings.IsDefaultLogoLeftMenu = true;
+        tenantWhiteLabelSettings.IsDefaultLogoAboutPage = true;
 
         tenantWhiteLabelSettings.SetLogoText(null);
 
@@ -460,7 +472,7 @@ public class TenantWhiteLabelSettingsHelper
                 WhiteLabelLogoTypeEnum.DocsEditorEmbed => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed.png"),
                 WhiteLabelLogoTypeEnum.Favicon => general ? _webImageSupplier.GetAbsoluteWebPath("logo/favicon_general.ico") : _webImageSupplier.GetAbsoluteWebPath("logo/favicon.ico"),
                 WhiteLabelLogoTypeEnum.LeftMenu => _webImageSupplier.GetAbsoluteWebPath("logo/left_menu_general.svg"),
-                WhiteLabelLogoTypeEnum.AboutPage => _webImageSupplier.GetAbsoluteWebPath("logo/dark_doc_space.svg"),
+                WhiteLabelLogoTypeEnum.AboutPage => _webImageSupplier.GetAbsoluteWebPath("logo/about_doc_space.svg"),
             _ => "",
         };
     }

@@ -192,6 +192,7 @@ public class WhitelabelController : BaseSettingsController
             new {type = (int)WhiteLabelLogoTypeEnum.Dark, name = nameof(WhiteLabelLogoTypeEnum.Dark), height = TenantWhiteLabelSettings.LogoDarkSize.Height, width = TenantWhiteLabelSettings.LogoDarkSize.Width},
             new {type = (int)WhiteLabelLogoTypeEnum.Favicon, name = nameof(WhiteLabelLogoTypeEnum.Favicon), height = TenantWhiteLabelSettings.LogoFaviconSize.Height, width = TenantWhiteLabelSettings.LogoFaviconSize.Width},
             new {type = (int)WhiteLabelLogoTypeEnum.DocsEditor, name = nameof(WhiteLabelLogoTypeEnum.DocsEditor), height = TenantWhiteLabelSettings.LogoDocsEditorSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorSize.Width},
+            new {type = (int)WhiteLabelLogoTypeEnum.DocsEditorEmbed, name = nameof(WhiteLabelLogoTypeEnum.DocsEditorEmbed), height = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Width},
             new {type = (int)WhiteLabelLogoTypeEnum.LeftMenu, name =  nameof(WhiteLabelLogoTypeEnum.LeftMenu), height = TenantWhiteLabelSettings.LogoLeftMenuSize.Height, width = TenantWhiteLabelSettings.LogoLeftMenuSize.Width},
             new {type = (int)WhiteLabelLogoTypeEnum.AboutPage, name =  nameof(WhiteLabelLogoTypeEnum.AboutPage), height = TenantWhiteLabelSettings.LogoAboutPageSize.Height, width = TenantWhiteLabelSettings.LogoAboutPageSize.Width}
         };
@@ -319,112 +320,75 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPost("rebranding/company")]
-    public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper, [FromQuery] WhiteLabelQueryRequestsDto inQueryDto)
+    public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
     {
         if (companyWhiteLabelSettingsWrapper.Settings == null)
         {
             throw new ArgumentNullException("settings");
         }
 
-        companyWhiteLabelSettingsWrapper.Settings.IsLicensor = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Branding && companyWhiteLabelSettingsWrapper.Settings.IsLicensor;
+        DemandRebrandingPermission();
 
-        if (inQueryDto.IsDefault)
-        {
-            DemandRebrandingPermission();
+        companyWhiteLabelSettingsWrapper.Settings.IsLicensor = false;
 
-            _settingsManager.SaveForDefaultTenant(companyWhiteLabelSettingsWrapper.Settings);
-        }
-        else
-        {
-            _settingsManager.SaveForCurrentUser(companyWhiteLabelSettingsWrapper.Settings);
-        }
+        _settingsManager.SaveForDefaultTenant(companyWhiteLabelSettingsWrapper.Settings);
+
         return true;
     }
 
     ///<visible>false</visible>
     [HttpGet("rebranding/company")]
-    public CompanyWhiteLabelSettings GetCompanyWhiteLabelSettings([FromQuery] WhiteLabelQueryRequestsDto inDto)
+    public CompanyWhiteLabelSettings GetCompanyWhiteLabelSettings()
     {
-        if (inDto.IsDefault)
-        {
-            return _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
-        }
-        else
-        {
-            return _settingsManager.LoadForCurrentUser<CompanyWhiteLabelSettings>();
-        }
+        return _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
     }
 
     ///<visible>false</visible>
     [HttpDelete("rebranding/company")]
-    public CompanyWhiteLabelSettings DeleteCompanyWhiteLabelSettings([FromQuery] WhiteLabelQueryRequestsDto inDto)
+    public CompanyWhiteLabelSettings DeleteCompanyWhiteLabelSettings()
     {
+        DemandRebrandingPermission();
+
         var defaultSettings = _settingsManager.GetDefault<CompanyWhiteLabelSettings>();
 
-        if (inDto.IsDefault)
-        {
-            DemandRebrandingPermission();
-            _settingsManager.SaveForDefaultTenant(defaultSettings);
-        }
-        else
-        {
-            _settingsManager.SaveForCurrentUser(defaultSettings);
-        }
+        _settingsManager.SaveForDefaultTenant(defaultSettings);
 
         return defaultSettings;
     }
 
     ///<visible>false</visible>
     [HttpPost("rebranding/additional")]
-    public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper, [FromQuery] WhiteLabelQueryRequestsDto inQueryDto)
+    public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
     {
         if (wrapper.Settings == null)
         {
             throw new ArgumentNullException("settings");
         }
 
-        if (inQueryDto.IsDefault)
-        {
-            DemandRebrandingPermission();
-            _settingsManager.SaveForDefaultTenant(wrapper.Settings);
-        }
-        else
-        {
-            _settingsManager.SaveForCurrentUser(wrapper.Settings);
-        }
+        DemandRebrandingPermission();
+
+        _settingsManager.SaveForDefaultTenant(wrapper.Settings);
 
         return true;
     }
 
     ///<visible>false</visible>
     [HttpGet("rebranding/additional")]
-    public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings([FromQuery] WhiteLabelQueryRequestsDto inDto)
+    public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings()
     {
-        if (inDto.IsDefault)
-        {
-            return _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
-        }
-        else
-        {
-            return _settingsManager.LoadForCurrentUser<AdditionalWhiteLabelSettings>();
-        }
+        return _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
     }
 
     ///<visible>false</visible>
     [HttpDelete("rebranding/additional")]
-    public AdditionalWhiteLabelSettings DeleteAdditionalWhiteLabelSettings([FromQuery] WhiteLabelQueryRequestsDto inDto)
+    public AdditionalWhiteLabelSettings DeleteAdditionalWhiteLabelSettings()
     {
+        DemandRebrandingPermission();
+
         var defaultSettings = _settingsManager.GetDefault<AdditionalWhiteLabelSettings>();
 
-        if (inDto.IsDefault)
-        {
-            DemandRebrandingPermission();
-            _settingsManager.SaveForDefaultTenant(defaultSettings);
-        }
-        else
-        {
-            _settingsManager.SaveForCurrentUser(defaultSettings);
-        }
+        _settingsManager.SaveForDefaultTenant(defaultSettings);
+
         return defaultSettings;
     }
 
@@ -498,11 +462,6 @@ public class WhitelabelController : BaseSettingsController
     private void DemandRebrandingPermission()
     {
         _tenantExtra.DemandControlPanelPermission();
-
-        if (!_coreBaseSettings.Standalone)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "SSBranding");
-        }
 
         if (_coreBaseSettings.CustomMode)
         {
