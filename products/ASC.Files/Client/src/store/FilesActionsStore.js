@@ -337,7 +337,7 @@ class FilesActionStore {
     }
   };
 
-  downloadFiles = async (fileConvertIds, folderIds, label) => {
+  downloadFiles = async (fileConvertIds, folderIds, translations) => {
     const {
       clearActiveOperations,
       secondaryProgressDataStore,
@@ -348,6 +348,7 @@ class FilesActionStore {
     } = secondaryProgressDataStore;
 
     const { addActiveItems } = this.filesStore;
+    const { label } = translations;
 
     if (this.isBulkDownload) {
       //toastr.error(); TODO: new add cancel download operation and new translation "ErrorMassage_SecondDownload"
@@ -378,7 +379,11 @@ class FilesActionStore {
         const item =
           data?.finished && data?.url
             ? data
-            : await this.uploadDataStore.loopFilesOperations(data, pbData);
+            : await this.uploadDataStore.loopFilesOperations(
+                data,
+                pbData,
+                true
+              );
 
         clearActiveOperations(fileIds, folderIds);
         this.setIsBulkDownload(false);
@@ -393,6 +398,7 @@ class FilesActionStore {
         }
 
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        !item.url && toastr.error(translations.error, null, 0, true);
       });
     } catch (err) {
       this.setIsBulkDownload(false);
