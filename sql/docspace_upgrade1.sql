@@ -18,4 +18,4 @@ END DLM00
 		
 CALL docspace_upgrade1() DLM00
 
-DELIMITER ;onlyoffice_app
+DELIMITER ;
