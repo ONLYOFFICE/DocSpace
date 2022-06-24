@@ -56,6 +56,8 @@ class PureHome extends React.Component {
       localStorage.removeItem("isFirstUrl");
     }
 
+    this.frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
+
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
@@ -313,11 +315,11 @@ class PureHome extends React.Component {
       snackbarExist,
     } = this.props;
 
-    const frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
-
-    const isFrame = frameConfig && window.name === frameConfig.name;
-    const showTitle = frameConfig && JSON.parse(frameConfig.showTitle);
-    const showFilter = frameConfig && JSON.parse(frameConfig.showFilter);
+    const isFrame = this.frameConfig && window.name === this.frameConfig.name;
+    const showTitle =
+      this.frameConfig && JSON.parse(this.frameConfig.showTitle);
+    const showFilter =
+      this.frameConfig && JSON.parse(this.frameConfig.showFilter);
 
     return (
       <>
@@ -435,6 +437,7 @@ export default inject(
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
+      filesList,
     } = filesStore;
 
     const { id, setAction } = fileActionStore;
@@ -541,6 +544,8 @@ export default inject(
       gallerySelected,
       setAction,
       setIsUpdatingRowItem,
+
+      filesList,
     };
   }
 )(withRouter(observer(Home)));
