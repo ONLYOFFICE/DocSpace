@@ -363,8 +363,6 @@ class SsoFormStore {
     for (let key of Object.keys(object)) {
       if (typeof object[key] !== "object") {
         this[key] = object[key];
-
-        this.setErrors(key, this[key]);
       } else {
         let prefix = "";
 
@@ -377,8 +375,6 @@ class SsoFormStore {
         } else {
           for (let field of Object.keys(object[key])) {
             this[`${prefix}${field}`] = object[key][field];
-
-            this.setErrors(`${prefix}${field}`, this[`${prefix}${field}`]);
           }
         }
       }
