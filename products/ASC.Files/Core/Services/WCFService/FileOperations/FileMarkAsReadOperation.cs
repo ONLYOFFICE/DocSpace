@@ -133,7 +133,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             var newrootfolder = new List<string>();
 
-            foreach (var r in rootIds)
+            foreach (var r in rootIds.Where(id => id != 0))
             {
                 var item = new KeyValuePair<int, int>(r, await fileMarker.GetRootFoldersIdMarkedAsNewAsync(r));
                 newrootfolder.Add($"new_{{\"key\"? \"{item.Key}\", \"value\"? \"{item.Value}\"}}");
