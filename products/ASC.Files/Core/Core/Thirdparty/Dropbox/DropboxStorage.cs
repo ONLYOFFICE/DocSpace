@@ -160,7 +160,7 @@ internal class DropboxStorage : IDisposable
 
     private ThumbnailSize Convert(int width, int height)
     {
-        if (height > 320)
+        if (width > 368)
         {
             return ThumbnailSize.W480h320.Instance;
         }
