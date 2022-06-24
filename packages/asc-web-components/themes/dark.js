@@ -2517,7 +2517,7 @@ const Dark = {
 
     badge: {
       color: black,
-      stroke: "#474747",
+      stroke: "#858585",
       fill: "#858585",
       defaultFill: black,
       badgeFill: "#F58D31",
