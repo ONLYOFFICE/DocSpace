@@ -31,11 +31,11 @@ public class IpSecurityFilter : IResourceFilter
 {
     private readonly AuthContext _authContext;
     private readonly IPSecurity.IPSecurity _iPSecurity;
-    private readonly ILog _logger;
+    private readonly ILogger<IpSecurityFilter> _logger;
     private readonly SettingsManager _settingsManager;
 
     public IpSecurityFilter(
-        ILog logger,
+        ILogger<IpSecurityFilter> logger,
         AuthContext authContext,
         IPSecurity.IPSecurity IPSecurity,
         SettingsManager settingsManager)
@@ -57,7 +57,7 @@ public class IpSecurityFilter : IResourceFilter
             if (enable && !_iPSecurity.Verify())
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                _logger.WarnFormat("IPSecurity: user {0}", _authContext.CurrentAccount.ID);
+                _logger.WarningIPSecurity(_authContext.CurrentAccount.ID);
                 return;
             }
         }

@@ -96,7 +96,7 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     [AllowAnonymous]
-    [Read("thirdparty/providers")]
+    [HttpGet("thirdparty/providers")]
     public ICollection<AccountInfoDto> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
     {
         ICollection<AccountInfoDto> infos = new List<AccountInfoDto>();
@@ -111,7 +111,7 @@ public class ThirdpartyController : ApiControllerBase
 
         foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
         {
-            if (inviteView && provider.Equals("twitter", StringComparison.OrdinalIgnoreCase))
+            if (inviteView && ProviderManager.InviteExceptProviders.Contains(provider))
             {
                 continue;
             }
@@ -136,43 +136,8 @@ public class ThirdpartyController : ApiControllerBase
         return infos;
     }
 
-    [Update("thirdparty/linkaccount")]
-    public void LinkAccountFromBody([FromBody] LinkAccountRequestDto inDto)
-    {
-        LinkAccount(inDto);
-    }
-
-    [Update("thirdparty/linkaccount")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void LinkAccountFromForm([FromForm] LinkAccountRequestDto inDto)
-    {
-        LinkAccount(inDto);
-    }
-
-    [AllowAnonymous]
-    [Create("thirdparty/signup")]
-    public void SignupAccountFromBody([FromBody] SignupAccountRequestDto inDto)
-    {
-        SignupAccount(inDto);
-    }
-
-    [AllowAnonymous]
-    [Create("thirdparty/signup")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void SignupAccountFromForm([FromForm] SignupAccountRequestDto inDto)
-    {
-        SignupAccount(inDto);
-    }
-
-    [Delete("thirdparty/unlinkaccount")]
-    public void UnlinkAccount(string provider)
-    {
-        GetLinker().RemoveProvider(_securityContext.CurrentAccount.ID.ToString(), provider);
-
-        _messageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
-    }
-
-    private void LinkAccount(LinkAccountRequestDto inDto)
+    [HttpPut("thirdparty/linkaccount")]
+    public void LinkAccount(LinkAccountRequestDto inDto)
     {
         var profile = new LoginProfile(_signature, _instanceCrypto, inDto.SerializedProfile);
 
@@ -196,7 +161,9 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
-    private void SignupAccount(SignupAccountRequestDto inDto)
+    [AllowAnonymous]
+    [HttpPost("thirdparty/signup")]
+    public void SignupAccount(SignupAccountRequestDto inDto)
     {
         var employeeType = inDto.EmplType ?? EmployeeType.User;
         var passwordHash = inDto.PasswordHash;
@@ -245,9 +212,9 @@ public class ThirdpartyController : ApiControllerBase
         }
 
         var user = _userManager.GetUsers(userID);
-        var cookiesKey = _securityContext.AuthenticateMe(user.Email, passwordHash);
-        _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
-        _messageService.Send(MessageAction.LoginSuccess);
+
+        _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+
         _studioNotifyService.UserHasJoin();
 
         if (mustChangePassword)
@@ -260,6 +227,14 @@ public class ThirdpartyController : ApiControllerBase
         {
             _personalSettingsHelper.IsNewUser = true;
         }
+    }
+
+    [HttpDelete("thirdparty/unlinkaccount")]
+    public void UnlinkAccount(string provider)
+    {
+        GetLinker().RemoveProvider(_securityContext.CurrentAccount.ID.ToString(), provider);
+
+        _messageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
     }
 
     private UserInfo CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)

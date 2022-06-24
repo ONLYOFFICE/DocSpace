@@ -11,16 +11,24 @@ const AboutDialog = (props) => {
   const { t, ready } = useTranslation(["About", "Common"]);
 
   return (
-    <ModalDialogContainer
-      isLoading={!ready}
-      visible={visible}
-      onClose={onClose}
-    >
-      <ModalDialog.Header>{t("AboutHeader")}</ModalDialog.Header>
-      <ModalDialog.Body>
-        <AboutContent personal={personal} buildVersionInfo={buildVersionInfo} />
-      </ModalDialog.Body>
-    </ModalDialogContainer>
+    <>
+      {visible && (
+        <ModalDialogContainer
+          isLoading={!ready}
+          visible={visible}
+          onClose={onClose}
+          withoutBodyScroll={true}
+        >
+          <ModalDialog.Header>{t("AboutHeader")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <AboutContent
+              personal={personal}
+              buildVersionInfo={buildVersionInfo}
+            />
+          </ModalDialog.Body>
+        </ModalDialogContainer>
+      )}
+    </>
   );
 };
 

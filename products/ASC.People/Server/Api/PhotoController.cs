@@ -63,20 +63,42 @@ public class PhotoController : PeopleControllerBase
         _setupInfo = setupInfo;
     }
 
-    [Create("{userid}/photo/thumbnails")]
-    public ThumbnailsDataDto CreateMemberPhotoThumbnailsFromBody(string userid, [FromBody] ThumbnailsRequestDto inDto)
+    [HttpPost("{userid}/photo/thumbnails")]
+    public ThumbnailsDataDto CreateMemberPhotoThumbnails(string userid, ThumbnailsRequestDto inDto)
     {
-        return CreateMemberPhotoThumbnails(userid, inDto);
+        var user = GetUserInfo(userid);
+
+        if (_userManager.IsSystemUser(user.Id))
+        {
+            throw new SecurityException();
+        }
+
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+
+        if (!string.IsNullOrEmpty(inDto.TmpFile))
+        {
+            var fileName = Path.GetFileName(inDto.TmpFile);
+            var data = _userPhotoManager.GetTempPhotoData(fileName);
+
+            var settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
+
+            _settingsManager.SaveForUser(settings, user.Id);
+            _userPhotoManager.RemovePhoto(user.Id);
+            _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
+            _userPhotoManager.RemoveTempPhoto(fileName);
+        }
+        else
+        {
+            UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, inDto.X, inDto.Y, inDto.Width, inDto.Height, user.Id);
+        }
+
+        _userManager.SaveUserInfo(user, syncCardDav: true);
+        _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
-    [Create("{userid}/photo/thumbnails")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public ThumbnailsDataDto CreateMemberPhotoThumbnailsFromForm(string userid, [FromForm] ThumbnailsRequestDto inDto)
-    {
-        return CreateMemberPhotoThumbnails(userid, inDto);
-    }
-
-    [Delete("{userid}/photo")]
+    [HttpDelete("{userid}/photo")]
     public ThumbnailsDataDto DeleteMemberPhoto(string userid)
     {
         var user = GetUserInfo(userid);
@@ -89,13 +111,13 @@ public class PhotoController : PeopleControllerBase
         _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         _userPhotoManager.RemovePhoto(user.Id);
-        _userManager.SaveUserInfo(user);
+        _userManager.SaveUserInfo(user, syncCardDav: true);
         _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
-    [Read("{userid}/photo")]
+    [HttpGet("{userid}/photo")]
     public ThumbnailsDataDto GetMemberPhoto(string userid)
     {
         var user = GetUserInfo(userid);
@@ -108,20 +130,28 @@ public class PhotoController : PeopleControllerBase
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
-    [Update("{userid}/photo")]
-    public ThumbnailsDataDto UpdateMemberPhotoFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
+    [HttpPut("{userid}/photo")]
+    public ThumbnailsDataDto UpdateMemberPhoto(string userid, UpdateMemberRequestDto inDto)
     {
-        return UpdateMemberPhoto(userid, inDto);
+        var user = GetUserInfo(userid);
+
+        if (_userManager.IsSystemUser(user.Id))
+        {
+            throw new SecurityException();
+        }
+
+        if (inDto.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
+        {
+            UpdatePhotoUrl(inDto.Files, user);
+        }
+
+        _userManager.SaveUserInfo(user, syncCardDav: true);
+        _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
-    [Update("{userid}/photo")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public ThumbnailsDataDto UpdateMemberPhotoFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
-    {
-        return UpdateMemberPhoto(userid, inDto);
-    }
-
-    [Create("{userid}/photo")]
+    [HttpPost("{userid}/photo")]
     public FileUploadResultDto UploadMemberPhoto(string userid, IFormCollection formCollection)
     {
         var result = new FileUploadResultDto();
@@ -218,60 +248,6 @@ public class PhotoController : PeopleControllerBase
         }
 
         return result;
-    }
-
-    private ThumbnailsDataDto CreateMemberPhotoThumbnails(string userid, ThumbnailsRequestDto inDto)
-    {
-        var user = GetUserInfo(userid);
-
-        if (_userManager.IsSystemUser(user.Id))
-        {
-            throw new SecurityException();
-        }
-
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
-
-        if (!string.IsNullOrEmpty(inDto.TmpFile))
-        {
-            var fileName = Path.GetFileName(inDto.TmpFile);
-            var data = _userPhotoManager.GetTempPhotoData(fileName);
-
-            var settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
-
-            _settingsManager.SaveForUser(settings, user.Id);
-            _userPhotoManager.RemovePhoto(user.Id);
-            _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
-            _userPhotoManager.RemoveTempPhoto(fileName);
-        }
-        else
-        {
-            UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, inDto.X, inDto.Y, inDto.Width, inDto.Height, user.Id);
-        }
-
-        _userManager.SaveUserInfo(user);
-        _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-
-        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
-    }
-
-    private ThumbnailsDataDto UpdateMemberPhoto(string userid, UpdateMemberRequestDto inDto)
-    {
-        var user = GetUserInfo(userid);
-
-        if (_userManager.IsSystemUser(user.Id))
-        {
-            throw new SecurityException();
-        }
-
-        if (inDto.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
-        {
-            UpdatePhotoUrl(inDto.Files, user);
-        }
-
-        _userManager.SaveUserInfo(user);
-        _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-
-        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
     private static void CheckImgFormat(byte[] data)

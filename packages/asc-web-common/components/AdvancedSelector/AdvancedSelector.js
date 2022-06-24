@@ -2,19 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
-import { isMobileOnly } from "react-device-detect";
-import { mobile } from "@appserver/components/utils/device";
+import { isMobile } from "react-device-detect";
+import { tablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 
 import Selector from "./sub-components/Selector";
 import Backdrop from "@appserver/components/backdrop";
 
-const mobileView = css`
-  top: 64px;
-
-  width: 100vw !important;
-  height: calc(100vh - 64px) !important;
-`;
+import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 
 const StyledBlock = styled.div`
   position: fixed;
@@ -22,8 +17,8 @@ const StyledBlock = styled.div`
   right: 0;
 
   width: 480px;
-  max-width: 100vw;
-  height: 100vh;
+  max-width: 100%;
+  height: 100%;
 
   z-index: 400;
 
@@ -32,11 +27,22 @@ const StyledBlock = styled.div`
 
   background: ${(props) => props.theme.filterInput.filter.background};
 
-  @media ${mobile} {
-    ${mobileView}
+  @media ${tablet} {
+    max-width: calc(100% - 69px);
   }
 
-  ${isMobileOnly && mobileView}
+  ${isMobile &&
+  css`
+    max-width: calc(100% - 69px);
+  `}
+
+  @media (max-width: 428px) {
+    bottom: 0;
+    top: unset;
+    height: calc(100% - 64px);
+    width: 100%;
+    max-width: 100%;
+  }
 
   .people-selector {
     height: 100%;
@@ -50,6 +56,48 @@ const StyledBlock = styled.div`
 `;
 
 StyledBlock.defaultProps = { theme: Base };
+
+const StyledControlContainer = styled.div`
+  display: flex;
+
+  width: 24px;
+  height: 24px;
+  position: absolute;
+
+  border-radius: 100px;
+  cursor: pointer;
+
+  align-items: center;
+  justify-content: center;
+  z-index: 450;
+
+  top: 14px;
+  left: -34px;
+
+  ${isMobile &&
+  css`
+    top: 14px;
+  `}
+
+  @media (max-width: 428px) {
+    top: -34px;
+    right: 10px;
+    left: unset;
+  }
+`;
+
+StyledControlContainer.defaultProps = { theme: Base };
+
+const StyledCrossIcon = styled(CrossIcon)`
+  width: 17px;
+  height: 17px;
+  z-index: 455;
+  path {
+    fill: ${(props) => props.theme.catalog.control.fill};
+  }
+`;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 class AdvancedSelector extends React.Component {
   constructor(props) {
@@ -83,6 +131,10 @@ class AdvancedSelector extends React.Component {
                 />
                 <StyledBlock>
                   <Selector {...this.props} />
+
+                  <StyledControlContainer onClick={this.onClose}>
+                    <StyledCrossIcon />
+                  </StyledControlContainer>
                 </StyledBlock>
               </>
             )}

@@ -53,42 +53,34 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_DocuSignComplete" xml:space="preserve">
     <value>h1. Работа с документом завершена $DocumentTitle
 
-Все стороны подписали конверт "$DocumentTitle":"$DocumentURL".
-
-^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Все стороны подписали конверт "$DocumentTitle":"$DocumentURL".</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle
 
-Для получения дополнительной информации зайдите в свой аккаунт DocuSign.
-
-^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Для получения дополнительной информации зайдите в свой аккаунт DocuSign.</value>
   </data>
   <data name="pattern_EditorMentions" xml:space="preserve">
     <value>h1. "$__AuthorName":"$__AuthorUrl" упомянул(а) вас в комментарии к документу
 
 "$__AuthorName":"$__AuthorUrl" упомянул(а) вас в комментарии к документу "$DocumentTitle":"$DocumentURL":
 
-$Message
-
-^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+$Message</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Рассылка завершена
 
 Завершена отправка $MailsCount сообщений, которую вы запросили.
 
-Статус этих писем можно проверить в папке "Отправленные":"$__VirtualRootPath/addons/mail/#sent" модуля "Почта".
-
-^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Статус этих писем можно проверить в папке "Отправленные":"$__VirtualRootPath/addons/mail/#sent" модуля "Почта".</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1.Предоставлен доступ к документу: "$DocumentTitle":"$DocumentURL"

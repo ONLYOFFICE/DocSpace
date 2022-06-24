@@ -29,12 +29,13 @@ namespace ASC.Files.Helpers;
 public class FilesControllerHelper<T> : FilesHelperBase<T>
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly UserManager _userManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly FileConverter _fileConverter;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
+    private readonly PathProvider _pathProvider;
 
     public FilesControllerHelper(
         IServiceProvider serviceProvider,
@@ -47,12 +48,13 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         FolderContentDtoHelper folderContentDtoHelper,
         IHttpContextAccessor httpContextAccessor,
         FolderDtoHelper folderDtoHelper,
-        ILog logger,
+        ILogger<FilesControllerHelper<T>> logger,
         ApiDateTimeHelper apiDateTimeHelper,
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         FileConverter fileConverter,
-        FileOperationDtoHelper fileOperationDtoHelper)
+        FileOperationDtoHelper fileOperationDtoHelper,
+        PathProvider pathProvider)
         : base(
             filesSettingsHelper,
             fileUploader,
@@ -71,6 +73,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         _userManager = userManager;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
+        _pathProvider = pathProvider;
     }
 
     public async Task<IEnumerable<FileDto<T>>> ChangeHistoryAsync(T fileId, int version, bool continueVersion)
@@ -86,6 +89,12 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         }
 
         return result;
+    }
+
+    public async Task<string> GetPresignedUri(T fileId)
+    {
+        var file = await _fileStorageService.GetFileAsync(fileId, -1);
+        return _pathProvider.GetFileStreamUrl(file);
     }
 
     public async IAsyncEnumerable<ConversationResultDto<T>> CheckConversionAsync(CheckConversionRequestDto<T> cheqConversionRequestDto)
@@ -120,7 +129,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
                 catch (Exception e)
                 {
                     o.File = r.Result;
-                    _logger.Error(e);
+                    _logger.ErrorCheckConversion(e);
                 }
             }
 
@@ -271,7 +280,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
 
         if (ext == destExt)
         {
-            var newFile = await service.CreateNewFileAsync(new FileModel<TTemplate, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
+            var newFile = await service.CreateNewFileAsync(new FileModel<TTemplate, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, true);
 
             return await _fileDtoHelper.GetAsync(newFile);
         }

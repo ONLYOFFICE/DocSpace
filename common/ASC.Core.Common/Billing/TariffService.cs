@@ -63,6 +63,15 @@ public class TariffServiceStorage
 [Scope]
 class ConfigureTariffService : IConfigureNamedOptions<TariffService>
 {
+    private readonly IOptionsSnapshot<CachedQuotaService> _quotaService;
+    private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly CoreSettings _coreSettings;
+    private readonly IConfiguration _configuration;
+    private readonly DbContextManager<CoreDbContext> _coreDbContextManager;
+    private readonly TariffServiceStorage _tariffServiceStorage;
+    private readonly ILogger<TariffService> _logger;
+
     public ConfigureTariffService(
         IOptionsSnapshot<CachedQuotaService> quotaService,
         IOptionsSnapshot<CachedTenantService> tenantService,
@@ -71,7 +80,7 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         IConfiguration configuration,
         DbContextManager<CoreDbContext> coreDbContextManager,
         TariffServiceStorage tariffServiceStorage,
-        IOptionsMonitor<ILog> options)
+        ILogger<TariffService> options)
     {
         _quotaService = quotaService;
         _tenantService = tenantService;
@@ -80,17 +89,9 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         _configuration = configuration;
         _coreDbContextManager = coreDbContextManager;
         _tariffServiceStorage = tariffServiceStorage;
-        _options = options;
+        _logger = options;
     }
 
-    private readonly IOptionsSnapshot<CachedQuotaService> _quotaService;
-    private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
-    private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly CoreSettings _coreSettings;
-    private readonly IConfiguration _configuration;
-    private readonly DbContextManager<CoreDbContext> _coreDbContextManager;
-    private readonly TariffServiceStorage _tariffServiceStorage;
-    private readonly IOptionsMonitor<ILog> _options;
 
     public void Configure(string name, TariffService options)
     {
@@ -102,11 +103,10 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
 
     public void Configure(TariffService options)
     {
-        options.Logger = _options.CurrentValue;
+        options.Logger = _logger;
         options.CoreSettings = _coreSettings;
         options.Configuration = _configuration;
         options.TariffServiceStorage = _tariffServiceStorage;
-        options.Options = _options;
         options.CoreBaseSettings = _coreBaseSettings;
         options.Test = _configuration["core:payment:test"] == "true";
         int.TryParse(_configuration["core:payment:delay"], out var paymentDelay);
@@ -128,7 +128,7 @@ public class TariffService : ITariffService
 
     internal ICache Cache { get; set; }
     internal ICacheNotify<TariffCacheItem> Notify { get; set; }
-    internal ILog Logger { get; set; }
+    internal ILogger<TariffService> Logger { get; set; }
     internal IQuotaService QuotaService { get; set; }
     internal ITenantService TenantService { get; set; }
     internal bool Test { get; set; }
@@ -141,7 +141,6 @@ public class TariffService : ITariffService
     internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
     internal Lazy<CoreDbContext> LazyCoreDbContext;
     internal TariffServiceStorage TariffServiceStorage { get; set; }
-    internal IOptionsMonitor<ILog> Options { get; set; }
 
     private readonly BillingClient _billingClient;
     private readonly IHttpClientFactory _httpClientFactory;
@@ -161,20 +160,18 @@ public class TariffService : ITariffService
         IConfiguration configuration,
         DbContextManager<CoreDbContext> coreDbContextManager,
         TariffServiceStorage tariffServiceStorage,
-        IOptionsMonitor<ILog> options,
-        Users.Constants constants,
+        ILogger<TariffService> logger,
         BillingClient billingClient,
         IHttpClientFactory httpClientFactory)
         : this()
 
     {
-        Logger = options.CurrentValue;
+        Logger = logger;
         QuotaService = quotaService;
         TenantService = tenantService;
         CoreSettings = coreSettings;
         Configuration = configuration;
         TariffServiceStorage = tariffServiceStorage;
-        Options = options;
         _billingClient = billingClient;
         _httpClientFactory = httpClientFactory;
         CoreBaseSettings = coreBaseSettings;
@@ -249,6 +246,28 @@ public class TariffService : ITariffService
                       }
                       catch (BillingNotFoundException)
                       {
+                          var q = QuotaService.GetTenantQuota(tariff.QuotaId);
+
+                          if (q != null
+                              && !q.Trial
+                              && !q.Free
+                              && !q.NonProfit
+                              && !q.Open
+                              && !q.Custom)
+                          {
+                              var asynctariff = Tariff.CreateDefault();
+                              asynctariff.DueDate = DateTime.Today.AddDays(-1);
+                              asynctariff.Prolongable = false;
+                              asynctariff.Autorenewal = false;
+                              asynctariff.State = TariffState.NotPaid;
+
+                              if (SaveBillingInfo(tenantId, asynctariff))
+                              {
+                                  asynctariff = CalculateTariff(tenantId, asynctariff);
+                                  ClearCache(tenantId);
+                                  Cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
+                              }
+                          }
                       }
                       catch (Exception error)
                       {
@@ -354,9 +373,9 @@ public class TariffService : ITariffService
                       ? GetBillingUrlCacheKey(tenant.Value)
                       : string.Format($"notenant{(!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "")}");
         key += quota.Visible ? "" : "0";
-        if (Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is not IDictionary<string, Tuple<Uri, Uri>> urls)
+        if (Cache.Get<Dictionary<string, Uri>>(key) is not IDictionary<string, Uri> urls)
         {
-            urls = new Dictionary<string, Tuple<Uri, Uri>>();
+            urls = new Dictionary<string, Uri>();
             if (_billingClient.Configured)
             {
                 try
@@ -381,7 +400,7 @@ public class TariffService : ITariffService
                 }
                 catch (Exception error)
                 {
-                    Logger.Error(error);
+                    Logger.ErrorGetShoppingUri(error);
                 }
             }
             Cache.Insert(key, urls, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
@@ -389,37 +408,69 @@ public class TariffService : ITariffService
 
         ResetCacheExpiration();
 
-        if (!string.IsNullOrEmpty(quota.AvangateId) && urls.TryGetValue(quota.AvangateId, out var tuple))
+        if (!string.IsNullOrEmpty(quota.AvangateId) && urls.TryGetValue(quota.AvangateId, out var url))
         {
-            var result = tuple.Item2;
-
-            if (result == null)
-            {
-                result = tuple.Item1;
-            }
-            else
-            {
-                var tariff = tenant.HasValue ? GetTariff(tenant.Value) : null;
-                if (tariff == null || tariff.QuotaId == quotaId || tariff.State >= TariffState.Delay)
-                {
-                    result = tuple.Item1;
-                }
-            }
-
-            if (result == null)
+            if (url == null)
             {
                 return null;
             }
 
-            result = new Uri(result.ToString()
+            url = new Uri(url.ToString()
                                    .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
                                    .Replace("__Language__", HttpUtility.UrlEncode((language ?? "").ToLower()))
                                    .Replace("__CustomerID__", HttpUtility.UrlEncode(customerId ?? ""))
                                    .Replace("__Quantity__", HttpUtility.UrlEncode(quantity ?? "")));
-            return result;
+            return url;
+        }
+        return null;
+    }
+
+    public Uri GetShoppingUri(string[] productIds, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null)
+    {
+        var key = "shopingurl" + string.Join("_", productIds) + (!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
+        var url = Cache.Get<string>(key);
+        if (url == null)
+        {
+            url = string.Empty;
+            if (_billingClient.Configured)
+            {
+                try
+                {
+                    var client = GetBillingClient();
+                    url =
+                        client.GetPaymentUrl(
+                            null,
+                            productIds,
+                            affiliateId,
+                            null,
+                            !string.IsNullOrEmpty(currency) ? "__Currency__" : null,
+                            !string.IsNullOrEmpty(language) ? "__Language__" : null,
+                            !string.IsNullOrEmpty(customerId) ? "__CustomerID__" : null,
+                            !string.IsNullOrEmpty(quantity) ? "__Quantity__" : null
+                            );
+                }
+                catch (Exception error)
+                {
+                    Logger.ErrorWithException(error);
+                }
+            }
+            Cache.Insert(key, url, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
         }
 
-        return null;
+        ResetCacheExpiration();
+
+
+        if (string.IsNullOrEmpty(url))
+        {
+            return null;
+        }
+
+        var result = new Uri(url.ToString()
+                               .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
+                               .Replace("__Language__", HttpUtility.UrlEncode((language ?? "").ToLower()))
+                               .Replace("__CustomerID__", HttpUtility.UrlEncode(customerId ?? ""))
+                               .Replace("__Quantity__", HttpUtility.UrlEncode(quantity ?? "")));
+        return result;
     }
 
     public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
@@ -498,31 +549,36 @@ public class TariffService : ITariffService
         var currentTariff = GetBillingInfo(tenant);
         if (!tariffInfo.EqualsByParams(currentTariff))
         {
-            using var tx = CoreDbContext.Database.BeginTransaction();
+            var strategy = CoreDbContext.Database.CreateExecutionStrategy();
 
-            // last record is not the same
-            var any = CoreDbContext.Tariffs
-                .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
-
-            if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
-            {
-                var efTariff = new DbTariff
+            strategy.Execute(() =>
                 {
-                    Tenant = tenant,
-                    Tariff = tariffInfo.QuotaId,
-                    Stamp = tariffInfo.DueDate,
-                    Quantity = tariffInfo.Quantity,
-                    CreateOn = DateTime.UtcNow
-                };
+                    using var tx = CoreDbContext.Database.BeginTransaction();
 
-                CoreDbContext.Tariffs.Add(efTariff);
-                CoreDbContext.SaveChanges();
+                    // last record is not the same
+                    var any = CoreDbContext.Tariffs
+                        .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
 
-                Cache.Remove(GetTariffCacheKey(tenant));
-                inserted = true;
-            }
+                    if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
+                    {
+                        var efTariff = new DbTariff
+                        {
+                            Tenant = tenant,
+                            Tariff = tariffInfo.QuotaId,
+                            Stamp = tariffInfo.DueDate,
+                            Quantity = tariffInfo.Quantity,
+                            CreateOn = DateTime.UtcNow
+                        };
 
-            tx.Commit();
+                        CoreDbContext.Tariffs.Add(efTariff);
+                        CoreDbContext.SaveChanges();
+
+                        Cache.Remove(GetTariffCacheKey(tenant));
+                        inserted = true;
+                    }
+
+                    tx.Commit();
+                });
         }
 
         if (inserted)
@@ -615,7 +671,6 @@ public class TariffService : ITariffService
                     defaultQuota.Name = "overdue";
 
                     defaultQuota.Features = q.Features;
-                    defaultQuota.Support = false;
 
                     QuotaService.SaveTenantQuota(defaultQuota);
                 }
@@ -653,10 +708,7 @@ public class TariffService : ITariffService
         }
         catch (ReflectionTypeLoadException rtle)
         {
-            Logger.ErrorFormat("{0}{1}LoaderExceptions: {2}",
-                rtle,
-                Environment.NewLine,
-                string.Join(Environment.NewLine, rtle.LoaderExceptions.Select(e => e.ToString())));
+            Logger.ErrorLoaderExceptions(string.Join(Environment.NewLine, rtle.LoaderExceptions.Select(e => e.ToString())), rtle);
             throw;
         }
     }
@@ -697,22 +749,21 @@ public class TariffService : ITariffService
     {
         if (error is BillingNotFoundException)
         {
-            Logger.DebugFormat("Payment tenant {0} not found: {1}", tenantId, error.Message);
+            Logger.DebugPaymentTenant(tenantId, error.Message);
         }
         else if (error is BillingNotConfiguredException)
         {
-            Logger.DebugFormat("Billing tenant {0} not configured: {1}", tenantId, error.Message);
+            Logger.DebugBillingTenant(tenantId, error.Message);
         }
         else
         {
-            if (Logger.IsDebugEnabled)
+            if (Logger.IsEnabled(LogLevel.Debug))
             {
-                Logger.Error("Billing tenant " + tenantId);
-                Logger.Error(error);
+                Logger.ErrorBillingWithException(tenantId, error);
             }
             else
             {
-                Logger.ErrorFormat("Billing tenant {0}: {1}", tenantId, error.Message);
+                Logger.ErrorBilling(tenantId, error.Message);
             }
         }
     }

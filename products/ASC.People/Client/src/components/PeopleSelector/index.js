@@ -20,6 +20,7 @@ class PeopleSelector extends React.Component {
       page: 0,
       hasNextPage: true,
       isNextPageLoading: false,
+      isFirstLoad: true,
     };
   }
 
@@ -93,8 +94,10 @@ class PeopleSelector extends React.Component {
 
     const pageCount = 100;
 
-    this.setState({ isNextPageLoading: true }, () => {
-      const { role, employeeStatus, useFake } = this.props;
+    this.setState(
+      { isNextPageLoading: true, isFirstLoad: startIndex === 0 },
+      () => {
+        const { role, employeeStatus, useFake } = this.props;
 
       const filter = Filter.getDefault();
       filter.page = startIndex / pageCount;
@@ -204,12 +207,12 @@ class PeopleSelector extends React.Component {
 
   onSearchChanged = () => {
     //console.log("onSearchChanged")(value);
-    this.setState({ options: [], hasNextPage: true });
+    this.setState({ options: [], hasNextPage: true, isFirstLoad: true });
   };
 
   onGroupChanged = () => {
     //console.log("onGroupChanged")(group);
-    this.setState({ options: [], hasNextPage: true });
+    this.setState({ options: [], hasNextPage: true, isFirstLoad: true });
   };
 
   render() {
@@ -219,6 +222,7 @@ class PeopleSelector extends React.Component {
       hasNextPage,
       isNextPageLoading,
       total,
+      isFirstLoad,
     } = this.state;
 
     const {
@@ -270,9 +274,6 @@ class PeopleSelector extends React.Component {
         selectButtonLabel={t("Translations:AddMembers")}
         emptySearchOptionsLabel={t("EmptySearchUsersResult")}
         emptyOptionsLabel={t("EmptyUsers")}
-        loadingLabel={`${t("Common:LoadingProcessing")} ${t(
-          "Common:LoadingDescription"
-        )}`}
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onGroupChanged={this.onGroupChanged}
@@ -281,8 +282,9 @@ class PeopleSelector extends React.Component {
         embeddedComponent={embeddedComponent}
         showCounter={showCounter}
         onArrowClick={onArrowClick}
-        headerLabel={headerLabel ? headerLabel : `${t("AddUsers")}`}
+        headerLabel={headerLabel ? headerLabel : `${t("Common:AddUsers")}`}
         total={total}
+        isFirstLoad={isFirstLoad}
       />
     );
   }

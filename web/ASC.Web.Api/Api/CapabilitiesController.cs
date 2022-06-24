@@ -36,7 +36,7 @@ public class CapabilitiesController : ControllerBase
     private readonly ProviderManager _providerManager;
     private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
 
     public CapabilitiesController(
@@ -45,14 +45,14 @@ public class CapabilitiesController : ControllerBase
         ProviderManager providerManager,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> options)
+        ILogger<CapabilitiesController> logger)
     {
         _coreBaseSettings = coreBaseSettings;
         _tenantManager = tenantManager;
         _providerManager = providerManager;
         _configuration = configuration;
         _httpContextAccessor = httpContextAccessor;
-        _log = options.CurrentValue;
+        _log = logger;
     }
 
     ///<summary>
@@ -62,22 +62,24 @@ public class CapabilitiesController : ControllerBase
     ///Get portal capabilities
     ///</short>
     ///<returns>CapabilitiesData</returns>
-    [Read(Check = false)] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
+    [HttpGet] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
+    [AllowNotPayment]
     public CapabilitiesDto GetPortalCapabilities()
     {
         var result = new CapabilitiesDto
         {
             LdapEnabled = false,
-            Providers = null,
+            OauthEnabled = _coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Oauth,
+            Providers = new List<string>(0),
             SsoLabel = string.Empty,
             SsoUrl = string.Empty
         };
 
         try
         {
-            if (SetupInfo.IsVisibleSettings(nameof(ManagementType.LdapSettings))
-                && (!_coreBaseSettings.Standalone
-                    || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Ldap))
+            if (_coreBaseSettings.Standalone
+                    || SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
+                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Ldap)
             {
                 //var settings = SettingsManager.Load<LdapSettings>();
 
@@ -87,27 +89,36 @@ public class CapabilitiesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error(ex.Message);
+            _log.ErrorWithException(ex);
         }
 
         try
         {
-            result.Providers = ProviderManager.AuthProviders.Where(loginProvider =>
+            if (result.OauthEnabled)
             {
-                var provider = _providerManager.GetLoginProvider(loginProvider);
-                return provider != null && provider.IsEnabled;
-            })
-            .ToList();
+                result.Providers = ProviderManager.AuthProviders.Where(loginProvider =>
+                {
+                    if ((loginProvider == ProviderConstants.Facebook || loginProvider == ProviderConstants.AppleId)
+                                                                    && _coreBaseSettings.Standalone && HttpContext.Request.MobileApp())
+                    {
+                        return false;
+                    }
+                    var provider = _providerManager.GetLoginProvider(loginProvider);
+                    return provider != null && provider.IsEnabled;
+                })
+                .ToList();
+            }
         }
         catch (Exception ex)
         {
-            _log.Error(ex.Message);
+            _log.ErrorWithException(ex);
         }
 
         try
         {
-            if (SetupInfo.IsVisibleSettings(nameof(ManagementType.SingleSignOnSettings))
-                && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso)
+            if (_coreBaseSettings.Standalone
+                    || SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
+                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso)
             {
                 //var settings = SettingsManager.Load<SsoSettingsV2>();
 
@@ -125,7 +136,7 @@ public class CapabilitiesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error(ex.Message);
+            _log.ErrorWithException(ex);
         }
 
         return result;

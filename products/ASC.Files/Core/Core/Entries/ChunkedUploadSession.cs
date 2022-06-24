@@ -33,6 +33,7 @@ public class ChunkedUploadSession<T> : CommonChunkedUploadSession
     public T FolderId { get; set; }
     public File<T> File { get; set; }
     public bool Encrypted { get; set; }
+    public bool KeepVersion { get; set; }
 
     //hack for Backup bug 48873
     [NonSerialized]
@@ -62,7 +63,7 @@ public class ChunkedUploadSession<T> : CommonChunkedUploadSession
     public static ChunkedUploadSession<T> Deserialize(Stream stream, FileHelper fileHelper)
     {
         var chunkedUploadSession = JsonSerializer.Deserialize<ChunkedUploadSession<T>>(stream);
-        chunkedUploadSession.File.FileHelper = fileHelper;
+        chunkedUploadSession.File.FileHelper = fileHelper; //TODO
         chunkedUploadSession.TransformItems();
 
         return chunkedUploadSession;
@@ -73,10 +74,10 @@ public class ChunkedUploadSession<T> : CommonChunkedUploadSession
 [Scope]
 public class ChunkedUploadSessionHelper
 {
-    private readonly ILog _logger;
+    private readonly ILogger<ChunkedUploadSessionHelper> _logger;
     private readonly EntryManager _entryManager;
 
-    public ChunkedUploadSessionHelper(ILog logger, EntryManager entryManager)
+    public ChunkedUploadSessionHelper(ILogger<ChunkedUploadSessionHelper> logger, EntryManager entryManager)
     {
         _entryManager = entryManager;
         _logger = logger;
@@ -90,7 +91,7 @@ public class ChunkedUploadSessionHelper
             {
                 if (f == null)
                 {
-                    _logger.ErrorFormat("GetBreadCrumbs {0} with null", session.FolderId);
+                    _logger.ErrorInUserInfoRequest(session.FolderId.ToString());
 
                     return default;
                 }

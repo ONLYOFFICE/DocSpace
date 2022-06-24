@@ -20,6 +20,10 @@ const saveDataWelcomePageSettings = {
   title: "Hello",
 };
 
+const saveDataPortalRenaming = {
+  alias: "NewPortalName",
+};
+
 Scenario("Tfa auth success", async ({ I }) => {
   I.mockEndpoint(Endpoints.confirm, "confirm");
   I.mockEndpoint(Endpoints.code, "code");
@@ -714,6 +718,162 @@ Scenario(
     });
   }
 );
+
+Scenario("Portal Renaming cancel button test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/portal-renaming");
+  }
+
+  const nameCurrent = await I.grabValueFrom(
+    "#textInputContainerPortalRenaming"
+  );
+
+  I.fillField("#textInputContainerPortalRenaming", "NewPortalName");
+
+  I.seeElement({
+    react: "TextInput",
+    props: {
+      value: "NewPortalName",
+    },
+  });
+
+  within("#buttonsPortalRenaming", () => {
+    I.click({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: false,
+      },
+    });
+  });
+
+  I.dontSee("You have unsaved changes");
+  I.dontSee("NewPortalName");
+
+  I.seeInField("#textInputContainerPortalRenaming", nameCurrent);
+});
+
+Scenario("Portal Renaming save button test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.portalRenaming, "portalRenaming");
+
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/portal-renaming");
+  }
+
+  I.fillField("#textInputContainerPortalRenaming", "NewPortalName");
+
+  I.seeElement({
+    react: "TextInput",
+    props: {
+      value: "NewPortalName",
+    },
+  });
+
+  within("#buttonsPortalRenaming", () => {
+    I.click({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: false,
+      },
+    });
+  });
+
+  I.checkRequest(
+    "http://localhost:8092/api/2.0/portal/portalrename.json",
+    saveDataPortalRenaming,
+    "settings",
+    "portalRenaming"
+  );
+
+  I.dontSee("You have unsaved changes");
+
+  I.seeElement({
+    react: "TextInput",
+    props: {
+      value: "NewPortalName",
+    },
+  });
+});
+
+Scenario("Portal Renaming error PortalNameLength test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/portal-renaming");
+  }
+
+  I.fillField("#textInputContainerPortalRenaming", "12345");
+
+  I.see("The account name must be between 6 and 50 characters long");
+});
+
+Scenario("Portal Renaming error PortalNameIncorrect test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/portal-renaming");
+  }
+
+  I.fillField("#textInputContainerPortalRenaming", "Новое имя");
+
+  I.see("Incorrect account name");
+});
 
 // SECURITY SETTINGS TESTS
 

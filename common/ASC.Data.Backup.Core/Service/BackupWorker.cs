@@ -31,34 +31,33 @@ public class BackupWorker
 {
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "backup";
 
-    internal string TempFolder { get; set; }
+    public string TempFolder { get; set; }
 
     private DistributedTaskQueue _progressQueue;
     private string _currentRegion;
     private Dictionary<string, string> _configPaths;
     private int _limit;
     private string _upgradesPath;
-    private readonly ILog _logger;
+    private readonly ILogger<BackupWorker> _logger;
     private readonly TempPath _tempPath;
     private readonly IServiceProvider _serviceProvider;
     private readonly object _synchRoot = new object();
 
     public BackupWorker(
-        IOptionsMonitor<ILog> options,
+        ILogger<BackupWorker> logger,
         IDistributedTaskQueueFactory queueFactory,
         IServiceProvider serviceProvider,
         TempPath tempPath)
     {
         _serviceProvider = serviceProvider;
-        _logger = options.CurrentValue;
+        _logger = logger;
         _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _tempPath = tempPath;
+        TempFolder = Path.Combine(_tempPath.GetTempPath(), "backup");
     }
 
     public void Start(BackupSettings settings)
     {
-        TempFolder = _tempPath.GetTempPath();
-
         if (!Directory.Exists(TempFolder))
         {
             Directory.CreateDirectory(TempFolder);
@@ -74,7 +73,7 @@ public class BackupWorker
 
         if (invalidConfigPath != null)
         {
-            _logger.WarnFormat("Configuration file {0} not found", invalidConfigPath);
+            _logger.WarningCanNotBackupFile(invalidConfigPath);
         }
     }
 

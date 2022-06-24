@@ -254,7 +254,7 @@
     <value>Seau</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Saisissez le nom du conteneur Google Cloud bucket où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez le nom du conteneur Google Cloud bucket pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Connecter service Google Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail. </value>
@@ -320,13 +320,13 @@
     <value>Conteneur Privé</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Saisissez l'adresse URL du conteneur privé Rackspace où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez l'adresse URL du conteneur privé Rackspace pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Conteneur public</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Saisissez l'adresse URL du conteneur public Rackspace où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez l'adresse URL du conteneur public Rackspace pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Région</value>
@@ -341,7 +341,7 @@
     <value>Conteneur</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Saisissez un nom unique du conteneur Amazon où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez un nom unique du conteneur Amazon pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Connecter Amazon AWS S3 pour créer des copies de sauvegarde et stocker des données de votre portail.</value>
@@ -377,13 +377,13 @@
     <value>Conteneur Privé</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Saisissez le nom du conteneur privé Selectel où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez le nom du conteneur privé Selectel pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Conteneur public</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Saisissez le nom du conteneur public Selectel où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez le nom du conteneur public Selectel pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -610,17 +610,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Le mot de passe doit contenir</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Le mot de passe doit comporter </value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>chiffres</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>sans espaces</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>symboles spéciaux</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>lettres majuscules</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>lettres latines seulement</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Le délai de  requête est dépassé</value>
@@ -638,7 +641,7 @@
     <value>L'utilisateur avec l'adresse email "{0}" ne peut pas être trouvé</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Région EU (Irlande)</value>
+    <value>Région EU (Francfort)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>La taille de fichier maximale est dépassée</value>
@@ -699,9 +702,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Quota d'espace disque est dépassé</value>
   </data>
-  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
-    <value>Cette fonctionalité n'est activée que pour le tarif gratuit</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Accès au portail</value>
   </data>
@@ -743,9 +743,6 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Mappage des champs non valides</value>
-  </data>
-  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
-    <value>Le portail a été renommé avec succès</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Les paramètres de la page d'accueil ont été enregistrés avec succès</value>

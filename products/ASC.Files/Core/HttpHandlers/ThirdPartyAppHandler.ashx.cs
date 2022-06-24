@@ -28,6 +28,8 @@ namespace ASC.Web.Files.HttpHandlers;
 
 public class ThirdPartyAppHandler
 {
+    public static string HandlerPath = "~/ThirdPartyApp";
+
     public ThirdPartyAppHandler(RequestDelegate next)
     {
     }
@@ -43,32 +45,34 @@ public class ThirdPartyAppHandlerService
 {
     private readonly AuthContext _authContext;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ILog _log;
-
+    private readonly ILogger<ThirdPartyAppHandlerService> _log;
+    private readonly ThirdPartySelector _thirdPartySelector;
     public string HandlerPath { get; set; }
 
     public ThirdPartyAppHandlerService(
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<ThirdPartyAppHandlerService> logger,
         AuthContext authContext,
         BaseCommonLinkUtility baseCommonLinkUtility,
-        CommonLinkUtility commonLinkUtility)
+        CommonLinkUtility commonLinkUtility,
+        ThirdPartySelector thirdPartySelector)
     {
         _authContext = authContext;
         _commonLinkUtility = commonLinkUtility;
-        _log = optionsMonitor.CurrentValue;
-        HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
+        _log = logger;
+        _thirdPartySelector = thirdPartySelector;
+        HandlerPath = baseCommonLinkUtility.ToAbsolute(ThirdPartyAppHandler.HandlerPath);
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
-        _log.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
+        _log.DebugThirdPartyAppHandlerRequest(context.Request.Url());
 
         var message = string.Empty;
 
         try
         {
-            var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
-            _log.Debug("ThirdPartyApp: app - " + app);
+            var app = _thirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
+            _log.DebugThirdPartyAppApp(app);
 
             if (await app.RequestAsync(context))
             {
@@ -82,7 +86,7 @@ public class ThirdPartyAppHandlerService
         }
         catch (Exception e)
         {
-            _log.Error("ThirdPartyApp", e);
+            _log.ErrorThirdPartyApp(e);
             message = e.Message;
         }
 

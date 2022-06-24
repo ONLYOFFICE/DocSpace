@@ -25,7 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using AuthenticationException = System.Security.Authentication.AuthenticationException;
-using SecurityContext = ASC.Core.SecurityContext;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace ASC.Api.Settings.Smtp;
@@ -50,7 +49,7 @@ public class SmtpOperation
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
-    private readonly ILog _logger;
+    private readonly ILogger<SmtpOperation> _logger;
     private readonly SmtpSettingsDto _smtpSettings;
 
     private readonly string _messageSubject;
@@ -64,7 +63,7 @@ public class SmtpOperation
         UserManager userManager,
         SecurityContext securityContext,
         TenantManager tenantManager,
-        IOptionsMonitor<ILog> options)
+        ILogger<SmtpOperation> logger)
     {
         _smtpSettings = smtpSettings;
         CurrentTenant = tenant;
@@ -85,7 +84,7 @@ public class SmtpOperation
 
         TaskInfo = new DistributedTask();
 
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
@@ -152,7 +151,7 @@ public class SmtpOperation
         catch (AuthorizingException authError)
         {
             Error = Resource.ErrorAccessDenied; // "No permissions to perform this action";
-            _logger.Error(Error, new SecurityException(Error, authError));
+            _logger.ErrorWithException(new SecurityException(Error, authError));
         }
         catch (AggregateException ae)
         {
@@ -161,17 +160,17 @@ public class SmtpOperation
         catch (SocketException ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            _logger.Error(ex.ToString());
+            _logger.ErrorWithException(ex);
         }
         catch (AuthenticationException ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            _logger.Error(ex.ToString());
+            _logger.ErrorWithException(ex);
         }
         catch (Exception ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            _logger.Error(ex.ToString());
+            _logger.ErrorWithException(ex);
         }
         finally
         {
@@ -184,7 +183,7 @@ public class SmtpOperation
             }
             catch (Exception ex)
             {
-                _logger.ErrorFormat("LdapOperation finalization problem. {0}", ex);
+                _logger.ErrorLdapOperationFinalizationProblem(ex);
             }
         }
     }
@@ -220,8 +219,6 @@ public class SmtpOperation
         return Progress;
     }
 
-    const string ProgerssString = "Progress: {0}% {1} {2}";
-
     public void SetProgress(int? currentPercent = null, string currentStatus = null, string currentSource = null)
     {
         if (!currentPercent.HasValue && currentStatus == null && currentSource == null)
@@ -244,7 +241,7 @@ public class SmtpOperation
             Source = currentSource;
         }
 
-        _logger.InfoFormat(ProgerssString, Progress, Status, Source);
+        _logger.InformationProgress(Progress, Status, Source);
 
         PublishTaskInfo();
     }

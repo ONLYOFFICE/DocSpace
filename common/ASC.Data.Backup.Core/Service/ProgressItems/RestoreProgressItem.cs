@@ -54,6 +54,9 @@ namespace ASC.Data.Backup.Services;
 [Transient]
 public class RestoreProgressItem : BaseBackupProgressItem
 {
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<RestoreProgressItem> _logger;
+    private readonly ICache _cache;
     private TenantManager _tenantManager;
     private BackupStorageFactory _backupStorageFactory;
     private readonly NotifyHelper _notifyHelper;
@@ -66,13 +69,17 @@ public class RestoreProgressItem : BaseBackupProgressItem
     private Dictionary<string, string> _configPaths;
 
     public RestoreProgressItem(
-        ILog logger,
+        IConfiguration configuration,
+        ILogger<RestoreProgressItem> logger,
+        ICache cache,
         IServiceScopeFactory serviceScopeFactory,
         NotifyHelper notifyHelper,
         CoreBaseSettings coreBaseSettings)
         : base(logger, serviceScopeFactory)
     {
-
+        _configuration = configuration;
+        _logger = logger;
+        _cache = cache;
         _notifyHelper = notifyHelper;
         _coreBaseSettings = coreBaseSettings;
 
@@ -155,7 +162,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             if (restoreTask.Dump)
             {
-                AscCacheNotify.OnClearCache();
+                _cache.Reset();
 
                 if (Notify)
                 {
@@ -173,7 +180,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
                 restoredTenant = _tenantManager.GetTenant(columnMapper.GetTenantMapping());
                 restoredTenant.SetStatus(TenantStatus.Active);
                 restoredTenant.Alias = tenant.Alias;
-                restoredTenant.PaymentId = string.Empty;
+                restoredTenant.PaymentId = string.IsNullOrEmpty(restoredTenant.PaymentId) ? _configuration["core:payment-region"] + TenantId : restoredTenant.PaymentId;
 
                 if (string.IsNullOrEmpty(restoredTenant.MappedDomain) && !string.IsNullOrEmpty(tenant.MappedDomain))
                 {
@@ -199,7 +206,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Logger.Error(error);
+            _logger.ErrorRestoreProgressItem(error);
             Exception = error;
 
             if (tenant != null)
@@ -216,7 +223,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.Error("publish", error);
+                _logger.ErrorPublish(error);
             }
 
             if (File.Exists(tempFile))

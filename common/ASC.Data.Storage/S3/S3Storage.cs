@@ -56,9 +56,10 @@ public class S3Storage : BaseStorage
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options,
-            IHttpClientFactory clientFactory)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
+        ILoggerProvider factory,
+        ILogger<S3Storage> options,
+        IHttpClientFactory clientFactory)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory)
     {
     }
 
@@ -502,15 +503,7 @@ public class S3Storage : BaseStorage
         var response = await client.ListObjectsAsync(request);
         foreach (var s3Object in response.S3Objects)
         {
-            await client.CopyObjectAsync(new CopyObjectRequest
-            {
-                SourceBucket = _bucket,
-                SourceKey = s3Object.Key,
-                DestinationBucket = _bucket,
-                DestinationKey = s3Object.Key.Replace(srckey, dstkey),
-                CannedACL = GetDomainACL(newdomain),
-                ServerSideEncryptionMethod = _sse
-            });
+            await CopyFileAsync(client, s3Object.Key, s3Object.Key.Replace(srckey, dstkey), newdomain);
 
             await client.DeleteObjectAsync(new DeleteObjectRequest
             {
@@ -522,23 +515,12 @@ public class S3Storage : BaseStorage
 
     public override async Task<Uri> MoveAsync(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
     {
-        using var client = GetClient();
         var srcKey = MakePath(srcdomain, srcpath);
         var dstKey = MakePath(newdomain, newpath);
         var size = await GetFileSizeAsync(srcdomain, srcpath);
 
-        var request = new CopyObjectRequest
-        {
-            SourceBucket = _bucket,
-            SourceKey = srcKey,
-            DestinationBucket = _bucket,
-            DestinationKey = dstKey,
-            CannedACL = GetDomainACL(newdomain),
-            MetadataDirective = S3MetadataDirective.REPLACE,
-            ServerSideEncryptionMethod = _sse
-        };
-
-        await client.CopyObjectAsync(request);
+        using var client = GetClient();
+        await CopyFileAsync(client, srcKey, dstKey, newdomain, S3MetadataDirective.REPLACE);
         await DeleteAsync(srcdomain, srcpath);
 
         QuotaUsedDelete(srcdomain, size);
@@ -546,6 +528,7 @@ public class S3Storage : BaseStorage
 
         return await GetUriAsync(newdomain, newpath);
     }
+
     public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
     {
         assignedPath = Guid.NewGuid().ToString();
@@ -721,50 +704,6 @@ public class S3Storage : BaseStorage
         return formBuilder.ToString();
     }
 
-    public override async Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
-    {
-        if (_httpContextAccessor?.HttpContext != null)
-        {
-            var buket = _httpContextAccessor?.HttpContext.Request.Query["bucket"].FirstOrDefault();
-            var key = _httpContextAccessor?.HttpContext.Request.Query["key"].FirstOrDefault();
-            var etag = _httpContextAccessor?.HttpContext.Request.Query["etag"].FirstOrDefault();
-            var destkey = MakePath(domain, directoryPath) + "/";
-
-            if (!string.IsNullOrEmpty(buket) && !string.IsNullOrEmpty(key) && string.Equals(buket, _bucket) &&
-                key.StartsWith(destkey))
-            {
-                var domainpath = key.Substring(MakePath(domain, string.Empty).Length);
-                var skipQuota = false;
-                if (_httpContextAccessor?.HttpContext.Session != null)
-                {
-                    _httpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
-                    skipQuota = isCounted != null;
-                }
-                //Add to quota controller
-                if (QuotaController != null && !skipQuota)
-                {
-                    try
-                    {
-                        var size = await GetFileSizeAsync(domain, domainpath);
-                        QuotaUsedAdd(domain, size);
-
-                        if (_httpContextAccessor?.HttpContext.Session != null)
-                        {
-                            //TODO:
-                            //HttpContext.Current.Session.Add(etag, size); 
-                        }
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-                return GetUriInternal(key).ToString();
-            }
-        }
-        return string.Empty;
-    }
-
     public override async IAsyncEnumerable<string> ListFilesRelativeAsync(string domain, string path, string pattern, bool recursive)
     {
         var tmp = await GetS3ObjectsAsync(domain, path);
@@ -872,23 +811,11 @@ public class S3Storage : BaseStorage
 
     public override async Task<Uri> CopyAsync(string srcdomain, string srcpath, string newdomain, string newpath)
     {
-        using var client = GetClient();
         var srcKey = MakePath(srcdomain, srcpath);
         var dstKey = MakePath(newdomain, newpath);
         var size = await GetFileSizeAsync(srcdomain, srcpath);
-
-        var request = new CopyObjectRequest
-        {
-            SourceBucket = _bucket,
-            SourceKey = srcKey,
-            DestinationBucket = _bucket,
-            DestinationKey = dstKey,
-            CannedACL = GetDomainACL(newdomain),
-            MetadataDirective = S3MetadataDirective.REPLACE,
-            ServerSideEncryptionMethod = _sse
-        };
-
-        await client.CopyObjectAsync(request);
+        using var client = GetClient();
+        await CopyFileAsync(client, srcKey, dstKey, newdomain, S3MetadataDirective.REPLACE);
 
         QuotaUsedAdd(newdomain, size);
 
@@ -906,15 +833,7 @@ public class S3Storage : BaseStorage
         var response = await client.ListObjectsAsync(request);
         foreach (var s3Object in response.S3Objects)
         {
-            await client.CopyObjectAsync(new CopyObjectRequest
-            {
-                SourceBucket = _bucket,
-                SourceKey = s3Object.Key,
-                DestinationBucket = _bucket,
-                DestinationKey = s3Object.Key.Replace(srckey, dstkey),
-                CannedACL = GetDomainACL(newdomain),
-                ServerSideEncryptionMethod = _sse
-            });
+            await CopyFileAsync(client, s3Object.Key, s3Object.Key.Replace(srckey, dstkey), newdomain);
 
             QuotaUsedAdd(newdomain, s3Object.Size);
         }
@@ -1222,19 +1141,95 @@ public class S3Storage : BaseStorage
 
     private async Task InternalRecycleAsync(IAmazonS3 client, string domain, string key)
     {
-        var copyObjectRequest = new CopyObjectRequest
+        await CopyFileAsync(client, key, GetRecyclePath(key), domain, S3MetadataDirective.REPLACE, S3StorageClass.Glacier);
+    }
+
+    private async Task CopyFileAsync(IAmazonS3 client, string sourceKey, string destinationKey, string newdomain, S3MetadataDirective metadataDirective = S3MetadataDirective.COPY, S3StorageClass storageClass = null)
+    {
+        var metadataRequest = new GetObjectMetadataRequest
         {
-            SourceBucket = _bucket,
-            SourceKey = key,
-            DestinationBucket = _bucket,
-            DestinationKey = GetRecyclePath(key),
-            CannedACL = GetDomainACL(domain),
-            MetadataDirective = S3MetadataDirective.REPLACE,
-            ServerSideEncryptionMethod = _sse,
-            StorageClass = S3StorageClass.Glacier
+            BucketName = _bucket,
+            Key = sourceKey
         };
 
-        await client.CopyObjectAsync(copyObjectRequest);
+        var metadataResponse = await client.GetObjectMetadataAsync(metadataRequest);
+        var objectSize = metadataResponse.ContentLength;
+
+        if (objectSize >= 100 * 1024 * 1024L) //100 megabytes
+        {
+            var copyResponses = new List<CopyPartResponse>();
+
+            var initiateRequest =
+                new InitiateMultipartUploadRequest
+                {
+                    BucketName = _bucket,
+                    Key = destinationKey,
+                    CannedACL = GetDomainACL(newdomain),
+                    ServerSideEncryptionMethod = _sse
+                };
+
+            if (storageClass != null)
+            {
+                initiateRequest.StorageClass = storageClass;
+            }
+
+            var initResponse = await client.InitiateMultipartUploadAsync(initiateRequest);
+
+            var uploadId = initResponse.UploadId;
+
+            var partSize = 5 * (long)Math.Pow(2, 20); // Part size is 5 MB.
+
+            long bytePosition = 0;
+            for (var i = 1; bytePosition < objectSize; i++)
+            {
+                var copyRequest = new CopyPartRequest
+                {
+                    DestinationBucket = _bucket,
+                    DestinationKey = destinationKey,
+                    SourceBucket = _bucket,
+                    SourceKey = sourceKey,
+                    UploadId = uploadId,
+                    FirstByte = bytePosition,
+                    LastByte = bytePosition + partSize - 1 >= objectSize ? objectSize - 1 : bytePosition + partSize - 1,
+                    PartNumber = i
+                };
+
+                copyResponses.Add(await client.CopyPartAsync(copyRequest));
+
+                bytePosition += partSize;
+            }
+
+            var completeRequest =
+                new CompleteMultipartUploadRequest
+                {
+                    BucketName = _bucket,
+                    Key = destinationKey,
+                    UploadId = initResponse.UploadId
+                };
+            completeRequest.AddPartETags(copyResponses);
+
+            var completeUploadResponse = await client.CompleteMultipartUploadAsync(completeRequest);
+        }
+        else
+        {
+            var request = new CopyObjectRequest
+            {
+                SourceBucket = _bucket,
+                SourceKey = sourceKey,
+                DestinationBucket = _bucket,
+                DestinationKey = destinationKey,
+                CannedACL = GetDomainACL(newdomain),
+                ServerSideEncryptionMethod = _sse,
+                MetadataDirective = metadataDirective,
+            };
+
+            if (storageClass != null)
+            {
+                request.StorageClass = storageClass;
+            }
+
+            await client.CopyObjectAsync(request);
+        }
     }
 
     private IAmazonCloudFront GetCloudFrontClient()

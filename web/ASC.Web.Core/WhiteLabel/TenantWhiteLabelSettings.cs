@@ -204,7 +204,7 @@ public class TenantWhiteLabelSettingsHelper
     private readonly WhiteLabelHelper _whiteLabelHelper;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
-    private readonly ILog _log;
+    private readonly ILogger<TenantWhiteLabelSettingsHelper> _log;
 
     public TenantWhiteLabelSettingsHelper(
         WebImageSupplier webImageSupplier,
@@ -213,7 +213,7 @@ public class TenantWhiteLabelSettingsHelper
         WhiteLabelHelper whiteLabelHelper,
         TenantManager tenantManager,
         SettingsManager settingsManager,
-            ILog logger)
+        ILogger<TenantWhiteLabelSettingsHelper> logger)
     {
         _webImageSupplier = webImageSupplier;
         _userPhotoManager = userPhotoManager;
@@ -269,7 +269,7 @@ public class TenantWhiteLabelSettingsHelper
         }
         catch (Exception e)
         {
-            _log.Error(e);
+            _log.ErrorRestoreDefault(e);
         }
 
         Save(tenantWhiteLabelSettings, tenantId, tenantLogoManager, true);
@@ -287,7 +287,7 @@ public class TenantWhiteLabelSettingsHelper
             }
             catch (Exception e)
             {
-                _log.Error(e);
+                _log.ErrorRestoreDefault(e);
             }
         }
     }
@@ -312,7 +312,7 @@ public class TenantWhiteLabelSettingsHelper
             }
             catch (Exception e)
             {
-                _log.Error(e);
+                _log.ErrorSetLogo(e);
             }
         }
         #endregion
@@ -358,7 +358,7 @@ public class TenantWhiteLabelSettingsHelper
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex);
+                        _log.ErrorSetLogo(ex);
                     }
                 }
                 else
@@ -426,11 +426,11 @@ public class TenantWhiteLabelSettingsHelper
 
         return type switch
         {
-            WhiteLabelLogoTypeEnum.LightSmall => general ? _webImageSupplier.GetAbsoluteWebPath("logo/light_small_general.svg") : _webImageSupplier.GetAbsoluteWebPath("logo/light_small.svg"),
-            WhiteLabelLogoTypeEnum.Dark => general ? _webImageSupplier.GetAbsoluteWebPath("logo/dark_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/dark.png"),
-            WhiteLabelLogoTypeEnum.DocsEditor => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo.png"),
-            WhiteLabelLogoTypeEnum.DocsEditorEmbed => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed.png"),
-            WhiteLabelLogoTypeEnum.Favicon => general ? _webImageSupplier.GetAbsoluteWebPath("logo/favicon_general.ico") : _webImageSupplier.GetAbsoluteWebPath("logo/favicon.ico"),
+                WhiteLabelLogoTypeEnum.LightSmall =>  _webImageSupplier.GetAbsoluteWebPath("logo/light_small_doc_space.svg"),
+                WhiteLabelLogoTypeEnum.Dark => _webImageSupplier.GetAbsoluteWebPath("logo/dark_doc_space.svg"),
+                WhiteLabelLogoTypeEnum.DocsEditor => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo.png"),
+                WhiteLabelLogoTypeEnum.DocsEditorEmbed => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed.png"),
+                WhiteLabelLogoTypeEnum.Favicon => general ? _webImageSupplier.GetAbsoluteWebPath("logo/favicon_general.ico") : _webImageSupplier.GetAbsoluteWebPath("logo/favicon.ico"),
             _ => "",
         };
     }

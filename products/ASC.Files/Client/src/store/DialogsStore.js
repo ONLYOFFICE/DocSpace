@@ -25,7 +25,6 @@ class DialogsStore {
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   isFolderActions = false;
-  hotkeyPanelVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -219,10 +218,6 @@ class DialogsStore {
     });
   };
 
-  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
-    this.hotkeyPanelVisible = hotkeyPanelVisible;
-  };
-
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -240,7 +235,7 @@ class DialogsStore {
       this.conflictResolveDialogVisible ||
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
-      this.hotkeyPanelVisible
+      this.authStore.settingsStore.hotkeyPanelVisible
     );
   }
 

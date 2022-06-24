@@ -27,67 +27,16 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-class Trash : BaseFilesTests
+public partial class BaseFilesTests
 {
-    private FolderDto<int> TestFolder { get; set; }
-    public FileDto<int> TestFile { get; private set; }
-
-    [OneTimeSetUp]
-    public override async Task SetUp()
-    {
-        await base.SetUp();
-        TestFolder = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
-        TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default, default);
-
-    }
-
-    [OneTimeSetUp]
-    public void Authenticate()
-    {
-        SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
-    }
-
-    [OneTimeTearDown]
-    public async Task TearDown()
-    {
-        await DeleteFileAsync(TestFile.Id);
-        await DeleteFolderAsync(TestFolder.Id);
-    }
-
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
-    [Category("Folder")]
-    [Order(1)]
-    public void CreateFolderReturnsFolderWrapper(string folderTitle)
-    {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync((int)GlobalFolderHelper.FolderTrash, folderTitle));
-        Assert.That(folderWrapper.Message == "You don't have enough permission to create");
-    }
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
-    [Category("File")]
-    [Order(2)]
-    public async Task CreateFileReturnsFolderWrapper(string fileTitle)
-    {
-        var fileWrapper = await FilesControllerHelper.CreateFileAsync((int)GlobalFolderHelper.FolderTrash, fileTitle, default, default);
-        Assert.AreEqual(fileWrapper.FolderId, GlobalFolderHelper.FolderMy);
-    }
-
     [Test]
     [Category("Folder")]
-    [Order(2)]
+    [Order(1)]
+    [Description("put - files/fileops/emptytrash - empty trash")]
     public async Task DeleteFileFromTrash()
     {
-        var Empty = await OperationControllerHelper.EmptyTrashAsync();
-
-        List<FileOperationResult> statuses;
-
-        while (true)
-        {
-            statuses = FileStorageService.GetTasksStatuses();
-
-            if (statuses.TrueForAll(r => r.Finished))
-                break;
-            await Task.Delay(100);
-        }
+        var Empty = await PutAsync<IEnumerable<FileOperationDto>>("fileops/emptytrash", null, _options);
+        var statuses = await WaitLongOperation();
         Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
     }
 }

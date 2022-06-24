@@ -41,7 +41,7 @@ class DateField extends React.Component {
           onChange={inputOnChange}
           hasError={hasError}
           tabIndex={inputTabIndex}
-          displayType="auto"
+          displayType="dropdown"
           calendarHeaderContent={calendarHeaderContent}
           minDate={calendarMinDate ? calendarMinDate : new Date("1900/01/01")}
           maxDate={calendarMaxDate ? calendarMaxDate : new Date()}

@@ -4,7 +4,12 @@ import Headline from "@appserver/common/components/Headline";
 const SectionHeaderContent = ({ title }) => {
   return (
     <div>
-      <Headline className="headline-header" type="content" truncate={true}>
+      <Headline
+        fontSize="18px"
+        className="headline-header"
+        type="content"
+        truncate={true}
+      >
         {title}
       </Headline>
     </div>

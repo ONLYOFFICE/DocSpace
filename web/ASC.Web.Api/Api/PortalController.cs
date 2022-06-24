@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.Web.Api.Controllers;
 
 [Scope]
@@ -52,7 +50,7 @@ public class PortalController : ControllerBase
     private readonly SetupInfo _setupInfo;
     private readonly DocumentServiceLicense _documentServiceLicense;
     private readonly TenantExtra _tenantExtra;
-    private readonly ILog _log;
+    private readonly ILogger<PortalController> _log;
     private readonly IHttpClientFactory _clientFactory;
     private readonly ApiSystemHelper _apiSystemHelper;
     private readonly CoreSettings _coreSettings;
@@ -64,7 +62,7 @@ public class PortalController : ControllerBase
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
     public PortalController(
-        IOptionsMonitor<ILog> options,
+        ILogger<PortalController> logger,
         ApiContext apiContext,
         UserManager userManager,
         TenantManager tenantManager,
@@ -93,7 +91,7 @@ public class PortalController : ControllerBase
         DisplayUserSettingsHelper displayUserSettingsHelper
         )
     {
-        _log = options.CurrentValue;
+        _log = logger;
         _apiContext = apiContext;
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -122,19 +120,19 @@ public class PortalController : ControllerBase
         _displayUserSettingsHelper = displayUserSettingsHelper;
     }
 
-    [Read("")]
+    [HttpGet("")]
     public Tenant Get()
     {
         return Tenant;
     }
 
-    [Read("users/{userID}")]
+    [HttpGet("users/{userID}")]
     public UserInfo GetUser(Guid userID)
     {
         return _userManager.GetUsers(userID);
     }
 
-    [Read("users/invite/{employeeType}")]
+    [HttpGet("users/invite/{employeeType}")]
     public object GeInviteLink(EmployeeType employeeType)
     {
         if (!_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _authContext.CurrentAccount.ID))
@@ -146,7 +144,7 @@ public class PortalController : ControllerBase
                 + $"&emplType={employeeType:d}";
     }
 
-    [Update("getshortenlink")]
+    [HttpPut("getshortenlink")]
     public async Task<object> GetShortenLinkAsync(ShortenLinkRequestsDto inDto)
     {
         try
@@ -155,12 +153,12 @@ public class PortalController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error("getshortenlink", ex);
+            _log.ErrorGetShortenLink(ex);
             return inDto.Link;
         }
     }
 
-    [Read("tenantextra")]
+    [HttpGet("tenantextra")]
     public async Task<object> GetTenantExtraAsync()
     {
         return new
@@ -182,7 +180,7 @@ public class PortalController : ControllerBase
     }
 
 
-    [Read("usedspace")]
+    [HttpGet("usedspace")]
     public double GetUsedSpace()
     {
         return Math.Round(
@@ -192,25 +190,25 @@ public class PortalController : ControllerBase
     }
 
 
-    [Read("userscount")]
+    [HttpGet("userscount")]
     public long GetUsersCount()
     {
         return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
     }
 
-    [Read("tariff")]
+    [HttpGet("tariff")]
     public Tariff GetTariff()
     {
         return _paymentManager.GetTariff(Tenant.Id);
     }
 
-    [Read("quota")]
+    [HttpGet("quota")]
     public TenantQuota GetQuota()
     {
         return _tenantManager.GetTenantQuota(Tenant.Id);
     }
 
-    [Read("quota/right")]
+    [HttpGet("quota/right")]
     public TenantQuota GetRightQuota()
     {
         var usedSpace = GetUsedSpace();
@@ -224,13 +222,13 @@ public class PortalController : ControllerBase
     }
 
 
-    [Read("path")]
+    [HttpGet("path")]
     public object GetFullAbsolutePath(string virtualPath)
     {
         return _commonLinkUtility.GetFullAbsolutePath(virtualPath);
     }
 
-    [Read("thumb")]
+    [HttpGet("thumb")]
     public FileResult GetThumb(string url)
     {
         if (!_securityContext.IsAuthenticated || _configuration["bookmarking:thumbnail-url"] == null)
@@ -264,7 +262,7 @@ public class PortalController : ControllerBase
         return File(bytes, type);
     }
 
-    [Create("present/mark")]
+    [HttpPost("present/mark")]
     public void MarkPresentAsReaded()
     {
         try
@@ -275,26 +273,18 @@ public class PortalController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error("MarkPresentAsReaded", ex);
+            _log.ErrorMarkPresentAsReaded(ex);
         }
     }
 
-    [Create("mobile/registration")]
-    public void RegisterMobileAppInstallFromBody([FromBody] MobileAppRequestsDto inDto)
+    [HttpPost("mobile/registration")]
+    public void RegisterMobileAppInstall(MobileAppRequestsDto inDto)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, inDto.Type);
     }
 
-    [Create("mobile/registration")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void RegisterMobileAppInstallFromForm([FromForm] MobileAppRequestsDto inDto)
-    {
-        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, inDto.Type);
-    }
-
-    [Create("mobile/registration")]
+    [HttpPost("mobile/registration")]
     public void RegisterMobileAppInstall(MobileAppType type)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
@@ -308,7 +298,7 @@ public class PortalController : ControllerBase
     /// <param name="alias">New portal name</param>
     /// <returns>Message about renaming a portal</returns>
     ///<visible>false</visible>
-    [Update("portalrename")]
+    [HttpPut("portalrename")]
     public async Task<object> UpdatePortalName(PortalRenameRequestsDto model)
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.PortalSecurity)))
@@ -377,7 +367,39 @@ public class PortalController : ControllerBase
         return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
     }
 
-    [Create("suspend")]
+    [HttpDelete("deleteportalimmediately")]
+    public async Task DeletePortalImmediately()
+    {
+        var tenant = _tenantManager.GetCurrentTenant();
+
+        if (_securityContext.CurrentAccount.ID != tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
+        _tenantManager.RemoveTenant(tenant.Id);
+
+        if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+        {
+            await _apiSystemHelper.RemoveTenantFromCacheAsync(tenant.Alias, _securityContext.CurrentAccount.ID);
+        }
+
+        try
+        {
+            if (!_securityContext.IsAuthenticated)
+            {
+                _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+            }
+
+            _messageService.Send(MessageAction.PortalDeleted);
+        }
+        finally
+        {
+            _securityContext.Logout();
+        }
+    }
+
+    [HttpPost("suspend")]
     public void SendSuspendInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -391,7 +413,7 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
-    [Create("delete")]
+    [HttpPost("delete")]
     public void SendDeleteInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -406,7 +428,7 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
-    [Update("continue")]
+    [HttpPut("continue")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalContinue")]
     public void ContinuePortal()
     {
@@ -414,7 +436,7 @@ public class PortalController : ControllerBase
         _tenantManager.SaveTenant(Tenant);
     }
 
-    [Update("suspend")]
+    [HttpPut("suspend")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalSuspend")]
     public void SuspendPortal()
     {
@@ -423,7 +445,7 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.PortalDeactivated);
     }
 
-    [Delete("delete")]
+    [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
     public async Task<object> DeletePortal()
     {

@@ -29,14 +29,14 @@ namespace ASC.Webhooks.Service.Services;
 [Singletone]
 public class WorkerService : BackgroundService
 {
-    private readonly ILog _logger;
+    private readonly ILogger<WorkerService> _logger;
     private readonly ConcurrentQueue<WebhookRequest> _queue;
     private readonly int? _threadCount = 10;
     private readonly WebhookSender _webhookSender;
     private readonly TimeSpan _waitingPeriod;
 
     public WorkerService(WebhookSender webhookSender,
-        ILog logger,
+        ILogger<WorkerService> logger,
         BuildQueueService buildQueueService,
         Settings settings)
     {
@@ -55,7 +55,7 @@ public class WorkerService : BackgroundService
 
             if (queueSize == 0) // change to "<= threadCount"
             {
-                _logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", _waitingPeriod);
+                _logger.TraceProcedure(_waitingPeriod);
 
                 await Task.Delay(_waitingPeriod, stoppingToken);
 
@@ -89,7 +89,7 @@ public class WorkerService : BackgroundService
             }
 
             Task.WaitAll(tasks.ToArray());
-            _logger.Debug("Procedure: Finish.");
+            _logger.DebugProcedureFinish();
         }
     }
 }

@@ -396,3 +396,47 @@ Scenario("Welcome Page Settings mobile render test", async ({ I }) => {
     }
   }
 });
+
+Scenario("Portal Renaming mobile render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  I.amOnPage("/settings/common/customization/portal-renaming");
+
+  if (deviceType === "mobile") {
+    I.see("Portal Renaming");
+
+    I.seeElement("div", ".settings-block");
+
+    I.see("New portal name");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: true,
+      },
+    });
+
+    I.saveScreenshot(`11.portal-renaming-mobile.png`);
+    if (!isModel) {
+      I.seeVisualDiff(`11.portal-renaming-mobile.png`, {
+        tolerance: 1,
+        prepareBaseImage: false,
+      });
+    }
+  }
+});

@@ -30,13 +30,13 @@ namespace ASC.Files.Core;
 [DebuggerDisplay("{ID} v{Version}")]
 public class EditHistory
 {
-    private readonly ILog _logger;
+    private readonly ILogger<EditHistory> _logger;
     private readonly TenantUtil _tenantUtil;
     private readonly UserManager _userManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
     public EditHistory(
-        ILog logger,
+        ILogger<EditHistory> logger,
         TenantUtil tenantUtil,
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper)
@@ -88,7 +88,7 @@ public class EditHistory
                     {
                         Author = new EditHistoryAuthor(_userManager, _displayUserSettingsHelper)
                         {
-                            Id = new Guid(r.User.Id ?? Guid.Empty.ToString()),
+                            Id = r.User.Id ?? "",
                             Name = r.User.Name,
                         }
                     };
@@ -108,7 +108,7 @@ public class EditHistory
             }
             catch (Exception ex)
             {
-                _logger.Error("DeSerialize old scheme exception", ex);
+                _logger.ErrorDeSerializeOldScheme(ex);
             }
 
             return changes;
@@ -150,18 +150,23 @@ public class EditHistoryAuthor
         _displayUserSettingsHelper = displayUserSettingsHelper;
     }
 
-    public Guid Id { get; set; }
+    public string Id { get; set; }
 
     private string _name;
     public string Name
     {
         get
         {
+            if (!Guid.TryParse(Id, out var idInternal))
+            {
+                return _name;
+            }
+
             UserInfo user;
             return
-                Id.Equals(Guid.Empty)
-                      || Id.Equals(ASC.Core.Configuration.Constants.Guest.ID)
-                      || (user = _userManager.GetUsers(Id)).Equals(Constants.LostUser)
+                idInternal.Equals(Guid.Empty)
+                      || idInternal.Equals(ASC.Core.Configuration.Constants.Guest.ID)
+                      || (user = _userManager.GetUsers(idInternal)).Equals(Constants.LostUser)
                           ? string.IsNullOrEmpty(_name)
                                 ? FilesCommonResource.Guest
                                 : _name

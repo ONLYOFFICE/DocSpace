@@ -37,14 +37,14 @@ public abstract class BaseStorage : IDataStore
     internal string Tenant { get; set; }
     internal Dictionary<string, TimeSpan> DomainsExpires { get; set; }
         = new Dictionary<string, TimeSpan>();
-    protected ILog Logger { get; set; }
+    protected ILogger Logger { get; set; }
 
     protected readonly TempStream _tempStream;
     protected readonly TenantManager _tenantManager;
     protected readonly PathUtils _tpathUtils;
     protected readonly EmailValidationKeyProvider _temailValidationKeyProvider;
     protected readonly IHttpContextAccessor _httpContextAccessor;
-    protected readonly IOptionsMonitor<ILog> _options;
+    protected readonly ILoggerProvider _options;
     protected readonly IHttpClientFactory _clientFactory;
 
     public BaseStorage(
@@ -53,7 +53,8 @@ public abstract class BaseStorage : IDataStore
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
+        ILogger logger,
         IHttpClientFactory clientFactory)
     {
 
@@ -63,7 +64,7 @@ public abstract class BaseStorage : IDataStore
         _temailValidationKeyProvider = emailValidationKeyProvider;
         _options = options;
         _clientFactory = clientFactory;
-        Logger = options.CurrentValue;
+        Logger = logger;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -320,7 +321,6 @@ public abstract class BaseStorage : IDataStore
     public abstract string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize,
                                          string contentType, string contentDisposition, string submitLabel);
 
-    public abstract Task<string> GetUploadedUrlAsync(string domain, string directoryPath);
     public abstract string GetUploadUrl();
 
     public abstract string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,

@@ -29,7 +29,8 @@ namespace ASC.Core.Notify.Senders;
 [Singletone]
 public class SmtpSender : INotifySender
 {
-    protected ILog _logger;
+    protected ILogger _logger;
+    private IDictionary<string, string> _initProperties;
     protected readonly IConfiguration _configuration;
     protected IServiceProvider _serviceProvider;
 
@@ -43,41 +44,17 @@ public class SmtpSender : INotifySender
     public SmtpSender(
         IConfiguration configuration,
         IServiceProvider serviceProvider,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
-        _logger = options.Get("ASC.Notify");
+        _initProperties = new Dictionary<string, string>();
+        _logger = options.CreateLogger("ASC.Notify");
         _configuration = configuration;
         _serviceProvider = serviceProvider;
     }
 
     public virtual void Init(IDictionary<string, string> properties)
     {
-        if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
-        {
-            _useCoreSettings = true;
-        }
-        else
-        {
-            _host = properties["host"];
-            _port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
-            _ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
-            if (properties.TryGetValue("userName", out var property))
-            {
-                _credentials = new NetworkCredential(property, properties["password"]);
-            }
-        }
-    }
-
-    private void InitUseCoreSettings(CoreConfiguration configuration)
-    {
-        var s = configuration.SmtpSettings;
-
-        _host = s.Host;
-        _port = s.Port;
-        _ssl = s.EnableSSL;
-        _credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
-            ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword)
-            : null;
+        _initProperties = properties;
     }
 
     public virtual NoticeSendResult Send(NotifyMessage m)
@@ -94,14 +71,11 @@ public class SmtpSender : INotifySender
         {
             try
             {
-                if (_useCoreSettings)
-                {
-                    InitUseCoreSettings(configuration);
-                }
+                BuildSmtpSettings(configuration);
 
                 var mail = BuildMailMessage(m);
 
-                _logger.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
+                _logger.DebugSmtpSender(_host, _port, _ssl, _credentials != null);
 
                 smtpClient.Connect(_host, _port,
                     _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
@@ -116,7 +90,7 @@ public class SmtpSender : INotifySender
             }
             catch (Exception e)
             {
-                _logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
+                _logger.ErrorSend(m.TenantId, m.Reciever, e);
 
                 throw;
             }
@@ -178,6 +152,49 @@ public class SmtpSender : INotifySender
         return result;
     }
 
+    private void BuildSmtpSettings(CoreConfiguration configuration)
+    {
+        if (configuration.SmtpSettings.IsDefaultSettings && _initProperties.ContainsKey("host") && !string.IsNullOrEmpty(_initProperties["host"]))
+        {
+            _host = _initProperties["host"];
+
+            if (_initProperties.ContainsKey("port") && !string.IsNullOrEmpty(_initProperties["port"]))
+            {
+                _port = int.Parse(_initProperties["port"]);
+            }
+            else
+            {
+                _port = 25;
+            }
+
+            if (_initProperties.ContainsKey("enableSsl") && !string.IsNullOrEmpty(_initProperties["enableSsl"]))
+            {
+                _ssl = bool.Parse(_initProperties["enableSsl"]);
+            }
+            else
+            {
+                _ssl = false;
+            }
+
+            if (_initProperties.ContainsKey("userName"))
+            {
+                _credentials = new NetworkCredential(
+                     _initProperties["userName"],
+                     _initProperties["password"]);
+            }
+        }
+        else
+        {
+            var s = configuration.SmtpSettings;
+
+            _host = s.Host;
+            _port = s.Port;
+            _ssl = s.EnableSSL;
+            _credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
+                ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword)
+                : null;
+        }
+    }
     private MimeMessage BuildMailMessage(NotifyMessage m)
     {
         var mimeMessage = new MimeMessage
@@ -210,7 +227,7 @@ public class SmtpSender : INotifySender
                 ContentTransferEncoding = ContentEncoding.QuotedPrintable
             };
 
-            if (m.Attachments != null && m.Attachments.Count > 0)
+            if (m.Attachments != null && m.Attachments.Length > 0)
             {
                 var multipartRelated = new MultipartRelated
                 {
@@ -294,7 +311,7 @@ public class SmtpSender : INotifySender
             return new MimePart("image", extension.TrimStart('.'))
             {
                 ContentId = attachment.ContentId,
-                Content = new MimeContent(new MemoryStream(attachment.Content.ToByteArray())),
+                Content = new MimeContent(new MemoryStream(attachment.Content)),
                 ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
                 ContentTransferEncoding = ContentEncoding.Base64,
                 FileName = attachment.FileName

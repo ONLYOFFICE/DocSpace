@@ -24,6 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using JWT.Algorithms;
+using JWT.Builder;
+
 using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
@@ -44,12 +47,15 @@ public class FileHandler
 [Scope]
 public class FileHandlerService
 {
+        private readonly ThumbnailSettings _thumbnailSettings;
+
     public string FileHandlerPath
     {
         get { return _filesLinkUtility.FileHandlerPath; }
     }
 
     private readonly CompressToArchive _compressToArchive;
+    private readonly InstanceCrypto _instanceCrypto;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly TenantExtra _tenantExtra;
     private readonly AuthContext _authContext;
@@ -74,7 +80,7 @@ public class FileHandlerService
     private readonly TempStream _tempStream;
     private readonly UserManager _userManager;
     private readonly SocketManager _socketManager;
-    private readonly ILog _logger;
+    private readonly ILogger<FileHandlerService> _logger;
     private readonly IHttpClientFactory _clientFactory;
 
     public FileHandlerService(
@@ -83,7 +89,7 @@ public class FileHandlerService
         AuthContext authContext,
         SecurityContext securityContext,
         GlobalStore globalStore,
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<FileHandlerService> logger,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
         FileMarker fileMarker,
@@ -103,8 +109,10 @@ public class FileHandlerService
         IServiceProvider serviceProvider,
         TempStream tempStream,
         SocketManager socketManager,
-            CompressToArchive compressToArchive,
-        IHttpClientFactory clientFactory)
+        CompressToArchive compressToArchive,
+        InstanceCrypto instanceCrypto,
+        IHttpClientFactory clientFactory,
+        ThumbnailSettings thumbnailSettings)
     {
         _filesLinkUtility = filesLinkUtility;
         _tenantExtra = tenantExtra;
@@ -129,10 +137,12 @@ public class FileHandlerService
         _serviceProvider = serviceProvider;
         _socketManager = socketManager;
         _compressToArchive = compressToArchive;
+        _instanceCrypto = instanceCrypto;
         _tempStream = tempStream;
         _userManager = userManager;
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
         _clientFactory = clientFactory;
+            this._thumbnailSettings = thumbnailSettings;
     }
 
     public Task Invoke(HttpContext context)
@@ -154,6 +164,8 @@ public class FileHandlerService
             switch ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").ToLower())
             {
                 case "view":
+                    await DownloadFile(context, true).ConfigureAwait(false);
+                    break;
                 case "download":
                     await DownloadFile(context).ConfigureAwait(false);
                     break;
@@ -203,13 +215,22 @@ public class FileHandlerService
             return;
         }
 
-        var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
+        var filename = context.Request.Query["filename"]; if (String.IsNullOrEmpty(filename))
+        {
+            var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
+            filename = FileConstant.DownloadTitle + ext;
+        }
+        else
+        {
+            filename = _instanceCrypto.Decrypt(Uri.UnescapeDataString(filename));
+        }
+
+        var path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
         var store = _globalStore.GetStore();
-        var path = string.Format(@"{0}\{1}{2}", _securityContext.CurrentAccount.ID, FileConstant.DownloadTitle, ext);
 
         if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
         {
-            _logger.ErrorFormat("BulkDownload file error. File is not exist on storage. UserId: {0}.", _authContext.CurrentAccount.ID);
+            _logger.ErrorBulkDownloadFile(_authContext.CurrentAccount.ID);
             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
             return;
         }
@@ -223,10 +244,10 @@ public class FileHandlerService
         }
 
         context.Response.Clear();
-        await InternalBulkDownloadFile(context, store, path, ext);
+        await InternalBulkDownloadFile(context, store, path, filename);
     }
 
-    private async Task InternalBulkDownloadFile(HttpContext context, IDataStore store, string path, string ext)
+    private async Task InternalBulkDownloadFile(HttpContext context, IDataStore store, string path, string filename)
     {
         try
         {
@@ -241,7 +262,7 @@ public class FileHandlerService
                     readStream.Seek(offset, SeekOrigin.Begin);
                 }
 
-                await SendStreamByChunksAsync(context, length, FileConstant.DownloadTitle + ext, readStream, flushed);
+                await SendStreamByChunksAsync(context, length, filename, readStream, flushed);
             }
 
             await context.Response.Body.FlushAsync();
@@ -251,26 +272,26 @@ public class FileHandlerService
         }
         catch (Exception e)
         {
-            _logger.ErrorFormat("BulkDownloadFile failed for user {0} with error: ", _securityContext.CurrentAccount.ID, e.Message);
+            _logger.ErrorBulkDownloadFileFailed(_securityContext.CurrentAccount.ID, e);
             throw new HttpException((int)HttpStatusCode.BadRequest, e.Message);
         }
     }
 
-    private async Task DownloadFile(HttpContext context)
+    private async Task DownloadFile(HttpContext context, bool forView = false)
     {
         var q = context.Request.Query[FilesLinkUtility.FileId];
 
         if (int.TryParse(q, out var id))
         {
-            await DownloadFile(context, id);
+            await DownloadFile(context, id, forView);
         }
         else
         {
-            await DownloadFile(context, q.FirstOrDefault() ?? "");
+            await DownloadFile(context, q.FirstOrDefault() ?? "", forView);
         }
     }
 
-    private async Task DownloadFile<T>(HttpContext context, T id)
+    private async Task DownloadFile<T>(HttpContext context, T id, bool forView)
     {
         var flushed = false;
         try
@@ -278,12 +299,13 @@ public class FileHandlerService
             var doc = context.Request.Query[FilesLinkUtility.DocShareKey].FirstOrDefault() ?? "";
 
             var fileDao = _daoFactory.GetFileDao<T>();
-            var (readLink, file) = await _fileShareLink.CheckAsync(doc, true, fileDao);
+            int version = 0;
+            var (readLink, file, linkShare) = await _fileShareLink.CheckAsync(doc, true, fileDao);
             if (!readLink && file == null)
             {
                 await fileDao.InvalidateCacheAsync(id);
 
-                file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
+                file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out version) && version > 0
                            ? await fileDao.GetFileAsync(id, version)
                            : await fileDao.GetFileAsync(id);
             }
@@ -295,7 +317,13 @@ public class FileHandlerService
                 return;
             }
 
-            if (!readLink && !await _fileSecurity.CanReadAsync(file))
+            if (!readLink && !await _fileSecurity.CanDownloadAsync(file))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return;
+            }
+
+            if (readLink && (linkShare == FileShare.Comment || linkShare == FileShare.Read) && file.DenyDownload)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
@@ -308,7 +336,7 @@ public class FileHandlerService
 
             if (!await fileDao.IsExistOnStorageAsync(file))
             {
-                _logger.ErrorFormat("Download file error. File is not exist on storage. File id: {0}.", file.Id);
+                _logger.ErrorDownloadFile2(file.Id.ToString());
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
                 return;
@@ -321,7 +349,27 @@ public class FileHandlerService
             //TODO
             //context.Response.Headers.Charset = "utf-8";
 
-            _filesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
+            var range = (context.Request.Headers["Range"].FirstOrDefault() ?? "").Split(new[] { '=', '-' });
+            var isNeedSendAction = range.Count() < 2 || Convert.ToInt64(range[1]) == 0;
+
+            if (isNeedSendAction)
+            {
+                if (forView)
+                {
+                    _filesMessageService.Send(file, MessageAction.FileReaded, file.Title);
+                }
+                else
+                {
+                    if (version == 0)
+                    {
+                        _filesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
+                    }
+                    else
+                    {
+                        _filesMessageService.Send(file, MessageAction.FileRevisionDownloaded, file.Title, file.Version.ToString());
+                    }
+                }
+            }
 
             if (string.Equals(context.Request.Headers["If-None-Match"], GetEtag(file)))
             {
@@ -364,7 +412,7 @@ public class FileHandlerService
                             {
                                 fileStream = await fileDao.GetFileStreamAsync(file);
 
-                                _logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.Id);
+                                _logger.InformationConvertingToMp4(file.Title, file.Id.ToString());
                                 var stream = await _fFmpegService.Convert(fileStream, ext);
                                 await store.SaveAsync(string.Empty, mp4Path, stream, mp4Name);
                             }
@@ -435,11 +483,11 @@ public class FileHandlerService
                 }
                 catch (ThreadAbortException tae)
                 {
-                    _logger.Error("DownloadFile", tae);
+                    _logger.ErrorDownloadFile(tae);
                 }
                 catch (HttpException e)
                 {
-                    _logger.Error("DownloadFile", e);
+                    _logger.ErrorDownloadFile(e);
                     throw new HttpException((int)HttpStatusCode.BadRequest, e.Message);
                 }
                 finally
@@ -460,13 +508,13 @@ public class FileHandlerService
                 }
                 catch (HttpException ex)
                 {
-                    _logger.Error("DownloadFile", ex);
+                    _logger.ErrorDownloadFile(ex);
                 }
             }
         }
         catch (ThreadAbortException tae)
         {
-            _logger.Error("DownloadFile", tae);
+            _logger.ErrorDownloadFile(tae);
         }
         catch (Exception ex)
         {
@@ -477,7 +525,7 @@ public class FileHandlerService
             // Get the line number from the stack frame
             var line = frame.GetFileLineNumber();
 
-            _logger.ErrorFormat("Url: {0} {1} IsClientConnected:{2}, line number:{3} frame:{4}", context.Request.Url(), ex, !context.RequestAborted.IsCancellationRequested, line, frame);
+            _logger.ErrorUrl(context.Request.Url(), !context.RequestAborted.IsCancellationRequested, line, frame, ex);
             if (!flushed && !context.RequestAborted.IsCancellationRequested)
             {
                 context.Response.StatusCode = 400;
@@ -518,7 +566,7 @@ public class FileHandlerService
             throw new HttpException(HttpStatusCode.RequestedRangeNotSatisfiable);
         }
 
-        _logger.InfoFormat("Starting file download (chunk {0}-{1})", offset, endOffset);
+        _logger.InformationStartingFileDownLoad(offset, endOffset);
         if (length < fullLength)
         {
             context.Response.StatusCode = (int)HttpStatusCode.PartialContent;
@@ -588,7 +636,7 @@ public class FileHandlerService
                 {
                     var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
 
-                    _logger.Error($"{FilesLinkUtility.AuthKey} {validateResult}: {context.Request.Url()}", exc);
+                    _logger.Error(FilesLinkUtility.AuthKey, validateResult, context.Request.Url(), exc);
 
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
@@ -607,9 +655,16 @@ public class FileHandlerService
 
                         header = header.Substring("Bearer ".Length);
 
-                        var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
+#pragma warning disable CS0618 // Type or member is obsolete
+                        var stringPayload = JwtBuilder.Create()
+                                                .WithAlgorithm(new HMACSHA256Algorithm())
+                                                .WithSerializer(new JwtSerializer())
+                                                .WithSecret(_fileUtility.SignatureSecret)
+                                                .MustVerifySignature()
+                                                .Decode(header);
+#pragma warning restore CS0618 // Type or member is obsolete
 
-                        _logger.Debug("DocService StreamFile payload: " + stringPayload);
+                        _logger.DebugDocServiceStreamFilePayload(stringPayload);
                         //var data = JObject.Parse(stringPayload);
                         //if (data == null)
                         //{
@@ -631,7 +686,7 @@ public class FileHandlerService
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("Download stream header " + context.Request.Url(), ex);
+                        _logger.ErrorDownloadStreamHeader(context.Request.Url(), ex);
                         context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                         await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
                         return;
@@ -653,7 +708,7 @@ public class FileHandlerService
                 return;
             }
 
-            if (linkRight == FileShare.Restrict && _securityContext.IsAuthenticated && !await _fileSecurity.CanReadAsync(file))
+            if (linkRight == FileShare.Restrict && _securityContext.IsAuthenticated && !await _fileSecurity.CanDownloadAsync(file))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
@@ -678,7 +733,7 @@ public class FileHandlerService
         }
         catch (Exception ex)
         {
-            _logger.Error("Error for: " + context.Request.Url(), ex);
+            _logger.ErrorForUrl(context.Request.Url(), ex);
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             await context.Response.WriteAsync(ex.Message);
             return;
@@ -693,7 +748,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.ErrorFormat("StreamFile", he);
+            _logger.ErrorStreamFile(he);
         }
     }
 
@@ -714,9 +769,16 @@ public class FileHandlerService
 
                     header = header.Substring("Bearer ".Length);
 
-                    var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
+#pragma warning disable CS0618 // Type or member is obsolete
+                    var stringPayload = JwtBuilder.Create()
+                                                    .WithAlgorithm(new HMACSHA256Algorithm())
+                                                    .WithSerializer(new JwtSerializer())
+                                                    .WithSecret(_fileUtility.SignatureSecret)
+                                                    .MustVerifySignature()
+                                                    .Decode(header);
+#pragma warning restore CS0618 // Type or member is obsolete
 
-                    _logger.Debug("DocService EmptyFile payload: " + stringPayload);
+                    _logger.DebugDocServiceStreamFilePayload(stringPayload);
                     //var data = JObject.Parse(stringPayload);
                     //if (data == null)
                     //{
@@ -738,7 +800,7 @@ public class FileHandlerService
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error("Download stream header " + context.Request.Url(), ex);
+                    _logger.ErrorDownloadStreamHeader(context.Request.Url(), ex);
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
                     return;
@@ -772,7 +834,7 @@ public class FileHandlerService
         }
         catch (Exception ex)
         {
-            _logger.Error("Error for: " + context.Request.Url(), ex);
+            _logger.ErrorForUrl(context.Request.Url(), ex);
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             await context.Response.WriteAsync(ex.Message);
             return;
@@ -786,7 +848,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.ErrorFormat("EmptyFile", he);
+            _logger.ErrorEmptyFile(he);
         }
     }
 
@@ -800,7 +862,7 @@ public class FileHandlerService
         {
             var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
 
-            _logger.Error($"{FilesLinkUtility.AuthKey} {validateResult}: {context.Request.Url()}", exc);
+            _logger.Error(FilesLinkUtility.AuthKey, validateResult, context.Request.Url(), exc);
 
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
@@ -838,7 +900,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.ErrorFormat("TempFile", he);
+            _logger.ErrorTempFile(he);
         }
     }
 
@@ -873,7 +935,7 @@ public class FileHandlerService
                 {
                     var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
 
-                    _logger.Error($"{FilesLinkUtility.AuthKey} {validateResult}: {context.Request.Url()}", exc);
+                    _logger.Error(FilesLinkUtility.AuthKey, validateResult, context.Request.Url(), exc);
 
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
@@ -921,7 +983,7 @@ public class FileHandlerService
         {
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             await context.Response.WriteAsync(ex.Message);
-            _logger.Error("Error for: " + context.Request.Url(), ex);
+            _logger.ErrorForUrl(context.Request.Url(), ex);
             return;
         }
 
@@ -933,7 +995,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.ErrorFormat("DifferenceFile", he);
+            _logger.ErrorDifferenceFile(he);
         }
     }
 
@@ -955,7 +1017,26 @@ public class FileHandlerService
     {
         try
         {
-            var fileDao = _daoFactory.GetFileDao<T>();
+                var defaultSize = _thumbnailSettings.Sizes.FirstOrDefault();
+
+                if (defaultSize == null)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return;
+                }
+
+                var width = defaultSize.Width;
+                var height = defaultSize.Height;
+
+                var size = context.Request.Query["size"].ToString() ?? "";
+                var sizes = size.Split('x');
+                if (sizes.Length == 2)
+                {
+                    _ = int.TryParse(sizes[0], out width);
+                    _ = int.TryParse(sizes[1], out height);
+                }
+
+                var fileDao = _daoFactory.GetFileDao<T>();
             var file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
                ? await fileDao.GetFileAsync(id, version)
                : await fileDao.GetFileAsync(id);
@@ -988,7 +1069,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 
-            using (var stream = await fileDao.GetThumbnailAsync(file))
+                using (var stream = await fileDao.GetThumbnailAsync(file, width, height))
             {
                 context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                 await stream.CopyToAsync(context.Response.Body);
@@ -996,14 +1077,14 @@ public class FileHandlerService
         }
         catch (FileNotFoundException ex)
         {
-            _logger.Error("Error for: " + context.Request.Url(), ex);
+            _logger.ErrorForUrl(context.Request.Url(), ex);
             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
             await context.Response.WriteAsync(ex.Message);
             return;
         }
         catch (Exception ex)
         {
-            _logger.Error("Error for: " + context.Request.Url(), ex);
+            _logger.ErrorForUrl(context.Request.Url(), ex);
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             await context.Response.WriteAsync(ex.Message);
             return;
@@ -1016,7 +1097,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.ErrorFormat("Thumbnail", he);
+            _logger.ErrorThumbnail(he);
         }
     }
 
@@ -1119,7 +1200,7 @@ public class FileHandlerService
 
     private async Task InternalWriteError(HttpContext context, Exception ex, bool responseMessage)
     {
-        _logger.Error(ex);
+        _logger.ErrorFileHandler(ex);
 
         if (responseMessage)
         {
@@ -1298,13 +1379,13 @@ public class FileHandlerService
     private Task TrackFile<T>(HttpContext context, T fileId)
     {
         var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
-        _logger.Debug("DocService track fileid: " + fileId);
+        _logger.DebugDocServiceTrackFileid(fileId.ToString());
 
         var callbackSpan = TimeSpan.FromDays(128);
         var validateResult = _emailValidationKeyProvider.ValidateEmailKey(fileId.ToString(), auth ?? "", callbackSpan);
         if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
         {
-            _logger.ErrorFormat("DocService track auth error: {0}, {1}: {2}", validateResult.ToString(), FilesLinkUtility.AuthKey, auth);
+            _logger.ErrorDocServiceTrackAuth(validateResult, FilesLinkUtility.AuthKey, auth);
             throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
         }
 
@@ -1321,7 +1402,7 @@ public class FileHandlerService
             using var readStream = new StreamReader(receiveStream);
             body = await readStream.ReadToEndAsync();
 
-            _logger.Debug("DocService track body: " + body);
+            _logger.DebugDocServiceTrackBody(body);
             if (string.IsNullOrEmpty(body))
             {
                 throw new ArgumentException("DocService request body is incorrect");
@@ -1336,12 +1417,12 @@ public class FileHandlerService
         }
         catch (JsonException e)
         {
-            _logger.Error("DocService track error read body", e);
+            _logger.ErrorDocServiceTrackReadBody(e);
             throw new HttpException((int)HttpStatusCode.BadRequest, "DocService request is incorrect");
         }
         catch (Exception e)
         {
-            _logger.Error("DocService track error read body", e);
+            _logger.ErrorDocServiceTrackReadBody(e);
             throw new HttpException((int)HttpStatusCode.BadRequest, e.Message);
         }
 
@@ -1351,7 +1432,15 @@ public class FileHandlerService
             {
                 try
                 {
-                    var dataString = JsonWebToken.Decode(fileData.Token, _fileUtility.SignatureSecret);
+#pragma warning disable CS0618 // Type or member is obsolete
+                    var dataString = JwtBuilder.Create()
+                            .WithAlgorithm(new HMACSHA256Algorithm())
+                            .WithSerializer(new JwtSerializer())
+                            .WithSecret(_fileUtility.SignatureSecret)
+                            .MustVerifySignature()
+                            .Decode(fileData.Token);
+#pragma warning restore CS0618 // Type or member is obsolete
+
                     var data = JObject.Parse(dataString);
                     if (data == null)
                     {
@@ -1361,7 +1450,7 @@ public class FileHandlerService
                 }
                 catch (SignatureVerificationException ex)
                 {
-                    _logger.Error("DocService track header", ex);
+                    _logger.ErrorDocServiceTrackHeader(ex);
                     throw new HttpException((int)HttpStatusCode.Forbidden, ex.Message);
                 }
             }
@@ -1371,16 +1460,23 @@ public class FileHandlerService
                 var header = context.Request.Headers[_fileUtility.SignatureHeader].FirstOrDefault();
                 if (string.IsNullOrEmpty(header) || !header.StartsWith("Bearer "))
                 {
-                    _logger.Error("DocService track header is null");
+                    _logger.ErrorDocServiceTrackHeaderIsNull();
                     throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
                 }
                 header = header.Substring("Bearer ".Length);
 
                 try
                 {
-                    var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
+#pragma warning disable CS0618 // Type or member is obsolete
+                    var stringPayload = JwtBuilder.Create()
+                            .WithAlgorithm(new HMACSHA256Algorithm())
+                            .WithSerializer(new JwtSerializer())
+                            .WithSecret(_fileUtility.SignatureSecret)
+                            .MustVerifySignature()
+                            .Decode(header);
+#pragma warning restore CS0618 // Type or member is obsolete
 
-                    _logger.Debug("DocService track payload: " + stringPayload);
+                    _logger.DebugDocServiceTrackPayload(stringPayload);
                     var jsonPayload = JObject.Parse(stringPayload);
                     var data = jsonPayload["payload"];
                     if (data == null)
@@ -1391,7 +1487,7 @@ public class FileHandlerService
                 }
                 catch (SignatureVerificationException ex)
                 {
-                    _logger.Error("DocService track header", ex);
+                    _logger.ErrorDocServiceTrackHeader(ex);
                     throw new HttpException((int)HttpStatusCode.Forbidden, ex.Message);
                 }
             }
@@ -1404,7 +1500,7 @@ public class FileHandlerService
         }
         catch (Exception e)
         {
-            _logger.Error("DocService track:", e);
+            _logger.ErrorDocServiceTrack(e);
             throw new HttpException((int)HttpStatusCode.BadRequest, e.Message);
         }
         result ??= new TrackResponse();

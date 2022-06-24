@@ -24,14 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.Web.Studio.UserControls.FirstTime;
 
 [Transient]
 public class FirstTimeTenantSettings
 {
-    private readonly ILog _log;
+    private readonly ILogger<FirstTimeTenantSettings> _log;
     private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
     private readonly SettingsManager _settingsManager;
@@ -47,7 +45,7 @@ public class FirstTimeTenantSettings
     private readonly IHttpClientFactory _clientFactory;
 
     public FirstTimeTenantSettings(
-        ILog logger,
+        ILogger<FirstTimeTenantSettings> logger,
         TenantManager tenantManager,
         TenantExtra tenantExtra,
         SettingsManager settingsManager,
@@ -102,7 +100,7 @@ public class FirstTimeTenantSettings
                 tenant = _tenantManager.GetTenant(tenant.Id);
                 if (tenant.OwnerId == Guid.Empty)
                 {
-                    _log.Error(tenant.Id + ": owner id is empty.");
+                    _log.ErrorOwnerEmpty(tenant.Id);
                 }
             }
 
@@ -136,7 +134,7 @@ public class FirstTimeTenantSettings
                 }
                 catch (Exception err)
                 {
-                    _log.Error("Incorrect Promo: " + promocode, err);
+                    _log.ErrorIncorrectPromo(promocode, err);
                     throw new Exception(Resource.EmailAndPasswordIncorrectPromocode);
                 }
             }
@@ -182,7 +180,7 @@ public class FirstTimeTenantSettings
         }
         catch (Exception ex)
         {
-            _log.Error(ex);
+            _log.ErrorFirstTimeTenantSettings(ex);
             throw;
         }
     }
@@ -210,7 +208,7 @@ public class FirstTimeTenantSettings
         }
         catch (Exception err)
         {
-            _log.Error(err);
+            _log.ErrorTrySetLanguage(err);
         }
     }
 
@@ -242,11 +240,11 @@ public class FirstTimeTenantSettings
                     _amiId = reader.ReadToEnd();
                 }
 
-                _log.Debug("Instance id: " + _amiId);
+                _log.DebugInstanceId(_amiId);
             }
             catch (Exception e)
             {
-                _log.Error("Request AMI id", e);
+                _log.ErrorRequestAMIId(e);
             }
         }
 
@@ -281,12 +279,12 @@ public class FirstTimeTenantSettings
             var httpClient = _clientFactory.CreateClient();
             using var response = httpClient.Send(request);
 
-            _log.Debug("Subscribe response: " + response);//toto write
+            _log.DebugSubscribeResponse(response);//toto write
 
         }
         catch (Exception e)
         {
-            _log.Error("Subscribe request", e);
+            _log.ErrorSubscribeRequest(e);
         }
     }
 }

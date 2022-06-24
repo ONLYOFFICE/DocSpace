@@ -24,6 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Data.Storage.Encryption.IntegrationEvents.Events;
+using ASC.EventBus.Abstractions;
+
 namespace ASC.Web.Api.Controllers.Settings;
 
 public class StorageController : BaseSettingsController
@@ -42,17 +45,19 @@ public class StorageController : BaseSettingsController
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly StorageSettingsHelper _storageSettingsHelper;
     private readonly ServiceClient _serviceClient;
-    private readonly EncryptionServiceClient _encryptionServiceClient;
     private readonly EncryptionSettingsHelper _encryptionSettingsHelper;
     private readonly BackupAjaxHandler _backupAjaxHandler;
     private readonly ICacheNotify<DeleteSchedule> _cacheDeleteSchedule;
     private readonly EncryptionWorker _encryptionWorker;
-    private readonly ILog _log;
+    private readonly ILogger _log;
+    private readonly IEventBus _eventBus;
+    private readonly ASC.Core.SecurityContext _securityContext;
 
     public StorageController(
-        IOptionsMonitor<ILog> option,
+        ILoggerProvider option,
         ServiceClient serviceClient,
         MessageService messageService,
+        ASC.Core.SecurityContext securityContext,
         StudioNotifyService studioNotifyService,
         ApiContext apiContext,
         TenantManager tenantManager,
@@ -66,14 +71,15 @@ public class StorageController : BaseSettingsController
         IWebHostEnvironment webHostEnvironment,
         ConsumerFactory consumerFactory,
         IMemoryCache memoryCache,
-        EncryptionServiceClient encryptionServiceClient,
+        IEventBus eventBus,
         EncryptionSettingsHelper encryptionSettingsHelper,
         BackupAjaxHandler backupAjaxHandler,
         ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
         EncryptionWorker encryptionWorker,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _log = option.Get("ASC.Api");
+        _log = option.CreateLogger("ASC.Api");
+        _eventBus = eventBus;
         _serviceClient = serviceClient;
         _webHostEnvironment = webHostEnvironment;
         _consumerFactory = consumerFactory;
@@ -86,14 +92,14 @@ public class StorageController : BaseSettingsController
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
         _storageSettingsHelper = storageSettingsHelper;
-        _encryptionServiceClient = encryptionServiceClient;
         _encryptionSettingsHelper = encryptionSettingsHelper;
         _backupAjaxHandler = backupAjaxHandler;
         _cacheDeleteSchedule = cacheDeleteSchedule;
         _encryptionWorker = encryptionWorker;
+        _securityContext = securityContext;
     }
 
-    [Read("storage")]
+    [HttpGet("storage")]
     public List<StorageDto> GetAllStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -105,7 +111,8 @@ public class StorageController : BaseSettingsController
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
-    [Read("storage/progress", false)]
+    [AllowNotPayment]
+    [HttpGet("storage/progress")]
     public double GetStorageProgress()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -120,20 +127,8 @@ public class StorageController : BaseSettingsController
 
     public readonly object Locker = new object();
 
-    [Create("encryption/start")]
-    public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionRequestsDto inDto)
-    {
-        return StartStorageEncryption(inDto);
-    }
-
-    [Create("encryption/start")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool StartStorageEncryptionFromForm([FromForm] StorageEncryptionRequestsDto inDto)
-    {
-        return StartStorageEncryption(inDto);
-    }
-
-    private bool StartStorageEncryption(StorageEncryptionRequestsDto inDto)
+    [HttpPost("encryption/start")]
+    public bool StartStorageEncryption(StorageEncryptionRequestsDto inDto)
     {
         if (_coreBaseSettings.CustomMode)
         {
@@ -167,11 +162,6 @@ public class StorageController : BaseSettingsController
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         _tenantExtra.DemandControlPanelPermission();
-
-        if (!_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).DiscEncryption)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
-        }
 
         var storages = GetAllStorages();
 
@@ -243,14 +233,19 @@ public class StorageController : BaseSettingsController
 
         _encryptionSettingsHelper.Save(settings);
 
-        var encryptionSettingsProto = new EncryptionSettingsProto
-        {
-            NotifyUsers = settings.NotifyUsers,
-            Password = settings.Password,
-            Status = settings.Status,
-            ServerRootPath = serverRootPath
-        };
-        _encryptionServiceClient.Start(encryptionSettingsProto);
+        _eventBus.Publish(new EncryptionDataStorageRequestedIntegration
+        (
+              encryptionSettings: new EncryptionSettings
+              {
+                  NotifyUsers = settings.NotifyUsers,
+                  Password = settings.Password,
+                  Status = settings.Status
+              },
+              serverRootPath: serverRootPath,
+              createBy: _securityContext.CurrentAccount.ID,
+              tenantId: _tenantManager.GetCurrentTenant().Id
+
+        ));
     }
 
     /// <summary>
@@ -258,7 +253,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <returns>EncryptionSettings</returns>
     /// <visible>false</visible>
-    [Read("encryption/settings")]
+    [HttpGet("encryption/settings")]
     public EncryptionSettings GetStorageEncryptionSettings()
     {
         try
@@ -282,11 +277,6 @@ public class StorageController : BaseSettingsController
 
             _tenantExtra.DemandControlPanelPermission();
 
-            if (!_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).DiscEncryption)
-            {
-                throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
-            }
-
             var settings = _encryptionSettingsHelper.Load();
 
             settings.Password = string.Empty; // Don't show password
@@ -295,12 +285,12 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("GetStorageEncryptionSettings", e);
+            _log.ErrorGetStorageEncryptionSettings(e);
             return null;
         }
     }
 
-    [Read("encryption/progress")]
+    [HttpGet("encryption/progress")]
     public double? GetStorageEncryptionProgress()
     {
         if (_coreBaseSettings.CustomMode)
@@ -318,28 +308,11 @@ public class StorageController : BaseSettingsController
             throw new NotSupportedException();
         }
 
-        if (!_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).DiscEncryption)
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
-        }
-
         return _encryptionWorker.GetEncryptionProgress();
     }
 
-    [Update("storage")]
-    public StorageSettings UpdateStorageFromBody([FromBody] StorageRequestsDto inDto)
-    {
-        return UpdateStorage(inDto);
-    }
-
-    [Update("storage")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public StorageSettings UpdateStorageFromForm([FromForm] StorageRequestsDto inDto)
-    {
-        return UpdateStorage(inDto);
-    }
-
-    private StorageSettings UpdateStorage(StorageRequestsDto inDto)
+    [HttpPut("storage")]
+    public StorageSettings UpdateStorage(StorageRequestsDto inDto)
     {
         try
         {
@@ -371,12 +344,12 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("UpdateStorage", e);
+            _log.ErrorUpdateStorage(e);
             throw;
         }
     }
 
-    [Delete("storage")]
+    [HttpDelete("storage")]
     public void ResetStorageToDefault()
     {
         try
@@ -399,12 +372,12 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("ResetStorageToDefault", e);
+            _log.ErrorResetStorageToDefault(e);
             throw;
         }
     }
 
-    [Read("storage/cdn")]
+    [HttpGet("storage/cdn")]
     public List<StorageDto> GetAllCdnStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -420,20 +393,8 @@ public class StorageController : BaseSettingsController
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
-    [Update("storage/cdn")]
-    public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageRequestsDto inDto)
-    {
-        return UpdateCdn(inDto);
-    }
-
-    [Update("storage/cdn")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public CdnStorageSettings UpdateCdnFromForm([FromForm] StorageRequestsDto inDto)
-    {
-        return UpdateCdn(inDto);
-    }
-
-    private CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
+    [HttpPut("storage/cdn")]
+    public CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         if (!_coreBaseSettings.Standalone)
@@ -464,14 +425,14 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("UpdateCdn", e);
+            _log.ErrorUpdateCdn(e);
             throw;
         }
 
         return settings;
     }
 
-    [Delete("storage/cdn")]
+    [HttpDelete("storage/cdn")]
     public void ResetCdnToDefault()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -485,7 +446,7 @@ public class StorageController : BaseSettingsController
         _storageSettingsHelper.Clear(_settingsManager.Load<CdnStorageSettings>());
     }
 
-    [Read("storage/backup")]
+    [HttpGet("storage/backup")]
     public List<StorageDto> GetAllBackupStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

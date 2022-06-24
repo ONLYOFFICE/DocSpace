@@ -41,12 +41,11 @@ public class StudioNotifyHelper
     private readonly UserManager _userManager;
     private readonly SettingsManager _settingsManager;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly SetupInfo _setupInfo;
     private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly WebImageSupplier _webImageSupplier;
-    private readonly ILog _logger;
+    private readonly ILogger<StudioNotifyHelper> _logger;
 
     public StudioNotifyHelper(
         StudioNotifySource studioNotifySource,
@@ -54,20 +53,18 @@ public class StudioNotifyHelper
         SettingsManager settingsManager,
         AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
         CommonLinkUtility commonLinkUtility,
-        SetupInfo setupInfo,
         TenantManager tenantManager,
         TenantExtra tenantExtra,
         CoreBaseSettings coreBaseSettings,
         WebImageSupplier webImageSupplier,
         IConfiguration configuration,
-            ILog logger)
+        ILogger<StudioNotifyHelper> logger)
     {
         Helplink = commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false);
         NotifySource = studioNotifySource;
         _userManager = userManager;
         _settingsManager = settingsManager;
         _commonLinkUtility = commonLinkUtility;
-        _setupInfo = setupInfo;
         _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;
         _coreBaseSettings = coreBaseSettings;
@@ -165,7 +162,7 @@ public class StudioNotifyHelper
                 {
                     res = res.Take(mayTake).ToList();
 
-                    _logger.Warn(string.Format("Free tenant {0} for today is trying to send {1} more letters without checking activation. Sent {2}", tenant.Id, tryCount, mayTake));
+                    _logger.WarningFreeTenant(tenant.Id, tryCount, mayTake);
                 }
                 spamEmailSettings.MailsSended = sended + tryCount;
                 _settingsManager.Save(spamEmailSettings);

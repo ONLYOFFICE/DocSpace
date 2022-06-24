@@ -71,11 +71,12 @@ public class DiscDataStore : BaseStorage
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
+        ILogger<DiscDataStore> logger,
         EncryptionSettingsHelper encryptionSettingsHelper,
-            EncryptionFactory encryptionFactory,
-            IHttpClientFactory clientFactory)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
+        EncryptionFactory encryptionFactory,
+        IHttpClientFactory clientFactory)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, clientFactory)
     {
         _encryptionSettingsHelper = encryptionSettingsHelper;
         _encryptionFactory = encryptionFactory;
@@ -142,7 +143,7 @@ public class DiscDataStore : BaseStorage
 
     public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
-        Logger.Debug("Save " + path);
+        Logger.DebugSavePath(path);
 
         var buffered = _tempStream.GetBuffered(stream);
         if (QuotaController != null)
@@ -507,11 +508,6 @@ public class DiscDataStore : BaseStorage
     }
 
     public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize, string contentType, string contentDisposition, string submitLabel)
-    {
-        throw new NotSupportedException("This operation supported only on s3 storage");
-    }
-
-    public override Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
     {
         throw new NotSupportedException("This operation supported only on s3 storage");
     }

@@ -37,14 +37,14 @@ public class Token : OAuth20Token
         App = app;
     }
 
-    public string GetRefreshedToken(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper)
+        public string GetRefreshedToken(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper, ThirdPartySelector thirdPartySelector)
     {
         if (IsExpired)
         {
-            var app = ThirdPartySelector.GetApp(App);
+                var app = thirdPartySelector.GetApp(App);
             try
             {
-                tokenHelper.Logger.Debug("Refresh token for app: " + App);
+                tokenHelper.Logger.DebugRefreshToken(App);
 
                 var refreshUrl = app.GetRefreshUrl();
 
@@ -62,7 +62,7 @@ public class Token : OAuth20Token
             }
             catch (Exception ex)
             {
-                tokenHelper.Logger.Error("Refresh token for app: " + app, ex);
+                tokenHelper.Logger.ErrorRefreshToken(App, ex);
             }
         }
 
@@ -73,7 +73,7 @@ public class Token : OAuth20Token
 [Scope]
 public class TokenHelper
 {
-    public ILog Logger;
+    public ILogger<TokenHelper> Logger;
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
     private readonly InstanceCrypto _instanceCrypto;
@@ -82,12 +82,12 @@ public class TokenHelper
 
     public TokenHelper(
         DbContextManager<FilesDbContext> dbContextManager,
-        IOptionsMonitor<ILog> option,
+        ILogger<TokenHelper> logger,
         InstanceCrypto instanceCrypto,
         AuthContext authContext,
         TenantManager tenantManager)
     {
-        Logger = option.CurrentValue;
+        Logger = logger;
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
         _instanceCrypto = instanceCrypto;
         _authContext = authContext;

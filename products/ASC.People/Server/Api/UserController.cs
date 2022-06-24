@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Security.Claims;
+using ASC.Common.Caching;
 
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
@@ -35,13 +35,15 @@ public class UserController : PeopleControllerBase
 {
     private Tenant Tenant => _apiContext.Tenant;
 
+    private readonly ICache _cache;
+    private readonly TenantManager _tenantManager;
     private readonly Constants _constants;
     private readonly CookiesManager _cookiesManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CustomNamingPeople _customNamingPeople;
     private readonly EmployeeDtoHelper _employeeDtoHelper;
     private readonly EmployeeFullDtoHelper _employeeFullDtoHelper;
-    private readonly ILog _logger;
+    private readonly ILogger<UserController> _logger;
     private readonly PasswordHasher _passwordHasher;
     private readonly QueueWorkerReassign _queueWorkerReassign;
     private readonly QueueWorkerRemove _queueWorkerRemove;
@@ -62,15 +64,20 @@ public class UserController : PeopleControllerBase
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
     private readonly SettingsManager _settingsManager;
+    private readonly FileSecurity _fileSecurity;
+    private readonly IDaoFactory _daoFactory;
+    private readonly EmailValidationKeyProvider _validationKeyProvider;
 
     public UserController(
+        ICache cache,
+        TenantManager tenantManager,
         Constants constants,
         CookiesManager cookiesManager,
         CoreBaseSettings coreBaseSettings,
         CustomNamingPeople customNamingPeople,
         EmployeeDtoHelper employeeDtoHelper,
         EmployeeFullDtoHelper employeeFullDtoHelper,
-        ILog logger,
+        ILogger<UserController> logger,
         PasswordHasher passwordHasher,
         QueueWorkerReassign queueWorkerReassign,
         QueueWorkerRemove queueWorkerRemove,
@@ -96,9 +103,14 @@ public class UserController : PeopleControllerBase
         UserPhotoManager userPhotoManager,
         IHttpClientFactory httpClientFactory,
         IHttpContextAccessor httpContextAccessor,
-        SettingsManager settingsManager)
+        SettingsManager settingsManager,
+        FileSecurity fileSecurity,
+        IDaoFactory daoFactory,
+        EmailValidationKeyProvider validationKeyProvider)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
+        _cache = cache;
+        _tenantManager = tenantManager;
         _constants = constants;
         _cookiesManager = cookiesManager;
         _coreBaseSettings = coreBaseSettings;
@@ -126,477 +138,13 @@ public class UserController : PeopleControllerBase
         _authContext = authContext;
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
+        _fileSecurity = fileSecurity;
+        _daoFactory = daoFactory;
+        _validationKeyProvider = validationKeyProvider;
     }
 
-    [Create("active")]
-    public EmployeeDto AddMemberAsActivatedFromBody([FromBody] MemberRequestDto inDto)
-    {
-        return AddMemberAsActivated(inDto);
-    }
-
-    [Create("active")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto AddMemberAsActivatedFromForm([FromForm] MemberRequestDto inDto)
-    {
-        return AddMemberAsActivated(inDto);
-    }
-
-    [Create]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    public EmployeeDto AddMemberFromBody([FromBody] MemberRequestDto inDto)
-    {
-        return AddMember(inDto);
-    }
-
-    [Create]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto AddMemberFromForm([FromForm] MemberRequestDto inDto)
-    {
-        return AddMember(inDto);
-    }
-
-    [Update("{userid}/password")]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
-    public EmployeeDto ChangeUserPasswordFromBody(Guid userid, [FromBody] MemberRequestDto inDto)
-    {
-        return ChangeUserPassword(userid, inDto);
-    }
-
-    [Update("{userid}/password")]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberRequestDto inDto)
-    {
-        return ChangeUserPassword(userid, inDto);
-    }
-
-    [Delete("{userid}")]
-    public EmployeeDto DeleteMember(string userid)
-    {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-
-        var user = GetUserInfo(userid);
-
-        if (_userManager.IsSystemUser(user.Id) || user.IsLDAP())
-        {
-            throw new SecurityException();
-        }
-
-        if (user.Status != EmployeeStatus.Terminated)
-        {
-            throw new Exception("The user is not suspended");
-        }
-
-        CheckReassignProccess(new[] { user.Id });
-
-        var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
-        _userPhotoManager.RemovePhoto(user.Id);
-        _userManager.DeleteUser(user.Id);
-        _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
-
-        _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
-
-        return _employeeFullDtoHelper.GetFull(user);
-    }
-
-    [Delete("@self")]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
-    public EmployeeDto DeleteProfile()
-    {
-        _apiContext.AuthByClaim();
-
-        if (_userManager.IsSystemUser(_securityContext.CurrentAccount.ID))
-        {
-            throw new SecurityException();
-        }
-
-        var user = GetUserInfo(_securityContext.CurrentAccount.ID.ToString());
-
-        if (!_userManager.UserExists(user))
-        {
-            throw new Exception(Resource.ErrorUserNotFound);
-        }
-
-        if (user.IsLDAP())
-        {
-            throw new SecurityException();
-        }
-
-        _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
-        user.Status = EmployeeStatus.Terminated;
-
-        _userManager.SaveUserInfo(user);
-        var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
-        _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
-
-        _cookiesManager.ResetUserCookie(user.Id);
-        _messageService.Send(MessageAction.CookieSettingsUpdated);
-
-        if (_coreBaseSettings.Personal)
-        {
-            _userPhotoManager.RemovePhoto(user.Id);
-            _userManager.DeleteUser(user.Id);
-            _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
-        }
-        else
-        {
-            //StudioNotifyService.Instance.SendMsgProfileHasDeletedItself(user);
-            //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
-        }
-
-        return _employeeFullDtoHelper.GetFull(user);
-    }
-
-    [Read("status/{status}/search")]
-    public IEnumerable<EmployeeDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
-    {
-        if (_coreBaseSettings.Personal)
-        {
-            throw new MethodAccessException("Method not available");
-        }
-        try
-        {
-            var list = _userManager.GetUsers(status).AsEnumerable();
-
-            if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
-            {
-                var groupId = new Guid(_apiContext.FilterValue);
-                //Filter by group
-                list = list.Where(x => _userManager.IsUserInGroup(x.Id, groupId));
-                _apiContext.SetDataFiltered();
-            }
-
-            list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
-                                   (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.ContactsList != null && x.ContactsList.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
-
-            return list.Select(u => _employeeFullDtoHelper.GetFull(u));
-        }
-        catch (Exception error)
-        {
-            _logger.Error(error);
-        }
-
-        return null;
-    }
-
-    [Read]
-    public IEnumerable<EmployeeDto> GetAll()
-    {
-        return GetByStatus(EmployeeStatus.Active);
-    }
-
-    [Read("email")]
-    public EmployeeDto GetByEmail([FromQuery] string email)
-    {
-        if (_coreBaseSettings.Personal && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOwner(Tenant))
-        {
-            throw new MethodAccessException("Method not available");
-        }
-
-        var user = _userManager.GetUserByEmail(email);
-        if (user.Id == Constants.LostUser.Id)
-        {
-            throw new ItemNotFoundException("User not found");
-        }
-
-        return _employeeFullDtoHelper.GetFull(user);
-    }
-
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    [Read("{username}", order: int.MaxValue)]
-    public EmployeeDto GetById(string username)
-    {
-        if (_coreBaseSettings.Personal)
-        {
-            throw new MethodAccessException("Method not available");
-        }
-
-        var isInvite = _httpContextAccessor.HttpContext.User.Claims
-               .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
-
-        _apiContext.AuthByClaim();
-
-        var user = _userManager.GetUserByUserName(username);
-        if (user.Id == Constants.LostUser.Id)
-        {
-            if (Guid.TryParse(username, out var userId))
-            {
-                user = _userManager.GetUsers(userId);
-            }
-            else
-            {
-                _logger.Error(string.Format("Account {0} сould not get user by name {1}", _securityContext.CurrentAccount.ID, username));
-            }
-        }
-
-        if (user.Id == Constants.LostUser.Id)
-        {
-            throw new ItemNotFoundException("User not found");
-        }
-
-        if (isInvite)
-        {
-            return _employeeFullDtoHelper.GetSimple(user);
-        }
-
-        return _employeeFullDtoHelper.GetFull(user);
-    }
-
-    [Read("status/{status}")]
-    public IEnumerable<EmployeeDto> GetByStatus(EmployeeStatus status)
-    {
-        if (_coreBaseSettings.Personal)
-        {
-            throw new Exception("Method not available");
-        }
-
-        Guid? groupId = null;
-        if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
-        {
-            groupId = new Guid(_apiContext.FilterValue);
-            _apiContext.SetDataFiltered();
-        }
-
-        return GetFullByFilter(status, groupId, null, null, null);
-    }
-
-    [Read("filter")]
-    public IEnumerable<EmployeeDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
-    {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
-
-        return users.Select(r => _employeeFullDtoHelper.GetFull(r));
-    }
-
-    [Read("info")]
-    public Module GetModule()
-    {
-        var product = new PeopleProduct();
-        product.Init();
-
-        return new Module(product);
-    }
-
-    [Read("search")]
-    public IEnumerable<EmployeeDto> GetPeopleSearch([FromQuery] string query)
-    {
-        return GetSearch(query);
-    }
-
-    [Read("@search/{query}")]
-    public IEnumerable<EmployeeDto> GetSearch(string query)
-    {
-        if (_coreBaseSettings.Personal)
-        {
-            throw new MethodAccessException("Method not available");
-        }
-
-        try
-        {
-            var groupId = Guid.Empty;
-            if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
-            {
-                groupId = new Guid(_apiContext.FilterValue);
-            }
-
-            var users = _userManager.Search(query, EmployeeStatus.Active, groupId);
-
-            return users.Select(u => _employeeFullDtoHelper.GetFull(u));
-        }
-        catch (Exception error)
-        {
-            _logger.Error(error);
-        }
-
-        return null;
-    }
-
-    [Read("simple/filter")]
-    public IEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
-    {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
-
-        return users.Select(_employeeDtoHelper.Get);
-    }
-
-    [AllowAnonymous]
-    [Create(@"register")]
-    public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
-    {
-        if (!_coreBaseSettings.Personal)
-        {
-            throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
-        }
-
-        return InternalRegisterUserOnPersonalAsync(inDto);
-    }
-
-    [Update("delete", Order = -1)]
-    public IEnumerable<EmployeeDto> RemoveUsersFromBody([FromBody] UpdateMembersRequestDto inDto)
-    {
-        return RemoveUsers(inDto);
-    }
-
-    [Update("delete", Order = -1)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> RemoveUsersFromForm([FromForm] UpdateMembersRequestDto inDto)
-    {
-        return RemoveUsers(inDto);
-    }
-
-    [Update("invite")]
-    public IEnumerable<EmployeeDto> ResendUserInvitesFromBody([FromBody] UpdateMembersRequestDto inDto)
-    {
-        return ResendUserInvites(inDto);
-    }
-
-    [Update("invite")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> ResendUserInvitesFromForm([FromForm] UpdateMembersRequestDto inDto)
-    {
-        return ResendUserInvites(inDto);
-    }
-
-    [Read("theme")]
-    public DarkThemeSettings GetTheme()
-    {
-        return _settingsManager.LoadForCurrentUser<DarkThemeSettings>();
-    }
-
-    [Update("theme")]
-    public DarkThemeSettings ChangeThemeFromBody([FromBody] DarkThemeSettingsRequestDto model)
-    {
-        return ChangeTheme(model);
-    }
-
-    [Update("theme")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public DarkThemeSettings ChangeThemeFromForm([FromForm] DarkThemeSettingsRequestDto model)
-    {
-        return ChangeTheme(model);
-    }
-
-    private DarkThemeSettings ChangeTheme(DarkThemeSettingsRequestDto model)
-    {
-        var darkThemeSettings = new DarkThemeSettings
-        {
-            Theme = model.Theme
-        };
-
-        _settingsManager.SaveForCurrentUser(darkThemeSettings);
-
-        return darkThemeSettings;
-    }
-
-    [Read("@self")]
-    public EmployeeDto Self()
-    {
-        var user = _userManager.GetUser(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
-
-        var result = _employeeFullDtoHelper.GetFull(user);
-
-        result.Theme = _settingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
-
-        return result;
-    }
-
-    [Create("email", false)]
-    public object SendEmailChangeInstructionsFromBody([FromBody] UpdateMemberRequestDto inDto)
-    {
-        return SendEmailChangeInstructions(inDto);
-    }
-
-    [Create("email", false)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SendEmailChangeInstructionsFromForm([FromForm] UpdateMemberRequestDto inDto)
-    {
-        return SendEmailChangeInstructions(inDto);
-    }
-
-    [AllowAnonymous]
-    [Create("password", false)]
-    public object SendUserPasswordFromBody([FromBody] MemberRequestDto inDto)
-    {
-        return SendUserPassword(inDto);
-    }
-
-    [AllowAnonymous]
-    [Create("password", false)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SendUserPasswordFromForm([FromForm] MemberRequestDto inDto)
-    {
-        return SendUserPassword(inDto);
-    }
-
-    [Update("activationstatus/{activationstatus}")]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
-    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody] UpdateMembersRequestDto inDto)
-    {
-        return UpdateEmployeeActivationStatus(activationstatus, inDto);
-    }
-
-    [Update("activationstatus/{activationstatus}")]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatusFromForm(EmployeeActivationStatus activationstatus, [FromForm] UpdateMembersRequestDto inDto)
-    {
-        return UpdateEmployeeActivationStatus(activationstatus, inDto);
-    }
-
-    [Update("{userid}/culture")]
-    public EmployeeDto UpdateMemberCultureFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
-    {
-        return UpdateMemberCulture(userid, inDto);
-    }
-
-    [Update("{userid}/culture")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto UpdateMemberCultureFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
-    {
-        return UpdateMemberCulture(userid, inDto);
-    }
-
-    [Update("{userid}")]
-    public EmployeeDto UpdateMemberFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
-    {
-        return UpdateMember(userid, inDto);
-    }
-
-    [Update("{userid}")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto UpdateMemberFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
-    {
-        return UpdateMember(userid, inDto);
-    }
-
-    [Update("status/{status}")]
-    public IEnumerable<EmployeeDto> UpdateUserStatusFromBody(EmployeeStatus status, [FromBody] UpdateMembersRequestDto inDto)
-    {
-        return UpdateUserStatus(status, inDto);
-    }
-
-    [Update("status/{status}")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> UpdateUserStatusFromForm(EmployeeStatus status, [FromForm] UpdateMembersRequestDto inDto)
-    {
-        return UpdateUserStatus(status, inDto);
-    }
-
-    [Update("type/{type}")]
-    public IEnumerable<EmployeeDto> UpdateUserTypeFromBody(EmployeeType type, [FromBody] UpdateMembersRequestDto inDto)
-    {
-        return UpdateUserType(type, inDto);
-    }
-
-    [Update("type/{type}")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> UpdateUserTypeFromForm(EmployeeType type, [FromForm] UpdateMembersRequestDto inDto)
-    {
-        return UpdateUserType(type, inDto);
-    }
-
-    private EmployeeDto AddMemberAsActivated(MemberRequestDto inDto)
+    [HttpPost("active")]
+    public EmployeeDto AddMemberAsActivated(MemberRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
@@ -637,7 +185,8 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user);
 
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsVisitor);
+        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsVisitor, false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -649,6 +198,893 @@ public class UserController : PeopleControllerBase
         }
 
         return _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpPost]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
+    public EmployeeDto AddMember(MemberRequestDto inDto)
+    {
+        _apiContext.AuthByClaim();
+
+        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+
+        var success = int.TryParse(inDto.RoomId, out var id);
+
+        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        {
+            var employeeType = inDto.IsVisitor ? EmployeeType.Visitor : EmployeeType.User;
+            var resultWithEmail = _validationKeyProvider.ValidateEmailKey(inDto.Email + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
+                _validationKeyProvider.ValidEmailKeyInterval);
+            var resultWithoutEmail = _validationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
+                _validationKeyProvider.ValidEmailKeyInterval);
+
+            if (resultWithEmail != EmailValidationKeyProvider.ValidationResult.Ok && resultWithoutEmail != EmailValidationKeyProvider.ValidationResult.Ok)
+            {
+                throw new SecurityException("Invalid data");
+            }
+
+            if (success)
+            {
+                var folderDao = _daoFactory.GetFolderDao<int>();
+                var folder = folderDao.GetFolderAsync(id).Result;
+
+                if (folder == null)
+                {
+                    throw new ItemNotFoundException("Virtual room not found");
+                }
+            }
+            else
+            {
+                var folderDao = _daoFactory.GetFolderDao<string>();
+                var folder = folderDao.GetFolderAsync(inDto.RoomId).Result;
+
+                if (folder == null)
+                {
+                    throw new ItemNotFoundException("Virtual room not found");
+                }
+            }
+        }
+
+        inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
+        if (string.IsNullOrEmpty(inDto.PasswordHash))
+        {
+            inDto.Password = (inDto.Password ?? "").Trim();
+
+            if (string.IsNullOrEmpty(inDto.Password))
+            {
+                inDto.Password = UserManagerWrapper.GeneratePassword();
+            }
+            else
+            {
+                _userManagerWrapper.CheckPasswordPolicy(inDto.Password);
+            }
+            inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
+        }
+
+        var user = new UserInfo();
+
+        //Validate email
+        var address = new MailAddress(inDto.Email);
+        user.Email = address.Address;
+        //Set common fields
+        user.FirstName = inDto.Firstname;
+        user.LastName = inDto.Lastname;
+        user.Title = inDto.Title;
+        user.Location = inDto.Location;
+        user.Notes = inDto.Comment;
+        user.Sex = "male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
+                       ? true
+                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
+
+        user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
+        user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
+
+        UpdateContacts(inDto.Contacts, user);
+        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true);
+
+        UpdateDepartments(inDto.Department, user);
+
+        if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
+        {
+            UpdatePhotoUrl(inDto.Files, user);
+        }
+
+        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        {
+            if (success)
+            {
+                _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
+                    .GetAwaiter().GetResult();
+            }
+            else
+            {
+                _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
+                    .GetAwaiter().GetResult();
+            }
+
+            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreatedAndAddedToRoom : MessageAction.UserCreatedAndAddedToRoom;
+            _messageService.Send(messageAction, _messageTarget.Create(new[] { user.Id.ToString(), inDto.RoomId }), user.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+        else
+        {
+            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
+            _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+
+        return _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpPut("{userid}/password")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
+    public async Task<EmployeeDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
+    {
+        _apiContext.AuthByClaim();
+        _permissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
+
+        var user = _userManager.GetUsers(userid);
+
+        if (!_userManager.UserExists(user))
+        {
+            return null;
+        }
+
+        if (_userManager.IsSystemUser(user.Id))
+        {
+            throw new SecurityException();
+        }
+
+        if (!string.IsNullOrEmpty(inDto.Email))
+        {
+            var address = new MailAddress(inDto.Email);
+            if (!string.Equals(address.Address, user.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                user.Email = address.Address.ToLowerInvariant();
+                user.ActivationStatus = EmployeeActivationStatus.Activated;
+                _userManager.SaveUserInfo(user, syncCardDav: true);
+            }
+        }
+
+        inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
+
+        if (string.IsNullOrEmpty(inDto.PasswordHash))
+        {
+            inDto.Password = (inDto.Password ?? "").Trim();
+
+            if (!string.IsNullOrEmpty(inDto.Password))
+            {
+                inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(inDto.PasswordHash))
+        {
+            _securityContext.SetUserPasswordHash(userid, inDto.PasswordHash);
+            _messageService.Send(MessageAction.UserUpdatedPassword);
+
+            await _cookiesManager.ResetUserCookie(userid);
+            _messageService.Send(MessageAction.CookieSettingsUpdated);
+        }
+
+        return _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
+    }
+
+    [HttpDelete("{userid}")]
+    public EmployeeDto DeleteMember(string userid)
+    {
+        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+
+        var user = GetUserInfo(userid);
+
+        if (_userManager.IsSystemUser(user.Id) || user.IsLDAP())
+        {
+            throw new SecurityException();
+        }
+
+        if (user.Status != EmployeeStatus.Terminated)
+        {
+            throw new Exception("The user is not suspended");
+        }
+
+        CheckReassignProccess(new[] { user.Id });
+
+        var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
+        _userPhotoManager.RemovePhoto(user.Id);
+        _userManager.DeleteUser(user.Id);
+        _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
+
+        _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
+
+        return _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpDelete("@self")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
+    public async Task<EmployeeDto> DeleteProfile()
+    {
+        _apiContext.AuthByClaim();
+
+        if (_userManager.IsSystemUser(_securityContext.CurrentAccount.ID))
+        {
+            throw new SecurityException();
+        }
+
+        var user = GetUserInfo(_securityContext.CurrentAccount.ID.ToString());
+
+        if (!_userManager.UserExists(user))
+        {
+            throw new Exception(Resource.ErrorUserNotFound);
+        }
+
+        if (user.IsLDAP())
+        {
+            throw new SecurityException();
+        }
+
+        _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
+        user.Status = EmployeeStatus.Terminated;
+
+        _userManager.SaveUserInfo(user);
+        var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
+        _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
+
+        await _cookiesManager.ResetUserCookie(user.Id);
+        _messageService.Send(MessageAction.CookieSettingsUpdated);
+
+        if (_coreBaseSettings.Personal)
+        {
+            _userPhotoManager.RemovePhoto(user.Id);
+            _userManager.DeleteUser(user.Id);
+            _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
+        }
+        else
+        {
+            //StudioNotifyService.Instance.SendMsgProfileHasDeletedItself(user);
+            //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
+        }
+
+        return _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpGet("status/{status}/search")]
+    public IEnumerable<EmployeeDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
+    {
+        if (_coreBaseSettings.Personal)
+        {
+            throw new MethodAccessException("Method not available");
+        }
+        try
+        {
+            var list = _userManager.GetUsers(status).AsEnumerable();
+
+            if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
+            {
+                var groupId = new Guid(_apiContext.FilterValue);
+                //Filter by group
+                list = list.Where(x => _userManager.IsUserInGroup(x.Id, groupId));
+                _apiContext.SetDataFiltered();
+            }
+
+            list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
+                                   (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.ContactsList != null && x.ContactsList.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
+
+            return list.Select(u => _employeeFullDtoHelper.GetFull(u));
+        }
+        catch (Exception error)
+        {
+            _logger.ErrorGetAdvanced(error);
+        }
+
+        return null;
+    }
+
+    [HttpGet]
+    public IEnumerable<EmployeeDto> GetAll()
+    {
+        return GetByStatus(EmployeeStatus.Active);
+    }
+
+    [HttpGet("email")]
+    public EmployeeDto GetByEmail([FromQuery] string email)
+    {
+        if (_coreBaseSettings.Personal && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOwner(Tenant))
+        {
+            throw new MethodAccessException("Method not available");
+        }
+
+        var user = _userManager.GetUserByEmail(email);
+        if (user.Id == Constants.LostUser.Id)
+        {
+            throw new ItemNotFoundException("User not found");
+        }
+
+        return _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
+    [HttpGet("{username}", Order = 1)]
+    public EmployeeDto GetById(string username)
+    {
+        if (_coreBaseSettings.Personal)
+        {
+            throw new MethodAccessException("Method not available");
+        }
+
+        var isInvite = _httpContextAccessor.HttpContext.User.Claims
+               .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
+
+        _apiContext.AuthByClaim();
+
+        var user = _userManager.GetUserByUserName(username);
+        if (user.Id == Constants.LostUser.Id)
+        {
+            if (Guid.TryParse(username, out var userId))
+            {
+                user = _userManager.GetUsers(userId);
+            }
+            else
+            {
+                _logger.ErrorCouldNotGetUserByName(_securityContext.CurrentAccount.ID, username);
+            }
+        }
+
+        if (user.Id == Constants.LostUser.Id)
+        {
+            throw new ItemNotFoundException("User not found");
+        }
+
+        if (isInvite)
+        {
+            return _employeeFullDtoHelper.GetSimple(user);
+        }
+
+        return _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpGet("status/{status}")]
+    public IEnumerable<EmployeeDto> GetByStatus(EmployeeStatus status)
+    {
+        if (_coreBaseSettings.Personal)
+        {
+            throw new Exception("Method not available");
+        }
+
+        Guid? groupId = null;
+        if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
+        {
+            groupId = new Guid(_apiContext.FilterValue);
+            _apiContext.SetDataFiltered();
+        }
+
+        return GetFullByFilter(status, groupId, null, null, null);
+    }
+
+    [HttpGet("filter")]
+    public IEnumerable<EmployeeDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    {
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
+
+        return users.Select(r => _employeeFullDtoHelper.GetFull(r));
+    }
+
+    [HttpGet("info")]
+    public Module GetModule()
+    {
+        var product = new PeopleProduct();
+        product.Init();
+
+        return new Module(product);
+    }
+
+    [HttpGet("search")]
+    public IEnumerable<EmployeeDto> GetPeopleSearch([FromQuery] string query)
+    {
+        return GetSearch(query);
+    }
+
+    [HttpGet("@search/{query}")]
+    public IEnumerable<EmployeeDto> GetSearch(string query)
+    {
+        if (_coreBaseSettings.Personal)
+        {
+            throw new MethodAccessException("Method not available");
+        }
+
+        try
+        {
+            var groupId = Guid.Empty;
+            if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
+            {
+                groupId = new Guid(_apiContext.FilterValue);
+            }
+
+            var users = _userManager.Search(query, EmployeeStatus.Active, groupId);
+
+            return users.Select(u => _employeeFullDtoHelper.GetFull(u));
+        }
+        catch (Exception error)
+        {
+            _logger.ErrorGetSearch(error);
+        }
+
+        return null;
+    }
+
+    [HttpGet("simple/filter")]
+    public IEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    {
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
+
+        return users.Select(_employeeDtoHelper.Get);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("register")]
+    public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
+    {
+        if (!_coreBaseSettings.Personal)
+        {
+            throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
+        }
+
+        return InternalRegisterUserOnPersonalAsync(inDto);
+    }
+
+    [HttpPut("delete", Order = -1)]
+    public IEnumerable<EmployeeDto> RemoveUsers(UpdateMembersRequestDto inDto)
+    {
+        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+
+        CheckReassignProccess(inDto.UserIds);
+
+        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
+            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
+            .ToList();
+
+        var userNames = users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)).ToList();
+
+        foreach (var user in users)
+        {
+            if (user.Status != EmployeeStatus.Terminated)
+            {
+                continue;
+            }
+
+            _userPhotoManager.RemovePhoto(user.Id);
+            _userManager.DeleteUser(user.Id);
+            _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
+        }
+
+        _messageService.Send(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);
+
+        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
+    }
+
+    [HttpPut("invite")]
+    public IEnumerable<EmployeeDto> ResendUserInvites(UpdateMembersRequestDto inDto)
+    {
+        var users = inDto.UserIds
+             .Where(userId => !_userManager.IsSystemUser(userId))
+             .Select(userId => _userManager.GetUsers(userId))
+             .ToList();
+
+        foreach (var user in users)
+        {
+            if (user.IsActive)
+            {
+                continue;
+            }
+
+            var viewer = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+
+            if (viewer == null)
+            {
+                throw new Exception(Resource.ErrorAccessDenied);
+            }
+
+            if (viewer.IsAdmin(_userManager) || viewer.Id == user.Id)
+            {
+                if (user.ActivationStatus == EmployeeActivationStatus.Activated)
+                {
+                    user.ActivationStatus = EmployeeActivationStatus.NotActivated;
+                }
+                if (user.ActivationStatus == (EmployeeActivationStatus.AutoGenerated | EmployeeActivationStatus.Activated))
+                {
+                    user.ActivationStatus = EmployeeActivationStatus.AutoGenerated;
+                }
+
+                _userManager.SaveUserInfo(user, syncCardDav: true);
+            }
+
+            if (user.ActivationStatus == EmployeeActivationStatus.Pending)
+            {
+                if (user.IsVisitor(_userManager))
+                {
+                    _studioNotifyService.GuestInfoActivation(user);
+                }
+                else
+                {
+                    _studioNotifyService.UserInfoActivation(user);
+                }
+            }
+            else
+            {
+                _studioNotifyService.SendEmailActivationInstructions(user, user.Email);
+            }
+        }
+
+        _messageService.Send(MessageAction.UsersSentActivationInstructions, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+
+        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
+    }
+
+    [HttpGet("theme")]
+    public DarkThemeSettings GetTheme()
+    {
+        return _settingsManager.LoadForCurrentUser<DarkThemeSettings>();
+    }
+
+    [HttpPut("theme")]
+    public DarkThemeSettings ChangeTheme(DarkThemeSettingsRequestDto model)
+    {
+        var darkThemeSettings = new DarkThemeSettings
+        {
+            Theme = model.Theme
+        };
+
+        _settingsManager.SaveForCurrentUser(darkThemeSettings);
+
+        return darkThemeSettings;
+    }
+
+    [HttpGet("@self")]
+    public EmployeeDto Self()
+    {
+        var user = _userManager.GetUser(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
+
+        var result = _employeeFullDtoHelper.GetFull(user);
+
+        result.Theme = _settingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
+
+        return result;
+    }
+
+    [AllowNotPayment]
+    [HttpPost("email")]
+    public object SendEmailChangeInstructions(UpdateMemberRequestDto inDto)
+    {
+        Guid.TryParse(inDto.UserId, out var userid);
+
+        if (userid == Guid.Empty)
+        {
+            throw new ArgumentNullException("userid");
+        }
+
+        var email = (inDto.Email ?? "").Trim();
+
+        if (string.IsNullOrEmpty(email))
+        {
+            throw new Exception(Resource.ErrorEmailEmpty);
+        }
+
+        if (!email.TestEmailRegex())
+        {
+            throw new Exception(Resource.ErrorNotCorrectEmail);
+        }
+
+        var viewer = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var user = _userManager.GetUsers(userid);
+
+        if (user == null)
+        {
+            throw new Exception(Resource.ErrorUserNotFound);
+        }
+
+        if (viewer == null || (user.IsOwner(Tenant) && viewer.Id != user.Id))
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
+        var existentUser = _userManager.GetUserByEmail(email);
+
+        if (existentUser.Id != Constants.LostUser.Id)
+        {
+            throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+        }
+
+        if (!viewer.IsAdmin(_userManager))
+        {
+            _studioNotifyService.SendEmailChangeInstructions(user, email);
+        }
+        else
+        {
+            if (email == user.Email)
+            {
+                throw new Exception(Resource.ErrorEmailsAreTheSame);
+            }
+
+            user.Email = email;
+            user.ActivationStatus = EmployeeActivationStatus.NotActivated;
+            _userManager.SaveUserInfo(user, syncCardDav: true);
+            _studioNotifyService.SendEmailActivationInstructions(user, email);
+        }
+
+        _messageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, _displayUserSettingsHelper));
+
+        return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
+    }
+
+    [AllowNotPayment]
+    [AllowAnonymous]
+    [HttpPost("password")]
+    public object SendUserPassword(MemberRequestDto inDto)
+    {
+        var error = _userManagerWrapper.SendUserPassword(inDto.Email);
+        if (!string.IsNullOrEmpty(error))
+        {
+            _logger.ErrorPasswordRecovery(inDto.Email, error);
+        }
+
+        return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);
+    }
+
+    [HttpPut("activationstatus/{activationstatus}")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
+    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
+    {
+        _apiContext.AuthByClaim();
+
+        var retuls = new List<EmployeeDto>();
+        foreach (var id in inDto.UserIds.Where(userId => !_userManager.IsSystemUser(userId)))
+        {
+            _permissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
+            var u = _userManager.GetUsers(id);
+            if (u.Id == Constants.LostUser.Id || u.IsLDAP())
+            {
+                continue;
+            }
+
+            u.ActivationStatus = activationstatus;
+            _userManager.SaveUserInfo(u);
+            retuls.Add(_employeeFullDtoHelper.GetFull(u));
+        }
+
+        return retuls;
+    }
+
+    [HttpPut("{userid}/culture")]
+    public EmployeeDto UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
+    {
+        var user = GetUserInfo(userid);
+
+        if (_userManager.IsSystemUser(user.Id))
+        {
+            throw new SecurityException();
+        }
+
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+
+        var curLng = user.CultureName;
+
+        if (_setupInfo.EnabledCultures.Find(c => string.Equals(c.Name, inDto.CultureName, StringComparison.InvariantCultureIgnoreCase)) != null)
+        {
+            if (curLng != inDto.CultureName)
+            {
+                user.CultureName = inDto.CultureName;
+
+                try
+                {
+                    _userManager.SaveUserInfo(user);
+                }
+                catch
+                {
+                    user.CultureName = curLng;
+                    throw;
+                }
+
+                _messageService.Send(MessageAction.UserUpdatedLanguage, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+
+            }
+        }
+
+        return _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpPut("{userid}")]
+    public async Task<EmployeeDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
+    {
+        var user = GetUserInfo(userid);
+
+        if (_userManager.IsSystemUser(user.Id))
+        {
+            throw new SecurityException();
+        }
+
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        var self = _securityContext.CurrentAccount.ID.Equals(user.Id);
+        var resetDate = new DateTime(1900, 01, 01);
+
+        //Update it
+
+        var isLdap = user.IsLDAP();
+        var isSso = user.IsSSO();
+        var isAdmin = _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
+
+        if (!isLdap && !isSso)
+        {
+            //Set common fields
+
+            user.FirstName = inDto.Firstname ?? user.FirstName;
+            user.LastName = inDto.Lastname ?? user.LastName;
+            user.Location = inDto.Location ?? user.Location;
+
+            if (isAdmin)
+            {
+                user.Title = inDto.Title ?? user.Title;
+            }
+        }
+
+        if (!_userFormatter.IsValidUserName(user.FirstName, user.LastName))
+        {
+            throw new Exception(Resource.ErrorIncorrectUserName);
+        }
+
+        user.Notes = inDto.Comment ?? user.Notes;
+        user.Sex = ("male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
+            ? true
+            : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null)) ?? user.Sex;
+
+        user.BirthDate = inDto.Birthday != null ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : user.BirthDate;
+
+        if (user.BirthDate == resetDate)
+        {
+            user.BirthDate = null;
+        }
+
+        user.WorkFromDate = inDto.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : user.WorkFromDate;
+
+        if (user.WorkFromDate == resetDate)
+        {
+            user.WorkFromDate = null;
+        }
+
+        //Update contacts
+        UpdateContacts(inDto.Contacts, user);
+        UpdateDepartments(inDto.Department, user);
+
+        if (inDto.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
+        {
+            UpdatePhotoUrl(inDto.Files, user);
+        }
+        if (inDto.Disable.HasValue)
+        {
+            user.Status = inDto.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
+            user.TerminatedDate = inDto.Disable.Value ? DateTime.UtcNow : null;
+        }
+        if (self && !isAdmin)
+        {
+            _studioNotifyService.SendMsgToAdminAboutProfileUpdated();
+        }
+
+        // change user type
+        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
+
+        if (inDto.IsVisitor && !user.IsVisitor(_userManager) && canBeGuestFlag)
+        {
+            _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
+            _webItemSecurityCache.ClearCache(Tenant.Id);
+        }
+
+        if (!self && !inDto.IsVisitor && user.IsVisitor(_userManager))
+        {
+            var usersQuota = _tenantExtra.GetTenantQuota().ActiveUsers;
+            if (_tenantStatisticsProvider.GetUsersCount() < usersQuota)
+            {
+                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+            }
+            else
+            {
+                throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", usersQuota));
+            }
+        }
+
+        _userManager.SaveUserInfo(user, inDto.IsVisitor, true);
+        _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+
+        if (inDto.Disable.HasValue && inDto.Disable.Value)
+        {
+            await _cookiesManager.ResetUserCookie(user.Id);
+            _messageService.Send(MessageAction.CookieSettingsUpdated);
+        }
+
+        return _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpPut("status/{status}")]
+    public async Task<IEnumerable<EmployeeDto>> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
+    {
+        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+
+        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
+            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
+            .ToList();
+
+        foreach (var user in users)
+        {
+            if (user.IsOwner(Tenant) || user.IsMe(_authContext))
+            {
+                continue;
+            }
+
+            switch (status)
+            {
+                case EmployeeStatus.Active:
+                    if (user.Status == EmployeeStatus.Terminated)
+                    {
+                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers || user.IsVisitor(_userManager))
+                        {
+                            user.Status = EmployeeStatus.Active;
+                            _userManager.SaveUserInfo(user, syncCardDav: true);
+                        }
+                    }
+                    break;
+                case EmployeeStatus.Terminated:
+                    user.Status = EmployeeStatus.Terminated;
+                    _userManager.SaveUserInfo(user, syncCardDav: true);
+
+                    await _cookiesManager.ResetUserCookie(user.Id);
+                    _messageService.Send(MessageAction.CookieSettingsUpdated);
+                    break;
+            }
+        }
+
+        _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+
+        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
+    }
+
+    [HttpPut("type/{type}")]
+    public IEnumerable<EmployeeDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
+    {
+        var users = inDto.UserIds
+            .Where(userId => !_userManager.IsSystemUser(userId))
+            .Select(userId => _userManager.GetUsers(userId))
+            .ToList();
+
+        foreach (var user in users)
+        {
+            if (user.IsOwner(Tenant) || user.IsAdmin(_userManager)
+                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
+            {
+                continue;
+            }
+
+            switch (type)
+            {
+                case EmployeeType.User:
+                    if (user.IsVisitor(_userManager))
+                    {
+                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers)
+                        {
+                            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
+                            _webItemSecurityCache.ClearCache(Tenant.Id);
+                        }
+                    }
+                    break;
+                case EmployeeType.Visitor:
+                    if (_coreBaseSettings.Standalone || _tenantStatisticsProvider.GetVisitorsCount() < _tenantExtra.GetTenantQuota().ActiveUsers * _constants.CoefficientOfVisitors)
+                    {
+                        _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
+                        _webItemSecurityCache.ClearCache(Tenant.Id);
+                    }
+                    break;
+            }
+        }
+
+        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+
+        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
     private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
@@ -777,7 +1213,7 @@ public class UserController : PeopleControllerBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.Debug($"ERROR write to template_unsubscribe {ex.Message}, email:{inDto.Email.ToLowerInvariant()}");
+                    _logger.DebugWriteToTemplateUnsubscribe(inDto.Email.ToLowerInvariant(), ex);
                 }
             }
 
@@ -789,115 +1225,6 @@ public class UserController : PeopleControllerBase
         }
 
         return string.Empty;
-    }
-
-    public EmployeeDto AddMember(MemberRequestDto inDto)
-    {
-        _apiContext.AuthByClaim();
-
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-
-        inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
-        if (string.IsNullOrEmpty(inDto.PasswordHash))
-        {
-            inDto.Password = (inDto.Password ?? "").Trim();
-
-            if (string.IsNullOrEmpty(inDto.Password))
-            {
-                inDto.Password = UserManagerWrapper.GeneratePassword();
-            }
-            else
-            {
-                _userManagerWrapper.CheckPasswordPolicy(inDto.Password);
-            }
-            inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
-        }
-
-        var user = new UserInfo();
-
-        //Validate email
-        var address = new MailAddress(inDto.Email);
-        user.Email = address.Address;
-        //Set common fields
-        user.FirstName = inDto.Firstname;
-        user.LastName = inDto.Lastname;
-        user.Title = inDto.Title;
-        user.Location = inDto.Location;
-        user.Notes = inDto.Comment;
-        user.Sex = "male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
-                       ? true
-                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
-
-        user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
-        user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
-
-        UpdateContacts(inDto.Contacts, user);
-
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink);
-
-        var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-        _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-
-        UpdateDepartments(inDto.Department, user);
-
-        if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
-        {
-            UpdatePhotoUrl(inDto.Files, user);
-        }
-
-        return _employeeFullDtoHelper.GetFull(user);
-    }
-
-    private EmployeeDto ChangeUserPassword(Guid userid, MemberRequestDto inDto)
-    {
-        _apiContext.AuthByClaim();
-        _permissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
-
-        var user = _userManager.GetUsers(userid);
-
-        if (!_userManager.UserExists(user))
-        {
-            return null;
-        }
-
-        if (_userManager.IsSystemUser(user.Id))
-        {
-            throw new SecurityException();
-        }
-
-        if (!string.IsNullOrEmpty(inDto.Email))
-        {
-            var address = new MailAddress(inDto.Email);
-            if (!string.Equals(address.Address, user.Email, StringComparison.OrdinalIgnoreCase))
-            {
-                user.Email = address.Address.ToLowerInvariant();
-                user.ActivationStatus = EmployeeActivationStatus.Activated;
-                _userManager.SaveUserInfo(user);
-            }
-        }
-
-        inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
-
-        if (string.IsNullOrEmpty(inDto.PasswordHash))
-        {
-            inDto.Password = (inDto.Password ?? "").Trim();
-
-            if (!string.IsNullOrEmpty(inDto.Password))
-            {
-                inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
-            }
-        }
-
-        if (!string.IsNullOrEmpty(inDto.PasswordHash))
-        {
-            _securityContext.SetUserPasswordHash(userid, inDto.PasswordHash);
-            _messageService.Send(MessageAction.UserUpdatedPassword);
-
-            _cookiesManager.ResetUserCookie(userid);
-            _messageService.Send(MessageAction.CookieSettingsUpdated);
-        }
-
-        return _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
     }
 
     private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
@@ -950,419 +1277,6 @@ public class UserController : PeopleControllerBase
         return users;
     }
 
-    public object SendEmailChangeInstructions(UpdateMemberRequestDto inDto)
-    {
-        Guid.TryParse(inDto.UserId, out var userid);
-
-        if (userid == Guid.Empty)
-        {
-            throw new ArgumentNullException("userid");
-        }
-
-        var email = (inDto.Email ?? "").Trim();
-
-        if (string.IsNullOrEmpty(email))
-        {
-            throw new Exception(Resource.ErrorEmailEmpty);
-        }
-
-        if (!email.TestEmailRegex())
-        {
-            throw new Exception(Resource.ErrorNotCorrectEmail);
-        }
-
-        var viewer = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        var user = _userManager.GetUsers(userid);
-
-        if (user == null)
-        {
-            throw new Exception(Resource.ErrorUserNotFound);
-        }
-
-        if (viewer == null || (user.IsOwner(Tenant) && viewer.Id != user.Id))
-        {
-            throw new Exception(Resource.ErrorAccessDenied);
-        }
-
-        var existentUser = _userManager.GetUserByEmail(email);
-
-        if (existentUser.Id != Constants.LostUser.Id)
-        {
-            throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
-        }
-
-        if (!viewer.IsAdmin(_userManager))
-        {
-            _studioNotifyService.SendEmailChangeInstructions(user, email);
-        }
-        else
-        {
-            if (email == user.Email)
-            {
-                throw new Exception(Resource.ErrorEmailsAreTheSame);
-            }
-
-            user.Email = email;
-            user.ActivationStatus = EmployeeActivationStatus.NotActivated;
-            _userManager.SaveUserInfo(user);
-            _studioNotifyService.SendEmailActivationInstructions(user, email);
-        }
-
-        _messageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, _displayUserSettingsHelper));
-
-        return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
-    }
-
-    public IEnumerable<EmployeeDto> RemoveUsers(UpdateMembersRequestDto inDto)
-    {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-
-        CheckReassignProccess(inDto.UserIds);
-
-        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
-            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
-            .ToList();
-
-        var userNames = users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)).ToList();
-
-        foreach (var user in users)
-        {
-            if (user.Status != EmployeeStatus.Terminated)
-            {
-                continue;
-            }
-
-            _userPhotoManager.RemovePhoto(user.Id);
-            _userManager.DeleteUser(user.Id);
-            _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
-        }
-
-        _messageService.Send(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);
-
-        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
-    }
-
-    public IEnumerable<EmployeeDto> ResendUserInvites(UpdateMembersRequestDto inDto)
-    {
-        var users = inDto.UserIds
-            .Where(userId => !_userManager.IsSystemUser(userId))
-            .Select(userId => _userManager.GetUsers(userId))
-            .ToList();
-
-        foreach (var user in users)
-        {
-            if (user.IsActive)
-            {
-                continue;
-            }
-
-            var viewer = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-
-            if (viewer == null)
-            {
-                throw new Exception(Resource.ErrorAccessDenied);
-            }
-
-            if (viewer.IsAdmin(_userManager) || viewer.Id == user.Id)
-            {
-                if (user.ActivationStatus == EmployeeActivationStatus.Activated)
-                {
-                    user.ActivationStatus = EmployeeActivationStatus.NotActivated;
-                }
-                if (user.ActivationStatus == (EmployeeActivationStatus.AutoGenerated | EmployeeActivationStatus.Activated))
-                {
-                    user.ActivationStatus = EmployeeActivationStatus.AutoGenerated;
-                }
-
-                _userManager.SaveUserInfo(user);
-            }
-
-            if (user.ActivationStatus == EmployeeActivationStatus.Pending)
-            {
-                if (user.IsVisitor(_userManager))
-                {
-                    _studioNotifyService.GuestInfoActivation(user);
-                }
-                else
-                {
-                    _studioNotifyService.UserInfoActivation(user);
-                }
-            }
-            else
-            {
-                _studioNotifyService.SendEmailActivationInstructions(user, user.Email);
-            }
-        }
-
-        _messageService.Send(MessageAction.UsersSentActivationInstructions, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
-
-        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
-    }
-
-    public object SendUserPassword(MemberRequestDto inDto)
-    {
-        var error = _userManagerWrapper.SendUserPassword(inDto.Email);
-        if (!string.IsNullOrEmpty(error))
-        {
-            _logger.ErrorFormat("Password recovery ({0}): {1}", inDto.Email, error);
-        }
-
-        return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);
-    }
-
-    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
-    {
-        _apiContext.AuthByClaim();
-
-        var retuls = new List<EmployeeDto>();
-        foreach (var id in inDto.UserIds.Where(userId => !_userManager.IsSystemUser(userId)))
-        {
-            _permissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
-            var u = _userManager.GetUsers(id);
-            if (u.Id == Constants.LostUser.Id || u.IsLDAP())
-            {
-                continue;
-            }
-
-            u.ActivationStatus = activationstatus;
-            _userManager.SaveUserInfo(u);
-            retuls.Add(_employeeFullDtoHelper.GetFull(u));
-        }
-
-        return retuls;
-    }
-
-    public EmployeeDto UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
-    {
-        var user = GetUserInfo(userid);
-
-        if (_userManager.IsSystemUser(user.Id))
-        {
-            throw new SecurityException();
-        }
-
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
-
-        var curLng = user.CultureName;
-
-        if (_setupInfo.EnabledCultures.Find(c => string.Equals(c.Name, inDto.CultureName, StringComparison.InvariantCultureIgnoreCase)) != null)
-        {
-            if (curLng != inDto.CultureName)
-            {
-                user.CultureName = inDto.CultureName;
-
-                try
-                {
-                    _userManager.SaveUserInfo(user);
-                }
-                catch
-                {
-                    user.CultureName = curLng;
-                    throw;
-                }
-
-                _messageService.Send(MessageAction.UserUpdatedLanguage, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-
-            }
-        }
-
-        return _employeeFullDtoHelper.GetFull(user);
-    }
-
-    public EmployeeDto UpdateMember(string userid, UpdateMemberRequestDto inDto)
-    {
-        var user = GetUserInfo(userid);
-
-        if (_userManager.IsSystemUser(user.Id))
-        {
-            throw new SecurityException();
-        }
-
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
-        var self = _securityContext.CurrentAccount.ID.Equals(user.Id);
-        var resetDate = new DateTime(1900, 01, 01);
-
-        //Update it
-
-        var isLdap = user.IsLDAP();
-        var isSso = user.IsSSO();
-        var isAdmin = _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
-
-        if (!isLdap && !isSso)
-        {
-            //Set common fields
-
-            user.FirstName = inDto.Firstname ?? user.FirstName;
-            user.LastName = inDto.Lastname ?? user.LastName;
-            user.Location = inDto.Location ?? user.Location;
-
-            if (isAdmin)
-            {
-                user.Title = inDto.Title ?? user.Title;
-            }
-        }
-
-        if (!_userFormatter.IsValidUserName(user.FirstName, user.LastName))
-        {
-            throw new Exception(Resource.ErrorIncorrectUserName);
-        }
-
-        user.Notes = inDto.Comment ?? user.Notes;
-        user.Sex = ("male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
-            ? true
-            : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null)) ?? user.Sex;
-
-        user.BirthDate = inDto.Birthday != null ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : user.BirthDate;
-
-        if (user.BirthDate == resetDate)
-        {
-            user.BirthDate = null;
-        }
-
-        user.WorkFromDate = inDto.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : user.WorkFromDate;
-
-        if (user.WorkFromDate == resetDate)
-        {
-            user.WorkFromDate = null;
-        }
-
-        //Update contacts
-        UpdateContacts(inDto.Contacts, user);
-        UpdateDepartments(inDto.Department, user);
-
-        if (inDto.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
-        {
-            UpdatePhotoUrl(inDto.Files, user);
-        }
-        if (inDto.Disable.HasValue)
-        {
-            user.Status = inDto.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
-            user.TerminatedDate = inDto.Disable.Value ? DateTime.UtcNow : null;
-        }
-        if (self && !isAdmin)
-        {
-            _studioNotifyService.SendMsgToAdminAboutProfileUpdated();
-        }
-
-        // change user type
-        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
-
-        if (inDto.IsVisitor && !user.IsVisitor(_userManager) && canBeGuestFlag)
-        {
-            _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
-            _webItemSecurityCache.ClearCache(Tenant.Id);
-        }
-
-        if (!self && !inDto.IsVisitor && user.IsVisitor(_userManager))
-        {
-            var usersQuota = _tenantExtra.GetTenantQuota().ActiveUsers;
-            if (_tenantStatisticsProvider.GetUsersCount() < usersQuota)
-            {
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
-                _webItemSecurityCache.ClearCache(Tenant.Id);
-            }
-            else
-            {
-                throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", usersQuota));
-            }
-        }
-
-        _userManager.SaveUserInfo(user);
-        _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-
-        if (inDto.Disable.HasValue && inDto.Disable.Value)
-        {
-            _cookiesManager.ResetUserCookie(user.Id);
-            _messageService.Send(MessageAction.CookieSettingsUpdated);
-        }
-
-        return _employeeFullDtoHelper.GetFull(user);
-    }
-
-    public IEnumerable<EmployeeDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
-    {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
-
-        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
-            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
-            .ToList();
-
-        foreach (var user in users)
-        {
-            if (user.IsOwner(Tenant) || user.IsMe(_authContext))
-            {
-                continue;
-            }
-
-            switch (status)
-            {
-                case EmployeeStatus.Active:
-                    if (user.Status == EmployeeStatus.Terminated)
-                    {
-                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers || user.IsVisitor(_userManager))
-                        {
-                            user.Status = EmployeeStatus.Active;
-                            _userManager.SaveUserInfo(user);
-                        }
-                    }
-                    break;
-                case EmployeeStatus.Terminated:
-                    user.Status = EmployeeStatus.Terminated;
-                    _userManager.SaveUserInfo(user);
-
-                    _cookiesManager.ResetUserCookie(user.Id);
-                    _messageService.Send(MessageAction.CookieSettingsUpdated);
-                    break;
-            }
-        }
-
-        _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
-
-        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
-    }
-
-    public IEnumerable<EmployeeDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
-    {
-        var users = inDto.UserIds
-            .Where(userId => !_userManager.IsSystemUser(userId))
-            .Select(userId => _userManager.GetUsers(userId))
-            .ToList();
-
-        foreach (var user in users)
-        {
-            if (user.IsOwner(Tenant) || user.IsAdmin(_userManager)
-                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
-            {
-                continue;
-            }
-
-            switch (type)
-            {
-                case EmployeeType.User:
-                    if (user.IsVisitor(_userManager))
-                    {
-                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers)
-                        {
-                            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
-                            _webItemSecurityCache.ClearCache(Tenant.Id);
-                        }
-                    }
-                    break;
-                case EmployeeType.Visitor:
-                    if (_coreBaseSettings.Standalone || _tenantStatisticsProvider.GetVisitorsCount() < _tenantExtra.GetTenantQuota().ActiveUsers * _constants.CoefficientOfVisitors)
-                    {
-                        _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
-                        _webItemSecurityCache.ClearCache(Tenant.Id);
-                    }
-                    break;
-            }
-        }
-
-        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
-
-        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
-    }
-
     ///// <summary>
     ///// Adds a new portal user from import with the first and last name, email address
     ///// </summary>
@@ -1372,12 +1286,14 @@ public class UserController : PeopleControllerBase
     ///// <param name="userList">The list of users to add</param>
     ///// <param name="importUsersAsCollaborators" optional="true">Add users as guests (bool type: false|true)</param>
     ///// <returns>Newly created users</returns>
-    //[Create("import/save")]
+    //[HttpPost("import/save")]
     //public void SaveUsers(string userList, bool importUsersAsCollaborators)
     //{
     //    lock (progressQueue.SynchRoot)
     //    {
     //        var task = progressQueue.GetItems().OfType<ImportUsersTask>().FirstOrDefault(t => (int)t.Id == TenantProvider.CurrentTenantID);
+    //var tenant = CoreContext.TenantManager.GetCurrentTenant();
+    //Cache.Insert("REWRITE_URL" + tenant.TenantId, HttpContext.Current.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
     //        if (task != null && task.IsCompleted)
     //        {
     //            progressQueue.Remove(task);
@@ -1395,7 +1311,7 @@ public class UserController : PeopleControllerBase
     //    }
     //}
 
-    //[Read("import/status")]
+    //[HttpGet("import/status")]
     //public object GetStatus()
     //{
     //    lock (progressQueue.SynchRoot)

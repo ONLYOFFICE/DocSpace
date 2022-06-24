@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using AutoMapper.QueryableExtensions;
-
 namespace ASC.Core.Data;
 
 [Scope]
@@ -84,7 +82,8 @@ public class DbTenantService : ITenantService
 
     public void ValidateDomain(string domain)
     {
-        using var tr = TenantDbContext.Database.BeginTransaction();
+        // TODO: Why does open transaction?
+        //        using var tr = TenantDbContext.Database.BeginTransaction();
         ValidateDomain(domain, Tenant.DefaultTenant, true);
     }
 
@@ -146,34 +145,15 @@ public class DbTenantService : ITenantService
         if (Guid.TryParse(login, out var userId))
         {
             var pwdHash = GetPasswordHash(userId, passwordHash);
-            var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
             var q = query()
                 .Where(r => r.User.Id == userId)
-                .Where(r => r.UserSecurity.PwdHash == pwdHash || r.UserSecurity.PwdHash == oldHash)  //todo: remove old scheme
+                .Where(r => r.UserSecurity.PwdHash == pwdHash)
                 ;
 
             return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
         }
         else
         {
-            var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
-
-            var q =
-                query()
-                .Where(r => r.UserSecurity.PwdHash == oldHash);
-
-            if (login.Contains('@'))
-            {
-                q = q.Where(r => r.User.Email == login);
-            }
-            else if (Guid.TryParse(login, out var uId))
-            {
-                q = q.Where(r => r.User.Id == uId);
-            }
-
-            //old password
-            var result = q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
-
             var usersQuery = UserDbContext.Users
                 .Where(r => r.Email == login)
                 .Where(r => r.Status == EmployeeStatus.Active)
@@ -183,13 +163,10 @@ public class DbTenantService : ITenantService
 
             var passwordHashs = usersQuery.Select(r => GetPasswordHash(r, passwordHash)).ToList();
 
-            q = query()
+            var q = query()
                 .Where(r => passwordHashs.Any(p => r.UserSecurity.PwdHash == p) && r.DbTenant.Status == TenantStatus.Active);
 
-            //new password
-            result = result.Concat(q.ProjectTo<Tenant>(_mapper.ConfigurationProvider)).ToList();
-
-            return result.Distinct();
+            return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
         }
     }
 
@@ -228,93 +205,98 @@ public class DbTenantService : ITenantService
     {
         ArgumentNullException.ThrowIfNull(tenant);
 
-        using var tx = TenantDbContext.Database.BeginTransaction();
+        var strategy = TenantDbContext.Database.CreateExecutionStrategy();
 
-        if (!string.IsNullOrEmpty(tenant.MappedDomain))
+        strategy.Execute(() =>
         {
-            var baseUrl = coreSettings.GetBaseDomain(tenant.HostedRegion);
+            using var tx = TenantDbContext.Database.BeginTransaction();
 
-            if (baseUrl != null && tenant.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
+            if (!string.IsNullOrEmpty(tenant.MappedDomain))
             {
-                ValidateDomain(tenant.MappedDomain.Substring(0, tenant.MappedDomain.Length - baseUrl.Length - 1), tenant.Id, false);
+                var baseUrl = coreSettings.GetBaseDomain(tenant.HostedRegion);
+
+                if (baseUrl != null && tenant.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    ValidateDomain(tenant.MappedDomain.Substring(0, tenant.MappedDomain.Length - baseUrl.Length - 1), tenant.Id, false);
+                }
+                else
+                {
+                    ValidateDomain(tenant.MappedDomain, tenant.Id, false);
+                }
+            }
+
+            if (tenant.Id == Tenant.DefaultTenant)
+            {
+                tenant.Version = TenantDbContext.TenantVersion
+                    .Where(r => r.DefaultVersion == 1 || r.Id == 0)
+                    .OrderByDescending(r => r.Id)
+                    .Select(r => r.Id)
+                    .FirstOrDefault();
+
+                tenant.LastModified = DateTime.UtcNow;
+
+                var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
+
+                dbTenant = TenantDbContext.Tenants.Add(dbTenant).Entity;
+                TenantDbContext.SaveChanges();
+                tenant.Id = dbTenant.Id;
             }
             else
             {
-                ValidateDomain(tenant.MappedDomain, tenant.Id, false);
-            }
-        }
+                var dbTenant = TenantDbContext.Tenants
+                    .Where(r => r.Id == tenant.Id)
+                    .FirstOrDefault();
 
-        if (tenant.Id == Tenant.DefaultTenant)
-        {
-            tenant.Version = TenantDbContext.TenantVersion
-                .Where(r => r.DefaultVersion == 1 || r.Id == 0)
-                .OrderByDescending(r => r.Id)
-                .Select(r => r.Id)
-                .FirstOrDefault();
+                if (dbTenant != null)
+                {
+                    dbTenant.Alias = tenant.Alias.ToLowerInvariant();
+                    dbTenant.MappedDomain = !string.IsNullOrEmpty(tenant.MappedDomain) ? tenant.MappedDomain.ToLowerInvariant() : null;
+                    dbTenant.Version = tenant.Version;
+                    dbTenant.VersionChanged = tenant.VersionChanged;
+                    dbTenant.Name = tenant.Name ?? tenant.Alias;
+                    dbTenant.Language = tenant.Language;
+                    dbTenant.TimeZone = tenant.TimeZone;
+                    dbTenant.TrustedDomainsRaw = tenant.GetTrustedDomains();
+                    dbTenant.TrustedDomainsEnabled = tenant.TrustedDomainsType;
+                    dbTenant.CreationDateTime = tenant.CreationDateTime;
+                    dbTenant.Status = tenant.Status;
+                    dbTenant.StatusChanged = tenant.StatusChangeDate;
+                    dbTenant.PaymentId = tenant.PaymentId;
+                    dbTenant.LastModified = tenant.LastModified = DateTime.UtcNow;
+                    dbTenant.Industry = tenant.Industry;
+                    dbTenant.Spam = tenant.Spam;
+                    dbTenant.Calls = tenant.Calls;
+                }
 
-            tenant.LastModified = DateTime.UtcNow;
-
-            var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
-
-            dbTenant = TenantDbContext.Tenants.Add(dbTenant).Entity;
-            TenantDbContext.SaveChanges();
-            tenant.Id = dbTenant.Id;
-        }
-        else
-        {
-            var dbTenant = TenantDbContext.Tenants
-                .Where(r => r.Id == tenant.Id)
-                .FirstOrDefault();
-
-            if (dbTenant != null)
-            {
-                dbTenant.Alias = tenant.Alias.ToLowerInvariant();
-                dbTenant.MappedDomain = !string.IsNullOrEmpty(tenant.MappedDomain) ? tenant.MappedDomain.ToLowerInvariant() : null;
-                dbTenant.Version = tenant.Version;
-                dbTenant.VersionChanged = tenant.VersionChanged;
-                dbTenant.Name = tenant.Name ?? tenant.Alias;
-                dbTenant.Language = tenant.Language;
-                dbTenant.TimeZone = tenant.TimeZone;
-                dbTenant.TrustedDomainsRaw = tenant.GetTrustedDomains();
-                dbTenant.TrustedDomainsEnabled = tenant.TrustedDomainsType;
-                dbTenant.CreationDateTime = tenant.CreationDateTime;
-                dbTenant.Status = tenant.Status;
-                dbTenant.StatusChanged = tenant.StatusChangeDate;
-                dbTenant.PaymentId = tenant.PaymentId;
-                dbTenant.LastModified = tenant.LastModified = DateTime.UtcNow;
-                dbTenant.Industry = tenant.Industry;
-                dbTenant.Spam = tenant.Spam;
-                dbTenant.Calls = tenant.Calls;
+                TenantDbContext.SaveChanges();
             }
 
-            TenantDbContext.SaveChanges();
-        }
-
-        if (string.IsNullOrEmpty(tenant.PartnerId) && string.IsNullOrEmpty(tenant.AffiliateId) && string.IsNullOrEmpty(tenant.Campaign))
-        {
-            var p = TenantDbContext.TenantPartner
-                .Where(r => r.TenantId == tenant.Id)
-                .FirstOrDefault();
-
-            if (p != null)
+            if (string.IsNullOrEmpty(tenant.PartnerId) && string.IsNullOrEmpty(tenant.AffiliateId) && string.IsNullOrEmpty(tenant.Campaign))
             {
-                TenantDbContext.TenantPartner.Remove(p);
+                var p = TenantDbContext.TenantPartner
+                    .Where(r => r.TenantId == tenant.Id)
+                    .FirstOrDefault();
+
+                if (p != null)
+                {
+                    TenantDbContext.TenantPartner.Remove(p);
+                }
             }
-        }
-        else
-        {
-            var tenantPartner = new DbTenantPartner
+            else
             {
-                TenantId = tenant.Id,
-                PartnerId = tenant.PartnerId,
-                AffiliateId = tenant.AffiliateId,
-                Campaign = tenant.Campaign
-            };
+                var tenantPartner = new DbTenantPartner
+                {
+                    TenantId = tenant.Id,
+                    PartnerId = tenant.PartnerId,
+                    AffiliateId = tenant.AffiliateId,
+                    Campaign = tenant.Campaign
+                };
 
-            TenantDbContext.TenantPartner.Add(tenantPartner);
-        }
+                TenantDbContext.TenantPartner.Add(tenantPartner);
+            }
 
-        tx.Commit();
+            tx.Commit();
+        });
 
         //CalculateTenantDomain(t);
         return tenant;
@@ -324,30 +306,35 @@ public class DbTenantService : ITenantService
     {
         var postfix = auto ? "_auto_deleted" : "_deleted";
 
-        using var tx = TenantDbContext.Database.BeginTransaction();
+        var strategy = TenantDbContext.Database.CreateExecutionStrategy();
 
-        var alias = TenantDbContext.Tenants
-            .Where(r => r.Id == id)
-            .Select(r => r.Alias)
-            .FirstOrDefault();
-
-        var count = TenantDbContext.Tenants
-            .Where(r => r.Alias.StartsWith(alias + postfix))
-            .Count();
-
-        var tenant = TenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefault();
-
-        if (tenant != null)
+        strategy.Execute(() =>
         {
-            tenant.Alias = alias + postfix + (count > 0 ? count.ToString() : "");
-            tenant.Status = TenantStatus.RemovePending;
-            tenant.StatusChanged = DateTime.UtcNow;
-            tenant.LastModified = DateTime.UtcNow;
-        }
+            using var tx = TenantDbContext.Database.BeginTransaction();
 
-        TenantDbContext.SaveChanges();
+            var alias = TenantDbContext.Tenants
+                .Where(r => r.Id == id)
+                .Select(r => r.Alias)
+                .FirstOrDefault();
 
-        tx.Commit();
+            var count = TenantDbContext.Tenants
+                .Where(r => r.Alias.StartsWith(alias + postfix))
+                .Count();
+
+            var tenant = TenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefault();
+
+            if (tenant != null)
+            {
+                tenant.Alias = alias + postfix + (count > 0 ? count.ToString() : "");
+                tenant.Status = TenantStatus.RemovePending;
+                tenant.StatusChanged = DateTime.UtcNow;
+                tenant.LastModified = DateTime.UtcNow;
+            }
+
+            TenantDbContext.SaveChanges();
+
+            tx.Commit();
+        });
     }
 
     public IEnumerable<TenantVersion> GetTenantVersions()
@@ -370,35 +357,40 @@ public class DbTenantService : ITenantService
 
     public void SetTenantSettings(int tenant, string key, byte[] data)
     {
-        using var tx = TenantDbContext.Database.BeginTransaction();
+        var strategy = TenantDbContext.Database.CreateExecutionStrategy();
 
-        if (data == null || data.Length == 0)
+        strategy.Execute(() =>
         {
-            var settings = TenantDbContext.CoreSettings
-                .Where(r => r.Tenant == tenant)
-                .Where(r => r.Id == key)
-                .FirstOrDefault();
+            using var tx = TenantDbContext.Database.BeginTransaction();
 
-            if (settings != null)
+            if (data == null || data.Length == 0)
             {
-                TenantDbContext.CoreSettings.Remove(settings);
+                var settings = TenantDbContext.CoreSettings
+                    .Where(r => r.Tenant == tenant)
+                    .Where(r => r.Id == key)
+                    .FirstOrDefault();
+
+                if (settings != null)
+                {
+                    TenantDbContext.CoreSettings.Remove(settings);
+                }
             }
-        }
-        else
-        {
-            var settings = new DbCoreSettings
+            else
             {
-                Id = key,
-                Tenant = tenant,
-                Value = data,
-                LastModified = DateTime.UtcNow
-            };
+                var settings = new DbCoreSettings
+                {
+                    Id = key,
+                    Tenant = tenant,
+                    Value = data,
+                    LastModified = DateTime.UtcNow
+                };
 
-            TenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
-        }
+                TenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
+            }
 
-        TenantDbContext.SaveChanges();
-        tx.Commit();
+            TenantDbContext.SaveChanges();
+            tx.Commit();
+        });
     }
 
     private IQueryable<DbTenant> TenantsQuery()
@@ -443,7 +435,7 @@ public class DbTenantService : ITenantService
             // cut number suffix
             while (true)
             {
-                if (6 < domain.Length && char.IsNumber(domain, domain.Length - 1))
+                if (TenantDomainValidator.MinLength < domain.Length && char.IsNumber(domain, domain.Length - 1))
                 {
                     domain = domain[0..^1];
                 }

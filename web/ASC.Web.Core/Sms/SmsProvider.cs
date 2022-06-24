@@ -95,7 +95,7 @@ public class SmsProviderManager
 
 public abstract class SmsProvider : Consumer
 {
-    protected ILog Log { get; }
+    protected ILogger<SmsProvider> Log { get; }
     protected IHttpClientFactory ClientFactory { get; }
     protected ICache MemoryCache { get; set; }
 
@@ -116,14 +116,14 @@ public abstract class SmsProvider : Consumer
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<SmsProvider> logger,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
     {
         MemoryCache = memCache;
-        Log = options.CurrentValue;
+        Log = logger;
         ClientFactory = clientFactory;
     }
 
@@ -162,13 +162,13 @@ public abstract class SmsProvider : Consumer
             {
                 using var reader = new StreamReader(stream);
                 var result = await reader.ReadToEndAsync();
-                Log.InfoFormat("SMS was sent to {0}, service returned: {1}", number, result);
+                Log.InformationSMSWasSend(number, result);
                 return true;
             }
         }
         catch (Exception ex)
         {
-            Log.Error("Failed to send sms message", ex);
+            Log.ErrorSendSms(ex);
         }
         return false;
     }
@@ -187,7 +187,7 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<SmsProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
@@ -260,14 +260,14 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
                 {
                     using var reader = new StreamReader(stream);
                     var result = await reader.ReadToEndAsync();
-                    Log.InfoFormat("SMS balance service returned: {0}", result);
+                    Log.InformationSmsBalaceReturned(result);
 
                     balance = result;
                 }
             }
             catch (Exception ex)
             {
-                Log.Error("Failed request sms balance", ex);
+                Log.ErrorRequestSms(ex);
                 balance = string.Empty;
             }
 
@@ -329,7 +329,7 @@ public class ClickatellProvider : SmsProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<ClickatellProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
@@ -351,7 +351,7 @@ public class ClickatellUSAProvider : ClickatellProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<ClickatellUSAProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> additional = null)
@@ -365,12 +365,26 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
 {
     protected override string Key
     {
-        get { return this["twilioAccountSid"]; }
+        get { return this["twilioKeySid"]; }
+        set { }
     }
 
     protected override string Secret
     {
+        get { return this["twilioKeySecret"]; }
+        set { }
+    }
+
+    protected string AccountSid
+    {
+        get { return this["twilioAccountSid"]; }
+        set { }
+    }
+
+    protected string AuthToken
+    {
         get { return this["twilioAuthToken"]; }
+        set { }
     }
 
     protected override string Sender
@@ -389,6 +403,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         return
             !string.IsNullOrEmpty(Key)
             && !string.IsNullOrEmpty(Secret)
+            && !string.IsNullOrEmpty(AccountSid)
             && !string.IsNullOrEmpty(Sender);
     }
 
@@ -399,21 +414,21 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
             number = "+" + number;
         }
 
-        var twilioRestClient = new TwilioRestClient(Key, Secret);
+        var twilioRestClient = new TwilioRestClient(Key, Secret, AccountSid);
 
         try
         {
             var smsMessage = MessageResource.Create(new PhoneNumber(number), body: message, @from: new PhoneNumber(Sender), client: twilioRestClient);
-            Log.InfoFormat("SMS was sent to {0}, status: {1}", number, smsMessage.Status);
+            Log.InformationSmsWasSendTo(number, smsMessage.Status);
             if (!smsMessage.ErrorCode.HasValue)
             {
                 return Task.FromResult(true);
             }
-            Log.Error("Failed to send sms. code: " + smsMessage.ErrorCode.Value + " message: " + smsMessage.ErrorMessage);
+            Log.ErrorSendSmsWithCode(smsMessage.ErrorCode.Value, smsMessage.ErrorMessage);
         }
         catch (Exception ex)
         {
-            Log.Error("Failed to send sms message via tiwilio", ex);
+            Log.ErrorSendSmsViaTiwilio(ex);
         }
 
         return Task.FromResult(false);
@@ -435,7 +450,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<TwilioProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props)
@@ -453,7 +468,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
     {
         try
         {
-            new VoipService.Twilio.TwilioProvider(Key, Secret, _authContext, _tenantUtil, _securityContext, _baseCommonLinkUtility).GetExistingPhoneNumbers();
+            new VoipService.Twilio.TwilioProvider(AccountSid, AuthToken, _authContext, _tenantUtil, _securityContext, _baseCommonLinkUtility).GetExistingPhoneNumbers();
             return true;
         }
         catch (Exception)
@@ -464,7 +479,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
 
     public void ClearOldNumbers()
     {
-        _twilioProviderCleaner.ClearOldNumbers(Key, Secret);
+        _twilioProviderCleaner.ClearOldNumbers(AccountSid, AuthToken);
     }
 }
 
@@ -487,7 +502,7 @@ public class TwilioSaaSProvider : TwilioProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<TwilioSaaSProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order)

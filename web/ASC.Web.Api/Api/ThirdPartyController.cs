@@ -38,7 +38,7 @@ public class ThirdPartyController : ControllerBase
         _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
-    [Read("{provider}")]
+    [HttpGet("{provider}")]
     public object Get(LoginProviderEnum provider)
     {
         var desktop = HttpContext.Request.Query["desktop"] == "true";
@@ -64,7 +64,8 @@ public class ThirdPartyController : ControllerBase
                 return _oAuth20TokenHelper.RequestCode<DropboxLoginProvider>(
                                                     additionalArgs: new Dictionary<string, string>
                                                         {
-                                                                        { "force_reauthentication", "true" }
+                                                                        { "force_reauthentication", "true" },
+                                                                        { "token_access_type","offline" }
                                                         }, additionalStateArgs: additionals);
 
             case LoginProviderEnum.Docusign:
@@ -88,7 +89,7 @@ public class ThirdPartyController : ControllerBase
         return null;
     }
 
-    [Read("{provider}/code")]
+    [HttpGet("{provider}/code")]
     public object GetCode(string redirect, string code, string error)
     {
         try

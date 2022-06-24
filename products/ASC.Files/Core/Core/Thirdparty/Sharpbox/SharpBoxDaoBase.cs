@@ -37,7 +37,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger monitor,
         FileUtility fileUtility,
         TempPath tempPath)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
@@ -144,54 +144,59 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             return;
         }
 
-        using var tx = FilesDbContext.Database.BeginTransaction();
-        var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
-            .Where(r => r.Id.StartsWith(oldValue))
-            .Select(r => r.Id)
-            .ToListAsync();
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        foreach (var oldID in oldIDs)
+        await strategy.ExecuteAsync(async () =>
         {
-            var oldHashID = await MappingIDAsync(oldID);
-            var newID = oldID.Replace(oldValue, newValue);
-            var newHashID = await MappingIDAsync(newID);
-
-            var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.HashId == oldHashID)
+            using var tx = await FilesDbContext.Database.BeginTransactionAsync();
+            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.Id.StartsWith(oldValue))
+                .Select(r => r.Id)
                 .ToListAsync();
 
-            foreach (var m in mappingForUpdate)
+            foreach (var oldID in oldIDs)
             {
-                m.Id = newID;
-                m.HashId = newHashID;
+                var oldHashID = await MappingIDAsync(oldID);
+                var newID = oldID.Replace(oldValue, newValue);
+                var newHashID = await MappingIDAsync(newID);
+
+                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
+                    .Where(r => r.HashId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var m in mappingForUpdate)
+                {
+                    m.Id = newID;
+                    m.HashId = newHashID;
+                }
+
+                await FilesDbContext.SaveChangesAsync();
+
+                var securityForUpdate = await Query(FilesDbContext.Security)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var s in securityForUpdate)
+                {
+                    s.EntryId = newHashID;
+                }
+
+                await FilesDbContext.SaveChangesAsync();
+
+                var linkForUpdate = await Query(FilesDbContext.TagLink)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var l in linkForUpdate)
+                {
+                    l.EntryId = newHashID;
+                }
+
+                await FilesDbContext.SaveChangesAsync();
             }
 
-            await FilesDbContext.SaveChangesAsync();
-
-            var securityForUpdate = await Query(FilesDbContext.Security)
-                .Where(r => r.EntryId == oldHashID)
-                .ToListAsync();
-
-            foreach (var s in securityForUpdate)
-            {
-                s.EntryId = newHashID;
-            }
-
-            await FilesDbContext.SaveChangesAsync();
-
-            var linkForUpdate = await Query(FilesDbContext.TagLink)
-                .Where(r => r.EntryId == oldHashID)
-                .ToListAsync();
-
-            foreach (var l in linkForUpdate)
-            {
-                l.EntryId = newHashID;
-            }
-
-            await FilesDbContext.SaveChangesAsync();
-        }
-
-        await tx.CommitAsync();
+            await tx.CommitAsync();
+        });
     }
 
     protected string MakePath(object entryId)
@@ -215,7 +220,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             }
             catch (Exception ex)
             {
-                _logger.Error("Sharpbox makeId error", ex);
+                _logger.ErrorSharpboxMakeId(ex);
             }
         }
         else if (entry != null)
@@ -279,6 +284,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         folder.Title = MakeTitle(fsEntry);
         folder.FilesCount = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
         folder.FoldersCount = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
+        SetFolderType(folder, isRoot);
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {

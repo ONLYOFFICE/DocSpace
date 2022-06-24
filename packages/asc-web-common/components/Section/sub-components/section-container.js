@@ -17,13 +17,20 @@ const tabletProps = css`
     position: sticky;
     top: 0;
     background: ${(props) => props.theme.section.header.background};
-    z-index: 20;
+    z-index: 202;
 
     ${isMobileOnly &&
     css`
       padding: 0 16px;
       margin: 0 0 0 -16px;
     `}
+
+    ${(props) =>
+      props.settingsStudio &&
+      isMobileOnly &&
+      css`
+        background: ${(props) => props.theme.section.header.backgroundColor};
+      `}
   }
   .section-body_filter {
     display: block;

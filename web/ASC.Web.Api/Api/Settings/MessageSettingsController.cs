@@ -77,20 +77,8 @@ public class MessageSettingsController : BaseSettingsController
         _coreBaseSettings = coreBaseSettings;
     }
 
-    [Create("messagesettings")]
-    public object EnableAdminMessageSettingsFromBody([FromBody] AdminMessageSettingsRequestsDto inDto)
-    {
-        return EnableAdminMessageSettings(inDto);
-    }
-
-    [Create("messagesettings")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object EnableAdminMessageSettingsFromForm([FromForm] AdminMessageSettingsRequestsDto inDto)
-    {
-        return EnableAdminMessageSettings(inDto);
-    }
-
-    private object EnableAdminMessageSettings(AdminMessageSettingsRequestsDto inDto)
+    [HttpPost("messagesettings")]
+    public object EnableAdminMessageSettings(AdminMessageSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -101,26 +89,14 @@ public class MessageSettingsController : BaseSettingsController
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
-    [Read("cookiesettings")]
+    [HttpGet("cookiesettings")]
     public int GetCookieSettings()
     {
         return _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
     }
 
-    [Update("cookiesettings")]
-    public object UpdateCookieSettingsFromBody([FromBody] CookieSettingsModel model)
-    {
-        return UpdateCookieSettings(model);
-    }
-
-    [Update("messagesettings")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object UpdateCookieSettingsFromForm([FromForm] CookieSettingsModel model)
-    {
-        return UpdateCookieSettings(model);
-    }
-
-    private object UpdateCookieSettings(CookieSettingsModel model)
+    [HttpPut("cookiesettings")]
+    public async Task<object> UpdateCookieSettings(CookieSettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -129,7 +105,7 @@ public class MessageSettingsController : BaseSettingsController
             throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
         }
 
-        _cookiesManager.SetLifeTime(model.LifeTime);
+        await _cookiesManager.SetLifeTime(model.LifeTime);
 
         _messageService.Send(MessageAction.CookieSettingsUpdated);
 
@@ -137,21 +113,8 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     [AllowAnonymous]
-    [Create("sendadmmail")]
-    public object SendAdmMailFromBody([FromBody] AdminMessageSettingsRequestsDto inDto)
-    {
-        return SendAdmMail(inDto);
-    }
-
-    [AllowAnonymous]
-    [Create("sendadmmail")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SendAdmMailFromForm([FromForm] AdminMessageSettingsRequestsDto inDto)
-    {
-        return SendAdmMail(inDto);
-    }
-
-    private object SendAdmMail(AdminMessageSettingsRequestsDto inDto)
+    [HttpPost("sendadmmail")]
+    public object SendAdmMail(AdminMessageSettingsRequestsDto inDto)
     {
         var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
         var enableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid();
@@ -180,21 +143,8 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     [AllowAnonymous]
-    [Create("sendjoininvite")]
-    public object SendJoinInviteMailFromBody([FromBody] AdminMessageSettingsRequestsDto inDto)
-    {
-        return SendJoinInviteMail(inDto);
-    }
-
-    [AllowAnonymous]
-    [Create("sendjoininvite")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SendJoinInviteMailFromForm([FromForm] AdminMessageSettingsRequestsDto inDto)
-    {
-        return SendJoinInviteMail(inDto);
-    }
-
-    private object SendJoinInviteMail(AdminMessageSettingsRequestsDto inDto)
+    [HttpPost("sendjoininvite")]
+    public object SendJoinInviteMail(AdminMessageSettingsRequestsDto inDto)
     {
         try
         {

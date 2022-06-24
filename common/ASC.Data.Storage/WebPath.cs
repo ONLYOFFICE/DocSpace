@@ -40,7 +40,7 @@ public class WebPathSettings
         }
     }
 
-    public string GetRelativePath(HttpContext httpContext, IOptionsMonitor<ILog> options, string absolutePath)
+    public string GetRelativePath(HttpContext httpContext, ILoggerProvider options, string absolutePath)
     {
         if (!Uri.IsWellFormedUriString(absolutePath, UriKind.Absolute))
         {
@@ -58,7 +58,7 @@ public class WebPathSettings
             absolutePath.Remove(0, appender.Append.Length);
     }
 
-    public string GetPath(HttpContext httpContext, IOptionsMonitor<ILog> options, string relativePath)
+    public string GetPath(HttpContext httpContext, ILoggerProvider options, string relativePath)
     {
         if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
         {
@@ -138,7 +138,7 @@ public class WebPath
     private readonly StorageSettingsHelper _storageSettingsHelper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILoggerProvider _options;
 
     public WebPath(
         WebPathSettings webPathSettings,
@@ -147,8 +147,8 @@ public class WebPath
         StorageSettingsHelper storageSettingsHelper,
         IHostEnvironment hostEnvironment,
         CoreBaseSettings coreBaseSettings,
-            IOptionsMonitor<ILog> options,
-            IHttpClientFactory clientFactory)
+        ILoggerProvider options,
+        IHttpClientFactory clientFactory)
     {
         _webPathSettings = webPathSettings;
         ServiceProvider = serviceProvider;
@@ -169,7 +169,7 @@ public class WebPath
         IHttpContextAccessor httpContextAccessor,
         IHostEnvironment hostEnvironment,
         CoreBaseSettings coreBaseSettings,
-            IOptionsMonitor<ILog> options,
+            ILoggerProvider options,
             IHttpClientFactory clientFactory)
             : this(webPathSettings, serviceProvider, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options, clientFactory)
     {

@@ -71,15 +71,25 @@ internal abstract class ThirdPartyProviderDao
         return Task.FromResult(false);
     }
 
-    public Task SaveThumbnailAsync(File<string> file, Stream thumbnail)
+        public Task SaveThumbnailAsync(File<string> file, Stream thumbnail, int width, int height)
     {
         //Do nothing
         return Task.CompletedTask;
     }
 
-    public Task<Stream> GetThumbnailAsync(File<string> file)
+        public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
     {
         return Task.FromResult<Stream>(null);
+    }
+
+    public Task<EntryProperties> GetProperties(string fileId)
+    {
+        return Task.FromResult<EntryProperties>(null);
+    }
+
+    public Task SaveProperties(string fileId, EntryProperties entryProperties)
+    {
+        return null;
     }
 
     public virtual Task<Stream> GetFileStreamAsync(File<string> file)
@@ -179,6 +189,16 @@ internal abstract class ThirdPartyProviderDao
         return null;
     }
 
+    public Task<string> GetFolderIDVirtualRooms(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDArchive(bool createIfNotExists)
+    {
+        return null;
+    }
+
     public Task<string> GetBunchObjectIDAsync(string folderID)
     {
         return null;
@@ -211,12 +231,15 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     protected FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
     protected readonly SetupInfo _setupInfo;
-    protected readonly ILog _logger;
+    protected readonly ILogger _logger;
     protected readonly FileUtility _fileUtility;
     protected readonly TempPath _tempPath;
     protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
     protected T ProviderInfo { get; set; }
     protected string PathPrefix { get; private set; }
+    protected List<FilterType> _constraintFolderFilters =
+        new List<FilterType> { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly,
+            FilterType.PresentationsOnly, FilterType.SpreadsheetsOnly, FilterType.ArchiveOnly, FilterType.MediaOnly };
 
     protected abstract string Id { get; }
 
@@ -227,7 +250,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger logger,
         FileUtility fileUtility,
         TempPath tempPath)
     {
@@ -236,7 +259,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         _tenantUtil = tenantUtil;
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
         _setupInfo = setupInfo;
-        _logger = monitor.CurrentValue;
+        _logger = logger;
         _fileUtility = fileUtility;
         _tempPath = tempPath;
         TenantID = tenantManager.GetCurrentTenant().Id;
@@ -361,6 +384,61 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         fileEntry.Error = entry.Error;
     }
 
+    protected void SetFolderType(Folder<string> folder, bool isRoot)
+    {
+        if (isRoot && (ProviderInfo.RootFolderType == FolderType.VirtualRooms ||
+            ProviderInfo.RootFolderType == FolderType.Archive))
+        {
+            folder.FolderType = ProviderInfo.RootFolderType;
+        }
+        else if (ProviderInfo.FolderId == folder.Id)
+        {
+            folder.FolderType = ProviderInfo.FolderType;
+        }
+    }
+
+    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, IEnumerable<string> tagNames)
+    {
+        if (tagNames == null || !tagNames.Any())
+        {
+            return folders;
+        }
+
+        var filtered = folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+            .Join(FilesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
+            .Join(FilesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new {result.folder, tagInfo.Name })
+                .Where(r => tagNames.Contains(r.Name))
+                .Select(r => r.folder);
+
+        return filtered;
+    }
+
+    protected IAsyncEnumerable<Folder<string>> SetFilterByTypes(IAsyncEnumerable<Folder<string>> folders, IEnumerable<FilterType> filterTypes)
+    {
+        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None))
+        {
+            var filter = filterTypes.Select(f => f switch
+            {
+                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+                FilterType.EditingRooms => FolderType.EditingRoom,
+                FilterType.ReviewRooms => FolderType.ReviewRoom,
+                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+                FilterType.CustomRooms => FolderType.CustomRoom,
+                _ => FolderType.CustomRoom
+            }).ToHashSet();
+
+            return folders.Where(f => filter.Contains(f.FolderType));
+        }
+
+        return folders;
+    }
+
+    protected bool CheckForInvalidFilters(IEnumerable<FilterType> filterTypes)
+    {
+        var intersection = filterTypes.Intersect(_constraintFolderFilters);
+
+        return !intersection.Any();
+    }
 
     protected abstract string MakeId(string path = null);
 
@@ -371,11 +449,10 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
-    public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+        public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
     {
         List<FileShareRecord> result = null;
-
-        return new ValueTask<List<FileShareRecord>>(result);
+            return Task<List<FileShareRecord>>.FromResult(result);
     }
 
     public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entry)
@@ -408,9 +485,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
-    public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
+    public Task<bool> IsSharedAsync(string entryId, FileEntryType type)
     {
-        throw new NotImplementedException();
+        return null;
     }
 
     #endregion
@@ -457,6 +534,21 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return AsyncEnumerable.Empty<Tag>();
     }
 
+    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0)
+    {
+        return AsyncEnumerable.Empty<TagInfo>();
+    }
+
+    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<string> names)
+    {
+        return AsyncEnumerable.Empty<TagInfo>();
+    }
+
+    public Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo)
+    {
+        return Task.FromResult(tagInfo);
+    }
+
     public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
     {
         return new List<Tag>();
@@ -473,6 +565,16 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     public void UpdateNewTags(Tag tag)
     {
+    }
+
+    public Task RemoveTagsAsync(FileEntry<string> entry, IEnumerable<int> tagsIds)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveTagsAsync(IEnumerable<int> tagsIds)
+    {
+        return Task.CompletedTask;
     }
 
     public void RemoveTags(IEnumerable<Tag> tag)

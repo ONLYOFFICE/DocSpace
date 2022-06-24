@@ -46,8 +46,10 @@ public class GoogleCloudStorage : BaseStorage
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options,
-            IHttpClientFactory clientFactory) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
+        ILoggerProvider factory,
+        ILogger<GoogleCloudStorage> options,
+        IHttpClientFactory clientFactory)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory)
     {
     }
 
@@ -597,7 +599,9 @@ public class GoogleCloudStorage : BaseStorage
         await storage.UpdateObjectAsync(uploaded);
 
         using var mStream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
-        var preSignedURL = await FromServiceAccountData(mStream).SignAsync(RequestTemplate.FromBucket(_bucket).WithObjectName(MakePath(domain, path)), UrlSigner.Options.FromExpiration(expires));
+        var signDuration = expires.Date == DateTime.MinValue ? expires.TimeOfDay : expires.Subtract(DateTime.UtcNow);
+        var preSignedURL = await FromServiceAccountData(mStream)
+            .SignAsync(RequestTemplate.FromBucket(_bucket).WithObjectName(MakePath(domain, path)), Options.FromDuration(signDuration));
 
         //TODO: CNAME!
         return preSignedURL;
@@ -739,10 +743,6 @@ public class GoogleCloudStorage : BaseStorage
     #endregion
 
     public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize, string contentType, string contentDisposition, string submitLabel)
-    {
-        throw new NotImplementedException();
-    }
-    public override Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
     {
         throw new NotImplementedException();
     }

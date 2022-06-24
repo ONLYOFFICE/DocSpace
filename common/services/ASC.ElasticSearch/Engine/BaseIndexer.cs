@@ -67,7 +67,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     private bool _isExist;
     private readonly Client _client;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     protected readonly TenantManager _tenantManager;
     private readonly BaseIndexerHelper _baseIndexerHelper;
     private readonly Settings _settings;
@@ -77,7 +77,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     public BaseIndexer(
         Client client,
-        IOptionsMonitor<ILog> log,
+        ILogger<BaseIndexer<T>> logger,
         DbContextManager<WebstudioDbContext> dbContextManager,
         TenantManager tenantManager,
         BaseIndexerHelper baseIndexerHelper,
@@ -85,7 +85,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         IServiceProvider serviceProvider)
     {
         _client = client;
-        _logger = log.CurrentValue;
+        _logger = logger;
         _tenantManager = tenantManager;
         _baseIndexerHelper = baseIndexerHelper;
         _settings = settings;
@@ -110,7 +110,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         }
 
         var (count, max, min) = getCount(lastIndexed);
-        _logger.Debug($"Index: {IndexName}, Count {count}, Max: {max}, Min: {min}");
+        _logger.DebugIndex(IndexName, count, max, min);
 
         var ids = new List<int>() { min };
         ids.AddRange(getIds(lastIndexed));
@@ -129,7 +129,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
         WebstudioDbContext.SaveChanges();
 
-        _logger.Debug($"index completed {Wrapper.IndexName}");
+        _logger.DebugIndexCompleted(Wrapper.IndexName);
     }
 
     public Task ReIndex()
@@ -192,7 +192,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            _logger.Error("CreateIfNotExist", e);
+            _logger.ErrorCreateIfNotExist(e);
         }
     }
 
@@ -260,11 +260,11 @@ public class BaseIndexer<T> where T : class, ISearchItem
                             {
                                 throw;
                             }
-                            _logger.Error(e);
+                            _logger.ErrorIndex(e);
                         }
                         catch (Exception e)
                         {
-                            _logger.Error(e);
+                            _logger.ErrorIndex(e);
                         }
                         finally
                         {
@@ -362,11 +362,11 @@ public class BaseIndexer<T> where T : class, ISearchItem
                             {
                                 throw;
                             }
-                            _logger.Error(e);
+                            _logger.ErrorIndex(e);
                         }
                         catch (Exception e)
                         {
-                            _logger.Error(e);
+                            _logger.ErrorIndex(e);
                         }
                         finally
                         {
@@ -495,7 +495,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            _logger.Error("CheckExist " + data.IndexName, e);
+            _logger.ErrorCheckExist(data.IndexName, e);
         }
 
         return false;
@@ -542,7 +542,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
         WebstudioDbContext.SaveChanges();
 
-        _logger.DebugFormat("Delete {0}", Wrapper.IndexName);
+        _logger.DebugIndexDeleted(Wrapper.IndexName);
         _client.Instance.Indices.Delete(Wrapper.IndexName);
         _baseIndexerHelper.Clear(Wrapper);
         CreateIfNotExist(Wrapper);

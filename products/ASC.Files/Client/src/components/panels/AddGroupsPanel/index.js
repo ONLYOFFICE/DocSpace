@@ -127,7 +127,11 @@ class AddGroupsPanelComponent extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel">
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          onClose={this.onClosePanels}
+        >
           <StyledContent>
             <StyledBody ref={this.scrollRef}>
               <GroupSelector
@@ -141,9 +145,11 @@ class AddGroupsPanelComponent extends React.Component {
                     t={t}
                     access={accessRight}
                     directionX="right"
+                    directionY="top"
                     onAccessChange={this.onAccessChange}
                     accessOptions={accessOptions}
                     arrowIconColor={theme.filesPanels.addGroups.arrowColor}
+                    isEmbedded={true}
                   />
                 }
                 headerLabel={t("AddGroupsForSharingButton")}

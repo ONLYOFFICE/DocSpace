@@ -49,6 +49,7 @@ public class DocumentServiceTracker
     {
         public List<Action> Actions { get; set; }
         public string ChangesUrl { get; set; }
+        public string Filetype { get; set; }
         public ForceSaveInitiator ForceSaveType { get; set; }
         public object History { get; set; }
         public string Key { get; set; }
@@ -71,7 +72,8 @@ public class DocumentServiceTracker
         {
             Command = 0,
             User = 1,
-            Timer = 2
+            Timer = 2,
+            UserSubmit = 3
         }
     }
 
@@ -146,9 +148,9 @@ public class DocumentServiceTrackerHelper
     private readonly NotifyClient _notifyClient;
     private readonly MailMergeTaskRunner _mailMergeTaskRunner;
     private readonly FileTrackerHelper _fileTracker;
-    private readonly ILog _logger;
+    private readonly ILogger<DocumentServiceTrackerHelper> _logger;
     private readonly IHttpClientFactory _clientFactory;
-
+    private readonly ThirdPartySelector _thirdPartySelector;
     public DocumentServiceTrackerHelper(
         SecurityContext securityContext,
         UserManager userManager,
@@ -160,7 +162,7 @@ public class DocumentServiceTrackerHelper
         GlobalStore globalStore,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IDaoFactory daoFactory,
-        ILog logger,
+        ILogger<DocumentServiceTrackerHelper> logger,
         DocumentServiceHelper documentServiceHelper,
         EntryManager entryManager,
         FileShareLink fileShareLink,
@@ -169,7 +171,8 @@ public class DocumentServiceTrackerHelper
         NotifyClient notifyClient,
         MailMergeTaskRunner mailMergeTaskRunner,
         FileTrackerHelper fileTracker,
-        IHttpClientFactory clientFactory)
+            IHttpClientFactory clientFactory,
+            ThirdPartySelector thirdPartySelector)
     {
         _securityContext = securityContext;
         _userManager = userManager;
@@ -191,6 +194,7 @@ public class DocumentServiceTrackerHelper
         _fileTracker = fileTracker;
         _logger = logger;
         _clientFactory = clientFactory;
+            _thirdPartySelector = thirdPartySelector;
     }
 
     public string GetCallbackUrl<T>(T fileId)
@@ -217,8 +221,8 @@ public class DocumentServiceTrackerHelper
         {
             case TrackerStatus.NotFound:
             case TrackerStatus.Closed:
-                    _fileTracker.Remove(fileId);
-                    _socketManager.StopEdit(fileId);
+                _fileTracker.Remove(fileId);
+                _socketManager.StopEdit(fileId);
 
                 break;
 
@@ -240,7 +244,7 @@ public class DocumentServiceTrackerHelper
 
     private async Task ProcessEditAsync<T>(T fileId, TrackerData fileData)
     {
-        if (ThirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
+            if (_thirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
         {
             return;
         }
@@ -249,7 +253,7 @@ public class DocumentServiceTrackerHelper
         var usersDrop = new List<string>();
 
         string docKey;
-        var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app == null)
         {
             File<T> fileStable;
@@ -264,7 +268,7 @@ public class DocumentServiceTrackerHelper
 
         if (!fileData.Key.Equals(docKey))
         {
-            _logger.InfoFormat("DocService editing file {0} ({1}) with key {2} for {3}", fileId, docKey, fileData.Key, string.Join(", ", fileData.Users));
+            _logger.InformationDocServiceEditingFile(fileId.ToString(), docKey, fileData.Key, fileData.Users);
             usersDrop = fileData.Users;
         }
         else
@@ -273,7 +277,7 @@ public class DocumentServiceTrackerHelper
             {
                 if (!Guid.TryParse(user, out var userId))
                 {
-                    _logger.Info("DocService userId is not Guid: " + user);
+                    _logger.InformationDocServiceUserIdIsNotGuid(user);
                     continue;
                 }
 
@@ -286,7 +290,7 @@ public class DocumentServiceTrackerHelper
                 }
                 catch (Exception e)
                 {
-                    _logger.DebugFormat("Drop command: fileId '{0}' docKey '{1}' for user {2} : {3}", fileId, fileData.Key, user, e.Message);
+                    _logger.DebugDropCommand(fileId.ToString(), fileData.Key, user, e);
                     usersDrop.Add(userId.ToString());
                 }
             }
@@ -296,7 +300,7 @@ public class DocumentServiceTrackerHelper
         {
             if (!await _documentServiceHelper.DropUserAsync(fileData.Key, usersDrop.ToArray(), fileId))
             {
-                _logger.Error("DocService drop failed for users " + string.Join(",", usersDrop));
+                _logger.ErrorDocServiceDropFailed(usersDrop);
             }
         }
 
@@ -324,7 +328,7 @@ public class DocumentServiceTrackerHelper
             userId = Guid.Empty;
         }
 
-        var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app == null)
         {
             File<T> fileStable;
@@ -333,9 +337,9 @@ public class DocumentServiceTrackerHelper
             var docKey = _documentServiceHelper.GetDocKey(fileStable);
             if (!fileData.Key.Equals(docKey))
             {
-                _logger.ErrorFormat("DocService saving file {0} ({1}) with key {2}", fileId, docKey, fileData.Key);
+                _logger.ErrorDocServiceSavingFile(fileId.ToString(), docKey, fileData.Key);
 
-                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), fileData.Filetype);
 
                 return new TrackResponse { Message = "Expected key " + docKey };
             }
@@ -353,7 +357,7 @@ public class DocumentServiceTrackerHelper
         }
         catch (Exception ex)
         {
-            _logger.Info("DocService save error: anonymous author - " + userId, ex);
+            _logger.InformationDocServiceSaveError(userId, ex);
             if (!userId.Equals(ASC.Core.Configuration.Constants.Guest.ID))
             {
                 comments.Add(FilesCommonResource.ErrorMassage_SaveAnonymous);
@@ -374,11 +378,11 @@ public class DocumentServiceTrackerHelper
                 await _daoFactory.GetFileDao<T>().UpdateCommentAsync(file.Id, file.Version, string.Join("; ", comments));
 
                 file = null;
-                _logger.ErrorFormat("DocService save error. Empty url. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key);
+                _logger.ErrorDocServiceSave2(fileId.ToString(), userId, fileData.Key);
             }
             catch (Exception ex)
             {
-                _logger.Error(string.Format("DocService save error. Version update. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key), ex);
+                _logger.ErrorDocServiceSaveVersionUpdate(fileId.ToString(), userId, fileData.Key, ex);
             }
         }
         else
@@ -395,37 +399,41 @@ public class DocumentServiceTrackerHelper
                 {
                     case TrackerData.ForceSaveInitiator.Command:
                         forcesaveType = ForcesaveType.Command;
+                        comments.Add(FilesCommonResource.CommentAutosave);
                         break;
                     case TrackerData.ForceSaveInitiator.Timer:
                         forcesaveType = ForcesaveType.Timer;
+                        comments.Add(FilesCommonResource.CommentAutosave);
                         break;
                     case TrackerData.ForceSaveInitiator.User:
                         forcesaveType = ForcesaveType.User;
+                        comments.Add(FilesCommonResource.CommentForcesave);
+                        break;
+                    case TrackerData.ForceSaveInitiator.UserSubmit:
+                        forcesaveType = ForcesaveType.UserSubmit;
+                        comments.Add(FilesCommonResource.CommentSubmitFillForm);
                         break;
                 }
-                comments.Add(fileData.ForceSaveType == TrackerData.ForceSaveInitiator.User
-                                 ? FilesCommonResource.CommentForcesave
-                                 : FilesCommonResource.CommentAutosave);
             }
 
             try
             {
-                file = await _entryManager.SaveEditingAsync(fileId, null, _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
+                file = await _entryManager.SaveEditingAsync(fileId, fileData.Filetype, _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
                 saveMessage = fileData.Status == TrackerStatus.MustSave || fileData.Status == TrackerStatus.ForceSave ? null : "Status " + fileData.Status;
             }
             catch (Exception ex)
             {
-                _logger.Error(string.Format("DocService save error. File id: '{0}'. UserId: {1}. DocKey '{2}'. DownloadUri: {3}", fileId, userId, fileData.Key, fileData.Url), ex);
+                _logger.ErrorDocServiceSave(fileId.ToString(), userId, fileData.Key, fileData.Url, ex);
                 saveMessage = ex.Message;
 
-                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), fileData.Filetype);
             }
         }
 
         if (!forcesave)
         {
-                _fileTracker.Remove(fileId);
-                _socketManager.StopEdit(fileId);
+            _fileTracker.Remove(fileId);
+            _socketManager.StopEdit(fileId);
         }
 
         if (file != null)
@@ -439,11 +447,14 @@ public class DocumentServiceTrackerHelper
             {
                 await SaveHistoryAsync(file, (fileData.History ?? "").ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.ChangesUrl));
             }
+
+            if (fileData.Status == TrackerStatus.ForceSave && fileData.ForceSaveType == TrackerData.ForceSaveInitiator.UserSubmit)
+            {
+                await _entryManager.SubmitFillForm(file);
+            }
         }
 
-        var result = new TrackResponse { Message = saveMessage };
-
-        return result;
+        return new TrackResponse { Message = saveMessage };
     }
 
     private async Task<TrackResponse> ProcessMailMergeAsync<T>(T fileId, TrackerData fileData)
@@ -549,18 +560,14 @@ public class DocumentServiceTrackerHelper
                 })
             {
                 var response = await _mailMergeTaskRunner.RunAsync(mailMergeTask, _clientFactory);
-                _logger.InfoFormat("DocService mailMerge {0}/{1} send: {2}",
-                                         fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
+                _logger.InformationDocServiceMailMerge(fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
             }
             saveMessage = null;
         }
         catch (Exception ex)
         {
-            _logger.Error(
-                string.Format("DocService mailMerge{0} error: userId - {1}, url - {2}",
-                              fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount,
-                              userId, fileData.Url),
-                ex);
+            _logger.ErrorDocServiceMailMerge(fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount,
+                              userId, fileData.Url, ex);
             saveMessage = ex.Message;
         }
 
@@ -579,7 +586,7 @@ public class DocumentServiceTrackerHelper
         return new TrackResponse { Message = saveMessage };
     }
 
-    private async Task StoringFileAfterErrorAsync<T>(T fileId, string userId, string downloadUri)
+    private async Task StoringFileAfterErrorAsync<T>(T fileId, string userId, string downloadUri, string downloadType)
     {
         if (string.IsNullOrEmpty(downloadUri))
         {
@@ -588,7 +595,13 @@ public class DocumentServiceTrackerHelper
 
         try
         {
-            var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + FileUtility.GetFileExtension(downloadUri));
+            if (string.IsNullOrEmpty(downloadType))
+            {
+                downloadType = FileUtility.GetFileExtension(downloadUri).Trim('.');
+            }
+
+            var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + "." + downloadType);
+
             var path = $@"save_crash\{DateTime.UtcNow:yyyy_MM_dd}\{userId}_{fileName}";
 
             var store = _globalStore.GetStore();
@@ -604,11 +617,11 @@ public class DocumentServiceTrackerHelper
             {
                 await store.SaveAsync(FileConstant.StorageDomainTmp, path, fileStream);
             }
-            _logger.DebugFormat("DocService storing to {0}", path);
+            _logger.DebugDocServiceStoring(path);
         }
         catch (Exception ex)
         {
-            _logger.Error("DocService Error on save file to temp store", ex);
+            _logger.ErrorDocServiceSaveFileToTempStore(ex);
         }
     }
 
@@ -646,7 +659,7 @@ public class DocumentServiceTrackerHelper
         }
         catch (Exception ex)
         {
-            _logger.Error("DocService save history error", ex);
+            _logger.ErrorDocServiceSavehistory(ex);
         }
     }
 }

@@ -16,10 +16,11 @@ import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: ${(props) =>
+  height: ${(props) => props.contentHeight};
+  /* height: ${(props) =>
     (props.isTabletView || isMobileOnly) && !isFirefox
       ? `${props.contentHeight}px`
-      : "100vh"};
+      : "100vh"}; */
 
   #customScrollBar {
     z-index: 0;
@@ -30,7 +31,7 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const { children, isTabletView, setIsTabletView } = props;
+  const { children, isTabletView, setIsTabletView, isBannerVisible } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
@@ -73,6 +74,10 @@ const Layout = (props) => {
     };
   }, [isTabletView]);
 
+  useEffect(() => {
+    changeRootHeight();
+  }, [isBannerVisible]);
+
   const onWidthChange = (e) => {
     const { matches } = e;
     setIsTabletView(matches);
@@ -99,7 +104,8 @@ const Layout = (props) => {
       intervalHandler = null;
       timeoutHandler = null;
 
-      let height = window.innerHeight;
+      let height = "100vh";
+      const windowHeight = window.innerHeight;
 
       if (isMobileOnly && isIOS && isChrome) {
         if (window.innerHeight < window.innerWidth && isPortrait) {
@@ -115,6 +121,11 @@ const Layout = (props) => {
       //     height = window.screen.availHeight - correctorTabletSafari;
       //   }
       // }
+
+      const bannerHeight = isBannerVisible ? 80 : 0;
+      let vh = (windowHeight - 48 - bannerHeight) * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+
       setContentHeight(height);
     };
     intervalHandler = setInterval(() => {
@@ -153,10 +164,11 @@ Layout.propTypes = {
   setIsTabletView: PropTypes.func,
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, bannerStore }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
 
     setIsTabletView: auth.settingsStore.setIsTabletView,
+    isBannerVisible: bannerStore.isBannerVisible,
   };
 })(observer(Layout));

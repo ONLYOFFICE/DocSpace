@@ -68,11 +68,19 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     diHelper.TryAdd<FileDataQueue>();
 
-    services.AddHostedService<ThumbnailService>();
-    diHelper.TryAdd<ThumbnailService>();
+    services.AddActivePassiveHostedService<FileConverterService<int>>();
+    diHelper.TryAdd<FileConverterService<int>>();
+
+    services.AddActivePassiveHostedService<FileConverterService<string>>();
+    diHelper.TryAdd<FileConverterService<string>>();
 
     services.AddHostedService<ThumbnailBuilderService>();
     diHelper.TryAdd<ThumbnailBuilderService>();
+
+    diHelper.TryAdd<ThumbnailRequestedIntegrationEventHandler>();
+
+    services.AddHostedService<Launcher>();
+    diHelper.TryAdd<Launcher>();
 
     diHelper.TryAdd<AuthManager>();
     diHelper.TryAdd<BaseCommonLinkUtility>();
@@ -97,4 +105,13 @@ var app = builder.Build();
 
 startup.Configure(app);
 
-await app.RunAsync();
+var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+
+eventBus.Subscribe<ThumbnailRequestedIntegrationEvent, ThumbnailRequestedIntegrationEventHandler>();
+
+app.Run();
+
+public partial class Program
+{
+    public static string AppName = Assembly.GetExecutingAssembly().GetName().Name;
+}

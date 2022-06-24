@@ -24,23 +24,30 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+global using System.Text.RegularExpressions;
+
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
+global using ASC.Common.Threading;
 global using ASC.Common.Utils;
 global using ASC.Core;
 global using ASC.Core.Billing;
 global using ASC.Core.Common.Hosting;
 global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Data.Backup.BackgroundTasks;
+global using ASC.Data.Backup.BackgroundTasks.Log;
 global using ASC.Data.Backup.Contracts;
 global using ASC.Data.Backup.Core.IntegrationEvents.Events;
 global using ASC.Data.Backup.IntegrationEvents.EventHandling;
 global using ASC.Data.Backup.Services;
 global using ASC.Data.Backup.Storage;
+global using ASC.Data.Backup.Tasks;
 global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Events;
+global using ASC.EventBus.Exceptions;
+global using ASC.EventBus.Log;
 global using ASC.Files.Core;
 global using ASC.Web.Studio.Core.Notify;
 
@@ -51,6 +58,6 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Logging;
 
 global using Newtonsoft.Json;

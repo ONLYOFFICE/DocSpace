@@ -79,7 +79,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <returns>List of provider key</returns>
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
     /// <returns></returns>
-    [Read("thirdparty/capabilities")]
+    [HttpGet("thirdparty/capabilities")]
     public List<List<string>> Capabilities()
     {
         var result = new List<List<string>>();
@@ -95,17 +95,34 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <visible>false</visible>
-    [Create("wordpress")]
-    public bool CreateWordpressPostFromBody([FromBody] CreateWordpressPostRequestDto inDto)
+    [HttpPost("wordpress")]
+    public bool CreateWordpressPost(CreateWordpressPostRequestDto inDto)
     {
-        return CreateWordpressPost(inDto);
-    }
+        try
+        {
+            var token = _wordpressToken.GetToken();
+            var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
+            var parser = JObject.Parse(meInfo);
+            if (parser == null)
+            {
+                return false;
+            }
 
-    [Create("wordpress")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool CreateWordpressPostFromForm([FromForm] CreateWordpressPostRequestDto inDto)
-    {
-        return CreateWordpressPost(inDto);
+            var blogId = parser.Value<string>("token_site_id");
+
+            if (blogId != null)
+            {
+                var createPost = _wordpressHelper.CreateWordpressPost(inDto.Title, inDto.Content, inDto.Status, blogId, token);
+
+                return createPost;
+            }
+
+            return false;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     /// <summary>
@@ -118,7 +135,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <category>Third-Party Integration</category>
     /// <returns>Folder id</returns>
     ///<exception cref="ArgumentException"></exception>
-    [Delete("thirdparty/{providerId:int}")]
+    [HttpDelete("thirdparty/{providerId:int}")]
     public Task<object> DeleteThirdPartyAsync(int providerId)
     {
         return _fileStorageServiceThirdparty.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
@@ -126,7 +143,7 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <visible>false</visible>
-    [Read("wordpress-delete")]
+    [HttpGet("wordpress-delete")]
     public object DeleteWordpressInfo()
     {
         var token = _wordpressToken.GetToken();
@@ -150,7 +167,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <category>Third-Party Integration</category>
     /// <short>Get third party folder</short>
     /// <returns>Connected providers folder</returns>
-    [Read("thirdparty/common")]
+    [HttpGet("thirdparty/common")]
     public async Task<IEnumerable<FolderDto<string>>> GetCommonThirdPartyFoldersAsync()
     {
         var parent = await _fileStorageService.GetFolderAsync(await _globalFolderHelper.FolderCommonAsync);
@@ -170,14 +187,14 @@ public class ThirdpartyController : ApiControllerBase
     /// <category>Third-Party Integration</category>
     /// <short>Get third party list</short>
     /// <returns>Connected providers</returns>
-    [Read("thirdparty")]
+    [HttpGet("thirdparty")]
     public async Task<IEnumerable<ThirdPartyParams>> GetThirdPartyAccountsAsync()
     {
         return await _fileStorageServiceThirdparty.GetThirdPartyAsync();
     }
 
     /// <visible>false</visible>
-    [Read("wordpress-info")]
+    [HttpGet("wordpress-info")]
     public object GetWordpressInfo()
     {
         var token = _wordpressToken.GetToken();
@@ -220,68 +237,14 @@ public class ThirdpartyController : ApiControllerBase
     /// <returns>Folder contents</returns>
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
     /// <exception cref="ArgumentException"></exception>
-    [Create("thirdparty")]
-    public Task<FolderDto<string>> SaveThirdPartyFromBodyAsync([FromBody] ThirdPartyRequestDto inDto)
-    {
-        return SaveThirdPartyAsync(inDto);
-    }
-
-    [Create("thirdparty")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<string>> SaveThirdPartyFromFormAsync([FromForm] ThirdPartyRequestDto inDto)
-    {
-        return SaveThirdPartyAsync(inDto);
-    }
-
-    /// <visible>false</visible>
-    [Create("wordpress-save")]
-    public object WordpressSaveFromBody([FromBody] WordpressSaveRequestDto inDto)
-    {
-        return WordpressSave(inDto);
-    }
-
-    [Create("wordpress-save")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object WordpressSaveFromForm([FromForm] WordpressSaveRequestDto inDto)
-    {
-        return WordpressSave(inDto);
-    }
-
-    private bool CreateWordpressPost(CreateWordpressPostRequestDto inDto)
-    {
-        try
-        {
-            var token = _wordpressToken.GetToken();
-            var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
-            var parser = JObject.Parse(meInfo);
-            if (parser == null)
-            {
-                return false;
-            }
-
-            var blogId = parser.Value<string>("token_site_id");
-
-            if (blogId != null)
-            {
-                var createPost = _wordpressHelper.CreateWordpressPost(inDto.Title, inDto.Content, inDto.Status, blogId, token);
-
-                return createPost;
-            }
-
-            return false;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
-
-    private async Task<FolderDto<string>> SaveThirdPartyAsync(ThirdPartyRequestDto inDto)
+    [HttpPost("thirdparty")]
+    public async Task<FolderDto<string>> SaveThirdPartyAsync(ThirdPartyRequestDto inDto)
     {
         var thirdPartyParams = new ThirdPartyParams
         {
             AuthData = new AuthData(inDto.Url, inDto.Login, inDto.Password, inDto.Token),
-            Corporate = inDto.IsCorporate,
+            Corporate = inDto.IsRoomsStorage ? false : inDto.IsCorporate,
+            RoomsStorage = inDto.IsCorporate ? false : inDto.IsRoomsStorage,
             CustomerTitle = inDto.CustomerTitle,
             ProviderId = inDto.ProviderId,
             ProviderKey = inDto.ProviderKey,
@@ -292,7 +255,9 @@ public class ThirdpartyController : ApiControllerBase
         return await _folderDtoHelper.GetAsync(folder);
     }
 
-    private object WordpressSave(WordpressSaveRequestDto inDto)
+    /// <visible>false</visible>
+    [HttpPost("wordpress-save")]
+    public object WordpressSave(WordpressSaveRequestDto inDto)
     {
         if (inDto.Code.Length == 0)
         {

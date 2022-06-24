@@ -35,9 +35,9 @@ global using System.Globalization;
 global using System.Linq;
 global using System.Linq.Expressions;
 global using System.Net;
+global using System.Net.Http.Headers;
 global using System.Reflection;
 global using System.Resources;
-global using System.Runtime.Caching;
 global using System.Runtime.Serialization;
 global using System.Security;
 global using System.Security.Authentication;
@@ -57,14 +57,19 @@ global using Amazon.Runtime;
 global using Amazon.SimpleEmail;
 global using Amazon.SimpleEmail.Model;
 
+global using ASC.AuditTrail.Models;
 global using ASC.Collections;
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Data;
+global using ASC.Common.Log;
 global using ASC.Common.Logging;
 global using ASC.Common.Mapping;
 global using ASC.Common.Module;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Notify.Patterns;
+global using ASC.Common.Radicale;
+global using ASC.Common.Radicale.Core;
 global using ASC.Common.Security;
 global using ASC.Common.Security.Authentication;
 global using ASC.Common.Security.Authorizing;
@@ -82,7 +87,9 @@ global using ASC.Core.Common.EF.Model.Mail;
 global using ASC.Core.Common.EF.Model.Resource;
 global using ASC.Core.Common.Hosting.Extensions;
 global using ASC.Core.Common.Hosting.Interfaces;
+global using ASC.Core.Common.Log;
 global using ASC.Core.Common.Notify;
+global using ASC.Core.Common.Notify.IntegrationEvents.Events;
 global using ASC.Core.Common.Notify.Jabber;
 global using ASC.Core.Common.Notify.Push;
 global using ASC.Core.Common.Notify.Telegram;
@@ -93,10 +100,18 @@ global using ASC.Core.Data;
 global using ASC.Core.Notify;
 global using ASC.Core.Notify.Jabber;
 global using ASC.Core.Notify.Senders;
+global using ASC.Core.Notify.Signalr;
 global using ASC.Core.Security.Authentication;
 global using ASC.Core.Security.Authorizing;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Events;
+global using ASC.Geolocation;
+global using ASC.MessagingSystem.Core;
+global using ASC.MessagingSystem.Data;
+global using ASC.MessagingSystem.Mapping;
+global using ASC.MessagingSystem.Models;
 global using ASC.Notify;
 global using ASC.Notify.Channels;
 global using ASC.Notify.Cron;
@@ -112,6 +127,7 @@ global using ASC.Web.Studio.Utility;
 global using Autofac;
 
 global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
 
 global using MailKit.Security;
 
@@ -123,6 +139,7 @@ global using Microsoft.EntityFrameworkCore.Metadata;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.EntityFrameworkCore.Query;
 global using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
@@ -135,6 +152,8 @@ global using Newtonsoft.Json;
 
 global using NVelocity;
 global using NVelocity.App.Events;
+
+global using ProtoBuf;
 
 global using Telegram.Bot;
 

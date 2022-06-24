@@ -3,6 +3,10 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import NoUserSelect from "../utils/commonStyles";
 
+const Container = styled.div`
+  display: inline-block;
+`;
+
 const ToggleButtonContainer = styled.label`
   position: absolute;
   -webkit-appearance: none;
@@ -84,4 +88,4 @@ const HiddenInput = styled.input`
   z-index: -1;
 `;
 
-export { ToggleButtonContainer, HiddenInput };
+export { ToggleButtonContainer, HiddenInput, Container };

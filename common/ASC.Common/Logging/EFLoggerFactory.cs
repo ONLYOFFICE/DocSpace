@@ -24,49 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ILogger = Microsoft.Extensions.Logging.ILogger;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
-
 namespace ASC.Common.Logging;
 
 [Singletone]
 public class EFLoggerFactory : ILoggerFactory
 {
-    private readonly Lazy<ILogger> _logger;
     private readonly ILoggerProvider _loggerProvider;
 
-    public EFLoggerFactory(EFLoggerProvider loggerProvider)
+    public EFLoggerFactory(ILoggerProvider loggerProvider)
     {
         _loggerProvider = loggerProvider;
-        _logger = new Lazy<ILogger>(() => _loggerProvider.CreateLogger(""));
     }
 
     public void AddProvider(ILoggerProvider provider)
     {
-        //LoggerProvider = provider;
     }
 
     public ILogger CreateLogger(string categoryName)
     {
-        return _logger.Value;
-    }
-
-    public void Dispose() { }
-}
-
-[Singletone]
-public class EFLoggerProvider : ILoggerProvider
-{
-    private readonly IOptionsMonitor<ILog> _option;
-
-    public EFLoggerProvider(IOptionsMonitor<ILog> option)
-    {
-        _option = option;
-    }
-
-    public ILogger CreateLogger(string categoryName)
-    {
-        return new EFLogger(_option.Get("ASC.SQL"));
+        return new EFLogger(_loggerProvider.CreateLogger("ASC.SQL"));
     }
 
     public void Dispose() { }
@@ -74,36 +50,23 @@ public class EFLoggerProvider : ILoggerProvider
 
 public class EFLogger : ILogger
 {
-    public ILog CustomLogger { get; }
-
-    public EFLogger(ILog customLogger)
+    private readonly ILogger _logger;
+    public EFLogger(ILogger logger)
     {
-        CustomLogger = customLogger;
+        _logger = logger;
     }
 
     public IDisposable BeginScope<TState>(TState state)
     {
-        return null;
+        return _logger.BeginScope(state);
     }
 
-    public bool IsEnabled(LogLevel logLevel)
+    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
     {
-        return logLevel switch
-        {
-            LogLevel.Trace => CustomLogger.IsTraceEnabled,
-            LogLevel.Information => CustomLogger.IsInfoEnabled,
-            LogLevel.None => false,
-
-            LogLevel.Debug => CustomLogger.IsDebugEnabled,
-            LogLevel.Warning => CustomLogger.IsWarnEnabled,
-            LogLevel.Error => CustomLogger.IsErrorEnabled,
-            LogLevel.Critical => CustomLogger.IsErrorEnabled,
-
-            _ => true,
-        };
+        return _logger.IsEnabled(logLevel);
     }
 
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
         switch (eventId.Id)
         {
@@ -112,8 +75,47 @@ public class EFLogger : ILogger
             //    break;
             case 20101:
                 var keyValuePairs = state as IEnumerable<KeyValuePair<string, object>>;
-                CustomLogger.DebugWithProps("", keyValuePairs);
+                var ev = new EFLogEvent("");
+
+                foreach (var kv in keyValuePairs)
+                {
+                    ev.WithProperty(kv.Key, kv.Value);
+                }
+
+                _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug,
+                        default(EventId),
+                        ev,
+                        exception,
+                        EFLogEvent.Formatter);
                 break;
         }
     }
+
+    class EFLogEvent : IEnumerable<KeyValuePair<string, object>>
+    {
+        readonly List<KeyValuePair<string, object>> _properties = new List<KeyValuePair<string, object>>();
+
+        public string Message { get; }
+
+        public EFLogEvent(string message)
+        {
+            Message = message;
+        }
+
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            return _properties.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+
+        public EFLogEvent WithProperty(string name, object value)
+        {
+            _properties.Add(new KeyValuePair<string, object>(name, value));
+            return this;
+        }
+
+        public static Func<EFLogEvent, Exception, string> Formatter { get; } = (l, e) => l.Message;
+    }
+
 }

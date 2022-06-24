@@ -476,6 +476,7 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedDocuments,
       commonThirdPartyList,
       buttonSize,
+      theme,
     } = this.props;
 
     const {
@@ -513,7 +514,7 @@ class AutomaticBackup extends React.PureComponent {
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledAutoBackup>
+      <StyledAutoBackup theme={theme}>
         <div className="backup_toggle-wrapper">
           <ToggleButton
             className="backup_toggle-btn"
@@ -616,7 +617,8 @@ class AutomaticBackup extends React.PureComponent {
   }
 }
 export default inject(({ auth, backup }) => {
-  const { language } = auth;
+  const { language, settingsStore } = auth;
+  const { theme } = settingsStore;
   const {
     backupSchedule,
     commonThirdPartyList,
@@ -648,6 +650,7 @@ export default inject(({ auth, backup }) => {
     selectedStorageType === `${StorageModuleType}`;
 
   return {
+    theme,
     language,
 
     backupSchedule,

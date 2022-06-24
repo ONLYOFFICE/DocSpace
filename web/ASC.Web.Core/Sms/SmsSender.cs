@@ -32,12 +32,12 @@ public class SmsSender
     private readonly IConfiguration _configuration;
     private readonly TenantManager _tenantManager;
     private readonly SmsProviderManager _smsProviderManager;
-    private readonly ILog _log;
+    private readonly ILogger<SmsSender> _log;
 
     public SmsSender(
         IConfiguration configuration,
         TenantManager tenantManager,
-            ILog logger,
+        ILogger<SmsSender> logger,
         SmsProviderManager smsProviderManager)
     {
         _configuration = configuration;
@@ -61,7 +61,7 @@ public class SmsSender
             var tenant = _tenantManager.GetCurrentTenant(false);
             var tenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
-            _log.InfoFormat("Tenant {0} send sms to phoneNumber {1} Message: {2}", tenantId, number, message);
+            _log.InformationSendSmsToPhoneNumber(tenantId, number, message);
             return Task.FromResult(false);
         }
 

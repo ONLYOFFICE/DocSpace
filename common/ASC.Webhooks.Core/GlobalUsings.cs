@@ -26,7 +26,6 @@
 
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
@@ -39,4 +38,3 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Infrastructure;
 global using Microsoft.EntityFrameworkCore.Metadata;
 global using Microsoft.EntityFrameworkCore.Migrations;
-global using Microsoft.Extensions.Options;

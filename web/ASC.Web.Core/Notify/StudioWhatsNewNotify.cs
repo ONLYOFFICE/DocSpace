@@ -29,7 +29,7 @@ namespace ASC.Web.Studio.Core.Notify;
 [Scope]
 public class StudioWhatsNewNotify
 {
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly WebItemManager _webItemManager;
     private readonly TenantManager _tenantManager;
     private readonly PaymentManager _paymentManager;
@@ -62,7 +62,7 @@ public class StudioWhatsNewNotify
         NotifyEngineQueue notifyEngineQueue,
         IConfiguration confuguration,
         WorkContext workContext,
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILoggerProvider optionsMonitor,
         IMapper mapper,
         WebItemManager webItemManager)
     {
@@ -82,18 +82,18 @@ public class StudioWhatsNewNotify
         _confuguration = confuguration;
         _workContext = workContext;
         _mapper = mapper;
-        _log = optionsMonitor.Get("ASC.Notify");
+        _log = optionsMonitor.CreateLogger("ASC.Notify");
     }
 
     public void SendMsgWhatsNew(DateTime scheduleDate)
     {
         if (_webItemManager.GetItemsAll<IProduct>().Count == 0)
         {
-            _log.Info("No products. Return from function");
+            _log.InformationNoProducts();
             return;
         }
 
-        _log.Info("Start send whats new.");
+        _log.InformationStartSendWhatsNew();
 
         var products = _webItemManager.GetItemsAll().ToDictionary(p => p.GetSysName());
         var tenants = GetChangedTenants(scheduleDate);
@@ -125,7 +125,7 @@ public class StudioWhatsNewNotify
             _tenantManager.SetCurrentTenant(tenant);
             var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-            _log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(_coreSettings), tenantid);
+            _log.InformationStartSendWhatsNewIn(tenant.GetTenantDomain(_coreSettings), tenantid);
             foreach (var user in _userManager.GetUsers())
             {
                 if (!_studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
@@ -226,7 +226,7 @@ public class StudioWhatsNewNotify
 
                 if (activities.Count > 0)
                 {
-                    _log.InfoFormat("Send whats new to {0}", user.Email);
+                    _log.InformationSendWhatsNewTo(user.Email);
                     client.SendNoticeAsync(
                         Actions.SendWhatsNew, null, user,
                         new TagValue(Tags.Activities, activities),
@@ -238,7 +238,7 @@ public class StudioWhatsNewNotify
         }
         catch (Exception error)
         {
-            _log.Error(error);
+            _log.ErrorSendMsgWhatsNew(error);
         }
     }
 

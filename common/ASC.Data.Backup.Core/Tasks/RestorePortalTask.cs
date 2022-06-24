@@ -40,11 +40,13 @@ public class RestorePortalTask : PortalTaskBase
     private readonly LicenseReader _licenseReader;
     private readonly TenantManager _tenantManager;
     private readonly AscCacheNotify _ascCacheNotify;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger<RestorePortalTask> _options;
+    private readonly ILogger<RestoreDbModuleTask> _logger;
 
     public RestorePortalTask(
         DbFactory dbFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<RestorePortalTask> options,
+        ILogger<RestoreDbModuleTask> logger,
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         CoreBaseSettings coreBaseSettings,
@@ -59,6 +61,7 @@ public class RestorePortalTask : PortalTaskBase
         _tenantManager = tenantManager;
         _ascCacheNotify = ascCacheNotify;
         _options = options;
+        _logger = logger;
     }
 
     public void Init(string toConfigPath, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
@@ -78,9 +81,9 @@ public class RestorePortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.Debug("begin restore portal");
+        _options.DebugBeginRestorePortal();
 
-        Logger.Debug("begin restore data");
+        _options.DebugBeginRestoreData();
 
         using (var dataReader = new ZipReadOperator(BackupFilePath))
         {
@@ -100,7 +103,7 @@ public class RestorePortalTask : PortalTaskBase
 
                 foreach (var module in modulesToProcess)
                 {
-                    var restoreTask = new RestoreDbModuleTask(_options, module, dataReader, _columnMapper, DbFactory, ReplaceDate, Dump, StorageFactory, StorageFactoryConfig, ModuleProvider);
+                    var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, _columnMapper, DbFactory, ReplaceDate, Dump, StorageFactory, StorageFactoryConfig, ModuleProvider);
                     restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
 
                     foreach (var tableName in _ignoredTables)
@@ -112,13 +115,13 @@ public class RestorePortalTask : PortalTaskBase
                 }
             }
 
-            Logger.Debug("end restore data");
+            _options.DebugEndRestoreData();
 
             if (ProcessStorage)
             {
                 if (_coreBaseSettings.Standalone)
                 {
-                    Logger.Debug("clear cache");
+                    _options.DebugClearCache();
                     _ascCacheNotify.ClearCache();
                 }
 
@@ -133,27 +136,28 @@ public class RestorePortalTask : PortalTaskBase
 
         if (_coreBaseSettings.Standalone)
         {
-            Logger.Debug("refresh license");
+            _options.DebugRefreshLicense();
             try
             {
                 _licenseReader.RejectLicense();
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                _options.ErrorRunJob(ex);
             }
 
-            Logger.Debug("clear cache");
+            _options.DebugClearCache();
             _ascCacheNotify.ClearCache();
         }
 
-        Logger.Debug("end restore portal");
+        _options.DebugEndRestorePortal();
     }
 
     private void RestoreFromDump(IDataReadOperator dataReader)
     {
         var keyBase = KeyHelper.GetDatabaseSchema();
         var keys = dataReader.GetEntries(keyBase).Select(r => Path.GetFileName(r)).ToList();
+        var dbs = dataReader.GetDirectories("").Where(r => Path.GetFileName(r).StartsWith("mailservice")).Select(r => Path.GetFileName(r)).ToList();
         var upgrades = new List<string>();
 
         if (!string.IsNullOrEmpty(UpgradesPath) && Directory.Exists(UpgradesPath))
@@ -162,6 +166,15 @@ public class RestorePortalTask : PortalTaskBase
         }
 
         var stepscount = keys.Count * 2 + upgrades.Count;
+
+        var databasesFromDirs = new Dictionary<string, List<string>>();
+        var databases = new Dictionary<Tuple<string, string>, List<string>>();
+        foreach (var db in dbs)
+        {
+            var keys1 = dataReader.GetEntries(db + "/" + keyBase).Select(k => Path.GetFileName(k)).ToList();
+            stepscount += keys1.Count() * 2;
+            databasesFromDirs.Add(db, keys1);
+        }
 
         SetStepsCount(ProcessStorage ? stepscount + 1 : stepscount);
 
@@ -188,10 +201,39 @@ public class RestorePortalTask : PortalTaskBase
             for (var j = 0; j < TasksLimit && i + j < keys.Count; j++)
             {
                 var key1 = Path.Combine(KeyHelper.GetDatabaseSchema(), keys[i + j]);
-                tasks.Add(RestoreFromDumpFile(dataReader, key1).ContinueWith(r => RestoreFromDumpFile(dataReader, KeyHelper.GetDatabaseData(key1.Substring(keyBase.Length + 1)))));
+                var key2 = Path.Combine(KeyHelper.GetDatabaseData(), keys[i + j]);
+                tasks.Add(RestoreFromDumpFile(dataReader, key1, key2));
             }
 
             Task.WaitAll(tasks.ToArray());
+        }
+
+        using (var connection = DbFactory.OpenConnection())
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = "select id, connection_string from mail_server_server";
+            ExecuteList(command).ForEach(r =>
+            {
+                var connectionString = GetConnectionString((int)r[0], JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(r[1]))["DbConnection"].ToString());
+                databases.Add(new Tuple<string, string>(connectionString.Name, connectionString.ConnectionString), databasesFromDirs[connectionString.Name]);
+            });
+        }
+
+        foreach (var database in databases)
+        {
+            for (var i = 0; i < database.Value.Count; i += TasksLimit)
+            {
+                var tasks = new List<Task>(TasksLimit * 2);
+
+                for (var j = 0; j < TasksLimit && i + j < database.Value.Count; j++)
+                {
+                    var key1 = Path.Combine(database.Key.Item1, KeyHelper.GetDatabaseSchema(), database.Value[i + j]);
+                    var key2 = Path.Combine(database.Key.Item1, KeyHelper.GetDatabaseData(), database.Value[i + j]);
+                    tasks.Add(RestoreFromDumpFile(dataReader, key1, key2, database.Key.Item2));
+                }
+
+                Task.WaitAll(tasks.ToArray());
+            }
         }
 
         var comparer = new SqlComparer();
@@ -202,14 +244,47 @@ public class RestorePortalTask : PortalTaskBase
         }
     }
 
-    private async Task RestoreFromDumpFile(IDataReadOperator dataReader, string fileName)
+    private async Task RestoreFromDumpFile(IDataReadOperator dataReader, string fileName1, string fileName2 = null, string db = null)
     {
-        Logger.DebugFormat("Restore from {0}", fileName);
-        using (var stream = dataReader.GetEntry(fileName))
+        _options.DebugRestoreFrom(fileName1);
+        using (var stream = dataReader.GetEntry(fileName1))
         {
-            await RunMysqlFile(stream);
+            await RunMysqlFile(stream, db);
         }
         SetStepCompleted();
+
+        _options.DebugRestoreFrom(fileName2);
+        if (fileName2 != null)
+        {
+            using (var stream = dataReader.GetEntry(fileName2))
+            {
+                await RunMysqlFile(stream, db);
+            }
+
+            SetStepCompleted();
+        }
+    }
+
+    public List<object[]> ExecuteList(DbCommand command)
+    {
+        var list = new List<object[]>();
+        using (var result = command.ExecuteReader())
+        {
+            while (result.Read())
+            {
+                var objects = new object[result.FieldCount];
+                result.GetValues(objects);
+                list.Add(objects);
+            }
+        }
+
+        return list;
+    }
+
+    private ConnectionStringSettings GetConnectionString(int id, string connectionString)
+    {
+        connectionString = connectionString + ";convert zero datetime=True";
+        return new ConnectionStringSettings("mailservice-" + id, connectionString, "MySql.Data.MySqlClient");
     }
 
     private class SqlComparer : IComparer<string>
@@ -264,7 +339,7 @@ public class RestorePortalTask : PortalTaskBase
 
     private void DoRestoreStorage(IDataReadOperator dataReader)
     {
-        Logger.Debug("begin restore storage");
+        _options.DebugBeginRestoreStorage();
 
         var fileGroups = GetFilesToProcess(dataReader).GroupBy(file => file.Module).ToList();
         var groupsProcessed = 0;
@@ -294,7 +369,7 @@ public class RestorePortalTask : PortalTaskBase
                         }
                         catch (Exception error)
                         {
-                            Logger.WarnFormat("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
+                            _options.WarningCantRestoreFile(file.Module, file.Path, error);
                         }
                     }
                 }
@@ -315,12 +390,12 @@ public class RestorePortalTask : PortalTaskBase
             SetStepCompleted();
         }
 
-        Logger.Debug("end restore storage");
+        _options.DebugEndRestoreStorage();
     }
 
     private void DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
     {
-        Logger.Debug("begin delete storage");
+        _options.DebugBeginDeleteStorage();
 
         foreach (var tenant in tenants)
         {
@@ -343,7 +418,7 @@ public class RestorePortalTask : PortalTaskBase
                         },
                         domain,
                         5,
-                        onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error)
+                        onFailure: error => Logger.WarningCanNotDeleteFilesForDomain(domain, error)
                     );
                 }
 
@@ -351,7 +426,7 @@ public class RestorePortalTask : PortalTaskBase
             }
         }
 
-        Logger.Debug("end delete storage");
+        Logger.DebugEndDeleteStorage();
     }
 
     private IEnumerable<BackupFileInfo> GetFilesToProcess(IDataReadOperator dataReader)

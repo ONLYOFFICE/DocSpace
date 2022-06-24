@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
-
+import { isMobile } from "@appserver/components/utils/device";
+import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { combineUrl } from "@appserver/common/utils";
@@ -112,12 +113,16 @@ const PureThirdPartyListContainer = ({
   openConnectWindow,
   setThirdPartyDialogVisible,
   history,
+  toggleArticleOpen,
 }) => {
   const redirectAction = useCallback(() => {
-    const thirdPartyUrl = "/settings/thirdParty";
+    const thirdPartyUrl = "/settings/connected-clouds";
     if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
-      setSelectedNode(["thirdParty"]);
+      setSelectedNode(["connected-clouds"]);
       setSelectedFolder(null);
+      if (isMobileOnly || isMobile()) {
+        toggleArticleOpen();
+      }
       return history.push(
         combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
       );
@@ -151,6 +156,9 @@ const PureThirdPartyListContainer = ({
           )
           .catch((e) => console.error(e));
       } else {
+        if (isMobileOnly || isMobile()) {
+          toggleArticleOpen();
+        }
         data.title = connectedCloudsTitleTranslation(data.title, t);
         setConnectItem(data);
         setConnectDialogVisible(true);
@@ -169,9 +177,12 @@ const PureThirdPartyListContainer = ({
   );
 
   const onShowConnectPanel = useCallback(() => {
+    if (isMobileOnly || isMobile()) {
+      toggleArticleOpen();
+    }
     setThirdPartyDialogVisible(true);
     redirectAction();
-  }, [setThirdPartyDialogVisible, redirectAction]);
+  }, [setThirdPartyDialogVisible, toggleArticleOpen, redirectAction]);
 
   return (
     <StyledThirdParty>
@@ -269,7 +280,7 @@ export default inject(
       openConnectWindow,
     } = settingsStore.thirdPartyStore;
 
-    const { getOAuthToken } = auth.settingsStore;
+    const { getOAuthToken, toggleArticleOpen } = auth.settingsStore;
 
     const {
       setConnectItem,
@@ -292,6 +303,8 @@ export default inject(
       getOAuthToken,
       openConnectWindow,
       setThirdPartyDialogVisible,
+
+      toggleArticleOpen,
     };
   }
 )(observer(ThirdPartyList));
