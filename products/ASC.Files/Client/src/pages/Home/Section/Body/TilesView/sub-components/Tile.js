@@ -151,6 +151,7 @@ const StyledTile = styled.div`
       !props.dragging &&
       props.isDesktop &&
       !props.inProgress &&
+      !isMobile &&
       css`
         .checkbox {
           opacity: 1;
