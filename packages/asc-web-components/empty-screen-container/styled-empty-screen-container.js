@@ -1,11 +1,15 @@
 import styled from "styled-components";
-import { mobile } from "../utils/device";
+import { mobile, tablet } from "../utils/device";
 import NoUserSelect from "../utils/commonStyles";
 
 const EmptyContentBody = styled.div`
   margin: 0 auto;
   padding: 64px 0;
   grid-template-columns: 150px 1fr;
+
+  @media ${tablet} {
+    grid-template-columns: none;
+  }
 
   display: grid;
   grid-template-areas:
@@ -20,7 +24,7 @@ const EmptyContentBody = styled.div`
   grid-template-rows: max-content;
   .ec-image {
     grid-area: img;
-    margin: 0 0 0 auto;
+    margin: 16px 0 0 auto;
     ${NoUserSelect}
   }
 
@@ -58,8 +62,7 @@ const EmptyContentBody = styled.div`
       }
     }
 
-    @media ${mobile} {
-      min-width: 343px;
+    @media (max-width: 428px) {
       grid-template-areas:
         "img img img"
         "headerText headerText headerText"
@@ -77,6 +80,7 @@ const EmptyContentBody = styled.div`
       .ec-header,
       .ec-subheading,
       .ec-desc,
+      .ec-image,
       .ec-buttons {
         padding-left: 16px;
       }

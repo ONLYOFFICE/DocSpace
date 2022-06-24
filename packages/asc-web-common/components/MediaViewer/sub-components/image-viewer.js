@@ -74,6 +74,9 @@ const StyledViewer = styled(Viewer)`
         props.theme.mediaViewer.imageViewer.backgroundColor};
     }
   }
+  .react-viewer-image-transition {
+    transition-duration: 0s;
+  }
   li[data-key="prev"] {
     left: 20px;
   }

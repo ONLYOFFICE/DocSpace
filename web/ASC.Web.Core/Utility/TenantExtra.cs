@@ -130,7 +130,6 @@ public class TenantExtra
         {
             return _coreBaseSettings.Standalone &&
                 !string.IsNullOrEmpty(_setupInfo.ControlPanelUrl) &&
-                GetTenantQuota().ControlPanel &&
                 GetCurrentTariff().State < TariffState.NotPaid &&
                 _userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager);
         }
@@ -220,17 +219,6 @@ public class TenantExtra
     public int GetRemainingCountUsers()
     {
         return GetTenantQuota().ActiveUsers - _tenantStatisticsProvider.GetUsersCount();
-    }
-
-    public bool UpdatedWithoutLicense
-    {
-        get
-        {
-            DateTime licenseDay;
-            return _coreBaseSettings.Standalone
-                   && (licenseDay = GetCurrentTariff().LicenseDate.Date) < DateTime.Today
-                   && licenseDay < _licenseReader.VersionReleaseDate;
-        }
     }
 
     public void DemandControlPanelPermission()

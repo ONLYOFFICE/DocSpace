@@ -1,8 +1,8 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (creation)",
+{
+  "AddHeadOfDepartment": "Dodaj vodjo oddelka",
+  "CustomNewDepartment": "{{groupCaption}} (ustvarjanje)",
   "GroupAction": "Skupinska akcija",
   "Members": "Člani",
   "SearchAddedMembers": "Išči dodane člane",
-  "SelectAction": "Izberi",
   "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' je bila uspešno shranjena"
 }

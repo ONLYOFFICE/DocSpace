@@ -25,7 +25,7 @@ describe("<Submenu />", () => {
   });
 
   it("doesnt render without data prop", () => {
-    const wrapper = mount(<Submenu />);
+    const wrapper = mount(<Submenu {...props} />);
     expect(wrapper).toExist(false);
   });
 

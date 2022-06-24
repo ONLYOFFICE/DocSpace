@@ -65,7 +65,7 @@ const ArticleBodyContent = (props) => {
         if (!filesSection) {
           const filter = FilesFilter.getDefault();
 
-          filter.folder = data[0];
+          filter.folder = data;
 
           const urlFilter = filter.toUrlParams();
 

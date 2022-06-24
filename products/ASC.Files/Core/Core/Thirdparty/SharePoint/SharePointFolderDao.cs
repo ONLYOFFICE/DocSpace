@@ -89,17 +89,23 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<string> tagNames = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagNames);
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
+        IEnumerable<string> tagNames = null)
+    {
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = GetFoldersAsync(parentId);
+
+        folders = SetFilterByTypes(folders, filterTypes);
 
         //Filter
         if (subjectID != Guid.Empty)
@@ -113,6 +119,8 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
+
+        folders = FilterByTags(folders, tagNames);
 
         if (orderBy == null)
         {
@@ -131,17 +139,23 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
+    {
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
+
+        folders = SetFilterByTypes(folders, filterTypes);
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
@@ -154,6 +168,8 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
+
+        folders = FilterByTags(folders, tagNames);
 
         return folders;
     }
@@ -210,43 +226,49 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     {
         var folder = await ProviderInfo.GetFolderByIdAsync(folderId).ConfigureAwait(false);
 
-        using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
         {
-            var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
-               .Where(r => r.Id.StartsWith(folder.ServerRelativeUrl))
-               .Select(r => r.HashId)
-               .ToListAsync()
-               .ConfigureAwait(false);
+            using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+            {
+                var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+                   .Where(r => r.Id.StartsWith(folder.ServerRelativeUrl))
+                   .Select(r => r.HashId)
+                   .ToListAsync()
+                   .ConfigureAwait(false);
 
-            var link = await Query(FilesDbContext.TagLink)
-                .Where(r => hashIDs.Any(h => h == r.EntryId))
-                .ToListAsync()
-                .ConfigureAwait(false);
+                var link = await Query(FilesDbContext.TagLink)
+                    .Where(r => hashIDs.Any(h => h == r.EntryId))
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-            FilesDbContext.TagLink.RemoveRange(link);
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                FilesDbContext.TagLink.RemoveRange(link);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            var tagsToRemove = from ft in FilesDbContext.Tag
-                               join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                               where ftl == null
-                               select ft;
+                var tagsToRemove = from ft in FilesDbContext.Tag
+                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                                   where ftl == null
+                                   select ft;
 
-            FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
-            var securityToDelete = Query(FilesDbContext.Security)
-                .Where(r => hashIDs.Any(h => h == r.EntryId));
+                var securityToDelete = Query(FilesDbContext.Security)
+                    .Where(r => hashIDs.Any(h => h == r.EntryId));
 
-            FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => hashIDs.Any(h => h == r.HashId));
+                var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
+                    .Where(r => hashIDs.Any(h => h == r.HashId));
 
-            FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            await tx.CommitAsync().ConfigureAwait(false);
-        }
+                await tx.CommitAsync().ConfigureAwait(false);
+            }
+        });
+
 
         await ProviderInfo.DeleteFolderAsync(folderId).ConfigureAwait(false);
     }

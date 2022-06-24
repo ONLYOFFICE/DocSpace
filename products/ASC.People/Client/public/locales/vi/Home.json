@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Quản trị viên",
   "ChangeToGuest": "Thay đổi thành {{guestCaption}}",
   "ChangeToUser": "Thay đổi thành {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Chưa có đồng đội nào ở đây",
   "LblInviteAgain": "Mời lại",
   "LblInvited": "Đã mời",
-  "LblOther": "Khác",
   "LblSendEmail": "Gửi email",
   "LblSendMessage": "Gửi tin nhắn ",
   "LblSetActive": "Kích hoạt ",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Email hướng dẫn kích hoạt đã được gửi đến địa chỉ email <1>{{email}}</1>",
   "NotFoundDescription": "Hãy thử một bộ lọc khác hoặc xóa bộ lọc đó để xem tất cả mọi người trong mục này.",
   "NotFoundTitle": "Không tìm thấy đồng đội",
+  "ReassignmentData": "Chuyển dữ liệu cho người khác",
   "SuccessfullyRemovedGroup": "Nhóm đã được xóa thành công",
   "UserStatus": "Trạng thái"
 }

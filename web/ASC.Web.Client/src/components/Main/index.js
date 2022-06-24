@@ -1,6 +1,12 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { isIOS, isFirefox, isMobile, isMobileOnly } from "react-device-detect";
+import {
+  isIOS,
+  isFirefox,
+  isSafari,
+  isMobile,
+  isMobileOnly,
+} from "react-device-detect";
 
 const StyledMain = styled.main`
   height: ${(props) =>
@@ -15,10 +21,6 @@ const StyledMain = styled.main`
   flex-direction: row;
   box-sizing: border-box;
 
-  #article-container {
-    height: calc(100%) !important;
-  }
-
   ${isMobileOnly &&
   css`
     height: auto;
@@ -28,10 +30,21 @@ const StyledMain = styled.main`
 `;
 
 const Main = React.memo((props) => {
-  if (isIOS && !isFirefox) {
-    const vh = (window.innerHeight - 48) * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-  }
+  // const orientationChanged = React.useCallback(() => {
+  //   if (isIOS && !isFirefox) {
+  //     let vh = (window.innerHeight - 48) * 0.01;
+  //     document.documentElement.style.setProperty("--vh", `${vh}px`);
+  //   }
+  // }, []);
+
+  // React.useEffect(() => {
+  //   orientationChanged();
+  //   if (isIOS && !isFirefox) {
+  //     window.addEventListener("resize", orientationChanged);
+  //   }
+  //   return () => window.removeEventListener("resize", orientationChanged);
+  // }, []);
+
   //console.log("Main render");
   return <StyledMain className="main" {...props} />;
 });

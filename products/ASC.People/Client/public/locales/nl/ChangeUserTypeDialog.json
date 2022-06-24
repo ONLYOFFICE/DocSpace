@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangeUserTypeButton": "Wijzig type",
   "ChangeUserTypeHeader": "Wijzig gebruiker type",
   "ChangeUserTypeMessage": "Gebruikers met de '{{ firstType }}' type worden verplaatst naar '{{ secondType }}' type.",

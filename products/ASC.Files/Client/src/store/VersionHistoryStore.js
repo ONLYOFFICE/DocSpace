@@ -16,8 +16,7 @@ class VersionHistoryStore {
     makeAutoObservable(this);
     this.filesStore = filesStore;
 
-    const isTabletView = window.innerWidth <= size.tablet;
-    if (isTabletView && this.versions) {
+    if (this.versions) {
       //TODO: Files store in not initialized on versionHistory page. Need socket.
 
       const { socketHelper } = this.filesStore.settingsStore;
@@ -52,11 +51,19 @@ class VersionHistoryStore {
 
   setIsVerHistoryPanel = (isVisible) => {
     this.isVisible = isVisible;
-    !isVisible && this.setVerHistoryFileId(null);
+
+    if (!isVisible) {
+      this.setVersions(null);
+      this.setVerHistoryFileId(null);
+    }
   };
 
   setVerHistoryFileId = (fileId) => {
     this.fileId = fileId;
+  };
+
+  setVersions = (versions) => {
+    this.versions = versions;
   };
 
   //setFileVersions

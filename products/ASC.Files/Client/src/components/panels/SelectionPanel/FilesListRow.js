@@ -25,6 +25,7 @@ const FilesListRow = ({
       theme={theme}
       isChecked={isChecked}
       folderSelection={folderSelection}
+      onClick={onFileClick}
     >
       <div className="selection-panel_icon">{element}</div>
       <div className="selection-panel_text">

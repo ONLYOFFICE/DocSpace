@@ -1,4 +1,4 @@
-﻿{
+{
   "EditComment": "코멘트 수정",
-  "Version": "버전.{{version}}"
+  "Version": "버전{{version}}"
 }

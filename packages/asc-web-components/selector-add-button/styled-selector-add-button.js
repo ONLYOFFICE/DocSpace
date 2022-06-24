@@ -6,7 +6,7 @@ const StyledButton = styled.div`
   background: ${(props) => props.theme.selectorAddButton.background};
   border: ${(props) => props.theme.selectorAddButton.border};
   box-sizing: ${(props) => props.theme.selectorAddButton.boxSizing};
-  border-radius: ${(props) => props.theme.selectorAddButton.boxSizing};
+  border-radius: ${(props) => props.theme.selectorAddButton.borderRadius};
   height: ${(props) => props.theme.selectorAddButton.height};
   width: ${(props) => props.theme.selectorAddButton.width};
   padding: ${(props) => props.theme.selectorAddButton.padding};
@@ -36,6 +36,8 @@ const StyledButton = styled.div`
       !props.isDisabled &&
       `background-color: ${props.theme.selectorAddButton.activeBackground};`}
   }
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 StyledButton.defaultProps = { theme: Base };

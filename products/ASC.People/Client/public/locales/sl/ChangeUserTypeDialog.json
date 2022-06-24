@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangeUserTypeButton": "Spremeni tip",
   "ChangeUserTypeHeader": "Spremeni tip uporabnika",
   "ChangeUserTypeMessage": "Uporabniki tipa '{{ firstType }}' bodo premaknjeni v '{{ secondType }}' tip.",

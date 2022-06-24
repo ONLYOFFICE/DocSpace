@@ -45,10 +45,15 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
 
   return (
     <StyledHotkeysPanel>
-      <Backdrop onClick={onClose} visible={visible} isAside={true} />
-      <Aside className="hotkeys-panel" visible={visible}>
+      <Backdrop
+        onClick={onClose}
+        visible={visible}
+        isAside={true}
+        zIndex={210}
+      />
+      <Aside className="hotkeys-panel" visible={visible} onClose={onClose}>
         <div className="hotkeys_header">
-          <Heading className="hotkeys_heading">{t("Hotkeys")}</Heading>
+          <Heading className="hotkeys_heading">{t("Common:Hotkeys")}</Heading>
         </div>
         <StyledScrollbar ref={scrollRef} stype="mediumBlack">
           <Heading className="hotkeys_sub-header">
@@ -125,11 +130,13 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
   );
 };
 
-export default inject(({ dialogsStore }) => {
-  const { hotkeyPanelVisible, setHotkeyPanelVisible } = dialogsStore;
+export default inject(({ auth }) => {
+  const { hotkeyPanelVisible, setHotkeyPanelVisible } = auth.settingsStore;
 
   return {
     visible: hotkeyPanelVisible,
     setHotkeyPanelVisible,
   };
-})(withTranslation("HotkeysPanel")(observer(HotkeyPanel)));
+})(
+  withTranslation(["HotkeysPanel", "Article", "Common"])(observer(HotkeyPanel))
+);

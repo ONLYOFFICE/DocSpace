@@ -66,7 +66,7 @@ saveFilePath = filePath
 filePath = "/app/onlyoffice/config/appsettings.json"
 jsonData = openJsonFile(filePath)
 #jsonUpdateValue = parseJsonValue(jsonValue)
-updateJsonFile(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +"r;Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false," )
+updateJsonFile(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +"r;Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false", )
 updateJsonFile(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
 updateJsonFile(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
 updateJsonFile(jsonData,"$.core.products.subfolder", "server")

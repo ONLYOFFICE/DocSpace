@@ -70,6 +70,8 @@ public abstract class BaseEvent : IEvent, ICloneable
 
     public virtual EventStatus Status { get; set; }
 
+    public virtual bool HasAttachments { get; set; }
+
     #endregion
 
     #region ICloneable Members

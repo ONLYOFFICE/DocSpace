@@ -264,7 +264,7 @@ const SectionBodyContent = ({
               newGroupManager.default ||
               newGroupManager.key === ID_NO_GROUP_MANAGER ||
               newGroupManager.displayName === "profile removed"
-                ? { ...newGroupManager, label: t("SelectAction") }
+                ? { ...newGroupManager, label: t("Common:SelectAction") }
                 : newGroupManager
             }
             scaled={true}

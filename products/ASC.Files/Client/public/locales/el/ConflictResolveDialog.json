@@ -1,4 +1,4 @@
-﻿{
+{
   "ConflictResolveDescription": "Το αρχείο με το όνομα <1>{{file}}</1> υπάρχει ήδη στον φάκελο <1>{{folder}}</1>.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} έγγραφα με το ίδιο όνομα υπάρχουν ήδη στον φάκελο <1>{{folder}}</1>",
   "ConflictResolveSelectAction": "Επιλέξτε την ενέργεια",

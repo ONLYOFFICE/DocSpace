@@ -1,4 +1,4 @@
-﻿{
+{
   "ConflictResolveDescription": "Fails ar nosaukumu <1>{{file}}</1> jau pastāv mapē <1>{{folder}}</1>.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} dokumenti ar tādu pašu nosaukumu jau pastāv mapē <1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Lūdzu, atlasiet darbību:",
@@ -6,7 +6,7 @@
   "CreateDescription": "Mapē būs divi dažādi faili.",
   "CreateTitle": "Izveidojiet faila kopiju",
   "OverwriteDescription": "Fails tiks pievienots failam ar tādu pašu nosaukumu kā versijai.",
-  "OverwriteTitle": "Overwrite with version update",
+  "OverwriteTitle": "Pārrakstīt ar versijas atjaunināšanu",
   "SkipDescription": "Fails tiks pievienots failam ar tādu pašu nosaukumu kā versijai.",
   "SkipTitle": "Izlaist"
 }

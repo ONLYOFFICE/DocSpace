@@ -33,11 +33,6 @@ public static class LoginProfileExtensions
         return profile.AppendProfile(uri);
     }
 
-    public static Uri AddProfileSession(this Uri uri, LoginProfile profile, HttpContext context)
-    {
-        return profile.AppendSessionProfile(uri, context);
-    }
-
     public static Uri AddProfileCache(this Uri uri, LoginProfile profile, IMemoryCache memoryCache)
     {
         return profile.AppendCacheProfile(uri, memoryCache);
@@ -58,7 +53,7 @@ public static class LoginProfileExtensions
         }
         if (!string.IsNullOrEmpty(queryString[LoginProfile.QueryCacheParamName]))
         {
-            return (LoginProfile)memoryCache.Get(queryString[LoginProfile.QuerySessionParamName]);
+            return (LoginProfile)memoryCache.Get(queryString[LoginProfile.QueryCacheParamName]);
         }
 
         return null;

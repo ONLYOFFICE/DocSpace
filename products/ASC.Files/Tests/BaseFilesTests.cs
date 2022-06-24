@@ -125,12 +125,13 @@ public class MySetUpClass
     }
 }
 
-public class BaseFilesTests
+public partial class BaseFilesTests
 {
     protected readonly JsonSerializerOptions _options;
     protected UserManager _userManager;
     private protected HttpClient _client;
     private readonly string _baseAddress;
+    private string _cookie;
 
     public static readonly string TestConnection = string.Format("Server=localhost;Database=onlyoffice_test.{0};User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True", DateTime.Now.Ticks);
 
@@ -149,7 +150,7 @@ public class BaseFilesTests
     }
 
     [OneTimeSetUp]
-    public Task OneTimeSetup()
+    public async Task OneTimeSetup()
     {
         var host = new FilesApplication(new Dictionary<string, string>
             {
@@ -176,13 +177,13 @@ public class BaseFilesTests
         tenantManager.SetCurrentTenant(tenant);
 
         var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-        var cookie = securityContext.AuthenticateMe(tenant.OwnerId);
+        _cookie = securityContext.AuthenticateMe(tenant.OwnerId);
 
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cookie);
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         _client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json;");
 
-        return Task.CompletedTask;
+        await _client.GetAsync("/");
     }
 
     public BatchRequestDto GetBatchModel(string text)
@@ -209,6 +210,7 @@ public class BaseFilesTests
 
     protected async Task<T> GetAsync<T>(string url, JsonSerializerOptions options)
     {
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         var request = await _client.GetAsync(url);
         var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
 
@@ -221,6 +223,7 @@ public class BaseFilesTests
 
     protected async Task<T> GetAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
     {
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(_baseAddress + url),
@@ -239,8 +242,9 @@ public class BaseFilesTests
 
     protected async Task<T> PostAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
     {
-        var request = await _client.PostAsync(url, content);
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
+        var response = await _client.PostAsync(url, content);
+        var result = await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
 
         if (result.Response is JsonElement jsonElement)
         {
@@ -251,8 +255,10 @@ public class BaseFilesTests
 
     protected async Task<T> PutAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
     {
-        var request = await _client.PutAsync(url, content);
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
+
+        var response = await _client.PutAsync(url, content);
+        var result = await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
 
         if (result.Response is JsonElement jsonElement)
         {
@@ -263,6 +269,7 @@ public class BaseFilesTests
 
     private protected async Task<HttpResponseMessage> DeleteAsync(string url, JsonContent content)
     {
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(_baseAddress + url),
@@ -275,8 +282,9 @@ public class BaseFilesTests
 
     protected async Task<T> DeleteAsync<T>(string url, JsonContent content, JsonSerializerOptions options)
     {
-        var sendRequest = await DeleteAsync(url, content);
-        var result = await sendRequest.Content.ReadFromJsonAsync<SuccessApiResponse>();
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
+        var response = await DeleteAsync(url, content);
+        var result = await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
 
         if (result.Response is JsonElement jsonElement)
         {

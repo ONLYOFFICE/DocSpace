@@ -94,7 +94,7 @@ class AccessRights extends PureComponent {
       isLoading: false,
     };
 
-    setDocumentTitle(t("AccessRights"));
+    setDocumentTitle(t("Common:AccessRights"));
   }
 
   async componentDidMount() {
@@ -177,4 +177,4 @@ export default inject(({ auth, setup }) => {
     organizationName: auth.settingsStore.organizationName,
     owner: auth.settingsStore.owner,
   };
-})(withTranslation("Settings")(withRouter(AccessRights)));
+})(withTranslation(["Settings", "Common"])(withRouter(AccessRights)));

@@ -1,4 +1,4 @@
-﻿{
+{
   "ActivationLink": "Aktivasyon bağlantısı",
   "AddContact": "Kişi ekle",
   "AddPhoto": "Fotoğraf ekle",
@@ -8,7 +8,7 @@
   "ChangesSavedSuccessfully": "Değişiklikler başarıyla kaydedildi",
   "ContactInformation": "İletişim bilgileri",
   "CopiedResourceText": "Kopyalandı",
-  "CustomCreation": "{{user}} (creation)",
+  "CustomCreation": "{{user}} (oluşturma)",
   "EditPhoto": "Fotoğrafı düzenle",
   "EditUserDialogTitle": "Profili düzenle",
   "EmailPopupHelper": "Ana e-posta, bildirimler ve erişimi geri yüklemek için kullanılır. <1> Bu alan üzerinde kullanıcı için yeni bir e-posta oluşturabilir ve sisteme ilk giriş için tek kullanımlık şifre atayabilirsiniz.</1>",

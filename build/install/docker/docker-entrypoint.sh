@@ -108,12 +108,6 @@ sed -i "s!\"Threads\".*!\"Threads\": \"${ELK_THREADS}\"!g" ${PATH_TO_CONF}/elast
 #sed -i "s!\"subfolder\".*!\"subfolder\": \"server\",!g" ${PATH_TO_CONF}/appsettings.services.json
 sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}\"!g" ${PATH_TO_CONF}/kafka.${ENV_EXTENSION}.json
 
-if  [[ -n "${RUN_COMMAND}" ]] && [[ ${RUN_COMMAND}=="node" ]]
-then 
-   ${RUN_COMMAND} ${RUN_FILE} --port=${SERVICE_PORT} --appsettings=${PATH_TO_CONF} --environment=${ENV_EXTENSION}
-elif [[ -n "${RUN_COMMAND}" ]] && [[ ${RUN_COMMAND}=="dotnet" ]]
-then
-   ${RUN_COMMAND} ${RUN_FILE} --urls=${URLS} --ENVIRONMENT=${ENV_EXTENSION} --'$STORAGE_ROOT'=${APP_STORAGE_ROOT} --pathToConf=$PATH_TO_CONF --log:dir=${LOG_DIR} --log:name=${NAME_SERVICE} ${PARAMETERS}
-else
-   ${RUN_COMMAND} ${PARAMETERS}
-fi
+sed -i "s!\"path\".*!\"path\": \"../../ASC.Socket.IO\"!g" ${PATH_TO_CONF}/socket.${APP_DOTNET_ENV}.json
+
+dotnet ${DOTNET_RUN} --urls=${URLS} --ENVIRONMENT=${APP_DOTNET_ENV} --'$STORAGE_ROOT'=${APP_STORAGE_ROOT} --pathToConf=${PATH_TO_CONF} --log:dir=${LOG_DIR} --log:name=${DOTNET_LOG_NAME} ${PARAMETERS}

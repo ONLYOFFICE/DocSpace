@@ -58,9 +58,8 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default inject(({ infoPanelStore }) => {
-  const { toggleIsVisible, isVisible } = infoPanelStore;
-
+export default inject(({ auth }) => {
+  const { toggleIsVisible, isVisible } = auth.infoPanelStore;
   return {
     toggleInfoPanel: toggleIsVisible,
     isInfoPanelVisible: isVisible,

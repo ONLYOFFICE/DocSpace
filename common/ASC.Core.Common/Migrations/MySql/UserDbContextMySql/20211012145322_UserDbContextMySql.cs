@@ -216,8 +216,6 @@ public partial class UserDbContextMySql : Migration
                 tenant = table.Column<int>(type: "int", nullable: false),
                 pwdhash = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
-                pwdhashsha512 = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
-                    .Annotation("MySql:CharSet", "utf8"),
                 LastModified = table.Column<DateTime>(type: "timestamp", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP")
             },
             constraints: table =>
@@ -258,19 +256,20 @@ public partial class UserDbContextMySql : Migration
                     { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|1e04460243b54d7982f3fd6208a11960", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
                     { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6743007c6f954d208c88a8601ce5e76d", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
                     { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|e67be73df9ae4ce18fec1880cb518cb4", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
-                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|ea942538e68e49079394035336ee0ba8", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
+                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|ea942538e68e49079394035336ee0ba8", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 1 },
                     { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|32d24cb57ece46069c9419216ba42086", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
                     { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|bf88953e3c434850a3fbb1e43ad53a3e", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
                     { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|2a9230378b2d487b9a225ac0918acf3f", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
-                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|28b10049dd204f54b986873bc14ccfc7", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
-                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|3cfd481b46f24a4ab55cb8c0c9def02c", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
-                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6a598c7491ae437da5f4ad339bd11bb2", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
-                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
-                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
+                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|f4d98afdd336433287783c6945c81ea0", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
+                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|28b10049dd204f54b986873bc14ccfc7", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 1 },
+                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|3cfd481b46f24a4ab55cb8c0c9def02c", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 1 },
+                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6a598c7491ae437da5f4ad339bd11bb2", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 1 },
+                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 1 },
+                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 1 },
                     { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|46cfa73af32046cf8d5bcd82e1d67f26", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
+                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|37620ae5c40b45ce855a39dd7d76a1fa", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
                     { "0d68b142-e20a-446e-a832-0d6b0b65a164", "", "bba32183-a14d-48ed-9d39-c6b4d8925fbf", -1, 0 },
                     { "f11e88d7-f185-4372-927c-d88008d2c483", "", "ba74ca02-873f-43dc-8470-8620c156bc67", -1, 0 },
-                    { "77777777-32ae-425f-99b5-83176061d1ae", "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|f4d98afdd336433287783c6945c81ea0", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", -1, 0 },
                     { "e0759a42-47f0-4763-a26a-d5aa665bec35", "", "ba74ca02-873f-43dc-8470-8620c156bc67", -1, 0 },
                     { "e37239bd-c5b5-4f1e-a9f8-3ceeac209615", "", "ba74ca02-873f-43dc-8470-8620c156bc67", -1, 0 },
                     { "f11e8f3f-46e6-4e55-90e3-09c22ec565bd", "", "5d5b7260-f7f7-49f1-a1c9-95fbb6a12604", -1, 0 },
@@ -383,8 +382,8 @@ public partial class UserDbContextMySql : Migration
 
         migrationBuilder.InsertData(
             table: "core_usersecurity",
-            columns: new[] { "userid", "pwdhash", "pwdhashsha512", "tenant" },
-            values: new object[] { "66faa6e4-f133-11ea-b126-00ffeec8b4ef", "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", "USubvPlB+ogq0Q1trcSupg==", 1 });
+            columns: new[] { "userid", "pwdhash", "tenant" },
+            values: new object[] { "66faa6e4-f133-11ea-b126-00ffeec8b4ef", "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", 1 });
 
         migrationBuilder.CreateIndex(
             name: "last_modified",
