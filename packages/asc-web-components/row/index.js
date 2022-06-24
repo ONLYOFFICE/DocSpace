@@ -14,7 +14,7 @@ import {
 } from "./styled-row";
 import Loader from "../loader";
 
-import { isDesktop } from "react-device-detect";
+import { isMobile } from "react-device-detect"; //TODO: isDesktop=true for IOS(Firefox & Safari)
 
 class Row extends React.Component {
   constructor(props) {
@@ -90,9 +90,7 @@ class Row extends React.Component {
     const { onRowClick, inProgress, mode, ...rest } = this.props;
 
     const onElementClick = () => {
-      console.log("onElementClick", isDesktop);
-
-      if (isDesktop) return;
+      if (!isMobile) return;
 
       onSelect && onSelect(true, data);
     };
