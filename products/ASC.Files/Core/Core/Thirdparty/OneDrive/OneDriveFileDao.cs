@@ -561,12 +561,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         return false;
     }
 
-    public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
-    {
-        return GetThumbnailAsync(file.Id, width, height);
-    }
-
-    public Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    public override Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
     {
         var oneDriveId = MakeOneDriveId(_oneDriveDaoSelector.ConvertId(fileId));
         return ProviderInfo.GetThumbnailAsync(oneDriveId, width, height);

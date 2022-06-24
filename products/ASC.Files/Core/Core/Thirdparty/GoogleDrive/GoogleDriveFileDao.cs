@@ -552,12 +552,8 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         return false;
     }
 
-    public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
-    {
-        return GetThumbnailAsync(file.Id, width, height);
-    }
 
-    public Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    public override Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
     {
         return ProviderInfo.GetThumbnail(MakeDriveId(_googleDriveDaoSelector.ConvertId(fileId)), width, height);
     }

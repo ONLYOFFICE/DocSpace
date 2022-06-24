@@ -81,7 +81,7 @@ public class FFmpegService
         {
             process.Start();
 
-            await StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
+            await inputStream.CopyToAsync(process.StandardInput.BaseStream);
 
             await ProcessLog(process.StandardError.BaseStream);
 
@@ -94,7 +94,7 @@ public class FFmpegService
         _logger = logger;
         _fFmpegPath = configuration["files:ffmpeg:value"];
         _fFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
-        _fFmpegThumbnailsArgs = configuration["files:ffmpeg:thumbnails:args"] ?? "-i - -vf  \"thumbnail\" {0}";
+        _fFmpegThumbnailsArgs = configuration["files:ffmpeg:thumbnails:args"] ?? "-ss 3 -i \"{0}\" -vf \"thumbnail\" -frames:v 1 -vsync vfr \"{1}\" -y";
 
         _convertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? Array.Empty<string>()).ToList();
 
@@ -163,44 +163,6 @@ public class FFmpegService
         return startInfo;
     }
 
-    private Task<int> StreamCopyToAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
-    {
-        ArgumentNullException.ThrowIfNull(srcStream);
-        ArgumentNullException.ThrowIfNull(dstStream);
-
-        return StreamCopyToAsyncInternal(srcStream, dstStream, closeSrc, closeDst);
-    }
-
-    private async Task<int> StreamCopyToAsyncInternal(Stream srcStream, Stream dstStream, bool closeSrc, bool closeDst)
-    {
-        const int bufs = 2048 * 4;
-
-        var buffer = new byte[bufs];
-        int readed;
-        var total = 0;
-        while ((readed = await srcStream.ReadAsync(buffer, 0, bufs)) > 0)
-        {
-            await dstStream.WriteAsync(buffer, 0, readed);
-            await dstStream.FlushAsync();
-            total += readed;
-        }
-
-        if (closeSrc)
-        {
-            srcStream.Dispose();
-            srcStream.Close();
-        }
-
-        if (closeDst)
-        {
-            await dstStream.FlushAsync();
-            dstStream.Dispose();
-            dstStream.Close();
-        }
-
-        return total;
-    }
-
     private async Task ProcessLog(Stream stream)
     {
         using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -211,81 +173,17 @@ public class FFmpegService
         }
     }
 
-    public async Task<Stream> CreateThumbnail(Stream stream, string tempPath)
+    public async Task CreateThumbnail(string sourcePath, string destPath)
     {
-        var startInfo = PrepareFFmpegForCreateThumbnail(tempPath);
+        var startInfo = PrepareCommonFFmpeg();
+        startInfo.Arguments = string.Format(_fFmpegThumbnailsArgs, sourcePath, destPath);
 
         Process process;
         using (process = new Process { StartInfo = startInfo })
         {
             process.Start();
-
-            await StreamCopyForThumbnailAsync(stream, process.StandardInput.BaseStream, closeDst: true);
-
+            process.WaitForExit(10000);
             await ProcessLog(process.StandardError.BaseStream);
-
-            return GetFileStream(tempPath);
-        }
-    }
-
-    private ProcessStartInfo PrepareFFmpegForCreateThumbnail(string tempFile)
-    {
-        var startInfo = PrepareCommonFFmpeg();
-
-        startInfo.Arguments = string.Format(_fFmpegThumbnailsArgs, tempFile);
-
-        return startInfo;
-    }
-
-    private Task<int> StreamCopyForThumbnailAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
-    {
-        ArgumentNullException.ThrowIfNull(srcStream);
-        ArgumentNullException.ThrowIfNull(dstStream);
-
-        return StreamCopyForThumbnailAsyncInternal(srcStream, dstStream, closeSrc, closeDst);
-    }
-
-    private async Task<int> StreamCopyForThumbnailAsyncInternal(Stream srcStream, Stream dstStream, bool closeSrc, bool closeDst)
-    {
-        const int bufs = 2048 * 4;
-
-        var buffer = new byte[bufs];
-        int readed;
-        var total = 0;
-
-        while ((readed = await srcStream.ReadAsync(buffer, 0, bufs)) > 0 && total < 9000000) // HACK: ffmpeg lock stream when total < 9000000
-        {
-            await dstStream.WriteAsync(buffer, 0, readed);
-            await dstStream.FlushAsync();
-            total += readed;
-        }
-
-        if (closeSrc)
-        {
-            srcStream.Dispose();
-            srcStream.Close();
-        }
-
-        if (closeDst)
-        {
-            await dstStream.FlushAsync();
-            dstStream.Dispose();
-            dstStream.Close();
-        }
-
-        return total;
-    }
-
-    private Stream GetFileStream(string tempFile)
-    {
-        if (File.Exists(tempFile))
-        {
-            return File.Open(tempFile, FileMode.Open);
-        }
-        else
-        {
-            _logger.ErrorFileNotFound(tempFile);
-            throw new IOException("file not found");
         }
     }
 }

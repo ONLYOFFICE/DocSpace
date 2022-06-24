@@ -80,6 +80,7 @@ public class Builder<T>
     private readonly PathProvider _pathProvider;
     private readonly IHttpClientFactory _clientFactory;
     private readonly ThumbnailSettings _thumbnailSettings;
+    private readonly TempStream _tempStream;
     private readonly SocketManager _socketManager;
     private readonly FFmpegService _fFmpegService;
     private readonly TempPath _tempPath;
@@ -97,7 +98,8 @@ public class Builder<T>
         FFmpegService fFmpegService,
         TempPath tempPath,
         SocketManager socketManager,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        TempStream tempStream)
     {
         _config = settings;
         _tenantManager = tenantManager;
@@ -112,6 +114,7 @@ public class Builder<T>
         _tempPath = tempPath;
         _socketManager = socketManager;
         _thumbnailSettings = thumbnailSettings;
+        _tempStream = tempStream;
     }
 
     internal async Task BuildThumbnail(FileData<T> fileData)
@@ -178,16 +181,18 @@ public class Builder<T>
             if (IsVideo(file))
             {
                 await MakeThumbnailFromVideo(fileDao, file);
-                return;
-            }
-
-            if (IsImage(file))
-            {
-                await CropImage(fileDao, file);
             }
             else
             {
-                await MakeThumbnail(fileDao, file);
+
+                if (IsImage(file))
+                {
+                    await CropImage(fileDao, file);
+                }
+                else
+                {
+                    await MakeThumbnail(fileDao, file);
+                }
             }
 
             var newFile = await fileDao.GetFileStableAsync(file.Id);
@@ -212,20 +217,23 @@ public class Builder<T>
     {
         var streamFile = await fileDao.GetFileStreamAsync(file);
 
-        var tempPath = GetTempPath();
-        var streamThumb = await _fFmpegService.CreateThumbnail(streamFile, tempPath);
+        var thumbPath = _tempPath.GetTempFileName("jpg");
+        var tempFilePath = _tempPath.GetTempFileName(Path.GetExtension(file.Title));
 
-        await Crop(fileDao, file, streamThumb);
+        using (var fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+        {
+            await streamFile.CopyToAsync(fileStream);
+        }
 
-        streamThumb.Dispose();
-        streamThumb.Close();
+        await _fFmpegService.CreateThumbnail(tempFilePath, thumbPath);
 
-        File.Delete(tempPath);
-    }
+        using (var streamThumb = new FileStream(thumbPath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+        {
+            await Crop(fileDao, file, streamThumb);
+        }
 
-    private string GetTempPath()
-    {
-        return Path.Combine(_tempPath.GetTempPath(), Path.ChangeExtension(Path.GetRandomFileName(), "jpg"));
+        File.Delete(thumbPath);
+        File.Delete(tempFilePath);
     }
 
     private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
@@ -398,8 +406,7 @@ public class Builder<T>
 
     private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height)
     {
-        var targetSize = new Size(Math.Min(sourceImg.Width, width), Math.Min(sourceImg.Height, height));
-        using var targetImg = GetImageThumbnail(sourceImg, targetSize, width, height);
+        using var targetImg = GetImageThumbnail(sourceImg, width);
         using var targetStream = new MemoryStream();
         switch (_global.ThumbnailExtension)
         {
@@ -431,7 +438,7 @@ public class Builder<T>
         await fileDao.SaveThumbnailAsync(file, targetStream, width, height);
     }
 
-    private Image GetImageThumbnail(Image sourceBitmap, Size targetSize, int thumbnaillWidth, int thumbnaillHeight)
+    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth)
     {
         return sourceBitmap.Clone(x => x.BackgroundColor(Color.White).Resize(thumbnaillWidth, 0));
     }

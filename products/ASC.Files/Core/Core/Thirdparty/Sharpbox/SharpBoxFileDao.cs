@@ -569,16 +569,6 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         return false;
     }
 
-    public Task<Stream> GetThumbnailAsync(string fileid, int width, int height)
-    {
-        return null;
-    }
-
-    public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
-    {
-        return null;
-    }
-
     #region chunking
 
     public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
