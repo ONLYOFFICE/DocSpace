@@ -32,5 +32,7 @@ public enum WhiteLabelLogoTypeEnum
     Dark = 2,
     Favicon = 3,
     DocsEditor = 4,
-    DocsEditorEmbed = 5
+    DocsEditorEmbed = 5,
+    LeftMenu = 6,
+    AboutPage = 7
 }
