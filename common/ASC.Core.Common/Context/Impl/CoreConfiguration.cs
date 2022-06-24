@@ -33,6 +33,7 @@ public class CoreBaseSettings
     private string _basedomain;
     private bool? _personal;
     private bool? _customMode;
+    private bool? _disableDocSpace;
 
     private IConfiguration Configuration { get; }
 
@@ -61,6 +62,8 @@ public class CoreBaseSettings
             _personal ?? (bool)(_personal = string.Equals(Configuration["core:personal"], "true", StringComparison.OrdinalIgnoreCase));
 
     public bool CustomMode => _customMode ?? (bool)(_customMode = string.Equals(Configuration["core:custom-mode"], "true", StringComparison.OrdinalIgnoreCase));
+
+    public bool DisableDocSpace => _disableDocSpace ?? (bool)(_disableDocSpace = string.Equals(Configuration["core:disableDocspace"], "true", StringComparison.OrdinalIgnoreCase));
 }
 
 class ConfigureCoreSettings : IConfigureNamedOptions<CoreSettings>

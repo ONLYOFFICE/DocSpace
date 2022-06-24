@@ -2024,4 +2024,7 @@ Don’t want to change your password? Just ignore this message.</value>
   <data name="subject_change_password_v115" xml:space="preserve">
     <value>Confirm changing your password</value>
   </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Confirm Room Invite</value>
+  </data>
 </root>

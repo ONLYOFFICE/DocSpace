@@ -40,6 +40,8 @@ public class MessagesRepository : IDisposable
     private readonly ILogger<MessagesRepository> _logger;
     private readonly Timer _timer;
     private readonly int _cacheLimit;
+    private readonly HashSet<MessageAction> _forceSaveAuditActions = new HashSet<MessageAction> 
+        { MessageAction.RoomInviteLinkUsed, MessageAction.UserSentPasswordChangeInstructions };
 
     public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILogger<MessagesRepository> logger, IMapper mapper, IConfiguration configuration)
     {
@@ -65,6 +67,7 @@ public class MessagesRepository : IDisposable
     {
         FlushCache(true);
     }
+
     private bool ForseSave(EventMessage message)
     {
         // messages with action code < 2000 are related to login-history
@@ -73,7 +76,7 @@ public class MessagesRepository : IDisposable
             return true;
         }
 
-        return message.Action == MessageAction.UserSentPasswordChangeInstructions;
+        return _forceSaveAuditActions.Contains(message.Action);
     }
 
     public int Add(EventMessage message)
