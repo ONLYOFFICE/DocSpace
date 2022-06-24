@@ -493,7 +493,7 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }, isDotsClick) => {
+  onSelectItem = ({ id, isFolder }, isDotsClick, isContextItem) => {
     const {
       setBufferSelection,
       setSelected,
@@ -522,7 +522,7 @@ class FilesActionStore {
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);
       }
-      setEnabledHotkeys(false);
+      isContextItem && setEnabledHotkeys(false);
     }
   };
 
@@ -1243,7 +1243,6 @@ class FilesActionStore {
           const pathParts = data.selectedFolder.pathParts;
           const newExpandedKeys = createNewExpandedKeys(pathParts);
           setExpandedKeys(newExpandedKeys);
-
         })
         .catch((err) => {
           toastr.error(err);
