@@ -68,18 +68,10 @@
 
     const onMessage = (msg) => {
       if (msg) {
-        if (msg.type === "onExternalPluginMessage") {
+        if (msg.type === "onMessage") {
           sendCommand(msg);
-        } else if (msg.type === "onExternalPluginMessageCallback") {
+        } else if (msg.type === "onCallback") {
           postMessage(window.parent, msg);
-        } else if (msg.frameId == config.frameId) {
-          const events = config.events || {};
-          const handler = events[msg.event];
-          let res;
-
-          if (handler && typeof handler == "function") {
-            res = handler.call(this, { target: this, data: msg.data });
-          }
         }
       }
     };
@@ -97,7 +89,7 @@
       localStorage.setItem("dsFrameConfig", JSON.stringify(config));
 
       postMessage(window.parent, {
-        source: config.frameId,
+        frameId: config.frameId,
         message: "Frame inserted!",
       });
     }
@@ -121,12 +113,18 @@
         postMessage(iframe.contentWindow, command);
     };
 
+    /*     const getItems = () => {
+      sendCommand("getItems");
+    }; */
+
     return {
       destroyFrame,
     };
   };
 
   MessageDispatcher = function (fn, scope) {
+    const callFunction = fn;
+    const msgScope = scope;
     const eventFn = (message) => {
       onMessage(message);
     };
@@ -139,12 +137,12 @@
       window.removeEventListener("message", eventFn, false);
     };
 
-    const onMessage = (message) => {
-      if (message && window.JSON && scope.frameOrigin == message.origin) {
+    const onMessage = (msg) => {
+      if (msg && window.JSON && msgScope.frameOrigin == msg.origin) {
         try {
-          const message = window.JSON.parse(message.data);
-          if (fn) {
-            fn.call(scope, message);
+          const msg = window.JSON.parse(msg.data);
+          if (callFunction) {
+            callFunction.call(msgScope, msg);
           }
         } catch (e) {}
       }
