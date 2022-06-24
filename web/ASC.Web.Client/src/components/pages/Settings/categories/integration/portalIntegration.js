@@ -55,7 +55,7 @@ const PortalIntegration = (props) => {
 
   setDocumentTitle(`Portal integration`);
 
-  const scriptUrl = "http://192.168.1.60:8092/static/scripts/ds-api.js";
+  const scriptUrl = `${window.location.origin}/static/scripts/ds-api.js`;
 
   const dataSortBy = [
     { key: "AZ", label: "Title", default: true },
@@ -100,18 +100,18 @@ const PortalIntegration = (props) => {
     DocSpace.destroyFrame();
   };
 
-  const showMessage = (e) => {
-    const data = e.data;
+  const showMessage = (message) => {
+    const data = message.data;
 
-    if (data.source === frameId) {
-      toastr.success(data.message, "Frame callback");
+    if (data.frameId === frameId) {
+      toastr.success(data.message, "Frame message");
     }
   };
 
   useEffect(() => {
-    window.addEventListener("message", showMessage);
+    window.addEventListener("message", showMessage, false);
 
-    return () => window.removeEventListener("message", showMessage);
+    return () => window.removeEventListener("message", showMessage, false);
   }, [showMessage]);
 
   const onChangeWidth = (e) => {
