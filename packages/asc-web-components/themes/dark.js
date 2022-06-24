@@ -2716,6 +2716,12 @@ const Dark = {
     textColor: "#E06A1B",
     bottomLineColor: "#E06A1B",
   },
+
+  hotkeys: {
+    key: {
+      color: "#C4C4C4",
+    },
+  },
 };
 
 export default Dark;

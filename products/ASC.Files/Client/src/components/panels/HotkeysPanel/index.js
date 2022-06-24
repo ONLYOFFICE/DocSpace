@@ -14,8 +14,9 @@ import NavigationBlock from "./NavigationBlock";
 import CreationBlock from "./CreationBlock";
 import UploadBlock from "./UploadBlock";
 import { isMacOs } from "react-device-detect";
+import Base from "@appserver/components/themes/base";
 
-const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
+const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, theme, tReady }) => {
   const scrollRef = useRef(null);
 
   const onClose = () => setHotkeyPanelVisible(false);
@@ -27,7 +28,7 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
   };
   const keyTextStyles = {
     ...textStyles,
-    ...{ color: "#657077", className: "hotkeys-key" },
+    ...{ color: theme.hotkeys.key.color, className: "hotkeys-key" },
   };
 
   const CtrlKey = isMacOs ? "⌘" : "Ctrl";
@@ -131,12 +132,19 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
   );
 };
 
+HotkeyPanel.defaultProps = { theme: Base };
+
 export default inject(({ auth }) => {
-  const { hotkeyPanelVisible, setHotkeyPanelVisible } = auth.settingsStore;
+  const {
+    hotkeyPanelVisible,
+    setHotkeyPanelVisible,
+    theme,
+  } = auth.settingsStore;
 
   return {
     visible: hotkeyPanelVisible,
     setHotkeyPanelVisible,
+    theme,
   };
 })(
   withTranslation(["HotkeysPanel", "Article", "Common"])(observer(HotkeyPanel))

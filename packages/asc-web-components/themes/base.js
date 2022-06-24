@@ -2706,6 +2706,12 @@ const Base = {
     textColor: "#316DAA",
     bottomLineColor: "#316DAA",
   },
+
+  hotkeys: {
+    key: {
+      color: grayMain,
+    },
+  },
 };
 
 export default Base;
