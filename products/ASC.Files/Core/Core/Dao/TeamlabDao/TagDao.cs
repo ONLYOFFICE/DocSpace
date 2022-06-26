@@ -730,7 +730,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .Where(r => r.mapping.TenantId == r.tagLink.Link.TenantId)
             .Join(ctx.ThirdpartyAccount, r => r.mapping.TenantId, r => r.TenantId, (tagLinkMapping, account) => new { tagLinkMapping.tagLink, tagLinkMapping.mapping, account })
             .Where(r => r.account.UserId != subject &&
-                        r.account.RootFolderType == FolderType.USER &&
+                        r.account.FolderType == FolderType.USER &&
                         (r.mapping.Id.StartsWith("sbox-" + r.account.Id) ||
                         r.mapping.Id.StartsWith("box-" + r.account.Id) ||
                         r.mapping.Id.StartsWith("dropbox-" + r.account.Id) ||
@@ -801,7 +801,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .Join(ctx.ThirdpartyIdMapping, r => r.Link.EntryId, r => r.HashId, (tagLink, mapping) => new { tagLink, mapping })
             .Where(r => r.mapping.TenantId == tenantId && r.tagLink.Tag.Owner == subject && r.tagLink.Link.EntryType == FileEntryType.Folder)
             .Join(ctx.ThirdpartyAccount, r => r.mapping.Id, r => r.FolderId, (tagLinkData, account) => new { tagLinkData, account })
-            .Where(r => r.tagLinkData.mapping.Id == r.account.FolderId && r.account.RootFolderType == FolderType.VirtualRooms)
+            .Where(r => r.tagLinkData.mapping.Id == r.account.FolderId && r.account.FolderType == FolderType.VirtualRooms)
             .Select(r => r.tagLinkData.tagLink).Distinct()
             );
 
@@ -815,7 +815,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
     static readonly Func<FilesDbContext, int, FolderType, Guid, IAsyncEnumerable<int>> _getThirdpartyAccountQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, FolderType folderType, Guid subject) =>
           ctx.ThirdpartyAccount
                 .Where(r => r.TenantId == tenantId)
-                .Where(r => r.RootFolderType == folderType)
+                .Where(r => r.FolderType == folderType)
                 .Where(r => folderType != FolderType.USER || r.UserId == subject)
                 .Select(r => r.Id));
 
