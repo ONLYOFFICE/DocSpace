@@ -7,7 +7,6 @@ import { RoomsType } from "@appserver/common/constants";
 import StyledLogoContainer from "./styled-room-logo";
 
 const RoomLogo = ({ id, className, style, type, isPrivacy, isArchive }) => {
-  console.log(type);
   const getIcon = () => {
     if (isArchive) {
       return isPrivacy
@@ -61,6 +60,7 @@ const RoomLogo = ({ id, className, style, type, isPrivacy, isArchive }) => {
 
 RoomLogo.defaultProps = {
   isPrivacy: false,
+  isArchive: false,
 };
 
 RoomLogo.propTypes = {
@@ -68,6 +68,8 @@ RoomLogo.propTypes = {
   type: PropTypes.number,
   /** Add privacy icon  */
   isPrivacy: PropTypes.bool,
+  /** Add archive icon  */
+  isArchive: PropTypes.bool,
   /** Accepts id  */
   id: PropTypes.string,
   /** Accepts class name  */
