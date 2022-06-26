@@ -1,5 +1,7 @@
 import styled, { css } from "styled-components";
 
+import { RoomsType } from "@appserver/common/constants";
+
 const formCss = css`
   border-color: #26acb8;
 
@@ -20,7 +22,7 @@ const archiveCss = css`
   }
 `;
 
-const collaborationCss = css`
+const editingCss = css`
   border-color: #eb7b0c;
 
   svg {
@@ -90,12 +92,25 @@ const StyledLogoContainer = styled.div`
     height: 16px;
   }
 
-  ${(props) => !props.isPrivacy && props.type === "view" && viewCss}
-  ${(props) => !props.isPrivacy && props.type === "fill" && formCss}
-  ${(props) => !props.isPrivacy && props.type === "editing" && collaborationCss}
-  ${(props) => !props.isPrivacy && props.type === "review" && reviewCss}
-  ${(props) => !props.isPrivacy && props.type === "custom" && customCss}
-  ${(props) => !props.isPrivacy && props.type === "archive" && archiveCss}
+  border-color: #f2557c;
+
+  svg {
+    path {
+      fill: #f2557c;
+    }
+  }
+
+  ${(props) =>
+    !props.isPrivacy && props.type === RoomsType.ReadOnlyRoom && viewCss}
+  ${(props) =>
+    !props.isPrivacy && props.type === RoomsType.FillingFormsRoom && formCss}
+  ${(props) =>
+    !props.isPrivacy && props.type === RoomsType.EditingRoom && editingCss}
+  ${(props) =>
+    !props.isPrivacy && props.type === RoomsType.ReviewRoom && reviewCss}
+  ${(props) =>
+    !props.isPrivacy && props.type === RoomsType.CustomRoom && customCss}
+  ${(props) => !props.isPrivacy && props.isArchive && archiveCss}
 
   ${(props) => props.isPrivacy && privacyCss}
 `;

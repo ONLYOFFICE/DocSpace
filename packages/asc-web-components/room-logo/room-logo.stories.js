@@ -23,4 +23,5 @@ export const Default = Template.bind({});
 Default.args = {
   type: "custom",
   isPrivacy: false,
+  isArchive: false,
 };
