@@ -31,13 +31,7 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const {
-    children,
-    isTabletView,
-    setIsTabletView,
-    isBannerVisible,
-    isMainBannerMount,
-  } = props;
+  const { children, isTabletView, setIsTabletView, isBannerVisible } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
@@ -186,6 +180,5 @@ export default inject(({ auth, bannerStore }) => {
     isTabletView: auth.settingsStore.isTabletView,
     setIsTabletView: auth.settingsStore.setIsTabletView,
     isBannerVisible: bannerStore.isBannerVisible,
-    isMainBannerMount: bannerStore.isMainBannerMount,
   };
 })(observer(Layout));
