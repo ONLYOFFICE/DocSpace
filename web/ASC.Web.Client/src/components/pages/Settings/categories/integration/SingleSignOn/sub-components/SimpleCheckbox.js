@@ -1,21 +1,36 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 import Checkbox from "@appserver/components/checkbox";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
-const SimpleCheckbox = ({ label, name, tabIndex }) => {
+const SimpleCheckbox = (props) => {
+  const {
+    label,
+    name,
+    tabIndex,
+    isChecked,
+    enableSso,
+    onCheckboxChange,
+  } = props;
+
   return (
     <Checkbox
       className="checkbox-input"
-      isDisabled={!FormStore.enableSso}
-      isChecked={FormStore[name]}
+      isDisabled={!enableSso}
+      isChecked={isChecked}
       label={label}
       name={name}
-      onChange={FormStore.onCheckboxChange}
+      onChange={onCheckboxChange}
       tabIndex={tabIndex}
     />
   );
 };
 
-export default observer(SimpleCheckbox);
+export default inject(({ ssoStore }) => {
+  const { enableSso, onCheckboxChange } = ssoStore;
+
+  return {
+    enableSso,
+    onCheckboxChange,
+  };
+})(observer(SimpleCheckbox));

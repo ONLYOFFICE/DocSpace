@@ -1,9 +1,8 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Text from "@appserver/components/text";
 
@@ -12,8 +11,21 @@ import SimpleFormField from "./sub-components/SimpleFormField";
 import UploadXML from "./sub-components/UploadXML";
 import { bindingOptions, nameIdOptions } from "./sub-components/constants";
 
-const IdpSettings = () => {
+const IdpSettings = (props) => {
   const { t } = useTranslation("SingleSignOn");
+  const {
+    ssoBinding,
+    enableSso,
+    onBindingChange,
+    sloBinding,
+    nameIdFormat,
+    spLoginLabel,
+    entityId,
+    ssoUrlPost,
+    ssoUrlRedirect,
+    sloUrlPost,
+    sloUrlRedirect,
+  } = props;
 
   return (
     <Box>
@@ -25,6 +37,7 @@ const IdpSettings = () => {
         placeholder="Single Sign-on"
         tabIndex={4}
         tooltipContent={t("CustomEntryTooltip")}
+        value={spLoginLabel}
       />
 
       <SimpleFormField
@@ -33,29 +46,27 @@ const IdpSettings = () => {
         placeholder="https://www.test.com"
         tabIndex={5}
         tooltipContent={t("ProviderURLTooltip")}
+        value={entityId}
       />
 
       <SimpleFormField
         labelText={t("SignOnEndpointUrl")}
-        name={
-          FormStore.ssoBinding.includes("POST")
-            ? "ssoUrlPost"
-            : "ssoUrlRedirect"
-        }
+        name={ssoBinding.includes("POST") ? "ssoUrlPost" : "ssoUrlRedirect"}
         placeholder="https://www.test.com/saml/login"
         tabIndex={7}
         tooltipContent={t("SignOnEndpointUrlTooltip")}
+        value={ssoBinding.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
       >
         <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
           <Text noSelect>{t("Binding")}</Text>
 
           <RadioButtonGroup
             className="radio-button-group"
-            isDisabled={!FormStore.enableSso}
+            isDisabled={!enableSso}
             name="ssoBinding"
-            onClick={FormStore.onBindingChange}
+            onClick={onBindingChange}
             options={bindingOptions}
-            selected={FormStore.ssoBinding}
+            selected={ssoBinding}
             spacing="21px"
             tabIndex={6}
           />
@@ -64,25 +75,22 @@ const IdpSettings = () => {
 
       <SimpleFormField
         labelText={t("LogoutEndpointUrl")}
-        name={
-          FormStore.sloBinding.includes("POST")
-            ? "sloUrlPost"
-            : "sloUrlRedirect"
-        }
+        name={sloBinding.includes("POST") ? "sloUrlPost" : "sloUrlRedirect"}
         placeholder="https://www.test.com/saml/logout"
         tabIndex={9}
         tooltipContent={t("LogoutEndpointUrlTooltip")}
+        value={sloBinding.includes("POST") ? sloUrlPost : sloUrlRedirect}
       >
         <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
           <Text>{t("Binding")}</Text>
 
           <RadioButtonGroup
             className="radio-button-group"
-            isDisabled={!FormStore.enableSso}
+            isDisabled={!enableSso}
             name="sloBinding"
-            onClick={FormStore.onBindingChange}
+            onClick={onBindingChange}
             options={bindingOptions}
-            selected={FormStore.sloBinding}
+            selected={sloBinding}
             spacing="21px"
             tabIndex={8}
           />
@@ -91,6 +99,7 @@ const IdpSettings = () => {
 
       <SimpleComboBox
         labelText={t("NameIDFormat")}
+        value={nameIdFormat}
         name="nameIdFormat"
         options={nameIdOptions}
         tabIndex={8}
@@ -99,4 +108,32 @@ const IdpSettings = () => {
   );
 };
 
-export default observer(IdpSettings);
+export default inject(({ ssoStore }) => {
+  const {
+    ssoBinding,
+    enableSso,
+    onBindingChange,
+    sloBinding,
+    nameIdFormat,
+    spLoginLabel,
+    entityId,
+    ssoUrlPost,
+    ssoUrlRedirect,
+    sloUrlPost,
+    sloUrlRedirect,
+  } = ssoStore;
+
+  return {
+    ssoBinding,
+    enableSso,
+    onBindingChange,
+    sloBinding,
+    nameIdFormat,
+    spLoginLabel,
+    entityId,
+    ssoUrlPost,
+    ssoUrlRedirect,
+    sloUrlPost,
+    sloUrlRedirect,
+  };
+})(observer(IdpSettings));

@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { isDesktop } from "react-device-detect";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import Certificates from "./Certificates";
 import FieldMapping from "./FieldMapping";
@@ -15,21 +14,26 @@ import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
 import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
-const SingleSignOn = () => {
+const SingleSignOn = (props) => {
+  const { onPageLoad, ServiceProviderSettings, SPMetadata } = props;
+
   if (!isDesktop) return <ForbiddenPage />;
 
   useEffect(() => {
-    FormStore.onPageLoad();
+    onPageLoad();
   }, []);
 
   return (
     <StyledSsoPage
-      hideSettings={FormStore.ServiceProviderSettings}
-      hideMetadata={FormStore.SPMetadata}
+      hideSettings={ServiceProviderSettings}
+      hideMetadata={SPMetadata}
     >
       <ToggleSSO />
 
-      <HideButton label="ServiceProviderSettings" />
+      <HideButton
+        label="ServiceProviderSettings"
+        value={ServiceProviderSettings}
+      />
 
       <Box className="service-provider-settings">
         <IdpSettings />
@@ -45,7 +49,7 @@ const SingleSignOn = () => {
 
       <hr className="separator" />
 
-      <HideButton label="SPMetadata" />
+      <HideButton label="SPMetadata" value={SPMetadata} />
 
       <Box className="sp-metadata">
         <ProviderMetadata />
@@ -54,4 +58,8 @@ const SingleSignOn = () => {
   );
 };
 
-export default observer(SingleSignOn);
+export default inject(({ ssoStore }) => {
+  const { onPageLoad, ServiceProviderSettings, SPMetadata } = ssoStore;
+
+  return { onPageLoad, ServiceProviderSettings, SPMetadata };
+})(observer(SingleSignOn));

@@ -1,10 +1,9 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import ModalDialog from "@appserver/components/modal-dialog";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import Text from "@appserver/components/text";
@@ -12,18 +11,25 @@ import TextArea from "@appserver/components/textarea";
 
 import { addArguments } from "../../../../utils";
 
-const AddIdpCertificateModal = () => {
+const AddIdpCertificateModal = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
+  const {
+    onCloseModal,
+    addCertificateToForm,
+    idp_isModalVisible,
+    onTextInputChange,
+    idp_certificate,
+  } = props;
 
-  const onClose = addArguments(FormStore.onCloseModal, "idp_isModalVisible");
-  const onSubmit = addArguments(FormStore.addCertificateToForm, "idp");
+  const onClose = addArguments(onCloseModal, "idp_isModalVisible");
+  const onSubmit = addArguments(addCertificateToForm, "idp");
 
   return (
     <StyledModalDialog
       contentHeight="100%"
       displayType="modal"
       onClose={onClose}
-      visible={FormStore.idp_isModalVisible}
+      visible={idp_isModalVisible}
     >
       <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
 
@@ -35,8 +41,8 @@ const AddIdpCertificateModal = () => {
         <TextArea
           className="text-area"
           name="idp_certificate"
-          onChange={FormStore.onTextInputChange}
-          value={FormStore.idp_certificate}
+          onChange={onTextInputChange}
+          value={idp_certificate}
         />
       </ModalDialog.Body>
 
@@ -60,4 +66,20 @@ const AddIdpCertificateModal = () => {
   );
 };
 
-export default observer(AddIdpCertificateModal);
+export default inject(({ ssoStore }) => {
+  const {
+    onCloseModal,
+    addCertificateToForm,
+    idp_isModalVisible,
+    onTextInputChange,
+    idp_certificate,
+  } = ssoStore;
+
+  return {
+    onCloseModal,
+    addCertificateToForm,
+    idp_isModalVisible,
+    onTextInputChange,
+    idp_certificate,
+  };
+})(observer(AddIdpCertificateModal));

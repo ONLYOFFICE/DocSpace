@@ -1,16 +1,16 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
 import { addArguments } from "../../../../utils/addArguments";
 
-const HideButton = ({ label, isAdditionalParameters }) => {
+const HideButton = (props) => {
   const { t } = useTranslation("SingleSignOn");
+  const { label, isAdditionalParameters, value, onHideClick } = props;
 
   const hide = isAdditionalParameters ? "HideAdditionalParameters" : "Hide";
   const show = isAdditionalParameters ? "ShowAdditionalParameters" : "Show";
@@ -19,7 +19,7 @@ const HideButton = ({ label, isAdditionalParameters }) => {
     ? "hide-additional-button"
     : "hide-button";
 
-  const onClick = addArguments(FormStore.onHideClick, label);
+  const onClick = addArguments(onHideClick, label);
 
   return (
     <Box
@@ -35,10 +35,16 @@ const HideButton = ({ label, isAdditionalParameters }) => {
       )}
 
       <Link className={className} isHovered onClick={onClick} type="action">
-        {FormStore[label] ? t(hide) : t(show)}
+        {value ? t(hide) : t(show)}
       </Link>
     </Box>
   );
 };
 
-export default observer(HideButton);
+export default inject(({ ssoStore }) => {
+  const { onHideClick } = ssoStore;
+
+  return {
+    onHideClick,
+  };
+})(observer(HideButton));

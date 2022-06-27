@@ -1,10 +1,9 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 
@@ -20,17 +19,36 @@ import {
   verifyAlgorithmsOptions,
 } from "./sub-components/constants";
 
-const Certificates = ({ provider }) => {
+const Certificates = (props) => {
   const { t } = useTranslation("SingleSignOn");
+  const {
+    provider,
+    enableSso,
+    onOpenIdpModal,
+    onOpenSpModal,
+    idp_certificates,
+    sp_certificates,
+    idp_showAdditionalParameters,
+    sp_showAdditionalParameters,
+    idp_verifyAlgorithm,
+    sp_encryptAlgorithm,
+    sp_decryptAlgorithm,
+  } = props;
 
   let prefix = "";
+  let additionalParameters = false;
+  let certificates = [];
 
   switch (provider) {
     case "IdentityProvider":
       prefix = "idp";
+      additionalParameters = idp_showAdditionalParameters;
+      certificates = idp_certificates;
       break;
     case "ServiceProvider":
       prefix = "sp";
+      additionalParameters = sp_showAdditionalParameters;
+      certificates = sp_certificates;
       break;
   }
 
@@ -52,17 +70,15 @@ const Certificates = ({ provider }) => {
         />
       </Box>
 
-      {FormStore[`${prefix}_certificates`].length > 0 && (
-        <CertificatesTable prefix={prefix} />
-      )}
+      {certificates.length > 0 && <CertificatesTable prefix={prefix} />}
 
       <Box alignItems="center" displayProp="flex" flexDirection="row">
         {prefix === "idp" && (
           <>
             <Button
-              isDisabled={!FormStore.enableSso}
+              isDisabled={!enableSso}
               label={t("AddCertificate")}
-              onClick={FormStore.onOpenIdpModal}
+              onClick={onOpenIdpModal}
               size="small"
               tabIndex={9}
             />
@@ -73,9 +89,9 @@ const Certificates = ({ provider }) => {
         {prefix === "sp" && (
           <>
             <Button
-              isDisabled={!FormStore.enableSso}
+              isDisabled={!enableSso}
               label={t("AddCertificate")}
-              onClick={FormStore.onOpenSpModal}
+              onClick={onOpenSpModal}
               size="small"
               tabIndex={9}
             />
@@ -84,12 +100,13 @@ const Certificates = ({ provider }) => {
         )}
 
         <HideButton
+          value={additionalParameters}
           label={`${prefix}_showAdditionalParameters`}
           isAdditionalParameters
         />
       </Box>
 
-      {FormStore[`${prefix}_showAdditionalParameters`] && (
+      {additionalParameters && (
         <>
           <CheckboxSet id={prefix} prefix={prefix} />
 
@@ -100,6 +117,7 @@ const Certificates = ({ provider }) => {
                 name={"idp_verifyAlgorithm"}
                 options={verifyAlgorithmsOptions}
                 tabIndex={14}
+                value={idp_verifyAlgorithm}
               />
             </>
           )}
@@ -111,6 +129,7 @@ const Certificates = ({ provider }) => {
                 name={"sp_signingAlgorithm"}
                 options={verifyAlgorithmsOptions}
                 tabIndex={14}
+                value={sp_encryptAlgorithm}
               />
 
               <SimpleComboBox
@@ -118,6 +137,7 @@ const Certificates = ({ provider }) => {
                 name={"sp_encryptAlgorithm"}
                 options={decryptAlgorithmsOptions}
                 tabIndex={15}
+                value={sp_decryptAlgorithm}
               />
             </>
           )}
@@ -127,8 +147,34 @@ const Certificates = ({ provider }) => {
   );
 };
 
-export default observer(Certificates);
-
-Certificates.PropTypes = {
+Certificates.propTypes = {
   provider: PropTypes.oneOf(["IdentityProvider", "ServiceProvider"]),
 };
+
+export default inject(({ ssoStore }) => {
+  const {
+    enableSso,
+    onOpenIdpModal,
+    onOpenSpModal,
+    idp_certificates,
+    sp_certificates,
+    idp_showAdditionalParameters,
+    sp_showAdditionalParameters,
+    idp_verifyAlgorithm,
+    sp_encryptAlgorithm,
+    sp_decryptAlgorithm,
+  } = ssoStore;
+
+  return {
+    enableSso,
+    onOpenIdpModal,
+    onOpenSpModal,
+    idp_certificates,
+    sp_certificates,
+    idp_showAdditionalParameters,
+    sp_showAdditionalParameters,
+    idp_verifyAlgorithm,
+    sp_encryptAlgorithm,
+    sp_decryptAlgorithm,
+  };
+})(observer(Certificates));

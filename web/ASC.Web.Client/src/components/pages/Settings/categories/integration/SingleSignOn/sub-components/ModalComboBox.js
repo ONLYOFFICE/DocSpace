@@ -1,15 +1,15 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import ComboBox from "@appserver/components/combobox";
 import FieldContainer from "@appserver/components/field-container";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 
-const ModalComboBox = () => {
+const ModalComboBox = (props) => {
   const { t } = useTranslation("SingleSignOn");
+  const { sp_action, onModalComboBoxChange } = props;
 
   const certificateOptions = [
     { key: "signing", label: t("Signing") },
@@ -18,14 +18,14 @@ const ModalComboBox = () => {
   ];
 
   const currentOption = certificateOptions.find(
-    (option) => option.key === FormStore.sp_action
+    (option) => option.key === sp_action
   );
 
   return (
     <FieldContainer isVertical labelText={t("UsedFor")}>
       <StyledInputWrapper>
         <ComboBox
-          onSelect={FormStore.onModalComboBoxChange}
+          onSelect={onModalComboBoxChange}
           options={certificateOptions}
           scaled
           scaledOptions
@@ -37,4 +37,8 @@ const ModalComboBox = () => {
   );
 };
 
-export default observer(ModalComboBox);
+export default inject(({ ssoStore }) => {
+  const { sp_action, onModalComboBoxChange } = ssoStore;
+
+  return { sp_action, onModalComboBoxChange };
+})(observer(ModalComboBox));

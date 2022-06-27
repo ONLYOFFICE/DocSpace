@@ -1,25 +1,33 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 import ComboBox from "@appserver/components/combobox";
 import FieldContainer from "@appserver/components/field-container";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 import { addArguments } from "../../../../utils/addArguments";
 
-const SimpleComboBox = ({ labelText, name, options, tabIndex }) => {
-  const currentOption = options.find(
-    (option) => option.key === FormStore[name]
-  );
+const SimpleComboBox = (props) => {
+  const {
+    labelText,
+    name,
+    options,
+    tabIndex,
+    value,
+    onComboBoxChange,
+    enableSso,
+  } = props;
 
-  const onSelect = addArguments(FormStore.onComboBoxChange, name);
+  const currentOption =
+    options.find((option) => option.key === value) || options[0];
+
+  const onSelect = addArguments(onComboBoxChange, name);
 
   return (
     <FieldContainer isVertical labelText={labelText}>
       <StyledInputWrapper>
         <ComboBox
-          isDisabled={!FormStore.enableSso}
+          isDisabled={!enableSso}
           onSelect={onSelect}
           options={options}
           scaled
@@ -33,4 +41,11 @@ const SimpleComboBox = ({ labelText, name, options, tabIndex }) => {
   );
 };
 
-export default observer(SimpleComboBox);
+export default inject(({ ssoStore }) => {
+  const { onComboBoxChange, enableSso } = ssoStore;
+
+  return {
+    onComboBoxChange,
+    enableSso,
+  };
+})(observer(SimpleComboBox));

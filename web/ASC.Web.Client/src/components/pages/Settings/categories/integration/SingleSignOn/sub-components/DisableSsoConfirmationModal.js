@@ -1,30 +1,27 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import { addArguments } from "../../../../utils";
 
-const DisableSsoConfirmationModal = () => {
+const DisableSsoConfirmationModal = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
+  const { onCloseModal, confirmationDisableModal, onConfirmDisable } = props;
 
-  const onClose = addArguments(
-    FormStore.onCloseModal,
-    "confirmationDisableModal"
-  );
+  const onClose = addArguments(onCloseModal, "confirmationDisableModal");
 
   return (
     <StyledModalDialog
       contentHeight="100%"
       displayType="modal"
       onClose={onClose}
-      visible={FormStore.confirmationDisableModal}
+      visible={confirmationDisableModal}
     >
       <ModalDialog.Header>{t("Common:Confirmation")}</ModalDialog.Header>
 
@@ -37,7 +34,7 @@ const DisableSsoConfirmationModal = () => {
           <Button
             className="ok-button"
             label={t("Common:OKButton")}
-            onClick={FormStore.onConfirmDisable}
+            onClick={onConfirmDisable}
             primary
             size="small"
           />
@@ -52,4 +49,8 @@ const DisableSsoConfirmationModal = () => {
   );
 };
 
-export default observer(DisableSsoConfirmationModal);
+export default inject(({ ssoStore }) => {
+  const { onCloseModal, confirmationDisableModal, onConfirmDisable } = ssoStore;
+
+  return { onCloseModal, confirmationDisableModal, onConfirmDisable };
+})(observer(DisableSsoConfirmationModal));

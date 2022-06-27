@@ -1,5 +1,5 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
@@ -10,8 +10,17 @@ import Text from "@appserver/components/text";
 import SimpleCheckbox from "./sub-components/SimpleCheckbox";
 import SimpleFormField from "./sub-components/SimpleFormField";
 
-const FieldMapping = () => {
+const FieldMapping = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
+  const {
+    firstName,
+    lastName,
+    email,
+    location,
+    title,
+    phone,
+    hideAuthPage,
+  } = props;
 
   return (
     <Box>
@@ -37,6 +46,7 @@ const FieldMapping = () => {
         name="firstName"
         placeholder="givenName"
         tabIndex={16}
+        value={firstName}
       />
 
       <SimpleFormField
@@ -44,6 +54,7 @@ const FieldMapping = () => {
         name="lastName"
         placeholder="sn"
         tabIndex={17}
+        value={lastName}
       />
 
       <SimpleFormField
@@ -51,6 +62,7 @@ const FieldMapping = () => {
         name="email"
         placeholder="sn"
         tabIndex={18}
+        value={email}
       />
 
       <SimpleFormField
@@ -58,6 +70,7 @@ const FieldMapping = () => {
         name="location"
         placeholder="sn"
         tabIndex={19}
+        value={location}
       />
 
       <SimpleFormField
@@ -65,6 +78,7 @@ const FieldMapping = () => {
         name="title"
         placeholder="sn"
         tabIndex={20}
+        value={title}
       />
 
       <SimpleFormField
@@ -72,6 +86,7 @@ const FieldMapping = () => {
         name="phone"
         placeholder="sn"
         tabIndex={21}
+        value={phone}
       />
 
       <FieldContainer
@@ -85,10 +100,31 @@ const FieldMapping = () => {
           label={t("HideAuthPage")}
           name="hideAuthPage"
           tabIndex={22}
+          isChecked={hideAuthPage}
         />
       </FieldContainer>
     </Box>
   );
 };
 
-export default observer(FieldMapping);
+export default inject(({ ssoStore }) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    location,
+    title,
+    phone,
+    hideAuthPage,
+  } = ssoStore;
+
+  return {
+    firstName,
+    lastName,
+    email,
+    location,
+    title,
+    phone,
+    hideAuthPage,
+  };
+})(observer(FieldMapping));

@@ -13,7 +13,14 @@ const borderProp = { radius: "4px" };
 
 const ToggleSSO = (props) => {
   const { t } = useTranslation("SingleSignOn");
-  const { theme } = props;
+  const {
+    theme,
+    enableSso,
+    isSsoEnabled,
+    openConfirmationDisableModal,
+    onSsoToggle,
+    confirmationDisableModal,
+  } = props;
 
   return (
     <>
@@ -32,11 +39,11 @@ const ToggleSSO = (props) => {
       >
         <ToggleButton
           className="toggle"
-          isChecked={FormStore.enableSso}
+          isChecked={enableSso}
           onChange={
-            FormStore.isSsoEnabled && FormStore.enableSso
-              ? FormStore.openConfirmationDisableModal
-              : FormStore.onSsoToggle
+            isSsoEnabled && enableSso
+              ? openConfirmationDisableModal
+              : onSsoToggle
           }
         />
 
@@ -50,15 +57,27 @@ const ToggleSSO = (props) => {
         </Box>
       </Box>
 
-      {FormStore.confirmationDisableModal && <DisableSsoConfirmationModal />}
+      {confirmationDisableModal && <DisableSsoConfirmationModal />}
     </>
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, ssoStore }) => {
   const { theme } = auth.settingsStore;
+  const {
+    enableSso,
+    isSsoEnabled,
+    openConfirmationDisableModal,
+    onSsoToggle,
+    confirmationDisableModal,
+  } = ssoStore;
 
   return {
     theme,
+    enableSso,
+    isSsoEnabled,
+    openConfirmationDisableModal,
+    onSsoToggle,
+    confirmationDisableModal,
   };
 })(observer(ToggleSSO));

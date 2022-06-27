@@ -1,30 +1,27 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import { addArguments } from "../../../../utils";
 
-const ResetConfirmationModal = () => {
+const ResetConfirmationModal = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
+  const { onCloseModal, confirmationResetModal, onConfirmReset } = props;
 
-  const onClose = addArguments(
-    FormStore.onCloseModal,
-    "confirmationResetModal"
-  );
+  const onClose = addArguments(onCloseModal, "confirmationResetModal");
 
   return (
     <StyledModalDialog
       contentHeight="100%"
       displayType="modal"
       onClose={onClose}
-      visible={FormStore.confirmationResetModal}
+      visible={confirmationResetModal}
     >
       <ModalDialog.Header>{t("Common:Confirmation")}</ModalDialog.Header>
 
@@ -37,7 +34,7 @@ const ResetConfirmationModal = () => {
           <Button
             className="ok-button"
             label={t("Common:OKButton")}
-            onClick={FormStore.onConfirmReset}
+            onClick={onConfirmReset}
             primary
             size="small"
           />
@@ -52,4 +49,8 @@ const ResetConfirmationModal = () => {
   );
 };
 
-export default observer(ResetConfirmationModal);
+export default inject(({ ssoStore }) => {
+  const { onCloseModal, confirmationResetModal, onConfirmReset } = ssoStore;
+
+  return { onCloseModal, confirmationResetModal, onConfirmReset };
+})(observer(ResetConfirmationModal));

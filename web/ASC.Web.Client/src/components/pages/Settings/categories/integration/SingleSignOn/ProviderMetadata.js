@@ -1,15 +1,15 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 
 import MetadataUrlField from "./sub-components/MetadataUrlField";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
-const ProviderMetadata = () => {
+const ProviderMetadata = (props) => {
   const { t } = useTranslation("SingleSignOn");
+  const { downloadMetadata } = props;
 
   return (
     <>
@@ -41,11 +41,17 @@ const ProviderMetadata = () => {
           primary
           size="small"
           tabIndex={25}
-          onClick={FormStore.downloadMetadata}
+          onClick={downloadMetadata}
         />
       </Box>
     </>
   );
 };
 
-export default observer(ProviderMetadata);
+export default inject(({ ssoStore }) => {
+  const { downloadMetadata } = ssoStore;
+
+  return {
+    downloadMetadata,
+  };
+})(observer(ProviderMetadata));

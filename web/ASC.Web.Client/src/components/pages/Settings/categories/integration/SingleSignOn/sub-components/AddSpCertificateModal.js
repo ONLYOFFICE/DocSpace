@@ -1,10 +1,9 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import Link from "@appserver/components/link";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
@@ -14,18 +13,27 @@ import ModalComboBox from "./ModalComboBox";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import { addArguments } from "../../../../utils";
 
-const AddSpCertificateModal = () => {
+const AddSpCertificateModal = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
+  const {
+    onCloseModal,
+    addCertificateToForm,
+    sp_isModalVisible,
+    generateCertificate,
+    onTextInputChange,
+    sp_certificate,
+    sp_privateKey,
+  } = props;
 
-  const onClose = addArguments(FormStore.onCloseModal, "sp_isModalVisible");
-  const onSubmit = addArguments(FormStore.addCertificateToForm, "sp");
+  const onClose = addArguments(onCloseModal, "sp_isModalVisible");
+  const onSubmit = addArguments(addCertificateToForm, "sp");
 
   return (
     <StyledModalDialog
       contentHeight="100%"
       displayType="modal"
       onClose={onClose}
-      visible={FormStore.sp_isModalVisible}
+      visible={sp_isModalVisible}
     >
       <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
 
@@ -34,7 +42,7 @@ const AddSpCertificateModal = () => {
           <Link
             className="generate"
             isHovered
-            onClick={FormStore.generateCertificate}
+            onClick={generateCertificate}
             type="action"
           >
             {t("GenerateCertificate")}
@@ -48,8 +56,8 @@ const AddSpCertificateModal = () => {
         <TextArea
           className="text-area"
           name="sp_certificate"
-          onChange={FormStore.onTextInputChange}
-          value={FormStore.sp_certificate}
+          onChange={onTextInputChange}
+          value={sp_certificate}
         />
 
         <Text isBold className="text-area-label" noSelect>
@@ -59,8 +67,8 @@ const AddSpCertificateModal = () => {
         <TextArea
           className="text-area"
           name="sp_privateKey"
-          onChange={FormStore.onTextInputChange}
-          value={FormStore.sp_privateKey}
+          onChange={onTextInputChange}
+          value={sp_privateKey}
         />
 
         <ModalComboBox />
@@ -86,4 +94,24 @@ const AddSpCertificateModal = () => {
   );
 };
 
-export default observer(AddSpCertificateModal);
+export default inject(({ ssoStore }) => {
+  const {
+    onCloseModal,
+    addCertificateToForm,
+    sp_isModalVisible,
+    generateCertificate,
+    onTextInputChange,
+    sp_certificate,
+    sp_privateKey,
+  } = ssoStore;
+
+  return {
+    onCloseModal,
+    addCertificateToForm,
+    sp_isModalVisible,
+    generateCertificate,
+    onTextInputChange,
+    sp_certificate,
+    sp_privateKey,
+  };
+})(observer(AddSpCertificateModal));

@@ -57,7 +57,7 @@ class SsoFormStore {
 
   // spCertificateAdvanced
   // null for some reason and no checkbox
-  sp_decryptAlgorithm = null;
+  sp_decryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
   sp_encryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
   sp_encryptAssertions = false;
   sp_signAuthRequests = false;
@@ -518,6 +518,4 @@ class SsoFormStore {
   };
 }
 
-const FormStore = new SsoFormStore();
-
-export default FormStore;
+export default SsoFormStore;

@@ -1,12 +1,11 @@
 import React from "react";
 import { ReactSVG } from "react-svg";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import FieldContainer from "@appserver/components/field-container";
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import Text from "@appserver/components/text";
 
 import SimpleTextInput from "./SimpleTextInput";
@@ -14,8 +13,15 @@ import FileInput from "@appserver/components/file-input";
 
 const uploadIcon = <ReactSVG src="images/actions.upload.react.svg" />;
 
-const UploadXML = () => {
+const UploadXML = (props) => {
   const { t } = useTranslation("SingleSignOn");
+  const {
+    enableSso,
+    uploadXmlUrl,
+    onLoadXML,
+    onLoadXmlMetadata,
+    onUploadXmlMetadata,
+  } = props;
 
   return (
     <FieldContainer
@@ -30,17 +36,16 @@ const UploadXML = () => {
           name="uploadXmlUrl"
           placeholder={t("UploadXMLPlaceholder")}
           tabIndex={1}
+          value={uploadXmlUrl}
         />
 
         <Button
           className="upload-button"
           icon={uploadIcon}
           isDisabled={
-            !FormStore.enableSso ||
-            FormStore.uploadXmlUrl.trim().length === 0 ||
-            FormStore.onLoadXML
+            !enableSso || uploadXmlUrl.trim().length === 0 || onLoadXML
           }
-          onClick={FormStore.onLoadXmlMetadata}
+          onClick={onLoadXmlMetadata}
           size="small"
           tabIndex={2}
         />
@@ -53,8 +58,8 @@ const UploadXML = () => {
           accept=".xml"
           buttonLabel={t("ChooseFile")}
           className="xml-upload-file"
-          isDisabled={!FormStore.enableSso || FormStore.onLoadXML}
-          onInput={FormStore.onUploadXmlMetadata}
+          isDisabled={!enableSso || onLoadXML}
+          onInput={onUploadXmlMetadata}
           size="middle"
           tabIndex={3}
         />
@@ -63,4 +68,20 @@ const UploadXML = () => {
   );
 };
 
-export default observer(UploadXML);
+export default inject(({ ssoStore }) => {
+  const {
+    enableSso,
+    uploadXmlUrl,
+    onLoadXML,
+    onLoadXmlMetadata,
+    onUploadXmlMetadata,
+  } = ssoStore;
+
+  return {
+    enableSso,
+    uploadXmlUrl,
+    onLoadXML,
+    onLoadXmlMetadata,
+    onUploadXmlMetadata,
+  };
+})(observer(UploadXML));

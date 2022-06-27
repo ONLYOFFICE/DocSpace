@@ -1,8 +1,7 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import Text from "@appserver/components/text";
 import { ContextMenuButton } from "@appserver/components";
 
@@ -10,33 +9,32 @@ import StyledCertificatesTable from "../styled-containers/StyledCertificatesTabl
 import { addArguments } from "../../../../utils/addArguments";
 import { ReactSVG } from "react-svg";
 
-const CertificatesTable = ({ prefix }) => {
+const CertificatesTable = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
+  const {
+    prefix,
+    onEditClick,
+    onDeleteClick,
+    idp_certificates,
+    sp_certificates,
+  } = props;
 
   const renderRow = (certificate, index) => {
-    const onEditClick = addArguments(
-      FormStore.onEditClick,
-      certificate,
-      prefix
-    );
-    const onDeleteClick = addArguments(
-      FormStore.onDeleteClick,
-      certificate.crt,
-      prefix
-    );
+    const onEdit = addArguments(onEditClick, certificate, prefix);
+    const onDelete = addArguments(onDeleteClick, certificate.crt, prefix);
 
     const contextOptions = [
       {
         key: "edit",
         label: t("Common:EditButton"),
         icon: "static/images/access.edit.react.svg",
-        onClick: onEditClick,
+        onClick: onEdit,
       },
       {
         key: "delete",
         label: t("Common:Delete"),
         icon: "static/images/button.trash.react.svg",
-        onClick: onDeleteClick,
+        onClick: onDelete,
       },
     ];
 
@@ -73,12 +71,23 @@ const CertificatesTable = ({ prefix }) => {
   return (
     <StyledCertificatesTable>
       <div className="body">
-        {FormStore[`${prefix}_certificates`].map((cert, index) =>
-          renderRow(cert, index)
-        )}
+        {prefix === "idp" &&
+          idp_certificates.map((cert, index) => renderRow(cert, index))}
+
+        {prefix === "sp" &&
+          sp_certificates.map((cert, index) => renderRow(cert, index))}
       </div>
     </StyledCertificatesTable>
   );
 };
 
-export default observer(CertificatesTable);
+export default inject(({ ssoStore }) => {
+  const {
+    onEditClick,
+    onDeleteClick,
+    idp_certificates,
+    sp_certificates,
+  } = ssoStore;
+
+  return { onEditClick, onDeleteClick, idp_certificates, sp_certificates };
+})(observer(CertificatesTable));

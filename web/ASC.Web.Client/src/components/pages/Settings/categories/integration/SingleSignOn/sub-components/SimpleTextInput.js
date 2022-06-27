@@ -1,36 +1,51 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
-import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import TextInput from "@appserver/components/text-input";
 
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 
-const SimpleTextInput = ({
-  hasError,
-  isDisabled,
-  maxWidth,
-  name,
-  placeholder,
-  tabIndex,
-}) => {
+const SimpleTextInput = (props) => {
+  const {
+    hasError,
+    isDisabled,
+    maxWidth,
+    name,
+    placeholder,
+    tabIndex,
+    value,
+    enableSso,
+    onBlur,
+    onFocus,
+    onTextInputChange,
+  } = props;
+
   return (
     <StyledInputWrapper maxWidth={maxWidth}>
       <TextInput
         className="field-input"
         hasError={hasError}
-        isDisabled={isDisabled ?? !FormStore.enableSso}
+        isDisabled={isDisabled ?? !enableSso}
         name={name}
-        onBlur={FormStore.onBlur}
-        onFocus={FormStore.onFocus}
-        onChange={FormStore.onTextInputChange}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onChange={onTextInputChange}
         placeholder={placeholder}
         scale
         tabIndex={tabIndex}
-        value={FormStore[name]}
+        value={value}
       />
     </StyledInputWrapper>
   );
 };
 
-export default observer(SimpleTextInput);
+export default inject(({ ssoStore }) => {
+  const { enableSso, onBlur, onFocus, onTextInputChange } = ssoStore;
+
+  return {
+    enableSso,
+    onBlur,
+    onFocus,
+    onTextInputChange,
+  };
+})(observer(SimpleTextInput));
