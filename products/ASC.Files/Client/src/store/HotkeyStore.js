@@ -49,7 +49,8 @@ class HotkeyStore {
       e.preventDefault();
     }
 
-    const { selection, hotkeyCaret, viewAs } = this.filesStore;
+    const { selection: s, hotkeyCaret, viewAs, filesList } = this.filesStore;
+    const selection = s.length ? s : filesList;
 
     if (!hotkeyCaret) {
       const scroll = document.getElementsByClassName("section-scroll");
