@@ -273,21 +273,10 @@ internal class BoxStorage
 
     public async Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
     {
-        if (await CanGetThumbnailAsync(fileId))
-        {
-            return await _boxClient.FilesManager.GetThumbnailAsync(fileId, width, height, extension: "jpg");
-        }
-        else
-        {
-            return null;
-        }
-    }
-    
-    private async Task<bool> CanGetThumbnailAsync(string fileId)
-    {
-        var file = await GetFileAsync(fileId);
-        var extension = FileUtility.GetFileExtension(file.Name);
 
-        return FileUtility.ExtsVideo.Contains(extension) || FileUtility.ExtsImage.Contains(extension);
+        var boxRepresentation = new BoxRepresentationRequest();
+        boxRepresentation.FileId = fileId;
+        boxRepresentation.XRepHints = $"[jpg?dimensions=320x320]";
+        return await _boxClient.FilesManager.GetRepresentationContentAsync(boxRepresentation);
     }
 }
