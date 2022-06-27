@@ -121,6 +121,8 @@ const ControlButtons = ({
               isFill
               getData={getContextOptionsPlus}
               isDisabled={false}
+              usePortal={false}
+              dropDownClassName="add-drop-down"
             />
           )}
           {!personal && (

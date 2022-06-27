@@ -310,7 +310,10 @@ class UpdateUserForm extends React.Component {
 
     updateProfile(this.state.profile)
       .then((profile) => {
-        isSelf && setUser(profile);
+        if (isSelf) {
+          if (!profile.theme) profile.theme = this.state.profile.theme;
+          setUser(profile);
+        }
         updateProfileInUsers(profile);
         toastr.success(t("ChangesSavedSuccessfully"));
         setIsEditingForm(false);

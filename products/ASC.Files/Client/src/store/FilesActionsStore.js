@@ -493,10 +493,9 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }, isBuffer = false, isSingleFile) => {
+  onSelectItem = ({ id, isFolder }, withSelect = true, isContextItem) => {
     const {
       setBufferSelection,
-      selected,
       setSelected,
       selection,
       setSelection,
@@ -513,22 +512,27 @@ class FilesActionStore {
     );
 
     if (item) {
-      if (isBuffer) {
-        setBufferSelection(item);
-        setEnabledHotkeys(false);
-        setSelected("none");
-      } else {
-        const isSelected = selection.findIndex(
-          (f) => f.id === id && f.isFolder === isFolder
-        );
+      const isSelected =
+        selection.findIndex((f) => f.id === id && f.isFolder === isFolder) !==
+        -1;
 
-        if (isSelected === -1 || isSingleFile) {
+      if (withSelect) {
+        if (isSelected && selection.length === 1) {
           setSelected("none");
+        } else {
           setSelection([item]);
+          setHotkeyCaret(null);
+          setHotkeyCaretStart(null);
         }
+      } else if (isSelected) {
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);
+      } else {
+        setSelected("none");
+        setBufferSelection(item);
       }
+
+      isContextItem && setEnabledHotkeys(false);
     }
   };
 
@@ -1249,7 +1253,6 @@ class FilesActionStore {
           const pathParts = data.selectedFolder.pathParts;
           const newExpandedKeys = createNewExpandedKeys(pathParts);
           setExpandedKeys(newExpandedKeys);
-
         })
         .catch((err) => {
           toastr.error(err);

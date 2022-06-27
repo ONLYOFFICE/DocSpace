@@ -60,7 +60,6 @@ class MediaViewer extends React.Component {
       playlist: props.playlist,
       playlistPos,
       fileUrl: item.src,
-      canSwipeImage: true,
     };
 
     this.detailsContainer = React.createRef();
@@ -347,9 +346,6 @@ class MediaViewer extends React.Component {
         ? playlist.find((file) => file.id === playlistPos).fileId
         : 0;
     this.props.onDelete && this.props.onDelete(currentFileId);
-    this.setState({
-      canSwipeImage: false,
-    });
   };
 
   onDownload = () => {
@@ -380,7 +376,7 @@ class MediaViewer extends React.Component {
     if (isActionKey) {
       switch (e.keyCode) {
         case ButtonKeys.leftArrow:
-          this.state.canSwipeImage
+          !this.props.deleteDialogVisible
             ? ctrIsPressed
               ? document.getElementsByClassName("iconContainer rotateLeft")
                   .length > 0 &&
@@ -391,7 +387,7 @@ class MediaViewer extends React.Component {
             : null;
           break;
         case ButtonKeys.rightArrow:
-          this.state.canSwipeImage
+          !this.props.deleteDialogVisible
             ? ctrIsPressed
               ? document.getElementsByClassName("iconContainer rotateRight")
                   .length > 0 &&
