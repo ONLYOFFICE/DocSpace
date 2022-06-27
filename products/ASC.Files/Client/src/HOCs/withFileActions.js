@@ -29,7 +29,7 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onHideContextMenu = () => {
-      this.props.setSelected("none");
+      //this.props.setSelected("none");
       this.props.setEnabledHotkeys(true);
     };
 
