@@ -172,7 +172,8 @@ public class NotifyClient
                 new TagValue(NotifyConstants.TagDocumentUrl, _baseCommonLinkUtility.GetFullAbsolutePath(url)),
                 new TagValue(NotifyConstants.TagAccessRights, aceString),
                 new TagValue(NotifyConstants.TagMessage, message.HtmlEncode()),
-                TagValues.Image(_studioNotifyHelper, 0, "privacy.png")
+                TagValues.Image(_studioNotifyHelper, 0, "privacy.png"),
+                new AdditionalSenderTag("push.sender")
                 );
         }
     }
@@ -201,7 +202,8 @@ public class NotifyClient
                 true,
                 new TagValue(NotifyConstants.TagDocumentTitle, file.Title),
                 new TagValue(NotifyConstants.TagDocumentUrl, _baseCommonLinkUtility.GetFullAbsolutePath(documentUrl)),
-                new TagValue(NotifyConstants.TagMessage, message.HtmlEncode())
+                new TagValue(NotifyConstants.TagMessage, message.HtmlEncode()),
+                new AdditionalSenderTag("push.sender")
                 );
         }
     }

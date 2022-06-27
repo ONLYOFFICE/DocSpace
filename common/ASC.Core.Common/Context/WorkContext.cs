@@ -205,6 +205,7 @@ public static class WorkContextExtension
         dIHelper.TryAdd<TelegramHelper>();
         dIHelper.TryAdd<TelegramSenderSinkMessageCreator>();
         dIHelper.TryAdd<JabberSenderSinkMessageCreator>();
+        dIHelper.TryAdd<PushSenderSinkMessageCreator>();
         dIHelper.TryAdd<EmailSenderSinkMessageCreator>();
     }
 }

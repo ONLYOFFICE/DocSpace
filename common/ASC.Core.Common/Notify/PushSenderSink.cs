@@ -48,78 +48,18 @@ class PushSenderSink : Sink
     {
         try
         {
-           
-            using var scope = _serviceProvider.CreateScope();
 
             var result = SendResult.OK;
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var user = userManager.GetUsers(new Guid(message.Recipient.ID));
-            var username = user.UserName;
+            using var scope = _serviceProvider.CreateScope();
 
-            if (string.IsNullOrEmpty(username))
+            var m = scope.ServiceProvider.GetRequiredService<PushSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
+            if (string.IsNullOrEmpty(m.Reciever))
             {
                 result = SendResult.IncorrectRecipient;
             }
             else
             {
-                var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-                var productID = message.Arguments.FirstOrDefault(x => x.Tag.Equals("__ProductID"));
-                var originalUrl = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentURL"));
-
-                var folderId = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderId"));
-                var rootFolderId = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderParentId"));
-                var rootFolderType = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderRootFolderType"));
-
-
-                var notifyData = new NotifyData()
-                {
-                    Email = user.Email,
-                    Portal = tenantManager.GetCurrentTenant().TrustedDomains.FirstOrDefault(),
-                    OriginalUrl = originalUrl != null && originalUrl.Value != null ? originalUrl.Value.ToString() : "",
-                    Folder = new NotifyFolderData
-                    {
-                        Id = folderId != null && folderId.Value != null ? folderId.Value.ToString() : "",
-                        ParentId = rootFolderId != null && rootFolderId.Value != null ? rootFolderId.Value.ToString() : "",
-                        RootFolderType = rootFolderType != null && rootFolderType.Value != null ? (int)rootFolderType.Value : 0
-                    },
-                };
-
-                var msg = (NoticeMessage)message;
-
-                if (msg.ObjectID.StartsWith("file_"))
-                {
-                    var documentTitle = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentTitle"));
-                    var documentExtension = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentExtension"));
-
-                    notifyData.File = new NotifyFileData()
-                    {
-                        Id = msg.ObjectID.Substring(5),
-                        Title = documentTitle != null && documentTitle.Value != null ? documentTitle.Value.ToString() : "",
-                        Extension = documentExtension != null && documentExtension.Value != null ? documentExtension.Value.ToString() : ""
-
-                    };
-                }
-
-                var jsonNotifyData = JsonConvert.SerializeObject(notifyData);
-                var tenant = tenantManager.GetCurrentTenant(false);
-
-                var m = new NotifyMessage
-                {
-                   // To = username,
-                    Subject = fromTag != null && fromTag.Value != null ? fromTag.Value.ToString() : message.Subject,
-                    ContentType = message.ContentType,
-                    Content = message.Body,
-                    Sender = Constants.NotifyPushSenderSysName,
-                    CreationDate = DateTime.UtcNow,
-                    ProductID = fromTag != null && fromTag.Value != null ? productID.Value.ToString() : null,
-                    ObjectID = msg.ObjectID,
-                   // Tenant = tenant == null ? Tenant.DefaultTenant : tenant.Id,
-                    Data = jsonNotifyData
-                };
-
                 _sender.Send(m);
-
             }
 
             return new SendResponse(message, Constants.NotifyPushSenderSysName, result);
@@ -135,5 +75,88 @@ class PushSenderSink : Sink
         var tag = message.Arguments.FirstOrDefault(arg => arg.Tag == tagName);
 
         return tag != null ? (T)tag.Value : default;
+    }
+}
+
+[Scope]
+public class PushSenderSinkMessageCreator : SinkMessageCreator
+{
+    private readonly UserManager _userManager;
+    private readonly TenantManager _tenantManager;
+
+    public PushSenderSinkMessageCreator(UserManager userManager, TenantManager tenantManager)
+    {
+        _tenantManager = tenantManager;
+        _userManager = userManager;
+    }
+
+    public override NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName)
+    {
+        var tenant = _tenantManager.GetCurrentTenant(false);
+        if (tenant == null)
+        {
+            _tenantManager.SetCurrentTenant(Tenant.DefaultTenant);
+            tenant = _tenantManager.GetCurrentTenant(false);
+        }      
+
+        var user = _userManager.GetUsers(new Guid(message.Recipient.ID));
+        var username = user.UserName;
+
+        var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
+        var productID = message.Arguments.FirstOrDefault(x => x.Tag.Equals("__ProductID"));
+        var originalUrl = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentURL"));
+
+        var folderId = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderId"));
+        var rootFolderId = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderParentId"));
+        var rootFolderType = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderRootFolderType"));
+
+
+        var notifyData = new NotifyData()
+        {
+            Email = user.Email,
+            Portal = _tenantManager.GetCurrentTenant().TrustedDomains.FirstOrDefault(),
+            OriginalUrl = originalUrl != null && originalUrl.Value != null ? originalUrl.Value.ToString() : "",
+            Folder = new NotifyFolderData
+            {
+                Id = folderId != null && folderId.Value != null ? folderId.Value.ToString() : "",
+                ParentId = rootFolderId != null && rootFolderId.Value != null ? rootFolderId.Value.ToString() : "",
+                RootFolderType = rootFolderType != null && rootFolderType.Value != null ? (int)rootFolderType.Value : 0
+            },
+        };
+
+        var msg = (NoticeMessage)message;
+
+        if (msg.ObjectID.StartsWith("file_"))
+        {
+            var documentTitle = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentTitle"));
+            var documentExtension = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentExtension"));
+
+            notifyData.File = new NotifyFileData()
+            {
+                Id = msg.ObjectID.Substring(5),
+                Title = documentTitle != null && documentTitle.Value != null ? documentTitle.Value.ToString() : "",
+                Extension = documentExtension != null && documentExtension.Value != null ? documentExtension.Value.ToString() : ""
+
+            };
+        }
+
+        var jsonNotifyData = JsonConvert.SerializeObject(notifyData);
+
+        var m = new NotifyMessage
+        {
+            Reciever = username,
+            Subject = fromTag != null && fromTag.Value != null ? fromTag.Value.ToString() : message.Subject,
+            ContentType = message.ContentType,
+            Content = message.Body,
+            Sender = Constants.NotifyPushSenderSysName,
+            CreationDate = DateTime.UtcNow,
+            ProductID = fromTag != null && fromTag.Value != null ? productID.Value.ToString() : null,
+            ObjectID = msg.ObjectID,
+            //Tenant = tenant == null ? Tenant.DefaultTenant : tenant.Id,
+            Data = jsonNotifyData
+        };
+
+
+        return m;
     }
 }

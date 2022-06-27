@@ -51,6 +51,10 @@ $Message
     <subject resource="|subject_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
   </pattern>
+  <pattern id="ShareDocument" sender="push.sender">
+    <subject resource="|subject_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+  </pattern>
   <pattern id="ShareDocument" sender="messanger.sender">
     <subject resource="|subject_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName
@@ -77,6 +81,7 @@ $DocumentURL
     <subject resource="|subject_ShareFolder|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareFolder|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
   </pattern>
+
   <pattern id="ShareFolder" sender="messanger.sender">
     <subject resource="|subject_ShareFolder|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName

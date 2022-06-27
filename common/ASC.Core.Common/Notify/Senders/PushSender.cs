@@ -51,8 +51,8 @@ public class PushSender : INotifySender
         try
         {
             using var scope = _serviceProvider.CreateScope();
-            var TelegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
-            TelegramHelper.SendMessage(m);
+            var FirebaseHelper = scope.ServiceProvider.GetService<FirebaseHelper>();
+            FirebaseHelper.SendMessage(m);
         }
         catch (Exception e)
         {
