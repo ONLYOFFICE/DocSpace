@@ -137,7 +137,7 @@ internal class ProviderAccountDao : IProviderDao
         .Where(r => r.TenantId == tenantId)
         .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) || r.UserId == userId)
         .Where(r => linkId == -1 || r.Id == linkId)
-        .Where(r => folderType == FolderType.DEFAULT || r.RootFolderType == folderType)
+        .Where(r => folderType == FolderType.DEFAULT || r.FolderType == folderType)
         .Where(r => searchText == "" || r.Title.ToLower().Contains(searchText)));
 
     private IAsyncEnumerable<IProviderInfo> GetProvidersInfoInternalAsync(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
@@ -186,7 +186,7 @@ internal class ProviderAccountDao : IProviderDao
             Title = Global.ReplaceInvalidCharsAndTruncate(customerTitle),
             UserName = authData.Login ?? "",
             Password = EncryptPassword(authData.Password),
-            RootFolderType = folderType,
+            FolderType = folderType,
             CreateOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()),
             UserId = _securityContext.CurrentAccount.ID,
             Token = EncryptPassword(authData.Token ?? ""),
@@ -216,7 +216,7 @@ internal class ProviderAccountDao : IProviderDao
             return false;
         }
 
-        forUpdate.RootFolderType = rootFolderType;
+        forUpdate.FolderType = rootFolderType;
 
         await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
@@ -235,7 +235,7 @@ internal class ProviderAccountDao : IProviderDao
             return false;
         }
 
-        forUpdate.FolderType = folderType;
+        forUpdate.RoomType = folderType;
         forUpdate.FolderId = folderId;
 
         await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -325,7 +325,7 @@ internal class ProviderAccountDao : IProviderDao
 
             if (folderType != FolderType.DEFAULT)
             {
-                t.RootFolderType = folderType;
+                t.FolderType = folderType;
             }
 
             if (userId.HasValue)
@@ -409,7 +409,7 @@ internal class ProviderAccountDao : IProviderDao
             UserName = authData.Login,
             Password = EncryptPassword(authData.Password),
             UserId = owner,
-            RootFolderType = type,
+            FolderType = type,
             CreateOn = createOn,
             Provider = providerKey.ToString()
         };
@@ -428,8 +428,8 @@ internal class ProviderAccountDao : IProviderDao
         var providerTitle = input.Title ?? string.Empty;
         var token = DecryptToken(input.Token, id);
         var owner = input.UserId;
-        var rootFolderType = input.RootFolderType;
-        var folderType = input.FolderType;
+        var rootFolderType = input.FolderType;
+        var folderType = input.RoomType;
         var folderId = input.FolderId;
         var createOn = _tenantUtil.DateTimeFromUtc(input.CreateOn);
         var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password, id), token);
