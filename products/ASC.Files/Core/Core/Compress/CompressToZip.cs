@@ -15,6 +15,7 @@
 */
 
 using System.IO;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Files.Core.Resources;
@@ -31,12 +32,7 @@ namespace ASC.Web.Files.Core.Compress
     {
         private ZipOutputStream zipStream;
         private ZipEntry zipEntry;
-        private TempStream TempStream { get; }
 
-        public CompressToZip(TempStream tempStream)
-        {
-            TempStream = tempStream;
-        }
 
         /// <summary> </summary>
         /// <param name="stream">Accepts a new stream, it will contain an archive upon completion of work</param>
@@ -59,14 +55,10 @@ namespace ASC.Web.Files.Core.Compress
         /// Transfer the file itself to the archive
         /// </summary>
         /// <param name="readStream">File data</param>
-        public void PutStream(Stream readStream)
+        public async Task PutStream(Stream readStream)
         {
-            using (var buffered = TempStream.GetBuffered(readStream))
-            {
-                zipEntry.Size = buffered.Length;
-                zipStream.PutNextEntry(zipEntry);
-                buffered.CopyTo(zipStream);
-            }
+            PutNextEntry();
+            await readStream.CopyToAsync(zipStream);
         }
 
         /// <summary>

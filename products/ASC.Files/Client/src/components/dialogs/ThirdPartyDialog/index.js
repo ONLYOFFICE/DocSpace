@@ -61,12 +61,6 @@ const StyledModalDialog = styled(ModalDialog)`
 
       .service-btn {
         margin-left: auto;
-
-        svg {
-          path {
-            fill: #333;
-          }
-        }
       }
     }
   }

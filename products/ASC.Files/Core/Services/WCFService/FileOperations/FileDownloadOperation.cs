@@ -120,6 +120,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, archiveExtension);
             }
 
+            TaskInfo.SetProperty(FINISHED, true);
             FillDistributedTask();
             TaskInfo.PublishChanges();
         }
@@ -139,14 +140,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             else if (!string.IsNullOrEmpty(error2))
             {
                 Error = error2;
-            }
-
-            var finished1 = thirdpartyTask.GetProperty<bool?>(FINISHED);
-            var finished2 = daoTask.GetProperty<bool?>(FINISHED);
-
-            if (finished1 != null && finished2 != null)
-            {
-                TaskInfo.SetProperty(FINISHED, finished1);
             }
 
             successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);
@@ -362,7 +355,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     //Take from converter
                                     using (var readStream = await fileConverter.ExecAsync(file, convertToExt))
                                     {
-                                        compressTo.PutStream(readStream);
+                                        await compressTo.PutStream(readStream);
 
                                         if (!string.IsNullOrEmpty(convertToExt))
                                         {
@@ -378,11 +371,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 {
                                     using (var readStream = await FileDao.GetFileStreamAsync(file))
                                     {
-                                        compressTo.PutStream(readStream);
+                                        await compressTo.PutStream(readStream);
 
                                         filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                                     }
                                 }
+                                compressTo.CloseEntry();
                             }
                             catch (Exception ex)
                             {
@@ -393,8 +387,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         else
                         {
                             compressTo.PutNextEntry();
+                            compressTo.CloseEntry();
                         }
-                        compressTo.CloseEntry();
+
                         counter++;
                     }
 

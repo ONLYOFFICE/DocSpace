@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
@@ -116,6 +116,7 @@ const Item = ({
   );
 };
 
+let dataMainTree = [];
 const Items = ({
   t,
   data,
@@ -138,10 +139,21 @@ const Items = ({
 
   moveDragItems,
 }) => {
+  useEffect(() => {
+    data.forEach((elem) => {
+      const elemId = elem.id;
+      dataMainTree.push(elemId.toString());
+    });
+  }, [data]);
+
   const isActive = React.useCallback(
     (item) => {
       if (selectedTreeNode.length > 0) {
-        if (pathParts && pathParts.includes(item.id)) return true;
+        const isMainFolder = dataMainTree.indexOf(selectedTreeNode[0]) !== -1;
+
+        if (pathParts && pathParts.includes(item.id) && !isMainFolder)
+          return true;
+
         if (selectedTreeNode[0] === "@my" && item.key === "0-0") return true;
         return `${item.id}` === selectedTreeNode[0];
       }

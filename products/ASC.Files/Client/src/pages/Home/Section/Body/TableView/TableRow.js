@@ -14,10 +14,8 @@ import SizeCell from "./sub-components/SizeCell";
 import AuthorCell from "./sub-components/AuthorCell";
 import DateCell from "./sub-components/DateCell";
 import TypeCell from "./sub-components/TypeCell";
-import globalColors from "@appserver/components/utils/globalColors";
 import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
-import { isSafari } from "react-device-detect";
 
 const hotkeyBorderStyle = css`
   border-bottom: 1px solid;
@@ -407,6 +405,7 @@ const FilesTableRow = (props) => {
             style={
               !authorAvailableDrag ? { background: "none" } : dragStyles.style
             }
+            {...selectionProp}
           >
             <AuthorCell
               sideColor={theme.filesSection.tableView.row.sideColor}

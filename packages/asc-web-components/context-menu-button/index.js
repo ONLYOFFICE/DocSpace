@@ -166,6 +166,7 @@ class ContextMenuButton extends React.Component {
       title,
       zIndex,
       usePortal,
+      dropDownClassName,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
@@ -197,6 +198,7 @@ class ContextMenuButton extends React.Component {
         />
         {displayType === "dropdown" ? (
           <DropDown
+            className={dropDownClassName}
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
@@ -319,6 +321,7 @@ ContextMenuButton.propTypes = {
   displayType: PropTypes.string,
   isNew: PropTypes.bool,
   usePortal: PropTypes.bool,
+  dropDownClassName: PropTypes.string,
 };
 
 ContextMenuButton.defaultProps = {
