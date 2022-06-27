@@ -36,6 +36,8 @@ class FilesActionStore {
   dialogsStore;
   mediaViewerDataStore;
 
+  isBulkDownload = false;
+
   constructor(
     authStore,
     uploadDataStore,
@@ -56,6 +58,10 @@ class FilesActionStore {
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
   }
+
+  setIsBulkDownload = (isBulkDownload) => {
+    this.isBulkDownload = isBulkDownload;
+  };
 
   isMediaOpen = () => {
     const { visible, setMediaViewerData, playlist } = this.mediaViewerDataStore;
@@ -331,7 +337,7 @@ class FilesActionStore {
     }
   };
 
-  downloadFiles = async (fileConvertIds, folderIds, label) => {
+  downloadFiles = async (fileConvertIds, folderIds, translations) => {
     const {
       clearActiveOperations,
       secondaryProgressDataStore,
@@ -342,6 +348,14 @@ class FilesActionStore {
     } = secondaryProgressDataStore;
 
     const { addActiveItems } = this.filesStore;
+    const { label } = translations;
+
+    if (this.isBulkDownload) {
+      //toastr.error(); TODO: new add cancel download operation and new translation "ErrorMassage_SecondDownload"
+      return;
+    }
+
+    this.setIsBulkDownload(true);
 
     setSecondaryProgressBarData({
       icon: "file",
@@ -365,9 +379,14 @@ class FilesActionStore {
         const item =
           data?.finished && data?.url
             ? data
-            : await this.uploadDataStore.loopFilesOperations(data, pbData);
+            : await this.uploadDataStore.loopFilesOperations(
+                data,
+                pbData,
+                true
+              );
 
         clearActiveOperations(fileIds, folderIds);
+        this.setIsBulkDownload(false);
 
         if (item.url) {
           window.location.href = item.url;
@@ -379,8 +398,10 @@ class FilesActionStore {
         }
 
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        !item.url && toastr.error(translations.error, null, 0, true);
       });
     } catch (err) {
+      this.setIsBulkDownload(false);
       clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({
         visible: true,
@@ -472,13 +493,11 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }, isBuffer = false, isSingleFile) => {
+  onSelectItem = ({ id, isFolder }, isDotsClick, isContextItem) => {
     const {
       setBufferSelection,
-      selected,
       setSelected,
       selection,
-      setSelection,
       setHotkeyCaretStart,
       setHotkeyCaret,
       setEnabledHotkeys,
@@ -492,22 +511,18 @@ class FilesActionStore {
     );
 
     if (item) {
-      if (isBuffer) {
-        setBufferSelection(item);
-        setEnabledHotkeys(false);
-        setSelected("none");
-      } else {
-        const isSelected = selection.findIndex(
-          (f) => f.id === id && f.isFolder === isFolder
-        );
+      const isSelected = selection.findIndex(
+        (f) => f.id === id && f.isFolder === isFolder
+      );
 
-        if (isSelected === -1 || isSingleFile) {
-          setSelected("none");
-          setSelection([item]);
-        }
+      if (isDotsClick || isSelected === -1) {
+        setSelected("none");
+        setBufferSelection(item);
+      } else {
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);
       }
+      isContextItem && setEnabledHotkeys(false);
     }
   };
 
@@ -743,7 +758,7 @@ class FilesActionStore {
     else updateFolderBadge(id, item.new);
   };
 
-  markAsRead = (folderIds, fileId, item) => {
+  markAsRead = (folderIds, fileIds, item) => {
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -756,13 +771,22 @@ class FilesActionStore {
       visible: true,
     });
 
-    return markAsRead(folderIds, fileId)
+    return markAsRead(folderIds, fileIds)
       .then(async (res) => {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "file" };
         await this.uploadDataStore.loopFilesOperations(data, pbData);
       })
-      .then(() => item && this.setNewBadgeCount(item))
+      .then(() => {
+        if (!item) return;
+
+        this.setNewBadgeCount(item);
+
+        const { getFileIndex, updateFileStatus } = this.filesStore;
+
+        const index = getFileIndex(item.id);
+        updateFileStatus(index, item.fileStatus & ~FileStatus.IsNew);
+      })
       .catch((err) => toastr.error(err))
       .finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
@@ -1219,8 +1243,6 @@ class FilesActionStore {
           const pathParts = data.selectedFolder.pathParts;
           const newExpandedKeys = createNewExpandedKeys(pathParts);
           setExpandedKeys(newExpandedKeys);
-
-          this.setNewBadgeCount(item);
         })
         .catch((err) => {
           toastr.error(err);

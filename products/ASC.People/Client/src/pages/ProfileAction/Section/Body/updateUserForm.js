@@ -302,12 +302,18 @@ class UpdateUserForm extends React.Component {
       history,
       t,
       setUserIsUpdate,
+      isSelf,
+      setUser,
     } = this.props;
 
     this.setState({ isLoading: true });
 
     updateProfile(this.state.profile)
       .then((profile) => {
+        if (isSelf) {
+          if (!profile.theme) profile.theme = this.state.profile.theme;
+          setUser(profile);
+        }
         updateProfileInUsers(profile);
         toastr.success(t("ChangesSavedSuccessfully"));
         setIsEditingForm(false);
@@ -1065,6 +1071,7 @@ export default withRouter(
     isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
     personal: auth.settingsStore.personal,
     setUserIsUpdate: auth.userStore.setUserIsUpdate,
+    setUser: auth.userStore.setUser,
     userFormValidation: auth.settingsStore.userFormValidation,
     isTabletView: auth.settingsStore.isTabletView,
     helpLink: auth.settingsStore.helpLink,
