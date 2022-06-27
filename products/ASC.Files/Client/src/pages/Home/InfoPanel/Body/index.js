@@ -6,11 +6,11 @@ import GalleryItem from "./views/Gallery/GalleryItem";
 import GalleryEmptyScreen from "./views/Gallery/GalleryEmptyScreen";
 import { StyledInfoRoomBody } from "./styles/styles.js";
 import { Base } from "@appserver/components/themes";
-import Details from "./views/Details";
-import Members from "./views/Members";
-import History from "./views/History";
 import withLoader from "../../../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
+import Members from "./views/Members";
+import History from "./views/History";
+import Details from "./views/Details";
 
 const InfoPanelBodyContent = ({
   t,
