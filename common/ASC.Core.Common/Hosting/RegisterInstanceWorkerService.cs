@@ -32,17 +32,26 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
     private readonly ILogger _logger;
     private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IServiceProvider _serviceProvider;
+    private readonly int _intervalCheckRegisterInstanceInSeconds;
     public static readonly string InstanceId =
         $"{typeof(T).GetFormattedName()}_{DateTime.UtcNow.Ticks}";
 
     public RegisterInstanceWorkerService(
         ILogger<RegisterInstanceWorkerService<T>> logger,
         IServiceProvider serviceProvider,
-        IHostApplicationLifetime applicationLifetime)
+        IHostApplicationLifetime applicationLifetime,
+        IConfiguration configuration)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
         _applicationLifetime = applicationLifetime;
+
+        if (!int.TryParse(configuration["core:hosting:intervalCheckRegisterInstanceInSeconds"], out _intervalCheckRegisterInstanceInSeconds))
+        {
+            _intervalCheckRegisterInstanceInSeconds = 1;
+        }
+
+        _intervalCheckRegisterInstanceInSeconds = _intervalCheckRegisterInstanceInSeconds*1000;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -60,7 +69,7 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
 
                 _logger.TraceWorkingRunnging(DateTimeOffset.Now);
 
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(_intervalCheckRegisterInstanceInSeconds, stoppingToken);
             }
             catch (Exception ex)
             {

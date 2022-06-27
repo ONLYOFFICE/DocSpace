@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core;
+
 namespace ASC.Web.Files.Utils;
 
 [Scope]
@@ -311,6 +313,7 @@ public class EntryManager
     private readonly ILogger<EntryManager> _logger;
     private readonly IHttpClientFactory _clientFactory;
     private readonly FilesMessageService _filesMessageService;
+    private readonly Global _global;
 
     public EntryManager(
         IDaoFactory daoFactory,
@@ -339,7 +342,8 @@ public class EntryManager
         ThirdPartySelector thirdPartySelector,
         IHttpClientFactory clientFactory,
         FilesMessageService filesMessageService,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        Global global)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -365,12 +369,20 @@ public class EntryManager
         _fileTracker = fileTracker;
         _entryStatusManager = entryStatusManager;
         _clientFactory = clientFactory;
+        _global = global;
         _filesMessageService = filesMessageService;
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;
     }
 
-    public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
+    public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
+        SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
+    {
+        return await GetEntriesAsync(parent, from, count, new[] { filterType }, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
+    }
+
+    public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
+        SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
     {
         var total = 0;
 
@@ -392,7 +404,7 @@ public class EntryManager
         var fileSecurity = _fileSecurity;
         var entries = Enumerable.Empty<FileEntry>();
 
-        searchInContent = searchInContent && filter != FilterType.ByExtension && !Equals(parent.Id, _globalFolderHelper.FolderTrash);
+        searchInContent = searchInContent && !filterTypes.Contains(FilterType.ByExtension) && !Equals(parent.Id, _globalFolderHelper.FolderTrash);
 
         if (parent.FolderType == FolderType.Projects && parent.Id.Equals(await _globalFolderHelper.FolderProjectsAsync))
         {
@@ -497,7 +509,7 @@ public class EntryManager
         else if (parent.FolderType == FolderType.SHARE)
         {
             //share
-            var shared = await fileSecurity.GetSharesForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+            var shared = await fileSecurity.GetSharesForMeAsync(filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
             entries = entries.Concat(shared);
 
@@ -505,14 +517,14 @@ public class EntryManager
         }
         else if (parent.FolderType == FolderType.Recent)
         {
-            var files = await GetRecentAsync(filter, subjectGroup, subjectId, searchText, searchInContent);
+            var files = await GetRecentAsync(filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent);
             entries = entries.Concat(files);
 
             CalculateTotal();
         }
         else if (parent.FolderType == FolderType.Favorites)
         {
-            var (files, folders) = await GetFavoritesAsync(filter, subjectGroup, subjectId, searchText, searchInContent);
+            var (files, folders) = await GetFavoritesAsync(filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent);
 
             entries = entries.Concat(folders);
             entries = entries.Concat(files);
@@ -523,7 +535,7 @@ public class EntryManager
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
-            var files = await GetTemplatesAsync(folderDao, fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
+            var files = await GetTemplatesAsync(folderDao, fileDao, filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent);
             entries = entries.Concat(files);
 
             CalculateTotal();
@@ -532,16 +544,22 @@ public class EntryManager
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
-            var folders = await folderDao.GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
+            var folders = await folderDao.GetFoldersAsync(parent.Id, orderBy, filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
             entries = entries.Concat(await fileSecurity.FilterReadAsync(folders));
 
-            var files = await fileDao.GetFilesAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
+            var files = await fileDao.GetFilesAsync(parent.Id, orderBy, filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
             entries = entries.Concat(await fileSecurity.FilterReadAsync(files));
 
             //share
-            var shared = await fileSecurity.GetPrivacyForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+            var shared = await fileSecurity.GetPrivacyForMeAsync(filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
             entries = entries.Concat(shared);
+
+            CalculateTotal();
+        }
+        else if (parent.FolderType == FolderType.VirtualRooms && !parent.ProviderEntry)
+        {
+            entries = await fileSecurity.GetVirtualRoomsAsync(filterTypes, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
 
             CalculateTotal();
         }
@@ -552,17 +570,17 @@ public class EntryManager
                 withSubfolders = false;
             }
 
-            var folders = await _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
+            var folders = await _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
             entries = entries.Concat(await fileSecurity.FilterReadAsync(folders));
 
-            var files = await _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
+            var files = await _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
             entries = entries.Concat(await fileSecurity.FilterReadAsync(files));
 
-            if (filter == FilterType.None || filter == FilterType.FoldersOnly)
+            if (filterTypes.FirstOrDefault() == FilterType.None || filterTypes.FirstOrDefault() == FilterType.FoldersOnly)
             {
                 var folderList = await GetThirpartyFoldersAsync(parent, searchText);
 
-                var thirdPartyFolder = FilterEntries(folderList, filter, subjectGroup, subjectId, searchText, searchInContent);
+                var thirdPartyFolder = FilterEntries(folderList, filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(thirdPartyFolder);
             }
         }
@@ -909,13 +927,36 @@ public class EntryManager
         };
         if (orderBy.SortedBy != SortedByType.New)
         {
+            var pinnedRooms = new List<FileEntry>();
+
+            if (!_coreBaseSettings.DisableDocSpace)
+            {
+                Func<FileEntry, bool> filter = (e) =>
+                {
+                    if (e.FileEntryType != FileEntryType.Folder)
+                    {
+                        return false;
+                    }
+
+                    if (((IFolder)e).Pinned)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                };
+
+                pinnedRooms = entries.Where(filter).ToList();
+            }
+
             // folders on top
-            var folders = entries.Where(r => r.FileEntryType == FileEntryType.Folder).ToList();
+            var folders = entries.Where(r => r.FileEntryType == FileEntryType.Folder).Except(pinnedRooms).ToList();
             var files = entries.Where(r => r.FileEntryType == FileEntryType.File).ToList();
+            pinnedRooms.Sort(sorter);
             folders.Sort(sorter);
             files.Sort(sorter);
 
-            return folders.Concat(files);
+            return pinnedRooms.Concat(folders).Concat(files);
         }
 
         var result = entries.ToList();
@@ -1671,7 +1712,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (!await _fileSecurity.CanEditAsync(file))
+        if (!await _fileSecurity.CanRenameAsync(file))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }
