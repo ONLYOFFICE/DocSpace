@@ -442,8 +442,24 @@ class SsoFormStore {
         }
       }
 
-      const newCertificate = await this.validateCertificate(data);
-      this.idp_certificates = [...this.idp_certificates, newCertificate[0]];
+      const newCertificates = await this.validateCertificate(data);
+
+      newCertificates.map((cert) => {
+        this.idp_certificates = [...this.idp_certificates, cert];
+
+        if (cert.action === "verification") {
+          this.idp_verifyAuthResponsesSign = true;
+          this.idp_verifyLogoutRequestsSign = true;
+        }
+        if (cert.action === "decrypt") {
+          this.idp_verifyLogoutResponsesSign = true;
+        }
+        if (cert.action === "verification and decrypt") {
+          this.idp_verifyAuthResponsesSign = true;
+          this.idp_verifyLogoutRequestsSign = true;
+          this.idp_verifyLogoutResponsesSign = true;
+        }
+      });
     }
   };
 
