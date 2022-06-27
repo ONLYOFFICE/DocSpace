@@ -63,9 +63,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         /// <summary>
         ///   Looks up a localized string similar to h1. All signers completed $DocumentTitle
         ///
-        ///This is an email notification to inform you that all signers completed &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot;.
-        ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
+        ///This is an email notification to inform you that all signers completed &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot;..
         /// </summary>
         public static string pattern_DocuSignComplete {
             get {
@@ -76,9 +74,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         /// <summary>
         ///   Looks up a localized string similar to h1. $Message: $DocumentTitle
         ///
-        ///Sign in to your DocuSign account for more information.
-        ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
+        ///Sign in to your DocuSign account for more information..
         /// </summary>
         public static string pattern_DocuSignStatus {
             get {
@@ -91,9 +87,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         ///
         ///This is a mail message to notify that you have been mentioned by &quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; in the comment to the &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot; document:
         ///
-        ///$Message
-        ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
+        ///$Message.
         /// </summary>
         public static string pattern_EditorMentions {
             get {
@@ -106,9 +100,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         ///
         ///This is an email notification to inform you that you have requested the mailing of $MailsCount messages and the process is now complete. $Message
         ///
-        ///The successfully sent mail messages can be found in your &quot;Sent&quot;:&quot;$__VirtualRootPath/addons/mail/#sent&quot; folder of the Mail module.
-        ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
+        ///The successfully sent mail messages can be found in your &quot;Sent&quot;:&quot;$__VirtualRootPath/addons/mail/#sent&quot; folder of the Mail module..
         /// </summary>
         public static string pattern_MailMergeEnd {
             get {
