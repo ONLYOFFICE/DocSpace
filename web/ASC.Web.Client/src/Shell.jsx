@@ -607,7 +607,11 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
     roomsMode,
     setSnackbarExist,
-    userTheme: auth?.userStore?.user?.theme,
+    userTheme: isDesktopClient
+      ? window.RendererProcessVariable?.theme?.type === "dark"
+        ? "Dark"
+        : "Base"
+      : auth?.userStore?.user?.theme,
   };
 })(observer(Shell));
 
