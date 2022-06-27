@@ -36,8 +36,11 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get install -yq git apt-utils npm && \
     npm install --global yarn && \
     curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
-    apt-get install -y nodejs
-
+    apt-get install -y nodejs && \
+    curl -sSL https://packages.microsoft.com/config/ubuntu/21.04/prod.list | tee /etc/apt/sources.list.d/microsoft-prod.list && \
+    curl -sSL https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc && \
+    apt-get update
+    
 RUN echo ${GIT_BRANCH}  && \
     git clone --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
 
