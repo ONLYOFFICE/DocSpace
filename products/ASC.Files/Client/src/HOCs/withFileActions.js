@@ -21,11 +21,11 @@ export default function withFileActions(WrappedFileItem) {
       id !== -1 && onSelectItem({ id, isFolder });
     };
 
-    onFileContextClick = (isDotsClick) => {
+    onFileContextClick = (withSelect) => {
       const { onSelectItem } = this.props;
       const { id, isFolder } = this.props.item;
 
-      id !== -1 && onSelectItem({ id, isFolder }, !isDotsClick, true);
+      id !== -1 && onSelectItem({ id, isFolder }, !withSelect, true);
     };
 
     onHideContextMenu = () => {

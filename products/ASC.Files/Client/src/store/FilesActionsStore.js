@@ -493,11 +493,12 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }, isDotsClick, isContextItem) => {
+  onSelectItem = ({ id, isFolder }, withSelect = true, isContextItem) => {
     const {
       setBufferSelection,
       setSelected,
       selection,
+      setSelection,
       setHotkeyCaretStart,
       setHotkeyCaret,
       setEnabledHotkeys,
@@ -511,17 +512,26 @@ class FilesActionStore {
     );
 
     if (item) {
-      const isSelected = selection.findIndex(
-        (f) => f.id === id && f.isFolder === isFolder
-      );
+      const isSelected =
+        selection.findIndex((f) => f.id === id && f.isFolder === isFolder) !==
+        -1;
 
-      if (isDotsClick || isSelected === -1) {
-        setSelected("none");
-        setBufferSelection(item);
-      } else {
+      if (withSelect) {
+        if (isSelected && selection.length === 1) {
+          setSelected("none");
+        } else {
+          setSelection([item]);
+          setHotkeyCaret(null);
+          setHotkeyCaretStart(null);
+        }
+      } else if (isSelected) {
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);
+      } else {
+        setSelected("none");
+        setBufferSelection(item);
       }
+
       isContextItem && setEnabledHotkeys(false);
     }
   };
