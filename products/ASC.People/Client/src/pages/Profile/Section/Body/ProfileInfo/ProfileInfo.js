@@ -311,7 +311,7 @@ class ProfileInfo extends React.PureComponent {
                   </IconButtonWrapper>
                 )}
                 {isSelf ? (
-                  <InfoItemValue>{email}</InfoItemValue>
+                  <Text>{email}</Text>
                 ) : (
                   <Link
                     className="email-link"

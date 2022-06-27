@@ -59,316 +59,309 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
-    <value>Outside portal</value>
+    <value>Xarici Portal</value>
   </data>
   <data name="AceStatusEnum_Comment" xml:space="preserve">
-    <value>Comment</value>
+    <value>Şərh</value>
   </data>
   <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
-    <value>Custom Filter</value>
+    <value>Fərdi Filter</value>
   </data>
   <data name="AceStatusEnum_FillForms" xml:space="preserve">
-    <value>Form Filling</value>
+    <value>Formanın Doldurulması</value>
   </data>
   <data name="AceStatusEnum_Read" xml:space="preserve">
-    <value>Read Only</value>
+    <value>Yalnız oxumaq üçün</value>
   </data>
   <data name="AceStatusEnum_ReadWrite" xml:space="preserve">
-    <value>Full Access</value>
+    <value>Tam giriş</value>
   </data>
   <data name="AceStatusEnum_Restrict" xml:space="preserve">
-    <value>Deny Access</value>
+    <value>Girişi Rədd Edin</value>
   </data>
   <data name="AceStatusEnum_Review" xml:space="preserve">
-    <value>Review</value>
+    <value>Nəzərdən keçirmə</value>
   </data>
   <data name="Admin" xml:space="preserve">
     <value>Admin</value>
   </data>
   <data name="AppAccessDenied" xml:space="preserve">
-    <value>To work with the file you must grant access to it</value>
+    <value>Faylla işləmək üçün ona giriş icazəsi verməlisiniz</value>
   </data>
   <data name="Author_Me" xml:space="preserve">
-    <value>Me</value>
+    <value>Mən</value>
   </data>
   <data name="CommentAutosave" xml:space="preserve">
-    <value>Autosaved</value>
+    <value>Avtomatik yadda saxlanıldı</value>
   </data>
   <data name="CommentChangeOwner" xml:space="preserve">
-    <value>Changed owner</value>
+    <value>Sahib dəyişdi</value>
   </data>
   <data name="CommentConvert" xml:space="preserve">
-    <value>Converted from {0}</value>
+    <value>Çevirmə: {0}</value>
   </data>
   <data name="CommentCopy" xml:space="preserve">
-    <value>Copied</value>
+    <value>Kopyalandı</value>
   </data>
   <data name="CommentCreate" xml:space="preserve">
-    <value>Created</value>
+    <value>Yaradıldı</value>
   </data>
   <data name="CommentCreateByDocuSign" xml:space="preserve">
-    <value>Created by DocuSign</value>
+    <value>DocuSign tərəfindən yaradıldı</value>
   </data>
   <data name="CommentCreateFillFormDraft" xml:space="preserve">
-    <value>Created to fill in the form</value>
+    <value>Formanı doldurmaq üçün yaradıldı</value>
   </data>
   <data name="CommentEdit" xml:space="preserve">
-    <value>Edited</value>
+    <value>Redaktə edildi</value>
   </data>
   <data name="CommentEditEncrypt" xml:space="preserve">
-    <value>Edited with encrypt</value>
+    <value>Şifrələnmə ilə redaktə edildi</value>
   </data>
   <data name="CommentEncrypted" xml:space="preserve">
-    <value>Encrypted</value>
+    <value>Şifrələnib</value>
   </data>
   <data name="CommentForcesave" xml:space="preserve">
-    <value>Saved</value>
+    <value>Yadda saxlanıldı</value>
   </data>
   <data name="CommentOverwrite" xml:space="preserve">
-    <value>Overwritten</value>
+    <value>Üstünə yazılıb</value>
   </data>
   <data name="CommentRevert" xml:space="preserve">
-    <value>Restored from the revision of {0}</value>
+    <value>{0} reviziyadan bərpa edildi</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
-    <value>Restored from the document change of {0}</value>
+    <value>{0} sənəd dəyişikliyindən bərpa edildi</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
-    <value>Uploaded</value>
+    <value>Yükləndi</value>
   </data>
   <data name="DocuSignStatusDeclined" xml:space="preserve">
-    <value>Declined</value>
+    <value>Rədd edildi</value>
   </data>
   <data name="DocuSignStatusError" xml:space="preserve">
-    <value>There was an error during the send operation</value>
+    <value>Göndərmə zamanı xəta baş verdi</value>
   </data>
   <data name="DocuSignStatusNotSended" xml:space="preserve">
-    <value>Sending the document via DocuSign has been canceled</value>
+    <value>Sənədlərin DocuSign vasitəsilə göndərilməsi ləğv edildi</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
-    <value>Document was sent to sign via DocuSign</value>
+    <value>Sənəd DocuSign vasitəsilə imzalanmaq üçün göndərildi.</value>
   </data>
   <data name="DocuSignStatusVoided" xml:space="preserve">
-    <value>Voided</value>
+    <value>Ləğv edildi</value>
   </data>
   <data name="EditorMentions" xml:space="preserve">
-    <value>Notify when mentioned in document</value>
+    <value>Sənəddə qeyd edildikdə bildir</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>Bad request.</value>
+    <value>Pis sorğu.</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
-    <value>You can not select this user</value>
+    <value>Bu istifadəçini seçə bilməzsiniz</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
-    <value>Conversion takes too much time.</value>
-  </data>
-  <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
-    <value>You are not allowed to create folders in the Recycle Bin</value>
+    <value>Çevirmə prosesi çox vaxt ala bilər.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>Error occurred in the Documents Service</value>
+    <value>Sənədlər Xidmətində xəta baş verdi</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>The file is opened for editing by {0}. Currently, the co-editing feature is not supported for this file format.</value>
+    <value>Fayl {0} istifadəçisi tərəfindən redaktə üçün açıqdır. Birgə redaktə, hazırda bu format üçün dəstəklənmir.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>The file is open for editing in a mobile application by {0}</value>
+    <value>Fayl {0} tərəfindən mobil tətbiqdə redaktə etmək üçün açıqdır</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
-    <value>Empty file</value>
+    <value>Boş qovluq</value>
   </data>
   <data name="ErrorMassage_FileNotFound" xml:space="preserve">
-    <value>The required file was not found</value>
+    <value>Tələb olunan fayl tapılmadı</value>
   </data>
   <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
-    <value>File larger than {0} will not be converted</value>
+    <value>{0} ölçüsündən böyük fayl çevrilməyəcək</value>
   </data>
   <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
-    <value>File larger than {0} will not be copied</value>
+    <value>{0} ölçüsündən böyük fayl kopyalanmayacaq</value>
   </data>
   <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
-    <value>File larger than {0} will not be edited</value>
+    <value>{0} ölçüsündən böyük fayl redaktə edilməyəcək</value>
   </data>
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
-    <value>File larger than {0} will not be moved</value>
-  </data>
-  <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
-    <value>File larger than {0} will not be archived</value>
+    <value>{0} ölçüsündən böyük fayl köçürülməyəcək</value>
   </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
-    <value>You cannot copy the folder to its subfolder</value>
+    <value>Qovluğu öz alt qovluğuna köçürə bilməzsiniz</value>
   </data>
   <data name="ErrorMassage_FolderNotFound" xml:space="preserve">
-    <value>The required folder was not found</value>
+    <value>Tələb olunan qovluq tapılmadı</value>
   </data>
   <data name="ErrorMassage_InvalidTitle" xml:space="preserve">
-    <value>Incorrect title</value>
+    <value>Yanlış başlıq</value>
   </data>
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
-    <value>The file is currently locked by another user</value>
+    <value>Hazırda fayl başqa istifadəçi tərəfindən kilidlənib.</value>
   </data>
   <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>There are no available accounts to send the message. Go to Mail and connect a mailbox.</value>
+    <value>Mesajı göndərmək üçün heç bir hesab yoxdur. Mail-ə daxil olub poçt qutunuzu əlaqələndirin.</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>At least {0} mail messages could not be sent. Please visit the Mail module to see what the reason for the failure could be.</value>
+    <value>Ən azı {0} poçt mesajı göndərmək alınmadı. Bunun səbəbini öyrənmək üçün Poçt moduluna daxil olun.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Too many downloads.</value>
+    <value>Həddən çox endirmə var</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
-    <value>Sorry, this file format isn't supported</value>
+    <value>Üzr istəyirik, amma bu format dəstəklənmir</value>
   </data>
   <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>The operation was canceled</value>
+    <value>Əməliyyat ləğv edildi</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
-    <value>Author of the save is unknown</value>
+    <value>Yadda saxlamanı icra edən şəxs bilinmir</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
-    <value>The file was corrupted when you tried to save it</value>
+    <value>Yadda saxlamağa çalışarkən fayl pozuldu</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
-    <value>Failed to get the file to be saved</value>
+    <value>Yadda saxlanılacaq faylı əldə etmək alınmadı</value>
   </data>
   <data name="ErrorMassage_SecurityException" xml:space="preserve">
-    <value>You don't have enough permission to perform the operation</value>
+    <value>Əməliyyatı gerçəkləşdirməyə yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>Can't authorize at {0} provider with given credentials.</value>
+    <value>Verilən kredensiallar ilə {0} provayerinə qoşulmaq mümkün deyil.</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
-    <value>You don't have enough permission to create</value>
+    <value>Yaratmağa yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
-    <value>Cannot delete the file because it is opened for editing</value>
+    <value>Fayl silinə bilməz, çünki fayl redaktə olunmaq üçün açıqdır</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
-    <value>Cannot delete the folder because one of the files is opened for editing</value>
+    <value>Qovluq silinə bilməz, çünki qovluqdakı fayllardan biri redaktə olunmaq üçün açıqdır</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
-    <value>You don't have enough permission to delete the file</value>
+    <value>Faylı silməyə yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFolder" xml:space="preserve">
-    <value>You don't have enough permission to delete the folder</value>
+    <value>Qovluğu silməyə yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFile" xml:space="preserve">
-    <value>You do not have enough permissions to edit the file</value>
+    <value>Faylı redaktə etməyə yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
-    <value>This document is being edited by you in another tab</value>
+    <value>Bu sənəd Sizin tərəfinizdən başqa bir nişanda redaktə olunur</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
-    <value>You don't have enough permission to move the file</value>
+    <value>Bu faylı köçürmək üçün kifayət qədər icazəniz yoxdur.</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
-    <value>You don't have enough permission to move the folder</value>
+    <value>Bu qovluğu köçürmək üçün kifayət qədər icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
-    <value>You don't have enough permission to view the file</value>
+    <value>Fayla baxmağa yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFolder" xml:space="preserve">
-    <value>You don't have enough permission to view the folder content</value>
+    <value>Qovluğun içinə baxmağa yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_RenameFile" xml:space="preserve">
-    <value>You don't have enough permission to rename the file</value>
+    <value>Faylı yenidən adlandırmağa yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_RenameFolder" xml:space="preserve">
-    <value>You don't have enough permission to rename the folder</value>
+    <value>Qovluğu yenidən adlandırmağa yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
-    <value>Cannot update the file because it's opened for editing</value>
+    <value>Fayl yenilənə bilməz, çünki redaktə olunmaq üçün açıqdır</value>
   </data>
   <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
-    <value>You don't have enough permission to view the folder content</value>
+    <value>Qovluğun içinə baxmağa yetərincə icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
-    <value>The content of third party folder are not available. Try to reconnect the account.</value>
+    <value>Üçüncü tərəf resurs qovluğunun məzmunu mövcud deyil. Hesabınızı yenidən əlaqələndirməyə çalışın.</value>
   </data>
   <data name="ErrorMassage_StartEditing" xml:space="preserve">
-    <value>File editing start error</value>
+    <value>Faylın redaktəsinə başlarkən xəta baş verdi</value>
   </data>
   <data name="ErrorMassage_UpdateEditingFile" xml:space="preserve">
-    <value>You cannot update a file which is opened for editing</value>
+    <value>Redaktə üçün açıq olan faylı güncəlləyə bilməzsiniz</value>
   </data>
   <data name="ErrorMassage_UserNotFound" xml:space="preserve">
-    <value>User could not be found</value>
+    <value>İStifadəçi tapılmadı</value>
   </data>
   <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
-    <value>You are not allowed to preview the elements in the Trash</value>
+    <value>Səbətdə elementlərə baxmağa icazəniz yoxdur</value>
   </data>
   <data name="Everyone" xml:space="preserve">
-    <value>Everyone</value>
+    <value>Hər kəs</value>
   </data>
   <data name="Guest" xml:space="preserve">
-    <value>Anonymous</value>
+    <value>Qonaq</value>
   </data>
   <data name="IndexTitle" xml:space="preserve">
-    <value>Search in documents content</value>
+    <value>Sənədlərin məzmununa görə axtarış</value>
   </data>
   <data name="MessageFileCreated" xml:space="preserve">
-    <value>File created in folder "{0}"</value>
+    <value>"{0}" qovluğunda fayl yaradıldı</value>
   </data>
   <data name="MessageFileCreatedForm" xml:space="preserve">
-    <value>The fillable OFORM document is ready. It is saved in the {0}</value>
+    <value>Doldurula bilən OFORM sənədi hazırdır. {0} qovluğunda yadda saxlanıldı </value>
   </data>
   <data name="MessageFillFormDraftCreated" xml:space="preserve">
-    <value>The OFORM copy is created in the {0} folder. Please fill out the form and download the result as a PDF or DOCX file.</value>
+    <value>OFORM-un kopyası {0} qovluğunda yaradıldı. Formanı doldurun və nəticəni PDF və ya DOCX formatında yükləyin.</value>
   </data>
   <data name="MessageFillFormDraftDiscard" xml:space="preserve">
-    <value>The file is no longer a draft to fill in the form.</value>
+    <value>Fayl artıq formanı doldurmaq üçün qaralama deyil.</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Do the same as a user|Link Dropbox, Box and other accounts in the 'Common' section|Set up access rights to the documents and folders in the 'Common' section</value>
+    <value>İstifadəçinin etdiyini etmək|Hesabları Dropbox'a, Box'a və 'Ümumi sənədlər' bölməsində digər hesablara birləşdirmək|Sənədlərə və qovluqlara 'Ümumi sənədlər' bölməsində giriş hüquqları tənzimlə</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Create, edit, and share office documents. Collaborate on them in real-time. Highest compatibility with docx, xlsx, pptx guaranteed. </value>
+    <value>Portaldakı sənədlərinizi yaradın, redaktə edin, yaddaşda saxlayın və paylaşın. Google Drive, Zoho, Box'dən sənədlərinizi import edin.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Edit, share and collaborate on office documents in real-time. Create and manage common docs for the whole team to access. 
-Highest compatibility with docx, xlsx, pptx. </value>
+    <value>Portaldakı sənədlərinizi yaradın, redaktə edin, yaddaşda saxlayın və paylaşın. Google Drive, Zoho, Box'dən sənədlərinizi import edin.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
-    <value>View and download shared documents. Upload files to shared folders. Highest compatibility with docx, xlsx, pptx guaranteed.</value>
+    <value>Paylaşılan sənədlərə baxıb endirin. Faylları paylaşılan qovluqlara yükləyin. docx, xlsx, pptx formatları ilə 100% uyğunluğa zəmanət verilir.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
-    <value>Documents</value>
+    <value>Sənədlər</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Create and edit own documents as well as the shared documents with the proper access rights|Give reading/editing access to other users to the documents and folders|Link Dropbox, Box and other accounts in the 'My documents' section</value>
+    <value>Öz sənədlərini və giriş icazəsi verilmiş sənədləri yaratmat və redaktə etmək|Sənədlərə digər istifadəçilərə oxumaq və redaktə etmək hüquqları vermək|Hesabları Dropbox'a, Box'a və 'Sənədlərim' bölməsində digər hesablara birləşdirmək</value>
   </data>
   <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} removed</value>
+    <value>{!User} silindi</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search</value>
+    <value>Axtarış</value>
   </data>
   <data name="ShareFolder" xml:space="preserve">
-    <value>Notify when a folder is shared</value>
+    <value>Qovluq paylaşılan zaman bildir</value>
   </data>
   <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Notify when document signed via DocuSign</value>
+    <value>Sənəd DocuSign ilə imzalandıqda bildir</value>
   </data>
   <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Notify when document in DocuSign changed status</value>
+    <value>DocuSign-dakı sənədin statusu dəyişdikdə bildir</value>
   </data>
   <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Notify when a document is shared</value>
+    <value>Paylaşılan zaman bildir</value>
   </data>
   <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Notify when mailing is complete</value>
+    <value>Göndərmənin başa çatması barədə məlumat ver</value>
   </data>
   <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Documents of {!user} {0}</value>
+    <value>{!user} {0} adlı şəxsin sənədləri</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>First Name</value>
+    <value>Ad</value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
-    <value>Last Name</value>
+    <value>Soyad</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
-    <value>The file is unlocked</value>
+    <value>Fayl kiliddən çıxarılıb</value>
   </data>
 </root>

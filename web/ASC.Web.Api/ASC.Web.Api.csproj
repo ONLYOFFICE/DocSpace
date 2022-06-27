@@ -99,5 +99,8 @@
     <EmbeddedResource Update="Core\AuditResource.zh-CN.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Core\AuditResource.az.resx">
+      <DependentUpon>AuditResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
