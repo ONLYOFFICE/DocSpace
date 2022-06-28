@@ -83,7 +83,7 @@ class RoomsFilter {
       searchInContent,
       withSubfolders,
       withSubfolders,
-      searchArea,
+      null,
       tags
     );
 
