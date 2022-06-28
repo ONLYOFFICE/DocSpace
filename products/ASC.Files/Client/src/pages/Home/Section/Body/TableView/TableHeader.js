@@ -111,8 +111,7 @@ class FilesTableHeader extends React.Component {
     if (currentScrollPosition === 0) {
       this.isBeginScrolling = false;
 
-      this.props.firstElemChecked &&
-        this.props.headerBorder &&
+      this.props.headerBorder &&
         elem?.classList?.add("hotkeys-lengthen-header");
 
       !firstElemChecked && elem?.classList?.remove("lengthen-header");
@@ -136,7 +135,7 @@ class FilesTableHeader extends React.Component {
       this.setState({ columns });
     }
 
-    if (this.props.firstElemChecked && this.props.headerBorder) {
+    if (this.props.headerBorder) {
       const elem = document.getElementById("table-container_caption-header");
       elem?.classList?.add("hotkeys-lengthen-header");
     } else {
