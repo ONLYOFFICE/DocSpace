@@ -60,7 +60,7 @@ export const FileType = Object.freeze({
   Document: 7,
 });
 /**
- * Enum for file type.
+ * Enum for room type.
  * @readonly
  */
 export const RoomsType = Object.freeze({
@@ -70,7 +70,15 @@ export const RoomsType = Object.freeze({
   ReadOnlyRoom: 4,
   CustomRoom: 5,
 });
-
+/**
+ * Enum for room search area.
+ * @readonly
+ */
+export const RoomSearchArea = Object.freeze({
+  Any: "Any",
+  Active: "Active",
+  Archive: "Archive",
+});
 /**
  * Enum for file action.
  * @readonly
