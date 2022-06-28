@@ -7,7 +7,6 @@ import {
   submitSsoForm,
   uploadXmlMetadata,
   validateCerts,
-  getMetadata,
 } from "@appserver/common/api/settings";
 import toastr from "../helpers/toastr";
 import { BINDING_POST, BINDING_REDIRECT } from "../helpers/constants";
@@ -563,7 +562,7 @@ class SsoFormStore {
   };
 
   downloadMetadata = async () => {
-    return await getMetadata();
+    window.open("/api/2.0/sso/metadata", "_blank");
   };
 }
 
