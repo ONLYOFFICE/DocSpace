@@ -561,6 +561,10 @@ class FilesStore {
     return newFilter;
   };
 
+  refreshFiles = () => {
+    return this.fetchFiles(this.selectedFolderStore.id, this.filter);
+  };
+
   fetchFiles = (
     folderId,
     filter,
@@ -1857,6 +1861,13 @@ class FilesStore {
   get isEmptyFilesList() {
     const filesList = [...this.files, ...this.folders];
     return filesList.length <= 0;
+  }
+
+  get hasNew() {
+    const newFiles = [...this.files, ...this.folders].filter(
+      (item) => (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew
+    );
+    return newFiles.length > 0;
   }
 
   get allFilesIsEditing() {

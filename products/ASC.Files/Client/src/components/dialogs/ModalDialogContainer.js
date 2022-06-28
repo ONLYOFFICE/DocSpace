@@ -66,7 +66,8 @@ const ModalDialogContainer = styled(ModalDialog)`
     border: ${(props) => props.theme.filesModalDialog.border};
 
     @media ${tablet} {
-      padding: 0;
+      //padding: 0;
+      padding-top: 0;
       border: 0;
     }
 
