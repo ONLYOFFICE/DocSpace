@@ -17,13 +17,7 @@ const SizeCell = ({ t, item, sideColor }) => {
       title=""
       truncate
     >
-      {fileExst || contentLength
-        ? contentLength
-        : !providerKey
-        ? `${t("TitleDocuments")}: ${filesCount} / ${t(
-            "TitleSubfolders"
-          )}: ${foldersCount}`
-        : ""}
+      {fileExst || contentLength ? contentLength : "—"}
     </StyledText>
   );
 };

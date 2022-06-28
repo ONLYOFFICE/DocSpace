@@ -42,7 +42,6 @@ using ASC.CRM.Core.Enums;
 using ASC.MessagingSystem.Core;
 using ASC.MessagingSystem.Models;
 using ASC.Web.Api.Models;
-using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Services.NotifyService;
@@ -102,7 +101,7 @@ namespace ASC.CRM.Api
         /// <category>Opportunities</category>
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
-        [Read(@"opportunity/{opportunityid:int}")]
+        [HttpGet(@"opportunity/{opportunityid:int}")]
         public OpportunityDto GetDealByID(int opportunityid)
         {
             if (opportunityid <= 0) throw new ArgumentException();
@@ -125,7 +124,7 @@ namespace ASC.CRM.Api
         /// <category>Opportunities</category>
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
-        [Update(@"opportunity/{opportunityid:int}/stage/{id:int}")]
+        [HttpPut(@"opportunity/{opportunityid:int}/stage/{id:int}")]
         public OpportunityDto UpdateToDealMilestone(int opportunityid, int stageid)
         {
             if (opportunityid <= 0 || stageid <= 0) throw new ArgumentException();
@@ -159,7 +158,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Opportunity 
         /// </returns>
-        [Update(@"opportunity/{opportunityid:int}/access")]
+        [HttpPut(@"opportunity/{opportunityid:int}/access")]
         public OpportunityDto SetAccessToDeal(int opportunityid, bool isPrivate, IEnumerable<Guid> accessList)
         {
             if (opportunityid <= 0) throw new ArgumentException();
@@ -228,7 +227,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Opportunity list
         /// </returns>
-        [Update(@"opportunity/filter/access")]
+        [HttpPut(@"opportunity/filter/access")]
         public IEnumerable<OpportunityDto> SetAccessToBatchDeal([FromBody] SetAccessToBatchDealByFilterRequestDto inDto)
         {
             var responsibleid = inDto.Responsibleid;
@@ -284,7 +283,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Opportunity list
         /// </returns>
-        [Update(@"opportunity/access")]
+        [HttpPut(@"opportunity/access")]
         public IEnumerable<OpportunityDto> SetAccessToBatchDeal(SetAccessToBatchDealRequestDto inDto)
         {
             var opportunityid = inDto.Opportunityid;
@@ -324,7 +323,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Opportunity list
         /// </returns>
-        [Update(@"opportunity")]
+        [HttpPut(@"opportunity")]
         public Task<IEnumerable<OpportunityDto>> DeleteBatchDealsAsync(IEnumerable<int> opportunityids)
         {
             if (opportunityids == null || !opportunityids.Any()) throw new ArgumentException();
@@ -358,7 +357,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Opportunity list
         /// </returns>
-        [Delete(@"opportunity/filter")]
+        [HttpDelete(@"opportunity/filter")]
         public Task<IEnumerable<OpportunityDto>> DeleteBatchDealsAsync(
             Guid responsibleid,
             int opportunityStagesid,
@@ -407,7 +406,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Opportunity list
         /// </returns>
-        [Read(@"opportunity/filter")]
+        [HttpGet(@"opportunity/filter")]
         public IEnumerable<OpportunityDto> GetDeals(
           [FromQuery] Guid responsibleid,
            [FromQuery] int opportunityStagesid,
@@ -515,7 +514,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Opportunity
         /// </returns>
-        [Delete(@"opportunity/{opportunityid:int}")]
+        [HttpDelete(@"opportunity/{opportunityid:int}")]
         public Task<OpportunityDto> DeleteDealAsync(int opportunityid)
         {
             if (opportunityid <= 0) throw new ArgumentException();
@@ -559,7 +558,7 @@ namespace ASC.CRM.Api
         ///  Opportunity
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Create(@"opportunity")]
+        [HttpPost(@"opportunity")]
         public OpportunityDto CreateDeal(CreateOrUpdateDealRequestDto inDto)
         {
 
@@ -658,7 +657,7 @@ namespace ASC.CRM.Api
         ///  Opportunity
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Update(@"opportunity/{opportunityid:int}")]
+        [HttpPut(@"opportunity/{opportunityid:int}")]
         public OpportunityDto UpdateDeal(
             int opportunityid, CreateOrUpdateDealRequestDto inDto)
         {
@@ -740,7 +739,7 @@ namespace ASC.CRM.Api
         /// <returns>Contact list</returns>
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
-        [Read(@"opportunity/{opportunityid:int}/contact")]
+        [HttpGet(@"opportunity/{opportunityid:int}/contact")]
         public IEnumerable<ContactDto> GetDealMembers(int opportunityid)
         {
             var opportunity = _daoFactory.GetDealDao().GetByID(opportunityid);
@@ -771,7 +770,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Participant
         /// </returns>
-        [Create(@"opportunity/{opportunityid:int}/contact/{contactid:int}")]
+        [HttpPost(@"opportunity/{opportunityid:int}/contact/{contactid:int}")]
         public ContactDto AddMemberToDeal([FromRoute] int opportunityid, [FromRoute] int contactid)
         {
             if (opportunityid <= 0 || contactid <= 0) throw new ArgumentException();
@@ -804,7 +803,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Participant
         /// </returns>
-        [Delete(@"opportunity/{opportunityid:int}/contact/{contactid:int}")]
+        [HttpDelete(@"opportunity/{opportunityid:int}/contact/{contactid:int}")]
         public ContactDto DeleteMemberFromDeal(int opportunityid, int contactid)
         {
             if ((opportunityid <= 0) || (contactid <= 0)) throw new ArgumentException();
@@ -836,7 +835,7 @@ namespace ASC.CRM.Api
         ///    Opportunities list
         /// </returns>
         /// <visible>false</visible>
-        [Read(@"opportunity/byprefix")]
+        [HttpGet(@"opportunity/byprefix")]
         public IEnumerable<OpportunityDto> GetDealsByPrefix(string prefix, int contactID, bool internalSearch = true)
         {
             var result = new List<OpportunityDto>();
@@ -876,7 +875,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Opportunity list
         /// </returns>
-        [Read(@"opportunity/bycontact/{contactid:int}")]
+        [HttpGet(@"opportunity/bycontact/{contactid:int}")]
         public IEnumerable<OpportunityDto> GetDeals(int contactid)
         {
             var deals = _daoFactory.GetDealDao().GetDealsByContactID(contactid);
@@ -884,7 +883,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Update(@"opportunity/{opportunityid:int}/creationdate")]
+        [HttpPut(@"opportunity/{opportunityid:int}/creationdate")]
         public void SetDealCreationDate(int opportunityid, ApiDateTime creationDate)
         {
             var dao = _daoFactory.GetDealDao();
@@ -897,7 +896,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Update(@"opportunity/{opportunityid:int}/lastmodifeddate")]
+        [HttpPut(@"opportunity/{opportunityid:int}/lastmodifeddate")]
         public void SetDealLastModifedDate(int opportunityid, ApiDateTime lastModifedDate)
         {
             var dao = _daoFactory.GetDealDao();

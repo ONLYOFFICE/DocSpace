@@ -37,12 +37,22 @@ const PortalRenaming = (props) => {
     "portalNameDefault"
   );
 
-  const [portalName, setPortalName] = useState(
-    portalNameFromSessionStorage || tenantAlias
-  );
+  const portalNameInitially =
+    portalNameFromSessionStorage === null ||
+    portalNameFromSessionStorage === "none"
+      ? tenantAlias
+      : portalNameFromSessionStorage;
+
+  const portalNameDefaultInitially =
+    portalNameDefaultFromSessionStorage === null ||
+    portalNameDefaultFromSessionStorage === "none"
+      ? tenantAlias
+      : portalNameDefaultFromSessionStorage;
+
+  const [portalName, setPortalName] = useState(portalNameInitially);
 
   const [portalNameDefault, setPortalNameDefault] = useState(
-    portalNameDefaultFromSessionStorage || tenantAlias
+    portalNameDefaultInitially
   );
 
   const [isLoadingPortalNameSave, setIsLoadingPortalNameSave] = useState(false);
@@ -90,10 +100,10 @@ const PortalRenaming = (props) => {
   useEffect(() => {
     if (isLoadedSetting) setIsLoadedPortalRenaming(isLoadedSetting);
 
-    if (portalNameDefault) {
+    if (portalNameDefault || portalName) {
       checkChanges();
     }
-  }, [isLoadedSetting, portalNameDefault]);
+  }, [isLoadedSetting, portalNameDefault, portalName]);
 
   const onSavePortalRename = () => {
     if (errorValue) return;
@@ -124,11 +134,12 @@ const PortalRenaming = (props) => {
     setErrorValue(null);
 
     if (
-      portalNameFromSessionStorage &&
+      portalNameFromSessionStorage !== "none" &&
+      portalNameFromSessionStorage !== null &&
       !settingIsEqualInitialValue(portalNameFromSessionStorage)
     ) {
       setPortalName(portalNameDefault);
-      saveToSessionStorage("portalName", "");
+      saveToSessionStorage("portalName", "none");
       setShowReminder(false);
     }
   };
@@ -141,8 +152,8 @@ const PortalRenaming = (props) => {
     setPortalName(value);
 
     if (settingIsEqualInitialValue(value)) {
-      saveToSessionStorage("portalName", "");
-      saveToSessionStorage("portalNameDefault", "");
+      saveToSessionStorage("portalName", "none");
+      saveToSessionStorage("portalNameDefault", "none");
     } else {
       saveToSessionStorage("portalName", value);
     }
@@ -183,7 +194,8 @@ const PortalRenaming = (props) => {
 
     const valueFromSessionStorage = getFromSessionStorage("portalName");
     if (
-      valueFromSessionStorage &&
+      valueFromSessionStorage !== "none" &&
+      valueFromSessionStorage !== null &&
       !settingIsEqualInitialValue(valueFromSessionStorage)
     ) {
       hasChanged = true;
@@ -216,17 +228,19 @@ const PortalRenaming = (props) => {
         {t("PortalRenamingMobile")}
       </div>
       <FieldContainer
-        id="fieldContainerWelcomePage"
+        id="fieldContainerPortalRenaming"
         className="field-container-width"
         labelText={`${t("PortalRenamingLabelText")}:`}
         isVertical={true}
       >
         <TextInput
+          id="textInputContainerPortalRenaming"
           scale={true}
           value={portalName}
           onChange={onChangePortalName}
           isDisabled={isLoadingPortalNameSave}
           hasError={hasError}
+          placeholder={`${t("EnterName")}`}
         />
         <div className="errorText">{errorValue}</div>
       </FieldContainer>
@@ -251,11 +265,12 @@ const PortalRenaming = (props) => {
         </div>
       )}
       {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-        <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+        <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
       ) : (
         <> {settingsBlock}</>
       )}
       <SaveCancelButtons
+        id="buttonsPortalRenaming"
         className="save-cancel-buttons"
         onSaveClick={onSavePortalRename}
         onCancelClick={onCancelPortalName}

@@ -17,6 +17,7 @@ const StyledPeopleRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox-wrapper {
+    padding-right: 0px;
     padding-left: 4px;
     min-width: 46px;
 
@@ -32,6 +33,10 @@ const StyledPeopleRow = styled(TableRow)`
 
   .table-cell_username {
     margin-right: 12px;
+  }
+
+  .table-container_row-context-menu-wrapper {
+    padding-right: 0px;
   }
 `;
 

@@ -30,14 +30,13 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.CRM.Core.Dao;
 using ASC.Data.Storage;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
 
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
@@ -48,18 +47,18 @@ namespace ASC.Web.CRM.Classes
     public class OrganisationLogoManager
     {
         private DaoFactory _daoFactory;
-        private ILog _logger;
+        private ILogger _logger;
         private Global _global;
         private WebImageSupplier _webImageSupplier;
 
         public OrganisationLogoManager(WebImageSupplier webImageSupplier,
                                        Global global,
-                                       IOptionsMonitor<ILog> logger,
+                                       ILogger logger,
                                        DaoFactory daoFactory)
         {
             _webImageSupplier = webImageSupplier;
             _global = global;
-            _logger = logger.Get("ASC.CRM");
+            _logger = logger;
             _daoFactory = daoFactory;
         }
 
@@ -186,7 +185,7 @@ namespace ASC.Web.CRM.Classes
 
             catch (Exception ex)
             {
-                _logger.ErrorFormat("TryUploadOrganisationLogoFromTmp failed with error: {0}", ex);
+                _logger.LogError("TryUploadOrganisationLogoFromTmp failed with error: {0}", ex.ToString());
 
                 return 0;
             }

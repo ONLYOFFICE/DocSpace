@@ -55,27 +55,4 @@ describe("<Checkbox />", () => {
     expect(wrapper.prop("isChecked")).toEqual(true);
     expect(wrapper.prop("isDisabled")).toEqual(true);
   });
-
-  it("componentDidUpdate() props lifecycle test", () => {
-    const wrapper = shallow(<Checkbox {...baseProps} />);
-    const instance = wrapper.instance();
-
-    instance.componentDidUpdate(
-      {
-        isChecked: true,
-      },
-      wrapper.state()
-    );
-
-    expect(wrapper.props()).toBe(wrapper.props());
-
-    instance.componentDidUpdate(
-      {
-        isChecked: false,
-      },
-      wrapper.state()
-    );
-
-    expect(wrapper.props()).toBe(wrapper.props());
-  });
 });

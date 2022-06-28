@@ -31,6 +31,12 @@ module.exports = class Endpoints {
     baseDir: "settings",
   };
 
+  static portalRenaming = {
+    url: ["http://localhost:8092/api/2.0/portal/portalrename.json"],
+    method: "PUT",
+    baseDir: "settings",
+  };
+
   static common = {
     url: ["http://localhost:8092/api/2.0/settings/customschemas/Common.json"],
     method: "GET",

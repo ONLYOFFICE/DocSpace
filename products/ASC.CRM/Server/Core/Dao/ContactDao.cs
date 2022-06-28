@@ -33,7 +33,6 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -47,7 +46,7 @@ using ASC.Web.CRM.Core.Search;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 namespace ASC.CRM.Core.Dao
@@ -74,7 +73,7 @@ namespace ASC.CRM.Core.Dao
             IDaoFactory daoFactory,
             FactoryIndexerContact factoryIndexerContact,
             FactoryIndexerContactInfo factoryIndexerContactInfo,
-            IOptionsMonitor<ILog> logger,
+            ILogger logger,
             ICache ascCache,
             DbContextManager<UserDbContext> userDbContext,
             BundleSearch bundleSearch,
@@ -317,7 +316,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _logger.Error("Private contacts count more than all contacts");
+                    _logger.LogError("Private contacts count more than all contacts");
 
                     privateCount = 0;
                 }
@@ -632,7 +631,7 @@ namespace ASC.CRM.Core.Dao
                 List<int> contactsIds;
                 if (!_bundleSearch.TrySelectContact(searchText, out contactsIds))
                 {
-                    _logger.Debug("FullTextSearch.SupportModule('CRM.Contacts') = false");
+                    _logger.LogDebug("FullTextSearch.SupportModule('CRM.Contacts') = false");
 
                     foreach (var k in keywords)
                     {
@@ -641,8 +640,8 @@ namespace ASC.CRM.Core.Dao
                 }
                 else
                 {
-                    _logger.Debug("FullTextSearch.SupportModule('CRM.Contacts') = true");
-                    _logger.DebugFormat("FullTextSearch.Search: searchText = {0}", searchText);
+                    _logger.LogDebug("FullTextSearch.SupportModule('CRM.Contacts') = true");
+                    _logger.LogDebug("FullTextSearch.Search: searchText = {0}", searchText);
 
                     var full_text_ids = contactsIds;
 

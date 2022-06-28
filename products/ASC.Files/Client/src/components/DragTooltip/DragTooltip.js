@@ -7,7 +7,7 @@ import { Base } from "@appserver/components/themes";
 const StyledTooltip = styled.div`
   position: fixed;
   padding: 8px;
-  z-index: 150;
+  z-index: 250;
   background: ${(props) => props.theme.filesDragTooltip.background};
   border-radius: 6px;
   font-size: 15px;

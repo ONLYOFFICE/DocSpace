@@ -30,6 +30,7 @@ public class MySqlWebstudioDbContext : WebstudioDbContext { }
 public class PostgreSqlWebstudioDbContext : WebstudioDbContext { }
 public class WebstudioDbContext : BaseDbContext
 {
+    public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     public DbSet<DbWebstudioUserVisit> WebstudioUserVisit { get; set; }
     public DbSet<DbWebstudioIndex> WebstudioIndex { get; set; }
@@ -53,7 +54,8 @@ public class WebstudioDbContext : BaseDbContext
             .AddWebstudioSettings()
             .AddWebstudioUserVisit()
             .AddDbWebstudioIndex()
-			.AddDbFunction();
+            .AddDbTenant()
+            .AddDbFunction();
     }
 }
 

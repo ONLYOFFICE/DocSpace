@@ -1,60 +1,67 @@
-import React from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { StyledTextarea, StyledScrollbar } from "./styled-textarea";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 
-class Textarea extends React.PureComponent {
-  render() {
-    // console.log('Textarea render');
-    const {
-      className,
-      id,
-      isDisabled,
-      isReadOnly,
-      hasError,
-      heightScale,
-      maxLength,
-      name,
-      onChange,
-      placeholder,
-      style,
-      tabIndex,
-      value,
-      fontSize,
-      heightTextArea,
-      color,
-      theme,
-    } = this.props;
+const Textarea = ({
+  className,
+  id,
+  isDisabled,
+  isReadOnly,
+  hasError,
+  heightScale,
+  maxLength,
+  name,
+  onChange,
+  placeholder,
+  style,
+  tabIndex,
+  value,
+  fontSize,
+  heightTextArea,
+  color,
+  theme,
+  autoFocus,
+  areaSelect,
+}) => {
+  const areaRef = useRef(null);
 
-    return (
-      <StyledScrollbar
-        className={className}
-        style={style}
-        stype="preMediumBlack"
+  React.useEffect(() => {
+    if (areaSelect && areaRef.current) {
+      areaRef.current.select();
+    }
+  }, [areaSelect]);
+
+  return (
+    <StyledScrollbar
+      className={className}
+      style={style}
+      stype="preMediumBlack"
+      isDisabled={isDisabled}
+      hasError={hasError}
+      heightScale={heightScale}
+      heighttextarea={heightTextArea}
+    >
+      <StyledTextarea
+        id={id}
+        placeholder={placeholder}
+        onChange={(e) => onChange && onChange(e)}
+        maxLength={maxLength}
+        name={name}
+        tabIndex={tabIndex}
         isDisabled={isDisabled}
-        hasError={hasError}
-        heightScale={heightScale}
-        heighttextarea={heightTextArea}
-      >
-        <StyledTextarea
-          id={id}
-          placeholder={placeholder}
-          onChange={(e) => onChange && onChange(e)}
-          maxLength={maxLength}
-          name={name}
-          tabIndex={tabIndex}
-          isDisabled={isDisabled}
-          disabled={isDisabled}
-          readOnly={isReadOnly}
-          value={value}
-          fontSize={fontSize}
-          color={color}
-        />
-      </StyledScrollbar>
-    );
-  }
-}
+        disabled={isDisabled}
+        readOnly={isReadOnly}
+        value={value}
+        fontSize={fontSize}
+        color={color}
+        autoFocus={autoFocus}
+        ref={areaRef}
+      />
+    </StyledScrollbar>
+  );
+};
 
 Textarea.propTypes = {
   /** Class name */
@@ -89,6 +96,8 @@ Textarea.propTypes = {
   heightTextArea: PropTypes.number,
   /** Specifies the text color */
   color: PropTypes.string,
+  autoFocus: PropTypes.bool,
+  areaSelect: PropTypes.bool,
 };
 
 Textarea.defaultProps = {
@@ -101,6 +110,8 @@ Textarea.defaultProps = {
   tabIndex: -1,
   value: "",
   fontSize: 13,
+  isAutoFocussed: false,
+  areaSelect: false,
 };
 
 export default Textarea;

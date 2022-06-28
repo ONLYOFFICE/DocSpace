@@ -56,7 +56,7 @@ class ContextMenu extends Component {
     this.currentEvent = e;
 
     if (this.state.visible) {
-      this.setState({ reshow: true });
+      !isMobileOnly && this.setState({ reshow: true });
     } else {
       this.setState({ visible: true }, () => {
         if (this.props.onShow) {
@@ -351,7 +351,11 @@ class ContextMenu extends Component {
     return (
       <>
         {this.props.withBackdrop && (
-          <Backdrop visible={this.state.visible} withBackground={true} />
+          <Backdrop
+            visible={this.state.visible}
+            withBackground={false}
+            withoutBlur={true}
+          />
         )}
         <Portal element={element} appendTo={this.props.appendTo} />
       </>

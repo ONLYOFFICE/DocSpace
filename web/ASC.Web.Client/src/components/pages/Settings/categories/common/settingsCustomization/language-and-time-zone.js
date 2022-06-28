@@ -395,6 +395,7 @@ class LanguageAndTimeZone extends React.Component {
       cultures,
       i18n,
       isLoadedPage,
+      helpLink,
     } = this.props;
 
     const {
@@ -409,7 +410,7 @@ class LanguageAndTimeZone extends React.Component {
     const cultureNames = mapCulturesToArray(cultures, i18n);
 
     const tooltipLanguageTimeSettings = (
-      <LanguageTimeSettingsTooltip theme={theme} t={t} />
+      <LanguageTimeSettingsTooltip theme={theme} t={t} helpLink={helpLink} />
     );
 
     const settingsBlock = (
@@ -473,7 +474,7 @@ class LanguageAndTimeZone extends React.Component {
           </div>
         )}
         {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-          <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+          <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
         ) : (
           <> {settingsBlock}</>
         )}
@@ -504,6 +505,7 @@ export default inject(({ auth, setup, common }) => {
     getPortalTimezones,
     getCurrentCustomSchema,
     cultures,
+    helpLink,
   } = auth.settingsStore;
 
   const { user } = auth.userStore;
@@ -526,6 +528,7 @@ export default inject(({ auth, setup, common }) => {
     isLoaded,
     setIsLoadedLngTZSettings,
     cultures,
+    helpLink,
   };
 })(
   withLoading(

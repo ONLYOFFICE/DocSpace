@@ -31,19 +31,20 @@ public class DbFactory
 {
     public const string DefaultConnectionStringName = "default";
 
-    internal ConnectionStringSettings ConnectionStringSettings
+    internal string ConnectionStringSettings(string path = null, string connectionString = null)
     {
-        get
+        if (!string.IsNullOrEmpty(connectionString))
         {
-            if (string.IsNullOrEmpty(_connectionString))
+            return connectionString;
+        }
+        else
+        {
+            if (path != null)
             {
-                return _configurationExtension.GetConnectionStrings(DefaultConnectionStringName);
-            }
-            else
-            {
-                return _configurationExtension.GetConnectionStrings(_connectionString);
+                return _configurationExtension.GetConnectionStrings(path).ConnectionString;
             }
 
+            return _configurationExtension.GetConnectionStrings(DefaultConnectionStringName).ConnectionString;
         }
     }
 
@@ -73,14 +74,14 @@ public class DbFactory
         _configurationExtension = configurationExtension;
     }
 
-    public DbConnection OpenConnection(string path = "default", string connectionString = DefaultConnectionStringName)//TODO
+    public DbConnection OpenConnection(string path = "default", string connectionString = null)
     {
         _connectionString = connectionString;
         _path = path;
         var connection = DbProviderFactory.CreateConnection();
         if (connection != null)
         {
-            connection.ConnectionString = EnsureConnectionTimeout(ConnectionStringSettings.ConnectionString);
+            connection.ConnectionString = EnsureConnectionTimeout(ConnectionStringSettings(path, connectionString));
             connection.Open();
         }
 
@@ -104,7 +105,7 @@ public class DbFactory
         if (command != null)
         {
             command.CommandText =
-                ConnectionStringSettings.ProviderName.IndexOf("MySql", StringComparison.OrdinalIgnoreCase) != -1
+                _configurationExtension.GetConnectionStrings(DefaultConnectionStringName).ProviderName.IndexOf("MySql", StringComparison.OrdinalIgnoreCase) != -1
                     ? "select Last_Insert_Id();"
                     : "select last_insert_rowid();";
         }

@@ -3,176 +3,86 @@ import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import Tree from "rc-tree";
-
+import "rc-tree/assets/index.css";
 import Badge from "../badge";
-import Text from "../text";
-
-import { tablet } from "../utils/device";
 import Base from "../themes/base";
 
-const StyledTreeMenu = styled(Tree)`
-  margin: 0;
-  padding: 0;
-  width: 93%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  @media ${tablet} {
-    width: 90%;
-  }
-
-  .rc-tree-switcher {
-    margin-left: 0 !important;
-    padding-left: 16px;
-    margin-top: 1px;
-  }
-
-  & li span.rc-tree-iconEle {
-    margin-left: 3px;
-    width: 18px;
-    height: 16px;
-    padding: 0;
-    margin-top: -4px;
-  }
-
-  ${(props) =>
-    props.isEmptyRootNode &&
-    css`
-      & > li > span.rc-tree-switcher-noop {
-        display: none;
+const StyledTree = styled(Tree)`
+  .rc-tree-list-holder-inner {
+    .disable-node {
+      span.rc-tree-node-content-wrapper {
+        pointer-events: none;
+        span.rc-tree-iconEle {
+          svg {
+            path {
+              fill: ${(props) => props.theme.treeNode.disableColor};
+            }
+          }
+        }
+        span.rc-tree-title {
+          color: ${(props) => props.theme.treeNode.disableColor} !important;
+        }
       }
-    `}
-  span.rc-tree-switcher {
-    margin-right: 6px !important;
-  }
-  .rc-tree-node-content-wrapper {
-    padding-top: 4px;
-  }
-
-  ${(props) =>
-    !props.isFullFillSelection &&
-    css`
-      span.rc-tree-node-selected {
-        // width: min-content !important;
-        // padding-right: 4px;
-        max-width: 98%;
+      span.rc-tree-switcher {
+        pointer-events: none;
+        svg {
+          path {
+            fill: ${(props) => props.theme.treeNode.disableColor};
+          }
+        }
       }
-    `}
-
-  & .rc-tree-node-selected .rc-tree-title {
-    ${(props) => !props.isFullFillSelection && "width: calc(100% - 16px);"}
-    margin-top: 2px;
-  }
-
-  &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
-    background: none;
-  }
-  &.rc-tree-show-line li:not(:last-child) > ul {
-    background: url("data:image/gif;base64,R0lGODlhCQACAIAAAMzMzP///yH5BAEAAAEALAAAAAAJAAIAAAIEjI9pUAA7")
-      0 0 repeat-y;
-  }
-  &.rc-tree-show-line li:not(:last-child) > .rc-tree-switcher-noop {
-    background-position: -56px -18px;
-  }
-  &.rc-tree-show-line li:last-child > .rc-tree-switcher-noop {
-    background-position: -56px -36px;
-  }
-  .rc-tree-child-tree {
-    display: none;
-  }
-  .rc-tree-treenode-switcher-open {
-    ${(props) => props.disableSwitch && "margin-bottom:10px;"}
-  }
-  .rc-tree-child-tree-open {
-    display: block;
-    ${(props) => props.disableSwitch && "margin: 0 0 25px 0;"}
-    li:first-child {
-      margin-top: ${(props) => (props.disableSwitch ? "10px" : "8px")};
-      margin-bottom: 8px;
-      margin-left: 0;
     }
-    li {
-      padding-left: 16px;
-    }
-  }
 
-  .rc-tree-treenode-selected {
-    ::after {
-      position: absolute;
-      display: block;
-      top: 0px;
-
-      width: 100%;
-      width: ${(props) => props.widthAdditional};
+    .rc-tree-treenode {
       height: 36px;
-      background-color: #f3f4f4;
-      content: "";
-      z-index: 1;
-      right: -${(props) => props.multiplicationFactor - 4}px;
-    }
-    .span.rc-tree-node-selected {
-    }
-  }
+      display: flex;
+      align-items: center;
+      padding-left: 16px;
+      span.rc-tree-switcher {
+        ${(props) => props.switcherIcon != null && "background: none"};
 
-  .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
-  .rc-tree-treenode-disabled > a,
-  .rc-tree-treenode-disabled > a span {
-    color: ${(props) => props.theme.treeMenu.disabledColor};
-    cursor: not-allowed;
-  }
-
-  .rc-tree-icon__open {
-    margin-right: 2px;
-    background-position: -110px -16px;
-    vertical-align: top;
-  }
-  .rc-tree-icon__close {
-    margin-right: 2px;
-    background-position: -110px 0;
-    vertical-align: top;
-  }
-  .rc-tree-icon__docu {
-    margin-right: 2px;
-    background-position: -110px -32px;
-    vertical-align: top;
-  }
-  .rc-tree-icon__customize {
-    margin-right: 2px;
-    vertical-align: top;
-  }
-  ${(props) =>
-    props.switcherIcon != null
-      ? css`
-          li span.rc-tree-switcher {
-            background: none;
-          }
-        `
-      : ""}
-  ${(props) =>
-    props.disableSwitch
-      ? css`
-          li span.rc-tree-switcher {
-            height: 0;
-            margin: 0;
-            width: 0;
-          }
-        `
-      : ``}
-  @media (max-width: 1024px) {
-    margin-top: 20px !important;
-    /* .rc-tree-node-content-wrapper {
-      margin-bottom: ${(props) =>
-      props.gapBetweenNodesTablet
-        ? +props.gapBetweenNodesTablet - 16 + "px;"
-        : +props.gapBetweenNodes - 16 + "px;"};
-    } */
-    & > li > .rc-tree-child-tree {
-      margin-left: 4px;
+        margin-right: 10px;
+        vertical-align: 1px;
+        height: 24px;
+        min-width: 8px;
+        max-width: 9px;
+        margin-top: -5px;
+      }
+      span.rc-tree-node-content-wrapper {
+        width: 83%;
+        span.rc-tree-iconEle {
+          margin-right: 8px;
+          vertical-align: 5px;
+        }
+        span.rc-tree-title {
+          width: calc(100% - 32px);
+          font-weight: 600;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          color: ${(props) => props.theme.treeNode.title.color};
+        }
+      }
+      .rc-tree-node-selected {
+        background: none !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+      }
+    }
+    .rc-tree-treenode-selected {
+      background: ${(props) => props.theme.treeNode.background};
+    }
+    .rc-tree-treenode-disabled > span:not(.rc-tree-switcher) {
+      color: ${(props) => props.theme.treeMenu.disabledColor} !important;
+    }
+    .node-motion {
+      transition: all 0.3s;
+      overflow-y: hidden;
+      overflow-x: hidden;
     }
   }
 `;
-
-StyledTreeMenu.defaultProps = { theme: Base };
-
+StyledTree.defaultProps = { theme: Base };
 const TreeMenu = React.forwardRef((props, ref) => {
   const {
     defaultExpandAll,
@@ -217,6 +127,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
     theme,
     childrenCount,
   } = props;
+
   const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
   const onTreeNodeSelect = (data, e) => {
@@ -258,13 +169,23 @@ const TreeMenu = React.forwardRef((props, ref) => {
 
   const modifiedChildren = renderChildren(children);
 
+  const motion = {
+    motionName: "node-motion",
+    motionAppear: false,
+    onAppearStart: () => ({ height: 0 }),
+    onAppearActive: (node) => ({ height: node.scrollHeight }),
+    onLeaveStart: (node) => ({ height: node.offsetHeight }),
+    onLeaveActive: () => ({ height: 0 }),
+  };
+
   return (
     <>
-      <StyledTreeMenu
-        id={id}
+      <StyledTree
+        motion={motion}
         style={style}
-        className={`${className} not-selectable`}
         ref={ref}
+        className={`${className} not-selectable`}
+        id={id}
         {...expandedKeysProp}
         loadData={loadData}
         checkable={!!checkable}
@@ -306,7 +227,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
         multiplicationFactor={32}
       >
         {modifiedChildren}
-      </StyledTreeMenu>
+      </StyledTree>
     </>
   );
 });

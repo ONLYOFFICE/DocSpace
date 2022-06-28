@@ -10,7 +10,7 @@ const ArticleSettings = React.memo(({ isLoadedPage }) => {
   return (
     <Article isLoadedPage={isLoadedPage}>
       <Article.Header>
-        <ArticleHeaderContent />
+        <ArticleHeaderContent isLoadedPage={isLoadedPage} />
       </Article.Header>
 
       <Article.Body>
@@ -35,7 +35,7 @@ const Layout = ({
   return (
     <>
       <ArticleSettings isLoadedPage={isLoadedPage} />
-      <Section withBodyScroll={true}>
+      <Section withBodyScroll={true} settingsStudio={true}>
         <Section.SectionHeader>
           <SectionHeaderContent />
         </Section.SectionHeader>

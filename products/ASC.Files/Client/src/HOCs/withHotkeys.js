@@ -40,6 +40,7 @@ const withHotkeys = (Component) => {
       uploadFile,
       someDialogIsOpen,
       enabledHotkeys,
+      mediaViewerIsVisible,
     } = props;
 
     const hotkeysFilter = {
@@ -47,7 +48,9 @@ const withHotkeys = (Component) => {
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
-      enabled: !someDialogIsOpen && enabledHotkeys,
+      enabled: !someDialogIsOpen && enabledHotkeys && !mediaViewerIsVisible,
+      // keyup: true,
+      // keydown: false,
     };
 
     const onKeyDown = (e) => activateHotkeys(e);
@@ -61,17 +64,50 @@ const withHotkeys = (Component) => {
     //Select/deselect item
     useHotkeys("x", selectFile);
 
-    //Select bottom element
-    useHotkeys("j, DOWN", selectBottom, hotkeysFilter);
+    useHotkeys(
+      "*",
+      (e) => {
+        if (e.shiftKey || e.ctrlKey) return;
 
-    //Select upper item
-    useHotkeys("k, UP", selectUpper, hotkeysFilter);
+        switch (e.key) {
+          case "ArrowDown":
+          case "j": {
+            return selectBottom();
+          }
 
-    //Select item on the left
-    useHotkeys("h, LEFT", selectLeft, hotkeysFilter);
+          case "ArrowUp":
+          case "k": {
+            return selectUpper();
+          }
 
-    //Select item on the right
-    useHotkeys("l, RIGHT", selectRight, hotkeysFilter);
+          case "ArrowRight":
+          case "l": {
+            return selectRight();
+          }
+
+          case "ArrowLeft":
+          case "h": {
+            return selectLeft();
+          }
+
+          default:
+            break;
+        }
+      },
+      hotkeysFilter
+    );
+
+    // //Select bottom element
+    // useHotkeys("j, DOWN", selectBottom, hotkeysFilter);
+
+    // //Select upper item
+    // useHotkeys("k, UP", selectUpper, hotkeysFilter);
+
+    // //Select item on the left
+    // useHotkeys("h, LEFT", selectLeft, hotkeysFilter);
+
+    // //Select item on the right
+    // useHotkeys("l, RIGHT", selectRight, hotkeysFilter);
 
     //Expand Selection DOWN
     useHotkeys("shift+DOWN", multiSelectBottom, hotkeysFilter);
@@ -127,21 +163,21 @@ const withHotkeys = (Component) => {
     useHotkeys(
       "Shift+s",
       () => setAction({ type: FileAction.Create, extension: "xlsx", id: -1 }),
-      hotkeysFilter
+      { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete presentation
     useHotkeys(
       "Shift+p",
       () => setAction({ type: FileAction.Create, extension: "pptx", id: -1 }),
-      hotkeysFilter
+      { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete form template
     useHotkeys(
       "Shift+o",
       () => setAction({ type: FileAction.Create, extension: "docxf", id: -1 }),
-      hotkeysFilter
+      { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete form template from file
@@ -155,7 +191,7 @@ const withHotkeys = (Component) => {
     useHotkeys(
       "Shift+f",
       () => setAction({ type: FileAction.Create, id: -1 }),
-      hotkeysFilter
+      { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Delete selection
@@ -214,11 +250,13 @@ const withHotkeys = (Component) => {
 
   return inject(
     ({
+      auth,
       filesStore,
       dialogsStore,
       settingsStore,
       filesActionsStore,
       hotkeyStore,
+      mediaViewerDataStore,
     }) => {
       const {
         setSelected,
@@ -250,7 +288,6 @@ const withHotkeys = (Component) => {
       } = hotkeyStore;
 
       const {
-        setHotkeyPanelVisible,
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
         someDialogIsOpen,
@@ -260,6 +297,9 @@ const withHotkeys = (Component) => {
         deleteAction,
         backToParentFolder,
       } = filesActionsStore;
+
+      const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
+      const { setHotkeyPanelVisible } = auth.settingsStore;
 
       return {
         setSelected,
@@ -295,6 +335,7 @@ const withHotkeys = (Component) => {
         uploadFile,
         someDialogIsOpen,
         enabledHotkeys,
+        mediaViewerIsVisible,
       };
     }
   )(observer(WithHotkeys));

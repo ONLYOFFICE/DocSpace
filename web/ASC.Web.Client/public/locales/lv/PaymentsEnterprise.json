@@ -1,4 +1,4 @@
-﻿{
+{
   "AccessSubscription": "Jūsu atbalsta un atjauninājumu abonementa derīguma termiņš beigsies šajā datumā:",
   "AdvantageEditor": "{{organizationName}} redaktori ar profesionālām funkcijām",
   "AdvantagePrivateRooom": "Privāta istaba šifrētai sadarbībai",
@@ -7,7 +7,7 @@
   "AdvantageWebEditors": "Mobilie tīmekļa redaktori",
   "ButtonBuyLicense": "Pirkt tagad",
   "ButtonUploadLicense": "Augšupielādēt licenci",
-  "ContactEmail": "Ja rodas jautājumi par pirkumu, sazinieties ar mums, rakstot e-pastu uz ",
+  "ContactEmail": "Ja rodas jautājumi par pirkumu, sazinieties ar mums, rakstot e-pastu uz",
   "ContactUrl": "Lai risinātu tehniskas problēmas, izmantojiet",
   "ErrorLoadingLicense": "Pārliecinieties, ka esat izvēlējies pareizo failu",
   "ExpiryPaidLicense": "Jūsu licencei vairs nav pieejams atbalsts kopš",

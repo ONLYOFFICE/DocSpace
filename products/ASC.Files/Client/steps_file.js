@@ -17,6 +17,7 @@ module.exports = function () {
       this.mockEndpoint(Endpoints.capabilities, "capabilities");
       this.mockEndpoint(Endpoints.thirdparty, "thirdparty");
       this.mockEndpoint(Endpoints.thumbnails, "thumbnails");
+      this.mockEndpoint(Endpoints.getFolder(1), "1");
     },
 
     selectAuthor: function () {

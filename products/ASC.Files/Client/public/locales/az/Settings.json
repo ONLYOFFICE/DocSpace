@@ -1,10 +1,10 @@
-﻿{
+{
+  "Clouds": "Buludlar",
   "CommonSettings": "Ümumi sazlamalar",
-  "ConnectAccounts": "Akkauntları qoş",
-  "ConnectAccountsSubTitle": "Qoşulmuş akkauntlar yoxdur",
   "ConnectAdminDescription": "Uğurlu qoşulma üçün, qeyd olunan məlumatları <1>bu səhifəyə</1> daxil edin.",
   "ConnectDescription": "Aşağıdakı hesabları ONLYOFFICE Sənədlərinə qoşa bilərsiniz. Bu hesablardakı sənədlər 'Sənədlərim' bölməsində düzəliş üçün əlçatan olacaq. ",
-  "ConnectedCloud": "Buluda qoşuldu",
+  "ConnectDescriptionText": "Hələ üçüncü tərəf buludlarına qoşulmamısınız",
+  "ConnectEmpty": "Burada heç nə yoxdur",
   "ConnectMakeShared": "Paylanılmış edərək, \"Ümumi\" qovluğuna yerləşdirmək",
   "ConnextOtherAccount": "Digər akkaunt",
   "DisplayFavorites": "Ən çox istifadə olunanları göstər",

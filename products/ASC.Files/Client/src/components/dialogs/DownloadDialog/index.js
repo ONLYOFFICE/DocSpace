@@ -453,7 +453,7 @@ class DownloadDialogComponent extends React.Component {
                         </Text>
                         <></>
                         <LinkWithDropdown
-                          className="link-other-formats"
+                          className="link-other-formats download-dialog-link"
                           containerMinWidth="fit-content"
                           data={[]}
                           directionX="left"

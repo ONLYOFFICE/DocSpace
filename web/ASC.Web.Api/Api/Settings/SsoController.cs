@@ -136,7 +136,13 @@ public class SsoController : BaseSettingsController
             throw new ArgumentException(Resource.SsoSettingsCouldNotBeNull);
         }
 
-        var settings = JsonSerializer.Deserialize<SsoSettingsV2>(serializeSettings);
+        var options = new JsonSerializerOptions
+        {
+            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true
+        };
+
+        var settings = JsonSerializer.Deserialize<SsoSettingsV2>(serializeSettings, options);
 
         if (settings == null)
         {

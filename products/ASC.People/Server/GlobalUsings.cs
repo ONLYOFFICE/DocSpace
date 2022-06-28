@@ -45,6 +45,8 @@ global using ASC.Data.Reassigns;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
+global using ASC.Files.Core;
+global using ASC.Files.Core.Security;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Models;
 global using ASC.People;
