@@ -517,7 +517,8 @@ class FilesActionStore {
         -1;
 
       if (withSelect) {
-        if (isSelected && selection.length === 1) {
+        //TODO: fix double event on context-menu click
+        if (isSelected && selection.length === 1 && !isContextItem) {
           setSelected("none");
         } else {
           setSelection([item]);

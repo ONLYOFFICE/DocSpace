@@ -1348,7 +1348,7 @@ const Dark = {
     icon: {
       width: "16px",
       marginRight: "8px",
-      lineHeight: "14px",
+      lineHeight: "10px",
 
       color: grayMaxLight,
       disableColor: gray,

@@ -1351,7 +1351,7 @@ const Base = {
     icon: {
       width: "16px",
       marginRight: "8px",
-      lineHeight: "14px",
+      lineHeight: "10px",
 
       color: black,
       disableColor: gray,

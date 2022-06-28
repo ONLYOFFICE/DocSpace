@@ -510,7 +510,7 @@ class ContextOptionsStore {
       {
         key: "owner-change",
         label: t("Translations:OwnerChange"),
-        icon: "/static/images/catalog.user.react.svg",
+        icon: "images/file.actions.owner.react.svg",
         onClick: this.onOwnerChange,
         disabled: false,
       },
