@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import elementResizeDetectorMaker from "element-resize-detector";
 
 import TileContainer from "./sub-components/TileContainer";
@@ -8,7 +9,7 @@ const containerPadding = 32;
 const tagMaxWidth = 100;
 const gridGap = 4;
 
-const VirtualRoomsTile = ({ data, sectionWidth }) => {
+const VirtualRoomsTile = ({ rooms, sectionWidth }) => {
   const [columnCount, setColumnCount] = React.useState(null);
 
   const firstTile = React.useRef(null);
@@ -30,7 +31,7 @@ const VirtualRoomsTile = ({ data, sectionWidth }) => {
 
       elementResizeDetector.uninstall(firstTile.current);
     };
-  }, [firstTile, data]);
+  }, [firstTile, rooms]);
 
   const onResize = React.useCallback(() => {
     if (firstTile?.current) {
@@ -46,20 +47,25 @@ const VirtualRoomsTile = ({ data, sectionWidth }) => {
 
   return (
     <TileContainer>
-      {data.map((item, index) => {
+      {rooms.map((room, index) => {
         return index === 0 ? (
           <Tile
-            key={item.key}
+            key={room.id}
             columnCount={columnCount}
-            {...item}
+            {...room}
+            item={room}
             ref={firstTile}
           />
         ) : (
-          <Tile key={item.key} columnCount={columnCount} {...item} />
+          <Tile key={room.id} columnCount={columnCount} item={room} {...room} />
         );
       })}
     </TileContainer>
   );
 };
 
-export default VirtualRoomsTile;
+export default inject(({ roomsStore }) => {
+  const { rooms } = roomsStore;
+
+  return { rooms };
+})(observer(VirtualRoomsTile));
