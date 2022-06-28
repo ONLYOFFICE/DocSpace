@@ -123,8 +123,12 @@ const StyledDropDown = styled(DropDown)`
     color: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
 
     svg {
-      path {
+      path[fill] {
         fill: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
+      }
+
+      path[stroke] {
+        stroke: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
       }
     }
 
