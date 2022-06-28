@@ -53,10 +53,11 @@ const SelectionPanelBody = ({
       theme={theme}
       visible={isPanelVisible}
       onClose={onClose}
-      style={{ maxWidth: "773px" }}
       displayType="modal"
       modalBodyPadding="0px"
       isLoading={isLoading}
+      autoMaxHeight
+      autoMaxWidth
     >
       <ModalDialog.Header theme={theme}>{dialogName}</ModalDialog.Header>
       <ModalDialog.Body theme={theme} className="select-file_body-modal-dialog">

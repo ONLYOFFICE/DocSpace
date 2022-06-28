@@ -170,7 +170,7 @@ const StyledAsideBody = styled.div`
   height: 100%;
 
   .selection-panel_aside-body {
-    height: calc(100% - 32px);
+    height: 100%;
     display: grid;
     grid-template-rows: max-content auto max-content;
   }
