@@ -139,7 +139,7 @@ const Items = ({
 
   moveDragItems,
 
-  docspace,
+  docSpace,
 }) => {
   const isActive = React.useCallback(
     (item) => {
@@ -153,7 +153,7 @@ const Items = ({
   );
   const getEndOfBlock = React.useCallback(
     (item) => {
-      if (docspace) return false;
+      if (docSpace) return false;
 
       switch (item.key) {
         case "0-3":
@@ -164,7 +164,7 @@ const Items = ({
           return false;
       }
     },
-    [docspace]
+    [docSpace]
   );
 
   const getFolderIcon = React.useCallback((item) => {
@@ -373,7 +373,7 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       currentId: id,
       showText: auth.settingsStore.showText,
-      docspace: auth.settingsStore.docspace,
+      docSpace: auth.settingsStore.docSpace,
       pathParts: selectedFolderStore.pathParts,
       data: treeFolders,
       selectedTreeNode,
