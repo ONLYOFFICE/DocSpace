@@ -133,7 +133,7 @@ export const settingsTree = [
   {
     key: "4",
     icon: "/images/data-management.react.svg",
-    link: "datamanagement",
+    link: "backup",
     tKey: "Backup",
     isHeader: true,
     children: [
@@ -149,7 +149,7 @@ export const settingsTree = [
   {
     key: "5",
     icon: "/images/data-management.react.svg",
-    link: "datamanagement",
+    link: "restore-backup",
     tKey: "RestoreBackup",
     isHeader: true,
     children: [
@@ -157,7 +157,7 @@ export const settingsTree = [
         key: "5-0",
         icon: "",
         link: "restore-backup",
-        tKey: "Backup",
+        tKey: "RestoreBackup",
         isCategory: true,
       },
     ],

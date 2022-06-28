@@ -125,14 +125,11 @@ const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
 );
-const DATA_MANAGEMENT_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/datamanagement/backup"
-);
+const DATA_MANAGEMENT_URL = combineUrl(PROXY_BASE_URL, "/backup");
 
 const RESTORE_DATA_MANAGEMENT_URL = combineUrl(
   PROXY_BASE_URL,
-  "/datamanagement/restore-backup"
+  "/restore-backup"
 );
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
