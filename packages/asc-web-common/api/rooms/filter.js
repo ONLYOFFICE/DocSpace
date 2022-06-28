@@ -1,5 +1,6 @@
 import { getObjectByLocation, toUrlParams } from "../../utils";
 import queryString from "query-string";
+import { RoomSearchArea } from "../../constants";
 
 const PAGE = "page";
 const PAGE_COUNT = "count";
@@ -23,7 +24,7 @@ const SEARCH_TYPE = "withSubfolders";
 const DEFAULT_SEARCH_TYPE = true;
 
 const SEARCH_AREA = "searchArea";
-const DEFAULT_SEARCH_AREA = null;
+const DEFAULT_SEARCH_AREA = RoomSearchArea.Active;
 
 const TAGS = "tags";
 const DEFAULT_TAGS = null;
@@ -82,8 +83,7 @@ class RoomsFilter {
       subjectId,
       searchInContent,
       withSubfolders,
-      withSubfolders,
-      null,
+      searchArea,
       tags
     );
 
