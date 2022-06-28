@@ -28,11 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
+using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading;
 using ASC.Common.Web;
 using ASC.Core.Tenants;
@@ -47,6 +50,7 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
@@ -86,43 +90,74 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
+            var (globalStore, filesLinkUtility, _, _, _, options) = scopeClass;
             var stream = TempStream.Create();
+            var Logger = options.CurrentValue;
 
-            await (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZipAsync(stream, scope);
-            await (DaoOperation as FileDownloadOperation<int>).CompressToZipAsync(stream, scope);
-
-            if (stream != null)
+            try
             {
-                var archiveExtension = "";
+                await (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZipAsync(stream, scope);
+                await (DaoOperation as FileDownloadOperation<int>).CompressToZipAsync(stream, scope);
 
-                using (var zip = scope.ServiceProvider.GetService<CompressToArchive>())
+                if (stream != null)
                 {
-                    archiveExtension = zip.ArchiveExtension;
+                    var archiveExtension = "";
+
+                    using (var zip = scope.ServiceProvider.GetService<CompressToArchive>())
+                    {
+                        archiveExtension = zip.ArchiveExtension;
+                    }
+
+                    stream.Position = 0;
+                    string fileName = FileConstant.DownloadTitle + archiveExtension;
+                    var store = globalStore.GetStore();
+                    var path = string.Format(@"{0}\{1}", ((IAccount)principal.Identity).ID, fileName);
+
+                    if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
+                    {
+                        await store.DeleteAsync(FileConstant.StorageDomainTmp, path);
+                    }
+
+                    await store.SaveAsync(
+                        FileConstant.StorageDomainTmp,
+                        path,
+                        stream,
+                        MimeMapping.GetMimeMapping(path),
+                        "attachment; filename=\"" + fileName + "\"");
+                    Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, archiveExtension);
                 }
 
-                stream.Position = 0;
-                string fileName = FileConstant.DownloadTitle + archiveExtension;
-                var store = globalStore.GetStore();
-                var path = string.Format(@"{0}\{1}", ((IAccount)principal.Identity).ID, fileName);
+                TaskInfo.SetProperty(FINISHED, true);
+                FillDistributedTask();
+                TaskInfo.PublishChanges();
 
-                if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
-                {
-                    await store.DeleteAsync(FileConstant.StorageDomainTmp, path);
-                }
-
-                await store.SaveAsync(
-                    FileConstant.StorageDomainTmp,
-                    path,
-                    stream,
-                    MimeMapping.GetMimeMapping(path),
-                    "attachment; filename=\"" + fileName + "\"");
-                Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, archiveExtension);
             }
-
-            TaskInfo.SetProperty(FINISHED, true);
-            FillDistributedTask();
-            TaskInfo.PublishChanges();
+            catch (AuthorizingException authError)
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException;
+                Logger.Error(Error, new SecurityException(Error, authError));
+            }
+            catch (AggregateException ae)
+            {
+                ae.Flatten().Handle(e => e is TaskCanceledException || e is OperationCanceledException);
+            }
+            catch (Exception error)
+            {
+                Error = error is TaskCanceledException || error is OperationCanceledException
+                            ? FilesCommonResource.ErrorMassage_OperationCanceledException
+                            : error.Message;
+                Logger.Error(error, error);
+            }
+            finally
+            {
+                try
+                {
+                    TaskInfo.SetProperty(FINISHED, true);
+                    FillDistributedTask();
+                    TaskInfo.PublishChanges();
+                }
+                catch { /* ignore */ }
+            }
         }
 
         public override void PublishChanges(DistributedTask task)
@@ -257,9 +292,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = await FolderDao.GetFolderAsync(folderId);
-                
+
                 if (folder == null || !await FilesSecurity.CanReadAsync(folder)) continue;
-                
+
                 var folderPath = path + folder.Title + "/";
 
                 entriesPathId.Add(folderPath, default(T));
@@ -278,7 +313,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 var nestedFolders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
                 var filteredNestedFolders = await FilesSecurity.FilterReadAsync(nestedFolders);
                 nestedFolders = filteredNestedFolders.ToList();
-                
+
                 var filesInFolder = await GetFilesInFoldersAsync(scope, nestedFolders.ConvertAll(f => f.ID), folderPath);
                 entriesPathId.Add(filesInFolder);
             }
@@ -289,7 +324,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             if (_entriesPathId == null) return;
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            var (_, _, _, fileConverter, filesMessageService) = scopeClass;
+            var (_, _, _, fileConverter, filesMessageService, _) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
 
             using (var compressTo = scope.ServiceProvider.GetService<CompressToArchive>())
@@ -491,28 +526,32 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private SetupInfo SetupInfo { get; }
         private FileConverter FileConverter { get; }
         private FilesMessageService FilesMessageService { get; }
+        private IOptionsMonitor<ILog> Options { get; }
 
         public FileDownloadOperationScope(
             GlobalStore globalStore,
             FilesLinkUtility filesLinkUtility,
             SetupInfo setupInfo,
             FileConverter fileConverter,
-            FilesMessageService filesMessageService)
+            FilesMessageService filesMessageService,
+            IOptionsMonitor<ILog> options)
         {
             GlobalStore = globalStore;
             FilesLinkUtility = filesLinkUtility;
             SetupInfo = setupInfo;
             FileConverter = fileConverter;
             FilesMessageService = filesMessageService;
+            Options = options;
         }
 
-        public void Deconstruct(out GlobalStore globalStore, out FilesLinkUtility filesLinkUtility, out SetupInfo setupInfo, out FileConverter fileConverter, out FilesMessageService filesMessageService)
+        public void Deconstruct(out GlobalStore globalStore, out FilesLinkUtility filesLinkUtility, out SetupInfo setupInfo, out FileConverter fileConverter, out FilesMessageService filesMessageService, out IOptionsMonitor<ILog> options)
         {
             globalStore = GlobalStore;
             filesLinkUtility = FilesLinkUtility;
             setupInfo = SetupInfo;
             fileConverter = FileConverter;
             filesMessageService = FilesMessageService;
+            options = Options;
         }
     }
 
