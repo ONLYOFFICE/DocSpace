@@ -143,9 +143,98 @@ class RoomsStore {
       combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/filter?${urlFilter}`
+        `/rooms?${urlFilter}`
       )
     );
+  };
+
+  selectRoom = (checked, item) => {
+    this.bufferSelection = null;
+
+    if (checked) {
+      this.selection.push(item);
+    } else {
+      const idx = this.selection.findIndex((room) => room.id === item.id);
+
+      this.selection.splice(idx, 1);
+    }
+  };
+
+  openContextMenu = (item) => {
+    this.bufferSelection = item;
+  };
+
+  closeContextMenu = () => {
+    this.bufferSelection = null;
+  };
+
+  createRoom = (e, title = "Room 4", roomType = RoomsType.ReadOnlyRoom) => {
+    const data = { title, roomType };
+
+    const request = () =>
+      api.rooms.createRoom(data).then((res) => {
+        this.fetchRooms(null, this.filter).then(() => {
+          toastr.success(`${res.title} was successful create`);
+        });
+      });
+
+    return request();
+  };
+
+  pinRoom = () => {
+    const selectedRoom =
+      this.selection.length > 0 ? this.selection[0] : this.bufferSelection;
+
+    if (selectedRoom.pinned) {
+      return this.unpinRoom();
+    }
+
+    const request = () =>
+      api.rooms.pinRoom(selectedRoom.id).then((res) => {
+        this.fetchRooms(null, this.filter).then(() => {
+          toastr.success(`${selectedRoom.title} was successful pin`);
+        });
+      });
+
+    return request();
+  };
+
+  unpinRoom = (room) => {
+    const selectedRoom = room
+      ? room
+      : this.selection.length > 0
+      ? this.selection[0]
+      : this.bufferSelection;
+
+    if (!selectedRoom.pinned) {
+      return this.pinRoom();
+    }
+
+    const request = () =>
+      api.rooms.unpinRoom(selectedRoom.id).then((res) => {
+        this.fetchRooms(null, this.filter).then(() => {
+          toastr.success(`${selectedRoom.title} was successful unpin`);
+        });
+      });
+
+    return request();
+  };
+
+  deleteRoom = () => {
+    const selectedRoom =
+      this.selection.length > 0 ? this.selection[0] : this.bufferSelection;
+
+    const request = () =>
+      api.rooms.deleteRoom(selectedRoom.id).then((res) => {
+        //TODO: change setTimeout
+        setTimeout(() => {
+          this.fetchRooms(null, this.filter).then(() => {
+            toastr.success(`${selectedRoom.title} was successful delete`);
+          });
+        }, 500);
+      });
+
+    return request();
   };
 }
 

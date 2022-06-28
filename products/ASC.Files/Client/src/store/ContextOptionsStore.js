@@ -22,6 +22,7 @@ class ContextOptionsStore {
   versionHistoryStore;
   settingsStore;
   filesSettingsStore;
+  roomsStore;
 
   constructor(
     authStore,
@@ -32,7 +33,8 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore
+    settingsStore,
+    roomsStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -44,6 +46,7 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
+    this.roomsStore = roomsStore;
   }
 
   onOpenFolder = (item) => {
@@ -343,19 +346,47 @@ class ContextOptionsStore {
     console.log("edit room");
   };
 
-  onClickPinRoom = (room) => {
-    console.log("pin room");
+  onClickInviteUsers = (room) => {
+    console.log("invite users");
+  };
+
+  onClickInfo = (room) => {
+    console.log("click info");
+  };
+
+  onClickPinRoom = () => {
+    this.roomsStore.pinRoom();
+  };
+
+  onClickUnpinRoom = () => {
+    this.roomsStore.unpinRoom();
   };
 
   onClickMoveRoomToArchive = (room) => {
     console.log("move room to archive");
   };
 
-  onClickDeleteRoom = (room) => {
-    console.log("delete room");
+  onClickDeleteRoom = () => {
+    this.roomsStore.deleteRoom();
   };
 
   getRoomsContextOptions = (room, t) => {
+    const pin = !room.pinned
+      ? {
+          key: "pin",
+          label: "Pin to top",
+          icon: "/static/images/pin.react.svg",
+          onClick: this.onClickPinRoom,
+          disabled: false,
+        }
+      : {
+          key: "unpin",
+          label: "Unpin",
+          icon: "/static/images/unpin.react.svg",
+          onClick: this.onClickUnpinRoom,
+          disabled: false,
+        };
+
     const contextOptions = [
       {
         key: "edit",
@@ -365,17 +396,25 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
-        key: "pin",
-        label: "Pin to top",
-        icon: "images/pin.react.svg",
-        onClick: () => this.onClickPinRoom(room),
+        key: "users",
+        label: "Invite users",
+        icon: "/static/images/person.react.svg",
+        onClick: () => this.onClickInviteUsers(room),
         disabled: false,
       },
+      {
+        key: "info",
+        label: "Info",
+        icon: "/static/images/info.react.svg",
+        onClick: () => this.onClickInfo(room),
+        disabled: false,
+      },
+      { ...pin },
       { key: "separator", isSeparator: true },
       {
         key: "archive",
         label: "Move to archive",
-        icon: "images/room.archive.svg",
+        icon: "/static/images/room.archive.svg",
         onClick: () => this.onClickMoveRoomToArchive(room),
         disabled: false,
       },
@@ -383,7 +422,7 @@ class ContextOptionsStore {
         key: "delete",
         label: "Delete",
         icon: "images/trash.react.svg",
-        onClick: () => this.onClickDeleteRoom(room),
+        onClick: this.onClickDeleteRoom,
         disabled: false,
       },
     ];

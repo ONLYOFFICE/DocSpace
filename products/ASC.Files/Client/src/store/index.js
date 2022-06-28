@@ -67,6 +67,16 @@ const filesActionsStore = new FilesActionsStore(
   mediaViewerDataStore
 );
 
+const roomsStore = new RoomsStore(
+  store.auth,
+  store.auth.settingsStore,
+  store.auth.userStore,
+  filesStore,
+  selectedFolderStore,
+  treeFoldersStore,
+  settingsStore
+);
+
 const versionHistoryStore = new VersionHistoryStore(filesStore);
 const contextOptionsStore = new ContextOptionsStore(
   store.auth,
@@ -77,7 +87,8 @@ const contextOptionsStore = new ContextOptionsStore(
   treeFoldersStore,
   uploadDataStore,
   versionHistoryStore,
-  settingsStore
+  settingsStore,
+  roomsStore
 );
 
 const hotkeyStore = new HotkeyStore(
@@ -87,16 +98,6 @@ const hotkeyStore = new HotkeyStore(
   filesActionsStore,
   treeFoldersStore,
   uploadDataStore
-);
-
-const roomsStore = new RoomsStore(
-  store.auth,
-  store.auth.settingsStore,
-  store.auth.userStore,
-  filesStore,
-  selectedFolderStore,
-  treeFoldersStore,
-  settingsStore
 );
 
 const stores = {
