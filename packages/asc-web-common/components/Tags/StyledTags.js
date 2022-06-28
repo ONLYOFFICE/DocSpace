@@ -5,6 +5,8 @@ const StyledTags = styled.div`
   display: flex;
 
   align-items: center;
+
+  overflow: hidden;
 `;
 
 export default StyledTags;
