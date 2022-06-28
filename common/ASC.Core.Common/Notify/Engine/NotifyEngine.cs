@@ -294,6 +294,7 @@ namespace ASC.Notify.Engine
                     catch (Exception exc)
                     {
                         directresponses.Add(new SendResponse(request.NotifyAction, request.Recipient, exc));
+                        log.Error(exc);
                     }
                     responces.AddRange(directresponses);
                 }
@@ -324,6 +325,7 @@ namespace ASC.Notify.Engine
                                 catch (Exception exc)
                                 {
                                     responces.Add(new SendResponse(request.NotifyAction, request.Recipient, exc));
+                                    log.Error(exc);
                                 }
                             }
                         }
@@ -358,9 +360,11 @@ namespace ASC.Notify.Engine
 
             try
             {
+                log.Debug("Prepare begin");//temp
                 PrepareRequestFillSenders(request, serviceScope);
                 PrepareRequestFillPatterns(request, serviceScope);
                 PrepareRequestFillTags(request, serviceScope);
+                log.Debug("Prepare end");//temp
             }
             catch (Exception ex)
             {
@@ -378,10 +382,12 @@ namespace ASC.Notify.Engine
                         try
                         {
                             response = SendDirectNotify(request, channel, serviceScope);
+                            log.Debug("SendDirectNotify");//temp
                         }
                         catch (Exception exc)
                         {
                             response = new SendResponse(request.NotifyAction, channel.SenderName, request.Recipient, exc);
+                            log.Error(exc);
                         }
                     }
                     else
@@ -411,7 +417,7 @@ namespace ASC.Notify.Engine
             request.CurrentMessage = noticeMessage;
             var preventresponse = CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
             if (preventresponse != null) return preventresponse;
-
+            log.Debug("SendAsync");//temp
             channel.SendAsync(noticeMessage);
 
             return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);

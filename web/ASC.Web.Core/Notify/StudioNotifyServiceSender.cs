@@ -68,6 +68,8 @@ namespace ASC.Web.Studio.Core.Notify
 
             try
             {
+                log.Debug("onMessage try");//temp
+
                 var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
                 commonLinkUtilitySettings.ServerUri = item.BaseUrl;
                 var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
@@ -94,6 +96,8 @@ namespace ASC.Web.Studio.Core.Notify
                     }
                 }
 
+                log.Debug("onMessage UserId");//temp
+
                 if (culture != null && !Equals(Thread.CurrentThread.CurrentCulture, culture))
                 {
                     Thread.CurrentThread.CurrentCulture = culture;
@@ -103,6 +107,8 @@ namespace ASC.Web.Studio.Core.Notify
                     Thread.CurrentThread.CurrentUICulture = culture;
                 }
 
+                log.Debug("onMessage culture");//temp
+
                 client.SendNoticeToAsync(
                     (NotifyAction)item.Action,
                     item.ObjectId,
@@ -110,6 +116,8 @@ namespace ASC.Web.Studio.Core.Notify
                     item.SenderNames.Count > 0 ? item.SenderNames.ToArray() : null,
                     item.CheckSubsciption,
                     item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
+
+                log.Debug("onMessage send");//temp
             }
             catch (Exception e)
             {

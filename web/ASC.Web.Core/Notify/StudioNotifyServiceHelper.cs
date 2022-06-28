@@ -84,6 +84,7 @@ namespace ASC.Web.Core.Notify
         {
             try
             {
+                _log.Debug("SendNoticeToAsync begin");
                 var item = new NotifyItem
                 {
                     TenantId = TenantManager.GetCurrentTenant().TenantId,
@@ -118,6 +119,8 @@ namespace ASC.Web.Core.Notify
                     }
                 }
 
+                _log.Debug("SendNoticeToAsync middle");
+
                 if (senderNames != null)
                 {
                     item.SenderNames.AddRange(senderNames);
@@ -129,6 +132,7 @@ namespace ASC.Web.Core.Notify
                 }
 
                 Cache.Publish(item, CacheNotifyAction.Any);
+                _log.Debug("SendNoticeToAsync end");
             }
             catch (Exception e)
             {
