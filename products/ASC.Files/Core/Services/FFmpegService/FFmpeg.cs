@@ -49,12 +49,18 @@ public class FFmpegService
     private readonly string _fFmpegPath;
     private readonly string _fFmpegArgs;
     private readonly string _fFmpegThumbnailsArgs;
+    private readonly List<string> _fFmpegFormats;
 
     private readonly ILogger<FFmpegService> _logger;
 
     public bool IsConvertable(string extension)
     {
         return MustConvertable.Contains(extension.TrimStart('.'));
+    }
+
+    public bool ExistFormat(string extension)
+    {
+        return _fFmpegFormats.Contains(extension);
     }
 
     public Task<Stream> Convert(Stream inputStream, string inputFormat)
@@ -95,6 +101,14 @@ public class FFmpegService
         _fFmpegPath = configuration["files:ffmpeg:value"];
         _fFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
         _fFmpegThumbnailsArgs = configuration["files:ffmpeg:thumbnails:args"] ?? "-ss 3 -i \"{0}\" -vf \"thumbnail\" -frames:v 1 -vsync vfr \"{1}\" -y";
+        _fFmpegFormats = configuration.GetSection("files:ffmpeg:thumbnails:formats").Get<List<string>>() ?? new List<string>
+            {
+                ".3gp", ".asf", ".avi", ".f4v",
+                ".fla", ".flv", ".m2ts", ".m4v",
+                ".mkv", ".mov", ".mp4", ".mpeg",
+                ".mpg", ".mts", ".ogv", ".svi",
+                ".vob", ".webm", ".wmv"
+            };
 
         _convertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? Array.Empty<string>()).ToList();
 

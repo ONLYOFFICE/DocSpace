@@ -85,6 +85,10 @@ public class Builder<T>
     private readonly FFmpegService _fFmpegService;
     private readonly TempPath _tempPath;
 
+    private readonly List<string> _imageFormatsCanBeCrop = new List<string>
+            {
+                ".bmp", ".gif", ".jpeg", ".jpg", ".pbm", ".png", ".tiff", ".tga", ".webp",
+            };
     public Builder(
         ThumbnailSettings settings,
         TenantManager tenantManager,
@@ -167,7 +171,7 @@ public class Builder<T>
 
             var ext = FileUtility.GetFileExtension(file.Title);
 
-            if (!_config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
+            if (!CanCreateThumbnail(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
             {
                 file.ThumbnailStatus = ASC.Files.Core.Thumbnail.NotRequired;
                 foreach (var size in _thumbnailSettings.Sizes)
@@ -178,14 +182,14 @@ public class Builder<T>
                 return;
             }
 
-            if (IsVideo(file))
+            if (IsVideo(ext))
             {
                 await MakeThumbnailFromVideo(fileDao, file);
             }
             else
             {
 
-                if (IsImage(file))
+                if (IsImage(ext))
                 {
                     await CropImage(fileDao, file);
                 }
@@ -354,18 +358,19 @@ public class Builder<T>
         _logger.DebugMakeThumbnail4(file.Id.ToString());
     }
 
-    private bool IsImage(File<T> file)
+    private bool CanCreateThumbnail(string extention)
     {
-        var extension = FileUtility.GetFileExtension(file.Title);
-
-        return FileUtility.ExtsImage.Contains(extension);
+        return _config.FormatsArray.Contains(extention) || IsVideo(extention) || IsImage(extention);
     }
 
-    private bool IsVideo(File<T> file)
+    private bool IsImage(string extention)
     {
-        var extension = FileUtility.GetFileExtension(file.Title);
+        return _imageFormatsCanBeCrop.Contains(extention);
+    }
 
-        return FileUtility.ExtsVideo.Contains(extension);
+    private bool IsVideo(string extention)
+    {
+        return _fFmpegService.ExistFormat(extention);
     }
 
     private async Task CropImage(IFileDao<T> fileDao, File<T> file)
