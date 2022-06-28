@@ -33,6 +33,7 @@ const Certificates = (props) => {
     idp_verifyAlgorithm,
     sp_encryptAlgorithm,
     sp_decryptAlgorithm,
+    onLoadXML,
   } = props;
 
   let prefix = "";
@@ -76,7 +77,7 @@ const Certificates = (props) => {
         {prefix === "idp" && (
           <>
             <Button
-              isDisabled={!enableSso}
+              isDisabled={!enableSso || onLoadXML}
               label={t("AddCertificate")}
               onClick={onOpenIdpModal}
               size="small"
@@ -89,7 +90,7 @@ const Certificates = (props) => {
         {prefix === "sp" && (
           <>
             <Button
-              isDisabled={!enableSso}
+              isDisabled={!enableSso || onLoadXML}
               label={t("AddCertificate")}
               onClick={onOpenSpModal}
               size="small"
@@ -163,6 +164,7 @@ export default inject(({ ssoStore }) => {
     idp_verifyAlgorithm,
     sp_encryptAlgorithm,
     sp_decryptAlgorithm,
+    onLoadXML,
   } = ssoStore;
 
   return {
@@ -176,5 +178,6 @@ export default inject(({ ssoStore }) => {
     idp_verifyAlgorithm,
     sp_encryptAlgorithm,
     sp_decryptAlgorithm,
+    onLoadXML,
   };
 })(observer(Certificates));

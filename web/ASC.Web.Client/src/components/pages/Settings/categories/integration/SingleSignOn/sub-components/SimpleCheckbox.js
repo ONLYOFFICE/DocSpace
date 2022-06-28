@@ -11,12 +11,13 @@ const SimpleCheckbox = (props) => {
     isChecked,
     enableSso,
     onCheckboxChange,
+    onLoadXML,
   } = props;
 
   return (
     <Checkbox
       className="checkbox-input"
-      isDisabled={!enableSso}
+      isDisabled={!enableSso || onLoadXML}
       isChecked={isChecked}
       label={label}
       name={name}
@@ -27,10 +28,11 @@ const SimpleCheckbox = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { enableSso, onCheckboxChange } = ssoStore;
+  const { enableSso, onCheckboxChange, onLoadXML } = ssoStore;
 
   return {
     enableSso,
     onCheckboxChange,
+    onLoadXML,
   };
 })(observer(SimpleCheckbox));

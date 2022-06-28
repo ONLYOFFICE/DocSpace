@@ -18,6 +18,7 @@ const SimpleTextInput = (props) => {
     onBlur,
     onFocus,
     onTextInputChange,
+    onLoadXML,
   } = props;
 
   return (
@@ -25,7 +26,7 @@ const SimpleTextInput = (props) => {
       <TextInput
         className="field-input"
         hasError={hasError}
-        isDisabled={isDisabled ?? !enableSso}
+        isDisabled={isDisabled ?? (!enableSso || onLoadXML)}
         name={name}
         onBlur={onBlur}
         onFocus={onFocus}
@@ -40,12 +41,13 @@ const SimpleTextInput = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { enableSso, onBlur, onFocus, onTextInputChange } = ssoStore;
+  const { enableSso, onBlur, onFocus, onTextInputChange, onLoadXML } = ssoStore;
 
   return {
     enableSso,
     onBlur,
     onFocus,
     onTextInputChange,
+    onLoadXML,
   };
 })(observer(SimpleTextInput));
