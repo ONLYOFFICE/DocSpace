@@ -10,6 +10,7 @@ import {
   getMetadata,
 } from "@appserver/common/api/settings";
 import toastr from "../helpers/toastr";
+import { BINDING_POST, BINDING_REDIRECT } from "../helpers/constants";
 
 class SsoFormStore {
   isSsoEnabled = false;
@@ -373,6 +374,11 @@ class SsoFormStore {
       } else {
         let prefix = "";
 
+        if (key === "idpSettings") {
+          this.setSsoUrls(object[key]);
+          this.setSloUrls(object[key]);
+        }
+
         if (key !== "fieldMapping" && key !== "idpSettings") {
           prefix = key.includes("idp") ? "idp_" : "sp_";
         }
@@ -385,6 +391,26 @@ class SsoFormStore {
           }
         }
       }
+    }
+  };
+
+  setSsoUrls = (o) => {
+    switch (o.ssoBinding) {
+      case BINDING_POST:
+        this.ssoUrlPost = o.ssoUrl;
+        break;
+      case BINDING_REDIRECT:
+        this.ssoUrlRedirect = o.ssoUrl;
+    }
+  };
+
+  setSloUrls = (o) => {
+    switch (o.sloBinding) {
+      case BINDING_POST:
+        this.sloUrlPost = o.ssoUrl;
+        break;
+      case BINDING_REDIRECT:
+        this.sloUrlRedirect = o.ssoUrl;
     }
   };
 

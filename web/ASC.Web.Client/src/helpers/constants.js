@@ -31,3 +31,7 @@ export const ValidationResult = Object.freeze({
   Invalid: 1,
   Expired: 2,
 });
+
+export const BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
+export const BINDING_REDIRECT =
+  "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
