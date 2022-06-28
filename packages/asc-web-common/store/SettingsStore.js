@@ -72,7 +72,7 @@ class SettingsStore {
   encryptionKeys = null;
 
   personal = false;
-   = true;
+  docSpace = true;
 
   roomsMode = false;
 
@@ -170,8 +170,6 @@ class SettingsStore {
       const dp = combineUrl(proxyURL, "/products/files/");
       this.setDefaultPage(dp);
     }
-
-    console.log(newSettings);
 
     Object.keys(newSettings).map((key) => {
       if (key in this) {
