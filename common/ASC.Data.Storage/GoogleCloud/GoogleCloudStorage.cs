@@ -267,13 +267,18 @@ namespace ASC.Data.Storage.GoogleCloud
             return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
         }
 
+        private bool EnableQuotaCheck(string domain)
+        {
+            return (QuotaController != null) && !domain.EndsWith("_temp");
+        }
+
         public async Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
                           string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
         {
 
             var buffered = TempStream.GetBuffered(stream);
 
-            if (QuotaController != null)
+            if (EnableQuotaCheck(domain))
             {
                 QuotaController.QuotaUsedCheck(buffered.Length);
             }

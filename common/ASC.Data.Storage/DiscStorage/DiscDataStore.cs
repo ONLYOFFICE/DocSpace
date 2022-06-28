@@ -156,12 +156,17 @@ namespace ASC.Data.Storage.DiscStorage
         {
             return SaveAsync(domain, path, stream);
         }
+        private bool EnableQuotaCheck(string domain)
+        {
+            return (QuotaController != null) && !domain.EndsWith("_temp");
+        }
 
         public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
         {
             Log.Debug("Save " + path);
             var buffered = TempStream.GetBuffered(stream);
-            if (QuotaController != null)
+            
+            if (EnableQuotaCheck(domain))
             {
                 QuotaController.QuotaUsedCheck(buffered.Length);
             }
