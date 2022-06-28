@@ -15,6 +15,7 @@ const SubmitResetButtons = (props) => {
     openResetModal,
     resetForm,
     confirmationResetModal,
+    isSubmitLoading,
   } = props;
 
   return (
@@ -22,16 +23,18 @@ const SubmitResetButtons = (props) => {
       <Button
         className="save-button"
         label={t("Common:SaveButton")}
-        onClick={onSubmit}
+        onClick={() => onSubmit(t)}
         primary
         size="small"
         tabIndex={23}
+        isLoading={isSubmitLoading}
       />
       <Button
         label={t("Settings:RestoreDefaultButton")}
         onClick={isSsoEnabled ? openResetModal : resetForm}
         size="small"
         tabIndex={24}
+        isDisabled={isSubmitLoading}
       />
       {confirmationResetModal && <ResetConfirmationModal />}
     </Box>
@@ -45,6 +48,7 @@ export default inject(({ ssoStore }) => {
     openResetModal,
     resetForm,
     confirmationResetModal,
+    isSubmitLoading,
   } = ssoStore;
 
   return {
@@ -53,5 +57,6 @@ export default inject(({ ssoStore }) => {
     openResetModal,
     resetForm,
     confirmationResetModal,
+    isSubmitLoading,
   };
 })(observer(SubmitResetButtons));

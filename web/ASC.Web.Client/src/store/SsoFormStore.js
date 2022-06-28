@@ -131,6 +131,8 @@ class SsoFormStore {
   sp_assertionConsumerUrlErrorMessage = null;
   sp_singleLogoutUrlErrorMessage = null;
 
+  isSubmitLoading = false;
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -336,15 +338,20 @@ class SsoFormStore {
       hideAuthPage: this.hideAuthPage,
     };
   };
-  onSubmit = async () => {
+  onSubmit = async (t) => {
     const settings = this.getSettings();
     const data = { serializeSettings: JSON.stringify(settings) };
 
+    this.isSubmitLoading = true;
+
     try {
       await submitSsoForm(data);
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+      this.isSubmitLoading = false;
     } catch (err) {
       toastr.error(err);
       console.error(err);
+      this.isSubmitLoading = false;
     }
   };
 
