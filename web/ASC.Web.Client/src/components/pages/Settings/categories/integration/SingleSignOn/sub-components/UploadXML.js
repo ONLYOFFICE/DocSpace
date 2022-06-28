@@ -14,7 +14,7 @@ import FileInput from "@appserver/components/file-input";
 const uploadIcon = <ReactSVG src="images/actions.upload.react.svg" />;
 
 const UploadXML = (props) => {
-  const { t } = useTranslation("SingleSignOn");
+  const { t } = useTranslation(["SingleSignOn", "Common"]);
   const {
     enableSso,
     uploadXmlUrl,
@@ -56,7 +56,7 @@ const UploadXML = (props) => {
 
         <FileInput
           accept=".xml"
-          buttonLabel={t("ChooseFile")}
+          buttonLabel={t("Common:SelectFile")}
           className="xml-upload-file"
           isDisabled={!enableSso || onLoadXML}
           onInput={onUploadXmlMetadata}
