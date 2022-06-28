@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
@@ -9,11 +11,15 @@ using ASC.Notify.Recipients;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Web.Core.Notify
 {
     [Scope]
     public class StudioNotifyServiceHelper
     {
+        private readonly ILog _log;
+
         private ICacheNotify<NotifyItem> Cache { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
         private AuthContext AuthContext { get; }
@@ -25,13 +31,15 @@ namespace ASC.Web.Core.Notify
             AuthContext authContext,
             TenantManager tenantManager,
             CommonLinkUtility commonLinkUtility,
-            ICacheNotify<NotifyItem> cache)
+            ICacheNotify<NotifyItem> cache,
+            IOptionsMonitor<ILog> options)
         {
             StudioNotifyHelper = studioNotifyHelper;
             AuthContext = authContext;
             TenantManager = tenantManager;
             CommonLinkUtility = commonLinkUtility;
             Cache = cache;
+            _log = options.CurrentValue;
         }
 
         public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -74,51 +82,58 @@ namespace ASC.Web.Core.Notify
 
         public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
         {
-            var item = new NotifyItem
+            try
             {
-                TenantId = TenantManager.GetCurrentTenant().TenantId,
-                UserId = AuthContext.CurrentAccount.ID.ToString(),
-                Action = (NotifyAction)action,
-                CheckSubsciption = checkSubsciption,
-                BaseUrl = CommonLinkUtility.GetFullAbsolutePath("")
-            };
-
-            if (objectID != null)
-            {
-                item.ObjectId = objectID;
-            }
-
-            if (recipients != null)
-            {
-                foreach (var r in recipients)
+                var item = new NotifyItem
                 {
-                    var recipient = new Recipient { Id = r.ID, Name = r.Name };
-                    if (r is IDirectRecipient d)
-                    {
-                        recipient.Addresses.AddRange(d.Addresses);
-                        recipient.CheckActivation = d.CheckActivation;
-                    }
+                    TenantId = TenantManager.GetCurrentTenant().TenantId,
+                    UserId = AuthContext.CurrentAccount.ID.ToString(),
+                    Action = (NotifyAction)action,
+                    CheckSubsciption = checkSubsciption,
+                    BaseUrl = CommonLinkUtility.GetFullAbsolutePath("")
+                };
 
-                    if (r is IRecipientsGroup g)
-                    {
-                        recipient.IsGroup = true;
-                    }
-
-                    item.Recipients.Add(recipient);
+                if (objectID != null)
+                {
+                    item.ObjectId = objectID;
                 }
-            }
 
-            if (senderNames != null)
+                if (recipients != null)
+                {
+                    foreach (var r in recipients)
+                    {
+                        var recipient = new Recipient { Id = r.ID, Name = r.Name };
+                        if (r is IDirectRecipient d)
+                        {
+                            recipient.Addresses.AddRange(d.Addresses);
+                            recipient.CheckActivation = d.CheckActivation;
+                        }
+
+                        if (r is IRecipientsGroup g)
+                        {
+                            recipient.IsGroup = true;
+                        }
+
+                        item.Recipients.Add(recipient);
+                    }
+                }
+
+                if (senderNames != null)
+                {
+                    item.SenderNames.AddRange(senderNames);
+                }
+
+                if (args != null)
+                {
+                    item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
+                }
+
+                Cache.Publish(item, CacheNotifyAction.Any);
+            }
+            catch (Exception e)
             {
-                item.SenderNames.AddRange(senderNames);
+                _log.Error("SendNoticeToAsync", e);
             }
-
-            if (args != null)
-            {
-                item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
-            }
-
-            Cache.Publish(item, CacheNotifyAction.Any);
         }
     }
 }

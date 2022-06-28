@@ -28,10 +28,10 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Configuration;
@@ -42,6 +42,7 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -63,48 +64,57 @@ namespace ASC.Web.Studio.Core.Notify
         public void OnMessage(NotifyItem item)
         {
             using var scope = ServiceProvider.CreateScope();
-            var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
-            commonLinkUtilitySettings.ServerUri = item.BaseUrl;
-            var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
-            var (tenantManager, userManager, securityContext, studioNotifyHelper, _, _) = scopeClass;
-            tenantManager.SetCurrentTenant(item.TenantId);
-            CultureInfo culture = null;
+            var log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
 
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
-
-            var tenant = tenantManager.GetCurrentTenant(false);
-
-            if (tenant != null)
+            try
             {
-                culture = tenant.GetCulture();
-            }
+                var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
+                commonLinkUtilitySettings.ServerUri = item.BaseUrl;
+                var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
+                var (tenantManager, userManager, securityContext, studioNotifyHelper, _, _) = scopeClass;
+                tenantManager.SetCurrentTenant(item.TenantId);
+                CultureInfo culture = null;
 
-            if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
-            {
-                securityContext.AuthenticateMeWithoutCookie(Guid.Parse(item.UserId));
-                var user = userManager.GetUsers(userId);
-                if (!string.IsNullOrEmpty(user.CultureName))
+                var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+
+                var tenant = tenantManager.GetCurrentTenant(false);
+
+                if (tenant != null)
                 {
-                    culture = CultureInfo.GetCultureInfo(user.CultureName);
+                    culture = tenant.GetCulture();
                 }
-            }
 
-            if (culture != null && !Equals(Thread.CurrentThread.CurrentCulture, culture))
-            {
-                Thread.CurrentThread.CurrentCulture = culture;
-            }
-            if (culture != null && !Equals(Thread.CurrentThread.CurrentUICulture, culture))
-            {
-                Thread.CurrentThread.CurrentUICulture = culture;
-            }
+                if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
+                {
+                    securityContext.AuthenticateMeWithoutCookie(Guid.Parse(item.UserId));
+                    var user = userManager.GetUsers(userId);
+                    if (!string.IsNullOrEmpty(user.CultureName))
+                    {
+                        culture = CultureInfo.GetCultureInfo(user.CultureName);
+                    }
+                }
 
-            client.SendNoticeToAsync(
-                (NotifyAction)item.Action,
-                item.ObjectId,
-                item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
-                item.SenderNames.Count > 0 ? item.SenderNames.ToArray() : null,
-                item.CheckSubsciption,
-                item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
+                if (culture != null && !Equals(Thread.CurrentThread.CurrentCulture, culture))
+                {
+                    Thread.CurrentThread.CurrentCulture = culture;
+                }
+                if (culture != null && !Equals(Thread.CurrentThread.CurrentUICulture, culture))
+                {
+                    Thread.CurrentThread.CurrentUICulture = culture;
+                }
+
+                client.SendNoticeToAsync(
+                    (NotifyAction)item.Action,
+                    item.ObjectId,
+                    item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
+                    item.SenderNames.Count > 0 ? item.SenderNames.ToArray() : null,
+                    item.CheckSubsciption,
+                    item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
+            }
+            catch (Exception e)
+            {
+                log.Error("onMessage", e);
+            }
         }
 
         public void RegisterSendMethod()
@@ -144,7 +154,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 WorkContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }
-        }      
+        }
 
         public void SendSaasTariffLetters(DateTime scheduleDate)
         {
