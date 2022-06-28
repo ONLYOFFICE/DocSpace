@@ -251,13 +251,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             CancellationToken.ThrowIfCancellationRequested();
 
             var entriesPathId = new ItemNameValueCollection<T>();
+
             foreach (var folderId in folderIds)
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = await FolderDao.GetFolderAsync(folderId);
+                
                 if (folder == null || !await FilesSecurity.CanReadAsync(folder)) continue;
+                
                 var folderPath = path + folder.Title + "/";
+
+                entriesPathId.Add(folderPath, default(T));
 
                 var files = await FileDao.GetFilesAsync(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync();
                 var filteredFiles = await FilesSecurity.FilterReadAsync(files);
@@ -273,11 +278,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 var nestedFolders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
                 var filteredNestedFolders = await FilesSecurity.FilterReadAsync(nestedFolders);
                 nestedFolders = filteredNestedFolders.ToList();
-                if (files.Count == 0 && nestedFolders.Count == 0)
-                {
-                    entriesPathId.Add(folderPath, default(T));
-                }
-
+                
                 var filesInFolder = await GetFilesInFoldersAsync(scope, nestedFolders.ConvertAll(f => f.ID), folderPath);
                 entriesPathId.Add(filesInFolder);
             }
@@ -391,6 +392,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
 
                         counter++;
+
+                        if (!Equals(entryId, default(T)) && file != null)
+                        {
+                            ProcessedFile(entryId);
+                        }
+                        else
+                        {
+                            ProcessedFolder(default(T));
+                        }
                     }
 
                     ProgressStep();

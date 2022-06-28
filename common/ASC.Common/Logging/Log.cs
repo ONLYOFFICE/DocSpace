@@ -403,7 +403,8 @@ namespace ASC.Common.Logging
 
             if (!string.IsNullOrEmpty(settings.Dir))
             {
-                LogManager.Configuration.Variables["dir"] = CrossPlatform.PathCombine(hostingEnvironment.ContentRootPath, settings.Dir).TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
+                var dir = Path.IsPathRooted(settings.Dir) ? settings.Dir : CrossPlatform.PathCombine(hostingEnvironment.ContentRootPath, settings.Dir);
+                LogManager.Configuration.Variables["dir"] = dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
             }
 
             NLog.Targets.Target.Register<SelfCleaningTarget>("SelfCleaning");
