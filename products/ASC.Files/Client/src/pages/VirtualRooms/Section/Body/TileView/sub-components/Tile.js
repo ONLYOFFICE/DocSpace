@@ -10,7 +10,6 @@ import ContextMenuButton from "@appserver/components/context-menu-button";
 import RoomLogo from "@appserver/components/room-logo";
 import ContextMenu from "@appserver/components/context-menu";
 import Checkbox from "@appserver/components/checkbox";
-import withRoomAction from "../../../../../../HOCs/withRoomActions";
 import { Base } from "@appserver/components/themes";
 
 const StyledTile = styled.div`
