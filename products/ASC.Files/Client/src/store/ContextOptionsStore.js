@@ -370,12 +370,14 @@ class ContextOptionsStore {
                 {
                   key: "finalize-version",
                   label: t("FinalizeVersion"),
+                  icon: "images/history-finalized.react.svg",
                   onClick: () => this.finalizeVersion(item.id),
                   disabled: false,
                 },
                 {
                   key: "show-version-history",
                   label: t("ShowVersionHistory"),
+                  icon: "images/history.react.svg",
                   onClick: () => this.showVersionHistory(item.id),
                   disabled: false,
                 },
@@ -411,18 +413,21 @@ class ContextOptionsStore {
                 {
                   key: "move-to",
                   label: t("MoveTo"),
+                  icon: "images/move.react.svg",
                   onClick: this.onMoveAction,
                   disabled: false,
                 },
                 {
                   key: "copy-to",
                   label: t("Translations:Copy"),
+                  icon: "/static/images/copy.react.svg",
                   onClick: this.onCopyAction,
                   disabled: false,
                 },
                 {
                   key: "copy",
                   label: t("Common:Duplicate"),
+                  icon: "/static/images/duplicate.react.svg",
                   onClick: () => this.onDuplicate(item, t),
                   disabled: false,
                 },
@@ -447,7 +452,7 @@ class ContextOptionsStore {
             {
               key: "copy",
               label: t("Common:Duplicate"),
-              icon: "/static/images/copy.react.svg",
+              icon: "/static/images/duplicate.react.svg",
               onClick: () => this.onDuplicate(item, t),
               disabled: false,
             },

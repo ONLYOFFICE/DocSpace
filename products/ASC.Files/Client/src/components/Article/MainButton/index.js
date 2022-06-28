@@ -135,6 +135,7 @@ const ArticleMainButtonContent = (props) => {
               items: [
                 {
                   className: "main-button_drop-down_sub",
+                  icon: "images/form.react.svg",
                   label: t("Translations:SubNewForm"),
                   onClick: onCreate,
                   action: "docxf",
@@ -142,6 +143,7 @@ const ArticleMainButtonContent = (props) => {
                 },
                 {
                   className: "main-button_drop-down_sub",
+                  icon: "images/form.file.react.svg",
                   label: t("Translations:SubNewFormFile"),
                   onClick: onShowSelectFileDialog,
                   disabled: isPrivacy,
@@ -149,6 +151,7 @@ const ArticleMainButtonContent = (props) => {
                 },
                 {
                   className: "main-button_drop-down_sub",
+                  icon: "images/form.react.svg",
                   label: t("Common:OFORMsGallery"),
                   onClick: onShowGallery,
                   disabled: isPrivacy,
