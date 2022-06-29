@@ -113,7 +113,7 @@ class SsoFormStore {
   sp_singleLogoutUrlHasError = false;
 
   // error messages
-  uploadXmlUrlErrorMessage = null;
+  //uploadXmlUrlErrorMessage = null;
   spLoginLabelErrorMessage = null;
 
   entityIdErrorMessage = null;
@@ -570,6 +570,13 @@ class SsoFormStore {
   downloadMetadata = async () => {
     window.open("/api/2.0/sso/metadata", "_blank");
   };
+
+  get hasErrors() {
+    for (let key in this) {
+      if (key.includes("ErrorMessage") && this[key] !== null) return true;
+    }
+    return false;
+  }
 }
 
 export default SsoFormStore;

@@ -16,6 +16,7 @@ const SubmitResetButtons = (props) => {
     resetForm,
     confirmationResetModal,
     isSubmitLoading,
+    hasErrors,
   } = props;
 
   return (
@@ -27,6 +28,7 @@ const SubmitResetButtons = (props) => {
         primary
         size="small"
         tabIndex={23}
+        isDisabled={hasErrors}
         isLoading={isSubmitLoading}
       />
       <Button
@@ -49,6 +51,7 @@ export default inject(({ ssoStore }) => {
     resetForm,
     confirmationResetModal,
     isSubmitLoading,
+    hasErrors,
   } = ssoStore;
 
   return {
@@ -58,5 +61,6 @@ export default inject(({ ssoStore }) => {
     resetForm,
     confirmationResetModal,
     isSubmitLoading,
+    hasErrors,
   };
 })(observer(SubmitResetButtons));
