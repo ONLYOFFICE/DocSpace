@@ -82,17 +82,13 @@ public class FFmpegService
     {
         var startInfo = PrepareFFmpeg(inputFormat);
 
-        Process process;
-        using (process = new Process { StartInfo = startInfo })
-        {
-            process.Start();
+        using var process = Process.Start(startInfo);
 
-            await inputStream.CopyToAsync(process.StandardInput.BaseStream);
+        await inputStream.CopyToAsync(process.StandardInput.BaseStream);
 
-            await ProcessLog(process.StandardError.BaseStream);
+        await ProcessLog(process.StandardError.BaseStream);
 
-            return process.StandardOutput.BaseStream;
-        }
+        return process.StandardOutput.BaseStream;
     }
 
     public FFmpegService(ILogger<FFmpegService> logger, IConfiguration configuration)
@@ -101,14 +97,7 @@ public class FFmpegService
         _fFmpegPath = configuration["files:ffmpeg:value"];
         _fFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
         _fFmpegThumbnailsArgs = configuration["files:ffmpeg:thumbnails:args"] ?? "-ss 3 -i \"{0}\" -vf \"thumbnail\" -frames:v 1 -vsync vfr \"{1}\" -y";
-        _fFmpegFormats = configuration.GetSection("files:ffmpeg:thumbnails:formats").Get<List<string>>() ?? new List<string>
-            {
-                ".3gp", ".asf", ".avi", ".f4v",
-                ".fla", ".flv", ".m2ts", ".m4v",
-                ".mkv", ".mov", ".mp4", ".mpeg",
-                ".mpg", ".mts", ".ogv", ".svi",
-                ".vob", ".webm", ".wmv"
-            };
+        _fFmpegFormats = configuration.GetSection("files:ffmpeg:thumbnails:formats").Get<List<string>>() ?? FileUtility.ExtsVideo;
 
         _convertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? Array.Empty<string>()).ToList();
 
@@ -190,14 +179,11 @@ public class FFmpegService
     public async Task CreateThumbnail(string sourcePath, string destPath)
     {
         var startInfo = PrepareCommonFFmpeg();
+
         startInfo.Arguments = string.Format(_fFmpegThumbnailsArgs, sourcePath, destPath);
 
-        Process process;
-        using (process = new Process { StartInfo = startInfo })
-        {
-            process.Start();
-            process.WaitForExit(10000);
-            await ProcessLog(process.StandardError.BaseStream);
-        }
+        using var process = Process.Start(startInfo);
+
+        await ProcessLog(process.StandardError.BaseStream);
     }
 }

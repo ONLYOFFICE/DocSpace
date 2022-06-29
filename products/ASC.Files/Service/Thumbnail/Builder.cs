@@ -80,7 +80,6 @@ public class Builder<T>
     private readonly PathProvider _pathProvider;
     private readonly IHttpClientFactory _clientFactory;
     private readonly ThumbnailSettings _thumbnailSettings;
-    private readonly TempStream _tempStream;
     private readonly SocketManager _socketManager;
     private readonly FFmpegService _fFmpegService;
     private readonly TempPath _tempPath;
@@ -89,6 +88,7 @@ public class Builder<T>
             {
                 ".bmp", ".gif", ".jpeg", ".jpg", ".pbm", ".png", ".tiff", ".tga", ".webp",
             };
+
     public Builder(
         ThumbnailSettings settings,
         TenantManager tenantManager,
@@ -102,8 +102,7 @@ public class Builder<T>
         FFmpegService fFmpegService,
         TempPath tempPath,
         SocketManager socketManager,
-        ThumbnailSettings thumbnailSettings,
-        TempStream tempStream)
+        ThumbnailSettings thumbnailSettings)
     {
         _config = settings;
         _tenantManager = tenantManager;
@@ -118,7 +117,6 @@ public class Builder<T>
         _tempPath = tempPath;
         _socketManager = socketManager;
         _thumbnailSettings = thumbnailSettings;
-        _tempStream = tempStream;
     }
 
     internal async Task BuildThumbnail(FileData<T> fileData)
