@@ -59,6 +59,7 @@ const EmptyTrashDialogComponent = (props) => {
           primary
           onClick={onEmptyTrash}
           isLoading={isLoading}
+          scale
         />
         <Button
           className="button-dialog"
@@ -67,6 +68,7 @@ const EmptyTrashDialogComponent = (props) => {
           size="small"
           onClick={onClose}
           isLoading={isLoading}
+          scale
         />
       </ModalDialog.Footer>
     </StyledModal>

@@ -9,6 +9,7 @@ import { inject, observer } from "mobx-react";
 import { ConflictResolveType } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import styled from "styled-components";
+import { convertFile } from "@appserver/common/api/files";
 
 const StyledModalDialog = styled(ModalDialog)`
   .radio {
@@ -53,10 +54,6 @@ const StyledModalDialog = styled(ModalDialog)`
     grid-template-columns: 1fr 1fr;
     grid-gap: 10px;
     width: 100%;
-  }
-
-  .button-dialog-accept {
-    margin-right: 8px;
   }
 
   .modal-dialog-aside-footer {
@@ -217,6 +214,7 @@ const ConflictResolveDialog = (props) => {
 
   return (
     <StyledModalDialog
+      withFooterBorder
       isLoading={!tReady}
       visible={visible}
       onClose={onCloseDialog}
@@ -226,12 +224,25 @@ const ConflictResolveDialog = (props) => {
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text className="message">
-          {singleFile
-            ? t("ConflictResolveDescription", { file, folder: folderTitle })
-            : t("ConflictResolveDescriptionFiles", {
-                filesCount,
-                folder: folderTitle,
-              })}
+          {console.log(filesCount, folderTitle)}
+
+          {singleFile ? (
+            <Trans
+              t={t}
+              i18nKey="ConflictResolveDescription"
+              ns="ConflictResolveDialog"
+            >
+              {{ file, folder: folderTitle }}
+            </Trans>
+          ) : (
+            <Trans
+              t={t}
+              i18nKey="ConflictResolveDescriptionFiles"
+              ns="ConflictResolveDialog"
+            >
+              {{ filesCount, folder: folderTitle }}
+            </Trans>
+          )}
         </Text>
         <Text className="select-action">
           {t("ConflictResolveSelectAction")}
@@ -249,7 +260,6 @@ const ConflictResolveDialog = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
-          className="button-dialog-accept"
           key="OkButton"
           label={t("Common:OKButton")}
           size="normal"
@@ -257,7 +267,6 @@ const ConflictResolveDialog = (props) => {
           onClick={onAcceptType}
         />
         <Button
-          className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="normal"
