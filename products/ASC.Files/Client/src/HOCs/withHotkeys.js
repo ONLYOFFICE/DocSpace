@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
 import { FileAction } from "@appserver/common/constants";
+import toastr from "studio/toastr";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
@@ -41,6 +42,11 @@ const withHotkeys = (Component) => {
       someDialogIsOpen,
       enabledHotkeys,
       mediaViewerIsVisible,
+
+      isFavoritesFolder,
+      isRecentFolder,
+      selection,
+      setFavoriteAction,
     } = props;
 
     const hotkeysFilter = {
@@ -199,8 +205,21 @@ const withHotkeys = (Component) => {
       "delete, shift+3, command+delete, command+Backspace",
       () => {
         if (isAvailableOption("delete")) {
-          if (confirmDelete) setDeleteDialogVisible(true);
-          else {
+          if (isRecentFolder) return;
+
+          if (isFavoritesFolder) {
+            const items = selection.map((item) => item.id);
+
+            setFavoriteAction("remove", items)
+              .then(() => toastr.success(t("RemovedFromFavorites")))
+              .catch((err) => toastr.error(err));
+
+            return;
+          }
+
+          if (confirmDelete) {
+            setDeleteDialogVisible(true);
+          } else {
             const translations = {
               deleteOperation: t("Translations:DeleteOperation"),
               deleteFromTrash: t("Translations:DeleteFromTrash"),
@@ -257,6 +276,7 @@ const withHotkeys = (Component) => {
       filesActionsStore,
       hotkeyStore,
       mediaViewerDataStore,
+      treeFoldersStore,
     }) => {
       const {
         setSelected,
@@ -264,6 +284,7 @@ const withHotkeys = (Component) => {
         setViewAs,
         fileActionStore,
         enabledHotkeys,
+        selection,
       } = filesStore;
       const { setAction } = fileActionStore;
 
@@ -296,10 +317,13 @@ const withHotkeys = (Component) => {
         isAvailableOption,
         deleteAction,
         backToParentFolder,
+        setFavoriteAction,
       } = filesActionsStore;
 
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
       const { setHotkeyPanelVisible } = auth.settingsStore;
+
+      const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
 
       return {
         setSelected,
@@ -336,6 +360,11 @@ const withHotkeys = (Component) => {
         someDialogIsOpen,
         enabledHotkeys,
         mediaViewerIsVisible,
+
+        isFavoritesFolder,
+        isRecentFolder,
+        selection,
+        setFavoriteAction,
       };
     }
   )(observer(WithHotkeys));
