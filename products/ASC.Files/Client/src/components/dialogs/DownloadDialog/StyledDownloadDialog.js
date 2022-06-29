@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import ModalDialog from "@appserver/components/modal-dialog";
 
 const StyledDownloadDialog = styled(ModalDialog)`
@@ -49,6 +49,14 @@ const StyledDownloadContent = styled.div`
     height: 48px;
     display: flex;
     align-items: center;
+
+    ${({ isOpen }) =>
+      isOpen &&
+      css`
+        background: #f8f9f9;
+        margin: 0 -16px;
+        padding: 0 16px;
+      `}
 
     .download-dialog-icon {
       width: 12px;
