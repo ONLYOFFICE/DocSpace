@@ -32,6 +32,7 @@ const FilesMediaViewer = (props) => {
     setScrollToItem,
     setCurrentId,
     setBufferSelection,
+    mediaViewerAudioFormats,
   } = props;
 
   useEffect(() => {
@@ -148,6 +149,8 @@ const FilesMediaViewer = (props) => {
     }
   };
 
+  const mediaFormats = [...mediaViewerMediaFormats, ...mediaViewerAudioFormats];
+
   return (
     visible && (
       <MediaViewer
@@ -163,7 +166,7 @@ const FilesMediaViewer = (props) => {
         onClose={onMediaViewerClose}
         onEmptyPlaylistError={onMediaViewerClose}
         deleteDialogVisible={deleteDialogVisible}
-        extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
+        extsMediaPreviewed={mediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
         errorLabel={t("Translations:MediaLoadError")}
         isPreviewFile={!!previewFile}
@@ -201,7 +204,7 @@ export default inject(
       setCurrentId,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { extsVideo, extsImage } = settingsStore;
+    const { extsVideo, extsImage, extsAudio } = settingsStore;
     const { expandedKeys, setExpandedKeys } = treeFoldersStore;
 
     return {
@@ -214,6 +217,7 @@ export default inject(
       setMediaViewerData,
       mediaViewerImageFormats: extsImage,
       mediaViewerMediaFormats: extsVideo,
+      mediaViewerAudioFormats: extsAudio,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
       fetchFiles,

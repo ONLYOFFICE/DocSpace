@@ -493,7 +493,11 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }, withSelect = true, isContextItem) => {
+  onSelectItem = (
+    { id, isFolder },
+    withSelect = true,
+    isContextItem = true
+  ) => {
     const {
       setBufferSelection,
       setSelected,

@@ -2357,7 +2357,7 @@ const Dark = {
       borderBottom: "1px solid #474747",
       borderTop: "1px solid #474747",
       externalLinkBackground: "#292929",
-      externalLinkSvg: "#858585",
+      externalLinkSvg: "#eeeeee",
 
       internalLinkBorder: "1px dashed #eeeeee",
 

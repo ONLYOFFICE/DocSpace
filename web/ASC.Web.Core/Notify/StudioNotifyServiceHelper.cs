@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -18,8 +17,6 @@ namespace ASC.Web.Core.Notify
     [Scope]
     public class StudioNotifyServiceHelper
     {
-        private readonly ILog _log;
-
         private ICacheNotify<NotifyItem> Cache { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
         private AuthContext AuthContext { get; }
@@ -39,7 +36,6 @@ namespace ASC.Web.Core.Notify
             TenantManager = tenantManager;
             CommonLinkUtility = commonLinkUtility;
             Cache = cache;
-            _log = options.CurrentValue;
         }
 
         public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -82,62 +78,51 @@ namespace ASC.Web.Core.Notify
 
         public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
         {
-            try
+            var item = new NotifyItem
             {
-                _log.Debug("SendNoticeToAsync begin");
-                var item = new NotifyItem
-                {
-                    TenantId = TenantManager.GetCurrentTenant().TenantId,
-                    UserId = AuthContext.CurrentAccount.ID.ToString(),
-                    Action = (NotifyAction)action,
-                    CheckSubsciption = checkSubsciption,
-                    BaseUrl = CommonLinkUtility.GetFullAbsolutePath("")
-                };
+                TenantId = TenantManager.GetCurrentTenant().TenantId,
+                UserId = AuthContext.CurrentAccount.ID.ToString(),
+                Action = (NotifyAction)action,
+                CheckSubsciption = checkSubsciption,
+                BaseUrl = CommonLinkUtility.GetFullAbsolutePath("")
+            };
 
-                if (objectID != null)
-                {
-                    item.ObjectId = objectID;
-                }
+            if (objectID != null)
+            {
+                item.ObjectId = objectID;
+            }
 
-                if (recipients != null)
+            if (recipients != null)
+            {
+                foreach (var r in recipients)
                 {
-                    foreach (var r in recipients)
+                    var recipient = new Recipient { Id = r.ID, Name = r.Name };
+                    if (r is IDirectRecipient d)
                     {
-                        var recipient = new Recipient { Id = r.ID, Name = r.Name };
-                        if (r is IDirectRecipient d)
-                        {
-                            recipient.Addresses.AddRange(d.Addresses);
-                            recipient.CheckActivation = d.CheckActivation;
-                        }
-
-                        if (r is IRecipientsGroup g)
-                        {
-                            recipient.IsGroup = true;
-                        }
-
-                        item.Recipients.Add(recipient);
+                        recipient.Addresses.AddRange(d.Addresses);
+                        recipient.CheckActivation = d.CheckActivation;
                     }
+
+                    if (r is IRecipientsGroup g)
+                    {
+                        recipient.IsGroup = true;
+                    }
+
+                    item.Recipients.Add(recipient);
                 }
-
-                _log.Debug("SendNoticeToAsync middle");
-
-                if (senderNames != null)
-                {
-                    item.SenderNames.AddRange(senderNames);
-                }
-
-                if (args != null)
-                {
-                    item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
-                }
-
-                Cache.Publish(item, CacheNotifyAction.Any);
-                _log.Debug("SendNoticeToAsync end");
             }
-            catch (Exception e)
+
+            if (senderNames != null)
             {
-                _log.Error("SendNoticeToAsync", e);
+                item.SenderNames.AddRange(senderNames);
             }
+
+            if (args != null)
+            {
+                item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
+            }
+
+            Cache.Publish(item, CacheNotifyAction.Any);
         }
     }
 }
