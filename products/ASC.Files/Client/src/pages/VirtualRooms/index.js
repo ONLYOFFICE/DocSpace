@@ -23,17 +23,11 @@ const VirtualRooms = ({
   const getRooms = React.useCallback(async () => {
     setIsLoading(true);
 
-    // const filterObj = RoomsFilter.getFilter(window.location);
-    const filterObj = null;
+    const filterObj = RoomsFilter.getFilter(window.location);
 
-    if (!filterObj) {
-      fetchRooms(null, filterObj).then((res) => {
-        setIsLoading(false);
-        setFirstLoad(false);
-      });
-    }
+    const searchArea = !!filterObj ? filterObj.searchArea : null;
 
-    fetchRooms(null, filterObj).then((res) => {
+    fetchRooms(searchArea, filterObj).then((res) => {
       setIsLoading(false);
       setFirstLoad(false);
     });
@@ -68,14 +62,19 @@ const VirtualRooms = ({
 
 export default inject(({ filesStore, roomsStore }) => {
   const {
-    firstLoad,
     setFirstLoad,
-    isLoading,
     setIsLoading,
+
     viewAs,
   } = filesStore;
 
   const { rooms, fetchRooms } = roomsStore;
 
-  return { setIsLoading, setFirstLoad, fetchRooms, viewAs, rooms };
+  return {
+    setIsLoading,
+    setFirstLoad,
+    viewAs,
+    rooms,
+    fetchRooms,
+  };
 })(observer(VirtualRooms));
