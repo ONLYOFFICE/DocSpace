@@ -1155,7 +1155,7 @@ class FilesActionStore {
       .set("downloadAs", downloadAs)
       .set("copy", copy)
       .set("delete", {
-        label: t("Common:Delete"),
+        label: t("RemoveFromFavorites"),
         alt: t("RemoveFromFavorites"),
         iconUrl: "/static/images/delete.react.svg",
         onClick: () => {
