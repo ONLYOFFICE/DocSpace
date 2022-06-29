@@ -354,6 +354,30 @@ internal class OneDriveStorage
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
     }
+
+    public async Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+        var thumbnails = await OnedriveClient.Drive.Items[fileId].Thumbnails.Request().GetAsync();
+        if (thumbnails.Count > 0)
+        {
+            var url = thumbnails[0].Medium.Url;
+            url = url.Substring(0, url.IndexOf("?width"));
+            url = url + $"?width={width}&height={height}&cropmode=none";
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(url),
+                Method = HttpMethod.Get
+            };
+            var httpClient = _clientFactory.CreateClient();
+            using var response = await httpClient.SendAsync(request);
+            var bytes = await response.Content.ReadAsByteArrayAsync();
+            return new MemoryStream(bytes);
+        }
+        else
+        {
+            return null;
+        }
+    }
 }
 
 

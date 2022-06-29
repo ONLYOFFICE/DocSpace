@@ -215,6 +215,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         file.ModifiedOn = driveFile.ModifiedTime.HasValue ? _tenantUtil.DateTimeFromUtc(driveFile.ModifiedTime.Value) : default;
         file.NativeAccessor = driveFile;
         file.Title = MakeFileTitle(driveFile);
+        file.ThumbnailStatus = Thumbnail.Created;
 
         return file;
     }

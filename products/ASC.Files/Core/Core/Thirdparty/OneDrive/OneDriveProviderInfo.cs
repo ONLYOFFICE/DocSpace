@@ -123,6 +123,12 @@ internal class OneDriveProviderInfo : IProviderInfo
     {
         return _oneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId);
     }
+
+    internal async Task<Stream> GetThumbnailAsync(string onedriveId, int width, int height)
+    {
+        var storage = await StorageAsync;
+        return await _oneDriveProviderInfoHelper.GetThumbnailAsync(storage, onedriveId, width, height);
+    }
 }
 
 [Scope(Additional = typeof(OneDriveProviderInfoExtention))]
@@ -283,6 +289,11 @@ public class OneDriveProviderInfoHelper
             _cacheChildItems.Remove(new Regex("onedrivei-" + i.Key));
             _cacheItem.Remove("onedrive-" + i.Key);
         }
+    }
+
+    internal async Task<Stream> GetThumbnailAsync(OneDriveStorage storage, string onedriveId, int width, int height)
+    {
+        return await storage.GetThumbnailAsync(onedriveId, width, height).ConfigureAwait(false);
     }
 }
 public static class OneDriveProviderInfoExtention
