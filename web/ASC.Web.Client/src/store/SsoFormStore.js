@@ -539,6 +539,7 @@ class SsoFormStore {
           cert,
         ];
       });
+      this.onCloseModal(e, `${prefix}_isModalVisible`);
     } catch (err) {
       toastr.error(err);
       console.error(err);
