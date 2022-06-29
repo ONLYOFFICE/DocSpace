@@ -82,6 +82,9 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     services.AddHostedService<Launcher>();
     diHelper.TryAdd<Launcher>();
 
+    services.AddHostedService<DeleteExpiredService>();
+    diHelper.TryAdd<DeleteExpiredService>();
+
     diHelper.TryAdd<AuthManager>();
     diHelper.TryAdd<BaseCommonLinkUtility>();
     diHelper.TryAdd<FeedAggregateDataProvider>();
