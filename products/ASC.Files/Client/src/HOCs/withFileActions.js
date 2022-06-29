@@ -18,14 +18,14 @@ export default function withFileActions(WrappedFileItem) {
       const { onSelectItem, item } = this.props;
       const { id, isFolder } = item;
 
-      id !== -1 && onSelectItem({ id, isFolder });
+      id !== -1 && onSelectItem({ id, isFolder }, true, false);
     };
 
     onFileContextClick = (withSelect) => {
       const { onSelectItem } = this.props;
       const { id, isFolder } = this.props.item;
 
-      id !== -1 && onSelectItem({ id, isFolder }, !withSelect, true);
+      id !== -1 && onSelectItem({ id, isFolder }, !withSelect);
     };
 
     onHideContextMenu = () => {
