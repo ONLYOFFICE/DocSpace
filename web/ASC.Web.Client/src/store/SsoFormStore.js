@@ -512,23 +512,27 @@ class SsoFormStore {
     );
   };
 
-  addCertificateToForm = (e, prefix) => {
+  addCertificateToForm = async (e, prefix) => {
     const action = this[`${prefix}_action`];
     const crt = this[`${prefix}_certificate`];
     const key = this[`${prefix}_privateKey`];
 
-    const cert = {
-      crt: crt,
-      key: key,
-      action: action,
-    };
+    const data = [
+      {
+        crt: crt,
+        key: key,
+        action: action,
+      },
+    ];
 
     try {
-      const newCertificate = this.validateCertificate(cert);
-      this[`${prefix}_certificates`] = [
-        ...this[`${prefix}_certificates`],
-        newCertificate,
-      ];
+      const newCertificates = await this.validateCertificate(data);
+      newCertificates.map((cert) => {
+        this[`${prefix}_certificates`] = [
+          ...this[`${prefix}_certificates`],
+          cert,
+        ];
+      });
     } catch (err) {
       toastr.error(err);
       console.error(err);
