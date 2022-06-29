@@ -79,7 +79,7 @@ const Layout = (props) => {
   }, [isBannerVisible]);
 
   useEffect(() => {
-    if (isIOS && isMobileOnly) {
+    if (isMobileOnly) {
       const htmlEl = document.getElementsByTagName("html")[0];
       const bodyEl = document.getElementsByTagName("body")[0];
 
