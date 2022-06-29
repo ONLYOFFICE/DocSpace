@@ -143,6 +143,7 @@ public class SettingsController : BaseSettingsController
             Culture = Tenant.GetCulture().ToString(),
             GreetingSettings = Tenant.Name,
             Personal = _coreBaseSettings.Personal,
+            DocSpace = !_coreBaseSettings.DisableDocSpace,
             Version = _configuration["version:number"] ?? "",
             TenantStatus = _tenantManager.GetCurrentTenant().Status,
             TenantAlias = Tenant.Alias,
