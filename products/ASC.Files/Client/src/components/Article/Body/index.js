@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { setDocumentTitle } from "../../../helpers/utils";
 import config from "../../../../package.json";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, RoomSearchArea } from "@appserver/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@appserver/components/utils/device";
 import FilesFilter from "@appserver/common/api/files/filter";
@@ -53,6 +53,7 @@ const ArticleBodyContent = (props) => {
       setIsLoading,
       fetchFiles,
       fetchRooms,
+
       homepage,
       history,
     } = props;
@@ -66,7 +67,12 @@ const ArticleBodyContent = (props) => {
     }
 
     if (type === FolderType.Rooms || type === FolderType.Archive) {
-      fetchRooms(data, null, true, false)
+      const searchArea =
+        type === FolderType.Rooms
+          ? RoomSearchArea.Active
+          : RoomSearchArea.Archive;
+
+      fetchRooms(searchArea, null, true, false)
         .then(() => {
           if (filesSection) {
             const filter = RoomsFilter.getDefault();

@@ -149,7 +149,7 @@ const Items = ({
         return `${item.id}` === selectedTreeNode[0];
       }
     },
-    [selectedTreeNode, pathParts]
+    [selectedTreeNode, pathParts, docSpace]
   );
   const getEndOfBlock = React.useCallback(
     (item) => {
