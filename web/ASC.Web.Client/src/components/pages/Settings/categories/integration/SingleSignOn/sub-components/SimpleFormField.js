@@ -1,5 +1,5 @@
 import React from "react";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import FieldContainer from "@appserver/components/field-container";
@@ -15,14 +15,13 @@ const SimpleFormField = ({
   tooltipContent,
   value,
   errorMessage,
-  hasError,
 }) => {
   const { t } = useTranslation("SingleSignOn");
 
   return (
     <FieldContainer
-      //errorMessage={t(FormStore[`${name}ErrorMessage`])}
-      //hasError={FormStore[`${name}HasError`]}
+      errorMessage={t(errorMessage)}
+      hasError={errorMessage !== null}
       inlineHelpButton
       isVertical
       labelText={labelText}
@@ -31,7 +30,7 @@ const SimpleFormField = ({
     >
       {children}
       <SimpleTextInput
-        //hasError={FormStore[`${name}errorMessage`]}
+        hasError={errorMessage !== null}
         name={name}
         placeholder={placeholder}
         tabIndex={tabIndex}
@@ -41,10 +40,4 @@ const SimpleFormField = ({
   );
 };
 
-export default inject(({ ssoStore }) => {
-  const { onHideClick } = ssoStore;
-
-  return {
-    onHideClick,
-  };
-})(observer(SimpleFormField));
+export default observer(SimpleFormField);

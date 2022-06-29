@@ -25,6 +25,12 @@ const IdpSettings = (props) => {
     ssoUrlRedirect,
     sloUrlPost,
     sloUrlRedirect,
+    spLoginLabelErrorMessage,
+    entityIdErrorMessage,
+    ssoUrlPostErrorMessage,
+    ssoUrlRedirectErrorMessage,
+    sloUrlPostErrorMessage,
+    sloUrlRedirectErrorMessage,
   } = props;
 
   return (
@@ -38,6 +44,7 @@ const IdpSettings = (props) => {
         tabIndex={4}
         tooltipContent={t("CustomEntryTooltip")}
         value={spLoginLabel}
+        errorMessage={spLoginLabelErrorMessage}
       />
 
       <SimpleFormField
@@ -47,6 +54,7 @@ const IdpSettings = (props) => {
         tabIndex={5}
         tooltipContent={t("ProviderURLTooltip")}
         value={entityId}
+        errorMessage={entityIdErrorMessage}
       />
 
       <SimpleFormField
@@ -56,6 +64,11 @@ const IdpSettings = (props) => {
         tabIndex={7}
         tooltipContent={t("SignOnEndpointUrlTooltip")}
         value={ssoBinding.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
+        errorMessage={
+          ssoBinding.includes("POST")
+            ? ssoUrlPostErrorMessage
+            : ssoUrlRedirectErrorMessage
+        }
       >
         <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
           <Text noSelect>{t("Binding")}</Text>
@@ -80,6 +93,11 @@ const IdpSettings = (props) => {
         tabIndex={9}
         tooltipContent={t("LogoutEndpointUrlTooltip")}
         value={sloBinding.includes("POST") ? sloUrlPost : sloUrlRedirect}
+        errorMessage={
+          sloBinding.includes("POST")
+            ? sloUrlPostErrorMessage
+            : sloUrlRedirectErrorMessage
+        }
       >
         <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
           <Text>{t("Binding")}</Text>
@@ -121,6 +139,12 @@ export default inject(({ ssoStore }) => {
     ssoUrlRedirect,
     sloUrlPost,
     sloUrlRedirect,
+    spLoginLabelErrorMessage,
+    entityIdErrorMessage,
+    ssoUrlPostErrorMessage,
+    ssoUrlRedirectErrorMessage,
+    sloUrlPostErrorMessage,
+    sloUrlRedirectErrorMessage,
   } = ssoStore;
 
   return {
@@ -135,5 +159,11 @@ export default inject(({ ssoStore }) => {
     ssoUrlRedirect,
     sloUrlPost,
     sloUrlRedirect,
+    spLoginLabelErrorMessage,
+    entityIdErrorMessage,
+    ssoUrlPostErrorMessage,
+    ssoUrlRedirectErrorMessage,
+    sloUrlPostErrorMessage,
+    sloUrlRedirectErrorMessage,
   };
 })(observer(IdpSettings));

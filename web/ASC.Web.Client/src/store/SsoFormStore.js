@@ -117,8 +117,10 @@ class SsoFormStore {
   spLoginLabelErrorMessage = null;
 
   entityIdErrorMessage = null;
-  ssoUrlErrorMessage = null;
-  sloUrlErrorMessage = null;
+  ssoUrlPostErrorMessage = null;
+  ssoUrlRedirectErrorMessage = null;
+  sloUrlPostErrorMessage = null;
+  sloUrlRedirectErrorMessage = null;
 
   firstNameErrorMessage = null;
   lastNameErrorMessage = null;

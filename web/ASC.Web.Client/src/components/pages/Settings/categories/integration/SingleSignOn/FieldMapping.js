@@ -20,6 +20,12 @@ const FieldMapping = (props) => {
     title,
     phone,
     hideAuthPage,
+    firstNameErrorMessage,
+    lastNameErrorMessage,
+    emailErrorMessage,
+    locationErrorMessage,
+    titleErrorMessage,
+    phoneErrorMessage,
   } = props;
 
   return (
@@ -47,6 +53,7 @@ const FieldMapping = (props) => {
         placeholder="givenName"
         tabIndex={16}
         value={firstName}
+        errorMessage={firstNameErrorMessage}
       />
 
       <SimpleFormField
@@ -55,6 +62,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={17}
         value={lastName}
+        errorMessage={lastNameErrorMessage}
       />
 
       <SimpleFormField
@@ -63,6 +71,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={18}
         value={email}
+        errorMessage={emailErrorMessage}
       />
 
       <SimpleFormField
@@ -71,6 +80,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={19}
         value={location}
+        errorMessage={locationErrorMessage}
       />
 
       <SimpleFormField
@@ -79,6 +89,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={20}
         value={title}
+        errorMessage={titleErrorMessage}
       />
 
       <SimpleFormField
@@ -87,6 +98,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={21}
         value={phone}
+        errorMessage={phoneErrorMessage}
       />
 
       <FieldContainer
@@ -116,6 +128,12 @@ export default inject(({ ssoStore }) => {
     title,
     phone,
     hideAuthPage,
+    firstNameErrorMessage,
+    lastNameErrorMessage,
+    emailErrorMessage,
+    locationErrorMessage,
+    titleErrorMessage,
+    phoneErrorMessage,
   } = ssoStore;
 
   return {
@@ -126,5 +144,11 @@ export default inject(({ ssoStore }) => {
     title,
     phone,
     hideAuthPage,
+    firstNameErrorMessage,
+    lastNameErrorMessage,
+    emailErrorMessage,
+    locationErrorMessage,
+    titleErrorMessage,
+    phoneErrorMessage,
   };
 })(observer(FieldMapping));
