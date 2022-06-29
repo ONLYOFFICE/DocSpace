@@ -638,7 +638,8 @@ public class VirtualRoomsCommonController : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<int>();
+        var parentId = searchArea != SearchArea.Archive ? await _globalFolderHelper.GetFolderVirtualRooms<int>()
+            : await _globalFolderHelper.GetFolderArchive<int>();
 
         var roomTypes = !string.IsNullOrEmpty(types) ? JsonSerializer.Deserialize<IEnumerable<RoomType>>(types) : null;
 
