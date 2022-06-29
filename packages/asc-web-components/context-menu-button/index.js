@@ -64,7 +64,10 @@ class ContextMenuButton extends React.Component {
 
   stopAction = (e) => e.preventDefault();
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
-  onClose = () => this.setState({ isOpen: !this.state.isOpen });
+  onClose = () => {
+    this.setState({ isOpen: !this.state.isOpen });
+    this.props?.onClose();
+  };
 
   componentDidUpdate(prevProps) {
     if (this.props.opened !== prevProps.opened) {
@@ -316,6 +319,7 @@ ContextMenuButton.propTypes = {
   /** Set the display type */
   displayType: PropTypes.string,
   isNew: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 ContextMenuButton.defaultProps = {

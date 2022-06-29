@@ -9,13 +9,14 @@ import RoomLogo from "@appserver/components/room-logo";
 ```
 
 ```jsx
-<RoomLogo type={"custom"} isPrivacy={false} />
+<RoomLogo type={"custom"} isPrivacy={false} isArchive={false} />
 ```
 
-| Props       |                             Type                             | Required | Values | Default | Description              |
-| ----------- | :----------------------------------------------------------: | :------: | :----: | :-----: | ------------------------ |
-| `id`        |                           `string`                           |    -     |   -    |    -    | Accepts id               |
-| `className` |                           `string`                           |    -     |   -    |    -    | Accepts class            |
-| `style`     |                        `obj`, `array`                        |    -     |   -    |    -    | Accepts css style        |
-| `type`      | `[ "view", "review", "fill", "editing","custom", "archive"]` |    -     |   -    |   ``    | Accepts the type of room |
-| `isPrivacy` |                          `boolean`                           |    -     |   -    | `false` | Accepts the privacy room |
+| Props       |      Type      | Required | Values | Default | Description              |
+| ----------- | :------------: | :------: | :----: | :-----: | ------------------------ |
+| `id`        |    `string`    |    -     |   -    |    -    | Accepts id               |
+| `className` |    `string`    |    -     |   -    |    -    | Accepts class            |
+| `style`     | `obj`, `array` |    -     |   -    |    -    | Accepts css style        |
+| `type`      |    `number`    |    -     |   -    |   ``    | Accepts the type of room |
+| `isPrivacy` |   `boolean`    |    -     |   -    | `false` | Accepts the privacy room |
+| `isArchive` |   `boolean`    |    -     |   -    | `false` | Accepts the archive room |

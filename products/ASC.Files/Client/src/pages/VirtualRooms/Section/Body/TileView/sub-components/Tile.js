@@ -9,6 +9,8 @@ import Badge from "@appserver/components/badge";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import RoomLogo from "@appserver/components/room-logo";
 import ContextMenu from "@appserver/components/context-menu";
+import Checkbox from "@appserver/components/checkbox";
+import { Base } from "@appserver/components/themes";
 
 const StyledTile = styled.div`
   border: 1px solid #eceef1;
@@ -21,7 +23,82 @@ const StyledTile = styled.div`
 
   &:hover {
     .tile-header {
-      background: #f3f4f4;
+      background: ${(props) =>
+        props.theme.filesSection.tilesView.tile.checkedColor} !important;
+    }
+  }
+
+  ${(props) =>
+    props.isHover &&
+    css`
+      .tile-header {
+        background: ${(props) =>
+          props.theme.filesSection.tilesView.tile.checkedColor} !important;
+      }
+
+      .tile-header__logo-container {
+        .tile-header_logo {
+          display: none !important;
+        }
+
+        .tile-header_checkbox {
+          display: flex !important;
+        }
+      }
+    `}
+
+  .tile-header__logo-container {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 12px;
+    .tile-header_logo {
+      display: flex;
+    }
+
+    .tile-header_checkbox {
+      display: none;
+
+      .checkbox {
+        margin-right: 0;
+      }
+    }
+  }
+
+  ${(props) =>
+    props.isChecked &&
+    css`
+      .tile-header {
+        background: ${props.theme.filesSection.tilesView.tile
+          .checkedColor} !important;
+      }
+
+      .tile-header__logo-container {
+        .tile-header_logo {
+          display: none;
+        }
+
+        .tile-header_checkbox {
+          display: flex;
+          align-item: center;
+          justify-content: center;
+        }
+      }
+    `}
+
+  &:hover {
+    .tile-header__logo-container {
+      .tile-header_logo {
+        display: none;
+      }
+
+      .tile-header_checkbox {
+        display: flex;
+      }
     }
   }
 `;
@@ -49,10 +126,6 @@ const StyledHeader = styled.div`
       ? "auto 1fr  auto auto"
       : "auto 1fr auto"};
 
-  .tile-header_logo {
-    margin-right: 12px;
-  }
-
   .tile-header_heading {
     font-size: 16px;
     line-height: 22px;
@@ -77,6 +150,8 @@ const StyledHeader = styled.div`
   }
 `;
 
+StyledHeader.defaultProps = { theme: Base };
+
 const StyledContent = styled.div`
   width: 100%;
 
@@ -94,15 +169,21 @@ const StyledContent = styled.div`
 const Tile = React.forwardRef(
   (
     {
-      type,
+      item,
+      roomType,
       isPrivacy,
-      label,
-      isPinned,
+      title,
+      pinned,
       badge,
       tags,
       columnCount,
+      isChecked,
+      isHover,
       onClickPinRoom,
       getRoomsContextOptions,
+      selectRoom,
+      openContextMenu,
+      closeContextMenu,
     },
     forwardRef
   ) => {
@@ -123,29 +204,56 @@ const Tile = React.forwardRef(
           tileRef.current.click(e); //TODO: need fix context menu to global
         }
         cmRef.current.show(e);
+        openContextMenu && openContextMenu(item);
       },
-      [cmRef.current, tileRef.current]
+      [cmRef.current, tileRef.current, openContextMenu, item]
     );
+
+    const onCloseContextMenu = React.useCallback(() => {
+      closeContextMenu && closeContextMenu(item);
+    }, [item, closeContextMenu]);
+
+    const onRoomSelect = React.useCallback(
+      (e) => {
+        selectRoom && selectRoom(e.target.checked, item);
+      },
+      [selectRoom, item]
+    );
+
+    const getRoomsContextOptionsActions = React.useCallback(() => {
+      return getRoomsContextOptions && getRoomsContextOptions(item);
+    }, [getRoomsContextOptions, item]);
 
     return (
       <StyledTile
         ref={tileRef}
+        isChecked={isChecked}
+        isHover={isHover}
         onContextMenu={onContextMenu}
         onClick={onTileClick}
       >
         <StyledHeader
           className="tile-header"
           withBadge={!!badge}
-          isPinned={isPinned}
+          isPinned={pinned}
         >
-          <RoomLogo
-            className={"tile-header_logo"}
-            type={type}
-            isPrivacy={isPrivacy}
-          />
+          <div className="tile-header__logo-container">
+            <RoomLogo
+              className={"tile-header_logo"}
+              type={roomType}
+              isPrivacy={isPrivacy}
+            />
+
+            <Checkbox
+              className={"tile-header_checkbox checkbox"}
+              isChecked={isChecked}
+              isIndeterminate={false}
+              onChange={onRoomSelect}
+            />
+          </div>
 
           <Heading className="tile-header_heading" truncate>
-            {label}
+            {title}
           </Heading>
 
           {!!badge && (
@@ -156,7 +264,7 @@ const Tile = React.forwardRef(
             />
           )}
 
-          {isPinned && (
+          {pinned && (
             <ReactSVG
               className="tile-header_pin-icon"
               onClick={onClickPinRoom}
@@ -166,16 +274,18 @@ const Tile = React.forwardRef(
 
           <ContextMenuButton
             className="tile-header_context-menu-button"
-            getData={getRoomsContextOptions}
+            getData={getRoomsContextOptionsActions}
             directionX="right"
             isNew={true}
             onClick={onContextMenu}
+            onClose={onCloseContextMenu}
           />
 
           <ContextMenu
-            getContextModel={getRoomsContextOptions}
+            getContextModel={getRoomsContextOptionsActions}
             ref={cmRef}
             withBackdrop={true}
+            onHide={onCloseContextMenu}
           />
         </StyledHeader>
         <StyledContent className="virtual-rooms_tile-content" ref={forwardRef}>
@@ -192,8 +302,27 @@ const Tile = React.forwardRef(
   }
 );
 
-export default inject(({ contextOptionsStore }) => {
+export default inject(({ contextOptionsStore, roomsStore }, { item }) => {
   const { onClickPinRoom, getRoomsContextOptions } = contextOptionsStore;
 
-  return { onClickPinRoom, getRoomsContextOptions };
+  const {
+    selection,
+    bufferSelection,
+    selectRoom,
+    openContextMenu,
+    closeContextMenu,
+  } = roomsStore;
+
+  const isChecked = !!selection.find((room) => room.id === item.id);
+  const isHover = !isChecked && bufferSelection?.id === item.id;
+
+  return {
+    isChecked,
+    isHover,
+    onClickPinRoom,
+    getRoomsContextOptions,
+    selectRoom,
+    openContextMenu,
+    closeContextMenu,
+  };
 })(observer(Tile));

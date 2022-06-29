@@ -35,8 +35,8 @@ public class DbFilesThirdpartyAccount : BaseEntity, IDbFile, IDbSearch
     public string Password { get; set; }
     public string Token { get; set; }
     public Guid UserId { get; set; }
-    public FolderType RootFolderType { get; set; }
     public FolderType FolderType { get; set; }
+    public FolderType RoomType { get; set; }
     public DateTime CreateOn { get; set; }
     public string Url { get; set; }
     public int TenantId { get; set; }
@@ -80,8 +80,8 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.RootFolderType).HasColumnName("root_folder_type");
             entity.Property(e => e.FolderType).HasColumnName("folder_type");
+            entity.Property(e => e.RoomType).HasColumnName("room_type");
 
             entity.Property(e => e.Password)
                 .IsRequired()
@@ -150,8 +150,8 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasColumnName("customer_title")
                 .HasMaxLength(400);
 
-            entity.Property(e => e.RootFolderType).HasColumnName("root_folder_type");
-            entity.Property(e => e.FolderType).HasColumnType("folder_type");
+            entity.Property(e => e.FolderType).HasColumnName("root_folder_type");
+            entity.Property(e => e.RoomType).HasColumnType("folder_type");
 
             entity.Property(e => e.Password)
                 .IsRequired()

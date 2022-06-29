@@ -67,6 +67,7 @@ const TableRow = (props) => {
               directionX="right"
               isNew={true}
               onClick={onContextMenu}
+              onClose={onHideContextMenu}
               title={title}
             />
           ) : (

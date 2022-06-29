@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
 
 import { isMobile } from "react-device-detect";
 import { tablet } from "@appserver/components/utils/device";
@@ -28,7 +29,7 @@ const StyledHeadline = styled(Headline)`
   }
 `;
 
-const SectionHeaderContent = () => {
+const SectionHeaderContent = ({ createRoom }) => {
   return (
     <StyledContainer>
       <StyledHeadline>Virtual Rooms</StyledHeadline>
@@ -39,11 +40,15 @@ const SectionHeaderContent = () => {
         iconName="images/plus.svg"
         size={15}
         isFill
-        onClick={() => console.log("New room click")}
+        onClick={createRoom}
         isDisabled={false}
       />
     </StyledContainer>
   );
 };
 
-export default SectionHeaderContent;
+export default inject(({ roomsStore }) => {
+  const { createRoom } = roomsStore;
+
+  return { createRoom };
+})(observer(SectionHeaderContent));

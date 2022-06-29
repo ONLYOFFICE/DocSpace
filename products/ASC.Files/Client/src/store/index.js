@@ -17,6 +17,7 @@ import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
 import selectFileDialogStore from "./SelectFileDialogStore";
+import RoomsStore from "./RoomsStore";
 
 const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
 
@@ -66,6 +67,16 @@ const filesActionsStore = new FilesActionsStore(
   mediaViewerDataStore
 );
 
+const roomsStore = new RoomsStore(
+  store.auth,
+  store.auth.settingsStore,
+  store.auth.userStore,
+  filesStore,
+  selectedFolderStore,
+  treeFoldersStore,
+  settingsStore
+);
+
 const versionHistoryStore = new VersionHistoryStore(filesStore);
 const contextOptionsStore = new ContextOptionsStore(
   store.auth,
@@ -76,7 +87,8 @@ const contextOptionsStore = new ContextOptionsStore(
   treeFoldersStore,
   uploadDataStore,
   versionHistoryStore,
-  settingsStore
+  settingsStore,
+  roomsStore
 );
 
 const hotkeyStore = new HotkeyStore(
@@ -90,6 +102,7 @@ const hotkeyStore = new HotkeyStore(
 
 const stores = {
   filesStore,
+  roomsStore,
   settingsStore,
   mediaViewerDataStore,
   versionHistoryStore,

@@ -18,13 +18,23 @@ const StyledOwnerCell = styled.div`
   }
 `;
 
-const OwnerCell = ({ sideColor }) => {
+const OwnerCell = ({ owner, isMe, sideColor }) => {
   return (
     <TableCell>
       <StyledOwnerCell>
-        <Avatar className="author-avatar-cell" role="user" />
-        <Text color={sideColor} fontSize="12px" fontWeight={400} truncate>
-          Me
+        <Avatar
+          className="author-avatar-cell"
+          role="user"
+          source={owner.avatarSmall}
+        />
+        <Text
+          color={sideColor}
+          fontWeight={600}
+          fontSize={"11px"}
+          noSelect={true}
+          truncate
+        >
+          {isMe ? "Me" : owner.displayName}
         </Text>
       </StyledOwnerCell>
     </TableCell>

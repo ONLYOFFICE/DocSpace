@@ -5,6 +5,7 @@ import RoomLogo from ".";
 const baseProps = {
   type: "custom",
   isPrivacy: false,
+  isArchive: false,
 };
 
 describe("<RoomLogo />", () => {
@@ -36,5 +37,11 @@ describe("<RoomLogo />", () => {
     const wrapper = mount(<RoomLogo {...baseProps} isPrivacy={true} />);
 
     expect(wrapper.prop("isPrivacy")).toEqual(true);
+  });
+
+  it("accepts isPrivacy prop", () => {
+    const wrapper = mount(<RoomLogo {...baseProps} isArchive={true} />);
+
+    expect(wrapper.prop("isArchive")).toEqual(true);
   });
 });

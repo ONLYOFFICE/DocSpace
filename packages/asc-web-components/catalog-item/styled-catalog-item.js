@@ -7,7 +7,6 @@ import { isMobile } from "react-device-detect";
 
 import Text from "@appserver/components/text";
 
-// width, height
 const badgeWithoutText = css`
   position: absolute;
 
@@ -28,6 +27,71 @@ const badgeWithoutText = css`
     props.theme.catalogItem.badgeWithoutText.size} !important;
 
   margin: 0 !important;
+`;
+
+const StyledCatalogItemHeaderContainer = styled.div`
+  width: 100%;
+
+  height: 24px;
+
+  padding: 8px 12px 4px;
+
+  box-sizing: border-box;
+
+  margin-top: ${(props) => (props.isFirstHeader ? "0" : "8px")};
+
+  .catalog-item__header-text {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 12px;
+    color: #a3a9ae;
+  }
+
+  @media ${tablet} {
+    padding: ${(props) => (props.showText ? "0px 12px 12px" : "4px 12px 19px")};
+
+    margin-top: ${(props) => (props.isFirstHeader ? "0" : "16px")};
+
+    ${(props) =>
+      !props.showText &&
+      css`
+        display: flex;
+        justify-content: center;
+
+        .catalog-item__header-text {
+          width: 20px;
+
+          line-height: 1px;
+          height: 1px;
+
+          background: #d0d5da;
+        }
+      `}
+  }
+
+  ${isMobile &&
+  css`
+    padding: ${(props) => (props.showText ? "0px 12px 12px" : "4px 12px 19px")};
+
+    margin-top: ${(props) => (props.isFirstHeader ? "0" : "16px")};
+
+    ${(props) =>
+      !props.showText &&
+      css`
+        display: flex;
+        justify-content: center;
+
+        .catalog-item__header-text {
+          width: 20px;
+
+          line-height: 1px;
+          height: 1px;
+
+          background: #d0d5da;
+        }
+      `}
+  `}
 `;
 
 const StyledCatalogItemBadgeWrapper = styled.div`
@@ -230,6 +294,8 @@ const StyledCatalogItemSibling = styled.div`
   width: 100%;
   height: 100%;
 
+  border-radius: 3px;
+
   min-height: ${(props) => props.theme.catalogItem.container.height};
   max-height: ${(props) => props.theme.catalogItem.container.height};
 
@@ -320,4 +386,5 @@ export {
   StyledCatalogItemText,
   StyledCatalogItemSibling,
   StyledCatalogItemBadgeWrapper,
+  StyledCatalogItemHeaderContainer,
 };
