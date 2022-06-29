@@ -9,7 +9,7 @@ import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 
 const ModalComboBox = (props) => {
   const { t } = useTranslation("SingleSignOn");
-  const { sp_action, onModalComboBoxChange } = props;
+  const { isDisabled, sp_action, onModalComboBoxChange } = props;
 
   const certificateOptions = [
     { key: "signing", label: t("Signing") },
@@ -31,6 +31,7 @@ const ModalComboBox = (props) => {
           scaledOptions
           selectedOption={currentOption}
           showDisabledItems
+          isDisabled={isDisabled}
         />
       </StyledInputWrapper>
     </FieldContainer>

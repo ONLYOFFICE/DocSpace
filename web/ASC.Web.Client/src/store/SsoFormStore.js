@@ -134,6 +134,7 @@ class SsoFormStore {
   sp_singleLogoutUrlErrorMessage = null;
 
   isSubmitLoading = false;
+  isGeneratedCertificate = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -285,9 +286,14 @@ class SsoFormStore {
 
   generateCertificate = async () => {
     try {
+      this.isGeneratedCertificate = true;
+
       const response = await generateCerts();
       this.setGeneratedCertificate(response);
+
+      this.isGeneratedCertificate = false;
     } catch (err) {
+      this.isGeneratedCertificate = false;
       toastr.error(err);
       console.error(err);
     }

@@ -23,10 +23,16 @@ const AddSpCertificateModal = (props) => {
     onTextInputChange,
     sp_certificate,
     sp_privateKey,
+    isGeneratedCertificate,
   } = props;
 
   const onClose = addArguments(onCloseModal, "sp_isModalVisible");
   const onSubmit = addArguments(addCertificateToForm, "sp");
+
+  const onGenerate = () => {
+    if (isGeneratedCertificate) return;
+    generateCertificate();
+  };
 
   return (
     <StyledModalDialog
@@ -42,7 +48,7 @@ const AddSpCertificateModal = (props) => {
           <Link
             className="generate"
             isHovered
-            onClick={generateCertificate}
+            onClick={onGenerate}
             type="action"
           >
             {t("GenerateCertificate")}
@@ -58,6 +64,7 @@ const AddSpCertificateModal = (props) => {
           name="sp_certificate"
           onChange={onTextInputChange}
           value={sp_certificate}
+          isDisabled={isGeneratedCertificate}
         />
 
         <Text isBold className="text-area-label" noSelect>
@@ -69,9 +76,10 @@ const AddSpCertificateModal = (props) => {
           name="sp_privateKey"
           onChange={onTextInputChange}
           value={sp_privateKey}
+          isDisabled={isGeneratedCertificate}
         />
 
-        <ModalComboBox />
+        <ModalComboBox isDisabled={isGeneratedCertificate} />
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
@@ -82,11 +90,13 @@ const AddSpCertificateModal = (props) => {
             onClick={onSubmit}
             primary
             size="small"
+            isDisabled={isGeneratedCertificate}
           />
           <Button
             label={t("Common:CancelButton")}
             onClick={onClose}
             size="small"
+            isDisabled={isGeneratedCertificate}
           />
         </Box>
       </ModalDialog.Footer>
@@ -103,6 +113,7 @@ export default inject(({ ssoStore }) => {
     onTextInputChange,
     sp_certificate,
     sp_privateKey,
+    isGeneratedCertificate,
   } = ssoStore;
 
   return {
@@ -113,5 +124,6 @@ export default inject(({ ssoStore }) => {
     onTextInputChange,
     sp_certificate,
     sp_privateKey,
+    isGeneratedCertificate,
   };
 })(observer(AddSpCertificateModal));
