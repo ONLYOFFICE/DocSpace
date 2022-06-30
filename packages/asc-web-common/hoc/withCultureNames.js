@@ -16,7 +16,11 @@ export default function withCultureNames(WrappedComponent) {
     const mapCulturesToArray = (cultures, i18n) => {
       const t = i18n.getFixedT(null, "Common");
       return cultures.map((culture) => {
-        return { key: culture, label: t(`Culture_${culture}`) };
+        return {
+          key: culture,
+          label: t(`Culture_${culture}`),
+          icon: `/static/images/flags/${culture}.react.svg`,
+        };
       });
     };
 

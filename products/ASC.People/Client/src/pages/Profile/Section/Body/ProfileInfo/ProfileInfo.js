@@ -405,6 +405,7 @@ class ProfileInfo extends React.PureComponent {
                     manualWidth="320px"
                     isDefaultMode={!isMobileOnly}
                     withBlur={isMobileOnly}
+                    fillIcon={false}
                   />
                   <HelpButton
                     place="bottom"
