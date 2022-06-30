@@ -11,11 +11,17 @@
     showTitle: true,
     showFilter: false,
     destroyText: "Frame container",
+    viewAs: "row",
     filter: {
-      folderId: "@my",
+      folder: "@my",
+      count: 25,
+      page: 0,
+      sortorder: "descending",
+      sortby: "DateAndTime",
+      search: null,
+      filterType: null,
+      authorType: null,
       withSubfolders: true,
-      sortBy: "DateAndTime",
-      sortOrder: "descending",
     },
   };
 
@@ -28,12 +34,16 @@
     let object = {};
 
     if (searchUrl && searchUrl.length) {
-      const decodedString = decodeURIComponent(searchUrl)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\\/g, "\\\\");
-      object = JSON.parse(`{"${decodedString}"}`);
+      object = Object.fromEntries(new URLSearchParams(searchUrl));
+
+      object.filter = {};
+
+      for (prop in object) {
+        if (prop in defaultConfig.filter) {
+          object.filter[prop] = object[prop];
+          delete object[prop];
+        }
+      }
     }
 
     return { ...defaultConfig, ...object };
@@ -42,7 +52,11 @@
   createIframe = (config) => {
     const iframe = document.createElement("iframe");
 
-    iframe.src = config.src;
+    const filter = config.filter
+      ? `filter?${new URLSearchParams(config.filter).toString()}`
+      : ``;
+
+    iframe.src = config.src + filter;
     iframe.width = config.width;
     iframe.height = config.height;
     iframe.name = config.name;
