@@ -45,6 +45,7 @@ const withHotkeys = (Component) => {
 
       isFavoritesFolder,
       isRecentFolder,
+      recycleBinFolder,
       selection,
       setFavoriteAction,
     } = props;
@@ -60,6 +61,9 @@ const withHotkeys = (Component) => {
     };
 
     const onKeyDown = (e) => activateHotkeys(e);
+
+    const folderWithNoAction =
+      isFavoritesFolder || isRecentFolder || recycleBinFolder;
 
     useEffect(() => {
       window.addEventListener("keydown", onKeyDown);
@@ -161,42 +165,65 @@ const withHotkeys = (Component) => {
     //Crete document
     useHotkeys(
       "Shift+d",
-      () => setAction({ type: FileAction.Create, extension: "docx", id: -1 }),
+      () => {
+        if (folderWithNoAction) return;
+        setAction({ type: FileAction.Create, extension: "docx", id: -1 });
+      },
+
       { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete spreadsheet
     useHotkeys(
       "Shift+s",
-      () => setAction({ type: FileAction.Create, extension: "xlsx", id: -1 }),
+      () => {
+        if (folderWithNoAction) return;
+        setAction({ type: FileAction.Create, extension: "xlsx", id: -1 });
+      },
+
       { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete presentation
     useHotkeys(
       "Shift+p",
-      () => setAction({ type: FileAction.Create, extension: "pptx", id: -1 }),
+      () => {
+        if (folderWithNoAction) return;
+        setAction({ type: FileAction.Create, extension: "pptx", id: -1 });
+      },
+
       { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete form template
     useHotkeys(
       "Shift+o",
-      () => setAction({ type: FileAction.Create, extension: "docxf", id: -1 }),
+      () => {
+        if (folderWithNoAction) return;
+        setAction({ type: FileAction.Create, extension: "docxf", id: -1 });
+      },
+
       { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete form template from file
     useHotkeys(
       "Alt+Shift+o",
-      () => setSelectFileDialogVisible(true),
+      () => {
+        if (folderWithNoAction) return;
+        setSelectFileDialogVisible(true);
+      },
+
       hotkeysFilter
     );
 
     //Crete folder
     useHotkeys(
       "Shift+f",
-      () => setAction({ type: FileAction.Create, id: -1 }),
+      () => {
+        if (folderWithNoAction) return;
+        setAction({ type: FileAction.Create, id: -1 });
+      },
       { ...hotkeysFilter, ...{ keyup: true } }
     );
 
@@ -259,10 +286,26 @@ const withHotkeys = (Component) => {
     );
 
     //Upload file
-    useHotkeys("Shift+u", () => uploadFile(false, history, t), hotkeysFilter);
+    useHotkeys(
+      "Shift+u",
+      () => {
+        if (folderWithNoAction) return;
+        uploadFile(false, history, t);
+      },
+
+      hotkeysFilter
+    );
 
     //Upload folder
-    useHotkeys("Shift+i", () => uploadFile(true), hotkeysFilter);
+    useHotkeys(
+      "Shift+i",
+      () => {
+        if (folderWithNoAction) return;
+        uploadFile(true);
+      },
+
+      hotkeysFilter
+    );
 
     return <Component {...props} />;
   };
@@ -323,7 +366,11 @@ const withHotkeys = (Component) => {
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
       const { setHotkeyPanelVisible } = auth.settingsStore;
 
-      const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
+      const {
+        isFavoritesFolder,
+        isRecentFolder,
+        recycleBinFolder,
+      } = treeFoldersStore;
 
       return {
         setSelected,
@@ -363,6 +410,7 @@ const withHotkeys = (Component) => {
 
         isFavoritesFolder,
         isRecentFolder,
+        recycleBinFolder,
         selection,
         setFavoriteAction,
       };
