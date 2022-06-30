@@ -45,7 +45,7 @@ const withHotkeys = (Component) => {
 
       isFavoritesFolder,
       isRecentFolder,
-      recycleBinFolder,
+      isTrashFolder,
       selection,
       setFavoriteAction,
     } = props;
@@ -63,7 +63,7 @@ const withHotkeys = (Component) => {
     const onKeyDown = (e) => activateHotkeys(e);
 
     const folderWithNoAction =
-      isFavoritesFolder || isRecentFolder || recycleBinFolder;
+      isFavoritesFolder || isRecentFolder || isTrashFolder;
 
     useEffect(() => {
       window.addEventListener("keydown", onKeyDown);
@@ -369,7 +369,7 @@ const withHotkeys = (Component) => {
       const {
         isFavoritesFolder,
         isRecentFolder,
-        recycleBinFolder,
+        isTrashFolder,
       } = treeFoldersStore;
 
       return {
@@ -410,7 +410,7 @@ const withHotkeys = (Component) => {
 
         isFavoritesFolder,
         isRecentFolder,
-        recycleBinFolder,
+        isTrashFolder,
         selection,
         setFavoriteAction,
       };
