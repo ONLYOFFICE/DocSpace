@@ -24,15 +24,31 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Log;
-internal static partial class FFmpegServiceLogger
+namespace ASC.Files.Expired;
+
+[Singletone]
+public class DeleteExpiredService : BackgroundService
 {
-    [LoggerMessage(Level = LogLevel.Error, Message = "FFmpeg/avconv was not found in PATH or 'files.ffmpeg' setting")]
-    public static partial void ErrorFFmpeg(this ILogger<FFmpegService> logger);
+    private readonly CommonChunkedUploadSessionHolder _commonChunkedUploadSessionHolder;
+    private readonly TimeSpan _launchFrequency;
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "File {file} not found")]
-    public static partial void ErrorFileNotFound(this ILogger<FFmpegService> logger, string file);
+    public DeleteExpiredService(
+        ILogger<DeleteExpiredService> log,
+        SetupInfo setupInfo,
+        TempPath tempPath,
+        GlobalStore globalStore,
+        IConfiguration configuration)
+    {
+        _launchFrequency = TimeSpan.Parse(configuration["files:deleteExpired"] ?? "1", CultureInfo.InvariantCulture);
+        _commonChunkedUploadSessionHolder = new CommonChunkedUploadSessionHolder(tempPath, log, globalStore.GetStore(false), FileConstant.StorageDomainTmp, setupInfo.ChunkUploadSize);
+    }
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "FFmpeg found in {path}")]
-    public static partial void InformationFFmpegFoundIn(this ILogger<FFmpegService> logger, string path);
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await _commonChunkedUploadSessionHolder.DeleteExpiredAsync();
+            await Task.Delay(_launchFrequency, stoppingToken);
+        }
+    }
 }

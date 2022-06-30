@@ -81,6 +81,13 @@ public class Builder<T>
     private readonly IHttpClientFactory _clientFactory;
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly SocketManager _socketManager;
+    private readonly FFmpegService _fFmpegService;
+    private readonly TempPath _tempPath;
+
+    private readonly List<string> _imageFormatsCanBeCrop = new List<string>
+            {
+                ".bmp", ".gif", ".jpeg", ".jpg", ".pbm", ".png", ".tiff", ".tga", ".webp",
+            };
 
     public Builder(
         ThumbnailSettings settings,
@@ -92,6 +99,8 @@ public class Builder<T>
         PathProvider pathProvider,
         ILoggerProvider log,
         IHttpClientFactory clientFactory,
+        FFmpegService fFmpegService,
+        TempPath tempPath,
         SocketManager socketManager,
         ThumbnailSettings thumbnailSettings)
     {
@@ -104,6 +113,8 @@ public class Builder<T>
         _pathProvider = pathProvider;
         _logger = log.CreateLogger("ASC.Files.ThumbnailBuilder");
         _clientFactory = clientFactory;
+        _fFmpegService = fFmpegService;
+        _tempPath = tempPath;
         _socketManager = socketManager;
         _thumbnailSettings = thumbnailSettings;
     }
@@ -158,7 +169,7 @@ public class Builder<T>
 
             var ext = FileUtility.GetFileExtension(file.Title);
 
-            if (!_config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
+            if (!CanCreateThumbnail(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
             {
                 file.ThumbnailStatus = ASC.Files.Core.Thumbnail.NotRequired;
                 foreach (var size in _thumbnailSettings.Sizes)
@@ -169,13 +180,21 @@ public class Builder<T>
                 return;
             }
 
-            if (IsImage(file))
+            if (IsVideo(ext))
             {
-                await CropImage(fileDao, file);
+                await MakeThumbnailFromVideo(fileDao, file);
             }
             else
             {
-                await MakeThumbnail(fileDao, file);
+
+                if (IsImage(ext))
+                {
+                    await CropImage(fileDao, file);
+                }
+                else
+                {
+                    await MakeThumbnail(fileDao, file);
+                }
             }
 
             var newFile = await fileDao.GetFileStableAsync(file.Id);
@@ -194,6 +213,29 @@ public class Builder<T>
                 }
             }
         }
+    }
+
+    private async Task MakeThumbnailFromVideo(IFileDao<T> fileDao, File<T> file)
+    {
+        var streamFile = await fileDao.GetFileStreamAsync(file);
+
+        var thumbPath = _tempPath.GetTempFileName("jpg");
+        var tempFilePath = _tempPath.GetTempFileName(Path.GetExtension(file.Title));
+
+        using (var fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+        {
+            await streamFile.CopyToAsync(fileStream);
+        }
+
+        await _fFmpegService.CreateThumbnail(tempFilePath, thumbPath);
+
+        using (var streamThumb = new FileStream(thumbPath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+        {
+            await Crop(fileDao, file, streamThumb);
+        }
+
+        File.Delete(thumbPath);
+        File.Delete(tempFilePath);
     }
 
     private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
@@ -314,11 +356,19 @@ public class Builder<T>
         _logger.DebugMakeThumbnail4(file.Id.ToString());
     }
 
-    private bool IsImage(File<T> file)
+    private bool CanCreateThumbnail(string extention)
     {
-        var extension = FileUtility.GetFileExtension(file.Title);
+        return _config.FormatsArray.Contains(extention) || IsVideo(extention) || IsImage(extention);
+    }
 
-        return FileUtility.ExtsImage.Contains(extension);
+    private bool IsImage(string extention)
+    {
+        return _imageFormatsCanBeCrop.Contains(extention);
+    }
+
+    private bool IsVideo(string extention)
+    {
+        return _fFmpegService.ExistFormat(extention);
     }
 
     private async Task CropImage(IFileDao<T> fileDao, File<T> file)
@@ -359,8 +409,7 @@ public class Builder<T>
 
     private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height)
     {
-        var targetSize = new Size(Math.Min(sourceImg.Width, width), Math.Min(sourceImg.Height, height));
-        using var targetImg = GetImageThumbnail(sourceImg, targetSize, width, height);
+        using var targetImg = GetImageThumbnail(sourceImg, width);
         using var targetStream = new MemoryStream();
         switch (_global.ThumbnailExtension)
         {
@@ -392,7 +441,7 @@ public class Builder<T>
         await fileDao.SaveThumbnailAsync(file, targetStream, width, height);
     }
 
-    private Image GetImageThumbnail(Image sourceBitmap, Size targetSize, int thumbnaillWidth, int thumbnaillHeight)
+    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth)
     {
         return sourceBitmap.Clone(x => x.BackgroundColor(Color.White).Resize(thumbnaillWidth, 0));
     }

@@ -71,13 +71,18 @@ internal abstract class ThirdPartyProviderDao
         return Task.FromResult(false);
     }
 
-        public Task SaveThumbnailAsync(File<string> file, Stream thumbnail, int width, int height)
+    public Task SaveThumbnailAsync(File<string> file, Stream thumbnail, int width, int height)
     {
         //Do nothing
         return Task.CompletedTask;
     }
 
-        public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
+    public virtual Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
+    {
+        return GetThumbnailAsync(file.Id, width, height);
+    }
+
+    public virtual Task<Stream> GetThumbnailAsync(string file, int width, int height)
     {
         return Task.FromResult<Stream>(null);
     }
@@ -406,7 +411,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         var filtered = folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
             .Join(FilesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
-            .Join(FilesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new {result.folder, tagInfo.Name })
+            .Join(FilesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
                 .Where(r => tagNames.Contains(r.Name))
                 .Select(r => r.folder);
 
@@ -449,10 +454,10 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
-        public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+    public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
     {
         List<FileShareRecord> result = null;
-            return Task<List<FileShareRecord>>.FromResult(result);
+        return Task<List<FileShareRecord>>.FromResult(result);
     }
 
     public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entry)

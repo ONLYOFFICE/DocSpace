@@ -270,4 +270,13 @@ internal class BoxStorage
         //todo: without chunked uploader:
         return Math.Min(max, MaxChunkedUploadFileSize);
     }
+
+    public async Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+
+        var boxRepresentation = new BoxRepresentationRequest();
+        boxRepresentation.FileId = fileId;
+        boxRepresentation.XRepHints = $"[jpg?dimensions=320x320]";
+        return await _boxClient.FilesManager.GetRepresentationContentAsync(boxRepresentation);
+    }
 }

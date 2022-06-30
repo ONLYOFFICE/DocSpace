@@ -132,9 +132,15 @@ internal class DropboxProviderInfo : IProviderInfo
     {
         return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile);
     }
+
+    internal async Task<Stream> GetThumbnailsAsync(string filePath, int width, int height)
+    {
+        var storage = await StorageAsync;
+        return await _dropboxProviderInfoHelper.GetThumbnailsAsync(storage, filePath, width, height);
+    }
 }
 
-[Scope]
+[Scope(Additional = typeof(DropboxStorageDisposableWrapperExtention))]
 internal class DropboxStorageDisposableWrapper : IDisposable
 {
     public DropboxStorage Storage { get; private set; }
@@ -163,7 +169,7 @@ internal class DropboxStorageDisposableWrapper : IDisposable
 
     public async Task<DropboxStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
     {
-        var dropboxStorage = _serviceProvider.GetService<DropboxStorage>();
+        var dropboxStorage = _serviceProvider.GetRequiredService<DropboxStorage>();
 
         await CheckTokenAsync(token, id).ConfigureAwait(false);
 
@@ -310,5 +316,18 @@ public class DropboxProviderInfoHelper
 
             await _cacheNotify.PublishAsync(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
+    }
+
+    internal Task<Stream> GetThumbnailsAsync(DropboxStorage storage, string filePath, int width, int height)
+    {
+        return storage.GetThumbnailsAsync(filePath, width, height);
+    }
+}
+
+public static class DropboxStorageDisposableWrapperExtention
+{
+    public static void Register(DIHelper dIHelper)
+    {
+        dIHelper.TryAdd<DropboxStorage>();
     }
 }
