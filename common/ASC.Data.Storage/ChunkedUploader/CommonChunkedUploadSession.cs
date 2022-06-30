@@ -96,7 +96,24 @@ namespace ASC.Core.ChunkedUploader
 
         public T GetItemOrDefault<T>(string key)
         {
-            return Items.ContainsKey(key) && Items[key] is T t ? t : default;
+            if (Items.ContainsKey(key) && Items[key] != null)
+            {
+                if (Items[key] is T)
+                {
+                    return (T)Items[key];
+                }
+
+                if (Items[key] is JsonElement)
+                {
+                    var jToken = (JsonElement)Items[key];
+
+                    var item = jToken.Deserialize<T>();
+                    Items[key] = item;
+                    return item;
+                }
+            }
+
+            return default(T);
         }
 
         public virtual Stream Serialize()
@@ -114,17 +131,21 @@ namespace ASC.Core.ChunkedUploader
                     if (item.Value is JsonElement)
                     {
                         var value = (JsonElement)item.Value;
-                        if (value.ValueKind == JsonValueKind.String)
+
+                        switch (value.ValueKind)
                         {
-                            newItems.Add(item.Key, item.Value.ToString());
-                        }
-                        if (value.ValueKind == JsonValueKind.Number)
-                        {
-                            newItems.Add(item.Key, Int32.Parse(item.Value.ToString()));
-                        }
-                        if (value.ValueKind == JsonValueKind.Array)
-                        {
-                            newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
+                            case JsonValueKind.String:
+                                newItems.Add(item.Key, item.Value.ToString());
+                                break;
+                            case JsonValueKind.Number:
+                                newItems.Add(item.Key, Int32.Parse(item.Value.ToString()));
+                                break;
+                            case JsonValueKind.Array:
+                                newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
+                                break;
+                            default:
+                                newItems.Add(item.Key, item.Value);
+                                break;
                         }
                     }
                     else

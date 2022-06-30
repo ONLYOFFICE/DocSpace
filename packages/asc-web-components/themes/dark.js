@@ -2483,6 +2483,10 @@ const Dark = {
       itemActiveBorder: "#eeeeee",
     },
 
+    row: {
+      itemBackground: globalColors.black,
+    },
+
     fill: "#858585",
     hoverFill: "#eeeeee",
   },

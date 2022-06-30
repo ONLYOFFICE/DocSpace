@@ -140,6 +140,13 @@ class TreeFoldersStore {
     );
   }
 
+  get isTrashFolder() {
+    return (
+      this.recycleBinFolder &&
+      this.selectedFolderStore.id === this.recycleBinFolder.id
+    );
+  }
+
   get isRecentFolder() {
     return (
       this.recentFolder && this.selectedFolderStore.id === this.recentFolder.id

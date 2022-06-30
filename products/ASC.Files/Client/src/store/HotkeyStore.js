@@ -69,7 +69,7 @@ class HotkeyStore {
     );
 
     if (viewAs === "table") {
-      item = item && item[0].getElementsByClassName("table-container_cell");
+      item = item && item[0]?.getElementsByClassName("table-container_cell");
     }
 
     if (item && item[0]) {

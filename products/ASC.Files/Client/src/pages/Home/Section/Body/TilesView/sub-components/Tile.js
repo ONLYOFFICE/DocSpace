@@ -383,7 +383,9 @@ class Tile extends React.PureComponent {
       if (
         e.target.nodeName !== "IMG" &&
         e.target.nodeName !== "INPUT" &&
-        e.target.nodeName !== "rect"
+        e.target.nodeName !== "rect" &&
+        e.target.nodeName !== "path" &&
+        e.target.nodeName !== "svg"
       ) {
         setSelection && setSelection([]);
       }

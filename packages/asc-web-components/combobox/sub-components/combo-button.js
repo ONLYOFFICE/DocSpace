@@ -33,6 +33,7 @@ class ComboButton extends React.Component {
       scaled,
       size,
       comboIcon,
+      fillIcon,
     } = this.props;
 
     const defaultOption = selectedOption.default;
@@ -69,7 +70,7 @@ class ComboButton extends React.Component {
           >
             <ReactSVG
               src={selectedOption.icon}
-              className="combo-button_selected-icon"
+              className={fillIcon ? "combo-button_selected-icon" : ""}
             />
           </StyledIcon>
         )}
@@ -127,6 +128,7 @@ ComboButton.propTypes = {
   scaled: PropTypes.bool,
   onClick: PropTypes.func,
   comboIcon: PropTypes.string,
+  fillIcon: PropTypes.bool,
 };
 
 ComboButton.defaultProps = {
