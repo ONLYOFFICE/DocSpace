@@ -1158,7 +1158,7 @@ class FilesActionStore {
       .set("delete", {
         label: t("RemoveFromFavorites"),
         alt: t("RemoveFromFavorites"),
-        iconUrl: "/static/images/delete.react.svg",
+        iconUrl: "images/favorites.react.svg",
         onClick: () => {
           const items = selection.map((item) => item.id);
           this.setFavoriteAction("remove", items)
