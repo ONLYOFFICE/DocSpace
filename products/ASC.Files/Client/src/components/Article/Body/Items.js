@@ -308,7 +308,9 @@ const Items = ({
     (data) => {
       const items = data.map((item, index) => {
         const isTrash = item.rootFolderType === FolderType.TRASH;
-        const showBadge = item.newItems ? item.newItems > 0 && true : false;
+        const showBadge = item.newItems
+          ? item.newItems > 0 && true
+          : isTrash && !trashIsEmpty;
         const labelBadge = showBadge ? item.newItems : null;
         const iconBadge = isTrash ? "images/clear.trash.react.svg" : null;
 
@@ -329,7 +331,7 @@ const Items = ({
             onMoveTo={onMoveTo}
             onBadgeClick={() => onClickBadge(isTrash)}
             showDragItems={showDragItems}
-            showBadge={showBadge || (isTrash && !trashIsEmpty)}
+            showBadge={showBadge}
             labelBadge={labelBadge}
             iconBadge={iconBadge}
           />
