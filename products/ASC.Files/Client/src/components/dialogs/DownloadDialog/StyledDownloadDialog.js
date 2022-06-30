@@ -53,7 +53,7 @@ const StyledDownloadContent = styled.div`
     ${({ isOpen }) =>
       isOpen &&
       css`
-        background: #f8f9f9;
+        background: ${(props) => props.theme.downloadDialog.background};
         margin: 0 -16px;
         padding: 0 16px;
       `}

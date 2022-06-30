@@ -2581,6 +2581,10 @@ const Dark = {
     },
   },
 
+  downloadDialog: {
+    background: "#282828",
+  },
+
   studio: {
     about: {
       linkColor: "#E06A1B",

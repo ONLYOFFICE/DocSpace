@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Text from "@appserver/components/text";
+import { inject, observer } from "mobx-react";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import Checkbox from "@appserver/components/checkbox";
 import ArrowIcon from "../../../../public/images/arrow.react.svg";
@@ -18,6 +19,7 @@ const DownloadContent = (props) => {
     title,
     isChecked,
     isIndeterminate,
+    theme,
   } = props;
 
   const getTitleExtensions = () => {
@@ -102,7 +104,7 @@ const DownloadContent = (props) => {
   const showHeader = items.length > 1;
 
   return (
-    <StyledDownloadContent isOpen={showHeader ? isOpen : true}>
+    <StyledDownloadContent isOpen={showHeader ? isOpen : true} theme={theme}>
       {showHeader && (
         <div className="download-dialog_content-wrapper">
           <Checkbox
@@ -162,4 +164,11 @@ const DownloadContent = (props) => {
   );
 };
 
-export default DownloadContent;
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { theme } = settingsStore;
+
+  return {
+    theme,
+  };
+})(observer(DownloadContent));
