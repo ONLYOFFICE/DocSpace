@@ -70,7 +70,7 @@ class ComboButton extends React.Component {
           >
             <ReactSVG
               src={selectedOption.icon}
-              className={fillIcon && `combo-button_selected-icon`}
+              className={fillIcon ? "combo-button_selected-icon" : ""}
             />
           </StyledIcon>
         )}
