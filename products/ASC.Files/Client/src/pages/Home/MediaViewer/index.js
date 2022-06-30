@@ -33,6 +33,7 @@ const FilesMediaViewer = (props) => {
     setCurrentId,
     setBufferSelection,
     mediaViewerAudioFormats,
+    isFavoritesFolder,
   } = props;
 
   useEffect(() => {
@@ -171,6 +172,7 @@ const FilesMediaViewer = (props) => {
         errorLabel={t("Translations:MediaLoadError")}
         isPreviewFile={!!previewFile}
         onChangeUrl={onChangeUrl}
+        isFavoritesFolder={isFavoritesFolder}
       />
     )
   );
@@ -205,7 +207,11 @@ export default inject(
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
     const { extsVideo, extsImage, extsAudio } = settingsStore;
-    const { expandedKeys, setExpandedKeys } = treeFoldersStore;
+    const {
+      expandedKeys,
+      setExpandedKeys,
+      isFavoritesFolder,
+    } = treeFoldersStore;
 
     return {
       files,
@@ -230,6 +236,7 @@ export default inject(
       setScrollToItem,
       setCurrentId,
       setBufferSelection,
+      isFavoritesFolder,
     };
   }
 )(

@@ -299,11 +299,12 @@ class FilesActionStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
+    const { isRecycleBinFolder } = this.treeFoldersStore;
     const { addActiveItems, files, folders } = this.filesStore;
 
     const fileIds = files.map((f) => f.id);
     const folderIds = folders.map((f) => f.id);
-    addActiveItems(fileIds, folderIds);
+    if (isRecycleBinFolder) addActiveItems(fileIds, folderIds);
 
     setSecondaryProgressBarData({
       icon: "trash",

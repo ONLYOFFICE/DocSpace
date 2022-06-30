@@ -2571,6 +2571,10 @@ const Base = {
     },
   },
 
+  downloadDialog: {
+    background: "#f8f9f9",
+  },
+
   studio: {
     about: {
       linkColor: blueMain,
