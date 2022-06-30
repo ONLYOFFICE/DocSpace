@@ -355,6 +355,7 @@ class FilesStore {
     }
     requests.push(getFilesSettings());
     requests.push(this.getOforms());
+    requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => (this.isInit = true));
   };
@@ -691,8 +692,6 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
-
-          this.getIsEmptyTrash(); //TODO:
 
           return Promise.resolve(selectedFolder);
         })

@@ -188,7 +188,7 @@ class FilesActionStore {
     withoutDialog = false
   ) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
-    const { addActiveItems } = this.filesStore;
+    const { addActiveItems, getIsEmptyTrash } = this.filesStore;
     const {
       secondaryProgressDataStore,
       clearActiveOperations,
@@ -276,6 +276,7 @@ class FilesActionStore {
           })
           .finally(() => {
             clearActiveOperations(fileIds, folderIds);
+            getIsEmptyTrash();
           });
       } catch (err) {
         clearActiveOperations(fileIds, folderIds);
@@ -300,7 +301,7 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
-    const { addActiveItems, files, folders } = this.filesStore;
+    const { addActiveItems, files, folders, getIsEmptyTrash } = this.filesStore;
 
     const fileIds = files.map((f) => f.id);
     const folderIds = folders.map((f) => f.id);
@@ -325,6 +326,7 @@ class FilesActionStore {
         await loopFilesOperations(data, pbData);
         toastr.success(translations.successOperation);
         this.updateCurrentFolder(fileIds, folderIds);
+        getIsEmptyTrash();
         clearActiveOperations(fileIds, folderIds);
       });
     } catch (err) {
@@ -581,7 +583,7 @@ class FilesActionStore {
   };
 
   deleteItemOperation = (isFile, itemId, translations) => {
-    const { addActiveItems } = this.filesStore;
+    const { addActiveItems, getIsEmptyTrash } = this.filesStore;
 
     const pbData = {
       icon: "trash",
@@ -609,6 +611,7 @@ class FilesActionStore {
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
           this.updateCurrentFolder(null, [itemId]);
+          getIsEmptyTrash();
         })
         .then(() => toastr.success(translations.successRemoveFolder));
     }
@@ -1158,7 +1161,7 @@ class FilesActionStore {
       .set("delete", {
         label: t("RemoveFromFavorites"),
         alt: t("RemoveFromFavorites"),
-        iconUrl: "/static/images/delete.react.svg",
+        iconUrl: "images/favorites.react.svg",
         onClick: () => {
           const items = selection.map((item) => item.id);
           this.setFavoriteAction("remove", items)
