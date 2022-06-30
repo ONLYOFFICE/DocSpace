@@ -57,6 +57,7 @@ class PureHome extends React.Component {
     }
 
     this.frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
+    this.isFrame = this.frameConfig && window.name === this.frameConfig.name;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
@@ -315,7 +316,6 @@ class PureHome extends React.Component {
       snackbarExist,
     } = this.props;
 
-    const isFrame = this.frameConfig && window.name === this.frameConfig.name;
     const showTitle =
       this.frameConfig && JSON.parse(this.frameConfig.showTitle);
     const showFilter =
@@ -353,7 +353,7 @@ class PureHome extends React.Component {
           firstLoad={firstLoad}
         >
           <Section.SectionHeader>
-            {isFrame ? (
+            {this.isFrame ? (
               showTitle && <SectionHeaderContent />
             ) : (
               <SectionHeaderContent />
@@ -371,7 +371,7 @@ class PureHome extends React.Component {
           </Section.SectionBar>
 
           <Section.SectionFilter>
-            {isFrame ? (
+            {this.isFrame ? (
               showFilter && <SectionFilterContent />
             ) : (
               <SectionFilterContent />
