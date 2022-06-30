@@ -177,11 +177,17 @@ public class S3Storage : BaseStorage
         return SaveAsync(domain, path, stream, contentType, contentDisposition, ACL.Auto);
     }
 
+        private bool EnableQuotaCheck(string domain)
+        {
+            return (QuotaController != null) && !domain.EndsWith("_temp");
+        }
+
     public async Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
                          string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
     {
         var buffered = _tempStream.GetBuffered(stream);
-        if (QuotaController != null)
+
+            if (EnableQuotaCheck(domain))
         {
             QuotaController.QuotaUsedCheck(buffered.Length);
         }

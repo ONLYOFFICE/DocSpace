@@ -250,6 +250,7 @@ class ConnectClouds extends React.Component {
                         type="page"
                         title={item.customer_title}
                         //color={theme.filesSettings.linkColor}
+                        isHovered={true}
                         color="#A3A9AE"
                         fontSize="11px"
                         fontWeight={400}

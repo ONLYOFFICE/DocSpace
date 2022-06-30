@@ -49,7 +49,8 @@ class HotkeyStore {
       e.preventDefault();
     }
 
-    const { selection, hotkeyCaret, viewAs } = this.filesStore;
+    const { selection: s, hotkeyCaret, viewAs, filesList } = this.filesStore;
+    const selection = s.length ? s : filesList;
 
     if (!hotkeyCaret) {
       const scroll = document.getElementsByClassName("section-scroll");
@@ -68,7 +69,7 @@ class HotkeyStore {
     );
 
     if (viewAs === "table") {
-      item = item && item[0].getElementsByClassName("table-container_cell");
+      item = item && item[0]?.getElementsByClassName("table-container_cell");
     }
 
     if (item && item[0]) {
@@ -85,8 +86,8 @@ class HotkeyStore {
       } else {
         if (scroll) scroll.style.overflowX = "hidden"; //hack to fix react-custom-scrollbar bug with horizontal scroll
         el.scrollIntoView({ block: "center" });
-        if (scroll) scroll.style.overflowX = null;
-        //console.log("element is not visible");
+        if (scroll) scroll.style.overflowX = "scroll";
+        console.log("element is not visible");
       }
     }
   };
@@ -158,7 +159,10 @@ class HotkeyStore {
       filesList,
       setHotkeyCaretStart,
       selection,
+      viewAs,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
+
     if (!hotkeyCaret && !selection.length) {
       this.selectFirstFile();
 
@@ -174,7 +178,9 @@ class HotkeyStore {
       filesList,
       setHotkeyCaretStart,
       selection,
+      viewAs,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) {
       this.selectFirstFile();
@@ -266,6 +272,7 @@ class HotkeyStore {
       hotkeyCaretStart,
       filesList,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) return this.selectFirstFile();
 
@@ -324,6 +331,7 @@ class HotkeyStore {
       filesList,
       hotkeyCaretStart,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) return this.selectFirstFile();
 

@@ -740,7 +740,7 @@ public class EntryManager
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
-            var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
+                var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
 
             var tmpFiles = await _fileSecurity.FilterReadAsync(files);
             files = tmpFiles.ToList();
@@ -1473,14 +1473,12 @@ public class EntryManager
         {
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
-
-        var fileSecurity = _fileSecurity;
         if (!editLink
-            && (!await fileSecurity.CanEditAsync(file, userId)
-                && !await fileSecurity.CanCustomFilterEditAsync(file, userId)
-                && !await fileSecurity.CanReviewAsync(file, userId)
-                && !await fileSecurity.CanFillFormsAsync(file, userId)
-                && !await fileSecurity.CanCommentAsync(file, userId)
+            && (!await _fileSecurity.CanEditAsync(file, userId)
+                && !await _fileSecurity.CanCustomFilterEditAsync(file, userId)
+                && !await _fileSecurity.CanReviewAsync(file, userId)
+                && !await _fileSecurity.CanFillFormsAsync(file, userId)
+                && !await _fileSecurity.CanCommentAsync(file, userId)
                 || _userManager.GetUsers(userId).IsVisitor(_userManager)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
