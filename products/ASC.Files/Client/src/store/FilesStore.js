@@ -72,6 +72,7 @@ class FilesStore {
   isLoadingFilesFind = false;
   pageItemsLength = null;
   isHidePagination = false;
+  trashIsEmpty = false;
 
   constructor(
     authStore,
@@ -690,6 +691,9 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
+
+          this.getIsEmptyTrash(); //TODO:
+
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -2095,6 +2099,16 @@ class FilesStore {
 
   setScrollToItem = (item) => {
     this.scrollToItem = item;
+  };
+
+  getIsEmptyTrash = async () => {
+    const res = await api.files.getTrashFolderList();
+    const items = [...res.files, ...res.folders];
+    this.setTrashIsEmpty(items.length === 0 ? true : false);
+  };
+
+  setTrashIsEmpty = (isEmpty) => {
+    this.trashIsEmpty = isEmpty;
   };
 }
 
