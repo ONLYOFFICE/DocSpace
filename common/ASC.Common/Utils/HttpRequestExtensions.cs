@@ -181,7 +181,7 @@ public static class HttpRequestExtensions
 
     public static string GetUserHostAddress(this HttpRequest request)
     {
-        return request.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString();
+        return request.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
     }
 
     private static Uri ParseRewriterUrl(string s)
