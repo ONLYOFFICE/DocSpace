@@ -2473,6 +2473,10 @@ const Base = {
       itemActiveBorder: blueMain,
     },
 
+    row: {
+      itemBackground: white,
+    },
+
     fill: gray,
     hoverFill: grayMain,
   },
