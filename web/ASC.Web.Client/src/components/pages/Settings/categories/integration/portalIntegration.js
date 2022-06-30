@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Box from "@appserver/components/box";
 import TextInput from "@appserver/components/text-input";
 import Textarea from "@appserver/components/textarea";
+import Label from "@appserver/components/label";
 import Checkbox from "@appserver/components/checkbox";
 import Button from "@appserver/components/button";
 import ComboBox from "@appserver/components/combobox";
@@ -15,28 +16,23 @@ import { inject, observer } from "mobx-react";
 
 const Controls = styled(Box)`
   width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
   @media ${tablet} {
     width: 100%;
+  }
+
+  .label {
+    min-width: fit-content;
   }
 `;
 
 const ControlsGroup = styled(Box)`
   display: flex;
   align-items: center;
-`;
-
-const Parameter = styled(TextInput)`
-  margin-bottom: 16px;
-  margin-right: 8px;
-`;
-
-const ParameterCheckbox = styled(Checkbox)`
-  margin-bottom: 16px;
-`;
-
-const ParameterComboBox = styled(ComboBox)`
-  margin-bottom: 16px;
+  gap: 8px;
 `;
 
 const Frame = styled(Box)`
@@ -58,21 +54,41 @@ const PortalIntegration = (props) => {
   const scriptUrl = `${window.location.origin}/static/scripts/ds-api.js`;
 
   const dataSortBy = [
-    { key: "AZ", label: "Title", default: true },
+    { key: "DateAndTime", label: "Last modified date", default: true },
+    { key: "AZ", label: "Title" },
     { key: "Type", label: "Type" },
     { key: "Size", label: "Size" },
     { key: "DateAndTimeCreation", label: "Creation date" },
-    { key: "DateAndTime", label: "Last modified date" },
     { key: "Author", label: "Author" },
   ];
 
+  const dataFilterType = [
+    { key: 0, label: "None", default: true },
+    { key: 1, label: "Files" },
+    { key: 2, label: "Folders" },
+    { key: 3, label: "Documents" },
+    { key: 4, label: "Presentations" },
+    { key: 5, label: "Spreadsheets" },
+    { key: 7, label: "Images" },
+    { key: 8, label: "By user" },
+    { key: 9, label: "By department" },
+    { key: 10, label: "Archive" },
+    { key: 11, label: "By Extension" },
+    { key: 12, label: "Media" },
+  ];
+
   const dataSortOrder = [
-    { key: "ascending", label: "Ascending", default: true },
-    { key: "descending", label: "Descending" },
+    { key: "descending", label: "Descending", default: true },
+    { key: "ascending", label: "Ascending" },
+  ];
+
+  const dataDisplayType = [
+    { key: "row", label: "Row", default: true },
+    { key: "table", label: "Table" },
+    { key: "tile", label: "Tile" },
   ];
 
   const [config, setConfig] = useState({
-    withSubfolders: true,
     showHeader: false,
     showTitle: true,
     showArticle: false,
@@ -81,23 +97,29 @@ const PortalIntegration = (props) => {
 
   const [sortBy, setSortBy] = useState(dataSortBy[0]);
   const [sortOrder, setSortOrder] = useState(dataSortOrder[0]);
+  const [filterType, setFilterType] = useState(dataFilterType[0]);
+  const [displayType, setDisplayType] = useState(dataDisplayType[0]);
+  const [withSubfolders, setWithSubfolders] = useState(false);
 
   const params = objectToGetParams(config);
 
   const frameId = config.frameId || "ds-frame";
 
+  const destroyFrame = () => {
+    DocSpace.destroyFrame();
+  };
+
   const loadFrame = () => {
     const script = document.getElementById("integration");
 
-    if (script) script.remove();
+    if (script) {
+      destroyFrame();
+      script.remove();
+    }
 
     const params = objectToGetParams(config);
 
     loadScript(`${scriptUrl}${params}`, "integration");
-  };
-
-  const destroyFrame = () => {
-    DocSpace.destroyFrame();
   };
 
   const showMessage = (message) => {
@@ -128,7 +150,7 @@ const PortalIntegration = (props) => {
 
   const onChangeFolderId = (e) => {
     setConfig((config) => {
-      return { ...config, folderId: e.target.value };
+      return { ...config, folder: e.target.value };
     });
   };
 
@@ -140,13 +162,15 @@ const PortalIntegration = (props) => {
 
   const onChangeWithSubfolders = (e) => {
     setConfig((config) => {
-      return { ...config, withSubfolders: !config.withSubfolders };
+      return { ...config, withSubfolders: !withSubfolders };
     });
+
+    setWithSubfolders(!withSubfolders);
   };
 
   const onChangeSortBy = (item) => {
     setConfig((config) => {
-      return { ...config, sortBy: item.key };
+      return { ...config, sortby: item.key };
     });
 
     setSortBy(item);
@@ -154,10 +178,26 @@ const PortalIntegration = (props) => {
 
   const onChangeSortOrder = (item) => {
     setConfig((config) => {
-      return { ...config, sortOrder: item.key };
+      return { ...config, sortorder: item.key };
     });
 
     setSortOrder(item);
+  };
+
+  const onChangeFilterType = (item) => {
+    setConfig((config) => {
+      return { ...config, filterType: item.key };
+    });
+
+    setFilterType(item);
+  };
+
+  const onChangeDisplayType = (item) => {
+    setConfig((config) => {
+      return { ...config, viewAs: item.key };
+    });
+
+    setDisplayType(item);
   };
 
   const onChangeShowHeader = (e) => {
@@ -184,6 +224,30 @@ const PortalIntegration = (props) => {
     });
   };
 
+  const onChangeCount = (e) => {
+    setConfig((config) => {
+      return { ...config, count: e.target.value };
+    });
+  };
+
+  const onChangePage = (e) => {
+    setConfig((config) => {
+      return { ...config, page: e.target.value };
+    });
+  };
+
+  const onChangeSearch = (e) => {
+    setConfig((config) => {
+      return { ...config, search: e.target.value };
+    });
+  };
+
+  const onChangeAuthor = (e) => {
+    setConfig((config) => {
+      return { ...config, authorType: e.target.value };
+    });
+  };
+
   const codeBlock = `<div id="${frameId}">Fallback text</div>\n<script src="${scriptUrl}${params}"></script>`;
 
   return (
@@ -192,86 +256,125 @@ const PortalIntegration = (props) => {
         <Heading level={1} size="small">
           Frame options
         </Heading>
+        <TextInput
+          scale={true}
+          onChange={onChangeFrameId}
+          placeholder="Frame id"
+          value={config.frameId}
+        />
+        <TextInput
+          scale={true}
+          onChange={onChangeWidth}
+          placeholder="Frame width"
+          value={config.width}
+        />
+        <TextInput
+          scale={true}
+          onChange={onChangeHeight}
+          placeholder="Frame height"
+          value={config.height}
+        />
         <ControlsGroup>
-          <Parameter
-            onChange={onChangeFrameId}
-            placeholder="Frame id"
-            value={config.frameId}
+          <Label className="label" text="Display mode: " />
+          <ComboBox
+            scale={true}
+            onSelect={onChangeDisplayType}
+            options={dataDisplayType}
+            scaled={true}
+            selectedOption={displayType}
+            displaySelectedOption
           />
         </ControlsGroup>
-
-        <ControlsGroup>
-          <Parameter
-            onChange={onChangeWidth}
-            placeholder="Frame width"
-            value={config.width}
-          />
-        </ControlsGroup>
-
-        <ControlsGroup>
-          <Parameter
-            onChange={onChangeHeight}
-            placeholder="Frame height"
-            value={config.height}
-          />
-        </ControlsGroup>
-
-        <ParameterCheckbox
+        <Checkbox
           label="Show header"
           onChange={onChangeShowHeader}
           isChecked={config.showHeader}
         />
-
-        <ParameterCheckbox
+        <Checkbox
           label="Show title"
           onChange={onChangeShowTitle}
           isChecked={config.showTitle}
         />
-
-        <ParameterCheckbox
+        <Checkbox
           label="Show article"
           onChange={onChangeShowArticle}
           isChecked={config.showArticle}
         />
-
-        <ParameterCheckbox
+        <Checkbox
           label="Show filter"
           onChange={onChangeShowFilter}
           isChecked={config.showFilter}
         />
-
         <Heading level={1} size="small">
           Filter options
         </Heading>
-
+        <TextInput
+          scale={true}
+          onChange={onChangeFolderId}
+          placeholder="Folder id"
+          value={config.folder}
+        />
+        <TextInput
+          scale={true}
+          onChange={onChangeCount}
+          placeholder="Items count"
+          value={config.count}
+        />
+        <TextInput
+          scale={true}
+          onChange={onChangePage}
+          placeholder="Page"
+          value={config.page}
+        />
         <ControlsGroup>
-          <Parameter
-            onChange={onChangeFolderId}
-            placeholder="Folder id"
-            value={config.folderId}
+          <TextInput
+            scale={true}
+            onChange={onChangeSearch}
+            placeholder="Search term"
+            value={config.search}
           />
-          <ParameterCheckbox
+          <Checkbox
             label="With subfolders"
             onChange={onChangeWithSubfolders}
-            isChecked={config.withSubfolders}
+            isChecked={withSubfolders}
           />
         </ControlsGroup>
-
-        <ParameterComboBox
-          onSelect={onChangeSortBy}
-          options={dataSortBy}
-          scaled={true}
-          selectedOption={sortBy}
-          displaySelectedOption
+        <TextInput
+          scale={true}
+          onChange={onChangeAuthor}
+          placeholder="Author"
+          value={config.authorType}
         />
-
-        <ParameterComboBox
-          onSelect={onChangeSortOrder}
-          options={dataSortOrder}
-          scaled={true}
-          selectedOption={sortOrder}
-          displaySelectedOption
-        />
+        <ControlsGroup>
+          <Label className="label" text="Filter type:" />
+          <ComboBox
+            onSelect={onChangeFilterType}
+            options={dataFilterType}
+            scaled={true}
+            selectedOption={filterType}
+            displaySelectedOption
+          />
+        </ControlsGroup>
+        <ControlsGroup>
+          <Label className="label" text="Sort by:" />
+          <ComboBox
+            onSelect={onChangeSortBy}
+            options={dataSortBy}
+            scaled={true}
+            selectedOption={sortBy}
+            displaySelectedOption
+          />
+        </ControlsGroup>
+        <ControlsGroup>
+          <Label className="label" text="Sort order:" />
+          <ComboBox
+            onSelect={onChangeSortOrder}
+            options={dataSortOrder}
+            scaled={true}
+            selectedOption={sortOrder}
+            displaySelectedOption
+          />
+        </ControlsGroup>
       </Controls>
       <Heading level={1} size="xsmall">
         Paste this code block on page:
