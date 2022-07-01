@@ -84,10 +84,8 @@ class HotkeyStore {
       ) {
         //console.log("element is visible");
       } else {
-        if (scroll) scroll.style.overflowX = "hidden"; //hack to fix react-custom-scrollbar bug with horizontal scroll
-        el.scrollIntoView({ block: "center" });
-        if (scroll) scroll.style.overflowX = "scroll";
-        console.log("element is not visible");
+        scroll.scrollTo(0, el.offsetTop - scrollRect.height / 2);
+        //console.log("element is not visible");
       }
     }
   };
