@@ -111,17 +111,21 @@ public class CommonChunkedUploadSession : ICloneable
                 if (item.Value is JsonElement)
                 {
                     var value = (JsonElement)item.Value;
-                    if (value.ValueKind == JsonValueKind.String)
+
+                        switch (value.ValueKind)
                     {
+                            case JsonValueKind.String:
                         newItems.Add(item.Key, item.Value.ToString());
-                    }
-                    if (value.ValueKind == JsonValueKind.Number)
-                    {
-                        newItems.Add(item.Key, Int32.Parse(item.Value.ToString()));
-                    }
-                    if (value.ValueKind == JsonValueKind.Array)
-                    {
+                                break;
+                            case JsonValueKind.Number:
+                                newItems.Add(item.Key, Int32.Parse(item.Value.ToString()));
+                                break;
+                            case JsonValueKind.Array:
                         newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
+                                break;
+                            default:
+                                newItems.Add(item.Key, item.Value);
+                                break;
                     }
                 }
                 else

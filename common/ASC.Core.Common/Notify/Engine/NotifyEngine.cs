@@ -281,6 +281,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                 catch (Exception exc)
                 {
                     directresponses.Add(new SendResponse(request.NotifyAction, request.Recipient, exc));
+                    _logger.ErrorWithException(exc);
                 }
 
                 responces.AddRange(directresponses);
@@ -312,6 +313,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                             catch (Exception exc)
                             {
                                 responces.Add(new SendResponse(request.NotifyAction, request.Recipient, exc));
+                                _logger.ErrorWithException(exc);
                             }
                         }
                     }
@@ -374,6 +376,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     catch (Exception exc)
                     {
                         response = new SendResponse(request.NotifyAction, channel.SenderName, request.Recipient, exc);
+                        _logger.ErrorWithException(exc);
                     }
                 }
                 else

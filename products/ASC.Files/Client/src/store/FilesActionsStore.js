@@ -36,6 +36,8 @@ class FilesActionStore {
   dialogsStore;
   mediaViewerDataStore;
 
+  isBulkDownload = false;
+
   constructor(
     authStore,
     uploadDataStore,
@@ -56,6 +58,10 @@ class FilesActionStore {
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
   }
+
+  setIsBulkDownload = (isBulkDownload) => {
+    this.isBulkDownload = isBulkDownload;
+  };
 
   isMediaOpen = () => {
     const { visible, setMediaViewerData, playlist } = this.mediaViewerDataStore;
@@ -293,11 +299,12 @@ class FilesActionStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
+    const { isRecycleBinFolder } = this.treeFoldersStore;
     const { addActiveItems, files, folders } = this.filesStore;
 
     const fileIds = files.map((f) => f.id);
     const folderIds = folders.map((f) => f.id);
-    addActiveItems(fileIds, folderIds);
+    if (isRecycleBinFolder) addActiveItems(fileIds, folderIds);
 
     setSecondaryProgressBarData({
       icon: "trash",
@@ -331,7 +338,7 @@ class FilesActionStore {
     }
   };
 
-  downloadFiles = async (fileConvertIds, folderIds, label) => {
+  downloadFiles = async (fileConvertIds, folderIds, translations) => {
     const {
       clearActiveOperations,
       secondaryProgressDataStore,
@@ -342,6 +349,14 @@ class FilesActionStore {
     } = secondaryProgressDataStore;
 
     const { addActiveItems } = this.filesStore;
+    const { label } = translations;
+
+    if (this.isBulkDownload) {
+      //toastr.error(); TODO: new add cancel download operation and new translation "ErrorMassage_SecondDownload"
+      return;
+    }
+
+    this.setIsBulkDownload(true);
 
     setSecondaryProgressBarData({
       icon: "file",
@@ -365,9 +380,14 @@ class FilesActionStore {
         const item =
           data?.finished && data?.url
             ? data
-            : await this.uploadDataStore.loopFilesOperations(data, pbData);
+            : await this.uploadDataStore.loopFilesOperations(
+                data,
+                pbData,
+                true
+              );
 
         clearActiveOperations(fileIds, folderIds);
+        this.setIsBulkDownload(false);
 
         if (item.url) {
           window.location.href = item.url;
@@ -379,8 +399,10 @@ class FilesActionStore {
         }
 
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        !item.url && toastr.error(translations.error, null, 0, true);
       });
     } catch (err) {
+      this.setIsBulkDownload(false);
       clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({
         visible: true,
@@ -472,10 +494,13 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }, isBuffer = false, isSingleFile) => {
+  onSelectItem = (
+    { id, isFolder },
+    withSelect = true,
+    isContextItem = true
+  ) => {
     const {
       setBufferSelection,
-      selected,
       setSelected,
       selection,
       setSelection,
@@ -492,22 +517,28 @@ class FilesActionStore {
     );
 
     if (item) {
-      if (isBuffer) {
-        setBufferSelection(item);
-        setEnabledHotkeys(false);
-        setSelected("none");
-      } else {
-        const isSelected = selection.findIndex(
-          (f) => f.id === id && f.isFolder === isFolder
-        );
+      const isSelected =
+        selection.findIndex((f) => f.id === id && f.isFolder === isFolder) !==
+        -1;
 
-        if (isSelected === -1 || isSingleFile) {
+      if (withSelect) {
+        //TODO: fix double event on context-menu click
+        if (isSelected && selection.length === 1 && !isContextItem) {
           setSelected("none");
+        } else {
           setSelection([item]);
+          setHotkeyCaret(null);
+          setHotkeyCaretStart(null);
         }
+      } else if (isSelected) {
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);
+      } else {
+        setSelected("none");
+        setBufferSelection(item);
       }
+
+      isContextItem && setEnabledHotkeys(false);
     }
   };
 
@@ -743,7 +774,7 @@ class FilesActionStore {
     else updateFolderBadge(id, item.new);
   };
 
-  markAsRead = (folderIds, fileId, item) => {
+  markAsRead = (folderIds, fileIds, item) => {
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -756,13 +787,22 @@ class FilesActionStore {
       visible: true,
     });
 
-    return markAsRead(folderIds, fileId)
+    return markAsRead(folderIds, fileIds)
       .then(async (res) => {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "file" };
         await this.uploadDataStore.loopFilesOperations(data, pbData);
       })
-      .then(() => item && this.setNewBadgeCount(item))
+      .then(() => {
+        if (!item) return;
+
+        this.setNewBadgeCount(item);
+
+        const { getFileIndex, updateFileStatus } = this.filesStore;
+
+        const index = getFileIndex(item.id);
+        updateFileStatus(index, item.fileStatus & ~FileStatus.IsNew);
+      })
       .catch((err) => toastr.error(err))
       .finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
@@ -1116,7 +1156,7 @@ class FilesActionStore {
       .set("downloadAs", downloadAs)
       .set("copy", copy)
       .set("delete", {
-        label: t("Common:Delete"),
+        label: t("RemoveFromFavorites"),
         alt: t("RemoveFromFavorites"),
         iconUrl: "/static/images/delete.react.svg",
         onClick: () => {
@@ -1186,6 +1226,7 @@ class FilesActionStore {
 
   openFileAction = (item) => {
     const {
+      isLoading,
       setIsLoading,
       fetchFiles,
       openDocEditor,
@@ -1207,7 +1248,7 @@ class FilesActionStore {
     const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
     if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);
 
-    if (isRecycleBinFolder) return;
+    if (isRecycleBinFolder || isLoading) return;
 
     if (isFolder) {
       setIsLoading(true);
@@ -1218,8 +1259,6 @@ class FilesActionStore {
           const pathParts = data.selectedFolder.pathParts;
           const newExpandedKeys = createNewExpandedKeys(pathParts);
           setExpandedKeys(newExpandedKeys);
-
-          this.setNewBadgeCount(item);
         })
         .catch((err) => {
           toastr.error(err);

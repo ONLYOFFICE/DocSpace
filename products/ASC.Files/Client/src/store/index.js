@@ -34,17 +34,30 @@ const filesStore = new FilesStore(
   selectFolderDialogStore,
   selectFileDialogStore
 );
+
+const roomsStore = new RoomsStore(
+  store.auth,
+  store.auth.settingsStore,
+  store.auth.userStore,
+  filesStore,
+  selectedFolderStore,
+  treeFoldersStore,
+  settingsStore
+);
+
 const mediaViewerDataStore = new MediaViewerDataStore(
   filesStore,
   settingsStore
 );
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
+const versionHistoryStore = new VersionHistoryStore(filesStore);
 const dialogsStore = new DialogsStore(
   store.auth,
   treeFoldersStore,
   filesStore,
-  selectedFolderStore
+  selectedFolderStore,
+  versionHistoryStore
 );
 const uploadDataStore = new UploadDataStore(
   treeFoldersStore,
@@ -67,17 +80,6 @@ const filesActionsStore = new FilesActionsStore(
   mediaViewerDataStore
 );
 
-const roomsStore = new RoomsStore(
-  store.auth,
-  store.auth.settingsStore,
-  store.auth.userStore,
-  filesStore,
-  selectedFolderStore,
-  treeFoldersStore,
-  settingsStore
-);
-
-const versionHistoryStore = new VersionHistoryStore(filesStore);
 const contextOptionsStore = new ContextOptionsStore(
   store.auth,
   dialogsStore,

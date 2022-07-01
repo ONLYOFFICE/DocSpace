@@ -168,6 +168,8 @@ class ContextMenuButton extends React.Component {
       isNew,
       title,
       zIndex,
+      usePortal,
+      dropDownClassName,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
@@ -199,6 +201,7 @@ class ContextMenuButton extends React.Component {
         />
         {displayType === "dropdown" ? (
           <DropDown
+            className={dropDownClassName}
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
@@ -207,6 +210,7 @@ class ContextMenuButton extends React.Component {
             columnCount={columnCount}
             withBackdrop={!!isMobile}
             zIndex={zIndex}
+            isDefaultMode={usePortal}
           >
             {this.state.data.map(
               (item, index) =>
@@ -320,6 +324,8 @@ ContextMenuButton.propTypes = {
   displayType: PropTypes.string,
   isNew: PropTypes.bool,
   onClose: PropTypes.func,
+  usePortal: PropTypes.bool,
+  dropDownClassName: PropTypes.string,
 };
 
 ContextMenuButton.defaultProps = {
@@ -333,6 +339,7 @@ ContextMenuButton.defaultProps = {
   isFill: false,
   displayType: "dropdown",
   isNew: false,
+  usePortal: true,
 };
 
 export default ContextMenuButton;

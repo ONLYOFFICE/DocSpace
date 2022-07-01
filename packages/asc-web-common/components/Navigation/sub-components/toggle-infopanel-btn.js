@@ -55,6 +55,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
 
   ${isMobile &&
   css`
+    display: none;
     margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
   `}
 

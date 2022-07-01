@@ -31,7 +31,7 @@ public class TempPath
 {
     private readonly string _tempFolder;
 
-    public TempPath(IConfiguration configuration)
+    public TempPath(IHostEnvironment hostEnvironment, IConfiguration configuration)
     {
         var rootFolder = AppContext.BaseDirectory;
         if (string.IsNullOrEmpty(rootFolder))
@@ -39,7 +39,7 @@ public class TempPath
             rootFolder = Assembly.GetEntryAssembly().Location;
         }
 
-        _tempFolder = configuration["temp"] ?? Path.Combine("..", "Data", "temp");
+        _tempFolder = configuration["web:temp"] ?? CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, "temp");
         if (!Path.IsPathRooted(_tempFolder))
         {
             _tempFolder = Path.GetFullPath(Path.Combine(rootFolder, _tempFolder));
@@ -56,7 +56,7 @@ public class TempPath
         return _tempFolder;
     }
 
-    public string GetTempFileName()
+    public string GetTempFileName(string ext = "")
     {
         FileStream f = null;
         string path;
@@ -65,6 +65,11 @@ public class TempPath
         do
         {
             path = Path.Combine(_tempFolder, Path.GetRandomFileName());
+
+            if (!string.IsNullOrEmpty(ext))
+            {
+                path = Path.ChangeExtension(path, ext);
+            }
 
             try
             {

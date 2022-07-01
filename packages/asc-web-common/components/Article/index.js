@@ -33,6 +33,8 @@ const Article = ({
   setIsMobileArticle,
   isLoadedPage,
   children,
+
+  isBannerVisible,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -111,6 +113,7 @@ const Article = ({
         id={"article-container"}
         showText={showText}
         articleOpen={articleOpen}
+        isBannerVisible={isBannerVisible}
         {...rest}
       >
         <SubArticleHeader
@@ -167,8 +170,10 @@ Article.Body = () => {
 };
 Article.Body.displayName = "Body";
 
-export default inject(({ auth }) => {
+export default inject(({ auth, bannerStore }) => {
   const { settingsStore } = auth;
+
+  const { isBannerVisible } = bannerStore;
 
   const {
     showText,
@@ -186,5 +191,7 @@ export default inject(({ auth }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
+
+    isBannerVisible,
   };
 })(observer(Article));
