@@ -127,9 +127,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 Error = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
             else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH
-                && folder.FolderType != FolderType.FillingFormsRoom && folder.FolderType != FolderType.EditingRoom
-                && folder.FolderType != FolderType.ReviewRoom && folder.FolderType != FolderType.ReadOnlyRoom 
-                && folder.FolderType != FolderType.CustomRoom)
+                && !DocSpaceHelper.IsRoom(folder.FolderType))
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
@@ -169,7 +167,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 }
                 else
                 {
-                    var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
+                    var immediately = _immediately || !await FolderDao.UseTrashForRemoveAsync(folder);
                     if (immediately && FolderDao.UseRecursiveOperation(folder.Id, default(T)))
                     {
                         var files = await FileDao.GetFilesAsync(folder.Id);

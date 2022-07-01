@@ -463,9 +463,9 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return items.Count == 0;
     }
 
-    public bool UseTrashForRemove(Folder<string> folder)
+    public Task<bool> UseTrashForRemoveAsync(Folder<string> folder)
     {
-        return false;
+        return Task.FromResult(false);
     }
 
     public bool UseRecursiveOperation<TTo>(string folderId, TTo toRootFolderId)

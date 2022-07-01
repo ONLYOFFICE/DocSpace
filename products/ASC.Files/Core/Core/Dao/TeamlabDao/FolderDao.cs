@@ -862,9 +862,22 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return await GetItemsCountAsync(folderId).ConfigureAwait(false) == 0;
     }
 
-    public bool UseTrashForRemove(Folder<int> folder)
+    public async Task<bool> UseTrashForRemoveAsync(Folder<int> folder)
     {
-        return folder.RootFolderType != FolderType.TRASH && folder.RootFolderType != FolderType.Privacy && folder.FolderType != FolderType.BUNCH;
+        var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
+
+        if (!isRoom && folder.RootFolderType == FolderType.VirtualRooms)
+        {
+            var privateRoom = (await GetParentFoldersAsync(folder.ParentId)).FirstOrDefault(f => f.Private);
+
+            if (privateRoom != null)
+            {
+                return false;
+            }
+        }
+
+        return folder.RootFolderType != FolderType.TRASH && folder.RootFolderType != FolderType.Privacy && folder.FolderType != FolderType.BUNCH
+            && !isRoom;
     }
 
     public bool UseRecursiveOperation(int folderId, string toRootFolderId)

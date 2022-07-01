@@ -1060,7 +1060,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         return file.RootFolderType != FolderType.TRASH && file.RootFolderType != FolderType.Privacy && file.Encrypted && file.RootFolderType == FolderType.VirtualRooms;
     }
-
+     
     public string GetUniqFileDirectory(int fileId)
     {
         if (fileId == 0)

@@ -474,9 +474,9 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
                || onedriveFolder.Folder.ChildCount == 0;
     }
 
-    public bool UseTrashForRemove(Folder<string> folder)
+    public Task<bool> UseTrashForRemoveAsync(Folder<string> folder)
     {
-        return false;
+        return Task.FromResult(false);
     }
 
     public bool UseRecursiveOperation(string folderId, string toRootFolderId)
