@@ -24,46 +24,30 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Webhooks.Core.Dao;
-public class MySqlWebhooksDbContext : WebhooksDbContext { }
-public class PostgreSqlWebhooksDbContext : WebhooksDbContext { }
-public partial class WebhooksDbContext : BaseDbContext
+namespace ASC.Webhooks.Core.EF.Model;
+
+public class WebhookEntry
 {
-    public WebhooksDbContext() { }
-
-    public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options)
-        : base(options)
+    public int Id { get; set; }
+    public string Payload { get; set; }
+    public string SecretKey { get; set; }
+    public string Uri { get; set; }
+    public override bool Equals(object other)
     {
-
-    }
-
-    public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
-    public virtual DbSet<WebhooksLog> WebhooksLogs { get; set; }
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
+        var toCompareWith = other as WebhookEntry;
+        if (toCompareWith == null)
         {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlWebhooksDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlWebhooksDbContext() } ,
-            };
+            return false;
         }
+
+        return Id == toCompareWith.Id &&
+            Payload == toCompareWith.Payload &&
+            Uri == toCompareWith.Uri &&
+            SecretKey == toCompareWith.SecretKey;
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public override int GetHashCode()
     {
-        ModelBuilderWrapper
-        .From(modelBuilder, _provider)
-        .AddWebhooksConfig()
-        .AddWebhooksLog();
-    }
-}
-
-public static class WebhooksDbExtension
-{
-    public static DIHelper AddWebhooksDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<TenantDbContext>();
+        return Id.GetHashCode();
     }
 }

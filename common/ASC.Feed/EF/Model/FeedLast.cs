@@ -24,74 +24,61 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Feed.Models;
+namespace ASC.Feed.Model;
 
-public class FeedUsers : BaseEntity
+public class FeedLast : BaseEntity
 {
-    public string FeedId { get; set; }
-    public Guid UserId { get; set; }
+    public string LastKey { get; set; }
+    public DateTime LastDate { get; set; }
 
     public override object[] GetKeys()
     {
-        return new object[] { FeedId, UserId };
+        return new object[] { LastKey };
     }
 }
-
-public static class FeedUsersExtension
+public static class FeedLastExtension
 {
-    public static ModelBuilderWrapper AddFeedUsers(this ModelBuilderWrapper modelBuilder)
+    public static ModelBuilderWrapper AddFeedLast(this ModelBuilderWrapper modelBuilder)
     {
         modelBuilder
-            .Add(MySqlAddFeedUsers, Provider.MySql)
-            .Add(PgSqlAddFeedUsers, Provider.PostgreSql);
+            .Add(MySqlAddFeedLast, Provider.MySql)
+            .Add(PgSqlAddFeedLast, Provider.PostgreSql);
         return modelBuilder;
     }
-
-    public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)
+    public static void MySqlAddFeedLast(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<FeedUsers>(entity =>
+        modelBuilder.Entity<FeedLast>(entity =>
         {
-            entity.HasKey(e => new { e.FeedId, e.UserId })
+            entity.HasKey(e => e.LastKey)
                 .HasName("PRIMARY");
 
-            entity.ToTable("feed_users");
+            entity.ToTable("feed_last");
 
-            entity.HasIndex(e => e.UserId)
-                .HasDatabaseName("user_id");
-
-            entity.Property(e => e.FeedId)
-                .HasColumnName("feed_id")
-                .HasColumnType("varchar(88)")
+            entity.Property(e => e.LastKey)
+                .HasColumnName("last_key")
+                .HasColumnType("varchar(128)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.UserId)
-                .HasColumnName("user_id")
-                .HasColumnType("char(38)")
-                .HasCharSet("utf8")
-                .UseCollation("utf8_general_ci");
+            entity.Property(e => e.LastDate)
+                .HasColumnName("last_date")
+                .HasColumnType("datetime");
         });
     }
-    public static void PgSqlAddFeedUsers(this ModelBuilder modelBuilder)
+    public static void PgSqlAddFeedLast(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<FeedUsers>(entity =>
+        modelBuilder.Entity<FeedLast>(entity =>
         {
-            entity.HasKey(e => new { e.FeedId, e.UserId })
-                .HasName("feed_users_pkey");
+            entity.HasKey(e => e.LastKey)
+                .HasName("feed_last_pkey");
 
-            entity.ToTable("feed_users", "onlyoffice");
+            entity.ToTable("feed_last", "onlyoffice");
 
-            entity.HasIndex(e => e.UserId)
-                .HasDatabaseName("user_id_feed_users");
+            entity.Property(e => e.LastKey)
+                .HasColumnName("last_key")
+                .HasMaxLength(128);
 
-            entity.Property(e => e.FeedId)
-                .HasColumnName("feed_id")
-                .HasMaxLength(88);
-
-            entity.Property(e => e.UserId)
-                .HasColumnName("user_id")
-                .HasMaxLength(38)
-                .IsFixedLength();
+            entity.Property(e => e.LastDate).HasColumnName("last_date");
         });
     }
 }

@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,44 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Feed.Data;
+namespace ASC.MessagingSystem.EF.Model;
 
-public class MySqlFeedDbContext : FeedDbContext { }
-public class PostgreSqlFeedDbContext : FeedDbContext { }
-public class FeedDbContext : BaseDbContext
+public class EventMessage
 {
-    public DbSet<FeedLast> FeedLast { get; set; }
-    public DbSet<FeedAggregate> FeedAggregates { get; set; }
-    public DbSet<FeedUsers> FeedUsers { get; set; }
-    public DbSet<FeedReaded> FeedReaded { get; set; }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlFeedDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlFeedDbContext() } ,
-            };
-        }
-    }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        ModelBuilderWrapper
-            .From(modelBuilder, _provider)
-            .AddFeedUsers()
-            .AddFeedReaded()
-            .AddFeedAggregate()
-            .AddFeedLast();
-    }
-}
-
-public static class FeedDbExtension
-{
-    public static DIHelper AddFeedDbService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<FeedDbContext>();
-    }
+    public int Id { get; set; }
+    public string Ip { get; set; }
+    public string Initiator { get; set; }
+    public string Browser { get; set; }
+    public string Platform { get; set; }
+    public DateTime Date { get; set; }
+    public int TenantId { get; set; }
+    public Guid UserId { get; set; }
+    public string Page { get; set; }
+    public MessageAction Action { get; set; }
+    public IList<string> Description { get; set; }
+    public MessageTarget Target { get; set; }
+    public string UAHeader { get; set; }
 }

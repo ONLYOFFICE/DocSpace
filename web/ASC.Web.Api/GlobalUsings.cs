@@ -76,7 +76,7 @@ global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem.Core;
-global using ASC.MessagingSystem.Models;
+global using ASC.MessagingSystem.EF.Model;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api;
 global using ASC.Web.Api.ApiModel.RequestsDto;
@@ -110,7 +110,7 @@ global using ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
-global using ASC.Webhooks.Core.Dao.Models;
+global using ASC.Webhooks.Core.EF.Model;
 
 global using Autofac;
 

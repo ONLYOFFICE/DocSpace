@@ -24,78 +24,74 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Feed.Models;
+namespace ASC.Feed.Model;
 
-public class FeedReaded : BaseEntity
+public class FeedUsers : BaseEntity
 {
+    public string FeedId { get; set; }
     public Guid UserId { get; set; }
-    public DateTime TimeStamp { get; set; }
-    public string Module { get; set; }
-    public int Tenant { get; set; }
 
     public override object[] GetKeys()
     {
-        return new object[] { Tenant, UserId, Module };
+        return new object[] { FeedId, UserId };
     }
 }
 
-public static class FeedReadedExtension
+public static class FeedUsersExtension
 {
-    public static ModelBuilderWrapper AddFeedReaded(this ModelBuilderWrapper modelBuilder)
+    public static ModelBuilderWrapper AddFeedUsers(this ModelBuilderWrapper modelBuilder)
     {
         modelBuilder
-            .Add(MySqlAddFeedReaded, Provider.MySql)
-            .Add(PgSqlAddFeedReaded, Provider.PostgreSql);
+            .Add(MySqlAddFeedUsers, Provider.MySql)
+            .Add(PgSqlAddFeedUsers, Provider.PostgreSql);
         return modelBuilder;
     }
-    public static void MySqlAddFeedReaded(this ModelBuilder modelBuilder)
+
+    public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<FeedReaded>(entity =>
+        modelBuilder.Entity<FeedUsers>(entity =>
         {
-            entity.HasKey(e => new { e.Tenant, e.UserId, e.Module })
+            entity.HasKey(e => new { e.FeedId, e.UserId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("feed_readed");
+            entity.ToTable("feed_users");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant_id");
+            entity.HasIndex(e => e.UserId)
+                .HasDatabaseName("user_id");
+
+            entity.Property(e => e.FeedId)
+                .HasColumnName("feed_id")
+                .HasColumnType("varchar(88)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id")
-                .HasColumnType("varchar(38)")
+                .HasColumnType("char(38)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
-
-            entity.Property(e => e.Module)
-                .HasColumnName("module")
-                .HasColumnType("varchar(50)")
-                .HasCharSet("utf8")
-                .UseCollation("utf8_general_ci");
-
-            entity.Property(e => e.TimeStamp)
-                .HasColumnName("timestamp")
-                .HasColumnType("datetime");
         });
     }
-    public static void PgSqlAddFeedReaded(this ModelBuilder modelBuilder)
+    public static void PgSqlAddFeedUsers(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<FeedReaded>(entity =>
+        modelBuilder.Entity<FeedUsers>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.Tenant, e.Module })
-                .HasName("feed_readed_pkey");
+            entity.HasKey(e => new { e.FeedId, e.UserId })
+                .HasName("feed_users_pkey");
 
-            entity.ToTable("feed_readed", "onlyoffice");
+            entity.ToTable("feed_users", "onlyoffice");
+
+            entity.HasIndex(e => e.UserId)
+                .HasDatabaseName("user_id_feed_users");
+
+            entity.Property(e => e.FeedId)
+                .HasColumnName("feed_id")
+                .HasMaxLength(88);
 
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id")
-                .HasMaxLength(38);
-
-            entity.Property(e => e.Tenant).HasColumnName("tenant_id");
-
-            entity.Property(e => e.Module)
-                .HasColumnName("module")
-                .HasMaxLength(50);
-
-            entity.Property(e => e.TimeStamp).HasColumnName("timestamp");
+                .HasMaxLength(38)
+                .IsFixedLength();
         });
     }
 }

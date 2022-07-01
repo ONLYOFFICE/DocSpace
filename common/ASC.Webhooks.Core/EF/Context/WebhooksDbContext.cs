@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,47 +24,47 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.MessagingSystem.Models;
+namespace ASC.Webhooks.Core.EF.Context;
+public class MySqlWebhooksDbContext : WebhooksDbContext { }
+public class PostgreSqlWebhooksDbContext : WebhooksDbContext { }
 
-[Singletone]
-public class MessagePolicy
+public partial class WebhooksDbContext : BaseDbContext
 {
-    private readonly IEnumerable<string> _secretIps;
+    public WebhooksDbContext() { }
 
-    public MessagePolicy(IConfiguration configuration)
+    public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options)
+        : base(options)
     {
-        _secretIps =
-            configuration["messaging.secret-ips"] == null
-            ? Array.Empty<string>()
-            : configuration["messaging.secret-ips"].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
     }
 
-    public bool Check(EventMessage message)
+    public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
+    public virtual DbSet<WebhooksLog> WebhooksLogs { get; set; }
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
-        if (message == null)
+        get
         {
-            return false;
+            return new Dictionary<Provider, Func<BaseDbContext>>()
+            {
+                { Provider.MySql, () => new MySqlWebhooksDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlWebhooksDbContext() } ,
+            };
         }
-
-        if (string.IsNullOrEmpty(message.Ip))
-        {
-            return true;
-        }
-
-        var ip = GetIpWithoutPort(message.Ip);
-
-        return _secretIps.All(x => x != ip);
     }
 
-    private static string GetIpWithoutPort(string ip)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        if (ip == null)
-        {
-            return null;
-        }
+        ModelBuilderWrapper
+        .From(modelBuilder, _provider)
+        .AddWebhooksConfig()
+        .AddWebhooksLog();
+    }
+}
 
-        var portIdx = ip.IndexOf(':');
-
-        return portIdx > -1 ? ip.Substring(0, portIdx) : ip;
+public static class WebhooksDbExtension
+{
+    public static DIHelper AddWebhooksDbContextService(this DIHelper services)
+    {
+        return services.AddDbContextManagerService<TenantDbContext>();
     }
 }

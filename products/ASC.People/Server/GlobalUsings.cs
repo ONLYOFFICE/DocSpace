@@ -46,7 +46,7 @@ global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.MessagingSystem.Core;
-global using ASC.MessagingSystem.Models;
+global using ASC.MessagingSystem.EF.Model;
 global using ASC.People;
 global using ASC.People.Api;
 global using ASC.People.ApiModels.RequestDto;

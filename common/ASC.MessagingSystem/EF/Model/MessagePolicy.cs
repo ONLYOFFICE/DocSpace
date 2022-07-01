@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,30 +24,47 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Webhooks.Core.Dao.Models;
+namespace ASC.MessagingSystem.EF.Model;
 
-public class WebhookEntry
+[Singletone]
+public class MessagePolicy
 {
-    public int Id { get; set; }
-    public string Payload { get; set; }
-    public string SecretKey { get; set; }
-    public string Uri { get; set; }
-    public override bool Equals(object other)
+    private readonly IEnumerable<string> _secretIps;
+
+    public MessagePolicy(IConfiguration configuration)
     {
-        var toCompareWith = other as WebhookEntry;
-        if (toCompareWith == null)
+        _secretIps =
+            configuration["messaging.secret-ips"] == null
+            ? Array.Empty<string>()
+            : configuration["messaging.secret-ips"].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+    }
+
+    public bool Check(EventMessage message)
+    {
+        if (message == null)
         {
             return false;
         }
 
-        return Id == toCompareWith.Id &&
-            Payload == toCompareWith.Payload &&
-            Uri == toCompareWith.Uri &&
-            SecretKey == toCompareWith.SecretKey;
+        if (string.IsNullOrEmpty(message.Ip))
+        {
+            return true;
+        }
+
+        var ip = GetIpWithoutPort(message.Ip);
+
+        return _secretIps.All(x => x != ip);
     }
 
-    public override int GetHashCode()
+    private static string GetIpWithoutPort(string ip)
     {
-        return Id.GetHashCode();
+        if (ip == null)
+        {
+            return null;
+        }
+
+        var portIdx = ip.IndexOf(':');
+
+        return portIdx > -1 ? ip.Substring(0, portIdx) : ip;
     }
 }
