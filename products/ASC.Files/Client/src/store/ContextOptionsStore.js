@@ -4,7 +4,11 @@ import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "../../package.json";
 import toastr from "studio/toastr";
-import { FileAction, AppServerConfig } from "@appserver/common/constants";
+import {
+  FileAction,
+  AppServerConfig,
+  FolderType,
+} from "@appserver/common/constants";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,
@@ -366,6 +370,10 @@ class ContextOptionsStore {
     console.log("move room to archive");
   };
 
+  onClickMoveRoomFromArchive = (room) => {
+    console.log("move room from archive");
+  };
+
   onClickDeleteRoom = () => {
     this.roomsStore.deleteRoom();
   };
@@ -386,6 +394,23 @@ class ContextOptionsStore {
           onClick: this.onClickUnpinRoom,
           disabled: false,
         };
+
+    const archive =
+      FolderType.Archive === room.rootFolderType
+        ? {
+            key: "archive",
+            label: "Move from archive",
+            icon: "/static/images/room.archive.svg",
+            onClick: () => this.onClickMoveRoomToArchive(room),
+            disabled: false,
+          }
+        : {
+            key: "archive",
+            label: "Move to archive",
+            icon: "/static/images/room.archive.svg",
+            onClick: () => this.onClickMoveRoomToArchive(room),
+            disabled: false,
+          };
 
     const contextOptions = [
       {
@@ -409,14 +434,12 @@ class ContextOptionsStore {
         onClick: () => this.onClickInfo(room),
         disabled: false,
       },
-      { ...pin },
+      {
+        ...pin,
+      },
       { key: "separator", isSeparator: true },
       {
-        key: "archive",
-        label: "Move to archive",
-        icon: "/static/images/room.archive.svg",
-        onClick: () => this.onClickMoveRoomToArchive(room),
-        disabled: false,
+        ...archive,
       },
       {
         key: "delete",
