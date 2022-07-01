@@ -70,6 +70,7 @@ public class BaseDbContext : DbContext
     {
         optionsBuilder.UseLoggerFactory(LoggerFactory);
         optionsBuilder.EnableSensitiveDataLogging();
+        optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomMySqlMigrationsSqlGenerator>();
         _provider = GetProviderByConnectionString();
         switch (_provider)
         {

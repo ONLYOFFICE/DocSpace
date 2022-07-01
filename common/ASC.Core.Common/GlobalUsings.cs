@@ -59,6 +59,7 @@ global using Amazon.SimpleEmail.Model;
 global using ASC.Collections;
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Data;
 global using ASC.Common.Log;
 global using ASC.Common.Logging;
 global using ASC.Common.Mapping;
@@ -128,6 +129,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Infrastructure;
 global using Microsoft.EntityFrameworkCore.Metadata;
 global using Microsoft.EntityFrameworkCore.Migrations;
+global using Microsoft.EntityFrameworkCore.Migrations.Operations;
 global using Microsoft.EntityFrameworkCore.Query;
 global using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 global using Microsoft.Extensions.Caching.Memory;
@@ -144,9 +146,11 @@ global using Newtonsoft.Json;
 global using NVelocity;
 global using NVelocity.App.Events;
 
+global using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
+global using Pomelo.EntityFrameworkCore.MySql.Migrations;
+
 global using ProtoBuf;
 
 global using Telegram.Bot;
 
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
-global using ASC.Common.Data;
