@@ -48,7 +48,7 @@
     "styled-components": "^5.3.5",
     "terser-webpack-plugin": "^5.1.2",
     "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.0",
+    "webpack-cli": "^4.9.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-hot-middleware": "^2.25.0",
     "webpack-merge": "^5.7.3",
