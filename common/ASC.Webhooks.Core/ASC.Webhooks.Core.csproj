@@ -34,6 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\MySql\" />
+    <Folder Include="Migrations\PostgreSql\WebhooksDbContextPostgreSql\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

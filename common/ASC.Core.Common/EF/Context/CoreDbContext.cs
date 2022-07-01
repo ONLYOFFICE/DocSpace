@@ -50,7 +50,7 @@ public class CoreDbContext : BaseDbContext
     {
         ModelBuilderWrapper
               .From(modelBuilder, _provider)
-            .AddDbButton()
+              .AddDbButton()
               .AddDbQuotaRow()
               .AddDbQuota()
               .AddDbTariff();

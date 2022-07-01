@@ -59,14 +59,12 @@ public static class ResDataExtension
             entity.HasKey(e => new { e.FileId, e.CultureTitle, e.Title })
                 .HasName("PRIMARY");
 
+            entity.HasAlternateKey(e => e.Id).HasName("id");
+
             entity.ToTable("res_data");
 
             entity.HasIndex(e => e.CultureTitle)
                 .HasDatabaseName("resources_FK2");
-
-            entity.HasIndex(e => e.Id)
-                .HasDatabaseName("id")
-                .IsUnique();
 
             entity.HasIndex(e => e.TimeChanges)
                 .HasDatabaseName("dateIndex");

@@ -110,22 +110,22 @@ public partial class FeedDbContextMySql : Migration
             })
             .Annotation("MySql:CharSet", "utf8mb4");
 
-        migrationBuilder.CreateIndex(
+        migrationBuilder.CreateIndexSafely(
             name: "aggregated_date",
             table: "feed_aggregate",
             columns: new[] { "tenant", "aggregated_date" });
 
-        migrationBuilder.CreateIndex(
+        migrationBuilder.CreateIndexSafely(
             name: "modified_date",
             table: "feed_aggregate",
             columns: new[] { "tenant", "modified_date" });
 
-        migrationBuilder.CreateIndex(
+        migrationBuilder.CreateIndexSafely(
             name: "product",
             table: "feed_aggregate",
             columns: new[] { "tenant", "product" });
 
-        migrationBuilder.CreateIndex(
+        migrationBuilder.CreateIndexSafely(
             name: "user_id",
             table: "feed_users",
             column: "user_id");

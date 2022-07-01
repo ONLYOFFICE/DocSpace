@@ -80,9 +80,9 @@ public static class BackupScheduleExtension
             entity.ToTable("backup_schedule");
 
             entity.Property(e => e.TenantId)
-                .IsRequired()
                 .HasColumnName("tenant_id")
-                .HasColumnType("int(10)");
+                .HasColumnType("int(10)")
+                .ValueGeneratedNever();
 
             entity.Property(e => e.BackupMail)
                 .HasColumnName("backup_mail")

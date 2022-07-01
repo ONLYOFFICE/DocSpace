@@ -165,5 +165,9 @@
       <DependentUpon>FilesUCResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
 
 </Project>

@@ -246,7 +246,6 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
             modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupSchedule", b =>
                 {
                     b.Property<int>("TenantId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(10)")
                         .HasColumnName("tenant_id");
 

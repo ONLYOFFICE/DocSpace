@@ -54,14 +54,12 @@ public static class ResReserveExtension
             entity.HasKey(e => new { e.FileId, e.Title, e.CultureTitle })
                 .HasName("PRIMARY");
 
+            entity.HasAlternateKey(e => e.Id).HasName("id");
+
             entity.ToTable("res_reserve");
 
             entity.HasIndex(e => e.CultureTitle)
                 .HasDatabaseName("resources_FK2");
-
-            entity.HasIndex(e => e.Id)
-                .HasDatabaseName("id")
-                .IsUnique();
 
             entity.Property(e => e.FileId).HasColumnName("fileid");
 
