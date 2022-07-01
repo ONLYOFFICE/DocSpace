@@ -11,6 +11,17 @@ export function getRooms(filter) {
   });
 }
 
+export function getRoom(id) {
+  const options = {
+    method: "get",
+    url: `/files/rooms/${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
 export function createRoom(data) {
   const options = { method: "post", url: `/files/rooms`, data };
 
