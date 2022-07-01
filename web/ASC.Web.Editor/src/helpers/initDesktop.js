@@ -24,7 +24,6 @@ const initDesktop = (cfg, user, fileId, t) => {
           callback(data);
         })
         .catch((error) => {
-          console.log(error);
           window?.toastr.error(
             typeof error === "string" ? error : error.message,
             null,

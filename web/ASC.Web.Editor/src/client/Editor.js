@@ -16,10 +16,10 @@ import {
   updateFile,
   checkFillFormDraft,
 } from "@appserver/common/api/files";
-import { EditorWrapper } from "./StyledEditor";
+import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
-import withDialogs from "./helpers/withDialogs";
-import { canConvert, convertDocumentUrl } from "./helpers/utils";
+import withDialogs from "../helpers/withDialogs";
+import { canConvert, convertDocumentUrl } from "../helpers/utils";
 
 const LoaderComponent = (
   <Loader

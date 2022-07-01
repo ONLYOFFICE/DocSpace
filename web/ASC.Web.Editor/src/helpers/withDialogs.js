@@ -10,7 +10,7 @@ import {
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
-import { StyledSelectFolder } from "../StyledEditor";
+import { StyledSelectFolder } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
 
 const insertImageAction = "imageFileType";
