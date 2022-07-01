@@ -360,16 +360,13 @@ namespace ASC.Notify.Engine
 
             try
             {
-                log.Debug("Prepare begin");//temp
                 PrepareRequestFillSenders(request, serviceScope);
                 PrepareRequestFillPatterns(request, serviceScope);
                 PrepareRequestFillTags(request, serviceScope);
-                log.Debug("Prepare end");//temp
             }
             catch (Exception ex)
             {
                 responses.Add(new SendResponse(request.NotifyAction, null, request.Recipient, SendResult.Impossible));
-                log.Error("Prepare", ex);
             }
 
             if (request.SenderNames != null && request.SenderNames.Length > 0)
@@ -382,7 +379,6 @@ namespace ASC.Notify.Engine
                         try
                         {
                             response = SendDirectNotify(request, channel, serviceScope);
-                            log.Debug("SendDirectNotify");//temp
                         }
                         catch (Exception exc)
                         {
