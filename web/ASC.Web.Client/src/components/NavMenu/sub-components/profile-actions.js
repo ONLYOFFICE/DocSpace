@@ -137,9 +137,10 @@ class ProfileActions extends React.PureComponent {
           forwardedRef={this.ref}
         >
           <div style={{ paddingTop: "8px" }}>
-            {this.props.userActions.map((action, index) =>
-              action ? (
-                action?.isButton ? (
+            {this.props.userActions.map(
+              (action, index) =>
+                action &&
+                (action?.isButton ? (
                   <StyledButtonWrapper key={action.key}>
                     <Button
                       size={"small"}
@@ -157,10 +158,7 @@ class ProfileActions extends React.PureComponent {
                   >
                     <DropDownItem {...action} />
                   </Link>
-                )
-              ) : (
-                <React.Fragment key="index"></React.Fragment>
-              )
+                ))
             )}
           </div>
         </ProfileMenu>

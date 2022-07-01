@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Valmistellaan tiedostoa salausta varten",
   "EncryptionKeysReload": "Salausavaimet on syötettävä uudelleen",
   "Error": "Virhe",
+  "ErrorInternalServer": "Palvelimen sisäinen virhe. Yritä myöhemmin uudelleen.",
   "FillFormButton": "Täytä lomake",
   "FullAccess": "Täysi pääsy",
   "Guest": "Vieras",

@@ -464,7 +464,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         var selector = GetSelector(file.Id);
         var fileDao = selector.GetFileDao(file.Id);
 
-            return fileDao.UseTrashForRemove(file);
+        return fileDao.UseTrashForRemove(file);
     }
 
     #region chunking
@@ -520,5 +520,19 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         return file;
     }
+
+    public override Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+        var selector = GetSelector(fileId);
+        var fileDao = selector.GetFileDao(fileId);
+        return fileDao.GetThumbnailAsync(fileId, width, height);
+    }
+
+    public override Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
+    {
+        var fileDao = GetFileDao(file);
+        return fileDao.GetThumbnailAsync(file, width, height);
+    }
+
     #endregion
 }

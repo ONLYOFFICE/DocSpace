@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
-import ModalDialogContainer from "../ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
+import { StyledDeleteDialog } from "./StyledDeleteDialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
@@ -205,14 +205,14 @@ class DeleteDialogComponent extends React.Component {
     const height = filesHeight + foldersHeight;
 
     return (
-      <ModalDialogContainer
+      <StyledDeleteDialog
         isLoading={!tReady}
         visible={visible}
         onClose={this.onClose}
       >
         <ModalDialog.Header>{title}</ModalDialog.Header>
         <ModalDialog.Body>
-          <div className="modal-dialog-content">
+          <div className="modal-dialog-content-body">
             <Text className="delete_dialog-header-text" noSelect>
               {noteText}
             </Text>
@@ -258,7 +258,7 @@ class DeleteDialogComponent extends React.Component {
             className="button-dialog-accept"
             key="OkButton"
             label={accessButtonLabel}
-            size="small"
+            size="normalTouchscreen"
             primary
             onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}
             isLoading={isLoading}
@@ -268,12 +268,12 @@ class DeleteDialogComponent extends React.Component {
             className="button-dialog"
             key="CancelButton"
             label={t("Common:CancelButton")}
-            size="small"
+            size="normalTouchscreen"
             onClick={this.onClose}
             isLoading={isLoading}
           />
         </ModalDialog.Footer>
-      </ModalDialogContainer>
+      </StyledDeleteDialog>
     );
   }
 }

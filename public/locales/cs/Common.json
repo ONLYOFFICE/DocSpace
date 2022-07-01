@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Příprava souboru k šifrování",
   "EncryptionKeysReload": "Šifrovací klíče musí být zadány znovu",
   "Error": "Chyba",
+  "ErrorInternalServer": "Interní chyba serveru. Zkuste to později.",
   "FillFormButton": "Vyplňte formulář",
   "FullAccess": "Plný přístup",
   "Guest": "Host",

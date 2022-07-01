@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Dosya şifreleme için hazırlanıyor",
   "EncryptionKeysReload": "Şifreleme anahtarları yeniden girilmelidir",
   "Error": "Hata",
+  "ErrorInternalServer": "İç sunucu hatası. Daha sonra tekrar deneyin.",
   "FillFormButton": "Formu doldurun",
   "FullAccess": "Tam erişim",
   "Guest": "Misafir",

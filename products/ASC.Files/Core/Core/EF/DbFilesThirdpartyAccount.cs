@@ -150,8 +150,8 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasColumnName("customer_title")
                 .HasMaxLength(400);
 
-            entity.Property(e => e.FolderType).HasColumnName("root_folder_type");
-            entity.Property(e => e.RoomType).HasColumnType("folder_type");
+            entity.Property(e => e.FolderType).HasColumnName("folder_type");
+            entity.Property(e => e.RoomType).HasColumnName("room_type");
 
             entity.Property(e => e.Password)
                 .IsRequired()

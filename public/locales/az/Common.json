@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Fayl şifrələnmə üçün hazırlanır",
   "EncryptionKeysReload": "Şifrələmə düymələri yenidən daxil edilməlidir",
   "Error": "Səhv",
+  "ErrorInternalServer": "Daxili server xətası. Daha sonra yenidən cəhd edin.",
   "FillFormButton": "Formu doldurun",
   "FullAccess": "Tam giriş",
   "Guest": "Qonaq",

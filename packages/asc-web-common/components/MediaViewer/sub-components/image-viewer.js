@@ -249,6 +249,8 @@ class ImageViewer extends React.Component {
       inactive,
       onClose,
       userAccess,
+
+      isFavoritesFolder,
     } = this.props;
 
     customToolbar.forEach((button) => {
@@ -270,9 +272,10 @@ class ImageViewer extends React.Component {
       }
     });
 
-    const toolbars = userAccess
-      ? customToolbar
-      : customToolbar.filter((x) => x.key !== "delete");
+    const toolbars =
+      userAccess && !isFavoritesFolder
+        ? customToolbar
+        : customToolbar.filter((x) => x.key !== "delete");
 
     return (
       <div className={className}>

@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Bestand klaarmaken voor versleuteling",
   "EncryptionKeysReload": "Encryptiesleutels moeten opnieuw worden ingevoerd",
   "Error": "Fout",
+  "ErrorInternalServer": "Interne serverfout. Probeer het later opnieuw.",
   "FillFormButton": "Vul het formulier in",
   "FullAccess": "Volledige toegang",
   "Guest": "Gast",

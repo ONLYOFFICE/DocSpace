@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Đang chuẩn bị tệp để mã hóa",
   "EncryptionKeysReload": "Phải nhập lại các khóa mã hóa",
   "Error": "Lỗi",
+  "ErrorInternalServer": "Lỗi server nội bộ. Thử lại sau.",
   "FillFormButton": "Điền vào mẫu",
   "FullAccess": "Toàn quyền truy cập",
   "Guest": "Khách",

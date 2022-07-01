@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Подготовка файла к шифрованию",
   "EncryptionKeysReload": "Ключи шифрования необходимо ввести повторно",
   "Error": "Ошибка",
+  "ErrorInternalServer": "Внутренняя ошибка сервера. Повторите попытку позже.",
   "FillFormButton": "Заполнить форму",
   "FullAccess": "Полный доступ",
   "Guest": "Гость",

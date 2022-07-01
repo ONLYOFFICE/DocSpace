@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Web.Files.Core.Compress;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Archives the data stream in the format selected in the settings
@@ -73,10 +74,7 @@ public class CompressToArchive : ICompress
     /// Transfer the file itself to the archive
     /// </summary>
     /// <param name="readStream">File data</param>
-    public void PutStream(Stream readStream)
-    {
-        _compress.PutStream(readStream);
-    }
+        public async Task PutStream(Stream readStream) => await _compress.PutStream(readStream);
 
     /// <summary>
     /// Put an entry on the output stream.
