@@ -45,3 +45,25 @@ export function deleteRoom(id) {
     return res;
   });
 }
+
+export function archiveRoom(id) {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/archive`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function unarchiveRoom(id) {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/unarchive`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
