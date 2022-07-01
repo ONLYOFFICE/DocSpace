@@ -61,12 +61,12 @@ class TargetUserStore {
     const member = this.peopleStore.usersStore.employeeWrapperToMemberModel(
       profile
     );
-    let result;
+
     const res = await api.people.updateUser(member);
-    result = res;
+    if (!res.theme) res.theme = authStore.userStore.user.theme;
 
     this.setTargetUser(res);
-    return Promise.resolve(result);
+    return Promise.resolve(res);
   };
 
   updateCreatedAvatar = (avatar) => {

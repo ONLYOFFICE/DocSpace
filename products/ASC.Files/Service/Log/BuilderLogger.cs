@@ -29,37 +29,40 @@ internal static partial class BuilderLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "MakeThumbnail: FileId: {fileId}.")]
     public static partial void DebugMakeThumbnail1(this ILogger logger, string fileId);
-    
+
     [LoggerMessage(Level = LogLevel.Debug, Message = "MakeThumbnail: FileId: {fileId}. Sleep {sleep} after attempt #{attempt}. ")]
-    public static partial void DebugMakeThumbnail2(this ILogger logger, string fileId, int sleep, int attempt); 
-    
+    public static partial void DebugMakeThumbnail2(this ILogger logger, string fileId, int sleep, int attempt);
+
     [LoggerMessage(Level = LogLevel.Debug, Message = "SaveThumbnail: FileId: {fileId}. ThumbnailUrl {url}.")]
-    public static partial void DebugMakeThumbnail3(this ILogger logger, string fileId, string url);  
-    
+    public static partial void DebugMakeThumbnail3(this ILogger logger, string fileId, string url);
+
     [LoggerMessage(Level = LogLevel.Debug, Message = "SaveThumbnail: FileId: {fileId}. Successfully saved.")]
-    public static partial void DebugMakeThumbnail4(this ILogger logger, string fileId); 
-    
+    public static partial void DebugMakeThumbnail4(this ILogger logger, string fileId);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "MakeThumbnail: FileId: {fileId}. Sleep {sleep} after attempt #{attempt}.")]
+    public static partial void DebugMakeThumbnailAfter(this ILogger logger, string fileId, int sleep, int attempt);
+
     [LoggerMessage(Level = LogLevel.Debug, Message = "CropImage: FileId: {fileId}.")]
-    public static partial void DebugCropImage(this ILogger logger, string fileId);   
-    
+    public static partial void DebugCropImage(this ILogger logger, string fileId);
+
     [LoggerMessage(Level = LogLevel.Debug, Message = "CropImage: FileId: {fileId}. Successfully saved.")]
-    public static partial void DebugCropImageSuccessfullySaved(this ILogger logger, string fileId);    
-    
+    public static partial void DebugCropImageSuccessfullySaved(this ILogger logger, string fileId);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "BuildThumbnails: filesWithoutThumbnails.Count: {count}.")]
-    public static partial void ErrorBuildThumbnailsCount(this ILogger logger, int count, Exception exception);  
-    
+    public static partial void ErrorBuildThumbnailsCount(this ILogger logger, int count, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "BuildThumbnail: TenantId: {tenantId}.")]
-    public static partial void ErrorBuildThumbnailsTenantId(this ILogger logger, int tenantId, Exception exception); 
-    
+    public static partial void ErrorBuildThumbnailsTenantId(this ILogger logger, int tenantId, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "GenerateThumbnail: FileId: {fileId}.")]
-    public static partial void ErrorGenerateThumbnail(this ILogger logger, string fileId, Exception exception); 
-    
+    public static partial void ErrorGenerateThumbnail(this ILogger logger, string fileId, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "BuildThumbnail: TenantId: {tenantId}. FileDao could not be null.")]
-    public static partial void ErrorBuildThumbnailFileDaoIsNull(this ILogger logger, int tenantId); 
-    
+    public static partial void ErrorBuildThumbnailFileDaoIsNull(this ILogger logger, int tenantId);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "GenerateThumbnail: FileId: {fileId}. File not found.")]
-    public static partial void ErrorGenerateThumbnailFileNotFound(this ILogger logger, string fileId); 
-    
+    public static partial void ErrorGenerateThumbnailFileNotFound(this ILogger logger, string fileId);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "GenerateThumbnail: FileId: {fileId}. Thumbnail already processed.")]
     public static partial void InformationGenerateThumbnail(this ILogger logger, string fileId);
 }

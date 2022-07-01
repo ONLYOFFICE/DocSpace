@@ -131,9 +131,15 @@ class SelectFolderDialog extends React.Component {
   };
 
   onClose = () => {
-    const { setExpandedPanelKeys, onClose, treeFolders } = this.props;
+    const {
+      setExpandedPanelKeys,
+      onClose,
+      treeFolders,
+      withInput,
+      isNeedArrowIcon,
+    } = this.props;
 
-    if (!treeFolders.length) {
+    if (!treeFolders.length && !withInput && !isNeedArrowIcon) {
       setExpandedPanelKeys(null);
     }
     onClose && onClose();
@@ -155,7 +161,10 @@ class SelectFolderDialog extends React.Component {
       providerKey,
       folderTitle,
       folderId,
+      setSelectedItems,
     } = this.props;
+
+    setSelectedItems();
 
     onSubmit && onSubmit(folderId, folderTitle, providerKey);
     onSave && onSave(e, folderId);
@@ -187,6 +196,9 @@ class SelectFolderDialog extends React.Component {
       folderTitle,
       expandedKeys,
       isDisableButton,
+      isRecycleBin,
+      currentFolderId,
+      selectionFiles,
       selectionButtonPrimary,
     } = this.props;
     const {
@@ -205,6 +217,7 @@ class SelectFolderDialog extends React.Component {
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
+        selectionFiles={selectionFiles}
         theme={theme}
         t={t}
         isPanelVisible={isPanelVisible}
@@ -222,14 +235,17 @@ class SelectFolderDialog extends React.Component {
         footer={footer}
         isLoadingData={isLoadingData}
         primaryButtonName={
-          isNeedArrowIcon ? t("Common:Select") : primaryButtonName
+          isNeedArrowIcon ? t("Common:SelectAction") : primaryButtonName
         }
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}
-        isDisableButton={isDisableButton}
+        isDisableButton={
+          isDisableButton || (isRecycleBin && currentFolderId === folderId)
+        }
       />
     ) : (
       <SelectionPanel
+        selectionFiles={selectionFiles}
         t={t}
         theme={theme}
         isPanelVisible={isPanelVisible}
@@ -250,7 +266,9 @@ class SelectFolderDialog extends React.Component {
         isDisableTree={isDisableTree}
         folderSelection
         newFilter={this.newFilter}
-        isDisableButton={isDisableButton}
+        isDisableButton={
+          isDisableButton || (isRecycleBin && currentFolderId === folderId)
+        }
       />
     );
   }
@@ -280,16 +298,22 @@ SelectFolderDialog.defaultProps = {
 };
 
 export default inject(
-  ({
-    treeFoldersStore,
-    selectedFolderStore,
-    selectFolderDialogStore,
-    filesStore,
-    auth,
-  }) => {
+  (
+    {
+      treeFoldersStore,
+      selectedFolderStore,
+      selectFolderDialogStore,
+      filesStore,
+      auth,
+      filesActionsStore,
+    },
+    { selectedId }
+  ) => {
     const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
 
     const { filter } = filesStore;
+    const { setSelectedItems } = filesActionsStore;
+
     const { id } = selectedFolderStore;
     const {
       setFolderId,
@@ -302,10 +326,11 @@ export default inject(
 
     const { settingsStore } = auth;
     const { theme } = settingsStore;
+    const selectedFolderId = selectedId ? selectedId : id;
 
     return {
       theme: theme,
-      storeFolderId: id,
+      storeFolderId: selectedFolderId,
       providerKey,
       folderTitle,
       folderId,
@@ -315,6 +340,7 @@ export default inject(
       setProviderKey,
       treeFolders,
       filter,
+      setSelectedItems,
     };
   }
 )(

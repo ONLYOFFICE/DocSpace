@@ -54,6 +54,8 @@ internal class BoxProviderInfo : IProviderInfo
     public string RootFolderId => "box-" + ID;
     public string ProviderKey { get; set; }
     public FolderType RootFolderType { get; set; }
+    public FolderType FolderType { get; set; }
+    public string FolderId { get; set; }
 
     public string BoxRootId
     {
@@ -144,6 +146,12 @@ internal class BoxProviderInfo : IProviderInfo
     internal Task CacheResetAsync(string boxPath = null, bool? isFile = null)
     {
         return _boxProviderInfoHelper.CacheResetAsync(BoxRootId, ID, boxPath, isFile);
+    }
+
+    internal async Task<Stream> GetThumbnailAsync(string boxFileId, int width, int height)
+    {
+        var storage = await StorageAsync;
+        return await _boxProviderInfoHelper.GetThumbnailAsync(storage, boxFileId, width, height);
     }
 }
 
@@ -329,5 +337,10 @@ public class BoxProviderInfoHelper
 
             await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
+    }
+
+    internal async Task<Stream> GetThumbnailAsync(BoxStorage storage, string boxFileId, int width, int height)
+    {
+        return await storage.GetThumbnailAsync(boxFileId, width, height).ConfigureAwait(false);
     }
 }

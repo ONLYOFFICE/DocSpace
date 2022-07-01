@@ -125,7 +125,7 @@ const VersionRow = (props) => {
       isEditing={isEditing}
     >
       <div className={`version-row_${index}`}>
-        <Box displayProp="flex">
+        <Box displayProp="flex" className="row-header">
           <VersionBadge
             theme={theme}
             className={`version_badge ${
@@ -147,17 +147,15 @@ const VersionRow = (props) => {
           >
             {title}
           </Link>
-          <Link className="icon-link" onClick={onOpenFile}>
-            <StyledExternalLinkIcon size="scale" />
-          </Link>
-          <Text
+
+          {/*<Text
             className="version_content-length"
             fontWeight={600}
             color={theme.filesVersionHistory.color}
             fontSize="14px"
           >
             {info.contentLength}
-          </Text>
+          </Text>*/}
         </Box>
         <Box
           className="version-comment-wrapper"
@@ -174,72 +172,14 @@ const VersionRow = (props) => {
                   heightTextArea={54}
                   value={commentValue}
                   isDisabled={isSavingComment}
+                  autoFocus={true}
+                  areaSelect={true}
                 />
-                <Box className="version_modal-dialog">
-                  <ModalDialog
-                    displayType="aside"
-                    visible={showEditPanel}
-                    onClose={onEditComment}
-                  >
-                    <ModalDialog.Header className="header-version-modal-dialog">
-                      {t("EditComment")}
-                    </ModalDialog.Header>
-                    <ModalDialog.Body>
-                      <Textarea
-                        className="text-area-mobile-edit-comment"
-                        style={{ margin: "8px 24px 8px 0" }}
-                        //placeholder="Add comment"
-                        onChange={onChange}
-                        heightTextArea={298}
-                        value={commentValue}
-                        isDisabled={isSavingComment}
-                      />
-                    </ModalDialog.Body>
-                    <ModalDialog.Footer>
-                      <Button
-                        isDisabled={isSavingComment}
-                        className="version_save-button"
-                        label={t("Common:SaveButton")}
-                        size="normal"
-                        primary
-                        onClick={onSaveClick}
-                      />
-                    </ModalDialog.Footer>
-                  </ModalDialog>
-                </Box>
               </>
             )}
 
-            <Link
-              type="action"
-              isHovered={!isEditing}
-              noHover={isEditing}
-              onClick={onEditComment}
-              className="version_link"
-            >
-              {info.comment}
-            </Link>
             <Text className="version_text">{info.comment}</Text>
           </>
-
-          <div className="version_links-container">
-            {canEdit && (
-              <Link
-                onClick={onRestoreClick}
-                {...linkStyles}
-                className="version_link-action"
-              >
-                {t("Translations:Restore")}
-              </Link>
-            )}
-            <Link
-              onClick={onDownloadAction}
-              {...linkStyles}
-              className="version_link-action"
-            >
-              {t("Common:Download")}
-            </Link>
-          </div>
         </Box>
         {showEditPanel && (
           <Box className="version_edit-comment" marginProp="8px 0 2px 70px">

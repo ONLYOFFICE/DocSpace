@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Web.Files.Core.Compress;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Archives the data stream in the format selected in the settings
@@ -64,19 +65,16 @@ public class CompressToArchive : ICompress
     /// The record name is created (the name of a separate file in the archive)
     /// </summary>
     /// <param name="title">File name with extension, this name will have the file in the archive</param>
-    public void CreateEntry(string title)
+    public void CreateEntry(string title, DateTime? lastModification = null)
     {
-        _compress.CreateEntry(title);
+        _compress.CreateEntry(title, lastModification);
     }
 
     /// <summary>
     /// Transfer the file itself to the archive
     /// </summary>
     /// <param name="readStream">File data</param>
-    public void PutStream(Stream readStream)
-    {
-        _compress.PutStream(readStream);
-    }
+        public async Task PutStream(Stream readStream) => await _compress.PutStream(readStream);
 
     /// <summary>
     /// Put an entry on the output stream.

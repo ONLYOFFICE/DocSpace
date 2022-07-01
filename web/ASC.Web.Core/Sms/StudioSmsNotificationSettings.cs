@@ -68,6 +68,16 @@ public class StudioSmsNotificationSettingsHelper
 
     public bool IsVisibleSettings()
     {
+        return SetupInfo.IsVisibleSettings<StudioSmsNotificationSettings>();
+    }
+
+    public bool IsVisibleAndAvailableSettings()
+    {
+        return IsVisibleSettings() && IsAvailableSettings();
+    }
+
+    public bool IsAvailableSettings()
+    {
         var quota = _tenantExtra.GetTenantQuota();
         return _coreBaseSettings.Standalone
                 || ((!quota.Trial || _setupInfo.SmsTrial)

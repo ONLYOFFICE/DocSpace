@@ -37,7 +37,8 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     config.AddJsonFile($"appsettings.services.json", true)
           .AddJsonFile("notify.json")
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
-          .AddJsonFile("elastic.json", true);
+          .AddJsonFile("elastic.json", true)
+          .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
 },
 (hostContext, services, diHelper) =>
 {
@@ -68,10 +69,22 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     diHelper.TryAdd<FileDataQueue>();
 
+    services.AddActivePassiveHostedService<FileConverterService<int>>();
+    diHelper.TryAdd<FileConverterService<int>>();
+
+    services.AddActivePassiveHostedService<FileConverterService<string>>();
+    diHelper.TryAdd<FileConverterService<string>>();
+
     services.AddHostedService<ThumbnailBuilderService>();
     diHelper.TryAdd<ThumbnailBuilderService>();
 
     diHelper.TryAdd<ThumbnailRequestedIntegrationEventHandler>();
+
+    services.AddHostedService<Launcher>();
+    diHelper.TryAdd<Launcher>();
+
+    services.AddHostedService<DeleteExpiredService>();
+    diHelper.TryAdd<DeleteExpiredService>();
 
     diHelper.TryAdd<AuthManager>();
     diHelper.TryAdd<BaseCommonLinkUtility>();

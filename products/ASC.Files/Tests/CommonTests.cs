@@ -27,7 +27,7 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-public class CommonTests : BaseFilesTests
+public partial class BaseFilesTests
 {
     [TestCase(DataTests.ShareId)]
     [TestCase(DataTests.FavoritesId)]
@@ -38,8 +38,8 @@ public class CommonTests : BaseFilesTests
     [Description("post - files/folder/{folderId} - attempt to create a folder when it is forbidden")]
     public async Task CreateFolderReturnsFolderWrapperAsync(int folderId)
     {
-        var request = await _client.PostAsync("folder/" + folderId, JsonContent.Create(new { Title = "test" }));
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
+        var response = await _client.PostAsync("folder/" + folderId, JsonContent.Create(new { Title = "test" }));
+        var result = await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
         Assert.AreEqual(HttpStatusCode.Forbidden, result.StatusCode);
     }
 

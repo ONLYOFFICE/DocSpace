@@ -90,6 +90,8 @@ class ModalDialog extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("resize", this.throttledResize);
     window.removeEventListener("keyup", this.onKeyPress);
+
+    window.onpopstate = null;
   }
 
   onKeyPress = (event) => {
@@ -162,6 +164,7 @@ class ModalDialog extends React.Component {
               contentHeight={contentHeight}
               contentWidth={contentWidth}
               displayType={this.state.displayType}
+              className="modal-dialog-content"
             >
               {isLoading ? (
                 <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
@@ -207,6 +210,7 @@ class ModalDialog extends React.Component {
             visible={visible}
             scale={scale}
             zIndex={zIndex}
+            onClose={onClose}
             contentPaddingBottom={contentPaddingBottom}
             className="modal-dialog-aside not-selectable"
             withoutBodyScroll={withoutBodyScroll}
@@ -216,6 +220,7 @@ class ModalDialog extends React.Component {
               contentWidth={contentWidth}
               withoutBodyScroll={withoutBodyScroll}
               displayType={this.state.displayType}
+              className="modal-dialog-content"
             >
               {isLoading ? (
                 <Loaders.DialogAsideLoader withoutAside />

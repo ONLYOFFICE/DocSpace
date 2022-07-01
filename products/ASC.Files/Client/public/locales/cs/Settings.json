@@ -1,10 +1,10 @@
-﻿{
+{
+  "Clouds": "Cloudy",
   "CommonSettings": "Společná nastavení",
-  "ConnectAccounts": "Připojené účty",
-  "ConnectAccountsSubTitle": "Žádné připojené účty",
   "ConnectAdminDescription": "Pro úspěšné připojení zadejte potřebné údaje na <1>této stránce</1>.",
   "ConnectDescription": "K dokumentům ONLYOFFICE můžete připojit následující účty. Dokumenty z těchto účtů budou k dispozici k úpravám v sekci 'Moje dokumenty'.",
-  "ConnectedCloud": "Připojený cloud",
+  "ConnectDescriptionText": "Zatím jste nepřipojili žádné cloudy třetích stran.",
+  "ConnectEmpty": "Není zde nic",
   "ConnectMakeShared": "Sdílet sdílené a umístit do složky 'Sdílené'",
   "ConnextOtherAccount": "Jiný účet",
   "DisplayFavorites": "Zobrazit oblíbené",

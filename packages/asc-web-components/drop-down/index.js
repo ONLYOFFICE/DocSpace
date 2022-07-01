@@ -62,7 +62,7 @@ class DropDown extends React.PureComponent {
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open) {
       if (this.props.open) {
-        this.props.enableOnClickOutside();
+        !isMobile && this.props.enableOnClickOutside(); //fixed main-button-mobile click, remove !isMobile if have dd problem
         this.bindDocumentResizeListener();
         if (this.props.isDefaultMode) {
           return this.checkPositionPortal();
@@ -163,7 +163,7 @@ class DropDown extends React.PureComponent {
 
     const rects = parent.current.getBoundingClientRect();
 
-    let dropDownHeight = this.dropDownRef.current.offsetParent
+    let dropDownHeight = this.dropDownRef.current?.offsetParent
       ? this.dropDownRef.current.offsetHeight
       : DomHelpers.getHiddenElementOuterHeight(this.dropDownRef.current);
 
@@ -294,13 +294,18 @@ class DropDownContainer extends React.Component {
     this.props.clickOutsideAction({}, !this.props.open);
   };
   render() {
-    const { withBackdrop = true, open, theme } = this.props;
+    const { withBackdrop = true, withBlur = false, open } = this.props;
     const eventTypesProp = isMobile ? { eventTypes: ["touchend"] } : {};
 
     return (
       <>
         {withBackdrop ? (
-          <Backdrop visible={open} zIndex={199} onClick={this.toggleDropDown} />
+          <Backdrop
+            visible={open}
+            zIndex={199}
+            onClick={this.toggleDropDown}
+            withoutBlur={!withBlur}
+          />
         ) : null}
         <EnhancedComponent
           {...eventTypesProp}
@@ -355,6 +360,8 @@ DropDownContainer.propTypes = {
   smallSectionWidth: PropTypes.bool,
   /** It is necessary when we explicitly set the direction, disables check position */
   fixedDirection: PropTypes.bool,
+  /**Enable blur for backdrop */
+  withBlur: PropTypes.bool,
 };
 
 DropDownContainer.defaultProps = {

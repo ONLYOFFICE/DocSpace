@@ -85,17 +85,23 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<string> tagNames = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagNames);
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<string> tagNames = null)
+    {
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = GetFoldersAsync(parentId); //TODO:!!!
+
+        folders = SetFilterByTypes(folders, filterTypes);
 
         if (subjectID != Guid.Empty)
         {
@@ -108,6 +114,8 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
+
+        folders = FilterByTags(folders, tagNames);
 
         if (orderBy == null)
         {
@@ -126,17 +134,23 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
+    {
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
+
+        folders = SetFilterByTypes(folders, filterTypes);
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
@@ -149,6 +163,8 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
+
+        folders = FilterByTags(folders, tagNames);
 
         return folders;
     }
@@ -197,7 +213,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
             folder.Title = await GetAvailableTitleAsync(folder.Title, dropboxFolderPath, IsExistAsync).ConfigureAwait(false);
 
-            var dropboxFolder = await ProviderInfo.Storage.CreateFolderAsync(folder.Title, dropboxFolderPath).ConfigureAwait(false);
+            var dropboxFolder = await (await ProviderInfo.StorageAsync).CreateFolderAsync(folder.Title, dropboxFolderPath).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(dropboxFolder).ConfigureAwait(false);
             var parentFolderPath = GetParentFolderPath(dropboxFolder);
@@ -269,7 +285,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
         if (dropboxFolder is not ErrorFolder)
         {
-            await ProviderInfo.Storage.DeleteItemAsync(dropboxFolder).ConfigureAwait(false);
+            await (await ProviderInfo.StorageAsync).DeleteItemAsync(dropboxFolder).ConfigureAwait(false);
         }
 
         await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFolder), true).ConfigureAwait(false);
@@ -322,7 +338,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
         var fromFolderPath = GetParentFolderPath(dropboxFolder);
 
-        dropboxFolder = await ProviderInfo.Storage.MoveFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
+        dropboxFolder = await (await ProviderInfo.StorageAsync).MoveFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
 
         await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFolder), false).ConfigureAwait(false);
         await ProviderInfo.CacheResetAsync(fromFolderPath).ConfigureAwait(false);
@@ -371,7 +387,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             throw new Exception(errorFolder.Error);
         }
 
-        var newDropboxFolder = await ProviderInfo.Storage.CopyFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
+        var newDropboxFolder = await (await ProviderInfo.StorageAsync).CopyFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
 
         await ProviderInfo.CacheResetAsync(newDropboxFolder).ConfigureAwait(false);
         await ProviderInfo.CacheResetAsync(MakeDropboxPath(newDropboxFolder), false).ConfigureAwait(false);
@@ -421,7 +437,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync).ConfigureAwait(false);
 
             //rename folder
-            dropboxFolder = await ProviderInfo.Storage.MoveFolderAsync(MakeDropboxPath(dropboxFolder), parentFolderPath, newTitle).ConfigureAwait(false);
+            dropboxFolder = await (await ProviderInfo.StorageAsync).MoveFolderAsync(MakeDropboxPath(dropboxFolder), parentFolderPath, newTitle).ConfigureAwait(false);
         }
 
         await ProviderInfo.CacheResetAsync(dropboxFolder).ConfigureAwait(false);
@@ -442,7 +458,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
         var dropboxFolderPath = MakeDropboxPath(folderId);
         //note: without cache
-        var items = await ProviderInfo.Storage.GetItemsAsync(dropboxFolderPath).ConfigureAwait(false);
+        var items = await (await ProviderInfo.StorageAsync).GetItemsAsync(dropboxFolderPath).ConfigureAwait(false);
 
         return items.Count == 0;
     }
@@ -472,10 +488,10 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return false;
     }
 
-    public Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
+    public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
     {
-        var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
+        var storageMaxUploadSize = (await ProviderInfo.StorageAsync).MaxChunkedUploadFileSize;
 
-        return Task.FromResult(chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize));
+        return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
 }

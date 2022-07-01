@@ -26,18 +26,33 @@
 
 namespace ASC.AuditTrail.Mappers;
 
-internal static class OthersActionsMapper
+internal class OthersActionsMapper : IProductActionMapper
 {
-    public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
-        new Dictionary<MessageAction, MessageMaps>
+    public ProductType Product { get; }
+    public List<IModuleActionMapper> Mappers { get; }
+
+    public OthersActionsMapper()
+    {
+        Product = ProductType.Others;
+        Mappers = new List<IModuleActionMapper>()
         {
-                    {
-                        MessageAction.ContactAdminMailSent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "SendActionType",
-                                ActionTextResourceName = "ContactAdminMailSent",
-                                ProductResourceName = "OthersProduct"
-                            }
-                    }
+            new OthersNoneModuleActionMapper()
         };
+    }
+}
+
+internal class OthersNoneModuleActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
+
+    public OthersNoneModuleActionMapper()
+    {
+        Module = ModuleType.None;
+
+        Actions = new MessageMapsDictionary()
+        {
+            { ActionType.Send, new[] { MessageAction.ContactAdminMailSent } }
+        };
+    }
 }

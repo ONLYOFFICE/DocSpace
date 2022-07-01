@@ -41,6 +41,13 @@ public enum FolderType
     Recent = 11,
     Templates = 12,
     Privacy = 13,
+    VirtualRooms = 14,
+    FillingFormsRoom = 15,
+    EditingRoom = 16,
+    ReviewRoom = 17,
+    ReadOnlyRoom = 18,
+    CustomRoom = 19,
+    Archive = 20,
 }
 
 public interface IFolder
@@ -51,6 +58,7 @@ public interface IFolder
     public bool Shareable { get; set; }
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
+    public bool Pinned { get; set; }
 }
 
 [DebuggerDisplay("{Title} ({Id})")]
@@ -63,11 +71,14 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
     public bool Shareable { get; set; }
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
+    public bool Pinned { get; set; }
     public override bool IsNew
     {
         get => Convert.ToBoolean(NewForMe);
         set => NewForMe = Convert.ToInt32(value);
     }
+
+    public bool IsFavorite { get; set; }
 
     public Folder()
     {
@@ -75,10 +86,16 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
         FileEntryType = FileEntryType.Folder;
     }
 
-    public Folder(FileHelper fileHelper, Global global) : this()
+    public Folder(
+        FileHelper fileHelper,
+        Global global,
+        GlobalFolderHelper globalFolderHelper,
+        SettingsManager settingsManager,
+        FilesSettingsHelper filesSettingsHelper,
+        FileDateTime fileDateTime) : base(fileHelper, global, globalFolderHelper, settingsManager, filesSettingsHelper, fileDateTime)
     {
-        FileHelper = fileHelper;
-        Global = global;
+        Title = string.Empty;
+        FileEntryType = FileEntryType.Folder;
     }
 
     public override string UniqID => $"folder_{Id}";
@@ -118,6 +135,12 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
                         break;
                     case FolderType.Projects:
                         result.Title = FilesUCResource.ProjectFiles;
+                        break;
+                    case FolderType.VirtualRooms:
+                        result.Title = FilesUCResource.VirtualRooms;
+                        break;
+                    case FolderType.Archive:
+                        result.Title = FilesUCResource.Archive;
                         break;
                     case FolderType.BUNCH:
                         try

@@ -67,7 +67,7 @@ const Item = ({
           t={t}
           access={item.access}
           directionX="right"
-          directionY="bottom"
+          directionY="both"
           accessOptions={externalAccessOptions}
           onAccessChange={onChangeItemAccess}
           itemId={item.sharedTo.id}
@@ -75,8 +75,8 @@ const Item = ({
           disableLink={false}
           canDelete={true}
           onRemoveUserClick={onRemoveUserClick}
-          isDefaultMode={false}
-          fixedDirection={true}
+          isDefaultMode={true}
+          fixedDirection={false}
         />
       )}
     </StyledItem>

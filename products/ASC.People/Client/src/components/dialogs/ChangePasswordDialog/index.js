@@ -19,6 +19,7 @@ class ChangePasswordDialogComponent extends React.Component {
   }
   onSendPasswordChangeInstructions = () => {
     const { email, onClose } = this.props;
+
     this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToChangePassword(email)
         .then((res) => {
@@ -31,13 +32,32 @@ class ChangePasswordDialogComponent extends React.Component {
     });
   };
 
+  keyPress = (e) => {
+    if (e.keyCode === 13) {
+      this.onSendPasswordChangeInstructions();
+    }
+  };
+
+  componentDidMount() {
+    addEventListener("keydown", this.keyPress, false);
+  }
+
+  componentWillUnmount() {
+    removeEventListener("keydown", this.keyPress, false);
+  }
+
   render() {
-    console.log("ChangePasswordDialog render");
+    // console.log("ChangePasswordDialog render");
     const { t, tReady, visible, email, onClose, theme } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog isLoading={!tReady} visible={visible} onClose={onClose}>
+      <ModalDialog
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+        displayType="modal"
+      >
         <ModalDialog.Header>{t("PasswordChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text fontSize="13px">

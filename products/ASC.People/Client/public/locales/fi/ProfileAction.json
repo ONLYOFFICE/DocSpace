@@ -1,4 +1,4 @@
-﻿{
+{
   "ActivationLink": "Aktivointilinkki",
   "AddContact": "Lisää yhteystieto",
   "AddPhoto": "Lisää valokuva",
@@ -8,7 +8,7 @@
   "ChangesSavedSuccessfully": "Muutokset tallennettu onnistuneesti",
   "ContactInformation": "Yhteystiedot",
   "CopiedResourceText": "Kopioitu",
-  "CustomCreation": "{{user}} (creation)",
+  "CustomCreation": "{{user}} (luominen)",
   "EditPhoto": "Muokkaa kuvaa",
   "EditUserDialogTitle": "Muokkaa profiilia",
   "EmailPopupHelper": "Pääsähköpostia käytetään ilmoituksiin ja pääsyn palauttamiseen. <1> Voit luoda käyttäjälle uuden sähköpostiviestin tälle verkkotunnukselle ja asettaa kertakäyttöisen salasanan ensimmäiselle kirjautumiskerralle. </1>",

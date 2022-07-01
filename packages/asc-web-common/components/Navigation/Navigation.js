@@ -1,20 +1,24 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Loaders from "@appserver/common/components/Loaders";
-
 import StyledContainer from "./StyledNavigation";
 import ArrowButton from "./sub-components/arrow-btn";
 import Text from "./sub-components/text";
 import ControlButtons from "./sub-components/control-btn";
 import DropBox from "./sub-components/drop-box";
 
-import { isMobileOnly } from "react-device-detect";
-
 import { Consumer } from "@appserver/components/utils/context";
 
 import DomHelpers from "@appserver/components/utils/domHelpers";
 import Backdrop from "@appserver/components/backdrop";
+
+import { isMobile, isMobileOnly } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+  isDesktop as isDesktopUtils,
+} from "@appserver/components/utils/device";
+import ToggleInfoPanelButton from "./sub-components/toggle-infopanel-btn";
 
 const Navigation = ({
   tReady,
@@ -22,7 +26,6 @@ const Navigation = ({
   isRootFolder,
   title,
   canCreate,
-  isDesktop,
   isTabletView,
   personal,
   onClickFolder,
@@ -37,6 +40,7 @@ const Navigation = ({
   isCurrentFolderInfo,
   toggleInfoPanel,
   isInfoPanelVisible,
+  titles,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -47,16 +51,23 @@ const Navigation = ({
   const dropBoxRef = React.useRef(null);
   const containerRef = React.useRef(null);
 
-  const onMissClick = (e) => {
-    e.preventDefault;
-    const path = e.path || (e.composedPath && e.composedPath());
+  const isDesktop =
+    (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
+    (isDesktopUtils() && !isMobile);
 
-    if (!firstClick) {
-      !path.includes(dropBoxRef.current) ? toggleDropBox() : null;
-    } else {
-      setFirstClick((prev) => !prev);
-    }
-  };
+  const onMissClick = React.useCallback(
+    (e) => {
+      e.preventDefault;
+      const path = e.path || (e.composedPath && e.composedPath());
+
+      if (!firstClick) {
+        !path.includes(dropBoxRef.current) ? toggleDropBox() : null;
+      } else {
+        setFirstClick((prev) => !prev);
+      }
+    },
+    [firstClick, toggleDropBox, setFirstClick]
+  );
 
   const onClickAvailable = React.useCallback(
     (id) => {
@@ -89,13 +100,13 @@ const Navigation = ({
       window.addEventListener("resize", onResize);
     } else {
       window.removeEventListener("click", onMissClick);
-      window.addEventListener("resize", onResize);
+      window.removeEventListener("resize", onResize);
       setFirstClick(true);
     }
 
     return () => {
       window.removeEventListener("click", onMissClick);
-      window.addEventListener("resize", onResize);
+      window.removeEventListener("resize", onResize);
     };
   }, [isOpen, onResize, onMissClick]);
 
@@ -110,16 +121,16 @@ const Navigation = ({
         <>
           {isOpen && (
             <>
-              {isMobileOnly && (
-                <Backdrop
-                  isAside={true}
-                  visible={isOpen}
-                  withBackground={true}
-                  zIndex={400}
-                />
-              )}
+              <Backdrop
+                visible={isOpen}
+                withBackground={false}
+                withoutBlur={true}
+                zIndex={400}
+              />
+
               <DropBox
                 {...rest}
+                isDesktop={isDesktop}
                 ref={dropBoxRef}
                 maxHeight={maxHeight}
                 dropBoxWidth={dropBoxWidth}
@@ -145,10 +156,10 @@ const Navigation = ({
             width={context.sectionWidth}
             isRootFolder={isRootFolder}
             canCreate={canCreate}
-            title={title}
-            isDesktop={isDesktop}
             isTabletView={isTabletView}
             isRecycleBinFolder={isRecycleBinFolder}
+            isDesktop={isDesktop}
+            isInfoPanelVisible={isInfoPanelVisible}
           >
             <ArrowButton
               isRootFolder={isRootFolder}
@@ -171,8 +182,17 @@ const Navigation = ({
               clearTrash={clearTrash}
               toggleInfoPanel={toggleInfoPanel}
               isInfoPanelVisible={isInfoPanelVisible}
+              isDesktop={isDesktop}
+              titles={titles}
             />
           </StyledContainer>
+          {isDesktop && (
+            <ToggleInfoPanelButton
+              isRootFolder={isRootFolder}
+              toggleInfoPanel={toggleInfoPanel}
+              isInfoPanelVisible={isInfoPanelVisible}
+            />
+          )}
         </>
       )}
     </Consumer>
@@ -192,6 +212,7 @@ Navigation.propTypes = {
   getContextOptionsPlus: PropTypes.func,
   getContextOptionsFolder: PropTypes.func,
   onBackToParentFolder: PropTypes.func,
+  titles: PropTypes.object,
 };
 
 export default React.memo(Navigation);

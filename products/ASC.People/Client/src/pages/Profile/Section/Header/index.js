@@ -14,6 +14,7 @@ import {
   deleteAvatar,
 } from "@appserver/common/api/people";
 import { AppServerConfig, EmployeeStatus } from "@appserver/common/constants";
+import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,
@@ -325,7 +326,7 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "edit",
             className: "header-context-menu_edit",
-            label: t("EditUser"),
+            label: t("Profile:EditUser"),
             onClick: this.onEditClick,
           },
           {
@@ -394,7 +395,7 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "invite-again",
             className: "header-context-menu_invite-again",
-            label: t("InviteAgainLbl"),
+            label: t("Profile:InviteAgainLbl"),
             onClick: this.onInviteAgainClick,
           },
           !isMe &&
@@ -474,24 +475,26 @@ class SectionHeaderContent extends React.PureComponent {
             size={17}
             getData={contextOptions}
             isDisabled={false}
+            usePortal={false}
           />
         )}
-
-        <AvatarEditor
-          image={avatar.image}
-          visible={visibleAvatarEditor}
-          onClose={this.onCloseAvatarEditor}
-          onSave={this.onSaveAvatar}
-          onLoadFile={this.onLoadFileAvatar}
-          headerLabel={t("Common:EditAvatar")}
-          selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-          orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
-          unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
-          maxSizeFileError={t("Translations:maxSizeFileError")}
-          unknownError={t("Common:Error")}
-          saveButtonLabel={t("Common:SaveButton")}
-          maxSizeLabel={t("Translations:MaxSizeLabel")}
-        />
+        {visibleAvatarEditor && (
+          <AvatarEditor
+            image={avatar.image}
+            visible={visibleAvatarEditor}
+            onClose={this.onCloseAvatarEditor}
+            onSave={this.onSaveAvatar}
+            onLoadFile={this.onLoadFileAvatar}
+            headerLabel={t("Common:EditAvatar")}
+            selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
+            orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+            unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+            maxSizeFileError={t("Translations:maxSizeFileError")}
+            unknownError={t("Common:Error")}
+            saveButtonLabel={t("Common:SaveButton")}
+            maxSizeLabel={t("Translations:MaxSizeLabel")}
+          />
+        )}
 
         {dialogsVisible.deleteSelfProfile && (
           <DeleteSelfProfileDialog
@@ -551,7 +554,9 @@ export default withRouter(
   })(
     observer(
       withTranslation(["Profile", "Common", "Translations"])(
-        withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
+        withCultureNames(
+          withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
+        )
       )
     )
   )

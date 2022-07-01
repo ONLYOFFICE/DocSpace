@@ -8,7 +8,6 @@ import Option from "./Option";
 
 const OptionList = ({
   listOptionsRef,
-  loadingLabel,
   options,
   isOptionChecked,
   isMultiSelect,
@@ -17,13 +16,22 @@ const OptionList = ({
   isItemLoaded,
   itemCount,
   loadMoreItems,
+  isFirstLoad,
 }) => {
   const renderOption = React.useCallback(
     ({ index, style }) => {
       const isLoaded = isItemLoaded(index);
-
+   
       if (!isLoaded) {
-        return <Option isLoader={true} loadingLabel={loadingLabel} />;
+        if (!isFirstLoad) {
+          return (
+            <div style={style}>
+              <Option isLoader={true} countLoaderRows={2} />
+            </div>
+          );
+        }
+
+        return <Option isLoader={true} />;
       }
 
       const option = options[index];
@@ -43,7 +51,6 @@ const OptionList = ({
     },
     [
       options,
-      loadingLabel,
       isMultiSelect,
 
       isItemLoaded,

@@ -180,13 +180,18 @@ public class GoogleCloudStorage : BaseStorage
         return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
     }
 
+    private bool EnableQuotaCheck(string domain)
+    {
+        return (QuotaController != null) && !domain.EndsWith("_temp");
+    }
+
     public async Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
                   string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
     {
 
         var buffered = _tempStream.GetBuffered(stream);
 
-        if (QuotaController != null)
+        if (EnableQuotaCheck(domain))
         {
             QuotaController.QuotaUsedCheck(buffered.Length);
         }
@@ -599,7 +604,9 @@ public class GoogleCloudStorage : BaseStorage
         await storage.UpdateObjectAsync(uploaded);
 
         using var mStream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
-        var preSignedURL = await FromServiceAccountData(mStream).SignAsync(RequestTemplate.FromBucket(_bucket).WithObjectName(MakePath(domain, path)), UrlSigner.Options.FromExpiration(expires));
+        var signDuration = expires.Date == DateTime.MinValue ? expires.TimeOfDay : expires.Subtract(DateTime.UtcNow);
+        var preSignedURL = await FromServiceAccountData(mStream)
+            .SignAsync(RequestTemplate.FromBucket(_bucket).WithObjectName(MakePath(domain, path)), Options.FromDuration(signDuration));
 
         //TODO: CNAME!
         return preSignedURL;
@@ -671,15 +678,15 @@ public class GoogleCloudStorage : BaseStorage
             totalBytes = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength);
         }
 
-        var contentRangeHeader = $"bytes {bytesRangeStart}-{bytesRangeEnd}/{totalBytes}";
-
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(uploadUri),
             Method = HttpMethod.Put
         };
-        request.Headers.Add("Content-Range", contentRangeHeader);
         request.Content = new StreamContent(stream);
+        request.Content.Headers.ContentRange = new ContentRangeHeaderValue(Convert.ToInt64(bytesRangeStart),
+                                                               Convert.ToInt64(bytesRangeEnd),
+                                                               Convert.ToInt64(totalBytes));
 
         const int MAX_RETRIES = 100;
         int millisecondsTimeout;
@@ -741,10 +748,6 @@ public class GoogleCloudStorage : BaseStorage
     #endregion
 
     public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize, string contentType, string contentDisposition, string submitLabel)
-    {
-        throw new NotImplementedException();
-    }
-    public override Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
     {
         throw new NotImplementedException();
     }

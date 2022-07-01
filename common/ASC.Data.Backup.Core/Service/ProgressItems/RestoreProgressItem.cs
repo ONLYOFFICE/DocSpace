@@ -54,6 +54,7 @@ namespace ASC.Data.Backup.Services;
 [Transient]
 public class RestoreProgressItem : BaseBackupProgressItem
 {
+    private readonly IConfiguration _configuration;
     private readonly ILogger<RestoreProgressItem> _logger;
     private readonly ICache _cache;
     private TenantManager _tenantManager;
@@ -68,6 +69,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
     private Dictionary<string, string> _configPaths;
 
     public RestoreProgressItem(
+        IConfiguration configuration,
         ILogger<RestoreProgressItem> logger,
         ICache cache,
         IServiceScopeFactory serviceScopeFactory,
@@ -75,6 +77,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         CoreBaseSettings coreBaseSettings)
         : base(logger, serviceScopeFactory)
     {
+        _configuration = configuration;
         _logger = logger;
         _cache = cache;
         _notifyHelper = notifyHelper;
@@ -177,7 +180,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
                 restoredTenant = _tenantManager.GetTenant(columnMapper.GetTenantMapping());
                 restoredTenant.SetStatus(TenantStatus.Active);
                 restoredTenant.Alias = tenant.Alias;
-                restoredTenant.PaymentId = string.Empty;
+                restoredTenant.PaymentId = string.IsNullOrEmpty(restoredTenant.PaymentId) ? _configuration["core:payment-region"] + TenantId : restoredTenant.PaymentId;
 
                 if (string.IsNullOrEmpty(restoredTenant.MappedDomain) && !string.IsNullOrEmpty(tenant.MappedDomain))
                 {

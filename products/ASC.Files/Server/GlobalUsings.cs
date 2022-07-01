@@ -34,6 +34,7 @@ global using System.Web;
 global using ASC.Api.Core;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;
+global using ASC.Api.Core.Security;
 global using ASC.Api.Core.Routing;
 global using ASC.Api.Utils;
 global using ASC.Common;
@@ -46,6 +47,8 @@ global using ASC.Core.Users;
 global using ASC.FederatedLogin.Helpers;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.Files.Core;
+global using ASC.Files.Core.Entries;
+global using ASC.Files.Core.VirtualRooms;
 global using ASC.Files.Core.ApiModels;
 global using ASC.Files.Core.ApiModels.RequestDto;
 global using ASC.Files.Core.ApiModels.ResponseDto;
@@ -72,6 +75,7 @@ global using ASC.Web.Files.Utils;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.Utility;
+global using ASC.Security.Cryptography;
 
 global using Autofac;
 

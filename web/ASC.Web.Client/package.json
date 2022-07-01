@@ -1,16 +1,19 @@
 {
   "name": "@appserver/studio",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "private": true,
   "homepage": "",
   "scripts": {
     "build": "webpack --mode production",
+    "build:personal": "webpack --mode production --env personal=true",
     "build:test": "webpack --env minimize=false --mode production",
     "build:test.translation": "webpack --env minimize=false hideText=true --mode production",
+    "build:test.translation:personal": "webpack --env minimize=false hideText=true personal=true --mode production",
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/studio/client && shx cp -r dist/* ../../build/deploy/studio/client",
     "serve": "serve dist -p 5001",
     "start": "webpack-cli serve",
+    "start:personal": "webpack-cli serve --env personal=true",
     "start-prod": "webpack --mode production && serve dist -p 5001",
     "test:codeceptjs": "npx codeceptjs run --reporter mocha-multi",
     "test:mobile": "cross-env DEVICE_TYPE=mobile yarn test:codeceptjs",
@@ -40,6 +43,7 @@
   "dependencies": {
     "firebase": "^8.10.0",
     "react-markdown": "^7.0.1",
+    "react-smartbanner": "^5.1.4",
     "react-string-format": "^0.1.4"
   },
   "devDependencies": {

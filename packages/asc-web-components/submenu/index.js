@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
-
 import Text from "../text";
 import { countAutoFocus, countAutoOffset } from "./autoOffset";
 import {
@@ -79,34 +78,38 @@ const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
         <LoaderSubmenu />
       ) : (
         <>
-          <StyledSubmenuItems ref={submenuItemsRef} role="list">
-            {data.map((d) => {
-              const isActive = d.id === currentItem.id;
+          <div className="sticky">
+            <StyledSubmenuItems ref={submenuItemsRef} role="list">
+              {data.map((d) => {
+                const isActive = d.id === currentItem.id;
 
-              return (
-                <StyledSubmenuItem
-                  key={d.id}
-                  id={d.id}
-                  onClick={selectSubmenuItem}
-                >
-                  <StyledSubmenuItemText>
-                    <Text
-                      color={isActive ? "#316DAA" : "#657077"}
-                      fontSize="13px"
-                      fontWeight="600"
-                      truncate={false}
-                    >
-                      {d.name}
-                    </Text>
-                  </StyledSubmenuItemText>
-                  <StyledSubmenuItemLabel
-                    color={isActive ? "#316DAA" : "none"}
-                  />
-                </StyledSubmenuItem>
-              );
-            })}
-          </StyledSubmenuItems>
-          <StyledSubmenuBottomLine />
+                return (
+                  <StyledSubmenuItem
+                    key={d.id}
+                    id={d.id}
+                    onClick={(e) => {
+                      d.onClick && d.onClick();
+                      selectSubmenuItem(e);
+                    }}
+                  >
+                    <StyledSubmenuItemText isActive={isActive}>
+                      <Text
+                        className="item-text"
+                        fontSize="13px"
+                        fontWeight="600"
+                        truncate={false}
+                      >
+                        {d.name}
+                      </Text>
+                    </StyledSubmenuItemText>
+                    <StyledSubmenuItemLabel isActive={isActive} />
+                  </StyledSubmenuItem>
+                );
+              })}
+            </StyledSubmenuItems>
+            <StyledSubmenuBottomLine />
+          </div>
+          <div className="sticky-indent"></div>
         </>
       )}
       <StyledSubmenuContentWrapper>

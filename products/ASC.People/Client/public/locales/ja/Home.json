@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "管理者",
   "ChangeToGuest": "{{guestCaption}}に変更します",
   "ChangeToUser": "{{userCaption}}に変更します",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "ここにはまだチームメンバはいません。",
   "LblInviteAgain": "もう一度招待する",
   "LblInvited": "招待された",
-  "LblOther": "その他",
   "LblSendEmail": "メール送信",
   "LblSendMessage": "メッセージの送信",
   "LblSetActive": "アクティブの設定",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "電子メールによるアクティベーションの指示は、<1>{{email}}</1>のメールアドレスに送信されています。",
   "NotFoundDescription": "別のフィルタを試すか、フィルタを解除すると、セクション内のすべての人が表示されます",
   "NotFoundTitle": "チームメンバは見つかりませんでした",
+  "ReassignmentData": "データの再配置",
   "SuccessfullyRemovedGroup": "グループの削除が完了しました。",
   "UserStatus": "ステータス"
 }

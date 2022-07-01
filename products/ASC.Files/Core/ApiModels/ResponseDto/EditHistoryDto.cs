@@ -47,7 +47,7 @@ public class EditHistoryDto
         Changes = editHistory.Changes.Select(r => new EditHistoryChangesWrapper(r, apiDateTimeHelper)).ToList();
         ChangesHistory = editHistory.ChangesString;
         Created = apiDateTimeHelper.Get(editHistory.ModifiedOn);
-        User = new EditHistoryAuthor(userManager, displayUserSettingsHelper) { Id = editHistory.ModifiedBy };
+        User = new EditHistoryAuthor(userManager, displayUserSettingsHelper) { Id = editHistory.ModifiedBy.ToString() };
         ServerVersion = editHistory.ServerVersion;
     }
 }

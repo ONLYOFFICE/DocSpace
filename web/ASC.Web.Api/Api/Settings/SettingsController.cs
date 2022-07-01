@@ -60,6 +60,7 @@ public class SettingsController : BaseSettingsController
     private readonly TelegramHelper _telegramHelper;
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
+    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
 
     public SettingsController(
         ILoggerProvider option,
@@ -94,7 +95,8 @@ public class SettingsController : BaseSettingsController
         PasswordHasher passwordHasher,
         Constants constants,
         IHttpContextAccessor httpContextAccessor,
-        DnsSettings dnsSettings
+        DnsSettings dnsSettings,
+        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -126,6 +128,7 @@ public class SettingsController : BaseSettingsController
         _telegramHelper = telegramHelper;
         _constants = constants;
         _dnsSettings = dnsSettings;
+        _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
     }
 
     [HttpGet("")]
@@ -140,6 +143,7 @@ public class SettingsController : BaseSettingsController
             Culture = Tenant.GetCulture().ToString(),
             GreetingSettings = Tenant.Name,
             Personal = _coreBaseSettings.Personal,
+            DocSpace = !_coreBaseSettings.DisableDocSpace,
             Version = _configuration["version:number"] ?? "",
             TenantStatus = _tenantManager.GetCurrentTenant().Status,
             TenantAlias = Tenant.Alias,
@@ -168,6 +172,8 @@ public class SettingsController : BaseSettingsController
                 AppId = _configuration["firebase:appId"] ?? "",
                 MeasurementId = _configuration["firebase:measurementId"] ?? ""
             };
+
+            settings.HelpLink = _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
 
             bool debugInfo;
             if (bool.TryParse(_configuration["debug-info:enabled"], out debugInfo))
@@ -372,6 +378,19 @@ public class SettingsController : BaseSettingsController
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         _colorThemesSettingsHelper.SaveColorTheme(inDto.Theme);
         _messageService.Send(MessageAction.ColorThemeChanged);
+    }
+
+    [HttpPut("closeadminhelper")]
+    public void CloseAdminHelper()
+    {
+        if (!_userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
+        {
+            throw new NotSupportedException("Not available.");
+        }
+
+        var adminHelperSettings = _settingsManager.LoadForCurrentUser<AdminHelperSettings>();
+        adminHelperSettings.Viewed = true;
+        _settingsManager.SaveForCurrentUser(adminHelperSettings);
     }
 
     ///<visible>false</visible>

@@ -203,8 +203,8 @@ public static class LogNLogConfigureExtenstion
 
         if (!string.IsNullOrEmpty(settings.Dir))
         {
-            loggerConfiguration.Variables["dir"] = CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, settings.Dir)
-                .TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
+            var dir = Path.IsPathRooted(settings.Dir) ? settings.Dir : CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, settings.Dir);
+            loggerConfiguration.Variables["dir"] = dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
         }
 
         return loggerConfiguration;

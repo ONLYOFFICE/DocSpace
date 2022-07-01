@@ -55,14 +55,20 @@ const EmptyFoldersContainer = (props) => {
     subheadingText,
     descriptionText,
     buttons,
+    style,
+    imageStyle,
+    buttonStyle,
   } = props;
 
   return (
     <EmptyFolderWrapper>
       <EmptyScreenContainer
         className="empty-folder_container"
+        style={style}
+        imageStyle={imageStyle}
         imageSrc={imageSrc}
         imageAlt={imageAlt}
+        buttonStyle={buttonStyle}
         headerText={headerText}
         subheadingText={subheadingText}
         descriptionText={descriptionText}

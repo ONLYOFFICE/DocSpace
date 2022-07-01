@@ -23,6 +23,7 @@
 // All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+using System.Threading.Tasks;
 
 namespace ASC.Web.Files.Core.Compress;
 
@@ -35,13 +36,13 @@ public interface ICompress : IDisposable
     /// The record name is created (the name of a separate file in the archive)
     /// </summary>
     /// <param name="title">File name with extension, this name will have the file in the archive</param>
-    void CreateEntry(string title);
+    void CreateEntry(string title, DateTime? lastModification = null);
 
     /// <summary>
     /// Transfer the file itself to the archive
     /// </summary>
     /// <param name="readStream">File data</param>
-    void PutStream(Stream readStream);
+        Task PutStream(Stream readStream);
 
     /// <summary>
     /// Put an entry on the output stream.

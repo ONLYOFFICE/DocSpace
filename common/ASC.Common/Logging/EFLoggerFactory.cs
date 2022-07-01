@@ -29,11 +29,11 @@ namespace ASC.Common.Logging;
 [Singletone]
 public class EFLoggerFactory : ILoggerFactory
 {
-    private readonly ILoggerProvider _loggerProvider;
+    private readonly ILogger _logger;
 
     public EFLoggerFactory(ILoggerProvider loggerProvider)
     {
-        _loggerProvider = loggerProvider;
+        _logger = new EFLogger(loggerProvider.CreateLogger("ASC.SQL"));
     }
 
     public void AddProvider(ILoggerProvider provider)
@@ -42,7 +42,7 @@ public class EFLoggerFactory : ILoggerFactory
 
     public ILogger CreateLogger(string categoryName)
     {
-        return new EFLogger(_loggerProvider.CreateLogger("ASC.SQL"));
+        return _logger;
     }
 
     public void Dispose() { }

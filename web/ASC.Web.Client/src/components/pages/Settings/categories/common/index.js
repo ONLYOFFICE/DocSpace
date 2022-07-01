@@ -7,7 +7,8 @@ import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../../../package.json";
 import { inject, observer } from "mobx-react";
 import Customization from "./customization";
-import WhiteLabel from "./whitelabel";
+import Branding from "./branding";
+import Appearance from "./appearance";
 import withLoading from "../../../../../HOCs/withLoading";
 
 const SubmenuCommon = (props) => {
@@ -42,9 +43,14 @@ const SubmenuCommon = (props) => {
       content: <Customization />,
     },
     {
-      id: "whitelabel",
-      name: t("White label"),
-      content: <WhiteLabel />,
+      id: "branding",
+      name: "Branding",
+      content: <Branding />,
+    },
+    {
+      id: "appearance",
+      name: "Appearance",
+      content: <Appearance />,
     },
   ];
 

@@ -19,7 +19,7 @@ const StyledTooltip = styled.div`
   }
 `;
 
-export const LanguageTimeSettingsTooltip = ({ t, theme }) => {
+export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
   const learnMore = t("Common:LearnMore");
   const text = t("Settings:StudioTimeLanguageSettings");
   const save = t("Common:SaveButton");
@@ -47,7 +47,7 @@ export const LanguageTimeSettingsTooltip = ({ t, theme }) => {
             color={theme.studio.settings.common.linkColorHelp}
             className="display-block font-size"
             isHovered={true}
-            href="https://helpcenter.onlyoffice.com/administration/configuration.aspx#CustomizingPortal_block"
+            href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
           >
             {{ learnMore }}
           </Link>

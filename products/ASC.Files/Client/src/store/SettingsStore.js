@@ -62,10 +62,6 @@ class SettingsStore {
     this.treeFoldersStore = treeFoldersStore;
   }
 
-  get infoPanelIsVisible() {
-    return this.infoPanelIsVisible;
-  }
-
   setIsLoaded = (isLoaded) => {
     this.settingsIsLoaded = isLoaded;
   };
@@ -239,7 +235,8 @@ class SettingsStore {
   isMediaOrImage = (fileExst) => {
     if (
       this.extsVideo.includes(fileExst) ||
-      this.extsImage.includes(fileExst)
+      this.extsImage.includes(fileExst) ||
+      this.extsAudio.includes(fileExst)
     ) {
       return true;
     }

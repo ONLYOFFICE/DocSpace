@@ -204,6 +204,45 @@ internal class ProviderAccountDao : IProviderDao
         return providerInfo != null && await providerInfo.CheckAccessAsync();
     }
 
+    public async Task<bool> UpdateProviderInfoAsync(int linkId, FolderType rootFolderType)
+    {
+        var forUpdate = await FilesDbContext.ThirdpartyAccount
+            .Where(r => r.Id == linkId)
+            .Where(r => r.TenantId == TenantID)
+            .FirstOrDefaultAsync().ConfigureAwait(false);
+
+        if (forUpdate == null)
+        {
+            return false;
+        }
+
+        forUpdate.FolderType = rootFolderType;
+
+        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+        return true;
+    }
+
+    public async Task<bool> UpdateProviderInfoAsync(int linkId, string folderId, FolderType folderType)
+    {
+        var forUpdate = await FilesDbContext.ThirdpartyAccount
+            .Where(r => r.Id == linkId)
+            .Where(r => r.TenantId == TenantID)
+            .FirstOrDefaultAsync().ConfigureAwait(false);
+
+        if (forUpdate == null)
+        {
+            return false;
+        }
+
+        forUpdate.RoomType = folderType;
+        forUpdate.FolderId = folderId;
+
+        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+        return true;
+    }
+
     public virtual async Task<int> UpdateProviderInfoAsync(int linkId, AuthData authData)
     {
         var forUpdate = await FilesDbContext.ThirdpartyAccount
@@ -256,7 +295,7 @@ internal class ProviderAccountDao : IProviderDao
             authData = new AuthData(
                 !string.IsNullOrEmpty(newAuthData.Url) ? newAuthData.Url : input.Url,
                 input.UserName,
-                !string.IsNullOrEmpty(newAuthData.Password) ? newAuthData.Password : DecryptPassword(input.Password),
+                !string.IsNullOrEmpty(newAuthData.Password) ? newAuthData.Password : DecryptPassword(input.Password, linkId),
                 newAuthData.Token);
 
             if (!string.IsNullOrEmpty(newAuthData.Token))
@@ -387,11 +426,13 @@ internal class ProviderAccountDao : IProviderDao
 
         var id = input.Id;
         var providerTitle = input.Title ?? string.Empty;
-        var token = DecryptToken(input.Token);
+        var token = DecryptToken(input.Token, id);
         var owner = input.UserId;
-        var folderType = input.FolderType;
+        var rootFolderType = input.FolderType;
+        var folderType = input.RoomType;
+        var folderId = input.FolderId;
         var createOn = _tenantUtil.DateTimeFromUtc(input.CreateOn);
-        var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password), token);
+        var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password, id), token);
 
         if (key == ProviderTypes.Box)
         {
@@ -405,9 +446,11 @@ internal class ProviderAccountDao : IProviderDao
             box.CustomerTitle = providerTitle;
             box.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             box.ProviderKey = input.Provider;
-            box.RootFolderType = folderType;
+            box.RootFolderType = rootFolderType;
             box.CreateOn = createOn;
             box.Token = OAuth20Token.FromJson(token);
+            box.FolderType = folderType;
+            box.FolderId = folderId;
 
             return box;
         }
@@ -424,9 +467,11 @@ internal class ProviderAccountDao : IProviderDao
             drop.CustomerTitle = providerTitle;
             drop.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             drop.ProviderKey = input.Provider;
-            drop.RootFolderType = folderType;
+            drop.RootFolderType = rootFolderType;
             drop.CreateOn = createOn;
             drop.Token = OAuth20Token.FromJson(token);
+            drop.FolderType = folderType;
+            drop.FolderId = folderId;
 
             return drop;
         }
@@ -443,9 +488,11 @@ internal class ProviderAccountDao : IProviderDao
             sh.CustomerTitle = providerTitle;
             sh.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             sh.ProviderKey = input.Provider;
-            sh.RootFolderType = folderType;
+            sh.RootFolderType = rootFolderType;
             sh.CreateOn = createOn;
             sh.InitClientContext(authData);
+            sh.FolderType = folderType;
+            sh.FolderId = folderId;
 
             return sh;
         }
@@ -462,9 +509,11 @@ internal class ProviderAccountDao : IProviderDao
             gd.CustomerTitle = providerTitle;
             gd.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             gd.ProviderKey = input.Provider;
-            gd.RootFolderType = folderType;
+            gd.RootFolderType = rootFolderType;
             gd.CreateOn = createOn;
             gd.Token = OAuth20Token.FromJson(token);
+            gd.FolderType = folderType;
+            gd.FolderId = folderId;
 
             return gd;
         }
@@ -481,9 +530,11 @@ internal class ProviderAccountDao : IProviderDao
             od.CustomerTitle = providerTitle;
             od.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             od.ProviderKey = input.Provider;
-            od.RootFolderType = folderType;
+            od.RootFolderType = rootFolderType;
             od.CreateOn = createOn;
             od.Token = OAuth20Token.FromJson(token);
+            od.FolderType = folderType;
+            od.FolderId = folderId;
 
             return od;
         }
@@ -508,9 +559,11 @@ internal class ProviderAccountDao : IProviderDao
         sharpBoxProviderInfo.CustomerTitle = providerTitle;
         sharpBoxProviderInfo.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
         sharpBoxProviderInfo.ProviderKey = input.Provider;
-        sharpBoxProviderInfo.RootFolderType = folderType;
+        sharpBoxProviderInfo.RootFolderType = rootFolderType;
         sharpBoxProviderInfo.CreateOn = createOn;
         sharpBoxProviderInfo.AuthData = authData;
+        sharpBoxProviderInfo.FolderType = folderType;
+        sharpBoxProviderInfo.FolderId = folderId;
 
         return sharpBoxProviderInfo;
     }
@@ -621,16 +674,24 @@ internal class ProviderAccountDao : IProviderDao
         return string.IsNullOrEmpty(password) ? string.Empty : _instanceCrypto.Encrypt(password);
     }
 
-    private string DecryptPassword(string password)
-    {
-        return string.IsNullOrEmpty(password) ? string.Empty : _instanceCrypto.Decrypt(password);
-    }
-
-    private string DecryptToken(string token)
+    private string DecryptPassword(string password, int id)
     {
         try
         {
-            return DecryptPassword(token);
+            return string.IsNullOrEmpty(password) ? string.Empty : _instanceCrypto.Decrypt(password);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorDecryptPassword(id, _securityContext.CurrentAccount.ID, e);
+            return null;
+        }
+    }
+
+    private string DecryptToken(string token, int id)
+    {
+        try
+        {
+            return DecryptPassword(token, id);
         }
         catch
         {

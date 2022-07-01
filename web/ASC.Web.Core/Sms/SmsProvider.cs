@@ -365,12 +365,26 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
 {
     protected override string Key
     {
-        get { return this["twilioAccountSid"]; }
+        get { return this["twilioKeySid"]; }
+        set { }
     }
 
     protected override string Secret
     {
+        get { return this["twilioKeySecret"]; }
+        set { }
+    }
+
+    protected string AccountSid
+    {
+        get { return this["twilioAccountSid"]; }
+        set { }
+    }
+
+    protected string AuthToken
+    {
         get { return this["twilioAuthToken"]; }
+        set { }
     }
 
     protected override string Sender
@@ -389,6 +403,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         return
             !string.IsNullOrEmpty(Key)
             && !string.IsNullOrEmpty(Secret)
+            && !string.IsNullOrEmpty(AccountSid)
             && !string.IsNullOrEmpty(Sender);
     }
 
@@ -399,7 +414,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
             number = "+" + number;
         }
 
-        var twilioRestClient = new TwilioRestClient(Key, Secret);
+        var twilioRestClient = new TwilioRestClient(Key, Secret, AccountSid);
 
         try
         {
@@ -453,7 +468,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
     {
         try
         {
-            new VoipService.Twilio.TwilioProvider(Key, Secret, _authContext, _tenantUtil, _securityContext, _baseCommonLinkUtility).GetExistingPhoneNumbers();
+            new VoipService.Twilio.TwilioProvider(AccountSid, AuthToken, _authContext, _tenantUtil, _securityContext, _baseCommonLinkUtility).GetExistingPhoneNumbers();
             return true;
         }
         catch (Exception)
@@ -464,7 +479,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
 
     public void ClearOldNumbers()
     {
-        _twilioProviderCleaner.ClearOldNumbers(Key, Secret);
+        _twilioProviderCleaner.ClearOldNumbers(AccountSid, AuthToken);
     }
 }
 
