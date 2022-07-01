@@ -283,7 +283,7 @@ public class LdapUserManager
                 {
                     using var scope = _serviceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
-                    var ldapNotifyHelper = scope.ServiceProvider.GetRequiredService<LdapNotifyHelper>();
+                    var ldapNotifyHelper = scope.ServiceProvider.GetRequiredService<LdapNotifyService>();
                     var source = scope.ServiceProvider.GetRequiredService<LdapNotifySource>();
                     source.Init(tenantManager.GetCurrentTenant());
                     var workContext = scope.ServiceProvider.GetRequiredService<WorkContext>();

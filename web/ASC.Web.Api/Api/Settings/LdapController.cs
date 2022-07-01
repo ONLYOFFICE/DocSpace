@@ -32,7 +32,7 @@ public class LdapController : BaseSettingsController
 
     private readonly SettingsManager _settingsManager;
     private readonly TenantManager _tenantManager;
-    private readonly LdapNotifyHelper _ldapNotifyHelper;
+    private readonly LdapNotifyService _ldapNotifyHelper;
     private readonly LdapSaveSyncOperation _ldapSaveSyncOperation;
     private readonly AuthContext _authContext;
     private readonly PermissionContext _permissionContext;
@@ -46,7 +46,7 @@ public class LdapController : BaseSettingsController
         IMemoryCache memoryCache,
         SettingsManager settingsManager,
         TenantManager tenantManager,
-        LdapNotifyHelper ldapNotifyHelper,
+        LdapNotifyService ldapNotifyHelper,
         LdapSaveSyncOperation ldapSaveSyncOperation,
         AuthContext authContext,
         PermissionContext permissionContext,
@@ -244,7 +244,7 @@ public class LdapController : BaseSettingsController
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
-        var result =  _ldapSaveSyncOperation.SaveLdapSettings(ldapSettings, Tenant, userId);
+        var result = _ldapSaveSyncOperation.SaveLdapSettings(ldapSettings, Tenant, userId);
 
         return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }
@@ -302,7 +302,7 @@ public class LdapController : BaseSettingsController
     {
         CheckLdapPermissions();
 
-        var settings =  new LdapSettings().GetDefault();
+        var settings = new LdapSettings().GetDefault();
 
         return _mapper.Map<LdapSettings, LdapSettingsDto>(settings);
     }

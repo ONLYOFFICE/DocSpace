@@ -32,7 +32,12 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args);
+builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, diHelper) =>
+{
+    services.AddHostedService<LdapNotifyService>();
+    diHelper.TryAdd<LdapNotifyService>();
+});
+
 builder.WebHost.ConfigureDefaultKestrel();
 
 var startup = new Startup(builder.Configuration, builder.Environment);
@@ -47,11 +52,5 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 var app = builder.Build();
 
 startup.Configure(app, app.Environment);
-
-using (var scope = app.Services.CreateScope())
-{
-    var ldapNotifyHelper = scope.ServiceProvider.GetRequiredService<LdapNotifyHelper>();
-    ldapNotifyHelper.RegisterAll();
-}
 
 await app.RunAsync();

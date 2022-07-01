@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+global using System.Collections.Concurrent;
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Globalization;
@@ -73,8 +74,8 @@ global using ASC.Web.Studio.Utility;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
-global using Microsoft.Extensions.Options;
 
 global using Novell.Directory.Ldap;
 global using Novell.Directory.Ldap.Controls;

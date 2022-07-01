@@ -30,15 +30,14 @@ namespace ASC.ActiveDirectory.Base;
 public class LdapNotifySource : INotifySource
 {
     private Tenant _tenant;
-    private LdapNotifyHelper _ldapNotifyHelper;
+    private readonly LdapNotifyService _ldapNotifyHelper;
 
     public string Id
     {
         get { return "asc.activedirectory." + _tenant.Id; }
     }
 
-    public LdapNotifySource(
-        LdapNotifyHelper ldapNotifyHelper)
+    public LdapNotifySource(LdapNotifyService ldapNotifyHelper)
     {
         _ldapNotifyHelper = ldapNotifyHelper;
     }
