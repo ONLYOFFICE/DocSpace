@@ -70,7 +70,7 @@ class FilesActionStore {
     }
   };
 
-  updateCurrentFolder = (fileIds, folderIds) => {
+  updateCurrentFolder = (fileIds, folderIds, clearSelection) => {
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
@@ -105,7 +105,8 @@ class FilesActionStore {
       updatedFolder,
       newFilter ? newFilter : filter,
       true,
-      true
+      true,
+      clearSelection
     ).finally(() => {
       this.dialogsStore.setIsFolderActions(false);
       return setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
@@ -251,7 +252,7 @@ class FilesActionStore {
               label: translations.deleteOperation,
             };
             await this.uploadDataStore.loopFilesOperations(data, pbData);
-            this.updateCurrentFolder(fileIds, folderIds);
+            this.updateCurrentFolder(fileIds, folderIds, false);
 
             if (currentFolderId) {
               const { socketHelper } = this.authStore.settingsStore;
