@@ -104,7 +104,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
     /// <category>Uploads</category>
     /// <returns></returns>
-    [HttpPost("{folderId}/insert", Order = int.MaxValue)]
+    [HttpPost("{folderId}/insert", Order = 1)]
     public Task<FileDto<T>> InsertFileAsync(T folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileRequestDto inDto)
     {
         return _filesControllerHelper.InsertFileAsync(folderId, inDto.Stream, inDto.Title, inDto.CreateNewIfExist, inDto.KeepConvertStatus);
@@ -133,7 +133,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
     /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
     /// <returns>Uploaded file</returns>
-    [HttpPost("{folderId}/upload", Order = int.MaxValue)]
+    [HttpPost("{folderId}/upload", Order = 1)]
     public Task<object> UploadFileAsync(T folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadRequestDto inDto)
     {
         return _filesControllerHelper.UploadFileAsync(folderId, inDto);

@@ -283,9 +283,11 @@ public interface IFileDao<T>
 
     Task<bool> ContainChangesAsync(T fileId, int fileVersion);
 
-        Task SaveThumbnailAsync(File<T> file, Stream thumbnail, int width, int height);
+    Task SaveThumbnailAsync(File<T> file, Stream thumbnail, int width, int height);
 
-        Task<Stream> GetThumbnailAsync(File<T> file, int width, int height);
+    Task<Stream> GetThumbnailAsync(File<T> file, int width, int height);    
+
+    Task<Stream> GetThumbnailAsync(T fileId, int width, int height);
 
     Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to);
 

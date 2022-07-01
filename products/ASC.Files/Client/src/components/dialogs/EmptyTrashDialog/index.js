@@ -46,7 +46,12 @@ const EmptyTrashDialogComponent = (props) => {
   };
 
   return (
-    <StyledModal isLoading={!tReady} visible={visible} onClose={onClose}>
+    <StyledModal
+      isLoading={!tReady}
+      visible={visible}
+      onClose={onClose}
+      displayType="modal"
+    >
       <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text>{t("DeleteForeverNote")}</Text>

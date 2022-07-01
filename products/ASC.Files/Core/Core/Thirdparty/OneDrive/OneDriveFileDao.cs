@@ -561,6 +561,12 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         return false;
     }
 
+    public override Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+        var oneDriveId = MakeOneDriveId(_oneDriveDaoSelector.ConvertId(fileId));
+        return ProviderInfo.GetThumbnailAsync(oneDriveId, width, height);
+    }
+
     #region chunking
 
     private File<string> RestoreIds(File<string> file)

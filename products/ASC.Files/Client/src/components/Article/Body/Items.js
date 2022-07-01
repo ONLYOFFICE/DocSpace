@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
@@ -29,10 +29,11 @@ const Item = ({
   startUpload,
   uploadEmptyFolders,
   setDragging,
+  showBadge,
+  labelBadge,
+  iconBadge,
 }) => {
   const [isDragActive, setIsDragActive] = React.useState(false);
-
-  const showBadge = item.newItems ? item.newItems > 0 && true : false;
 
   const isDragging = dragging ? showDragItems(item) : false;
 
@@ -109,13 +110,15 @@ const Item = ({
         isDragActive={isDragActive && isDragging}
         value={value}
         showBadge={showBadge}
-        labelBadge={showBadge ? item.newItems : null}
+        labelBadge={labelBadge}
         onClickBadge={onBadgeClick}
+        iconBadge={iconBadge}
       />
     </StyledDragAndDrop>
   );
 };
 
+let dataMainTree = [];
 const Items = ({
   t,
   data,
@@ -137,11 +140,25 @@ const Items = ({
   draggableItems,
 
   moveDragItems,
+
+  setEmptyTrashDialogVisible,
+  trashIsEmpty,
 }) => {
+  useEffect(() => {
+    data.forEach((elem) => {
+      const elemId = elem.id;
+      dataMainTree.push(elemId.toString());
+    });
+  }, [data]);
+
   const isActive = React.useCallback(
     (item) => {
       if (selectedTreeNode.length > 0) {
-        if (pathParts && pathParts.includes(item.id)) return true;
+        const isMainFolder = dataMainTree.indexOf(selectedTreeNode[0]) !== -1;
+
+        if (pathParts && pathParts.includes(item.id) && !isMainFolder)
+          return true;
+
         if (selectedTreeNode[0] === "@my" && item.key === "0-0") return true;
         return `${item.id}` === selectedTreeNode[0];
       }
@@ -275,9 +292,26 @@ const Items = ({
     [moveDragItems, t]
   );
 
+  const onEmptyTrashAction = () => {
+    setEmptyTrashDialogVisible(true);
+  };
+
+  const onClickBadge = (isTrash) => {
+    if (isTrash) {
+      onEmptyTrashAction();
+    } else {
+      onBadgeClick();
+    }
+  };
+
   const getItem = React.useCallback(
     (data) => {
       const items = data.map((item, index) => {
+        const isTrash = item.rootFolderType === FolderType.TRASH;
+        const showBadge = item.newItems ? item.newItems > 0 && true : false;
+        const labelBadge = showBadge ? item.newItems : null;
+        const iconBadge = isTrash ? "images/clear.trash.react.svg" : null;
+
         return (
           <Item
             key={`${item.id}_${index}`}
@@ -293,8 +327,11 @@ const Items = ({
             showText={showText}
             onClick={onClick}
             onMoveTo={onMoveTo}
-            onBadgeClick={onBadgeClick}
+            onBadgeClick={() => onClickBadge(isTrash)}
             showDragItems={showDragItems}
+            showBadge={showBadge || (isTrash && !trashIsEmpty)}
+            labelBadge={labelBadge}
+            iconBadge={iconBadge}
           />
         );
       });
@@ -314,6 +351,7 @@ const Items = ({
       setDragging,
       startUpload,
       uploadEmptyFolders,
+      trashIsEmpty,
     ]
   );
 
@@ -336,8 +374,15 @@ export default inject(
     filesStore,
     filesActionsStore,
     uploadDataStore,
+    dialogsStore,
   }) => {
-    const { selection, dragging, setDragging, setStartDrag } = filesStore;
+    const {
+      selection,
+      dragging,
+      setDragging,
+      setStartDrag,
+      trashIsEmpty,
+    } = filesStore;
 
     const { startUpload } = uploadDataStore;
 
@@ -351,6 +396,8 @@ export default inject(
 
     const { id } = selectedFolderStore;
     const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
+    const { setEmptyTrashDialogVisible } = dialogsStore;
+
     return {
       isAdmin: auth.isAdmin,
       myId: myFolderId,
@@ -368,6 +415,8 @@ export default inject(
       moveDragItems,
       startUpload,
       uploadEmptyFolders,
+      setEmptyTrashDialogVisible,
+      trashIsEmpty,
     };
   }
 )(withTranslation(["Home", "Common", "Translations"])(observer(Items)));

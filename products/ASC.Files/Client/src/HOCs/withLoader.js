@@ -6,6 +6,7 @@ import Loaders from "@appserver/common/components/Loaders";
 
 const pathname = window.location.pathname.toLowerCase();
 const isEditor = pathname.indexOf("doceditor") !== -1;
+const isGallery = pathname.indexOf("form-gallery") !== -1;
 
 let loadTimeout = null;
 const withLoader = (WrappedComponent) => (Loader) => {
@@ -52,7 +53,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       }
     }, [isEditor, firstLoad, isLoaded, isMobile, inLoad]);
 
-    return (!isEditor && firstLoad) ||
+    return (!isEditor && firstLoad && !isGallery) ||
       !isLoaded ||
       (isMobile && inLoad) ||
       (isLoadingFilesFind && !Loader) ||

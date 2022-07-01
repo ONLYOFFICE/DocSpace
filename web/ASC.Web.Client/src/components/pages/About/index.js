@@ -8,11 +8,8 @@ import { setDocumentTitle } from "../../../helpers/utils";
 import i18n from "./i18n";
 import withLoader from "../Confirm/withLoader";
 import { inject, observer } from "mobx-react";
+import AboutHeader from "./AboutHeader";
 import AboutContent from "./AboutContent";
-
-const BodyStyle = styled.div`
-  padding: ${isMobileOnly ? "48px 0 0" : "80px 147px 0"};
-`;
 
 const Body = ({ t, personal, buildVersionInfo, theme }) => {
   useEffect(() => {
@@ -20,17 +17,11 @@ const Body = ({ t, personal, buildVersionInfo, theme }) => {
   }, [t]);
 
   return (
-    <BodyStyle>
-      <Text fontSize="32px" fontWeight="600">
-        {t("AboutHeader")}
-      </Text>
-
-      <AboutContent
-        theme={theme}
-        personal={personal}
-        buildVersionInfo={buildVersionInfo}
-      />
-    </BodyStyle>
+    <AboutContent
+      theme={theme}
+      personal={personal}
+      buildVersionInfo={buildVersionInfo}
+    />
   );
 };
 
@@ -47,6 +38,9 @@ const About = (props) => {
   return (
     <I18nextProvider i18n={i18n}>
       <Section>
+        <Section.SectionHeader>
+          <AboutHeader />
+        </Section.SectionHeader>
         <Section.SectionBody>
           <BodyWrapper {...props} />
         </Section.SectionBody>

@@ -196,6 +196,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         file.ModifiedOn = _tenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
         file.NativeAccessor = dropboxFile;
         file.Title = MakeFileTitle(dropboxFile);
+        file.ThumbnailStatus = Thumbnail.Created;
 
         return file;
     }

@@ -93,5 +93,8 @@
     <EmbeddedResource Update="Resources\NotifyTemplateResource.zh-CN.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.az.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
