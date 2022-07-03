@@ -52,6 +52,7 @@ const ArticleBodyContent = (props) => {
       toggleArticleOpen,
       setIsLoading,
       fetchFiles,
+
       fetchRooms,
 
       homepage,
@@ -72,7 +73,7 @@ const ArticleBodyContent = (props) => {
           ? RoomSearchArea.Active
           : RoomSearchArea.Archive;
 
-      fetchRooms(searchArea, null, true, false)
+      fetchRooms(searchArea, null)
         .then(() => {
           if (filesSection) {
             const filter = RoomsFilter.getDefault();

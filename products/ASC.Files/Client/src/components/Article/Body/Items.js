@@ -390,8 +390,13 @@ export default inject(
     uploadDataStore,
     dialogsStore,
   }) => {
-    const { selection, dragging, setDragging, setStartDrag, trashIsEmpty } =
-      filesStore;
+    const {
+      selection,
+      dragging,
+      setDragging,
+      setStartDrag,
+      trashIsEmpty,
+    } = filesStore;
 
     const { startUpload } = uploadDataStore;
 
