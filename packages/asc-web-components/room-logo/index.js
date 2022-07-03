@@ -1,12 +1,25 @@
 import React from "react";
-import PropTypes, { number } from "prop-types";
+import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
 import { RoomsType } from "@appserver/common/constants";
 
-import StyledLogoContainer from "./styled-room-logo";
+import Checkbox from "../checkbox";
 
-const RoomLogo = ({ id, className, style, type, isPrivacy, isArchive }) => {
+import { StyledContainer, StyledLogoContainer } from "./styled-room-logo";
+
+const RoomLogo = ({
+  id,
+  className,
+  style,
+  type,
+  isPrivacy,
+  isArchive,
+  withCheckbox,
+  isChecked,
+  isIndeterminate,
+  onChange,
+}) => {
   const getIcon = () => {
     if (isArchive) {
       return isPrivacy
@@ -45,22 +58,34 @@ const RoomLogo = ({ id, className, style, type, isPrivacy, isArchive }) => {
   const icon = getIcon();
 
   return (
-    <StyledLogoContainer
-      id={id}
-      className={className}
-      style={style}
-      type={type}
-      isPrivacy={isPrivacy}
-      isArchive={isArchive}
-    >
-      <ReactSVG className="room-logo_icon" src={icon} />
-    </StyledLogoContainer>
+    <StyledContainer id={id} className={className} style={style}>
+      <StyledLogoContainer
+        className="room-logo_icon-container"
+        type={type}
+        isPrivacy={isPrivacy}
+        isArchive={isArchive}
+      >
+        <ReactSVG className="room-logo_icon" src={icon} />
+      </StyledLogoContainer>
+
+      {withCheckbox && (
+        <Checkbox
+          className="room-logo_checkbox checkbox"
+          isChecked={isChecked}
+          isIndeterminate={isIndeterminate}
+          onChange={onChange}
+        />
+      )}
+    </StyledContainer>
   );
 };
 
 RoomLogo.defaultProps = {
   isPrivacy: false,
   isArchive: false,
+  withCheckbox: false,
+  isChecked: false,
+  isIndeterminate: false,
 };
 
 RoomLogo.propTypes = {
@@ -70,6 +95,14 @@ RoomLogo.propTypes = {
   isPrivacy: PropTypes.bool,
   /** Add archive icon  */
   isArchive: PropTypes.bool,
+  /** Add checkbox when row/tile is hovered or checked  */
+  withCheckbox: PropTypes.bool,
+  /** Add checked state to checkbox  */
+  isChecked: PropTypes.bool,
+  /** Add indeterminate state to checkbox  */
+  isIndeterminate: PropTypes.bool,
+  /** Add onChange checkbox callback function  */
+  onChange: PropTypes.func,
   /** Accepts id  */
   id: PropTypes.string,
   /** Accepts class name  */

@@ -24,4 +24,8 @@ Default.args = {
   type: "custom",
   isPrivacy: false,
   isArchive: false,
+  withCheckbox: false,
+  isChecked: false,
+  isIndeterminate: false,
+  onChange: () => console.log("checked"),
 };
