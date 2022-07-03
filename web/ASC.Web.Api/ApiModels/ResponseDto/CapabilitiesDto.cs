@@ -31,6 +31,7 @@ public class CapabilitiesDto
     public bool LdapEnabled { get; set; }
     public List<string> Providers { get; set; }
     public string SsoLabel { get; set; }
+    public bool OauthEnabled { get; set; }
 
     /// <summary>
     /// if empty sso is disabled

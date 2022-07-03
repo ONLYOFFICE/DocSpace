@@ -27,7 +27,7 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-class Recent : BaseFilesTests
+public partial class BaseFilesTests
 {
     [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
     [Category("File")]

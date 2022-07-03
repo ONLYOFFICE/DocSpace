@@ -83,17 +83,23 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<string> tagNames = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagNames);
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<string> tagNames = null)
+        {
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = GetFoldersAsync(parentId); //TODO:!!!
+
+        folders = SetFilterByTypes(folders, filterTypes);
 
         if (subjectID != Guid.Empty)
         {
@@ -106,6 +112,8 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
+
+        folders = FilterByTags(folders, tagNames);
 
         if (orderBy == null)
         {
@@ -124,17 +132,23 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
+        {
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
+
+        folders = SetFilterByTypes(folders, filterTypes);
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
@@ -147,6 +161,8 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
+
+        folders = FilterByTags(folders, tagNames);
 
         return folders;
     }
@@ -215,7 +231,10 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         var id = MakeId(driveFolder);
 
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
+        await strategy.ExecuteAsync(async () =>
+        {
         using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
         {
             var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
@@ -253,6 +272,8 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
 
             await tx.CommitAsync().ConfigureAwait(false);
         }
+        });
+
 
         if (driveFolder is not ErrorDriveEntry)
         {

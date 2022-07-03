@@ -37,11 +37,11 @@ public class Token : OAuth20Token
         App = app;
     }
 
-    public string GetRefreshedToken(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper)
+        public string GetRefreshedToken(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper, ThirdPartySelector thirdPartySelector)
     {
         if (IsExpired)
         {
-            var app = ThirdPartySelector.GetApp(App);
+                var app = thirdPartySelector.GetApp(App);
             try
             {
                 tokenHelper.Logger.DebugRefreshToken(App);

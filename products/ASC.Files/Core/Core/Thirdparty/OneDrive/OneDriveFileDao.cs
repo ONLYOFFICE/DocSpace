@@ -353,7 +353,10 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         var id = MakeId(onedriveFile.Id);
 
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
+        await strategy.ExecuteAsync(async () =>
+        {
         using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
         {
             var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
@@ -391,6 +394,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
             await tx.CommitAsync().ConfigureAwait(false);
         }
+        });
 
         if (onedriveFile is not ErrorItem)
         {
@@ -556,6 +560,12 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     public bool UseTrashForRemove(File<string> file)
     {
         return false;
+    }
+
+    public override Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+        var oneDriveId = MakeOneDriveId(_oneDriveDaoSelector.ConvertId(fileId));
+        return ProviderInfo.GetThumbnailAsync(oneDriveId, width, height);
     }
 
     #region chunking

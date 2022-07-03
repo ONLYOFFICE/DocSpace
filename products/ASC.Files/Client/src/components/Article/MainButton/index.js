@@ -5,10 +5,7 @@ import { inject, observer } from "mobx-react";
 import MainButton from "@appserver/components/main-button";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import {
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-} from "@appserver/components/utils/device";
+import { isTablet as isTabletUtils } from "@appserver/components/utils/device";
 import Loaders from "@appserver/common/components/Loaders";
 import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
@@ -39,7 +36,6 @@ const ArticleMainButtonContent = (props) => {
     isCommonFolder,
     isRecycleBinFolder,
     history,
-    hasGalleryFiles,
     currentFolderId,
   } = props;
   const inputFilesElement = React.useRef(null);
@@ -48,6 +44,7 @@ const ArticleMainButtonContent = (props) => {
   const [actions, setActions] = React.useState([]);
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
+  const [isTablet, setIsTablet] = React.useState(isTabletUtils());
 
   const onCreate = React.useCallback(
     (e) => {
@@ -105,10 +102,18 @@ const ArticleMainButtonContent = (props) => {
     );
   };
 
+  const onResize = React.useCallback(() => {
+    const isTabletView = isTabletUtils();
+    setIsTablet(isTabletView);
+  }, []);
+
   React.useEffect(() => {
+    window.addEventListener("resize", onResize);
+
     const folderUpload = !isMobile
       ? [
           {
+            id: "main-button_upload-folders",
             className: "main-button_drop-down",
             icon: "images/actions.upload.react.svg",
             label: t("UploadFolder"),
@@ -120,7 +125,7 @@ const ArticleMainButtonContent = (props) => {
       : [];
 
     const formActions =
-      !isMobile && !isTabletUtils()
+      !isMobile && !isTablet
         ? [
             {
               className: "main-button_drop-down",
@@ -130,6 +135,7 @@ const ArticleMainButtonContent = (props) => {
               items: [
                 {
                   className: "main-button_drop-down_sub",
+                  icon: "images/form.react.svg",
                   label: t("Translations:SubNewForm"),
                   onClick: onCreate,
                   action: "docxf",
@@ -137,13 +143,15 @@ const ArticleMainButtonContent = (props) => {
                 },
                 {
                   className: "main-button_drop-down_sub",
+                  icon: "images/form.file.react.svg",
                   label: t("Translations:SubNewFormFile"),
                   onClick: onShowSelectFileDialog,
                   disabled: isPrivacy,
                   key: "form-file",
                 },
-                hasGalleryFiles && {
+                {
                   className: "main-button_drop-down_sub",
+                  icon: "images/form.react.svg",
                   label: t("Common:OFORMsGallery"),
                   onClick: onShowGallery,
                   disabled: isPrivacy,
@@ -171,7 +179,7 @@ const ArticleMainButtonContent = (props) => {
             },
           ];
 
-    if ((isMobile || isTabletUtils()) && hasGalleryFiles) {
+    if (isMobile || isTablet) {
       formActions.push({
         className: "main-button_drop-down_sub",
         icon: "images/form.react.svg",
@@ -184,6 +192,7 @@ const ArticleMainButtonContent = (props) => {
 
     const actions = [
       {
+        id: "main-button_new-document",
         className: "main-button_drop-down",
         icon: "images/actions.documents.react.svg",
         label: t("NewDocument"),
@@ -192,6 +201,7 @@ const ArticleMainButtonContent = (props) => {
         key: "docx",
       },
       {
+        id: "main-button_new-spreadsheet",
         className: "main-button_drop-down",
         icon: "images/spreadsheet.react.svg",
         label: t("NewSpreadsheet"),
@@ -200,6 +210,7 @@ const ArticleMainButtonContent = (props) => {
         key: "xlsx",
       },
       {
+        id: "main-button_new-presentation",
         className: "main-button_drop-down",
         icon: "images/actions.presentation.react.svg",
         label: t("NewPresentation"),
@@ -209,6 +220,7 @@ const ArticleMainButtonContent = (props) => {
       },
       ...formActions,
       {
+        id: "main-button_new-folder",
         className: "main-button_drop-down",
         icon: "images/catalog.folder.react.svg",
         label: t("NewFolder"),
@@ -219,6 +231,7 @@ const ArticleMainButtonContent = (props) => {
 
     const uploadActions = [
       {
+        id: "main-button_upload-files",
         className: "main-button_drop-down",
         icon: "images/actions.upload.react.svg",
         label: t("UploadFiles"),
@@ -240,15 +253,20 @@ const ArticleMainButtonContent = (props) => {
     setModel(menuModel);
     setActions(actions);
     setUploadActions(uploadActions);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
   }, [
     t,
     isPrivacy,
-    hasGalleryFiles,
     currentFolderId,
+    isTablet,
     onCreate,
     onShowSelectFileDialog,
     onUploadFileClick,
     onUploadFolderClick,
+    onResize,
   ]);
 
   return (
@@ -263,6 +281,7 @@ const ArticleMainButtonContent = (props) => {
             !isArticleLoading &&
             canCreate && (
               <MobileView
+                t={t}
                 titleProp={t("Upload")}
                 actionOptions={actions}
                 buttonOptions={uploadActions}
@@ -271,6 +290,7 @@ const ArticleMainButtonContent = (props) => {
         </>
       ) : (
         <MainButton
+          id="files_main-button"
           isDisabled={isDisabled ? isDisabled : !canCreate}
           isDropdown={true}
           text={t("Common:Actions")}
@@ -318,7 +338,6 @@ export default inject(
       isLoading,
       fileActionStore,
       canCreate,
-      hasGalleryFiles,
     } = filesStore;
     const {
       isPrivacyFolder,
@@ -356,12 +375,11 @@ export default inject(
       isLoading,
       isLoaded,
       firstLoad,
-      hasGalleryFiles,
       currentFolderId,
     };
   }
 )(
-  withTranslation(["Article", "Common"])(
+  withTranslation(["Article", "UploadPanel", "Common"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
       <Loaders.ArticleButton />
     )

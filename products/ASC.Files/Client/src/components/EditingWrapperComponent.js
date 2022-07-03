@@ -67,7 +67,7 @@ const EditingWrapper = styled.div`
         props.theme.filesEditingWrapper.tile.background};
 
       border: ${(props) => props.theme.filesEditingWrapper.border};
-      border-radius: 0 0 6px 6px;
+      border-radius: ${(props) => (props.isFolder ? "6px" : "0 0 6px 6px")};
 
       height: 43px;
       bottom: 0;
@@ -78,7 +78,7 @@ const EditingWrapper = styled.div`
 
 
   @media ${tablet} {
-    height: 56px;
+    height: ${(props) => (props.viewAs === "tile" ? "43px" : "56px")};
   }
 
   .edit-text {
@@ -95,6 +95,9 @@ const EditingWrapper = styled.div`
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: ${(props) => props.theme.filesEditingWrapper.color};
+    background: ${(props) =>
+      props.theme.filesEditingWrapper.row.itemBackground} !important;
+
     ${(props) =>
       props.viewAs === "tile" &&
       css`
@@ -114,8 +117,10 @@ const EditingWrapper = styled.div`
 
     ${(props) =>
       props.viewAs === "tile" &&
+      !props.isUpdatingRowItem &&
       css`
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
@@ -124,6 +129,8 @@ const EditingWrapper = styled.div`
             `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
         }
       `};
+
+    ${({ isDisabled }) => isDisabled && "background-color: #fff"}
   }
 
   .edit-button {
@@ -135,7 +142,8 @@ const EditingWrapper = styled.div`
       props.viewAs === "tile" &&
       css`
         margin-left: 0px;
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
@@ -172,11 +180,6 @@ const EditingWrapper = styled.div`
     height: 14px;
     padding: 1px;
   }
-
-  .is-edit {
-    /* margin-top: 4px; */
-    ${(props) => props.viewAs === "table" && `padding-left: 4px;`}
-  }
 `;
 
 EditingWrapper.defaultProps = { theme: Base };
@@ -193,13 +196,19 @@ const EditingWrapperComponent = (props) => {
     elementIcon,
     isUpdatingRowItem,
     passwordEntryProcess,
+    isFolder,
   } = props;
 
   const isTable = viewAs === "table";
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
+  const [isTouchOK, setIsTouchOK] = useState(false);
+  const [isTouchCancel, setIsTouchCancel] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const inputRef = React.useRef(null);
 
   const onKeyUpUpdateItem = (e) => {
     if (isLoading) return;
@@ -224,8 +233,16 @@ const EditingWrapperComponent = (props) => {
 
   const onFocus = (e) => e.target.select();
   const onBlur = (e) => {
-    if (e.relatedTarget && e.relatedTarget.classList.contains("edit-button"))
+    if (
+      (e.relatedTarget && e.relatedTarget.classList.contains("edit-button")) ||
+      OkIconIsHovered ||
+      CancelIconIsHovered ||
+      isTouchOK ||
+      isTouchCancel
+    )
       return false;
+
+    if (!document.hasFocus() && inputRef.current === e.target) return false;
 
     !passwordEntryProcess && onClickUpdateItem(e, false);
   };
@@ -234,6 +251,8 @@ const EditingWrapperComponent = (props) => {
     <EditingWrapper
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
+      isFolder={isFolder}
+      isDisabled={isLoading}
     >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (
@@ -254,6 +273,7 @@ const EditingWrapperComponent = (props) => {
           isDisabled={isLoading}
           data-itemid={itemId}
           withBorder={!isTable}
+          forwardedRef={inputRef}
         />
       )}
       {!isUpdatingRowItem && (
@@ -267,7 +287,9 @@ const EditingWrapperComponent = (props) => {
             data-itemid={itemId}
             onMouseEnter={setIsHoveredOkHandler}
             onMouseLeave={setIsHoveredOkHandler}
+            onTouchStart={() => setIsTouchOK(true)}
             isHovered={OkIconIsHovered}
+            title=""
           />
           <Button
             className="edit-button not-selectable"
@@ -279,7 +301,9 @@ const EditingWrapperComponent = (props) => {
             data-action="cancel"
             onMouseEnter={setIsHoveredCancelHandler}
             onMouseLeave={setIsHoveredCancelHandler}
+            onTouchStart={() => setIsTouchCancel(true)}
             isHovered={CancelIconIsHovered}
+            title=""
           />
         </>
       )}

@@ -1,15 +1,12 @@
 {
-  "Info": "Info",
-  "ViewDetails": "View Details",
+  "EmptyScreenText": "See file and folder details here",
+  "FileExtension": "File extension",
   "ItemsSelected": "Items selected",
-  "SystemProperties": "System properties",
-  "WhoHasAccess": "Who has access",
+  "LastModifiedBy": "Last modified by",
   "Members": "members",
   "OpenSharingSettings": "Open sharing settings",
-
-  "Location": "Location",
-  "FileExtension": "File extension",
-  "LastModifiedBy": "Last modified by",
+  "SystemProperties": "System properties",
   "Versions": "Versions",
-  "Comments": "Comments"
+  "ViewDetails": "View Details",
+  "WhoHasAccess": "Who has access"
 }

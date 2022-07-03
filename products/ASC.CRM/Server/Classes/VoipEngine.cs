@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -41,7 +40,7 @@ using ASC.CRM.Resources;
 using ASC.VoipService;
 using ASC.VoipService.Dao;
 
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -53,7 +52,7 @@ namespace ASC.Web.CRM.Classes
         public readonly DaoFactory _daoFactory;
         public readonly VoipDao _voipDao;
         public readonly TenantManager _tenantManager;
-        public readonly ILog _logger;
+        public readonly ILogger _logger;
         public readonly int _tenantId;
         public readonly SecurityContext _securityContext;
         public readonly TenantUtil _tenantUtil;
@@ -66,7 +65,7 @@ namespace ASC.Web.CRM.Classes
                          TenantUtil tenantUtil,
                          IDistributedTaskQueueFactory factory,
                          SecurityContext securityContext,
-                         IOptionsMonitor<ILog> logger,
+                         ILogger logger,
                          TenantManager tenantManager,
                          VoipDao voipDao)
         {
@@ -74,7 +73,7 @@ namespace ASC.Web.CRM.Classes
             _tenantUtil = tenantUtil;
             _securityContext = securityContext;
             _queue = factory.CreateQueue<QueueItem>();
-            _logger = logger.Get("ASC.CRM");
+            _logger = logger;
             _tenantManager = tenantManager;
             _voipDao = voipDao;
             _daoFactory = daoFactory;
@@ -274,7 +273,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception ex)
             {
-                _logger.ErrorFormat("SaveAdditionalInfo {0}, {1}", ex, ex.StackTrace);
+                _logger.LogError("SaveAdditionalInfo {0}, {1}", ex, ex.StackTrace);
             }
         }
 

@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
-import { mobile, tablet } from "../utils/device";
+import { mobile, tablet, hugeMobile } from "../utils/device";
 import Scrollbar from "../scrollbar";
 import { isMobile } from "react-device-detect";
 
@@ -9,7 +9,7 @@ const StyledTableContainer = styled.div`
 
   width: 100%;
   max-width: 100%;
-  margin-top: -19px;
+  margin-top: -25px;
 
   display: grid;
 
@@ -23,7 +23,7 @@ const StyledTableContainer = styled.div`
     display: block;
     cursor: ew-resize;
     height: 10px;
-    margin: 14px 8px 0 auto;
+    margin: 14px 0px 0 auto;
     z-index: 1;
     border-right: ${(props) => props.theme.tableContainer.borderRight};
     &:hover {
@@ -33,6 +33,7 @@ const StyledTableContainer = styled.div`
 
   .table-container_group-menu,
   .table-container_header {
+    z-index: 200;
     padding: 0 20px;
 
     border-bottom: 1px solid;
@@ -40,9 +41,18 @@ const StyledTableContainer = styled.div`
     border-image-source: ${(props) =>
       props.theme.tableContainer.header.borderImageSource};
     border-top: 0;
+    border-left: 0;
   }
+
   .lengthen-header {
-    border-bottom: ${(props) => props.theme.tableContainer.header.borderBottom};
+    border-image-slice: 1;
+    border-image-source: ${(props) =>
+      props.theme.tableContainer.header.lengthenBorderImageSource};
+  }
+
+  .hotkeys-lengthen-header {
+    border-bottom: ${(props) =>
+      props.theme.tableContainer.header.hotkeyBorderBottom};
     border-image-source: none;
   }
 
@@ -79,7 +89,7 @@ const StyledTableGroupMenu = styled.div`
   align-items: center;
   width: 100%;
   z-index: 199;
-  height: 53px;
+  height: 52px;
   box-shadow: ${(props) => props.theme.tableContainer.groupMenu.boxShadow};
   border-radius: 0px 0px 6px 6px;
   margin: 0;
@@ -89,7 +99,7 @@ const StyledTableGroupMenu = styled.div`
     height: 60px;
   }
 
-  @media ${mobile} {
+  @media ${mobile}, ${hugeMobile} {
     height: 52px;
   }
 
@@ -126,24 +136,30 @@ const StyledTableGroupMenu = styled.div`
 StyledTableGroupMenu.defaultProps = { theme: Base };
 
 const StyledInfoPanelToggleWrapper = styled.div`
-  display: flex;
+  display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+
   align-items: center;
   align-self: center;
   justify-content: center;
-  margin: 0 20px 0 auto;
+  margin: ${isMobile ? "0 16px 0 auto" : "0 20px 0 auto"};
   height: 100%;
   width: auto;
   padding-left: 20px;
 
   @media ${tablet} {
+    display: none;
     margin: 0 16px 0 auto;
   }
+
+  margin-top: 1px;
 
   .info-panel-toggle-bg {
     height: 32px;
     width: 32px;
     display: flex;
     align-items: center;
+    align-self: center;
+
     justify-content: center;
     border-radius: 50%;
     background-color: ${(props) =>
@@ -230,7 +246,11 @@ const StyledTableHeaderCell = styled.div`
   }
 
   .table-container_header-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 22px;
+
+    margin-right: 8px;
+
     user-select: none;
   }
 
@@ -245,7 +265,7 @@ const StyledTableHeaderCell = styled.div`
     color: ${(props) =>
       props.isActive
         ? props.theme.tableContainer.header.activeTextColor
-        : props.theme.tableContainer.header.textColor} !important;
+        : props.theme.tableContainer.header.textColor};
 
     &:hover {
       color: ${(props) =>
@@ -290,6 +310,8 @@ const StyledTableCell = styled.div`
 
   display: flex;
   align-items: center;
+
+  padding-right: 30px;
 
   .react-svg-icon svg {
     margin-top: 2px;

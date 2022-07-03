@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Core.EF;
 
-public class DbFilesTag : IDbFile
+public class DbFilesTag : IDbFile, IMapFrom<TagInfo>
 {
     public int TenantId { get; set; }
     public int Id { get; set; }

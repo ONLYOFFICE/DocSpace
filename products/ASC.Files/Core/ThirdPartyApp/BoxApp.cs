@@ -26,6 +26,7 @@
 
 namespace ASC.Web.Files.ThirdPartyApp;
 
+    [Scope]
 public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 {
     public const string AppAttr = "box";
@@ -265,7 +266,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
-                var resultTuple = await _documentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false);
+                var resultTuple = await _documentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, CultureInfo.CurrentUICulture.Name, null, null, false);
                 downloadUrl = resultTuple.ConvertedDocumentUri;
 
                 stream = null;
@@ -283,18 +284,13 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             RequestUri = new Uri(_boxUrlUpload.Replace("{fileId}", fileId))
         };
 
-        using (var tmpStream = new MemoryStream())
-        {
-            var boundary = DateTime.UtcNow.Ticks.ToString("x");
+            StreamContent streamContent;
 
-            var metadata = $"Content-Disposition: form-data; name=\"filename\"; filename=\"{title}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
-            var metadataPart = $"--{boundary}\r\n{metadata}";
-            var bytes = Encoding.UTF8.GetBytes(metadataPart);
-            await tmpStream.WriteAsync(bytes, 0, bytes.Length);
+            using var multipartFormContent = new MultipartFormDataContent();
 
             if (stream != null)
             {
-                await stream.CopyToAsync(tmpStream);
+                streamContent = new StreamContent(stream);
             }
             else
             {
@@ -302,23 +298,20 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 {
                     RequestUri = new Uri(downloadUrl)
                 };
-                using var response = await httpClient.SendAsync(request);
-                using var downloadStream = new ResponseStream(response);
-                await downloadStream.CopyToAsync(tmpStream);
+                var response = await httpClient.SendAsync(downloadRequest);
+                var downloadStream = new ResponseStream(response);
+
+                streamContent = new StreamContent(downloadStream);
             }
 
-            var mediaPartEnd = $"\r\n--{boundary}--\r\n";
-            bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
-            await tmpStream.WriteAsync(bytes, 0, bytes.Length);
+            streamContent.Headers.TryAddWithoutValidation("Content-Type", MimeMapping.GetMimeMapping(title));
+            multipartFormContent.Add(streamContent, name: "filename", fileName: title);
 
+            request.Content = multipartFormContent;
             request.Method = HttpMethod.Post;
             request.Headers.Add("Authorization", "Bearer " + token);
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
-            _logger.DebugBoxAppSaveFileTotalSize(tmpStream.Length);
-
-            tmpStream.Seek(0, SeekOrigin.Begin);
-            request.Content = new StreamContent(tmpStream);
-        }
+            //request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
+            //_logger.DebugBoxAppSaveFileTotalSize(tmpStream.Length);
 
         try
         {
@@ -379,9 +372,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new Exception("Profile is null");
             }
 
-            var cookiesKey = _securityContext.AuthenticateMe(userInfo.Id);
-            _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
-            _messageService.Send(MessageAction.LoginSuccessViaSocialApp);
+            _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
 
             if (isNew)
             {

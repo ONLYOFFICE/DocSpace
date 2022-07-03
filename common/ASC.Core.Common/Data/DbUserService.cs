@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using AutoMapper.QueryableExtensions;
-
 namespace ASC.Core.Data;
 
 [Scope]
@@ -119,10 +117,7 @@ public class EFUserService : IUserService
 
         if (Guid.TryParse(login, out var userId))
         {
-            RegeneratePassword(tenant, userId);
-
             var pwdHash = GetPasswordHash(userId, passwordHash);
-            var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
 
             var q = GetUserQuery(tenant)
                 .Where(r => !r.Removed)
@@ -132,7 +127,7 @@ public class EFUserService : IUserService
                     User = user,
                     UserSecurity = security
                 })
-                .Where(r => r.UserSecurity.PwdHash == pwdHash || r.UserSecurity.PwdHash == oldHash)  //todo: remove old scheme
+                .Where(r => r.UserSecurity.PwdHash == pwdHash)
                 ;
 
             if (tenant != Tenant.DefaultTenant)
@@ -151,31 +146,20 @@ public class EFUserService : IUserService
                 .Where(r => r.Email == login);
 
             var users = q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider).ToList();
-            UserInfo result = null;
             foreach (var user in users)
             {
-                RegeneratePassword(tenant, user.Id);
-
                 var pwdHash = GetPasswordHash(user.Id, passwordHash);
-                var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
 
                 var any = UserDbContext.UserSecurity
-                    .Any(r => r.UserId == user.Id && (r.PwdHash == pwdHash || r.PwdHash == oldHash));//todo: remove old scheme
+                    .Any(r => r.UserId == user.Id && (r.PwdHash == pwdHash));
 
                 if (any)
                 {
-                    if (tenant != Tenant.DefaultTenant)
-                    {
-                        return user;
-                    }
-
-                    //need for regenerate all passwords only
-                    //todo: remove with old scheme
-                    result = user;
+                    return user;
                 }
             }
 
-            return result;
+            return null;
         }
     }
 
@@ -186,31 +170,6 @@ public class EFUserService : IUserService
             .Where(r => !r.Removed);
 
         return q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider).ToList();
-    }
-
-    //todo: remove
-    private void RegeneratePassword(int tenant, Guid userId)
-    {
-        var q = UserDbContext.UserSecurity
-            .Where(r => r.UserId == userId);
-
-        if (tenant != Tenant.DefaultTenant)
-        {
-            q = q.Where(r => r.Tenant == tenant);
-        }
-
-        var h2 = q.Select(r => new { r.Tenant, r.PwdHashSha512 })
-            .Take(1)
-            .FirstOrDefault();
-
-        if (h2 == null || string.IsNullOrEmpty(h2.PwdHashSha512))
-        {
-            return;
-        }
-
-        var password = Crypto.GetV(h2.PwdHashSha512, 1, false);
-        var passwordHash = _passwordHasher.GetClientPassword(password);
-        SetUserPasswordHash(h2.Tenant, userId, passwordHash);
     }
 
     public UserGroupRef GetUserGroupRef(int tenant, Guid groupId, UserGroupRefType refType)
@@ -318,36 +277,41 @@ public class EFUserService : IUserService
         var ids = CollectGroupChilds(tenant, id);
         var stringIds = ids.Select(r => r.ToString()).ToList();
 
-        using var tr = UserDbContext.Database.BeginTransaction();
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
 
-        UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)));
-        UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
-        UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
-
-        var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.GroupId));
-        var groups = UserDbContext.Groups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Id));
-
-        if (immediate)
+        strategy.Execute(() =>
         {
-            UserDbContext.UserGroups.RemoveRange(userGroups);
-            UserDbContext.Groups.RemoveRange(groups);
-        }
-        else
-        {
-            foreach (var ug in userGroups)
-            {
-                ug.Removed = true;
-                ug.LastModified = DateTime.UtcNow;
-            }
-            foreach (var g in groups)
-            {
-                g.Removed = true;
-                g.LastModified = DateTime.UtcNow;
-            }
-        }
+            using var tr = UserDbContext.Database.BeginTransaction();
 
-        UserDbContext.SaveChanges();
-        tr.Commit();
+            UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)));
+            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
+            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
+
+            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.GroupId));
+            var groups = UserDbContext.Groups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Id));
+
+            if (immediate)
+            {
+                UserDbContext.UserGroups.RemoveRange(userGroups);
+                UserDbContext.Groups.RemoveRange(groups);
+            }
+            else
+            {
+                foreach (var ug in userGroups)
+                {
+                    ug.Removed = true;
+                    ug.LastModified = DateTime.UtcNow;
+                }
+                foreach (var g in groups)
+                {
+                    g.Removed = true;
+                    g.LastModified = DateTime.UtcNow;
+                }
+            }
+
+            UserDbContext.SaveChanges();
+            tr.Commit();
+        });
     }
 
     public void RemoveUser(int tenant, Guid id)
@@ -357,43 +321,48 @@ public class EFUserService : IUserService
 
     public void RemoveUser(int tenant, Guid id, bool immediate)
     {
-        using var tr = UserDbContext.Database.BeginTransaction();
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
 
-        UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id));
-        UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
-        UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
-        UserDbContext.Photos.RemoveRange(UserDbContext.Photos.Where(r => r.Tenant == tenant && r.UserId == id));
-
-        var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.UserId == id);
-        var users = UserDbContext.Users.Where(r => r.Tenant == tenant && r.Id == id);
-        var userSecurity = UserDbContext.UserSecurity.Where(r => r.Tenant == tenant && r.UserId == id);
-
-        if (immediate)
+        strategy.Execute(() =>
         {
-            UserDbContext.UserGroups.RemoveRange(userGroups);
-            UserDbContext.Users.RemoveRange(users);
-            UserDbContext.UserSecurity.RemoveRange(userSecurity);
-        }
-        else
-        {
-            foreach (var ug in userGroups)
+            using var tr = UserDbContext.Database.BeginTransaction();
+
+            UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id));
+            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
+            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
+            UserDbContext.Photos.RemoveRange(UserDbContext.Photos.Where(r => r.Tenant == tenant && r.UserId == id));
+
+            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.UserId == id);
+            var users = UserDbContext.Users.Where(r => r.Tenant == tenant && r.Id == id);
+            var userSecurity = UserDbContext.UserSecurity.Where(r => r.Tenant == tenant && r.UserId == id);
+
+            if (immediate)
             {
-                ug.Removed = true;
-                ug.LastModified = DateTime.UtcNow;
+                UserDbContext.UserGroups.RemoveRange(userGroups);
+                UserDbContext.Users.RemoveRange(users);
+                UserDbContext.UserSecurity.RemoveRange(userSecurity);
+            }
+            else
+            {
+                foreach (var ug in userGroups)
+                {
+                    ug.Removed = true;
+                    ug.LastModified = DateTime.UtcNow;
+                }
+
+                foreach (var u in users)
+                {
+                    u.Removed = true;
+                    u.Status = EmployeeStatus.Terminated;
+                    u.TerminatedDate = DateTime.UtcNow;
+                    u.LastModified = DateTime.UtcNow;
+                }
             }
 
-            foreach (var u in users)
-            {
-                u.Removed = true;
-                u.Status = EmployeeStatus.Terminated;
-                u.TerminatedDate = DateTime.UtcNow;
-                u.LastModified = DateTime.UtcNow;
-            }
-        }
+            UserDbContext.SaveChanges();
 
-        UserDbContext.SaveChanges();
-
-        tr.Commit();
+            tr.Commit();
+        });
     }
 
     public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType)
@@ -403,26 +372,31 @@ public class EFUserService : IUserService
 
     public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType, bool immediate)
     {
-        using var tr = UserDbContext.Database.BeginTransaction();
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
 
-        var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.UserId == userId && r.GroupId == groupId && r.RefType == refType);
-        if (immediate)
+        strategy.Execute(() =>
         {
-            UserDbContext.UserGroups.RemoveRange(userGroups);
-        }
-        else
-        {
-            foreach (var u in userGroups)
+            using var tr = UserDbContext.Database.BeginTransaction();
+
+            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.UserId == userId && r.GroupId == groupId && r.RefType == refType);
+            if (immediate)
             {
-                u.LastModified = DateTime.UtcNow;
-                u.Removed = true;
+                UserDbContext.UserGroups.RemoveRange(userGroups);
             }
-        }
-        var user = UserDbContext.Users.First(r => r.Tenant == tenant && r.Id == userId);
-        user.LastModified = DateTime.UtcNow;
-        UserDbContext.SaveChanges();
+            else
+            {
+                foreach (var u in userGroups)
+                {
+                    u.LastModified = DateTime.UtcNow;
+                    u.Removed = true;
+                }
+            }
+            var user = UserDbContext.Users.First(r => r.Tenant == tenant && r.Id == userId);
+            user.LastModified = DateTime.UtcNow;
+            UserDbContext.SaveChanges();
 
-        tr.Commit();
+            tr.Commit();
+        });
     }
 
     public Group SaveGroup(int tenant, Group group)
@@ -468,26 +442,31 @@ public class EFUserService : IUserService
         user.UserName = user.UserName.Trim();
         user.Email = user.Email.Trim();
 
-        using var tx = UserDbContext.Database.BeginTransaction();
-        var any = GetUserQuery(tenant)
-            .Any(r => r.UserName == user.UserName && r.Id != user.Id && !r.Removed);
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
 
-        if (any)
+        strategy.Execute(() =>
         {
-            throw new ArgumentOutOfRangeException("Duplicate username.");
-        }
+            using var tx = UserDbContext.Database.BeginTransaction();
+            var any = GetUserQuery(tenant)
+                .Any(r => r.UserName == user.UserName && r.Id != user.Id && !r.Removed);
 
-        any = GetUserQuery(tenant)
-            .Any(r => r.Email == user.Email && r.Id != user.Id && !r.Removed);
+            if (any)
+            {
+                throw new ArgumentOutOfRangeException("Duplicate username.");
+            }
 
-        if (any)
-        {
-            throw new ArgumentOutOfRangeException("Duplicate email.");
-        }
+            any = GetUserQuery(tenant)
+                .Any(r => r.Email == user.Email && r.Id != user.Id && !r.Removed);
 
-        UserDbContext.AddOrUpdate(r => r.Users, _mapper.Map<UserInfo, User>(user));
-        UserDbContext.SaveChanges();
-        tx.Commit();
+            if (any)
+            {
+                throw new ArgumentOutOfRangeException("Duplicate email.");
+            }
+
+            UserDbContext.AddOrUpdate(r => r.Users, _mapper.Map<UserInfo, User>(user));
+            UserDbContext.SaveChanges();
+            tx.Commit();
+        });
 
         return user;
     }
@@ -499,17 +478,24 @@ public class EFUserService : IUserService
         userGroupRef.LastModified = DateTime.UtcNow;
         userGroupRef.Tenant = tenant;
 
-        using var tr = UserDbContext.Database.BeginTransaction();
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
 
-        var user = GetUserQuery(tenant).FirstOrDefault(a => a.Tenant == tenant && a.Id == userGroupRef.UserId);
-        if (user != null)
+        strategy.Execute(() =>
         {
-            user.LastModified = userGroupRef.LastModified;
-            UserDbContext.AddOrUpdate(r => r.UserGroups, _mapper.Map<UserGroupRef, UserGroup>(userGroupRef));
-        }
+            using var tr = UserDbContext.Database.BeginTransaction();
 
-        UserDbContext.SaveChanges();
-        tr.Commit();
+            var user = GetUserQuery(tenant).FirstOrDefault(a => a.Tenant == tenant && a.Id == userGroupRef.UserId);
+            if (user != null)
+            {
+                user.LastModified = userGroupRef.LastModified;
+                UserDbContext.AddOrUpdate(r => r.UserGroups, _mapper.Map<UserGroupRef, UserGroup>(userGroupRef));
+            }
+
+            UserDbContext.SaveChanges();
+            tr.Commit();
+        });
+
+
 
         return userGroupRef;
     }
@@ -523,7 +509,6 @@ public class EFUserService : IUserService
             Tenant = tenant,
             UserId = id,
             PwdHash = h1,
-            PwdHashSha512 = null,//todo: remove
             LastModified = DateTime.UtcNow
         };
 
@@ -533,34 +518,39 @@ public class EFUserService : IUserService
 
     public void SetUserPhoto(int tenant, Guid id, byte[] photo)
     {
-        using var tr = UserDbContext.Database.BeginTransaction();
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
 
-        var userPhoto = UserDbContext.Photos.FirstOrDefault(r => r.UserId == id && r.Tenant == tenant);
-        if (photo != null && photo.Length != 0)
+        strategy.Execute(() =>
         {
-            if (userPhoto == null)
+            using var tr = UserDbContext.Database.BeginTransaction();
+
+            var userPhoto = UserDbContext.Photos.FirstOrDefault(r => r.UserId == id && r.Tenant == tenant);
+            if (photo != null && photo.Length != 0)
             {
-                userPhoto = new UserPhoto
+                if (userPhoto == null)
                 {
-                    Tenant = tenant,
-                    UserId = id,
-                    Photo = photo
-                };
+                    userPhoto = new UserPhoto
+                    {
+                        Tenant = tenant,
+                        UserId = id,
+                        Photo = photo
+                    };
+                }
+                else
+                {
+                    userPhoto.Photo = photo;
+                }
+
+                UserDbContext.AddOrUpdate(r => r.Photos, userPhoto);
             }
-            else
+            else if (userPhoto != null)
             {
-                userPhoto.Photo = photo;
+                UserDbContext.Photos.Remove(userPhoto);
             }
 
-            UserDbContext.AddOrUpdate(r => r.Photos, userPhoto);
-        }
-        else if (userPhoto != null)
-        {
-            UserDbContext.Photos.Remove(userPhoto);
-        }
-
-        UserDbContext.SaveChanges();
-        tr.Commit();
+            UserDbContext.SaveChanges();
+            tr.Commit();
+        });
     }
 
     private IQueryable<User> GetUserQuery(int tenant)
@@ -711,6 +701,16 @@ public class EFUserService : IUserService
         {
             return q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider).FirstOrDefault();
         }
+    }
+
+    public IEnumerable<string> GetDavUserEmails(int tenant)
+    {
+        return (from usersDav in UserDbContext.UsersDav
+                join users in UserDbContext.Users on new { tenant = usersDav.TenantId, userId = usersDav.UserId } equals new { tenant = users.Tenant, userId = users.Id }
+                where usersDav.TenantId == tenant
+                select users.Email)
+                .Distinct()
+                .ToList();
     }
 
     protected string GetPasswordHash(Guid userId, string password)

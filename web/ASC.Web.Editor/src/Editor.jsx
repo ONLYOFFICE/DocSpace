@@ -13,6 +13,7 @@ import {
   isRetina,
   getCookie,
   setCookie,
+  assign,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -58,9 +59,9 @@ const theme = store.auth.settingsStore.theme;
 
 let documentIsReady = false;
 
-const text = "text";
-const spreadSheet = "spreadsheet";
-const presentation = "presentation";
+const text = "word";
+const spreadSheet = "cell";
+const presentation = "slide";
 const insertImageAction = "imageFileType";
 const mailMergeAction = "mailMergeFileType";
 const compareFilesAction = "documentsFileType";
@@ -73,11 +74,11 @@ let fileInfo;
 let successAuth;
 let isSharingAccess;
 let user = null;
-let personal;
+let personal = IS_PERSONAL || null;
 let config;
 let url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
-const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
+//const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
 
 toast.configure();
 
@@ -346,13 +347,13 @@ const Editor = () => {
     if (!favicon) return;
     let icon = null;
     switch (documentType) {
-      case "text":
+      case text:
         icon = "text.ico";
         break;
-      case "presentation":
+      case presentation:
         icon = "presentation.ico";
         break;
-      case "spreadsheet":
+      case spreadSheet:
         icon = "spreadsheet.ico";
         break;
       default:
@@ -471,7 +472,7 @@ const Editor = () => {
         onRequestSharingSettings = onSDKRequestSharingSettings;
       }
 
-      if (fileInfo && fileInfo.canEdit) {
+      if (fileInfo && fileInfo.canEdit && !fileInfo.providerKey) {
         onRequestRename = onSDKRequestRename;
       }
 
@@ -512,6 +513,8 @@ const Editor = () => {
       const newConfig = Object.assign(config, events);
 
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
+
+      assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
     } catch (error) {
       console.log(error);
       toastr.error(error.message, null, 0, true);
@@ -908,6 +911,7 @@ const Editor = () => {
             <div id="editor"></div>
             {isSharingAccess && isVisible && (
               <SharingDialog
+                settings={settings} //TODO: Maybe init filesSettings in editor?
                 isVisible={isVisible}
                 sharingObject={fileInfo}
                 onCancel={onCancel}
@@ -917,7 +921,7 @@ const Editor = () => {
 
             {isFileDialogVisible && (
               <SelectFileDialog
-                settings={settings}
+                settings={settings} //TODO: Maybe init filesSettings in editor?
                 resetTreeFolders
                 onSelectFile={onSelectFile}
                 isPanelVisible={isFileDialogVisible}
@@ -928,43 +932,39 @@ const Editor = () => {
               />
             )}
 
-            {isFolderDialogVisible && (
-              <SelectFolderDialog
-                isPanelVisible={isFolderDialogVisible}
-                onClose={onCloseFolderDialog}
-                foldersType="exceptSortedByTags"
-                onSave={onClickSaveSelectFolder}
-                isDisableButton={!titleSelectorFolder.trim()}
-                header={
+            <SelectFolderDialog
+              folderId={fileInfo?.folderId}
+              isPanelVisible={isFolderDialogVisible}
+              onClose={onCloseFolderDialog}
+              foldersType="exceptSortedByTags"
+              onSave={onClickSaveSelectFolder}
+              isDisableButton={!titleSelectorFolder.trim()}
+              header={
+                <StyledSelectFolder>
+                  <Text className="editor-select-folder_text" fontWeight={600}>
+                    {i18n.t("FileName")}
+                  </Text>
+                  <TextInput
+                    className="editor-select-folder_text-input"
+                    scale
+                    onChange={onChangeInput}
+                    value={titleSelectorFolder}
+                  />
+                </StyledSelectFolder>
+              }
+              {...(extension !== "fb2" && {
+                footer: (
                   <StyledSelectFolder>
-                    <Text
-                      className="editor-select-folder_text"
-                      fontWeight={600}
-                    >
-                      {i18n.t("FileName")}
-                    </Text>
-                    <TextInput
-                      className="editor-select-folder_text-input"
-                      scale
-                      onChange={onChangeInput}
-                      value={titleSelectorFolder}
+                    <Checkbox
+                      className="editor-select-folder_checkbox"
+                      label={i18n.t("OpenSavedDocument")}
+                      onChange={onClickCheckbox}
+                      isChecked={openNewTab}
                     />
                   </StyledSelectFolder>
-                }
-                {...(extension !== "fb2" && {
-                  footer: (
-                    <StyledSelectFolder>
-                      <Checkbox
-                        className="editor-select-folder_checkbox"
-                        label={i18n.t("OpenSavedDocument")}
-                        onChange={onClickCheckbox}
-                        isChecked={openNewTab}
-                      />
-                    </StyledSelectFolder>
-                  ),
-                })}
-              />
-            )}
+                ),
+              })}
+            />
 
             {preparationPortalDialogVisible && (
               <PreparationPortalDialog

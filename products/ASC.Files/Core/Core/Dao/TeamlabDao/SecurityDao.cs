@@ -65,7 +65,10 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     public async Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
     {
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
+        await strategy.ExecuteAsync(async () =>
+        {
         using var tx = await FilesDbContext.Database.BeginTransactionAsync();
 
         foreach (var record in records)
@@ -83,16 +86,16 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
 
         await tx.CommitAsync();
+        });
     }
 
-    public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
+    public async Task<bool> IsSharedAsync(T entryId, FileEntryType type)
     {
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var mappedId = (await MappingIDAsync(entryId)).ToString();
 
-        return Query(FilesDbContext.Security)
-            .AsAsyncEnumerable()
-            .AnyAwaitAsync(async r => r.EntryId == (await MappingIDAsync(entryId)).ToString() &&
-                      r.EntryType == type);
+        return await Query(FilesDbContext.Security)
+            .AnyAsync(r => r.EntryId == mappedId && r.EntryType == type && !(new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(r.Subject));
     }
 
     public async Task SetShareAsync(FileShareRecord r)
@@ -107,6 +110,10 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
                 return;
             }
 
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+
+            await strategy.ExecuteAsync(async () =>
+             {
             using var tx = await FilesDbContext.Database.BeginTransactionAsync();
             var files = new List<string>();
 
@@ -161,6 +168,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
             }
 
             await tx.CommitAsync();
+
+             });
         }
         else
         {
@@ -172,7 +181,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
     }
 
-    public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+        public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
     {
         var q = GetQuery(r => subjects.Contains(r.Subject));
 
@@ -421,7 +430,10 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     public async Task RemoveSubjectAsync(Guid subject)
     {
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
+        await strategy.ExecuteAsync(async () =>
+        {
         using var tr = await FilesDbContext.Database.BeginTransactionAsync();
 
         var toDelete1 = await FilesDbContext.Security.AsQueryable().Where(r => r.Subject == subject).ToListAsync();
@@ -434,6 +446,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         await FilesDbContext.SaveChangesAsync();
 
         await tr.CommitAsync();
+        });
     }
 
     private IQueryable<DbFilesSecurity> GetQuery(Expression<Func<DbFilesSecurity, bool>> where = null)
@@ -449,13 +462,16 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         return q;
     }
 
-    protected ValueTask<List<FileShareRecord>> FromQueryAsync(IQueryable<DbFilesSecurity> filesSecurities)
+        protected async Task<List<FileShareRecord>> FromQueryAsync(IQueryable<DbFilesSecurity> filesSecurities)
     {
-        return filesSecurities
-            .AsAsyncEnumerable()
-            .SelectAwait(async e => await ToFileShareRecordAsync(e))
-            .ToListAsync();
+            var data = await filesSecurities.ToListAsync();
+            var result = new List<FileShareRecord>();
+            foreach (var file in data)
+            {
+                result.Add(await ToFileShareRecordAsync(file));
     }
+            return result;
+        }
 
     protected IAsyncEnumerable<FileShareRecord> FromQueryAsyncEnumerable(IQueryable<DbFilesSecurity> filesSecurities)
     {

@@ -350,7 +350,10 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         var id = MakeId(boxFile.Id);
 
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
+        await strategy.ExecuteAsync(async () =>
+        {
         using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
         {
             var hashIDs = Query(FilesDbContext.ThirdpartyIdMapping)
@@ -385,6 +388,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
             await tx.CommitAsync().ConfigureAwait(false);
         }
+        });
 
         if (boxFile is not ErrorFile)
         {
@@ -545,6 +549,12 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
     public bool UseTrashForRemove(File<string> file)
     {
         return false;
+    }
+
+    public override Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+        var boxFileId = MakeBoxId(_boxDaoSelector.ConvertId(fileId));
+        return ProviderInfo.GetThumbnailAsync(boxFileId, width, height);
     }
 
     #region chunking

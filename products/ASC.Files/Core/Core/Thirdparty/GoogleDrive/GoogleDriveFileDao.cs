@@ -343,11 +343,13 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         }
 
         var id = MakeId(driveFile.Id);
-
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        using (var tx = FilesDbContext.Database.BeginTransaction())
+        await strategy.ExecuteAsync(async () =>
         {
+            using (var tx = await FilesDbContext.Database.BeginTransactionAsync())
+            {
             var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(id))
                 .Select(r => r.HashId)
@@ -383,6 +385,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
             await tx.CommitAsync().ConfigureAwait(false);
         }
+        });
 
         if (driveFile is not ErrorDriveEntry)
         {
@@ -549,6 +552,12 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         return false;
     }
 
+
+    public override Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+        return ProviderInfo.GetThumbnail(MakeDriveId(_googleDriveDaoSelector.ConvertId(fileId)), width, height);
+    }
+
     #region chunking
 
     private File<string> RestoreIds(File<string> file)
@@ -703,5 +712,6 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
         return Task.CompletedTask;
     }
+
     #endregion
 }

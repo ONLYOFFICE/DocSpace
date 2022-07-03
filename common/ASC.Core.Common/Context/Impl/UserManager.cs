@@ -55,6 +55,12 @@ public class UserManager
     private readonly PermissionContext _permissionContext;
     private readonly UserManagerConstants _userManagerConstants;
     private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly CoreSettings _coreSettings;
+    private readonly InstanceCrypto _instanceCrypto;
+    private readonly RadicaleClient _radicaleClient;
+    private readonly CardDavAddressbook _cardDavAddressbook;
+    private readonly ILogger<UserManager> _log;
+    private readonly ICache _cache;
     private readonly Constants _constants;
 
     private Tenant _tenant;
@@ -70,13 +76,25 @@ public class UserManager
         TenantManager tenantManager,
         PermissionContext permissionContext,
         UserManagerConstants userManagerConstants,
-        CoreBaseSettings coreBaseSettings)
+        CoreBaseSettings coreBaseSettings,
+        CoreSettings coreSettings,
+        InstanceCrypto instanceCrypto,
+        RadicaleClient radicaleClient,
+        CardDavAddressbook cardDavAddressbook,
+        ILogger<UserManager> log,
+        ICache cache)
     {
         _userService = service;
         _tenantManager = tenantManager;
         _permissionContext = permissionContext;
         _userManagerConstants = userManagerConstants;
         _coreBaseSettings = coreBaseSettings;
+        _coreSettings = coreSettings;
+        _instanceCrypto = instanceCrypto;
+        _radicaleClient = radicaleClient;
+        _cardDavAddressbook = cardDavAddressbook;
+        _log = log;
+        _cache = cache;
         _constants = _userManagerConstants.Constants;
     }
 
@@ -86,8 +104,14 @@ public class UserManager
         PermissionContext permissionContext,
         UserManagerConstants userManagerConstants,
         CoreBaseSettings coreBaseSettings,
+        CoreSettings coreSettings,
+        InstanceCrypto instanceCrypto,
+        RadicaleClient radicaleClient,
+        CardDavAddressbook cardDavAddressbook,
+        ILogger<UserManager> log,
+        ICache cache,
         IHttpContextAccessor httpContextAccessor)
-        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings)
+        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache)
     {
         _accessor = httpContextAccessor;
     }
@@ -279,7 +303,7 @@ public class UserManager
         return findUsers.ToArray();
     }
 
-    public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
+    public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
     {
         if (IsSystemUser(u.Id))
         {
@@ -329,9 +353,76 @@ public class UserManager
             throw new InvalidOperationException("Can not disable tenant owner.");
         }
 
+        var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
 
+        if (syncCardDav)
+        {
+            var tenant = _tenantManager.GetCurrentTenant();
+            var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
+                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
+                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
+
+            var rootAuthorization = _cardDavAddressbook.GetSystemAuthorization();
+            var allUserEmails = GetDavUserEmails().ToList();
+
+            if (oldUserData != null && oldUserData.Status != newUser.Status && newUser.Status == EmployeeStatus.Terminated)
+            {
+                var userAuthorization = oldUserData.Email.ToLower() + ":" + _instanceCrypto.Encrypt(oldUserData.Email);
+                var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, newUser.Email.ToLower(), true, true);
+                var collection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
+                if (collection.Completed && collection.StatusCode != 404)
+                {
+                    _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id).Wait();//TODO
+                }
+                foreach (var email in allUserEmails)
+                {
+                    var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: newUser.Id.ToString());
+                    try
+                    {
+                        var davItemRequest = new DavRequest()
+                        {
+                            Url = requestUrlItem,
+                            Authorization = rootAuthorization,
+                            Header = myUri
+                        };
+                        _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.ErrorWithException(ex);
+                    }
+                }
+            }
+            else
+            {
+
+                try
+                {
+                    var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
+
+                    try
+                    {
+                        _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null).Wait(); // todo
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.ErrorWithException(ex);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    _log.ErrorWithException(ex);
+                }
+            }
+
+        }
         return newUser;
+    }
+    public IEnumerable<string> GetDavUserEmails()
+    {
+        return _userService.GetDavUserEmails(_tenantManager.GetCurrentTenant().Id);
     }
 
     public void DeleteUser(Guid id)
@@ -347,7 +438,59 @@ public class UserManager
             throw new InvalidOperationException("Can not remove tenant owner.");
         }
 
+        var delUser = GetUsers(id);
         _userService.RemoveUser(Tenant.Id, id);
+        var tenant = _tenantManager.GetCurrentTenant();
+
+        try
+        {
+            var curreMail = delUser.Email.ToLower();
+            var currentAccountPaswd = _instanceCrypto.Encrypt(curreMail);
+            var userAuthorization = curreMail + ":" + currentAccountPaswd;
+            var rootAuthorization = _cardDavAddressbook.GetSystemAuthorization();
+            var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
+                (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
+                new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
+            var davUsersEmails = GetDavUserEmails();
+            var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, delUser.Email.ToLower(), true, true);
+            var addBookCollection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
+
+
+            if (addBookCollection.Completed && addBookCollection.StatusCode != 404)
+            {
+                var davbookRequest = new DavRequest()
+                {
+                    Url = requestUrlBook,
+                    Authorization = rootAuthorization,
+                    Header = myUri
+                };
+                _radicaleClient.RemoveAsync(davbookRequest).ConfigureAwait(false);
+            }
+
+            foreach (var email in davUsersEmails)
+            {
+                var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: delUser.Id.ToString());
+                try
+                {
+                    var davItemRequest = new DavRequest()
+                    {
+                        Url = requestUrlItem,
+                        Authorization = rootAuthorization,
+                        Header = myUri
+                    };
+                    _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _log.ErrorWithException(ex);
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            _log.ErrorWithException(ex);
+        }
     }
 
     public void SaveUserPhoto(Guid id, byte[] photo)
@@ -467,6 +610,15 @@ public class UserManager
         _userService.SaveUserGroupRef(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
         ResetGroupCache(userId);
+        var user = GetUsers(userId);
+        if (groupId == Constants.GroupVisitor.ID)
+        {
+            var tenant = _tenantManager.GetCurrentTenant();
+            var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
+                       (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
+                       new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
+            _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id).Wait(); //todo
+        }
     }
 
     public void RemoveUserFromGroup(Guid userId, Guid groupId)
@@ -563,7 +715,12 @@ public class UserManager
 
         if (group == null)
         {
-            group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID));
+                group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID) ?? Constants.LostGroupInfo);
+        }
+
+        if (group == null)
+        {
+            return Constants.LostGroupInfo;
         }
 
         return new GroupInfo

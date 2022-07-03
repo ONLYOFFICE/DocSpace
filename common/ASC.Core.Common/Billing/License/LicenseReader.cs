@@ -44,11 +44,11 @@ public class LicenseReader
     private readonly PaymentManager _paymentManager;
     private readonly CoreSettings _coreSettings;
     private readonly ILogger<LicenseReader> _logger;
+    private readonly Users.Constants _constants;
     public readonly string LicensePath;
     private readonly string _licensePathTemp;
 
     public const string CustomerIdKey = "CustomerId";
-    public const int MaxUserCount = 10000;
 
     public LicenseReader(
         UserManager userManager,
@@ -56,7 +56,8 @@ public class LicenseReader
         PaymentManager paymentManager,
         CoreSettings coreSettings,
         LicenseReaderConfig licenseReaderConfig,
-        ILogger<LicenseReader> logger)
+        ILogger<LicenseReader> logger,
+        Users.Constants constants)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -65,6 +66,7 @@ public class LicenseReader
         LicensePath = licenseReaderConfig.LicensePath;
         _licensePathTemp = LicensePath + ".tmp";
         _logger = logger;
+        _constants = constants;
     }
 
     public string CustomerId
@@ -186,31 +188,6 @@ public class LicenseReader
             throw new BillingNotConfiguredException("License not correct", license.OriginalLicense);
         }
 
-        if (license.DueDate.Date < VersionReleaseDate)
-        {
-            throw new LicenseExpiredException("License expired", license.OriginalLicense);
-        }
-
-        if (license.ActiveUsers.Equals(default) || license.ActiveUsers < 1)
-        {
-            license.ActiveUsers = MaxUserCount;
-        }
-
-        if (license.ActiveUsers < _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User).Length)
-        {
-            throw new LicenseQuotaException("License quota", license.OriginalLicense);
-        }
-
-        if (license.PortalCount <= 0)
-        {
-            license.PortalCount = _tenantManager.GetTenantQuota(Tenant.DefaultTenant).CountPortals;
-        }
-        var activePortals = _tenantManager.GetTenants().Count;
-        if (activePortals > 1 && license.PortalCount < activePortals)
-        {
-            throw new LicensePortalException("License portal count", license.OriginalLicense);
-        }
-
         return license.DueDate.Date;
     }
 
@@ -224,39 +201,15 @@ public class LicenseReader
 
         var quota = new TenantQuota(-1000)
         {
-            ActiveUsers = license.ActiveUsers,
+            ActiveUsers = _constants.MaxEveryoneCount,
             MaxFileSize = defaultQuota.MaxFileSize,
             MaxTotalSize = defaultQuota.MaxTotalSize,
             Name = "license",
             DocsEdition = true,
-            HasDomain = true,
-            Audit = true,
-            ControlPanel = true,
-            HealthCheck = true,
-            Ldap = true,
-            Sso = true,
             Customization = license.Customization,
-            WhiteLabel = license.WhiteLabel || license.Customization,
-            Branding = license.Branding,
-            SSBranding = license.SSBranding,
             Update = true,
-            Support = true,
-            Trial = license.Trial,
-            CountPortals = license.PortalCount,
-            DiscEncryption = true,
-            PrivacyRoom = true,
-            Restore = true,
-            ContentSearch = true
+            Trial = license.Trial
         };
-
-        if (defaultQuota.Name != "overdue" && !defaultQuota.Trial)
-        {
-            quota.WhiteLabel |= defaultQuota.WhiteLabel;
-            quota.Branding |= defaultQuota.Branding;
-            quota.SSBranding |= defaultQuota.SSBranding;
-
-            quota.CountPortals = Math.Max(defaultQuota.CountPortals, quota.CountPortals);
-        }
 
         _tenantManager.SaveTenantQuota(quota);
 
@@ -267,13 +220,6 @@ public class LicenseReader
         };
 
         _paymentManager.SetTariff(-1, tariff);
-
-        if (!string.IsNullOrEmpty(license.AffiliateId))
-        {
-            var tenant = _tenantManager.GetCurrentTenant();
-            tenant.AffiliateId = license.AffiliateId;
-            _tenantManager.SaveTenant(tenant);
-        }
     }
 
     private void LogError(Exception error)
@@ -292,63 +238,6 @@ public class LicenseReader
             {
                 _logger.ErrorWithException(error);
             }
-        }
-    }
-
-    private static readonly DateTime _date = DateTime.MinValue;
-
-    public DateTime VersionReleaseDate
-    {
-        get
-        {
-            // release sign is not longer requered
-            return _date;
-
-            //if (_date != DateTime.MinValue) return _date;
-
-            //_date = DateTime.MaxValue;
-            //try
-            //{
-            //    var versionDate = Configuration["version:release:date"];
-            //    var sign = Configuration["version:release:sign"];
-
-            //    if (!sign.StartsWith("ASC "))
-            //    {
-            //        throw new Exception("sign without ASC");
-            //    }
-
-            //    var splitted = sign.Substring(4).Split(':');
-            //    var pkey = splitted[0];
-            //    if (pkey != versionDate)
-            //    {
-            //        throw new Exception("sign with different date");
-            //    }
-
-            //    var date = splitted[1];
-            //    var orighash = splitted[2];
-
-            //var skey = MachinePseudoKeys.GetMachineConstant();
-
-            //using (var hasher = new HMACSHA1(skey))
-            //    {
-            //        var data = string.Join("\n", date, pkey);
-            //        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
-            //        if (WebEncoders.Base64UrlEncode(hash) != orighash && Convert.ToBase64String(hash) != orighash)
-            //        {
-            //            throw new Exception("incorrect hash");
-            //        }
-            //    }
-
-            //    var year = int.Parse(versionDate.Substring(0, 4));
-            //    var month = int.Parse(versionDate.Substring(4, 2));
-            //    var day = int.Parse(versionDate.Substring(6, 2));
-            //    _date = new DateTime(year, month, day);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Error("VersionReleaseDate", ex);
-            //}
-            //return _date;
         }
     }
 }

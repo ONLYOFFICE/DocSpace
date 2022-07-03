@@ -1,27 +1,45 @@
-import IconButton from "@appserver/components/icon-button";
 import { Base } from "@appserver/components/themes";
-import { isTablet, mobile, tablet } from "@appserver/components/utils/device";
+import {
+  isTablet,
+  isMobile as isMobileUtils,
+  tablet,
+  isDesktop,
+} from "@appserver/components/utils/device";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
+
+import { isMobile } from "react-device-detect";
 
 const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   id: id,
 }))`
+  user-select: none;
   height: auto;
   width: auto;
-  background: rgba(6, 22, 38, 0.2);
-  backdrop-filter: blur(18px);
+  background: ${(props) => props.theme.infoPanel.blurColor};
+  backdrop-filter: blur(3px);
 
   @media ${tablet} {
     z-index: 309;
-    position: absolute;
+    position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
   }
+
+  ${isMobile &&
+  css`
+    z-index: 309;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  `}
 `;
 
 const StyledInfoPanel = styled.div`
@@ -32,6 +50,10 @@ const StyledInfoPanel = styled.div`
   display: flex;
   flex-direction: column;
 
+  .scroll-body {
+    padding-bottom: 20px;
+  }
+
   @media ${tablet} {
     position: absolute;
     border: none;
@@ -40,70 +62,112 @@ const StyledInfoPanel = styled.div`
     max-width: calc(100vw - 69px);
   }
 
-  @media ${mobile} {
+  ${isMobile &&
+  css`
+    position: absolute;
+    border: none;
+    right: 0;
+    width: 480px;
+    max-width: calc(100vw - 69px);
+  `}
+
+  @media (max-width: 428px) {
     bottom: 0;
-    height: 80%;
+    height: calc(100% - 64px);
     width: 100vw;
     max-width: 100vw;
   }
 `;
 
-const StyledCloseButtonWrapper = styled.div`
-  position: absolute;
+const StyledControlContainer = styled.div`
   display: none;
-  background-color: ${(props) => props.theme.infoPanel.closeButtonBg};
-  padding: ${(props) => props.theme.infoPanel.closeButtonWrapperPadding};
-  border-radius: 50%;
 
-  .info-panel-button {
-    svg {
-      width: ${(props) => props.theme.infoPanel.closeButtonSize};
-      height: ${(props) => props.theme.infoPanel.closeButtonSize};
-    }
-    path {
-      fill: ${(props) => props.theme.infoPanel.closeButtonIcon};
-    }
-  }
+  width: 24px;
+  height: 24px;
+  position: absolute;
+
+  border-radius: 100px;
+  cursor: pointer;
+
+  align-items: center;
+  justify-content: center;
+  z-index: 450;
 
   @media ${tablet} {
-    display: block;
-    top: 0;
-    left: 0;
-    margin-top: 18px;
-    margin-left: -34px;
+    display: flex;
+
+    top: 16px;
+    left: -34px;
   }
-  @media ${mobile} {
-    right: 0;
-    left: auto;
-    margin-top: -34px;
-    margin-right: 10px;
+
+  ${isMobile &&
+  css`
+    display: flex;
+
+    top: 16px;
+    left: -34px;
+  `}
+
+  @media (max-width: 428px) {
+    display: flex;
+
+    top: -34px;
+    right: 10px;
+    left: unset;
   }
 `;
 
-const InfoPanel = ({ children, isVisible, setIsVisible }) => {
+StyledControlContainer.defaultProps = { theme: Base };
+
+const StyledCrossIcon = styled(CrossIcon)`
+  width: 17px;
+  height: 17px;
+  z-index: 455;
+  path {
+    fill: ${(props) => props.theme.catalog.control.fill};
+  }
+`;
+
+StyledCrossIcon.defaultProps = { theme: Base };
+
+const InfoPanel = ({ children, isVisible, setIsVisible, viewAs, isFiles }) => {
   if (!isVisible) return null;
 
   const closeInfoPanel = () => setIsVisible(false);
+
+  useEffect(() => {
+    if (!isFiles) closeInfoPanel();
+  }, [isFiles]);
 
   useEffect(() => {
     const onMouseDown = (e) => {
       if (e.target.id === "InfoPanelWrapper") closeInfoPanel();
     };
 
-    if (isTablet()) document.addEventListener("mousedown", onMouseDown);
+    if (viewAs === "row" || isTablet() || isMobile || isMobileUtils())
+      document.addEventListener("mousedown", onMouseDown);
+
+    window.onpopstate = () => {
+      if (!isDesktop() && isVisible) closeInfoPanel();
+    };
+
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, []);
 
   return (
-    <StyledInfoPanelWrapper className="info-panel" id="InfoPanelWrapper">
-      <StyledInfoPanel>
-        <StyledCloseButtonWrapper>
-          <IconButton
-            onClick={closeInfoPanel}
-            iconName="/static/images/cross.react.svg"
-            className="info-panel-button"
-          />
-        </StyledCloseButtonWrapper>
+    <StyledInfoPanelWrapper
+      isRowView={viewAs === "row"}
+      className="info-panel"
+      id="InfoPanelWrapper"
+    >
+      <StyledInfoPanel isRowView={viewAs === "row"}>
+        <StyledControlContainer
+          isRowView={viewAs === "row"}
+          onClick={closeInfoPanel}
+        >
+          <StyledCrossIcon />
+        </StyledControlContainer>
+
         {children}
       </StyledInfoPanel>
     </StyledInfoPanelWrapper>
@@ -120,21 +184,16 @@ InfoPanel.propTypes = {
 };
 
 StyledInfoPanelWrapper.defaultProps = { theme: Base };
-StyledCloseButtonWrapper.defaultProps = { theme: Base };
 StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
-export default inject(({ infoPanelStore }) => {
-  let isVisible = false;
-  let setIsVisible = () => {};
-
-  if (infoPanelStore) {
-    isVisible = infoPanelStore.isVisible;
-    setIsVisible = infoPanelStore.setIsVisible;
-  }
+export default inject(({ auth, filesStore }) => {
+  const { isVisible, setIsVisible } = auth.infoPanelStore;
+  const isFiles = true && filesStore;
 
   return {
     isVisible,
     setIsVisible,
+    isFiles,
   };
 })(InfoPanel);

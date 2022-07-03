@@ -10,7 +10,7 @@ const { auth: authStore } = store;
 class SelectFileDialogBody extends React.Component {
   componentDidMount() {
     const { settings, setFilesSettings } = this.props;
-    settings && setFilesSettings(settings);
+    settings && setFilesSettings(settings); // Remove after initialization settings in Editor
   }
 
   render() {

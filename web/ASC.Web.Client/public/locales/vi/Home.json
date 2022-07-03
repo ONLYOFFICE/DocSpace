@@ -1,0 +1,6 @@
+{
+  "GoodAfternoon": "Xin chào {{displayName}}!",
+  "GoodEvening": "Chào buổi tối {{displayName}}!",
+  "GoodMorning": "Chào buổi sang {{displayName}}!",
+  "NoOneModulesAvailable": " Không có mô-đun nào"
+}

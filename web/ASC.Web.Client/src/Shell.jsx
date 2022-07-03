@@ -23,6 +23,8 @@ import System from "./components/System";
 import { AppServerConfig } from "@appserver/common/constants";
 import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
+import ReactSmartBanner from "./components/SmartBanner";
+import { useThemeDetector } from "./helpers/utils";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -61,9 +63,10 @@ const About = React.lazy(() => import("./components/pages/About"));
 const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
-const Confirm = React.lazy(() => import("./components/pages/Confirm"));
+const Confirm =
+  !IS_PERSONAL && React.lazy(() => import("./components/pages/Confirm"));
 const MyProfile = React.lazy(() => import("people/MyProfile"));
-const EnterCode = React.lazy(() => import("login/codeLogin"));
+const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
 const InvalidError = React.lazy(() =>
   import("./components/pages/Errors/Invalid")
 );
@@ -109,13 +112,15 @@ const HomeRoute = (props) => (
   </React.Suspense>
 );
 
-const ConfirmRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Confirm {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const ConfirmRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <Confirm {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
 
 const PreparationPortalRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -157,13 +162,15 @@ const MyProfileRoute = (props) => (
   </React.Suspense>
 );
 
-const EnterCodeRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <EnterCode {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const EnterCodeRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <EnterCode {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
 
 const InvalidRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -187,6 +194,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     setCheckedMaintenance,
     socketHelper,
     setPreparationPortalDialogVisible,
+    isBase,
     setTheme,
     setMaintenanceExist,
     roomsMode,
@@ -229,7 +237,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     });
   }, [socketHelper]);
 
-  const { t } = useTranslation("Common");
+  const { t, ready } = useTranslation(["Common", "SmartBanner"]);
 
   let snackTimer = null;
   let fbInterval = null;
@@ -320,7 +328,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const barConfig = {
       parentElementId: "main-bar",
-      headerText: "Atention",
+      headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
@@ -357,7 +365,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             return;
           }
 
-          setTimeout(() => showSnackBar(campaign), 10000);
+          setTimeout(() => showSnackBar(campaign), 1000);
         })
         .catch((err) => {
           console.error(err);
@@ -469,7 +477,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const loginRoutes = [];
 
-  if (isLoaded && !personal) {
+  if (isLoaded && !IS_PERSONAL) {
     let module;
     if (roomsMode) {
       module = "./roomsLogin";
@@ -495,57 +503,62 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const roomsRoutes = [];
 
-  if (roomsMode) {
+  if (!IS_PERSONAL && roomsMode) {
     roomsRoutes.push(
       <Route path={ENTER_CODE_URL} component={EnterCodeRoute} />
     );
   }
 
+  const currentTheme = isBase ? "Base" : "Dark";
+  const systemTheme = useThemeDetector();
+  useEffect(() => {
+    if (userTheme === "System" && currentTheme !== systemTheme)
+      setTheme(systemTheme);
+  }, [systemTheme]);
+
   return (
     <Layout>
       <Router history={history}>
-        <>
-          {isEditor ? <></> : <NavMenu />}
-          <ScrollToTop />
-          <Main isDesktop={isDesktop}>
-            <Switch>
-              <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
-              <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
-              <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
-              {loginRoutes}
-              {roomsRoutes}
+        <ReactSmartBanner t={t} ready={ready} />
+        {isEditor ? <></> : <NavMenu />}
+        <ScrollToTop />
+        <Main isDesktop={isDesktop}>
+          <Switch>
+            <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
+            <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
+            <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
+            {loginRoutes}
+            {roomsRoutes}
+            {!IS_PERSONAL && (
               <Route path={CONFIRM_URL} component={ConfirmRoute} />
-              <Route path={INVALID_URL} component={InvalidRoute} />
+            )}
+            <Route path={INVALID_URL} component={InvalidRoute} />
+            <PrivateRoute path={COMING_SOON_URLS} component={ComingSoonRoute} />
+            <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
+            {!personal && (
               <PrivateRoute
-                path={COMING_SOON_URLS}
-                component={ComingSoonRoute}
+                restricted
+                path={SETTINGS_URL}
+                component={SettingsRoute}
               />
-              <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
-              {!personal && (
-                <PrivateRoute
-                  restricted
-                  path={SETTINGS_URL}
-                  component={SettingsRoute}
-                />
-              )}
-              <PrivateRoute
-                exact
-                allowForMe
-                path={PROFILE_MY_URL}
-                component={MyProfileRoute}
-              />
-              <PrivateRoute
-                path={PREPARATION_PORTAL}
-                component={PreparationPortalRoute}
-              />
-              {dynamicRoutes}
-              <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
-              <PrivateRoute
-                component={!personal ? Error404Route : RedirectToHome}
-              />
-            </Switch>
-          </Main>
-        </>
+            )}
+            <PrivateRoute
+              exact
+              allowForMe
+              path={PROFILE_MY_URL}
+              component={MyProfileRoute}
+            />
+            <PrivateRoute
+              path={PREPARATION_PORTAL}
+              component={PreparationPortalRoute}
+            />
+            {dynamicRoutes}
+            <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
+            <PrivateRoute
+              component={!personal ? Error404Route : RedirectToHome}
+            />
+          </Switch>
+        </Main>
       </Router>
     </Layout>
   );
@@ -566,6 +579,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     socketHelper,
     setTheme,
   } = settingsStore;
+  const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
 
   return {
@@ -589,10 +603,15 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setMaintenanceExist,
     socketHelper,
     setPreparationPortalDialogVisible,
+    isBase,
     setTheme,
     roomsMode,
     setSnackbarExist,
-    userTheme: auth?.userStore?.user?.theme,
+    userTheme: isDesktopClient
+      ? window.RendererProcessVariable?.theme?.type === "dark"
+        ? "Dark"
+        : "Base"
+      : auth?.userStore?.user?.theme,
   };
 })(observer(Shell));
 

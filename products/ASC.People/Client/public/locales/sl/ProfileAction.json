@@ -1,4 +1,4 @@
-﻿{
+{
   "ActivationLink": "Povezava za aktiviranje",
   "AddContact": "Dodaj kontakt",
   "AddPhoto": "Dodaj fotografijo",
@@ -8,7 +8,7 @@
   "ChangesSavedSuccessfully": "Spremembe so uspešno shranjene",
   "ContactInformation": "Kontaktne informacije",
   "CopiedResourceText": "Kopirano",
-  "CustomCreation": "{{user}} (creation)",
+  "CustomCreation": "{{user}} (ustvarjanje)",
   "EditPhoto": "Uredi fotografijo",
   "EditUserDialogTitle": "Uredi profil",
   "EmailPopupHelper": "Glavni e-mail naslov se uporablja za obvestila in obnovitev dostopa. <1> Za to domeno lahko za uporabnika ustvarite novo e-mail sporočilo in nastavite enkratno geslo za prvo prijavo.</1>",

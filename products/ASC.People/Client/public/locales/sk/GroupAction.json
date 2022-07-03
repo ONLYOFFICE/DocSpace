@@ -1,8 +1,8 @@
-﻿{
+{
+  "AddHeadOfDepartment": "Pridať vedúceho oddelenia",
   "CustomNewDepartment": "{{groupCaption}} (vytvorenie)",
   "GroupAction": "Skupinová akcia",
   "Members": "Členovia",
   "SearchAddedMembers": "Hľadať pridaných členov",
-  "SelectAction": "Vyberať",
   "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' bola úspešne uložená"
 }

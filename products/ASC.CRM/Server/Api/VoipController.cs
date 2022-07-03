@@ -48,7 +48,6 @@ using ASC.Data.Storage;
 using ASC.VoipService;
 using ASC.VoipService.Dao;
 using ASC.VoipService.Twilio;
-using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 using ASC.Web.Studio.Utility;
 
@@ -105,7 +104,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        [Read(@"voip/numbers/available")]
+        [HttpGet(@"voip/numbers/available")]
         public IEnumerable<VoipPhone> GetAvailablePhoneNumbers(PhoneNumberType numberType, string isoCountryCode)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -123,7 +122,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Read(@"voip/numbers/unlinked")]
+        [HttpGet(@"voip/numbers/unlinked")]
         public IEnumerable<VoipPhone> GetUnlinkedPhoneNumbers()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -141,7 +140,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Read(@"voip/numbers/existing")]
+        [HttpGet(@"voip/numbers/existing")]
         public IEnumerable<VoipPhone> GetExistingPhoneNumbers()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -155,7 +154,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Create(@"voip/numbers")]
+        [HttpPost(@"voip/numbers")]
         public Task<VoipPhone> BuyNumberAsync([FromBody] string number)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -181,7 +180,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Create(@"voip/numbers/link")]
+        [HttpPost(@"voip/numbers/link")]
         public Task<VoipPhone> LinkNumberAsync([FromBody] string id)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -232,7 +231,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Delete(@"voip/numbers/{numberId:regex(\w+)}")]
+        [HttpDelete(@"voip/numbers/{numberId:regex(\w+)}")]
         public VoipPhone DeleteNumber(string numberId)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -255,7 +254,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Read(@"voip/numbers/{numberId:regex(\w+)}")]
+        [HttpGet(@"voip/numbers/{numberId:regex(\w+)}")]
         public VoipPhone GetNumber(string numberId)
         {
             return _daoFactory.GetVoipDao().GetNumber(numberId).NotFoundIfNull();
@@ -267,7 +266,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Read(@"voip/numbers/current")]
+        [HttpGet(@"voip/numbers/current")]
         public VoipPhone GetCurrentNumber()
         {
             return _daoFactory.GetVoipDao().GetCurrentNumber().NotFoundIfNull();
@@ -279,7 +278,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Read(@"voip/token")]
+        [HttpGet(@"voip/token")]
         public string GetToken()
         {
             return _daoFactory.GetVoipDao().GetProvider().GetToken(GetCurrentNumber().Caller);
@@ -292,7 +291,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Update(@"voip/numbers/{numberId:regex(\w+)}/settings")]
+        [HttpPut(@"voip/numbers/{numberId:regex(\w+)}/settings")]
         public VoipPhone UpdateSettings(string numberId, string greeting, string holdUp, string wait, string voiceMail, WorkingHours workingHours, bool? allowOutgoingCalls, bool? record, string alias)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -341,7 +340,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Update(@"voip/numbers/settings")]
+        [HttpPut(@"voip/numbers/settings")]
         public object UpdateSettings(Queue queue, bool pause)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -389,7 +388,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
 
-        [Read(@"voip/numbers/settings")]
+        [HttpGet(@"voip/numbers/settings")]
         public Task<object> GetVoipSettingsAsync()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -418,7 +417,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Read(@"voip/uploads")]
+        [HttpGet(@"voip/uploads")]
         public IAsyncEnumerable<VoipUpload> GetUploadedFilesUriAsync()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -466,7 +465,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Delete(@"voip/uploads")]
+        [HttpDelete(@"voip/uploads")]
         public Task<VoipUpload> DeleteUploadedFileAsync(AudioType audioType, string fileName)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -539,7 +538,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Read(@"voip/numbers/{numberId:regex(\w+)}/oper")]
+        [HttpGet(@"voip/numbers/{numberId:regex(\w+)}/oper")]
         public IEnumerable<Guid> GetOperators(string numberId)
         {
             return _daoFactory.GetVoipDao().GetNumber(numberId).Settings.Operators.Select(r => r.Id);
@@ -553,7 +552,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        [Update(@"voip/numbers/{numberId:regex(\w+)}/oper")]
+        [HttpPut(@"voip/numbers/{numberId:regex(\w+)}/oper")]
         public IEnumerable<Agent> AddOperators(string numberId, IEnumerable<Guid> operators)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -582,7 +581,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Delete(@"voip/numbers/{numberId:regex(\w+)}/oper")]
+        [HttpDelete(@"voip/numbers/{numberId:regex(\w+)}/oper")]
         public Guid DeleteOperator(string numberId, Guid oper)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -611,7 +610,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Update(@"voip/opers/{operatorId}")]
+        [HttpPut(@"voip/opers/{operatorId}")]
         public Agent UpdateOperator(Guid operatorId, AgentStatus? status, bool? allowOutgoingCalls, bool? record, AnswerType? answerType, string redirectToNumber)
         {
             if (!_crmSecurity.IsAdmin && !operatorId.Equals(_securityContext.CurrentAccount.ID)) throw _crmSecurity.CreateSecurityException();
@@ -664,7 +663,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
-        [Create(@"voip/call")]
+        [HttpPost(@"voip/call")]
         public Task<VoipCallDto> MakeCallAsync([FromBody] CreateMakeCallRequestDto inDto)
         {
             var number = _daoFactory.GetVoipDao().GetCurrentNumber().NotFoundIfNull();
@@ -715,7 +714,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Create(@"voip/call/{callId:regex(\w+)}/answer")]
+        [HttpPost(@"voip/call/{callId:regex(\w+)}/answer")]
         public VoipCallDto AnswerCall([FromRoute] string callId)
         {
             var dao = _daoFactory.GetVoipDao();
@@ -734,7 +733,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Create(@"voip/call/{callId:regex(\w+)}/reject")]
+        [HttpPost(@"voip/call/{callId:regex(\w+)}/reject")]
         public VoipCallDto RejectCall([FromRoute] string callId)
         {
             var dao = _daoFactory.GetVoipDao();
@@ -752,7 +751,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Create(@"voip/call/{callId:regex(\w+)}/redirect")]
+        [HttpPost(@"voip/call/{callId:regex(\w+)}/redirect")]
         public VoipCallDto ReditectCall([FromRoute] string callId, [FromBody] string to)
         {
             var dao = _daoFactory.GetVoipDao();
@@ -782,7 +781,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Create(@"voip/call/{callId:regex(\w+)}")]
+        [HttpPost(@"voip/call/{callId:regex(\w+)}")]
         public VoipCallDto SaveCall(
             [FromRoute] string callId,
             [FromBody] CreateVoipCallRequestDto inDto)
@@ -868,7 +867,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Create(@"voip/price/{callId:regex(\w+)}")]
+        [HttpPost(@"voip/price/{callId:regex(\w+)}")]
         public void SavePrice([FromRoute] string callId)
         {
             _voipEngine.SaveAdditionalInfo(callId);
@@ -880,7 +879,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Read(@"voip/call")]
+        [HttpGet(@"voip/call")]
         public async Task<IEnumerable<VoipCallDto>> GetCallsAsync(string callType, ApiDateTime from, ApiDateTime to, Guid? agent, int? client, int? contactID)
         {
             var voipDao = _daoFactory.GetVoipDao();
@@ -946,7 +945,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Read(@"voip/call/missed")]
+        [HttpGet(@"voip/call/missed")]
         public async Task<IEnumerable<VoipCallDto>> GetMissedCallsAsync()
         {
             var voipDao = _daoFactory.GetVoipDao();
@@ -993,7 +992,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Voip</category>
         /// <returns></returns>
-        [Read(@"voip/call/{callId:regex(\w+)}")]
+        [HttpGet(@"voip/call/{callId:regex(\w+)}")]
         public VoipCallDto GetCall(string callId)
         {
             var call = _daoFactory.GetVoipDao().GetCall(callId);

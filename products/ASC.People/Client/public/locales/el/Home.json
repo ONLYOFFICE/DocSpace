@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Διαχειριστής",
   "ChangeToGuest": "Αλλαγή σε {{guestCaption}}",
   "ChangeToUser": "Αλλαγή σε {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Δεν υπάρχουν ακόμη συνάδελφοι εδώ",
   "LblInviteAgain": "Πρόσκληση ξανά",
   "LblInvited": "Προσκεκλημένος",
-  "LblOther": "Άλλα",
   "LblSendEmail": "Αποστολή email",
   "LblSendMessage": "Αποστολή μηνύματος",
   "LblSetActive": "Ορισμός ως ενεργού",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Οι οδηγίες ενεργοποίησης μέσω email έχουν σταλεί στη διεύθυνση email <1>{{email}}</1>",
   "NotFoundDescription": "Δοκιμάστε ένα διαφορετικό φίλτρο ή καταργήστε το για να δείτε όλα τα άτομα στο τμήμα.",
   "NotFoundTitle": "Δεν βρέθηκαν συνάδελφοι",
+  "ReassignmentData": "Νέα αντιστοίχιση δεδομένων",
   "SuccessfullyRemovedGroup": "Η ομάδα έχει καταργηθεί με επιτυχία",
   "UserStatus": "Κατάσταση"
 }

@@ -329,12 +329,7 @@ class AvatarEditorBody extends React.Component {
 
     return (
       <Text as="span" textAlign={!desktopMode ? labelAlign : "left"}>
-        <Link
-          type="action"
-          fontWeight={600}
-          isHovered
-          {...onClickProp}
-        >
+        <Link type="action" fontWeight={600} isHovered {...onClickProp}>
           {selectNewPhotoLabel}
         </Link>{" "}
         {desktopMode && orDropFileHereLabel}

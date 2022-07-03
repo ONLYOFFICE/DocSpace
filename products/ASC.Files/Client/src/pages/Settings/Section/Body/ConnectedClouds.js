@@ -18,6 +18,8 @@ import { connectedCloudsTypeTitleTranslation } from "../../../../helpers/utils";
 import Loaders from "@appserver/common/components/Loaders";
 import { tablet } from "@appserver/components/utils/device";
 import { ReactSVG } from "react-svg";
+import { isMobile } from "react-device-detect";
+import { Base } from "@appserver/components/themes";
 
 const linkStyles = {
   isHovered: true,
@@ -28,8 +30,8 @@ const linkStyles = {
 };
 
 const StyledHeader = styled.div`
-  display: flex;
-  border-bottom: 1px solid #eceef1;
+  display: ${isMobile ? "none" : "flex"};
+  border-bottom: ${(props) => props.theme.connectedClouds.borderBottom};
   padding-bottom: 12px;
 
   @media ${tablet} {
@@ -52,7 +54,7 @@ const StyledHeader = styled.div`
     height: 10px;
     margin: 4px 8px 0 0;
     z-index: 1;
-    border-right: 1px solid #d0d5da;
+    border-right: ${(props) => props.theme.connectedClouds.borderRight};
   }
 
   .cloud-settings-header_connection {
@@ -60,6 +62,8 @@ const StyledHeader = styled.div`
     margin-left: -15px;
   }
 `;
+
+StyledHeader.defaultProps = { theme: Base };
 
 const StyledRow = styled(Row)`
   .cloud-settings-row-content {
@@ -163,6 +167,7 @@ class ConnectClouds extends React.Component {
         label: t("Translations:ThirdPartyInfo"),
         onClick: this.onChangeThirdPartyInfo,
       },
+      { key: "separator", isSeparator: true },
       {
         key: `${index}_delete`,
         "data-id": item.provider_id,
@@ -195,7 +200,7 @@ class ConnectClouds extends React.Component {
                 className="cloud-settings-clouds"
                 fontSize="12px"
                 fontWeight={600}
-                color="#657077"
+                color={theme.connectedClouds.color}
               >
                 {t("Clouds")}
               </Text>
@@ -245,6 +250,7 @@ class ConnectClouds extends React.Component {
                         type="page"
                         title={item.customer_title}
                         //color={theme.filesSettings.linkColor}
+                        isHovered={true}
                         color="#A3A9AE"
                         fontSize="11px"
                         fontWeight={400}
@@ -264,9 +270,11 @@ class ConnectClouds extends React.Component {
           </>
         ) : (
           <EmptyFolderContainer
-            headerText={t("ConnectAccounts")}
-            subheadingText={t("ConnectAccountsSubTitle")}
-            imageSrc="/static/images/empty_screen.png"
+            headerText={t("ConnectEmpty")}
+            descriptionText={t("ConnectDescriptionText")}
+            style={{ gridColumnGap: "39px" }}
+            buttonStyle={{ marginTop: "16px" }}
+            imageSrc="/static/images/empty_screen_alt.svg"
             buttons={
               <div className="empty-folder_container-links empty-connect_container-links">
                 <img
@@ -277,7 +285,7 @@ class ConnectClouds extends React.Component {
                 />
                 <Box className="flex-wrapper_container">
                   <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
-                    {t("Translations:AddAccount")}
+                    {t("Common:Connect")}
                   </Link>
                 </Box>
               </div>
@@ -326,7 +334,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Settings", "Translations"])(
+  withTranslation(["Settings", "Translations", "Common"])(
     observer(withRouter(ConnectClouds))
   )
 );

@@ -19,11 +19,14 @@ import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
 import Tile from "./TileLoader";
 import Tiles from "./TilesLoader";
+import TableLoader from "./TableLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
 import ListLoader from "./ListLoader";
 import SharingPanelLoader from "./SharingPanelLoader";
 import SharingPanelLoaderModal from "./SharingPanelLoader/modal";
+import InfoPanelBodyLoader from "./InfoPanelBodyLoader";
+import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
 
 export default {
   Rectangle,
@@ -43,6 +46,7 @@ export default {
   HistoryRows,
   Tile,
   Tiles,
+  TableLoader,
   DialogLoader,
   DialogAsideLoader,
   ArticleButton,
@@ -52,4 +56,6 @@ export default {
   NewTreeFolders,
   SharingPanelLoader,
   SharingPanelLoaderModal,
+  InfoPanelBodyLoader,
+  InfoPanelHeaderLoader,
 };

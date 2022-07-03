@@ -246,6 +246,28 @@ public class TariffService : ITariffService
                       }
                       catch (BillingNotFoundException)
                       {
+                          var q = QuotaService.GetTenantQuota(tariff.QuotaId);
+
+                          if (q != null
+                              && !q.Trial
+                              && !q.Free
+                              && !q.NonProfit
+                              && !q.Open
+                              && !q.Custom)
+                          {
+                              var asynctariff = Tariff.CreateDefault();
+                              asynctariff.DueDate = DateTime.Today.AddDays(-1);
+                              asynctariff.Prolongable = false;
+                              asynctariff.Autorenewal = false;
+                              asynctariff.State = TariffState.NotPaid;
+
+                              if (SaveBillingInfo(tenantId, asynctariff))
+                              {
+                                  asynctariff = CalculateTariff(tenantId, asynctariff);
+                                  ClearCache(tenantId);
+                                  Cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
+                              }
+                          }
                       }
                       catch (Exception error)
                       {
@@ -351,9 +373,9 @@ public class TariffService : ITariffService
                       ? GetBillingUrlCacheKey(tenant.Value)
                       : string.Format($"notenant{(!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "")}");
         key += quota.Visible ? "" : "0";
-        if (Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is not IDictionary<string, Tuple<Uri, Uri>> urls)
+        if (Cache.Get<Dictionary<string, Uri>>(key) is not IDictionary<string, Uri> urls)
         {
-            urls = new Dictionary<string, Tuple<Uri, Uri>>();
+            urls = new Dictionary<string, Uri>();
             if (_billingClient.Configured)
             {
                 try
@@ -386,37 +408,69 @@ public class TariffService : ITariffService
 
         ResetCacheExpiration();
 
-        if (!string.IsNullOrEmpty(quota.AvangateId) && urls.TryGetValue(quota.AvangateId, out var tuple))
+        if (!string.IsNullOrEmpty(quota.AvangateId) && urls.TryGetValue(quota.AvangateId, out var url))
         {
-            var result = tuple.Item2;
-
-            if (result == null)
-            {
-                result = tuple.Item1;
-            }
-            else
-            {
-                var tariff = tenant.HasValue ? GetTariff(tenant.Value) : null;
-                if (tariff == null || tariff.QuotaId == quotaId || tariff.State >= TariffState.Delay)
-                {
-                    result = tuple.Item1;
-                }
-            }
-
-            if (result == null)
+            if (url == null)
             {
                 return null;
             }
 
-            result = new Uri(result.ToString()
+            url = new Uri(url.ToString()
                                    .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
                                    .Replace("__Language__", HttpUtility.UrlEncode((language ?? "").ToLower()))
                                    .Replace("__CustomerID__", HttpUtility.UrlEncode(customerId ?? ""))
                                    .Replace("__Quantity__", HttpUtility.UrlEncode(quantity ?? "")));
-            return result;
+            return url;
+        }
+        return null;
+    }
+
+    public Uri GetShoppingUri(string[] productIds, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null)
+    {
+        var key = "shopingurl" + string.Join("_", productIds) + (!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
+        var url = Cache.Get<string>(key);
+        if (url == null)
+        {
+            url = string.Empty;
+            if (_billingClient.Configured)
+            {
+                try
+                {
+                    var client = GetBillingClient();
+                    url =
+                        client.GetPaymentUrl(
+                            null,
+                            productIds,
+                            affiliateId,
+                            null,
+                            !string.IsNullOrEmpty(currency) ? "__Currency__" : null,
+                            !string.IsNullOrEmpty(language) ? "__Language__" : null,
+                            !string.IsNullOrEmpty(customerId) ? "__CustomerID__" : null,
+                            !string.IsNullOrEmpty(quantity) ? "__Quantity__" : null
+                            );
+                }
+                catch (Exception error)
+                {
+                    Logger.ErrorWithException(error);
+                }
+            }
+            Cache.Insert(key, url, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
         }
 
-        return null;
+        ResetCacheExpiration();
+
+
+        if (string.IsNullOrEmpty(url))
+        {
+            return null;
+        }
+
+        var result = new Uri(url.ToString()
+                               .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
+                               .Replace("__Language__", HttpUtility.UrlEncode((language ?? "").ToLower()))
+                               .Replace("__CustomerID__", HttpUtility.UrlEncode(customerId ?? ""))
+                               .Replace("__Quantity__", HttpUtility.UrlEncode(quantity ?? "")));
+        return result;
     }
 
     public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
@@ -495,31 +549,36 @@ public class TariffService : ITariffService
         var currentTariff = GetBillingInfo(tenant);
         if (!tariffInfo.EqualsByParams(currentTariff))
         {
-            using var tx = CoreDbContext.Database.BeginTransaction();
+            var strategy = CoreDbContext.Database.CreateExecutionStrategy();
 
-            // last record is not the same
-            var any = CoreDbContext.Tariffs
-                .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
-
-            if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
-            {
-                var efTariff = new DbTariff
+            strategy.Execute(() =>
                 {
-                    Tenant = tenant,
-                    Tariff = tariffInfo.QuotaId,
-                    Stamp = tariffInfo.DueDate,
-                    Quantity = tariffInfo.Quantity,
-                    CreateOn = DateTime.UtcNow
-                };
+                    using var tx = CoreDbContext.Database.BeginTransaction();
 
-                CoreDbContext.Tariffs.Add(efTariff);
-                CoreDbContext.SaveChanges();
+                    // last record is not the same
+                    var any = CoreDbContext.Tariffs
+                        .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
 
-                Cache.Remove(GetTariffCacheKey(tenant));
-                inserted = true;
-            }
+                    if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
+                    {
+                        var efTariff = new DbTariff
+                        {
+                            Tenant = tenant,
+                            Tariff = tariffInfo.QuotaId,
+                            Stamp = tariffInfo.DueDate,
+                            Quantity = tariffInfo.Quantity,
+                            CreateOn = DateTime.UtcNow
+                        };
 
-            tx.Commit();
+                        CoreDbContext.Tariffs.Add(efTariff);
+                        CoreDbContext.SaveChanges();
+
+                        Cache.Remove(GetTariffCacheKey(tenant));
+                        inserted = true;
+                    }
+
+                    tx.Commit();
+                });
         }
 
         if (inserted)
@@ -612,7 +671,6 @@ public class TariffService : ITariffService
                     defaultQuota.Name = "overdue";
 
                     defaultQuota.Features = q.Features;
-                    defaultQuota.Support = false;
 
                     QuotaService.SaveTenantQuota(defaultQuota);
                 }

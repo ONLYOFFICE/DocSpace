@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
     <value>Hallo $UserName,
@@ -149,20 +149,6 @@ Der Link ist 7 Tage gültig.
 
 Möchten Sie Ihre E-Mail-Adresse nicht ändern? Ignorieren Sie einfach diese Nachricht.</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Sie haben Änderung Ihres Kennworts angefordert, das zum Einloggen auf das Portal "${__VirtualRootPath}":"${__VirtualRootPath}" verwendet wird.
-
-Bitte folgen Sie dem Link unten, um Ihr Kennwort zu ändern:
-
-$GreenButton
-
-*Bitte beachten*: Dieser Link ist nur 7 Tage gültig. Bitte schließen Sie den Prozess der Passwortänderung innerhalb dieses Zeitraums ab.
-
-Ignorieren Sie diese Nachricht, falls Sie Ihr Kennwort nicht ändern möchten oder diese E-Mail versehentlich erhalten haben.
-
-Mit freundlichen Grüßen,
-ONLYOFFICE Team</value>
-  </data>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Hallo,
 
@@ -196,9 +182,7 @@ Beim Entfernen persönlicher Daten es wurde freigegeben:
 
 # Dokumente - $DocsSpace
 # E-Mail - $MailSpace
-# Chat - $TalkSpace
-
-^Sie erhalten diese E-Mail, weil Sie ein registrierter Benutzer bzw. eine registrierte Benutzerin von "${__VirtualRootPath}":"${__VirtualRootPath}" sind.^</value>
+# Chat - $TalkSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Neues Portal wurde registriert
@@ -218,12 +202,6 @@ Beim Entfernen persönlicher Daten es wurde freigegeben:
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Willkommen bei ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Verbinden Sie Ihren bevorzugten Cloud-Speicher mit ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
-    <value>ONLYOFFICE Personal-Passworthilfe</value>
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Bitte aktivieren Sie Ihre E-Mail-Adresse</value>

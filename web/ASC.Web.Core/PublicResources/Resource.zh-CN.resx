@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>请输入验证码</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>请填写您的手机号码</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>管理员通知</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>您的信息已成功发送。稍后工作站管理员会与您联系。</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>系统已发送通知到：email（本工作站主要负责人的Email），等待其确认此操作。</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>LDAP用户禁止密码恢复操作</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>SSO用户禁止密码恢复操作</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>自定义</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>系统已发送通知到：{0}（本工作站主要负责人的Email），等待其确认此操作。</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>实例id不正确。</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Email地址不正确</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>促销码有误</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>很抱歉，您没有权限执行这项操作</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>对门户的访问受到限制。</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>不良秘钥</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>您的档案被停用</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>已有{!User}通过此email注册</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>不允许来自此域名的电子邮件注册</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>请输入Email地址</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>您输入的新email地址和原地址相同</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>每个空格都必须填写哦</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>消息文本为空</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>无法找到上传的文件</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>图片尺寸过大</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>名字或姓氏不正确</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>您的定价方案不支持该选项</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>无效的电子邮件</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>无效的域名</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>密码不能为空。</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>从{0}到{1}个字符</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>密码格式不正确。新密码必须包含</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>它必须包含</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>数字</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>特殊字符</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>大写字母</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>超过请求限制</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>暂无符合条件的用户</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>找不到email是"{0}"的用户</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>欧盟（法兰克福）地区</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>文件太大</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>注意：文件大小不能超过{1}{0}{2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>b,KB,MB,GB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>通知邮件已发送。请查收并按邮件中的提示完成账户激活操作</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>服务器无法保存设置。</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>LDAP操作太多</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>许可证有误</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>许可证已过期</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>门户数量超过许可证允许的数量</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>用户数超过许可证允许的数量</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>上传成功</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>详细的email地址变更指引已发送到{0}的电子邮箱</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>若想更改号码，您需要删除当前的电话号码</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG地区</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>创建者</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>超过磁盘空间配额</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>门户访问</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>{0}的数据重新分配流程尚未完成。</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>无效的Recaptcha</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Asia Pacific (新加坡)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>验证码有误</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>请使用以下验证码来登录工作站：{0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>使用代码的时间已过期。请求新短信。</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>短信设置不可用</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>您发送了太多短信。请稍后再试。</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>无法保存设置</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>设置不能为空</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>无效绑定：{0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>实体ID无效</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>字段映射无效</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>问候区设置已保存！</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>设置已更新</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>有关删除个人账号的详细指引已发送到您提供的Email地址中</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>验证码有误</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>美国西部（俄勒冈州）地区</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>新鲜事</value>
+  </data>
+</root>

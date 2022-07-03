@@ -1,8 +1,8 @@
-﻿{
+{
   "Account": "Konto",
   "ConnectFolderTitle": "Nazwa folderu",
-  "ConnectionUrl": "Adres URL połączenia",
   "ConnectMakeShared": "Udostępnij i umieść we 'Wspólnym' folderze",
+  "ConnectionUrl": "Adres URL połączenia",
   "Login": "Logowanie",
   "Reconnect": "Połącz ponownie"
 }

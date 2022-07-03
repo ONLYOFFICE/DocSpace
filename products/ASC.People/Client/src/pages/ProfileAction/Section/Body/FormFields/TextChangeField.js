@@ -45,6 +45,8 @@ class TextChangeField extends React.Component {
         tooltipContent={tooltipContent}
         helpButtonHeaderContent={helpButtonHeaderContent}
         maxLabelWidth={maxLabelWidth}
+        offsetRight={100}
+        tooltipMaxWidth="300px"
       >
         <InputContainer>
           <TextInput

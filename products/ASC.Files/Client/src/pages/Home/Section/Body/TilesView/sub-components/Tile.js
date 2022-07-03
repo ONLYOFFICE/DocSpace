@@ -6,7 +6,7 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 import Loader from "@appserver/components/loader";
@@ -58,16 +58,27 @@ const StyledTile = styled.div`
   ${(props) => props.isFolder && "border-top-left-radius: 6px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  ${(props) => props.isFolder && FlexBoxStyles}
-  ${(props) => (props.isFolder ? FolderStyles : FileStyles)}
+  ${(props) => props.isFolder && FlexBoxStyles};
+  ${(props) => (props.isFolder ? FolderStyles : FileStyles)};
   ${(props) =>
     !props.isEdit &&
     props.isFolder &&
     (props.checked || props.isActive) &&
-    checkedStyle}
+    checkedStyle};
 
+  ${(props) =>
+    !props.isDragging &&
+    !isMobile &&
+    css`
+      :hover {
+        ${checkedStyle}
+        .file-tile-bottom {
+          ${bottomFileBorder}
+        }
+      }
+    `}
 
-  &:before, 
+  &:before,
   &:after {
     ${(props) =>
       props.isFolder &&
@@ -140,6 +151,7 @@ const StyledTile = styled.div`
       !props.dragging &&
       props.isDesktop &&
       !props.inProgress &&
+      !isMobile &&
       css`
         .checkbox {
           opacity: 1;
@@ -169,7 +181,7 @@ const StyledFileTileTop = styled.div`
     position: absolute;
     height: 100%;
     width: 100%;
-    object-fit: cover;
+    object-fit: ${(props) => (props.isMedia ? "cover" : "none")};
     object-position: top;
     z-index: 0;
     border-radius: 6px 6px 0 0;
@@ -188,6 +200,7 @@ const StyledFileTileBottom = styled.div`
     !props.isEdit && (props.checked || props.isActive) && checkedStyle}
 
   border-top: 1px solid transparent;
+
   ${(props) =>
     !props.isEdit && (props.checked || props.isActive) && bottomFileBorder}
 
@@ -245,7 +258,7 @@ const StyledOptionButton = styled.div`
   display: block;
 
   .expandButton > div:first-child {
-    padding: 8px 21px 8px 12px;
+    padding: 8px 21px 8px 8px;
   }
 `;
 
@@ -349,7 +362,7 @@ class Tile extends React.PureComponent {
 
   changeCheckbox = (e) => {
     const { onSelect, item } = this.props;
-    onSelect && onSelect(e.target.checked, item);
+    onSelect && onSelect(!e.target.checked, item);
   };
 
   onFileIconClick = () => {
@@ -357,6 +370,28 @@ class Tile extends React.PureComponent {
 
     const { onSelect, item } = this.props;
     onSelect && onSelect(true, item);
+  };
+
+  onFileClick = (e) => {
+    const { onSelect, item, checked, setSelection } = this.props;
+
+    if (
+      e.detail === 1 &&
+      !e.target.closest(".badge") &&
+      !e.target.closest(".item-file-name")
+    ) {
+      if (
+        e.target.nodeName !== "IMG" &&
+        e.target.nodeName !== "INPUT" &&
+        e.target.nodeName !== "rect" &&
+        e.target.nodeName !== "path" &&
+        e.target.nodeName !== "svg"
+      ) {
+        setSelection && setSelection([]);
+      }
+
+      onSelect && onSelect(!checked, item);
+    }
   };
 
   render() {
@@ -369,6 +404,7 @@ class Tile extends React.PureComponent {
       indeterminate,
       tileContextClick,
       dragging,
+      isDragging,
       isRecycleBin,
       item,
       isActive,
@@ -402,7 +438,7 @@ class Tile extends React.PureComponent {
     };
 
     const onContextMenu = (e) => {
-      tileContextClick && tileContextClick();
+      tileContextClick && tileContextClick(e.button === 2);
       if (!this.cm.current.menuRef.current) {
         this.tile.current.click(e); //TODO: need fix context menu to global
       }
@@ -423,6 +459,7 @@ class Tile extends React.PureComponent {
         ref={this.tile}
         {...this.props}
         onContextMenu={onContextMenu}
+        isDragging={isDragging}
         dragging={dragging && isFolder}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
@@ -431,6 +468,7 @@ class Tile extends React.PureComponent {
         inProgress={inProgress}
         isDesktop={isDesktop}
         showHotkeyBorder={showHotkeyBorder}
+        onClick={this.onFileClick}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
@@ -484,6 +522,7 @@ class Tile extends React.PureComponent {
                 getContextModel={getContextModel}
                 ref={this.cm}
                 header={contextMenuHeader}
+                withBackdrop={true}
               />
             </StyledOptionButton>
           </>
@@ -507,6 +546,7 @@ class Tile extends React.PureComponent {
               checked={checked}
               isActive={isActive}
               isEdit={isEdit}
+              className="file-tile-bottom"
             >
               {id !== -1 && !isEdit && (
                 <>

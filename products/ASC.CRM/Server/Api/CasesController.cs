@@ -42,7 +42,6 @@ using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.MessagingSystem.Core;
 using ASC.MessagingSystem.Models;
-using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Services.NotifyService;
 
@@ -96,7 +95,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Case
         /// </returns>
-        [Update(@"case/{caseid:int}/close")]
+        [HttpPut(@"case/{caseid:int}/close")]
         public CasesDto CloseCases(int caseid)
         {
             if (caseid <= 0) throw new ArgumentException();
@@ -121,7 +120,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Case
         /// </returns>
-        [Update(@"case/{caseid:int}/reopen")]
+        [HttpPut(@"case/{caseid:int}/reopen")]
         public CasesDto ReOpenCases(int caseid)
         {
             if (caseid <= 0) throw new ArgumentException();
@@ -160,7 +159,7 @@ namespace ASC.CRM.Api
         /// 
         /// ]]>
         /// </example>
-        [Create(@"case")]
+        [HttpPost(@"case")]
         public CasesDto CreateCases([FromBody] CreateOrUpdateCasesRequestDto inDto)
         {
 
@@ -237,7 +236,7 @@ namespace ASC.CRM.Api
         /// 
         /// ]]>
         /// </example>
-        [Update(@"case/{caseid:int}")]
+        [HttpPut(@"case/{caseid:int}")]
         public CasesDto UpdateCases(int caseid, [FromBody] CreateOrUpdateCasesRequestDto inDto)
         {
             var title = inDto.Title;
@@ -295,7 +294,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Case 
         /// </returns>
-        [Update(@"case/{caseid:int}/access")]
+        [HttpPut(@"case/{caseid:int}/access")]
         public CasesDto SetAccessToCases(int caseid, bool isPrivate, IEnumerable<Guid> accessList)
         {
             if (caseid <= 0) throw new ArgumentException();
@@ -356,7 +355,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Case list
         /// </returns>
-        [Update(@"case/access")]
+        [HttpPut(@"case/access")]
         public IEnumerable<CasesDto> SetAccessToBatchCases([FromBody] SetAccessToBatchCasesRequestDto inDto)
         {
             var casesid = inDto.CasesId;
@@ -397,7 +396,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Case list
         /// </returns>
-        [Update(@"case/filter/access")]
+        [HttpPut(@"case/filter/access")]
         public IEnumerable<CasesDto> SetAccessToBatchCases([FromBody] SetAccessToBatchCasesByFilterInDto inDto)
         {
             int contactid = inDto.Contactid;
@@ -433,7 +432,7 @@ namespace ASC.CRM.Api
         /// <param name="caseid">Case ID</param>
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
-        [Read(@"case/{caseid:int}")]
+        [HttpGet(@"case/{caseid:int}")]
         public CasesDto GetCaseByID(int caseid)
         {
             if (caseid <= 0) throw new ItemNotFoundException();
@@ -455,7 +454,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Case list
         /// </returns>
-        [Read(@"case/filter")]
+        [HttpGet(@"case/filter")]
         public IEnumerable<CasesDto> GetCases(int contactid, bool? isClosed, IEnumerable<string> tags)
         {
             IEnumerable<CasesDto> result;
@@ -537,7 +536,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Case
         /// </returns>
-        [Delete(@"case/{caseid:int}")]
+        [HttpDelete(@"case/{caseid:int}")]
         public Task<CasesDto> DeleteCaseAsync(int caseid)
         {
             if (caseid <= 0) throw new ArgumentException();
@@ -567,7 +566,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Case list
         /// </returns>
-        [Update(@"case")]
+        [HttpPut(@"case")]
         public Task<IEnumerable<CasesDto>> DeleteBatchCasesAsync([FromBody] IEnumerable<int> casesids)
         {
             if (casesids == null) throw new ArgumentException();
@@ -600,7 +599,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Case list
         /// </returns>
-        [Delete(@"case/filter")]
+        [HttpDelete(@"case/filter")]
         public Task<IEnumerable<CasesDto>> DeleteBatchCasesAsync(int contactid, bool? isClosed, IEnumerable<string> tags)
         {
             var caseses = _daoFactory.GetCasesDao().GetCases(_apiContext.FilterValue, contactid, isClosed, tags, 0, 0, null);
@@ -626,7 +625,7 @@ namespace ASC.CRM.Api
         /// <category>Cases</category>
         /// <returns>Contact list</returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"case/{caseid:int}/contact")]
+        [HttpGet(@"case/{caseid:int}/contact")]
         public IEnumerable<ContactDto> GetCasesMembers(int caseid)
         {
             var contactIDs = _daoFactory.GetCasesDao().GetMembers(caseid);
@@ -649,7 +648,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Participant
         /// </returns>
-        [Create(@"case/{caseid:int}/contact")]
+        [HttpPost(@"case/{caseid:int}/contact")]
         public ContactDto AddMemberToCases([FromRoute] int caseid, [FromBody] int contactid)
         {
             if ((caseid <= 0) || (contactid <= 0)) throw new ArgumentException();
@@ -680,7 +679,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Participant
         /// </returns>
-        [Delete(@"case/{caseid:int}/contact/{contactid:int}")]
+        [HttpDelete(@"case/{caseid:int}/contact/{contactid:int}")]
         public ContactDto DeleteMemberFromCases(int caseid, int contactid)
         {
             if ((caseid <= 0) || (contactid <= 0)) throw new ArgumentException();
@@ -712,7 +711,7 @@ namespace ASC.CRM.Api
         ///    Cases list
         /// </returns>
         /// <visible>false</visible>
-        [Read(@"case/byprefix")]
+        [HttpGet(@"case/byprefix")]
         public IEnumerable<CasesDto> GetCasesByPrefix(string prefix, int contactID)
         {
             var result = new List<CasesDto>();

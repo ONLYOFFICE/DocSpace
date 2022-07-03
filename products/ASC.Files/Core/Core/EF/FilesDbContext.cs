@@ -41,6 +41,7 @@ public class FilesDbContext : BaseDbContext
     public DbSet<DbFilesTag> Tag { get; set; }
     public DbSet<DbFilesThirdpartyApp> ThirdpartyApp { get; set; }
     public DbSet<DbFilesLink> FilesLink { get; set; }
+    public DbSet<DbFilesProperties> FilesProperties { get; set; }
     public DbSet<DbTariff> Tariffs { get; set; }
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
@@ -71,6 +72,7 @@ public class FilesDbContext : BaseDbContext
             .AddDbFilesTag()
             .AddDbDbFilesThirdpartyApp()
             .AddDbFilesLink()
+            .AddDbFilesProperties()
             .AddDbTariff()
             .AddDbQuota()
             .AddDbTenant();

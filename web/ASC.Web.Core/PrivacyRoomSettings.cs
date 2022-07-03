@@ -49,9 +49,9 @@ public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
         return settingsManager.Load<PrivacyRoomSettings>().EnabledSetting;
     }
 
-    public static void SetEnabled(TenantManager tenantManager, SettingsManager settingsManager, bool value)
+    public static void SetEnabled(SettingsManager settingsManager, bool value)
     {
-        if (!IsAvailable(tenantManager))
+        if (!IsAvailable())
         {
             return;
         }
@@ -61,9 +61,8 @@ public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
         settingsManager.Save(settings);
     }
 
-    public static bool IsAvailable(TenantManager tenantManager)
+    public static bool IsAvailable()
     {
-        return SetupInfo.IsVisibleSettings(nameof(ManagementType.PrivacyRoom))
-            && tenantManager.GetTenantQuota(tenantManager.GetCurrentTenant().Id).PrivacyRoom;
+        return SetupInfo.IsVisibleSettings(nameof(ManagementType.PrivacyRoom));
     }
 }

@@ -1,10 +1,10 @@
-﻿{
+{
+  "Clouds": "Clouds",
   "CommonSettings": "Allgemeine Einstellungen",
-  "ConnectAccounts": "Konten verbinden",
-  "ConnectAccountsSubTitle": "Keine Konten wurden verbunden",
   "ConnectAdminDescription": "Für erfolgreiche Verbindung geben Sie die notwendigen Daten <1>auf dieser Seite</1> ein.",
   "ConnectDescription": "Sie können folgende Konten mit ONLYOFFICE verbinden. Dokumente aus diesen Konten werden im Bereich \"Meine Dokumente\" für Bearbeitung verfügbar.",
-  "ConnectedCloud": "Cloud verbinden",
+  "ConnectDescriptionText": "Sie haben noch keine Cloud-Dienste von Drittanbietern verbunden.",
+  "ConnectEmpty": "Nichts gefunden",
   "ConnectMakeShared": "Freigeben und in den Ordner \"Gemeinsame Dokumente\" verschieben",
   "ConnextOtherAccount": "Anderes Konto",
   "DisplayFavorites": "Favoriten anzeigen",

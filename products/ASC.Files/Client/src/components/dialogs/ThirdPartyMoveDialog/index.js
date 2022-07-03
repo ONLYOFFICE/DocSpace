@@ -164,7 +164,7 @@ export default inject(
       setThirdPartyMoveDialogVisible,
       destFolderId,
       setDestFolderId,
-      provider: selection[0].providerKey,
+      provider: selection[0]?.providerKey,
       checkFileConflicts,
       selection,
       setBufferSelection,

@@ -14,6 +14,8 @@ import {
 } from "./styled-row";
 import Loader from "../loader";
 
+import { isMobile } from "react-device-detect"; //TODO: isDesktop=true for IOS(Firefox & Safari)
+
 class Row extends React.Component {
   constructor(props) {
     super(props);
@@ -70,7 +72,7 @@ class Row extends React.Component {
     };
 
     const onContextMenu = (e) => {
-      rowContextClick && rowContextClick();
+      rowContextClick && rowContextClick(e.button === 2);
       if (!this.cm.current.menuRef.current) {
         this.row.current.click(e); //TODO: need fix context menu to global
       }
@@ -85,29 +87,63 @@ class Row extends React.Component {
       };
     }
 
-    const { onRowClick, inProgress, ...rest } = this.props;
+    const { onRowClick, inProgress, mode, ...rest } = this.props;
+
+    const onElementClick = () => {
+      if (!isMobile) return;
+
+      onSelect && onSelect(true, data);
+    };
 
     return (
-      <StyledRow ref={this.row} {...rest} onContextMenu={onContextMenu}>
+      <StyledRow
+        ref={this.row}
+        {...rest}
+        mode={mode}
+        onContextMenu={onContextMenu}
+      >
         {inProgress ? (
           <Loader className="row-loader" type="oval" size="16px" />
         ) : (
-          renderCheckbox && (
-            <StyledCheckbox className="not-selectable">
-              <Checkbox
-                className="checkbox"
-                isChecked={checked}
-                isIndeterminate={indeterminate}
-                onChange={changeCheckbox}
-              />
-            </StyledCheckbox>
-          )
+          <>
+            {mode == "default" && renderCheckbox && (
+              <StyledCheckbox className="not-selectable">
+                <Checkbox
+                  className="checkbox"
+                  isChecked={checked}
+                  isIndeterminate={indeterminate}
+                  onChange={changeCheckbox}
+                />
+              </StyledCheckbox>
+            )}
+            {mode == "modern" && renderCheckbox && renderElement && (
+              <StyledCheckbox
+                className="not-selectable styled-checkbox-container"
+                checked={checked}
+                mode={mode}
+              >
+                <StyledElement
+                  onClick={onElementClick}
+                  className="styled-element"
+                >
+                  {element}
+                </StyledElement>
+                <Checkbox
+                  className="checkbox"
+                  isChecked={checked}
+                  isIndeterminate={indeterminate}
+                  onChange={changeCheckbox}
+                />
+              </StyledCheckbox>
+            )}
+          </>
         )}
-        {renderElement && (
+        {mode == "default" && renderElement && (
           <StyledElement onClick={onRowClick} className="styled-element">
             {element}
           </StyledElement>
         )}
+
         <StyledContent onClick={onRowClick} className="row_content">
           {children}
         </StyledContent>
@@ -174,10 +210,12 @@ Row.propTypes = {
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   inProgress: PropTypes.bool,
   getContextModel: PropTypes.func,
+  mode: PropTypes.string,
 };
 
 Row.defaultProps = {
   contextButtonSpacerWidth: "26px",
+  mode: "default",
   data: {},
 };
 

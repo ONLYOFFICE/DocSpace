@@ -137,6 +137,11 @@ export const LoginContainer = styled.div`
 
         .login-checkbox {
           display: flex;
+          align-items: flex-start;
+
+          label {
+            justify-content: center;
+          }
         }
 
         .remember-helper-wrapper {

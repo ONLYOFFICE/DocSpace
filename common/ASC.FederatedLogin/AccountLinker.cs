@@ -166,26 +166,34 @@ public class AccountLinker
 
     public void RemoveProvider(string obj, string provider = null, string hashId = null)
     {
-        using var tr = AccountLinkContext.Database.BeginTransaction();
+        var strategy = AccountLinkContext.Database.CreateExecutionStrategy();
 
-        var accountLinkQuery = AccountLinks
-            .Where(r => r.Id == obj);
-
-        if (!string.IsNullOrEmpty(provider))
+        strategy.Execute(() =>
         {
-            accountLinkQuery = accountLinkQuery.Where(r => r.Provider == provider);
-        }
+            using var tr = AccountLinkContext.Database.BeginTransaction();
 
-        if (!string.IsNullOrEmpty(hashId))
-        {
-            accountLinkQuery = accountLinkQuery.Where(r => r.UId == hashId);
-        }
+            var accountLinkQuery = AccountLinks
+                .Where(r => r.Id == obj);
 
-        var accountLink = accountLinkQuery.FirstOrDefault();
-        AccountLinks.Remove(accountLink);
-        AccountLinkContext.SaveChanges();
+            if (!string.IsNullOrEmpty(provider))
+            {
+                accountLinkQuery = accountLinkQuery.Where(r => r.Provider == provider);
+            }
 
-        tr.Commit();
+            if (!string.IsNullOrEmpty(hashId))
+            {
+                accountLinkQuery = accountLinkQuery.Where(r => r.UId == hashId);
+            }
+
+            var accountLink = accountLinkQuery.FirstOrDefault();
+            AccountLinks.Remove(accountLink);
+            AccountLinkContext.SaveChanges();
+
+            tr.Commit();
+        });
+
+
+
         AccountLinkerStorage.RemoveFromCache(obj);
     }
 

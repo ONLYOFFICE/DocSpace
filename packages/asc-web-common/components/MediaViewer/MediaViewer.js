@@ -376,22 +376,26 @@ class MediaViewer extends React.Component {
     if (isActionKey) {
       switch (e.keyCode) {
         case ButtonKeys.leftArrow:
-          ctrIsPressed
-            ? document.getElementsByClassName("iconContainer rotateLeft")
-                .length > 0 &&
-              document
-                .getElementsByClassName("iconContainer rotateLeft")[0]
-                .click()
-            : this.prevMedia();
+          !this.props.deleteDialogVisible
+            ? ctrIsPressed
+              ? document.getElementsByClassName("iconContainer rotateLeft")
+                  .length > 0 &&
+                document
+                  .getElementsByClassName("iconContainer rotateLeft")[0]
+                  .click()
+              : this.prevMedia()
+            : null;
           break;
         case ButtonKeys.rightArrow:
-          ctrIsPressed
-            ? document.getElementsByClassName("iconContainer rotateRight")
-                .length > 0 &&
-              document
-                .getElementsByClassName("iconContainer rotateRight")[0]
-                .click()
-            : this.nextMedia();
+          !this.props.deleteDialogVisible
+            ? ctrIsPressed
+              ? document.getElementsByClassName("iconContainer rotateRight")
+                  .length > 0 &&
+                document
+                  .getElementsByClassName("iconContainer rotateRight")[0]
+                  .click()
+              : this.nextMedia()
+            : null;
           break;
         case ButtonKeys.esc:
           if (!this.props.deleteDialogVisible) this.props.onClose();
@@ -457,6 +461,7 @@ class MediaViewer extends React.Component {
       canDownload,
       errorLabel,
       isPreviewFile,
+      isFavoritesFolder,
     } = this.props;
 
     const currentFileId =
@@ -540,6 +545,7 @@ class MediaViewer extends React.Component {
               onPrevClick={this.prevMedia}
               onDeleteClick={this.onDelete}
               onDownloadClick={this.onDownload}
+              isFavoritesFolder={isFavoritesFolder}
             />
           ) : (
             <StyledVideoViewer
@@ -552,13 +558,15 @@ class MediaViewer extends React.Component {
         <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
           {!isImage && (
             <span>
-              {canDelete(currentFileId) && !isPreviewFile && (
-                <ControlBtn onClick={this.onDelete}>
-                  <div className="deleteBtnContainer">
-                    <StyledMediaDeleteIcon size="scale" />
-                  </div>
-                </ControlBtn>
-              )}
+              {canDelete(currentFileId) &&
+                !isPreviewFile &&
+                !isFavoritesFolder && (
+                  <ControlBtn onClick={this.onDelete}>
+                    <div className="deleteBtnContainer">
+                      <StyledMediaDeleteIcon size="scale" />
+                    </div>
+                  </ControlBtn>
+                )}
               {canDownload(currentFileId) && (
                 <ControlBtn onClick={this.onDownload}>
                   <div className="downloadBtnContainer">
@@ -591,6 +599,7 @@ MediaViewer.propTypes = {
   deleteDialogVisible: PropTypes.bool,
   errorLabel: PropTypes.string,
   isPreviewFile: PropTypes.bool,
+  isFavoritesFolder: PropTypes.bool,
   onChangeUrl: PropTypes.func,
 };
 

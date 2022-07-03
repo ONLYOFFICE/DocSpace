@@ -30,7 +30,7 @@ namespace ASC.Files.Core.Security;
 public interface ISecurityDao<T>
 {
     Task SetShareAsync(FileShareRecord r);
-    ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects);
+        Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects);
     IAsyncEnumerable<FileShareRecord> GetSharesAsyncEnumerable(IEnumerable<Guid> subjects);
     Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<T>> entry);
     Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry);
@@ -39,5 +39,5 @@ public interface ISecurityDao<T>
     IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IAsyncEnumerable<FileEntry<T>> entries);
     Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<T> entry);
     Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records);
-    ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type);
+    Task<bool> IsSharedAsync(T entryId, FileEntryType type);
 }

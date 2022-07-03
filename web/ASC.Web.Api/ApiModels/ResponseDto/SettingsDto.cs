@@ -41,6 +41,7 @@ public class SettingsDto
     public bool? EnableAdmMess { get; set; }
     public bool? ThirdpartyEnable { get; set; }
     public bool Personal { get; set; }
+    public bool DocSpace { get; set; }
     public string WizardToken { get; set; }
     public PasswordHasher PasswordHash { get; set; }
     public FirebaseDto Firebase { get; set; }
@@ -50,6 +51,7 @@ public class SettingsDto
     public string SocketUrl { get; set; }
     public TenantStatus TenantStatus { get; set; }
     public string TenantAlias { get; set; }
+    public string HelpLink { get; set; }
 
     public static SettingsDto GetSample()
     {

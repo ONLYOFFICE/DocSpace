@@ -76,12 +76,14 @@ global using ASC.Data.Storage;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Core;
 global using ASC.ElasticSearch.Service;
+global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.Helpers;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.Files.Core;
+global using ASC.Files.Core.VirtualRooms;
 global using ASC.Files.Core.ApiModels.RequestDto;
 global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.Core.Entries;
@@ -89,7 +91,9 @@ global using ASC.Files.Core.Data;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.IntegrationEvents.Events;
 global using ASC.Files.Core.Log;
+global using ASC.Files.Core.Entries;
 global using ASC.Files.Core.Mapping;
+global using ASC.Files.Core.Helpers;
 global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Core.Services.NotifyService;
@@ -103,6 +107,7 @@ global using ASC.Files.Thirdparty.OneDrive;
 global using ASC.Files.Thirdparty.ProviderDao;
 global using ASC.Files.Thirdparty.SharePoint;
 global using ASC.Files.Thirdparty.Sharpbox;
+global using ASC.Files.ThumbnailBuilder;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Models;
 global using ASC.Notify.Model;
@@ -164,6 +169,8 @@ global using ICSharpCode.SharpZipLib.GZip;
 global using ICSharpCode.SharpZipLib.Tar;
 global using ICSharpCode.SharpZipLib.Zip;
 
+global using JWT.Algorithms;
+global using JWT.Builder;
 global using JWT.Exceptions;
 
 global using Microsoft.AspNetCore.Builder;
@@ -193,6 +200,10 @@ global using Newtonsoft.Json.Linq;
 
 global using ProtoBuf;
 
+global using SixLabors.ImageSharp;
+
+global using StackExchange.Redis;
+
 global using static ASC.Files.Core.Data.AbstractDao;
 global using static ASC.Web.Core.Files.DocumentService;
 global using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracker;
@@ -219,3 +230,4 @@ global using JsonTokenType = System.Text.Json.JsonTokenType;
 global using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 global using JsonConverterAttribute = System.Text.Json.Serialization.JsonConverterAttribute;
 global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
+global using SocketManager = ASC.Web.Files.Utils.SocketManager;

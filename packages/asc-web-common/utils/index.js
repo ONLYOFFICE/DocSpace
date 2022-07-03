@@ -343,3 +343,33 @@ export function getFolderOptions(folderId, filter) {
 
   return options;
 }
+
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function isElementInViewport(el) {
+  if (!el) return;
+
+  const rect = el.getBoundingClientRect();
+
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
+export function assign(obj, keyPath, value) {
+  const lastKeyIndex = keyPath.length - 1;
+  for (let i = 0; i < lastKeyIndex; ++i) {
+    const key = keyPath[i];
+    if (!(key in obj)) {
+      obj[key] = {};
+    }
+    obj = obj[key];
+  }
+  obj[keyPath[lastKeyIndex]] = value;
+}

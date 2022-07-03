@@ -145,8 +145,11 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         }
 
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        using var tx = FilesDbContext.Database.BeginTransaction();
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tx = await FilesDbContext.Database.BeginTransactionAsync();
         var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
             .Where(r => r.Id.StartsWith(oldValue))
             .Select(r => r.Id)
@@ -194,6 +197,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         }
 
         await tx.CommitAsync();
+        });
     }
 
     protected string MakePath(object entryId)
@@ -281,6 +285,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         folder.Title = MakeTitle(fsEntry);
         folder.FilesCount = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
         folder.FoldersCount = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
+        SetFolderType(folder, isRoot);
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {

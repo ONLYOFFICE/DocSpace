@@ -364,7 +364,10 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         var id = MakeId(file);
 
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
+        await strategy.ExecuteAsync(async () =>
+        {
         using (var tx = FilesDbContext.Database.BeginTransaction())
         {
             var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
@@ -402,6 +405,10 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
             await tx.CommitAsync().ConfigureAwait(false);
         }
+        });
+
+
+
 
         if (file is not ErrorEntry)
         {
