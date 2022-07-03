@@ -434,8 +434,6 @@ public class EntryManager
 
     public async Task<IEnumerable<FileEntry>> GetEntriesAsync<T>(Folder<T> parent, int from, int count, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
     {
-        var total = 0;
-
         if (parent == null)
         {
             throw new ArgumentNullException(nameof(parent), FilesCommonResource.ErrorMassage_FolderNotFound);
@@ -648,7 +646,7 @@ public class EntryManager
             }
         }
 
-        var data = entries;
+        IEnumerable<FileEntry> data = entries.ToList();
 
         if (orderBy.SortedBy != SortedByType.New)
         {
