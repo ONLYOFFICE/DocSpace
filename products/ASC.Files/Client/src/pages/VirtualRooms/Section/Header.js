@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
 
 import { isMobile } from "react-device-detect";
 import { tablet } from "@appserver/components/utils/device";
@@ -8,6 +9,8 @@ import { tablet } from "@appserver/components/utils/device";
 import Headline from "@appserver/common/components/Headline";
 
 import IconButton from "@appserver/components/icon-button";
+import withLoader from "../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -29,10 +32,10 @@ const StyledHeadline = styled(Headline)`
   }
 `;
 
-const SectionHeaderContent = ({ createRoom }) => {
+const SectionHeaderContent = ({ createRoom, title }) => {
   return (
     <StyledContainer>
-      <StyledHeadline>Virtual Rooms</StyledHeadline>
+      <StyledHeadline>{title}</StyledHeadline>
       <IconButton
         zIndex={402}
         className="create-button"
@@ -47,8 +50,12 @@ const SectionHeaderContent = ({ createRoom }) => {
   );
 };
 
-export default inject(({ roomsStore }) => {
+export default inject(({ roomsStore, selectedFolderStore }) => {
   const { createRoom } = roomsStore;
 
-  return { createRoom };
-})(observer(SectionHeaderContent));
+  return { createRoom, title: selectedFolderStore.title };
+})(
+  withTranslation([])(
+    withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
+  )
+);
