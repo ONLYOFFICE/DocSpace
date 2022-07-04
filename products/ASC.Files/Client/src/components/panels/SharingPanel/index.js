@@ -26,7 +26,6 @@ import Body from "./Body";
 import Footer from "./Footer";
 import SharingPanelLoader from "@appserver/common/components/Loaders/SharingPanelLoader";
 import SharingPanelLoaderModal from "@appserver/common/components/Loaders/SharingPanelLoader/modal";
-import ThirdPartyList from "../../Article/Body/ThirdPartyList";
 
 // const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
