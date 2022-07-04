@@ -76,12 +76,12 @@ const Tag = ({
             directionX={"right"}
             manualY={"4px"}
           >
-            {advancedOptions.map((tag) => (
+            {advancedOptions.map((tag, index) => (
               <DropDownItem
                 className="tag__dropdown-item"
-                key={tag.key}
-                onClick={tag.onClick}
-                value={tag.value}
+                key={`${tag}_${index}`}
+                onClick={onClick}
+                value={tag}
               >
                 <StyledDropdownIcon
                   className="tag__dropdown-item-icon"
@@ -92,7 +92,7 @@ const Tag = ({
                   fontWeight={600}
                   fontSize={"12px"}
                 >
-                  {tag.label}
+                  {tag}
                 </StyledDropdownText>
               </DropDownItem>
             ))}
