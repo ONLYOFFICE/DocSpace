@@ -31,6 +31,7 @@ const FilterInput = React.memo(
     viewSelectorVisible,
     isRecentFolder,
     isFavoritesFolder,
+    isRoomFolder,
     ...props
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
@@ -76,7 +77,8 @@ const FilterInput = React.memo(
         {(isMobile ||
           isTabletUtils() ||
           isMobileUtils() ||
-          viewAs === "row") && (
+          viewAs === "row" ||
+          isRoomFolder) && (
           <SortButton
             t={t}
             selectedFilterData={selectedFilterData}
