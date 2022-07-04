@@ -296,16 +296,8 @@ const Items = ({
   );
 
   const onEmptyTrashAction = () => {
+    isMobile && onHide();
     setEmptyTrashDialogVisible(true);
-  };
-
-  const onClickBadge = (isTrash) => {
-    if (isTrash) {
-      isMobile && onHide();
-      onEmptyTrashAction();
-    } else {
-      onBadgeClick();
-    }
   };
 
   const getItem = React.useCallback(
@@ -333,7 +325,7 @@ const Items = ({
             showText={showText}
             onClick={onClick}
             onMoveTo={onMoveTo}
-            onBadgeClick={() => onClickBadge(isTrash)}
+            onBadgeClick={isTrash ? onEmptyTrashAction : onBadgeClick}
             showDragItems={showDragItems}
             showBadge={showBadge}
             labelBadge={labelBadge}
