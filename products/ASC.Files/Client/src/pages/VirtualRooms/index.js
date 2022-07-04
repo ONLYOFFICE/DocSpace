@@ -5,8 +5,6 @@ import Section from "@appserver/common/components/Section";
 
 import { showLoader, hideLoader } from "@appserver/common/utils";
 
-import { getRooms } from "@appserver/common/api/rooms";
-
 import SectionHeaderContent from "./Section/Header";
 import Bar from "./Section/Bar";
 import SectionFilterContent from "./Section/Filter";
@@ -16,9 +14,10 @@ import RoomsFilter from "@appserver/common/api/rooms/filter";
 const VirtualRooms = ({
   setFirstLoad,
   setIsLoading,
-  fetchRooms,
   viewAs,
+
   rooms,
+  fetchRooms,
 }) => {
   const getRooms = React.useCallback(async () => {
     setIsLoading(true);
@@ -27,7 +26,7 @@ const VirtualRooms = ({
 
     const searchArea = !!filterObj ? filterObj.searchArea : null;
 
-    fetchRooms(searchArea, filterObj).then((res) => {
+    fetchRooms(searchArea, filterObj).then(() => {
       setIsLoading(false);
       setFirstLoad(false);
     });

@@ -8,7 +8,9 @@ import { Consumer } from "@appserver/components/utils/context";
 import EmptyContainer from "./EmptyContainer";
 
 import VirtualRoomsTile from "./TileView";
+import VirtualRoomsRow from "./RowView";
 import VirtualRoomsTable from "./TableView";
+
 import withLoader from "../../../../HOCs/withLoader";
 
 const SectionBodyContent = ({ isEmpty, viewAs }) => {
@@ -20,7 +22,7 @@ const SectionBodyContent = ({ isEmpty, viewAs }) => {
         ) : viewAs === "tile" ? (
           <VirtualRoomsTile sectionWidth={context.sectionWidth} />
         ) : viewAs === "row" ? (
-          <></>
+          <VirtualRoomsRow sectionWidth={context.sectionWidth} />
         ) : (
           <VirtualRoomsTable sectionWidth={context.sectionWidth} />
         )
