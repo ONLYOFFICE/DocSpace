@@ -4,7 +4,6 @@ import Tag from "@appserver/components/tag";
 
 import StyledTags from "./StyledTags";
 
-const tagMaxWidth = 160;
 const Tags = ({ id, className, style, tags, columnCount }) => {
   const [renderedTags, setRenderedTags] = React.useState(null);
 
@@ -24,10 +23,10 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
           (currentTagMaxWidth / containerWidth) * 100
         );
 
-        newTags.push(...tags);
-
         for (let i = 0; i < tags.length; i++) {
-          newTags[i].maxWidth = `${maxWidthPercent}%`;
+          const tag = { name: tags[i], maxWidth: `${maxWidthPercent}%` };
+
+          newTags.push(tag);
         }
       } else {
         if (tags.length === columnCount + 1) {
@@ -38,10 +37,10 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
             (currentTagMaxWidth / containerWidth) * 100
           );
 
-          newTags.push(...tags);
-
           for (let i = 0; i < tags.length; i++) {
-            newTags[i].maxWidth = `${maxWidthPercent}%`;
+            const tag = { name: tags[i], maxWidth: `${maxWidthPercent}%` };
+
+            newTags.push(tag);
           }
         } else {
           const tagWithDropdown = {
@@ -56,13 +55,13 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
             (currentTagMaxWidth / containerWidth) * 100
           );
 
-          newTags.push(...tags.slice(0, columnCount));
-          newTags.push(tagWithDropdown);
-
           for (let i = 0; i < columnCount; i++) {
-            newTags[i].maxWidth = `${maxWidthPercent}%`;
+            const tag = { name: tags[i], maxWidth: `${maxWidthPercent}%` };
+
+            newTags.push(tag);
           }
 
+          newTags.push(tagWithDropdown);
           newTags[newTags.length - 1].maxWidth = `35px`;
         }
       }
@@ -78,10 +77,10 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
   return (
     <StyledTags id={id} className={className} style={style} ref={tagsRef}>
       {renderedTags?.length > 0 ? (
-        renderedTags.map((tag) => (
+        renderedTags.map((tag, index) => (
           <Tag
-            key={tag.key}
-            label={tag.label}
+            key={`${tag.name}_${index}`}
+            label={tag.name}
             advancedOptions={tag.advancedOptions}
             tagMaxWidth={tag.maxWidth}
             isNewTag={false}
