@@ -40,6 +40,9 @@ const DropDownItem = (props) => {
           />
         </IconWrapper>
       )}
+
+      {!icon && <IconWrapper />}
+
       {isSeparator ? "\u00A0" : label ? label : children && children}
 
       {isSubMenu && (
