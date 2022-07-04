@@ -6,9 +6,9 @@ const StyledDropdown = styled.div`
     ${window.innerHeight < 500 &&
     css`
       top: ${(props) =>
-        props.isPersonal && props.isExternalLink ? "10% !important " : "0"};
+        props.isPersonal && props.isExternalLink ? "10% !important " : "auto"};
       left: ${(props) =>
-        props.isPersonal && props.isExternalLink ? "45% !important " : "0"};
+        props.isPersonal && props.isExternalLink ? "45% !important " : "auto"};
     `}
   }
 
