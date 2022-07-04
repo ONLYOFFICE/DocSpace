@@ -163,7 +163,7 @@ class DropDown extends React.PureComponent {
 
     const rects = parent.current.getBoundingClientRect();
 
-    let dropDownHeight = this.dropDownRef.current.offsetParent
+    let dropDownHeight = this.dropDownRef.current?.offsetParent
       ? this.dropDownRef.current.offsetHeight
       : DomHelpers.getHiddenElementOuterHeight(this.dropDownRef.current);
 

@@ -31,16 +31,15 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
     right: 0;
   }
 
-  /* ${(props) =>
-    (props.isRowView || isMobile) &&
-    css`
-      z-index: 309;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    `} */
+  ${isMobile &&
+  css`
+    z-index: 309;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  `}
 `;
 
 const StyledInfoPanel = styled.div`
@@ -63,15 +62,14 @@ const StyledInfoPanel = styled.div`
     max-width: calc(100vw - 69px);
   }
 
-  /* ${(props) =>
-    (props.isRowView || isMobile) &&
-    css`
-      position: absolute;
-      border: none;
-      right: 0;
-      width: 480px;
-      max-width: calc(100vw - 69px);
-    `} */
+  ${isMobile &&
+  css`
+    position: absolute;
+    border: none;
+    right: 0;
+    width: 480px;
+    max-width: calc(100vw - 69px);
+  `}
 
   @media (max-width: 428px) {
     bottom: 0;
@@ -94,7 +92,6 @@ const StyledControlContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 450;
-  /* background: ${(props) => props.theme.catalog.control.background}; */
 
   @media ${tablet} {
     display: flex;
@@ -103,14 +100,13 @@ const StyledControlContainer = styled.div`
     left: -34px;
   }
 
-  /* ${(props) =>
-    (props.isRowView || isMobile) &&
-    css`
-      display: flex !important;
+  ${isMobile &&
+  css`
+    display: flex;
 
-      top: 18px;
-      left: -34px;
-    `} */
+    top: 16px;
+    left: -34px;
+  `}
 
   @media (max-width: 428px) {
     display: flex;
@@ -134,10 +130,14 @@ const StyledCrossIcon = styled(CrossIcon)`
 
 StyledCrossIcon.defaultProps = { theme: Base };
 
-const InfoPanel = ({ children, isVisible, setIsVisible, viewAs }) => {
+const InfoPanel = ({ children, isVisible, setIsVisible, viewAs, isFiles }) => {
   if (!isVisible) return null;
 
   const closeInfoPanel = () => setIsVisible(false);
+
+  useEffect(() => {
+    if (!isFiles) closeInfoPanel();
+  }, [isFiles]);
 
   useEffect(() => {
     const onMouseDown = (e) => {
@@ -187,10 +187,13 @@ StyledInfoPanelWrapper.defaultProps = { theme: Base };
 StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, filesStore }) => {
   const { isVisible, setIsVisible } = auth.infoPanelStore;
+  const isFiles = true && filesStore;
+
   return {
     isVisible,
     setIsVisible,
+    isFiles,
   };
 })(InfoPanel);

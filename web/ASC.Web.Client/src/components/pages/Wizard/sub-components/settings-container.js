@@ -73,7 +73,7 @@ const SettingsContainer = ({
       {titleEmail}
       {contentEmail}
 
-      <Text fontSize="13px">{t("Language")}:</Text>
+      <Text fontSize="13px">{t("Common:Language")}:</Text>
       <ComboBox
         className="drop-down"
         options={languages}

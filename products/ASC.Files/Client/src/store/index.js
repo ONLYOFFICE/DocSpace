@@ -39,11 +39,13 @@ const mediaViewerDataStore = new MediaViewerDataStore(
 );
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
+const versionHistoryStore = new VersionHistoryStore(filesStore);
 const dialogsStore = new DialogsStore(
   store.auth,
   treeFoldersStore,
   filesStore,
-  selectedFolderStore
+  selectedFolderStore,
+  versionHistoryStore
 );
 const uploadDataStore = new UploadDataStore(
   treeFoldersStore,
@@ -66,7 +68,6 @@ const filesActionsStore = new FilesActionsStore(
   mediaViewerDataStore
 );
 
-const versionHistoryStore = new VersionHistoryStore(filesStore);
 const contextOptionsStore = new ContextOptionsStore(
   store.auth,
   dialogsStore,

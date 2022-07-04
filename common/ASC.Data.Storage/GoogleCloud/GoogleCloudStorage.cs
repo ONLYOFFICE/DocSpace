@@ -32,6 +32,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -267,13 +268,18 @@ namespace ASC.Data.Storage.GoogleCloud
             return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
         }
 
+        private bool EnableQuotaCheck(string domain)
+        {
+            return (QuotaController != null) && !domain.EndsWith("_temp");
+        }
+
         public async Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
                           string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
         {
 
             var buffered = TempStream.GetBuffered(stream);
 
-            if (QuotaController != null)
+            if (EnableQuotaCheck(domain))
             {
                 QuotaController.QuotaUsedCheck(buffered.Length);
             }
@@ -754,14 +760,14 @@ namespace ASC.Data.Storage.GoogleCloud
 
             if (chunkLength != defaultChunkSize)
                 totalBytes = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength);
-
-            var contentRangeHeader = $"bytes {bytesRangeStart}-{bytesRangeEnd}/{totalBytes}";
-
+            
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(uploadUri);
             request.Method = HttpMethod.Put;
-            request.Headers.Add("Content-Range", contentRangeHeader);
             request.Content = new StreamContent(stream);
+            request.Content.Headers.ContentRange = new ContentRangeHeaderValue(Convert.ToInt64(bytesRangeStart),
+                                                                   Convert.ToInt64(bytesRangeEnd),
+                                                                   Convert.ToInt64(totalBytes));
 
 
             const int MAX_RETRIES = 100;

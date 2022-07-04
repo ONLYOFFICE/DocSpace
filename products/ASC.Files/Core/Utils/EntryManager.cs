@@ -674,7 +674,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
+                var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
 
                 var tmpFiles = await FileSecurity.FilterReadAsync(files);
                 files = tmpFiles.ToList();
@@ -1179,21 +1179,26 @@ namespace ASC.Web.Files.Utils
             var editLink = check.EditLink;
             var file = check.File;
             if (file == null)
+            {
                 file = await fileDao.GetFileAsync(fileId);
+            }
 
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            var fileSecurity = FileSecurity;
-            if (!editLink
-                && (!await fileSecurity.CanEditAsync(file, userId)
-                    && !await fileSecurity.CanCustomFilterEditAsync(file, userId)
-                    && !await fileSecurity.CanReviewAsync(file, userId)
-                    && !await fileSecurity.CanFillFormsAsync(file, userId)
-                    && !await fileSecurity.CanCommentAsync(file, userId)
-                    || UserManager.GetUsers(userId).IsVisitor(UserManager)))
+            if (!Equals(userId, Guid.Empty))
             {
-                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+                if (!editLink
+                    && (!await FileSecurity.CanEditAsync(file, userId)
+                        && !await FileSecurity.CanCustomFilterEditAsync(file, userId)
+                        && !await FileSecurity.CanReviewAsync(file, userId)
+                        && !await FileSecurity.CanFillFormsAsync(file, userId)
+                        && !await FileSecurity.CanCommentAsync(file, userId)
+                        || UserManager.GetUsers(userId).IsVisitor(UserManager)))
+                {
+                    throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+                }
+                if (await FileLockedForMeAsync(file.ID, userId)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             }
-            if (await FileLockedForMeAsync(file.ID, userId)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
+
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             checkRight = FileTracker.ProlongEditing(fileId, tabId, userId, editingAlone);

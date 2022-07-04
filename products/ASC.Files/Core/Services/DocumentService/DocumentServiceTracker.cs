@@ -312,8 +312,16 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     if (!Guid.TryParse(user, out var userId))
                     {
-                        Logger.Info("DocService userId is not Guid: " + user);
-                        continue;
+                        if (!string.IsNullOrEmpty(user) && user.StartsWith("uid-"))
+                        {
+                            userId = Guid.Empty;
+                        }
+                        else
+                        {
+                            Logger.Info("DocService userId is not Guid: " + user);
+                            continue;
+                        }
+
                     }
                     users.Remove(userId);
 
