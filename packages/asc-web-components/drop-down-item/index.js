@@ -16,6 +16,8 @@ const DropDownItem = (props) => {
     className,
     theme,
     fillIcon,
+    isSubMenu,
+    isActive,
   } = props;
 
   const onClickAction = (e) => {
@@ -28,6 +30,7 @@ const DropDownItem = (props) => {
       className={className}
       onClick={onClickAction}
       disabled={disabled}
+      isActive={isActive}
     >
       {icon && (
         <IconWrapper>
@@ -38,6 +41,15 @@ const DropDownItem = (props) => {
         </IconWrapper>
       )}
       {isSeparator ? "\u00A0" : label ? label : children && children}
+
+      {isSubMenu && (
+        <IconWrapper className="submenu-arrow">
+          <ReactSVG
+            src="/static/images/right.arrow.react.svg"
+            className="drop-down-item_icon"
+          />
+        </IconWrapper>
+      )}
     </StyledDropdownItem>
   );
 };
@@ -70,6 +82,8 @@ DropDownItem.propTypes = {
   /** Accepts css text-overflow */
   textOverflow: PropTypes.bool,
   fillIcon: PropTypes.bool,
+  isSubMenu: PropTypes.bool,
+  isActive: PropTypes.bool,
 };
 
 DropDownItem.defaultProps = {
