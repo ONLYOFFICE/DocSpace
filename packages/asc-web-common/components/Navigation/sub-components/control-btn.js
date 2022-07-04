@@ -7,6 +7,7 @@ import { isMobile } from "react-device-detect";
 import { tablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 import ToggleInfoPanelButton from "./toggle-infopanel-btn";
+import PlusButton from "./plus-btn";
 
 const StyledContainer = styled.div`
   margin-left: 20px;
@@ -112,17 +113,9 @@ const ControlButtons = ({
       {!isRootFolder && canCreate ? (
         <>
           {!isMobile && (
-            <ContextMenuButton
-              zIndex={402}
+            <PlusButton
               className="add-button"
-              directionX="right"
-              iconName="images/plus.svg"
-              size={15}
-              isFill
               getData={getContextOptionsPlus}
-              isDisabled={false}
-              usePortal={false}
-              dropDownClassName="add-drop-down"
             />
           )}
           {!personal && (
@@ -148,17 +141,9 @@ const ControlButtons = ({
       ) : canCreate ? (
         <>
           {!isMobile && (
-            <ContextMenuButton
-              zIndex={402}
+            <PlusButton
               className="add-button"
-              directionX="right"
-              iconName="images/plus.svg"
-              size={15}
-              isFill
               getData={getContextOptionsPlus}
-              isDisabled={false}
-              usePortal={false}
-              dropDownClassName="add-drop-down"
             />
           )}
           {!isDesktop && (
