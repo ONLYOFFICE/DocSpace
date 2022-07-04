@@ -121,30 +121,28 @@ class ManualBackup extends React.Component {
     selectedFolder,
     moduleName,
     moduleType,
-    key,
-    selectedId,
-    storageValues,
     selectedStorageId,
     selectedStorage
   ) => {
-    const { isCheckedDocuments, isCheckedThirdParty } = this.state;
+    const {
+      isCheckedDocuments,
+      isCheckedThirdParty,
+      isCheckedThirdPartyStorage,
+    } = this.state;
     const {
       t,
       getIntervalProgress,
       setDownloadingProgress,
       clearSessionStorage,
       setTemporaryLink,
+      getStorageParams,
     } = this.props;
 
-    const storageValue =
-      isCheckedDocuments || isCheckedThirdParty ? selectedFolder : selectedId;
-
-    const storageParams = [
-      {
-        key: `${key}`,
-        value: storageValue,
-      },
-    ];
+    const storageParams = getStorageParams(
+      isCheckedThirdPartyStorage,
+      selectedFolder,
+      selectedStorageId
+    );
 
     saveToSessionStorage("LocalCopyStorageType", moduleName);
 
@@ -156,12 +154,9 @@ class ManualBackup extends React.Component {
         "LocalCopyThirdPartyStorageType",
         `${selectedStorage}`
       );
-
-      for (let i = 0; i < storageValues.length; i++) {
-        storageParams.push(storageValues[i]);
-      }
     }
-
+    console.log("storageParams", storageParams);
+    return;
     try {
       await startBackup(moduleType, storageParams);
       setDownloadingProgress(1);
@@ -339,6 +334,7 @@ export default inject(({ auth, backup }) => {
     setTemporaryLink,
     setCommonThirdPartyList,
     temporaryLink,
+    getStorageParams,
   } = backup;
   const { organizationName } = auth.settingsStore;
   return {
@@ -354,5 +350,6 @@ export default inject(({ auth, backup }) => {
     setTemporaryLink,
     setCommonThirdPartyList,
     temporaryLink,
+    getStorageParams,
   };
 })(withTranslation(["Settings", "Common"])(observer(ManualBackup)));

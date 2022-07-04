@@ -35,7 +35,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
   componentDidMount() {
     const { thirdPartyStorage } = this.props;
 
-    if (thirdPartyStorage) {
+    if (thirdPartyStorage && thirdPartyStorage.length > 0) {
       const parameters = getOptions(thirdPartyStorage);
 
       const {
@@ -66,22 +66,12 @@ class ThirdPartyStorageModule extends React.PureComponent {
     });
   };
 
-  onMakeCopyIntoStorage = async (arraySettings) => {
+  onMakeCopyIntoStorage = async () => {
     const { selectedId, selectedStorage } = this.state;
-    const { onMakeCopy } = this.props;
+    const { onMakeCopy, isFormReady } = this.props;
     const { StorageModuleType } = BackupStorageType;
 
-    let obj = {};
-    let inputValueArray = [];
-
-    for (let i = 0; i < arraySettings.length; i++) {
-      obj = {
-        key: arraySettings[i][0],
-        value: arraySettings[i][1],
-      };
-
-      inputValueArray.push(obj);
-    }
+    if (!isFormReady()) return;
 
     this.setState({
       isStartCopy: true,
@@ -91,9 +81,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
       null,
       "ThirdPartyStorage",
       `${StorageModuleType}`,
-      "module",
-      selectedId,
-      inputValueArray,
       selectedId,
       selectedStorage
     );
@@ -103,24 +90,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
     });
   };
 
-  isInvalidForm = (formSettings) => {
-    let errors = {};
-    let firstError = false;
-
-    for (let key in formSettings) {
-      const elem = formSettings[key];
-
-      if (typeof elem == "boolean") continue;
-
-      errors[key] = !elem.trim();
-
-      if (!elem.trim() && !firstError) {
-        firstError = true;
-      }
-    }
-
-    return [firstError, errors];
-  };
   render() {
     const { isMaxProgress, thirdPartyStorage, buttonSize } = this.props;
     const {
@@ -131,6 +100,8 @@ class ThirdPartyStorageModule extends React.PureComponent {
       availableStorage,
     } = this.state;
 
+    console.log("third-party storage  container  render");
+
     const commonProps = {
       isLoadingData: !isMaxProgress || isStartCopy,
       selectedStorage: availableStorage[selectedId],
@@ -138,7 +109,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
       selectedId,
       buttonSize,
       onMakeCopyIntoStorage: this.onMakeCopyIntoStorage,
-      isInvalidForm: this.isInvalidForm,
     };
 
     const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
@@ -171,9 +141,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
 }
 
 export default inject(({ backup }) => {
-  const { thirdPartyStorage } = backup;
+  const { thirdPartyStorage, isFormReady } = backup;
 
   return {
     thirdPartyStorage,
+    isFormReady,
   };
 })(observer(ThirdPartyStorageModule));

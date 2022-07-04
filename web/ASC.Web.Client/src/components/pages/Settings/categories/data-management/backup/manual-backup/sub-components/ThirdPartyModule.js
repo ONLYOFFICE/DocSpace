@@ -77,8 +77,7 @@ class ThirdPartyModule extends React.Component {
     await onMakeCopy(
       selectedFolder,
       "ThirdPartyResource",
-      `${ResourcesModuleType}`,
-      "folderId"
+      `${ResourcesModuleType}`
     );
 
     this.setState({

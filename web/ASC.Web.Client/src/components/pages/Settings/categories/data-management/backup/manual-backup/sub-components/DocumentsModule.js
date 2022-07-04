@@ -46,12 +46,7 @@ class DocumentsModule extends React.Component {
       isStartCopy: true,
     });
 
-    await onMakeCopy(
-      selectedFolder,
-      "Documents",
-      `${DocumentModuleType}`,
-      "folderId"
-    );
+    await onMakeCopy(selectedFolder, "Documents", `${DocumentModuleType}`);
 
     this.setState({
       isStartCopy: false,
