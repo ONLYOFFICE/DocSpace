@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Die Datei wird auf Verschlüsselung vorbereitet",
   "EncryptionKeysReload": "Verschlüsselungsschlüssel müssen erneut eingegeben werden",
   "Error": "Fehler",
+  "ErrorInternalServer": "Interner Serverfehler. Versuchen Sie nochmals später.",
   "FillFormButton": "Formular ausfüllen",
   "FullAccess": "Voller Zugriff",
   "Guest": "Gast",

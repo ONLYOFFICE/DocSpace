@@ -52,13 +52,13 @@ const globalColors = {
   hoverInfo: "#EED27B",
   hoverWarning: "#EEB97B",
 
-  firstDefaultСolorScheme: "#4781D1",
-  secondDefaultСolorScheme: "#ED7309",
-  thirdDefaultСolorScheme: "#08AAA0",
-  fourthDefaultСolorScheme: "#F2665A",
-  fifthDefaultСolorScheme: "#6D4EC2",
-  sixthDefaultСolorScheme: "#11A3D4",
-  seventhDefaultСolorScheme: "#444444",
+  colorSchemeDefault_1: "#4781D1",
+  colorSchemeDefault_2: "#ED7309",
+  colorSchemeDefault_3: "#08AAA0",
+  colorSchemeDefault_4: "#F2665A",
+  colorSchemeDefault_5: "#6D4EC2",
+  colorSchemeDefault_6: "#11A3D4",
+  colorSchemeDefault_7: "#444444",
 };
 
 export default globalColors;

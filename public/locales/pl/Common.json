@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Przygotowywanie pliku do szyfrowania",
   "EncryptionKeysReload": "Klucze szyfrowania muszą zostać wpisane ponownie",
   "Error": "Błąd",
+  "ErrorInternalServer": "Wewnętrzny błąd serwera. Spróbuj ponownie później.",
   "FillFormButton": "Wypełnij formularz",
   "FullAccess": "Pełen dostęp",
   "Guest": "Gość",

@@ -267,10 +267,10 @@ internal class OneDriveStorage
             Method = HttpMethod.Post
         };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
-        request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
-        {
-            CharSet = Encoding.UTF8.WebName
-        };
+        //request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
+        //{
+        //    CharSet = Encoding.UTF8.WebName
+        //};
 
         var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
 
@@ -312,11 +312,11 @@ internal class OneDriveStorage
             Method = HttpMethod.Put
         };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
-        request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
-                                                           oneDriveSession.BytesTransfered,
-                                                           oneDriveSession.BytesTransfered + chunkLength - 1,
-                                                           oneDriveSession.BytesToTransfer));
         request.Content = new StreamContent(stream);
+
+        request.Content.Headers.ContentRange = new ContentRangeHeaderValue(oneDriveSession.BytesTransfered,
+                                                               oneDriveSession.BytesTransfered + chunkLength - 1,
+                                                               oneDriveSession.BytesToTransfer);
 
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);

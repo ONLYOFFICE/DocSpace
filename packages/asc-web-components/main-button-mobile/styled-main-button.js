@@ -65,6 +65,18 @@ const mobileDropDown = css`
 
   right: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.bottom};
+
+  .dialog-background-scroll {
+    background: ${(props) => props.theme.backgroundColor} !important;
+  }
+  .section-scroll {
+    background: ${(props) =>
+      props.theme.mainButtonMobile.buttonOptions.backgroundColor};
+  }
+`;
+
+const StyledRenderItem = styled.div`
+  background: ${(props) => props.theme.backgroundColor};
 `;
 
 const StyledDropDown = styled(DropDown)`
@@ -111,8 +123,12 @@ const StyledDropDown = styled(DropDown)`
     color: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
 
     svg {
-      path {
+      path[fill] {
         fill: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
+      }
+
+      path[stroke] {
+        stroke: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
       }
     }
 
@@ -281,4 +297,5 @@ export {
   StyledButtonWrapper,
   StyledButtonOptions,
   StyledAlertIcon,
+  StyledRenderItem,
 };

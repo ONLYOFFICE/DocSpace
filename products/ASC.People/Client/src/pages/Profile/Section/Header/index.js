@@ -475,6 +475,7 @@ class SectionHeaderContent extends React.PureComponent {
             size={17}
             getData={contextOptions}
             isDisabled={false}
+            usePortal={false}
           />
         )}
         {visibleAvatarEditor && (
