@@ -138,6 +138,7 @@ const ArticleMainButtonContent = (props) => {
             onClick: onCreate,
             action: "docxf",
             key: "docxf",
+            withoutIcon: isMobile,
           },
           {
             className: "main-button_drop-down_sub",
@@ -146,6 +147,7 @@ const ArticleMainButtonContent = (props) => {
             onClick: onShowSelectFileDialog,
             disabled: isPrivacy,
             key: "form-file",
+            withoutIcon: isMobile,
           },
           {
             className: "main-button_drop-down_sub",
@@ -154,6 +156,7 @@ const ArticleMainButtonContent = (props) => {
             onClick: onShowGallery,
             disabled: isPrivacy,
             key: "form-gallery",
+            withoutIcon: isMobile,
           },
         ],
       },
