@@ -35,6 +35,7 @@ class Row extends React.Component {
       indeterminate,
       onSelect,
       rowContextClick,
+      rowContextClose,
       sectionWidth,
       getContextModel,
     } = this.props;
@@ -171,6 +172,7 @@ class Row extends React.Component {
             ref={this.cm}
             header={contextMenuHeader}
             withBackdrop={true}
+            onHide={rowContextClose}
           ></ContextMenu>
         </StyledOptionButton>
       </StyledRow>
