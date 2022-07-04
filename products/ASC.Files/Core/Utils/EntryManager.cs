@@ -444,12 +444,12 @@ public class EntryManager
         _thumbnailSettings = thumbnailSettings;
     }
 
-    public async Task<IEnumerable<FileEntry>> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
+    public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
     {
         return await GetEntriesAsync(parent, from, count, new[] { filter }, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
     }
 
-    public async Task<IEnumerable<FileEntry>> GetEntriesAsync<T>(Folder<T> parent, int from, int count, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
+    public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
     {
         var total = 0;
 
@@ -717,7 +717,7 @@ public class EntryManager
         await t1;
         await t2;
 
-        return data;
+        return (data, total);
 
         void CalculateTotal()
         {

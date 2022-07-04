@@ -292,8 +292,7 @@ public class FileStorageService<T> //: IFileStorageService
         int total;
         try
         {
-            entries = await _entryManager.GetEntriesAsync(parent, from, count, filterTypes, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
-            total = entries.Count();
+            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterTypes, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
         }
         catch (Exception e)
         {
