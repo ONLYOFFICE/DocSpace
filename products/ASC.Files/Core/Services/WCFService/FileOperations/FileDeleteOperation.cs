@@ -216,17 +216,14 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             {
                                 await FolderDao.DeleteFolderAsync(folder.Id);
 
+                                if (isRoom)
+                                {
+                                    await roomLogoManager.DeleteAsync(folder.Id);
+                                }
+
                                 if (isNeedSendActions)
                                 {
-                                    if (isRoom)
-                                    {
-                                        await roomLogoManager.DeleteAsync(folder.Id);
-                                        filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
-                                    }
-                                    else
-                                    {
-                                        filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
-                                    }
+                                    filesMessageService.Send(folder, _headers, isRoom ? MessageAction.RoomDeleted : MessageAction.FolderDeleted, folder.Title);
                                 }
                             }
                             else
