@@ -150,7 +150,6 @@ class DeleteGroupUsersDialogComponent extends React.Component {
             isDisabled={!userIds.length}
           />
           <Button
-            className="button-dialog"
             label={t("Common:CancelButton")}
             size="normal"
             scale

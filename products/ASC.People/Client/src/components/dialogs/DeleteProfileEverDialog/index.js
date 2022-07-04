@@ -93,21 +93,20 @@ class DeleteProfileEverDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="OKBtn"
-            className="delete-profile_button-delete"
             label={t("Common:OKButton")}
             size="normal"
             primary={true}
+            scale
             onClick={this.onDeleteProfileEver}
             isLoading={isRequestRunning}
           />
-          {/* <Button
-              className="button-dialog"
-              key="ReassignBtn"
-              label={t("Translations:ReassignData")}
-              size="small"
-              onClick={this.onReassignDataClick}
-              isDisabled={isRequestRunning}
-            /> */}
+          <Button
+            label={t("Common:CancelButton")}
+            size="normal"
+            scale
+            onClick={onClose}
+            isLoading={isRequestRunning}
+          />
         </ModalDialog.Footer>
       </ModalDialogContainer>
     );

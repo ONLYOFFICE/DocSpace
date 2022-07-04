@@ -1,4 +1,3 @@
-import { smallTablet } from "../utils/device";
 import globalColors from "../utils/globalColors";
 
 const {

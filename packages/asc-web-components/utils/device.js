@@ -35,17 +35,6 @@ export const isTouchDevice = !!(
   ("ontouchstart" in window || navigator.msMaxTouchPoints > 0)
 );
 
-export const getCurrentSizeName = () => {
-  const innerWidth = window.innerWidth;
-  return innerWidth >= size.desktop
-    ? "desktop"
-    : innerWidth <= size.tablet && innerWidth > size.smallTablet
-    ? "tablet"
-    : innerWidth <= size.smallTablet && innerWidth > size.mobile
-    ? "smallTablet"
-    : "mobile";
-};
-
 export const getModalType = () => {
   return window.innerWidth < size.desktop ? "aside" : "modal";
 };

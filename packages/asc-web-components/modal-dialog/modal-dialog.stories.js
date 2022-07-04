@@ -71,6 +71,6 @@ Default.args = {
     desktop: "modal",
     tablet: "aside",
     smallTablet: "modal",
-    mobile: "modal",
+    mobile: "aside",
   },
 };
