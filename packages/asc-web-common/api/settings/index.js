@@ -485,51 +485,23 @@ export function resetSsoForm() {
 }
 
 export function loadXmlMetadata(data) {
-  const options = {
-    method: "post",
-    url: "/sso/loadmetadata",
-    data,
-  };
-
-  return request(options);
+  return axios.post("/sso/loadmetadata", data);
 }
 
 export function uploadXmlMetadata(data) {
-  const options = {
-    method: "post",
-    url: "/sso/uploadmetadata",
-    data,
-  };
-
-  return request(options);
+  return axios.post("/sso/uploadmetadata", data);
 }
 
 export function validateCerts(data) {
-  const options = {
-    method: "post",
-    url: "/sso/validatecerts",
-    data,
-  };
-
-  return request(options);
+  return axios.post("/sso/validatecerts", data);
 }
 
 export function generateCerts() {
-  const options = {
-    method: "get",
-    url: "/sso/generatecert",
-  };
-
-  return request(options);
+  return axios.get("/sso/generatecert");
 }
 
 export function getMetadata() {
-  const options = {
-    method: "get",
-    url: "/sso/metadata",
-  };
-
-  return request(options);
+  return axios.get("/sso/metadata");
 }
 
 export function getOforms(url) {
