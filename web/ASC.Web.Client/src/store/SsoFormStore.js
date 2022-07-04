@@ -489,7 +489,11 @@ class SsoFormStore {
       const newCertificates = await this.validateCertificate(data);
 
       newCertificates.data.map((cert) => {
-        this.idp_certificates = [...this.idp_certificates, cert];
+        if (newCertificates.data.length > 1) {
+          this.idp_certificates = [...this.idp_certificates, cert];
+        } else {
+          this.idp_certificates = [cert];
+        }
 
         if (cert.action === "verification") {
           this.idp_verifyAuthResponsesSign = true;
