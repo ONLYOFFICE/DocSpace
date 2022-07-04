@@ -500,7 +500,8 @@ class FilesActionStore {
   onSelectItem = (
     { id, isFolder },
     withSelect = true,
-    isContextItem = true
+    isContextItem = true,
+    isSingleMenu = false
   ) => {
     const {
       setBufferSelection,
@@ -533,7 +534,7 @@ class FilesActionStore {
           setHotkeyCaret(null);
           setHotkeyCaretStart(null);
         }
-      } else if (isSelected) {
+      } else if (isSelected && !isContextItem && !isSingleMenu) {
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);
       } else {
