@@ -26,6 +26,7 @@ import Body from "./Body";
 import Footer from "./Footer";
 import SharingPanelLoader from "@appserver/common/components/Loaders/SharingPanelLoader";
 import SharingPanelLoaderModal from "@appserver/common/components/Loaders/SharingPanelLoader/modal";
+import ThirdPartyList from "../../Article/Body/ThirdPartyList";
 
 // const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -700,7 +701,8 @@ class SharingPanelComponent extends React.Component {
                         onSaveClick={this.onSaveClick}
                         cancelButtonLabel={t("Common:CancelButton")}
                         onCancelClick={this.onClose}
-                        showReminder={true}
+                        showReminder={this.state.isUpdated}
+                        cancelEnable={true}
                       />
                     </StyledModalFooter>
                   </ModalDialog.Footer>
