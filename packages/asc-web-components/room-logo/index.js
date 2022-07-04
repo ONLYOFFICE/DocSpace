@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
+import { isMobile } from "react-device-detect";
 
 import { RoomsType } from "@appserver/common/constants";
 
@@ -55,6 +56,12 @@ const RoomLogo = ({
     }
   };
 
+  const onSelect = () => {
+    if (!isMobile) return;
+
+    onChange && onChange();
+  };
+
   const icon = getIcon();
 
   return (
@@ -64,6 +71,7 @@ const RoomLogo = ({
         type={type}
         isPrivacy={isPrivacy}
         isArchive={isArchive}
+        onClick={onSelect}
       >
         <ReactSVG className="room-logo_icon" src={icon} />
       </StyledLogoContainer>

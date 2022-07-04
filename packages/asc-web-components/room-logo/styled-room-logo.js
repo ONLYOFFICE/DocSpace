@@ -94,8 +94,8 @@ const StyledContainer = styled.div`
 `;
 
 const StyledLogoContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 32px;
+  height: 32px;
 
   box-sizing: border-box;
 
