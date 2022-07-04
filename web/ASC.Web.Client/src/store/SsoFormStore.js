@@ -246,7 +246,7 @@ class SsoFormStore {
     try {
       this.onLoadXML = true;
       const response = await loadXmlMetadata(data);
-      this.setFieldsFromMetaData(response.meta);
+      this.setFieldsFromMetaData(response.data.meta);
       this.onLoadXML = false;
     } catch (err) {
       this.onLoadXML = false;
@@ -488,7 +488,7 @@ class SsoFormStore {
 
       const newCertificates = await this.validateCertificate(data);
 
-      newCertificates.map((cert) => {
+      newCertificates.data.map((cert) => {
         this.idp_certificates = [...this.idp_certificates, cert];
 
         if (cert.action === "verification") {
