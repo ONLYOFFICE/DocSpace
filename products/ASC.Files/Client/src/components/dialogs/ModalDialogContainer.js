@@ -126,20 +126,20 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
   .convert_dialog_footer {
     display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
 
-    .convert_dialog_button {
-      margin-left: auto;
-      display: inline-block;
-
-      @media ${tablet} {
-        display: none;
-      }
+    .convert_dialog_checkboxes {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .convert_dialog_button-accept {
-      @media ${tablet} {
-        width: 100%;
-      }
+    .convert_dialog_buttons {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
     }
   }
 

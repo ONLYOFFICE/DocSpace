@@ -68,23 +68,26 @@ const ConvertDialogComponent = (props) => {
       isLoading={!tReady}
       visible={visible}
       onClose={onClose}
+      withFooterCheckboxes
     >
       <ModalDialog.Header>
         {convertSingleFile ? t("ConvertAndOpenTitle") : t("ConversionTitle")}
       </ModalDialog.Header>
       <ModalDialog.Body>
-        <div className="convert_dialog_content">
-          <img
+        {/* <img
             className="convert_dialog_image"
             src="images/convert_alert.png"
             alt="convert alert"
-          />
-          <div className="convert_dialog-content">
-            <Text>
-              {convertSingleFile
-                ? t("ConversionFileMessage")
-                : t("ConversionMessage")}
-            </Text>
+          /> */}
+        <Text>
+          {convertSingleFile
+            ? t("ConversionFileMessage")
+            : t("ConversionMessage")}
+        </Text>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <div className="convert_dialog_footer">
+          <div className="convert_dialog_checkboxes">
             <Checkbox
               className="convert_dialog_checkbox"
               label={t("SaveOriginalFormatMessage")}
@@ -116,25 +119,23 @@ const ConvertDialogComponent = (props) => {
               />
             )}
           </div>
-        </div>
-      </ModalDialog.Body>
-      <ModalDialog.Footer>
-        <div className="convert_dialog_footer">
-          <Button
-            className="convert_dialog_button-accept"
-            key="ContinueButton"
-            label={t("Common:ContinueButton")}
-            size="small"
-            primary
-            onClick={onConvert}
-          />
-          <Button
-            className="convert_dialog_button"
-            key="CloseButton"
-            label={t("Common:CloseButton")}
-            size="small"
-            onClick={onClose}
-          />
+          <div className="convert_dialog_buttons">
+            <Button
+              key="ContinueButton"
+              label={t("Common:ContinueButton")}
+              size="normal"
+              primary
+              scale
+              onClick={onConvert}
+            />
+            <Button
+              key="CloseButton"
+              label={t("Common:CloseButton")}
+              size="normal"
+              scale
+              onClick={onClose}
+            />
+          </div>
         </div>
       </ModalDialog.Footer>
     </ModalDialogContainer>

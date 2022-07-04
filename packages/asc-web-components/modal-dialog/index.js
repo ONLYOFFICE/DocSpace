@@ -143,7 +143,7 @@ ModalDialog.propTypes = {
 
   /** **`ASIDE-ONLY`**  
 
-  Disables Body scroll */
+  Enables Body scroll */
   withBodyScroll: PropTypes.bool,
   /** **`ASIDE-ONLY`**  
 
@@ -153,12 +153,6 @@ ModalDialog.propTypes = {
 
 ModalDialog.defaultProps = {
   displayType: "modal",
-  // displayTypeDetailed: {
-  //   desktop: "modal",
-  //   tablet: "aside",
-  //   smallTablet: "aside",
-  //   mobile: "aside",
-  // },
   zIndex: 310,
   isLarge: false,
   isLoading: false,

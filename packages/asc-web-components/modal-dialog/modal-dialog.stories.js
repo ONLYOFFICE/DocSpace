@@ -67,5 +67,10 @@ Template.propTypes = {
 export const Default = Template.bind({});
 Default.args = {
   displayType: "aside",
-  zIndex: 310,
+  displayTypeDetailed: {
+    desktop: "modal",
+    tablet: "aside",
+    smallTablet: "modal",
+    mobile: "modal",
+  },
 };
