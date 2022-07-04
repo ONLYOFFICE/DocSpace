@@ -38,8 +38,6 @@ const FilterButton = ({
     setShowFilterBlock((value) => !value);
   }, [setShowFilterBlock]);
 
-  // console.log(selectedFilterData.filterValues);
-
   return (
     <>
       <StyledButton onClick={changeShowFilterBlock}>

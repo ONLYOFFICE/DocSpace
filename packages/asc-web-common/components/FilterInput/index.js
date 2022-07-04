@@ -53,9 +53,9 @@ const FilterInput = React.memo(
       getViewSettingsData && setViewSettings(getViewSettingsData());
     }, [getViewSettingsData]);
 
-    const onClearSearch = () => {
+    const onClearSearch = React.useCallback(() => {
       onSearch && onSearch();
-    };
+    }, [onSearch]);
 
     return (
       <StyledFilterInput {...props}>
