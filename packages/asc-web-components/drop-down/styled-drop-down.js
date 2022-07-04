@@ -3,13 +3,14 @@ import Base from "../themes/base";
 
 const StyledDropdown = styled.div`
   @media (orientation: landscape) {
-    ${window.innerHeight < 500 &&
-    css`
-      top: ${(props) =>
-        props.isPersonal && props.isExternalLink ? "10% !important " : "0"};
-      left: ${(props) =>
-        props.isPersonal && props.isExternalLink ? "45% !important " : "0"};
-    `}
+    ${(props) =>
+      props.isPersonal &&
+      props.isExternalLink &&
+      window.innerHeight < 500 &&
+      css`
+        top: 10% !important;
+        left: 45% !important;
+      `}
   }
 
   font-family: ${(props) => props.theme.fontFamily};
