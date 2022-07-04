@@ -116,6 +116,7 @@ const MainButtonMobile = (props) => {
   const [isOpen, setIsOpen] = useState(opened);
   const [isUploading, setIsUploading] = useState(false);
   const [height, setHeight] = useState(window.innerHeight - 48 + "px");
+  const [isOpenSubMenu, setIsOpenSubMenu] = useState(false);
 
   const divRef = useRef();
   const ref = useRef();
@@ -184,7 +185,7 @@ const MainButtonMobile = (props) => {
 
   useEffect(() => {
     recalculateHeight();
-  }, [isOpen, isOpenButton, window.innerHeight, isUploading]);
+  }, [isOpen, isOpenButton, window.innerHeight, isUploading, isOpenSubMenu]);
 
   useEffect(() => {
     window.addEventListener("resize", recalculateHeight);
@@ -229,6 +230,48 @@ const MainButtonMobile = (props) => {
               toggle(false);
               option.onClick && option.onClick({ action: option.action });
             };
+
+            const onClickSub = () => {
+              setIsOpenSubMenu(!isOpenSubMenu);
+            };
+
+            if (option.items)
+              return (
+                <div key="mobile-submenu">
+                  <StyledDropDownItem
+                    key={option.key}
+                    label={option.label}
+                    className={`${option.className} ${
+                      option.isSeparator && "is-separator"
+                    }`}
+                    onClick={onClickSub}
+                    icon={option.icon ? option.icon : ""}
+                    action={option.action}
+                    isActive={isOpenSubMenu}
+                    isSubMenu={true}
+                  />
+                  {isOpenSubMenu &&
+                    option.items.map((item) => {
+                      const subMenuOnClickAction = () => {
+                        toggle(false);
+                        setIsOpenSubMenu(false);
+                        item.onClick && item.onClick({ action: item.action });
+                      };
+
+                      return (
+                        <StyledDropDownItem
+                          key={item.key}
+                          label={item.label}
+                          className={item.className}
+                          onClick={subMenuOnClickAction}
+                          icon={item.icon ? item.icon : ""}
+                          action={item.action}
+                          withoutIcon={true}
+                        />
+                      );
+                    })}
+                </div>
+              );
 
             return (
               <StyledDropDownItem
