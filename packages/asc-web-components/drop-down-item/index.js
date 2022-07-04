@@ -18,6 +18,7 @@ const DropDownItem = (props) => {
     fillIcon,
     isSubMenu,
     isActive,
+    withoutIcon,
   } = props;
 
   const onClickAction = (e) => {
@@ -41,7 +42,7 @@ const DropDownItem = (props) => {
         </IconWrapper>
       )}
 
-      {!icon && <IconWrapper />}
+      {withoutIcon && <IconWrapper />}
 
       {isSeparator ? "\u00A0" : label ? label : children && children}
 
@@ -87,6 +88,7 @@ DropDownItem.propTypes = {
   fillIcon: PropTypes.bool,
   isSubMenu: PropTypes.bool,
   isActive: PropTypes.bool,
+  withoutIcon: PropTypes.bool,
 };
 
 DropDownItem.defaultProps = {
@@ -98,6 +100,9 @@ DropDownItem.defaultProps = {
   noHover: false,
   textOverflow: false,
   fillIcon: true,
+  isSubMenu: false,
+  isActive: false,
+  withoutIcon: false,
 };
 
 export default DropDownItem;
