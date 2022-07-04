@@ -107,21 +107,31 @@ class SectionHeaderContent extends React.Component {
         icon: "images/actions.presentation.react.svg",
       },
       {
+        icon: "images/form.react.svg",
         label: t("Translations:NewForm"),
-        icon: "images/form.react.svg",
-        onClick: this.createForm,
-      },
-      {
-        label: t("Translations:NewFormFile"),
-        onClick: this.createFormFromFile,
-        disabled: isPrivacyFolder,
-        icon: "images/form.file.react.svg",
-      },
-      {
-        label: t("Common:OFORMsGallery"),
-        onClick: this.onShowGallery,
-        disabled: isPrivacyFolder || (isMobile && isTablet),
-        icon: "images/form.react.svg",
+        key: "new-form-base",
+        items: [
+          {
+            key: "new-form",
+            label: t("Translations:NewForm"),
+            icon: "images/form.react.svg",
+            onClick: this.createForm,
+          },
+          {
+            key: "new-form-file",
+            label: t("Translations:NewFormFile"),
+            onClick: this.createFormFromFile,
+            disabled: isPrivacyFolder,
+            icon: "images/form.file.react.svg",
+          },
+          {
+            key: "oforms-gallery",
+            label: t("Common:OFORMsGallery"),
+            onClick: this.onShowGallery,
+            disabled: isPrivacyFolder || (isMobile && isTablet),
+            icon: "images/form.react.svg",
+          },
+        ],
       },
       {
         key: "new-folder",
@@ -129,14 +139,14 @@ class SectionHeaderContent extends React.Component {
         onClick: this.createFolder,
         icon: "images/catalog.folder.react.svg",
       },
-      { key: "separator", isSeparator: true },
+      /*{ key: "separator", isSeparator: true },
       {
         key: "upload-to-folder",
         label: t("UploadToFolder"),
         onClick: this.uploadToFolder,
         disabled: true,
         icon: "images/actions.upload.react.svg",
-      },
+      },*/
     ];
   };
 

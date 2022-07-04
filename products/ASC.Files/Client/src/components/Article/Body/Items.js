@@ -9,6 +9,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import withLoader from "../../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
 import Loader from "@appserver/components/loader";
+import { isMobile } from "react-device-detect";
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
@@ -143,6 +144,8 @@ const Items = ({
 
   setEmptyTrashDialogVisible,
   trashIsEmpty,
+
+  onHide,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -293,15 +296,8 @@ const Items = ({
   );
 
   const onEmptyTrashAction = () => {
+    isMobile && onHide();
     setEmptyTrashDialogVisible(true);
-  };
-
-  const onClickBadge = (isTrash) => {
-    if (isTrash) {
-      onEmptyTrashAction();
-    } else {
-      onBadgeClick();
-    }
   };
 
   const getItem = React.useCallback(
@@ -329,7 +325,7 @@ const Items = ({
             showText={showText}
             onClick={onClick}
             onMoveTo={onMoveTo}
-            onBadgeClick={() => onClickBadge(isTrash)}
+            onBadgeClick={isTrash ? onEmptyTrashAction : onBadgeClick}
             showDragItems={showDragItems}
             showBadge={showBadge}
             labelBadge={labelBadge}
@@ -366,6 +362,7 @@ Items.propTypes = {
   selectedTreeNode: PropTypes.array,
   onClick: PropTypes.func,
   onClickBadge: PropTypes.func,
+  onHide: PropTypes.func,
 };
 
 export default inject(

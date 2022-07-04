@@ -2,6 +2,16 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 const StyledDropdown = styled.div`
+  @media (orientation: landscape) {
+    ${window.innerHeight < 500 &&
+    css`
+      top: ${(props) =>
+        props.isPersonal && props.isExternalLink ? "10% !important " : "0"};
+      left: ${(props) =>
+        props.isPersonal && props.isExternalLink ? "45% !important " : "0"};
+    `}
+  }
+
   font-family: ${(props) => props.theme.fontFamily};
   font-style: normal;
   font-weight: ${(props) => props.theme.dropDown.fontWeight};

@@ -367,6 +367,7 @@ namespace ASC.Notify.Engine
             catch (Exception ex)
             {
                 responses.Add(new SendResponse(request.NotifyAction, null, request.Recipient, SendResult.Impossible));
+                log.Error("Prepare", ex);
             }
 
             if (request.SenderNames != null && request.SenderNames.Length > 0)
@@ -413,7 +414,6 @@ namespace ASC.Notify.Engine
             request.CurrentMessage = noticeMessage;
             var preventresponse = CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
             if (preventresponse != null) return preventresponse;
-            log.Debug("SendAsync");//temp
             channel.SendAsync(noticeMessage);
 
             return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);
