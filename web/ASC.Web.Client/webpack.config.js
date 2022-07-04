@@ -7,6 +7,7 @@ const DefinePlugin = require("webpack").DefinePlugin;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
+const minifyJson = require("@appserver/common/utils/minifyJson");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 
@@ -175,12 +176,13 @@ const config = {
     new CopyPlugin({
       patterns: [
         {
-          from: "public",
-          globOptions: {
-            dot: true,
-            gitignore: true,
-            ignore: ["**/index.html"],
-          },
+          context: path.resolve(__dirname, "public"),
+          from: "images/**/*.*",
+        },
+        {
+          context: path.resolve(__dirname, "public"),
+          from: "locales/**/*.json",
+          transform: minifyJson,
         },
       ],
     }),

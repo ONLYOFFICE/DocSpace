@@ -10,10 +10,6 @@ const StyledPaging = styled.div`
     margin-right: ${(props) => props.theme.paging.button.marginRight};
     max-width: ${(props) => props.theme.paging.button.maxWidth};
   }
-
-  .buttonCustomStyle {
-    padding: ${(props) => props.theme.paging.button.padding};
-  }
 `;
 StyledPaging.defaultProps = { theme: Base };
 

@@ -105,6 +105,22 @@ const StyledDropdownItem = styled.div`
   }
 
   ${(props) => props.disabled && disabledAndHeaderStyle}
+
+  .submenu-arrow {
+    margin-left: auto;
+    ${(props) =>
+      props.isActive &&
+      css`
+        transform: rotate(90deg);
+      `}
+  }
+
+  ${(props) =>
+    props.isActive &&
+    css`
+      background-color: ${(props) =>
+        props.theme.dropDownItem.hoverBackgroundColor};
+    `}
 `;
 StyledDropdownItem.defaultProps = { theme: Base };
 

@@ -129,9 +129,10 @@ class ConnectClouds extends React.Component {
       getSubfolders,
       setFirstLoad,
     } = this.props;
+    const { dataset } = (e.originalEvent || e).currentTarget;
 
-    const provider = e.currentTarget.dataset.providerKey;
-    const providerId = e.currentTarget.dataset.providerId;
+    const provider = dataset.providerKey;
+    const providerId = dataset.providerId;
 
     const isCorporate =
       !!providers.length &&
@@ -159,7 +160,17 @@ class ConnectClouds extends React.Component {
 
   getContextOptions = (item, index) => {
     const { t } = this.props;
+
     return [
+      {
+        key: `${index}_open`,
+        "data-provider-id": item.provider_id,
+        "data-provider-key": item.provider_key,
+        icon: "images/folder.react.svg",
+        label: t("Home:Open"),
+        onClick: this.openLocation,
+        disabled: !isMobile,
+      },
       {
         key: `${index}_change`,
         "data-provider-id": item.provider_id,
@@ -334,7 +345,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Settings", "Translations", "Common"])(
+  withTranslation(["Settings", "Translations", "Home", "Common"])(
     observer(withRouter(ConnectClouds))
   )
 );

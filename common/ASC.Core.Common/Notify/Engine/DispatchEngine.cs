@@ -54,16 +54,13 @@ namespace ASC.Notify.Engine
 
         public SendResponse Dispatch(INoticeMessage message, string senderName)
         {
-            log.Debug("Dispatch start");
             var response = new SendResponse(message, senderName, SendResult.OK);
             if (!logOnly)
             {
                 var sender = context.NotifyService.GetSender(senderName);
                 if (sender != null)
                 {
-                    log.Debug("Dispatch sender != null");
                     response = sender.DirectSend(message);
-                    log.Debug("Dispatch DirectSend completed");
                 }
                 else
                 {

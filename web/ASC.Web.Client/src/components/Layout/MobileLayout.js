@@ -24,8 +24,6 @@ class MobileLayout extends Component {
   }
 
   componentDidMount() {
-    document.body.style.overflow = "hidden";
-
     this.customScrollElm = document.querySelector(
       "#customScrollBar > .scroll-body"
     );
