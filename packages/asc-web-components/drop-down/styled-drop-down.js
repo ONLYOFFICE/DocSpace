@@ -1,12 +1,9 @@
 import styled, { css } from "styled-components";
-import { isMobileOnly, isTablet } from "react-device-detect";
 import Base from "../themes/base";
 
 const StyledDropdown = styled.div`
   @media (orientation: landscape) {
-    ${isMobileOnly &&
-    !isTablet &&
-    window.innerHeight < 500 &&
+    ${window.innerHeight < 500 &&
     css`
       top: ${(props) =>
         props.isPersonal && props.isExternalLink ? "10% !important " : "0"};
