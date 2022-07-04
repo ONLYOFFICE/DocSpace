@@ -157,6 +157,8 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         var filesId = new HashSet<string>();
         var foldersId = new HashSet<string>();
 
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         foreach (var f in fileEntries)
         {
             var idObj = await MappingIDAsync(f.Id).ConfigureAwait(false);

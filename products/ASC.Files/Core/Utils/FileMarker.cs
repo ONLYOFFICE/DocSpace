@@ -884,7 +884,7 @@ public class FileMarker
         }
     }
 
-    public async Task<IEnumerable<FileEntry>> SetTagsNewAsync<T>(Folder<T> parent, IEnumerable<FileEntry> entries)
+    public async Task SetTagsNewAsync<T>(Folder<T> parent, IEnumerable<FileEntry> entries)
     {
         var tagDao = _daoFactory.GetTagDao<T>();
         var folderDao = _daoFactory.GetFolderDao<T>();
@@ -1011,8 +1011,6 @@ public class FileMarker
                 }
             }
         }
-
-        return entries;
     }
 
     private void InsertToCahce(object folderId, int count)

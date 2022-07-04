@@ -197,8 +197,10 @@ public class EntryStatusManager
 
     public async Task SetFileStatusAsync(IEnumerable<FileEntry> files)
     {
-        await SetFileStatusAsync(files.OfType<File<int>>().Where(r => r.Id != 0).ToList());
-        await SetFileStatusAsync(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.Id)).ToList());
+        var t1 = SetFileStatusAsync(files.OfType<File<int>>().Where(r => r.Id != 0));
+        var t2 = SetFileStatusAsync(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.Id)));
+        await t1;
+        await t2;
     }
 
     public async Task SetFileStatusAsyncEnumerable(IAsyncEnumerable<FileEntry> asyncEnumerableFiles)
@@ -210,10 +212,18 @@ public class EntryStatusManager
 
     public async Task SetFileStatusAsync<T>(IEnumerable<File<T>> files)
     {
+        if (!files.Any())
+        {
+            return;
+        }
+
         var tagDao = _daoFactory.GetTagDao<T>();
 
-        var tags = await tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
-        var tagsNew = await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, files).ToListAsync();
+        var tagsTask = tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
+        var tagsNewTask = tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, files).ToListAsync();
+
+        var tags = await tagsTask;
+        var tagsNew = await tagsNewTask;
 
         foreach (var file in files)
         {
@@ -266,12 +276,19 @@ public class EntryStatusManager
 
     public async Task SetIsFavoriteFoldersAsync(IEnumerable<FileEntry> files)
     {
-        await SetIsFavoriteFoldersAsync(files.OfType<Folder<int>>().Where(r => r.Id != 0).ToList());
-        await SetIsFavoriteFoldersAsync(files.OfType<Folder<string>>().Where(r => !string.IsNullOrEmpty(r.Id)).ToList());
+        var t1 = SetIsFavoriteFoldersAsync(files.OfType<Folder<int>>().Where(r => r.Id != 0));
+        var t2 = SetIsFavoriteFoldersAsync(files.OfType<Folder<string>>().Where(r => !string.IsNullOrEmpty(r.Id)));
+        await t1;
+        await t2;
     }
 
     public async Task SetIsFavoriteFoldersAsync<T>(IEnumerable<Folder<T>> folders)
     {
+        if (!folders.Any())
+        {
+            return;
+        }
+
         var tagDao = _daoFactory.GetTagDao<T>();
 
         var tagsFavorite = await tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Favorite, folders).ToListAsync();
@@ -434,6 +451,8 @@ public class EntryManager
 
     public async Task<IEnumerable<FileEntry>> GetEntriesAsync<T>(Folder<T> parent, int from, int count, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
     {
+        var total = 0;
+
         if (parent == null)
         {
             throw new ArgumentNullException(nameof(parent), FilesCommonResource.ErrorMassage_FolderNotFound);
@@ -650,6 +669,8 @@ public class EntryManager
 
         if (orderBy.SortedBy != SortedByType.New)
         {
+            total = data.Count();
+
             if (parent.FolderType != FolderType.Recent)
             {
                 data = SortEntries<T>(data, orderBy);
@@ -664,13 +685,17 @@ public class EntryManager
             {
                 data = data.Take(count);
             }
+
+            data = data.ToList();
         }
 
-        data = await _fileMarker.SetTagsNewAsync(parent, data);
+        await _fileMarker.SetTagsNewAsync(parent, data);
 
         //sorting after marking
         if (orderBy.SortedBy == SortedByType.New)
         {
+            total = data.Count();
+
             data = SortEntries<T>(data, orderBy);
 
             if (0 < from)
@@ -682,10 +707,15 @@ public class EntryManager
             {
                 data = data.Take(count);
             }
+
+            data = data.ToList();
         }
 
-        await _entryStatusManager.SetFileStatusAsync(data.Where(r => r != null && r.FileEntryType == FileEntryType.File));
-        await _entryStatusManager.SetIsFavoriteFoldersAsync(entries.Where(r => r != null && r.FileEntryType == FileEntryType.Folder).ToList());
+        var t1 = _entryStatusManager.SetFileStatusAsync(data.Where(r => r != null && r.FileEntryType == FileEntryType.File));
+        var t2 = _entryStatusManager.SetIsFavoriteFoldersAsync(data.Where(r => r != null && r.FileEntryType == FileEntryType.Folder));
+
+        await t1;
+        await t2;
 
         return data;
 

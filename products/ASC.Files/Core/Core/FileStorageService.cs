@@ -305,7 +305,11 @@ public class FileStorageService<T> //: IFileStorageService
             throw GenerateException(e);
         }
 
-        var breadCrumbs = await _entryManager.GetBreadCrumbsAsync(parentId, folderDao);
+        var breadCrumbsTask = _entryManager.GetBreadCrumbsAsync(parentId, folderDao);
+        var shareableTask = _fileSharing.CanSetAccessAsync(parent);
+        var newTask = _fileMarker.GetRootFoldersIdMarkedAsNewAsync(parentId);
+
+        var breadCrumbs = await breadCrumbsTask;
 
         var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count - 2);
         if (prevVisible != null)
@@ -321,7 +325,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
         }
 
-        parent.Shareable = await _fileSharing.CanSetAccessAsync(parent)
+        parent.Shareable = await shareableTask
             || parent.FolderType == FolderType.SHARE
             || parent.RootFolderType == FolderType.Privacy;
 
@@ -348,7 +352,7 @@ public class FileStorageService<T> //: IFileStorageService
                 return 0;
             })),
             FolderInfo = parent,
-            New = await _fileMarker.GetRootFoldersIdMarkedAsNewAsync(parentId)
+            New = await newTask
         };
 
         return result;
@@ -530,14 +534,14 @@ public class FileStorageService<T> //: IFileStorageService
 
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
-            
+
             if (isRoom)
             {
                 _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomCreated, folder.Title);
             }
             else
             {
-            _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
+                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
             }
 
             return folder;
@@ -582,7 +586,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
             else
             {
-            _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderRenamed, folder.Title);
+                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderRenamed, folder.Title);
             }
 
             //if (!folder.ProviderEntry)
@@ -653,7 +657,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (filter == FilterType.FoldersOnly)
         {
-            return Enumerable.Empty <FileEntry<T>> ();
+            return Enumerable.Empty<FileEntry<T>>();
         }
         if (filter == FilterType.None)
         {
@@ -720,7 +724,7 @@ public class FileStorageService<T> //: IFileStorageService
         if (!EqualityComparer<T>.Default.Equals(fileWrapper.ParentId, default(T)))
         {
             folder = await folderDao.GetFolderAsync(fileWrapper.ParentId);
-            var canCreate = await _fileSecurity.CanCreateAsync(folder) && folder.FolderType != FolderType.VirtualRooms 
+            var canCreate = await _fileSecurity.CanCreateAsync(folder) && folder.FolderType != FolderType.VirtualRooms
                 && folder.FolderType != FolderType.Archive;
 
             if (!canCreate)
@@ -801,17 +805,17 @@ public class FileStorageService<T> //: IFileStorageService
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
                     var pathThumb = $"{path}{fileExt.Trim('.')}.{size.Width}x{size.Height}.{_global.ThumbnailExtension}";
-                if (await storeTemplate.IsFileAsync("", pathThumb))
-                {
-                    using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
+                    if (await storeTemplate.IsFileAsync("", pathThumb))
                     {
+                        using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
+                        {
                             await fileDao.SaveThumbnailAsync(file, streamThumb, size.Width, size.Height);
-                    }
+                        }
                     }
                 }
 
-                    file.ThumbnailStatus = Thumbnail.Created;
-                }
+                file.ThumbnailStatus = Thumbnail.Created;
+            }
             catch (Exception e)
             {
                 throw GenerateException(e);
@@ -839,7 +843,7 @@ public class FileStorageService<T> //: IFileStorageService
                         using (var thumb = await fileTemlateDao.GetThumbnailAsync(template, size.Width, size.Height))
                         {
                             await fileDao.SaveThumbnailAsync(file, thumb, size.Width, size.Height);
-                    }
+                        }
                     }
                     file.ThumbnailStatus = Thumbnail.Created;
                 }
@@ -1313,7 +1317,7 @@ public class FileStorageService<T> //: IFileStorageService
         result.Token = _documentServiceHelper.GetSignature(result);
 
         return result;
-        }
+    }
 
     public async Task<List<EditHistory>> RestoreVersionAsync(T fileId, int version, string url = null, string doc = null)
     {
@@ -1607,7 +1611,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
 
-        var folderId = thirdPartyParams.Corporate && !_coreBaseSettings.Personal ? await _globalFolderHelper.FolderCommonAsync 
+        var folderId = thirdPartyParams.Corporate && !_coreBaseSettings.Personal ? await _globalFolderHelper.FolderCommonAsync
             : thirdPartyParams.RoomsStorage && !_coreBaseSettings.DisableDocSpace ? await _globalFolderHelper.FolderVirtualRoomsAsync : _globalFolderHelper.FolderMy;
 
         var parentFolder = await folderDaoInt.GetFolderAsync(folderId);
@@ -2346,11 +2350,11 @@ public class FileStorageService<T> //: IFileStorageService
                         else
                         {
 
-                    _filesMessageService.Send(entry, GetHttpHeaders(),
-                                                 entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccessFor : MessageAction.FileUpdatedAccessFor,
-                                                 entry.Title, name, GetAccessString(ace.Share));
-                }
-            }
+                            _filesMessageService.Send(entry, GetHttpHeaders(),
+                                                         entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccessFor : MessageAction.FileUpdatedAccessFor,
+                                                         entry.Title, name, GetAccessString(ace.Share));
+                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -2385,7 +2389,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (entry.FileEntryType == FileEntryType.File)
             {
                 _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.FileRemovedFromList, entry.Title);
-    }
+            }
             else
             {
                 _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.FolderRemovedFromList, entry.Title);
@@ -2757,7 +2761,7 @@ public class FileStorageService<T> //: IFileStorageService
                         using (var thumbnail = await fileDao.GetThumbnailAsync(file, size.Width, size.Height))
                         {
                             await fileDao.SaveThumbnailAsync(newFile, thumbnail, size.Width, size.Height);
-                    }
+                        }
                     }
                     newFile.ThumbnailStatus = Thumbnail.Created;
                 }
@@ -3005,7 +3009,7 @@ public class FileStorageService<T> //: IFileStorageService
                 return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_" + fileShare.ToString());
             default:
                 return string.Empty;
-}
+        }
     }
 }
 
