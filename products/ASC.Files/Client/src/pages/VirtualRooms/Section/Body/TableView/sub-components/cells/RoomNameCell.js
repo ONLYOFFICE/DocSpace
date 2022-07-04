@@ -35,13 +35,10 @@ const FileNameCell = ({
     <TableCell className="table-container_element-wrapper room-name_cell">
       <div className="room-name__logo-container">
         <RoomLogo
-          className={"room-name_logo"}
+          className={"table-name_logo"}
           type={type}
           isPrivacy={isPrivacy}
-        />
-
-        <Checkbox
-          className={"room-name_checkbox checkbox"}
+          withCheckbox={true}
           isChecked={isChecked}
           isIndeterminate={false}
           onChange={onRoomSelect}

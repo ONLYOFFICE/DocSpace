@@ -59,12 +59,6 @@ const StyledTableContainer = styled(TableContainer)`
   }
 
   .table-row-selected + .table-row-selected {
-    .room-name_cell,
-    .table-container_row-context-menu-wrapper {
-      margin-top: -1px;
-      border-image-slice: 1;
-      border-top: 1px solid;
-    }
     .room-name_cell {
       ${fileNameCss}
       border-left: 0; //for Safari macOS
@@ -74,6 +68,9 @@ const StyledTableContainer = styled(TableContainer)`
           ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
     }
     .table-container_row-context-menu-wrapper {
+      margin-top: -1px;
+      border-image-slice: 1;
+      border-top: 1px solid;
       ${contextCss}
 
       border-image-source: ${(props) => `linear-gradient(to left,

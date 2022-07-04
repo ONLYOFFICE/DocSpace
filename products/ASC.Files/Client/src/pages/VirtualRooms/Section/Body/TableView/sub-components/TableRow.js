@@ -5,37 +5,14 @@ import { inject, observer } from "mobx-react";
 import TableRow from "@appserver/components/table-container/TableRow";
 import TableCell from "@appserver/components/table-container/TableCell";
 
-import FileNameCell from "./RoomNameCell";
-import TypeCell from "./TypeCell";
-import OwnerCell from "./OwnerCell";
-import DateCell from "./DateCell";
-import SizeCell from "./SizeCell";
-import TagsCell from "./TagsCell";
+import FileNameCell from "./cells/RoomNameCell";
+import TypeCell from "./cells/TypeCell";
+import OwnerCell from "./cells/OwnerCell";
+import DateCell from "./cells/DateCell";
+import SizeCell from "./cells/SizeCell";
+import TagsCell from "./cells/TagsCell";
 
 const StyledTableRow = styled(TableRow)`
-  .room-name_cell {
-    .room-name__logo-container {
-      width: 32px;
-      height: 32px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      .room-name_logo {
-        display: flex;
-      }
-
-      .room-name_checkbox {
-        display: none;
-
-        .checkbox {
-          margin-right: 0;
-        }
-      }
-    }
-  }
-
   .table-container_cell {
     height: 48px;
     max-height: 48px;
@@ -53,14 +30,13 @@ const StyledTableRow = styled(TableRow)`
     .room-name_cell {
       margin-left: -24px;
       padding-left: 24px;
-      .room-name__logo-container {
-        .room-name_logo {
-          display: none;
-        }
 
-        .room-name_checkbox {
-          display: flex;
-        }
+      .room-logo_icon-container {
+        display: none;
+      }
+
+      .room-logo_checkbox {
+        display: flex;
       }
     }
 
@@ -84,14 +60,12 @@ const StyledTableRow = styled(TableRow)`
     (props.isHover || props.isChecked) &&
     css`
       .room-name_cell {
-        .room-name__logo-container {
-          .room-name_logo {
-            display: none;
-          }
+        .room-logo_icon-container {
+          display: none;
+        }
 
-          .room-name_checkbox {
-            display: flex;
-          }
+        .room-logo_checkbox {
+          display: flex;
         }
       }
     `}
