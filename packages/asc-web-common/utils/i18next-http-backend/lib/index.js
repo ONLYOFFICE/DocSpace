@@ -91,14 +91,12 @@ class Backend {
 
     if (index > -1) {
       //console.log("skip already in load url", url);
-
-      if (window.i18n.loaded[url]) {
-        return callback(null, window.i18n.loaded[url].data);
-      }
-
       window.i18n.inLoad[index].callbacks.push(callback);
-
       return;
+    }
+
+    if (window.i18n.loaded[url]) {
+      return callback(null, window.i18n.loaded[url].data);
     }
 
     if (namespaces == "translation") {
