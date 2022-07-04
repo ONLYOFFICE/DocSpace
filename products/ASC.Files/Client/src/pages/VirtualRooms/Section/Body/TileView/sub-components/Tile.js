@@ -9,7 +9,6 @@ import Badge from "@appserver/components/badge";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import RoomLogo from "@appserver/components/room-logo";
 import ContextMenu from "@appserver/components/context-menu";
-import Checkbox from "@appserver/components/checkbox";
 import { Base } from "@appserver/components/themes";
 
 const StyledTile = styled.div`
@@ -25,6 +24,14 @@ const StyledTile = styled.div`
     .tile-header {
       background: ${(props) =>
         props.theme.filesSection.tilesView.tile.checkedColor} !important;
+
+      .room-logo_icon-container {
+        display: none;
+      }
+
+      .room-logo_checkbox {
+        display: flex;
+      }
     }
   }
 
@@ -34,40 +41,16 @@ const StyledTile = styled.div`
       .tile-header {
         background: ${(props) =>
           props.theme.filesSection.tilesView.tile.checkedColor} !important;
-      }
 
-      .tile-header__logo-container {
-        .tile-header_logo {
+        .room-logo_icon-container {
           display: none !important;
         }
 
-        .tile-header_checkbox {
+        .room-logo_checkbox {
           display: flex !important;
         }
       }
     `}
-
-  .tile-header__logo-container {
-    width: 32px;
-    height: 32px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-right: 12px;
-    .tile-header_logo {
-      display: flex;
-    }
-
-    .tile-header_checkbox {
-      display: none;
-
-      .checkbox {
-        margin-right: 0;
-      }
-    }
-  }
 
   ${(props) =>
     props.isChecked &&
@@ -75,32 +58,16 @@ const StyledTile = styled.div`
       .tile-header {
         background: ${props.theme.filesSection.tilesView.tile
           .checkedColor} !important;
-      }
 
-      .tile-header__logo-container {
-        .tile-header_logo {
-          display: none;
+        .room-logo_icon-container {
+          display: none !important;
         }
 
-        .tile-header_checkbox {
-          display: flex;
-          align-item: center;
-          justify-content: center;
+        .room-logo_checkbox {
+          display: flex !important;
         }
       }
     `}
-
-  &:hover {
-    .tile-header__logo-container {
-      .tile-header_logo {
-        display: none;
-      }
-
-      .tile-header_checkbox {
-        display: flex;
-      }
-    }
-  }
 `;
 
 const StyledHeader = styled.div`
@@ -201,7 +168,7 @@ const Tile = React.forwardRef(
     const onContextMenu = React.useCallback(
       (e) => {
         if (!cmRef.current.menuRef.current) {
-          tileRef.current.click(e); //TODO: need fix context menu to global
+          tileRef.current.click(e);
         }
         cmRef.current.show(e);
         openContextMenu && openContextMenu(item);
@@ -237,20 +204,15 @@ const Tile = React.forwardRef(
           withBadge={!!badge}
           isPinned={pinned}
         >
-          <div className="tile-header__logo-container">
-            <RoomLogo
-              className={"tile-header_logo"}
-              type={roomType}
-              isPrivacy={isPrivacy}
-            />
-
-            <Checkbox
-              className={"tile-header_checkbox checkbox"}
-              isChecked={isChecked}
-              isIndeterminate={false}
-              onChange={onRoomSelect}
-            />
-          </div>
+          <RoomLogo
+            className={"tile-header_logo"}
+            type={roomType}
+            isPrivacy={isPrivacy}
+            withCheckbox={true}
+            isChecked={isChecked}
+            isIndeterminate={false}
+            onChange={onRoomSelect}
+          />
 
           <Heading className="tile-header_heading" truncate>
             {title}
