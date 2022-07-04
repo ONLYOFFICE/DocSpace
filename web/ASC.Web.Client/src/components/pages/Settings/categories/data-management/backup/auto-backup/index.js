@@ -244,6 +244,7 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
       selectedFolderId,
+      isFormReady,
     } = this.props;
 
     if (
@@ -257,32 +258,7 @@ class AutomaticBackup extends React.PureComponent {
     }
 
     if (isCheckedThirdPartyStorage) {
-      let errors = {};
-      let firstError = false;
-
-      for (let key of this.formNames) {
-        const field = this.formSettings[key];
-
-        if (!field) {
-          if (!firstError) {
-            firstError = true;
-          }
-          errors[key] = true;
-        } else {
-          if (!firstError && !field.trim()) {
-            firstError = true;
-          }
-          errors[key] = !field.trim();
-        }
-      }
-
-      if (firstError) {
-        this.setState({
-          isErrorsFields: errors,
-        });
-        return false;
-      }
-      return true;
+      return isFormReady();
     }
     return true;
   };
@@ -301,6 +277,8 @@ class AutomaticBackup extends React.PureComponent {
       selectedMonthDay,
       selectedStorageId,
       selectedFolderId,
+
+      getStorageParams,
     } = this.props;
 
     if (!isEnable) {
@@ -325,7 +303,6 @@ class AutomaticBackup extends React.PureComponent {
           day = null;
         }
       }
-
       let time = selectedHour.substring(0, selectedHour.indexOf(":"));
 
       const storageType = isCheckedDocuments
@@ -334,28 +311,14 @@ class AutomaticBackup extends React.PureComponent {
         ? ResourcesModuleType
         : StorageModuleType;
 
-      const storageParams = [
-        {
-          key: isCheckedThirdPartyStorage ? "module" : "folderId",
-          value: isCheckedThirdPartyStorage
-            ? selectedStorageId
-            : selectedFolderId,
-        },
-      ];
+      const storageParams = getStorageParams(
+        isCheckedThirdPartyStorage,
+        selectedFolderId,
+        selectedStorageId
+      );
 
-      if (isCheckedThirdPartyStorage) {
-        const arraySettings = Object.entries(this.formSettings);
-
-        for (let i = 0; i < arraySettings.length; i++) {
-          const tmpObj = {
-            key: arraySettings[i][0],
-            value: arraySettings[i][1],
-          };
-
-          storageParams.push(tmpObj);
-        }
-      }
-
+      console.log("storageParams", storageParams);
+      return;
       this.createSchedule(
         storageType.toString(),
         storageParams,
@@ -440,22 +403,6 @@ class AutomaticBackup extends React.PureComponent {
     this.setState({
       isAdditionalChanged: changed,
     });
-  };
-  onSetFormSettings = (name, value, initialObj) => {
-    if (!initialObj) {
-      this.formSettings = {
-        ...this.formSettings,
-        ...{ [name]: value },
-      };
-    } else {
-      this.formSettings = {
-        ...initialObj,
-      };
-    }
-  };
-
-  onSetRequiredFormNames = (namesArray) => {
-    this.formNames = namesArray;
   };
 
   render() {
@@ -590,9 +537,6 @@ class AutomaticBackup extends React.PureComponent {
                 <ThirdPartyStorageModule
                   {...commonProps}
                   onSetIsChanged={this.onSetIsChanged}
-                  onSetFormSettings={this.onSetFormSettings}
-                  onSetRequiredFormNames={this.onSetRequiredFormNames}
-                  isErrorsFields={isErrorsFields}
                 />
               )}
             </StyledModules>
@@ -648,6 +592,9 @@ const { organizationName, theme } = settingsStore;
     selectedStorageId,
     isChanged,
     toDefault,
+    isFormReady,
+    getStorageParams,
+    formSettings,
   } = backup;
 
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
@@ -658,7 +605,7 @@ const { organizationName, theme } = settingsStore;
   return {
     theme,
     language,
-
+    isFormReady,
     organizationName,
     backupSchedule,
     commonThirdPartyList,
@@ -686,5 +633,8 @@ const { organizationName, theme } = settingsStore;
     isCheckedThirdPartyStorage,
     isCheckedThirdParty,
     isCheckedDocuments,
+
+    formSettings,
+    getStorageParams,
   };
 })(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

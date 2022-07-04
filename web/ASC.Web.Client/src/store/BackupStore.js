@@ -50,6 +50,11 @@ class BackupStore {
   temporaryLink = null;
   timerId = null;
 
+  formSettings = {};
+  requiredFormSettings = {};
+  defaultFormSettings = {};
+  errorsFieldsBeforeSafe = {};
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -394,6 +399,111 @@ class BackupStore {
   setTemporaryLink = (link) => {
     this.temporaryLink = link;
   };
-}
 
+  setFormSettings = (obj) => {
+    this.formSettings = obj;
+    console.log(" this.formSettings", this.formSettings);
+  };
+
+  getStorageParams = (
+    isCheckedThirdPartyStorage,
+    selectedFolderId,
+    selectedStorageId
+  ) => {
+    let storageParams = [
+      {
+        key: isCheckedThirdPartyStorage ? "module" : "folderId",
+        value: isCheckedThirdPartyStorage
+          ? selectedStorageId
+          : selectedFolderId,
+      },
+    ];
+
+    if (isCheckedThirdPartyStorage) {
+      const arraySettings = Object.entries(this.formSettings);
+
+      for (let i = 0; i < arraySettings.length; i++) {
+        const tmpObj = {
+          key: arraySettings[i][0],
+          value: arraySettings[i][1],
+        };
+
+        storageParams.push(tmpObj);
+      }
+    }
+
+    return storageParams;
+  };
+
+  setRequiredFormSettings = (array) => {
+    this.requiredFormSettings = array;
+  };
+
+  replaceRequiredFormSettings = (beingDeletedValue, addedValue) => {
+    const index = this.requiredFormSettings.indexOf(beingDeletedValue);
+
+    if (~index) {
+      this.requiredFormSettings[index] = addedValue;
+    }
+  };
+
+  setDefaultFormSettings = (obj) => {
+    this.defaultFormSettings = obj;
+  };
+
+  updateDefaultSettings = () => {
+    this.defaultFormSettings = { ...this.formSettings };
+  };
+
+  resetNewFormSettings = () => {
+    this.formSettings = { ...this.defaultFormSettings };
+  };
+
+  isFormReady = () => {
+    let errors = {};
+    let firstError = false;
+
+    for (let key of this.requiredFormSettings) {
+      const elem = this.formSettings[key];
+
+      if (typeof elem == "boolean") continue;
+
+      errors[key] = !elem.trim();
+      // console.log("elem.trim()", elem.trim(), "firstError", firstError);
+      if (!elem.trim() && !firstError) {
+        firstError = true;
+      }
+    }
+    this.setErrorsFormFields(errors);
+    console.log("errors", errors, "firstError", firstError);
+    return !firstError;
+  };
+
+  setErrorsFormFields = (errors) => {
+    this.errorsFieldsBeforeSafe = errors;
+  };
+  setCompletedFormFields = (values, receivedValues = null) => {
+    let defaultFormSettings = {};
+
+    const isCorrectFields = receivedValues
+      ? values.length === receivedValues.length
+      : false;
+
+    console.log("isCorrectFields", values, receivedValues);
+    if (isCorrectFields) {
+      for (let i = 0; i < receivedValues.length; i++) {
+        const elem = receivedValues[i].name;
+        const value = receivedValues[i].value;
+
+        defaultFormSettings[elem] = value;
+      }
+    } else {
+      for (const [key, value] of Object.entries(values)) {
+        defaultFormSettings[key] = value;
+      }
+    }
+    this.setFormSettings(defaultFormSettings);
+    this.setDefaultFormSettings(defaultFormSettings);
+  };
+}
 export default BackupStore;
