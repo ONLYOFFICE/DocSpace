@@ -90,7 +90,9 @@ const Backup = ({
 
   const onSelect = () => {};
 
-  return (
+  return isInitialLoading ? (
+    <></>
+  ) : (
     <Submenu data={data} startSelect={data[0]} onSelect={(e) => onSelect(e)} />
   );
 };

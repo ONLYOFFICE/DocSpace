@@ -3,12 +3,18 @@ import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
 import ComboBox from "@appserver/components/combobox";
 import RadioButton from "@appserver/components/radio-button";
-import { getPortalPasswordSettings } from "@appserver/common/api/settings";
-import { thirdParty } from "@appserver/common/api/files";
 import Text from "@appserver/components/text";
 import styled, { css } from "styled-components";
 import HelpButton from "@appserver/components/help-button";
 import { Trans, withTranslation } from "react-i18next";
+import {
+  onChangeCheckbox,
+  onChangeTextInput,
+  onSelectEncryptionMode,
+  onSelectManagedKeys,
+  onSetAdditionInfo,
+} from "./InputsMethods";
+import { inject, observer } from "mobx-react";
 
 const bucketInput = "bucket";
 const regionInput = "region";
@@ -45,15 +51,6 @@ class AmazonSettings extends React.Component {
       kms: true,
       s3: false,
     };
-
-    // [
-    //   bucketInput,
-    //   regionInput,
-    //   urlInput,
-    //   forcePathStyleInput,
-    //   httpInput,
-    //   sseInput,
-    // ];
   };
 
   static requiredFormsName = () => {
@@ -62,17 +59,20 @@ class AmazonSettings extends React.Component {
 
   constructor(props) {
     super(props);
-    const { t, selectedStorage } = this.props;
+    const { t, selectedStorage, setRequiredFormSettings } = this.props;
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
+    console.log("selectedStorage", selectedStorage);
+
+    setRequiredFormSettings([urlInput, bucketInput]); //TODO: add the flexible urlInput or region. customKey, clientKey
 
     this.bucketPlaceholder =
-      selectedStorage && selectedStorage.properties[0].title;
+      selectedStorage && selectedStorage.properties[0]?.title;
 
     this.forcePathStylePlaceholder = t("ForcePathStyle");
 
     this.regionPlaceholder =
-      selectedStorage && selectedStorage.properties[2].title;
+      selectedStorage && selectedStorage.properties[2]?.title;
 
     this.serviceUrlPlaceholder = t("ServiceUrl");
     this.SSEPlaceholder = t("ServerSideEncryptionMethod");
@@ -125,22 +125,26 @@ class AmazonSettings extends React.Component {
   }
 
   onSelectEncryptionMethod = (options) => {
-    const { onSelectAdditionalInfo } = this.props;
     const key = options.key;
     const label = options.label;
 
-    onSelectAdditionalInfo("sse", key);
+    onSetAdditionInfo("sse", key);
     this.setState({
       selectedEncryption: { key, label },
     });
   };
 
   onSelectRegion = (options) => {
-    const { onSelectAdditionalInfo } = this.props;
+    const { replaceRequiredFormSettings } = this.props;
+
     const key = options.key;
     const label = options.label;
 
-    onSelectAdditionalInfo("region", key);
+    onSetAdditionInfo("region", key);
+
+    key === "0"
+      ? replaceRequiredFormSettings(regionInput, urlInput)
+      : replaceRequiredFormSettings(urlInput, regionInput);
 
     this.setState({
       region: { key, label },
@@ -148,11 +152,12 @@ class AmazonSettings extends React.Component {
   };
 
   onSelectManagedKeys = (options) => {
-    const { onSelectAdditionalInfo } = this.props;
+    const { setFormSettings } = this.props;
     const key = options.key;
     const label = options.label;
 
-    onSelectAdditionalInfo("managedkeys", key);
+    const newState = onSetAdditionInfo("managedkeys", key);
+    setFormSettings(newState);
 
     this.setState({
       managedKeys: { key, label },
@@ -160,43 +165,45 @@ class AmazonSettings extends React.Component {
   };
 
   onSelectEncryptionMode = (e) => {
-    const { onSelectSSEMode } = this.props;
-    console.log("Hello");
-    // let newStateObj = {};
+    const { setFormSettings, onSetIsChanged } = this.props;
     const name = e.target.name;
-    // newStateObj[name] = true;
-
-    // const newState = this.state.selectedEncryptionMode.filter(
-    //   (el) => el !== name
-    // );
-    // newState.forEach((name) => (newStateObj[name] = false));
     const nonCheck = name === "s3" ? "kms" : "s3"; //TODO: names from api
+    const newState = onSelectEncryptionMode(name, nonCheck);
+    onSetIsChanged && onSetIsChanged(true);
+    setFormSettings(newState);
+  };
 
-    onSelectSSEMode(name, nonCheck);
-    // this.setState({
-    //   selectedEncryptionMode: {
-    //     ...newStateObj,
-    //   },
-    // });
+  onUpdateValue = (e, type) => {
+    const { formSettings, setFormSettings, onSetIsChanged } = this.props;
+    onSetIsChanged && onSetIsChanged(true);
+
+    const newState =
+      type === "checkbox"
+        ? onChangeCheckbox
+        : onChangeTextInput(formSettings, e);
+
+    setFormSettings(newState);
+  };
+
+  onChangeText = (e) => {
+    this.onUpdateValue(e);
+  };
+
+  onChangeCheckbox = (e) => {
+    this.onUpdateValue(e, "checkbox");
   };
 
   render() {
     const {
-      isError,
+      errorsFieldsBeforeSafe: isError,
       isLoadingData,
       isLoading,
-      onChange,
       formSettings,
-      onChangeCheckbox,
       t,
+      onChange,
     } = this.props;
-    const {
-      selectedEncryption,
-      selectedEncryptionMode,
-      region,
-      managedKeys,
-    } = this.state;
-    console.log("formSettings", formSettings);
+    const { selectedEncryption, region, managedKeys } = this.state;
+    console.log("amazon settings render", isError);
     const renderTooltip = (helpInfo) => {
       return (
         <>
@@ -226,7 +233,7 @@ class AmazonSettings extends React.Component {
             scale
             value={formSettings.bucket}
             hasError={isError?.bucket}
-            onChange={onChange}
+            onChange={this.onChangeText}
             isDisabled={isLoadingData || isLoading || this.isDisabled}
             tabIndex={1}
           />
@@ -248,7 +255,7 @@ class AmazonSettings extends React.Component {
             scaled={true}
             scaledOptions={true}
             dropDownMaxHeight={300}
-            isDisabled={!!formSettings.serviceurl.trim()}
+            isDisabled={!!formSettings.serviceurl?.trim()}
             tabIndex={2}
           />
         </StyledBody>
@@ -264,7 +271,7 @@ class AmazonSettings extends React.Component {
             scale
             value={formSettings.serviceurl}
             hasError={isError?.serviceurl}
-            onChange={onChange}
+            onChange={this.onChangeText}
             isDisabled={
               isLoadingData ||
               isLoading ||
@@ -281,7 +288,7 @@ class AmazonSettings extends React.Component {
           isChecked={formSettings.forcepathstyle}
           isIndeterminate={false}
           isDisabled={false}
-          onChange={onChangeCheckbox}
+          onChange={this.onChangeCheckbox}
           tabIndex={4}
         />
 
@@ -292,7 +299,7 @@ class AmazonSettings extends React.Component {
           isChecked={formSettings.usehttp}
           isIndeterminate={false}
           isDisabled={false}
-          onChange={onChangeCheckbox}
+          onChange={this.onChangeCheckbox}
           tabIndex={5}
         />
         <StyledBody>
@@ -363,7 +370,7 @@ class AmazonSettings extends React.Component {
               scale
               value={formSettings.customKey}
               hasError={isError?.customKey}
-              onChange={onChange}
+              onChange={this.onChangeText}
               isDisabled={isLoadingData || isLoading || this.isDisabled}
               tabIndex={9}
             />
@@ -379,7 +386,7 @@ class AmazonSettings extends React.Component {
               scale
               value={formSettings.clientKey}
               hasError={isError?.clientKey}
-              onChange={onChange}
+              onChange={this.onChangeText}
               isDisabled={isLoadingData || isLoading || this.isDisabled}
               tabIndex={8}
             />
@@ -389,4 +396,21 @@ class AmazonSettings extends React.Component {
     );
   }
 }
-export default AmazonSettings;
+
+export default inject(({ backup }) => {
+  const {
+    setFormSettings,
+    setRequiredFormSettings,
+    formSettings,
+    errorsFieldsBeforeSafe,
+    replaceRequiredFormSettings,
+  } = backup;
+
+  return {
+    setFormSettings,
+    setRequiredFormSettings,
+    formSettings,
+    errorsFieldsBeforeSafe,
+    replaceRequiredFormSettings,
+  };
+})(observer(AmazonSettings));
