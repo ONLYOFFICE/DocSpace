@@ -10,7 +10,7 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
   const tagsRef = React.useRef(null);
 
   const updateRenderedTags = React.useCallback(() => {
-    if (tags && tagsRef && columnCount) {
+    if (tags && tagsRef) {
       const newTags = [];
 
       const containerWidth = tagsRef.current.offsetWidth;
@@ -29,7 +29,7 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
           newTags.push(tag);
         }
       } else {
-        if (tags.length === columnCount + 1) {
+        if (tags.length === columnCount + 1 && columnCount !== 0) {
           const currentTagMaxWidth =
             (containerWidth - tags.length * 4) / tags.length;
 
@@ -55,10 +55,12 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
             (currentTagMaxWidth / containerWidth) * 100
           );
 
-          for (let i = 0; i < columnCount; i++) {
-            const tag = { name: tags[i], maxWidth: `${maxWidthPercent}%` };
+          if (columnCount !== 0) {
+            for (let i = 0; i < columnCount; i++) {
+              const tag = { name: tags[i], maxWidth: `${maxWidthPercent}%` };
 
-            newTags.push(tag);
+              newTags.push(tag);
+            }
           }
 
           newTags.push(tagWithDropdown);
