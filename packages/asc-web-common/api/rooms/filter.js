@@ -21,13 +21,19 @@ const SEARCH_IN_CONTENT = "searchInContent";
 const DEFAULT_SEARCH_IN_CONTENT = null;
 
 const SEARCH_TYPE = "withSubfolders";
-const DEFAULT_SEARCH_TYPE = true;
+const DEFAULT_SEARCH_TYPE = false;
 
 const SEARCH_AREA = "searchArea";
 const DEFAULT_SEARCH_AREA = RoomSearchArea.Active;
 
 const TAGS = "tags";
 const DEFAULT_TAGS = null;
+
+const SORT_BY = "sortby";
+const DEFAULT_SORT_BY = "DateAndTime";
+
+const SORT_ORDER = "sortorder";
+const DEFAULT_SORT_ORDER = "descending";
 
 class RoomsFilter {
   static getDefault(total = DEFAULT_TOTAL) {
@@ -74,6 +80,10 @@ class RoomsFilter {
 
     const tags = (urlFilter[TAGS] && urlFilter[TAGS]) || defaultFilter.tags;
 
+    const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
+
+    const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
+
     const newFilter = new RoomsFilter(
       page,
       pageCount,
@@ -84,7 +94,9 @@ class RoomsFilter {
       searchInContent,
       withSubfolders,
       searchArea,
-      tags
+      tags,
+      sortBy,
+      sortOrder
     );
 
     return newFilter;
@@ -100,7 +112,9 @@ class RoomsFilter {
     searchInContent = DEFAULT_SEARCH_IN_CONTENT,
     withSubfolders = DEFAULT_SEARCH_TYPE,
     searchArea = DEFAULT_SEARCH_AREA,
-    tags = DEFAULT_TAGS
+    tags = DEFAULT_TAGS,
+    sortBy = DEFAULT_SORT_BY,
+    sortOrder = DEFAULT_SORT_ORDER
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -112,6 +126,8 @@ class RoomsFilter {
     this.withSubfolders = withSubfolders;
     this.searchArea = searchArea;
     this.tags = tags;
+    this.sortBy = sortBy;
+    this.sortOrder = sortOrder;
   }
 
   getStartIndex = () => {
@@ -137,6 +153,8 @@ class RoomsFilter {
       withSubfolders,
       searchArea,
       tags,
+      sortBy,
+      sortOrder,
     } = this;
 
     const dtoFilter = {
@@ -150,6 +168,8 @@ class RoomsFilter {
       withSubfolders: withSubfolders,
       searchArea: searchArea,
       tags: tags,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
     };
 
     const str = toUrlParams(dtoFilter, true);
@@ -167,6 +187,8 @@ class RoomsFilter {
       withSubfolders,
       searchArea,
       tags,
+      sortBy,
+      sortOrder,
     } = this;
 
     const dtoFilter = {};
@@ -204,6 +226,8 @@ class RoomsFilter {
     }
 
     dtoFilter[PAGE] = page + 1;
+    dtoFilter[SORT_BY] = sortBy;
+    dtoFilter[SORT_ORDER] = sortOrder;
 
     const str = toUrlParams(dtoFilter, true);
     return str;
@@ -224,7 +248,9 @@ class RoomsFilter {
       this.searchInContent,
       this.withSubfolders,
       this.searchArea,
-      this.tags
+      this.tags,
+      this.sortBy,
+      this.sortOrder
     );
   }
 
@@ -238,7 +264,9 @@ class RoomsFilter {
       this.searchInContent === filter.searchInContent &&
       this.withSubfolders === filter.withSubfolders &&
       this.searchArea === filter.searchArea &&
-      this.tags === filter.tags;
+      this.tags === filter.tags &&
+      this.sortBy === filter.sortBy &&
+      this.sortOrder === filter.sortOrder;
 
     return equals;
   }
