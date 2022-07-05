@@ -516,7 +516,11 @@ class SectionBodyContent extends React.PureComponent {
 
         {isSelf && (
           <ToggleWrapper>
-            <ToggleContent label={t("InterfaceTheme")} isOpen={true}>
+            <ToggleContent
+              label={t("InterfaceTheme")}
+              isOpen={true}
+              enableToggle={false}
+            >
               <RadioButtonGroup
                 orientation={"vertical"}
                 name={"interface-theme"}

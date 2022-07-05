@@ -76,6 +76,7 @@
   "EncryptionFilePreparing": "Priprava datoteke za šifriranje",
   "EncryptionKeysReload": "Ključe za šifriranje je potrebno znova vnesti",
   "Error": "Napaka",
+  "ErrorInternalServer": "Notranja napaka strežnika. Ponovno poskusite kasneje.",
   "FillFormButton": "Izpolni obrazec",
   "FullAccess": "Poln dostop",
   "Guest": "Gost",

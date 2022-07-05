@@ -141,6 +141,9 @@
     <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.zh-CN.resx">
       <DependentUpon>FilesPatternResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.az.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\NotifyService\patterns.xml" />
@@ -385,6 +388,15 @@
       <DependentUpon>FilesUCResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\FilesUCResource.zh-CN.resx">
+      <DependentUpon>FilesUCResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\FilesCommonResource.az-Latn-AZ.resx">
+      <DependentUpon>FilesCommonResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\FilesJSResource.az-Latn-AZ.resx">
+      <DependentUpon>FilesJSResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\FilesUCResource.az-Latn-AZ.resx">
       <DependentUpon>FilesUCResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

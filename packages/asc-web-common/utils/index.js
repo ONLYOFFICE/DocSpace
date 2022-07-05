@@ -361,3 +361,15 @@ export function isElementInViewport(el) {
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
+
+export function assign(obj, keyPath, value) {
+  const lastKeyIndex = keyPath.length - 1;
+  for (let i = 0; i < lastKeyIndex; ++i) {
+    const key = keyPath[i];
+    if (!(key in obj)) {
+      obj[key] = {};
+    }
+    obj = obj[key];
+  }
+  obj[keyPath[lastKeyIndex]] = value;
+}

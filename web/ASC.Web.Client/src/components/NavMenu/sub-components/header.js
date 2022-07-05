@@ -146,7 +146,6 @@ const HeaderComponent = ({
   ...props
 }) => {
   const { t } = useTranslation("Common");
-
   const isNavAvailable = mainModules.length > 0;
 
   const onLogoClick = () => {
@@ -212,6 +211,15 @@ const HeaderComponent = ({
     return () => window.removeEventListener("resize", onResize);
   });
 
+  const [isFormGallery, setIsFormGallery] = useState(
+    history.location.pathname.includes("/form-gallery")
+  );
+  useEffect(() => {
+    return history.listen((location) => {
+      setIsFormGallery(location.pathname.includes("/form-gallery"));
+    });
+  }, [history]);
+
   return (
     <>
       <Header
@@ -225,9 +233,8 @@ const HeaderComponent = ({
         isDesktopView={isDesktopView}
       >
         {((isPersonal && location.pathname.includes("files")) ||
-          (!isPersonal && currentProductId !== "home")) && (
-          <HeaderCatalogBurger onClick={toggleArticleOpen} />
-        )}
+          (!isPersonal && currentProductId !== "home")) &&
+          !isFormGallery && <HeaderCatalogBurger onClick={toggleArticleOpen} />}
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
             <img alt="logo" src={props.logoUrl} className="header-logo-icon" />

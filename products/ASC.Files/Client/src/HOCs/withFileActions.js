@@ -18,19 +18,18 @@ export default function withFileActions(WrappedFileItem) {
       const { onSelectItem, item } = this.props;
       const { id, isFolder } = item;
 
-      id !== -1 && onSelectItem({ id, isFolder });
+      id !== -1 && onSelectItem({ id, isFolder }, true, false);
     };
 
-    onFileContextClick = (isSingleFile) => {
+    onFileContextClick = (withSelect) => {
       const { onSelectItem } = this.props;
       const { id, isFolder } = this.props.item;
 
-      id !== -1 &&
-        onSelectItem({ id, isFolder }, false, !isSingleFile || isMobile);
+      id !== -1 && onSelectItem({ id, isFolder }, !withSelect);
     };
 
     onHideContextMenu = () => {
-      //this.props.setBufferSelection(null);
+      //this.props.setSelected("none");
       this.props.setEnabledHotkeys(true);
     };
 
@@ -287,6 +286,7 @@ export default function withFileActions(WrappedFileItem) {
         activeFiles,
         activeFolders,
         setEnabledHotkeys,
+        setSelected,
       } = filesStore;
 
       const { startUpload } = uploadDataStore;
@@ -360,6 +360,7 @@ export default function withFileActions(WrappedFileItem) {
         showHotkeyBorder,
         openFileAction,
         setEnabledHotkeys,
+        setSelected,
       };
     }
   )(observer(WithFileActions));

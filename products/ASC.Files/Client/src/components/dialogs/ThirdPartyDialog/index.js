@@ -61,12 +61,6 @@ const StyledModalDialog = styled(ModalDialog)`
 
       .service-btn {
         margin-left: auto;
-
-        svg {
-          path {
-            fill: #333;
-          }
-        }
       }
     }
   }
@@ -81,6 +75,7 @@ const ServiceItem = (props) => {
     className,
     getThirdPartyIcon,
     serviceName,
+    serviceKey,
     onClick,
   } = props;
 
@@ -93,7 +88,7 @@ const ServiceItem = (props) => {
     "data-key": capabilityKey,
   };
 
-  const src = getThirdPartyIcon(capabilityKey);
+  const src = getThirdPartyIcon(serviceKey || capabilityKey);
 
   const capabilityName = connectedCloudsTypeTitleTranslation(capabilityKey, t);
 
@@ -282,7 +277,8 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               t={t}
               serviceName="Nextcloud"
-              capability={webDavConnectItem}
+              serviceKey="NextCloud"
+              capability={nextCloudConnectItem}
               onClick={onShowService}
               getThirdPartyIcon={getThirdPartyIcon}
             />
@@ -292,7 +288,8 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               t={t}
               serviceName="ownCloud"
-              capability={webDavConnectItem}
+              serviceKey="OwnCloud"
+              capability={ownCloudConnectItem}
               onClick={onShowService}
               getThirdPartyIcon={getThirdPartyIcon}
             />

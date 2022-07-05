@@ -302,12 +302,15 @@ class UpdateUserForm extends React.Component {
       history,
       t,
       setUserIsUpdate,
+      isSelf,
+      setUser,
     } = this.props;
 
     this.setState({ isLoading: true });
 
     updateProfile(this.state.profile)
       .then((profile) => {
+        if (isSelf) setUser(profile);
         updateProfileInUsers(profile);
         toastr.success(t("ChangesSavedSuccessfully"));
         setIsEditingForm(false);
@@ -842,33 +845,34 @@ class UpdateUserForm extends React.Component {
               maxLabelWidth={maxLabelWidth}
             />
             {!personal && (
-              <DateField
-                calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-                labelText={`${t("Translations:Birthdate")}:`}
-                inputName="birthday"
-                inputClassName="date-picker_input-birthday"
-                inputValue={birthdayDateValue}
-                inputIsDisabled={isLoading}
-                inputOnChange={this.onBirthdayDateChange}
-                inputTabIndex={6}
-                locale={language}
-                maxLabelWidth={maxLabelWidth}
-              />
-            )}
-            <RadioField
-              labelText={`${t("Translations:Sex")}:`}
-              radioName="sex"
-              radioValue={profile.sex}
-              radioOptions={[
-                { value: "male", label: t("Translations:MaleSexStatus") },
-                { value: "female", label: t("Translations:FemaleSexStatus") },
-              ]}
-              radioIsDisabled={isLoading}
-              radioOnChange={this.onInputChange}
-              maxLabelWidth={maxLabelWidth}
-            />
-            {!personal && (
               <>
+                <DateField
+                  calendarHeaderContent={`${t("CalendarSelectDate")}:`}
+                  labelText={`${t("Translations:Birthdate")}:`}
+                  inputName="birthday"
+                  inputClassName="date-picker_input-birthday"
+                  inputValue={birthdayDateValue}
+                  inputIsDisabled={isLoading}
+                  inputOnChange={this.onBirthdayDateChange}
+                  inputTabIndex={6}
+                  locale={language}
+                  maxLabelWidth={maxLabelWidth}
+                />
+                <RadioField
+                  labelText={`${t("Translations:Sex")}:`}
+                  radioName="sex"
+                  radioValue={profile.sex}
+                  radioOptions={[
+                    { value: "male", label: t("Translations:MaleSexStatus") },
+                    {
+                      value: "female",
+                      label: t("Translations:FemaleSexStatus"),
+                    },
+                  ]}
+                  radioIsDisabled={isLoading}
+                  radioOnChange={this.onInputChange}
+                  maxLabelWidth={maxLabelWidth}
+                />
                 <RadioField
                   labelText={`${t("Common:Type")}:`}
                   radioName="isVisitor"
@@ -1064,6 +1068,7 @@ export default withRouter(
     isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
     personal: auth.settingsStore.personal,
     setUserIsUpdate: auth.userStore.setUserIsUpdate,
+    setUser: auth.userStore.setUser,
     userFormValidation: auth.settingsStore.userFormValidation,
     isTabletView: auth.settingsStore.isTabletView,
     helpLink: auth.settingsStore.helpLink,

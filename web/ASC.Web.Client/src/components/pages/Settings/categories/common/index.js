@@ -44,12 +44,12 @@ const SubmenuCommon = (props) => {
     },
     {
       id: "branding",
-      name: t("Branding"),
+      name: "Branding",
       content: <Branding />,
     },
     {
       id: "appearance",
-      name: t("Appearance"),
+      name: "Appearance",
       content: <Appearance />,
     },
   ];

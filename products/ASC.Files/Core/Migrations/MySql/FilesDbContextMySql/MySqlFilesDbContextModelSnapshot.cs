@@ -602,6 +602,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("FolderType")
+                        .HasColumnType("int")
                         .HasColumnType("folder_type");
 
                     b.Property<string>("Password")
@@ -619,10 +620,6 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .HasDefaultValueSql("'0'")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<int>("RootFolderType")
-                        .HasColumnType("int")
-                        .HasColumnName("root_folder_type");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int")

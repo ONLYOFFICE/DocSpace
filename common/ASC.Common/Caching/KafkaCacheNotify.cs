@@ -253,7 +253,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
 
     private string GetChannelName(CacheNotifyAction notifyAction)
     {
-        return $"ascchannel{notifyAction}{typeof(T).FullName}".ToLower();
+        return $"ascchannel{notifyAction}{typeof(T).FullName}".ToLowerInvariant();
     }
 }
 
