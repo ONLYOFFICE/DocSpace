@@ -35,14 +35,14 @@ const DropDownItem = (props) => {
     >
       {icon && (
         <IconWrapper>
-          <ReactSVG
-            src={icon}
-            className={fillIcon ? "drop-down-item_icon" : ""}
-          />
+          {!withoutIcon && (
+            <ReactSVG
+              src={icon}
+              className={fillIcon ? "drop-down-item_icon" : ""}
+            />
+          )}
         </IconWrapper>
       )}
-
-      {withoutIcon && <IconWrapper />}
 
       {isSeparator ? "\u00A0" : label ? label : children && children}
 
