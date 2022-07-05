@@ -221,7 +221,7 @@ class FilesStore {
         false
       );
 
-      this.getFileInfo(id);
+      this.createThumbnail(id);
     });
   }
 
