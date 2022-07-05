@@ -200,7 +200,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         try
         {
-            entries = await _entryManager.GetEntriesAsync(
+            (entries, _) = await _entryManager.GetEntriesAsync(
                 await folderDao.GetFolderAsync(parentId), 0, 0, FilterType.FoldersOnly,
                 false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true));
         }
@@ -683,7 +683,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             try
             {
-                entries = await _entryManager.GetEntriesAsync(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy);
+                (entries, _) = await _entryManager.GetEntriesAsync(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy);
             }
             catch (Exception e)
             {
