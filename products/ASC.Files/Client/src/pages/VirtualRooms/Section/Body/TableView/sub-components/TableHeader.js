@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 
 import TableHeader from "@appserver/components/table-container/TableHeader";
 
@@ -7,9 +8,33 @@ const TableHeaderContent = ({
   columnStorageName,
   containerRef,
   sectionWidth,
+
+  filter,
+  fetchRooms,
+
+  setIsLoading,
 }) => {
   const [columns, setColumns] = React.useState(null);
   const [resetColumnsSize, setResetColumnsSize] = React.useState(false);
+
+  const onFilter = (sortBy, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const newFilter = filter.clone();
+
+    if (newFilter.sortBy !== sortBy) {
+      newFilter.sortBy = sortBy;
+    } else {
+      newFilter.sortOrder =
+        newFilter.sortOrder === "ascending" ? "descending" : "ascending";
+    }
+
+    setIsLoading(true);
+    fetchRooms(newFilter.searchArea, newFilter).finally(() =>
+      setIsLoading(false)
+    );
+  };
 
   React.useEffect(() => {
     const defaultColumns = [
@@ -21,46 +46,43 @@ const TableHeaderContent = ({
         default: true,
         sortBy: "AZ",
         minWidth: 210,
+        onClick: onFilter,
       },
       {
         key: "Type",
         title: "Type",
         enable: false,
         resizable: true,
-        sortBy: "Author",
+        sortBy: "Type",
         onChange: onColumnChange,
+        onClick: onFilter,
       },
       {
         key: "Tags",
         title: "Tags",
         enable: true,
         resizable: true,
-        sortBy: "DateAndTimeCreation",
+        sortBy: "Tags",
         onChange: onColumnChange,
+        onClick: onFilter,
       },
       {
         key: "Owner",
         title: "Owner",
         enable: false,
         resizable: true,
-        sortBy: "DateAndTime",
+        sortBy: "Author",
         onChange: onColumnChange,
+        onClick: onFilter,
       },
       {
         key: "Activity",
         title: "Last activity",
         enable: true,
         resizable: true,
-        sortBy: "Size",
+        sortBy: "DateAndTime",
         onChange: onColumnChange,
-      },
-      {
-        key: "Size",
-        title: "Size",
-        enable: false,
-        resizable: true,
-        sortBy: "Type",
-        onChange: onColumnChange,
+        onClick: onFilter,
       },
     ];
 
@@ -75,7 +97,7 @@ const TableHeaderContent = ({
     setColumns(newColumns);
     setResetColumnsSize(resetColumnsSize);
     setTableColumns(tableColumns);
-  }, [tableStorageName, getColumns]);
+  }, [tableStorageName, getColumns, filter]);
 
   const getColumns = React.useCallback((defaultColumns, splitColumns) => {
     const columns = [];
@@ -118,18 +140,29 @@ const TableHeaderContent = ({
     [tableStorageName]
   );
 
+  const { sortBy, sortOrder } = filter;
+
   return columns ? (
     <TableHeader
       sectionWidth={sectionWidth}
       checkboxSize="32px"
+      sorted={sortOrder === "descending"}
+      sortBy={sortBy}
       columns={columns}
       columnStorageName={columnStorageName}
       containerRef={containerRef}
       resetColumnsSize={resetColumnsSize}
+      sortingVisible={true}
     />
   ) : (
     <></>
   );
 };
 
-export default TableHeaderContent;
+export default inject(({ roomsStore, filesStore }) => {
+  const { setIsLoading } = filesStore;
+
+  const { filter, fetchRooms } = roomsStore;
+
+  return { filter, fetchRooms, setIsLoading };
+})(observer(TableHeaderContent));

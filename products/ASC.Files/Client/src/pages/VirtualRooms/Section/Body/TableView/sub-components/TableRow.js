@@ -3,13 +3,11 @@ import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 
 import TableRow from "@appserver/components/table-container/TableRow";
-import TableCell from "@appserver/components/table-container/TableCell";
 
 import FileNameCell from "./cells/RoomNameCell";
 import TypeCell from "./cells/TypeCell";
 import OwnerCell from "./cells/OwnerCell";
 import DateCell from "./cells/DateCell";
-import SizeCell from "./cells/SizeCell";
 import TagsCell from "./cells/TagsCell";
 
 const StyledTableRow = styled(TableRow)`
@@ -156,7 +154,6 @@ const Row = React.forwardRef(
           sideColor={theme.filesSection.tableView.row.sideColor}
         />
         <DateCell sideColor={theme.filesSection.tableView.row.sideColor} />
-        <SizeCell sideColor={theme.filesSection.tableView.row.sideColor} />
       </StyledTableRow>
     );
   }
