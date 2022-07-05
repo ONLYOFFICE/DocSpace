@@ -27,7 +27,6 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .button-dialog {
     display: inline-block;
-    margin-left: 8px;
 
     @media ${tablet} {
       display: none;

@@ -57,7 +57,6 @@ const StyledDeleteDialog = styled(ModalDialog)`
     }
 
     display: inline-block;
-    margin-left: 8px;
   }
 `;
 

@@ -55,7 +55,6 @@ class DataLossWarningDialogComponent extends React.Component {
             onClick={this.onSubmit}
           />
           <Button
-            className="button-dialog"
             key="StayOnPage"
             label={t("Common:CancelButton")}
             size="normal"

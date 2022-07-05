@@ -76,7 +76,6 @@ class DeleteSelfProfileDialogComponent extends React.Component {
             isLoading={isRequestRunning}
           />
           <Button
-            className="button-dialog"
             key="CloseBtn"
             label={t("Common:CloseButton")}
             size="normal"

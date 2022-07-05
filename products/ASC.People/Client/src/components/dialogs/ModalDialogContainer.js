@@ -26,10 +26,6 @@ const ModalDialogContainer = styled(ModalDialog)`
     margin-top: 16px;
   }
 
-  .button-dialog {
-    margin-left: 8px;
-  }
-
   .warning-text {
     margin: 20px 0;
   }
