@@ -31,8 +31,8 @@ const DeleteDialogComponent = (props) => {
 
   while (props.selection.length !== i) {
     const item = props.selection[i];
-    if (!((isRootFolder && item.providerKey) || item.isEditing)) {
-      if (item.access === 0 || item.access === 1 || unsubscribe) {
+    if (!((isRootFolder && item?.providerKey) || item?.isEditing)) {
+      if (item?.access === 0 || item?.access === 1 || unsubscribe) {
         selection.push(item);
       }
     }
@@ -96,7 +96,7 @@ const DeleteDialogComponent = (props) => {
       if (selection.length > 1) {
         return t("MoveToTrashItemsTitle");
       } else {
-        return selection[0].isFolder
+        return selection[0]?.isFolder
           ? t("MoveToTrashOneFolderTitle")
           : t("MoveToTrashOneFileTitle");
       }
@@ -107,7 +107,7 @@ const DeleteDialogComponent = (props) => {
     if (selection.length > 1) {
       return t("MoveToTrashItemsNote");
     } else {
-      return !selection[0].isFolder
+      return !selection[0]?.isFolder
         ? t("MoveToTrashOneFileNote")
         : personal
         ? ""
@@ -134,27 +134,25 @@ const DeleteDialogComponent = (props) => {
       <ModalDialog.Header>{title}</ModalDialog.Header>
       <ModalDialog.Body>
         <div className="modal-dialog-content-body">
-          <Text className="delete_dialog-header-text" noSelect>
-            {noteText}
-          </Text>
+          <Text noSelect>{noteText}</Text>
         </div>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
-          className="button-dialog-accept"
           key="OkButton"
           label={accessButtonLabel}
-          size="normalTouchscreen"
+          size="normal"
           primary
+          scale
           onClick={unsubscribe ? onUnsubscribe : onDelete}
           isLoading={isLoading}
           isDisabled={!selection.length}
         />
         <Button
-          className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="normalTouchscreen"
+          size="normal"
+          scale
           onClick={onClose}
           isLoading={isLoading}
         />
