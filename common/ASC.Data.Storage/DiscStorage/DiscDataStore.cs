@@ -140,13 +140,18 @@ public class DiscDataStore : BaseStorage
     {
         return SaveAsync(domain, path, stream);
     }
+        private bool EnableQuotaCheck(string domain)
+        {
+            return (QuotaController != null) && !domain.EndsWith("_temp");
+        }
 
     public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
         Logger.DebugSavePath(path);
 
         var buffered = _tempStream.GetBuffered(stream);
-        if (QuotaController != null)
+            
+            if (EnableQuotaCheck(domain))
         {
             QuotaController.QuotaUsedCheck(buffered.Length);
         }

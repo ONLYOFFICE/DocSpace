@@ -277,11 +277,18 @@ public class DocumentServiceTrackerHelper
             {
                 if (!Guid.TryParse(user, out var userId))
                 {
-                    _logger.InformationDocServiceUserIdIsNotGuid(user);
-                    continue;
-                }
+                        if (!string.IsNullOrEmpty(user) && user.StartsWith("uid-"))
+                        {
+                            userId = Guid.Empty;
+                        }
+                        else
+                        {
+                            _logger.InformationDocServiceUserIdIsNotGuid(user);
+                            continue;
+                        }
 
-                users.Remove(userId);
+                    }
+                    users.Remove(userId);
 
                 try
                 {

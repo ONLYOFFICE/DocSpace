@@ -12,12 +12,13 @@ import {
   StyledButtonWrapper,
   StyledButtonOptions,
   StyledAlertIcon,
+  StyledRenderItem,
 } from "./styled-main-button";
 import IconButton from "../icon-button";
 import Button from "../button";
 import Text from "../text";
 import Scrollbar from "@appserver/components/scrollbar";
-import { isMobile } from "react-device-detect";
+import { isIOS, isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
 import styled from "styled-components";
@@ -126,6 +127,52 @@ const MainButtonMobile = (props) => {
     }
   }, [opened]);
 
+  let currentPosition, prevPosition, buttonBackground, scrollElem;
+
+  useEffect(() => {
+    if (!isIOS) return;
+
+    scrollElem = document.getElementsByClassName("section-scroll")[0];
+
+    if (scrollElem?.scrollTop === 0) {
+      scrollElem.classList.add("dialog-background-scroll");
+    }
+
+    scrollElem?.addEventListener("scroll", scrollChangingBackground);
+
+    return () => {
+      scrollElem?.removeEventListener("scroll", scrollChangingBackground);
+    };
+  }, []);
+
+  const scrollChangingBackground = () => {
+    currentPosition = scrollElem.scrollTop;
+    const scrollHeight = scrollElem.scrollHeight;
+
+    if (currentPosition < prevPosition) {
+      setDialogBackground(scrollHeight);
+    } else {
+      if (currentPosition > 0 && currentPosition > prevPosition) {
+        setButtonBackground();
+      }
+    }
+    prevPosition = currentPosition;
+  };
+
+  const setDialogBackground = (scrollHeight) => {
+    if (!buttonBackground) {
+      document
+        .getElementsByClassName("section-scroll")[0]
+        .classList.add("dialog-background-scroll");
+    }
+    if (currentPosition < scrollHeight / 3) {
+      buttonBackground = false;
+    }
+  };
+  const setButtonBackground = () => {
+    buttonBackground = true;
+    scrollElem.classList.remove("dialog-background-scroll");
+  };
   const recalculateHeight = () => {
     let height =
       divRef?.current?.getBoundingClientRect()?.height || window.innerHeight;
@@ -175,7 +222,7 @@ const MainButtonMobile = (props) => {
 
   const renderItems = () => {
     return (
-      <div ref={divRef}>
+      <StyledRenderItem ref={divRef}>
         <StyledContainerAction>
           {actionOptions.map((option) => {
             const optionOnClickAction = () => {
@@ -240,7 +287,7 @@ const MainButtonMobile = (props) => {
               )
             : ""}
         </StyledButtonOptions>
-      </div>
+      </StyledRenderItem>
     );
   };
 

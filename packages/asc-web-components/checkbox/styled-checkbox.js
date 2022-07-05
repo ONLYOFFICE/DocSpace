@@ -3,14 +3,7 @@ import Base from "../themes/base";
 
 const StyledLabel = styled.label`
   display: flex;
-
-  ${(props) =>
-    !props.isLogin &&
-    css`
-      align-items: "center";
-    `};
-
-  justify-content: ${(props) => props.isLogin && "center"};
+  align-items: center;
   position: relative;
   margin: 0;
 

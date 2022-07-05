@@ -620,10 +620,6 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("RootFolderType")
-                        .HasColumnType("int")
-                        .HasColumnName("root_folder_type");
-
                     b.Property<int>("TenantId")
                         .HasColumnType("int")
                         .HasColumnName("tenant_id");

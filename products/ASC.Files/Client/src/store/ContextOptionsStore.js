@@ -68,19 +68,19 @@ class ContextOptionsStore {
       this.settingsStore.extsWebRestrictedEditing[0];
 
     this.uploadDataStore.copyAsAction(id, newTitle, folderId).catch((err) => {
-      console.log("err", err);
-      const isPasswordError = new RegExp(/\(password\)*$/);
-
-      if (isPasswordError.test(err)) {
-        toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
-        setFormCreationInfo({
-          newTitle,
-          fromExst: fileExst,
-          toExst: this.settingsStore.extsWebRestrictedEditing[0],
-          fileInfo: item,
-        });
-        setConvertPasswordDialogVisible(true);
+      if (err.indexOf("password") == -1) {
+        toastr.error(err, t("Common:Warning"));
+        return;
       }
+
+      toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
+      setFormCreationInfo({
+        newTitle,
+        fromExst: fileExst,
+        toExst: this.settingsStore.extsWebRestrictedEditing[0],
+        fileInfo: item,
+      });
+      setConvertPasswordDialogVisible(true);
     });
   };
 
@@ -370,12 +370,14 @@ class ContextOptionsStore {
                 {
                   key: "finalize-version",
                   label: t("FinalizeVersion"),
+                  icon: "images/history-finalized.react.svg",
                   onClick: () => this.finalizeVersion(item.id),
                   disabled: false,
                 },
                 {
                   key: "show-version-history",
                   label: t("ShowVersionHistory"),
+                  icon: "images/history.react.svg",
                   onClick: () => this.showVersionHistory(item.id),
                   disabled: false,
                 },
@@ -411,18 +413,21 @@ class ContextOptionsStore {
                 {
                   key: "move-to",
                   label: t("MoveTo"),
+                  icon: "images/move.react.svg",
                   onClick: this.onMoveAction,
                   disabled: false,
                 },
                 {
                   key: "copy-to",
                   label: t("Translations:Copy"),
+                  icon: "/static/images/copy.react.svg",
                   onClick: this.onCopyAction,
                   disabled: false,
                 },
                 {
                   key: "copy",
                   label: t("Common:Duplicate"),
+                  icon: "/static/images/duplicate.react.svg",
                   onClick: () => this.onDuplicate(item, t),
                   disabled: false,
                 },
@@ -447,7 +452,7 @@ class ContextOptionsStore {
             {
               key: "copy",
               label: t("Common:Duplicate"),
-              icon: "/static/images/copy.react.svg",
+              icon: "/static/images/duplicate.react.svg",
               onClick: () => this.onDuplicate(item, t),
               disabled: false,
             },
@@ -510,7 +515,7 @@ class ContextOptionsStore {
       {
         key: "owner-change",
         label: t("Translations:OwnerChange"),
-        icon: "/static/images/catalog.user.react.svg",
+        icon: "images/file.actions.owner.react.svg",
         onClick: this.onOwnerChange,
         disabled: false,
       },
