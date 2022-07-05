@@ -11,6 +11,8 @@ import RoomLogo from "@appserver/components/room-logo";
 import ContextMenu from "@appserver/components/context-menu";
 import { Base } from "@appserver/components/themes";
 
+import RoomsBadges from "../../../../components/Badges";
+
 const StyledTile = styled.div`
   border: 1px solid #eceef1;
 
@@ -84,32 +86,17 @@ const StyledHeader = styled.div`
 
   display: grid;
   align-items: center;
+
   grid-template-columns: ${(props) =>
-    props.withBadge
-      ? props.isPinned
-        ? "auto 1fr auto auto auto"
-        : "auto 1fr auto auto"
-      : props.isPinned
-      ? "auto 1fr  auto auto"
-      : "auto 1fr auto"};
+    props.withBadge || props.isPinned
+      ? "auto 1fr auto auto"
+      : "auto 1fr  auto"};
 
   .tile-header_heading {
     font-size: 16px;
     line-height: 22px;
 
     margin-right: 12px;
-  }
-
-  .tile-header_badge {
-    p {
-      line-height: 16px;
-    }
-  }
-
-  .tile-header_pin-icon {
-    height: 16px;
-
-    margin: 0 0 0 12px;
   }
 
   .tile-header_context-menu-button {
@@ -218,19 +205,12 @@ const Tile = React.forwardRef(
             {title}
           </Heading>
 
-          {!!badge && (
-            <Badge
-              className="tile-header_badge"
-              label={badge}
-              onClick={onBadgeClick}
-            />
-          )}
-
-          {pinned && (
-            <ReactSVG
-              className="tile-header_pin-icon"
-              onClick={onClickPinRoom}
-              src="images/unpin.react.svg"
+          {(!!badge || pinned) && (
+            <RoomsBadges
+              badge={badge}
+              pinned={pinned}
+              onClickPinRoom={onClickPinRoom}
+              onBadgeClick={onBadgeClick}
             />
           )}
 
