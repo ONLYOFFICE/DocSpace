@@ -231,7 +231,7 @@ public class BatchModelBinder : BaseBatchModelBinder
 
         if (bindingContext.GetFirstValue(nameof(result.ConflictResolveType), out var сonflictResolveTypeValue))
         {
-            if (Enum.TryParse<FileConflictResolveType>(сonflictResolveTypeValue, out var conflictResolveType))
+            if (FileConflictResolveTypeExtensions.TryParse(сonflictResolveTypeValue, out var conflictResolveType))
             {
                 result.ConflictResolveType = conflictResolveType;
             }

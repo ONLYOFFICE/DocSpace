@@ -26,6 +26,7 @@
 
 namespace ASC.Files.Core.Security;
 
+[EnumExtensions]
 public enum FileShare
 {
     None,
@@ -51,7 +52,7 @@ public class FileShareConverter : System.Text.Json.Serialization.JsonConverter<F
         }
         else
         {
-            if (reader.TokenType == JsonTokenType.String && Enum.TryParse<FileShare>(reader.GetString(), out var share))
+            if (reader.TokenType == JsonTokenType.String && FileShareExtensions.TryParse(reader.GetString(), out var share))
             {
                 return share;
             }

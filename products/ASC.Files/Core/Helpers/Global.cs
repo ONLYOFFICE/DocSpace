@@ -73,6 +73,7 @@ public class GlobalNotify
     }
 }
 
+[EnumExtensions]
 public enum ThumbnailExtension
 {
     bmp,
@@ -84,6 +85,8 @@ public enum ThumbnailExtension
     tga,
     webp
 }
+
+[EnumExtensions]
 public enum DocThumbnailExtension
 {
     bmp,
@@ -120,11 +123,11 @@ public class Global
         _customNamingPeople = customNamingPeople;
         _fileSecurityCommon = fileSecurityCommon;
 
-        if (!Enum.TryParse(configuration["files:thumbnail:docs-exts"] ?? "jpg", true, out DocThumbnailExtension))
+        if (!DocThumbnailExtensionExtensions.TryParse(configuration["files:thumbnail:docs-exts"] ?? "jpg", true, out DocThumbnailExtension))
         {
             DocThumbnailExtension = DocThumbnailExtension.jpg;
         }
-        if (!Enum.TryParse(configuration["files:thumbnail:exts"] ?? "webp", true, out ThumbnailExtension))
+        if (!ThumbnailExtensionExtensions.TryParse(configuration["files:thumbnail:exts"] ?? "webp", true, out ThumbnailExtension))
         {
             ThumbnailExtension = ThumbnailExtension.jpg;
         }
