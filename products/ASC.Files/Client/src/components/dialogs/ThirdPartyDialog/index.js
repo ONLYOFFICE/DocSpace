@@ -64,6 +64,10 @@ const StyledModalDialog = styled(ModalDialog)`
       }
     }
   }
+
+  .modal-dialog-aside {
+    padding-bottom: 0;
+  }
 `;
 
 StyledModalDialog.defaultProps = { theme: Base };
