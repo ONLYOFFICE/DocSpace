@@ -184,7 +184,7 @@ class ConnectClouds extends React.Component {
         "data-id": item.provider_id,
         "data-title": item.customer_title,
         icon: "/static/images/catalog.trash.react.svg",
-        label: t("Translations:DeleteThirdParty"),
+        label: t("Common:Disconnect"),
         onClick: this.onDeleteThirdParty,
       },
     ];

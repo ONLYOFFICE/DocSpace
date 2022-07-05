@@ -627,7 +627,7 @@ class ContextOptionsStore {
       {
         key: "delete",
         label: isRootThirdPartyFolder
-          ? t("Translations:DeleteThirdParty")
+          ? t("Common:Disconnect")
           : t("Common:Delete"),
         icon: "images/trash.react.svg",
         onClick: () => this.onClickDelete(item, t),
