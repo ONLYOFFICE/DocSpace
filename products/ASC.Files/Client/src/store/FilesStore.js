@@ -125,7 +125,7 @@ class FilesStore {
 
             if (!file || !file.id) return;
 
-            this.setFile(file);
+            this.getFileInfo(file.id); //this.setFile(file);
 
             if (this.selection) {
               const foundIndex = this.selection?.findIndex(
