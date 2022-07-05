@@ -602,7 +602,7 @@ const Base = {
     },
 
     closeButton: {
-      backgroundColor: "#9a9ea3",
+      //backgroundColor: "#9a9ea3",
       fillColor: white,
     },
   },

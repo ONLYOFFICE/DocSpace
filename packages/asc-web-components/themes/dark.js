@@ -600,8 +600,8 @@ const Dark = {
     },
 
     closeButton: {
-      backgroundColor: "#9A9EA3",
-      fillColor: black,
+      //backgroundColor: "#9A9EA3",
+      fillColor: "#9A9EA3",
     },
   },
 

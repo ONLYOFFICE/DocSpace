@@ -7,16 +7,12 @@ import IconButton from "../../icon-button";
 import Base from "../../themes/base";
 
 const StyledCloseButtonWrapper = styled.div`
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background-color: ${(props) =>
-    props.theme.modalDialog.closeButton.backgroundColor};
-  border-radius: 50%;
 
   cursor: pointer;
   position: absolute;
@@ -28,14 +24,14 @@ const StyledCloseButtonWrapper = styled.div`
           right: -34px;
           @media ${smallTablet} {
             right: 10px;
-            top: -34px;
+            top: -27px;
           }
         `
       : css`
           top: 10px;
-          left: -34px;
+          left: -27px;
           @media ${smallTablet} {
-            top: -34px;
+            top: -27px;
             left: auto;
             right: 10px;
           }
@@ -59,7 +55,7 @@ const CloseButton = ({ currentDisplayType, zIndex, onClick }) => {
       currentDisplayType={currentDisplayType}
     >
       <IconButton
-        size="12px"
+        size="17px"
         className="close-button"
         iconName="/static/images/cross.react.svg"
       />
