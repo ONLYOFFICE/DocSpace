@@ -190,7 +190,7 @@ class DropDown extends React.PureComponent {
       this.dropDownRef.current.style.left =
         rects.right - this.dropDownRef.current.clientWidth + "px";
     } else {
-      this.dropDownRef.current.style.left = left + "px";
+      this.dropDownRef.current.style.left = left + this.props.offsetLeft + "px";
     }
 
     this.dropDownRef.current.style.top = this.props.top || bottom + "px";
@@ -366,6 +366,8 @@ DropDownContainer.propTypes = {
   fixedDirection: PropTypes.bool,
   /**Enable blur for backdrop */
   withBlur: PropTypes.bool,
+
+  offsetLeft: PropTypes.number,
 };
 
 DropDownContainer.defaultProps = {
