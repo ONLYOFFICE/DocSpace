@@ -46,11 +46,9 @@ const VirtualRooms = ({
         <Bar />
       </Section.SectionBar>
 
-      {rooms?.length > 0 && (
-        <Section.SectionFilter>
-          <SectionFilterContent />
-        </Section.SectionFilter>
-      )}
+      <Section.SectionFilter>
+        <SectionFilterContent />
+      </Section.SectionFilter>
 
       <Section.SectionBody>
         <SectionBodyContent />
