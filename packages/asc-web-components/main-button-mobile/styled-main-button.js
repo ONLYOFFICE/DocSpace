@@ -134,7 +134,9 @@ const StyledDropDown = styled(DropDown)`
 
     &:hover {
       background-color: ${(props) =>
-        props.theme.mainButtonMobile.dropDown.hoverButtonColor};
+        isMobileOnly
+          ? props.theme.mainButtonMobile.buttonOptions.backgroundColor
+          : props.theme.mainButtonMobile.dropDown.hoverButtonColor};
     }
   }
 

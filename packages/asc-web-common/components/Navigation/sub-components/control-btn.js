@@ -157,7 +157,7 @@ const ControlButtons = ({
       ) : isRecycleBinFolder && !isEmptyFilesList ? (
         <>
           <IconButton
-            iconName="images/clear.active.react.svg"
+            iconName="images/clear.trash.react.svg"
             size={15}
             isFill={true}
             onClick={clearTrash}

@@ -25,6 +25,8 @@ import styled from "styled-components";
 import ButtonAlertIcon from "../../../public/images/main-button.alert.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
+import { isMobileOnly } from "react-device-detect";
+
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
@@ -221,6 +223,8 @@ const MainButtonMobile = (props) => {
     }
   }, [progressOptions]);
 
+  const noHover = isMobileOnly ? true : false;
+
   const renderItems = () => {
     return (
       <StyledRenderItem ref={divRef}>
@@ -249,6 +253,7 @@ const MainButtonMobile = (props) => {
                     action={option.action}
                     isActive={isOpenSubMenu}
                     isSubMenu={true}
+                    noHover={noHover}
                   />
                   {isOpenSubMenu &&
                     option.items.map((item) => {
@@ -267,6 +272,7 @@ const MainButtonMobile = (props) => {
                           icon={item.icon ? item.icon : ""}
                           action={item.action}
                           withoutIcon={item.withoutIcon}
+                          noHover={noHover}
                         />
                       );
                     })}
@@ -283,6 +289,7 @@ const MainButtonMobile = (props) => {
                 onClick={optionOnClickAction}
                 icon={option.icon ? option.icon : ""}
                 action={option.action}
+                noHover={noHover}
               />
             );
           })}
