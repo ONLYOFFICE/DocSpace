@@ -487,13 +487,15 @@ public class FileSecurity : IFileSecurity
                  f.RootFolderType == FolderType.Archive;
 
         var isVisitor = user.IsVisitor(_userManager);
+        var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
+        var isAdmin = _fileSecurityCommon.IsAdministrator(userId);
 
         if (entries.Any(filter))
         {
             List<Guid> subjects = null;
             foreach (var e in entries.Where(filter))
             {
-                if (!_authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated && userId != FileConstant.ShareLinkId)
+                if (!isAuthenticated && userId != FileConstant.ShareLinkId)
                 {
                     continue;
                 }
@@ -646,21 +648,21 @@ public class FileSecurity : IFileSecurity
                     }
                 }
 
-                if (e.RootFolderType == FolderType.COMMON && _fileSecurityCommon.IsAdministrator(userId))
+                if (e.RootFolderType == FolderType.COMMON && isAdmin)
                 {
                     // administrator in Common has all right
                     result.Add(e);
                     continue;
                 }
 
-                if (e.RootFolderType == FolderType.VirtualRooms && _fileSecurityCommon.IsAdministrator(userId))
+                if (e.RootFolderType == FolderType.VirtualRooms && isAdmin)
                 {
                     // administrator in VirtualRooms has all right
                     result.Add(e);
                     continue;
                 }
 
-                if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && _fileSecurityCommon.IsAdministrator(userId))
+                if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && isAdmin)
                 {
                     result.Add(e);
                     continue;
@@ -872,7 +874,7 @@ public class FileSecurity : IFileSecurity
             }
         }
 
-        if (_fileSecurityCommon.IsAdministrator(userId))
+        if (isAdmin)
         {
             // administrator can work with crashed entries (crash in files_folder_tree)
             filter = f => f.RootFolderType == FolderType.DEFAULT;
@@ -1235,7 +1237,7 @@ public class FileSecurity : IFileSecurity
                 }
             }
 
-            if (_fileSecurityCommon.IsAdministrator(userId) && e.RootFolderType == FolderType.DEFAULT)
+            if (isAdmin && e.RootFolderType == FolderType.DEFAULT)
             {
                 // administrator can work with crashed entries (crash in files_folder_tree)
                 yield return e;
