@@ -507,7 +507,7 @@ class ContextOptionsStore {
       },
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !isShareable,
@@ -692,7 +692,7 @@ class ContextOptionsStore {
     const options = [
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !sharingItems,

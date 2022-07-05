@@ -235,7 +235,7 @@ class SectionHeaderContent extends React.Component {
     return [
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         onClick: this.onOpenSharingPanel,
         disabled: personal ? true : false,
         icon: "/static/images/share.react.svg",
@@ -537,7 +537,11 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Home", "Common", "Translations", "InfoPanel"])(
-    withRouter(observer(SectionHeaderContent))
-  )
+  withTranslation([
+    "Home",
+    "Common",
+    "Translations",
+    "InfoPanel",
+    "SharingPanel",
+  ])(withRouter(observer(SectionHeaderContent)))
 );
