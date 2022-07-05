@@ -19,6 +19,7 @@ const DropDownItem = (props) => {
     isSubMenu,
     isActive,
     withoutIcon,
+    noHover,
   } = props;
 
   const onClickAction = (e) => {
@@ -28,6 +29,7 @@ const DropDownItem = (props) => {
   return (
     <StyledDropdownItem
       {...props}
+      noHover={noHover}
       className={className}
       onClick={onClickAction}
       disabled={disabled}
