@@ -9,12 +9,7 @@ import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
 import { isMobileOnly } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
-import {
-  isHugeMobile,
-  mobile,
-  size,
-  tablet,
-} from "@appserver/components/utils/device";
+import { mobile, tablet } from "@appserver/components/utils/device";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 import Portal from "@appserver/components/portal";
 
@@ -33,8 +28,6 @@ const StyledDropDown = styled(DropDown)`
   top: ${(props) =>
     props.isBannerVisible && props.withPortal ? "134px" : "54px"} !important;
   right: 20px !important;
-
-  max-height: 100%;
 
   @media ${tablet} {
     right: 16px !important;
