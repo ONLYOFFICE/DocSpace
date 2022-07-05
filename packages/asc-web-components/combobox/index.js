@@ -106,6 +106,7 @@ class ComboBox extends React.Component {
       fillIcon,
       isExternalLink,
       isPersonal,
+      offsetLeft,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -173,6 +174,7 @@ class ComboBox extends React.Component {
             withBlur={withBlur}
             isExternalLink={isExternalLink}
             isPersonal={isPersonal}
+            offsetLeft={offsetLeft}
           >
             {advancedOptions
               ? advancedOptions
@@ -262,6 +264,8 @@ ComboBox.propTypes = {
   fillIcon: PropTypes.bool,
   isExternalLink: PropTypes.bool,
   isPersonal: PropTypes.bool,
+
+  offsetLeft: PropTypes.number,
 };
 
 ComboBox.defaultProps = {
