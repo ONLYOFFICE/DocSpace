@@ -82,7 +82,7 @@ const PureThirdPartyMoveContainer = ({
 
   const startOperation = () => {
     const isCopy = actionType === "copy";
-    console.log("isCopy", isCopy);
+
     const folderIds = [];
     const fileIds = [];
 
