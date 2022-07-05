@@ -56,7 +56,8 @@ while [ "$1" != "" ]; do
 done
 
 # Array of names server in directory products
-servers_products_name_backend=(ASC.Files)
+servers_products_name_backend=()
+servers_products_name_backend+=(ASC.Files)
 servers_products_name_backend+=(ASC.People)
 
 # Publish server backend products
@@ -68,10 +69,9 @@ for i in ${!servers_products_name_backend[@]}; do
 done
 
 # Array of names backend services
-services_name_backend=(ASC.Data.Backup)
-#services_name_backend+=(ASC.Data.Storage.Encryption)
+services_name_backend=()
+services_name_backend+=(ASC.Data.Backup)
 services_name_backend+=(ASC.Files.Service)
-#services_name_backend+=(ASC.Data.Storage.Migration)
 services_name_backend+=(ASC.Notify)
 services_name_backend+=(ASC.Studio.Notify)
 services_name_backend+=(ASC.TelegramService)
@@ -91,8 +91,9 @@ for i in ${!services_name_backend[@]}; do
   dotnet publish -c Release --self-contained ${SELF_CONTAINED} ${ARGS} -o ${BUILD_PATH}/services/${services_name_backend[$i]}/service/
 done
 
-# Array of names backend services in directory common (Nodejs)  
-#services_name_backend_nodejs=(ASC.Thumbnails)
+# Array of names backend services in directory common (Nodejs)
+services_name_backend_nodejs=()  
+#services_name_backend_nodejs+=(ASC.Thumbnails)
 services_name_backend_nodejs+=(ASC.UrlShortener)
 services_name_backend_nodejs+=(ASC.Socket.IO)
 services_name_backend_nodejs+=(ASC.SsoAuth)
