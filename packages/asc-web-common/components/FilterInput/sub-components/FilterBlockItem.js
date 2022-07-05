@@ -53,7 +53,9 @@ const FilterBlockItem = ({
 
     const isAuthor = item.key === "user";
 
-    return !item.isSelected ? (
+    return !item.isSelected ||
+      item.selectedKey === "me" ||
+      item.selectedKey === "other" ? (
       <StyledFilterBlockItemSelector key={item.key}>
         <SelectorAddButton
           onClick={(event) =>
@@ -81,7 +83,7 @@ const FilterBlockItem = ({
           noSelect={true}
           isSelected={item.isSelected}
         >
-          {item.selectedLabel.toLowerCase()}
+          {item?.selectedLabel?.toLowerCase()}
         </StyledFilterBlockItemTagText>
         {item.isSelected && (
           <StyledFilterBlockItemTagIcon ref={clearSelectorRef}>
