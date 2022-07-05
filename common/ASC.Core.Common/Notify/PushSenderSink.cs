@@ -144,6 +144,7 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
 
         var m = new NotifyMessage
         {
+            TenantId = tenant.Id,
             Reciever = username,
             Subject = fromTag != null && fromTag.Value != null ? fromTag.Value.ToString() : message.Subject,
             ContentType = message.ContentType,
@@ -152,7 +153,6 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
             CreationDate = DateTime.UtcNow,
             ProductID = fromTag != null && fromTag.Value != null ? productID.Value.ToString() : null,
             ObjectID = msg.ObjectID,
-            //Tenant = tenant == null ? Tenant.DefaultTenant : tenant.Id,
             Data = jsonNotifyData
         };
 

@@ -52,8 +52,8 @@ $Message
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
   </pattern>
   <pattern id="ShareDocument" sender="push.sender">
-    <subject resource="|subject_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <subject></subject>
+    <body styler="ASC.Notify.Textile.PushStyler, ASC.Notify.Textile" resource="|subject_ShareDocument_push|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core"/>
   </pattern>
   <pattern id="ShareDocument" sender="messanger.sender">
     <subject resource="|subject_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />

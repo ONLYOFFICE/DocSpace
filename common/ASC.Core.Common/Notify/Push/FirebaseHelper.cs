@@ -24,12 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using ASC.Core.Common.Notify.Push.Dao;
 
 using FirebaseAdmin;
@@ -43,31 +37,47 @@ namespace ASC.Core.Common.Notify.Push;
 public class FirebaseHelper
 {
     protected readonly UserManager _userManager;
-    private readonly ILogger<TelegramHelper> _logger;
+    private readonly TenantManager _tenantManager;
+    private readonly ILogger<FirebaseHelper> _logger;
     private readonly IConfiguration _configuration;
+    private readonly FirebaseDao _firebaseDao;
 
     public FirebaseHelper(
         UserManager userManager,
+        TenantManager tenantManager,
         IConfiguration configuration,
-        ILogger<TelegramHelper> logger)
+        ILogger<FirebaseHelper> logger,
+        FirebaseDao firebaseDao)
     {
         _userManager = userManager;
+        _tenantManager = tenantManager;
         _configuration = configuration;
         _logger = logger;
+        _firebaseDao = firebaseDao;
+
+        var credentials = JsonConvert.SerializeObject(new FirebaseApiKey(_configuration)).Replace("\\\\", "\\");
+        var defaultInstance = FirebaseApp.DefaultInstance;
+        if (defaultInstance == null)
+        {
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromJson(credentials)
+            });
+        }
+        _firebaseDao = firebaseDao;
     }
 
-    private FirebaseHelper()
-    {
-        FirebaseApp.Create(new AppOptions()
-        {
-            Credential = GoogleCredential.FromJson(JsonConvert.SerializeObject(new FirebaseApiKey(_configuration)).Replace("\\\\", "\\"))
-        });
-    }
     public void SendMessage(NotifyMessage msg)
     {
         var data = new Dictionary<string, string>();
-        var user = _userManager.GetUserByUserName(msg.ReplyTo);
-        var fbDao = new FirebaseDao();
+
+        var tenant = _tenantManager.GetCurrentTenant(false);
+
+        if (tenant == null)
+        {
+            _tenantManager.SetCurrentTenant(1);
+        }
+        var user = _userManager.GetUserByUserName(msg.Reciever);
 
         Guid productID;
 
@@ -77,12 +87,12 @@ public class FirebaseHelper
 
         if (productID == new Guid("{E67BE73D-F9AE-4ce1-8FEC-1880CB518CB4}")) //documents product
         {
-            fireBaseUser = fbDao.GetUserDeviceTokens(user.Id, msg.TenantId, PushConstants.PushDocAppName);
+            fireBaseUser = _firebaseDao.GetUserDeviceTokens(user.Id, msg.TenantId, PushConstants.PushDocAppName);
         }
 
         if (productID == new Guid("{1e044602-43b5-4d79-82f3-fd6208a11960}")) //projects product
         {
-            fireBaseUser = fbDao.GetUserDeviceTokens(user.Id, msg.TenantId, PushConstants.PushProjAppName);
+            fireBaseUser = _firebaseDao.GetUserDeviceTokens(user.Id, msg.TenantId, PushConstants.PushProjAppName);
         }
 
         foreach (var fb in fireBaseUser)
@@ -100,7 +110,7 @@ public class FirebaseHelper
                         Body = msg.Content
                     }
                 };
-                FirebaseMessaging.DefaultInstance.SendAsync(m);
+                var result = FirebaseMessaging.DefaultInstance.SendAsync(m).Result;
             }
         }
     }

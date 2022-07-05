@@ -215,6 +215,15 @@ namespace ASC.Files.Core.Services.NotifyService {
         /// <summary>
         ///   Looks up a localized string similar to Documents. Access granted to document: [$DocumentTitle]($DocumentURL).
         /// </summary>
+        public static string subject_ShareDocument_push {
+            get {
+                return ResourceManager.GetString("subject_ShareDocument_push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documents. Access granted to document: [$DocumentTitle]($DocumentURL).
+        /// </summary>
         public static string subject_ShareDocument_tg {
             get {
                 return ResourceManager.GetString("subject_ShareDocument_tg", resourceCulture);
