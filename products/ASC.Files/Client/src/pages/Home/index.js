@@ -47,8 +47,6 @@ class PureHome extends React.Component {
       playlist,
       isMediaOrImage,
       getFileInfo,
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
       gallerySelected,
       setAction,
       setIsUpdatingRowItem,
@@ -69,16 +67,18 @@ class PureHome extends React.Component {
       const pathname = window.location.href;
       const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
-      getFileInfo(fileId)
-        .then((data) => {
-          const canOpenPlayer = isMediaOrImage(data.fileExst);
-          const file = { ...data, canOpenPlayer };
-          setToPreviewFile(file, true);
-        })
-        .catch((err) => {
-          toastr.error(err);
-          this.fetchDefaultFiles();
-        });
+      setTimeout(() => {
+        getFileInfo(fileId)
+          .then((data) => {
+            const canOpenPlayer = isMediaOrImage(data.fileExst);
+            const file = { ...data, canOpenPlayer };
+            setToPreviewFile(file, true);
+          })
+          .catch((err) => {
+            toastr.error(err);
+            this.fetchDefaultFiles();
+          });
+      }, 1);
 
       return;
     }
@@ -96,12 +96,6 @@ class PureHome extends React.Component {
 
         return;
       }
-    }
-
-    //TODO:
-    if (isPrevSettingsModule && !gallerySelected) {
-      setIsPrevSettingsModule(false);
-      return;
     }
 
     if (!filterObj) return;
@@ -427,8 +421,6 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
       gallerySelected,
       setIsUpdatingRowItem,
     } = filesStore;
@@ -534,9 +526,6 @@ export default inject(
       playlist,
       isMediaOrImage: settingsStore.isMediaOrImage,
       getFileInfo,
-
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
       gallerySelected,
       setAction,
       setIsUpdatingRowItem,

@@ -151,6 +151,7 @@ const StyledTile = styled.div`
       !props.dragging &&
       props.isDesktop &&
       !props.inProgress &&
+      !isMobile &&
       css`
         .checkbox {
           opacity: 1;
@@ -373,13 +374,23 @@ class Tile extends React.PureComponent {
 
   onFileClick = (e) => {
     const { onSelect, item, checked, setSelection } = this.props;
-    if (e.detail === 1) {
-      if (e.target.nodeName === "INPUT" || e.target.nodeName === "rect") {
-        onSelect && onSelect(!checked, item);
-      } else {
+
+    if (
+      e.detail === 1 &&
+      !e.target.closest(".badge") &&
+      !e.target.closest(".item-file-name")
+    ) {
+      if (
+        e.target.nodeName !== "IMG" &&
+        e.target.nodeName !== "INPUT" &&
+        e.target.nodeName !== "rect" &&
+        e.target.nodeName !== "path" &&
+        e.target.nodeName !== "svg"
+      ) {
         setSelection && setSelection([]);
-        onSelect && onSelect(!checked, item);
       }
+
+      onSelect && onSelect(!checked, item);
     }
   };
 

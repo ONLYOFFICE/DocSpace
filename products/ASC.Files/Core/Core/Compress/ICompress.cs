@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ASC.Web.Files.Core.Compress
 {
@@ -18,7 +19,7 @@ namespace ASC.Web.Files.Core.Compress
         /// Transfer the file itself to the archive
         /// </summary>
         /// <param name="readStream">File data</param>
-        void PutStream(Stream readStream);
+        Task PutStream(Stream readStream);
 
         /// <summary>
         /// Put an entry on the output stream.

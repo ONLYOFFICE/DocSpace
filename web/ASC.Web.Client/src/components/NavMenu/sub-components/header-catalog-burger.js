@@ -14,6 +14,7 @@ const StyledIconBox = styled.div`
   align-items: center;
 
   padding-left: 16px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 const StyledMenuIcon = styled(MenuIcon)`

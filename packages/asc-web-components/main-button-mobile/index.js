@@ -12,12 +12,13 @@ import {
   StyledButtonWrapper,
   StyledButtonOptions,
   StyledAlertIcon,
+  StyledRenderItem,
 } from "./styled-main-button";
 import IconButton from "../icon-button";
 import Button from "../button";
 import Text from "../text";
 import Scrollbar from "@appserver/components/scrollbar";
-import { isMobile } from "react-device-detect";
+import { isIOS, isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
 import styled from "styled-components";
@@ -115,6 +116,7 @@ const MainButtonMobile = (props) => {
   const [isOpen, setIsOpen] = useState(opened);
   const [isUploading, setIsUploading] = useState(false);
   const [height, setHeight] = useState(window.innerHeight - 48 + "px");
+  const [isOpenSubMenu, setIsOpenSubMenu] = useState(false);
 
   const divRef = useRef();
   const ref = useRef();
@@ -126,6 +128,52 @@ const MainButtonMobile = (props) => {
     }
   }, [opened]);
 
+  let currentPosition, prevPosition, buttonBackground, scrollElem;
+
+  useEffect(() => {
+    if (!isIOS) return;
+
+    scrollElem = document.getElementsByClassName("section-scroll")[0];
+
+    if (scrollElem?.scrollTop === 0) {
+      scrollElem.classList.add("dialog-background-scroll");
+    }
+
+    scrollElem?.addEventListener("scroll", scrollChangingBackground);
+
+    return () => {
+      scrollElem?.removeEventListener("scroll", scrollChangingBackground);
+    };
+  }, []);
+
+  const scrollChangingBackground = () => {
+    currentPosition = scrollElem.scrollTop;
+    const scrollHeight = scrollElem.scrollHeight;
+
+    if (currentPosition < prevPosition) {
+      setDialogBackground(scrollHeight);
+    } else {
+      if (currentPosition > 0 && currentPosition > prevPosition) {
+        setButtonBackground();
+      }
+    }
+    prevPosition = currentPosition;
+  };
+
+  const setDialogBackground = (scrollHeight) => {
+    if (!buttonBackground) {
+      document
+        .getElementsByClassName("section-scroll")[0]
+        .classList.add("dialog-background-scroll");
+    }
+    if (currentPosition < scrollHeight / 3) {
+      buttonBackground = false;
+    }
+  };
+  const setButtonBackground = () => {
+    buttonBackground = true;
+    scrollElem.classList.remove("dialog-background-scroll");
+  };
   const recalculateHeight = () => {
     let height =
       divRef?.current?.getBoundingClientRect()?.height || window.innerHeight;
@@ -137,7 +185,7 @@ const MainButtonMobile = (props) => {
 
   useEffect(() => {
     recalculateHeight();
-  }, [isOpen, isOpenButton, window.innerHeight, isUploading]);
+  }, [isOpen, isOpenButton, window.innerHeight, isUploading, isOpenSubMenu]);
 
   useEffect(() => {
     window.addEventListener("resize", recalculateHeight);
@@ -175,13 +223,55 @@ const MainButtonMobile = (props) => {
 
   const renderItems = () => {
     return (
-      <div ref={divRef}>
+      <StyledRenderItem ref={divRef}>
         <StyledContainerAction>
           {actionOptions.map((option) => {
             const optionOnClickAction = () => {
               toggle(false);
               option.onClick && option.onClick({ action: option.action });
             };
+
+            const onClickSub = () => {
+              setIsOpenSubMenu(!isOpenSubMenu);
+            };
+
+            if (option.items)
+              return (
+                <div key="mobile-submenu">
+                  <StyledDropDownItem
+                    key={option.key}
+                    label={option.label}
+                    className={`${option.className} ${
+                      option.isSeparator && "is-separator"
+                    }`}
+                    onClick={onClickSub}
+                    icon={option.icon ? option.icon : ""}
+                    action={option.action}
+                    isActive={isOpenSubMenu}
+                    isSubMenu={true}
+                  />
+                  {isOpenSubMenu &&
+                    option.items.map((item) => {
+                      const subMenuOnClickAction = () => {
+                        toggle(false);
+                        setIsOpenSubMenu(false);
+                        item.onClick && item.onClick({ action: item.action });
+                      };
+
+                      return (
+                        <StyledDropDownItem
+                          key={item.key}
+                          label={item.label}
+                          className={item.className}
+                          onClick={subMenuOnClickAction}
+                          icon={item.icon ? item.icon : ""}
+                          action={item.action}
+                          withoutIcon={true}
+                        />
+                      );
+                    })}
+                </div>
+              );
 
             return (
               <StyledDropDownItem
@@ -240,7 +330,7 @@ const MainButtonMobile = (props) => {
               )
             : ""}
         </StyledButtonOptions>
-      </div>
+      </StyledRenderItem>
     );
   };
 

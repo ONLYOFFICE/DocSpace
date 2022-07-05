@@ -103,6 +103,9 @@ class ComboBox extends React.Component {
       displaySelectedOption,
       fixedDirection,
       withBlur,
+      fillIcon,
+      isExternalLink,
+      isPersonal,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -149,6 +152,7 @@ class ComboBox extends React.Component {
           size={size}
           scaled={scaled}
           comboIcon={comboIcon}
+          fillIcon={fillIcon}
         />
         {displayType !== "toggle" && (
           <DropDown
@@ -167,6 +171,8 @@ class ComboBox extends React.Component {
             isDefaultMode={isDefaultMode}
             fixedDirection={fixedDirection}
             withBlur={withBlur}
+            isExternalLink={isExternalLink}
+            isPersonal={isPersonal}
           >
             {advancedOptions
               ? advancedOptions
@@ -183,6 +189,7 @@ class ComboBox extends React.Component {
                       key={option.key}
                       disabled={disabled}
                       onClick={this.optionClick.bind(this, option)}
+                      fillIcon={fillIcon}
                     />
                   );
                 })}
@@ -251,6 +258,10 @@ ComboBox.propTypes = {
   fixedDirection: PropTypes.bool,
   /** Disable clicking on the item */
   disableItemClick: PropTypes.bool,
+
+  fillIcon: PropTypes.bool,
+  isExternalLink: PropTypes.bool,
+  isPersonal: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -268,6 +279,7 @@ ComboBox.defaultProps = {
   displaySelectedOption: false,
   fixedDirection: false,
   disableItemClick: false,
+  isExternalLink: false,
 };
 
 export default ComboBox;

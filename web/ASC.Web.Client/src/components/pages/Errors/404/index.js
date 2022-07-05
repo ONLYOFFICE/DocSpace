@@ -3,9 +3,9 @@ import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
 const Error404 = () => {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation("Errors");
 
-  return <ErrorContainer headerText={t("Error404Text")} />;
+  return ready ? <ErrorContainer headerText={t("Error404Text")} /> : <></>;
 };
 
 export default () => (

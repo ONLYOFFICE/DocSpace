@@ -6,7 +6,6 @@ import Aside from "@appserver/components/aside";
 import Loaders from "@appserver/common/components/Loaders";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { withTranslation } from "react-i18next";
-import history from "@appserver/common/history";
 import {
   StyledVersionHistoryPanel,
   StyledContent,
@@ -22,6 +21,16 @@ class PureVersionHistoryPanel extends React.Component {
     const { setIsVerHistoryPanel } = this.props;
     setIsVerHistoryPanel(false);
   };
+
+  componentDidMount() {
+    document.addEventListener("keyup", this.onKeyPress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keyup", this.onKeyPress);
+  }
+
+  onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && this.onClose();
 
   render() {
     //console.log("render versionHistoryPanel");

@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
@@ -523,7 +524,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 var titleData = !string.IsNullOrEmpty(driveFile.Name) ? $"\"name\":\"{driveFile.Name}\"" : "";
                 var parentData = !string.IsNullOrEmpty(folderId) ? $",\"parents\":[\"{folderId}\"]" : "";
 
-                body = !string.IsNullOrEmpty(titleData + parentData) ? "{{" + titleData + parentData + "}}" : "";
+                body = !string.IsNullOrEmpty(titleData + parentData) ? "{" + titleData + parentData + "}" : "";
             }
 
             var request = new HttpRequestMessage();
@@ -562,14 +563,13 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.RequestUri = new Uri(googleDriveSession.Location);
             request.Method = HttpMethod.Put;
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
-            request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
-                                                               googleDriveSession.BytesTransfered,
-                                                               googleDriveSession.BytesTransfered + chunkLength - 1,
-                                                               googleDriveSession.BytesToTransfer));
             request.Content = new StreamContent(stream);
+            request.Content.Headers.ContentRange = new ContentRangeHeaderValue(googleDriveSession.BytesTransfered,
+                                                                               googleDriveSession.BytesTransfered + chunkLength - 1,
+                                                                               googleDriveSession.BytesToTransfer);
             var httpClient = _clientFactory.CreateClient();
             HttpResponseMessage response;
-
+            
             try
             {
                 response = await httpClient.SendAsync(request);
@@ -598,10 +598,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
                 if (response != null)
                 {
-                    var locationHeader = response.Headers.Location.ToString();
-                    if (!string.IsNullOrEmpty(locationHeader))
+                    var locationHeader = response.Headers.Location;
+
+                    if (locationHeader != null)
                     {
-                        uplSession.Location = locationHeader;
+                        uplSession.Location = locationHeader.ToString();
                     }
                 }
             }

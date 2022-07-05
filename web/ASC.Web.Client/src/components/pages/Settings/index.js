@@ -59,6 +59,7 @@ const COMMON_URLS = [
   combineUrl(PROXY_BASE_URL, "/common"),
   combineUrl(PROXY_BASE_URL, "/common/customization"),
   combineUrl(PROXY_BASE_URL, "/common/branding"),
+  combineUrl(PROXY_BASE_URL, "/common/appearance"),
 ];
 
 const CUSTOMIZATION_URLS = [

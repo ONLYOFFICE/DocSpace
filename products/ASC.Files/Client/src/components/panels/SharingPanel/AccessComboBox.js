@@ -35,6 +35,7 @@ const AccessComboBox = (props) => {
     isExternalLink,
     isDefaultMode,
     isEmbedded,
+    isPersonal,
   } = props;
 
   const [isLoading, setIsLoading] = React.useState(true);
@@ -232,13 +233,17 @@ const AccessComboBox = (props) => {
 
   const advancedOptions = renderAdvancedOption();
 
-  return isLoading ? (
-    <> </>
-  ) : isExternalLink ? (
+  if (isLoading) {
+    return <></>;
+  }
+
+  return isExternalLink ? (
     <AccessRightSelect
       options={[]}
       selectedOption={selectedOption}
       advancedOptions={advancedOptions}
+      isExternalLink={isExternalLink}
+      isPersonal={isPersonal}
     />
   ) : (
     <ComboBox

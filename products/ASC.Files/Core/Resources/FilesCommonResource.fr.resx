@@ -173,7 +173,7 @@
     <value>Le fichier est ouvert pour l'édition par {0}. Actuellement, la coédition n'est pas prise en charge pour ce type de fichier.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>Le fichier est verrouillé pour modification dans une application mobile par {0}</value>
+    <value>Le fichier est ouvert pour modification dans une application mobile par {0}</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
     <value>Fichier vide</value>

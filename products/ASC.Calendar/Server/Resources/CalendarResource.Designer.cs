@@ -19,10 +19,10 @@ namespace ASC.Calendar.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CalendarResource {
+    public class CalendarResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace ASC.Calendar.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Calendar.Resources.CalendarResource", typeof(CalendarResource).Assembly);
@@ -51,7 +51,7 @@ namespace ASC.Calendar.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The uploaded file could not be found.
         /// </summary>
-        internal static string ErrorEmptyUploadFileSelected {
+        public static string ErrorEmptyUploadFileSelected {
             get {
                 return ResourceManager.GetString("ErrorEmptyUploadFileSelected", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Image size is too large.
         /// </summary>
-        internal static string ErrorImageSizetLimit {
+        public static string ErrorImageSizetLimit {
             get {
                 return ResourceManager.GetString("ErrorImageSizetLimit", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Image file size is too large.
         /// </summary>
-        internal static string ErrorImageWeightLimit {
+        public static string ErrorImageWeightLimit {
             get {
                 return ResourceManager.GetString("ErrorImageWeightLimit", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Unknown image file type.
         /// </summary>
-        internal static string ErrorUnknownFileImageType {
+        public static string ErrorUnknownFileImageType {
             get {
                 return ResourceManager.GetString("ErrorUnknownFileImageType", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Do the same as a user|Create profiles and groups|Import profiles|Invite users.
         /// </summary>
-        internal static string ProductAdminOpportunities {
+        public static string ProductAdminOpportunities {
             get {
                 return ResourceManager.GetString("ProductAdminOpportunities", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Add new users, invite or import them. Manage users and view their detailed information..
         /// </summary>
-        internal static string ProductDescription {
+        public static string ProductDescription {
             get {
                 return ResourceManager.GetString("ProductDescription", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to People.
         /// </summary>
-        internal static string ProductName {
+        public static string ProductName {
             get {
                 return ResourceManager.GetString("ProductName", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to View profiles and groups.
         /// </summary>
-        internal static string ProductUserOpportunities {
+        public static string ProductUserOpportunities {
             get {
                 return ResourceManager.GetString("ProductUserOpportunities", resourceCulture);
             }

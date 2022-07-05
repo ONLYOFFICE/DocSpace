@@ -53,10 +53,11 @@ const StyledArticle = styled.article`
     width: 100%;
     position: fixed;
 
-    margin-top: 64px !important;
-    height: calc(100% - 64px) !important;
     margin: 0;
     padding: 0;
+    margin-top: ${(props) =>
+      props.isBannerVisible ? "-16px" : "64px"} !important;
+    height: calc(100% - 64px) !important;
   `}
 
   z-index: ${(props) =>

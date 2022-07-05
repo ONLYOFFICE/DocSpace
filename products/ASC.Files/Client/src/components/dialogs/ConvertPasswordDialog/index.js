@@ -92,17 +92,18 @@ const ConvertPasswordDialogComponent = (props) => {
             onClose();
           })
           .catch((err) => {
-            console.log("err", err);
-
-            const isPasswordError = new RegExp(/\(password\)*$/);
-
-            if (isPasswordError.test(err)) {
-              toastr.error(t("CreationError"), t("Common:Warning"));
-              if (_isMounted) {
-                setPasswordValid(false);
-                focusInput();
-              }
+            if (err.indexOf("password") == -1) {
+              toastr.error(err, t("Common:Warning"));
+              return;
             }
+
+            toastr.error(t("CreationError"), t("Common:Warning"));
+            if (_isMounted) {
+              setPasswordValid(false);
+              focusInput();
+            }
+          })
+          .finally(() => {
             _isMounted && setIsLoading(false);
           });
       } else {
@@ -116,17 +117,19 @@ const ConvertPasswordDialogComponent = (props) => {
             editCompleteAction(actionId, fileInfo, false);
           })
           .catch((err) => {
-            console.log("err", err);
-            const isPasswordError = new RegExp(/\(password\)*$/);
-
-            if (isPasswordError.test(err)) {
-              toastr.error(t("CreationError"), t("Common:Warning"));
-              open && openDocEditor(null, null, tab);
-              if (_isMounted) {
-                setPasswordValid(false);
-                focusInput();
-              }
+            if (err.indexOf("password") == -1) {
+              toastr.error(err, t("Common:Warning"));
+              return;
             }
+
+            toastr.error(t("CreationError"), t("Common:Warning"));
+            open && openDocEditor(null, null, tab);
+            if (_isMounted) {
+              setPasswordValid(false);
+              focusInput();
+            }
+          })
+          .finally(() => {
             _isMounted && setIsLoading(false);
           });
       }

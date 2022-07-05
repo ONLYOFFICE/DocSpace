@@ -47,7 +47,7 @@ public class DarkThemeSettings : ISettings
     {
         return new DarkThemeSettings
         {
-            Theme = DarkThemeSettingsEnum.Base,
+            Theme = DarkThemeSettingsEnum.System,
         };
     }
 }

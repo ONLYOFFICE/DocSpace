@@ -80,6 +80,9 @@ class Checkbox extends React.Component {
       truncate,
       name,
       helpButton,
+      onChange,
+      isChecked,
+      ...rest
     } = this.props;
 
     return (
@@ -100,6 +103,7 @@ class Checkbox extends React.Component {
             ref={this.ref}
             value={value}
             onChange={this.onInputChange}
+            {...rest}
           />
           <RenderCheckboxIcon {...this.props} />
           <div className="wrapper">
@@ -153,14 +157,11 @@ Checkbox.propTypes = {
   truncate: PropTypes.bool,
   /** Help button render */
   helpButton: PropTypes.any,
-
-  isLogin: PropTypes.bool,
 };
 
 Checkbox.defaultProps = {
   isChecked: false,
   truncate: false,
-  isLogin: false,
 };
 
 export default React.memo(Checkbox);

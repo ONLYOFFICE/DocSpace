@@ -95,6 +95,9 @@ const EditingWrapper = styled.div`
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: ${(props) => props.theme.filesEditingWrapper.color};
+    background: ${(props) =>
+      props.theme.filesEditingWrapper.row.itemBackground} !important;
+
     ${(props) =>
       props.viewAs === "tile" &&
       css`
@@ -126,6 +129,8 @@ const EditingWrapper = styled.div`
             `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
         }
       `};
+
+    ${({ isDisabled }) => isDisabled && "background-color: #fff"}
   }
 
   .edit-button {
@@ -247,6 +252,7 @@ const EditingWrapperComponent = (props) => {
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
       isFolder={isFolder}
+      isDisabled={isLoading}
     >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (
