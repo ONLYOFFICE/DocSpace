@@ -366,12 +366,13 @@ class ContextOptionsStore {
     this.roomsStore.unpinRoom();
   };
 
-  onClickMoveRoomToArchive = (room) => {
-    console.log("move room to archive");
+  onClickMoveRoomToArchive = () => {
+    console.log("1", this.roomsStore);
+    this.roomsStore.moveToArchive();
   };
 
-  onClickMoveRoomFromArchive = (room) => {
-    console.log("move room from archive");
+  onClickMoveRoomFromArchive = () => {
+    this.roomsStore.moveFromArchive();
   };
 
   onClickDeleteRoom = () => {
