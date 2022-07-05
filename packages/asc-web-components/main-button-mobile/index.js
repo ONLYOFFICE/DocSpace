@@ -271,7 +271,7 @@ const MainButtonMobile = (props) => {
                           onClick={subMenuOnClickAction}
                           icon={item.icon ? item.icon : ""}
                           action={item.action}
-                          withoutIcon={true}
+                          withoutIcon={item.withoutIcon}
                           noHover={noHover}
                         />
                       );

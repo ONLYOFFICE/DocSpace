@@ -113,13 +113,13 @@ class SectionHeaderContent extends React.Component {
         items: [
           {
             key: "new-form",
-            label: t("Translations:NewForm"),
+            label: t("Translations:SubNewForm"),
             icon: "images/form.react.svg",
             onClick: this.createForm,
           },
           {
             key: "new-form-file",
-            label: t("Translations:NewFormFile"),
+            label: t("Translations:SubNewFormFile"),
             onClick: this.createFormFromFile,
             disabled: isPrivacyFolder,
             icon: "images/form.file.react.svg",

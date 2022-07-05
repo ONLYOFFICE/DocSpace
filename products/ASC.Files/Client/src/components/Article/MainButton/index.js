@@ -5,7 +5,6 @@ import { inject, observer } from "mobx-react";
 import MainButton from "@appserver/components/main-button";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import { isTablet as isTabletUtils } from "@appserver/components/utils/device";
 import Loaders from "@appserver/common/components/Loaders";
 import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
@@ -44,7 +43,6 @@ const ArticleMainButtonContent = (props) => {
   const [actions, setActions] = React.useState([]);
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
-  const [isTablet, setIsTablet] = React.useState(isTabletUtils());
 
   const onCreate = React.useCallback(
     (e) => {
@@ -102,14 +100,7 @@ const ArticleMainButtonContent = (props) => {
     );
   };
 
-  const onResize = React.useCallback(() => {
-    const isTabletView = isTabletUtils();
-    setIsTablet(isTabletView);
-  }, []);
-
   React.useEffect(() => {
-    window.addEventListener("resize", onResize);
-
     const folderUpload = !isMobile
       ? [
           {
@@ -133,30 +124,30 @@ const ArticleMainButtonContent = (props) => {
         items: [
           {
             className: "main-button_drop-down_sub",
-            icon: !isMobile && "images/form.react.svg",
+            icon: "images/form.react.svg",
             label: t("Translations:SubNewForm"),
             onClick: onCreate,
             action: "docxf",
             key: "docxf",
-            withoutIcon: isMobile,
+            withoutIcon: true,
           },
           {
             className: "main-button_drop-down_sub",
-            icon: !isMobile && "images/form.file.react.svg",
+            icon: "images/form.file.react.svg",
             label: t("Translations:SubNewFormFile"),
             onClick: onShowSelectFileDialog,
             disabled: isPrivacy,
             key: "form-file",
-            withoutIcon: isMobile,
+            withoutIcon: true,
           },
           {
             className: "main-button_drop-down_sub",
-            icon: !isMobile && "images/form.react.svg",
+            icon: "images/form.react.svg",
             label: t("Common:OFORMsGallery"),
             onClick: onShowGallery,
             disabled: isPrivacy,
             key: "form-gallery",
-            withoutIcon: isMobile,
+            withoutIcon: true,
           },
         ],
       },
@@ -225,20 +216,14 @@ const ArticleMainButtonContent = (props) => {
     setModel(menuModel);
     setActions(actions);
     setUploadActions(uploadActions);
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-    };
   }, [
     t,
     isPrivacy,
     currentFolderId,
-    isTablet,
     onCreate,
     onShowSelectFileDialog,
     onUploadFileClick,
     onUploadFolderClick,
-    onResize,
   ]);
 
   return (
