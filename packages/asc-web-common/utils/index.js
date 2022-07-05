@@ -12,7 +12,11 @@ export const toUrlParams = (obj, skipNull) => {
       str += "&";
     }
 
-    str += key + "=" + encodeURIComponent(obj[key]);
+    if (typeof obj[key] === "object") {
+      str += key + "=" + JSON.stringify(obj[key]);
+    } else {
+      str += key + "=" + encodeURIComponent(obj[key]);
+    }
   }
 
   return str;
