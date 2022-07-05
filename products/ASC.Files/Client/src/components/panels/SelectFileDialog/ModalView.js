@@ -194,8 +194,9 @@ class SelectFileDialogModalView extends React.Component {
           isLoading={isLoading}
           autoMaxHeight
           autoMaxWidth
+          withFooterBorder
         >
-          <ModalDialog.Header theme={theme}>
+          <ModalDialog.Header theme={theme} className={"SELECTFILEDIALOG"}>
             {headerName ? headerName : t("SelectFile")}
           </ModalDialog.Header>
           <ModalDialog.Body
@@ -253,27 +254,22 @@ class SelectFileDialogModalView extends React.Component {
             </StyledSelectFilePanel>
           </ModalDialog.Body>
           <ModalDialog.Footer theme={theme}>
-            <StyledSelectFilePanel
+            <Button
               theme={theme}
-              isHeaderChildren={isHeaderChildren}
-            >
-              <Button
-                theme={theme}
-                className="select-file-modal-dialog-buttons-save"
-                primary
-                size="normal"
-                label={primaryButtonName}
-                onClick={onClickSave}
-                isDisabled={selectedFile.length === 0}
-              />
-              <Button
-                theme={theme}
-                className="modal-dialog-button"
-                size="normal"
-                label={t("Common:CancelButton")}
-                onClick={onClose}
-              />
-            </StyledSelectFilePanel>
+              className="select-file-modal-dialog-buttons-save"
+              primary
+              size="normal"
+              label={primaryButtonName}
+              onClick={onClickSave}
+              isDisabled={selectedFile.length === 0}
+            />
+            <Button
+              theme={theme}
+              className="modal-dialog-button"
+              size="normal"
+              label={t("Common:CancelButton")}
+              onClick={onClose}
+            />
           </ModalDialog.Footer>
         </ModalDialog>
       </StyledAsidePanel>

@@ -19,12 +19,20 @@ const commonStyles = css`
 `;
 
 const StyledModalDialog = styled(ModalDialog)`
+  .select-panel-modal-header {
+    margin-bottom: 0;
+  }
+
   .heading {
     line-height: 52px;
     font-size: 21px;
   }
   .modal-dialog-aside-header {
     height: 53px;
+  }
+
+  .select-file_body-modal-dialog {
+    padding-bottom: 0;
   }
 `;
 
@@ -36,6 +44,7 @@ const StyledBody = styled.div`
     grid-template-areas: "tree files" "footer footer";
     grid-template-rows: auto max-content;
     margin-right: -4px;
+    padding-bottom: 0;
 
     .selection-panel_files-body {
       width: 500px;
@@ -211,13 +220,9 @@ const StyledAsideBody = styled.div`
   }
 
   .selection-panel_aside-footer {
+    width: 100%;
+    height: 100%;
     border-top: 1px solid ${(props) => props.theme.row.borderBottom};
-    margin-left: -13px;
-    margin-right: -13px;
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-top: 16px;
-    padding-bottom: 12px;
 
     .selection-panel_aside-buttons {
       ${(props) => props.footer && "margin-top:16px"};

@@ -39,6 +39,8 @@ const Modal = ({
   const bodyComponent = body ? body.props.children : null;
   const footerComponent = footer ? footer.props.children : null;
 
+  console.log(header);
+
   return (
     <StyledModal
       className={visible ? "modal-active" : ""}
@@ -88,6 +90,7 @@ const Modal = ({
                   <StyledHeader
                     id="modal-header-swipe"
                     currentDisplayType={currentDisplayType}
+                    {...header.props}
                   >
                     <Heading
                       level={1}
@@ -104,6 +107,7 @@ const Modal = ({
                     withoutBodyScroll={true}
                     hasFooter={1 && footer}
                     currentDisplayType={currentDisplayType}
+                    {...body.props}
                   >
                     {currentDisplayType === "aside" && withBodyScroll ? (
                       <Scrollbar stype="mediumBlack">{bodyComponent}</Scrollbar>
@@ -116,6 +120,7 @@ const Modal = ({
                   <StyledFooter
                     withFooterBorder={withFooterBorder}
                     currentDisplayType={currentDisplayType}
+                    {...footer.props}
                   >
                     {footerComponent}
                   </StyledFooter>
