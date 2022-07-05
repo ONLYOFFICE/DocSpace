@@ -534,7 +534,12 @@ class FilesActionStore {
           setHotkeyCaret(null);
           setHotkeyCaretStart(null);
         }
-      } else if (isSelected && !isContextItem && !isSingleMenu) {
+      } else if (
+        isSelected &&
+        selection.length > 1 &&
+        !isContextItem &&
+        !isSingleMenu
+      ) {
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);
       } else {

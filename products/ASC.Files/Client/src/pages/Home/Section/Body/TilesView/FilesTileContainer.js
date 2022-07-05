@@ -52,6 +52,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
   }, [firstRef, filesList]);
 
   const onResize = useCallback(() => {
+    if (!firstRef?.current) return;
     const { width } = firstRef.current.getBoundingClientRect();
 
     const size = getThumbSize(width);
