@@ -377,6 +377,7 @@ DropDownContainer.defaultProps = {
   showDisabledItems: false,
   isDefaultMode: true,
   fixedDirection: false,
+  offsetLeft: 0,
 };
 
 export default DropDownContainer;
