@@ -483,14 +483,16 @@ export default inject(
 
     const { toggleIsVisible, isVisible } = auth.infoPanelStore;
 
+    const { title, id, pathParts, navigationPath } = selectedFolderStore;
+
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
-      isRootFolder: selectedFolderStore.parentId === 0,
-      title: selectedFolderStore.title,
-      currentFolderId: selectedFolderStore.id,
-      pathParts: selectedFolderStore.pathParts,
-      navigationPath: selectedFolderStore.navigationPath,
+      isRootFolder: pathParts?.length === 1,
+      title,
+      currentFolderId: id,
+      pathParts: pathParts,
+      navigationPath: navigationPath,
       canCreate,
       toggleInfoPanel: toggleIsVisible,
       isInfoPanelVisible: isVisible,
