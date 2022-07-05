@@ -548,7 +548,7 @@ class ContextOptionsStore {
       {
         key: "open-location",
         label: t("OpenLocation"),
-        icon: "images/download-as.react.svg",
+        icon: "images/folder.location.react.svg",
         onClick: () => this.onOpenLocation(item),
         disabled: false,
       },
