@@ -24,30 +24,40 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.EF;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations.Design;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace AutoMigrationCreator;
-
-public static class EFCoreDesignTimeServices
+namespace AutoMigrationCreator.Utils;
+public static class ArgsParser
 {
-    public static ServiceProvider GetServiceProvider(BaseDbContext context)
+    public static (string path, bool create) Parse(string[] args)
     {
-        var serviceCollection = new ServiceCollection();
-        serviceCollection.AddEntityFrameworkDesignTimeServices();
-        serviceCollection.AddDbContextDesignTimeServices(context);
-        serviceCollection.AddSingleton<MigrationsCodeGeneratorDependencies>();
-        serviceCollection.AddSingleton<AnnotationCodeGeneratorDependencies>();
-        serviceCollection.AddSingleton<IAnnotationCodeGenerator, AnnotationCodeGenerator>();
-        serviceCollection.AddSingleton(context.GetService<ITypeMappingSource>());
+        var path = "";
+        var create = false;
 
-        var designTimeServices = serviceCollection.BuildServiceProvider();
+        if (args.Length == 0 || args.Length > 2)
+        {
+            throw new Exception("Incorrect combination of parameters. First parametr: string path, Second parametr: bool created");
+        }
 
-        return designTimeServices;
+        if (args.Length < 2)
+        {
+            path = args[0];
+        }
+
+        if (args.Length == 2)
+        {
+            create = Convert.ToBoolean(args[1]);
+        }
+
+        if (!create && path == "")
+        {
+            throw new Exception("Incorrect combination of parameters. First parametr: string path, Second parametr: bool created");
+        }
+
+        return (path, create);
     }
 }

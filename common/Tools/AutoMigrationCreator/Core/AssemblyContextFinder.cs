@@ -24,30 +24,23 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.EF;
+using System;
+using System.Reflection;
 
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations.Design;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
+using AutoMigrationCreator.Core;
 
 namespace AutoMigrationCreator;
 
-public static class EFCoreDesignTimeServices
+public class AssemblyContextFinder : ContextFinder
 {
-    public static ServiceProvider GetServiceProvider(BaseDbContext context)
+    private readonly Assembly _assembly;
+    public AssemblyContextFinder(Assembly assembly)
     {
-        var serviceCollection = new ServiceCollection();
-        serviceCollection.AddEntityFrameworkDesignTimeServices();
-        serviceCollection.AddDbContextDesignTimeServices(context);
-        serviceCollection.AddSingleton<MigrationsCodeGeneratorDependencies>();
-        serviceCollection.AddSingleton<AnnotationCodeGeneratorDependencies>();
-        serviceCollection.AddSingleton<IAnnotationCodeGenerator, AnnotationCodeGenerator>();
-        serviceCollection.AddSingleton(context.GetService<ITypeMappingSource>());
+        _assembly = assembly;
+    }
 
-        var designTimeServices = serviceCollection.BuildServiceProvider();
-
-        return designTimeServices;
+    protected override Type[] GetAssemblyTypes()
+    {
+        return _assembly.GetTypes();
     }
 }
