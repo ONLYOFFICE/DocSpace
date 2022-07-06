@@ -46,7 +46,6 @@ class AutomaticBackup extends React.PureComponent {
       isAdditionalChanged: false,
       isReset: false,
       isSuccessSave: false,
-      isErrorsFields: [],
       isError: false,
     };
 
@@ -117,26 +116,6 @@ class AutomaticBackup extends React.PureComponent {
     this.getWeekdays();
 
     this.setBasicSettings();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { isAdditionalChanged, isSuccessSave, isReset } = this.state;
-
-    const { isChanged } = this.props;
-    if (
-      (isAdditionalChanged !== prevState.isAdditionalChanged ||
-        isChanged !== prevProps.isChanged) &&
-      isSuccessSave
-    ) {
-      this.setState({ isSuccessSave: false });
-    }
-    if (
-      (isAdditionalChanged !== prevState.isAdditionalChanged ||
-        isChanged !== prevProps.isChanged) &&
-      isReset
-    ) {
-      this.setState({ isReset: false });
-    }
   }
 
   componentWillUnmount() {
@@ -220,8 +199,13 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   onCancelModuleSettings = () => {
-    const { isError, isEnable, isErrorsFields } = this.state;
-    const { toDefault, backupSchedule } = this.props;
+    const { isError, isEnable } = this.state;
+    const {
+      toDefault,
+      backupSchedule,
+      resetStorageSettings,
+      isCheckedThirdPartyStorage,
+    } = this.props;
 
     toDefault();
 
@@ -230,11 +214,12 @@ class AutomaticBackup extends React.PureComponent {
     } else {
       isEnable && this.setState({ isEnable: false });
     }
+    console.log("isCheckedThirdPartyStorage", isCheckedThirdPartyStorage);
+    isCheckedThirdPartyStorage && resetStorageSettings();
+
     this.setState({
       ...(isError && { isError: false }),
-      ...(isErrorsFields && { isErrorsFields: false }),
       isAdditionalChanged: false,
-      isReset: true,
     });
   };
 
@@ -343,6 +328,8 @@ class AutomaticBackup extends React.PureComponent {
       setThirdPartyStorage,
       setDefaultOptions,
       setBackupSchedule,
+      updateStorageDefaultSettings,
+      isCheckedThirdPartyStorage,
     } = this.props;
 
     try {
@@ -364,10 +351,11 @@ class AutomaticBackup extends React.PureComponent {
       setThirdPartyStorage(storageInfo);
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
 
+      isCheckedThirdPartyStorage && updateStorageDefaultSettings();
+
       toastr.success(t("SuccessfullySaveSettingsMessage"));
       this.setState({
         isLoadingData: false,
-        isSuccessSave: true,
         isAdditionalChanged: false,
       });
     } catch (e) {
@@ -422,11 +410,8 @@ class AutomaticBackup extends React.PureComponent {
     const {
       isInitialLoading,
       isEnable,
-      isReset,
       isLoadingData,
       isError,
-      isSuccessSave,
-      isErrorsFields,
       isAdditionalChanged,
     } = this.state;
 
@@ -434,8 +419,6 @@ class AutomaticBackup extends React.PureComponent {
 
     const commonProps = {
       isLoadingData,
-      isReset,
-      isSuccessSave,
       monthNumbersArray: this.monthNumbersArray,
       hoursArray: this.hoursArray,
       maxNumberCopiesArray: this.maxNumberCopiesArray,
@@ -595,6 +578,8 @@ const { organizationName, theme } = settingsStore;
     isFormReady,
     getStorageParams,
     formSettings,
+    updateDefaultSettings: updateStorageDefaultSettings,
+    resetNewFormSettings: resetStorageSettings,
   } = backup;
 
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
@@ -636,5 +621,8 @@ const { organizationName, theme } = settingsStore;
 
     formSettings,
     getStorageParams,
+
+    updateStorageDefaultSettings,
+    resetStorageSettings,
   };
 })(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

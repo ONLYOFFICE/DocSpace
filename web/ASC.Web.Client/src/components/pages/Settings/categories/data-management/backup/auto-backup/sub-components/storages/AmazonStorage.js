@@ -18,29 +18,11 @@ class AmazonStorage extends React.Component {
     this.isDisabled = !selectedStorage?.isSet;
   }
 
-  componentDidUpdate(prevProps) {
-    const {
-      isReset,
-      isSuccessSave,
-      resetNewFormSettings,
-      updateDefaultSettings,
-    } = this.props;
-
-    if (isReset && isReset !== prevProps.isReset) {
-      resetNewFormSettings();
-    }
-
-    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
-      updateDefaultSettings();
-    }
-  }
-
   render() {
     const {
       t,
       isLoadingData,
       selectedStorage,
-      formErrors,
       onSetIsChanged,
       ...rest
     } = this.props;
@@ -50,7 +32,6 @@ class AmazonStorage extends React.Component {
         <AmazonSettings
           onSetIsChanged={onSetIsChanged}
           isLoadingData={isLoadingData}
-          isError={formErrors}
           selectedStorage={selectedStorage}
           t={t}
         />
