@@ -221,12 +221,21 @@ class FilesStore {
         false
       );
 
-      this.createThumbnail(id);
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing
+      );
+
+      if (typeof id == "string") {
+        this.getFileInfo(id);
+      } else {
+        this.createThumbnail(id);
+      }
     });
   }
 
   updateSelectionStatus = (id, status, isEditing) => {
-    const index = this.selection.findIndex((x) => x.id === id && x.fileExst);
+    const index = this.selection.findIndex((x) => x.id === id);
 
     if (index !== -1) {
       this.selection[index].fileStatus = status;
