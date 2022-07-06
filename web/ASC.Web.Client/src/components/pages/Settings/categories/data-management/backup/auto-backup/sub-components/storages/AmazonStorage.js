@@ -19,18 +19,11 @@ class AmazonStorage extends React.Component {
   }
 
   render() {
-    const {
-      t,
-      isLoadingData,
-      selectedStorage,
-      onSetIsChanged,
-      ...rest
-    } = this.props;
+    const { t, isLoadingData, selectedStorage, ...rest } = this.props;
 
     return (
       <StyledStoragesModule>
         <AmazonSettings
-          onSetIsChanged={onSetIsChanged}
           isLoadingData={isLoadingData}
           selectedStorage={selectedStorage}
           t={t}

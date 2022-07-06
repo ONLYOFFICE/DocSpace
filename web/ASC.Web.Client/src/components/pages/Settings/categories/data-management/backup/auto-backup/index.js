@@ -25,6 +25,7 @@ import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
+import ButtonContainer from "./sub-components/ButtonContainer";
 const {
   DocumentModuleType,
   ResourcesModuleType,
@@ -40,10 +41,8 @@ class AutomaticBackup extends React.PureComponent {
     moment.locale(language);
 
     this.state = {
-      isEnable: false,
       isLoadingData: false,
       isInitialLoading: !isMobileOnly ? false : true,
-      isAdditionalChanged: false,
       isReset: false,
       isSuccessSave: false,
       isError: false,
@@ -104,7 +103,6 @@ class AutomaticBackup extends React.PureComponent {
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
 
       this.setState({
-        isEnable: !!backupSchedule,
         isInitialLoading: false,
       });
     } catch (error) {
@@ -173,23 +171,11 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   onClickPermissions = () => {
-    const { isEnable } = this.state;
-    const { seStorageType, backupSchedule } = this.props;
+    const { seStorageType, setSelectedEnableSchedule } = this.props;
 
     seStorageType(DocumentModuleType.toString());
 
-    if (backupSchedule) {
-      this.setState({
-        isAdditionalChanged: !isEnable ? false : true,
-      });
-    } else {
-      this.setState({
-        isAdditionalChanged: isEnable ? true : false,
-      });
-    }
-    this.setState({
-      isEnable: !isEnable,
-    });
+    setSelectedEnableSchedule();
   };
 
   onClickShowStorage = (e) => {
@@ -199,27 +185,20 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   onCancelModuleSettings = () => {
-    const { isError, isEnable } = this.state;
+    const { isError } = this.state;
     const {
       toDefault,
-      backupSchedule,
+
       resetStorageSettings,
       isCheckedThirdPartyStorage,
     } = this.props;
 
     toDefault();
 
-    if (!!backupSchedule) {
-      !isEnable && this.setState({ isEnable: true });
-    } else {
-      isEnable && this.setState({ isEnable: false });
-    }
-    console.log("isCheckedThirdPartyStorage", isCheckedThirdPartyStorage);
     isCheckedThirdPartyStorage && resetStorageSettings();
 
     this.setState({
       ...(isError && { isError: false }),
-      isAdditionalChanged: false,
     });
   };
 
@@ -248,8 +227,6 @@ class AutomaticBackup extends React.PureComponent {
     return true;
   };
   onSaveModuleSettings = async () => {
-    const { isEnable } = this.state;
-
     const {
       isCheckedDocuments,
       isCheckedThirdParty,
@@ -262,11 +239,11 @@ class AutomaticBackup extends React.PureComponent {
       selectedMonthDay,
       selectedStorageId,
       selectedFolderId,
-
+      selectedEnableSchedule,
       getStorageParams,
     } = this.props;
 
-    if (!isEnable) {
+    if (!selectedEnableSchedule) {
       this.deleteSchedule();
       return;
     }
@@ -356,7 +333,6 @@ class AutomaticBackup extends React.PureComponent {
       toastr.success(t("SuccessfullySaveSettingsMessage"));
       this.setState({
         isLoadingData: false,
-        isAdditionalChanged: false,
       });
     } catch (e) {
       toastr.error(e);
@@ -375,7 +351,6 @@ class AutomaticBackup extends React.PureComponent {
           toastr.success(t("SuccessfullySaveSettingsMessage"));
           this.setState({
             isLoadingData: false,
-            isAdditionalChanged: false,
           });
         })
         .catch((error) => {
@@ -387,16 +362,9 @@ class AutomaticBackup extends React.PureComponent {
     });
   };
 
-  onSetIsChanged = (changed) => {
-    this.setState({
-      isAdditionalChanged: changed,
-    });
-  };
-
   render() {
     const {
       t,
-      isChanged,
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
       isCheckedDocuments,
@@ -405,15 +373,10 @@ class AutomaticBackup extends React.PureComponent {
       organizationName,
       theme,
       renderTooltip,
+      selectedEnableSchedule,
     } = this.props;
 
-    const {
-      isInitialLoading,
-      isEnable,
-      isLoadingData,
-      isError,
-      isAdditionalChanged,
-    } = this.state;
+    const { isInitialLoading, isLoadingData, isError } = this.state;
 
     const isDisabledThirdPartyList = commonThirdPartyList?.length === 0;
 
@@ -456,14 +419,14 @@ class AutomaticBackup extends React.PureComponent {
             className="backup_toggle-btn"
             label={t("EnableAutomaticBackup")}
             onChange={this.onClickPermissions}
-            isChecked={isEnable}
+            isChecked={selectedEnableSchedule}
             isDisabled={isLoadingData}
           />
           <Text className="backup_toggle-btn-description">
             {t("EnableAutomaticBackupDescription")}
           </Text>
         </div>
-        {isEnable && (
+        {selectedEnableSchedule && (
           <div className="backup_modules">
             <StyledModules>
               <RadioButton
@@ -517,34 +480,19 @@ class AutomaticBackup extends React.PureComponent {
               </Text>
 
               {isCheckedThirdPartyStorage && (
-                <ThirdPartyStorageModule
-                  {...commonProps}
-                  onSetIsChanged={this.onSetIsChanged}
-                />
+                <ThirdPartyStorageModule {...commonProps} />
               )}
             </StyledModules>
           </div>
         )}
 
-        {(isAdditionalChanged || isChanged) && (
-          <div className="auto-backup_buttons">
-            <Button
-              label={t("Common:SaveButton")}
-              onClick={this.onSaveModuleSettings}
-              primary
-              isDisabled={isLoadingData}
-              size={buttonSize}
-              className="save-button"
-            />
-
-            <Button
-              label={t("Common:CancelButton")}
-              isDisabled={isLoadingData}
-              onClick={this.onCancelModuleSettings}
-              size={buttonSize}
-            />
-          </div>
-        )}
+        <ButtonContainer
+          t={t}
+          isLoadingData={isLoadingData}
+          buttonSize={buttonSize}
+          onSaveModuleSettings={this.onSaveModuleSettings}
+          onCancelModuleSettings={this.onCancelModuleSettings}
+        />
       </StyledAutoBackup>
     );
   }
@@ -573,13 +521,14 @@ const { organizationName, theme } = settingsStore;
     selectedPeriodNumber,
     selectedFolderId,
     selectedStorageId,
-    isChanged,
     toDefault,
     isFormReady,
     getStorageParams,
     formSettings,
     updateDefaultSettings: updateStorageDefaultSettings,
     resetNewFormSettings: resetStorageSettings,
+    setSelectedEnableSchedule,
+    selectedEnableSchedule,
   } = backup;
 
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
@@ -612,7 +561,7 @@ const { organizationName, theme } = settingsStore;
     selectedPeriodNumber,
     selectedFolderId,
     selectedStorageId,
-    isChanged,
+
     toDefault,
 
     isCheckedThirdPartyStorage,
@@ -624,5 +573,7 @@ const { organizationName, theme } = settingsStore;
 
     updateStorageDefaultSettings,
     resetStorageSettings,
+    setSelectedEnableSchedule,
+    selectedEnableSchedule,
   };
 })(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

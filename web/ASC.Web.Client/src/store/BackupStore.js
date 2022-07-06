@@ -49,11 +49,15 @@ class BackupStore {
 
   temporaryLink = null;
   timerId = null;
+  isThirdStorageChanged = false;
 
   formSettings = {};
   requiredFormSettings = {};
   defaultFormSettings = {};
   errorsFieldsBeforeSafe = {};
+
+  selectedEnableSchedule = false;
+  defaultEnableSchedule = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -90,6 +94,9 @@ class BackupStore {
 
     this.selectedWeekdayLabel = this.defaultWeekdayLabel;
     this.selectedWeekday = this.defaultWeekday;
+
+    this.selectedEnableSchedule = false;
+    this.defaultEnableSchedule = false;
   };
   get isChanged() {
     if (this.selectedHour !== this.defaultHour) {
@@ -124,6 +131,7 @@ class BackupStore {
 
     if (this.selectedStorageId !== this.defaultStorageId) return true;
 
+    if (this.selectedEnableSchedule !== this.defaultEnableSchedule) return true;
     return false;
   }
 
@@ -141,6 +149,7 @@ class BackupStore {
     this.selectedWeekday = this.defaultWeekday;
     this.selectedStorageId = this.defaultStorageId;
     this.selectedFolderId = this.defaultFolderId;
+    this.selectedEnableSchedule = this.defaultEnableSchedule;
   };
 
   setDefaultOptions = (t, periodObj, weekdayArr) => {
@@ -154,6 +163,9 @@ class BackupStore {
 
       const { folderId } = storageParams;
       const { period, day, hour } = cronParams;
+
+      this.defaultEnableSchedule = true;
+      this.selectedEnableSchedule = true;
 
       this.defaultDay = `${day}`;
       this.defaultHour = `${hour}:00`;
@@ -504,6 +516,17 @@ class BackupStore {
     }
     this.setFormSettings(defaultFormSettings);
     this.setDefaultFormSettings(defaultFormSettings);
+  };
+
+  setIsThirdStorageChanged = (changed) => {
+    if (changed !== this.isThirdStorageChanged) {
+      this.isThirdStorageChanged = changed;
+    }
+  };
+
+  setSelectedEnableSchedule = () => {
+    const isEnable = this.selectedEnableSchedule;
+    this.selectedEnableSchedule = !isEnable;
   };
 }
 export default BackupStore;

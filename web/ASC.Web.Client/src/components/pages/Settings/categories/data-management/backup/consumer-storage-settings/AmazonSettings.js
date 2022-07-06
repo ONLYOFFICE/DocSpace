@@ -165,17 +165,22 @@ class AmazonSettings extends React.Component {
   };
 
   onSelectEncryptionMode = (e) => {
-    const { setFormSettings, onSetIsChanged } = this.props;
+    const { setFormSettings, setIsThirdStorageChanged } = this.props;
     const name = e.target.name;
     const nonCheck = name === "s3" ? "kms" : "s3"; //TODO: names from api
     const newState = onSelectEncryptionMode(name, nonCheck);
-    onSetIsChanged && onSetIsChanged(true);
+
+    setIsThirdStorageChanged(true);
     setFormSettings(newState);
   };
 
   onUpdateValue = (e, type) => {
-    const { formSettings, setFormSettings, onSetIsChanged } = this.props;
-    onSetIsChanged && onSetIsChanged(true);
+    const {
+      formSettings,
+      setFormSettings,
+      setIsThirdStorageChanged,
+    } = this.props;
+    setIsThirdStorageChanged(true);
 
     const newState =
       type === "checkbox"
@@ -404,6 +409,7 @@ export default inject(({ backup }) => {
     formSettings,
     errorsFieldsBeforeSafe,
     replaceRequiredFormSettings,
+    setIsThirdStorageChanged,
   } = backup;
 
   return {
@@ -412,5 +418,6 @@ export default inject(({ backup }) => {
     formSettings,
     errorsFieldsBeforeSafe,
     replaceRequiredFormSettings,
+    setIsThirdStorageChanged,
   };
 })(observer(AmazonSettings));
