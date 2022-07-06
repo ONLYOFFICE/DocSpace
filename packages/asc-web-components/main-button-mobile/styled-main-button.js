@@ -167,6 +167,10 @@ StyledButtonOptions.defaultProps = { theme: Base };
 
 const StyledContainerAction = styled.div`
   padding: 16px 0px;
+
+  .sublevel {
+    padding-left: 48px;
+  }
 `;
 
 const StyledButtonWrapper = styled.div`

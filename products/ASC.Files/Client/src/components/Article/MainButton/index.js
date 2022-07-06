@@ -124,12 +124,11 @@ const ArticleMainButtonContent = (props) => {
         items: [
           {
             className: "main-button_drop-down_sub",
-            icon: "images/form.react.svg",
+            icon: "images/form.blank.react.svg",
             label: t("Translations:SubNewForm"),
             onClick: onCreate,
             action: "docxf",
             key: "docxf",
-            withoutIcon: true,
           },
           {
             className: "main-button_drop-down_sub",
@@ -138,16 +137,14 @@ const ArticleMainButtonContent = (props) => {
             onClick: onShowSelectFileDialog,
             disabled: isPrivacy,
             key: "form-file",
-            withoutIcon: true,
           },
           {
             className: "main-button_drop-down_sub",
-            icon: "images/form.react.svg",
+            icon: "images/form.gallery.react.svg",
             label: t("Common:OFORMsGallery"),
             onClick: onShowGallery,
             disabled: isPrivacy,
             key: "form-gallery",
-            withoutIcon: true,
           },
         ],
       },
