@@ -14,10 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EtaEmre.NetEscapades.EnumGenerators" Version="1.0.0-beta07" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>

@@ -38,7 +38,6 @@ global using System.Text;
 global using System.Text.Json.Serialization;
 global using System.Web;
 global using System.Xml.XPath;
-global using NetEscapades.EnumGenerators;
 
 global using ASC.Common;
 global using ASC.Common.Caching;

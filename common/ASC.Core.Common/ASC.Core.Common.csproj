@@ -56,7 +56,6 @@
     </PackageReference>
     <PackageReference Include="MailKit" Version="3.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="EtaEmre.NetEscapades.EnumGenerators" Version="1.0.0-beta07" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
