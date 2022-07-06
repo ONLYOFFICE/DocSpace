@@ -6,7 +6,7 @@ import Section from "@appserver/common/components/Section";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 
 import SectionHeaderContent from "./Section/Header";
-import Bar from "./Section/Bar";
+import SectionBarContent from "./Section/Bar";
 import SectionFilterContent from "./Section/Filter";
 import SectionBodyContent from "./Section/Body";
 import RoomsFilter from "@appserver/common/api/rooms/filter";
@@ -43,7 +43,7 @@ const VirtualRooms = ({
       </Section.SectionHeader>
 
       <Section.SectionBar>
-        <Bar />
+        <SectionBarContent />
       </Section.SectionBar>
 
       <Section.SectionFilter>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ADS_TIMEOUT } from "../../../helpers/constants";
+import { ADS_TIMEOUT } from "../../../../helpers/constants";
 import SnackBar from "@appserver/components/snackbar";
 import { Consumer } from "@appserver/components/utils/context";
 import difference from "lodash/difference";

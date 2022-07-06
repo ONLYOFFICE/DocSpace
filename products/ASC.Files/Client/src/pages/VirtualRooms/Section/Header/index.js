@@ -9,7 +9,7 @@ import { tablet } from "@appserver/components/utils/device";
 import Headline from "@appserver/common/components/Headline";
 
 import IconButton from "@appserver/components/icon-button";
-import withLoader from "../../../HOCs/withLoader";
+import withLoader from "../../../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
 
 const StyledContainer = styled.div`
