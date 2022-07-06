@@ -119,8 +119,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
         ? t("Translations:DisabledEmployeeStatus")
         : t("Common:Active");
 
-    return null;
-
+    //return null;
     return (
       <ModalDialogContainer
         isLoading={!tReady}
