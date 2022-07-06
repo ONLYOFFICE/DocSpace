@@ -2046,10 +2046,6 @@ class FilesStore {
     return fileInfo;
   };
 
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openEditor(id, providerKey, tab, url);
-  };
-
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
@@ -2057,6 +2053,20 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    const foundIndex = this.files.findIndex((x) => x.id === id);
+    if (foundIndex !== -1) {
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
+        true
+      );
+
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing
+      );
+    }
+
     const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
     return openEditor(id, providerKey, tab, url, isPrivacy);
   };
