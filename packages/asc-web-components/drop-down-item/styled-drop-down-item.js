@@ -119,7 +119,7 @@ const StyledDropdownItem = styled.div`
     props.isActive &&
     css`
       background-color: ${(props) =>
-        props.theme.dropDownItem.hoverBackgroundColor};
+        props.theme.dropDownItem.hoverBackgroundColor} !important;
     `}
 `;
 StyledDropdownItem.defaultProps = { theme: Base };

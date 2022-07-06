@@ -267,7 +267,7 @@ const MainButtonMobile = (props) => {
                         <StyledDropDownItem
                           key={item.key}
                           label={item.label}
-                          className={item.className}
+                          className={`${item.className} sublevel`}
                           onClick={subMenuOnClickAction}
                           icon={item.icon ? item.icon : ""}
                           action={item.action}
