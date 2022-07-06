@@ -745,7 +745,7 @@ namespace ASC.Api.Settings
         [Read("cultures", Check = false)]
         public IEnumerable<object> GetSupportedCultures()
         {
-            return SetupInfo.EnabledCultures.Select(r => r.Name).ToArray();
+            return SetupInfo.EnabledCultures.Select(r => r.Name).OrderBy(s => s).ToArray();
         }
 
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
