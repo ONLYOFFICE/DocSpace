@@ -150,16 +150,16 @@ public class SecurityController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpGet("/audit/types")]
+    [HttpGet("audit/types")]
     public object GetTypes()
     {
         return new
         {
-            Actions = Enum.GetValues(typeof(MessageAction)).Cast<MessageAction>().Select(x => x.ToString()),
-            ActionTypes = Enum.GetValues(typeof(ActionType)).Cast<ActionType>().Select(x => x.ToString()),
-            ProductTypes = Enum.GetValues(typeof(ProductType)).Cast<ProductType>().Select(x => x.ToString()),
-            ModuleTypes = Enum.GetValues(typeof(ModuleType)).Cast<ModuleType>().Select(x => x.ToString()),
-            EntryTypes = Enum.GetValues(typeof(EntryType)).Cast<EntryType>().Select(x => x.ToString())
+            Actions = MessageActionExtensions.GetNames(),
+            ActionTypes = ActionTypeExtensions.GetNames(),
+            ProductTypes = ProductTypeExtensions.GetNames(),
+            ModuleTypes = ModuleTypeExtensions.GetNames(),
+            EntryTypes = EntryTypeExtensions.GetNames()
         };
     }
 

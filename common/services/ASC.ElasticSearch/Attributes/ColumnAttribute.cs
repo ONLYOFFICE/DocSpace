@@ -26,6 +26,7 @@
 
 namespace ASC.ElasticSearch;
 
+[EnumExtensions]
 public enum Analyzer
 {
     standard,
@@ -34,6 +35,7 @@ public enum Analyzer
 }
 
 [Flags]
+[EnumExtensions]
 public enum CharFilter
 {
     io,

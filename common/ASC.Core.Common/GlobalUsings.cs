@@ -148,6 +148,8 @@ global using Microsoft.Extensions.Options;
 
 global using MimeKit;
 
+global using NetEscapades.EnumGenerators;
+
 global using Newtonsoft.Json;
 
 global using NVelocity;
