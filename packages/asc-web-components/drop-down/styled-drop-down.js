@@ -70,6 +70,12 @@ const StyledDropdown = styled.div`
     -moz-column-count: ${props.columnCount};
           column-count: ${props.columnCount};
   `}
+
+  .scroll-drop-down-item {
+    .scroll-body {
+      padding-right: 0 !important;
+    }
+  }
 `;
 
 StyledDropdown.defaultProps = { theme: Base };
