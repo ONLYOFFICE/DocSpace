@@ -124,18 +124,10 @@ class SendInviteDialogComponent extends React.Component {
         <ModalDialog.Body>
           <Text>{t("SendInviteAgainDialog")}</Text>
           <Text>{t("SendInviteAgainDialogMessage")}</Text>
-          <ToggleContent
-            className="toggle-content-dialog"
-            label={t("Common:ShowUsersList")}
-          >
-            <div style={containerStyles} className="modal-dialog-content">
-              <AutoSizer>{renderList}</AutoSizer>
-            </div>
-          </ToggleContent>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            label={t("Common:OKButton")}
+            label={t("Common:SendButton")}
             size="normal"
             scale
             primary
