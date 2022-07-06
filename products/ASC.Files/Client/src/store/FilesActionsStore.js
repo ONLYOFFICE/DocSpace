@@ -490,10 +490,13 @@ class FilesActionStore {
       });
       setIsLoading(false);
       type === FileAction.Rename &&
-        this.onSelectItem({
-          id: selectedItem.id,
-          isFolder: selectedItem.isFolder,
-        });
+        this.onSelectItem(
+          {
+            id: selectedItem.id,
+            isFolder: selectedItem.isFolder,
+          },
+          false
+        );
     }
   };
 
