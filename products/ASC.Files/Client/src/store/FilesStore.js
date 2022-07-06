@@ -221,12 +221,21 @@ class FilesStore {
         false
       );
 
-      this.createThumbnail(id);
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing
+      );
+
+      if (typeof id == "string") {
+        this.getFileInfo(id);
+      } else {
+        this.createThumbnail(id);
+      }
     });
   }
 
   updateSelectionStatus = (id, status, isEditing) => {
-    const index = this.selection.findIndex((x) => x.id === id && x.fileExst);
+    const index = this.selection.findIndex((x) => x.id === id);
 
     if (index !== -1) {
       this.selection[index].fileStatus = status;
@@ -2046,10 +2055,6 @@ class FilesStore {
     return fileInfo;
   };
 
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openEditor(id, providerKey, tab, url);
-  };
-
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
@@ -2057,6 +2062,20 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    const foundIndex = this.files.findIndex((x) => x.id === id);
+    if (foundIndex !== -1) {
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
+        true
+      );
+
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing
+      );
+    }
+
     const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
     return openEditor(id, providerKey, tab, url, isPrivacy);
   };

@@ -297,7 +297,7 @@ class DropDownContainer extends React.Component {
   };
   render() {
     const { withBackdrop = true, withBlur = false, open } = this.props;
-    const eventTypesProp = isMobile ? { eventTypes: ["touchend"] } : {};
+    const eventTypesProp = isMobile ? { eventTypes: ["click"] } : {};
 
     return (
       <>
