@@ -229,11 +229,11 @@ const SectionHeaderContent = (props) => {
         label: userCaption,
         onClick: goToEmployeeCreate,
       },
-      {
-        key: "new-guest",
-        label: guestCaption,
-        onClick: goToGuestCreate,
-      },
+      // {
+      //   key: "new-guest",
+      //   label: guestCaption,
+      //   onClick: goToGuestCreate,
+      // },
       {
         key: "new-group",
         label: groupCaption,

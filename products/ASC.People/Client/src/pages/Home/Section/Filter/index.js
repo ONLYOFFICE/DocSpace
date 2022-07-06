@@ -147,11 +147,11 @@ const SectionFilterContent = ({
         group: "filter-type",
         label: userCaption,
       },
-      {
-        key: "guest",
-        group: "filter-type",
-        label: guestCaption,
-      },
+      // {
+      //   key: "guest",
+      //   group: "filter-type",
+      //   label: guestCaption,
+      // },
       {
         key: "filter-email",
         group: "filter-email",

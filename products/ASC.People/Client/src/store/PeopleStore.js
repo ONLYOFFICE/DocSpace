@@ -105,34 +105,34 @@ class PeopleStore {
     } = this.dialogStore;
 
     const headerMenu = [
-      {
-        label: t("ChangeToUser", {
-          userCaption,
-        }),
-        disabled: !hasUsersToMakeEmployees,
-        onClick: () => setEmployeeDialogVisible(true),
-        iconUrl: "/static/images/change.to.employee.react.svg",
-      },
-      {
-        label: t("ChangeToGuest", {
-          guestCaption,
-        }),
-        disabled: !hasUsersToMakeGuests,
-        onClick: () => setGuestDialogVisible(true),
-        iconUrl: "/static/images/change.to.guest.react.svg",
-      },
-      {
-        label: t("LblSetActive"),
-        disabled: !hasUsersToActivate,
-        onClick: () => setActiveDialogVisible(true),
-        iconUrl: "/static/images/enable.react.svg",
-      },
-      {
-        label: t("LblSetDisabled"),
-        disabled: !hasUsersToDisable,
-        onClick: () => setDisableDialogVisible(true),
-        iconUrl: "/static/images/disable.react.svg",
-      },
+      //{
+      //   label: t("ChangeToUser", {
+      //     userCaption,
+      //   }),
+      //   disabled: !hasUsersToMakeEmployees,
+      //   onClick: () => setEmployeeDialogVisible(true),
+      //   iconUrl: "/static/images/change.to.employee.react.svg",
+      // },
+      // {
+      //   label: t("ChangeToGuest", {
+      //     guestCaption,
+      //   }),
+      //   disabled: !hasUsersToMakeGuests,
+      //   onClick: () => setGuestDialogVisible(true),
+      //   iconUrl: "/static/images/change.to.guest.react.svg",
+      // },
+      // {
+      //   label: t("LblSetActive"),
+      //   disabled: !hasUsersToActivate,
+      //   onClick: () => setActiveDialogVisible(true),
+      //   iconUrl: "/static/images/enable.react.svg",
+      // },
+      // {
+      //   label: t("LblSetDisabled"),
+      //   disabled: !hasUsersToDisable,
+      //   onClick: () => setDisableDialogVisible(true),
+      //   iconUrl: "/static/images/disable.react.svg",
+      // },
       {
         label: t("LblInviteAgain"),
         disabled: !hasUsersToInvite,

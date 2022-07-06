@@ -113,6 +113,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
 
     const firstType = userType === 1 ? t("Common:Guest") : t("Common:User");
     const secondType = userType === 1 ? t("Common:User") : t("Common:Guest");
+    return null;
     return (
       <ModalDialogContainer
         isLoading={!tReady}

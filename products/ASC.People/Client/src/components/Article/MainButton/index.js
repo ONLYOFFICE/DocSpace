@@ -98,16 +98,16 @@ class ArticleMainButtonContent extends React.Component {
         label: userCaption,
         onClick: this.goToEmployeeCreate,
       },
-      {
-        key: "create-guest",
-        icon: combineUrl(
-          AppServerConfig.proxyURL,
-          homepage,
-          "/images/add.guest.react.svg"
-        ),
-        label: guestCaption,
-        onClick: this.goToGuestCreate,
-      },
+      // {
+      //   key: "create-guest",
+      //   icon: combineUrl(
+      //     AppServerConfig.proxyURL,
+      //     homepage,
+      //     "/images/add.guest.react.svg"
+      //   ),
+      //   label: guestCaption,
+      //   onClick: this.goToGuestCreate,
+      // },
       {
         key: "create-group",
         icon: combineUrl(

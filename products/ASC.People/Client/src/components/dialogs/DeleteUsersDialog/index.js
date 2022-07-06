@@ -108,6 +108,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
     );
 
     //console.log("DeleteGroupUsersDialog render");
+    return null;
     return (
       <ModalDialogContainer
         isLoading={!tReady}
