@@ -90,6 +90,14 @@ class ChangePasswordDialogComponent extends React.Component {
             onClick={this.onSendPasswordChangeInstructions}
             isLoading={isRequestRunning}
           />
+          <Button
+            key="CloseBtn"
+            label={t("Common:CancelButton")}
+            size="normal"
+            scale
+            onClick={onClose}
+            isLoading={isRequestRunning}
+          />
         </ModalDialog.Footer>
       </ModalDialog>
     );

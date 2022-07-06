@@ -214,7 +214,6 @@ const ConflictResolveDialog = (props) => {
 
   return (
     <StyledModalDialog
-      withFooterBorder
       isLoading={!tReady}
       visible={visible}
       onClose={onCloseDialog}

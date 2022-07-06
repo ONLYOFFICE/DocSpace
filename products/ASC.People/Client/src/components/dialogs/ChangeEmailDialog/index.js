@@ -161,6 +161,14 @@ class ChangeEmailDialogComponent extends React.Component {
             onClick={this.onValidateEmail}
             isLoading={isRequestRunning}
           />
+          <Button
+            key="CloseBtn"
+            label={t("Common:CancelButton")}
+            size="normal"
+            scale
+            onClick={onClose}
+            isLoading={isRequestRunning}
+          />
         </ModalDialog.Footer>
       </ModalDialogContainer>
     );

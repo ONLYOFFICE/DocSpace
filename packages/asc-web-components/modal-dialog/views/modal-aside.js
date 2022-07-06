@@ -39,8 +39,6 @@ const Modal = ({
   const bodyComponent = body ? body.props.children : null;
   const footerComponent = footer ? footer.props.children : null;
 
-  console.log(header);
-
   return (
     <StyledModal
       className={visible ? "modal-active" : ""}
