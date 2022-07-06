@@ -5,7 +5,6 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButton from "@appserver/components/radio-button";
 import Text from "@appserver/components/text";
-import Button from "@appserver/components/button";
 import {
   deleteBackupSchedule,
   getBackupSchedule,
@@ -19,7 +18,6 @@ import {
 } from "@appserver/common/constants";
 import ToggleButton from "@appserver/components/toggle-button";
 import { getBackupStorage } from "@appserver/common/api/settings";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
@@ -67,7 +65,6 @@ class AutomaticBackup extends React.PureComponent {
     this.monthNumbersArray = [];
     this.maxNumberCopiesArray = [];
     this.weekdaysLabelArray = [];
-    this.formSettings = "";
 
     this.getTime();
     this.getMonthNumbers();
@@ -280,7 +277,7 @@ class AutomaticBackup extends React.PureComponent {
       );
 
       console.log("storageParams", storageParams);
-      return;
+      // return;
       this.createSchedule(
         storageType.toString(),
         storageParams,
@@ -396,7 +393,7 @@ class AutomaticBackup extends React.PureComponent {
       className: "backup_radio-button",
       onClick: this.onClickShowStorage,
     };
-
+    console.log("render backup");
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -524,7 +521,6 @@ const { organizationName, theme } = settingsStore;
     toDefault,
     isFormReady,
     getStorageParams,
-    formSettings,
     updateDefaultSettings: updateStorageDefaultSettings,
     resetNewFormSettings: resetStorageSettings,
     setSelectedEnableSchedule,
@@ -568,7 +564,6 @@ const { organizationName, theme } = settingsStore;
     isCheckedThirdParty,
     isCheckedDocuments,
 
-    formSettings,
     getStorageParams,
 
     updateStorageDefaultSettings,
