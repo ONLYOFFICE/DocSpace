@@ -164,6 +164,10 @@ const StyledTile = styled.div`
         }
       `}
   }
+
+  .new-items {
+    min-width: 16px;
+  }
 `;
 
 const StyledFileTileTop = styled.div`
@@ -503,6 +507,7 @@ class Tile extends React.PureComponent {
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
               {FilesTileContent}
+              {badges}
             </StyledContent>
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (

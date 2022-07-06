@@ -511,12 +511,16 @@ namespace ASC.Files.Thirdparty
                 q = q.Where(r => r.tag.Owner == subject);
             }
 
-            var qList = q
+            var qList = await q
                 .Distinct()
-                .AsAsyncEnumerable();
+                .AsAsyncEnumerable()
+                .ToListAsync();
 
-            var tags = qList
-                .SelectAwait(async r => new Tag
+            List<Tag> tags = new List<Tag>();
+
+            foreach (var r in qList)
+            {
+                tags.Add(new Tag
                 {
                     TagName = r.tag.Name,
                     TagType = r.tag.Flag,
@@ -526,19 +530,22 @@ namespace ASC.Files.Thirdparty
                     Count = r.tagLink.TagCount,
                     Id = r.tag.Id
                 });
+            }
 
 
             if (deepSearch)
             {
-                await foreach (var e in tags.ConfigureAwait(false))
+                foreach (var e in tags)
+                {
                     yield return e;
+                }
                 yield break;
             }
 
             var folderFileIds = new[] { parentFolder.ID }
                 .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
-            await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())).ConfigureAwait(false))
+            foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
                 yield return e;
         }
 

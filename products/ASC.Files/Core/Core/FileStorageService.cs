@@ -940,7 +940,14 @@ namespace ASC.Web.Files.Services.WCFService
             var file = await fileDao.GetFileAsync(fileId);
             ErrorIf(!await FileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-            return await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
+            var result = await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
+
+            foreach (var r in result)
+            {
+                await EntryStatusManager.SetFileStatusAsync(r);
+            }
+
+            return result;
         }
 
         public async Task<KeyValuePair<File<T>, List<File<T>>>> UpdateToVersionAsync(T fileId, int version)

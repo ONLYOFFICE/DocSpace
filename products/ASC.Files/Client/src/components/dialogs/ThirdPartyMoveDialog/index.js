@@ -43,6 +43,39 @@ const StyledOperationDialog = styled(ModalDialog)`
       }
     }
   }
+  .third-party-move-radio-button {
+    margin-top: 12px;
+    label:not(:last-child) {
+      margin-bottom: 12px;
+    }
+  }
+  .modal-dialog-modal-footer {
+    border-top: ${(props) => props.theme.button.border.baseDisabled};
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    .operation-button {
+      margin-right: 8px;
+    }
+  }
+  .modal-dialog-aside-footer {
+    border-top: ${(props) => props.theme.button.border.baseDisabled};
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 16px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    width: 100%;
+  }
+  .third-party-move-dialog-text {
+    margin-top: 16px;
+  }
 `;
 
 const PureThirdPartyMoveContainer = ({
@@ -59,18 +92,20 @@ const PureThirdPartyMoveContainer = ({
   setBufferSelection,
   itemOperationToFolder,
   setMoveToPanelVisible,
+  conflictResolveDialogVisible,
 }) => {
   const zIndex = 310;
   const deleteAfter = false; // TODO: get from settings
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const onClose = () => {
+  const onClosePanels = () => {
     setDestFolderId(false);
     setThirdPartyMoveDialogVisible(false);
     setMoveToPanelVisible(false);
     setBufferSelection(null);
   };
+  const onClose = () => setThirdPartyMoveDialogVisible(false);
 
   const providerTitle = connectedCloudsTypeTitleTranslation(provider, t);
 
@@ -127,7 +162,7 @@ const PureThirdPartyMoveContainer = ({
           setIsLoading(false);
         } else {
           setIsLoading(false);
-          onClose();
+          onClosePanels();
           await itemOperationToFolder(data);
         }
       })
@@ -140,7 +175,7 @@ const PureThirdPartyMoveContainer = ({
   return (
     <StyledOperationDialog
       isLoading={!tReady}
-      visible={visible}
+      visible={conflictResolveDialogVisible ? false : visible}
       zIndex={zIndex}
       onClose={onClose}
       displayType="modal"
@@ -196,6 +231,7 @@ export default inject(
       destFolderId,
       setDestFolderId,
       setMoveToPanelVisible,
+      conflictResolveDialogVisible,
     } = dialogsStore;
     const { bufferSelection, setBufferSelection } = filesStore;
     const { checkFileConflicts, setConflictDialogData } = filesActionsStore;
@@ -217,6 +253,7 @@ export default inject(
       setConflictDialogData,
       itemOperationToFolder,
       setMoveToPanelVisible,
+      conflictResolveDialogVisible,
     };
   }
 )(
