@@ -8,15 +8,40 @@ import Button from "@appserver/components/button";
 import { inject, observer } from "mobx-react";
 import toastr from "@appserver/components/toast/toastr";
 import { connectedCloudsTypeTitleTranslation } from "../../../helpers/utils";
+import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 const StyledOperationDialog = styled(ModalDialog)`
   .operation-button {
     margin-right: 8px;
   }
 
-  .modal-dialog-aside-footer {
-    display: flex;
-    width: 90%;
+  .select-action-wrapper {
+    margin-top: 16px;
+
+    .select-action {
+      margin-bottom: 12px;
+    }
+
+    .conflict-resolve-radio-button {
+      label {
+        display: flex;
+        align-items: center;
+        &:not(:last-child) {
+          margin-bottom: 12px;
+        }
+      }
+
+      svg {
+        overflow: visible;
+        margin-right: 8px;
+        margin-top: 3px;
+      }
+
+      .radio-option-title {
+        font-weight: 600;
+        font-size: 14px;
+      }
+    }
   }
 `;
 
@@ -47,10 +72,32 @@ const PureThirdPartyMoveContainer = ({
     setBufferSelection(null);
   };
 
+  const providerTitle = connectedCloudsTypeTitleTranslation(provider, t);
+
+  const [resolveType, setResolveType] = useState("move");
+  const onSelectResolveType = (e) => setResolveType(e.target.value);
+
+  const radioOptions = [
+    {
+      label: (
+        <Text className="radio-option-title">{t("Translations:Move")}</Text>
+      ),
+      value: "move",
+    },
+    {
+      label: (
+        <Text className="radio-option-title">{t("Translations:Copy")}</Text>
+      ),
+      value: "copy",
+    },
+  ];
+
   const startOperation = (e) => {
-    const isCopy = e.target.dataset.copy;
+    const isCopy = resolveType === "copy";
     const folderIds = [];
     const fileIds = [];
+
+    console.log(isCopy);
 
     for (let item of selection) {
       if (item.fileExst) {
@@ -90,49 +137,48 @@ const PureThirdPartyMoveContainer = ({
       });
   };
 
-  const providerTitle = connectedCloudsTypeTitleTranslation(provider, t);
-
   return (
     <StyledOperationDialog
       isLoading={!tReady}
       visible={visible}
       zIndex={zIndex}
       onClose={onClose}
-      displayType="aside"
+      displayType="modal"
+      isLarge
     >
       <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text>{t("MoveConfirmationMessage", { provider: providerTitle })}</Text>
-        <br />
-        <Text>{t("MoveConfirmationAlert")}</Text>
+
+        <div className="select-action-wrapper">
+          <Text className="select-action">
+            {t("ConflictResolveDialog:ConflictResolveSelectAction")}
+          </Text>
+          <RadioButtonGroup
+            className="conflict-resolve-radio-button"
+            orientation="vertical"
+            fontSize="13px"
+            fontWeight="400"
+            name="group"
+            onClick={onSelectResolveType}
+            options={radioOptions}
+            selected="move"
+          />
+        </div>
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
         <Button
-          className="operation-button"
-          label={t("Translations:Move")}
+          label={t("Common:OKButton")}
           size="normal"
-          scale
           primary
           onClick={startOperation}
           isLoading={isLoading}
           isDisabled={isLoading}
         />
         <Button
-          data-copy="copy"
-          className="operation-button"
-          label={t("Translations:Copy")}
-          size="normal"
-          scale
-          onClick={startOperation}
-          isLoading={isLoading}
-          isDisabled={isLoading}
-        />
-        <Button
-          className="operation-button"
           label={t("Common:CancelButton")}
           size="normal"
-          scale
           onClick={onClose}
           isLoading={isLoading}
           isDisabled={isLoading}
@@ -174,7 +220,10 @@ export default inject(
     };
   }
 )(
-  withTranslation(["ThirdPartyMoveDialog", "Common", "Translations"])(
-    observer(PureThirdPartyMoveContainer)
-  )
+  withTranslation([
+    "ThirdPartyMoveDialog",
+    "ConflictResolveDialog",
+    "Common",
+    "Translations",
+  ])(observer(PureThirdPartyMoveContainer))
 );
