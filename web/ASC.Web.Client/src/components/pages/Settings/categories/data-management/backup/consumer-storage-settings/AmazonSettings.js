@@ -1,20 +1,19 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
 import ComboBox from "@appserver/components/combobox";
 import RadioButton from "@appserver/components/radio-button";
 import Text from "@appserver/components/text";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import HelpButton from "@appserver/components/help-button";
-import { Trans, withTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import {
   onChangeCheckbox,
   onChangeTextInput,
   onSelectEncryptionMode,
-  onSelectManagedKeys,
   onSetAdditionInfo,
 } from "./InputsMethods";
-import { inject, observer } from "mobx-react";
 
 const bucketInput = "bucket";
 const regionInput = "region";
@@ -59,12 +58,18 @@ class AmazonSettings extends React.Component {
 
   constructor(props) {
     super(props);
-    const { t, selectedStorage, setRequiredFormSettings } = this.props;
+    const {
+      t,
+      selectedStorage,
+      setRequiredFormSettings,
+      setIsThirdStorageChanged,
+    } = this.props;
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
     console.log("selectedStorage", selectedStorage);
 
     setRequiredFormSettings([urlInput, bucketInput]); //TODO: add the flexible urlInput or region. customKey, clientKey
+    setIsThirdStorageChanged(false);
 
     this.bucketPlaceholder =
       selectedStorage && selectedStorage.properties[0]?.title;
@@ -205,7 +210,6 @@ class AmazonSettings extends React.Component {
       isLoading,
       formSettings,
       t,
-      onChange,
     } = this.props;
     const { selectedEncryption, region, managedKeys } = this.state;
     console.log("amazon settings render", isError);

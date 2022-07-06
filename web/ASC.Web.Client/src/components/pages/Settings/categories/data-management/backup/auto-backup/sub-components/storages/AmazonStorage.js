@@ -1,10 +1,10 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import AmazonSettings from "../../../consumer-storage-settings/AmazonSettings";
 import ScheduleComponent from "../ScheduleComponent";
 import { StyledStoragesModule } from "../../../StyledBackup";
 
-import { inject, observer } from "mobx-react";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
@@ -36,15 +36,9 @@ class AmazonStorage extends React.Component {
 }
 
 export default inject(({ backup }) => {
-  const {
-    setCompletedFormFields,
-    updateDefaultSettings,
-    resetNewFormSettings,
-  } = backup;
+  const { setCompletedFormFields } = backup;
 
   return {
     setCompletedFormFields,
-    updateDefaultSettings,
-    resetNewFormSettings,
   };
 })(observer(withTranslation(["Settings", "Common"])(AmazonStorage)));

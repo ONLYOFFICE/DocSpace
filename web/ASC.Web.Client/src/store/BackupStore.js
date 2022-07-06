@@ -97,6 +97,8 @@ class BackupStore {
 
     this.selectedEnableSchedule = false;
     this.defaultEnableSchedule = false;
+
+    this.setIsThirdStorageChanged(false);
   };
   get isChanged() {
     if (this.selectedHour !== this.defaultHour) {
@@ -150,6 +152,8 @@ class BackupStore {
     this.selectedStorageId = this.defaultStorageId;
     this.selectedFolderId = this.defaultFolderId;
     this.selectedEnableSchedule = this.defaultEnableSchedule;
+
+    this.setIsThirdStorageChanged(false);
   };
 
   setDefaultOptions = (t, periodObj, weekdayArr) => {
@@ -226,6 +230,8 @@ class BackupStore {
       this.selectedWeekdayLabel = this.defaultWeekdayLabel;
       this.selectedWeekday = this.defaultWeekday;
     }
+
+    this.setIsThirdStorageChanged(false);
   };
 
   setThirdPartyStorage = (list) => {
@@ -487,7 +493,7 @@ class BackupStore {
       }
     }
     this.setErrorsFormFields(errors);
-    console.log("errors", errors, "firstError", firstError);
+
     return !firstError;
   };
 
@@ -496,12 +502,17 @@ class BackupStore {
   };
   setCompletedFormFields = (values, receivedValues = null) => {
     let defaultFormSettings = {};
+    const keys = Object.keys(values);
 
-    const isCorrectFields = receivedValues
-      ? values.length === receivedValues.length
-      : false;
+    const isCorrectFields =
+      receivedValues !== null ? keys.length === receivedValues.length : false;
 
-    console.log("isCorrectFields", values, receivedValues);
+    console.log(
+      "isCorrectFields",
+      isCorrectFields,
+      keys.length,
+      receivedValues?.length
+    );
     if (isCorrectFields) {
       for (let i = 0; i < receivedValues.length; i++) {
         const elem = receivedValues[i].name;

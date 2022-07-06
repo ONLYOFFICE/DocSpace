@@ -1,16 +1,24 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import TextInput from "@appserver/components/text-input";
+import { onChangeTextInput } from "./InputsMethods";
 
 const publicInput = "public_container";
 const privateInput = "private_container";
 class SelectelSettings extends React.Component {
   static formNames = () => {
-    return [publicInput, privateInput];
+    return { public_container: "", private_container: "" };
   };
 
   constructor(props) {
     super(props);
-    const { selectedStorage } = this.props;
+    const {
+      selectedStorage,
+      setRequiredFormSettings,
+      setIsThirdStorageChanged,
+    } = this.props;
+    setIsThirdStorageChanged(false);
+    setRequiredFormSettings([publicInput, privateInput]);
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
 
@@ -21,13 +29,22 @@ class SelectelSettings extends React.Component {
       selectedStorage && selectedStorage.properties[1].title;
   }
 
+  onChangeText = (e) => {
+    const {
+      formSettings,
+      setFormSettings,
+      setIsThirdStorageChanged,
+    } = this.props;
+    const newState = onChangeTextInput(formSettings, e);
+    setIsThirdStorageChanged(true);
+    setFormSettings(newState);
+  };
   render() {
     const {
       formSettings,
-      isError,
+      errorsFieldsBeforeSafe: isError,
       isLoadingData,
       isLoading,
-      onChange,
     } = this.props;
 
     return (
@@ -38,7 +55,7 @@ class SelectelSettings extends React.Component {
           scale={true}
           value={formSettings.private_container}
           hasError={isError?.private_container}
-          onChange={onChange}
+          onChange={this.onChangeText}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.privatePlaceholder || ""}
           tabIndex={1}
@@ -49,7 +66,7 @@ class SelectelSettings extends React.Component {
           scale={true}
           value={formSettings.public_container}
           hasError={isError?.public_container}
-          onChange={onChange}
+          onChange={this.onChangeText}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.publicPlaceholder || ""}
           tabIndex={2}
@@ -58,4 +75,21 @@ class SelectelSettings extends React.Component {
     );
   }
 }
-export default SelectelSettings;
+
+export default inject(({ backup }) => {
+  const {
+    setFormSettings,
+    setRequiredFormSettings,
+    formSettings,
+    errorsFieldsBeforeSafe,
+    setIsThirdStorageChanged,
+  } = backup;
+
+  return {
+    setFormSettings,
+    setRequiredFormSettings,
+    formSettings,
+    errorsFieldsBeforeSafe,
+    setIsThirdStorageChanged,
+  };
+})(observer(SelectelSettings));

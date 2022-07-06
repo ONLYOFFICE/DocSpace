@@ -1,8 +1,9 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import AmazonSettings from "../../../consumer-storage-settings/AmazonSettings";
-import { inject, observer } from "mobx-react";
+
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);

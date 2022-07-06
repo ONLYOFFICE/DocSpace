@@ -1,29 +1,46 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import TextInput from "@appserver/components/text-input";
+import { onChangeTextInput } from "./InputsMethods";
 
 const bucket = "bucket";
 class GoogleCloudSettings extends React.Component {
   static formNames = () => {
-    return [bucket];
+    return { bucket: "" };
   };
 
   constructor(props) {
     super(props);
-    const { selectedStorage } = this.props;
+    const {
+      selectedStorage,
+      setRequiredFormSettings,
+      setIsThirdStorageChanged,
+    } = this.props;
 
+    setRequiredFormSettings([bucket]);
+    setIsThirdStorageChanged(false);
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
 
     this.bucketPlaceholder =
       selectedStorage && selectedStorage.properties[0].title;
   }
 
-  render() {
+  onChangeText = (e) => {
     const {
       formSettings,
-      isError,
+      setFormSettings,
+      setIsThirdStorageChanged,
+    } = this.props;
+    const newState = onChangeTextInput(formSettings, e);
+    setIsThirdStorageChanged(true);
+    setFormSettings(newState);
+  };
+  render() {
+    const {
+      errorsFieldsBeforeSafe: isError,
+      formSettings,
       isLoadingData,
       isLoading,
-      onChange,
     } = this.props;
 
     return (
@@ -34,7 +51,7 @@ class GoogleCloudSettings extends React.Component {
           scale
           value={formSettings.bucket}
           hasError={isError?.bucket}
-          onChange={onChange}
+          onChange={this.onChangeText}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.bucketPlaceholder || ""}
         />
@@ -42,4 +59,21 @@ class GoogleCloudSettings extends React.Component {
     );
   }
 }
-export default GoogleCloudSettings;
+
+export default inject(({ backup }) => {
+  const {
+    setFormSettings,
+    setRequiredFormSettings,
+    formSettings,
+    errorsFieldsBeforeSafe,
+    setIsThirdStorageChanged,
+  } = backup;
+
+  return {
+    setFormSettings,
+    setRequiredFormSettings,
+    formSettings,
+    errorsFieldsBeforeSafe,
+    setIsThirdStorageChanged,
+  };
+})(observer(GoogleCloudSettings));

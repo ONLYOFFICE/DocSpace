@@ -24,6 +24,7 @@ import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 import ButtonContainer from "./sub-components/ButtonContainer";
+
 const {
   DocumentModuleType,
   ResourcesModuleType,
@@ -41,8 +42,6 @@ class AutomaticBackup extends React.PureComponent {
     this.state = {
       isLoadingData: false,
       isInitialLoading: !isMobileOnly ? false : true,
-      isReset: false,
-      isSuccessSave: false,
       isError: false,
     };
 
@@ -185,7 +184,6 @@ class AutomaticBackup extends React.PureComponent {
     const { isError } = this.state;
     const {
       toDefault,
-
       resetStorageSettings,
       isCheckedThirdPartyStorage,
     } = this.props;
@@ -277,7 +275,7 @@ class AutomaticBackup extends React.PureComponent {
       );
 
       console.log("storageParams", storageParams);
-      // return;
+      //return;
       this.createSchedule(
         storageType.toString(),
         storageParams,
@@ -346,6 +344,7 @@ class AutomaticBackup extends React.PureComponent {
         .then(() => {
           deleteSchedule(this.weekdaysLabelArray);
           toastr.success(t("SuccessfullySaveSettingsMessage"));
+
           this.setState({
             isLoadingData: false,
           });
