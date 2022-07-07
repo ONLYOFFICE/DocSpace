@@ -47,7 +47,7 @@ public class FileHandler
 [Scope]
 public class FileHandlerService
 {
-        private readonly ThumbnailSettings _thumbnailSettings;
+    private readonly ThumbnailSettings _thumbnailSettings;
 
     public string FileHandlerPath
     {
@@ -142,7 +142,7 @@ public class FileHandlerService
         _userManager = userManager;
         _logger = logger;
         _clientFactory = clientFactory;
-            this._thumbnailSettings = thumbnailSettings;
+        this._thumbnailSettings = thumbnailSettings;
     }
 
     public Task Invoke(HttpContext context)
@@ -1009,34 +1009,34 @@ public class FileHandlerService
         }
         else
         {
-            await ThumbnailFile(context, q.FirstOrDefault() ?? "");
+            await ThumbnailFileFromThirdparty(context, q.FirstOrDefault() ?? "");
         }
     }
 
-    private async Task ThumbnailFile<T>(HttpContext context, T id)
+    private async Task ThumbnailFile(HttpContext context, int id)
     {
         try
         {
-                var defaultSize = _thumbnailSettings.Sizes.FirstOrDefault();
+            var defaultSize = _thumbnailSettings.Sizes.FirstOrDefault();
 
-                if (defaultSize == null)
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    return;
-                }
+            if (defaultSize == null)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return;
+            }
 
-                var width = defaultSize.Width;
-                var height = defaultSize.Height;
+            var width = defaultSize.Width;
+            var height = defaultSize.Height;
 
-                var size = context.Request.Query["size"].ToString() ?? "";
-                var sizes = size.Split('x');
-                if (sizes.Length == 2)
-                {
-                    _ = int.TryParse(sizes[0], out width);
-                    _ = int.TryParse(sizes[1], out height);
-                }
+            var size = context.Request.Query["size"].ToString() ?? "";
+            var sizes = size.Split('x');
+            if (sizes.Length == 2)
+            {
+                _ = int.TryParse(sizes[0], out width);
+                _ = int.TryParse(sizes[1], out height);
+            }
 
-                var fileDao = _daoFactory.GetFileDao<T>();
+            var fileDao = _daoFactory.GetFileDao<int>();
             var file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
                ? await fileDao.GetFileAsync(id, version)
                : await fileDao.GetFileAsync(id);
@@ -1069,9 +1069,68 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 
-                using (var stream = await fileDao.GetThumbnailAsync(file, width, height))
+            using (var stream = await fileDao.GetThumbnailAsync(file, width, height))
             {
                 context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
+                await stream.CopyToAsync(context.Response.Body);
+            }
+        }
+        catch (FileNotFoundException ex)
+        {
+            _logger.ErrorForUrl(context.Request.Url(), ex);
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            await context.Response.WriteAsync(ex.Message);
+            return;
+        }
+        catch (Exception ex)
+        {
+            _logger.ErrorForUrl(context.Request.Url(), ex);
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            await context.Response.WriteAsync(ex.Message);
+            return;
+        }
+
+        try
+        {
+            await context.Response.Body.FlushAsync();
+            await context.Response.CompleteAsync();
+        }
+        catch (HttpException he)
+        {
+            _logger.ErrorThumbnail(he);
+        }
+    }
+
+    private async Task ThumbnailFileFromThirdparty(HttpContext context, string id)
+    {
+        try
+        {
+            var defaultSize = _thumbnailSettings.Sizes.FirstOrDefault();
+
+            if (defaultSize == null)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return;
+            }
+
+            var width = defaultSize.Width;
+            var height = defaultSize.Height;
+
+            var size = context.Request.Query["size"].ToString() ?? "";
+            var sizes = size.Split('x');
+            if (sizes.Length == 2)
+            {
+                _ = int.TryParse(sizes[0], out width);
+                _ = int.TryParse(sizes[1], out height);
+            }
+            
+            context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
+            context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
+
+            var fileDao = _daoFactory.GetFileDao<string>();
+
+            using (var stream = await fileDao.GetThumbnailAsync(id, width, height))
+            {
                 await stream.CopyToAsync(context.Response.Body);
             }
         }

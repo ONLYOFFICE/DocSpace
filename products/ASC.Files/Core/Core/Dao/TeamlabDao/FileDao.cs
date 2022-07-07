@@ -1470,6 +1470,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
         await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
     }
 
+    public async Task<Stream> GetThumbnailAsync(int fileId, int width, int height)
+    {
+        var file = await GetFileAsync(fileId);
+        return await GetThumbnailAsync(file, width, height);
+    }
+
     public async Task<Stream> GetThumbnailAsync(File<int> file, int width, int height)
     {
         var thumnailName = GetThumnailName(width, height);

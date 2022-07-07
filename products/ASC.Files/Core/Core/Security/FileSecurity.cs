@@ -767,7 +767,8 @@ public class FileSecurity : IFileSecurity
                     {
                         result.Add(e);
                     }
-                    else if (folder != null && folder.FolderType == FolderType.DEFAULT)
+                    else if (folder != null && (folder.RootFolderType == FolderType.VirtualRooms || folder.RootFolderType == FolderType.Archive) &&
+                        folder.FolderType == FolderType.DEFAULT)
                     {
                         result.Add(e);
                     }

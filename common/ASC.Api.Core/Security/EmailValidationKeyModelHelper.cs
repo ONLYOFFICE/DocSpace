@@ -61,7 +61,7 @@ public class EmailValidationKeyModelHelper
         request.TryGetValue("type", out var type);
 
         ConfirmType? cType = null;
-        if (Enum.TryParse<ConfirmType>(type, out var confirmType))
+        if (ConfirmTypeExtensions.TryParse(type, out var confirmType))
         {
             cType = confirmType;
         }
@@ -69,7 +69,7 @@ public class EmailValidationKeyModelHelper
         request.TryGetValue("key", out var key);
 
         request.TryGetValue("emplType", out var emplType);
-        Enum.TryParse<EmployeeType>(emplType, out var employeeType);
+        EmployeeTypeExtensions.TryParse(emplType, out var employeeType);
 
         request.TryGetValue("email", out var _email);
 

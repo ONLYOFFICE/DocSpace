@@ -8,6 +8,7 @@ import { inject, observer } from "mobx-react";
 import Loaders from "@appserver/common/components/Loaders";
 import MainButton from "@appserver/components/main-button";
 import ContextMenuButton from "@appserver/components/context-menu-button";
+import globalColors from "@appserver/components/utils/globalColors";
 
 const StyledComponent = styled.div`
   display: flex;
@@ -155,12 +156,30 @@ const StyledComponent = styled.div`
 `;
 
 const Preview = (props) => {
+  const { selectedColor } = props;
+
+  const [color, setColor] = useState();
+  const globalColors = "globalColors.colorSchemeDefault_";
+
+  useEffect(() => {
+    setColor(globalColors + `${selectedColor}`);
+  }, [selectedColor]);
+
   return (
     <StyledComponent>
       <div className="menu">
-        <Loaders.Rectangle width="211" height="24" className="header" />
+        <Loaders.Rectangle
+          width="211"
+          height="24"
+          className="header"
+          style={{ background: `${color}` }}
+        />
 
-        <MainButton text="Actions" className="main-button-preview" />
+        <MainButton
+          text="Actions"
+          className="main-button-preview"
+          style={{ background: `${color}` }}
+        />
 
         <div className="menu-section">
           <Loaders.Rectangle width="37" height="12" className="title-section" />

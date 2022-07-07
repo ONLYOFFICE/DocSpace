@@ -192,6 +192,7 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
         file.ModifiedOn = boxFile.ModifiedAt.HasValue ? _tenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value.UtcDateTime) : default;
         file.NativeAccessor = boxFile;
         file.Title = MakeFileTitle(boxFile);
+        file.ThumbnailStatus = Thumbnail.Created;
 
         return file;
     }

@@ -15,6 +15,7 @@ const DropDownItem = (props) => {
     onClick,
     className,
     theme,
+    fillIcon,
   } = props;
 
   const onClickAction = (e) => {
@@ -30,7 +31,10 @@ const DropDownItem = (props) => {
     >
       {icon && (
         <IconWrapper>
-          <ReactSVG src={icon} className="drop-down-item_icon" />
+          <ReactSVG
+            src={icon}
+            className={fillIcon ? "drop-down-item_icon" : ""}
+          />
         </IconWrapper>
       )}
       {isSeparator ? "\u00A0" : label ? label : children && children}
@@ -65,6 +69,7 @@ DropDownItem.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Accepts css text-overflow */
   textOverflow: PropTypes.bool,
+  fillIcon: PropTypes.bool,
 };
 
 DropDownItem.defaultProps = {
@@ -75,6 +80,7 @@ DropDownItem.defaultProps = {
   disabled: false,
   noHover: false,
   textOverflow: false,
+  fillIcon: true,
 };
 
 export default DropDownItem;

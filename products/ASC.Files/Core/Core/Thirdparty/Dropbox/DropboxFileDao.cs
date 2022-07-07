@@ -185,6 +185,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         }
 
         //Get only files
+
         var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
         var files = items.Select(item => ToFile(item.AsFile));
 
@@ -546,6 +547,11 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
     public bool UseTrashForRemove(File<string> file)
     {
         return false;
+    }
+
+    public override Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+        return ProviderInfo.GetThumbnailsAsync(_dropboxDaoSelector.ConvertId(fileId), width, height);
     }
 
     #region chunking

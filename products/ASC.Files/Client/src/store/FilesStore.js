@@ -72,6 +72,7 @@ class FilesStore {
   isLoadingFilesFind = false;
   pageItemsLength = null;
   isHidePagination = false;
+  trashIsEmpty = false;
 
   constructor(
     authStore,
@@ -404,12 +405,13 @@ class FilesStore {
     this.folders = folders;
   };
 
-  updateFileStatus = (index, status, file) => {
-    if (index < 0) return;
+  getFileIndex = (id) => {
+    const index = this.files.findIndex((x) => x.id === id);
+    return index;
+  };
 
-    if (file) {
-      this.files[index] = file;
-    }
+  updateFileStatus = (index, status) => {
+    if (index < 0) return;
 
     this.files[index].fileStatus = status;
   };
@@ -505,6 +507,7 @@ class FilesStore {
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
+    this.setFilterUrl(filter);
     this.filter = filter;
 
     runInAction(() => {
@@ -557,6 +560,10 @@ class FilesStore {
     newFilter.page--;
 
     return newFilter;
+  };
+
+  refreshFiles = () => {
+    return this.fetchFiles(this.selectedFolderStore.id, this.filter);
   };
 
   fetchFiles = (
@@ -684,6 +691,9 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
+
+          this.getIsEmptyTrash(); //TODO:
+
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -1491,7 +1501,7 @@ class FilesStore {
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
 
-    const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
+    const iconSize = this.viewAs === "table" ? 24 : 32;
     const icon = extension
       ? getFileIcon(`.${extension}`, iconSize)
       : getFolderIcon(null, iconSize);
@@ -1735,11 +1745,13 @@ class FilesStore {
       other: [],
     };
 
-    const selection = this.selection.length
+    let selection = this.selection.length
       ? this.selection
       : this.bufferSelection
       ? [this.bufferSelection]
       : [];
+
+    selection = JSON.parse(JSON.stringify(selection));
 
     for (let item of selection) {
       item.checked = true;
@@ -1853,6 +1865,13 @@ class FilesStore {
   get isEmptyFilesList() {
     const filesList = [...this.files, ...this.folders];
     return filesList.length <= 0;
+  }
+
+  get hasNew() {
+    const newFiles = [...this.files, ...this.folders].filter(
+      (item) => (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew
+    );
+    return newFiles.length > 0;
   }
 
   get allFilesIsEditing() {
@@ -2080,6 +2099,16 @@ class FilesStore {
 
   setScrollToItem = (item) => {
     this.scrollToItem = item;
+  };
+
+  getIsEmptyTrash = async () => {
+    const res = await api.files.getTrashFolderList();
+    const items = [...res.files, ...res.folders];
+    this.setTrashIsEmpty(items.length === 0 ? true : false);
+  };
+
+  setTrashIsEmpty = (isEmpty) => {
+    this.trashIsEmpty = isEmpty;
   };
 }
 

@@ -32,7 +32,12 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args);
+builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
+{
+    config
+          .AddJsonFile("elastic.json", true)
+          .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
+});
 builder.WebHost.ConfigureDefaultKestrel((hostingContext, serverOptions) =>
 {
     serverOptions.Limits.MaxRequestBodySize = 100 * 1024 * 1024;

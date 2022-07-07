@@ -1461,7 +1461,7 @@ Equipe ONLYOFFICE
     <value>Téléchargez les applications pour travailler sur les documents &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://www.onlyoffice.com/apps.aspx"&gt;en mode déconnecté&lt;/a&gt; aussi bien que sur les appareils &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://itunes.apple.com/us/app/onlyoffice-documents/id944896972"&gt;iOS&lt;/a&gt; et &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://play.google.com/store/apps/details?id=com.onlyoffice.documents"&gt;Android&lt;/a&gt;.</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_apps_hdr" xml:space="preserve">
-    <value>*Téléchargez les applications*</value>
+    <value>*Créez des formulaires à remplir*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_attach" xml:space="preserve">
     <value>Le module Documents est intégré avec d'autres modules ONLYOFFICE pour ne plus avoir à charger et télécharger les documents depuis d'autres endroits</value>
@@ -1479,7 +1479,7 @@ Equipe ONLYOFFICE
     <value>Créez des formulaires à remplir, partagez-les et remplissez-les.</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr" xml:space="preserve">
-    <value>*Créez des formulaires à remplir*</value>
+    <value>*Créez des formulaires d'aspect professionnel*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_differences" xml:space="preserve">
     <value>Identifiez rapidement les différence entre deux versions du même document grâce à l'outil Comparaison des documents.</value>
@@ -1909,7 +1909,7 @@ Le lien est valide pendant 7 jours.</value>
 </value>
   </data>
   <data name="subject_saas_admin_activation_v115" xml:space="preserve">
-    <value>Bienvenue dans ONLYOFFICE cloud!</value>
+    <value>Merci de confirmer votre adresse e-mail</value>
   </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Astuces pour le travail efficace</value>

@@ -1,14 +1,14 @@
-﻿namespace ASC.AuditTrail.Types
+﻿namespace ASC.AuditTrail.Types;
+
+[EnumExtensions]
+public enum ProductType
 {
-    public enum ProductType
-    {
-        None,
-        CRM,
-        Documents,
-        Login,
-        Others,
-        People,
-        Projects,
-        Settings
-    }
+    None,
+    CRM,
+    Documents,
+    Login,
+    Others,
+    People,
+    Projects,
+    Settings
 }

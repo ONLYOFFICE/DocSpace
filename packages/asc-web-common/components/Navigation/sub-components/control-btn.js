@@ -29,6 +29,10 @@ const StyledContainer = styled.div`
     `}
   }
 
+  .add-drop-down {
+    margin-top: 8px;
+  }
+
   .option-button {
     margin-right: 16px;
     min-width: 15px;
@@ -117,6 +121,8 @@ const ControlButtons = ({
               isFill
               getData={getContextOptionsPlus}
               isDisabled={false}
+              usePortal={false}
+              dropDownClassName="add-drop-down"
             />
           )}
           {!personal && (
@@ -151,6 +157,8 @@ const ControlButtons = ({
               isFill
               getData={getContextOptionsPlus}
               isDisabled={false}
+              usePortal={false}
+              dropDownClassName="add-drop-down"
             />
           )}
           {!isDesktop && (

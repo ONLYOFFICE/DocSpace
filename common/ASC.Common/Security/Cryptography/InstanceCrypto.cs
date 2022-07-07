@@ -60,7 +60,7 @@ public class InstanceCrypto
 
     public string Decrypt(string data) => Decrypt(Convert.FromBase64String(data));
 
-    public string Decrypt(byte[] data)
+    public string Decrypt(byte[] data, Encoding encoding = null)
     {
         using var hasher = Aes.Create();
         hasher.Key = _eKey;
@@ -68,7 +68,7 @@ public class InstanceCrypto
 
         using var msDecrypt = new MemoryStream(data);
         using var csDecrypt = new CryptoStream(msDecrypt, hasher.CreateDecryptor(), CryptoStreamMode.Read);
-        using var srDecrypt = new StreamReader(csDecrypt);
+        using var srDecrypt = new StreamReader(csDecrypt, encoding);
 
         // Read the decrypted bytes from the decrypting stream
         // and place them in a string.
