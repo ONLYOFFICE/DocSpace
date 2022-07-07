@@ -55,6 +55,7 @@ public class FirebaseHelper
         _logger = logger;
         _firebaseDao = firebaseDao;
 
+
         var credentials = JsonConvert.SerializeObject(new FirebaseApiKey(_configuration)).Replace("\\\\", "\\");
         var defaultInstance = FirebaseApp.DefaultInstance;
         if (defaultInstance == null)
@@ -64,7 +65,6 @@ public class FirebaseHelper
                 Credential = GoogleCredential.FromJson(credentials)
             });
         }
-        _firebaseDao = firebaseDao;
     }
 
     public void SendMessage(NotifyMessage msg)
@@ -113,5 +113,15 @@ public class FirebaseHelper
                 var result = FirebaseMessaging.DefaultInstance.SendAsync(m).Result;
             }
         }
+    }
+
+    public FireBaseUser RegisterUserDevice(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
+    {
+        return _firebaseDao.RegisterUserDevice(userId, tenantId, fbDeviceToken, isSubscribed, application);
+    }
+
+    public FireBaseUser UpdateUser(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
+    {
+        return _firebaseDao.UpdateUser(userId, tenantId, fbDeviceToken, isSubscribed, application);
     }
 }

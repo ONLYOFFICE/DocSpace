@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using Constants = ASC.Core.Users.Constants;
+using FireBaseUser = ASC.Core.Common.EF.FireBaseUser;
 
 namespace ASC.Web.Api.Controllers.Settings;
 public class SettingsController : BaseSettingsController
@@ -58,6 +59,7 @@ public class SettingsController : BaseSettingsController
     private readonly PasswordHasher _passwordHasher;
     private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
+    private readonly FirebaseHelper _firebaseHelper;
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
 
@@ -90,6 +92,7 @@ public class SettingsController : BaseSettingsController
         ProviderManager providerManager,
         FirstTimeTenantSettings firstTimeTenantSettings,
         TelegramHelper telegramHelper,
+        FirebaseHelper firebaseHelper,
         UrlShortener urlShortener,
         PasswordHasher passwordHasher,
         Constants constants,
@@ -124,6 +127,7 @@ public class SettingsController : BaseSettingsController
         _passwordHasher = passwordHasher;
         _urlShortener = urlShortener;
         _telegramHelper = telegramHelper;
+        _firebaseHelper = firebaseHelper;
         _constants = constants;
         _dnsSettings = dnsSettings;
     }
@@ -690,4 +694,27 @@ public class SettingsController : BaseSettingsController
         _telegramHelper.Disconnect(_authContext.CurrentAccount.ID, Tenant.Id);
     }
 
+    [HttpPost("push/docregisterdevice")]
+    public FireBaseUser DocRegisterPusnNotificationDevice(FirebaseRequestsDto inDto)
+    {
+        return _firebaseHelper.RegisterUserDevice(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
+    }
+
+    [HttpPost("push/projregisterdevice")]
+    public FireBaseUser ProjRegisterPusnNotificationDevice(FirebaseRequestsDto inDto)
+    {
+        return _firebaseHelper.RegisterUserDevice(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
+    }
+
+    [HttpPut("push/docsubscribe")]
+    public FireBaseUser SubscribeDocumentsPushNotification(FirebaseRequestsDto inDto)
+    {
+        return _firebaseHelper.UpdateUser(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
+    }
+
+    [HttpPut("push/projsubscribe")]
+    public FireBaseUser SubscribeProjectsPushNotification(FirebaseRequestsDto inDto)
+    {
+        return _firebaseHelper.UpdateUser(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushProjAppName);
+    }
 }

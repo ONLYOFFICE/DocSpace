@@ -85,7 +85,6 @@ public class FirebaseDao
 
     public FireBaseUser UpdateUser(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
     {
-
         var user = new FireBaseUser
         {
             UserId = userId,
@@ -98,9 +97,7 @@ public class FirebaseDao
         FirebaseDbContext.Update(user);
         FirebaseDbContext.SaveChanges();
      
-
         return user;
     }
-
 
 }
