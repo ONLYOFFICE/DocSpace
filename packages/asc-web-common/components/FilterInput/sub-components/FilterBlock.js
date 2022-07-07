@@ -20,7 +20,6 @@ import {
 import { withTranslation } from "react-i18next";
 import Scrollbar from "@appserver/components/scrollbar";
 
-//TODO: fix translate
 const FilterBlock = ({
   t,
   selectedFilterData,
@@ -38,6 +37,7 @@ const FilterBlock = ({
 
   const [filterData, setFilterData] = React.useState([]);
   const [filterValues, setFilterValues] = React.useState([]);
+  const [clearFilter, setClearFilter] = React.useState(false);
 
   const changeShowSelector = (isAuthor, group) => {
     setShowSelector((val) => {
@@ -83,9 +83,11 @@ const FilterBlock = ({
     setFilterData(items);
   };
 
-  const clearFilter = () => {
+  const onClearFilter = () => {
     changeSelectedItems([]);
     setFilterValues([]);
+    setClearFilter(true);
+    selectedFilterData.filterValues.length > 0 && onFilter && onFilter([]);
   };
 
   const changeFilterValue = (group, key, isSelected, label) => {
@@ -96,6 +98,16 @@ const FilterBlock = ({
 
       setFilterValues(value);
       changeSelectedItems(value);
+
+      const idx = selectedFilterData.filterValues.findIndex(
+        (item) => item.group === group
+      );
+
+      if (idx > -1) {
+        setClearFilter(true);
+        onFilter(value);
+      }
+
       return;
     }
 
@@ -121,41 +133,47 @@ const FilterBlock = ({
   };
 
   React.useEffect(() => {
-    const data = getFilterData();
+    if (!clearFilter) {
+      const data = getFilterData();
 
-    const items = data.filter((item) => item.isHeader === true);
+      const items = data.filter((item) => item.isHeader === true);
 
-    items.forEach((item) => {
-      const groupItem = data.filter(
-        (val) => val.group === item.group && val.isHeader !== true
-      );
+      items.forEach((item) => {
+        const groupItem = data.filter(
+          (val) => val.group === item.group && val.isHeader !== true
+        );
 
-      groupItem.forEach((item) => (item.isSelected = false));
+        groupItem.forEach((item) => (item.isSelected = false));
 
-      item.groupItem = groupItem;
-    });
-
-    if (selectedFilterData.filterValues) {
-      selectedFilterData.filterValues.forEach((value) => {
-        items.forEach((item) => {
-          if (item.group === value.group) {
-            item.groupItem.forEach((groupItem) => {
-              if (groupItem.key === value.key || groupItem.isSelector) {
-                groupItem.isSelected = true;
-                if (groupItem.isSelector) {
-                  groupItem.selectedLabel = value.label;
-                  groupItem.selectedKey = value.key;
-                }
-              }
-            });
-          }
-        });
+        item.groupItem = groupItem;
       });
-    }
 
-    setFilterData(items);
-    setFilterValues(selectedFilterData.filterValues);
-  }, [selectedFilterData, getFilterData]);
+      if (selectedFilterData.filterValues) {
+        selectedFilterData.filterValues.forEach((value) => {
+          items.forEach((item) => {
+            if (item.group === value.group) {
+              item.groupItem.forEach((groupItem) => {
+                if (groupItem.key === value.key || groupItem.isSelector) {
+                  groupItem.isSelected = true;
+                  if (groupItem.isSelector) {
+                    groupItem.selectedLabel = value.label;
+                    groupItem.selectedKey = value.key;
+                  }
+                }
+              });
+            }
+          });
+        });
+      }
+
+      const newFilterValues = selectedFilterData.filterValues.map((value) => ({
+        ...value,
+      }));
+
+      setFilterData(items);
+      setFilterValues(newFilterValues);
+    }
+  }, [selectedFilterData, getFilterData, clearFilter]);
 
   const onFilterAction = () => {
     onFilter && onFilter(filterValues);
@@ -174,6 +192,39 @@ const FilterBlock = ({
 
     changeFilterValue(showSelector.group, items[0].key, false, items[0].label);
   };
+
+  const isEqualFilter = () => {
+    const selectedFilterValues = selectedFilterData.filterValues;
+
+    let isEqual = true;
+
+    if (
+      filterValues.length === 0 ||
+      selectedFilterValues.length > filterValues.length
+    )
+      return !isEqual;
+
+    if (
+      (selectedFilterValues.length === 0 && filterValues.length > 0) ||
+      selectedFilterValues.length !== filterValues.length
+    ) {
+      isEqual = false;
+
+      return !isEqual;
+    }
+
+    filterValues.forEach((value) => {
+      const oldValue = selectedFilterValues.find(
+        (item) => item.group === value.group
+      );
+
+      isEqual = isEqual && oldValue?.key === value.key;
+    });
+
+    return !isEqual;
+  };
+
+  const showFooter = isEqualFilter();
 
   return (
     <>
@@ -208,13 +259,13 @@ const FilterBlock = ({
           </StyledFilterBlock>
         </>
       ) : (
-        <StyledFilterBlock>
+        <StyledFilterBlock showFooter={showFooter}>
           <StyledFilterBlockHeader>
             <Heading size="medium">{contextMenuHeader}</Heading>
             <IconButton
               iconName="/static/images/clear.react.svg"
               isFill={true}
-              onClick={clearFilter}
+              onClick={onClearFilter}
               size={17}
             />
           </StyledFilterBlockHeader>
@@ -237,15 +288,17 @@ const FilterBlock = ({
               })}
             </Scrollbar>
           </div>
-          <StyledFilterBlockFooter>
-            <Button
-              size="normal"
-              primary={true}
-              label={t("AddFilter")}
-              scale={true}
-              onClick={onFilterAction}
-            />
-          </StyledFilterBlockFooter>
+          {showFooter && (
+            <StyledFilterBlockFooter>
+              <Button
+                size="normal"
+                primary={true}
+                label={t("AddFilter")}
+                scale={true}
+                onClick={onFilterAction}
+              />
+            </StyledFilterBlockFooter>
+          )}
 
           <StyledControlContainer onClick={hideFilterBlock}>
             <StyledCrossIcon />

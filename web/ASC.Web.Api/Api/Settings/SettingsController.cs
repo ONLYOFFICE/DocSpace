@@ -258,7 +258,7 @@ public class SettingsController : BaseSettingsController
     [HttpGet("cultures")]
     public IEnumerable<object> GetSupportedCultures()
     {
-        return _setupInfo.EnabledCultures.Select(r => r.Name).ToArray();
+        return _setupInfo.EnabledCultures.Select(r => r.Name).OrderBy(s => s).ToArray();
     }
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]

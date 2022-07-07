@@ -234,12 +234,13 @@ class DownloadDialogComponent extends React.Component {
       isIndeterminate: indeterminateOtherTitle,
     } = this.state.other;
 
-    const isSingleFile =
+    const isCheckedLength =
       documents.filter((f) => f.checked).length +
-        spreadsheets.filter((f) => f.checked).length +
-        presentations.filter((f) => f.checked).length +
-        other.filter((f) => f.checked).length <=
-      1;
+      spreadsheets.filter((f) => f.checked).length +
+      presentations.filter((f) => f.checked).length +
+      other.filter((f) => f.checked).length;
+
+    const isSingleFile = isCheckedLength <= 1;
 
     const downloadContentProps = {
       t,
@@ -318,6 +319,7 @@ class DownloadDialogComponent extends React.Component {
             size="normalTouchscreen"
             primary
             onClick={this.onDownload}
+            isDisabled={isCheckedLength === 0}
             scale
           />
           <Button

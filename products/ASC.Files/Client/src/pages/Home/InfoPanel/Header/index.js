@@ -23,7 +23,7 @@ const InfoPanelHeaderContent = ({ t, setIsVisible, isGallery }) => {
   return (
     <StyledInfoPanelHeader>
       <Text className="header-text" fontSize="21px" fontWeight="700">
-        {isGallery ? t("FormGallery:FormTemplateInfo") : t("Common:Info")}
+        {t("Common:Info")}
       </Text>
       <StyledInfoPanelToggleWrapper
         isRootFolder={true}

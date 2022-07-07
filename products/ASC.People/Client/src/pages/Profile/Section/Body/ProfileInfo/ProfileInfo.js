@@ -406,6 +406,7 @@ class ProfileInfo extends React.PureComponent {
                     isDefaultMode={!isMobileOnly}
                     withBlur={isMobileOnly}
                     fillIcon={false}
+                    offsetLeft={-16}
                   />
                   <HelpButton
                     place="bottom"

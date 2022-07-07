@@ -1247,10 +1247,8 @@ class UploadDataStore {
       (el) => !folderIds.includes(el)
     );
 
-    setTimeout(() => {
-      setActiveFiles(newActiveFiles);
-      setActiveFolders(newActiveFolders);
-    }, TIMEOUT);
+    setActiveFiles(newActiveFiles);
+    setActiveFolders(newActiveFolders);
   };
 
   clearUploadedFilesHistory = () => {
