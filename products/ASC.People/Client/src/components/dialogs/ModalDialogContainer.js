@@ -93,6 +93,25 @@ const ModalDialogContainer = styled(ModalDialog)`
   .heading {
     max-width: calc(100% - 32px);
   }
+
+  .delete-user-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 16px;
+
+    .reassign-data {
+      text-underline-offset: 0.5px;
+    }
+    .delete-user-footer-buttons {
+      width: 100%;
+      flex-direction: row;
+      display: flex;
+      gap: 8px;
+    }
+  }
 `;
 
 ModalDialogContainer.defaultProps = { theme: Base };

@@ -71,7 +71,9 @@ const ConvertDialogComponent = (props) => {
       withFooterCheckboxes
     >
       <ModalDialog.Header>
-        {convertSingleFile ? t("ConvertAndOpenTitle") : t("ConversionTitle")}
+        {convertSingleFile
+          ? t("DocumentConversionTitle")
+          : t("FileUploadTitle")}
       </ModalDialog.Header>
       <ModalDialog.Body>
         {/* <img
@@ -80,9 +82,7 @@ const ConvertDialogComponent = (props) => {
             alt="convert alert"
           /> */}
         <Text>
-          {convertSingleFile
-            ? t("ConversionFileMessage")
-            : t("ConversionMessage")}
+          {convertSingleFile ? t("OpenFileMessage") : t("ConversionMessage")}
         </Text>
       </ModalDialog.Body>
       <ModalDialog.Footer>

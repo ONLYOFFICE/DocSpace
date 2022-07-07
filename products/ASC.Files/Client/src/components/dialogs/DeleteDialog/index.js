@@ -90,28 +90,19 @@ const DeleteDialogComponent = (props) => {
   };
 
   const moveToTrashTitle = () => {
-    if (unsubscribe) {
-      return t("UnsubscribeTitle");
-    } else {
-      if (selection.length > 1) {
-        return t("MoveToTrashItemsTitle");
-      } else {
-        return selection[0]?.isFolder
-          ? t("MoveToTrashOneFolderTitle")
-          : t("MoveToTrashOneFileTitle");
-      }
-    }
+    if (unsubscribe) return t("UnsubscribeTitle");
+    return t("MoveToTrashTitle");
   };
 
   const moveToTrashNoteText = () => {
     if (selection.length > 1) {
-      return t("MoveToTrashItemsNote");
+      return t("MoveToTrashItems");
     } else {
       return !selection[0]?.isFolder
-        ? t("MoveToTrashOneFileNote")
+        ? t("MoveToTrashFile")
         : personal
         ? ""
-        : t("MoveToTrashOneFolderNote");
+        : t("MoveToTrashFolder");
     }
   };
 

@@ -115,12 +115,9 @@ class DeleteGroupUsersDialogComponent extends React.Component {
         onClose={onClose}
         autoMaxHeight
       >
-        <ModalDialog.Header>
-          {t("DeleteGroupUsersMessageHeader")}
-        </ModalDialog.Header>
+        <ModalDialog.Header>{t("DeleteUsers")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <Text>{t("DeleteGroupUsersMessage")}</Text>
-          <Text>{t("Translations:NotBeUndone")}</Text>
+          <Text>{t("DeleteUsersMessage")}</Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
