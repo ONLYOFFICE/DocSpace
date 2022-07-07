@@ -578,7 +578,9 @@ namespace ASC.Employee.Core.Controllers
             //Validate email
             var address = new MailAddress(memberModel.Email);
             user.Email = address.Address;
+
             //Set common fields
+            user.CultureName = memberModel.CultureName;
             user.FirstName = memberModel.Firstname;
             user.LastName = memberModel.Lastname;
             user.Title = memberModel.Title;
