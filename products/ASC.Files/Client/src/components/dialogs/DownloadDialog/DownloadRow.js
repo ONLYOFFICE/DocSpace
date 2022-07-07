@@ -73,6 +73,7 @@ const DownloadRow = (props) => {
           directionY="bottom"
           fontSize="13px"
           fontWeight={600}
+          hasScroll={true}
         >
           {file.format || t("OriginalFormat")}
         </LinkWithDropdown>

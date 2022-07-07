@@ -56,6 +56,8 @@ global using Microsoft.Extensions.Logging;
 
 global using Nest;
 
+global using NetEscapades.EnumGenerators;
+
 global using Newtonsoft.Json;
 
 global using LogLevel = Microsoft.Extensions.Logging.LogLevel;

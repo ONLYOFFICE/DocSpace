@@ -161,7 +161,7 @@ class NewFilesPanel extends React.Component {
         updateFilesBadge();
       }
     } else {
-      updateFolderBadge(+newFilesIds[newFilesIds.length - 1], filesCount);
+      updateFolderBadge(newFilesIds[newFilesIds.length - 1], filesCount);
     }
   };
 

@@ -30,7 +30,12 @@ const StyledRow = styled.div`
   align-content: center;
 
   .row-loader {
-    padding: 15px 12px 12px 0px;
+    padding: 0;
+    margin-left: 9px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    min-width: 32px;
   }
 
   ${(props) =>

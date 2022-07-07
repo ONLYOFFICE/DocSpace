@@ -50,7 +50,7 @@ const StyledFilterBlock = styled.div`
   }
 
   .filter-body {
-    height: calc(100% - 125px);
+    height: ${(props) => (props.showFooter ? "calc(100% - 125px)" : "100%")};
   }
 `;
 

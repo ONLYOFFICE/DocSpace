@@ -26,6 +26,7 @@
 
 namespace ASC.MessagingSystem.Core;
 
+[EnumExtensions]
 public enum MessageAction
 {
     None = -1,
@@ -462,20 +463,20 @@ public enum MessageAction
 
     FolderMarkedAsRead = 5065,
 
-    RoomCreated = 5066,
-    RoomRenamed = 5067,
-    RoomArchived = 5068,
-    RoomUnarchived = 5069,
-    RoomDeleted = 5070,
-    RoomUpdateAccess = 5071,
+    RoomCreated = 5070,
+    RoomRenamed = 5071,
+    RoomArchived = 5072,
+    RoomUnarchived = 5073,
+    RoomDeleted = 5074,
+    RoomUpdateAccess = 5075,
 
-    TagCreated = 5072,
-    TagsDeleted = 5073,
-    AddedRoomTags = 5074,
-    DeletedRoomTags = 5075,
+    TagCreated = 5076,
+    TagsDeleted = 5077,
+    AddedRoomTags = 5078,
+    DeletedRoomTags = 5079,
 
-    RoomLogoCreated = 5076,
-    RoomLogoDeleted = 5077,
+    RoomLogoCreated = 5080,
+    RoomLogoDeleted = 5081,
 
     #endregion
 

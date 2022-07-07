@@ -73,24 +73,22 @@ const FilterInput = React.memo(
           onFilter={onFilter}
           headerLabel={headerLabel}
         />
-        {(isMobile ||
-          isTabletUtils() ||
-          isMobileUtils() ||
-          viewAs === "row") && (
-          <SortButton
-            t={t}
-            selectedFilterData={selectedFilterData}
-            getSortData={getSortData}
-            onChangeViewAs={onChangeViewAs}
-            viewAs={viewAs === "table" ? "row" : viewAs}
-            viewSettings={viewSettings}
-            onSort={onSort}
-            viewSelectorVisible={
-              viewSelectorVisible &&
-              (isMobile || isMobileUtils() || isTabletUtils())
-            }
-          />
-        )}
+        {(isMobile || isTabletUtils() || isMobileUtils() || viewAs === "row") &&
+          !isRecentFolder && (
+            <SortButton
+              t={t}
+              selectedFilterData={selectedFilterData}
+              getSortData={getSortData}
+              onChangeViewAs={onChangeViewAs}
+              viewAs={viewAs === "table" ? "row" : viewAs}
+              viewSettings={viewSettings}
+              onSort={onSort}
+              viewSelectorVisible={
+                viewSelectorVisible &&
+                (isMobile || isMobileUtils() || isTabletUtils())
+              }
+            />
+          )}
         {((viewSettings &&
           !isMobile &&
           viewSelectorVisible &&

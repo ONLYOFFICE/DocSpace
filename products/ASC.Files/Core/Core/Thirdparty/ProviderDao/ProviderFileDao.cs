@@ -57,7 +57,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
         }
 
         return result;
@@ -72,7 +72,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
         }
 
         return result;
@@ -86,7 +86,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
         }
 
         return result;
@@ -101,7 +101,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
         }
 
         return result;
@@ -188,11 +188,11 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         var fileDao = selector.GetFileDao(parentId);
         var files = fileDao.GetFilesAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
-        var result = files.Where(r => r != null);
+        var result = await files.Where(r => r != null).ToListAsync();
 
-        await SetSharedPropertyAsync(result).ConfigureAwait(false);
+        await SetSharedPropertyAsync(result);
 
-        await foreach (var r in result.ConfigureAwait(false))
+        foreach (var r in result)
         {
             yield return r;
         }

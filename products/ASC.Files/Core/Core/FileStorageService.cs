@@ -1089,7 +1089,14 @@ public class FileStorageService<T> //: IFileStorageService
         var file = await fileDao.GetFileAsync(fileId);
         ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-        return await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
+        var result = await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
+
+        foreach (var r in result)
+        {
+            await _entryStatusManager.SetFileStatusAsync(r);
+        }
+
+        return result;
     }
 
     public async Task<KeyValuePair<File<T>, List<File<T>>>> UpdateToVersionAsync(T fileId, int version)
