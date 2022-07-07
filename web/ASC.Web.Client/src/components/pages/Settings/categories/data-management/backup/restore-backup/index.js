@@ -23,6 +23,7 @@ import ThirdPartyStorages from "./sub-components/ThirdPartyStoragesModule";
 import LocalFile from "./sub-components/LocalFileModule";
 import config from "../../../../../../../../package.json";
 import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
+import { getBackupStorage } from "@appserver/common/api/settings";
 
 const {
   DocumentModuleType,
@@ -47,7 +48,7 @@ class RestoreBackup extends React.Component {
       selectedFile: "",
       isStorageFillingError: {},
       isFileSelectedError: false,
-      isInitialLoading: isMobileOnly ? true : false,
+      isInitialLoading: true,
       checkingRecoveryData: false,
     };
 
@@ -63,12 +64,22 @@ class RestoreBackup extends React.Component {
   }
 
   setBasicSettings = async () => {
-    const { getProgress, t, setCommonThirdPartyList } = this.props;
+    const {
+      getProgress,
+      t,
+      setCommonThirdPartyList,
+      setThirdPartyStorage,
+    } = this.props;
 
     try {
       getProgress(t);
+      const [commonThirdPartyList, backupStorage] = await Promise.all([
+        getThirdPartyCommonFolderTree,
+        getBackupStorage(),
+      ]);
 
-      const commonThirdPartyList = await getThirdPartyCommonFolderTree();
+      setThirdPartyStorage(backupStorage);
+
       commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
     } catch (error) {
       toastr.error(error);
@@ -80,7 +91,7 @@ class RestoreBackup extends React.Component {
   };
 
   componentDidMount() {
-    isMobileOnly && this.setBasicSettings();
+    this.setBasicSettings();
   }
 
   componentWillUnmount() {
@@ -156,6 +167,8 @@ class RestoreBackup extends React.Component {
       isCheckedThirdParty,
     } = this.state;
 
+    const { isFormReady } = this.props;
+
     if (isCheckedDocuments || isCheckedThirdParty) {
       if (!selectedFileId) return false;
       return true;
@@ -167,31 +180,7 @@ class RestoreBackup extends React.Component {
     }
 
     if (isCheckedThirdPartyStorage) {
-      let errors = {};
-      let firstError = false;
-
-      for (let key of this.formNames) {
-        const field = this.formSettings[key];
-        if (!field) {
-          if (!firstError) {
-            firstError = true;
-          }
-          errors[key] = true;
-        } else {
-          if (!firstError && !field.trim()) {
-            firstError = true;
-          }
-          errors[key] = !field.trim();
-        }
-      }
-
-      if (firstError) {
-        this.setState({
-          isStorageFillingError: errors,
-        });
-        return false;
-      }
-      return true;
+      return isFormReady();
     }
   };
   onRestoreClick = async () => {
@@ -204,7 +193,7 @@ class RestoreBackup extends React.Component {
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
     } = this.state;
-    const { history, socketHelper } = this.props;
+    const { history, socketHelper, getStorageParams } = this.props;
 
     if (!this.canRestore()) {
       this.setState({
@@ -231,21 +220,7 @@ class RestoreBackup extends React.Component {
       : `${StorageModuleType}`;
 
     if (isCheckedThirdPartyStorage) {
-      storageParams.push({
-        key: "module",
-        value: this.storageId,
-      });
-      let tmpObj = {};
-      const arraySettings = Object.entries(this.formSettings);
-
-      for (let i = 0; i < this.formNames.length; i++) {
-        tmpObj = {
-          key: arraySettings[i][0],
-          value: arraySettings[i][1],
-        };
-
-        storageParams.push(tmpObj);
-      }
+      storageParams = getStorageParams(true, null, this.storageId);
     } else {
       obj.key = "filePath";
       if (isCheckedDocuments || isCheckedThirdParty) {
@@ -283,6 +258,15 @@ class RestoreBackup extends React.Component {
       return;
     }
 
+    console.log(
+      "backupId",
+      backupId,
+      "storageType",
+      storageType,
+      "storageParams",
+      storageParams
+    );
+    return;
     startRestore(backupId, storageType, storageParams, isNotify)
       .then(() => {
         socketHelper.emit({
@@ -511,9 +495,13 @@ export default inject(({ auth, backup }) => {
     clearProgressInterval,
     commonThirdPartyList,
     setCommonThirdPartyList,
+    setThirdPartyStorage,
+    isFormReady,
+    getStorageParams,
   } = backup;
 
   return {
+    setThirdPartyStorage,
     theme,
     clearProgressInterval,
     commonThirdPartyList,
@@ -521,5 +509,7 @@ export default inject(({ auth, backup }) => {
     socketHelper,
     setCommonThirdPartyList,
     getProgress,
+    isFormReady,
+    getStorageParams,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));

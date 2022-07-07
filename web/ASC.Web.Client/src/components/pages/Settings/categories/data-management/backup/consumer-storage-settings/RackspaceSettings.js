@@ -6,6 +6,7 @@ import { onChangeTextInput } from "./InputsMethods";
 const regionInput = "region";
 const publicInput = "public_container";
 const privateInput = "private_container";
+const filePath = "filePath";
 class RackspaceSettings extends React.Component {
   static formNames = () => {
     return { region: "", public_container: "", private_container: "" };
@@ -17,9 +18,17 @@ class RackspaceSettings extends React.Component {
       selectedStorage,
       setRequiredFormSettings,
       setIsThirdStorageChanged,
+      isNeedFilePath,
     } = this.props;
+
     setIsThirdStorageChanged(false);
-    setRequiredFormSettings([regionInput, publicInput, privateInput]);
+    const filePathField = isNeedFilePath ? [filePath] : [];
+    setRequiredFormSettings([
+      regionInput,
+      publicInput,
+      privateInput,
+      ...filePathField,
+    ]);
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
 
@@ -48,6 +57,8 @@ class RackspaceSettings extends React.Component {
       errorsFieldsBeforeSafe: isError,
       isLoadingData,
       isLoading,
+      t,
+      isNeedFilePath,
     } = this.props;
 
     return (
@@ -85,6 +96,19 @@ class RackspaceSettings extends React.Component {
           placeholder={this.regionPlaceholder || ""}
           tabIndex={3}
         />
+        {isNeedFilePath && (
+          <TextInput
+            name="filePath"
+            className="backup_text-input"
+            scale
+            value={formSettings.filePath}
+            onChange={this.onChangeText}
+            isDisabled={isLoadingData || isLoading || this.isDisabled}
+            placeholder={t("Path")}
+            tabIndex={4}
+            hasError={isError?.filePath}
+          />
+        )}
       </>
     );
   }

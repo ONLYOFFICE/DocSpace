@@ -24,6 +24,7 @@ const sseInput = "sse";
 const sse_kms = "ssekms";
 const customKey = "customKey";
 const clientKey = "clientKey";
+const filePath = "filePath";
 
 const StyledBody = styled.div`
   margin-bottom: 16px;
@@ -63,12 +64,14 @@ class AmazonSettings extends React.Component {
       selectedStorage,
       setRequiredFormSettings,
       setIsThirdStorageChanged,
+      isNeedFilePath,
     } = this.props;
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
     console.log("selectedStorage", selectedStorage);
 
-    setRequiredFormSettings([urlInput, bucketInput]); //TODO: add the flexible urlInput or region. customKey, clientKey
+    const filePathField = isNeedFilePath ? [filePath] : [];
+    setRequiredFormSettings([urlInput, bucketInput, ...filePathField]); //TODO: add the flexible urlInput or region. customKey, clientKey
     setIsThirdStorageChanged(false);
 
     this.bucketPlaceholder =
@@ -210,6 +213,7 @@ class AmazonSettings extends React.Component {
       isLoading,
       formSettings,
       t,
+      isNeedFilePath,
     } = this.props;
     const { selectedEncryption, region, managedKeys } = this.state;
     console.log("amazon settings render", isError);
@@ -400,6 +404,19 @@ class AmazonSettings extends React.Component {
               tabIndex={8}
             />
           </>
+        )}
+
+        {isNeedFilePath && (
+          <TextInput
+            name="filePath"
+            className="backup_text-input"
+            scale
+            value={formSettings.filePath}
+            onChange={this.onChangeText}
+            isDisabled={isLoadingData || isLoading || this.isDisabled}
+            placeholder={t("Path")}
+            hasError={isError?.filePath}
+          />
         )}
       </>
     );

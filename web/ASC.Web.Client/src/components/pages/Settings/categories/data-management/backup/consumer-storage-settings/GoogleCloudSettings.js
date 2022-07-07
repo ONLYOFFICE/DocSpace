@@ -4,6 +4,7 @@ import TextInput from "@appserver/components/text-input";
 import { onChangeTextInput } from "./InputsMethods";
 
 const bucket = "bucket";
+const filePath = "filePath";
 class GoogleCloudSettings extends React.Component {
   static formNames = () => {
     return { bucket: "" };
@@ -15,9 +16,10 @@ class GoogleCloudSettings extends React.Component {
       selectedStorage,
       setRequiredFormSettings,
       setIsThirdStorageChanged,
+      isNeedFilePath,
     } = this.props;
-
-    setRequiredFormSettings([bucket]);
+    const filePathField = isNeedFilePath ? [filePath] : [];
+    setRequiredFormSettings([bucket, ...filePathField]);
     setIsThirdStorageChanged(false);
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
 
@@ -41,6 +43,8 @@ class GoogleCloudSettings extends React.Component {
       formSettings,
       isLoadingData,
       isLoading,
+      isNeedFilePath,
+      t,
     } = this.props;
 
     return (
@@ -54,7 +58,22 @@ class GoogleCloudSettings extends React.Component {
           onChange={this.onChangeText}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.bucketPlaceholder || ""}
+          tabIndex={1}
         />
+
+        {isNeedFilePath && (
+          <TextInput
+            name="filePath"
+            className="backup_text-input"
+            scale
+            value={formSettings.filePath}
+            onChange={this.onChangeText}
+            isDisabled={isLoadingData || isLoading || this.isDisabled}
+            placeholder={t("Path")}
+            tabIndex={2}
+            hasError={isError?.filePath}
+          />
+        )}
       </>
     );
   }

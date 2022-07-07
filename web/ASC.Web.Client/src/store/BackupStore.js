@@ -462,6 +462,8 @@ class BackupStore {
 
     if (~index) {
       this.requiredFormSettings[index] = addedValue;
+    } else {
+      this.requiredFormSettings.push(addedValue);
     }
   };
 
@@ -507,12 +509,6 @@ class BackupStore {
     const isCorrectFields =
       receivedValues !== null ? keys.length === receivedValues.length : false;
 
-    console.log(
-      "isCorrectFields",
-      isCorrectFields,
-      keys.length,
-      receivedValues?.length
-    );
     if (isCorrectFields) {
       for (let i = 0; i < receivedValues.length; i++) {
         const elem = receivedValues[i].name;
@@ -527,6 +523,7 @@ class BackupStore {
     }
     this.setFormSettings(defaultFormSettings);
     this.setDefaultFormSettings(defaultFormSettings);
+    this.setErrorsFormFields({});
   };
 
   setIsThirdStorageChanged = (changed) => {

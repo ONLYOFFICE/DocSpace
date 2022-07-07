@@ -5,6 +5,7 @@ import { onChangeTextInput } from "./InputsMethods";
 
 const publicInput = "public_container";
 const privateInput = "private_container";
+const filePath = "filePath";
 class SelectelSettings extends React.Component {
   static formNames = () => {
     return { public_container: "", private_container: "" };
@@ -16,9 +17,12 @@ class SelectelSettings extends React.Component {
       selectedStorage,
       setRequiredFormSettings,
       setIsThirdStorageChanged,
+      isNeedFilePath,
     } = this.props;
+
+    const filePathField = isNeedFilePath ? [filePath] : [];
     setIsThirdStorageChanged(false);
-    setRequiredFormSettings([publicInput, privateInput]);
+    setRequiredFormSettings([publicInput, privateInput, ...filePathField]);
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
 
@@ -45,6 +49,8 @@ class SelectelSettings extends React.Component {
       errorsFieldsBeforeSafe: isError,
       isLoadingData,
       isLoading,
+      isNeedFilePath,
+      t,
     } = this.props;
 
     return (
@@ -71,6 +77,20 @@ class SelectelSettings extends React.Component {
           placeholder={this.publicPlaceholder || ""}
           tabIndex={2}
         />
+
+        {isNeedFilePath && (
+          <TextInput
+            name="filePath"
+            className="backup_text-input"
+            scale
+            value={formSettings.filePath}
+            onChange={this.onChangeText}
+            isDisabled={isLoadingData || isLoading || this.isDisabled}
+            placeholder={t("Path")}
+            tabIndex={3}
+            hasError={isError?.filePath}
+          />
+        )}
       </>
     );
   }
