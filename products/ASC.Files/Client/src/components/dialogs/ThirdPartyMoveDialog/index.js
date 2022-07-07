@@ -34,12 +34,16 @@ const StyledOperationDialog = styled(ModalDialog)`
       svg {
         overflow: visible;
         margin-right: 8px;
-        margin-top: 3px;
       }
 
-      .radio-option-title {
-        font-weight: 600;
-        font-size: 14px;
+      span {
+        display: flex;
+        align-items: center;
+        .radio-option-title {
+          font-weight: 600;
+          font-size: 14px;
+          line-height: 16px;
+        }
       }
     }
   }
@@ -114,14 +118,12 @@ const PureThirdPartyMoveContainer = ({
 
   const radioOptions = [
     {
-      label: (
-        <Text className="radio-option-title">{t("Translations:Move")}</Text>
-      ),
+      label: <Text className="radio-option-title">{t("MoveFileOption")}</Text>,
       value: "move",
     },
     {
       label: (
-        <Text className="radio-option-title">{t("Translations:Copy")}</Text>
+        <Text className="radio-option-title">{t("CreateFileCopyOption")}</Text>
       ),
       value: "copy",
     },
@@ -148,10 +150,6 @@ const PureThirdPartyMoveContainer = ({
       fileIds,
       deleteAfter,
       isCopy,
-      translations: {
-        copy: t("Common:CopyOperation"),
-        move: t("Translations:MoveToOperation"),
-      },
     };
 
     setIsLoading(true);
@@ -183,7 +181,7 @@ const PureThirdPartyMoveContainer = ({
     >
       <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text>{t("MoveConfirmationMessage", { provider: providerTitle })}</Text>
+        <Text>{t("MoveConfirmationAlert", { provider: providerTitle })}</Text>
 
         <div className="select-action-wrapper">
           <Text className="select-action">
