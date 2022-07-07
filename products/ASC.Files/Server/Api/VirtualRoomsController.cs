@@ -202,15 +202,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <param name="id">
     /// Room ID
     /// </param>
+    /// <param name="deleteAfter">
+    /// Delete after finished
+    /// </param>
     /// <returns>
     /// Result of the operation
     /// </returns>
     [HttpDelete("rooms/{id}")]
-    public async Task<FileOperationDto> DeleteRoomAsync(T id)
+    public async Task<FileOperationDto> DeleteRoomAsync(T id, DeleteRoomRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
-        var operationResult = _fileStorageService.DeleteFolder("delete", id, false, true, true)
+        var operationResult = _fileStorageService.DeleteFolder("delete", id, false, inDto.DeleteAfter, true)
             .FirstOrDefault();
 
         return await _fileOperationDtoHelper.GetAsync(operationResult);
