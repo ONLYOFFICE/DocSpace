@@ -46,11 +46,11 @@ namespace ASC.CRM.Mapping
         private readonly CurrencyProvider _currencyProvider;
         private readonly SettingsManager _settingsManager;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeWraperHelper;
         private readonly CrmSecurity _crmSecurity;
 
         public InvoiceItemDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
-                                    EmployeeWraperHelper employeeWraperHelper,
+                                   EmployeeDtoHelper employeeWraperHelper,
                                    CrmSecurity crmSecurity,
                                    SettingsManager settingsManager,
                                    CurrencyProvider currencyProvider,

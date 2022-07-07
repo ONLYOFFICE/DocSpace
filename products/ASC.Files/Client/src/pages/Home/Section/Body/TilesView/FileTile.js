@@ -41,6 +41,7 @@ const FileTile = (props) => {
     onHideContextMenu,
     thumbSize,
     setSelection,
+    id,
   } = props;
 
   const temporaryExtension =
@@ -59,7 +60,7 @@ const FileTile = (props) => {
   );
 
   return (
-    <div ref={props.selectableRef}>
+    <div ref={props.selectableRef} id={id}>
       <DragAndDrop
         data-title={item.title}
         value={value}
@@ -98,11 +99,6 @@ const FileTile = (props) => {
           getContextModel={getContextModel}
           hideContextMenu={onHideContextMenu}
           t={t}
-          title={
-            item.isFolder
-              ? t("Translations:TitleShowFolderActions")
-              : t("Translations:TitleShowActions")
-          }
           showHotkeyBorder={showHotkeyBorder}
           setSelection={setSelection}
         >

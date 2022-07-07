@@ -9,6 +9,8 @@ import GalleryEmptyScreen from "./GalleryEmptyScreen";
 import { StyledInfoRoomBody } from "./styles/styles.js";
 import { Base } from "@appserver/components/themes";
 import EmptyScreen from "./EmptyScreen";
+import withLoader from "../../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
 
 const InfoPanelBodyContent = ({
   t,
@@ -174,7 +176,9 @@ export default inject(
 )(
   withRouter(
     withTranslation(["InfoPanel", "Home", "Common", "Translations"])(
-      observer(InfoPanelBodyContent)
+      withLoader(observer(InfoPanelBodyContent))(
+        <Loaders.InfoPanelBodyLoader isFolder />
+      )
     )
   )
 );

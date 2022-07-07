@@ -16,6 +16,8 @@ const themes = {
   Base: Base,
 };
 
+const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
+
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
@@ -27,7 +29,11 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = Base;
+  theme = isDesktopEditors
+    ? window.RendererProcessVariable?.theme?.type === "dark"
+      ? Dark
+      : Base
+    : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   ipRestrictionEnable = false;
@@ -69,7 +75,7 @@ class SettingsStore {
     guestCaption: "Guest",
     guestsCaption: "Guests",
   };
-  isDesktopClient = window["AscDesktopEditor"] !== undefined;
+  isDesktopClient = isDesktopEditors;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
@@ -119,6 +125,7 @@ class SettingsStore {
 
   tenantStatus = null;
   helpLink = null;
+  hotkeyPanelVisible = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -513,6 +520,10 @@ class SettingsStore {
 
   setIsBurgerLoading = (isBurgerLoading) => {
     this.isBurgerLoading = isBurgerLoading;
+  };
+
+  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
+    this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 }
 

@@ -1,8 +1,8 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
-import { mobile, tablet } from "../utils/device";
+import { mobile, tablet, hugeMobile } from "../utils/device";
 import Scrollbar from "../scrollbar";
-import { isDesktop, isMobile } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
@@ -33,6 +33,7 @@ const StyledTableContainer = styled.div`
 
   .table-container_group-menu,
   .table-container_header {
+    z-index: 200;
     padding: 0 20px;
 
     border-bottom: 1px solid;
@@ -98,7 +99,7 @@ const StyledTableGroupMenu = styled.div`
     height: 60px;
   }
 
-  @media ${mobile} {
+  @media ${mobile}, ${hugeMobile} {
     height: 52px;
   }
 
@@ -140,7 +141,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
   align-items: center;
   align-self: center;
   justify-content: center;
-  margin: 0 20px 0 auto;
+  margin: ${isMobile ? "0 16px 0 auto" : "0 20px 0 auto"};
   height: 100%;
   width: auto;
   padding-left: 20px;

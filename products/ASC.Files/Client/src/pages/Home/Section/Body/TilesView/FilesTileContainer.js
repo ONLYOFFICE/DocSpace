@@ -52,6 +52,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
   }, [firstRef, filesList]);
 
   const onResize = useCallback(() => {
+    if (!firstRef?.current) return;
     const { width } = firstRef.current.getBoundingClientRect();
 
     const size = getThumbSize(width);
@@ -76,6 +77,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
       {filesList.map((item, index) => {
         return index == 0 ? (
           <FileTile
+            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
             sectionWidth={sectionWidth}
@@ -84,6 +86,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
           />
         ) : (
           <FileTile
+            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
             sectionWidth={sectionWidth}

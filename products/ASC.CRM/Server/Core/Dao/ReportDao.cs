@@ -35,10 +35,8 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.CRM.Classes;
@@ -46,16 +44,16 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+using ASC.Files.Core;
 using ASC.VoipService;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
-using ASC.Web.Files.Api;
 
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 
 #endregion
@@ -72,10 +70,10 @@ namespace ASC.CRM.Core.Dao
         private TenantManager _tenantManager;
         private UserManager _userManager;
         private Global _global;
-        private FilesIntegration _filesIntegration;
         private CurrencyInfo _defaultCurrency;
         private TenantUtil _tenantUtil;
         private DaoFactory _daoFactory;
+        private IDaoFactory _daoFilesFactory;
         private DisplayUserSettingsHelper _displayUserSettings;
 
         #region Constructor
@@ -83,8 +81,7 @@ namespace ASC.CRM.Core.Dao
         public ReportDao(DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
-                       FilesIntegration filesIntegration,
-                       IOptionsMonitor<ILog> logger,
+                       ILogger logger,
                        ICache ascCache,
                        TenantUtil tenantUtil,
                        SettingsManager settingsManager,
@@ -93,6 +90,7 @@ namespace ASC.CRM.Core.Dao
                        IServiceProvider serviceProvider,
                        CurrencyProvider currencyProvider,
                        DaoFactory daoFactory,
+                       IDaoFactory daoFilesFactory,
                        DisplayUserSettingsHelper displayUserSettingsHelper,
                        IMapper mapper) :
             base(dbContextManager,
@@ -104,12 +102,12 @@ namespace ASC.CRM.Core.Dao
         {
             _tenantUtil = tenantUtil;
 
-            _filesIntegration = filesIntegration;
             _global = global;
             _userManager = userManager;
             _tenantManager = tenantManager;
             _serviceProvider = serviceProvider;
             _daoFactory = daoFactory;
+            _daoFilesFactory = daoFilesFactory;
 
             var crmSettings = settingsManager.Load<CrmSettings>();
 
@@ -312,13 +310,13 @@ namespace ASC.CRM.Core.Dao
                     var document = _serviceProvider.GetService<Files.Core.File<int>>();
 
                     document.Title = Path.GetFileName(filePath);
-                    document.FolderID = await _daoFactory.GetFileDao().GetRootAsync();
+                    document.ParentId = await _daoFactory.GetFileDao().GetRootAsync();
                     document.ContentLength = stream.Length;
 
 
                     var file = await _daoFactory.GetFileDao().SaveFileAsync(document, stream);
 
-                    SaveFile(file.ID, -1);
+                    SaveFile(file.Id, -1);
 
                     result.Add(file);
                 }
@@ -334,7 +332,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<Files.Core.File<int>> GetFiles(Guid userId)
         {
-            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _daoFilesFactory.GetFileDao<int>();
 
             var fileIds = Query(CrmDbContext.ReportFile).Where(x => x.CreateBy == userId).Select(x => x.FileId).ToArray();
 
@@ -363,7 +361,7 @@ namespace ASC.CRM.Core.Dao
             var exist = Query(CrmDbContext.ReportFile)
                         .Any(x => x.CreateBy == userId && x.FileId == fileid);
 
-            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _daoFilesFactory.GetFileDao<int>();
 
             return exist ? filedao.GetFileAsync(fileid).Result : null;
 
@@ -374,7 +372,7 @@ namespace ASC.CRM.Core.Dao
             var exist = await Query(CrmDbContext.ReportFile)
                         .AnyAsync(x => x.CreateBy == userId && x.FileId == fileid);
 
-            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _daoFilesFactory.GetFileDao<int>();
 
             return exist ? await filedao.GetFileAsync(fileid) : null;
 
@@ -387,7 +385,7 @@ namespace ASC.CRM.Core.Dao
             CrmDbContext.Remove(itemToDelete);
             CrmDbContext.SaveChanges();
 
-            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _daoFilesFactory.GetFileDao<int>();
 
             filedao.DeleteFileAsync(fileid).Wait();
         }
@@ -401,7 +399,7 @@ namespace ASC.CRM.Core.Dao
             CrmDbContext.Remove(itemToDelete);
             CrmDbContext.SaveChanges();
 
-            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _daoFilesFactory.GetFileDao<int>();
 
             foreach (var fileId in fileIds)
             {

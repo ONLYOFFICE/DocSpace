@@ -103,6 +103,7 @@ const StyledSimpleFilesRow = styled(Row)`
     `
     & > div:last-child {
         width: 0px;
+        overflow: hidden;
       }
   `}
 
@@ -220,6 +221,7 @@ const SimpleFilesRow = (props) => {
     isAdmin,
     getContextModel,
     showHotkeyBorder,
+    id,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
@@ -231,6 +233,7 @@ const SimpleFilesRow = (props) => {
 
   return (
     <StyledWrapper
+      id={id}
       className={`row-wrapper ${
         showHotkeyBorder
           ? "row-hotkey-border"
@@ -252,6 +255,7 @@ const SimpleFilesRow = (props) => {
           data={item}
           isEdit={isEdit}
           element={element}
+          mode={"modern"}
           sectionWidth={sectionWidth}
           contentElement={isSmallContainer ? null : quickButtonsComponent}
           onSelect={onContentFileSelect}

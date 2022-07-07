@@ -61,7 +61,7 @@ namespace ASC.CRM.ApiModels
                 Title = "Programmer",
                 About = "",
                 Created = ApiDateTime.GetSample(),
-                CreateBy = EmployeeWraper.GetSample(),
+                CreateBy = EmployeeDto.GetSample(),
                 ShareType = ShareType.None
             };
         }
@@ -118,7 +118,7 @@ namespace ASC.CRM.ApiModels
         }
 
         public IEnumerable<Address> Addresses { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
+        public EmployeeDto CreateBy { get; set; }
         public ApiDateTime Created { get; set; }
         public String About { get; set; }
         public String Industry { get; set; }
@@ -142,7 +142,7 @@ namespace ASC.CRM.ApiModels
                 Title = "Programmer",
                 About = "",
                 Created = ApiDateTime.GetSample(),
-                CreateBy = EmployeeWraper.GetSample(),
+                CreateBy = EmployeeDto.GetSample(),
                 CommonData = new List<ContactInfoDto>() { ContactInfoDto.GetSample() },
                 CustomFields = new List<CustomFieldBaseDto>() { CustomFieldBaseDto.GetSample() },
                 ShareType = ShareType.None,
@@ -226,7 +226,7 @@ namespace ASC.CRM.ApiModels
         public String MediumFotoUrl { get; set; }
         public String DisplayName { get; set; }
         public bool IsCompany { get; set; }
-        public IEnumerable<EmployeeWraper> AccessList { get; set; }
+        public IEnumerable<EmployeeDto> AccessList { get; set; }
         public bool IsPrivate { get; set; }
         public bool IsShared { get; set; }
         public ShareType ShareType { get; set; }

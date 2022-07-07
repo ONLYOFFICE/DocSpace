@@ -31,7 +31,9 @@ const FilesMediaViewer = (props) => {
     expandedKeys,
     setScrollToItem,
     setCurrentId,
-    setSelection,
+    setBufferSelection,
+    mediaViewerAudioFormats,
+    isFavoritesFolder,
   } = props;
 
   useEffect(() => {
@@ -126,7 +128,7 @@ const FilesMediaViewer = (props) => {
           setIsLoading(false);
           setFirstLoad(false);
           setScrollToItem({ id: previewFile.id, type: "file" });
-          setSelection([previewFile]);
+          setBufferSelection(previewFile);
           setToPreviewFile(null);
         });
     }
@@ -142,11 +144,13 @@ const FilesMediaViewer = (props) => {
 
       setScrollToItem({ id: currentMediaFileId, type: "file" });
       const targetFile = files.find((item) => item.id === currentMediaFileId);
-      if (targetFile) setSelection([targetFile]);
+      if (targetFile) setBufferSelection(targetFile);
 
       window.history.replaceState(null, null, url);
     }
   };
+
+  const mediaFormats = [...mediaViewerMediaFormats, ...mediaViewerAudioFormats];
 
   return (
     visible && (
@@ -163,11 +167,12 @@ const FilesMediaViewer = (props) => {
         onClose={onMediaViewerClose}
         onEmptyPlaylistError={onMediaViewerClose}
         deleteDialogVisible={deleteDialogVisible}
-        extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
+        extsMediaPreviewed={mediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
         errorLabel={t("Translations:MediaLoadError")}
         isPreviewFile={!!previewFile}
         onChangeUrl={onChangeUrl}
+        isFavoritesFolder={isFavoritesFolder}
       />
     )
   );
@@ -189,7 +194,7 @@ export default inject(
       setIsLoading,
       setFirstLoad,
       setScrollToItem,
-      setSelection,
+      setBufferSelection,
     } = filesStore;
     const {
       visible,
@@ -201,8 +206,12 @@ export default inject(
       setCurrentId,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { extsVideo, extsImage } = settingsStore;
-    const { expandedKeys, setExpandedKeys } = treeFoldersStore;
+    const { extsVideo, extsImage, extsAudio } = settingsStore;
+    const {
+      expandedKeys,
+      setExpandedKeys,
+      isFavoritesFolder,
+    } = treeFoldersStore;
 
     return {
       files,
@@ -214,6 +223,7 @@ export default inject(
       setMediaViewerData,
       mediaViewerImageFormats: extsImage,
       mediaViewerMediaFormats: extsVideo,
+      mediaViewerAudioFormats: extsAudio,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
       fetchFiles,
@@ -225,7 +235,8 @@ export default inject(
       expandedKeys,
       setScrollToItem,
       setCurrentId,
-      setSelection,
+      setBufferSelection,
+      isFavoritesFolder,
     };
   }
 )(

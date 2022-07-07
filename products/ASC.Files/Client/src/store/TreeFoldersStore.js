@@ -63,8 +63,14 @@ class TreeFoldersStore {
   };
 
   updateRootBadge = (id, count) => {
-    const rootItem = this.treeFolders.find((x) => x.id === id);
-    if (rootItem) rootItem.newItems -= count;
+    const index = this.treeFolders.findIndex((x) => x.id === id);
+    if (index < 0) return;
+
+    this.treeFolders = this.treeFolders.map((f, i) => {
+      if (i !== index) return f;
+      f.newItems -= count;
+      return f;
+    });
   };
 
   isMy = (myType) => myType === FolderType.USER;
@@ -131,6 +137,13 @@ class TreeFoldersStore {
     return (
       this.favoritesFolder &&
       this.selectedFolderStore.id === this.favoritesFolder.id
+    );
+  }
+
+  get isTrashFolder() {
+    return (
+      this.recycleBinFolder &&
+      this.selectedFolderStore.id === this.recycleBinFolder.id
     );
   }
 

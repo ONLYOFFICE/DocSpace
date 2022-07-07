@@ -39,7 +39,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
@@ -51,13 +50,13 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
-using ASC.Web.Files.Api;
+using ASC.Files.Core;
 
 using MailKit.Net.Smtp;
 using MailKit.Security;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using MimeKit;
 
@@ -72,7 +71,7 @@ namespace ASC.Web.CRM.Classes
     public class SendBatchEmailsOperation : DistributedTaskProgress, IProgressItem, IDisposable
     {
         private bool _storeInHistory;
-        private readonly ILog _log;
+        private readonly ILogger _log;
         private readonly SMTPServerSetting _smtpSetting;
         private readonly Guid _currUser;
         private readonly int _tenantID;
@@ -84,7 +83,7 @@ namespace ASC.Web.CRM.Classes
         private double _exactPercentageValue = 0;
 
         private DaoFactory _daoFactory;
-        private FilesIntegration _filesIntegration;
+        private IDaoFactory _daoFilesFactory;
         private AuthManager _authManager;
         private UserManager _userManager;
         private TenantManager _tenantManager;
@@ -99,16 +98,15 @@ namespace ASC.Web.CRM.Classes
 
         public SendBatchEmailsOperation(
               TenantUtil tenantUtil,
-              IOptionsMonitor<ILog> logger,
-              Global global,
+              ILogger logger,
               SecurityContext securityContext,
               TenantManager tenantManager,
               UserManager userManager,
               AuthManager authManager,
               SettingsManager settingsManager,
               DaoFactory daoFactory,
-              CoreConfiguration coreConfiguration,
-              FilesIntegration filesIntegration
+              IDaoFactory daoFilesFactory,
+              CoreConfiguration coreConfiguration
              )
         {
             _tenantUtil = tenantUtil;
@@ -116,9 +114,9 @@ namespace ASC.Web.CRM.Classes
 
             Percentage = 0;
 
-            _log = logger.Get("ASC.CRM.MailSender");
+            _log = logger;
 
-            _tenantID = tenantManager.GetCurrentTenant().TenantId;
+            _tenantID = tenantManager.GetCurrentTenant().Id;
 
             var _crmSettings = settingsManager.Load<CrmSettings>();
 
@@ -128,8 +126,8 @@ namespace ASC.Web.CRM.Classes
             _authManager = authManager;
             _userManager = userManager;
             _daoFactory = daoFactory;
+            _daoFilesFactory = daoFilesFactory;
             _tenantManager = tenantManager;
-            _filesIntegration = filesIntegration;
         }
 
 
@@ -213,7 +211,7 @@ namespace ASC.Web.CRM.Classes
 
                 var from = new MailboxAddress(_smtpSetting.SenderDisplayName, _smtpSetting.SenderEmailAddress);
                 var filePaths = new List<string>();
-                var fileDao = _filesIntegration.DaoFactory.GetFileDao<int>();
+                var fileDao = _daoFilesFactory.GetFileDao<int>();
 
                 foreach (var fileID in _fileID)
                 {
@@ -298,7 +296,7 @@ namespace ASC.Web.CRM.Classes
 
                         mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
 
-                        _log.Debug(GetLoggerRow(mimeMessage));
+                        _log.LogDebug(GetLoggerRow(mimeMessage));
 
                         var success = false;
 
@@ -310,7 +308,7 @@ namespace ASC.Web.CRM.Classes
                         }
                         catch (SmtpCommandException ex)
                         {
-                            _log.Error(Error, ex);
+                            _log.LogError(ex.ToString());
 
                             Error += string.Format(CRMCommonResource.MailSender_FailedDeliverException, recipientEmail) + "<br/>";
                         }
@@ -344,7 +342,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (OperationCanceledException)
                 {
-                    _log.Debug("cancel mail sender");
+                    _log.LogDebug("cancel mail sender");
                 }
                 finally
                 {
@@ -364,7 +362,7 @@ namespace ASC.Web.CRM.Classes
             catch (SocketException e)
             {
                 Error = e.Message;
-                _log.Error(Error);
+                _log.LogError(e.ToString());
             }
             finally
             {
@@ -414,14 +412,14 @@ namespace ASC.Web.CRM.Classes
         {
             if (_fileID == null || _fileID.Count == 0) return;
 
-            var fileDao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var fileDao = _daoFilesFactory.GetFileDao<int>();
 
             foreach (var fileID in _fileID)
             {
                 var fileObj = fileDao.GetFileAsync(fileID);
                 if (fileObj == null) continue;
 
-                fileDao.DeleteFileAsync(fileObj.Result.ID).Wait();
+                fileDao.DeleteFileAsync(fileObj.Result.Id).Wait();
             }
 
         }
@@ -448,7 +446,7 @@ namespace ASC.Web.CRM.Classes
         {
             IsCompleted = true;
             Percentage = 100;
-            _log.Debug("Completed");
+            _log.LogDebug("Completed");
         }
 
         public override bool Equals(object obj)
@@ -481,24 +479,24 @@ namespace ASC.Web.CRM.Classes
         private readonly SendBatchEmailsOperation _sendBatchEmailsOperation;
         private readonly int _tenantID;
         private readonly CoreConfiguration _coreConfiguration;
-        private readonly IOptionsMonitor<ILog> _logManager;
+        private readonly ILogger _logger;
 
 
         public MailSender(
                           IConfiguration configuration,
                           TenantManager tenantManager,
                           SettingsManager settingsManager,
-                          DistributedTaskQueueOptionsManager progressQueueOptionsManager,
+                          IDistributedTaskQueueFactory factory,
                           SendBatchEmailsOperation sendBatchEmailsOperation,
                           CoreConfiguration coreConfiguration,
-                          IOptionsMonitor<ILog> logger
+                          ILogger logger
             )
         {
             _sendBatchEmailsOperation = sendBatchEmailsOperation;
-            _tenantID = tenantManager.GetCurrentTenant().TenantId;
-            _mailQueue = progressQueueOptionsManager.Get<SendBatchEmailsOperation>();
+            _tenantID = tenantManager.GetCurrentTenant().Id;
+            _mailQueue = factory.CreateQueue<SendBatchEmailsOperation>();
             _coreConfiguration = coreConfiguration;
-            _logManager = logger;
+            _logger = logger;
 
             int parsed;
 
@@ -522,11 +520,11 @@ namespace ASC.Web.CRM.Classes
         {
             lock (_syncObj)
             {
-                var operation = _mailQueue.GetTasks<SendBatchEmailsOperation>().FirstOrDefault(x => Convert.ToInt32(x.Id) == _tenantID);
+                var operation = _mailQueue.GetAllTasks<SendBatchEmailsOperation>().FirstOrDefault(x => Convert.ToInt32(x.Id) == _tenantID);
 
                 if (operation != null && operation.IsCompleted)
                 {
-                    _mailQueue.RemoveTask(operation.Id);
+                    _mailQueue.DequeueTask(operation.Id);
                     operation = null;
                 }
 
@@ -549,7 +547,7 @@ namespace ASC.Web.CRM.Classes
 
                     _sendBatchEmailsOperation.Configure(fileID, contactID, subject, bodyTemplate, storeInHistory);
 
-                    _mailQueue.QueueTask(_sendBatchEmailsOperation);
+                    _mailQueue.EnqueueTask(_sendBatchEmailsOperation);
                 }
 
                 return operation;
@@ -576,8 +574,6 @@ namespace ASC.Web.CRM.Classes
 
         public void StartSendTestMail(string recipientEmail, string mailSubj, string mailBody)
         {
-            var log = _logManager.Get("ASC.CRM.MailSender");
-
             if (!recipientEmail.TestEmailRegex())
             {
                 throw new Exception(string.Format(CRMCommonResource.MailSender_InvalidEmail, recipientEmail));
@@ -618,14 +614,14 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (Exception ex)
                 {
-                    log.Error(ex);
+                    _logger.LogError(ex.ToString());
                 }
             });
         }
 
         public IProgressItem GetStatus()
         {
-            var findedItem = _mailQueue.GetTasks<SendBatchEmailsOperation>().FirstOrDefault(x => Convert.ToInt32(x.Id) == _tenantID);
+            var findedItem = _mailQueue.GetAllTasks<SendBatchEmailsOperation>().FirstOrDefault(x => Convert.ToInt32(x.Id) == _tenantID);
 
             return findedItem;
         }
@@ -634,11 +630,11 @@ namespace ASC.Web.CRM.Classes
         {
             lock (_syncObj)
             {
-                var findedItem = _mailQueue.GetTasks<SendBatchEmailsOperation>().FirstOrDefault(x => Convert.ToInt32(x.Id) == _tenantID);
+                var findedItem = _mailQueue.GetAllTasks<SendBatchEmailsOperation>().FirstOrDefault(x => Convert.ToInt32(x.Id) == _tenantID);
 
                 if (findedItem == null) return;
 
-                _mailQueue.RemoveTask(findedItem.Id);
+                _mailQueue.DequeueTask(findedItem.Id);
 
             }
         }

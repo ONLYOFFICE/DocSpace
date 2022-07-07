@@ -466,7 +466,6 @@ const Form = (props) => {
                 <div className="remember-wrapper">
                   <Checkbox
                     className="login-checkbox"
-                    isLogin={true}
                     isChecked={isChecked}
                     onChange={onChangeCheckbox}
                     label={t("Remember")}

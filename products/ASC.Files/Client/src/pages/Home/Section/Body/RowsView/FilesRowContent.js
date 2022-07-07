@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { isMobile, isTablet } from "react-device-detect";
+import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
@@ -121,18 +121,18 @@ const FilesRowContent = ({
           {badgesComponent}
           {quickButtons}
         </div>
-        {!!fileExst && (
-          <Text
-            containerMinWidth="200px"
-            containerWidth="15%"
-            fontSize="12px"
-            fontWeight={400}
-            // color={sideColor}
-            className="row_update-text"
-          >
-            {updatedDate && updatedDate}
-          </Text>
-        )}
+
+        <Text
+          containerMinWidth="200px"
+          containerWidth="15%"
+          fontSize="12px"
+          fontWeight={400}
+          // color={sideColor}
+          className="row_update-text"
+        >
+          {updatedDate && updatedDate}
+        </Text>
+
         <Text
           containerMinWidth="90px"
           containerWidth="10%"
@@ -143,8 +143,10 @@ const FilesRowContent = ({
           title=""
           truncate={true}
         >
-          {!fileExst && !contentLength && !providerKey
+          {!fileExst && !contentLength && !providerKey && !isMobileOnly
             ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
+            : fileExst
+            ? `${fileExst.toUpperCase().replace(/^\./, "")}`
             : ""}
         </Text>
       </SimpleFilesRowContent>

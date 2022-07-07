@@ -25,13 +25,23 @@ const CampaignsBanner = (props) => {
   return (
     <BannerWrapper>
       <a href={link} target="_blank" rel="noreferrer">
-        <Text fontWeight="700" fontSize="13px">
+        <Text noSelect fontWeight="700" fontSize="13px">
           {headerLabel}
         </Text>
-        <Text className="banner-sub-header" fontWeight="500" fontSize="12px">
+        <Text
+          noSelect
+          className="banner-sub-header"
+          fontWeight="500"
+          fontSize="12px"
+        >
           {subHeaderLabel}
         </Text>
-        <img src={img} onMouseDown={onMouseDown} onLoad={handleImageLoaded} />
+        <img
+          className="banner-img"
+          src={img}
+          onMouseDown={onMouseDown}
+          onLoad={handleImageLoaded}
+        />
         {!imageLoad && <Loaders.Rectangle height="140px" borderRadius="5px" />}
       </a>
 

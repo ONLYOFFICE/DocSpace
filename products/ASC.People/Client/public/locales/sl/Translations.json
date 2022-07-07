@@ -1,6 +1,7 @@
 {
   "AddMembers": "Dodaj člane",
   "Birthdate": "Datum rojstva",
+  "DeleteUserDataConfirmation": "Uporabniški dokumenti v skupni rabi z drugimi bodo izbrisani. Da bi se temu izognili, znova dodelite podatke.",
   "DeleteSelfProfile": "Izbriši profil",
   "DisableUserButton": "Onemogoči",
   "DisabledEmployeeStatus": "Onemogočeno",

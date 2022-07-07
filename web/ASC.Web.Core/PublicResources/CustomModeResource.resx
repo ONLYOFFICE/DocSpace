@@ -154,20 +154,6 @@ The link is valid for 7 days.
 
 Don’t want to change your email? Just ignore this message.</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
-    <value>There has been a request to change your password used to enter the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
-
-Please follow the link below to change your password:
-
-$GreenButton
-
-*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-
-If you do not want to change your password or received this email by mistake, please ignore it.
-
-Sincerely,
-ONLYOFFICE team</value>
-  </data>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Hello,
 
@@ -223,12 +209,6 @@ The deletion of personal data allowed to free:
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Welcome to ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Connect your favorite cloud storage to ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
-    <value>ONLYOFFICE Personal password assistance</value>
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Please activate your email address</value>

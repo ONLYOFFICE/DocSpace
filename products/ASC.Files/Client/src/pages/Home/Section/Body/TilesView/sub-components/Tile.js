@@ -151,6 +151,7 @@ const StyledTile = styled.div`
       !props.dragging &&
       props.isDesktop &&
       !props.inProgress &&
+      !isMobile &&
       css`
         .checkbox {
           opacity: 1;
@@ -162,6 +163,10 @@ const StyledTile = styled.div`
           display: none;
         }
       `}
+  }
+
+  .new-items {
+    min-width: 16px;
   }
 `;
 
@@ -373,13 +378,23 @@ class Tile extends React.PureComponent {
 
   onFileClick = (e) => {
     const { onSelect, item, checked, setSelection } = this.props;
-    if (e.detail === 1) {
-      if (e.target.nodeName === "INPUT" || e.target.nodeName === "rect") {
-        onSelect && onSelect(!checked, item);
-      } else {
+
+    if (
+      e.detail === 1 &&
+      !e.target.closest(".badge") &&
+      !e.target.closest(".item-file-name")
+    ) {
+      if (
+        e.target.nodeName !== "IMG" &&
+        e.target.nodeName !== "INPUT" &&
+        e.target.nodeName !== "rect" &&
+        e.target.nodeName !== "path" &&
+        e.target.nodeName !== "svg"
+      ) {
         setSelection && setSelection([]);
-        onSelect && onSelect(!checked, item);
       }
+
+      onSelect && onSelect(!checked, item);
     }
   };
 
@@ -400,10 +415,10 @@ class Tile extends React.PureComponent {
       inProgress,
       isEdit,
       contentElement,
-      title,
       getContextModel,
       showHotkeyBorder,
       hideContextMenu,
+      t,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -442,6 +457,10 @@ class Tile extends React.PureComponent {
       icon: children[0].props.item.icon,
       title: children[0].props.item.title,
     };
+
+    const title = item.isFolder
+      ? t("Translations:TitleShowFolderActions")
+      : t("Translations:TitleShowActions");
 
     return (
       <StyledTile
@@ -492,6 +511,7 @@ class Tile extends React.PureComponent {
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
               {FilesTileContent}
+              {badges}
             </StyledContent>
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (

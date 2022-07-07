@@ -65,7 +65,6 @@ const FilterInput = React.memo(
           onChange={onSearch}
           onClearSearch={onClearSearch}
         />
-
         <FilterButton
           t={t}
           selectedFilterData={selectedFilterData}
@@ -74,38 +73,34 @@ const FilterInput = React.memo(
           onFilter={onFilter}
           headerLabel={headerLabel}
         />
-
-        {(viewSettings &&
+        {(isMobile || isTabletUtils() || isMobileUtils() || viewAs === "row") &&
+          !isRecentFolder && (
+            <SortButton
+              t={t}
+              selectedFilterData={selectedFilterData}
+              getSortData={getSortData}
+              onChangeViewAs={onChangeViewAs}
+              viewAs={viewAs === "table" ? "row" : viewAs}
+              viewSettings={viewSettings}
+              onSort={onSort}
+              viewSelectorVisible={
+                viewSelectorVisible &&
+                (isMobile || isMobileUtils() || isTabletUtils())
+              }
+            />
+          )}
+        {((viewSettings &&
           !isMobile &&
           viewSelectorVisible &&
           !isMobileUtils() &&
-          !isTabletUtils() &&
-          viewAs !== "row") ||
-        isRecentFolder ? (
+          !isTabletUtils()) ||
+          isRecentFolder) && (
           <ViewSelector
             style={{ marginLeft: "8px" }}
             onChangeView={onChangeViewAs}
             viewAs={viewAs === "table" ? "row" : viewAs}
             viewSettings={viewSettings}
           />
-        ) : (
-          <>
-            {(isMobile ||
-              isTabletUtils() ||
-              isMobileUtils() ||
-              viewAs === "row") && (
-              <SortButton
-                t={t}
-                selectedFilterData={selectedFilterData}
-                getSortData={getSortData}
-                onChangeViewAs={onChangeViewAs}
-                viewAs={viewAs === "table" ? "row" : viewAs}
-                viewSettings={viewSettings}
-                onSort={onSort}
-                viewSelectorVisible={viewSelectorVisible}
-              />
-            )}
-          </>
         )}
       </StyledFilterInput>
     );

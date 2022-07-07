@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "Silin",
   "Department": "Şöbə",
+  "Disconnect": "Bağlantını kəs",
   "Documents": "Sənədlər",
   "DomainIpAddress": "IP ünvan kimi domen dəstəklənmir",
   "Download": "Endirin",
@@ -76,6 +77,7 @@
   "EncryptionFilePreparing": "Fayl şifrələnmə üçün hazırlanır",
   "EncryptionKeysReload": "Şifrələmə düymələri yenidən daxil edilməlidir",
   "Error": "Səhv",
+  "ErrorInternalServer": "Daxili server xətası. Daha sonra yenidən cəhd edin.",
   "FillFormButton": "Formu doldurun",
   "FullAccess": "Tam giriş",
   "Guest": "Qonaq",
@@ -165,5 +167,6 @@
   "Video": "Video",
   "View": "Baxın",
   "ViewWeb": "Veb versiyaya baxın",
-  "Warning": "Xəbərdarlıq"
+  "Warning": "Xəbərdarlıq",
+  "Hotkeys": "Qısayollar"
 }

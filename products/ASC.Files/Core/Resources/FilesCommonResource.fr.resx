@@ -133,6 +133,9 @@
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Restaurée à partir de la modification du document de {0}</value>
   </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Formulaire soumis</value>
+  </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Chargée</value>
   </data>
@@ -173,7 +176,7 @@
     <value>Le fichier est ouvert pour l'édition par {0}. Actuellement, la coédition n'est pas prise en charge pour ce type de fichier.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>Le fichier est verrouillé pour modification dans une application mobile par {0}</value>
+    <value>Le fichier est ouvert pour modification dans une application mobile par {0}</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
     <value>Fichier vide</value>

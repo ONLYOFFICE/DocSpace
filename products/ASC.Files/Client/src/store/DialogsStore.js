@@ -7,6 +7,7 @@ class DialogsStore {
   treeFoldersStore;
   filesStore;
   selectedFolderStore;
+  versionHistoryStore;
 
   sharingPanelVisible = false;
   ownerPanelVisible = false;
@@ -25,7 +26,6 @@ class DialogsStore {
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   isFolderActions = false;
-  hotkeyPanelVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -39,13 +39,20 @@ class DialogsStore {
   convertItem = null;
   formCreationInfo = null;
 
-  constructor(authStore, treeFoldersStore, filesStore, selectedFolderStore) {
+  constructor(
+    authStore,
+    treeFoldersStore,
+    filesStore,
+    selectedFolderStore,
+    versionHistoryStore
+  ) {
     makeAutoObservable(this);
 
     this.treeFoldersStore = treeFoldersStore;
     this.filesStore = filesStore;
     this.selectedFolderStore = selectedFolderStore;
     this.authStore = authStore;
+    this.versionHistoryStore = versionHistoryStore;
   }
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -219,10 +226,6 @@ class DialogsStore {
     });
   };
 
-  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
-    this.hotkeyPanelVisible = hotkeyPanelVisible;
-  };
-
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -240,7 +243,8 @@ class DialogsStore {
       this.conflictResolveDialogVisible ||
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
-      this.hotkeyPanelVisible
+      this.authStore.settingsStore.hotkeyPanelVisible ||
+      this.versionHistoryStore.isVisible
     );
   }
 

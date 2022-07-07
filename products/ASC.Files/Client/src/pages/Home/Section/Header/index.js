@@ -4,40 +4,19 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import Headline from "@appserver/common/components/Headline";
-import { FilterType, FileAction } from "@appserver/common/constants";
+import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
-import { isMobile, isMobileOnly } from "react-device-detect";
-import ContextMenuButton from "@appserver/components/context-menu-button";
+import { isMobile, isTablet } from "react-device-detect";
 import DropDownItem from "@appserver/components/drop-down-item";
-import IconButton from "@appserver/components/icon-button";
-import { tablet, desktop, mobile } from "@appserver/components/utils/device";
+import { tablet } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import Navigation from "@appserver/common/components/Navigation";
+import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const StyledContainer = styled.div`
-  /* padding: 0 0 15px;
-
-  @media ${tablet} {
-    padding: 0 0 17px;
-  }
-
-  ${isMobile &&
-  css`
-    padding: 0 0 17px;
-  `}
-
-  @media ${mobile} {
-    padding: 0 0 13px;
-  }
-
-  ${isMobileOnly &&
-  css`
-    padding: 0 0 13px;
-  `} */
-
   .table-container_group-menu {
     ${(props) =>
       props.viewAs === "table"
@@ -56,12 +35,6 @@ const StyledContainer = styled.div`
     }
 
     ${isMobile &&
-    css`
-      margin: 0 -16px;
-      width: calc(100% + 32px);
-    `}
-
-    ${isMobileOnly &&
     css`
       margin: 0 -16px;
       width: calc(100% + 32px);
@@ -96,6 +69,17 @@ class SectionHeaderContent extends React.Component {
     setSelectFileDialogVisible(true);
   };
 
+  onShowGallery = () => {
+    const { history, currentFolderId } = this.props;
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/form-gallery/${currentFolderId}/`
+      )
+    );
+  };
+
   createFolder = () => this.onCreate();
 
   uploadToFolder = () => console.log("Upload To Folder click");
@@ -123,15 +107,31 @@ class SectionHeaderContent extends React.Component {
         icon: "images/actions.presentation.react.svg",
       },
       {
-        label: t("Translations:NewForm"),
         icon: "images/form.react.svg",
-        onClick: this.createForm,
-      },
-      {
-        label: t("Translations:NewFormFile"),
-        onClick: this.createFormFromFile,
-        disabled: isPrivacyFolder,
-        icon: "images/form.file.react.svg",
+        label: t("Translations:NewForm"),
+        key: "new-form-base",
+        items: [
+          {
+            key: "new-form",
+            label: t("Translations:SubNewForm"),
+            icon: "images/form.blank.react.svg",
+            onClick: this.createForm,
+          },
+          {
+            key: "new-form-file",
+            label: t("Translations:SubNewFormFile"),
+            icon: "images/form.file.react.svg",
+            onClick: this.createFormFromFile,
+            disabled: isPrivacyFolder,
+          },
+          {
+            key: "oforms-gallery",
+            label: t("Common:OFORMsGallery"),
+            icon: "images/form.gallery.react.svg",
+            onClick: this.onShowGallery,
+            disabled: isPrivacyFolder || (isMobile && isTablet),
+          },
+        ],
       },
       {
         key: "new-folder",
@@ -139,14 +139,14 @@ class SectionHeaderContent extends React.Component {
         onClick: this.createFolder,
         icon: "images/catalog.folder.react.svg",
       },
-      { key: "separator", isSeparator: true },
+      /*{ key: "separator", isSeparator: true },
       {
         key: "upload-to-folder",
         label: t("UploadToFolder"),
         onClick: this.uploadToFolder,
         disabled: true,
         icon: "images/actions.upload.react.svg",
-      },
+      },*/
     ];
   };
 
@@ -235,7 +235,7 @@ class SectionHeaderContent extends React.Component {
     return [
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         onClick: this.onOpenSharingPanel,
         disabled: personal ? true : false,
         icon: "/static/images/share.react.svg",
@@ -483,14 +483,16 @@ export default inject(
 
     const { toggleIsVisible, isVisible } = auth.infoPanelStore;
 
+    const { title, id, pathParts, navigationPath } = selectedFolderStore;
+
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
-      isRootFolder: selectedFolderStore.parentId === 0,
-      title: selectedFolderStore.title,
-      currentFolderId: selectedFolderStore.id,
-      pathParts: selectedFolderStore.pathParts,
-      navigationPath: selectedFolderStore.navigationPath,
+      isRootFolder: pathParts?.length === 1,
+      title,
+      currentFolderId: id,
+      pathParts: pathParts,
+      navigationPath: navigationPath,
       canCreate,
       toggleInfoPanel: toggleIsVisible,
       isInfoPanelVisible: isVisible,
@@ -535,7 +537,11 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Home", "Common", "Translations", "InfoPanel"])(
-    withRouter(observer(SectionHeaderContent))
-  )
+  withTranslation([
+    "Home",
+    "Common",
+    "Translations",
+    "InfoPanel",
+    "SharingPanel",
+  ])(withRouter(observer(SectionHeaderContent)))
 );

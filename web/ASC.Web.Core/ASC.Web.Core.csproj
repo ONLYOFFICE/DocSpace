@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -122,6 +123,9 @@
     <EmbeddedResource Update="PublicResources\NamingPeopleResource.zh-CN.resx">
       <DependentUpon>NamingPeopleResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.az.resx">
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="PublicResources\Resource.Designer.cs">
@@ -199,6 +203,9 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\Resource.zh-CN.resx">
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.az.resx">
       <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -280,6 +287,9 @@
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.zh-CN.resx">
       <DependentUpon>UserControlsCommonResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\UserControlsCommonResource.az.resx">
+      <DependentUpon>UserControlsCommonResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="PublicResources\WebstudioNotifyPatternResource.Designer.cs">
@@ -290,7 +300,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebstudioNotifyPatternResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.ru.resx">
@@ -350,6 +360,9 @@
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.zh-CN.resx">
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.az.resx">
+      <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="PublicResources\CustomModeResource.Designer.cs">
@@ -396,6 +409,9 @@
     <EmbeddedResource Update="PublicResources\CustomModeResource.zh-CN.resx">
       <DependentUpon>CustomModeResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.az.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\sms_key_cache_key.proto" />
@@ -405,8 +421,8 @@
     <Protobuf Include="protos\user_photo_manager_cache_item.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GoogleAuthenticator" Version="2.4.1" />
-    <PackageReference Include="Grpc.Tools" Version="2.43.0">
+    <PackageReference Include="GoogleAuthenticator" Version="2.5.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.45.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

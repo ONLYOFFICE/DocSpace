@@ -40,6 +40,7 @@ const SectionBodyContent = (props) => {
     scrollToItem,
     setScrollToItem,
     filesList,
+    uploaded,
   } = props;
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
+    window.addEventListener("beforeunload", onBeforeunload);
     window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
@@ -60,6 +62,7 @@ const SectionBodyContent = (props) => {
     document.addEventListener("drop", onDropEvent);
 
     return () => {
+      window.removeEventListener("beforeunload", onBeforeunload);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mousemove", onMouseMove);
@@ -68,15 +71,13 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
     };
-  }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
+  }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs, uploaded]);
 
   useEffect(() => {
     if (scrollToItem) {
       const { type, id } = scrollToItem;
 
-      const targetElement = document.querySelector(
-        `div[value='${type}_${id}_draggable']`
-      );
+      const targetElement = document.getElementById(`${type}_${id}`);
 
       if (!targetElement) return;
 
@@ -84,18 +85,25 @@ const SectionBodyContent = (props) => {
 
       if (!isInViewport || viewAs === "table") {
         const bodyScroll = isMobileOnly
-          ? document.querySelector("#customScrollBar > div")
+          ? document.querySelector("#customScrollBar > .scroll-body")
           : document.querySelector(".section-scroll");
 
         const count =
           filesList.findIndex((elem) => elem.id === scrollToItem.id) *
-          (isMobileOnly ? 57 : 48);
+          (isMobileOnly ? 57 : viewAs === "table" ? 40 : 48);
 
         bodyScroll.scrollTo(0, count);
       }
       setScrollToItem(null);
     }
   }, [scrollToItem]);
+
+  const onBeforeunload = (e) => {
+    if (!uploaded) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  };
 
   const onMouseDown = (e) => {
     if (
@@ -266,6 +274,7 @@ export default inject(
     selectedFolderStore,
     treeFoldersStore,
     filesActionsStore,
+    uploadDataStore,
   }) => {
     const {
       fileActionStore,
@@ -307,6 +316,7 @@ export default inject(
       scrollToItem,
       setScrollToItem,
       filesList,
+      uploaded: uploadDataStore.uploaded,
     };
   }
 )(

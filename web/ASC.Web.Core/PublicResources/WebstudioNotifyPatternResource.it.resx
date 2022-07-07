@@ -227,19 +227,6 @@ Cordiali saluti,
 Il team di supporto ONLYOFFICE®
 [www.onlyoffice.com](http://onlyoffice.com/)</value>
   </data>
-  <data name="pattern_change_password" xml:space="preserve">
-    <value>h1.Richiesta modifica password per il portale "${__VirtualRootPath}":"${__VirtualRootPath}" 
-
-È stata richiesta una modifica della password utilizzata per accedere al portale "${__VirtualRootPath}":"${__VirtualRootPath}"
-
-Si prega di andare sul link qui sotto per completare la procedura:
-
-$GreenButton
-
-*Nota*: questo collegamento è valido solo per 7 giorni. Completare il processo di modifica della password entro tale periodo.
-
-Se non desideri modificare la tua password o non abbia ricevuto questa email per errore, ignora o contatta il tuo amministratore del portale "${__VirtualRootPath}":${__VirtualRootPath} per scoprire i dettagli.</value>
-  </data>
   <data name="pattern_change_phone" xml:space="preserve">
     <value>h1.Richiesta cambio numero di cellulare
 
@@ -399,7 +386,7 @@ Otterrai più consigli su come usare il tuo web-office. Puoi cancellare le sotto
   <data name="pattern_enterprise_user_activation_v10" xml:space="preserve">
     <value>Salve, $UserName!
 
-$__AuthorName ti ha invitato a unirti all'ufficio web sicuro e protetto della tua azienda che migliorerebbe la tua collaborazione. Il suo indirizzo è "${__VirtualRootPath}":"${__VirtualRootPath}".
+Sei invitato a unirti all'ufficio web sicuro e protetto creato dalla tua azienda per migliorare la collaborazione. Il suo indirizzo è "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Accetta l'invito facendo clic sul collegamento:
 
@@ -444,15 +431,15 @@ Otterrai più consigli su come usare il tuo web-office. Puoi cancellare le sotto
   <data name="pattern_enterprise_whitelabel_user_activation_v10" xml:space="preserve">
     <value>Salve, $UserName!
 
-$__AuthorName ti ha invitato a unirti all'ufficio web sicuro e protetto della tua azienda che migliorerebbe la tua collaborazione. Il suo indirizzo è "${__VirtualRootPath}":"${__VirtualRootPath}".
+$__AuthorName ti ha invitato a unirti all'ufficio web sicuro e protetto creato dalla tua azienda per migliorare la collaborazione. L'indirizzo è "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-Accetta l'invito facendo clic sul collegamento:
+Accetta l'invito cliccando il link:
 
 $GreenButton
 
 Il collegamento è valido solo per 7 giorni.
 
-Riceverai ulteriori suggerimenti su come utilizzare il nostro ufficio. Puoi annullare gli abbonamenti sulla pagina del tuo profilo in qualsiasi momento e riattivarli.</value>
+Riceverai ulteriori suggerimenti su come utilizzare il nostro ufficio. Puoi annullare gli abbonamenti sulla pagina del tuo profilo in qualsiasi momento così come riattivarli.</value>
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Messaggio dal portale "${__VirtualRootPath}":"${__VirtualRootPath}"
@@ -711,20 +698,6 @@ Interessato? Ulteriori informazioni su "ONLYOFFICE for business":"http://www.onl
 
 Cordiali saluti,
 il team ONLYOFFICE</value>
-  </data>
-  <data name="pattern_personal_change_password" xml:space="preserve">
-    <value>È stata richiesta la modifica della password utilizzata per accedere al portale "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Si prega di seguire il link sottostante per cambiare la password:
-
-$GreenButton
-
-*Nota*: questo link sarà valido solo per 7 giorni. Si prega di completare la procedura di modifica della password entro nel periodo richiesto.
-
-Se non si desidera modificare la password o aver ricevuto questa email per errore, ignorarla.
-
-Cordiali saluti,
-il Team ONLYOFFICE</value>
   </data>
   <data name="pattern_personal_confirmation" xml:space="preserve">
     <value>Salve,
@@ -1026,6 +999,32 @@ Cordiali saluti,
 Team di ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Salve!
+
+Sei invitato a unirti a "${__VirtualRootPath}":"${__VirtualRootPath}" come utente ospite. Accetta l'invito cliccando il link:
+
+$GreenButton
+
+Ti invieremo anche consigli utili e le ultime notizie su ONLYOFFICE ogni tanto. Puoi annullare gli abbonamenti sulla pagina del tuo profilo in qualsiasi momento così come riattivarli.
+
+Tanti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v115" xml:space="preserve">
+    <value>Salve!
+
+Sei invitato a unirti a ONLYOFFICE via "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando il link:
+
+$GreenButton
+
+Ti invieremo anche consigli utili e le ultime notizie su ONLYOFFICE ogni tanto. Puoi annullare gli abbonamenti sulla pagina del tuo profilo in qualsiasi momento così come riattivarli.
+
+Tanti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
   <data name="pattern_saas_user_welcome_v115" xml:space="preserve">
     <value>Ciao, $UserName!
 
@@ -1118,9 +1117,6 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_change_email_v115" xml:space="preserve">
     <value>‎Confermare la modifica della dell'indirizzo di posta elettronica‎</value>
-  </data>
-  <data name="subject_change_password" xml:space="preserve">
-    <value>${LetterLogoText} Password di assistenza</value>
   </data>
   <data name="subject_change_phone" xml:space="preserve">
     <value>${LetterLogoText}. Richiesta cambio cellulare</value>
@@ -1263,9 +1259,6 @@ il team di ONLYOFFICE</value>
   <data name="subject_personal_after_registration7" xml:space="preserve">
     <value>Collega il tuo cloud storage preferito a ONLYOFFICE</value>
   </data>
-  <data name="subject_personal_change_password" xml:space="preserve">
-    <value>ONLYOFFICE Personal assistenza per password</value>
-  </data>
   <data name="subject_personal_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Si prega di attivare il tuo indirizzo email</value>
   </data>
@@ -1344,8 +1337,14 @@ il team di ONLYOFFICE</value>
   <data name="subject_saas_admin_welcome_v115" xml:space="preserve">
     <value>Benvenuti in ONLYOFFICE!</value>
   </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Unisciti a ${__VirtualRootPath}</value>
+  </data>
   <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
     <value>‎Benvenuti nel vostro ONLYOFFICE‎</value>
+  </data>
+  <data name="subject_saas_user_activation_v115" xml:space="preserve">
+    <value>Unisciti a ${__VirtualRootPath}</value>
   </data>
   <data name="subject_saas_user_welcome_v115" xml:space="preserve">
     <value>‎Benvenuti nel vostro ONLYOFFICE‎</value>
