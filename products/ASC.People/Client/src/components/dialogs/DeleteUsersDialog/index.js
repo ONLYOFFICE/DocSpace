@@ -121,23 +121,6 @@ class DeleteGroupUsersDialogComponent extends React.Component {
         <ModalDialog.Body>
           <Text>{t("DeleteGroupUsersMessage")}</Text>
           <Text>{t("Translations:NotBeUndone")}</Text>
-          <br />
-          <Text
-            color={theme.peopleDialogs.deleteUser.textColor}
-            fontSize="18px"
-          >
-            {t("Common:Warning")}!
-          </Text>
-          <br />
-          <Text>{t("DeleteUserDataConfirmation")}</Text>
-          <ToggleContent
-            className="toggle-content-dialog"
-            label={t("Common:ShowUsersList")}
-          >
-            <div style={containerStyles} className="modal-dialog-content">
-              <AutoSizer>{renderList}</AutoSizer>
-            </div>
-          </ToggleContent>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button

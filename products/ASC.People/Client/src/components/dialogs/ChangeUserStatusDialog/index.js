@@ -137,14 +137,6 @@ class ChangeUserStatusDialogComponent extends React.Component {
             })}
           </Text>
           <Text>{t("ChangeUserStatusDialogMessage")}</Text>
-          <ToggleContent
-            className="toggle-content-dialog"
-            label={t("Common:ShowUsersList")}
-          >
-            <div style={containerStyles} className="modal-dialog-content">
-              <AutoSizer>{renderList}</AutoSizer>
-            </div>
-          </ToggleContent>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
