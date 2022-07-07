@@ -104,19 +104,21 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return Selectors.FirstOrDefault(selector => selector.IsMatch(id));
         }
 
-        protected async Task SetSharedPropertyAsync(IAsyncEnumerable<FileEntry<string>> entries)
+        protected async Task SetSharedPropertyAsync(IEnumerable<FileEntry<string>> entries)
         {
             var pureShareRecords = await SecurityDao.GetPureShareRecordsAsync(entries);
             var ids = pureShareRecords
                 //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
                 .Select(x => x.EntryId).Distinct();
 
-            foreach(var id in ids)
+            foreach (var id in ids)
             {
-                var firstEntry = await entries.FirstOrDefaultAsync(y => y.ID.Equals(id));
+                var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
 
                 if (firstEntry != null)
+                {
                     firstEntry.Shared = true;
+                }
             }
         }
 

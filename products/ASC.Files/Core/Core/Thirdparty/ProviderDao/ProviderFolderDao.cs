@@ -62,11 +62,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
         private async Task<Folder<string>> InternalGetFolderAsync(string folderId, IDaoSelector selector)
         {
             var folderDao = selector.GetFolderDao(folderId);
-            var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId)).ConfigureAwait(false);
+            var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId));
 
             if (result != null)
             {
-                await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+                await SetSharedPropertyAsync(new[] { result });
             }
 
             return result;
@@ -105,11 +105,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(parentId);
             var folderDao = selector.GetFolderDao(parentId);
             var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders);
-            var result = folders.Where(r => r != null);
+            var result = await folders.Where(r => r != null).ToListAsync();
 
-            await SetSharedPropertyAsync(result).ConfigureAwait(false);
+            await SetSharedPropertyAsync(result);
 
-            await foreach (var r in result.ConfigureAwait(false))
+            foreach (var r in result)
             {
                 yield return r;
             }
