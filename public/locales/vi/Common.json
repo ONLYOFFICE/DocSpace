@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "Xóa bỏ",
   "Department": "Phòng",
+  "Disconnect": "Ngắt kết nối",
   "Documents": "Các tài liệu",
   "DomainIpAddress": "Các tên miền dưới dạng địa chỉ IP không được hỗ trợ",
   "Download": "Tải xuống",
@@ -76,6 +77,7 @@
   "EncryptionFilePreparing": "Đang chuẩn bị tệp để mã hóa",
   "EncryptionKeysReload": "Phải nhập lại các khóa mã hóa",
   "Error": "Lỗi",
+  "ErrorInternalServer": "Lỗi server nội bộ. Thử lại sau.",
   "FillFormButton": "Điền vào mẫu",
   "FullAccess": "Toàn quyền truy cập",
   "Guest": "Khách",
@@ -165,5 +167,6 @@
   "Video": "Video",
   "View": "Xem",
   "ViewWeb": "Xem phiên bản web",
-  "Warning": "Cảnh báo"
+  "Warning": "Cảnh báo",
+  "Hotkeys": "Phím tắt"
 }

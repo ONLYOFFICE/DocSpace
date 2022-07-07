@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "Delete",
   "Department": "Department",
+  "Disconnect": "Disconnect",
   "Documents": "Documents",
   "DomainIpAddress": "Domains as IP address are not supported",
   "Download": "Download",
@@ -76,6 +77,7 @@
   "EncryptionFilePreparing": "Preparing file for encryption",
   "EncryptionKeysReload": "Encryption keys must be re-entered",
   "Error": "Error",
+  "ErrorInternalServer": "Internal server error. Try again later.",
   "FillFormButton": "Fill in the form",
   "FullAccess": "Full access",
   "Guest": "Guest",
@@ -165,5 +167,6 @@
   "Video": "Video",
   "View": "View",
   "ViewWeb": "View web version",
-  "Warning": "Warning"
+  "Warning": "Warning",
+  "Hotkeys": "Hotkeys"
 }

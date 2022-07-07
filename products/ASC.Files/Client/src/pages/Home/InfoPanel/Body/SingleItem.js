@@ -75,11 +75,16 @@ const SingleItem = (props) => {
         </Text>
       );
 
+      const replaceUnicode = (str) => {
+        const regex = /&#([0-9]{1,4});/gi;
+        return str
+          ? str.replace(regex, (match, numStr) => String.fromCharCode(+numStr))
+          : "...";
+      };
+
       const parseAndFormatDate = (date) => {
         const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
-
         const correctDate = getCorrectDate(locale, date);
-
         return correctDate;
       };
 
@@ -119,9 +124,9 @@ const SingleItem = (props) => {
           id: "Owner",
           title: t("Common:Owner"),
           content: personal
-            ? styledText(item.createdBy?.displayName)
+            ? styledText(replaceUnicode(item.createdBy?.displayName))
             : styledLink(
-                item.createdBy?.displayName,
+                replaceUnicode(item.createdBy?.displayName),
                 item.createdBy?.profileUrl
               ),
         },
@@ -149,9 +154,9 @@ const SingleItem = (props) => {
           id: "LastModifiedBy",
           title: t("LastModifiedBy"),
           content: personal
-            ? styledText(item.updatedBy?.displayName)
+            ? styledText(replaceUnicode(item.updatedBy?.displayName))
             : styledLink(
-                item.updatedBy?.displayName,
+                replaceUnicode(item.updatedBy?.displayName),
                 item.updatedBy?.profileUrl
               ),
         },
@@ -161,6 +166,9 @@ const SingleItem = (props) => {
           content: styledText(parseAndFormatDate(item.created)),
         },
       ];
+
+      if (item.providerKey && item.isFolder)
+        result = result.filter((x) => x.id !== "Size");
 
       if (dontShowOwner) result.shift();
       if (item.isFolder) return result;

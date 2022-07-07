@@ -49,5 +49,8 @@
     <EmbeddedResource Update="BackupResource.tr.resx">
       <DependentUpon>BackupResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="BackupResource.az.resx">
+      <DependentUpon>BackupResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

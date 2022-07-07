@@ -28,7 +28,6 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -63,6 +62,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void OnMessage(NotifyItem item)
         {
             using var scope = ServiceProvider.CreateScope();
+
             var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
             commonLinkUtilitySettings.ServerUri = item.BaseUrl;
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
@@ -144,7 +144,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 WorkContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }
-        }      
+        }
 
         public void SendSaasTariffLetters(DateTime scheduleDate)
         {

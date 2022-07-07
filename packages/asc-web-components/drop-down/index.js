@@ -62,7 +62,7 @@ class DropDown extends React.PureComponent {
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open) {
       if (this.props.open) {
-        !isMobile && this.props.enableOnClickOutside(); //fixed main-button-mobile click, remove !isMobile if have dd problem
+        this.props.enableOnClickOutside(); //fixed main-button-mobile click, remove !isMobile if have dd problem
         this.bindDocumentResizeListener();
         if (this.props.isDefaultMode) {
           return this.checkPositionPortal();
@@ -163,7 +163,7 @@ class DropDown extends React.PureComponent {
 
     const rects = parent.current.getBoundingClientRect();
 
-    let dropDownHeight = this.dropDownRef.current.offsetParent
+    let dropDownHeight = this.dropDownRef.current?.offsetParent
       ? this.dropDownRef.current.offsetHeight
       : DomHelpers.getHiddenElementOuterHeight(this.dropDownRef.current);
 
@@ -190,7 +190,7 @@ class DropDown extends React.PureComponent {
       this.dropDownRef.current.style.left =
         rects.right - this.dropDownRef.current.clientWidth + "px";
     } else {
-      this.dropDownRef.current.style.left = left + "px";
+      this.dropDownRef.current.style.left = left + this.props.offsetLeft + "px";
     }
 
     this.dropDownRef.current.style.top = this.props.top || bottom + "px";
@@ -255,6 +255,8 @@ class DropDown extends React.PureComponent {
         directionX={directionX}
         directionY={directionY}
         manualY={manualY}
+        isExternalLink={this.props.isExternalLink}
+        isPersonal={this.props.isPersonal}
         {...dropDownMaxHeightProp}
       >
         {maxHeight ? (
@@ -295,7 +297,7 @@ class DropDownContainer extends React.Component {
   };
   render() {
     const { withBackdrop = true, withBlur = false, open } = this.props;
-    const eventTypesProp = isMobile ? { eventTypes: ["touchend"] } : {};
+    const eventTypesProp = isMobile ? { eventTypes: ["click"] } : {};
 
     return (
       <>
@@ -320,6 +322,8 @@ class DropDownContainer extends React.Component {
 DropDown.propTypes = {
   disableOnClickOutside: PropTypes.func,
   enableOnClickOutside: PropTypes.func,
+  isExternalLink: PropTypes.bool,
+  isPersonal: PropTypes.bool,
 };
 
 DropDownContainer.propTypes = {
@@ -362,6 +366,8 @@ DropDownContainer.propTypes = {
   fixedDirection: PropTypes.bool,
   /**Enable blur for backdrop */
   withBlur: PropTypes.bool,
+
+  offsetLeft: PropTypes.number,
 };
 
 DropDownContainer.defaultProps = {
@@ -371,6 +377,7 @@ DropDownContainer.defaultProps = {
   showDisabledItems: false,
   isDefaultMode: true,
   fixedDirection: false,
+  offsetLeft: 0,
 };
 
 export default DropDownContainer;

@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "Удалить",
   "Department": "Отдел",
+  "Disconnect": "Отключить",
   "Documents": "Документы",
   "DomainIpAddress": "IP адрес в качестве домена не поддерживается",
   "Download": "Скачать",
@@ -76,6 +77,7 @@
   "EncryptionFilePreparing": "Подготовка файла к шифрованию",
   "EncryptionKeysReload": "Ключи шифрования необходимо ввести повторно",
   "Error": "Ошибка",
+  "ErrorInternalServer": "Внутренняя ошибка сервера. Повторите попытку позже.",
   "FillFormButton": "Заполнить форму",
   "FullAccess": "Полный доступ",
   "Guest": "Гость",
@@ -165,5 +167,6 @@
   "Video": "Видео",
   "View": "Просмотр",
   "ViewWeb": "Просмотреть веб-версию",
-  "Warning": "Внимание"
+  "Warning": "Внимание",
+  "Hotkeys": "Горячие клавиши"
 }

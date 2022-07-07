@@ -15,7 +15,7 @@ const InvalidError = () => {
 
   const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 
-  const { t } = useTranslation();
+  const { t } = useTranslation("Errors");
 
   setTimeout(() => (location.href = PROXY_HOMEPAGE_URL), 10000);
 

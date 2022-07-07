@@ -98,7 +98,7 @@ class SelectFolderDialog extends React.Component {
 
   componentWillUnmount() {
     const { setFolderTitle, setProviderKey, setFolderId } = this.props;
-    console.log("componentWillUnmount");
+    //console.log("componentWillUnmount");
 
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();

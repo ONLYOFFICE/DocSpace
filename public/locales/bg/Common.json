@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "Изтрий",
   "Department": "Отдел",
+  "Disconnect": "Прекъсни връзката",
   "Documents": "Документи",
   "DomainIpAddress": "Домейни като IP адрес не се поддържат",
   "Download": "Изтегли",
@@ -76,6 +77,7 @@
   "EncryptionFilePreparing": "Подготвяне на файла за криптиране",
   "EncryptionKeysReload": "Криптиращите ключове трябва да се въведат отново",
   "Error": "Грешка",
+  "ErrorInternalServer": "Вътрешна грешка на сървъра. Опитайте отново по-късно.",
   "FillFormButton": "Попълнете формуляра",
   "FullAccess": "Пълен достъп",
   "Guest": "Гост",
@@ -165,5 +167,6 @@
   "Video": "Видео",
   "View": "Преглед",
   "ViewWeb": "Отиди към уеб версия",
-  "Warning": "Внимание"
+  "Warning": "Внимание",
+  "Hotkeys": "Бързи клавиши"
 }

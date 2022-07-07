@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "ລົບ",
   "Department": "ກົມ",
+  "Disconnect": "ຕັດການເຊື່ອມຕໍ່",
   "Documents": "ເອກະສານ",
   "DomainIpAddress": "ທີ່ຢູ່ IP ໂດເມນຍັງບໍ່ຮອງຮັບ",
   "Download": "ດາວໂຫຼດ",
@@ -164,5 +165,6 @@
   "Video": "ວິດີໂອ",
   "View": "ມຸມມອງ",
   "ViewWeb": "ເປີດຜ່ານຫນ້າເວັບ",
-  "Warning": "ແຈ້ງເຕືອນ"
+  "Warning": "ແຈ້ງເຕືອນ",
+  "Hotkeys": "ປຸ່ມໃຊ້ປະຈຳ"
 }

@@ -5,10 +5,6 @@ import { inject, observer } from "mobx-react";
 import MainButton from "@appserver/components/main-button";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import {
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-} from "@appserver/components/utils/device";
 import Loaders from "@appserver/common/components/Loaders";
 import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
@@ -39,7 +35,6 @@ const ArticleMainButtonContent = (props) => {
     isCommonFolder,
     isRecycleBinFolder,
     history,
-    hasGalleryFiles,
     currentFolderId,
   } = props;
   const inputFilesElement = React.useRef(null);
@@ -120,68 +115,40 @@ const ArticleMainButtonContent = (props) => {
         ]
       : [];
 
-    const formActions =
-      !isMobile && !isTabletUtils()
-        ? [
-            {
-              className: "main-button_drop-down",
-              icon: "images/form.react.svg",
-              label: t("Translations:NewForm"),
-              key: "new-form",
-              items: [
-                {
-                  className: "main-button_drop-down_sub",
-                  label: t("Translations:SubNewForm"),
-                  onClick: onCreate,
-                  action: "docxf",
-                  key: "docxf",
-                },
-                {
-                  className: "main-button_drop-down_sub",
-                  label: t("Translations:SubNewFormFile"),
-                  onClick: onShowSelectFileDialog,
-                  disabled: isPrivacy,
-                  key: "form-file",
-                },
-                hasGalleryFiles && {
-                  className: "main-button_drop-down_sub",
-                  label: t("Common:OFORMsGallery"),
-                  onClick: onShowGallery,
-                  disabled: isPrivacy,
-                  key: "form-gallery",
-                },
-              ],
-            },
-          ]
-        : [
-            {
-              className: "main-button_drop-down_sub",
-              icon: "images/form.react.svg",
-              label: t("Translations:NewForm"),
-              onClick: onCreate,
-              action: "docxf",
-              key: "docxf",
-            },
-            {
-              className: "main-button_drop-down_sub",
-              icon: "images/form.file.react.svg",
-              label: t("Translations:NewFormFile"),
-              onClick: onShowSelectFileDialog,
-              disabled: isPrivacy,
-              key: "form-file",
-            },
-          ];
-
-    if ((isMobile || isTabletUtils()) && hasGalleryFiles) {
-      formActions.push({
-        className: "main-button_drop-down_sub",
+    const formActions = [
+      {
+        className: "main-button_drop-down",
         icon: "images/form.react.svg",
-        label: t("Common:OFORMsGallery"),
-        onClick: onShowGallery,
-        disabled: isPrivacy,
-        key: "form-gallery",
-      });
-    }
+        label: t("Translations:NewForm"),
+        key: "new-form",
+        items: [
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.blank.react.svg",
+            label: t("Translations:SubNewForm"),
+            onClick: onCreate,
+            action: "docxf",
+            key: "docxf",
+          },
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.file.react.svg",
+            label: t("Translations:SubNewFormFile"),
+            onClick: onShowSelectFileDialog,
+            disabled: isPrivacy,
+            key: "form-file",
+          },
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.gallery.react.svg",
+            label: t("Common:OFORMsGallery"),
+            onClick: onShowGallery,
+            disabled: isPrivacy,
+            key: "form-gallery",
+          },
+        ],
+      },
+    ];
 
     const actions = [
       {
@@ -249,7 +216,6 @@ const ArticleMainButtonContent = (props) => {
   }, [
     t,
     isPrivacy,
-    hasGalleryFiles,
     currentFolderId,
     onCreate,
     onShowSelectFileDialog,
@@ -326,7 +292,6 @@ export default inject(
       isLoading,
       fileActionStore,
       canCreate,
-      hasGalleryFiles,
     } = filesStore;
     const {
       isPrivacyFolder,
@@ -364,7 +329,6 @@ export default inject(
       isLoading,
       isLoaded,
       firstLoad,
-      hasGalleryFiles,
       currentFolderId,
     };
   }

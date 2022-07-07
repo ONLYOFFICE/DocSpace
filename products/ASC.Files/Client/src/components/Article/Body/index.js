@@ -37,6 +37,7 @@ const ArticleBodyContent = (props) => {
     isVisitor,
     FirebaseHelper,
     theme,
+    toggleArticleOpen,
     filesIsLoading,
   } = props;
 
@@ -104,6 +105,7 @@ const ArticleBodyContent = (props) => {
         onClick={onClick}
         onBadgeClick={onShowNewFilesPanel}
         showText={showText}
+        onHide={toggleArticleOpen}
       />
       {!personal && !firstLoad && <SettingsItems />}
       {!isDesktopClient && showText && (

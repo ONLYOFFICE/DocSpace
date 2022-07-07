@@ -613,7 +613,6 @@ const Base = {
     button: {
       marginRight: "8px",
       maxWidth: "110px",
-      padding: "6px 8px 10px",
     },
 
     page: {
@@ -1351,7 +1350,7 @@ const Base = {
     icon: {
       width: "16px",
       marginRight: "8px",
-      lineHeight: "14px",
+      lineHeight: "10px",
 
       color: black,
       disableColor: gray,
@@ -2473,6 +2472,10 @@ const Base = {
       itemActiveBorder: blueMain,
     },
 
+    row: {
+      itemBackground: white,
+    },
+
     fill: gray,
     hoverFill: grayMain,
   },
@@ -2565,6 +2568,10 @@ const Base = {
     changePassword: {
       linkColor: link,
     },
+  },
+
+  downloadDialog: {
+    background: "#f8f9f9",
   },
 
   studio: {
@@ -2705,6 +2712,12 @@ const Base = {
     backgroundColor: white,
     textColor: "#316DAA",
     bottomLineColor: "#316DAA",
+  },
+
+  hotkeys: {
+    key: {
+      color: grayMain,
+    },
   },
 };
 

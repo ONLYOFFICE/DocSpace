@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "Eliminar",
   "Department": "Departamento",
+  "Disconnect": "Desligar",
   "Documents": "Documentos",
   "DomainIpAddress": "Os domínios como endereço IP não são suportados",
   "Download": "Download",
@@ -165,5 +166,6 @@
   "Video": "Vídeo",
   "View": "Ver",
   "ViewWeb": "Ver versão web",
-  "Warning": "Aviso"
+  "Warning": "Aviso",
+  "Hotkeys": "Teclas de atalho"
 }

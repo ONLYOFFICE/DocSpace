@@ -1111,7 +1111,7 @@ class UploadDataStore {
         );
   };
 
-  loopFilesOperations = async (data, pbData) => {
+  loopFilesOperations = async (data, pbData, isDownloadAction) => {
     const {
       clearSecondaryProgressData,
       setSecondaryProgressBarData,
@@ -1133,7 +1133,11 @@ class UploadDataStore {
       operationItem = item;
 
       progress = item ? item.progress : 100;
-      finished = item ? item.finished : true;
+      finished = item
+        ? isDownloadAction
+          ? item.finished && item.url
+          : item.finished
+        : true;
 
       setSecondaryProgressBarData({
         icon: pbData.icon,
@@ -1244,10 +1248,8 @@ class UploadDataStore {
       (el) => !folderIds.includes(el)
     );
 
-    setTimeout(() => {
-      setActiveFiles(newActiveFiles);
-      setActiveFolders(newActiveFolders);
-    }, TIMEOUT);
+    setActiveFiles(newActiveFiles);
+    setActiveFolders(newActiveFolders);
   };
 
   clearUploadedFilesHistory = () => {

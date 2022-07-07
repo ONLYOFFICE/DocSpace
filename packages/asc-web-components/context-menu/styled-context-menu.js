@@ -197,15 +197,25 @@ const StyledContextMenu = styled.div`
       height: 16px;
       width: 16px;
     }
-    path,
-    circle,
-    rect {
+    path[fill],
+    circle[fill],
+    rect[fill] {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
     }
 
+    path[stroke],
+    circle[stroke],
+    rect[stroke] {
+      stroke: ${(props) => props.theme.dropDownItem.icon.color};
+    }
+
     &.p-disabled {
-      path {
+      path[fill] {
         fill: ${(props) => props.theme.dropDownItem.icon.disableColor};
+      }
+
+      path[stroke] {
+        stroke: ${(props) => props.theme.dropDownItem.icon.disableColor};
       }
     }
 
@@ -215,8 +225,12 @@ const StyledContextMenu = styled.div`
   .p-submenu-icon {
     margin-left: auto;
     padding-left: 8px;
-    path {
+    path[fill] {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
+    }
+
+    path[stroke] {
+      stroke: ${(props) => props.theme.dropDownItem.icon.color};
     }
   }
 

@@ -41,11 +41,20 @@ const StyledDropdownItem = styled.div`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .drop-down-item_icon {
-    path {
-      fill: ${(props) =>
-        props.disabled
-          ? props.theme.dropDownItem.icon.disableColor
-          : props.theme.dropDownItem.icon.color};
+    svg {
+      path[fill] {
+        fill: ${(props) =>
+          props.disabled
+            ? props.theme.dropDownItem.icon.disableColor
+            : props.theme.dropDownItem.icon.color};
+      }
+
+      path[stroke] {
+        stroke: ${(props) =>
+          props.disabled
+            ? props.theme.dropDownItem.icon.disableColor
+            : props.theme.dropDownItem.icon.color};
+      }
     }
   }
 
@@ -96,6 +105,22 @@ const StyledDropdownItem = styled.div`
   }
 
   ${(props) => props.disabled && disabledAndHeaderStyle}
+
+  .submenu-arrow {
+    margin-left: auto;
+    ${(props) =>
+      props.isActive &&
+      css`
+        transform: rotate(90deg);
+      `}
+  }
+
+  ${(props) =>
+    props.isActive &&
+    css`
+      background-color: ${(props) =>
+        props.theme.dropDownItem.hoverBackgroundColor} !important;
+    `}
 `;
 StyledDropdownItem.defaultProps = { theme: Base };
 

@@ -1,6 +1,7 @@
 {
   "AddMembers": "Dodaj członków",
   "Birthdate": "Data urodzenia",
+  "DeleteUserDataConfirmation": "Udostępnione przez użytkownika dokumenty zostaną usunięte. Aby tego uniknąć, przypisz dane innemu użytkownikowi.",
   "DeleteSelfProfile": "Usuń profil",
   "DisableUserButton": "Dezaktywuj",
   "DisabledEmployeeStatus": "Nieaktywny",

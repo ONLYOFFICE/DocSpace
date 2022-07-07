@@ -87,5 +87,8 @@
     <EmbeddedResource Update="AuditReportResource.zh-CN.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="AuditReportResource.az.resx">
+      <DependentUpon>AuditReportResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

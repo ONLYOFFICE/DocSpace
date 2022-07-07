@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "Sil",
   "Department": "Departman",
+  "Disconnect": "Bağlantıyı kes",
   "Documents": "Belgeler",
   "DomainIpAddress": "IP adresi olarak alan adları desteklenmez",
   "Download": "İndir",
@@ -76,6 +77,7 @@
   "EncryptionFilePreparing": "Dosya şifreleme için hazırlanıyor",
   "EncryptionKeysReload": "Şifreleme anahtarları yeniden girilmelidir",
   "Error": "Hata",
+  "ErrorInternalServer": "İç sunucu hatası. Daha sonra tekrar deneyin.",
   "FillFormButton": "Formu doldurun",
   "FullAccess": "Tam erişim",
   "Guest": "Misafir",
@@ -165,5 +167,6 @@
   "Video": "Video",
   "View": "Görüntüle",
   "ViewWeb": "Web sürümünü görüntüle",
-  "Warning": "Uyarı"
+  "Warning": "Uyarı",
+  "Hotkeys": "Kısayol tuşları"
 }

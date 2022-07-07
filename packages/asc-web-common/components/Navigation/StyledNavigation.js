@@ -1,6 +1,11 @@
 import styled, { css } from "styled-components";
 import { isMobile, isMobileOnly } from "react-device-detect";
-import { tablet, mobile } from "@appserver/components/utils/device";
+import {
+  tablet,
+  mobile,
+  desktop,
+  hugeMobile,
+} from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
   ${(props) =>
@@ -46,7 +51,11 @@ const StyledContainer = styled.div`
     padding: ${(props) => (props.isDropBox ? "14px 0 5px" : "14px 0 15px")};
   `}
 
-  @media ${mobile} {
+  @media ${desktop} {
+    padding: ${(props) => (props.isDropBox ? "10px 0 5px" : "10px 0 11px")};
+  }
+
+  @media ${mobile}, ${hugeMobile} {
     padding: ${(props) =>
       props.isDropBox ? "10px 0 5px" : "10px 0 11px"} !important;
   }

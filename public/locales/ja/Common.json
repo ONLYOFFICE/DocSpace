@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "削除",
   "Department": "部門",
+  "Disconnect": "接続解除",
   "Documents": "ドキュメント",
   "DomainIpAddress": "IPアドレスとしてのドメインには対応していません",
   "Download": "ダウンロード",
@@ -165,5 +166,6 @@
   "Video": "動画",
   "View": "ビュー",
   "ViewWeb": "ウェブ版を表示する",
-  "Warning": "警告"
+  "Warning": "警告",
+  "Hotkeys": "ホットキー"
 }

@@ -63,7 +63,6 @@ class FilesStore {
   firstElemChecked = false;
   headerBorder = false;
 
-  isPrevSettingsModule = false;
   enabledHotkeys = true;
   oformFiles = null;
   gallerySelected = null;
@@ -74,6 +73,7 @@ class FilesStore {
   isLoadingFilesFind = false;
   pageItemsLength = null;
   isHidePagination = false;
+  trashIsEmpty = false;
   filesIsLoading = false;
 
   constructor(
@@ -127,7 +127,7 @@ class FilesStore {
 
             if (!file || !file.id) return;
 
-            this.setFile(file);
+            this.getFileInfo(file.id); //this.setFile(file);
 
             if (this.selection) {
               const foundIndex = this.selection?.findIndex(
@@ -141,7 +141,7 @@ class FilesStore {
             }
 
             if (this.bufferSelection) {
-              const foundIndex = this.bufferSelection?.findIndex(
+              const foundIndex = [this.bufferSelection].findIndex(
                 (x) => x.id === file.id
               );
               if (foundIndex > -1) {
@@ -224,21 +224,26 @@ class FilesStore {
         false
       );
 
-      this.getFileInfo(id);
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing
+      );
+
+      if (typeof id == "string") {
+        this.getFileInfo(id);
+      } else {
+        this.createThumbnail(id);
+      }
     });
   }
 
   updateSelectionStatus = (id, status, isEditing) => {
-    const index = this.selection.findIndex((x) => x.id === id && x.fileExst);
+    const index = this.selection.findIndex((x) => x.id === id);
 
     if (index !== -1) {
       this.selection[index].fileStatus = status;
       this.selection[index].isEditing = isEditing;
     }
-  };
-
-  setIsPrevSettingsModule = (isSettings) => {
-    this.isPrevSettingsModule = isSettings;
   };
 
   addActiveItems = (files, folders) => {
@@ -367,6 +372,7 @@ class FilesStore {
     }
     requests.push(getFilesSettings());
     requests.push(this.getOforms());
+    requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => (this.isInit = true));
   };
@@ -417,12 +423,13 @@ class FilesStore {
     this.folders = folders;
   };
 
-  updateFileStatus = (index, status, file) => {
-    if (index < 0) return;
+  getFileIndex = (id) => {
+    const index = this.files.findIndex((x) => x.id === id);
+    return index;
+  };
 
-    if (file) {
-      this.files[index] = file;
-    }
+  updateFileStatus = (index, status) => {
+    if (index < 0) return;
 
     this.files[index].fileStatus = status;
   };
@@ -513,12 +520,12 @@ class FilesStore {
   };
 
   //TODO: FILTER
-  setFilesFilter = (filter, isPrefSettings) => {
+  setFilesFilter = (filter) => {
     const key = `UserFilter=${this.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
-    !isPrefSettings && this.setFilterUrl(filter);
+    this.setFilterUrl(filter);
     this.filter = filter;
 
     runInAction(() => {
@@ -573,6 +580,10 @@ class FilesStore {
     return newFilter;
   };
 
+  refreshFiles = () => {
+    return this.fetchFiles(this.selectedFolderStore.id, this.filter);
+  };
+
   fetchFiles = (
     folderId,
     filter,
@@ -587,9 +598,6 @@ class FilesStore {
       selectedTreeNode,
     } = this.treeFoldersStore;
     const { id } = this.selectedFolderStore;
-
-    const isPrefSettings = isNaN(+selectedTreeNode) && !id;
-    isPrefSettings && this.setIsPrevSettingsModule(true);
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -648,7 +656,7 @@ class FilesStore {
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
-          this.setFilesFilter(filterData, isPrefSettings); //TODO: FILTER
+          this.setFilesFilter(filterData); //TODO: FILTER
 
           runInAction(() => {
             this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
@@ -703,6 +711,7 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
+
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -1510,7 +1519,7 @@ class FilesStore {
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
 
-    const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
+    const iconSize = this.viewAs === "table" ? 24 : 32;
     const icon = extension
       ? getFileIcon(`.${extension}`, iconSize)
       : getFolderIcon(null, iconSize);
@@ -1754,11 +1763,13 @@ class FilesStore {
       other: [],
     };
 
-    const selection = this.selection.length
+    let selection = this.selection.length
       ? this.selection
       : this.bufferSelection
       ? [this.bufferSelection]
       : [];
+
+    selection = JSON.parse(JSON.stringify(selection));
 
     for (let item of selection) {
       item.checked = true;
@@ -1872,6 +1883,13 @@ class FilesStore {
   get isEmptyFilesList() {
     const filesList = [...this.files, ...this.folders];
     return filesList.length <= 0;
+  }
+
+  get hasNew() {
+    const newFiles = [...this.files, ...this.folders].filter(
+      (item) => (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew
+    );
+    return newFiles.length > 0;
   }
 
   get allFilesIsEditing() {
@@ -2047,10 +2065,6 @@ class FilesStore {
     return fileInfo;
   };
 
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openEditor(id, providerKey, tab, url);
-  };
-
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
@@ -2058,6 +2072,20 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    const foundIndex = this.files.findIndex((x) => x.id === id);
+    if (foundIndex !== -1) {
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
+        true
+      );
+
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing
+      );
+    }
+
     const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
     return openEditor(id, providerKey, tab, url, isPrivacy);
   };
@@ -2099,6 +2127,16 @@ class FilesStore {
 
   setScrollToItem = (item) => {
     this.scrollToItem = item;
+  };
+
+  getIsEmptyTrash = async () => {
+    const res = await api.files.getTrashFolderList();
+    const items = [...res.files, ...res.folders];
+    this.setTrashIsEmpty(items.length === 0 ? true : false);
+  };
+
+  setTrashIsEmpty = (isEmpty) => {
+    this.trashIsEmpty = isEmpty;
   };
 
   get hasMoreFiles() {

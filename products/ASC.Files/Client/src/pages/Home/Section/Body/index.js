@@ -40,6 +40,7 @@ const SectionBodyContent = (props) => {
     scrollToItem,
     setScrollToItem,
     filesList,
+    uploaded,
     fetchMoreFiles,
   } = props;
 
@@ -52,6 +53,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
+    window.addEventListener("beforeunload", onBeforeunload);
     window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
@@ -67,6 +69,7 @@ const SectionBodyContent = (props) => {
     scroll.addEventListener("scroll", onScroll);
 
     return () => {
+      window.removeEventListener("beforeunload", onBeforeunload);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mousemove", onMouseMove);
@@ -76,7 +79,7 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("drop", onDropEvent);
       scroll && scroll.removeEventListener("scroll", onScroll);
     };
-  }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
+  }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs, uploaded]);
 
   useEffect(() => {
     if (scrollToItem) {
@@ -106,6 +109,13 @@ const SectionBodyContent = (props) => {
   const onScroll = (e) => {
     if (window.innerHeight + e.target.scrollTop + 1 > e.target.scrollHeight) {
       fetchMoreFiles();
+    }
+  };
+
+  const onBeforeunload = (e) => {
+    if (!uploaded) {
+      e.preventDefault();
+      e.returnValue = "";
     }
   };
 
@@ -278,6 +288,7 @@ export default inject(
     selectedFolderStore,
     treeFoldersStore,
     filesActionsStore,
+    uploadDataStore,
   }) => {
     const {
       fileActionStore,
@@ -320,6 +331,7 @@ export default inject(
       scrollToItem,
       setScrollToItem,
       filesList,
+      uploaded: uploadDataStore.uploaded,
       fetchMoreFiles,
     };
   }

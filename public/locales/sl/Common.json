@@ -61,6 +61,7 @@
   "Culture_zh-CN": "中文（简体，中国）",
   "Delete": "Izbriši",
   "Department": "Oddelek",
+  "Disconnect": "Prekinitev",
   "Documents": "Dokumenti",
   "DomainIpAddress": "Domene kot IP naslov niso podprte",
   "Download": "Prenesi",
@@ -76,6 +77,7 @@
   "EncryptionFilePreparing": "Priprava datoteke za šifriranje",
   "EncryptionKeysReload": "Ključe za šifriranje je potrebno znova vnesti",
   "Error": "Napaka",
+  "ErrorInternalServer": "Notranja napaka strežnika. Ponovno poskusite kasneje.",
   "FillFormButton": "Izpolni obrazec",
   "FullAccess": "Poln dostop",
   "Guest": "Gost",
@@ -165,5 +167,6 @@
   "Video": "Video",
   "View": "Ogled",
   "ViewWeb": "Ogled spletne verzije",
-  "Warning": "Opozorilo"
+  "Warning": "Opozorilo",
+  "Hotkeys": "Bližnjice"
 }

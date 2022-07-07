@@ -95,6 +95,9 @@ const EditingWrapper = styled.div`
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: ${(props) => props.theme.filesEditingWrapper.color};
+    background: ${(props) =>
+      props.theme.filesEditingWrapper.row.itemBackground} !important;
+
     ${(props) =>
       props.viewAs === "tile" &&
       css`
@@ -102,12 +105,14 @@ const EditingWrapper = styled.div`
         border: none;
         background: none;
       `};
+
     ${(props) =>
       props.isUpdatingRowItem &&
       css`
         margin-left: 0;
         display: flex;
         align-items: center;
+        background: none !important;
       `}
 
     ${(props) => props.viewAs === "table" && `padding-left: 12px`}
@@ -116,7 +121,8 @@ const EditingWrapper = styled.div`
       props.viewAs === "tile" &&
       !props.isUpdatingRowItem &&
       css`
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
@@ -125,6 +131,8 @@ const EditingWrapper = styled.div`
             `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
         }
       `};
+
+    ${({ isDisabled }) => isDisabled && "background-color: #fff"}
   }
 
   .edit-button {
@@ -136,7 +144,8 @@ const EditingWrapper = styled.div`
       props.viewAs === "tile" &&
       css`
         margin-left: 0px;
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
@@ -245,6 +254,7 @@ const EditingWrapperComponent = (props) => {
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
       isFolder={isFolder}
+      isDisabled={isLoading}
     >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (
