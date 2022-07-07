@@ -2231,6 +2231,14 @@ const Base = {
     },
   },
 
+  connectCloud: {
+    connectBtnContent: black,
+    connectBtnTextBg: white,
+    connectBtnIconBg: white,
+    connectBtnTextBorder: grayMid,
+    connectBtnIconBorder: grayMid,
+  },
+
   filesThirdPartyDialog: {
     border: "1px solid #d1d1d1",
   },
