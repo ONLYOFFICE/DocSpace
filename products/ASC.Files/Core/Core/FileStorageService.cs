@@ -531,7 +531,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
-            
+
             if (isRoom)
             {
                 _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomCreated, folder.Title);
@@ -721,7 +721,7 @@ public class FileStorageService<T> //: IFileStorageService
         if (!EqualityComparer<T>.Default.Equals(fileWrapper.ParentId, default(T)))
         {
             folder = await folderDao.GetFolderAsync(fileWrapper.ParentId);
-            var canCreate = await _fileSecurity.CanCreateAsync(folder) && folder.FolderType != FolderType.VirtualRooms 
+            var canCreate = await _fileSecurity.CanCreateAsync(folder) && folder.FolderType != FolderType.VirtualRooms
                 && folder.FolderType != FolderType.Archive;
 
             if (!canCreate)
@@ -1087,7 +1087,14 @@ public class FileStorageService<T> //: IFileStorageService
         var file = await fileDao.GetFileAsync(fileId);
         ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-        return await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
+        var result = await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
+
+        foreach (var r in result)
+        {
+            await _entryStatusManager.SetFileStatusAsync(r);
+        }
+
+        return result;
     }
 
     public async Task<KeyValuePair<File<T>, List<File<T>>>> UpdateToVersionAsync(T fileId, int version)
@@ -1608,7 +1615,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
 
-        var folderId = thirdPartyParams.Corporate && !_coreBaseSettings.Personal ? await _globalFolderHelper.FolderCommonAsync 
+        var folderId = thirdPartyParams.Corporate && !_coreBaseSettings.Personal ? await _globalFolderHelper.FolderCommonAsync
             : thirdPartyParams.RoomsStorage && !_coreBaseSettings.DisableDocSpace ? await _globalFolderHelper.FolderVirtualRoomsAsync : _globalFolderHelper.FolderMy;
 
         var parentFolder = await folderDaoInt.GetFolderAsync(folderId);

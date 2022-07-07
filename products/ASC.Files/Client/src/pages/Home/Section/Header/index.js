@@ -107,21 +107,31 @@ class SectionHeaderContent extends React.Component {
         icon: "images/actions.presentation.react.svg",
       },
       {
+        icon: "images/form.react.svg",
         label: t("Translations:NewForm"),
-        icon: "images/form.react.svg",
-        onClick: this.createForm,
-      },
-      {
-        label: t("Translations:NewFormFile"),
-        onClick: this.createFormFromFile,
-        disabled: isPrivacyFolder,
-        icon: "images/form.file.react.svg",
-      },
-      {
-        label: t("Common:OFORMsGallery"),
-        onClick: this.onShowGallery,
-        disabled: isPrivacyFolder || (isMobile && isTablet),
-        icon: "images/form.react.svg",
+        key: "new-form-base",
+        items: [
+          {
+            key: "new-form",
+            label: t("Translations:SubNewForm"),
+            icon: "images/form.blank.react.svg",
+            onClick: this.createForm,
+          },
+          {
+            key: "new-form-file",
+            label: t("Translations:SubNewFormFile"),
+            icon: "images/form.file.react.svg",
+            onClick: this.createFormFromFile,
+            disabled: isPrivacyFolder,
+          },
+          {
+            key: "oforms-gallery",
+            label: t("Common:OFORMsGallery"),
+            icon: "images/form.gallery.react.svg",
+            onClick: this.onShowGallery,
+            disabled: isPrivacyFolder || (isMobile && isTablet),
+          },
+        ],
       },
       {
         key: "new-folder",
@@ -129,14 +139,14 @@ class SectionHeaderContent extends React.Component {
         onClick: this.createFolder,
         icon: "images/catalog.folder.react.svg",
       },
-      { key: "separator", isSeparator: true },
+      /*{ key: "separator", isSeparator: true },
       {
         key: "upload-to-folder",
         label: t("UploadToFolder"),
         onClick: this.uploadToFolder,
         disabled: true,
         icon: "images/actions.upload.react.svg",
-      },
+      },*/
     ];
   };
 
@@ -225,7 +235,7 @@ class SectionHeaderContent extends React.Component {
     return [
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         onClick: this.onOpenSharingPanel,
         disabled: personal ? true : false,
         icon: "/static/images/share.react.svg",
@@ -473,14 +483,16 @@ export default inject(
 
     const { toggleIsVisible, isVisible } = auth.infoPanelStore;
 
+    const { title, id, pathParts, navigationPath } = selectedFolderStore;
+
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
-      isRootFolder: selectedFolderStore.parentId === 0,
-      title: selectedFolderStore.title,
-      currentFolderId: selectedFolderStore.id,
-      pathParts: selectedFolderStore.pathParts,
-      navigationPath: selectedFolderStore.navigationPath,
+      isRootFolder: pathParts?.length === 1,
+      title,
+      currentFolderId: id,
+      pathParts: pathParts,
+      navigationPath: navigationPath,
       canCreate,
       toggleInfoPanel: toggleIsVisible,
       isInfoPanelVisible: isVisible,
@@ -525,7 +537,11 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Home", "Common", "Translations", "InfoPanel"])(
-    withRouter(observer(SectionHeaderContent))
-  )
+  withTranslation([
+    "Home",
+    "Common",
+    "Translations",
+    "InfoPanel",
+    "SharingPanel",
+  ])(withRouter(observer(SectionHeaderContent)))
 );

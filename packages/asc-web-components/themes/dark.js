@@ -611,7 +611,6 @@ const Dark = {
     button: {
       marginRight: "8px",
       maxWidth: "110px",
-      padding: "6px 8px 10px",
     },
 
     page: {
@@ -2521,8 +2520,8 @@ const Dark = {
 
     badge: {
       color: black,
-      stroke: "#858585",
-      fill: "#858585",
+      stroke: "#ADADAD",
+      fill: "#ADADAD",
       defaultFill: black,
       badgeFill: "#F58D31",
     },
@@ -2579,6 +2578,10 @@ const Dark = {
     changePassword: {
       linkColor: "#e06a1b",
     },
+  },
+
+  downloadDialog: {
+    background: "#282828",
   },
 
   studio: {
