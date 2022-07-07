@@ -655,7 +655,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var tagNames = !string.IsNullOrEmpty(tags) ? JsonSerializer.Deserialize<IEnumerable<string>>(tags) : null;
 
         OrderBy orderBy = null;
-        if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
+        if (SortedByTypeExtensions.TryParse(_apiContext.SortBy, true, out var sortBy))
         {
             orderBy = new OrderBy(sortBy, !_apiContext.SortDescending);
         }

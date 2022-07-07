@@ -511,7 +511,7 @@ public class UserController : PeopleControllerBase
         }
 
         var isInvite = _httpContextAccessor.HttpContext.User.Claims
-               .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
+               .Any(role => role.Type == ClaimTypes.Role && ConfirmTypeExtensions.TryParse(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
 
         _apiContext.AuthByClaim();
 

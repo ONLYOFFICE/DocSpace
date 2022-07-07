@@ -1,26 +1,26 @@
-﻿namespace ASC.AuditTrail.Types
+﻿namespace ASC.AuditTrail.Types;
+
+[EnumExtensions]
+public enum ActionType
 {
-    public enum ActionType
-    {
-        None,
-        Create,
-        Update,
-        Delete,
-        Link,
-        Unlink,
-        Attach,
-        Detach,
-        Send,
-        Import,
-        Export,
-        UpdateAccess,
-        Download,
-        Upload,
-        Copy,
-        Move,
-        Reassigns,
-        Follow,
-        Unfollow,
-        Logout
-    }
+    None,
+    Create,
+    Update,
+    Delete,
+    Link,
+    Unlink,
+    Attach,
+    Detach,
+    Send,
+    Import,
+    Export,
+    UpdateAccess,
+    Download,
+    Upload,
+    Copy,
+    Move,
+    Reassigns,
+    Follow,
+    Unfollow,
+    Logout
 }
