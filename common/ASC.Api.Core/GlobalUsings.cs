@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+global using System.Collections.Concurrent;
 global using System.ComponentModel;
 global using System.Globalization;
 global using System.Linq.Expressions;
@@ -69,8 +70,8 @@ global using ASC.EventBus;
 global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.RabbitMQ;
 global using ASC.IPSecurity;
-global using ASC.MessagingSystem.Data;
 global using ASC.MessagingSystem.Core;
+global using ASC.MessagingSystem.Data;
 global using ASC.MessagingSystem.Models;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Routing;
@@ -82,6 +83,8 @@ global using ASC.Webhooks.Core;
 
 global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
+
+global using AutoMapper;
 
 global using Confluent.Kafka;
 
@@ -122,8 +125,6 @@ global using NLog.Config;
 global using NLog.Extensions.Logging;
 
 global using RabbitMQ.Client;
-
-global using AutoMapper;
 
 global using StackExchange.Redis.Extensions.Core.Configuration;
 global using StackExchange.Redis.Extensions.Newtonsoft;

@@ -79,13 +79,20 @@ const Layout = (props) => {
   }, [isBannerVisible]);
 
   useEffect(() => {
-    if (isMobileOnly) {
-      const htmlEl = document.getElementsByTagName("html")[0];
-      const bodyEl = document.getElementsByTagName("body")[0];
+    const htmlEl = document.getElementsByTagName("html")[0];
+    const bodyEl = document.getElementsByTagName("body")[0];
 
+    if (isMobileOnly || (isTablet && isChrome)) {
       htmlEl.style.height = bodyEl.style.height = "100%";
       htmlEl.style.overflow = "hidden";
+    }
+
+    if (isMobileOnly) {
       bodyEl.style.overflow = "auto";
+    }
+
+    if (isTablet) {
+      bodyEl.style.overflow = "hidden";
     }
   }, []);
 

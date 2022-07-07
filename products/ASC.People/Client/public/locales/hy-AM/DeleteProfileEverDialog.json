@@ -1,0 +1,5 @@
+{
+  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> կջնջվի.",
+  "DeleteUserDataConfirmation": "Օգտատիրոջ փաստաթղթերը, որոնք համօգտագործվում են ուրիշների հետ, կջնջվեն: Խուսափելու համար, վերահանձնարարեք տվյալները:",
+  "SuccessfullyDeleteUserInfoMessage": "Օգտվողը հաջողությամբ ջնջվել է"
+}

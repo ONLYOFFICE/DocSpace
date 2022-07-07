@@ -153,13 +153,13 @@ public class BaseIndexer<T> where T : class, ISearchItem
             {
                 IPromise<IAnalyzers> analyzers(AnalyzersDescriptor b)
                 {
-                    foreach (var c in Enum.GetNames(typeof(Analyzer)))
+                    foreach (var c in AnalyzerExtensions.GetNames())
                     {
                         var c1 = c;
                         b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(nameof(Filter.lowercase)).CharFilters(nameof(CharFilter.io)));
                     }
 
-                    foreach (var c in Enum.GetNames(typeof(CharFilter)))
+                    foreach (var c in CharFilterExtensions.GetNames())
                     {
                         if (c == nameof(CharFilter.io))
                         {

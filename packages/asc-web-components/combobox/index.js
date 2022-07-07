@@ -104,6 +104,9 @@ class ComboBox extends React.Component {
       fixedDirection,
       withBlur,
       fillIcon,
+      isExternalLink,
+      isPersonal,
+      offsetLeft,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -169,6 +172,9 @@ class ComboBox extends React.Component {
             isDefaultMode={isDefaultMode}
             fixedDirection={fixedDirection}
             withBlur={withBlur}
+            isExternalLink={isExternalLink}
+            isPersonal={isPersonal}
+            offsetLeft={offsetLeft}
           >
             {advancedOptions
               ? advancedOptions
@@ -256,6 +262,10 @@ ComboBox.propTypes = {
   disableItemClick: PropTypes.bool,
 
   fillIcon: PropTypes.bool,
+  isExternalLink: PropTypes.bool,
+  isPersonal: PropTypes.bool,
+
+  offsetLeft: PropTypes.number,
 };
 
 ComboBox.defaultProps = {
@@ -273,6 +283,7 @@ ComboBox.defaultProps = {
   displaySelectedOption: false,
   fixedDirection: false,
   disableItemClick: false,
+  isExternalLink: false,
 };
 
 export default ComboBox;

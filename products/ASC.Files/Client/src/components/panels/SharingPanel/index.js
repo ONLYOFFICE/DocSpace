@@ -700,7 +700,8 @@ class SharingPanelComponent extends React.Component {
                         onSaveClick={this.onSaveClick}
                         cancelButtonLabel={t("Common:CancelButton")}
                         onCancelClick={this.onClose}
-                        showReminder={true}
+                        showReminder={this.state.isUpdated}
+                        cancelEnable={true}
                       />
                     </StyledModalFooter>
                   </ModalDialog.Footer>
