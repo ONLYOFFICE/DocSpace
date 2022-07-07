@@ -157,12 +157,12 @@ class InviteDialogComponent extends React.Component {
                   {t("GetShortenLink")}
                 </Link>
               )}
-              <Checkbox
+              {/* <Checkbox
                 label={t("InviteUsersAsCollaborators", { guestsCaption })}
                 isChecked={this.state.isGuest}
                 onChange={this.onCheckedGuest}
                 isDisabled={this.state.isLoading}
-              />
+              /> */}
             </div>
             <Textarea
               className="textarea-dialog"
