@@ -47,8 +47,10 @@ public partial class BaseFilesTests
     public async Task DeleteRecentFileReturnsFolderWrapper(int fileId, string fileTitleExpected)
     {
         await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
+
         await DeleteAsync("file/" + fileId, JsonContent.Create(new { DeleteAfter = false, Immediately = true }));
-        _ = await WaitLongOperation();
+        await WaitLongOperation();
+
         var recents = await GetAsync<FolderContentDto<int>>("@recent", _options);
         Assert.IsTrue(!recents.Files.Any(r => r.Title == fileTitleExpected + ".docx"));
     }

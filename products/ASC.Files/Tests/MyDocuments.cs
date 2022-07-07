@@ -90,7 +90,7 @@ public partial class BaseFilesTests
     {
         await DeleteAsync("folder/" + folderId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }));
         var statuses = await WaitLongOperation();
-        Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+        CheckStatuses(statuses);
     }
 
     [TestCase(DataTests.NewTitle)]
@@ -138,7 +138,7 @@ public partial class BaseFilesTests
     {
         await DeleteAsync("file/" + fileId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }));
         var statuses = await WaitLongOperation();
-        Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+        CheckStatuses(statuses);
     }
 
     [TestCase(DataTests.MoveBatchItems)]

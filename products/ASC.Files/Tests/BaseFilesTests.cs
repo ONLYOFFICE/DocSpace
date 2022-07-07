@@ -67,7 +67,7 @@ class FilesApplication : WebApplicationFactory<Program>
 public class MySetUpClass
 {
     protected IServiceScope Scope { get; set; }
-    private readonly string _pathToProducts = Path.Combine("..", "..", "..", "Data.Test");
+    protected readonly string _pathToProducts = Path.Combine("..", "..", "..", "Data.Test");
 
     [OneTimeSetUp]
     public void CreateDb()
@@ -227,11 +227,13 @@ public partial class BaseFilesTests
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(_baseAddress + url),
-            Method = HttpMethod.Delete,
+            Method = HttpMethod.Get,
             Content = content
         };
 
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
+        var response = await _client.SendAsync(request);
+
+        var result = await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
 
         if (result.Response is JsonElement jsonElement)
         {
@@ -309,5 +311,11 @@ public partial class BaseFilesTests
         }
 
         return statuses;
+    }
+
+    protected void CheckStatuses(List<FileOperationResult> statuses)
+    {
+        Assert.IsTrue(statuses.Count() > 0);
+        Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
     }
 }
