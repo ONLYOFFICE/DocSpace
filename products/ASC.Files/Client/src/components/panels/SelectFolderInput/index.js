@@ -64,6 +64,7 @@ class SelectFolderInput extends React.PureComponent {
     this.setState({
       resultingFolderTree,
       baseId: resultingId,
+      isLoading: false,
     });
   }
 

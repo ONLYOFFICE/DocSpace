@@ -8,10 +8,11 @@ import ScheduleComponent from "./ScheduleComponent";
 class ThirdPartyModule extends React.PureComponent {
   constructor(props) {
     super(props);
-
+    const { setSelectedFolder, isResourcesDefault } = props;
     this.state = {
       isPanelVisible: false,
     };
+    !isResourcesDefault && setSelectedFolder("");
   }
 
   onClickInput = () => {
@@ -53,11 +54,12 @@ class ThirdPartyModule extends React.PureComponent {
             isPanelVisible={isPanelVisible}
             isError={isError}
             foldersType="third-party"
-            isDisabled={isLoadingData}
+            isDisabled={commonThirdPartyList.length === 0 || isLoadingData}
             id={passedId}
             isReset={isReset}
             isSuccessSave={isSuccessSave}
             foldersList={commonThirdPartyList}
+            withoutBasicSelection
           />
         </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
@@ -84,5 +86,6 @@ export default inject(({ backup }) => {
     setSelectedFolder,
     passedId,
     commonThirdPartyList,
+    isResourcesDefault,
   };
 })(withTranslation("Settings")(observer(ThirdPartyModule)));

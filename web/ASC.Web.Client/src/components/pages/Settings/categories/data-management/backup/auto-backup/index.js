@@ -83,18 +83,18 @@ class AutomaticBackup extends React.PureComponent {
       getProgress(t);
 
       const [
-        commonThirdPartyList,
+        thirdPartyList,
         backupSchedule,
         backupStorage,
       ] = await Promise.all([
-        getThirdPartyCommonFolderTree,
+        getThirdPartyCommonFolderTree(),
         getBackupSchedule(),
         getBackupStorage(),
       ]);
 
       setThirdPartyStorage(backupStorage);
       setBackupSchedule(backupSchedule);
-      commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+      thirdPartyList && setCommonThirdPartyList(thirdPartyList);
 
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
 
@@ -374,7 +374,9 @@ class AutomaticBackup extends React.PureComponent {
 
     const { isInitialLoading, isLoadingData, isError } = this.state;
 
-    const isDisabledThirdPartyList = commonThirdPartyList?.length === 0;
+    const isDisabledThirdPartyList = isCheckedThirdParty
+      ? false
+      : commonThirdPartyList?.length === 0;
 
     const commonProps = {
       isLoadingData,
