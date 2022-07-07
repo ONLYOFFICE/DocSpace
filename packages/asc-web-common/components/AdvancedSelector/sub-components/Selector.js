@@ -192,9 +192,11 @@ const Selector = (props) => {
           return;
         }
 
-        newGroupList[0].selectedCount = isChecked
-          ? newGroupList[0].selectedCount - 1
-          : newGroupList[0].selectedCount + 1;
+        if (newGroupList.length > 0) {
+          newGroupList[0].selectedCount = isChecked
+            ? newGroupList[0].selectedCount - 1
+            : newGroupList[0].selectedCount + 1;
+        }
 
         option.groups.forEach((group) => {
           const groupIndex = newGroupList.findIndex(
