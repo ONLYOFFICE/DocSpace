@@ -29,8 +29,9 @@ const FilterBlockItem = ({
   changeFilterValue,
   showSelector,
 }) => {
-  const changeFilterValueAction = (key, isSelected) => {
-    changeFilterValue && changeFilterValue(group, key, isSelected);
+  const changeFilterValueAction = (key, isSelected, isMultiSelect) => {
+    changeFilterValue &&
+      changeFilterValue(group, key, isSelected, null, isMultiSelect);
   };
 
   const showSelectorAction = (event, isAuthor, group, ref) => {
@@ -113,14 +114,16 @@ const FilterBlockItem = ({
       <StyledFilterBlockItemTag
         key={item.key}
         isSelected={item.isSelected}
-        name={`${item.label.toLowerCase()}-${item.key}`}
-        onClick={() => changeFilterValueAction(item.key, item.isSelected)}
+        name={`${item.label}-${item.key}`}
+        onClick={() =>
+          changeFilterValueAction(item.key, item.isSelected, item.isMultiSelect)
+        }
       >
         <StyledFilterBlockItemTagText
           noSelect={true}
           isSelected={item.isSelected}
         >
-          {item.label.toLowerCase()}
+          {item.label}
         </StyledFilterBlockItemTagText>
       </StyledFilterBlockItemTag>
     );

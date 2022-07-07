@@ -16,34 +16,36 @@ import { StyledFilterInput, StyledSearchInput } from "./StyledFilterInput";
 const FilterInput = React.memo(
   ({
     t,
+    sectionWidth,
     getFilterData,
     getSortData,
     getViewSettingsData,
     getSelectedFilterData,
+    getSelectedSortData,
+    getSelectedInputValue,
     onFilter,
     onSearch,
     onSort,
     onChangeViewAs,
     viewAs,
     placeholder,
+    view,
     contextMenuHeader,
     headerLabel,
     viewSelectorVisible,
-    isRecentFolder,
     isFavoritesFolder,
-    isRoomFolder,
-    ...props
+    isRecentFolder,
+
+    isLoading,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
-    const [selectedFilterData, setSelectedFilterData] = React.useState([]);
-
     const [inputValue, setInputValue] = React.useState("");
+    const [selectedFilterData, setSelectedFilterData] = React.useState([]);
 
     const getSelectedFilterDataAction = React.useCallback(async () => {
       const data = await getSelectedFilterData();
 
       setSelectedFilterData(data);
-      setInputValue(!!data.inputValue ? data.inputValue : "");
     }, [getSelectedFilterData]);
 
     React.useEffect(() => {
@@ -51,15 +53,23 @@ const FilterInput = React.memo(
     }, [getSelectedFilterData]);
 
     React.useEffect(() => {
-      getViewSettingsData && setViewSettings(getViewSettingsData());
+      const value = getViewSettingsData();
+
+      if (value) setViewSettings(value);
     }, [getViewSettingsData]);
+
+    React.useEffect(() => {
+      const value = getSelectedInputValue && getSelectedInputValue();
+
+      if (value) setInputValue(value);
+    }, [getSelectedInputValue]);
 
     const onClearSearch = React.useCallback(() => {
       onSearch && onSearch();
     }, [onSearch]);
 
     return (
-      <StyledFilterInput {...props}>
+      <StyledFilterInput>
         <StyledSearchInput
           placeholder={placeholder}
           value={inputValue}
@@ -69,25 +79,24 @@ const FilterInput = React.memo(
         <FilterButton
           t={t}
           selectedFilterData={selectedFilterData}
-          contextMenuHeader={contextMenuHeader}
           getFilterData={getFilterData}
+          getSelectedFilterData={getSelectedFilterData}
           onFilter={onFilter}
+          contextMenuHeader={contextMenuHeader}
           headerLabel={headerLabel}
         />
-        {(isMobile ||
-          isTabletUtils() ||
-          isMobileUtils() ||
-          viewAs === "row" ||
-          isRoomFolder) && (
+        {!isRecentFolder && (
           <SortButton
             t={t}
-            selectedFilterData={selectedFilterData}
             getSortData={getSortData}
+            getSelectedSortData={getSelectedSortData}
             onChangeViewAs={onChangeViewAs}
+            view={view}
             viewAs={viewAs === "table" ? "row" : viewAs}
             viewSettings={viewSettings}
             onSort={onSort}
             viewSelectorVisible={
+              viewSettings &&
               viewSelectorVisible &&
               (isMobile || isMobileUtils() || isTabletUtils())
             }

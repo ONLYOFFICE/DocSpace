@@ -23,7 +23,7 @@ import Scrollbar from "@appserver/components/scrollbar";
 //TODO: fix translate
 const FilterBlock = ({
   t,
-  selectedFilterData,
+  selectedFilterValue,
   contextMenuHeader,
   getFilterData,
   hideFilterBlock,
@@ -37,7 +37,6 @@ const FilterBlock = ({
   });
   const [filterData, setFilterData] = React.useState([]);
   const [filterValues, setFilterValues] = React.useState([]);
-  const [clearFilter, setClearFilter] = React.useState(false);
 
   const changeShowSelector = React.useCallback((isAuthor, group) => {
     setShowSelector((val) => {
@@ -51,9 +50,9 @@ const FilterBlock = ({
 
   const changeSelectedItems = React.useCallback(
     (filter) => {
-      const items = filterData.map((item) => ({ ...item }));
+      const data = filterData.map((item) => ({ ...item }));
 
-      items.forEach((item) => {
+      data.forEach((item) => {
         if (filter.find((value) => value.group === item.group)) {
           const currentFilter = filter.filter(
             (value) => value.group === item.group
@@ -69,6 +68,9 @@ const FilterBlock = ({
               groupItem.selectedKey = currentFilter.key;
               groupItem.selectedLabel = currentFilter.label;
             }
+            if (groupItem.isMultiSelect) {
+              groupItem.isSelected = currentFilter.key.includes(groupItem.key);
+            }
           });
         } else {
           item.groupItem.forEach((groupItem) => {
@@ -81,7 +83,7 @@ const FilterBlock = ({
         }
       });
 
-      setFilterData(items);
+      setFilterData(data);
     },
     [filterData]
   );
@@ -90,28 +92,53 @@ const FilterBlock = ({
     changeSelectedItems([]);
     setFilterValues([]);
 
-    setClearFilter(true);
-    selectedFilterData.filterValues.length > 0 && onFilter && onFilter([]);
-  }, [selectedFilterData.filterValues.length]);
+    selectedFilterValue.length > 0 && onFilter && onFilter([]);
+  }, [selectedFilterValue.length]);
 
   const changeFilterValue = React.useCallback(
-    (group, key, isSelected, label) => {
-      let value = filterValues.map((item) => ({
-        ...item,
-      }));
+    (group, key, isSelected, label, isMultiSelect) => {
+      let value = filterValues.map((value) => {
+        if (typeof value.key === "object") {
+          const newKey = [...value.key];
+          value.key = newKey;
+        }
+
+        return {
+          ...value,
+        };
+      });
 
       if (isSelected) {
-        value = value.filter((item) => item.group !== group);
+        if (isMultiSelect) {
+          const groupIdx = value.findIndex((item) => item.group === group);
+
+          const itemIdx = value[groupIdx].key.findIndex((item) => item === key);
+
+          value[groupIdx].key.splice(itemIdx, 1);
+        } else {
+          value = value.filter((item) => item.group !== group);
+        }
 
         setFilterValues(value);
         changeSelectedItems(value);
 
-        const idx = selectedFilterData.filterValues.findIndex(
+        const idx = selectedFilterValue.findIndex(
           (item) => item.group === group
         );
 
         if (idx > -1) {
-          setClearFilter(true);
+          if (isMultiSelect) {
+            const itemIdx = selectedFilterValue[idx].key.findIndex(
+              (item) => item === key
+            );
+
+            if (itemIdx === -1) return;
+
+            selectedFilterValue[idx].key.splice(itemIdx, 1);
+
+            return onFilter(selectedFilterValue);
+          }
+
           onFilter(value);
         }
 
@@ -121,15 +148,21 @@ const FilterBlock = ({
       if (value.find((item) => item.group === group)) {
         value.forEach((item) => {
           if (item.group === group) {
-            item.key = key;
-            if (label) {
-              item.label = label;
+            if (isMultiSelect) {
+              item.key.push(key);
+            } else {
+              item.key = key;
+              if (label) {
+                item.label = label;
+              }
             }
           }
         });
       } else {
         if (label) {
           value.push({ group, key, label });
+        } else if (isMultiSelect) {
+          value.push({ group, key: [key] });
         } else {
           value.push({ group, key });
         }
@@ -138,51 +171,62 @@ const FilterBlock = ({
       setFilterValues(value);
       changeSelectedItems(value);
     },
-    [selectedFilterData.filterValues, filterValues, changeSelectedItems]
+    [selectedFilterValue, filterValues, changeSelectedItems]
   );
 
   React.useEffect(() => {
-    if (!clearFilter) {
-      const data = getFilterData();
+    const data = getFilterData();
 
-      const items = data.filter((item) => item.isHeader === true);
+    const items = data.filter((item) => item.isHeader === true);
 
-      items.forEach((item) => {
-        const groupItem = data.filter(
-          (val) => val.group === item.group && val.isHeader !== true
-        );
+    items.forEach((item) => {
+      const groupItem = data.filter(
+        (val) => val.group === item.group && val.isHeader !== true
+      );
 
-        groupItem.forEach((item) => (item.isSelected = false));
+      groupItem.forEach((item) => (item.isSelected = false));
 
-        item.groupItem = groupItem;
-      });
+      item.groupItem = groupItem;
+    });
 
-      if (selectedFilterData.filterValues) {
-        selectedFilterData.filterValues.forEach((value) => {
-          items.forEach((item) => {
-            if (item.group === value.group) {
-              item.groupItem.forEach((groupItem) => {
-                if (groupItem.key === value.key || groupItem.isSelector) {
-                  groupItem.isSelected = true;
-                  if (groupItem.isSelector) {
-                    groupItem.selectedLabel = value.label;
-                    groupItem.selectedKey = value.key;
-                  }
+    if (selectedFilterValue) {
+      selectedFilterValue.forEach((selectedValue) => {
+        items.forEach((item) => {
+          if (item.group === selectedValue.group) {
+            item.groupItem.forEach((groupItem) => {
+              if (groupItem.key === selectedValue.key || groupItem.isSelector) {
+                groupItem.isSelected = true;
+                if (groupItem.isSelector) {
+                  groupItem.selectedLabel = selectedValue.label;
+                  groupItem.selectedKey = selectedValue.key;
                 }
-              });
-            }
-          });
+              }
+
+              if (groupItem.isMultiSelect) {
+                groupItem.isSelected = selectedValue.key.includes(
+                  groupItem.key
+                );
+              }
+            });
+          }
         });
+      });
+    }
+
+    const newFilterValues = selectedFilterValue.map((value) => {
+      if (typeof value.key === "object") {
+        const newKey = [...value.key];
+        value.key = newKey;
       }
 
-      const newFilterValues = selectedFilterData.filterValues.map((value) => ({
+      return {
         ...value,
-      }));
+      };
+    });
 
-      setFilterData(items);
-      setFilterValues(newFilterValues);
-    }
-  }, [selectedFilterData, getFilterData, clearFilter]);
+    setFilterData(items);
+    setFilterValues(newFilterValues);
+  }, []);
 
   const onFilterAction = React.useCallback(() => {
     onFilter && onFilter(filterValues);
@@ -211,7 +255,7 @@ const FilterBlock = ({
   );
 
   const isEqualFilter = () => {
-    const selectedFilterValues = selectedFilterData.filterValues;
+    const selectedFilterValues = selectedFilterValue;
 
     let isEqual = true;
 
@@ -235,7 +279,17 @@ const FilterBlock = ({
         (item) => item.group === value.group
       );
 
-      isEqual = isEqual && oldValue?.key === value.key;
+      let isMultiSelectEqual = true;
+
+      if (typeof value.key === "object") {
+        value.key.forEach(
+          (item) =>
+            (isMultiSelectEqual =
+              isMultiSelectEqual && oldValue.key.includes(item))
+        );
+      }
+
+      isEqual = isEqual && (oldValue?.key === value.key || isMultiSelectEqual);
     });
 
     return !isEqual;
