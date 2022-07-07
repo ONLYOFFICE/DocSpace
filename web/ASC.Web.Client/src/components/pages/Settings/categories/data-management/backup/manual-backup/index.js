@@ -40,7 +40,7 @@ class ManualBackup extends React.Component {
     this.state = {
       selectedFolder: "",
       isPanelVisible: false,
-      isInitialLoading: isMobileOnly ? true : false,
+      isInitialLoading: true,
       isCheckedTemporaryStorage: checkedTemporary,
       isCheckedDocuments: checkedDocuments,
       isCheckedThirdParty: checkedThirdPartyResource,
@@ -56,12 +56,19 @@ class ManualBackup extends React.Component {
   }
 
   setBasicSettings = async () => {
-    const { getProgress, setCommonThirdPartyList, t } = this.props;
+    const { getProgress, setCommonThirdPartyList, t, isDocSpace } = this.props;
     try {
       getProgress(t);
 
-      const commonThirdPartyList = await getThirdPartyCommonFolderTree();
-      commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+      if (isDocSpace) {
+        //TODO: another parameter
+
+        const commonThirdPartyList = await getThirdPartyCommonFolderTree();
+        commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+      } else {
+        const commonThirdPartyList = await getThirdPartyCommonFolderTree();
+        commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+      }
     } catch (error) {
       console.error(error);
       this.clearSessionStorage();
@@ -73,7 +80,7 @@ class ManualBackup extends React.Component {
   };
 
   componentDidMount() {
-    isMobileOnly && this.setBasicSettings();
+    this.setBasicSettings();
   }
 
   componentWillUnmount() {
@@ -178,6 +185,7 @@ class ManualBackup extends React.Component {
       buttonSize,
       organizationName,
       renderTooltip,
+      isDocSpace,
     } = this.props;
     const {
       isInitialLoading,
@@ -189,7 +197,9 @@ class ManualBackup extends React.Component {
 
     const isMaxProgress = downloadingProgress === 100;
 
-    const isDisabledThirdParty = commonThirdPartyList?.length === 0;
+    const isDisabledThirdParty = isDocSpace
+      ? false
+      : commonThirdPartyList?.length === 0;
 
     const commonRadioButtonProps = {
       fontSize: "13px",
@@ -337,6 +347,9 @@ export default inject(({ auth, backup }) => {
     getStorageParams,
   } = backup;
   const { organizationName } = auth.settingsStore;
+
+  const isDocSpace = true;
+
   return {
     organizationName,
 
@@ -351,5 +364,6 @@ export default inject(({ auth, backup }) => {
     setCommonThirdPartyList,
     temporaryLink,
     getStorageParams,
+    isDocSpace,
   };
 })(withTranslation(["Settings", "Common"])(observer(ManualBackup)));

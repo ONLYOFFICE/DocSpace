@@ -35,6 +35,7 @@ class SelectFolderInput extends React.PureComponent {
       id,
       onSelectFolder,
       foldersList,
+      withoutBasicSelection = false,
     } = this.props;
 
     setFirstLoad(false);
@@ -51,7 +52,9 @@ class SelectFolderInput extends React.PureComponent {
         id,
         this.onSetBaseFolderPath,
         onSelectFolder,
-        foldersList
+        foldersList,
+        false,
+        withoutBasicSelection
       );
     } catch (e) {
       toastr.error(e);

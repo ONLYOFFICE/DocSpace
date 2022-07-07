@@ -95,6 +95,24 @@ const StyledManualBackup = styled.div`
       margin-left: 0px;
     }
   }
+
+  .manual-backup_third-party-module {
+    margin-top: 16px;
+    margin-left: 24px;
+
+    .manual-backup_connection {
+      display: flex;
+    }
+    .manual-backup_third-party-combo {
+      max-width: 234px;
+      margin-right: 8px;
+    }
+
+    p {
+      margin-top: 16px;
+      max-width: 350px;
+    }
+  }
   .manual-backup_folder-input {
     margin-left: 24px;
     margin-top: 16px;

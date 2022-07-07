@@ -176,7 +176,8 @@ class SelectionPanel extends React.Component {
     onSetBaseFolderPath,
     onSelectFolder,
     foldersList,
-    isFilesPanel = false
+    isFilesPanel = false,
+    withoutBasicSelection = false
   ) => {
     const getRequestFolderTree = () => {
       switch (foldersType) {
@@ -253,7 +254,7 @@ class SelectionPanel extends React.Component {
       onSetBaseFolderPath && onSetBaseFolderPath(passedId);
     }
 
-    onSelectFolder && onSelectFolder(passedId);
+    !withoutBasicSelection && onSelectFolder && onSelectFolder(passedId);
 
     if (
       foldersType === "exceptSortedByTags" ||

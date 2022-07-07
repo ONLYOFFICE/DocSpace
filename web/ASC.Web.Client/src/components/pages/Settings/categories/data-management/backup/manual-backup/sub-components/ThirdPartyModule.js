@@ -5,13 +5,38 @@ import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
 import { BackupStorageType } from "@appserver/common/constants";
+import ComboBox from "@appserver/components/combobox";
+import Text from "@appserver/components/text";
 
 let folder = "";
 class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
 
+    const { isDocSpace } = props;
+
     folder = getFromSessionStorage("LocalCopyFolder");
+
+    if (isDocSpace) {
+      this.accounts = [
+        {
+          key: "0",
+          label: "Google Drive",
+        },
+        {
+          key: "1",
+          label: "OneDrive ",
+        },
+        {
+          key: "2",
+          label: "Dropbox ",
+        },
+        {
+          key: "3",
+          label: "Box.com",
+        },
+      ];
+    }
 
     this.state = {
       isStartCopy: false,
@@ -19,6 +44,8 @@ class ThirdPartyModule extends React.Component {
       selectedFolder: folder || "",
       isPanelVisible: false,
       isError: false,
+      ...(isDocSpace && { selectedAccount: this.accounts[0] }),
+      isConnected: false,
     };
   }
 
@@ -84,12 +111,45 @@ class ThirdPartyModule extends React.Component {
       isStartCopy: false,
     });
   };
+
+  onCopyingDirectly = () => {
+    console.log("copy");
+  };
+  onSelectAccount = (options) => {
+    const key = options.key;
+    const label = options.label;
+
+    this.setState({
+      selectedAccount: { key, label },
+    });
+  };
+
+  onConnect = () => {
+    const { isConnected } = this.state;
+
+    this.setState({ isConnected: !isConnected });
+  };
   render() {
-    const { isMaxProgress, t, commonThirdPartyList, buttonSize } = this.props;
-    const { isPanelVisible, isLoadingData, isError, isStartCopy } = this.state;
+    const {
+      isMaxProgress,
+      t,
+      commonThirdPartyList,
+      buttonSize,
+      isDocSpace,
+    } = this.props;
+    const {
+      isPanelVisible,
+      isLoadingData,
+      isError,
+      isStartCopy,
+      selectedAccount,
+      isConnected,
+      selectedFolder,
+    } = this.state;
 
     const isModuleDisabled = !isMaxProgress || isStartCopy || isLoadingData;
-    return (
+    console.log(selectedFolder);
+    return !isDocSpace ? (
       <>
         <div className="manual-backup_folder-input">
           <SelectFolderInput
@@ -124,13 +184,62 @@ class ThirdPartyModule extends React.Component {
           )}
         </div>
       </>
+    ) : (
+      <div className="manual-backup_third-party-module">
+        <div className="manual-backup_connection">
+          <ComboBox
+            className="manual-backup_third-party-combo"
+            options={this.accounts}
+            selectedOption={{
+              key: 0,
+              label: selectedAccount.label,
+            }}
+            onSelect={this.onSelectAccount}
+            noBorder={false}
+            scaledOptions
+            dropDownMaxHeight={300}
+            tabIndex={1}
+          />
+
+          <Button
+            label={t("Common:Connect")}
+            onClick={this.onConnect}
+            isDisabled={isModuleDisabled}
+            size={"small"}
+          />
+        </div>
+        <Text fontWeight={"600"}>{"Folder name:"}</Text>
+
+        <SelectFolderInput
+          onSelectFolder={this.onSelectFolder}
+          name={"thirdParty"}
+          onClose={this.onClose}
+          onClickInput={this.onClickInput}
+          onSetLoadingData={this.onSetLoadingData}
+          isDisabled={isModuleDisabled || !isConnected}
+          isPanelVisible={isPanelVisible}
+          isError={isError}
+          foldersType="third-party"
+          foldersList={commonThirdPartyList}
+          withoutBasicSelection
+        />
+
+        <Button
+          label={t("Common:Duplicate")}
+          onClick={this.onCopyingDirectly}
+          primary
+          isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
+          size={buttonSize}
+        />
+      </div>
     );
   }
 }
 export default inject(({ backup }) => {
   const { commonThirdPartyList } = backup;
-
+  const isDocSpace = true;
   return {
     commonThirdPartyList,
+    isDocSpace,
   };
 })(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));
