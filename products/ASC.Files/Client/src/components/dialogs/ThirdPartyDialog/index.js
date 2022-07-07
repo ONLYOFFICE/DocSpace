@@ -64,6 +64,10 @@ const StyledModalDialog = styled(ModalDialog)`
       }
     }
   }
+
+  .modal-dialog-aside {
+    padding-bottom: 0;
+  }
 `;
 
 StyledModalDialog.defaultProps = { theme: Base };
@@ -167,8 +171,8 @@ const ThirdPartyDialog = (props) => {
 
   const onShowService = (e) => {
     setThirdPartyDialogVisible(false);
-    const item = e.currentTarget.dataset;
-    const showAccountSetting = !e.currentTarget.dataset.link;
+    const item = e.currentTarget.dataset || e.target.dataset;
+    const showAccountSetting = !item.link;
     if (!showAccountSetting) {
       let authModal = window.open(
         "",

@@ -99,11 +99,6 @@ const FileTile = (props) => {
           getContextModel={getContextModel}
           hideContextMenu={onHideContextMenu}
           t={t}
-          title={
-            item.isFolder
-              ? t("Translations:TitleShowFolderActions")
-              : t("Translations:TitleShowActions")
-          }
           showHotkeyBorder={showHotkeyBorder}
           setSelection={setSelection}
         >

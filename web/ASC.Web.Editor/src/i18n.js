@@ -1,6 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import Backend from "i18next-http-backend";
+import Backend from "@appserver/common/utils/i18next-http-backend";
 import config from "../package.json";
 import { LANGUAGE } from "@appserver/common/constants";
 import { loadLanguagePath } from "@appserver/common/utils";
@@ -10,8 +10,8 @@ const newInstance = i18n.createInstance();
 const lng = localStorage.getItem(LANGUAGE) || "en";
 
 newInstance
-  .use(initReactI18next)
   .use(Backend)
+  .use(initReactI18next)
   .init({
     lng: lng,
     fallbackLng: "en",

@@ -164,6 +164,10 @@ const StyledTile = styled.div`
         }
       `}
   }
+
+  .new-items {
+    min-width: 16px;
+  }
 `;
 
 const StyledFileTileTop = styled.div`
@@ -411,10 +415,10 @@ class Tile extends React.PureComponent {
       inProgress,
       isEdit,
       contentElement,
-      title,
       getContextModel,
       showHotkeyBorder,
       hideContextMenu,
+      t,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -453,6 +457,10 @@ class Tile extends React.PureComponent {
       icon: children[0].props.item.icon,
       title: children[0].props.item.title,
     };
+
+    const title = item.isFolder
+      ? t("Translations:TitleShowFolderActions")
+      : t("Translations:TitleShowActions");
 
     return (
       <StyledTile
@@ -503,6 +511,7 @@ class Tile extends React.PureComponent {
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
               {FilesTileContent}
+              {badges}
             </StyledContent>
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (

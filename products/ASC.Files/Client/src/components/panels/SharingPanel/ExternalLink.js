@@ -191,6 +191,7 @@ const ExternalLink = ({
               isExternalLink={true}
               isDefaultMode={false}
               fixedDirection={true}
+              isPersonal={isPersonal}
             />
           </div>
         </>

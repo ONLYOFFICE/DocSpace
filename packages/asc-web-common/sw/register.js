@@ -5,7 +5,7 @@ import { Workbox } from "workbox-window";
 import SnackBar from "@appserver/components/snackbar";
 import i18n from "i18next";
 import { useTranslation, initReactI18next } from "react-i18next";
-import Backend from "i18next-http-backend";
+import Backend from "@appserver/common/utils/i18next-http-backend";
 import { LANGUAGE } from "../constants";
 import { loadLanguagePath } from "../utils";
 

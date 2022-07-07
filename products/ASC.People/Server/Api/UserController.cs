@@ -267,6 +267,7 @@ public class UserController : PeopleControllerBase
         var address = new MailAddress(inDto.Email);
         user.Email = address.Address;
         //Set common fields
+        user.CultureName = inDto.CultureName;
         user.FirstName = inDto.Firstname;
         user.LastName = inDto.Lastname;
         user.Title = inDto.Title;
