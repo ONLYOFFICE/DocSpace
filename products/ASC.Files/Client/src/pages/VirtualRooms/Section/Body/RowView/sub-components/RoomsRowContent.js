@@ -29,21 +29,6 @@ const StyledRowContent = styled(RowContent)`
 const RoomsRowContent = ({ title, roomType, tags, sectionWidth }) => {
   const tagsText = tags?.length > 0 ? tags.join(" | ") : "";
 
-  const getRoomType = () => {
-    switch (roomType) {
-      case RoomsType.FillingFormsRoom:
-        return "Filling form";
-      case RoomsType.EditingRoom:
-        return "Editing";
-      case RoomsType.CustomRoom:
-        return "Custom";
-      case RoomsType.ReadOnlyRoom:
-        return "Viewing";
-      case RoomsType.ReviewRoom:
-        return "Review";
-    }
-  };
-
   return (
     <>
       <StyledRowContent
@@ -68,18 +53,6 @@ const RoomsRowContent = ({ title, roomType, tags, sectionWidth }) => {
           <div></div>
           <div></div>{" "}
         </div>
-
-        <Text
-          className="row_type-text"
-          containerMinWidth="200px"
-          containerWidth="15%"
-          fontSize="12px"
-          fontWeight={400}
-          truncate={true}
-          noSelect={true}
-        >
-          {getRoomType()}
-        </Text>
 
         <Text
           className="row_tags-text"
