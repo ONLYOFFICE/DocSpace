@@ -22,13 +22,14 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
                 {
                     b.Property<int>("Tenant")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("tenant");
 
                     b.Property<int>("ActiveUsers")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("active_users");
+                        .HasColumnName("active_users")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("AvangateId")
                         .HasColumnType("varchar(128)")
@@ -49,12 +50,16 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<long>("MaxFileSize")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("max_file_size");
+                        .HasColumnName("max_file_size")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<long>("MaxTotalSize")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("max_total_size");
+                        .HasColumnName("max_total_size")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Name")
                         .HasColumnType("varchar(128)")
@@ -63,17 +68,23 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<decimal>("Price")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(10,2)")
-                        .HasColumnName("price");
+                        .HasColumnName("price")
+                        .HasDefaultValueSql("'0.00'");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("visible");
+                    b.Property<int>("Visible")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("visible")
+                        .HasDefaultValueSql("'0'");
 
                     b.HasKey("Tenant")
                         .HasName("PRIMARY");
 
                     b.ToTable("tenants_quota", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasData(
                         new
@@ -86,7 +97,7 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                             MaxTotalSize = 10995116277760L,
                             Name = "default",
                             Price = 0.00m,
-                            Visible = false
+                            Visible = 0
                         });
                 });
 
@@ -104,14 +115,14 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("CreateOn")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp")
-                        .HasColumnName("create_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("create_on");
 
                     b.Property<int>("Quantity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("quantity");
+                        .HasColumnName("quantity")
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<DateTime>("Stamp")
                         .HasColumnType("datetime")
@@ -131,6 +142,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("tenant");
 
                     b.ToTable("tenants_tariff", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
@@ -147,19 +160,21 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<bool>("Calls")
+                    b.Property<int>("Calls")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("int")
                         .HasColumnName("calls")
-                        .HasDefaultValueSql("true");
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<DateTime>("CreationDateTime")
                         .HasColumnType("datetime")
                         .HasColumnName("creationdatetime");
 
-                    b.Property<int?>("Industry")
+                    b.Property<int>("Industry")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("industry");
+                        .HasColumnName("industry")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Language")
                         .IsRequired()
@@ -171,10 +186,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("last_modified");
 
                     b.Property<string>("MappedDomain")
                         .HasColumnType("varchar(100)")
@@ -202,15 +215,17 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<bool>("Spam")
+                    b.Property<int>("Spam")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("int")
                         .HasColumnName("spam")
-                        .HasDefaultValueSql("true");
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("status");
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<DateTime?>("StatusChanged")
                         .HasColumnType("datetime")
@@ -257,17 +272,19 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
 
                     b.ToTable("tenants_tenants", (string)null);
 
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
                     b.HasData(
                         new
                         {
                             Id = 1,
                             Alias = "localhost",
-                            Calls = false,
+                            Calls = 0,
                             CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
-                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Web Office",
                             OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            Spam = false,
+                            Spam = 0,
                             Status = 0,
                             TrustedDomainsEnabled = 0,
                             Version = 0
@@ -305,8 +322,10 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<long>("ContentLength")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("content_length");
+                        .HasColumnName("content_length")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("ConvertedType")
                         .HasColumnType("varchar(10)")
@@ -325,21 +344,29 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasColumnType("datetime")
                         .HasColumnName("create_on");
 
-                    b.Property<bool>("CurrentVersion")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("current_version");
+                    b.Property<int>("CurrentVersion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("current_version")
+                        .HasDefaultValueSql("'0'");
 
-                    b.Property<bool>("Encrypted")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("encrypted");
+                    b.Property<int>("Encrypted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("encrypted")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("FileStatus")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("file_status");
+                        .HasColumnName("file_status")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("Forcesave")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("forcesave");
+                        .HasColumnName("forcesave")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
@@ -353,12 +380,16 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasColumnName("modified_on");
 
                     b.Property<int>("ParentId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("folder_id");
+                        .HasColumnName("folder_id")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("ThumbnailStatus")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("thumb");
+                        .HasColumnName("thumb")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -386,6 +417,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("folder_id");
 
                     b.ToTable("files_file", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesBunchObjects", b =>
@@ -414,6 +447,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("left_node");
 
                     b.ToTable("files_bunch_objects", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesLink", b =>
@@ -448,6 +483,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("linked_for");
 
                     b.ToTable("files_link", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesSecurity", b =>
@@ -484,10 +521,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasColumnName("security");
 
                     b.Property<DateTime>("TimeStamp")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp")
-                        .HasColumnName("timestamp")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("timestamp");
 
                     b.HasKey("TenantId", "EntryId", "EntryType", "Subject")
                         .HasName("PRIMARY");
@@ -499,6 +534,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("tenant_id");
 
                     b.ToTable("files_security", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTag", b =>
@@ -536,6 +573,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("name");
 
                     b.ToTable("files_tag", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTagLink", b =>
@@ -559,8 +598,10 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasColumnName("entry_type");
 
                     b.Property<int>("Count")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("tag_count");
+                        .HasColumnName("tag_count")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("CreateBy")
                         .HasColumnType("char(38)")
@@ -582,6 +623,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("entry_id");
 
                     b.ToTable("files_tag_link", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyAccount", b =>
@@ -596,12 +639,14 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasColumnName("create_on");
 
                     b.Property<int>("FolderType")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("folder_type");
+                        .HasColumnName("folder_type")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("varchar(512)")
                         .HasColumnName("password")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
@@ -655,6 +700,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                     b.HasKey("Id");
 
                     b.ToTable("files_thirdparty_account", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyApp", b =>
@@ -672,10 +719,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("ModifiedOn")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp")
-                        .HasColumnName("modified_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("modified_on");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int")
@@ -691,6 +736,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasName("PRIMARY");
 
                     b.ToTable("files_thirdparty_app", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyIdMapping", b =>
@@ -719,6 +766,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("index_1");
 
                     b.ToTable("files_thirdparty_id_mapping", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFolder", b =>
@@ -740,16 +789,22 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasColumnName("create_on");
 
                     b.Property<int>("FilesCount")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("filesCount");
+                        .HasColumnName("filesCount")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("FolderType")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("folder_type");
+                        .HasColumnName("folder_type")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("FoldersCount")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("foldersCount");
+                        .HasColumnName("foldersCount")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
@@ -763,8 +818,10 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasColumnName("modified_on");
 
                     b.Property<int>("ParentId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("parent_id");
+                        .HasColumnName("parent_id")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int")
@@ -786,6 +843,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("parent_id");
 
                     b.ToTable("files_folder", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFolderTree", b =>
@@ -809,6 +868,8 @@ namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
                         .HasDatabaseName("folder_id");
 
                     b.ToTable("files_folder_tree", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

@@ -59,7 +59,8 @@ public static class WebhooksPayloadExtension
             entity.HasKey(e => new { e.Id })
                 .HasName("PRIMARY");
 
-            entity.ToTable("webhooks_logs");
+            entity.ToTable("webhooks_logs")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int")

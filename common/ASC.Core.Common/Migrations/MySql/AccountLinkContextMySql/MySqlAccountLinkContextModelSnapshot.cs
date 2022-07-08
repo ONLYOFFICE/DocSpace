@@ -57,6 +57,8 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
                         .HasDatabaseName("uid");
 
                     b.ToTable("account_links", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

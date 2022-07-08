@@ -52,7 +52,8 @@ public static class LoginEventsExtension
     {
         modelBuilder.Entity<LoginEvent>(entity =>
         {
-            entity.ToTable("login_events");
+            entity.ToTable("login_events")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.Date)
                 .HasDatabaseName("date");
@@ -62,7 +63,9 @@ public static class LoginEventsExtension
 
             entity.Property(e => e.Id).HasColumnName("id");
 
-            entity.Property(e => e.Action).HasColumnName("action");
+            entity.Property(e => e.Action)
+                .HasColumnName("action")
+                .IsRequired(false);
 
             entity.Property(e => e.Browser)
                 .HasColumnName("browser")

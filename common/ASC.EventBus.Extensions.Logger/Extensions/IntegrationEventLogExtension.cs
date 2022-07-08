@@ -40,7 +40,8 @@ public static class IntegrationEventLogExtension
     {
         modelBuilder.Entity<IntegrationEventLogEntry>(entity =>
         {
-            entity.ToTable("event_bus_integration_event_log");
+            entity.ToTable("event_bus_integration_event_log")
+                .HasCharSet("utf8");
 
             entity.HasKey(e => e.EventId)
                   .HasName("PRIMARY");

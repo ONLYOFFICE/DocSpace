@@ -53,9 +53,11 @@ namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("GeonameId")
+                    b.Property<int?>("GeonameId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("geoname_id");
+                        .HasColumnName("geoname_id")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("IPEnd")
                         .IsRequired()
@@ -71,13 +73,17 @@ namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<long>("Latitude")
-                        .HasColumnType("bigint")
-                        .HasColumnName("latitude");
+                    b.Property<float?>("Latitude")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasColumnName("latitude")
+                        .HasDefaultValueSql("NULL");
 
-                    b.Property<long>("Longitude")
-                        .HasColumnType("bigint")
-                        .HasColumnName("longitude");
+                    b.Property<float?>("Longitude")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasColumnName("longitude")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("Processed")
                         .ValueGeneratedOnAdd()
@@ -98,9 +104,11 @@ namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<double>("TimezoneOffset")
-                        .HasColumnType("double")
-                        .HasColumnName("timezone_offset");
+                    b.Property<int?>("TimezoneOffset")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("timezone_offset")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("ZipCode")
                         .HasColumnType("varchar(255)")
@@ -114,6 +122,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
                         .HasDatabaseName("ip_start");
 
                     b.ToTable("dbip_location", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.MobileAppInstall", b =>
@@ -128,9 +138,11 @@ namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
                         .HasColumnType("int")
                         .HasColumnName("app_type");
 
-                    b.Property<DateTime>("LastSign")
+                    b.Property<DateTime?>("LastSign")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasColumnName("last_sign");
+                        .HasColumnName("last_sign")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<DateTime>("RegisteredOn")
                         .HasColumnType("datetime")
@@ -140,6 +152,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
                         .HasName("PRIMARY");
 
                     b.ToTable("mobile_app_install", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Regions", b =>
@@ -156,6 +170,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
                     b.HasKey("Region");
 
                     b.ToTable("Regions");
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

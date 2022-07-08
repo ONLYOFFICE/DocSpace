@@ -49,7 +49,8 @@ public static class DbFilesTagExtension
     {
         modelBuilder.Entity<DbFilesTag>(entity =>
         {
-            entity.ToTable("files_tag");
+            entity.ToTable("files_tag")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Type })
                 .HasDatabaseName("name");

@@ -42,18 +42,21 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                         .HasName("PRIMARY");
 
                     b.ToTable("tenants_buttons", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
                 {
                     b.Property<int>("Tenant")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("tenant");
 
                     b.Property<int>("ActiveUsers")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("active_users");
+                        .HasColumnName("active_users")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("AvangateId")
                         .HasColumnType("varchar(128)")
@@ -74,12 +77,16 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<long>("MaxFileSize")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("max_file_size");
+                        .HasColumnName("max_file_size")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<long>("MaxTotalSize")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("max_total_size");
+                        .HasColumnName("max_total_size")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Name")
                         .HasColumnType("varchar(128)")
@@ -88,17 +95,23 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<decimal>("Price")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(10,2)")
-                        .HasColumnName("price");
+                        .HasColumnName("price")
+                        .HasDefaultValueSql("'0.00'");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("visible");
+                    b.Property<int>("Visible")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("visible")
+                        .HasDefaultValueSql("'0'");
 
                     b.HasKey("Tenant")
                         .HasName("PRIMARY");
 
                     b.ToTable("tenants_quota", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasData(
                         new
@@ -111,7 +124,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                             MaxTotalSize = 10995116277760L,
                             Name = "default",
                             Price = 0.00m,
-                            Visible = false
+                            Visible = 0
                         });
                 });
 
@@ -128,14 +141,14 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<long>("Counter")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("counter");
+                        .HasColumnName("counter")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("last_modified");
 
                     b.Property<string>("Tag")
                         .HasColumnType("varchar(1024)")
@@ -150,6 +163,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                         .HasDatabaseName("last_modified");
 
                     b.ToTable("tenants_quotarow", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbTariff", b =>
@@ -166,14 +181,14 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("CreateOn")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp")
-                        .HasColumnName("create_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("create_on");
 
                     b.Property<int>("Quantity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("quantity");
+                        .HasColumnName("quantity")
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<DateTime>("Stamp")
                         .HasColumnType("datetime")
@@ -193,6 +208,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                         .HasDatabaseName("tenant");
 
                     b.ToTable("tenants_tariff", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

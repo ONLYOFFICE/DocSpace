@@ -54,7 +54,8 @@ public static class FeedUsersExtension
             entity.HasKey(e => new { e.FeedId, e.UserId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("feed_users");
+            entity.ToTable("feed_users")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.UserId)
                 .HasDatabaseName("user_id");

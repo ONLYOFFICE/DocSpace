@@ -30,8 +30,8 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<long>("TelegramUserId")
-                        .HasColumnType("bigint")
+                    b.Property<int>("TelegramUserId")
+                        .HasColumnType("int")
                         .HasColumnName("telegram_user_id");
 
                     b.HasKey("TenantId", "PortalUserId")
@@ -41,6 +41,8 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
                         .HasDatabaseName("tgId");
 
                     b.ToTable("telegram_users", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

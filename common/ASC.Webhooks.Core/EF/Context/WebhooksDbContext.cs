@@ -28,7 +28,7 @@ namespace ASC.Webhooks.Core.EF.Context;
 public class MySqlWebhooksDbContext : WebhooksDbContext { }
 public class PostgreSqlWebhooksDbContext : WebhooksDbContext { }
 
-public partial class WebhooksDbContext : BaseDbContext
+public class WebhooksDbContext : BaseDbContext
 {
     public WebhooksDbContext() { }
 
@@ -65,6 +65,6 @@ public static class WebhooksDbExtension
 {
     public static DIHelper AddWebhooksDbContextService(this DIHelper services)
     {
-        return services.AddDbContextManagerService<TenantDbContext>();
+        return services.AddDbContextManagerService<WebhooksDbContext>();
     }
 }

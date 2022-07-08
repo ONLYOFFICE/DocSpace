@@ -111,8 +111,8 @@ public static class AclExtension
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|28b10049dd204f54b986873bc14ccfc7", AceType = 0 },
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|3cfd481b46f24a4ab55cb8c0c9def02c", AceType = 0 },
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6a598c7491ae437da5f4ad339bd11bb2", AceType = 0 },
-                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca", AceType = 0 },
-                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234", AceType = 0 },
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca", AceType = (AceType)1 },
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234", AceType = (AceType)1 },
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|46cfa73af32046cf8d5bcd82e1d67f26", AceType = 0 }
             );
 
@@ -126,7 +126,8 @@ public static class AclExtension
             entity.HasKey(e => new { e.Tenant, e.Subject, e.Action, e.Object })
                 .HasName("PRIMARY");
 
-            entity.ToTable("core_acl");
+            entity.ToTable("core_acl")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
 

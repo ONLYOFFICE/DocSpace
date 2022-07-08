@@ -32,16 +32,16 @@ public class DbVoipCall
     public string ParentCallId { get; set; }
     public string NumberFrom { get; set; }
     public string NumberTo { get; set; }
-    public int Status { get; set; }
+    public int? Status { get; set; }
     public Guid AnsweredBy { get; set; }
-    public DateTime DialDate { get; set; }
-    public int DialDuration { get; set; }
+    public DateTime? DialDate { get; set; }
+    public int? DialDuration { get; set; }
     public string Sid { get; set; }
     public string Uri { get; set; }
-    public int Duration { get; set; }
+    public int? Duration { get; set; }
     public decimal RecordPrice { get; set; }
-    public int ContactId { get; set; }
-    public decimal Price { get; set; }
+    public int? ContactId { get; set; }
+    public decimal? Price { get; set; }
     public int TenantId { get; set; }
 
     public CrmContact CrmContact { get; set; }
@@ -61,7 +61,8 @@ public static class DbVoipCallExtension
     {
         modelBuilder.Entity<DbVoipCall>(entity =>
         {
-            entity.ToTable("crm_voip_calls");
+            entity.ToTable("crm_voip_calls")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant_id");
@@ -83,13 +84,18 @@ public static class DbVoipCallExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.ContactId).HasColumnName("contact_id");
+            entity.Property(e => e.ContactId)
+                .HasColumnName("contact_id")
+                .IsRequired(false);
 
             entity.Property(e => e.DialDate)
                 .HasColumnName("dial_date")
-                .HasColumnType("datetime");
+                .HasColumnType("datetime")
+                .IsRequired(false);
 
-            entity.Property(e => e.DialDuration).HasColumnName("dial_duration");
+            entity.Property(e => e.DialDuration)
+                .HasColumnName("dial_duration")
+                .IsRequired(false);
 
             entity.Property(e => e.NumberFrom)
                 .IsRequired()
@@ -114,9 +120,12 @@ public static class DbVoipCallExtension
 
             entity.Property(e => e.Price)
                 .HasColumnName("price")
-                .HasColumnType("decimal(10,4)");
+                .HasColumnType("decimal(10,4)")
+                .IsRequired(false);
 
-            entity.Property(e => e.Duration).HasColumnName("record_duration");
+            entity.Property(e => e.Duration)
+                .HasColumnName("record_duration")
+                .IsRequired(false);
 
             entity.Property(e => e.RecordPrice)
                 .HasColumnName("record_price")
@@ -134,7 +143,9 @@ public static class DbVoipCallExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status)
+                .HasColumnName("status")
+                .IsRequired(false);
 
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
         });

@@ -549,6 +549,7 @@ public class TariffService : ITariffService
         foreach (var t in tariffs)
         {
             t.Tenant = -2;
+            t.CreateOn = DateTime.UtcNow;
         }
 
         CoreDbContext.SaveChanges();

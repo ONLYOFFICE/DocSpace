@@ -101,7 +101,8 @@ public class TokenHelper
             App = token.App,
             Token = EncryptToken(token),
             UserId = _authContext.CurrentAccount.ID,
-            TenantId = _tenantManager.GetCurrentTenant().Id
+            TenantId = _tenantManager.GetCurrentTenant().Id,
+            ModifiedOn = DateTime.UtcNow
         };
 
         FilesDbContext.AddOrUpdate(r => r.ThirdpartyApp, dbFilesThirdpartyApp);

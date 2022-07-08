@@ -37,8 +37,10 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("ContactTypeId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("contact_type_id");
+                        .HasColumnName("contact_type_id")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("CreateBy")
                         .IsRequired()
@@ -79,18 +81,17 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_company");
 
-                    b.Property<bool>("IsShared")
-                        .HasColumnType("tinyint(1)")
+                    b.Property<sbyte?>("IsShared")
+                        .HasColumnType("tinyint")
                         .HasColumnName("is_shared");
 
                     b.Property<string>("LastModifedBy")
-                        .IsRequired()
                         .HasColumnType("char(38)")
                         .HasColumnName("last_modifed_by")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<DateTime>("LastModifedOn")
+                    b.Property<DateTime?>("LastModifedOn")
                         .HasColumnType("datetime")
                         .HasColumnName("last_modifed_on");
 
@@ -107,8 +108,10 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("StatusId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("status_id");
+                        .HasColumnName("status_id")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int")
@@ -135,6 +138,8 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasDatabaseName("display_name");
 
                     b.ToTable("crm_contact", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbVoipCall", b =>
@@ -154,22 +159,22 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("ContactId")
+                    b.Property<int?>("ContactId")
                         .HasColumnType("int")
                         .HasColumnName("contact_id");
 
                     b.Property<int?>("CrmContactId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DialDate")
+                    b.Property<DateTime?>("DialDate")
                         .HasColumnType("datetime")
                         .HasColumnName("dial_date");
 
-                    b.Property<int>("DialDuration")
+                    b.Property<int?>("DialDuration")
                         .HasColumnType("int")
                         .HasColumnName("dial_duration");
 
-                    b.Property<int>("Duration")
+                    b.Property<int?>("Duration")
                         .HasColumnType("int")
                         .HasColumnName("record_duration");
 
@@ -194,7 +199,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
                         .HasColumnType("decimal(10,4)")
                         .HasColumnName("price");
 
@@ -208,7 +213,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("Status")
                         .HasColumnType("int")
                         .HasColumnName("status");
 
@@ -233,6 +238,8 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasDatabaseName("parent_call_id");
 
                     b.ToTable("crm_voip_calls", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.VoipNumber", b =>
@@ -272,6 +279,8 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasDatabaseName("tenant_id");
 
                     b.ToTable("crm_voip_number", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbVoipCall", b =>

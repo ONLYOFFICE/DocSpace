@@ -80,8 +80,6 @@ global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.EF.Model.Mail;
-global using ASC.Core.Common.EF.Model.Resource;
 global using ASC.Core.Common.Hosting.Extensions;
 global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Core.Common.Log;

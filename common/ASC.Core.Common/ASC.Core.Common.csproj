@@ -80,10 +80,4 @@
     <Protobuf Include="protos\az_record_cache.proto" />
     <Protobuf Include="protos\quota_cache_item.proto" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Migrations\MySql\ResourceDbContextMySql\" />
-    <Folder Include="Migrations\MySql\TelegramDbContextMySql\" />
-    <Folder Include="Migrations\PostgreSql\ResourceDbContextPostgreSql\" />
-  </ItemGroup>
 </Project>

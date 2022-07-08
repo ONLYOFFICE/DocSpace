@@ -77,7 +77,8 @@ public static class BackupScheduleExtension
             entity.HasKey(e => new { e.TenantId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("backup_schedule");
+            entity.ToTable("backup_schedule")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.TenantId)
                 .HasColumnName("tenant_id")

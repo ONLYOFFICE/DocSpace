@@ -55,7 +55,7 @@ public class GeolocationHelper
                     IPEnd = r.IPEnd,
                     IPStart = r.IPStart,
                     Key = r.Country,
-                    TimezoneOffset = r.TimezoneOffset,
+                    TimezoneOffset = r.TimezoneOffset ?? 0,
                     TimezoneName = r.TimezoneName
                 })
                 .FirstOrDefault();

@@ -54,6 +54,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
 
                     b.ToTable("core_acl", (string)null);
 
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
                     b.HasData(
                         new
                         {
@@ -565,7 +567,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca",
-                            AceType = 0
+                            AceType = 1
                         },
                         new
                         {
@@ -573,7 +575,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234",
-                            AceType = 0
+                            AceType = 1
                         },
                         new
                         {
@@ -601,10 +603,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("last_modified");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -619,9 +619,11 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<bool>("Removed")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("removed");
+                    b.Property<int>("Removed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("removed")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Sid")
                         .HasColumnType("varchar(512)")
@@ -642,6 +644,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .HasDatabaseName("parentid");
 
                     b.ToTable("core_group", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbSubscriptionMethod", b =>
@@ -679,6 +683,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .HasName("PRIMARY");
 
                     b.ToTable("core_subscriptionmethod", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasData(
                         new
@@ -969,14 +975,18 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<bool>("Unsubscribed")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("unsubscribed");
+                    b.Property<int>("Unsubscribed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("unsubscribed")
+                        .HasDefaultValueSql("'0'");
 
                     b.HasKey("Tenant", "Source", "Action", "Recipient", "Object")
                         .HasName("PRIMARY");
 
                     b.ToTable("core_subscription", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasData(
                         new
@@ -986,7 +996,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "send_whats_new",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -995,7 +1005,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "new feed",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1004,7 +1014,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "new post",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1013,16 +1023,16 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "new topic in forum",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Source = "9d51954f-db9b-4aed-94e3-ed70b914e10",
+                            Source = "9d51954f-db9b-4aed-94e3-ed70b914e101",
                             Action = "new photo uploaded",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1031,7 +1041,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "new bookmark created",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1040,16 +1050,16 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "new wiki page",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
                             Tenant = -1,
                             Source = "37620ae5-c40b-45ce-855a-39dd7d76a1fa",
-                            Action = "BirthdayReminderd",
+                            Action = "BirthdayReminder",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1058,7 +1068,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "sharedocument",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1067,7 +1077,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "sharefolder",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1076,7 +1086,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "calendar_sharing",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1085,7 +1095,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "event_alert",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1094,7 +1104,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "admin_notify",
                             Recipient = "cd84e66b-b803-40fc-99f9-b2969a54a1de",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1103,7 +1113,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "SetAccess",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1112,7 +1122,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "ResponsibleForTask",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1121,7 +1131,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "AddRelationshipEvent",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1130,7 +1140,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "ExportCompleted",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1139,7 +1149,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "CreateNewContact",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1148,7 +1158,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "ResponsibleForOpportunity",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         },
                         new
                         {
@@ -1157,7 +1167,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             Action = "periodic_notify",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
-                            Unsubscribed = false
+                            Unsubscribed = 0
                         });
                 });
 
@@ -1171,8 +1181,10 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("ActivationStatus")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("activation_status");
+                        .HasColumnName("activation_status")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime")
@@ -1185,10 +1197,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("CreateDate")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp")
-                        .HasColumnName("create_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("create_on");
 
                     b.Property<string>("CultureName")
                         .HasColumnType("varchar(20)")
@@ -1233,8 +1243,10 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("MobilePhoneActivation")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("phone_activation");
+                        .HasColumnName("phone_activation")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Notes")
                         .HasColumnType("varchar(512)")
@@ -1242,12 +1254,14 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<bool>("Removed")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("removed");
+                    b.Property<int>("Removed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("removed")
+                        .HasDefaultValueSql("'0'");
 
-                    b.Property<bool?>("Sex")
-                        .HasColumnType("tinyint(1)")
+                    b.Property<int?>("Sex")
+                        .HasColumnType("int")
                         .HasColumnName("sex");
 
                     b.Property<string>("Sid")
@@ -1312,18 +1326,20 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
 
                     b.ToTable("core_user", (string)null);
 
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
                     b.HasData(
                         new
                         {
                             Id = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
                             ActivationStatus = 0,
-                            CreateDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreateDate = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "",
                             FirstName = "Administrator",
                             LastModified = new DateTime(2021, 3, 9, 9, 52, 55, 765, DateTimeKind.Utc).AddTicks(1420),
                             LastName = "",
                             MobilePhoneActivation = 0,
-                            Removed = false,
+                            Removed = 0,
                             Status = 1,
                             Tenant = 1,
                             UserName = "administrator",
@@ -1354,14 +1370,14 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .HasColumnName("ref_type");
 
                     b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("last_modified");
 
-                    b.Property<bool>("Removed")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("removed");
+                    b.Property<int>("Removed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("removed")
+                        .HasDefaultValueSql("'0'");
 
                     b.HasKey("Tenant", "UserId", "GroupId", "RefType")
                         .HasName("PRIMARY");
@@ -1373,6 +1389,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
 
                     b.ToTable("core_usergroup", (string)null);
 
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
                     b.HasData(
                         new
                         {
@@ -1380,8 +1398,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
                             GroupId = "cd84e66b-b803-40fc-99f9-b2969a54a1de",
                             RefType = 0,
-                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Removed = false
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Removed = 0
                         });
                 });
 
@@ -1410,6 +1428,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .HasDatabaseName("tenant");
 
                     b.ToTable("core_userphoto", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.UserSecurity", b =>
@@ -1422,9 +1442,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .IsRequired()
+                        .HasColumnType("timestamp");
 
                     b.Property<string>("PwdHash")
                         .HasColumnType("varchar(512)")
@@ -1453,11 +1472,13 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
 
                     b.ToTable("core_usersecurity", (string)null);
 
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
                     b.HasData(
                         new
                         {
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            LastModified = new DateTime(2022, 6, 28, 12, 56, 24, 652, DateTimeKind.Utc).AddTicks(8278),
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
                             Tenant = 1
                         });

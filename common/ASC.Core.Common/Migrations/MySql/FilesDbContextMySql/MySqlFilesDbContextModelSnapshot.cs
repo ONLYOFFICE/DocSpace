@@ -37,6 +37,8 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
 
                     b.ToTable("files_converts", (string)null);
 
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
                     b.HasData(
                         new
                         {
@@ -141,26 +143,6 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
                         new
                         {
                             Input = ".docxf",
-                            Output = ".dotx"
-                        },
-                        new
-                        {
-                            Input = ".docxf",
-                            Output = ".epub"
-                        },
-                        new
-                        {
-                            Input = ".docxf",
-                            Output = ".fb2"
-                        },
-                        new
-                        {
-                            Input = ".docxf",
-                            Output = ".html"
-                        },
-                        new
-                        {
-                            Input = ".docxf",
                             Output = ".odt"
                         },
                         new
@@ -171,11 +153,6 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
                         new
                         {
                             Input = ".docxf",
-                            Output = ".ott"
-                        },
-                        new
-                        {
-                            Input = ".docxf",
                             Output = ".pdf"
                         },
                         new
@@ -651,16 +628,6 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
                         new
                         {
                             Input = ".pptt",
-                            Output = ".odp"
-                        },
-                        new
-                        {
-                            Input = ".pptt",
-                            Output = ".pdf"
-                        },
-                        new
-                        {
-                            Input = ".pptt",
                             Output = ".pptx"
                         },
                         new
@@ -676,7 +643,7 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
                         new
                         {
                             Input = ".rtf",
-                            Output = ".odp"
+                            Output = ".odt"
                         },
                         new
                         {
@@ -706,12 +673,12 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
                         new
                         {
                             Input = ".txt",
-                            Output = ".odp"
+                            Output = ".odt"
                         },
                         new
                         {
                             Input = ".txt",
-                            Output = ".rtx"
+                            Output = ".rtf"
                         },
                         new
                         {

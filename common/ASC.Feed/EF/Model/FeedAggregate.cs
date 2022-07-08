@@ -59,7 +59,8 @@ public static class FeedAggregateExtension
     {
         modelBuilder.Entity<FeedAggregate>(entity =>
         {
-            entity.ToTable("feed_aggregate");
+            entity.ToTable("feed_aggregate")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
                 .HasDatabaseName("aggregated_date");

@@ -39,7 +39,7 @@ public static class FilesConvertsExtension
         modelBuilder
             .Add(MySqlAddFilesConverts, Provider.MySql)
             .Add(PgSqlAddFilesConverts, Provider.PostgreSql)
-            .HasData(
+            .HasData( 
            new FilesConverts { Input = ".csv", Output = ".ods" },
            new FilesConverts { Input = ".csv", Output = ".pdf" },
            new FilesConverts { Input = ".csv", Output = ".xlsx" },
@@ -61,13 +61,8 @@ public static class FilesConvertsExtension
 
            new FilesConverts { Input = ".docx", Output = ".docxf" },
            new FilesConverts { Input = ".docxf", Output = ".docx" },
-           new FilesConverts { Input = ".docxf", Output = ".dotx" },
-           new FilesConverts { Input = ".docxf", Output = ".epub" },
-           new FilesConverts { Input = ".docxf", Output = ".fb2" },
-           new FilesConverts { Input = ".docxf", Output = ".html" },
            new FilesConverts { Input = ".docxf", Output = ".odt" },
            new FilesConverts { Input = ".docxf", Output = ".oform" },
-           new FilesConverts { Input = ".docxf", Output = ".ott" },
            new FilesConverts { Input = ".docxf", Output = ".pdf" },
            new FilesConverts { Input = ".docxf", Output = ".rtf" },
            new FilesConverts { Input = ".docxf", Output = ".txt" },
@@ -164,19 +159,17 @@ public static class FilesConvertsExtension
            new FilesConverts { Input = ".pptm", Output = ".odp" },
            new FilesConverts { Input = ".pptm", Output = ".pdf" },
            new FilesConverts { Input = ".pptm", Output = ".pptx" },
-           new FilesConverts { Input = ".pptt", Output = ".odp" },
-           new FilesConverts { Input = ".pptt", Output = ".pdf" },
            new FilesConverts { Input = ".pptt", Output = ".pptx" },
            new FilesConverts { Input = ".pptx", Output = ".odp" },
            new FilesConverts { Input = ".pptx", Output = ".pdf" },
-           new FilesConverts { Input = ".rtf", Output = ".odp" },
+           new FilesConverts { Input = ".rtf", Output = ".odt" },
            new FilesConverts { Input = ".rtf", Output = ".pdf" },
            new FilesConverts { Input = ".rtf", Output = ".docx" },
            new FilesConverts { Input = ".rtf", Output = ".txt" },
            new FilesConverts { Input = ".txt", Output = ".pdf" },
            new FilesConverts { Input = ".txt", Output = ".docx" },
-           new FilesConverts { Input = ".txt", Output = ".odp" },
-           new FilesConverts { Input = ".txt", Output = ".rtx" },
+           new FilesConverts { Input = ".txt", Output = ".odt" },
+           new FilesConverts { Input = ".txt", Output = ".rtf" },
            new FilesConverts { Input = ".xls", Output = ".csv" },
            new FilesConverts { Input = ".xls", Output = ".ods" },
            new FilesConverts { Input = ".xls", Output = ".pdf" },
@@ -214,7 +207,8 @@ public static class FilesConvertsExtension
             entity.HasKey(e => new { e.Input, e.Output })
                 .HasName("PRIMARY");
 
-            entity.ToTable("files_converts");
+            entity.ToTable("files_converts")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.Input)
                 .HasColumnName("input")

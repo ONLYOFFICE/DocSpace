@@ -78,7 +78,8 @@ public static class BackupRecordExtension
     {
         modelBuilder.Entity<BackupRecord>(entity =>
         {
-            entity.ToTable("backup_backup");
+            entity.ToTable("backup_backup")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant_id");

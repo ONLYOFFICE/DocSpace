@@ -31,8 +31,8 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model.Resource;
+using ASC.Resource.Manager.EF.Context;
+using ASC.Resource.Manager.EF.Model;
 
 namespace ASC.Resource.Manager
 {

@@ -22,25 +22,30 @@ namespace ASC.Core.Common.Migrations.PostgreSql.NotifyDbContextPostgreSql
             modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyInfo", b =>
                 {
                     b.Property<int>("NotifyId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("notify_id");
 
                     b.Property<int>("Attempts")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("attempts");
+                        .HasColumnName("attempts")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<DateTime>("ModifyDate")
                         .HasColumnType("datetime")
                         .HasColumnName("modify_date");
 
                     b.Property<int>("Priority")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("priority");
+                        .HasColumnName("priority")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("State")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("state");
+                        .HasColumnName("state")
+                        .HasDefaultValueSql("'0'");
 
                     b.HasKey("NotifyId")
                         .HasName("PRIMARY");
@@ -49,6 +54,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.NotifyDbContextPostgreSql
                         .HasDatabaseName("state");
 
                     b.ToTable("notify_info", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyQueue", b =>
@@ -124,6 +131,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.NotifyDbContextPostgreSql
                         .HasName("PRIMARY");
 
                     b.ToTable("notify_queue", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

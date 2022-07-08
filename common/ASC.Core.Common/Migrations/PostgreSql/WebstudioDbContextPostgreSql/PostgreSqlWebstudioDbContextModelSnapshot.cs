@@ -28,15 +28,15 @@ namespace ASC.Core.Common.Migrations.PostgreSql.WebstudioDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("last_modified");
 
                     b.HasKey("IndexName")
                         .HasName("PRIMARY");
 
                     b.ToTable("webstudio_index", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
@@ -71,6 +71,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.WebstudioDbContextPostgreSql
 
                     b.ToTable("webstudio_settings", (string)null);
 
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
                     b.HasData(
                         new
                         {
@@ -103,17 +105,23 @@ namespace ASC.Core.Common.Migrations.PostgreSql.WebstudioDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<DateTime>("FirstVisitTime")
+                    b.Property<DateTime?>("FirstVisitTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasColumnName("firstvisittime");
+                        .HasColumnName("firstvisittime")
+                        .HasDefaultValueSql("NULL");
 
-                    b.Property<DateTime>("LastVisitTime")
+                    b.Property<DateTime?>("LastVisitTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasColumnName("lastvisittime");
+                        .HasColumnName("lastvisittime")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("VisitCount")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("visitcount");
+                        .HasColumnName("visitcount")
+                        .HasDefaultValueSql("'0'");
 
                     b.HasKey("TenantId", "VisitDate", "ProductId", "UserId")
                         .HasName("PRIMARY");
@@ -122,6 +130,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.WebstudioDbContextPostgreSql
                         .HasDatabaseName("visitdate");
 
                     b.ToTable("webstudio_uservisit", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

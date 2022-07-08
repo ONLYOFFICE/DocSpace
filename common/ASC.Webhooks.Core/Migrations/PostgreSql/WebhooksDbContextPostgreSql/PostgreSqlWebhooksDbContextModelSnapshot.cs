@@ -48,6 +48,8 @@ namespace ASC.Webhooks.Core.Migrations.PostgreSql.WebhooksDbContextPostgreSql
                         .HasName("PRIMARY");
 
                     b.ToTable("webhooks_config", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksLog", b =>
@@ -106,6 +108,8 @@ namespace ASC.Webhooks.Core.Migrations.PostgreSql.WebhooksDbContextPostgreSql
                         .HasName("PRIMARY");
 
                     b.ToTable("webhooks_logs", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

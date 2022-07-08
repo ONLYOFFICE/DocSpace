@@ -49,7 +49,8 @@ public static class WebhooksConfigExtension
             entity.HasKey(e => new { e.ConfigId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("webhooks_config");
+            entity.ToTable("webhooks_config")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.ConfigId)
                 .HasColumnType("int")

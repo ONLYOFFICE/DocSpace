@@ -54,6 +54,8 @@ public class CustomMySqlMigrationsSqlGenerator : MySqlMigrationsSqlGenerator
             Options = MigrationsSqlGenerationOptions.Default;
         }
 
+        var test = migrationCommandListBuilder.GetCommandList();
+
         return migrationCommandListBuilder.GetCommandList();
     }
 
@@ -126,14 +128,14 @@ public class CustomMigrationCommandListBuilder : MigrationCommandListBuilder
         var separatingStrings = new[] { startOpearation, startUnique, startIndexName, startTableName, StartColumnsName, endColumnsName };
         var separatedOpearion = indexOperation.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
 
-        var indexName = separatedOpearion[1];
-        var tableName = separatedOpearion[2];
+        var indexName = separatedOpearion[0];
+        var tableName = separatedOpearion[1];
 
         var createIndexForMySQL =
             $"set @x := (select count(*) from information_schema.statistics where table_name = '{tableName}' and index_name = '{indexName}' and table_schema = database()); " +
             $"set @sql := if (@x > 0, 'select ''Index exists.''', '{indexOperation};'); " +
             $"PREPARE stmt FROM @sql; " +
-            $"EXECUTE stmt; ";
+            $"EXECUTE stmt";
 
         switch (Dependencies.CurrentContext.Context.Database.ProviderName)
         {

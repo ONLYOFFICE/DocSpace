@@ -52,7 +52,8 @@ public static class FeedLastExtension
             entity.HasKey(e => e.LastKey)
                 .HasName("PRIMARY");
 
-            entity.ToTable("feed_last");
+            entity.ToTable("feed_last")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.LastKey)
                 .HasColumnName("last_key")

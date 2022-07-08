@@ -61,7 +61,8 @@ public static class DbFilesThirdpartyAccountExtension
     {
         modelBuilder.Entity<DbFilesThirdpartyAccount>(entity =>
         {
-            entity.ToTable("files_thirdparty_account");
+            entity.ToTable("files_thirdparty_account")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.Id).HasColumnName("id");
 
@@ -76,12 +77,14 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.FolderType).HasColumnName("folder_type");
+            entity.Property(e => e.FolderType)
+                .HasColumnName("folder_type")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Password)
                 .IsRequired()
                 .HasColumnName("password")
-                .HasColumnType("varchar(100)")
+                .HasColumnType("varchar(512)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 

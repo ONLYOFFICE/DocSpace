@@ -184,6 +184,7 @@ public class DbHelper : IDisposable
                         {
                             var tariff = _coreDbContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
                             tariff.Tenant = (int)r[table.Columns["id"]];
+                            tariff.CreateOn = DateTime.Now;
                             //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
                             _coreDbContext.Entry(tariff).State = EntityState.Modified;
                             _coreDbContext.SaveChanges();

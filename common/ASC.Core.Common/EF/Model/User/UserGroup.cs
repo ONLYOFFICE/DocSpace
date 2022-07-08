@@ -53,7 +53,8 @@ public static class DbUserGroupExtension
                 Tenant = 1,
                 UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                 GroupId = Guid.Parse("cd84e66b-b803-40fc-99f9-b2969a54a1de"),
-                RefType = 0
+                RefType = 0,
+                LastModified = new DateTime(2022, 7, 8)
             }
             );
 
@@ -67,7 +68,8 @@ public static class DbUserGroupExtension
             entity.HasKey(e => new { e.Tenant, e.UserId, e.GroupId, e.RefType })
                 .HasName("PRIMARY");
 
-            entity.ToTable("core_usergroup");
+            entity.ToTable("core_usergroup")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified");
@@ -90,10 +92,12 @@ public static class DbUserGroupExtension
 
             entity.Property(e => e.LastModified)
                 .HasColumnName("last_modified")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .HasColumnType("timestamp");
 
-            entity.Property(e => e.Removed).HasColumnName("removed");
+            entity.Property(e => e.Removed)
+            .HasColumnName("removed")
+            .HasColumnType("int")
+            .HasDefaultValueSql("'0'");
         });
     }
     public static void PgSqlAddUserGroup(this ModelBuilder modelBuilder)

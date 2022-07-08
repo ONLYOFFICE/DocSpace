@@ -33,19 +33,21 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<bool>("Calls")
+                    b.Property<int>("Calls")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("int")
                         .HasColumnName("calls")
-                        .HasDefaultValueSql("true");
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<DateTime>("CreationDateTime")
                         .HasColumnType("datetime")
                         .HasColumnName("creationdatetime");
 
-                    b.Property<int?>("Industry")
+                    b.Property<int>("Industry")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("industry");
+                        .HasColumnName("industry")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Language")
                         .IsRequired()
@@ -57,10 +59,8 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("last_modified");
 
                     b.Property<string>("MappedDomain")
                         .HasColumnType("varchar(100)")
@@ -88,15 +88,17 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<bool>("Spam")
+                    b.Property<int>("Spam")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("int")
                         .HasColumnName("spam")
-                        .HasDefaultValueSql("true");
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("status");
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<DateTime?>("StatusChanged")
                         .HasColumnType("datetime")
@@ -143,17 +145,19 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
 
                     b.ToTable("tenants_tenants", (string)null);
 
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
                     b.HasData(
                         new
                         {
                             Id = 1,
                             Alias = "localhost",
-                            Calls = false,
+                            Calls = 0,
                             CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
-                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Web Office",
                             OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            Spam = false,
+                            Spam = 0,
                             Status = 0,
                             TrustedDomainsEnabled = 0,
                             Version = 0
@@ -241,6 +245,8 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                         .HasDatabaseName("tenant_id");
 
                     b.ToTable("backup_backup", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupSchedule", b =>
@@ -294,6 +300,8 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                         .HasName("PRIMARY");
 
                     b.ToTable("backup_schedule", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

@@ -55,7 +55,8 @@ public static class FeedReadedExtension
             entity.HasKey(e => new { e.Tenant, e.UserId, e.Module })
                 .HasName("PRIMARY");
 
-            entity.ToTable("feed_readed");
+            entity.ToTable("feed_readed")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant_id");
 

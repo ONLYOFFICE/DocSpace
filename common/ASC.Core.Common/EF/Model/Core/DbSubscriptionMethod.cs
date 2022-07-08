@@ -92,7 +92,8 @@ public static class SubscriptionMethodExtension
             entity.HasKey(e => new { e.Tenant, e.Source, e.Action, e.Recipient })
                 .HasName("PRIMARY");
 
-            entity.ToTable("core_subscriptionmethod");
+            entity.ToTable("core_subscriptionmethod")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
 

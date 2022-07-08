@@ -88,7 +88,8 @@ public static class DbTenantExtension
                 Alias = "localhost",
                 Name = "Web Office",
                 CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
-                OwnerId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef")
+                OwnerId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
+                LastModified = new DateTime(2022, 7, 8)
             }
             );
 
@@ -104,7 +105,8 @@ public static class DbTenantExtension
 
         modelBuilder.Entity<DbTenant>(entity =>
         {
-            entity.ToTable("tenants_tenants");
+            entity.ToTable("tenants_tenants")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified");
@@ -126,13 +128,17 @@ public static class DbTenantExtension
 
             entity.Property(e => e.Calls)
                 .HasColumnName("calls")
-                .HasDefaultValueSql("true");
+                .HasDefaultValueSql("'1'")
+                .HasColumnType("int");
 
             entity.Property(e => e.CreationDateTime)
                 .HasColumnName("creationdatetime")
                 .HasColumnType("datetime");
 
-            entity.Property(e => e.Industry).HasColumnName("industry");
+            entity.Property(e => e.Industry)
+                .HasColumnName("industry")
+                .IsRequired()
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Language)
                 .IsRequired()
@@ -144,8 +150,7 @@ public static class DbTenantExtension
 
             entity.Property(e => e.LastModified)
                 .HasColumnName("last_modified")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .HasColumnType("timestamp");
 
             entity.Property(e => e.MappedDomain)
                 .HasColumnName("mappeddomain")
@@ -174,9 +179,13 @@ public static class DbTenantExtension
 
             entity.Property(e => e.Spam)
                 .HasColumnName("spam")
-                .HasDefaultValueSql("true");
+                .HasDefaultValueSql("'1'")
+                .HasColumnType("int");
 
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status)
+                .HasColumnName("status")
+                .IsRequired()
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.StatusChanged)
                 .HasColumnName("statuschanged")

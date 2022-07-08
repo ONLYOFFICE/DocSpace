@@ -48,7 +48,8 @@ public static class VoipNumberExtension
     {
         modelBuilder.Entity<VoipNumber>(entity =>
         {
-            entity.ToTable("crm_voip_number");
+            entity.ToTable("crm_voip_number")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant_id");

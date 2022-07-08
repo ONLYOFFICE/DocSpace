@@ -80,7 +80,8 @@ public static class DbUserExtension
                 Status = (EmployeeStatus)1,
                 ActivationStatus = 0,
                 WorkFromDate = new DateTime(2021, 3, 9, 9, 52, 55, 764, DateTimeKind.Utc).AddTicks(9157),
-                LastModified = new DateTime(2021, 3, 9, 9, 52, 55, 765, DateTimeKind.Utc).AddTicks(1420)
+                LastModified = new DateTime(2021, 3, 9, 9, 52, 55, 765, DateTimeKind.Utc).AddTicks(1420),
+                CreateDate = new DateTime(2022, 7, 8)
             });
 
         return modelBuilder;
@@ -91,7 +92,8 @@ public static class DbUserExtension
         modelBuilder.MySqlAddUserGroup();
         modelBuilder.Entity<User>(entity =>
         {
-            entity.ToTable("core_user");
+            entity.ToTable("core_user")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.Email)
                 .HasDatabaseName("email");
@@ -108,7 +110,9 @@ public static class DbUserExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.ActivationStatus).HasColumnName("activation_status");
+            entity.Property(e => e.ActivationStatus)
+                .HasColumnName("activation_status")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.BirthDate)
                 .HasColumnName("bithdate")
@@ -122,8 +126,7 @@ public static class DbUserExtension
 
             entity.Property(e => e.CreateDate)
                 .HasColumnName("create_on")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .HasColumnType("timestamp");
 
             entity.Property(e => e.CultureName)
                 .HasColumnName("culture")
@@ -174,11 +177,18 @@ public static class DbUserExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.MobilePhoneActivation).HasColumnName("phone_activation");
+            entity.Property(e => e.MobilePhoneActivation)
+                .HasColumnName("phone_activation")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.Removed).HasColumnName("removed");
+            entity.Property(e => e.Removed)
+                .HasColumnName("removed")
+                .HasColumnType("int")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.Sex).HasColumnName("sex");
+            entity.Property(e => e.Sex)
+                .HasColumnName("sex")
+                .HasColumnType("int");
 
             entity.Property(e => e.Sid)
                 .HasColumnName("sid")
