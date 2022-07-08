@@ -78,3 +78,14 @@ export function unarchiveRoom(id) {
     return res;
   });
 }
+
+export function getTags() {
+  const options = {
+    method: "get",
+    url: "/files/tags",
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
