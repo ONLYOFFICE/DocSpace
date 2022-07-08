@@ -21,6 +21,8 @@ const StyledArticle = styled.article`
   min-width: 251px;
   max-width: 251px;
 
+  box-sizing: border-box;
+
   padding: 0 20px;
 
   @media ${tablet} {
