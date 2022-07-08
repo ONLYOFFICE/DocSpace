@@ -34,7 +34,7 @@ public class ChunkedUploaderHandler
 
     public async Task Invoke(HttpContext context, ChunkedUploaderHandlerService chunkedUploaderHandlerService)
     {
-        await chunkedUploaderHandlerService.Invoke(context).ConfigureAwait(false);
+        await chunkedUploaderHandlerService.Invoke(context);
     }
 }
 

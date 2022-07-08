@@ -58,12 +58,12 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
     public async Task<Folder<string>> GetFolderAsync(string folderId)
     {
-        return ToFolder(await GetDropboxFolderAsync(folderId).ConfigureAwait(false));
+        return ToFolder(await GetDropboxFolderAsync(folderId));
     }
 
     public async Task<Folder<string>> GetFolderAsync(string title, string parentId)
     {
-        var items = await GetDropboxItemsAsync(parentId, true).ConfigureAwait(false);
+        var items = await GetDropboxItemsAsync(parentId, true);
         var metadata = items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
 
         return metadata == null
@@ -78,7 +78,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
-        var items = await GetDropboxItemsAsync(parentId, true).ConfigureAwait(false);
+        var items = await GetDropboxItemsAsync(parentId, true);
         foreach (var i in items)
         {
             yield return ToFolder(i.AsFolder);
@@ -148,7 +148,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
-        var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
+        var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e));
 
         folders = SetFilterByTypes(folders, filterTypes);
 
@@ -175,7 +175,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
         while (folderId != null)
         {
-            var dropboxFolder = await GetDropboxFolderAsync(folderId).ConfigureAwait(false);
+            var dropboxFolder = await GetDropboxFolderAsync(folderId);
 
             if (dropboxFolder is ErrorFolder)
             {
@@ -204,22 +204,22 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
         if (folder.Id != null)
         {
-            return await RenameFolderAsync(folder, folder.Title).ConfigureAwait(false);
+            return await RenameFolderAsync(folder, folder.Title);
         }
 
         if (folder.ParentId != null)
         {
             var dropboxFolderPath = MakeDropboxPath(folder.ParentId);
 
-            folder.Title = await GetAvailableTitleAsync(folder.Title, dropboxFolderPath, IsExistAsync).ConfigureAwait(false);
+            folder.Title = await GetAvailableTitleAsync(folder.Title, dropboxFolderPath, IsExistAsync);
 
-            var dropboxFolder = await (await ProviderInfo.StorageAsync).CreateFolderAsync(folder.Title, dropboxFolderPath).ConfigureAwait(false);
+            var dropboxFolder = await (await ProviderInfo.StorageAsync).CreateFolderAsync(folder.Title, dropboxFolderPath);
 
-            await ProviderInfo.CacheResetAsync(dropboxFolder).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(dropboxFolder);
             var parentFolderPath = GetParentFolderPath(dropboxFolder);
             if (parentFolderPath != null)
             {
-                await ProviderInfo.CacheResetAsync(parentFolderPath).ConfigureAwait(false);
+                await ProviderInfo.CacheResetAsync(parentFolderPath);
             }
 
             return MakeId(dropboxFolder);
@@ -230,14 +230,14 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
     public async Task<bool> IsExistAsync(string title, string folderId)
     {
-        var items = await GetDropboxItemsAsync(folderId, true).ConfigureAwait(false);
+        var items = await GetDropboxItemsAsync(folderId, true);
 
         return items.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
     }
 
     public async Task DeleteFolderAsync(string folderId)
     {
-        var dropboxFolder = await GetDropboxFolderAsync(folderId).ConfigureAwait(false);
+        var dropboxFolder = await GetDropboxFolderAsync(folderId);
         var id = MakeId(dropboxFolder);
 
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
@@ -245,21 +245,21 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
         await strategy.ExecuteAsync(async () =>
         {
-        using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+        using (var tx = await FilesDbContext.Database.BeginTransactionAsync())
         {
             var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                .Where(r => r.Id.StartsWith(id))
                .Select(r => r.HashId)
                .ToListAsync()
-               .ConfigureAwait(false);
+               ;
 
             var link = await Query(FilesDbContext.TagLink)
                 .Where(r => hashIDs.Any(h => h == r.EntryId))
                 .ToListAsync()
-                .ConfigureAwait(false);
+                ;
 
             FilesDbContext.TagLink.RemoveRange(link);
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await FilesDbContext.SaveChangesAsync();
 
             var tagsToRemove = from ft in FilesDbContext.Tag
                                join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
@@ -272,28 +272,28 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
                 .Where(r => hashIDs.Any(h => h == r.EntryId));
 
             FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await FilesDbContext.SaveChangesAsync();
 
             var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                 .Where(r => hashIDs.Any(h => h == r.HashId));
 
             FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await FilesDbContext.SaveChangesAsync();
 
-            await tx.CommitAsync().ConfigureAwait(false);
+            await tx.CommitAsync();
         }
         });
 
         if (dropboxFolder is not ErrorFolder)
         {
-            await (await ProviderInfo.StorageAsync).DeleteItemAsync(dropboxFolder).ConfigureAwait(false);
+            await (await ProviderInfo.StorageAsync).DeleteItemAsync(dropboxFolder);
         }
 
-        await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFolder), true).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFolder), true);
         var parentFolderPath = GetParentFolderPath(dropboxFolder);
         if (parentFolderPath != null)
         {
-            await ProviderInfo.CacheResetAsync(parentFolderPath).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentFolderPath);
         }
     }
 
@@ -301,12 +301,12 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
         if (toFolderId is int tId)
         {
-            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken), typeof(TTo));
         }
 
         if (toFolderId is string tsId)
         {
-            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken), typeof(TTo));
         }
 
         throw new NotImplementedException();
@@ -318,20 +318,20 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             folderId, this, _dropboxDaoSelector.GetFileDao(folderId), _dropboxDaoSelector.ConvertId,
             toFolderId, _folderDao, _fileDao, r => r,
             true, cancellationToken)
-            .ConfigureAwait(false);
+            ;
 
         return moved.Id;
     }
 
     public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
     {
-        var dropboxFolder = await GetDropboxFolderAsync(folderId).ConfigureAwait(false);
+        var dropboxFolder = await GetDropboxFolderAsync(folderId);
         if (dropboxFolder is ErrorFolder errorFolder)
         {
             throw new Exception(errorFolder.Error);
         }
 
-        var toDropboxFolder = await GetDropboxFolderAsync(toFolderId).ConfigureAwait(false);
+        var toDropboxFolder = await GetDropboxFolderAsync(toFolderId);
         if (toDropboxFolder is ErrorFolder errorFolder1)
         {
             throw new Exception(errorFolder1.Error);
@@ -339,11 +339,11 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
         var fromFolderPath = GetParentFolderPath(dropboxFolder);
 
-        dropboxFolder = await (await ProviderInfo.StorageAsync).MoveFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
+        dropboxFolder = await (await ProviderInfo.StorageAsync).MoveFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name);
 
-        await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFolder), false).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(fromFolderPath).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder)).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFolder), false);
+        await ProviderInfo.CacheResetAsync(fromFolderPath);
+        await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder));
 
         return MakeId(dropboxFolder);
     }
@@ -352,12 +352,12 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
         if (toFolderId is int tId)
         {
-            return await CopyFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
+            return await CopyFolderAsync(folderId, tId, cancellationToken) as Folder<TTo>;
         }
 
         if (toFolderId is string tsId)
         {
-            return await CopyFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
+            return await CopyFolderAsync(folderId, tsId, cancellationToken) as Folder<TTo>;
         }
 
         throw new NotImplementedException();
@@ -369,30 +369,30 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             folderId, this, _dropboxDaoSelector.GetFileDao(folderId), _dropboxDaoSelector.ConvertId,
             toFolderId, _folderDao, _fileDao, r => r,
             false, cancellationToken)
-            .ConfigureAwait(false);
+            ;
 
         return moved;
     }
 
     public async Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
     {
-        var dropboxFolder = await GetDropboxFolderAsync(folderId).ConfigureAwait(false);
+        var dropboxFolder = await GetDropboxFolderAsync(folderId);
         if (dropboxFolder is ErrorFolder folder)
         {
             throw new Exception(folder.Error);
         }
 
-        var toDropboxFolder = await GetDropboxFolderAsync(toFolderId).ConfigureAwait(false);
+        var toDropboxFolder = await GetDropboxFolderAsync(toFolderId);
         if (toDropboxFolder is ErrorFolder errorFolder)
         {
             throw new Exception(errorFolder.Error);
         }
 
-        var newDropboxFolder = await (await ProviderInfo.StorageAsync).CopyFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
+        var newDropboxFolder = await (await ProviderInfo.StorageAsync).CopyFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name);
 
-        await ProviderInfo.CacheResetAsync(newDropboxFolder).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(MakeDropboxPath(newDropboxFolder), false).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder)).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(newDropboxFolder);
+        await ProviderInfo.CacheResetAsync(MakeDropboxPath(newDropboxFolder), false);
+        await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder));
 
         return ToFolder(newDropboxFolder);
     }
@@ -424,27 +424,27 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
     {
-        var dropboxFolder = await GetDropboxFolderAsync(folder.Id).ConfigureAwait(false);
+        var dropboxFolder = await GetDropboxFolderAsync(folder.Id);
         var parentFolderPath = GetParentFolderPath(dropboxFolder);
 
         if (IsRoot(dropboxFolder))
         {
             //It's root folder
-            await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle).ConfigureAwait(false);
+            await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
             //rename provider customer title
         }
         else
         {
-            newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync).ConfigureAwait(false);
+            newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync);
 
             //rename folder
-            dropboxFolder = await (await ProviderInfo.StorageAsync).MoveFolderAsync(MakeDropboxPath(dropboxFolder), parentFolderPath, newTitle).ConfigureAwait(false);
+            dropboxFolder = await (await ProviderInfo.StorageAsync).MoveFolderAsync(MakeDropboxPath(dropboxFolder), parentFolderPath, newTitle);
         }
 
-        await ProviderInfo.CacheResetAsync(dropboxFolder).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(dropboxFolder);
         if (parentFolderPath != null)
         {
-            await ProviderInfo.CacheResetAsync(parentFolderPath).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentFolderPath);
         }
 
         return MakeId(dropboxFolder);
@@ -459,7 +459,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
         var dropboxFolderPath = MakeDropboxPath(folderId);
         //note: without cache
-        var items = await (await ProviderInfo.StorageAsync).GetItemsAsync(dropboxFolderPath).ConfigureAwait(false);
+        var items = await (await ProviderInfo.StorageAsync).GetItemsAsync(dropboxFolderPath);
 
         return items.Count == 0;
     }

@@ -80,7 +80,7 @@ internal class DropboxProviderInfo : IProviderInfo
     {
         try
         {
-            await (await StorageAsync).GetUsedSpaceAsync().ConfigureAwait(false);
+            await (await StorageAsync).GetUsedSpaceAsync();
         }
         catch (AggregateException)
         {
@@ -171,7 +171,7 @@ internal class DropboxStorageDisposableWrapper : IDisposable
     {
         var dropboxStorage = _serviceProvider.GetRequiredService<DropboxStorage>();
 
-        await CheckTokenAsync(token, id).ConfigureAwait(false);
+        await CheckTokenAsync(token, id);
 
         dropboxStorage.Open(token);
 
@@ -195,7 +195,7 @@ internal class DropboxStorageDisposableWrapper : IDisposable
             token = _oAuth20TokenHelper.RefreshToken<DropboxLoginProvider>(_consumerFactory, token);
             var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
             var authData = new AuthData(token: token.ToJson());
-            await dbDao.UpdateProviderInfoAsync(id, authData).ConfigureAwait(false);
+            await dbDao.UpdateProviderInfoAsync(id, authData);
         }
     }
 
@@ -257,7 +257,7 @@ public class DropboxProviderInfoHelper
         var folder = _cacheFolder.Get<FolderMetadata>("dropboxd-" + id + "-" + dropboxFolderPath);
         if (folder == null)
         {
-            folder = await storage.GetFolderAsync(dropboxFolderPath).ConfigureAwait(false);
+            folder = await storage.GetFolderAsync(dropboxFolderPath);
             if (folder != null)
             {
                 _cacheFolder.Insert("dropboxd-" + id + "-" + dropboxFolderPath, folder, DateTime.UtcNow.Add(_cacheExpiration));
@@ -272,7 +272,7 @@ public class DropboxProviderInfoHelper
         var file = _cacheFile.Get<FileMetadata>("dropboxf-" + id + "-" + dropboxFilePath);
         if (file == null)
         {
-            file = await storage.GetFileAsync(dropboxFilePath).ConfigureAwait(false);
+            file = await storage.GetFileAsync(dropboxFilePath);
             if (file != null)
             {
                 _cacheFile.Insert("dropboxf-" + id + "-" + dropboxFilePath, file, DateTime.UtcNow.Add(_cacheExpiration));
@@ -288,7 +288,7 @@ public class DropboxProviderInfoHelper
 
         if (items == null)
         {
-            items = await storage.GetItemsAsync(dropboxFolderPath).ConfigureAwait(false);
+            items = await storage.GetItemsAsync(dropboxFolderPath);
             _cacheChildItems.Insert("dropbox-" + id + "-" + dropboxFolderPath, items, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
@@ -299,7 +299,7 @@ public class DropboxProviderInfoHelper
     {
         if (dropboxItem != null)
         {
-            await _cacheNotify.PublishAsync(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, CacheNotifyAction.Remove);
         }
     }
 
@@ -308,13 +308,13 @@ public class DropboxProviderInfoHelper
         var key = id + "-";
         if (dropboxPath == null)
         {
-            await _cacheNotify.PublishAsync(new DropboxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new DropboxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
         }
         else
         {
             key += dropboxPath;
 
-            await _cacheNotify.PublishAsync(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
         }
     }
 

@@ -200,8 +200,8 @@ internal class ProviderAccountDao : IProviderDao
             Url = authData.Url ?? ""
         };
 
-        var res = await FilesDbContext.AddOrUpdateAsync(r => r.ThirdpartyAccount, dbFilesThirdpartyAccount).ConfigureAwait(false);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        var res = await FilesDbContext.AddOrUpdateAsync(r => r.ThirdpartyAccount, dbFilesThirdpartyAccount);
+        await FilesDbContext.SaveChangesAsync();
 
         return res.Id;
     }
@@ -216,7 +216,7 @@ internal class ProviderAccountDao : IProviderDao
         var forUpdate = await FilesDbContext.ThirdpartyAccount
             .Where(r => r.Id == linkId)
             .Where(r => r.TenantId == TenantID)
-            .FirstOrDefaultAsync().ConfigureAwait(false);
+            .FirstOrDefaultAsync();
 
         if (forUpdate == null)
         {
@@ -225,7 +225,7 @@ internal class ProviderAccountDao : IProviderDao
 
         forUpdate.FolderType = rootFolderType;
 
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        await FilesDbContext.SaveChangesAsync();
 
         return true;
     }
@@ -235,7 +235,7 @@ internal class ProviderAccountDao : IProviderDao
         var forUpdate = await FilesDbContext.ThirdpartyAccount
             .Where(r => r.Id == linkId)
             .Where(r => r.TenantId == TenantID)
-            .FirstOrDefaultAsync().ConfigureAwait(false);
+            .FirstOrDefaultAsync();
 
         if (forUpdate == null)
         {
@@ -245,7 +245,7 @@ internal class ProviderAccountDao : IProviderDao
         forUpdate.RoomType = folderType;
         forUpdate.FolderId = folderId;
 
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        await FilesDbContext.SaveChangesAsync();
 
         return true;
     }
@@ -259,7 +259,7 @@ internal class ProviderAccountDao : IProviderDao
             .Where(r => r.Id == linkId)
             .Where(r => r.TenantId == TenantID)
             .ToListAsync()
-            .ConfigureAwait(false);
+            ;
 
         foreach (var f in forUpdate)
         {
@@ -269,7 +269,7 @@ internal class ProviderAccountDao : IProviderDao
             f.Url = authData.Url ?? "";
         }
 
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        await FilesDbContext.SaveChangesAsync();
 
         return forUpdate.Count == 1 ? linkId : default;
     }
@@ -291,7 +291,7 @@ internal class ProviderAccountDao : IProviderDao
             DbFilesThirdpartyAccount input;
             try
             {
-                input = await querySelect.SingleAsync().ConfigureAwait(false);
+                input = await querySelect.SingleAsync();
             }
             catch (Exception e)
             {
@@ -315,7 +315,7 @@ internal class ProviderAccountDao : IProviderDao
                 authData = GetEncodedAccesToken(authData, key);
             }
 
-            if (!await CheckProviderInfoAsync(ToProviderInfo(0, key, customerTitle, authData, _securityContext.CurrentAccount.ID, folderType, _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()))).ConfigureAwait(false))
+            if (!await CheckProviderInfoAsync(ToProviderInfo(0, key, customerTitle, authData, _securityContext.CurrentAccount.ID, folderType, _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()))))
             {
                 throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, key));
             }
@@ -326,7 +326,7 @@ internal class ProviderAccountDao : IProviderDao
             .Where(r => r.Id == linkId)
             .Where(r => r.TenantId == TenantID)
             .ToListAsync()
-            .ConfigureAwait(false);
+            ;
 
         foreach (var t in toUpdate)
         {
@@ -354,7 +354,7 @@ internal class ProviderAccountDao : IProviderDao
             }
         }
 
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        await FilesDbContext.SaveChangesAsync();
 
         return toUpdate.Count == 1 ? linkId : default;
     }
@@ -366,7 +366,7 @@ internal class ProviderAccountDao : IProviderDao
 
         await strategy.ExecuteAsync(async () =>
         {
-        using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
+        using var tx = await FilesDbContext.Database.BeginTransactionAsync();
         var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
 
         var entryIDs = await FilesDbContext.ThirdpartyIdMapping
@@ -375,39 +375,39 @@ internal class ProviderAccountDao : IProviderDao
             .Where(r => r.Id.StartsWith(folderId))
             .Select(r => r.HashId)
             .ToListAsync()
-            .ConfigureAwait(false);
+            ;
 
         var forDelete = await FilesDbContext.Security
             .AsQueryable()
             .Where(r => r.TenantId == TenantID)
             .Where(r => entryIDs.Any(a => a == r.EntryId))
             .ToListAsync()
-            .ConfigureAwait(false);
+            ;
 
         FilesDbContext.Security.RemoveRange(forDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        await FilesDbContext.SaveChangesAsync();
 
         var linksForDelete = await FilesDbContext.TagLink
             .AsQueryable()
             .Where(r => r.TenantId == TenantID)
             .Where(r => entryIDs.Any(e => e == r.EntryId))
             .ToListAsync()
-            .ConfigureAwait(false);
+            ;
 
         FilesDbContext.TagLink.RemoveRange(linksForDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        await FilesDbContext.SaveChangesAsync();
 
         var accountsForDelete = await FilesDbContext.ThirdpartyAccount
             .AsQueryable()
             .Where(r => r.Id == linkId)
             .Where(r => r.TenantId == TenantID)
             .ToListAsync()
-            .ConfigureAwait(false);
+            ;
 
         FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        await FilesDbContext.SaveChangesAsync();
 
-        await tx.CommitAsync().ConfigureAwait(false);
+        await tx.CommitAsync();
         });
     }
 

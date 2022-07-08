@@ -313,7 +313,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
                     .Where(r => r.HashId == id)
                     .Select(r => r.Id)
                     .FirstOrDefaultAsync()
-                    .ConfigureAwait(false);
+                    ;
         }
         if (saveIfNotExist)
         {
@@ -324,8 +324,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
                 TenantId = TenantID
             };
 
-            await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping).ConfigureAwait(false);
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping);
+            await FilesDbContext.SaveChangesAsync();
         }
 
         return result;
@@ -640,7 +640,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
                    .Where(r => r.Id.StartsWith(parentFolder.Id))
                    .Select(r => r.HashId)
                    .ToListAsync()
-                   .ConfigureAwait(false);
+                   ;
 
         if (!entryIDs.Any())
         {
@@ -671,7 +671,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
                 Name = r.tag.Name,
                 Type = r.tag.Type,
                 Owner = r.tag.Owner,
-                EntryId = await MappingIDAsync(r.tagLink.EntryId).ConfigureAwait(false),
+                EntryId = await MappingIDAsync(r.tagLink.EntryId),
                 EntryType = r.tagLink.EntryType,
                 Count = r.tagLink.Count,
                 Id = r.tag.Id
@@ -689,7 +689,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
 
         var folderFileIds = new[] { parentFolder.Id }
-            .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
+            .Concat(await GetChildrenAsync(folderId));
 
         foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
         {

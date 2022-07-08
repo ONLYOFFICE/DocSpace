@@ -215,7 +215,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
             var selector = GetSelector(folderId);
             folder.Id = selector.ConvertId(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            var newFolderId = await folderDao.SaveFolderAsync(folder).ConfigureAwait(false);
+            var newFolderId = await folderDao.SaveFolderAsync(folder);
             folder.Id = folderId;
 
             return newFolderId;
@@ -226,7 +226,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
             var selector = GetSelector(folderId);
             folder.ParentId = selector.ConvertId(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            var newFolderId = await folderDao.SaveFolderAsync(folder).ConfigureAwait(false);
+            var newFolderId = await folderDao.SaveFolderAsync(folder);
             folder.ParentId = folderId;
 
             return newFolderId;
@@ -248,12 +248,12 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     {
         if (toFolderId is int tId)
         {
-            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken), typeof(TTo));
         }
 
         if (toFolderId is string tsId)
         {
-            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken), typeof(TTo));
         }
 
         throw new NotImplementedException();
@@ -264,18 +264,18 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var selector = GetSelector(folderId);
         if (IsCrossDao(folderId, toFolderId))
         {
-            var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken).ConfigureAwait(false);
+            var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken);
 
             return newFolder?.Id;
         }
         var folderDao = selector.GetFolderDao(folderId);
 
-        return await folderDao.MoveFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null).ConfigureAwait(false);
+        return await folderDao.MoveFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null);
     }
 
     public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
     {
-        var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken).ConfigureAwait(false);
+        var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken);
 
         return newFolder.Id;
     }
@@ -284,12 +284,12 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     {
         if (toFolderId is int tId)
         {
-            return await CopyFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
+            return await CopyFolderAsync(folderId, tId, cancellationToken) as Folder<TTo>;
         }
 
         if (toFolderId is string tsId)
         {
-            return await CopyFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
+            return await CopyFolderAsync(folderId, tsId, cancellationToken) as Folder<TTo>;
         }
 
         throw new NotImplementedException();
@@ -306,8 +306,8 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var folderDao = selector.GetFolderDao(folderId);
 
         return IsCrossDao(folderId, toFolderId)
-                ? await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, false, cancellationToken).ConfigureAwait(false)
-                : await folderDao.CopyFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null).ConfigureAwait(false);
+                ? await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, false, cancellationToken)
+                : await folderDao.CopyFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null);
     }
 
     public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
@@ -431,7 +431,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     {
         var selector = GetSelector(folderId);
         var folderDao = selector.GetFolderDao(folderId);
-        var storageMaxUploadSize = await folderDao.GetMaxUploadSizeAsync(selector.ConvertId(folderId), chunkedUpload).ConfigureAwait(false);
+        var storageMaxUploadSize = await folderDao.GetMaxUploadSizeAsync(selector.ConvertId(folderId), chunkedUpload);
 
         if (storageMaxUploadSize == -1 || storageMaxUploadSize == long.MaxValue)
         {
