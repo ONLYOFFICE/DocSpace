@@ -5,8 +5,7 @@ import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
 import { BackupStorageType } from "@appserver/common/constants";
-import ComboBox from "@appserver/components/combobox";
-import Text from "@appserver/components/text";
+import DirectConnectionContainer from "../../common-container/DirectConnectionContainer";
 
 let folder = "";
 class ThirdPartyModule extends React.Component {
@@ -186,29 +185,13 @@ class ThirdPartyModule extends React.Component {
       </>
     ) : (
       <div className="manual-backup_third-party-module">
-        <div className="manual-backup_connection">
-          <ComboBox
-            className="manual-backup_third-party-combo"
-            options={this.accounts}
-            selectedOption={{
-              key: 0,
-              label: selectedAccount.label,
-            }}
-            onSelect={this.onSelectAccount}
-            noBorder={false}
-            scaledOptions
-            dropDownMaxHeight={300}
-            tabIndex={1}
-          />
-
-          <Button
-            label={t("Common:Connect")}
-            onClick={this.onConnect}
-            isDisabled={isModuleDisabled}
-            size={"small"}
-          />
-        </div>
-        <Text fontWeight={"600"}>{"Folder name:"}</Text>
+        <DirectConnectionContainer
+          accounts={this.accounts}
+          selectedAccount={selectedAccount}
+          onSelectAccount={this.onSelectAccount}
+          onConnect={this.onConnect}
+          t={t}
+        />
 
         <SelectFolderInput
           onSelectFolder={this.onSelectFolder}

@@ -99,19 +99,6 @@ const StyledManualBackup = styled.div`
   .manual-backup_third-party-module {
     margin-top: 16px;
     margin-left: 24px;
-
-    .manual-backup_connection {
-      display: flex;
-    }
-    .manual-backup_third-party-combo {
-      max-width: 234px;
-      margin-right: 8px;
-    }
-
-    p {
-      margin-top: 16px;
-      max-width: 350px;
-    }
   }
   .manual-backup_folder-input {
     margin-left: 24px;
@@ -124,17 +111,6 @@ const StyledAutoBackup = styled.div`
   .auto-backup_third-party-module {
     margin-top: 16px;
     margin-left: 24px;
-    .auto-backup_connection {
-      display: flex;
-    }
-    .auto-backup_third-party-combo {
-      max-width: 234px;
-      margin-right: 8px;
-    }
-    p {
-      margin-top: 16px;
-      max-width: 350px;
-    }
   }
 
   .automatic-backup_main {
@@ -206,17 +182,6 @@ const StyledRestoreBackup = styled.div`
 
   .restore-backup_third-party-module {
     margin-top: 16px;
-    .restore-backup_connection {
-      display: flex;
-    }
-    .restore-backup_third-party-combo {
-      max-width: 234px;
-      margin-right: 8px;
-    }
-    p {
-      margin-top: 16px;
-      max-width: 350px;
-    }
   }
 
   .restore-description {
@@ -386,6 +351,17 @@ const StyledScheduleComponent = styled.div`
 const StyledBackup = styled.div`
   ${commonSettingsStyles}
 
+  .backup_connection {
+    display: flex;
+  }
+  .backup_third-party-combo {
+    max-width: 234px;
+    margin-right: 8px;
+  }
+  .backup_third-party-text {
+    margin-top: 16px;
+    max-width: 350px;
+  }
   .backup_modules-separation {
     margin-bottom: 28px;
     border-bottom: ${(props) =>

@@ -4,9 +4,7 @@ import { inject, observer } from "mobx-react";
 import { BackupStorageType } from "@appserver/common/constants";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
-import ComboBox from "@appserver/components/combobox";
-import Button from "@appserver/components/button";
-import Text from "@appserver/components/text";
+import DirectConnectionContainer from "../../common-container/DirectConnectionContainer";
 
 class ThirdPartyModule extends React.PureComponent {
   constructor(props) {
@@ -114,29 +112,13 @@ class ThirdPartyModule extends React.PureComponent {
           </div>
         ) : (
           <div className="auto-backup_third-party-module">
-            <div className="auto-backup_connection">
-              <ComboBox
-                className="auto-backup_third-party-combo"
-                options={this.accounts}
-                selectedOption={{
-                  key: 0,
-                  label: selectedAccount.label,
-                }}
-                onSelect={this.onSelectAccount}
-                noBorder={false}
-                scaledOptions
-                dropDownMaxHeight={300}
-                tabIndex={1}
-              />
-
-              <Button
-                label={t("Common:Connect")}
-                onClick={this.onConnect}
-                isDisabled={isLoadingData}
-                size={"small"}
-              />
-            </div>
-            <Text fontWeight={"600"}>{"Folder name:"}</Text>
+            <DirectConnectionContainer
+              accounts={this.accounts}
+              selectedAccount={selectedAccount}
+              onSelectAccount={this.onSelectAccount}
+              onConnect={this.onConnect}
+              t={t}
+            />
 
             <SelectFolderInput
               onSelectFolder={this.onSelectFolder}

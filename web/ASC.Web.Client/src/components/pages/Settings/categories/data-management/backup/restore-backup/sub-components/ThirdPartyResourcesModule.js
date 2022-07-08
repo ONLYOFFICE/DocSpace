@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SelectFileInput from "files/SelectFileInput";
 import { inject, observer } from "mobx-react";
-import ComboBox from "@appserver/components/combobox";
-import Button from "@appserver/components/button";
-import Text from "@appserver/components/text";
+import DirectConnectionContainer from "../../common-container/DirectConnectionContainer";
 
 let accounts = [];
 const ThirdPartyResources = (props) => {
@@ -58,28 +56,13 @@ const ThirdPartyResources = (props) => {
     />
   ) : (
     <div className={"restore-backup_third-party-module"}>
-      <div className="restore-backup_connection">
-        <ComboBox
-          className="restore-backup_third-party-combo"
-          options={accounts}
-          selectedOption={{
-            key: 0,
-            label: selectedAccount?.label,
-          }}
-          onSelect={onSelectAccount}
-          noBorder={false}
-          scaledOptions
-          dropDownMaxHeight={300}
-          tabIndex={1}
-        />
-
-        <Button
-          label={t("Common:Connect")}
-          onClick={onConnect}
-          size={"small"}
-        />
-      </div>
-      <Text fontWeight={"600"}>{"Folder name:"}</Text>
+      <DirectConnectionContainer
+        accounts={accounts}
+        selectedAccount={selectedAccount}
+        onSelectAccount={onSelectAccount}
+        onConnect={onConnect}
+        t={t}
+      />
 
       <SelectFileInput
         {...props}
