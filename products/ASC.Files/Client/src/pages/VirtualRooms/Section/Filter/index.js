@@ -1,139 +1,188 @@
 import React from "react";
+
+import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
+import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
 import find from "lodash/find";
 import result from "lodash/result";
-import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
-import { FilterType, RoomsType } from "@appserver/common/constants";
+
+import { getUser } from "@appserver/common/api/people";
+import { RoomsType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
-import { isMobileOnly, isMobile } from "react-device-detect";
-import { inject, observer } from "mobx-react";
-import { getUser } from "@appserver/common/api/people";
+
+import withLoader from "../../../../HOCs/withLoader";
 
 const getTypes = (filterValues) => {
-  const types = result(
-    find(filterValues, (value) => {
-      return value.group === "filter-types";
-    }),
-    "key"
-  );
+  const filterTypes = filterValues.find(
+    (value) => value.group === "filter-types"
+  )?.key;
 
-  return types ? +types : null;
+  const types =
+    typeof filterTypes === "number"
+      ? [filterTypes]
+      : filterTypes?.length > 0
+      ? filterTypes.map((type) => +type)
+      : null;
+
+  return types;
 };
 
-const getAuthorType = (filterValues) => {
-  const authorType = result(
+const getOwner = (filterValues) => {
+  const filterOwner = result(
     find(filterValues, (value) => {
-      return value.group === "filter-author";
+      return value.group === "filter-owner";
     }),
     "key"
   );
 
-  return authorType ? authorType : null;
+  return filterOwner ? filterOwner : null;
 };
 
-const getSearchParams = (filterValues) => {
-  const searchParams = result(
-    find(filterValues, (value) => {
-      return value.group === "filter-folders";
-    }),
-    "key"
-  );
+const getTags = (filterValues) => {
+  const filterTags = filterValues.find((value) => value.group === "filter-tags")
+    ?.key;
 
-  return searchParams || "true";
+  const tags = filterTags?.length > 0 ? filterTags : null;
+
+  return tags;
 };
 
 const SectionFilterContent = ({
   t,
-  user,
-  filter,
-  personal,
-  isRecentFolder,
-  isFavoritesFolder,
   sectionWidth,
+
+  userId,
+  infoPanelVisible,
+
+  filter,
+  sortRooms,
+  filterRooms,
+  searchRooms,
+  fetchTags,
+
   viewAs,
-  createThumbnails,
   setViewAs,
   setIsLoading,
-  selectedFolderId,
-  fetchRooms,
-  infoPanelVisible,
 }) => {
-  const [loading, setLoading] = React.useState(false);
+  const onFilter = React.useCallback(
+    (data) => {
+      const types = getTypes(data) || null;
 
-  const filterColumnCount =
-    window.innerWidth < 500
-      ? { filterColumnCount: 3 }
-      : { filterColumnCount: personal ? 2 : 3 };
+      const owner = getOwner(data) || null;
 
-  const onFilter = (data) => {
-    const types = getTypes(data) || null;
-    const authorType = !!getAuthorType(data)
-      ? getAuthorType(data).includes("user_")
-        ? getAuthorType(data)
-        : `user_${getAuthorType(data)}`
-      : null;
-    const withSubfolders = getSearchParams(data);
+      const subjectId = owner === "me" || owner === "other" ? userId : owner;
 
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.types = types ? [types] : null;
-    newFilter.authorType = authorType;
-    newFilter.withSubfolders = withSubfolders;
+      const tags = getTags(data) || null;
 
-    setIsLoading(true);
+      setIsLoading(true);
 
-    fetchRooms(newFilter.searchArea, newFilter).finally(() =>
-      setIsLoading(false)
-    );
-  };
+      filterRooms(types, subjectId, tags).finally(() => {
+        setIsLoading(false);
+      });
+    },
+    [filterRooms, setIsLoading]
+  );
 
-  const onSearch = (data = "") => {
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.filterValue = data;
+  const onSearch = React.useCallback(
+    (data = "") => {
+      setIsLoading(true);
 
-    setIsLoading(true);
+      searchRooms(data).finally(() => {
+        setIsLoading(false);
+      });
+    },
+    [searchRooms, setIsLoading]
+  );
 
-    fetchRooms(newFilter.searchArea, newFilter).finally(() =>
-      setIsLoading(false)
-    );
-  };
+  const onSort = React.useCallback(
+    (sortId, sortDirection) => {
+      const sortBy = sortId;
+      const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
 
-  const onSort = (sortId, sortDirection) => {
-    const sortBy = sortId;
-    const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
+      setIsLoading(true);
 
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.sortBy = sortBy;
-    newFilter.sortOrder = sortOrder;
+      sortRooms(sortBy, sortOrder).finally(() => {
+        setIsLoading(false);
+      });
+    },
+    [sortRooms, setIsLoading]
+  );
 
-    setIsLoading(true);
-
-    fetchRooms(newFilter.searchArea, newFilter).finally(() =>
-      setIsLoading(false)
-    );
-  };
-
-  const onChangeViewAs = (view) => {
-    if (view === "row") {
-      if (
-        (sectionWidth < 1025 && !infoPanelVisible) ||
-        (sectionWidth < 625 && infoPanelVisible) ||
-        isMobile
-      ) {
-        setViewAs("row");
+  const onChangeViewAs = React.useCallback(
+    (view) => {
+      if (view === "row") {
+        if (
+          (sectionWidth < 1025 && !infoPanelVisible) ||
+          (sectionWidth < 625 && infoPanelVisible) ||
+          isMobile
+        ) {
+          setViewAs("row");
+        } else {
+          setViewAs("table");
+        }
       } else {
-        setViewAs("table");
+        setViewAs(view);
       }
-    } else {
-      setViewAs(view);
-    }
-  };
+    },
+    [sectionWidth, infoPanelVisible, setViewAs]
+  );
 
-  const getFilterData = () => {
+  const getSelectedInputValue = React.useCallback(() => {
+    return filter.filterValue;
+  }, [filter.filterValue]);
+
+  const getSelectedSortData = React.useCallback(() => {
+    return {
+      sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
+      sortId: filter.sortBy,
+    };
+  }, [filter.sortOrder, filter.sortBy]);
+
+  const getSelectedFilterData = React.useCallback(async () => {
+    const filterValues = [];
+
+    if (filter.types) {
+      const key =
+        typeof filter.types === "object" ? filter.types[0] : filter.types; //Remove it if filter types will be multi select
+
+      filterValues.push({
+        key: key,
+        group: "filter-types",
+      });
+    }
+
+    // TODO: add logic to other key
+    if (filter.subjectId) {
+      const isMe = userId === filter.subjectId;
+      let label = null;
+
+      if (!isMe) {
+        const user = await getUser(filter.subjectId);
+
+        label = user.displayName;
+      }
+
+      filterValues.push({
+        key: isMe ? "me" : filter.subjectId,
+        group: "filter-owner",
+        label: label,
+      });
+    }
+
+    if (filter.tags) {
+      filterValues.push({
+        key: filter.tags,
+        group: "filter-tags",
+      });
+    }
+
+    return filterValues;
+  }, [filter.types, filter.subjectId, filter.tags, userId]);
+
+  const getFilterData = React.useCallback(async () => {
     const ownerOptions = [
       {
         key: "filter-owner",
@@ -167,29 +216,34 @@ const SectionFilterContent = ({
         isHeader: true,
       },
       {
-        key: RoomsType.CustomRoom.toString(),
+        key: RoomsType.CustomRoom,
         group: "filter-types",
         label: "Custom room",
+        isMultiSelect: false,
       },
       {
-        key: RoomsType.FillingFormsRoom.toString(),
+        key: RoomsType.FillingFormsRoom,
         group: "filter-types",
         label: "Filling form",
+        isMultiSelect: false,
       },
       {
-        key: RoomsType.EditingRoom.toString(),
+        key: RoomsType.EditingRoom,
         group: "filter-types",
         label: "Editing",
+        isMultiSelect: false,
       },
       {
-        key: RoomsType.ReviewRoom.toString(),
+        key: RoomsType.ReviewRoom,
         group: "filter-types",
         label: "Review",
+        isMultiSelect: false,
       },
       {
-        key: RoomsType.ReadOnlyRoom.toString(),
+        key: RoomsType.ReadOnlyRoom,
         group: "filter-types",
         label: "View-only",
+        isMultiSelect: false,
       },
     ];
 
@@ -199,6 +253,15 @@ const SectionFilterContent = ({
 
     filterOptions.push(...typeOptions);
 
+    const tags = await fetchTags();
+
+    const tagsOptions = tags.map((tag) => ({
+      key: tag,
+      group: "filter-tags",
+      label: tag,
+      isMultiSelect: true,
+    }));
+
     filterOptions.push({
       key: "filter-tags",
       group: "filter-tags",
@@ -207,38 +270,12 @@ const SectionFilterContent = ({
       isLast: true,
     });
 
+    filterOptions.push(...tagsOptions);
+
     return filterOptions;
-  };
+  }, [fetchTags]);
 
-  const getSelectedFilterData = async () => {
-    const selectedFilterData = {
-      filterValues: [],
-      sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
-      sortId: filter.sortBy,
-    };
-
-    selectedFilterData.inputValue = filter.filterValue;
-
-    if (filter.types) {
-      selectedFilterData.filterValues.push({
-        key: `${filter.types}`,
-        group: "filter-types",
-      });
-    }
-
-    if (filter.authorType) {
-      const user = await getUser(filter.authorType.replace("user_", ""));
-      selectedFilterData.filterValues.push({
-        key: `${filter.authorType}`,
-        group: "filter-owner",
-        label: user.displayName,
-      });
-    }
-
-    return selectedFilterData;
-  };
-
-  const getViewSettingsData = () => {
+  const getViewSettingsData = React.useCallback(() => {
     const viewSettings = [
       {
         value: "row",
@@ -253,9 +290,10 @@ const SectionFilterContent = ({
     ];
 
     return viewSettings;
-  };
+  }, []);
 
-  const getSortData = () => {
+  // TODO: Remove comments after backend fix
+  const getSortData = React.useCallback(() => {
     const commonOptions = [
       { key: "AZ", label: "Name", default: true },
       // { key: "Type", label: t("Common:Type"), default: true },
@@ -265,30 +303,27 @@ const SectionFilterContent = ({
     ];
 
     return commonOptions;
-  };
+  }, []);
 
   return (
     <FilterInput
       t={t}
-      sectionWidth={sectionWidth}
-      getFilterData={getFilterData}
-      getSortData={getSortData}
-      getViewSettingsData={getViewSettingsData}
-      getSelectedFilterData={getSelectedFilterData}
       onFilter={onFilter}
-      onSearch={onSearch}
+      getFilterData={getFilterData}
+      getSelectedFilterData={getSelectedFilterData}
       onSort={onSort}
-      onChangeViewAs={onChangeViewAs}
+      getSortData={getSortData}
+      getSelectedSortData={getSelectedSortData}
       viewAs={viewAs}
-      placeholder={t("Common:Search")}
-      {...filterColumnCount}
-      contextMenuHeader={t("Filter")}
-      headerLabel={t("Translations:AddAuthor")}
       viewSelectorVisible={true}
-      isFavoritesFolder={isFavoritesFolder}
-      isRecentFolder={isRecentFolder}
-      isRoomFolder={true}
-      isLoading={loading}
+      onChangeViewAs={onChangeViewAs}
+      getViewSettingsData={getViewSettingsData}
+      onSearch={onSearch}
+      getSelectedInputValue={getSelectedInputValue}
+      filterHeader={t("Filter")}
+      placeholder={t("Common:Search")}
+      view={t("Common:View")}
+      selectorLabel={t("Translations:AddAuthor")}
     />
   );
 };
@@ -296,25 +331,21 @@ const SectionFilterContent = ({
 export default inject(({ auth, filesStore, roomsStore }) => {
   const { setIsLoading, setViewAs, viewAs } = filesStore;
 
-  const { fetchRooms, filter, rooms } = roomsStore;
+  const { fetchTags, filter, sortRooms, filterRooms, searchRooms } = roomsStore;
 
   const { user } = auth.userStore;
 
-  const { search, filterType, authorType } = filter;
-
-  // const isFiltered =
-  //   (!!files.length ||
-  //     !!folders.length ||
-  //     search ||
-  //     filterType ||
-  //     authorType) &&
-  //   !(treeFoldersStore.isPrivacyFolder && isMobile);
+  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
   return {
-    user,
+    userId: user.id,
+    infoPanelVisible,
 
-    fetchRooms,
+    fetchTags,
     filter,
+    sortRooms,
+    filterRooms,
+    searchRooms,
 
     viewAs,
     setViewAs,
@@ -324,7 +355,7 @@ export default inject(({ auth, filesStore, roomsStore }) => {
   withRouter(
     withLayoutSize(
       withTranslation(["Home", "Common", "Translations"])(
-        observer(SectionFilterContent)
+        withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
       )
     )
   )
