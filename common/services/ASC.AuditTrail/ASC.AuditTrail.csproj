@@ -2,6 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -9,8 +10,15 @@
     <NoWarn>1701;1702;NU1701;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="15.0.8" />
+    <Compile Remove="Attributes\**" />
+    <EmbeddedResource Remove="Attributes\**" />
+    <None Remove="Attributes\**" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.2.1" />
+    <PackageReference Include="EtaEmre.NetEscapades.EnumGenerators" Version="1.0.0-beta07" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
     <ProjectReference Include="..\..\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />

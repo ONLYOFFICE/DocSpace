@@ -133,6 +133,9 @@
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Восстановлена из изменения документа от {0}</value>
   </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Отправленная форма</value>
+  </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Загружена</value>
   </data>

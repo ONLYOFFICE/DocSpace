@@ -1,106 +1,99 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
+namespace ASC.Data.Storage.Encryption;
 
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Notify;
-using ASC.Notify.Messages;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Data.Storage.Encryption
+[Scope]
+public class NotifyHelper
 {
-    [Scope]
-    public class NotifyHelper
+    private const string NotifyService = "ASC.Web.Studio.Core.Notify.StudioNotifyService, ASC.Web.Core";
+
+    private string _serverRootPath;
+    private readonly NotifyServiceClient _notifyServiceClient;
+    private readonly ILogger<NotifyHelper> _logger;
+
+    public NotifyHelper(ILogger<NotifyHelper> logger, NotifyServiceClient notifyServiceClient)
     {
-        private const string NotifyService = "ASC.Web.Studio.Core.Notify.StudioNotifyService, ASC.Web.Core";
+        _notifyServiceClient = notifyServiceClient;
+        _logger = logger;
+    }
 
-        private string ServerRootPath { get; set; }
-        private NotifyServiceClient NotifyServiceClient { get; set; }
-        private ILog Log { get; set; }
+    public void Init(string serverRootPath)
+    {
+        _serverRootPath = serverRootPath;
+    }
 
-        public NotifyHelper(IOptionsMonitor<ILog> option, NotifyServiceClient notifyServiceClient)
+    public void SendStorageEncryptionStart(int tenantId)
+    {
+        SendStorageEncryptionNotification("SendStorageEncryptionStart", tenantId);
+    }
+
+    public void SendStorageEncryptionSuccess(int tenantId)
+    {
+        SendStorageEncryptionNotification("SendStorageEncryptionSuccess", tenantId);
+    }
+
+    public void SendStorageEncryptionError(int tenantId)
+    {
+        SendStorageEncryptionNotification("SendStorageEncryptionError", tenantId);
+    }
+
+    public void SendStorageDecryptionStart(int tenantId)
+    {
+        SendStorageEncryptionNotification("SendStorageDecryptionStart", tenantId);
+    }
+
+    public void SendStorageDecryptionSuccess(int tenantId)
+    {
+        SendStorageEncryptionNotification("SendStorageDecryptionSuccess", tenantId);
+    }
+
+    public void SendStorageDecryptionError(int tenantId)
+    {
+        SendStorageEncryptionNotification("SendStorageDecryptionError", tenantId);
+    }
+
+    private void SendStorageEncryptionNotification(string method, int tenantId)
+    {
+        var notifyInvoke = new NotifyInvoke()
         {
-            NotifyServiceClient = notifyServiceClient;
-            Log = option.CurrentValue;
+            Service = NotifyService,
+            Method = method,
+            Tenant = tenantId
+        };
+
+        notifyInvoke.Parameters.Add(_serverRootPath);
+
+        try
+        {
+            _notifyServiceClient.InvokeSendMethod(notifyInvoke);
         }
-
-        public void Init(string serverRootPath)
+        catch (Exception error)
         {
-            ServerRootPath = serverRootPath;
-        }
-
-        public void SendStorageEncryptionStart(int tenantId)
-        {
-            SendStorageEncryptionNotification("SendStorageEncryptionStart", tenantId);
-        }
-
-        public void SendStorageEncryptionSuccess(int tenantId)
-        {
-            SendStorageEncryptionNotification("SendStorageEncryptionSuccess", tenantId);
-        }
-
-        public void SendStorageEncryptionError(int tenantId)
-        {
-            SendStorageEncryptionNotification("SendStorageEncryptionError", tenantId);
-        }
-
-        public void SendStorageDecryptionStart(int tenantId)
-        {
-            SendStorageEncryptionNotification("SendStorageDecryptionStart", tenantId);
-        }
-
-        public void SendStorageDecryptionSuccess(int tenantId)
-        {
-            SendStorageEncryptionNotification("SendStorageDecryptionSuccess", tenantId);
-        }
-
-        public void SendStorageDecryptionError(int tenantId)
-        {
-            SendStorageEncryptionNotification("SendStorageDecryptionError", tenantId);
-        }
-
-        private void SendStorageEncryptionNotification(string method, int tenantId)
-        {
-            var notifyInvoke = new NotifyInvoke()
-            {
-                Service = NotifyService,
-                Method = method,
-                Tenant = tenantId
-            };
-            notifyInvoke.Parameters.Add(ServerRootPath);
-            try
-            {
-                NotifyServiceClient.InvokeSendMethod(notifyInvoke);
-            }
-            catch (Exception error)
-            {
-                Log.Warn("Error while sending notification", error);
-            }
+            _logger.WarningErrorWhileSending(error);
         }
     }
 }

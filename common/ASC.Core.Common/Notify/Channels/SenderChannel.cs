@@ -1,86 +1,81 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Notify.Channels;
 
-using System;
-
-using ASC.Notify.Messages;
-using ASC.Notify.Sinks;
-
-namespace ASC.Notify.Channels
+public class SenderChannel : ISenderChannel
 {
-    public class SenderChannel : ISenderChannel
+    private readonly ISink _firstSink;
+    private readonly ISink _senderSink;
+
+    public string SenderName { get; private set; }
+
+
+    public SenderChannel(DispatchEngine dispatchEngine, string senderName, ISink decorateSink, ISink senderSink)
     {
-        private readonly ISink firstSink;
-        private readonly ISink senderSink;
+        SenderName = senderName ?? throw new ArgumentNullException(nameof(senderName));
+        _firstSink = decorateSink;
+        _senderSink = senderSink ?? throw new ApplicationException($"channel with tag {senderName} not created sender sink");
 
 
-        public string SenderName
+        var dispatcherSink = new DispatchSink(SenderName, dispatchEngine);
+        _firstSink = AddSink(_firstSink, dispatcherSink);
+    }
+
+    public void SendAsync(INoticeMessage message)
+    {
+        ArgumentNullException.ThrowIfNull(message);
+
+        _firstSink.ProcessMessageAsync(message);
+    }
+
+    public SendResponse DirectSend(INoticeMessage message)
+    {
+        return _senderSink.ProcessMessage(message);
+    }
+
+    private ISink AddSink(ISink firstSink, ISink addedSink)
+    {
+        if (firstSink == null)
         {
-            get;
-            private set;
+            return addedSink;
         }
 
-
-        public SenderChannel(Context context, string senderName, ISink decorateSink, ISink senderSink)
+        if (addedSink == null)
         {
-            this.SenderName = senderName ?? throw new ArgumentNullException(nameof(senderName));
-            this.firstSink = decorateSink;
-            this.senderSink = senderSink ?? throw new ApplicationException($"channel with tag {senderName} not created sender sink");
-
-
-            context = context ?? throw new ArgumentNullException(nameof(context));
-            var dispatcherSink = new DispatchSink(SenderName, context.DispatchEngine);
-            this.firstSink = AddSink(firstSink, dispatcherSink);
-        }
-
-        public void SendAsync(INoticeMessage message)
-        {
-            if (message == null) throw new ArgumentNullException(nameof(message));
-
-            firstSink.ProcessMessageAsync(message);
-        }
-
-        public SendResponse DirectSend(INoticeMessage message)
-        {
-            return senderSink.ProcessMessage(message);
-        }
-
-
-        private ISink AddSink(ISink firstSink, ISink addedSink)
-        {
-            if (firstSink == null) return addedSink;
-            if (addedSink == null) return firstSink;
-
-            var current = firstSink;
-            while (current.NextSink != null)
-            {
-                current = current.NextSink;
-            }
-            current.NextSink = addedSink;
             return firstSink;
         }
+
+        var current = firstSink;
+        while (current.NextSink != null)
+        {
+            current = current.NextSink;
+        }
+        current.NextSink = addedSink;
+
+        return firstSink;
     }
 }

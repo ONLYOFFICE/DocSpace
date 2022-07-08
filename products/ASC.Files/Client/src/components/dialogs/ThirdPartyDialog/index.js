@@ -202,8 +202,8 @@ const ThirdPartyDialog = (props) => {
 
   const onShowService = (e) => {
     setThirdPartyDialogVisible(false);
-    const item = e.currentTarget.dataset;
-    const showAccountSetting = !e.currentTarget.dataset.link;
+    const item = e.currentTarget.dataset || e.target.dataset;
+    const showAccountSetting = !item.link;
     if (!showAccountSetting) {
       let authModal = window.open(
         "",

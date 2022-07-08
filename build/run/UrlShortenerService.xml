@@ -1,0 +1,10 @@
+<service>
+  <id>OnlyofficeUrlShortenerService</id>
+  <name>ONLYOFFICE UrlShortenerService</name>
+  <startmode>manual</startmode>
+  <executable>node</executable>
+  <arguments>../../common/ASC.UrlShortener/index.js</arguments>
+  <log mode="none"/>
+  <delayedAutoStart>true</delayedAutoStart>
+  <onfailure action="restart" delay="5 sec" />
+</service>

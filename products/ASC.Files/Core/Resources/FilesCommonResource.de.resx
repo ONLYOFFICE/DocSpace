@@ -133,6 +133,9 @@
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Aus der Dokumentänderung{0}wiederhergestellt </value>
   </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Formular abgesendet</value>
+  </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Hochgeladen</value>
   </data>

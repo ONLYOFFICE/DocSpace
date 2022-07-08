@@ -154,20 +154,6 @@ El enlace es válido durante 7 días.
 
 ¿No desea cambiar su correo electrónico? Simplemente ignore este mensaje.</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Se ha pedido el cambio de contraseña que se usa para entrar en el portal "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Por favor, siga el enlace abajo para cambiar su contraseña:
-
-$GreenButton
-
-*Tome en cuenta*: este enlace es válido sólo durante 7 días. Por favor, termine el proceso de cambio de contraseña dentro de este período.
-
-Si Usted no quiere cambiar su contraseña o ha recibido este mensaje por error, por favor, ignórelo.
-
-Muy atentamente,
-Equipo de ONLYOFFICE</value>
-  </data>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Buenos días,
 
@@ -223,12 +209,6 @@ La eliminación de datos personales permitió liberar:
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Bienvenido al ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Conecte su almacenamiento en la nube favorito al ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Asistencia para contraseñas de ONLYOFFICE Personal</value>
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Por favor, active su correo electrónico</value>

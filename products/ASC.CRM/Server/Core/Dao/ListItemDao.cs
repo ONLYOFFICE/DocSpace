@@ -30,10 +30,8 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
@@ -43,7 +41,7 @@ using ASC.CRM.Resources;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -55,7 +53,7 @@ namespace ASC.CRM.Core.Dao
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger,
+            ILogger logger,
             ICache ascCache,
             IMapper mapper)
             : base(dbContextManager,
@@ -68,10 +66,10 @@ namespace ASC.CRM.Core.Dao
 
         }
 
-        public bool IsExist(ListType listType, String title)
+        public bool IsExist(ListType listType, string title)
         {
             return Query(CrmDbContext.ListItem)
-                    .Where(x => x.TenantId == TenantID && x.ListType == listType && String.Compare(x.Title, title, true) == 0)
+                    .Where(x => x.TenantId == TenantID && x.ListType == listType && x.Title.ToLower() == title.ToLower())
                     .Any();
         }
 
@@ -225,7 +223,7 @@ namespace ASC.CRM.Core.Dao
         public ListItem GetByTitle(ListType listType, string title)
         {
             var dbEntity = Query(CrmDbContext.ListItem)
-                                .FirstOrDefault(x => String.Compare(x.Title, title, true) == 0 && x.ListType == listType);
+                                .FirstOrDefault(x => x.Title.ToLower() == title.ToLower() && x.ListType == listType);
 
             return _mapper.Map<ListItem>(dbEntity);
         }
@@ -349,9 +347,12 @@ namespace ASC.CRM.Core.Dao
             var sortOrder = enumItem.SortOrder;
 
             if (sortOrder == 0)
+            {
+                if(Query(CrmDbContext.ListItem).Any(x => x.ListType == listType))
                 sortOrder = Query(CrmDbContext.ListItem)
                     .Where(x => x.ListType == listType)
                     .Max(x => x.SortOrder) + 1;
+            }
 
             var listItem = new DbListItem
             {

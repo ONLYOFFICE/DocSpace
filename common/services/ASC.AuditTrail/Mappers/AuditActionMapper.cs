@@ -1,148 +1,154 @@
-﻿/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.AuditTrail.Mappers;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.MessagingSystem;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.AuditTrail.Mappers
+[Singletone]
+public class AuditActionMapper
 {
-    [Singletone]
-    public class AuditActionMapper
+    public List<IProductActionMapper> Mappers { get; }
+    private readonly ILogger<AuditActionMapper> _logger;
+
+    public AuditActionMapper(ILogger<AuditActionMapper> logger)
     {
-        private Dictionary<MessageAction, MessageMaps> Actions { get; }
-        private ILog Log { get; }
+        _logger = logger;
 
-        public AuditActionMapper(IOptionsMonitor<ILog> options)
+        Mappers = new List<IProductActionMapper>()
+            {
+                new CrmActionMapper(),
+                new DocumentsActionMapper(),
+                new LoginActionsMapper(),
+                new OthersActionsMapper(),
+                new PeopleActionMapper(),
+                new ProjectsActionsMapper(),
+                new SettingsActionsMapper()
+            };
+    }
+
+    public string GetActionText(MessageMaps action, AuditEventDto evt)
+    {
+        if (action == null)
         {
-            Actions = new Dictionary<MessageAction, MessageMaps>();
-            Log = options.CurrentValue;
+            _logger.ErrorThereIsNoActionText(action);
 
-            Actions = Actions
-                .Union(LoginActionsMapper.GetMaps())
-                .Union(ProjectsActionsMapper.GetMaps())
-                .Union(CrmActionMapper.GetMaps())
-                .Union(PeopleActionMapper.GetMaps())
-                .Union(DocumentsActionMapper.GetMaps())
-                .Union(SettingsActionsMapper.GetMaps())
-                .Union(OthersActionsMapper.GetMaps())
-                .ToDictionary(x => x.Key, x => x.Value);
+            return string.Empty;
         }
 
-        public string GetActionText(AuditEvent evt)
+        try
         {
-            var action = (MessageAction)evt.Action;
-            if (!Actions.ContainsKey(action))
+            var actionText = action.GetActionText();
+
+            if (evt.Description == null || evt.Description.Count == 0)
             {
-                Log.Error(string.Format("There is no action text for \"{0}\" type of event", action));
-                return string.Empty;
+                return actionText;
             }
 
-            try
-            {
-                var actionText = Actions[(MessageAction)evt.Action].GetActionText();
-
-                if (evt.Description == null || evt.Description.Count == 0) return actionText;
-
-                var description = evt.Description
-                                     .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                                     .Select(split => string.Join(", ", split.Select(ToLimitedText))).ToArray();
+            var description = evt.Description
+                                 .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                 .Select(split => string.Join(", ", split.Select(ToLimitedText))).ToArray();
 
 
-                return string.Format(actionText, description);
-            }
-            catch
-            {
-                //log.Error(string.Format("Error while building action text for \"{0}\" type of event", action));
-                return string.Empty;
-            }
+            return string.Format(actionText, description);
         }
-
-        public string GetActionText(LoginEvent evt)
+        catch
         {
-            var action = (MessageAction)evt.Action;
-            if (!Actions.ContainsKey(action))
+            //log.Error(string.Format("Error while building action text for \"{0}\" type of event", action));
+            return string.Empty;
+        }
+    }
+
+    public string GetActionText(MessageMaps action, LoginEventDto evt)
+    {
+        if (action == null)
+        {
+            //log.Error(string.Format("There is no action text for \"{0}\" type of event", action));
+            return string.Empty;
+        }
+
+        try
+        {
+            var actionText = action.GetActionText();
+
+            if (evt.Description == null || evt.Description.Count == 0)
             {
-                //log.Error(string.Format("There is no action text for \"{0}\" type of event", action));
-                return string.Empty;
+                return actionText;
             }
 
-            try
-            {
-                var actionText = Actions[(MessageAction)evt.Action].GetActionText();
+            var description = evt.Description
+                                 .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                 .Select(split => string.Join(", ", split.Select(ToLimitedText))).ToArray();
 
-                if (evt.Description == null || evt.Description.Count == 0) return actionText;
-
-                var description = evt.Description
-                                     .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                                     .Select(split => string.Join(", ", split.Select(ToLimitedText))).ToArray();
-
-                return string.Format(actionText, description);
-            }
-            catch
-            {
-                //log.Error(string.Format("Error while building action text for \"{0}\" type of event", action));
-                return string.Empty;
-            }
+            return string.Format(actionText, description);
         }
-
-        public string GetActionTypeText(AuditEvent evt)
+        catch
         {
-            var action = (MessageAction)evt.Action;
-            return !Actions.ContainsKey(action)
-                       ? string.Empty
-                       : Actions[(MessageAction)evt.Action].GetActionTypeText();
+            //log.Error(string.Format("Error while building action text for \"{0}\" type of event", action));
+            return string.Empty;
+        }
+    }
+
+    public string GetActionTypeText(MessageMaps action)
+    {
+        return action == null
+                   ? string.Empty
+                   : action.GetActionTypeText();
+    }
+
+    public string GetProductText(MessageMaps action)
+    {
+        return action == null
+                   ? string.Empty
+                   : action.GetProductText();
+    }
+
+    public string GetModuleText(MessageMaps action)
+    {
+        return action == null
+                   ? string.Empty
+                   : action.GetModuleText();
+    }
+
+    private string ToLimitedText(string text)
+    {
+        if (text == null)
+        {
+            return null;
         }
 
-        public string GetProductText(AuditEvent evt)
-        {
-            var action = (MessageAction)evt.Action;
-            return !Actions.ContainsKey(action)
-                       ? string.Empty
-                       : Actions[(MessageAction)evt.Action].GetProduct();
-        }
+        return text.Length < 50 ? text : $"{text.Substring(0, 47)}...";
+    }
 
-        public string GetModuleText(AuditEvent evt)
+    public MessageMaps GetMessageMaps(int actionInt)
+    {
+        var action = (MessageAction)actionInt;
+        var mapper = Mappers.SelectMany(m => m.Mappers).FirstOrDefault(m => m.Actions.ContainsKey(action));
+        if (mapper != null)
         {
-            var action = (MessageAction)evt.Action;
-            return !Actions.ContainsKey(action)
-                       ? string.Empty
-                       : Actions[(MessageAction)evt.Action].GetModule();
+            return mapper.Actions[action];
         }
-
-        private string ToLimitedText(string text)
-        {
-            if (text == null) return null;
-            return text.Length < 50 ? text : $"{text.Substring(0, 47)}...";
-        }
+        return null;
     }
 }

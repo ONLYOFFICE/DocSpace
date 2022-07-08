@@ -24,18 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-using System;
-using System.Text.Json.Serialization;
-
-using ASC.Core.Common.Settings;
-
 namespace ASC.Web.Core.Users;
 
 [Serializable]
-public class DarkThemeSettings : ISettings
+public class DarkThemeSettings : ISettings<DarkThemeSettings>
 {
-    [JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{38362061-066D-4C57-A23E-8953CF34EFC3}"); }
@@ -43,7 +37,7 @@ public class DarkThemeSettings : ISettings
 
     public DarkThemeSettingsEnum Theme { get; set; }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public DarkThemeSettings GetDefault()
     {
         return new DarkThemeSettings
         {
@@ -52,7 +46,7 @@ public class DarkThemeSettings : ISettings
     }
 }
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DarkThemeSettingsEnum
 {
     Base,
