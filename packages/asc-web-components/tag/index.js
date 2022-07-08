@@ -39,11 +39,11 @@ const Tag = ({
 
   const onClickAction = React.useCallback(
     (e) => {
-      if (e.target === tagRef.current && onClick && !isDisabled) {
-        onClick(tag);
+      if (onClick && !isDisabled) {
+        onClick(e.target.dataset.tag);
       }
     },
-    [tag, onClick, isDisabled]
+    [onClick, isDisabled]
   );
 
   const onDeleteAction = React.useCallback(
@@ -60,7 +60,7 @@ const Tag = ({
       {!!advancedOptions ? (
         <StyledTag
           id={id}
-          className={className}
+          className={`tag${className ? ` ${className}` : ""}`}
           style={style}
           ref={tagRef}
           onClick={toggleDropdown}
@@ -78,10 +78,10 @@ const Tag = ({
           >
             {advancedOptions.map((tag, index) => (
               <DropDownItem
-                className="tag__dropdown-item"
+                className="tag__dropdown-item tag"
                 key={`${tag}_${index}`}
-                onClick={onClick}
-                value={tag}
+                onClick={onClickAction}
+                data-tag={tag}
               >
                 <StyledDropdownIcon
                   className="tag__dropdown-item-icon"
@@ -105,8 +105,9 @@ const Tag = ({
           isNewTag={isNewTag}
           isDisabled={isDisabled}
           tagMaxWidth={tagMaxWidth}
+          data-tag={label}
           id={id}
-          className={className}
+          className={`tag${className ? ` ${className}` : ""}`}
           style={style}
         >
           <Text
