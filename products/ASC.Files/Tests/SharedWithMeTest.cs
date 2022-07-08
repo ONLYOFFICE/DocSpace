@@ -49,7 +49,7 @@ public partial class BaseFilesTests
     [Description("put - files/folder/{folderId}/share - share folder to another user for read")]
     public async Task ShareFolderToAnotherUserRead(int folderId, bool notify, string message)
     {
-        var share = await PutAsync<IEnumerable<FileShareDto>>("folder/" + folderId + "/share", JsonContent.Create(new { Share = _testFolderParamRead, Notify = notify, SharingMessage = message }), _options);
+        var share = await PutAsync<IEnumerable<FileShareDto>>("folder/" + folderId + "/share", JsonContent.Create(new { Share = _testFolderParamRead, Notify = notify, SharingMessage = message }));
         Assert.IsNotNull(share);
     }
 
@@ -70,7 +70,7 @@ public partial class BaseFilesTests
     [Description("put - file/{fileId}/share - share file to another user for read")]
     public async Task ShareFileToAnotherUserRead(int fileId, bool notify, string message)
     {
-        var share = await PutAsync<IEnumerable<FileShareDto>>("file/" + fileId + "/share", JsonContent.Create(new { Share = _testFolderParamRead, Notify = notify, SharingMessage = message }), _options);
+        var share = await PutAsync<IEnumerable<FileShareDto>>("file/" + fileId + "/share", JsonContent.Create(new { Share = _testFolderParamRead, Notify = notify, SharingMessage = message }));
         Assert.IsNotNull(share);
     }
 
@@ -95,7 +95,7 @@ public partial class BaseFilesTests
     [Description("put - files/folder/{folderId}/share - share folder to another user for read and write")]
     public async Task ShareFolderToAnotherUserReadAndWrite(int folderId, bool notify, string message)
     {
-        var share = await PutAsync<IEnumerable<FileShareDto>>("folder/" + folderId + "/share", JsonContent.Create(new { Share = _testFolderParamReadAndWrite, Notify = notify, SharingMessage = message }), _options);
+        var share = await PutAsync<IEnumerable<FileShareDto>>("folder/" + folderId + "/share", JsonContent.Create(new { Share = _testFolderParamReadAndWrite, Notify = notify, SharingMessage = message }));
         Assert.IsNotNull(share);
     }
 
@@ -105,7 +105,7 @@ public partial class BaseFilesTests
     [Description("put - files/folder/{folderId} - rename shared for read and write folder")]
     public async Task RenameSharedFolderReturnsFolderWrapperReadAndWrite(int folderId, string newTitle)
     {
-        var sharedFolder = await PutAsync<FolderDto<int>>("folder/" + folderId, JsonContent.Create(new { Title = newTitle }), _options);
+        var sharedFolder = await PutAsync<FolderDto<int>>("folder/" + folderId, JsonContent.Create(new { Title = newTitle }));
 
         Assert.IsNotNull(sharedFolder);
         Assert.AreEqual(newTitle, sharedFolder.Title);
@@ -117,7 +117,7 @@ public partial class BaseFilesTests
     [Description("put - files/file/{fileId}/share - share file to another user for read and write")]
     public async Task ShareFileToAnotherUserReadAndWrite(int fileId, bool notify, string message)
     {
-        var share = await PutAsync<IEnumerable<FileShareDto>>("file/" + fileId + "/share", JsonContent.Create(new { Share = _testFolderParamReadAndWrite, Notify = notify, SharingMessage = message }), _options);
+        var share = await PutAsync<IEnumerable<FileShareDto>>("file/" + fileId + "/share", JsonContent.Create(new { Share = _testFolderParamReadAndWrite, Notify = notify, SharingMessage = message }));
         Assert.IsNotNull(share);
     }
 
@@ -127,7 +127,7 @@ public partial class BaseFilesTests
     [Description("put - files/file/{fileId} - update shared for read and write file")]
     public async Task UpdateSharedFileReturnsFolderWrapperReadAndWrite(int fileId, string fileTitle, int lastVersion)
     {
-        var sharedFile = await PutAsync<FolderDto<int>>("file/" + fileId, JsonContent.Create(new { Title = fileTitle, LastVersion = lastVersion }), _options);
+        var sharedFile = await PutAsync<FolderDto<int>>("file/" + fileId, JsonContent.Create(new { Title = fileTitle, LastVersion = lastVersion }));
 
         Assert.IsNotNull(sharedFile);
         Assert.AreEqual(fileTitle + ".docx", sharedFile.Title);
@@ -141,7 +141,7 @@ public partial class BaseFilesTests
     [Description("get - files/folder/{folderId} - get shared folder")]
     public async Task GetSharedFolderInfoReturnsFolderWrapperRead(int folderId, string folderName, int parentId)
     {
-        var sharedFolder = await GetAsync<FolderDto<int>>("folder/" + folderId, _options);
+        var sharedFolder = await GetAsync<FolderDto<int>>("folder/" + folderId);
 
         Assert.IsNotNull(sharedFolder);
         Assert.AreEqual(folderName, sharedFolder.Title);
@@ -156,7 +156,7 @@ public partial class BaseFilesTests
     [Description("get - files/file/{fileId} -  get shared file")]
     public async Task GetSharedFileInfoReturnsFolderWrapperRead(int fileId, string fileName)
     {
-        var sharedFile = await GetAsync<FolderDto<int>>("file/" + fileId, _options);
+        var sharedFile = await GetAsync<FolderDto<int>>("file/" + fileId);
 
         Assert.IsNotNull(sharedFile);
         Assert.AreEqual(fileName, sharedFile.Title);
@@ -169,7 +169,7 @@ public partial class BaseFilesTests
     [Description("delete - files/file/{fileId} - try delete shared file")]
     public async Task DeleteSharedFileReturnsFolderWrapperRead(int fileId, bool deleteAfter, bool immediately)
     {
-        var result = (await DeleteAsync<IEnumerable<FileOperationDto>>("file/" + fileId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }), _options)).FirstOrDefault();
+        var result = (await DeleteAsync<IEnumerable<FileOperationDto>>("file/" + fileId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }))).FirstOrDefault();
 
         await WaitLongOperation(result, FilesCommonResource.ErrorMassage_SecurityException_DeleteFile);
     }
@@ -181,7 +181,7 @@ public partial class BaseFilesTests
     [Description("delete - files/folder/{folderId} - try delete shared folder")]
     public async Task DeleteSharedFolderReturnsFolderWrapperRead(int folderId, bool deleteAfter, bool immediately)
     {
-        var result = (await DeleteAsync<IEnumerable<FileOperationDto>>("folder/" + folderId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }), _options)).FirstOrDefault();
+        var result = (await DeleteAsync<IEnumerable<FileOperationDto>>("folder/" + folderId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }))).FirstOrDefault();
 
         await WaitLongOperation(result, FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
     }

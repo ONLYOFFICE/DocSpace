@@ -52,7 +52,7 @@ public partial class BaseFilesTests
     [Order(1)]
     public async Task CreateFileReturnsFolderWrapperAsync(int folderId)
     {
-        var file = await PostAsync<FileDto<int>>(folderId + "/file", JsonContent.Create(new { Title = "test" }), _options);
+        var file = await PostAsync<FileDto<int>>(folderId + "/file", JsonContent.Create(new { Title = "test" }));
         Assert.AreEqual(file.FolderId, 1);
     }
 }

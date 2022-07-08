@@ -35,7 +35,7 @@ public partial class BaseFilesTests
     [Description("put - files/fileops/emptytrash - empty trash")]
     public async Task DeleteFileFromTrash()
     {
-        await PutAsync<IEnumerable<FileOperationDto>>("fileops/emptytrash", null, _options);
+        await PutAsync<IEnumerable<FileOperationDto>>("fileops/emptytrash", null);
         var statuses = await WaitLongOperation();
         CheckStatuses(statuses);
     }

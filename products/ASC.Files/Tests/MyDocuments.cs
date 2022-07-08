@@ -35,7 +35,7 @@ public partial class BaseFilesTests
     [Description("post - files/folder/{folderId} - create new folder")]
     public async Task CreateFolderReturnsFolderWrapper(int folderId, string title)
     {
-        var folder = await PostAsync<FolderDto<int>>("folder/" + folderId, JsonContent.Create(new { Title = title }), _options);
+        var folder = await PostAsync<FolderDto<int>>("folder/" + folderId, JsonContent.Create(new { Title = title }));
         Assert.IsNotNull(folder);
         Assert.AreEqual(title, folder.Title);
         Assert.AreEqual(folderId, folder.ParentId);
@@ -48,7 +48,7 @@ public partial class BaseFilesTests
     [Description("get - files/{folderId} - get empty folder / get not empty folder")]
     public async Task GetFolderEmptyReturnsFolderContentWrapper(int folderId, int expectedCount)
     {
-        var folder = await GetAsync<FolderContentDto<int>>(folderId.ToString(), _options);
+        var folder = await GetAsync<FolderContentDto<int>>(folderId.ToString());
 
         Assert.IsNotNull(folder);
         Assert.AreEqual(expectedCount, folder.Files.Count);
@@ -61,7 +61,7 @@ public partial class BaseFilesTests
     [Description("get - files/folder/{folderId} - get folder info")]
     public async Task GetFolderInfoReturnsFolderWrapper(int folderId, string folderName, int parentId)
     {
-        var folder = await GetAsync<FolderDto<int>>("folder/" + folderId, _options);
+        var folder = await GetAsync<FolderDto<int>>("folder/" + folderId);
 
         Assert.IsNotNull(folder);
         Assert.AreEqual(folderName, folder.Title);
@@ -75,7 +75,7 @@ public partial class BaseFilesTests
     [Description("put - files/folder/{folderId} - rename folder")]
     public async Task RenameFolderReturnsFolderWrapper(int folderId, string newTitle)
     {
-        var folder = await PutAsync<FolderDto<int>>("folder/" + folderId, JsonContent.Create(new { Title = newTitle }), _options);
+        var folder = await PutAsync<FolderDto<int>>("folder/" + folderId, JsonContent.Create(new { Title = newTitle }));
 
         Assert.IsNotNull(folder);
         Assert.AreEqual(folderId, folder.Id);
@@ -99,7 +99,7 @@ public partial class BaseFilesTests
     [Description("post - files/@my/file - create file in myFolder")]
     public async Task CreateFileReturnsFileWrapper(string newTitle)
     {
-        var file = await PostAsync<FileDto<int>>("@my/file", JsonContent.Create(new { Title = newTitle }), _options);
+        var file = await PostAsync<FileDto<int>>("@my/file", JsonContent.Create(new { Title = newTitle }));
 
         Assert.IsNotNull(file);
         Assert.AreEqual($"{newTitle}.docx", file.Title);
@@ -112,7 +112,7 @@ public partial class BaseFilesTests
     [Description("get - files/file/{fileId} - get file info")]
     public async Task GetFileInfoReturnsFilesWrapper(int fileId, string fileName)
     {
-        var file = await GetAsync<FileDto<int>>("file/" + fileId, _options);
+        var file = await GetAsync<FileDto<int>>("file/" + fileId);
 
         Assert.IsNotNull(file);
         Assert.AreEqual(fileName, file.Title);
@@ -124,7 +124,7 @@ public partial class BaseFilesTests
     [Description("put - files/file/{fileId} - update file")]
     public async Task UpdateFileReturnsFileWrapper(int fileId, string newTitle, int lastVersion)
     {
-        var file = await PutAsync<FileDto<int>>("file/" + fileId, JsonContent.Create(new { Title = newTitle, LastVersion = lastVersion }), _options);
+        var file = await PutAsync<FileDto<int>>("file/" + fileId, JsonContent.Create(new { Title = newTitle, LastVersion = lastVersion }));
 
         Assert.IsNotNull(file);
         Assert.AreEqual(newTitle + ".docx", file.Title);
@@ -148,7 +148,7 @@ public partial class BaseFilesTests
     {
         var batchModel = GetBatchModel(json);
 
-        var statuses = await PutAsync<IEnumerable<FileOperationDto>>("fileops/move", JsonContent.Create(batchModel), _options);
+        var statuses = await PutAsync<IEnumerable<FileOperationDto>>("fileops/move", JsonContent.Create(batchModel));
 
         FileOperationDto status = null;
         foreach (var item in statuses)
@@ -171,7 +171,7 @@ public partial class BaseFilesTests
     {
         var batchModel = GetBatchModel(json);
 
-        var statuses = await PutAsync<IEnumerable<FileOperationDto>>("fileops/copy", JsonContent.Create(batchModel), _options);
+        var statuses = await PutAsync<IEnumerable<FileOperationDto>>("fileops/copy", JsonContent.Create(batchModel));
 
         FileOperationDto status = null;
         foreach (var item in statuses)

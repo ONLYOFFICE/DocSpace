@@ -207,7 +207,7 @@ public partial class BaseFilesTests
         return batchModel;
     }
 
-    protected async Task<T> GetAsync<T>(string url, JsonSerializerOptions options)
+    protected async Task<T> GetAsync<T>(string url)
     {
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         var request = await _client.GetAsync(url);
@@ -215,12 +215,12 @@ public partial class BaseFilesTests
 
         if (result.Response is JsonElement jsonElement)
         {
-            return jsonElement.Deserialize<T>(options);
+            return jsonElement.Deserialize<T>(_options);
         }
         throw new Exception("can't parsing result");
     }
 
-    protected async Task<T> GetAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    protected async Task<T> GetAsync<T>(string url, HttpContent content)
     {
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         var request = new HttpRequestMessage
@@ -236,12 +236,12 @@ public partial class BaseFilesTests
 
         if (result.Response is JsonElement jsonElement)
         {
-            return jsonElement.Deserialize<T>(options);
+            return jsonElement.Deserialize<T>(_options);
         }
         throw new Exception("can't parsing result");
     }
 
-    protected async Task<T> PostAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    protected async Task<T> PostAsync<T>(string url, HttpContent content)
     {
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         var response = await _client.PostAsync(url, content);
@@ -249,12 +249,12 @@ public partial class BaseFilesTests
 
         if (result.Response is JsonElement jsonElement)
         {
-            return jsonElement.Deserialize<T>(options);
+            return jsonElement.Deserialize<T>(_options);
         }
         throw new Exception("can't parsing result");
     }
 
-    protected async Task<T> PutAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    protected async Task<T> PutAsync<T>(string url, HttpContent content)
     {
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
 
@@ -263,7 +263,7 @@ public partial class BaseFilesTests
 
         if (result.Response is JsonElement jsonElement)
         {
-            return jsonElement.Deserialize<T>(options);
+            return jsonElement.Deserialize<T>(_options);
         }
         throw new Exception("can't parsing result");
     }
@@ -281,7 +281,7 @@ public partial class BaseFilesTests
         return await _client.SendAsync(request);
     }
 
-    protected async Task<T> DeleteAsync<T>(string url, JsonContent content, JsonSerializerOptions options)
+    protected async Task<T> DeleteAsync<T>(string url, JsonContent content)
     {
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         var response = await DeleteAsync(url, content);
@@ -289,7 +289,7 @@ public partial class BaseFilesTests
 
         if (result.Response is JsonElement jsonElement)
         {
-            return jsonElement.Deserialize<T>(options);
+            return jsonElement.Deserialize<T>(_options);
         }
         throw new Exception("can't parsing result");
     }
@@ -300,7 +300,7 @@ public partial class BaseFilesTests
 
         while (true)
         {
-            statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
+            statuses = await GetAsync<List<FileOperationResult>>("fileops");
 
             if (statuses.TrueForAll(r => r.Finished))
             {
