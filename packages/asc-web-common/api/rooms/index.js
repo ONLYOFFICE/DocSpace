@@ -1,4 +1,5 @@
 import { request } from "../client";
+import { decodeDisplayName } from "../../utils";
 
 export function getRooms(filter) {
   const options = {

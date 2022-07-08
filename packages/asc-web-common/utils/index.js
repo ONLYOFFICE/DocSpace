@@ -22,7 +22,7 @@ export const toUrlParams = (obj, skipNull) => {
   return str;
 };
 
-const decodeDisplayName = (items) => {
+export const decodeDisplayName = (items) => {
   return items.map((item) => {
     if (!item) return item;
 
