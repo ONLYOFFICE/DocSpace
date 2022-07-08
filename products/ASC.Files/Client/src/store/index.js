@@ -18,6 +18,7 @@ import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
 import selectFileDialogStore from "./SelectFileDialogStore";
 import RoomsStore from "./RoomsStore";
+import RoomsActionsStore from "./RoomsActionsStore";
 
 const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
 
@@ -44,6 +45,8 @@ const roomsStore = new RoomsStore(
   treeFoldersStore,
   settingsStore
 );
+
+const roomsActionsStore = new RoomsActionsStore(roomsStore);
 
 const mediaViewerDataStore = new MediaViewerDataStore(
   filesStore,
@@ -105,6 +108,7 @@ const hotkeyStore = new HotkeyStore(
 const stores = {
   filesStore,
   roomsStore,
+  roomsActionsStore,
   settingsStore,
   mediaViewerDataStore,
   versionHistoryStore,
