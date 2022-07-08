@@ -469,7 +469,7 @@ public class EntryManager
         }
 
         var fileSecurity = _fileSecurity;
-        var entries = Enumerable.Empty<FileEntry>();
+        var entries = new List<FileEntry>();
 
         searchInContent = searchInContent && !filterTypes.Contains(FilterType.ByExtension) && !Equals(parent.Id, _globalFolderHelper.FolderTrash);
 
@@ -578,14 +578,14 @@ public class EntryManager
             //share
             var shared = await fileSecurity.GetSharesForMeAsync(filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
-            entries = entries.Concat(shared);
+            entries.AddRange(shared);
 
             CalculateTotal();
         }
         else if (parent.FolderType == FolderType.Recent)
         {
             var files = await GetRecentAsyncEnumerable(filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent);
-            entries = entries.Concat(files);
+            entries.AddRange(files);
 
             CalculateTotal();
         }
@@ -593,8 +593,8 @@ public class EntryManager
         {
             var (files, folders) = await GetFavoritesAsync(filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent);
 
-            entries = entries.Concat(folders);
-            entries = entries.Concat(files);
+            entries.AddRange(folders);
+            entries.AddRange(files);
 
             CalculateTotal();
         }
@@ -603,7 +603,7 @@ public class EntryManager
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
             var files = await GetTemplatesAsyncEnumerable(folderDao, fileDao, filterTypes.FirstOrDefault(), subjectGroup, subjectId, searchText, searchInContent).ToListAsync();
-            entries = entries.Concat(files);
+            entries.AddRange(files);
 
             CalculateTotal();
         }
@@ -621,10 +621,9 @@ public class EntryManager
             var task2 = fileSecurity.FilterReadAsync(files).ToListAsync();
             var task3 = shared.ToListAsync();
 
-
-            entries = entries.Concat(await task1);
-            entries = entries.Concat(await task2);
-            entries = entries.Concat(await task3);
+            entries.AddRange(await task1);
+            entries.AddRange(await task2);
+            entries.AddRange(await task3);
 
             CalculateTotal();
         }
@@ -654,23 +653,23 @@ public class EntryManager
 
                 var task3 = thirdPartyFolder.ToListAsync();
 
-                entries = entries.Concat(await task1);
-                entries = entries.Concat(await task2);
-                entries = entries.Concat(await task3);
+                entries.AddRange(await task1);
+                entries.AddRange(await task2);
+                entries.AddRange(await task3);
             }
             else
             {
-                entries = entries.Concat(await task1);
-                entries = entries.Concat(await task2);
+                entries.AddRange(await task1);
+                entries.AddRange(await task2);
             }
         }
 
-        IEnumerable<FileEntry> data = entries.ToList();
+        total = entries.Count;
+
+        IEnumerable<FileEntry> data = entries;
 
         if (orderBy.SortedBy != SortedByType.New)
         {
-            total = data.Count();
-
             if (parent.FolderType != FolderType.Recent)
             {
                 data = SortEntries<T>(data, orderBy);
@@ -694,8 +693,6 @@ public class EntryManager
         //sorting after marking
         if (orderBy.SortedBy == SortedByType.New)
         {
-            total = data.Count();
-
             data = SortEntries<T>(data, orderBy);
 
             if (0 < from)
@@ -1239,9 +1236,12 @@ public class EntryManager
             ,
             _ => (x, y) => c * x.Title.EnumerableComparer(y.Title),
         };
+
+        var comparer = Comparer<FileEntry>.Create(sorter);
+
         if (orderBy.SortedBy != SortedByType.New)
         {
-            var pinnedRooms = new List<FileEntry>();
+            IEnumerable<FileEntry> pinnedRooms = new List<FileEntry>();
 
             if (!_coreBaseSettings.DisableDocSpace)
             {
@@ -1264,20 +1264,16 @@ public class EntryManager
             }
 
             // folders on top
-            var folders = entries.Where(r => r.FileEntryType == FileEntryType.Folder).Except(pinnedRooms).ToList();
-            var files = entries.Where(r => r.FileEntryType == FileEntryType.File).ToList();
-            pinnedRooms.Sort(sorter);
-            folders.Sort(sorter);
-            files.Sort(sorter);
+            var folders = entries.Where(r => r.FileEntryType == FileEntryType.Folder).Except(pinnedRooms);
+            var files = entries.Where(r => r.FileEntryType == FileEntryType.File);
+            pinnedRooms = pinnedRooms.OrderBy(r => r, comparer);
+            folders = folders.OrderBy(r => r, comparer);
+            files = files.OrderBy(r => r, comparer);
 
             return pinnedRooms.Concat(folders).Concat(files);
         }
 
-        var result = entries.ToList();
-
-        result.Sort(sorter);
-
-        return result;
+        return entries.OrderBy(r => r, comparer);
     }
 
     public IAsyncEnumerable<FileEntry> SortEntriesAsync<T>(IAsyncEnumerable<FileEntry> entries, OrderBy orderBy)
