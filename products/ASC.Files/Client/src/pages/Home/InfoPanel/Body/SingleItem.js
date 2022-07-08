@@ -1,10 +1,9 @@
+import React, { useEffect, useState } from "react";
 import { FileType } from "@appserver/common/constants";
 import { LANGUAGE } from "@appserver/common/constants";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
-import React, { useEffect, useState } from "react";
-import { ReactSVG } from "react-svg";
 import {
   StyledAccess,
   StyledAccessItem,
@@ -14,8 +13,7 @@ import {
   StyledThumbnail,
   StyledTitle,
 } from "./styles/styles.js";
-
-const moment = require("moment");
+import getCorrectDate from "@appserver/components/utils/getCorrectDate";
 
 const SingleItem = (props) => {
   const {
@@ -23,16 +21,19 @@ const SingleItem = (props) => {
     selectedItem,
     onSelectItem,
     setSharingPanelVisible,
-    getFolderInfo,
+    //getFolderInfo,
     getIcon,
     getFolderIcon,
     getShareUsers,
     dontShowSize,
     dontShowLocation,
     dontShowAccess,
+    dontShowOwner,
+    personal,
+    createThumbnail,
+    culture,
   } = props;
 
-  let updateSubscription = true;
   const [item, setItem] = useState({
     id: "",
     isFolder: false,
@@ -58,19 +59,33 @@ const SingleItem = (props) => {
 
     const getSingleItemProperties = (item) => {
       const styledLink = (text, href) => (
-        <Link className="property-content" href={href} isHovered={true}>
+        <Link
+          isTextOverflow
+          className="property-content"
+          href={href}
+          isHovered={true}
+        >
           {text}
         </Link>
       );
 
       const styledText = (text) => (
-        <Text className="property-content">{text}</Text>
+        <Text truncate className="property-content">
+          {text}
+        </Text>
       );
 
+      const replaceUnicode = (str) => {
+        const regex = /&#([0-9]{1,4});/gi;
+        return str
+          ? str.replace(regex, (match, numStr) => String.fromCharCode(+numStr))
+          : "...";
+      };
+
       const parseAndFormatDate = (date) => {
-        return moment(date)
-          .locale(localStorage.getItem(LANGUAGE))
-          .format("DD.MM.YY hh:mm A");
+        const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+        const correctDate = getCorrectDate(locale, date);
+        return correctDate;
       };
 
       const getItemType = (fileType) => {
@@ -108,10 +123,12 @@ const SingleItem = (props) => {
         {
           id: "Owner",
           title: t("Common:Owner"),
-          content: styledLink(
-            item.createdBy?.displayName,
-            item.createdBy?.profileUrl
-          ),
+          content: personal
+            ? styledText(replaceUnicode(item.createdBy?.displayName))
+            : styledLink(
+                replaceUnicode(item.createdBy?.displayName),
+                item.createdBy?.profileUrl
+              ),
         },
         // {
         //   id: "Location",
@@ -125,7 +142,7 @@ const SingleItem = (props) => {
         },
         {
           id: "Size",
-          title: t("Common:Size"),
+          title: item.fileType ? t("Common:Size") : t("Common:Content"),
           content: styledText(itemSize),
         },
         {
@@ -136,10 +153,12 @@ const SingleItem = (props) => {
         {
           id: "LastModifiedBy",
           title: t("LastModifiedBy"),
-          content: styledLink(
-            item.updatedBy?.displayName,
-            item.updatedBy?.profileUrl
-          ),
+          content: personal
+            ? styledText(replaceUnicode(item.updatedBy?.displayName))
+            : styledLink(
+                replaceUnicode(item.updatedBy?.displayName),
+                item.updatedBy?.profileUrl
+              ),
         },
         {
           id: "ByCreationDate",
@@ -148,6 +167,10 @@ const SingleItem = (props) => {
         },
       ];
 
+      if (item.providerKey && item.isFolder)
+        result = result.filter((x) => x.id !== "Size");
+
+      if (dontShowOwner) result.shift();
       if (item.isFolder) return result;
 
       result.splice(3, 0, {
@@ -166,7 +189,7 @@ const SingleItem = (props) => {
         },
         {
           id: "Comments",
-          title: t("Comments"),
+          title: t("Common:Comments"),
           content: styledText(item.comment),
         }
       );
@@ -195,48 +218,58 @@ const SingleItem = (props) => {
   };
 
   const loadAsyncData = async (displayedItem, selectedItem) => {
-    if (!updateSubscription) return;
+    if (
+      !selectedItem.thumbnailUrl &&
+      !selectedItem.isFolder &&
+      selectedItem.thumbnailStatus === 0 &&
+      (selectedItem.fileType === FileType.Image ||
+        selectedItem.fileType === FileType.Spreadsheet ||
+        selectedItem.fileType === FileType.Presentation ||
+        selectedItem.fileType === FileType.Document)
+    ) {
+      await createThumbnail(selectedItem.id);
+    }
 
-    const updateLoadedItemProperties = async (displayedItem, selectedItem) => {
-      const parentFolderId = selectedItem.isFolder
-        ? selectedItem.parentId
-        : selectedItem.folderId;
+    // const updateLoadedItemProperties = async (displayedItem, selectedItem) => {
+    //   const parentFolderId = selectedItem.isFolder
+    //     ? selectedItem.parentId
+    //     : selectedItem.folderId;
 
-      const noLocationProperties = [...displayedItem.properties].filter(
-        (dip) => dip.id !== "Location"
-      );
+    //   const noLocationProperties = [...displayedItem.properties].filter(
+    //     (dip) => dip.id !== "Location"
+    //   );
 
-      let result;
-      await getFolderInfo(parentFolderId)
-        .catch(() => {
-          result = noLocationProperties;
-        })
-        .then((data) => {
-          if (!data) {
-            result = noLocationProperties;
-            return;
-          }
-          result = [...displayedItem.properties].map((dip) =>
-            dip.id === "Location"
-              ? {
-                  id: "Location",
-                  title: t("Location"),
-                  content: (
-                    <Link
-                      className="property-content"
-                      href={`/products/files/filter?folder=${parentFolderId}`}
-                      isHovered={true}
-                    >
-                      {data.title}
-                    </Link>
-                  ),
-                }
-              : dip
-          );
-        });
+    //   let result;
+    //   await getFolderInfo(parentFolderId)
+    //     .catch(() => {
+    //       result = noLocationProperties;
+    //     })
+    //     .then((data) => {
+    //       if (!data) {
+    //         result = noLocationProperties;
+    //         return;
+    //       }
+    //       result = [...displayedItem.properties].map((dip) =>
+    //         dip.id === "Location"
+    //           ? {
+    //               id: "Location",
+    //               title: t("Common:Location"),
+    //               content: (
+    //                 <Link
+    //                   className="property-content"
+    //                   href={`/products/files/filter?folder=${parentFolderId}`}
+    //                   isHovered={true}
+    //                 >
+    //                   {data.title}
+    //                 </Link>
+    //               ),
+    //             }
+    //           : dip
+    //       );
+    //     });
 
-      return result;
-    };
+    //   return result;
+    // };
 
     const updateLoadedItemAccess = async (selectedItem) => {
       const accesses = await getShareUsers(
@@ -282,12 +315,14 @@ const SingleItem = (props) => {
       return;
     }
 
-    const access = await updateLoadedItemAccess(selectedItem);
-    setItem({
-      ...displayedItem,
-      // properties: properties,
-      access: access,
-    });
+    if (!personal) {
+      const access = await updateLoadedItemAccess(selectedItem);
+      setItem({
+        ...displayedItem,
+        // properties: properties,
+        access: access,
+      });
+    }
   };
 
   const openSharingPanel = () => {
@@ -297,25 +332,32 @@ const SingleItem = (props) => {
   };
 
   useEffect(() => {
-    if (selectedItem.id !== item.id && updateSubscription)
-      updateItemsInfo(selectedItem);
-    return () => (updateSubscription = false);
+    updateItemsInfo(selectedItem);
   }, [selectedItem]);
 
   return (
     <>
       <StyledTitle>
-        <ReactSVG className="icon" src={item.iconUrl} />
+        <img className="icon" src={item.iconUrl} alt="thumbnail-icon" />
         <Text className="text">{item.title}</Text>
       </StyledTitle>
 
-      {selectedItem.thumbnailUrl ? (
+      {selectedItem?.thumbnailUrl ? (
         <StyledThumbnail>
-          <img src={item.thumbnailUrl} alt="" />
+          <img
+            src={selectedItem.thumbnailUrl}
+            alt="thumbnail-image"
+            height={260}
+            width={360}
+          />
         </StyledThumbnail>
       ) : (
         <div className="no-thumbnail-img-wrapper">
-          <ReactSVG className="no-thumbnail-img" src={item.thumbnailUrl} />
+          <img
+            className="no-thumbnail-img"
+            src={item.thumbnailUrl}
+            alt="thumbnail-icon-big"
+          />
         </div>
       )}
 
@@ -338,7 +380,7 @@ const SingleItem = (props) => {
         })}
       </StyledProperties>
 
-      {!dontShowAccess && item.access && (
+      {!dontShowAccess && item.access && !personal && (
         <>
           <StyledSubtitle>
             <Text fontWeight="600" fontSize="14px">

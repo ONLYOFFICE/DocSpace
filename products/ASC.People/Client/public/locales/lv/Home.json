@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Administrators",
   "ChangeToGuest": "Mainīt uz {{guestCaption}}",
   "ChangeToUser": "Mainīt uz {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Šeit vēl nav komandas biedru",
   "LblInviteAgain": "Uzaicināt vēlreiz",
   "LblInvited": "Uzaicināts",
-  "LblOther": "Cits",
   "LblSendEmail": "Sūtīt e-pastu",
   "LblSendMessage": "Sūtīt ziņojumu",
   "LblSetActive": "Iestatīt kā aktīvs",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <1>{{email}}</1> e-pasta adresi",
   "NotFoundDescription": "Izmēģiniet citu filtru vai notīriet to, lai skatītu visus sadaļā esošos cilvēkus.",
   "NotFoundTitle": "Nav atrasts neviens komandas biedrs",
+  "ReassignmentData": "Datu atkārtota piešķiršana",
   "SuccessfullyRemovedGroup": "Grupa ir veiksmīgi noņemta",
   "UserStatus": "Statuss"
 }

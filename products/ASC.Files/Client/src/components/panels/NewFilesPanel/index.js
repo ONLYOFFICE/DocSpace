@@ -30,7 +30,7 @@ import withLoader from "../../../HOCs/withLoader";
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
 class NewFilesPanel extends React.Component {
-  state = { readingFiles: [] };
+  state = { readingFiles: [], inProgress: false };
 
   onClose = () => {
     this.props.setNewFilesPanelVisible(false);
@@ -60,11 +60,21 @@ class NewFilesPanel extends React.Component {
       else folderIds.push(item.id);
     }
 
+    this.setState({ inProgress: true });
+
     this.props
       .markAsRead(folderIds, fileIds)
       .then(() => this.setNewBadgeCount())
+      .then(() => {
+        const { hasNew, refreshFiles } = this.props;
+
+        return hasNew ? refreshFiles() : Promise.resolve();
+      })
       .catch((err) => toastr.error(err))
-      .finally(() => this.onClose());
+      .finally(() => {
+        this.setState({ inProgress: false });
+        this.onClose();
+      });
   };
 
   onNewFileClick = (e) => {
@@ -151,7 +161,7 @@ class NewFilesPanel extends React.Component {
         updateFilesBadge();
       }
     } else {
-      updateFolderBadge(+newFilesIds[newFilesIds.length - 1], filesCount);
+      updateFolderBadge(newFilesIds[newFilesIds.length - 1], filesCount);
     }
   };
 
@@ -168,7 +178,11 @@ class NewFilesPanel extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel" visible={visible}>
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          onClose={this.onClose}
+        >
           <StyledContent>
             <StyledHeaderContent>
               <Heading
@@ -234,6 +248,7 @@ class NewFilesPanel extends React.Component {
                 size="normal"
                 primary
                 onClick={this.onMarkAsRead}
+                isLoading={this.state.inProgress}
               />
               <Button
                 className="sharing_panel-button"
@@ -269,6 +284,8 @@ export default inject(
       updateFilesBadge,
       updateFolderBadge,
       updateFoldersBadge,
+      hasNew,
+      refreshFiles,
     } = filesStore;
     const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
@@ -305,6 +322,8 @@ export default inject(
       updateFilesBadge,
 
       theme: auth.settingsStore.theme,
+      hasNew,
+      refreshFiles,
     };
   }
 )(

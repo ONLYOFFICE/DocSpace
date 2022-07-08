@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { ToggleButtonContainer, HiddenInput } from "./styled-toggle-button";
+import {
+  ToggleButtonContainer,
+  HiddenInput,
+  Container,
+} from "./styled-toggle-button";
 import Text from "../text";
 import globalColors from "../utils/globalColors";
 import { motion } from "framer-motion";
@@ -13,17 +17,17 @@ const ToggleIcon = ({ isChecked, isLoading }) => {
         isChecked ? "checked" : "notChecked",
         isLoading ? "isLoading" : "",
       ]}
-      width="30"
-      height="18"
-      viewBox="0 0 30 18"
+      width="28"
+      height="16"
+      viewBox="0 0 28 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <motion.rect x="1" y="1" width="28" height="16" rx="8" />
+      <motion.rect width="28" height="16" rx="8" />
       <motion.circle
         fill-rule="evenodd"
         clip-rule="evenodd"
-        cy="9"
+        cy="8"
         variants={{
           isLoading: {
             r: [5, 6, 6],
@@ -35,8 +39,8 @@ const ToggleIcon = ({ isChecked, isLoading }) => {
               },
             },
           },
-          checked: { cx: 21, r: 6 },
-          notChecked: { cx: 9, r: 6 },
+          checked: { cx: 20, r: 6 },
+          notChecked: { cx: 8, r: 6 },
         }}
       />
     </motion.svg>
@@ -74,26 +78,28 @@ class ToggleButton extends Component {
     //console.log("ToggleButton render");
 
     return (
-      <ToggleButtonContainer
-        id={id}
-        className={className}
-        style={style}
-        isDisabled={isDisabled}
-        isChecked={this.state.checked}
-      >
-        <HiddenInput
-          type="checkbox"
-          checked={this.state.checked}
-          disabled={isDisabled}
-          onChange={onChange}
-        />
-        <ToggleIcon isChecked={this.state.checked} isLoading={isLoading} />
-        {label && (
-          <Text className="toggle-button-text" as="span" {...colorProps}>
-            {label}
-          </Text>
-        )}
-      </ToggleButtonContainer>
+      <Container id={id} className={className} style={style}>
+        <ToggleButtonContainer
+          id={id}
+          className={className}
+          style={style}
+          isDisabled={isDisabled}
+          isChecked={this.state.checked}
+        >
+          <HiddenInput
+            type="checkbox"
+            checked={this.state.checked}
+            disabled={isDisabled}
+            onChange={onChange}
+          />
+          <ToggleIcon isChecked={this.state.checked} isLoading={isLoading} />
+          {label && (
+            <Text className="toggle-button-text" as="span" {...colorProps}>
+              {label}
+            </Text>
+          )}
+        </ToggleButtonContainer>
+      </Container>
     );
   }
 }

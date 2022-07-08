@@ -202,6 +202,8 @@ const PureConnectDialogContainer = (props) => {
       isLoading={!tReady}
       visible={visible}
       zIndex={310}
+      isLarge={!isAccount}
+      autoMaxHeight
       onClose={onClose}
     >
       <ModalDialog.Header>
@@ -212,7 +214,7 @@ const PureConnectDialogContainer = (props) => {
           <FieldContainer labelVisible labelText={t("Account")} isVertical>
             <Button
               label={t("Reconnect")}
-              size="small"
+              size="normal"
               onClick={onReconnect}
               scale
               isDisabled={isLoading}

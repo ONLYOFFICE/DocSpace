@@ -1,7 +1,50 @@
 import Base from "@appserver/components/themes/base";
 import styled, { keyframes, css } from "styled-components";
+import { desktop, tablet } from "@appserver/components/utils/device";
+import { isDesktop } from "react-device-detect";
+
+const StyledFloatingButtonWrapper = styled.div`
+  @media ${desktop} {
+    position: absolute;
+    z-index: 300;
+    right: 0;
+    bottom: 0;
+
+    ${isDesktop &&
+    css`
+      width: 100px;
+      height: 70px;
+    `}
+  }
+
+  .layout-progress-bar_close-icon {
+    display: none;
+    position: absolute;
+    cursor: pointer;
+    right: 77px;
+    bottom: 33px;
+  }
+  :hover {
+    .layout-progress-bar_close-icon {
+      display: block;
+    }
+    @media ${tablet} {
+      .layout-progress-bar_close-icon {
+        display: none;
+      }
+    }
+  }
+
+  @media ${tablet} {
+    .layout-progress-bar_close-icon {
+      display: none;
+    }
+  }
+`;
 
 const StyledCircleWrap = styled.div`
+  position: relative;
+  z-index: 500;
   width: 48px;
   height: 48px;
   background: ${(props) =>
@@ -61,7 +104,10 @@ const StyledCircle = styled.div`
 
   .circle__mask .circle__fill {
     clip: rect(0px, 21px, 42px, 0px);
-    background-color: ${(props) => props.theme.floatingButton.color};
+    background-color: ${(props) =>
+      !props.displayProgress
+        ? "transparent !important"
+        : props.theme.floatingButton.color};
   }
 
   .circle__mask.circle__full {
@@ -128,6 +174,7 @@ const StyledAlertIcon = styled.div`
 `;
 
 export {
+  StyledFloatingButtonWrapper,
   StyledCircleWrap,
   StyledCircle,
   StyledFloatingButton,

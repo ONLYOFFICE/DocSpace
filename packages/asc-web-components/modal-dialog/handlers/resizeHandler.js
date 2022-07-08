@@ -1,26 +1,24 @@
-import { getModalType } from "../../utils/device";
+import { size } from "../../utils/device";
+
+const getCurrentSizeName = () => {
+  const innerWidth = window.innerWidth;
+  return innerWidth > size.tablet
+    ? "desktop"
+    : innerWidth <= size.tablet && innerWidth > size.smallTablet
+    ? "tablet"
+    : innerWidth <= size.smallTablet && innerWidth > size.mobile
+    ? "smallTablet"
+    : "mobile";
+};
 
 export const getCurrentDisplayType = (
-  stateDisplayType,
   propsDisplayType,
-  onResize
+  propsDisplayTypeDetailed
 ) => {
-  if (propsDisplayType !== "auto") return false;
+  if (!propsDisplayTypeDetailed) return propsDisplayType;
 
-  const newType = getTypeByWidth(propsDisplayType);
-  if (newType === stateDisplayType) return false;
+  const detailedDisplayType = propsDisplayTypeDetailed[getCurrentSizeName()];
 
-  onResize && onResize(newType);
-  return newType;
-};
-
-export const getTypeByWidth = (propsDisplayType) => {
-  if (propsDisplayType !== "auto") return propsDisplayType;
-  return getModalType();
-};
-
-export const popstate = (onClose) => {
-  window.removeEventListener("popstate", popstate, false);
-  onClose();
-  window.history.go(1);
+  if (detailedDisplayType) return detailedDisplayType;
+  return propsDisplayType;
 };

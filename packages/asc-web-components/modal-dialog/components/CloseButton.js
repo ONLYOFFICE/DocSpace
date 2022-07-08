@@ -7,40 +7,37 @@ import IconButton from "../../icon-button";
 import Base from "../../themes/base";
 
 const StyledCloseButtonWrapper = styled.div`
-  position: absolute;
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background-color: ${(props) =>
-    props.theme.modalDialog.closeButton.backgroundColor};
-  border-radius: 50%;
-
   cursor: pointer;
   position: absolute;
 
-  right: 0;
-  top: 0;
-
   ${(props) =>
-    props.displayType === "modal"
+    props.currentDisplayType === "modal"
       ? css`
-          margin-right: -34px;
+          top: 0;
+          right: -34px;
           @media ${smallTablet} {
-            margin-right: 10px;
-            margin-top: -34px;
+            right: 10px;
+            top: -27px;
           }
         `
       : css`
-          z-index: 1000;
-          margin-top: 10px;
-          right: 335px;
+          top: 10px;
+          left: -27px;
+          @media ${smallTablet} {
+            top: -27px;
+            left: auto;
+            right: 10px;
+          }
         `}
 
-  .close-button {
+  .close-button, .close-button:hover {
     cursor: pointer;
     path {
       fill: ${(props) => props.theme.modalDialog.closeButton.fillColor};
@@ -50,11 +47,15 @@ const StyledCloseButtonWrapper = styled.div`
 
 StyledCloseButtonWrapper.defaultProps = { theme: Base };
 
-const CloseButton = ({ displayType, onClick }) => {
+const CloseButton = ({ currentDisplayType, zIndex, onClick }) => {
   return (
-    <StyledCloseButtonWrapper onClick={onClick} displayType={displayType}>
+    <StyledCloseButtonWrapper
+      zIndex={zIndex}
+      onClick={onClick}
+      currentDisplayType={currentDisplayType}
+    >
       <IconButton
-        size={12}
+        size="17px"
         className="close-button"
         iconName="/static/images/cross.react.svg"
       />
@@ -63,7 +64,7 @@ const CloseButton = ({ displayType, onClick }) => {
 };
 
 CloseButton.propTypes = {
-  displayType: PropTypes.oneOf(["modal", "aside"]),
+  currentDisplayType: PropTypes.oneOf(["modal", "aside"]),
   onClick: PropTypes.func,
 };
 

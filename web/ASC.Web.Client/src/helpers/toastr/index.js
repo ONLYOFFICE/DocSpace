@@ -34,7 +34,7 @@ function warning(data, title, timeout, withCross, centerPosition) {
 function info(data, title, timeout, withCross, centerPosition) {
   return toastr.info(
     data,
-    title ? title : i18n.t("Info"),
+    title ? title : i18n.t("Common:Info"),
     timeout,
     withCross,
     centerPosition

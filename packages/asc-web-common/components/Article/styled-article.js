@@ -36,36 +36,32 @@ const StyledArticle = styled.article`
 
   @media ${mobile} {
     display: ${(props) => (props.articleOpen ? "flex" : "none")};
-    min-width: 100vw;
-    width: 100vw;
-    height: calc(100vh - 64px) !important;
+    min-width: 100%;
+    width: 100%;
+    position: fixed;
+
+    height: calc(100% - 64px) !important;
     margin: 0;
+    margin-top: 16px;
     padding: 0;
-    padding-bottom: 0px;
   }
 
   ${isMobileOnly &&
   css`
     display: ${(props) => (props.articleOpen ? "flex" : "none")} !important;
-    min-width: 100vw !important;
-    width: 100vw;
+    min-width: 100% !important;
+    width: 100%;
     position: fixed;
-    margin-top: 64px !important;
-    height: calc(100vh - 64px) !important;
+
     margin: 0;
     padding: 0;
-    padding-bottom: 0px;
+    margin-top: ${(props) =>
+      props.isBannerVisible ? "-16px" : "64px"} !important;
+    height: calc(100% - 64px) !important;
   `}
 
-  @media ${mobile} {
-    position: fixed;
-    margin-top: 16px;
-    height: calc(100vh - 64px) !important;
-    z-index: 400;
-  }
-
   z-index: ${(props) =>
-    props.showText && (isMobileOnly || isMobileUtils()) ? "205" : "100"};
+    props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
   .resizable-block {
     overflow: hidden;
@@ -97,12 +93,11 @@ const StyledArticle = styled.article`
 
     @media ${mobile} {
       display: ${(props) => (props.articleOpen ? "flex" : "none")};
-      min-width: 100vw;
-      width: 100vw;
-      height: calc(100vh - 64px) !important;
+      min-width: 100%;
+      width: 100%;
+
       margin: 0;
       padding: 0;
-      padding-bottom: 0px;
     }
 
     ${isMobile &&
@@ -117,18 +112,26 @@ const StyledArticle = styled.article`
     ${isMobileOnly &&
     css`
       display: ${(props) => (props.articleOpen ? "flex" : "none")};
-      min-width: 100vw !important;
-      width: 100vw;
-      height: calc(100vh - 64px) !important;
+      min-width: 100% !important;
+      width: 100%;
       margin: 0;
       padding: 0;
-      padding-bottom: 0px;
     `}
   }
 
   .article-body__scrollbar {
     .scroll-body {
+      padding-top: 16px;
       padding-right: 0px !important;
+
+      @media ${mobile} {
+        padding-bottom: 20px;
+      }
+
+      ${isMobileOnly &&
+      css`
+        padding-bottom: 20px;
+      `}
     }
   }
 `;
@@ -142,24 +145,21 @@ const StyledArticleHeader = styled.div`
   justify-content: flex-start;
   align-items: center;
 
-  .loader {
-    padding-top: 2px;
-  }
-
   @media ${tablet} {
     padding: 16px 16px 17px;
     margin: 0;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
-    .loader {
-      padding-top: 5px;
-      padding-bottom: 7px;
-    }
+
+    height: 61px;
+    min-height: 61px;
+    max-height: 61px;
+    box-sizing: border-box;
   }
 
   @media ${mobile} {
     border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
     padding: 12px 16px 12px;
-    margin-bottom: 16px !important;
+    //margin-bottom: 16px !important;
   }
 
   ${isTablet &&
@@ -167,10 +167,6 @@ const StyledArticleHeader = styled.div`
     padding: 16px 16px 17px;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
     margin: 0;
-    .loader {
-      padding-top: 5px;
-      padding-bottom: 7px;
-    }
   `}
 
   ${isMobileOnly &&
@@ -178,8 +174,10 @@ const StyledArticleHeader = styled.div`
     border-bottom: ${(props) =>
       props.theme.catalog.header.borderBottom} !important;
     padding: 12px 16px 12px !important;
-    margin-bottom: 16px !important;
+    //margin-bottom: 16px !important;
   `}
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 StyledArticleHeader.defaultProps = { theme: Base };
@@ -213,7 +211,7 @@ const StyledHeading = styled(Heading)`
 const StyledIconBox = styled.div`
   display: none;
   align-items: center;
-  height: 28px;
+  height: 20px;
 
   @media ${tablet} {
     display: flex;
@@ -265,11 +263,10 @@ const StyledArticleMainButton = styled.div`
 `;
 
 const StyledControlContainer = styled.div`
-  background: ${(props) => props.theme.catalog.control.background};
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
   position: absolute;
-  top: 30px;
+  top: 37px;
   right: 10px;
   border-radius: 100px;
   cursor: pointer;
@@ -282,8 +279,8 @@ const StyledControlContainer = styled.div`
 StyledControlContainer.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 12px;
-  height: 12px;
+  width: 17px;
+  height: 17px;
   path {
     fill: ${(props) => props.theme.catalog.control.fill};
   }

@@ -27,16 +27,9 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .button-dialog {
     display: inline-block;
-    margin-left: 8px;
 
     @media ${tablet} {
       display: none;
-    }
-  }
-
-  .button-dialog-accept {
-    @media ${tablet} {
-      width: 100%;
     }
   }
 
@@ -67,29 +60,18 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
   }
 
-  .delete_dialog-header-text {
-    padding-bottom: 8px;
-  }
-
-  .delete_dialog-text {
-    padding-bottom: 8px;
-  }
-
   .modal-dialog-content {
     padding: 8px 16px;
     border: ${(props) => props.theme.filesModalDialog.border};
 
     @media ${tablet} {
-      padding: 0;
+      //padding: 0;
+      padding-top: 0;
       border: 0;
     }
 
     .modal-dialog-checkbox:not(:last-child) {
       padding-bottom: 4px;
-    }
-
-    .delete_dialog-text:not(:first-child) {
-      padding-top: 8px;
     }
   }
 
@@ -126,20 +108,20 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
   .convert_dialog_footer {
     display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
 
-    .convert_dialog_button {
-      margin-left: auto;
-      display: inline-block;
-
-      @media ${tablet} {
-        display: none;
-      }
+    .convert_dialog_checkboxes {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .convert_dialog_button-accept {
-      @media ${tablet} {
-        width: 100%;
-      }
+    .convert_dialog_buttons {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
     }
   }
 

@@ -7,6 +7,7 @@ import ArticleButton from "./ArticleButtonLoader";
 import ArticleFolder from "./ArticleFolderLoader";
 import ArticleGroup from "./ArticleGroupsLoader";
 import TreeFolders from "./TreeFolderLoader";
+import NewTreeFolders from "./NewTreeFolderLoader";
 import TreeSettingsLoader from "./TreeSettingsLoader";
 import Row from "./RowLoader";
 import Rows from "./RowsLoader";
@@ -18,9 +19,14 @@ import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
 import Tile from "./TileLoader";
 import Tiles from "./TilesLoader";
+import TableLoader from "./TableLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
 import ListLoader from "./ListLoader";
+import SharingPanelLoader from "./SharingPanelLoader";
+import SharingPanelLoaderModal from "./SharingPanelLoader/modal";
+import InfoPanelBodyLoader from "./InfoPanelBodyLoader";
+import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
 
 export default {
   Rectangle,
@@ -40,10 +46,16 @@ export default {
   HistoryRows,
   Tile,
   Tiles,
+  TableLoader,
   DialogLoader,
   DialogAsideLoader,
   ArticleButton,
   ArticleFolder,
   ArticleGroup,
   ListLoader,
+  NewTreeFolders,
+  SharingPanelLoader,
+  SharingPanelLoaderModal,
+  InfoPanelBodyLoader,
+  InfoPanelHeaderLoader,
 };

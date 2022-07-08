@@ -6,22 +6,19 @@ import Button from "@appserver/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
 import { BackupStorageType } from "@appserver/common/constants";
 
-let folderPath = "";
 let folder = "";
 class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
 
-    folderPath = getFromSessionStorage("LocalCopyPath");
     folder = getFromSessionStorage("LocalCopyFolder");
 
     this.state = {
       isStartCopy: false,
-      isLoadingData: true,
+      isLoadingData: false,
       selectedFolder: folder || "",
       isPanelVisible: false,
       isError: false,
-      folderPath: folderPath || "",
     };
   }
 
@@ -90,13 +87,7 @@ class ThirdPartyModule extends React.Component {
   };
   render() {
     const { isMaxProgress, t, commonThirdPartyList, buttonSize } = this.props;
-    const {
-      isPanelVisible,
-      isLoadingData,
-      isError,
-      folderPath,
-      isStartCopy,
-    } = this.state;
+    const { isPanelVisible, isLoadingData, isError, isStartCopy } = this.state;
 
     const isModuleDisabled = !isMaxProgress || isStartCopy || isLoadingData;
     return (
@@ -108,13 +99,12 @@ class ThirdPartyModule extends React.Component {
             onClose={this.onClose}
             onClickInput={this.onClickInput}
             onSetLoadingData={this.onSetLoadingData}
-            isSavingProcess={isModuleDisabled}
+            isDisabled={isModuleDisabled}
             isPanelVisible={isPanelVisible}
             isError={isError}
-            folderPath={folderPath}
             foldersType="third-party"
-            fontSizeInput={"13px"}
             foldersList={commonThirdPartyList}
+            ignoreSelectedFolderTree
           />
         </div>
         <div className="manual-backup_buttons">

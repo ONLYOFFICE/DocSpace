@@ -4,28 +4,52 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ConflictResolveType } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import styled from "styled-components";
+import { convertFile } from "@appserver/common/api/files";
 
 const StyledModalDialog = styled(ModalDialog)`
-  .conflict-resolve-dialog-text {
+  .radio {
     padding-bottom: 8px;
   }
 
-  .conflict-resolve-radio-button {
-    svg {
-      overflow: visible;
-    }
+  .message {
+    margin-bottom: 16px;
   }
 
-  .modal-dialog-aside-footer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 10px;
-    width: 90%;
+  .select-action {
+    margin-bottom: 12px;
+  }
+
+  .conflict-resolve-radio-button {
+    label {
+      display: flex;
+      align-items: flex-start;
+      &:not(:last-child) {
+        margin-bottom: 12px;
+      }
+    }
+
+    svg {
+      overflow: visible;
+      margin-right: 8px;
+      margin-top: 3px;
+    }
+
+    .radio-option-title {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    .radio-option-description {
+      font-size: 12px;
+      line-height: 16px;
+      color: #a3a9ae;
+    }
   }
 `;
 
@@ -43,6 +67,7 @@ const ConflictResolveDialog = (props) => {
     setMoveToPanelVisible,
     setCopyPanelVisible,
     setThirdPartyMoveDialogVisible,
+    theme,
   } = props;
 
   const {
@@ -127,8 +152,11 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text>{t("OverwriteTitle")}</Text>
-          <Text>{t("OverwriteDescription")}</Text>
+          <Text className="radio-option-title">{t("OverwriteTitle")}</Text>
+          <Text className="radio-option-description">
+            {" "}
+            {t("OverwriteDescription")}
+          </Text>
         </div>
       ),
       value: "overwrite",
@@ -136,8 +164,10 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text>{t("CreateTitle")}</Text>
-          <Text>{t("CreateDescription")}</Text>
+          <Text className="radio-option-title">{t("CreateTitle")}</Text>
+          <Text className="radio-option-description">
+            {t("CreateDescription")}
+          </Text>
         </div>
       ),
 
@@ -146,8 +176,10 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text>{t("SkipTitle")}</Text>
-          <Text>{t("SkipDescription")}</Text>
+          <Text className="radio-option-title">{t("SkipTitle")}</Text>
+          <Text className="radio-option-description">
+            {t("SkipDescription")}
+          </Text>
         </div>
       ),
       value: "skip",
@@ -163,19 +195,33 @@ const ConflictResolveDialog = (props) => {
       isLoading={!tReady}
       visible={visible}
       onClose={onCloseDialog}
-      displayType="aside"
+      isLarge
+      zIndex={312}
     >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text className="conflict-resolve-dialog-text">
-          {singleFile
-            ? t("ConflictResolveDescription", { file, folder: folderTitle })
-            : t("ConflictResolveDescriptionFiles", {
-                filesCount,
-                folder: folderTitle,
-              })}
+        <Text className="message">
+          {console.log(filesCount, folderTitle)}
+
+          {singleFile ? (
+            <Trans
+              t={t}
+              i18nKey="SingleConflictResolveMessage"
+              ns="ConflictResolveDialog"
+            >
+              {{ file, folder: folderTitle }}
+            </Trans>
+          ) : (
+            <Trans
+              t={t}
+              i18nKey="SeveralConflictsResolveMessage"
+              ns="ConflictResolveDialog"
+            >
+              {{ filesCount, folder: folderTitle }}
+            </Trans>
+          )}
         </Text>
-        <Text className="conflict-resolve-dialog-text">
+        <Text className="select-action">
           {t("ConflictResolveSelectAction")}
         </Text>
         <RadioButtonGroup
@@ -191,30 +237,24 @@ const ConflictResolveDialog = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
-          className="button-dialog-accept"
           key="OkButton"
           label={t("Common:OKButton")}
-          size="small"
+          size="normal"
           primary
-          scale
           onClick={onAcceptType}
-          //isLoading={isLoading}
         />
         <Button
-          className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="small"
-          scale
+          size="normal"
           onClick={onCloseDialog}
-          //isLoading={isLoading}
         />
       </ModalDialog.Footer>
     </StyledModalDialog>
   );
 };
 
-export default inject(({ dialogsStore, uploadDataStore, filesStore }) => {
+export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
   const {
     conflictResolveDialogVisible: visible,
     setConflictResolveDialogVisible,
@@ -227,8 +267,10 @@ export default inject(({ dialogsStore, uploadDataStore, filesStore }) => {
 
   const { itemOperationToFolder } = uploadDataStore;
   const { activeFiles, setActiveFiles } = filesStore;
-
+  const { settingsStore } = auth;
+  const { theme } = settingsStore;
   return {
+    theme,
     items,
     visible,
     conflictResolveDialogData,

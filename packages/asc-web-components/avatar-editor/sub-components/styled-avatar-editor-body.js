@@ -2,6 +2,13 @@ import styled, { css } from "styled-components";
 import { Base } from "../../themes";
 import { tablet, desktop, mobile } from "../../utils/device";
 
+const StyledAvatarEditorBodyContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const StyledAvatarEditorBody = styled.div`
   max-width: ${(props) => props.theme.avatarEditorBody.maxWidth};
   ${(props) => !props.useModalDialog && "margin-bottom: 40px;"}
@@ -120,7 +127,7 @@ const StyledAvatarContainer = styled.div`
   .preview-container {
     display: grid;
     grid-template-columns: 1fr;
-    grid-column-gap: 16px;
+    grid-column-gap: 44px;
 
     .custom-range {
       width: 100%;
@@ -158,7 +165,7 @@ const StyledAvatarContainer = styled.div`
       display: grid;
 
       @media ${desktop} {
-        width: 224px;
+        width: 216px;
       }
 
       @media ${tablet} {

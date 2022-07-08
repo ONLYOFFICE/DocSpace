@@ -7,106 +7,156 @@ import { withTranslation } from "react-i18next";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
-import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
-import NoUserSelect from "@appserver/components/utils/commonStyles";
+import {
+  connectedCloudsTypeTitleTranslation,
+  connectedCloudsTitleTranslation,
+} from "../../../helpers/utils";
 import { Base } from "@appserver/components/themes";
+import Button from "@appserver/components/button";
+import SelectorAddButton from "@appserver/components/selector-add-button";
+import { isMobile } from "react-device-detect";
+import { mobile } from "@appserver/components/utils/device";
 
-const StyledServicesBlock = styled.div`
-  display: grid;
-  column-gap: 55px;
-  row-gap: 20px;
-  justify-content: center;
-  align-items: center;
-  grid-template-columns: repeat(auto-fill, 158px);
-  padding-top: 24px;
-
-  .service-item {
-    border: ${(props) => props.theme.filesThirdPartyDialog.border};
-    width: 158px;
-    height: 40px;
-
-    :hover {
-      cursor: pointer;
-    }
+const StyledModalDialog = styled(ModalDialog)`
+  .modal-dialog-aside-body {
+    margin-right: -16px;
   }
 
-  .service-item__svg {
-    ${NoUserSelect}
-    border: ${(props) => props.theme.filesThirdPartyDialog.border};
-    width: 158px;
-    height: 40px;
+  .connect-cloud-message {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
+    color: #657077;
+  }
 
-    display: flex;
-    justify-content: center;
-    align-item: center;
+  .service-block {
+    padding-top: 16px;
+    display: grid;
+    grid-gap: 16px;
 
-    :hover {
-      cursor: pointer;
-    }
+    .service-item-container {
+      display: flex;
 
-    ${(props) =>
-      !props.theme.isBase &&
-      css`
-        svg {
-          rect {
-            fill: #333333;
-          }
-          path {
-            fill: #ffffff;
-            opacity: 0.16;
+      .service-name-container {
+        display: flex;
+        align-items: center;
+
+        .service-item__svg {
+          width: 24px;
+          height: 24px;
+          margin-right: 8px;
+        }
+        .kDrive {
+          svg {
+            path:nth-child(7) {
+              opacity: 0.5 !important;
+            }
+            path:nth-child(8) {
+              opacity: 0.8 !important;
+            }
+            path:nth-child(9) {
+              opacity: 0.8 !important;
+            }
+            path:nth-child(10) {
+              opacity: 0.16 !important;
+            }
+            path:nth-child(11) {
+              opacity: 0.16 !important;
+            }
           }
         }
-      `}
-  }
+      }
 
-  .kDrive {
-    svg {
-      path:nth-child(7) {
-        opacity: 0.5 !important;
-      }
-      path:nth-child(8) {
-        opacity: 0.8 !important;
-      }
-      path:nth-child(9) {
-        opacity: 0.8 !important;
-      }
-      path:nth-child(10) {
-        opacity: 0.16 !important;
-      }
-      path:nth-child(11) {
-        opacity: 0.16 !important;
+      .service-btn {
+        margin-left: auto;
+
+        &-text {
+          color: ${(props) => props.theme.connectCloud.connectBtnContent};
+          background: ${(props) => props.theme.connectCloud.connectBtnTextBg};
+          ${(props) =>
+            `border: 1px solid ${props.theme.connectCloud.connectBtnTextBorder}`};
+        }
+
+        &-icon {
+          width: 36px;
+          border-radius: 3px;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: ${(props) => props.theme.connectCloud.connectBtnIconBg};
+          ${(props) =>
+            `border: 1px solid ${props.theme.connectCloud.connectBtnIconBorder}`};
+
+          path {
+            fill: ${(props) => props.theme.connectCloud.connectBtnContent};
+          }
+        }
       }
     }
-  }
 
-  .service-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    .modal-dialog-aside {
+      padding-bottom: 0;
+    }
   }
 `;
 
-StyledServicesBlock.defaultProps = { theme: Base };
+StyledModalDialog.defaultProps = { theme: Base };
 
 const ServiceItem = (props) => {
-  const { capability, t, className, ...rest } = props;
+  const {
+    t,
+    capability,
+    className,
+    getThirdPartyIcon,
+    serviceName,
+    serviceKey,
+    onClick,
+  } = props;
 
-  const capabilityName = capability[0];
+  const capabilityKey = capability[0];
   const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
-    "data-title": capabilityName,
-    "data-key": capabilityName,
+    "data-title": capabilityKey,
+    "data-key": capabilityKey,
   };
 
+  const src = getThirdPartyIcon(serviceKey || capabilityKey);
+
+  const capabilityName = connectedCloudsTypeTitleTranslation(capabilityKey, t);
+
   return (
-    <ReactSVG
-      {...dataProps}
-      {...rest}
-      className={`service-item__svg ${className}`}
-      alt=""
-    />
+    <div className="service-item-container">
+      <div className="service-name-container">
+        <ReactSVG
+          src={src}
+          className={`service-item__svg ${className}`}
+          alt=""
+        />
+        <Text fontWeight={600} fontSize="14px">
+          {serviceName ? serviceName : capabilityName}
+        </Text>
+      </div>
+      {isMobile ? (
+        <SelectorAddButton
+          onClick={onClick}
+          iconName="/static/images/actions.plus.icon.react.svg"
+          className="service-btn service-btn-icon"
+          title={t("Common:Connect")}
+          {...dataProps}
+        />
+      ) : (
+        <Button
+          size="small"
+          className="service-btn service-text"
+          label={t("Common:Connect")}
+          onClick={onClick}
+          {...dataProps}
+        />
+      )}
+    </div>
   );
 };
 
@@ -133,6 +183,7 @@ const ThirdPartyDialog = (props) => {
     getOAuthToken,
     setConnectDialogVisible,
     setConnectItem,
+    getThirdPartyIcon,
   } = props;
 
   const onClose = () => {
@@ -151,8 +202,8 @@ const ThirdPartyDialog = (props) => {
 
   const onShowService = (e) => {
     setThirdPartyDialogVisible(false);
-    const item = e.currentTarget.dataset;
-    const showAccountSetting = !e.currentTarget.dataset.link;
+    const item = e.currentTarget.dataset || e.target.dataset;
+    const showAccountSetting = !item.link;
     if (!showAccountSetting) {
       let authModal = window.open(
         "",
@@ -178,129 +229,134 @@ const ThirdPartyDialog = (props) => {
     setThirdPartyDialogVisible(false);
   };
 
-  const yandexLogoUrl =
-    i18n && i18n.language === "ru-RU"
-      ? "images/services/logo_yandex_ru.svg"
-      : "images/services/logo_yandex_en.svg";
-
   return (
-    <ModalDialog
+    <StyledModalDialog
       isLoading={!tReady}
       visible={visible}
       scale={false}
-      displayType="modal"
+      displayType="aside"
       zIndex={310}
       onClose={onClose}
     >
-      <ModalDialog.Header>
-        {t("Translations:ConnectingAccount")}
-      </ModalDialog.Header>
+      <ModalDialog.Header>{t("ConnectCloud")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text as="div" noSelect>
-          {t("ConnectDescription")}
-          {isAdmin && (
+        <Text as="div" className="connect-cloud-message" noSelect>
+          {t("ConnectMessage")}
+          {/* {isAdmin && (
             <Trans t={t} i18nKey="ConnectAdminDescription" ns="Settings">
               For successful connection enter the necessary data at
               <Link isHovered href="/settings/integration/third-party-services">
                 this page
               </Link>
             </Trans>
-          )}
+          )} */}
         </Text>
-        <StyledServicesBlock>
+        <div className="service-block">
           {googleConnectItem && (
             <ServiceItem
+              t={t}
               capability={googleConnectItem}
               onClick={onShowService}
-              src="images/services/logo_google-drive.svg"
+              getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
 
           {boxConnectItem && (
             <ServiceItem
+              t={t}
               capability={boxConnectItem}
               onClick={onShowService}
-              src="images/services/logo_box.svg"
+              getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
 
           {dropboxConnectItem && (
             <ServiceItem
+              t={t}
               capability={dropboxConnectItem}
               onClick={onShowService}
-              src="images/services/logo_dropbox.svg"
+              getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
 
           {sharePointConnectItem && (
             <ServiceItem
+              t={t}
               capability={sharePointConnectItem}
               onClick={onShowService}
-              src={"images/services/logo_sharepoint.svg"}
+              getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
 
           {oneDriveConnectItem && (
             <ServiceItem
+              t={t}
               capability={oneDriveConnectItem}
               onClick={onShowService}
-              src="images/services/logo_onedrive.svg"
+              getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
 
-          {sharePointConnectItem && (
+          {/* {sharePointConnectItem && (
             <ServiceItem
+              t={t}
               capability={sharePointConnectItem}
               onClick={onShowService}
-              src={"images/services/logo_onedrive-for-business.svg"}
+              getThirdPartyIcon={getThirdPartyIcon}
             />
-          )}
+          )} */}
 
           {nextCloudConnectItem && (
             <ServiceItem
-              capability={webDavConnectItem}
+              t={t}
+              serviceName="Nextcloud"
+              serviceKey="NextCloud"
+              capability={nextCloudConnectItem}
               onClick={onShowService}
-              src="images/services/logo_nextcloud.svg"
+              getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
 
           {ownCloudConnectItem && (
             <ServiceItem
-              capability={webDavConnectItem}
+              t={t}
+              serviceName="ownCloud"
+              serviceKey="OwnCloud"
+              capability={ownCloudConnectItem}
               onClick={onShowService}
-              src="images/services/logo_owncloud.svg"
+              getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
 
           {kDriveConnectItem && (
             <ServiceItem
+              t={t}
               capability={kDriveConnectItem}
               onClick={onShowService}
               className={"kDrive"}
-              src="images/services/logo_kdrive.svg"
+              getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
           {yandexConnectItem && (
             <ServiceItem
+              t={t}
               capability={yandexConnectItem}
               onClick={onShowService}
-              src={yandexLogoUrl}
+              getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
           {webDavConnectItem && (
-            <Text
+            <ServiceItem
+              t={t}
+              serviceName={t("ConnextOtherAccount")}
+              capability={webDavConnectItem}
               onClick={onShowService}
-              className="service-item service-text"
-              data-title={webDavConnectItem[0]}
-              data-key={webDavConnectItem[0]}
-              noSelect
-            >
-              {t("ConnextOtherAccount")}
-            </Text>
+              getThirdPartyIcon={getThirdPartyIcon}
+            />
           )}
-        </StyledServicesBlock>
+        </div>
       </ModalDialog.Body>
-    </ModalDialog>
+    </StyledModalDialog>
   );
 };
 
@@ -317,6 +373,7 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     webDavConnectItem,
     sharePointConnectItem,
     openConnectWindow,
+    getThirdPartyIcon,
   } = settingsStore.thirdPartyStore;
   const {
     setThirdPartyDialogVisible,
@@ -346,5 +403,10 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setThirdPartyDialogVisible,
     getOAuthToken,
     openConnectWindow,
+    getThirdPartyIcon,
   };
-})(withTranslation(["Settings", "Translations"])(observer(ThirdPartyDialog)));
+})(
+  withTranslation(["Settings", "Translations, Common"])(
+    observer(ThirdPartyDialog)
+  )
+);

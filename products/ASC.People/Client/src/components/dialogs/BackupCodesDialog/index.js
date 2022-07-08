@@ -6,6 +6,8 @@ import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import toastr from "studio/toastr";
+import Link from "@appserver/components/link";
+import styled from "styled-components";
 
 class BackupCodesDialogComponent extends React.Component {
   constructor(props) {
@@ -54,20 +56,24 @@ class BackupCodesDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
+        autoMaxHeight
+        isLarge
       >
         <ModalDialog.Header>{t("BackupCodesTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <div id="backup-codes-print-content">
-            <Text className="text-dialog">{t("BackupCodesDescription")}</Text>
-            <Text className="text-dialog">
+            <Text className="backup-codes-description-one">
+              {t("BackupCodesDescription")}
+            </Text>
+            <Text className="backup-codes-description-two">
               {t("BackupCodesSecondDescription")}
             </Text>
 
-            <Text className="text-dialog" isBold={true}>
+            <Text className="backup-codes-counter" isBold={true}>
               {backupCodesCount} {t("CodesCounter")}
             </Text>
 
-            <Text className="text-dialog" isBold={true}>
+            <Text className="backup-codes-codes" isBold={true}>
               {backupCodes.length > 0 &&
                 backupCodes.map((item) => {
                   if (!item.isUsed) {
@@ -83,29 +89,33 @@ class BackupCodesDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            key="PrintBtn"
-            label={t("PrintButton")}
-            size="small"
-            primary={true}
-            onClick={this.printPage}
-          />
-          <Button
             key="RequestNewBtn"
-            className="button-dialog"
             label={t("RequestNewButton")}
-            size="small"
-            primary={false}
+            size="normal"
+            primary
             onClick={this.getNewBackupCodes}
           />
+          <Button
+            key="PrintBtn"
+            label={t("Common:CancelButton")}
+            size="normal"
+            onClick={this.props.onClose}
+          />
+          <div className="backup-codes-print-link-wrapper">
+            <Link type="action" fontSize="13px" isBold={true} isHovered={true}>
+              {t("PrintButton")}
+            </Link>
+          </div>
         </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
 }
 
-const BackupCodesDialog = withTranslation("BackupCodesDialog")(
-  BackupCodesDialogComponent
-);
+const BackupCodesDialog = withTranslation(
+  "BackupCodesDialog",
+  "Common"
+)(BackupCodesDialogComponent);
 
 BackupCodesDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

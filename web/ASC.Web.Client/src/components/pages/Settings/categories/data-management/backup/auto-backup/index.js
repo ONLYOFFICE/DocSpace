@@ -24,7 +24,7 @@ import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
-
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 const {
   DocumentModuleType,
   ResourcesModuleType,
@@ -93,7 +93,7 @@ class AutomaticBackup extends React.PureComponent {
         backupSchedule,
         backupStorage,
       ] = await Promise.all([
-        SelectFolderDialog.getCommonThirdPartyList(),
+        getThirdPartyCommonFolderTree,
         getBackupSchedule(),
         getBackupStorage(),
       ]);
@@ -476,6 +476,7 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedDocuments,
       commonThirdPartyList,
       buttonSize,
+      theme,
     } = this.props;
 
     const {
@@ -513,7 +514,7 @@ class AutomaticBackup extends React.PureComponent {
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledAutoBackup>
+      <StyledAutoBackup theme={theme}>
         <div className="backup_toggle-wrapper">
           <ToggleButton
             className="backup_toggle-btn"
@@ -616,7 +617,8 @@ class AutomaticBackup extends React.PureComponent {
   }
 }
 export default inject(({ auth, backup }) => {
-  const { language } = auth;
+  const { language, settingsStore } = auth;
+  const { theme } = settingsStore;
   const {
     backupSchedule,
     commonThirdPartyList,
@@ -648,6 +650,7 @@ export default inject(({ auth, backup }) => {
     selectedStorageType === `${StorageModuleType}`;
 
   return {
+    theme,
     language,
 
     backupSchedule,

@@ -1,38 +1,21 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
-import { smallTablet } from "../utils/device";
+import { smallTablet, tablet } from "../utils/device";
 
 const StyledModal = styled.div`
   pointer-events: none;
-
   &.modal-active {
     pointer-events: all;
   }
 
-  .heading-aside {
-    margin-right: -16px;
-  }
-
-  .bodybox-aside {
-    padding-left: 16px;
-  }
-
-  .footer-aside {
-    width: 100%;
-    margin-bottom: -6px;
-  }
-
-  .aside-dialog {
-    padding: 0;
-    margin-bottom: -6px;
+  .loader-wrapper {
+    padding: 0 16px 16px;
   }
 `;
 
 const Dialog = styled.div`
-  position: relative;
   display: flex;
-  cursor: default;
   align-items: center;
   justify-content: center;
   width: auto;
@@ -46,28 +29,52 @@ const Content = styled.div.attrs((props) => ({
       props.modalSwipeOffset < 0 ? `${props.modalSwipeOffset * 1.1}px` : "0px",
   },
 }))`
-  position: relative;
   box-sizing: border-box;
+  position: relative;
   background-color: ${(props) => props.theme.modalDialog.backgroundColor};
   color: ${(props) => props.theme.modalDialog.textColor};
-  height: auto;
-  max-height: ${(props) =>
-    props.displayType === "aside" ? "auto" : props.isLarge ? "400px" : "280px"};
-  width: ${(props) =>
-    props.displayType === "aside" ? "auto" : props.isLarge ? "520px" : "400px"};
-  border-radius: 6px;
-  padding: ${(props) => (props.displayType === "modal" ? "0" : "0 0 -16px")};
+  padding: ${(props) =>
+    props.currentDisplayType === "modal" ? "0" : "0 0 -16px"};
 
-  ${({ displayType }) =>
-    displayType === "modal" &&
-    css`
-      @media ${smallTablet} {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        border-radius: 6px 6px 0 0;
-      }
-    `}
+  ${(props) =>
+    props.currentDisplayType === "modal"
+      ? css`
+          height: auto;
+          max-height: ${(props) =>
+            props.autoMaxHeight ? "auto" : props.isLarge ? "400px" : "280px"};
+          width: ${(props) =>
+            props.autoMaxWidth ? "auto" : props.isLarge ? "520px" : "400px"};
+
+          border-radius: 6px;
+          @media ${smallTablet} {
+            transform: translateY(${(props) => (props.visible ? "0" : "100%")});
+            transition: transform 0.3s ease-in-out;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: auto;
+            border-radius: 6px 6px 0 0;
+          }
+        `
+      : css`
+          width: 480px;
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          transform: translateX(${(props) => (props.visible ? "0" : "100%")});
+          transition: transform 0.3s ease-in-out;
+          @media ${smallTablet} {
+            transform: translateY(${(props) => (props.visible ? "0" : "100%")});
+            height: calc(100vh - 64px);
+            width: 100%;
+            left: 0;
+            top: auto;
+            bottom: 0;
+          }
+        `}
 `;
 
 const StyledHeader = styled.div`
@@ -86,29 +93,42 @@ const StyledHeader = styled.div`
     font-family: "Open Sans";
     color: ${(props) => props.theme.modalDialog.textColor};
     font-weight: 700;
-    font-size: ${(props) => (props.displayType === "modal" ? "18px" : "21px")};
+    font-size: ${(props) =>
+      props.currentDisplayType === "modal" ? "18px" : "21px"};
   }
 `;
 
-const BodyBox = styled(Box)`
+const StyledBody = styled(Box)`
   position: relative;
-  ${(props) => props.withoutBodyScroll && `height: 100%;`}
-  padding-bottom: 8px;
+  padding: 0 16px;
+  padding-bottom: ${(props) =>
+    props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
+
+  ${(props) =>
+    props.currentDisplayType === "aside" &&
+    css`
+      padding-bottom: 8px;
+      height: 100%;
+      min-height: auto;
+    `}
 `;
 
 const StyledFooter = styled.div`
-  //width: 100%;
   display: flex;
   flex-direction: row;
-  border-top: ${(props) =>
-    `1px solid ${props.theme.modalDialog.footerBorderColor}`};
-  gap: 10px;
+  ${(props) =>
+    props.withFooterBorder &&
+    `border-top: 1px solid ${props.theme.modalDialog.headerBorderColor}`};
   padding: 16px;
-  ${(props) => props.displayType === "aside" && "margin-bottom: -10px"}
+
+  gap: 8px;
+  @media ${tablet} {
+    gap: 10px;
+  }
 `;
 
 Dialog.defaultProps = { theme: Base };
 StyledHeader.defaultProps = { theme: Base };
 Content.defaultProps = { theme: Base };
 
-export { StyledModal, StyledHeader, Content, Dialog, BodyBox, StyledFooter };
+export { StyledModal, StyledHeader, Content, Dialog, StyledBody, StyledFooter };

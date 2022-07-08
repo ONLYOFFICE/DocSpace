@@ -48,14 +48,14 @@ namespace ASC.Web.CRM.Classes
         private readonly object Locker = new object();
         private PdfProgressItem _pdfProgressItem;
 
-        public PdfQueueWorker(DistributedTaskQueueOptionsManager queueOptions,
+        public PdfQueueWorker(IDistributedTaskQueueFactory factory,
                               PdfProgressItem pdfProgressItem,
                               TenantManager tenantProvider,
                               SecurityContext securityContext)
         {
-            _queue = queueOptions.Get<PdfProgressItem>();
+            _queue = factory.CreateQueue<PdfProgressItem>();
             _pdfProgressItem = pdfProgressItem;
-            _tenantId = tenantProvider.GetCurrentTenant().TenantId;
+            _tenantId = tenantProvider.GetCurrentTenant().Id;
             _userId = securityContext.CurrentAccount.ID;
         }
 
@@ -69,7 +69,7 @@ namespace ASC.Web.CRM.Classes
         {
             var id = GetTaskId(tenantId, invoiceId);
 
-            var findedItem = _queue.GetTasks<PdfProgressItem>().FirstOrDefault(x => x.Id == id);
+            var findedItem = _queue.GetAllTasks<PdfProgressItem>().FirstOrDefault(x => x.Id == id);
 
             return findedItem;
         }
@@ -79,7 +79,7 @@ namespace ASC.Web.CRM.Classes
             var item = GetTaskStatus(_tenantId, invoiceId);
 
             if (item != null)
-                _queue.RemoveTask(item.Id);
+                _queue.DequeueTask(item.Id);
         }
 
         public PdfProgressItem StartTask(int invoiceId)
@@ -90,14 +90,14 @@ namespace ASC.Web.CRM.Classes
 
                 if (task != null && task.IsCompleted)
                 {
-                    _queue.RemoveTask(task.Id);
+                    _queue.DequeueTask(task.Id);
                     task = null;
                 }
 
                 if (task == null)
                 {
                     _pdfProgressItem.Configure(GetTaskId(_tenantId, invoiceId), _tenantId, _userId, invoiceId);
-                    _queue.QueueTask(_pdfProgressItem);
+                    _queue.EnqueueTask(_pdfProgressItem);
 
                 }
 

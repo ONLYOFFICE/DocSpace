@@ -31,7 +31,11 @@ class HotkeyStore {
   }
 
   activateHotkeys = (e) => {
-    if (this.dialogsStore.someDialogIsOpen || e.target?.tagName === "INPUT")
+    if (
+      this.dialogsStore.someDialogIsOpen ||
+      e.target?.tagName === "INPUT" ||
+      e.target?.tagName === "TEXTAREA"
+    )
       return e;
 
     const isDefaultKeys =
@@ -45,7 +49,8 @@ class HotkeyStore {
       e.preventDefault();
     }
 
-    const { selection, hotkeyCaret, viewAs } = this.filesStore;
+    const { selection: s, hotkeyCaret, viewAs, filesList } = this.filesStore;
+    const selection = s.length ? s : filesList;
 
     if (!hotkeyCaret) {
       const scroll = document.getElementsByClassName("section-scroll");
@@ -64,7 +69,7 @@ class HotkeyStore {
     );
 
     if (viewAs === "table") {
-      item = item && item[0].getElementsByClassName("table-container_cell");
+      item = item && item[0]?.getElementsByClassName("table-container_cell");
     }
 
     if (item && item[0]) {
@@ -79,7 +84,7 @@ class HotkeyStore {
       ) {
         //console.log("element is visible");
       } else {
-        el.scrollIntoView({ block: "center" });
+        scroll.scrollTo(0, el.offsetTop - scrollRect.height / 2);
         //console.log("element is not visible");
       }
     }
@@ -152,7 +157,10 @@ class HotkeyStore {
       filesList,
       setHotkeyCaretStart,
       selection,
+      viewAs,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
+
     if (!hotkeyCaret && !selection.length) {
       this.selectFirstFile();
 
@@ -168,7 +176,9 @@ class HotkeyStore {
       filesList,
       setHotkeyCaretStart,
       selection,
+      viewAs,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) {
       this.selectFirstFile();
@@ -260,6 +270,7 @@ class HotkeyStore {
       hotkeyCaretStart,
       filesList,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) return this.selectFirstFile();
 
@@ -318,6 +329,7 @@ class HotkeyStore {
       filesList,
       hotkeyCaretStart,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) return this.selectFirstFile();
 
@@ -472,7 +484,10 @@ class HotkeyStore {
 
   get caretIndex() {
     const { filesList, hotkeyCaret, selection } = this.filesStore;
-    const id = selection.length ? selection[0].id : hotkeyCaret?.id;
+    const id =
+      selection.length && selection.length === 1 && !hotkeyCaret
+        ? selection[0].id
+        : hotkeyCaret?.id;
     const caretIndex = filesList.findIndex((f) => f.id === id);
 
     if (caretIndex !== -1) return caretIndex;
@@ -522,7 +537,7 @@ class HotkeyStore {
   }
 
   get prevFile() {
-    const { filesList, selection, hotkeyCaret } = this.filesStore;
+    const { filesList } = this.filesStore;
 
     if (this.caretIndex !== -1) {
       const prevCaretIndex = this.caretIndex - 1;

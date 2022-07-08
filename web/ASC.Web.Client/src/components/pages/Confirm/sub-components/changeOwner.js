@@ -37,7 +37,7 @@ const ChangeOwnerForm = (props) => {
             label={t("Common:SaveButton")}
             tabIndex={2}
             isDisabled={false}
-            //onClick={this.onAcceptClick}
+            //onClick={this.onAcceptClick} // call toast with t("ConfirmOwnerPortalSuccessMessage")
           />
           <Button
             className="button"

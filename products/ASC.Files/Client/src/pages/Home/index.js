@@ -32,6 +32,7 @@ import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 import { Consumer } from "@appserver/components/utils/context";
+import { FileAction } from "@appserver/common/constants";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -46,8 +47,9 @@ class PureHome extends React.Component {
       playlist,
       isMediaOrImage,
       getFileInfo,
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
+      gallerySelected,
+      setAction,
+      setIsUpdatingRowItem,
     } = this.props;
 
     if (!window.location.href.includes("#preview")) {
@@ -65,16 +67,18 @@ class PureHome extends React.Component {
       const pathname = window.location.href;
       const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
-      getFileInfo(fileId)
-        .then((data) => {
-          const canOpenPlayer = isMediaOrImage(data.fileExst);
-          const file = { ...data, canOpenPlayer };
-          setToPreviewFile(file, true);
-        })
-        .catch((err) => {
-          toastr.error(err);
-          this.fetchDefaultFiles();
-        });
+      setTimeout(() => {
+        getFileInfo(fileId)
+          .then((data) => {
+            const canOpenPlayer = isMediaOrImage(data.fileExst);
+            const file = { ...data, canOpenPlayer };
+            setToPreviewFile(file, true);
+          })
+          .catch((err) => {
+            toastr.error(err);
+            this.fetchDefaultFiles();
+          });
+      }, 1);
 
       return;
     }
@@ -92,11 +96,6 @@ class PureHome extends React.Component {
 
         return;
       }
-    }
-
-    if (isPrevSettingsModule) {
-      setIsPrevSettingsModule(false);
-      return;
     }
 
     if (!filterObj) return;
@@ -167,6 +166,18 @@ class PureHome extends React.Component {
 
         return Promise.resolve();
       })
+      .then(() => {
+        if (gallerySelected) {
+          setIsUpdatingRowItem(false);
+          setAction({
+            type: FileAction.Create,
+            extension: "docxf",
+            fromTemplate: true,
+            title: gallerySelected.attributes.name_form,
+            id: -1,
+          });
+        }
+      })
       .finally(() => {
         setIsLoading(false);
         setFirstLoad(false);
@@ -185,9 +196,24 @@ class PureHome extends React.Component {
   };
 
   onDrop = (files, uploadToFolder) => {
-    const { t, startUpload, setDragging, dragging } = this.props;
+    const {
+      t,
+      startUpload,
+      setDragging,
+      dragging,
+      uploadEmptyFolders,
+    } = this.props;
     dragging && setDragging(false);
-    startUpload(files, uploadToFolder, t);
+    const emptyFolders = files.filter((f) => f.isEmptyDirectory);
+
+    if (emptyFolders.length > 0) {
+      uploadEmptyFolders(emptyFolders, uploadToFolder).then(() => {
+        const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+        if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
+      });
+    } else {
+      startUpload(files, uploadToFolder, t);
+    }
   };
 
   showOperationToast = (type, qty, title) => {
@@ -228,12 +254,11 @@ class PureHome extends React.Component {
     const {
       uploaded,
       converted,
-      uploadPanelVisible,
       setUploadPanelVisible,
       clearPrimaryProgressData,
       primaryProgressDataVisible,
     } = this.props;
-    setUploadPanelVisible(!uploadPanelVisible);
+    setUploadPanelVisible(true);
 
     if (primaryProgressDataVisible && uploaded && converted)
       clearPrimaryProgressData();
@@ -242,8 +267,8 @@ class PureHome extends React.Component {
     const {
       isProgressFinished,
       secondaryProgressDataStoreIcon,
-      selectionLength,
-      selectionTitle,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = this.props;
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
@@ -255,8 +280,8 @@ class PureHome extends React.Component {
     ) {
       this.showOperationToast(
         secondaryProgressDataStoreIcon,
-        selectionLength,
-        selectionTitle
+        itemsSelectionLength,
+        itemsSelectionTitle
       );
     }
   }
@@ -275,6 +300,7 @@ class PureHome extends React.Component {
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearUploadedFilesHistory,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
@@ -308,6 +334,7 @@ class PureHome extends React.Component {
           secondaryProgressBarValue={secondaryProgressDataStorePercent}
           secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
           showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
+          clearUploadedFilesHistory={clearUploadedFilesHistory}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||
@@ -374,10 +401,12 @@ export default inject(
     treeFoldersStore,
     mediaViewerDataStore,
     settingsStore,
+    filesActionsStore,
   }) => {
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
+      clearUploadedFilesHistory,
     } = uploadDataStore;
     const {
       firstLoad,
@@ -392,11 +421,11 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
+      gallerySelected,
+      setIsUpdatingRowItem,
     } = filesStore;
 
-    const { id } = fileActionStore;
+    const { id, setAction } = fileActionStore;
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
@@ -418,6 +447,8 @@ export default inject(
       icon: secondaryProgressDataStoreIcon,
       alert: secondaryProgressDataStoreAlert,
       isSecondaryProgressFinished: isProgressFinished,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = secondaryProgressDataStore;
 
     const {
@@ -426,6 +457,8 @@ export default inject(
       uploaded,
       converted,
     } = uploadDataStore;
+
+    const { uploadEmptyFolders } = filesActionsStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -463,6 +496,8 @@ export default inject(
       primaryProgressDataAlert,
       clearPrimaryProgressData,
 
+      clearUploadedFilesHistory,
+
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
       secondaryProgressDataStoreIcon,
@@ -472,6 +507,9 @@ export default inject(
       isProgressFinished,
       selectionTitle,
 
+      itemsSelectionLength,
+      itemsSelectionTitle,
+
       setExpandedKeys,
       setFirstLoad,
       setDragging,
@@ -480,6 +518,7 @@ export default inject(
       setUploadPanelVisible,
       setSelections,
       startUpload,
+      uploadEmptyFolders,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
       personal: auth.settingsStore.personal,
@@ -487,9 +526,9 @@ export default inject(
       playlist,
       isMediaOrImage: settingsStore.isMediaOrImage,
       getFileInfo,
-
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
+      gallerySelected,
+      setAction,
+      setIsUpdatingRowItem,
     };
   }
 )(withRouter(observer(Home)));

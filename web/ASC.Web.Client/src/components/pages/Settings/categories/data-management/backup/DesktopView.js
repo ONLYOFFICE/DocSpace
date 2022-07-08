@@ -14,12 +14,11 @@ import { StyledBackup } from "./StyledBackup";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import RestoreBackup from "./restore-backup";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import toastr from "@appserver/components/toast/toastr";
 import moment from "moment";
 import { getBackupStorage } from "@appserver/common/api/settings";
 import HelpButton from "@appserver/components/help-button";
-
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 class BackupDesktopView extends React.Component {
   constructor(props) {
     super(props);
@@ -57,7 +56,7 @@ class BackupDesktopView extends React.Component {
       enableAutoBackup(),
       getBackupSchedule(),
       getBackupStorage(),
-      SelectFolderDialog.getCommonThirdPartyList(),
+      getThirdPartyCommonFolderTree(),
     ];
 
     try {
@@ -102,6 +101,7 @@ class BackupDesktopView extends React.Component {
       downloadingProgress,
       organizationName,
       buttonSize,
+      theme,
     } = this.props;
     const { isInitialLoading, enableRestore, enableAutoBackup } = this.state;
 
@@ -137,7 +137,7 @@ class BackupDesktopView extends React.Component {
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledBackup isDesktop={true}>
+      <StyledBackup isDesktop={true} theme={theme}>
         <div className="backup_modules-separation">
           <div className="backup_modules-header_wrapper">
             <Text className="backup_modules-header">{t("ManualBackup")}</Text>
@@ -205,6 +205,7 @@ export default inject(({ auth, backup }) => {
     helpUrlCreatingBackup,
     organizationName,
     isTabletView,
+    theme,
   } = settingsStore;
   const {
     setThirdPartyStorage,
@@ -217,6 +218,7 @@ export default inject(({ auth, backup }) => {
 
   const buttonSize = isTabletView ? "normal" : "small";
   return {
+    theme,
     helpUrlCreatingBackup,
     language,
     setThirdPartyStorage,

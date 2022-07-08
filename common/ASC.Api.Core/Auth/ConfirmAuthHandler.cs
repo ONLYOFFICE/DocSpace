@@ -1,122 +1,126 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Security.Authentication;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common;
-using ASC.Core;
-using ASC.Security.Cryptography;
+using SecurityContext = ASC.Core.SecurityContext;
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+namespace ASC.Api.Core.Auth;
 
-namespace ASC.Api.Core.Auth
+[Transient]
+public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    [Scope(Additional = typeof(ConfirmAuthHandlerExtension))]
-    public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    private readonly SecurityContext _securityContext;
+    private readonly UserManager _userManager;
+    private readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
+
+    public ConfirmAuthHandler(
+        IOptionsMonitor<AuthenticationSchemeOptions> options,
+        ILoggerFactory logger,
+        UrlEncoder encoder,
+        ISystemClock clock) :
+        base(options, logger, encoder, clock)
+    { }
+
+    public ConfirmAuthHandler(
+        IOptionsMonitor<AuthenticationSchemeOptions> options,
+        ILoggerFactory logger,
+        UrlEncoder encoder,
+        ISystemClock clock,
+        SecurityContext securityContext,
+        UserManager userManager,
+        EmailValidationKeyModelHelper emailValidationKeyModelHelper) :
+        base(options, logger, encoder, clock)
     {
-        public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        _securityContext = securityContext;
+        _userManager = userManager;
+        _emailValidationKeyModelHelper = emailValidationKeyModelHelper;
+    }
+
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    {
+        var emailValidationKeyModel = _emailValidationKeyModelHelper.GetModel();
+
+        if (!emailValidationKeyModel.Type.HasValue)
         {
-        }
-        public ConfirmAuthHandler(
-            IOptionsMonitor<AuthenticationSchemeOptions> options,
-            ILoggerFactory logger,
-            UrlEncoder encoder,
-            ISystemClock clock,
-            SecurityContext securityContext,
-            UserManager userManager,
-            IServiceProvider serviceProvider) :
-            base(options, logger, encoder, clock)
-        {
-            SecurityContext = securityContext;
-            UserManager = userManager;
-            ServiceProvider = serviceProvider;
-        }
-
-        private SecurityContext SecurityContext { get; }
-        private UserManager UserManager { get; }
-        private IServiceProvider ServiceProvider { get; }
-
-        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
-        {
-            using var scope = ServiceProvider.CreateScope();
-
-            var emailValidationKeyHelper = scope.ServiceProvider.GetService<EmailValidationKeyModelHelper>();
-            var emailValidationKeyModel = emailValidationKeyHelper.GetModel();
-
-            if (!emailValidationKeyModel.Type.HasValue)
-            {
-                return SecurityContext.IsAuthenticated
-                    ? Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)))
+            return _securityContext.IsAuthenticated
+                ? Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)))
                     : Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
-            }
+        }
 
-            EmailValidationKeyProvider.ValidationResult checkKeyResult;
-            try
-            {
-                checkKeyResult = emailValidationKeyHelper.Validate(emailValidationKeyModel);
-            }
-            catch (ArgumentNullException)
-            {
-                checkKeyResult = EmailValidationKeyProvider.ValidationResult.Invalid;
-            }
+        EmailValidationKeyProvider.ValidationResult checkKeyResult;
+        try
+        {
+            checkKeyResult = _emailValidationKeyModelHelper.Validate(emailValidationKeyModel);
+        }
+        catch (ArgumentNullException)
+        {
+            checkKeyResult = EmailValidationKeyProvider.ValidationResult.Invalid;
+        }
 
-            var claims = new List<Claim>()
-            {
+        var claims = new List<Claim>()
+        {
                 new Claim(ClaimTypes.Role, emailValidationKeyModel.Type.ToString())
-            };
+        };
 
-            if (checkKeyResult == EmailValidationKeyProvider.ValidationResult.Ok)
+        if (checkKeyResult == EmailValidationKeyProvider.ValidationResult.Ok)
+        {
+            Guid userId;
+            if (!_securityContext.IsAuthenticated)
             {
-                Guid userId;
-                if (!SecurityContext.IsAuthenticated)
+                if (emailValidationKeyModel.UiD.HasValue && !emailValidationKeyModel.UiD.Equals(Guid.Empty))
                 {
-                    if (emailValidationKeyModel.UiD.HasValue && !emailValidationKeyModel.UiD.Equals(Guid.Empty))
-                    {
-                        userId = emailValidationKeyModel.UiD.Value;
-                    }
-                    else
-                    {
-                        if(emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.EmailActivation ||
-                            emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.EmpInvite ||
-                            emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.LinkInvite)
-                        {
-                            userId = ASC.Core.Configuration.Constants.CoreSystem.ID;
-                        }
-                        else
-                        {
-                            userId = UserManager.GetUserByEmail(emailValidationKeyModel.Email).ID;
-                        }
-                    }
+                    userId = emailValidationKeyModel.UiD.Value;
                 }
                 else
                 {
-                    userId = SecurityContext.CurrentAccount.ID;
+                    if (emailValidationKeyModel.Type == ConfirmType.EmailActivation
+                        || emailValidationKeyModel.Type == ConfirmType.EmpInvite
+                        || emailValidationKeyModel.Type == ConfirmType.LinkInvite)
+                    {
+                        userId = ASC.Core.Configuration.Constants.CoreSystem.ID;
+                    }
+                    else
+                    {
+                        userId = _userManager.GetUserByEmail(emailValidationKeyModel.Email).Id;
+                    }
                 }
-
-                SecurityContext.AuthenticateMeWithoutCookie(userId, claims);
+            }
+            else
+            {
+                userId = _securityContext.CurrentAccount.ID;
             }
 
-            var result = checkKeyResult switch
-            {
-                EmailValidationKeyProvider.ValidationResult.Ok => AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)),
-                _ => AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized)))
-            };
-
-            return Task.FromResult(result);
+            _securityContext.AuthenticateMeWithoutCookie(userId, claims);
         }
-    }
 
-    public static class ConfirmAuthHandlerExtension
-    {
-        public static void Register(DIHelper services)
+        var result = checkKeyResult switch
         {
-            services.TryAdd<EmailValidationKeyModelHelper>();
-        }
+            EmailValidationKeyProvider.ValidationResult.Ok => AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)),
+            _ => AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized)))
+        };
+
+        return Task.FromResult(result);
     }
 }

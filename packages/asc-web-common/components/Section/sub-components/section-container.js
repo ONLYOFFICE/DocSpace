@@ -17,13 +17,20 @@ const tabletProps = css`
     position: sticky;
     top: 0;
     background: ${(props) => props.theme.section.header.background};
-    z-index: 20;
+    z-index: 202;
 
     ${isMobileOnly &&
     css`
       padding: 0 16px;
       margin: 0 0 0 -16px;
     `}
+
+    ${(props) =>
+      props.settingsStudio &&
+      isMobileOnly &&
+      css`
+        background: ${(props) => props.theme.section.header.backgroundColor};
+      `}
   }
   .section-body_filter {
     display: block;
@@ -38,10 +45,8 @@ const StyledSectionContainer = styled.section`
   display: flex;
   flex-direction: column;
 
-  width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100% - 677px)" : "100%"};
-  max-width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 677px)" : "100vw"};
+  width: 100%;
+  max-width: 100%;
 
   @media ${tablet} {
     width: 100%;
@@ -52,7 +57,7 @@ const StyledSectionContainer = styled.section`
   ${isMobile &&
   css`
     width: 100% !important;
-    max-width: 100vw !important
+    max-width: 100vw !important;
     padding: 0 0 0 16px;
     ${tabletProps};
     min-width: 100px;

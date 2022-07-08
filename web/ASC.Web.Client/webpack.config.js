@@ -7,6 +7,7 @@ const DefinePlugin = require("webpack").DefinePlugin;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
+const minifyJson = require("@appserver/common/utils/minifyJson");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 
@@ -170,27 +171,60 @@ const config = {
 
   plugins: [
     new CleanWebpackPlugin(),
+    new ExternalTemplateRemotesPlugin(),
+
+    new CopyPlugin({
+      patterns: [
+        {
+          context: path.resolve(__dirname, "public"),
+          from: "images/**/*.*",
+        },
+        {
+          context: path.resolve(__dirname, "public"),
+          from: "locales/**/*.json",
+          transform: minifyJson,
+        },
+      ],
+    }),
+  ],
+};
+
+module.exports = (env, argv) => {
+  if (argv.mode === "production") {
+    config.mode = "production";
+    config.optimization = {
+      splitChunks: { chunks: "all" },
+      minimize: !env.minimize,
+      minimizer: [new TerserPlugin()],
+    };
+  } else {
+    config.devtool = "cheap-module-source-map";
+  }
+
+  const remotes = {
+    studio: `studio@${combineUrl(AppServerConfig.proxyURL, "/remoteEntry.js")}`,
+    people: `people@${combineUrl(
+      AppServerConfig.proxyURL,
+      "/products/people/remoteEntry.js"
+    )}`,
+    files: `files@${combineUrl(
+      AppServerConfig.proxyURL,
+      "/products/files/remoteEntry.js"
+    )}`,
+  };
+
+  if (!env.personal) {
+    remotes.login = `login@${combineUrl(
+      AppServerConfig.proxyURL,
+      "/login/remoteEntry.js"
+    )}`;
+  }
+
+  config.plugins.push(
     new ModuleFederationPlugin({
       name: "studio",
       filename: "remoteEntry.js",
-      remotes: {
-        studio: `studio@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/remoteEntry.js"
-        )}`,
-        people: `people@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/products/people/remoteEntry.js"
-        )}`,
-        login: `login@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/login/remoteEntry.js"
-        )}`,
-        files: `files@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/products/files/remoteEntry.js"
-        )}`,
-      },
+      remotes: remotes,
       exposes: {
         "./shell": "./src/Shell",
         "./store": "./src/store",
@@ -209,48 +243,56 @@ const config = {
         ...deps,
         ...sharedDeps,
       },
-    }),
-    new ExternalTemplateRemotesPlugin(),
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      publicPath: homepage,
-      title: title,
-      base: `${homepage}/`,
-    }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: "public",
-          globOptions: {
-            dot: true,
-            gitignore: true,
-            ignore: ["**/index.html"],
-          },
-        },
-      ],
-    }),
-    new DefinePlugin({
-      VERSION: JSON.stringify(version),
-      BUILD_AT: DefinePlugin.runtimeValue(function () {
-        const timeElapsed = Date.now();
-        const today = new Date(timeElapsed);
-        return JSON.stringify(today.toISOString().split(".")[0] + "Z");
-      }, true),
-    }),
-  ],
-};
+    })
+  );
 
-module.exports = (env, argv) => {
-  if (argv.mode === "production") {
-    config.mode = "production";
-    config.optimization = {
-      splitChunks: { chunks: "all" },
-      minimize: !env.minimize,
-      minimizer: [new TerserPlugin()],
-    };
+  if (!!env.hideText) {
+    config.plugins.push(
+      new HtmlWebpackPlugin({
+        template: "./public/index.html",
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+        custom: `<style type="text/css">
+          div,
+          p,
+          a,
+          span,
+          button,
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6,
+          ::placeholder {
+            color: rgba(0, 0, 0, 0) !important;
+        }
+        </style>`,
+      })
+    );
   } else {
-    config.devtool = "cheap-module-source-map";
+    config.plugins.push(
+      new HtmlWebpackPlugin({
+        template: "./public/index.html",
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+      })
+    );
   }
+
+  const defines = {
+    VERSION: JSON.stringify(version),
+    BUILD_AT: DefinePlugin.runtimeValue(function () {
+      const timeElapsed = Date.now();
+      const today = new Date(timeElapsed);
+      return JSON.stringify(today.toISOString().split(".")[0] + "Z");
+    }, true),
+    IS_PERSONAL: env.personal || false,
+  };
+
+  config.plugins.push(new DefinePlugin(defines));
 
   return config;
 };

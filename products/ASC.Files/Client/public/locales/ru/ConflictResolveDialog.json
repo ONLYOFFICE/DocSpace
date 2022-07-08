@@ -1,6 +1,6 @@
-﻿{
-  "ConflictResolveDescription": "Файл с именем {{file}} уже существует в папке {{folder}}.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} документов с одинаковыми именами уже существуют в папке '{{folder}}'.",
+{
+  "ConflictResolveDescription": "Файл с именем <1>{{file}}</1> уже существует в папке <1>{{folder}}</1>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} документов с одинаковыми именами уже существуют в папке <1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Пожалуйста, выберите действие:",
   "ConflictResolveTitle": "Подтверждение перезаписи",
   "CreateDescription": "В папке будет два разных файла.",

@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangeUserTypeButton": "Αλλαγή τύπου",
   "ChangeUserTypeHeader": "Αλλαγή τύπου χρήστη",
   "ChangeUserTypeMessage": "Οι χρήστες με τον τύπο '{{ firstType }}' θα μετακινηθούν στον τύπο '{{ secondType }}'",

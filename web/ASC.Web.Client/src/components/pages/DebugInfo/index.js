@@ -6,13 +6,11 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Box from "@appserver/components/box";
 import Scrollbar from "@appserver/components/scrollbar";
-import { getModalType } from "@appserver/components/utils/device";
 import axios from "axios";
 
 const DebugInfoDialog = (props) => {
   const { visible, onClose, user } = props;
   const [md, setMd] = useState();
-  const [modalType, setModalType] = useState(getModalType());
 
   useEffect(() => {
     if (md || !visible) return;
@@ -30,35 +28,37 @@ const DebugInfoDialog = (props) => {
     loadMD();
   }, [md, visible]);
 
-  const onResize = (type) => {
-    setModalType(type);
-  };
-
   return (
-    <ModalDialog
-      visible={visible}
-      onClose={onClose}
-      contentHeight="500px"
-      onResize={onResize}
-    >
-      <ModalDialog.Header>Debug Info</ModalDialog.Header>
-      <ModalDialog.Body>
-        {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
-        <Text>{`# Version: ${VERSION}`}</Text>
-        <Text>{`# Build date: ${BUILD_AT}`}</Text>
-        {user && (
-          <Text>{`# Current User: ${user?.displayName} (id:${user?.id})`}</Text>
-        )}
-        <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
-        <hr />
-        <Box
-          overflowProp="auto"
-          heightProp={modalType === "modal" ? "300px" : "70vh"}
+    <>
+      {visible && (
+        <ModalDialog
+          visible={visible}
+          onClose={onClose}
+          isLarge
+          displayType="modal"
         >
-          <Scrollbar>{md && <ReactMarkdown children={md} />}</Scrollbar>
-        </Box>
-      </ModalDialog.Body>
-    </ModalDialog>
+          <ModalDialog.Header>Debug Info</ModalDialog.Header>
+          <ModalDialog.Body>
+            {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
+            <Text>{`# Version: ${VERSION}`}</Text>
+            <Text>{`# Build date: ${BUILD_AT}`}</Text>
+            {user && (
+              <Text>{`# Current User: ${user?.displayName} (id:${user?.id})`}</Text>
+            )}
+            <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
+            <hr />
+            <Box
+              overflowProp="auto"
+              heightProp={modalType === "modal" ? "300px" : "70vh"}
+            >
+              <Scrollbar stype="mediumBlack">
+                {md && <ReactMarkdown children={md} />}
+              </Scrollbar>
+            </Box>
+          </ModalDialog.Body>
+        </ModalDialog>
+      )}
+    </>
   );
 };
 

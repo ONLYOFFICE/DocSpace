@@ -62,6 +62,7 @@ const Selector = (props) => {
     onArrowClick,
     headerLabel,
     total,
+    isFirstLoad,
   } = props;
 
   const listOptionsRef = useRef(null);
@@ -114,7 +115,7 @@ const Selector = (props) => {
 
       if (groups.length === 1) return setGroupHeader(newGroupList[0]);
       selectedOptions.forEach((option) => {
-        option.groups.forEach((group) => {
+        option?.groups?.forEach((group) => {
           const groupIndex = newGroupList.findIndex(
             (newGroup) => group === newGroup.id
           );
@@ -136,7 +137,11 @@ const Selector = (props) => {
 
       const newGroupList = groupList;
 
-      newGroupList.find((group) => group.key === groupHeader.key).total = total;
+      if (newGroupList.length > 0) {
+        newGroupList.find(
+          (group) => group.key === groupHeader.key
+        ).total = total;
+      }
 
       setGroupList(newGroupList);
     }
@@ -304,7 +309,7 @@ const Selector = (props) => {
 
   const renderGroupsList = useCallback(() => {
     if (groupList.length === 0) {
-      return <Option isLoader={true} loadingLabel={loadingLabel} />;
+      return <Option isLoader={true} />;
     }
 
     return (
@@ -314,7 +319,7 @@ const Selector = (props) => {
         onGroupClick={onGroupClick}
       />
     );
-  }, [isMultiSelect, groupList, onGroupClick, loadingLabel]);
+  }, [isMultiSelect, groupList, onGroupClick]);
 
   const itemCount = hasNextPage ? options.length + 1 : options.length;
   const hasSelected = selectedOptionList.length > 0;
@@ -334,7 +339,7 @@ const Selector = (props) => {
           isDisabled={isDisabled}
           placeholder={searchPlaceHolderLabel}
           value={searchValue}
-          onChange={onSearchChange}
+          onSearchChange={onSearchChange}
           onClearSearch={onSearchReset}
         />
         <div style={{ width: "100%", height: "100%" }} className="body-options">
@@ -369,7 +374,6 @@ const Selector = (props) => {
               ) : (
                 <OptionList
                   listOptionsRef={listOptionsRef}
-                  loadingLabel={loadingLabel}
                   options={options}
                   itemCount={itemCount}
                   isMultiSelect={isMultiSelect}
@@ -378,6 +382,7 @@ const Selector = (props) => {
                   isItemLoaded={isItemLoaded}
                   isOptionChecked={isOptionChecked}
                   loadMoreItems={loadMoreItems}
+                  isFirstLoad={isFirstLoad}
                 />
               )}
             </>
@@ -417,6 +422,7 @@ Selector.propTypes = {
   isDisabled: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
   allowGroupSelection: PropTypes.bool,
+  isFirstLoad: PropTypes.bool,
 
   selectButtonLabel: PropTypes.string,
   selectAllLabel: PropTypes.string,

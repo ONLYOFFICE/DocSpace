@@ -1,7 +1,7 @@
 import React from "react";
 import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { Switch } from "react-router-dom";
+import { Switch, withRouter } from "react-router-dom";
 import config from "../package.json";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import AppLoader from "@appserver/common/components/AppLoader";
@@ -28,6 +28,7 @@ import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
 } from "./components/Article";
+import FormGallery from "./pages/FormGallery";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -40,6 +41,10 @@ const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
 const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
 const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
+const FORM_GALLERY_URL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/form-gallery/:folderId"
+);
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -56,8 +61,12 @@ window.AppServer.files = {
 
 const Error404 = React.lazy(() => import("studio/Error404"));
 
-const FilesArticle = React.memo(() => {
-  return (
+const FilesArticle = React.memo(({ history }) => {
+  const isFormGallery = history.location.pathname
+    .split("/")
+    .includes("form-gallery");
+
+  return !isFormGallery ? (
     <Article>
       <Article.Header>
         <ArticleHeaderContent />
@@ -69,6 +78,8 @@ const FilesArticle = React.memo(() => {
         <ArticleBodyContent />
       </Article.Body>
     </Article>
+  ) : (
+    <></>
   );
 });
 
@@ -76,11 +87,12 @@ const FilesSection = React.memo(() => {
   return (
     <Switch>
       <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
-      <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
+      {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
       <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
       <PrivateRoute exact path={HOME_URL} component={Home} />
       <PrivateRoute path={FILTER_URL} component={Home} />
       <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
+      <PrivateRoute path={FORM_GALLERY_URL} component={FormGallery} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
@@ -158,7 +170,7 @@ class FilesContent extends React.Component {
     return (
       <>
         <Panels />
-        <FilesArticle />
+        <FilesArticle history={this.props.history} />
         <FilesSection />
       </>
     );
@@ -182,7 +194,7 @@ const Files = inject(({ auth, filesStore }) => {
       auth.setProductVersion(config.version);
     },
   };
-})(withTranslation("Common")(observer(FilesContent)));
+})(withTranslation("Common")(observer(withRouter(FilesContent))));
 
 export default () => (
   <FilesProvider {...stores}>

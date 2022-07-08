@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "Acerca del programa",
   "LogoutButton": "Salir",
   "RecoverAccess": "Recuperar acceso",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "Describa su problema",
   "RecoverTextBody": "Si no puede conectarse con su cuenta actual o quiere registrarse como nuevo usuario, póngase en contacto con el administrador del portal. ",
   "RecoverTitle": "Recuperación de acceso",
-  "TurnOnDesktopVersion": "Activar la versión de escritorio"
+  "TurnOnDesktopVersion": "Activar la versión de escritorio",
+  "HelpCenter": "Centro de ayuda"
 }

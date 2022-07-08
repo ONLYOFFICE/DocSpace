@@ -31,8 +31,10 @@ const Article = ({
   toggleShowText,
   toggleArticleOpen,
   setIsMobileArticle,
-  isLoading,
+  isLoadedPage,
   children,
+
+  isBannerVisible,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -107,7 +109,13 @@ const Article = ({
 
   return (
     <>
-      <StyledArticle showText={showText} articleOpen={articleOpen} {...rest}>
+      <StyledArticle
+        id={"article-container"}
+        showText={showText}
+        articleOpen={articleOpen}
+        isBannerVisible={isBannerVisible}
+        {...rest}
+      >
         <Resizable
           defaultSize={{
             width: 256,
@@ -117,7 +125,7 @@ const Article = ({
           handleWrapperClass="resizable-border not-selectable"
         >
           <SubArticleHeader
-            isLoading={isLoading}
+            isLoadedPage={isLoadedPage}
             showText={showText}
             onClick={toggleShowText}
           >
@@ -128,7 +136,7 @@ const Article = ({
               {articleMainButtonContent.props.children}
             </SubArticleMainButton>
           ) : null}
-          <SubArticleBody isLoading={isLoading} showText={showText}>
+          <SubArticleBody showText={showText}>
             {articleBodyContent ? articleBodyContent.props.children : null}
           </SubArticleBody>
         </Resizable>
@@ -171,8 +179,10 @@ Article.Body = () => {
 };
 Article.Body.displayName = "Body";
 
-export default inject(({ auth }) => {
+export default inject(({ auth, bannerStore }) => {
   const { settingsStore } = auth;
+
+  const { isBannerVisible } = bannerStore;
 
   const {
     showText,
@@ -190,5 +200,7 @@ export default inject(({ auth }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
+
+    isBannerVisible,
   };
 })(observer(Article));

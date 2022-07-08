@@ -89,15 +89,15 @@ const Panels = (props) => {
     selectFileDialogVisible && (
       <SelectFileDialog
         key="select-file-dialog"
-        resetTreeFolders
+        //resetTreeFolders
         onSelectFile={createMasterForm}
         isPanelVisible={selectFileDialogVisible}
         onClose={onClose}
         foldersType="exceptPrivacyTrashFolders"
         ByExtension
         searchParam={".docx"}
-        headerName={t("Translations:CreateMasterFormFromFile")}
-        titleFilesList={t("SelectFile:SelectDOCXFormat")}
+        dialogName={t("Translations:CreateMasterFormFromFile")}
+        filesListTitle={t("SelectFile:SelectDOCXFormat")}
         creationButtonPrimary
         withSubfolders={false}
       />
@@ -110,7 +110,7 @@ const Panels = (props) => {
 };
 
 export default inject(
-  ({ dialogsStore, uploadDataStore, versionHistoryStore }) => {
+  ({ auth, dialogsStore, uploadDataStore, versionHistoryStore }) => {
     const {
       sharingPanelVisible,
       ownerPanelVisible,
@@ -132,11 +132,11 @@ export default inject(
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
-      hotkeyPanelVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
     const { isVisible: versionHistoryPanelVisible } = versionHistoryStore;
+    const { hotkeyPanelVisible } = auth.settingsStore;
 
     return {
       sharingPanelVisible,

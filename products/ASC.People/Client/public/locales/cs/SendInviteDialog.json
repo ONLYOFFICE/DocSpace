@@ -1,4 +1,4 @@
-﻿{
-  "SendInviteAgainDialog": "Pozvánka bude znovu odeslána vybraným uživatelům se stavem 'Pending'.",
+{
+  "SendInviteAgainDialog": "Pozvánka bude znovu odeslána vybraným uživatelům se stavem 'Čekající'.",
   "SendInviteAgainDialogMessage": "Poté, co uživatelé přijmou pozvánku, bude jejich stav změněn na 'Aktivní'."
 }

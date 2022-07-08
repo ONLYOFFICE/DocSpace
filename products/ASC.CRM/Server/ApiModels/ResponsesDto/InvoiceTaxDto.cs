@@ -58,7 +58,7 @@ namespace ASC.CRM.ApiModels
         public string Description { get; set; }
         public decimal Rate { get; set; }
         public ApiDateTime CreateOn { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
+        public EmployeeDto CreateBy { get; set; }
         public bool CanEdit { get; set; }
         public bool CanDelete { get; set; }
 

@@ -1,15 +1,12 @@
 {
-  "Info": "Информация",
-  "ViewDetails": "Просмотреть подробную информацию",
+  "EmptyScreenText": "Здесь будут представлены свойства файлов и папок",
+  "FileExtension": "Расширение файла",
   "ItemsSelected": "Выбрано элементов",
-  "SystemProperties": "Системные свойства",
-  "WhoHasAccess": "У кого есть доступ",
+  "LastModifiedBy": "Автор последнего корректива",
   "Members": "участников",
   "OpenSharingSettings": "Открыть настройки общего доступа",
-
-  "Location": "Местоположение",
-  "FileExtension": "Расширение файла",
-  "LastModifiedBy": "Автор последнего корректива",
+  "SystemProperties": "Системные свойства",
   "Versions": "Версии",
-  "Comments": "Комментарии"
+  "ViewDetails": "Просмотреть подробную информацию",
+  "WhoHasAccess": "У кого есть доступ"
 }

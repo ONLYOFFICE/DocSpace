@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "Proqram haqqında",
   "LogoutButton": "Çıxış edin",
   "RecoverAccess": "Girişi bərpa edin",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "Probleminizi təsvir edin",
   "RecoverTextBody": "Cari hesabınızla giriş edə bilmirsinizsə və ya yeni istifadəçi kimi qeydiyyatdan keçmək istəyirsinizsə, o zaman portal administratoru ilə əlaqə saxlayın.",
   "RecoverTitle": "Girişin bərpası",
-  "TurnOnDesktopVersion": "Masaüstü versiyanı işə salın"
+  "TurnOnDesktopVersion": "Masaüstü versiyanı işə salın",
+  "HelpCenter": "Yardım Mərkəzi"
 }

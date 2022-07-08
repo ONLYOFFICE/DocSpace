@@ -16,7 +16,6 @@ import { StyledFilterInput, StyledSearchInput } from "./StyledFilterInput";
 const FilterInput = React.memo(
   ({
     t,
-    sectionWidth,
     getFilterData,
     getSortData,
     getViewSettingsData,
@@ -59,14 +58,13 @@ const FilterInput = React.memo(
     };
 
     return (
-      <StyledFilterInput {...props} sectionWidth={sectionWidth}>
+      <StyledFilterInput {...props}>
         <StyledSearchInput
           placeholder={placeholder}
           value={inputValue}
           onChange={onSearch}
           onClearSearch={onClearSearch}
         />
-
         <FilterButton
           t={t}
           selectedFilterData={selectedFilterData}
@@ -75,35 +73,34 @@ const FilterInput = React.memo(
           onFilter={onFilter}
           headerLabel={headerLabel}
         />
-
-        {viewSettings &&
-        !isMobile &&
-        viewSelectorVisible &&
-        !isMobileUtils() &&
-        !isTabletUtils() ? (
+        {(isMobile || isTabletUtils() || isMobileUtils() || viewAs === "row") &&
+          !isRecentFolder && (
+            <SortButton
+              t={t}
+              selectedFilterData={selectedFilterData}
+              getSortData={getSortData}
+              onChangeViewAs={onChangeViewAs}
+              viewAs={viewAs === "table" ? "row" : viewAs}
+              viewSettings={viewSettings}
+              onSort={onSort}
+              viewSelectorVisible={
+                viewSelectorVisible &&
+                (isMobile || isMobileUtils() || isTabletUtils())
+              }
+            />
+          )}
+        {((viewSettings &&
+          !isMobile &&
+          viewSelectorVisible &&
+          !isMobileUtils() &&
+          !isTabletUtils()) ||
+          isRecentFolder) && (
           <ViewSelector
             style={{ marginLeft: "8px" }}
             onChangeView={onChangeViewAs}
             viewAs={viewAs === "table" ? "row" : viewAs}
             viewSettings={viewSettings}
           />
-        ) : (
-          <>
-            {(isMobile || isTabletUtils() || isMobileUtils()) && (
-              <SortButton
-                t={t}
-                selectedFilterData={selectedFilterData}
-                getSortData={getSortData}
-                onChangeViewAs={onChangeViewAs}
-                viewAs={viewAs === "table" ? "row" : viewAs}
-                viewSettings={viewSettings}
-                onSort={onSort}
-                viewSelectorVisible={viewSelectorVisible}
-                isRecentFolder={isRecentFolder}
-                isFavoritesFolder={isFavoritesFolder}
-              />
-            )}
-          </>
         )}
       </StyledFilterInput>
     );

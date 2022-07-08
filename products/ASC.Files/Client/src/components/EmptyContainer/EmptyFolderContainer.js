@@ -75,8 +75,10 @@ const EmptyFolderContainer = ({
 
   return (
     <EmptyContainer
-      headerText={t("EmptyFolderHeader")}
-      imageSrc="/static/images/empty_screen.png"
+      headerText={t("EmptyScreenFolder")}
+      style={{ gridColumnGap: "39px" }}
+      descriptionText={t("EmptyFolderDecription")}
+      imageSrc="/static/images/empty_screen_alt.svg"
       buttons={buttons}
     />
   );

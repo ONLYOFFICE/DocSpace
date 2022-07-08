@@ -41,7 +41,7 @@ const Template = ({ onOk, ...args }) => {
             label="Send"
             primary={true}
             scale
-            size="big"
+            size="normal"
             onClick={() => {
               onOk();
               closeModal();
@@ -51,7 +51,7 @@ const Template = ({ onOk, ...args }) => {
             key="CloseBtn"
             label="Cancel"
             scale
-            size="big"
+            size="normal"
             onClick={closeModal}
           />
         </ModalDialog.Footer>
@@ -66,7 +66,11 @@ Template.propTypes = {
 
 export const Default = Template.bind({});
 Default.args = {
-  displayType: "modal",
-  isLarge: false,
-  zIndex: 310,
+  displayType: "aside",
+  displayTypeDetailed: {
+    desktop: "modal",
+    tablet: "aside",
+    smallTablet: "modal",
+    mobile: "aside",
+  },
 };

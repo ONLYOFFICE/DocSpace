@@ -107,11 +107,21 @@ const StyledLabel = styled.label`
             `}
   }
 
+  .wrapper {
+    display: inline-block;
+  }
+
   .checkbox-text {
     color: ${(props) =>
       props.isDisabled
         ? props.theme.text.disableColor
         : props.theme.text.color};
+    margin-top: -2px;
+  }
+
+  .help-button {
+    display: inline-block;
+    margin-left: 4px;
   }
 `;
 StyledLabel.defaultProps = { theme: Base };

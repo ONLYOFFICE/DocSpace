@@ -46,6 +46,7 @@ const ViewSelector = ({
               firstItem={indx === 0}
               lastItem={indx === lastIndx}
               key={value}
+              name={`view-selector-name_${value}`}
               className="view-selector-icon"
               data-view={value}
               title={

@@ -21,6 +21,7 @@ const styledMobileView = css`
   max-height: ${(props) => props.theme.newContextMenu.devices.maxHeight};
   left: ${(props) => props.theme.newContextMenu.devices.left};
   bottom: ${(props) => props.theme.newContextMenu.devices.bottom};
+  border-radius: ${(props) => props.theme.newContextMenu.mobileBorderRadius};
 `;
 
 const StyledContextMenu = styled.div`
@@ -146,6 +147,8 @@ const StyledContextMenu = styled.div`
     color: ${(props) => props.theme.dropDownItem.color};
     text-transform: none;
 
+    -webkit-touch-callout: none;
+
     &:hover {
       background-color: ${(props) =>
         props.noHover
@@ -194,13 +197,25 @@ const StyledContextMenu = styled.div`
       height: 16px;
       width: 16px;
     }
-    path {
+    path[fill],
+    circle[fill],
+    rect[fill] {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
     }
 
+    path[stroke],
+    circle[stroke],
+    rect[stroke] {
+      stroke: ${(props) => props.theme.dropDownItem.icon.color};
+    }
+
     &.p-disabled {
-      path {
+      path[fill] {
         fill: ${(props) => props.theme.dropDownItem.icon.disableColor};
+      }
+
+      path[stroke] {
+        stroke: ${(props) => props.theme.dropDownItem.icon.disableColor};
       }
     }
 
@@ -210,8 +225,12 @@ const StyledContextMenu = styled.div`
   .p-submenu-icon {
     margin-left: auto;
     padding-left: 8px;
-    path {
+    path[fill] {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
+    }
+
+    path[stroke] {
+      stroke: ${(props) => props.theme.dropDownItem.icon.color};
     }
   }
 

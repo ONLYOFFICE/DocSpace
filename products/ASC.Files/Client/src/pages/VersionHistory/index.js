@@ -10,32 +10,6 @@ import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { inject, observer } from "mobx-react";
 
 class PureVersionHistory extends React.Component {
-  componentDidMount() {
-    const { isTabletView } = this.props;
-
-    if (!isTabletView) {
-      this.redirectToPanelView();
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { isTabletView } = this.props;
-    if (isTabletView !== prevProps.isTabletView && !isTabletView) {
-      this.redirectToPanelView();
-    }
-  }
-
-  redirectToPanelView = () => {
-    const { setIsVerHistoryPanel } = this.props;
-    setIsVerHistoryPanel(true);
-    this.redirectToHomepage();
-  };
-
-  redirectToHomepage = () => {
-    const { history } = this.props;
-    history.goBack();
-  };
-
   render() {
     const { isLoading, versions, showProgressBar } = this.props;
 

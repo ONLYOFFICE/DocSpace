@@ -123,7 +123,8 @@ const TreeNodeMenu = styled(TreeNode)`
   ${NoUserSelect}
 
   .rc-tree-node-selected {
-    max-width: ${(props) => (props.newItems > 999 ? "71%" : "102%")} !important;
+    max-width: ${(props) => (props.newItems > 999 ? "71%" : "87%")} !important;
+    width: calc(100% - 10px) !important;
   }
 
   ${(props) =>
@@ -182,9 +183,12 @@ const TreeNodeMenu = styled(TreeNode)`
     padding: 0;
   }
   .rc-tree-node-content-wrapper {
-    width: ${(props) => (props.disableSwitch ? "90%" : "108%")};
+    // width: ${(props) => (props.disableSwitch ? "90%" : "108%")};
+    width: calc(100% - 16px);
+    max-width: 87%;
     display: inline-block;
     position: relative;
+    z-index: 2;
     /*min-width: ${(props) => (props.disableSwitch ? "160px" : "190px")};*/
     // overflow: hidden;
 
@@ -220,6 +224,7 @@ const TreeNodeMenu = styled(TreeNode)`
 
     svg {
       height: 16px;
+      margin-top: 10px;
     }
   }
   span.rc-tree-iconEle {
@@ -242,6 +247,8 @@ const TreeNodeMenu = styled(TreeNode)`
     vertical-align: 1px;
     height: 24px;
     width: 8px;
+    z-index: 2;
+    position: relative;
   }
   span.rc-tree-switcher.rc-tree-icon__customize,
   span.rc-tree-checkbox.rc-tree-icon__customize,
@@ -324,7 +331,7 @@ const TreeNodeMenu = styled(TreeNode)`
         ? props.icon
           ? props.newItems > 999
             ? "calc(100% - 104px)"
-            : "calc(100% - 44px)"
+            : "calc(100% - 16px)"
           : "calc(100% - 20px)"
         : "100%"};
     white-space: nowrap;
@@ -333,13 +340,14 @@ const TreeNodeMenu = styled(TreeNode)`
     color: ${(props) => props.theme.treeNode.title.color};
     padding-left: ${(props) =>
       props.icon || props.disableSwitch ? "0" : "20px"};
+    margin-top: 2px;
   }
   span.rc-tree-title:first-child {
     max-width: 100%;
   }
 
   .rc-tree-node-selected {
-    background: ${(props) => props.theme.treeNode.selected.background};
+    //background: ${(props) => props.theme.treeNode.selected.background};
     mix-blend-mode: normal;
     border-radius: ${(props) => props.theme.treeNode.selected.borderRadius};
     z-index: 0;
@@ -354,6 +362,9 @@ const TreeNodeMenu = styled(TreeNode)`
         props.theme.treeNode.selected.hoverBackgroundColor};
     }
     overflow: visible;
+    z-index: 2;
+    position: relative;
+    padding-top: 4px;
   }
 
   .newItem {

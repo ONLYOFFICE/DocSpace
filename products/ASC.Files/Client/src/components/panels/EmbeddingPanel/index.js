@@ -7,12 +7,9 @@ import Aside from "@appserver/components/aside";
 import IconButton from "@appserver/components/icon-button";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import {
-  StyledEmbeddingPanel,
-  StyledContent,
-  StyledHeaderContent,
-  StyledBody,
-} from "../StyledPanels";
+import { StyledEmbeddingPanel, StyledContent } from "../StyledPanels";
+
+import { StyledHeaderContent } from "../SharingPanel/StyledSharingPanel";
 
 import EmbeddingBody from "./EmbeddingBody";
 
@@ -25,7 +22,7 @@ class EmbeddingPanelComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, theme } = this.props;
+    const { visible, t, theme, embeddingLink } = this.props;
     const zIndex = 310;
 
     //console.log("EmbeddingPanel render");
@@ -37,9 +34,13 @@ class EmbeddingPanelComponent extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel">
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          onClose={this.onClosePanels}
+        >
           <StyledContent>
-            <StyledHeaderContent>
+            <StyledHeaderContent isEmbedding={true}>
               <IconButton
                 size="16"
                 iconName="/static/images/arrow.path.react.svg"
@@ -54,9 +55,8 @@ class EmbeddingPanelComponent extends React.Component {
                 {t("EmbeddingDocument")}
               </Heading>
             </StyledHeaderContent>
-            <StyledBody>
-              <EmbeddingBody theme={theme} />
-            </StyledBody>
+
+            <EmbeddingBody embeddingLink={embeddingLink} theme={theme} />
           </StyledContent>
         </Aside>
       </StyledEmbeddingPanel>

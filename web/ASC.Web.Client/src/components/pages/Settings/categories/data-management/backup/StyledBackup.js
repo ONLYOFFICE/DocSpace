@@ -54,11 +54,11 @@ const StyledManualBackup = styled.div`
     button:first-child {
       width: 50%;
       max-width: 164px;
+      margin-right: 8px;
     }
     button:last-child {
       max-width: 164px;
       width: calc(50% - 8px);
-      margin-left: 8px;
     }
   }
 
@@ -121,7 +121,8 @@ const StyledAutoBackup = styled.div`
 
   .backup_toggle-wrapper {
     margin-bottom: 16px;
-    background-color: #f8f9f9;
+    background-color: ${(props) =>
+      props.theme.studio.settings.backup.rectangleBackgroundColor};
     padding: 12px;
     max-width: 1144px;
     box-sizing: border-box;
@@ -171,7 +172,7 @@ const StyledRestoreBackup = styled.div`
     }
   }
   .restore-backup_list {
-    color: ${linkColor};
+    color: ${(props) => props.theme.text.color};
     text-decoration: underline dotted;
     cursor: pointer;
     font-weight: 600;
@@ -307,7 +308,8 @@ const StyledBackup = styled.div`
 
   .backup_modules-separation {
     margin-bottom: 28px;
-    border-bottom: 1px solid #eceef1;
+    border-bottom: ${(props) =>
+      props.theme.studio.settings.backup.separatorBorder};
   }
   .backup_modules-header {
     font-size: 16px;
@@ -433,11 +435,13 @@ const StyledBackupList = styled.div`
   }
   .backup-restore_empty-list {
     margin-top: 96px;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   #backup-list_help {
     display: flex;
-    background-color: white;
+    background-color: ${(props) => props.theme.backgroundColor};
     margin-bottom: 16px;
   }
   .backup-list_tooltip {
@@ -458,7 +462,8 @@ const StyledBackupList = styled.div`
 
     .backup-list_footer {
       padding: 16px 16px 0 16px;
-      border-top: ${`1px solid ${borderColor}`};
+
+      ${(props) => !props.isEmpty && `border-top: 1px solid ${borderColor}`};
       margin-left: -16px;
       margin-right: -16px;
 

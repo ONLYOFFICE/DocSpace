@@ -36,7 +36,6 @@ using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.Web.Api.Models;
-using ASC.Web.Api.Routing;
 
 using AutoMapper;
 
@@ -46,16 +45,16 @@ namespace ASC.CRM.Api
 {
     public class TaskTemplateController : BaseApiController
     {
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
 
         public TaskTemplateController(CrmSecurity crmSecurity,
                                     DaoFactory daoFactory,
-                                    EmployeeWraperHelper employeeWraperHelper,
+                                    EmployeeDtoHelper employeeDtoHelper,
                                     IMapper mapper)
                         : base(daoFactory, crmSecurity, mapper)
 
         {
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
         }
 
 
@@ -72,7 +71,7 @@ namespace ASC.CRM.Api
         /// </returns>
         /// <exception cref="ArgumentException"></exception>
         /// <visible>false</visible>
-        [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
+        [HttpPost(@"{entityType:regex(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
         public TaskTemplateContainerDto CreateTaskTemplateContainer([FromRoute] string entityType, [FromBody] string title)
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentException();
@@ -97,7 +96,7 @@ namespace ASC.CRM.Api
         ///     Task template container list
         /// </returns>
         /// <visible>false</visible>
-        [Read(@"{entityType:regex(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
+        [HttpGet(@"{entityType:regex(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
         public IEnumerable<TaskTemplateContainerDto> GetTaskTemplateContainers(string entityType)
         {
             return ToTaskListTemplateContainerDto(_daoFactory.GetTaskTemplateContainerDao().GetItems(ToEntityType(entityType)));
@@ -115,7 +114,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         /// <visible>false</visible>
-        [Delete(@"tasktemplatecontainer/{containerid:int}")]
+        [HttpDelete(@"tasktemplatecontainer/{containerid:int}")]
         public TaskTemplateContainerDto DeleteTaskTemplateContainer(int containerid)
         {
             if (containerid <= 0) throw new ArgumentException();
@@ -141,7 +140,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         /// <visible>false</visible>
-        [Update(@"tasktemplatecontainer/{containerid:int}")]
+        [HttpPut(@"tasktemplatecontainer/{containerid:int}")]
         public TaskTemplateContainerDto UpdateTaskTemplateContainer(int containerid, string title)
         {
             if (containerid <= 0 || string.IsNullOrEmpty(title)) throw new ArgumentException();
@@ -168,7 +167,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         /// <visible>false</visible>
-        [Read(@"tasktemplatecontainer/{containerid:int}")]
+        [HttpGet(@"tasktemplatecontainer/{containerid:int}")]
         public TaskTemplateContainerDto GetTaskTemplateContainerByID(int containerid)
         {
             if (containerid <= 0) throw new ArgumentException();
@@ -191,7 +190,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         /// <visible>false</visible>
-        [Read(@"tasktemplatecontainer/{containerid:int}/tasktemplate")]
+        [HttpGet(@"tasktemplatecontainer/{containerid:int}/tasktemplate")]
         public IEnumerable<TaskTemplateDto> GetTaskTemplates(int containerid)
         {
             if (containerid <= 0) throw new ArgumentException();
@@ -219,7 +218,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         /// <visible>false</visible>
-        [Create(@"tasktemplatecontainer/{containerid:int}/tasktemplate")]
+        [HttpPost(@"tasktemplatecontainer/{containerid:int}/tasktemplate")]
         public TaskTemplateDto CreateTaskTemplate(
             [FromRoute] int containerid,
             [FromBody] CreateOrUpdateTaskTemplateRequestDto inDto)
@@ -273,7 +272,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         /// <visible>false</visible>
-        [Update(@"tasktemplatecontainer/{containerid:int}/tasktemplate/{id:int}")]
+        [HttpPut(@"tasktemplatecontainer/{containerid:int}/tasktemplate/{id:int}")]
         public TaskTemplateDto UpdateTaskTemplate(
             [FromRoute] int id,
             [FromRoute] int containerid,
@@ -324,7 +323,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         /// <visible>false</visible>
-        [Delete(@"tasktemplatecontainer/tasktemplate/{id:int}")]
+        [HttpDelete(@"tasktemplatecontainer/tasktemplate/{id:int}")]
         public TaskTemplateDto DeleteTaskTemplate(int id)
         {
             if (id <= 0) throw new ArgumentException();
@@ -349,7 +348,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         /// <visible>false</visible>
-        [Read(@"tasktemplatecontainer/tasktemplate/{id:int}")]
+        [HttpGet(@"tasktemplatecontainer/tasktemplate/{id:int}")]
         public TaskTemplateDto GetTaskTemplateByID(int id)
         {
             if (id <= 0) throw new ArgumentException();
@@ -373,7 +372,7 @@ namespace ASC.CRM.Api
                 isNotify = taskTemplate.isNotify,
                 Title = taskTemplate.Title,
                 OffsetTicks = taskTemplate.Offset.Ticks,
-                Responsible = _employeeWraperHelper.Get(taskTemplate.ResponsibleID)
+                Responsible = _employeeDtoHelper.Get(taskTemplate.ResponsibleID)
             };
         }
 

@@ -1,614 +1,264 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+namespace ASC.AuditTrail.Mappers;
 
-using System.Collections.Generic;
-
-using ASC.MessagingSystem;
-
-namespace ASC.AuditTrail.Mappers
+internal class ProjectsActionsMapper : IProductActionMapper
 {
-    internal static class ProjectsActionsMapper
+    public List<IModuleActionMapper> Mappers { get; }
+    public ProductType Product { get; }
+    public ProjectsActionsMapper()
     {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps()
+        Product = ProductType.Projects;
+
+        Mappers = new List<IModuleActionMapper>()
         {
-            return new Dictionary<MessageAction, MessageMaps>
+            new ProjectsActionMapper(),
+            new MilestonesActionMapper(),
+            new TasksActionMapper(),
+            new DiscussionsActionMapper(),
+            new TimeTrackingActionMapper(),
+            new ReportsActionMapper(),
+            new ProjectsSettingsActionMapper()
+        };
+    }
+}
+
+internal class ProjectsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
+
+    public ProjectsActionMapper()
+    {
+        Module = ModuleType.Projects;
+
+        Actions = new MessageMapsDictionary(ProductType.Projects, Module)
+        {
+            {
+                EntryType.Project, new Dictionary<ActionType, MessageAction[]>()
                 {
-                    #region projects
+                    { ActionType.Create, new[] { MessageAction.ProjectCreated, MessageAction.ProjectCreatedFromTemplate } },
+                    { ActionType.Update, new[] { MessageAction.ProjectUpdated, MessageAction.ProjectUpdatedStatus, MessageAction.ProjectUpdatedTeam } },
+                    { ActionType.Delete, new[] { MessageAction.ProjectDeleted, MessageAction.ProjectDeletedMember } },
+                    { ActionType.Link, new[] { MessageAction.ProjectLinkedCompany, MessageAction.ProjectLinkedPerson, MessageAction.ProjectLinkedContacts } },
+                    { ActionType.Unlink, new[] { MessageAction.ProjectUnlinkedCompany, MessageAction.ProjectUnlinkedPerson } }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
 
-                    {
-                        MessageAction.ProjectCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "ProjectCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectCreatedFromTemplate, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "ProjectCreatedFromTemplate",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ProjectUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectUpdatedStatus, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ProjectUpdatedStatus",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectFollowed, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "FollowActionType",
-                                ActionTextResourceName = "ProjectFollowed",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectUnfollowed, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnfollowActionType",
-                                ActionTextResourceName = "ProjectUnfollowed",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "ProjectDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
+                    { ActionType.Follow, MessageAction.ProjectFollowed },
+                    { ActionType.Unfollow, MessageAction.ProjectUnfollowed },
+                    { ActionType.UpdateAccess, MessageAction.ProjectUpdatedMemberRights },
+                    { ActionType.Import, MessageAction.ProjectsImportedFromBasecamp }
+                }
+            }
+        };
+    }
+}
 
-                    #endregion
-                    
-                    #region team 
+internal class MilestonesActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    {
-                        MessageAction.ProjectDeletedMember, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "ProjectDeletedMember",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectUpdatedTeam, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ProjectUpdatedTeam",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectUpdatedMemberRights, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateAccessActionType",
-                                ActionTextResourceName = "ProjectUpdatedMemberRights",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
+    public MilestonesActionMapper()
+    {
+        Module = ModuleType.Milestones;
 
-                    #endregion
+        Actions = new MessageMapsDictionary(ProductType.Projects, Module)
+        {
+            {
+                EntryType.Milestone, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Update, new[] { MessageAction.MilestoneUpdated, MessageAction.MilestoneUpdatedStatus } }
+                }, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.MilestoneCreated },
+                    { ActionType.Delete, MessageAction.MilestoneDeleted }
+                }
+            }
+        };
+    }
+}
 
-                    #region contacts
+internal class TasksActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    {
-                        MessageAction.ProjectLinkedCompany, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "ProjectLinkedCompany",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectUnlinkedCompany, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "ProjectUnlinkedCompany",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectLinkedPerson, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "ProjectLinkedPerson",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectUnlinkedPerson, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "ProjectUnlinkedPerson",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectLinkedContacts, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "ProjectLinkedContacts",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
+    public TasksActionMapper()
+    {
+        Module = ModuleType.Tasks;
 
-                    #endregion
+        Actions = new MessageMapsDictionary(ProductType.Projects, Module)
+        {
+            {
+                EntryType.Task, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Create, new[] { MessageAction.TaskCreated, MessageAction.TaskCreatedFromDiscussion  } },
+                    { ActionType.Update, new[] { MessageAction.TaskUpdated, MessageAction.TaskUpdatedStatus, MessageAction.TaskMovedToMilestone, MessageAction.TaskUnlinkedMilestone } }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Delete, MessageAction.TaskDeleted },
+                    { ActionType.Follow, MessageAction.TaskUpdatedFollowing },
+                    { ActionType.Attach, MessageAction.TaskAttachedFiles },
+                    { ActionType.Detach, MessageAction.TaskDetachedFile },
+                    { ActionType.Link, MessageAction.TasksLinked },
+                    { ActionType.Unlink, MessageAction.TasksUnlinked },
+                }
+            },
+            {
+                EntryType.Comment, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.TaskCommentCreated },
+                    { ActionType.Update, MessageAction.TaskCommentUpdated },
+                    { ActionType.Delete, MessageAction.TaskCommentDeleted }
+                }
+            },
+            {
+                EntryType.SubTask, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Update, new[] { MessageAction.SubtaskUpdated, MessageAction.SubtaskUpdatedStatus, MessageAction.SubtaskMoved }  }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.SubtaskCreated },
+                    { ActionType.Delete,MessageAction.SubtaskDeleted  }
+                }
+            },
+        };
+    }
+}
 
-                    #region milestones
+internal class DiscussionsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
 
-                    {
-                        MessageAction.MilestoneCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "MilestoneCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "MilestonesModule"
-                            }
-                    },
-                    {
-                        MessageAction.MilestoneUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "MilestoneUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "MilestonesModule"
-                            }
-                    },
-                    {
-                        MessageAction.MilestoneUpdatedStatus, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "MilestoneUpdatedStatus",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "MilestonesModule"
-                            }
-                    },
-                    {
-                        MessageAction.MilestoneDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "MilestoneDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "MilestonesModule"
-                            }
-                    },
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public DiscussionsActionMapper()
+    {
+        Module = ModuleType.Discussions;
 
-                    #region tasks
+        Actions = new MessageMapsDictionary(ProductType.Projects, Module)
+        {
+            {
+                EntryType.Message, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.DiscussionCreated },
+                    { ActionType.Update, MessageAction.DiscussionUpdated },
+                    { ActionType.Delete, MessageAction.DiscussionDeleted },
+                    { ActionType.Follow, MessageAction.DiscussionUpdatedFollowing },
+                    { ActionType.Attach, MessageAction.DiscussionAttachedFiles },
+                    { ActionType.Detach, MessageAction.DiscussionDetachedFile }
+                }
+            },
+            {
+                EntryType.Comment, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.DiscussionCommentCreated },
+                    { ActionType.Update, MessageAction.DiscussionCommentUpdated },
+                    { ActionType.Delete, MessageAction.DiscussionCommentDeleted }
+                }
+            },
+        };
+    }
+}
 
-                    {
-                        MessageAction.TaskCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "TaskCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskCreatedFromDiscussion, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "TaskCreatedFromDiscussion",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "TaskUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskUpdatedStatus, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "TaskUpdatedStatus",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskMovedToMilestone, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "TaskMovedToMilestone",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskUnlinkedMilestone, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "TaskUnlinkedMilestone",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskUpdatedFollowing, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "FollowActionType",
-                                ActionTextResourceName = "TaskUpdatedFollowing",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskAttachedFiles, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "AttachActionType",
-                                ActionTextResourceName = "TaskAttachedFiles",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskDetachedFile, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DetachActionType",
-                                ActionTextResourceName = "TaskDetachedFile",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TasksLinked, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "LinkActionType",
-                                ActionTextResourceName = "TasksLinked",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TasksUnlinked, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UnlinkActionType",
-                                ActionTextResourceName = "TasksUnlinked",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "TaskDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskCommentCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "TaskCommentCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskCommentUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "TaskCommentUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskCommentDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "TaskCommentDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
+internal class TimeTrackingActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public TimeTrackingActionMapper()
+    {
+        Module = ModuleType.TimeTracking;
 
-                    #region subtasks
+        Actions = new MessageMapsDictionary(ProductType.Projects, Module)
+        {
+            {
+                EntryType.TimeSpend, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Update, new[] { MessageAction.TaskTimeUpdated, MessageAction.TaskTimesUpdatedStatus } }
+                },
+                new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.TaskTimeCreated },
+                    { ActionType.Delete, MessageAction.TaskTimesDeleted },
+                }
+            }
+        };
+    }
+}
 
-                    {
-                        MessageAction.SubtaskCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "SubtaskCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.SubtaskUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "SubtaskUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.SubtaskUpdatedStatus, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "SubtaskUpdatedStatus",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
-                    {
-                        MessageAction.SubtaskDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "SubtaskDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TasksModule"
-                            }
-                    },
+internal class ReportsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public ReportsActionMapper()
+    {
+        Module = ModuleType.Reports;
 
-                    #region discussions
+        Actions = new MessageMapsDictionary(ProductType.Projects, Module)
+        {
+            {
+                EntryType.TimeSpend, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.ReportTemplateCreated },
+                    { ActionType.Update, MessageAction.ReportTemplateUpdated },
+                    { ActionType.Delete, MessageAction.ReportTemplateDeleted },
+                }
+            }
+        };
+    }
+}
 
-                    {
-                        MessageAction.DiscussionCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "DiscussionCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "DiscussionsModule"
-                            }
-                    },
-                    {
-                        MessageAction.DiscussionUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "DiscussionUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "DiscussionsModule"
-                            }
-                    },
-                    {
-                        MessageAction.DiscussionUpdatedFollowing, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "FollowActionType",
-                                ActionTextResourceName = "DiscussionUpdatedFollowing",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "DiscussionsModule"
-                            }
-                    },
-                    {
-                        MessageAction.DiscussionAttachedFiles, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "AttachActionType",
-                                ActionTextResourceName = "DiscussionAttachedFiles",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "DiscussionsModule"
-                            }
-                    },
-                    {
-                        MessageAction.DiscussionDetachedFile, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DetachActionType",
-                                ActionTextResourceName = "DiscussionDetachedFile",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "DiscussionsModule"
-                            }
-                    },
-                    {
-                        MessageAction.DiscussionDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "DiscussionDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "DiscussionsModule"
-                            }
-                    },
-                    {
-                        MessageAction.DiscussionCommentCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "DiscussionCommentCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "DiscussionsModule"
-                            }
-                    },
-                    {
-                        MessageAction.DiscussionCommentUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "DiscussionCommentUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "DiscussionsModule"
-                            }
-                    },
-                    {
-                        MessageAction.DiscussionCommentDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "DiscussionCommentDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "DiscussionsModule"
-                            }
-                    },
+internal class ProjectsSettingsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
 
-                    #endregion
+    public ProjectsSettingsActionMapper()
+    {
+        Module = ModuleType.ProjectsSettings;
 
-                    #region time tracking
-
-                    {
-                        MessageAction.TaskTimeCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "TaskTimeCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TimeTrackingModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskTimeUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "TaskTimeUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TimeTrackingModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskTimesUpdatedStatus, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "TaskTimesUpdatedStatus",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TimeTrackingModule"
-                            }
-                    },
-                    {
-                        MessageAction.TaskTimesDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "TaskTimesDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "TimeTrackingModule"
-                            }
-                    },
-
-                    #endregion
-
-                    #region reports
-
-                    {
-                        MessageAction.ReportTemplateCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "ReportTemplateCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ReportsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ReportTemplateUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ReportTemplateUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ReportsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ReportTemplateDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "ReportTemplateDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ReportsModule"
-                            }
-                    },
-
-                    #endregion
- 
-                    #region settings
-                    
-                    {
-                        MessageAction.ProjectTemplateCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "ProjectTemplateCreated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectTemplateUpdated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "UpdateActionType",
-                                ActionTextResourceName = "ProjectTemplateUpdated",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectTemplateDeleted, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "DeleteActionType",
-                                ActionTextResourceName = "ProjectTemplateDeleted",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsSettingsModule"
-                            }
-                    },
-                    {
-                        MessageAction.ProjectsImportedFromBasecamp, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "ImportActionType",
-                                ActionTextResourceName = "ProjectsImportedFromBasecamp",
-                                ProductResourceName = "ProjectsProduct",
-                                ModuleResourceName = "ProjectsModule"
-                            }
-                    },
-
-                    #endregion
-                };
-        }
+        Actions = new MessageMapsDictionary(ProductType.Projects, Module)
+        {
+            {
+                EntryType.Template, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.ProjectTemplateCreated },
+                    { ActionType.Update, MessageAction.ProjectTemplateUpdated },
+                    { ActionType.Delete, MessageAction.ProjectTemplateDeleted },
+                }
+            }
+        };
     }
 }

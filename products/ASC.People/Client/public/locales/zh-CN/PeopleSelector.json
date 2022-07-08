@@ -1,4 +1,5 @@
-﻿{
+{
+  "AllUsers": "所有用户",
   "CustomAllGroups": "所有{{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "没有此名称的用户",
   "EmptyUsers": "没有用户",

@@ -1,10 +1,11 @@
 import styled, { css } from "styled-components";
 
+import { isDesktop } from "react-device-detect";
+
 import SearchInput from "@appserver/components/search-input";
 
 const StyledFilterInput = styled.div`
   width: 100%;
-  max-width: ${(props) => props.sectionWidth}px;
   height: 32px;
 
   display: flex;
@@ -13,6 +14,11 @@ const StyledFilterInput = styled.div`
 
   margin: 0;
   padding: 0;
+
+  ${isDesktop &&
+  css`
+    margin-bottom: 6px;
+  `}
 `;
 
 const StyledSearchInput = styled(SearchInput)`

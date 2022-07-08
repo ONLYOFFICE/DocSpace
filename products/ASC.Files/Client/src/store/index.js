@@ -12,11 +12,11 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
-import selectedFilesStore from "./SelectedFilesStore";
+import selectFolderDialogStore from "./SelectFolderDialogStore";
 import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
-import InfoPanelStore from "./InfoPanelStore";
+import selectFileDialogStore from "./SelectFileDialogStore";
 
 const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
 
@@ -30,7 +30,8 @@ const filesStore = new FilesStore(
   selectedFolderStore,
   treeFoldersStore,
   settingsStore,
-  selectedFilesStore
+  selectFolderDialogStore,
+  selectFileDialogStore
 );
 const mediaViewerDataStore = new MediaViewerDataStore(
   filesStore,
@@ -38,11 +39,13 @@ const mediaViewerDataStore = new MediaViewerDataStore(
 );
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
+const versionHistoryStore = new VersionHistoryStore(filesStore);
 const dialogsStore = new DialogsStore(
   store.auth,
   treeFoldersStore,
   filesStore,
-  selectedFolderStore
+  selectedFolderStore,
+  versionHistoryStore
 );
 const uploadDataStore = new UploadDataStore(
   treeFoldersStore,
@@ -54,8 +57,6 @@ const uploadDataStore = new UploadDataStore(
   settingsStore
 );
 
-const infoPanelStore = new InfoPanelStore();
-
 const filesActionsStore = new FilesActionsStore(
   store.auth,
   uploadDataStore,
@@ -64,11 +65,9 @@ const filesActionsStore = new FilesActionsStore(
   selectedFolderStore,
   settingsStore,
   dialogsStore,
-  mediaViewerDataStore,
-  infoPanelStore
+  mediaViewerDataStore
 );
 
-const versionHistoryStore = new VersionHistoryStore(filesStore);
 const contextOptionsStore = new ContextOptionsStore(
   store.auth,
   dialogsStore,
@@ -78,8 +77,7 @@ const contextOptionsStore = new ContextOptionsStore(
   treeFoldersStore,
   uploadDataStore,
   versionHistoryStore,
-  settingsStore,
-  infoPanelStore
+  settingsStore
 );
 
 const hotkeyStore = new HotkeyStore(
@@ -91,7 +89,6 @@ const hotkeyStore = new HotkeyStore(
   uploadDataStore
 );
 
-//const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
 const stores = {
   filesStore,
   settingsStore,
@@ -102,10 +99,10 @@ const stores = {
   treeFoldersStore,
   selectedFolderStore,
   filesActionsStore,
-  selectedFilesStore,
+  selectFolderDialogStore,
   contextOptionsStore,
   hotkeyStore,
-  infoPanelStore,
+  selectFileDialogStore,
 };
 
 export default stores;

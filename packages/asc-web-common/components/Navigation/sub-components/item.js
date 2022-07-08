@@ -80,9 +80,9 @@ const Item = ({ id, title, isRoot, onClick, ...rest }) => {
       <StyledText
         isRoot={isRoot}
         fontWeight={isRoot ? "600" : "400"}
-        isRoot={isRoot}
         fontSize={"15px"}
         truncate={true}
+        title={title}
       >
         {title}
       </StyledText>

@@ -3,7 +3,7 @@ import api from "../api";
 import { LANGUAGE, TenantStatus } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
-import { AppServerConfig } from "../constants";
+import { AppServerConfig, ThemeKeys } from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 
@@ -16,9 +16,12 @@ const themes = {
   Base: Base,
 };
 
+const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
+
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
+  isBurgerLoading = false;
 
   checkedMaintenance = false;
   maintenanceExist = false;
@@ -26,13 +29,16 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = !!localStorage.getItem("theme")
-    ? themes[localStorage.getItem("theme")]
+  theme = isDesktopEditors
+    ? window.RendererProcessVariable?.theme?.type === "dark"
+      ? Dark
+      : Base
     : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   timezone = "UTC";
   timezones = [];
+  tenantAlias = "";
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
   defaultPage = "/";
@@ -51,6 +57,8 @@ class SettingsStore {
   enabledJoin = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
+  urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms?populate=*&locale=";
+
   logoUrl = combineUrl(proxyURL, "/static/images/nav.logo.opened.react.svg");
   customNames = {
     id: "Common",
@@ -64,7 +72,7 @@ class SettingsStore {
     guestCaption: "Guest",
     guestsCaption: "Guests",
   };
-  isDesktopClient = window["AscDesktopEditor"] !== undefined;
+  isDesktopClient = isDesktopEditors;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
@@ -113,6 +121,8 @@ class SettingsStore {
   folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', "gim");
 
   tenantStatus = null;
+  helpLink = null;
+  hotkeyPanelVisible = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -121,10 +131,9 @@ class SettingsStore {
   setTenantStatus = (tenantStatus) => {
     this.tenantStatus = tenantStatus;
   };
+
   get urlAuthKeys() {
-    const splitted = this.culture.split("-");
-    const lang = splitted.length > 0 ? splitted[0] : "en";
-    return `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`;
+    return `${this.helpLink}/installation/groups-authorization-keys.aspx`;
   }
 
   get wizardCompleted() {
@@ -132,16 +141,11 @@ class SettingsStore {
   }
 
   get helpUrlCommonSettings() {
-    const substring = this.culture.substring(0, this.culture.indexOf("-"));
-    const lang = substring.length > 0 ? substring : "en";
-
-    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
+    return `${this.helpLink}/administration/configuration.aspx#CustomizingPortal_block`;
   }
 
   get helpUrlCreatingBackup() {
-    const splitted = this.culture.split("-");
-    const lang = splitted.length > 0 ? splitted[0] : "en";
-    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CreatingBackup_block`;
+    return `${this.helpLink}/administration/configuration.aspx#CreatingBackup_block`;
   }
 
   setValue = (key, value) => {
@@ -221,6 +225,10 @@ class SettingsStore {
     ) {
       this.getCurrentCustomSchema(origSettings.nameSchemaId);
     }
+
+    if (origSettings.tenantAlias) {
+      this.setTenantAlias(origSettings.tenantAlias);
+    }
   };
 
   init = async () => {
@@ -250,8 +258,13 @@ class SettingsStore {
     this.isLoaded = isLoaded;
   };
 
+  setCultures = (cultures) => {
+    this.cultures = cultures;
+  };
+
   getPortalCultures = async () => {
-    this.cultures = await api.settings.getPortalCultures();
+    const cultures = await api.settings.getPortalCultures();
+    this.setCultures(cultures);
   };
 
   setIsEncryptionSupport = (isEncryptionSupport) => {
@@ -321,8 +334,6 @@ class SettingsStore {
           ? homepage
           : `${homepage}/`
         : "/";
-
-      console.log("SET base URL", baseUrl);
 
       baseElm[0].setAttribute("href", baseUrl);
     }
@@ -428,19 +439,28 @@ class SettingsStore {
       this.buildVersionInfo.documentServer = "6.4.1";
   };
 
-  changeTheme = () => {
-    const currentTheme =
-      JSON.stringify(this.theme) === JSON.stringify(Base) ? Dark : Base;
-    localStorage.setItem(
-      "theme",
-      JSON.stringify(this.theme) === JSON.stringify(Base) ? "Dark" : "Base"
-    );
-    this.theme = currentTheme;
-  };
+  setTheme = (key) => {
+    let theme = null;
+    switch (key) {
+      case ThemeKeys.Base:
+      case ThemeKeys.BaseStr:
+        theme = ThemeKeys.BaseStr;
+        break;
+      case ThemeKeys.Dark:
+      case ThemeKeys.DarkStr:
+        theme = ThemeKeys.DarkStr;
+        break;
+      case ThemeKeys.System:
+      case ThemeKeys.SystemStr:
+      default:
+        theme =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? ThemeKeys.DarkStr
+            : ThemeKeys.BaseStr;
+    }
 
-  setTheme = (theme) => {
     this.theme = themes[theme];
-    localStorage.setItem("theme", theme);
   };
 
   setMailDomainSettings = async (data) => {
@@ -448,6 +468,18 @@ class SettingsStore {
     this.trustedDomainsType = data.type;
     this.trustedDomains = data.domains;
     return res;
+  };
+
+  setTenantAlias = (tenantAlias) => {
+    this.tenantAlias = tenantAlias;
+  };
+
+  setIsBurgerLoading = (isBurgerLoading) => {
+    this.isBurgerLoading = isBurgerLoading;
+  };
+
+  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
+    this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 }
 

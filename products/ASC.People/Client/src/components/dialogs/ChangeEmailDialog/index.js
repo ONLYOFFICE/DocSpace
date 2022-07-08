@@ -15,13 +15,10 @@ class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { user } = props;
-    const { email } = user;
-
     this.state = {
       isEmailValid: true,
       isRequestRunning: false,
-      email,
+      email: "",
       hasError: false,
       errorMessage: "",
       emailErrors: [],
@@ -30,14 +27,6 @@ class ChangeEmailDialogComponent extends React.Component {
 
   componentDidMount() {
     window.addEventListener("keyup", this.onKeyPress);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { user } = this.props;
-    const { email } = user;
-    if (prevProps.user.email !== email) {
-      this.setState({ email });
-    }
   }
 
   componentWillUnmount() {
@@ -134,7 +123,7 @@ class ChangeEmailDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
-        isTabletView={isTabletView}
+        displayType="modal"
       >
         <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
@@ -142,6 +131,7 @@ class ChangeEmailDialogComponent extends React.Component {
             <Text className="text-body">{t("EmailActivationDescription")}</Text>
             <FieldContainer
               isVertical
+              style={{ margin: "0" }}
               //labelText={t("EnterEmail")}
               errorMessage={errorMessage}
               hasError={hasError}
@@ -156,6 +146,7 @@ class ChangeEmailDialogComponent extends React.Component {
                 onValidateInput={this.onValidateEmailInput}
                 onKeyUp={this.onKeyPress}
                 hasError={hasError}
+                placeholder={t("EnterEmail")}
               />
             </FieldContainer>
           </>
@@ -164,9 +155,18 @@ class ChangeEmailDialogComponent extends React.Component {
           <Button
             key="SendBtn"
             label={t("Common:SendButton")}
-            size="small"
+            size="normal"
+            scale
             primary={true}
             onClick={this.onValidateEmail}
+            isLoading={isRequestRunning}
+          />
+          <Button
+            key="CloseBtn"
+            label={t("Common:CancelButton")}
+            size="normal"
+            scale
+            onClick={onClose}
             isLoading={isRequestRunning}
           />
         </ModalDialog.Footer>

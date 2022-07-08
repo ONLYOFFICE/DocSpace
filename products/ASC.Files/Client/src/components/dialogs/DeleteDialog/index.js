@@ -1,67 +1,60 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
-import ModalDialogContainer from "../ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
+import { StyledDeleteDialog } from "./StyledDeleteDialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
-import Checkbox from "@appserver/components/checkbox";
-import Scrollbar from "@appserver/components/scrollbar";
 import { withTranslation } from "react-i18next";
 import toastr from "studio/toastr";
 import { inject, observer } from "mobx-react";
 
-class DeleteDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
+const DeleteDialogComponent = (props) => {
+  const {
+    t,
+    deleteAction,
+    unsubscribeAction,
+    setBufferSelection,
+    setRemoveMediaItem,
+    setDeleteDialogVisible,
+    personal,
+    visible,
+    tReady,
+    isLoading,
+    unsubscribe,
+    isPrivacyFolder,
+    isRecycleBinFolder,
+    isRootFolder,
+  } = props;
 
-    const foldersList = [];
-    const filesList = [];
-    const selection = [];
+  const selection = [];
+  let i = 0;
 
-    let i = 0;
-    while (props.selection.length !== i) {
-      if (
-        !(
-          (props.isRootFolder && props.selection[i].providerKey) ||
-          props.selection[i].isEditing
-        )
-      ) {
-        if (
-          props.selection[i].access === 0 ||
-          props.selection[i].access === 1 ||
-          props.unsubscribe
-        ) {
-          const item = { ...props.selection[i], checked: true };
-          selection.push(item);
-          if (props.selection[i].fileExst) {
-            filesList.push(item);
-          } else {
-            foldersList.push(item);
-          }
-        }
+  while (props.selection.length !== i) {
+    const item = props.selection[i];
+    if (!((isRootFolder && item?.providerKey) || item?.isEditing)) {
+      if (item?.access === 0 || item?.access === 1 || unsubscribe) {
+        selection.push(item);
       }
-      i++;
     }
-
-    this.state = { foldersList, filesList, selection };
+    i++;
   }
 
-  componentDidMount() {
-    document.addEventListener("keyup", this.onKeyUp, false);
-  }
+  useEffect(() => {
+    document.addEventListener("keyup", onKeyUp, false);
 
-  componentWillUnmount() {
-    document.removeEventListener("keyup", this.onKeyUp, false);
-  }
+    return () => {
+      document.removeEventListener("keyup", onKeyUp, false);
+    };
+  }, []);
 
-  onKeyUp = (e) => {
-    if (e.keyCode === 27) this.onClose();
-    if (e.keyCode === 13 || e.which === 13) this.onDelete();
+  const onKeyUp = (e) => {
+    if (e.keyCode === 27) onClose();
+    if (e.keyCode === 13 || e.which === 13) onDelete();
   };
 
-  onDelete = () => {
-    this.onClose();
-    const { t, deleteAction } = this.props;
+  const onDelete = () => {
+    onClose();
+
     const translations = {
       deleteOperation: t("Translations:DeleteOperation"),
       deleteFromTrash: t("Translations:DeleteFromTrash"),
@@ -70,18 +63,13 @@ class DeleteDialogComponent extends React.Component {
       FolderRemoved: t("Home:FolderRemoved"),
     };
 
-    const selection = this.state.selection.filter((f) => f.checked);
-
     if (!selection.length) return;
 
     deleteAction(translations, selection);
   };
 
-  onUnsubscribe = () => {
-    this.onClose();
-    const { unsubscribeAction } = this.props;
-
-    const selection = this.state.selection.filter((f) => f.checked);
+  const onUnsubscribe = () => {
+    onClose();
 
     if (!selection.length) return;
 
@@ -95,188 +83,74 @@ class DeleteDialogComponent extends React.Component {
     unsubscribeAction(filesId, foldersId).catch((err) => toastr.error(err));
   };
 
-  onChange = (event) => {
-    const value = event.target.value.split("/");
-    const fileType = value[0];
-    const id = Number(value[1]);
-
-    const newSelection = this.state.selection;
-
-    if (fileType !== "undefined") {
-      const selection = newSelection.find((x) => x.id === id && x.fileExst);
-      selection.checked = !selection.checked;
-      this.setState({ selection: newSelection });
-    } else {
-      const selection = newSelection.find((x) => x.id === id && !x.fileExst);
-      selection.checked = !selection.checked;
-      this.setState({ selection: newSelection });
-    }
+  const onClose = () => {
+    setBufferSelection(null);
+    setRemoveMediaItem(null);
+    setDeleteDialogVisible(false);
   };
 
-  onClose = () => {
-    this.props.setBufferSelection(null);
-    this.props.setRemoveMediaItem(null);
-    this.props.setDeleteDialogVisible(false);
+  const moveToTrashTitle = () => {
+    if (unsubscribe) return t("UnsubscribeTitle");
+    return t("MoveToTrashTitle");
   };
 
-  moveToTrashTitle = (checkedSelections) => {
-    const { unsubscribe, t } = this.props;
-    const { filesList, foldersList } = this.state;
-
-    const itemsCount = filesList.length + foldersList.length;
-    const checkedSelectionCount = checkedSelections.length;
-
-    if (unsubscribe) {
-      return t("UnsubscribeTitle");
+  const moveToTrashNoteText = () => {
+    if (selection.length > 1) {
+      return t("MoveToTrashItems");
     } else {
-      if (
-        (checkedSelectionCount < itemsCount && itemsCount > 1) ||
-        checkedSelectionCount > 1
-      ) {
-        return t("MoveToTrashItemsTitle");
-      } else {
-        return filesList.length === 1
-          ? t("MoveToTrashOneFileTitle")
-          : t("MoveToTrashOneFolderTitle");
-      }
-    }
-  };
-
-  moveToTrashNoteText = (checkedSelections) => {
-    const { filesList, foldersList } = this.state;
-    const { t, personal } = this.props;
-
-    const itemsCount = filesList.length + foldersList.length;
-    const checkedSelectionCount = checkedSelections.length;
-
-    if (
-      (checkedSelectionCount < itemsCount && itemsCount > 1) ||
-      checkedSelectionCount > 1
-    ) {
-      return t("MoveToTrashItemsNote");
-    } else {
-      return filesList.length === 1
-        ? t("MoveToTrashOneFileNote")
+      return !selection[0]?.isFolder
+        ? t("MoveToTrashFile")
         : personal
         ? ""
-        : t("MoveToTrashOneFolderNote");
+        : t("MoveToTrashFolder");
     }
   };
-  render() {
-    const {
-      visible,
-      t,
-      tReady,
-      isLoading,
-      unsubscribe,
-      isPrivacyFolder,
-      isRecycleBinFolder,
-    } = this.props;
-    const { filesList, foldersList, selection } = this.state;
 
-    const checkedSelections = selection.filter((x) => x.checked === true);
+  const title =
+    isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
+      ? t("Common:Confirmation")
+      : moveToTrashTitle();
 
-    const title =
-      isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
-        ? t("Common:Confirmation")
-        : this.moveToTrashTitle(checkedSelections);
+  const noteText = unsubscribe ? t("UnsubscribeNote") : moveToTrashNoteText();
 
-    const noteText = unsubscribe
-      ? t("UnsubscribeNote")
-      : this.moveToTrashNoteText(checkedSelections);
+  const accessButtonLabel =
+    isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
+      ? t("Common:OKButton")
+      : unsubscribe
+      ? t("UnsubscribeButton")
+      : t("MoveToTrashButton");
 
-    const accessButtonLabel =
-      isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
-        ? t("Common:OKButton")
-        : unsubscribe
-        ? t("UnsubscribeButton")
-        : t("MoveToTrashButton");
-
-    const accuracy = 20;
-    let filesHeight = 25 * filesList.length + accuracy + 8;
-    let foldersHeight = 25 * foldersList.length + accuracy + 8;
-    if (foldersList.length === 0) {
-      foldersHeight = 0;
-    }
-    if (filesList.length === 0) {
-      filesHeight = 0;
-    }
-
-    const height = filesHeight + foldersHeight;
-
-    return (
-      <ModalDialogContainer
-        isLoading={!tReady}
-        visible={visible}
-        onClose={this.onClose}
-      >
-        <ModalDialog.Header>{title}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <div className="modal-dialog-content">
-            <Text className="delete_dialog-header-text" noSelect>
-              {noteText}
-            </Text>
-            <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
-              {foldersList.length > 0 && (
-                <Text isBold className="delete_dialog-text" noSelect>
-                  {t("Translations:Folders")}:
-                </Text>
-              )}
-              {foldersList.map((item, index) => (
-                <Checkbox
-                  truncate
-                  className="modal-dialog-checkbox"
-                  value={`${item.fileExst}/${item.id}`}
-                  onChange={this.onChange}
-                  key={`checkbox_${index}`}
-                  isChecked={item.checked}
-                  label={item.title}
-                />
-              ))}
-
-              {filesList.length > 0 && (
-                <Text isBold className="delete_dialog-text" noSelect>
-                  {t("Translations:Files")}:
-                </Text>
-              )}
-              {filesList.map((item, index) => (
-                <Checkbox
-                  truncate
-                  className="modal-dialog-checkbox"
-                  value={`${item.fileExst}/${item.id}`}
-                  onChange={this.onChange}
-                  key={`checkbox_${index}`}
-                  isChecked={item.checked}
-                  label={item.title}
-                />
-              ))}
-            </Scrollbar>
-          </div>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            className="button-dialog-accept"
-            key="OkButton"
-            label={accessButtonLabel}
-            size="small"
-            primary
-            onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}
-            isLoading={isLoading}
-            isDisabled={!checkedSelections.length}
-          />
-          <Button
-            className="button-dialog"
-            key="CancelButton"
-            label={t("Common:CancelButton")}
-            size="small"
-            onClick={this.onClose}
-            isLoading={isLoading}
-          />
-        </ModalDialog.Footer>
-      </ModalDialogContainer>
-    );
-  }
-}
+  return (
+    <StyledDeleteDialog isLoading={!tReady} visible={visible} onClose={onClose}>
+      <ModalDialog.Header>{title}</ModalDialog.Header>
+      <ModalDialog.Body>
+        <div className="modal-dialog-content-body">
+          <Text noSelect>{noteText}</Text>
+        </div>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          key="OkButton"
+          label={accessButtonLabel}
+          size="normal"
+          primary
+          scale
+          onClick={unsubscribe ? onUnsubscribe : onDelete}
+          isLoading={isLoading}
+          isDisabled={!selection.length}
+        />
+        <Button
+          key="CancelButton"
+          label={t("Common:CancelButton")}
+          size="normal"
+          scale
+          onClick={onClose}
+          isLoading={isLoading}
+        />
+      </ModalDialog.Footer>
+    </StyledDeleteDialog>
+  );
+};
 
 const DeleteDialog = withTranslation([
   "DeleteDialog",

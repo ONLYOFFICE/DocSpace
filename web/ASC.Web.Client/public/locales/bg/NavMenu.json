@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "За тази програма",
   "LogoutButton": "Отписване",
   "RecoverAccess": "Поднови достъп",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "Опишете проблема си",
   "RecoverTextBody": "Ако не можете да се впишете със съществуващия си профил или искате да се регистрирате като нов потребител, свържете се с администратора на портала. ",
   "RecoverTitle": "Възстановяване на достъп",
-  "TurnOnDesktopVersion": "Превключете на настолна версия"
+  "TurnOnDesktopVersion": "Превключете на настолна версия",
+  "HelpCenter": "Помощен център"
 }

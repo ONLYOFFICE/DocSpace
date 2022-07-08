@@ -40,8 +40,7 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
+using ASC.MessagingSystem.Core;
 using ASC.Web.Core.Utility;
 using ASC.Web.CRM.Classes;
 
@@ -96,7 +95,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    List of available currencies
         /// </returns>
-        [Read(@"settings/currency")]
+        [HttpGet(@"settings/currency")]
         public IEnumerable<CurrencyInfoDto> GetAvaliableCurrency()
         {
             return _currencyProvider.GetAll().ConvertAll(item => _mapper.Map<CurrencyInfoDto>(item));
@@ -113,7 +112,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Decimal result of convertation
         /// </returns>
-        [Read(@"settings/currency/convert")]
+        [HttpGet(@"settings/currency/convert")]
         public Decimal ConvertAmount(Decimal amount, String fromcurrency, String tocurrency)
         {
             return _currencyProvider.MoneyConvert(amount, fromcurrency, tocurrency);
@@ -129,7 +128,7 @@ namespace ASC.CRM.Api
         ///    Dictionary of currencies and rates
         /// </returns>
         /// <exception cref="ArgumentException"></exception>
-        [Read(@"settings/currency/summarytable")]
+        [HttpGet(@"settings/currency/summarytable")]
         public IEnumerable<CurrencyRateInfoDto> GetSummaryTable(String currency)
         {
             var result = new List<CurrencyRateInfoDto>();
@@ -167,7 +166,7 @@ namespace ASC.CRM.Api
         ///    ChangeContactStatusGroupAuto setting value (true, false or null)
         /// </returns>
         /// <exception cref="SecurityException"></exception>
-        [Update(@"contact/status/settings")]
+        [HttpPut(@"contact/status/settings")]
         public Boolean? UpdateCRMContactStatusSettings(Boolean? changeContactStatusGroupAuto)
         {
             var tenantSettings = _settingsManager.Load<CrmSettings>();
@@ -191,7 +190,7 @@ namespace ASC.CRM.Api
         ///    WriteMailToHistoryAuto setting value (true or false)
         /// </returns>
         /// <exception cref="SecurityException"></exception>
-        [Update(@"contact/mailtohistory/settings")]
+        [HttpPut(@"contact/mailtohistory/settings")]
         public Boolean UpdateCRMWriteMailToHistorySettings(Boolean writeMailToHistoryAuto)
         {
             var tenantSettings = _settingsManager.Load<CrmSettings>();
@@ -214,7 +213,7 @@ namespace ASC.CRM.Api
         ///    AddTagToContactGroupAuto setting value (true, false or null)
         /// </returns>
         /// <exception cref="SecurityException"></exception>
-        [Update(@"contact/tag/settings")]
+        [HttpPut(@"contact/tag/settings")]
         public Boolean? UpdateCRMContactTagSettings(Boolean? addTagToContactGroupAuto)
         {
             var tenantSettings = _settingsManager.Load<CrmSettings>();
@@ -236,7 +235,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    IsConfiguredPortal setting value (true or false)
         /// </returns>
-        [Update(@"settings")]
+        [HttpPut(@"settings")]
         public Boolean SetIsPortalConfigured(Boolean? configured, Guid? webFormKey)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -259,7 +258,7 @@ namespace ASC.CRM.Api
         /// <category>Organisation</category>
         /// <returns>Organisation company name</returns>
         /// <exception cref="SecurityException"></exception>
-        [Update(@"settings/organisation/base")]
+        [HttpPut(@"settings/organisation/base")]
         public String UpdateOrganisationSettingsCompanyName(String companyName)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -291,7 +290,7 @@ namespace ASC.CRM.Api
         /// <category>Organisation</category>
         /// <returns>Returns a JSON object with the organization company address details</returns>
         /// <exception cref="SecurityException"></exception>
-        [Update(@"settings/organisation/address")]
+        [HttpPut(@"settings/organisation/address")]
         public String UpdateOrganisationSettingsCompanyAddress(String street, String city, String state, String zip, String country)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -331,7 +330,7 @@ namespace ASC.CRM.Api
         /// <returns>Organisation logo ID</returns>
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="Exception"></exception>
-        [Update(@"settings/organisation/logo")]
+        [HttpPut(@"settings/organisation/logo")]
         public Task<Int32> UpdateOrganisationSettingsLogoAsync(bool reset)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -379,7 +378,7 @@ namespace ASC.CRM.Api
         /// <category>Organisation</category>
         /// <returns>Organisation logo content in base64</returns>
         /// <exception cref="Exception"></exception>
-        [Read(@"settings/organisation/logo")]
+        [HttpGet(@"settings/organisation/logo")]
         public String GetOrganisationSettingsLogo(int id)
         {
             if (id != 0)
@@ -406,7 +405,7 @@ namespace ASC.CRM.Api
         /// <category>Common</category>
         /// <returns>Web form key</returns>
         /// <exception cref="SecurityException"></exception>
-        [Update(@"settings/webformkey/change")]
+        [HttpPut(@"settings/webformkey/change")]
         public string ChangeWebToLeadFormKey()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -431,7 +430,7 @@ namespace ASC.CRM.Api
         /// <returns>currency</returns>
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        [Update(@"settings/currency")]
+        [HttpPut(@"settings/currency")]
         public CurrencyInfoDto UpdateCRMCurrency(String currency)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -451,7 +450,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Create(@"{entityType:regex(contact|opportunity|case|task)}/import/start")]
+        [HttpPost(@"{entityType:regex(contact|opportunity|case|task)}/import/start")]
         public string StartImportFromCSV(
             [FromRoute] string entityType, 
             [FromBody] StartImportFromCSVRequestDto inDto )
@@ -487,7 +486,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Read(@"{entityType:regex(contact|opportunity|case|task)}/import/status")]
+        [HttpGet(@"{entityType:regex(contact|opportunity|case|task)}/import/status")]
         public IProgressItem GetImportFromCSVStatus(string entityType)
         {
             EntityType entityTypeObj;
@@ -515,7 +514,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Read(@"import/samplerow")]
+        [HttpGet(@"import/samplerow")]
         public Task<String> GetImportFromCSVSampleRowAsync(string csvFileURI, int indexRow, string jsonSettings)
         {
             if (String.IsNullOrEmpty(csvFileURI) || indexRow < 0) throw new ArgumentException();
@@ -533,7 +532,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Create(@"import/uploadfake")]
+        [HttpPost(@"import/uploadfake")]
         public Task<FileUploadResult> ProcessUploadFakeAsync([FromBody] ProcessUploadFakeRequestDto inDto)
         {
             var csvFileURI = inDto.CsvFileURI;
@@ -543,7 +542,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Read(@"export/status")]
+        [HttpGet(@"export/status")]
         public IProgressItem GetExportStatus()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -553,7 +552,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Update(@"export/cancel")]
+        [HttpPut(@"export/cancel")]
         public IProgressItem CancelExport()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -565,7 +564,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Create(@"export/start")]
+        [HttpPost(@"export/start")]
         public IProgressItem StartExport()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -576,14 +575,14 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Read(@"export/partial/status")]
+        [HttpGet(@"export/partial/status")]
         public IProgressItem GetPartialExportStatus()
         {
             return _exportToCsv.GetStatus(true);
         }
 
         /// <visible>false</visible>
-        [Update(@"export/partial/cancel")]
+        [HttpPut(@"export/partial/cancel")]
         public IProgressItem CancelPartialExport()
         {
 
@@ -594,7 +593,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Create(@"export/partial/{entityType:regex(contact|opportunity|case|task|invoiceitem)}/start")]
+        [HttpPost(@"export/partial/{entityType:regex(contact|opportunity|case|task|invoiceitem)}/start")]
         public IProgressItem StartPartialExport([FromRoute] string entityType, [FromBody] string base64FilterString)
         {
             if (string.IsNullOrEmpty(base64FilterString)) throw new ArgumentException();

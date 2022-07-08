@@ -1,6 +1,4 @@
 import React from "react";
-import styled, { css } from "styled-components";
-
 import Error403 from "studio/Error403";
 import Error520 from "studio/Error520";
 import ConnectClouds from "./ConnectedClouds";
@@ -12,29 +10,6 @@ import TabsContainer from "@appserver/components/tabs-container";
 import CommonSettings from "./CommonSettings";
 import AdminSettings from "./AdminSettings";
 
-import { tablet } from "@appserver/components/utils/device";
-import { isMobile } from "react-device-detect";
-
-const StyledContainer = styled.div`
-  position: absolute;
-  top: 3px;
-
-  width: calc(100% - 40px);
-
-  height: auto;
-
-  @media ${tablet} {
-    position: static;
-    width: calc(100% - 32px);
-  }
-
-  ${isMobile &&
-  css`
-    position: static;
-    width: calc(100% - 32px);
-  `}
-`;
-
 const SectionBodyContent = ({
   setting,
   isAdmin,
@@ -44,6 +19,7 @@ const SectionBodyContent = ({
   history,
   setExpandSettingsTree,
   setSelectedNode,
+  isPersonal,
   t,
 }) => {
   const commonSettings = {
@@ -66,11 +42,13 @@ const SectionBodyContent = ({
 
   const elements = [];
 
-  if (isAdmin) {
+  if (isAdmin && !isPersonal) {
     elements.push(adminSettings);
   }
 
-  elements.push(commonSettings);
+  if (!isPersonal) {
+    elements.push(commonSettings);
+  }
 
   if (enableThirdParty) {
     elements.push(connectedCloud);
@@ -99,30 +77,33 @@ const SectionBodyContent = ({
   const selectedTab = React.useCallback(() => {
     switch (setting) {
       case "common":
-        return 1;
+        return isAdmin ? 1 : 0;
       case "admin":
         return 0;
       case "connected-clouds":
-        return 2;
+        return isPersonal ? 0 : isAdmin ? 2 : 1;
       default:
-        return 1;
+        return isAdmin ? 1 : 0;
     }
-  }, [setting]);
+  }, [setting, isAdmin, isPersonal]);
 
   return !settingsIsLoaded ? null : (!enableThirdParty &&
-      setting === "thirdParty") ||
-    (!isAdmin && setting === "admin") ? (
+      setting === "connected-clouds") ||
+    (!isAdmin && setting === "admin") ||
+    (isPersonal && setting !== "connected-clouds") ? (
     <Error403 />
   ) : isErrorSettings ? (
     <Error520 />
-  ) : (
-    <StyledContainer>
+  ) : !isPersonal ? (
+    <div>
       <TabsContainer
         elements={elements}
         onSelect={onSelect}
         selectedItem={selectedTab()}
       />
-    </StyledContainer>
+    </div>
+  ) : (
+    <div>{elements[0].content}</div>
   );
 };
 
@@ -133,9 +114,11 @@ export default inject(({ auth, treeFoldersStore, settingsStore }) => {
 
     setExpandSettingsTree,
   } = settingsStore;
+
   const { setSelectedNode } = treeFoldersStore;
   return {
     isAdmin: auth.isAdmin,
+    isPersonal: auth.settingsStore.personal,
     enableThirdParty,
     settingsIsLoaded,
 

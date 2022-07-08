@@ -10,6 +10,8 @@ import MainButtonMobile from "@appserver/components/main-button-mobile";
 const StyledMainButtonMobile = styled(MainButtonMobile)`
   position: fixed;
 
+  z-index: 200;
+
   right: 24px;
   bottom: 24px;
 
@@ -26,6 +28,7 @@ const StyledMainButtonMobile = styled(MainButtonMobile)`
 `;
 
 const MobileView = ({
+  t,
   titleProp,
   actionOptions,
   buttonOptions,
@@ -35,6 +38,7 @@ const MobileView = ({
   primaryProgressDataVisible,
   primaryProgressDataPercent,
   primaryProgressDataLoadingFile,
+  primaryProgressDataAlert,
   clearPrimaryProgressData,
   secondaryProgressDataStoreVisible,
   secondaryProgressDataStorePercent,
@@ -88,21 +92,20 @@ const MobileView = ({
       {
         key: "primary-progress",
         open: primaryProgressDataVisible,
-        label: "Upload",
-        icon: "/static/images/mobile.actions.remove.react.svg",
+        label: t("UploadPanel:Uploads"),
+        icon: "/static/images/cross.sidebar.react.svg",
         percent: primaryProgressDataPercent,
-        status: `${
+        status:
           primaryProgressDataPercent === 100
-            ? files.length
-            : currentPrimaryNumEl
-        }/${files.length}`,
+            ? t("FilesUploaded")
+            : `${currentPrimaryNumEl}/${files.length}`,
         onClick: showUploadPanel,
         onCancel: clearUploadPanel,
       },
       {
         key: "secondary-progress",
         open: secondaryProgressDataStoreVisible,
-        label: "Other operations",
+        label: t("Common:OtherOperations"),
         icon: "/static/images/mobile.actions.remove.react.svg",
         percent: secondaryProgressDataStorePercent,
         status: `${Math.round(
@@ -154,6 +157,7 @@ const MobileView = ({
       progressOptions={progressOptions}
       title={titleProp}
       withButton={true}
+      alert={primaryProgressDataAlert}
     />
   );
 };
@@ -171,6 +175,7 @@ export default inject(({ uploadDataStore }) => {
     visible: primaryProgressDataVisible,
     percent: primaryProgressDataPercent,
     loadingFile: primaryProgressDataLoadingFile,
+    alert: primaryProgressDataAlert,
     clearPrimaryProgressData,
   } = primaryProgressDataStore;
 
@@ -189,6 +194,7 @@ export default inject(({ uploadDataStore }) => {
     primaryProgressDataVisible,
     primaryProgressDataPercent,
     primaryProgressDataLoadingFile,
+    primaryProgressDataAlert,
     clearPrimaryProgressData,
     secondaryProgressDataStoreVisible,
     secondaryProgressDataStorePercent,

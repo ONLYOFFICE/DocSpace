@@ -14,8 +14,9 @@ import NavigationBlock from "./NavigationBlock";
 import CreationBlock from "./CreationBlock";
 import UploadBlock from "./UploadBlock";
 import { isMacOs } from "react-device-detect";
+import Base from "@appserver/components/themes/base";
 
-const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
+const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, theme, tReady }) => {
   const scrollRef = useRef(null);
 
   const onClose = () => setHotkeyPanelVisible(false);
@@ -23,10 +24,11 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
     fontSize: "13px",
     fontWeight: 600,
     className: "hotkey-key-description",
+    noSelect: true,
   };
   const keyTextStyles = {
     ...textStyles,
-    ...{ color: "#657077", className: "hotkeys-key" },
+    ...{ color: theme.hotkeys.key.color, className: "hotkeys-key" },
   };
 
   const CtrlKey = isMacOs ? "⌘" : "Ctrl";
@@ -45,10 +47,15 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
 
   return (
     <StyledHotkeysPanel>
-      <Backdrop onClick={onClose} visible={visible} isAside={true} />
-      <Aside className="hotkeys-panel" visible={visible}>
+      <Backdrop
+        onClick={onClose}
+        visible={visible}
+        isAside={true}
+        zIndex={210}
+      />
+      <Aside className="hotkeys-panel" visible={visible} onClose={onClose}>
         <div className="hotkeys_header">
-          <Heading className="hotkeys_heading">{t("Hotkeys")}</Heading>
+          <Heading className="hotkeys_heading">{t("Common:Hotkeys")}</Heading>
         </div>
         <StyledScrollbar ref={scrollRef} stype="mediumBlack">
           <Heading className="hotkeys_sub-header">
@@ -125,11 +132,20 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
   );
 };
 
-export default inject(({ dialogsStore }) => {
-  const { hotkeyPanelVisible, setHotkeyPanelVisible } = dialogsStore;
+HotkeyPanel.defaultProps = { theme: Base };
+
+export default inject(({ auth }) => {
+  const {
+    hotkeyPanelVisible,
+    setHotkeyPanelVisible,
+    theme,
+  } = auth.settingsStore;
 
   return {
     visible: hotkeyPanelVisible,
     setHotkeyPanelVisible,
+    theme,
   };
-})(withTranslation("HotkeysPanel")(observer(HotkeyPanel)));
+})(
+  withTranslation(["HotkeysPanel", "Article", "Common"])(observer(HotkeyPanel))
+);

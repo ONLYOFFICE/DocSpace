@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "Про цю програму",
   "LogoutButton": "Вихід",
   "RecoverAccess": "Відновити доступ",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "Опишіть свою проблему",
   "RecoverTextBody": "Якщо ви не можете увійти зі своїм існуючим обліковим записом або хочете зареєструватися як новий користувач, зверніться до адміністратора порталу.",
   "RecoverTitle": "Відновлення доступу",
-  "TurnOnDesktopVersion": "Увімкнути настільну версію"
+  "TurnOnDesktopVersion": "Увімкнути настільну версію",
+  "HelpCenter": "Центр довідки"
 }

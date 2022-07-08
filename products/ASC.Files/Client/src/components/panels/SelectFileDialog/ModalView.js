@@ -191,11 +191,12 @@ class SelectFileDialogModalView extends React.Component {
           className="select-file-modal-dialog"
           style={{ maxWidth: "725px" }}
           displayType="modal"
-          modalBodyPadding="0px"
           isLoading={isLoading}
-          modalLoaderBodyHeight="277px"
+          autoMaxHeight
+          autoMaxWidth
+          withFooterBorder
         >
-          <ModalDialog.Header theme={theme}>
+          <ModalDialog.Header theme={theme} className={"SELECTFILEDIALOG"}>
             {headerName ? headerName : t("SelectFile")}
           </ModalDialog.Header>
           <ModalDialog.Body
@@ -253,29 +254,22 @@ class SelectFileDialogModalView extends React.Component {
             </StyledSelectFilePanel>
           </ModalDialog.Body>
           <ModalDialog.Footer theme={theme}>
-            <StyledSelectFilePanel
+            <Button
               theme={theme}
-              isHeaderChildren={isHeaderChildren}
-            >
-              <div className="select-file-dialog-modal_buttons">
-                <Button
-                  theme={theme}
-                  className="select-file-modal-dialog-buttons-save"
-                  primary
-                  size="small"
-                  label={primaryButtonName}
-                  onClick={onClickSave}
-                  isDisabled={selectedFile.length === 0}
-                />
-                <Button
-                  theme={theme}
-                  className="modal-dialog-button"
-                  size="small"
-                  label={t("Common:CancelButton")}
-                  onClick={onClose}
-                />
-              </div>
-            </StyledSelectFilePanel>
+              className="select-file-modal-dialog-buttons-save"
+              primary
+              size="normal"
+              label={primaryButtonName}
+              onClick={onClickSave}
+              isDisabled={selectedFile.length === 0}
+            />
+            <Button
+              theme={theme}
+              className="modal-dialog-button"
+              size="normal"
+              label={t("Common:CancelButton")}
+              onClick={onClose}
+            />
           </ModalDialog.Footer>
         </ModalDialog>
       </StyledAsidePanel>

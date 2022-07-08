@@ -5,15 +5,36 @@ import { withTranslation } from "react-i18next";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../../../package.json";
-
+import { inject, observer } from "mobx-react";
 import Customization from "./customization";
-import WhiteLabel from "./whitelabel";
-import LoaderSubmenu from "./sub-components/loaderSubmenu";
+import Branding from "./branding";
+import Appearance from "./appearance";
+import withLoading from "../../../../../HOCs/withLoading";
 
 const SubmenuCommon = (props) => {
-  const { t, history } = props;
+  const {
+    t,
+    history,
+    isLoaded,
+    tReady,
+    setIsLoadedSubmenu,
+    isLoadedPage,
+  } = props;
   const [currentTab, setCurrentTab] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const isLoadedSetting = isLoaded && tReady;
+
+  useEffect(() => {
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    if (currentTab !== -1) {
+      setCurrentTab(currentTab);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLoadedSetting) setIsLoadedSubmenu(isLoadedSetting);
+  }, [isLoadedSetting]);
 
   const data = [
     {
@@ -22,20 +43,16 @@ const SubmenuCommon = (props) => {
       content: <Customization />,
     },
     {
-      id: "whitelabel",
-      name: t("White label"),
-      content: <WhiteLabel />,
+      id: "branding",
+      name: "Branding",
+      content: <Branding />,
+    },
+    {
+      id: "appearance",
+      name: "Appearance",
+      content: <Appearance />,
     },
   ];
-
-  useEffect(() => {
-    const path = location.pathname;
-    const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) {
-      setCurrentTab(currentTab);
-    }
-    //setIsLoading(true);
-  }, []);
 
   const onSelect = (e) => {
     history.push(
@@ -46,16 +63,23 @@ const SubmenuCommon = (props) => {
       )
     );
   };
-  //TODO: isLoading
-  return isLoading ? (
-    <LoaderSubmenu />
-  ) : (
+
+  return (
     <Submenu
       data={data}
       startSelect={currentTab}
       onSelect={(e) => onSelect(e)}
+      isLoading={!isLoadedPage}
     />
   );
 };
 
-export default withTranslation("Settings")(withRouter(SubmenuCommon));
+export default inject(({ common }) => {
+  const { isLoaded, setIsLoadedSubmenu } = common;
+  return {
+    isLoaded,
+    setIsLoadedSubmenu,
+  };
+})(
+  withLoading(withRouter(withTranslation("Settings")(observer(SubmenuCommon))))
+);

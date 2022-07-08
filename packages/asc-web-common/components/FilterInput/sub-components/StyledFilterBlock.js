@@ -1,18 +1,11 @@
 import Text from "@appserver/components/text";
 import styled, { css } from "styled-components";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 
 import ToggleButton from "@appserver/components/toggle-button";
-import { mobile } from "@appserver/components/utils/device";
+import { mobile, tablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
-
-const mobileView = css`
-  top: 64px;
-
-  width: 100vw !important;
-  height: calc(100vh - 64px) !important;
-`;
 
 const StyledFilterBlock = styled.div`
   position: fixed;
@@ -20,7 +13,7 @@ const StyledFilterBlock = styled.div`
   right: 0;
 
   width: 480px;
-  height: 100vh;
+  height: 100%;
 
   z-index: 400;
 
@@ -29,11 +22,22 @@ const StyledFilterBlock = styled.div`
 
   background: ${(props) => props.theme.filterInput.filter.background};
 
-  @media ${mobile} {
-    ${mobileView}
+  @media ${tablet} {
+    max-width: calc(100% - 69px);
   }
 
-  ${isMobileOnly && mobileView}
+  ${isMobile &&
+  css`
+    max-width: calc(100% - 69px);
+  `}
+
+  @media (max-width: 428px) {
+    bottom: 0;
+    top: unset;
+    height: calc(100% - 64px);
+    width: 100%;
+    max-width: 100%;
+  }
 
   .people-selector {
     height: 100%;
@@ -43,6 +47,10 @@ const StyledFilterBlock = styled.div`
     .column-options {
       width: 100%;
     }
+  }
+
+  .filter-body {
+    height: ${(props) => (props.showFooter ? "calc(100% - 125px)" : "100%")};
   }
 `;
 
@@ -87,6 +95,7 @@ const StyledFilterBlockItem = styled.div`
 const StyledFilterBlockItemHeader = styled.div`
   height: 16px;
   line-height: 16px;
+  margin-right: -16px;
 
   display: flex;
   align-items: center;
@@ -94,6 +103,7 @@ const StyledFilterBlockItemHeader = styled.div`
 
 const StyledFilterBlockItemContent = styled.div`
   margin-top: ${(props) => !props.withoutHeader && "12px"};
+  margin-right: -16px;
 
   height: fit-content;
 
@@ -152,6 +162,7 @@ const StyledFilterBlockItemTag = styled.div`
   cursor: pointer;
 
   ${(props) => props.isSelected && selectedItemTag}
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 StyledFilterBlockItemTag.defaultProps = { theme: Base };
@@ -206,11 +217,15 @@ const StyledFilterBlockItemToggleText = styled(Text)`
 
 const StyledFilterBlockItemToggleButton = styled(ToggleButton)`
   position: static;
+
+  grid-gap: 0px;
 `;
 
 const StyledFilterBlockItemSeparator = styled.div`
   height: 1px;
-  width: 100%;
+  width: calc(100% + 16px);
+
+  margin-right: 16px;
 
   background: ${(props) => props.theme.filterInput.filter.separatorColor};
 
@@ -241,62 +256,51 @@ const StyledFilterBlockFooter = styled.div`
   align-items: center;
   justify-content: center;
 
-  @media ${mobile} {
-    width: 100vw;
+  @media (max-width: 428px) {
+    width: 100%;
   }
-
-  ${isMobileOnly &&
-  css`
-    width: 100vw;
-  `}
 `;
 
 StyledFilterBlockFooter.defaultProps = { theme: Base };
 
 const StyledControlContainer = styled.div`
-  background: ${(props) => props.theme.catalog.control.background};
+  display: flex;
+
   width: 24px;
   height: 24px;
-  position: fixed;
-  top: 30px;
-  right: 10px;
+  position: absolute;
+
   border-radius: 100px;
   cursor: pointer;
-  display: flex;
+
   align-items: center;
   justify-content: center;
-  z-index: 999;
-  display: none;
+  z-index: 450;
 
-  @media ${mobile} {
-    display: flex;
-  }
+  top: 14px;
+  left: -34px;
 
-  ${isMobileOnly &&
+  ${isMobile &&
   css`
-    display: flex;
+    top: 14px;
   `}
+
+  @media (max-width: 428px) {
+    top: -34px;
+    right: 10px;
+    left: unset;
+  }
 `;
 
 StyledControlContainer.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 12px;
-  height: 12px;
+  width: 17px;
+  height: 17px;
+  z-index: 455;
   path {
     fill: ${(props) => props.theme.catalog.control.fill};
   }
-
-  display: none;
-
-  @media ${mobile} {
-    display: flex;
-  }
-
-  ${isMobileOnly &&
-  css`
-    display: flex;
-  `}
 `;
 
 StyledCrossIcon.defaultProps = { theme: Base };

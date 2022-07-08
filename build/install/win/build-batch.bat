@@ -1,26 +1,30 @@
 REM echo ######## Set variables ########
-set "msbuild4="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe""
+set "publisher="Ascensio System SIA""
+set "zookeeper_version=3.7.1"
+set "kafka_version=2.8.0"
+set "nginx_version=1.21.1"
+set "scala_version=2.12"
 
 REM echo ######## Extracting and preparing files to build ########
-%sevenzip% x build\install\win\nginx-1.21.1.zip -o"build\install\win\Files" -y
-xcopy "build\install\win\Files\nginx-1.21.1" "build\install\win\Files\nginx" /s /y /b /i
-rmdir build\install\win\Files\nginx-1.21.1 /s /q
+%sevenzip% x build\install\win\nginx-%nginx_version%.zip -o"build\install\win\Files" -y
+xcopy "build\install\win\Files\nginx-%nginx_version%" "build\install\win\Files\nginx" /s /y /b /i
+rmdir build\install\win\Files\nginx-%nginx_version% /s /q
 rmdir build\install\win\kafka-zookeeper /s /q
 md build\install\win\kafka-zookeeper
 md build\install\win\Files\nginx\temp
 md build\install\win\Files\nginx\logs
-%tar% -xvf build\install\win\apache-zookeeper-3.7.0-bin.tar.gz -C build\install\win\kafka-zookeeper
-%tar% -xvf build\install\win\kafka_2.12-2.8.0.tgz -C build\install\win\kafka-zookeeper
-ren build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin zookeeper
-ren build\install\win\kafka-zookeeper\kafka_2.12-2.8.0 kafka
+%tar% -xvf build\install\win\apache-zookeeper-%zookeeper_version%-bin.tar.gz -C build\install\win\kafka-zookeeper
+%tar% -xvf build\install\win\kafka_%scala_version%-%kafka_version%.tgz -C build\install\win\kafka-zookeeper
+ren build\install\win\kafka-zookeeper\apache-zookeeper-%zookeeper_version%-bin zookeeper
+ren build\install\win\kafka-zookeeper\kafka_%scala_version%-%kafka_version% kafka
 md build\install\win\kafka-zookeeper\kafka\tools
 md build\install\win\Files\tools
 copy build\install\win\WinSW.NET4new.exe "build\install\win\kafka-zookeeper\kafka\tools\kafka.exe" /y
 copy build\install\win\WinSW.NET4new.exe "build\install\win\kafka-zookeeper\kafka\tools\zookeeper.exe" /y
 copy build\install\win\tools\zookeeper.xml "build\install\win\kafka-zookeeper\kafka\tools\zookeeper.xml" /y
 copy build\install\win\tools\kafka.xml "build\install\win\kafka-zookeeper\kafka\tools\kafka.xml" /y
-del /f /q build\install\win\apache-zookeeper-3.7.0-bin.*
-del /f /q build\install\win\kafka_2.12-2.8.0.*
+del /f /q build\install\win\apache-zookeeper-%zookeeper_version%-bin.*
+del /f /q build\install\win\kafka_%scala_version%-%kafka_version%.*
 copy build\install\win\WinSW.NET4.exe "build\install\win\Files\tools\proxy.exe" /y
 copy build\install\win\tools\proxy.xml "build\install\win\Files\tools\proxy.xml" /y
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
@@ -29,7 +33,7 @@ del /f /q "build\install\win\kafka-zookeeper\zookeeper\conf\zoo_sample.cfg"
 rmdir build\install\win\publish /s /q
 
 REM echo ######## Build Utils ########
-%msbuild4% build\install\win\CustomActions\C#\Utils\Utils.csproj
+%msbuild% build\install\win\CustomActions\C#\Utils\Utils.csproj
 copy build\install\win\CustomActions\C#\Utils\bin\Debug\Utils.CA.dll build\install\win\Utils.CA.dll /y
 rmdir build\install\win\CustomActions\C#\Utils\bin /s /q
 rmdir build\install\win\CustomActions\C#\Utils\obj /s /q
@@ -80,7 +84,7 @@ copy "build\install\win\publish\Apache ZooKeeper.msi" "build\install\win\Apache 
 copy "build\install\win\publish\Apache Kafka.msi" "build\install\win\Apache Kafka.msi" /y
 
 REM echo ######## Build MySQL Server Installer ########
-iscc "build\install\win\MySQL Server Installer Runner.iss"
+iscc /Qp /S"byparam="signtool" sign /a /n "%publisher%" /t http://timestamp.digicert.com $f" "build\install\win\MySQL Server Installer Runner.iss"
 
 REM echo ######## Build AppServer package ########
 %AdvancedInstaller% /edit build\install\win\AppServer.aip /SetVersion %BUILD_VERSION%.%BUILD_NUMBER%

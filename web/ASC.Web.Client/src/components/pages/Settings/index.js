@@ -1,10 +1,10 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { withRouter } from "react-router";
 import Layout from "./Layout";
 import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
-
+import { inject, observer } from "mobx-react";
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 const Admins = lazy(() => import("./categories/security/access-rights/admins"));
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
@@ -46,7 +46,11 @@ const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup")
 );
 
-const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
+const WhiteLabel = lazy(() =>
+  import("./categories/common/settingsBranding/whitelabel")
+);
+
+const Branding = lazy(() => import("./categories/common/branding"));
 
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
 
@@ -54,7 +58,8 @@ const COMMON_URLS = [
   PROXY_BASE_URL,
   combineUrl(PROXY_BASE_URL, "/common"),
   combineUrl(PROXY_BASE_URL, "/common/customization"),
-  combineUrl(PROXY_BASE_URL, "/common/whitelabel"),
+  combineUrl(PROXY_BASE_URL, "/common/branding"),
+  combineUrl(PROXY_BASE_URL, "/common/appearance"),
 ];
 
 const CUSTOMIZATION_URLS = [
@@ -105,7 +110,13 @@ const DATA_MANAGEMENT_URL = combineUrl(
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
-const Settings = () => {
+const Settings = (props) => {
+  const { loadBaseInfo } = props;
+
+  useEffect(() => {
+    loadBaseInfo();
+  }, []);
+
   return (
     <Layout key="1">
       <Suspense fallback={null}>
@@ -159,4 +170,10 @@ const Settings = () => {
   );
 };
 
-export default withRouter(Settings);
+export default inject(({ common }) => {
+  return {
+    loadBaseInfo: async () => {
+      await common.initSettings();
+    },
+  };
+})(withRouter(observer(Settings)));

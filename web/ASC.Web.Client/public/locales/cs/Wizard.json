@@ -1,7 +1,7 @@
-﻿{
+{
   "ChangeEmailTitle": "Změnit e-mail",
   "Desc": "Nastavte prosím registrační údaje portálu.",
-  "Domain": "Domain:",
+  "Domain": "Doména:",
   "ErrorEmail": "Neplatná e-mailová adresa",
   "ErrorInitWizard": "Služba je momentálně nedostupná, zkuste to prosím později.",
   "ErrorInitWizardButton": "Zkuste to znovu",

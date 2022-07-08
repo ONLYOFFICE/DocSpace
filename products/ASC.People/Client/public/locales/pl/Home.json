@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Administrator",
   "ChangeToGuest": "Zmień na {{guestCaption}}",
   "ChangeToUser": "Zmień na {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Brak członków zespołu",
   "LblInviteAgain": "Zaproś ponownie",
   "LblInvited": "Zaproszono",
-  "LblOther": "Inne",
   "LblSendEmail": "Wyślij e-mail",
   "LblSendMessage": "Wyślij wiadomość",
   "LblSetActive": "Ustaw jako aktywny",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Instrukcje dotyczące aktywacji adresu e-mail zostały wysłane na adres <1>{{email}}</1>",
   "NotFoundDescription": "Spróbuj użyć innego filtra lub usuń go, aby zobaczyć wszystkich użytkowników w sekcji.",
   "NotFoundTitle": "Nie znaleziono członków zespołu",
+  "ReassignmentData": "Przypisz dane innemu użytkownikowi",
   "SuccessfullyRemovedGroup": "Grupa została pomyślnie usunięta",
   "UserStatus": "Status"
 }
