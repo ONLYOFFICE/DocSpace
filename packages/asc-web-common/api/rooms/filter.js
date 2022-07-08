@@ -60,7 +60,8 @@ class RoomsFilter {
       (urlFilter[FILTER_VALUE] && +urlFilter[FILTER_VALUE]) ||
       defaultFilter.filterValue;
 
-    const types = (urlFilter[TYPES] && urlFilter[TYPES]) || defaultFilter.types;
+    const types =
+      (urlFilter[TYPES] && [...urlFilter[TYPES]]) || defaultFilter.types;
 
     const subjectId =
       (urlFilter[SUBJECT_ID] && urlFilter[SUBJECT_ID]) ||
@@ -78,7 +79,8 @@ class RoomsFilter {
       (urlFilter[SEARCH_AREA] && urlFilter[SEARCH_AREA]) ||
       defaultFilter.searchArea;
 
-    const tags = (urlFilter[TAGS] && urlFilter[TAGS]) || defaultFilter.tags;
+    const tags =
+      (urlFilter[TAGS] && [...urlFilter[TAGS]]) || defaultFilter.tags;
 
     const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
 
