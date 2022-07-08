@@ -3,7 +3,7 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
-import { getFolderOptions } from "../../utils";
+import { getFolderOptions, decodeDisplayName } from "../../utils";
 import { Encoder } from "../../utils/encoder";
 
 export function openEdit(fileId, version, doc, view) {
@@ -48,24 +48,6 @@ export function getFolderPath(folderId) {
 
   return request(options);
 }
-
-const decodeDisplayName = (items) => {
-  return items.map((item) => {
-    if (!item) return item;
-
-    if (item.updatedBy?.displayName) {
-      item.updatedBy.displayName = Encoder.htmlDecode(
-        item.updatedBy.displayName
-      );
-    }
-    if (item.createdBy?.displayName) {
-      item.createdBy.displayName = Encoder.htmlDecode(
-        item.createdBy.displayName
-      );
-    }
-    return item;
-  });
-};
 
 export function getFolder(folderId, filter) {
   const options = getFolderOptions(folderId, filter);

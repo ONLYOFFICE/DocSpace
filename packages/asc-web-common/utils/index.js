@@ -22,6 +22,24 @@ export const toUrlParams = (obj, skipNull) => {
   return str;
 };
 
+const decodeDisplayName = (items) => {
+  return items.map((item) => {
+    if (!item) return item;
+
+    if (item.updatedBy?.displayName) {
+      item.updatedBy.displayName = Encoder.htmlDecode(
+        item.updatedBy.displayName
+      );
+    }
+    if (item.createdBy?.displayName) {
+      item.createdBy.displayName = Encoder.htmlDecode(
+        item.createdBy.displayName
+      );
+    }
+    return item;
+  });
+};
+
 export function getObjectByLocation(location) {
   if (!location.search || !location.search.length) return null;
 
