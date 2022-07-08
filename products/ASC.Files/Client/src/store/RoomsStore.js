@@ -26,6 +26,7 @@ class RoomsStore {
   filesSettingsStore;
 
   rooms = [];
+  tags = [];
 
   selection = [];
   bufferSelection = [];
@@ -62,6 +63,10 @@ class RoomsStore {
     this.rooms = rooms;
   };
 
+  setTags = (tags) => {
+    this.tags = tags;
+  };
+
   setRoomsFilter = (filter) => {
     this.filter = filter;
   };
@@ -84,6 +89,36 @@ class RoomsStore {
 
   setBufferSelection = (item) => {
     this.bufferSelection = item;
+  };
+
+  sortRooms = (sortBy, sortOrder) => {
+    const newFilter = this.filter.clone();
+
+    newFilter.page = 0;
+    newFilter.sortBy = sortBy;
+    newFilter.sortOrder = sortOrder;
+
+    return this.fetchRooms(newFilter.searchArea, newFilter);
+  };
+
+  filterRooms = (types, subjectId, tags) => {
+    const newFilter = this.filter.clone();
+
+    newFilter.page = 0;
+    newFilter.types = types ? types : null;
+    newFilter.subjectId = subjectId ? subjectId : null;
+    newFilter.tags = tags ? tags : null;
+
+    return this.fetchRooms(newFilter.searchArea, newFilter);
+  };
+
+  searchRooms = (filterValue) => {
+    const newFilter = this.filter.clone();
+
+    newFilter.page = 0;
+    newFilter.filterValue = filterValue;
+
+    return this.fetchRooms(newFilter.searchArea, newFilter);
   };
 
   fetchRooms = (searchArea, filter) => {
@@ -214,6 +249,16 @@ class RoomsStore {
       : this.bufferSelection;
 
     return api.rooms.unarchiveRoom(selectedRoom.id);
+  };
+
+  fetchTags = () => {
+    const request = () =>
+      api.rooms.getTags().then((res) => {
+        this.setTags(res);
+        return res;
+      });
+
+    return request();
   };
 }
 
