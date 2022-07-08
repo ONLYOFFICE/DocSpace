@@ -19,25 +19,30 @@ const Indicator = styled.div`
   top: 25px;
   left: 25px;
 
-  z-index: 3;
+  z-index: 10;
 `;
 
 Indicator.defaultProps = { theme: Base };
 
 const FilterButton = ({
   t,
-  contextMenuHeader,
+  onFilter,
   getFilterData,
   getSelectedFilterData,
-  onFilter,
-  headerLabel,
+
+  filterHeader,
+  selectorLabel,
 }) => {
   const [showFilterBlock, setShowFilterBlock] = React.useState(false);
 
   const [selectedFilterValue, setSelectedFilterValue] = React.useState(null);
 
   React.useEffect(() => {
-    const value = getSelectedFilterData();
+    getSelectedFilterDataAction();
+  }, [getSelectedFilterDataAction, getSelectedFilterData]);
+
+  const getSelectedFilterDataAction = React.useCallback(async () => {
+    const value = await getSelectedFilterData();
 
     setSelectedFilterValue(value);
   }, [getSelectedFilterData]);
@@ -56,12 +61,12 @@ const FilterButton = ({
       {showFilterBlock && (
         <FilterBlock
           t={t}
-          contextMenuHeader={contextMenuHeader}
+          filterHeader={filterHeader}
           selectedFilterValue={selectedFilterValue}
           hideFilterBlock={changeShowFilterBlock}
           getFilterData={getFilterData}
           onFilter={onFilter}
-          headerLabel={headerLabel}
+          selectorLabel={selectorLabel}
         />
       )}
     </>

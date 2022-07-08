@@ -24,11 +24,11 @@ import Scrollbar from "@appserver/components/scrollbar";
 const FilterBlock = ({
   t,
   selectedFilterValue,
-  contextMenuHeader,
+  filterHeader,
   getFilterData,
   hideFilterBlock,
   onFilter,
-  headerLabel,
+  selectorLabel,
 }) => {
   const [showSelector, setShowSelector] = React.useState({
     show: false,
@@ -54,9 +54,9 @@ const FilterBlock = ({
 
       data.forEach((item) => {
         if (filter.find((value) => value.group === item.group)) {
-          const currentFilter = filter.filter(
+          const currentFilter = filter.find(
             (value) => value.group === item.group
-          )[0];
+          );
 
           item.groupItem.forEach((groupItem) => {
             groupItem.isSelected = false;
@@ -115,6 +115,10 @@ const FilterBlock = ({
           const itemIdx = value[groupIdx].key.findIndex((item) => item === key);
 
           value[groupIdx].key.splice(itemIdx, 1);
+
+          if (value[groupIdx].key.length === 0) {
+            value = value.filter((item) => item.group !== group);
+          }
         } else {
           value = value.filter((item) => item.group !== group);
         }
@@ -174,8 +178,8 @@ const FilterBlock = ({
     [selectedFilterValue, filterValues, changeSelectedItems]
   );
 
-  React.useEffect(() => {
-    const data = getFilterData();
+  const getDefaultFilterData = React.useCallback(async () => {
+    const data = await getFilterData();
 
     const items = data.filter((item) => item.isHeader === true);
 
@@ -228,6 +232,10 @@ const FilterBlock = ({
     setFilterValues(newFilterValues);
   }, []);
 
+  React.useEffect(() => {
+    getDefaultFilterData();
+  }, []);
+
   const onFilterAction = React.useCallback(() => {
     onFilter && onFilter(filterValues);
     hideFilterBlock();
@@ -255,19 +263,17 @@ const FilterBlock = ({
   );
 
   const isEqualFilter = () => {
-    const selectedFilterValues = selectedFilterValue;
-
     let isEqual = true;
 
     if (
       filterValues.length === 0 ||
-      selectedFilterValues.length > filterValues.length
+      selectedFilterValue.length > filterValues.length
     )
       return !isEqual;
 
     if (
-      (selectedFilterValues.length === 0 && filterValues.length > 0) ||
-      selectedFilterValues.length !== filterValues.length
+      (selectedFilterValue.length === 0 && filterValues.length > 0) ||
+      selectedFilterValue.length !== filterValues.length
     ) {
       isEqual = false;
 
@@ -275,7 +281,7 @@ const FilterBlock = ({
     }
 
     filterValues.forEach((value) => {
-      const oldValue = selectedFilterValues.find(
+      const oldValue = selectedFilterValue.find(
         (item) => item.group === value.group
       );
 
@@ -289,7 +295,10 @@ const FilterBlock = ({
         );
       }
 
-      isEqual = isEqual && (oldValue?.key === value.key || isMultiSelectEqual);
+      isEqual =
+        isEqual &&
+        (oldValue?.key === value.key ||
+          (isMultiSelectEqual && typeof value.key === "object"));
     });
 
     return !isEqual;
@@ -310,7 +319,7 @@ const FilterBlock = ({
                 isMultiSelect={false}
                 onSelect={selectOption}
                 onArrowClick={onArrowClick}
-                headerLabel={headerLabel}
+                headerLabel={selectorLabel}
               />
             ) : (
               <GroupSelector
@@ -320,7 +329,7 @@ const FilterBlock = ({
                 isMultiSelect={false}
                 onSelect={selectOption}
                 onArrowClick={onArrowClick}
-                headerLabel={headerLabel}
+                headerLabel={selectorLabel}
               />
             )}
 
@@ -332,7 +341,7 @@ const FilterBlock = ({
       ) : (
         <StyledFilterBlock showFooter={showFooter}>
           <StyledFilterBlockHeader>
-            <Heading size="medium">{contextMenuHeader}</Heading>
+            <Heading size="medium">{filterHeader}</Heading>
             <IconButton
               iconName="/static/images/clear.react.svg"
               isFill={true}

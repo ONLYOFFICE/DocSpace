@@ -16,41 +16,28 @@ import { StyledFilterInput, StyledSearchInput } from "./StyledFilterInput";
 const FilterInput = React.memo(
   ({
     t,
-    sectionWidth,
-    getFilterData,
-    getSortData,
-    getViewSettingsData,
-    getSelectedFilterData,
-    getSelectedSortData,
-    getSelectedInputValue,
     onFilter,
-    onSearch,
+    getFilterData,
+    getSelectedFilterData,
     onSort,
-    onChangeViewAs,
-    viewAs,
-    placeholder,
+    getSortData,
+    getSelectedSortData,
     view,
-    contextMenuHeader,
-    headerLabel,
+    viewAs,
     viewSelectorVisible,
-    isFavoritesFolder,
-    isRecentFolder,
+    getViewSettingsData,
+    onChangeViewAs,
+    placeholder,
+    onSearch,
+    getSelectedInputValue,
 
-    isLoading,
+    filterHeader,
+    selectorLabel,
+
+    isRecentFolder,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
-    const [selectedFilterData, setSelectedFilterData] = React.useState([]);
-
-    const getSelectedFilterDataAction = React.useCallback(async () => {
-      const data = await getSelectedFilterData();
-
-      setSelectedFilterData(data);
-    }, [getSelectedFilterData]);
-
-    React.useEffect(() => {
-      getSelectedFilterDataAction();
-    }, [getSelectedFilterData]);
 
     React.useEffect(() => {
       const value = getViewSettingsData();
@@ -78,23 +65,22 @@ const FilterInput = React.memo(
         />
         <FilterButton
           t={t}
-          selectedFilterData={selectedFilterData}
+          onFilter={onFilter}
           getFilterData={getFilterData}
           getSelectedFilterData={getSelectedFilterData}
-          onFilter={onFilter}
-          contextMenuHeader={contextMenuHeader}
-          headerLabel={headerLabel}
+          filterHeader={filterHeader}
+          selectorLabel={selectorLabel}
         />
         {!isRecentFolder && (
           <SortButton
             t={t}
+            onSort={onSort}
             getSortData={getSortData}
             getSelectedSortData={getSelectedSortData}
-            onChangeViewAs={onChangeViewAs}
             view={view}
             viewAs={viewAs === "table" ? "row" : viewAs}
             viewSettings={viewSettings}
-            onSort={onSort}
+            onChangeViewAs={onChangeViewAs}
             viewSelectorVisible={
               viewSettings &&
               viewSelectorVisible &&
@@ -110,9 +96,9 @@ const FilterInput = React.memo(
           isRecentFolder) && (
           <ViewSelector
             style={{ marginLeft: "8px" }}
-            onChangeView={onChangeViewAs}
             viewAs={viewAs === "table" ? "row" : viewAs}
             viewSettings={viewSettings}
+            onChangeView={onChangeViewAs}
             isFilter={true}
           />
         )}
