@@ -78,7 +78,7 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
 
   return (
     <StyledTags id={id} className={className} style={style} ref={tagsRef}>
-      {renderedTags?.length > 0 ? (
+      {renderedTags?.length > 0 &&
         renderedTags.map((tag, index) => (
           <Tag
             key={`${tag.name}_${index}`}
@@ -87,10 +87,7 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
             tagMaxWidth={tag.maxWidth}
             isNewTag={false}
           />
-        ))
-      ) : (
-        <Tag key={"empty"} label={"No tag"} isDisabled={true} />
-      )}
+        ))}
     </StyledTags>
   );
 };
