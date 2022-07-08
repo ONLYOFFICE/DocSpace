@@ -121,6 +121,21 @@ const StyledManualBackup = styled.div`
 
 const StyledAutoBackup = styled.div`
   ${commonStyles}
+  .auto-backup_third-party-module {
+    margin-top: 16px;
+    margin-left: 24px;
+    .auto-backup_connection {
+      display: flex;
+    }
+    .auto-backup_third-party-combo {
+      max-width: 234px;
+      margin-right: 8px;
+    }
+    p {
+      margin-top: 16px;
+      max-width: 350px;
+    }
+  }
 
   .automatic-backup_main {
     margin-bottom: 30px;

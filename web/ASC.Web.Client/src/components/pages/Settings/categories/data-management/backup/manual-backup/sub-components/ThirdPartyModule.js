@@ -148,7 +148,7 @@ class ThirdPartyModule extends React.Component {
     } = this.state;
 
     const isModuleDisabled = !isMaxProgress || isStartCopy || isLoadingData;
-    console.log(selectedFolder);
+
     return !isDocSpace ? (
       <>
         <div className="manual-backup_folder-input">

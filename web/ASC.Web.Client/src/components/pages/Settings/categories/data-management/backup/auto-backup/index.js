@@ -370,13 +370,15 @@ class AutomaticBackup extends React.PureComponent {
       theme,
       renderTooltip,
       selectedEnableSchedule,
+      isDocSpace,
     } = this.props;
 
     const { isInitialLoading, isLoadingData, isError } = this.state;
 
-    const isDisabledThirdPartyList = isCheckedThirdParty
-      ? false
-      : commonThirdPartyList?.length === 0;
+    const isDisabledThirdPartyList =
+      isCheckedThirdParty || isDocSpace
+        ? false
+        : commonThirdPartyList?.length === 0;
 
     const commonProps = {
       isLoadingData,
@@ -532,7 +534,7 @@ const { organizationName, theme } = settingsStore;
   const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
     selectedStorageType === `${StorageModuleType}`;
-
+  const isDocSpace = true;
   return {
     theme,
     language,
@@ -571,5 +573,6 @@ const { organizationName, theme } = settingsStore;
     resetStorageSettings,
     setSelectedEnableSchedule,
     selectedEnableSchedule,
+    isDocSpace,
   };
 })(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

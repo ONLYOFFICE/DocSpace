@@ -246,7 +246,7 @@ class SelectionPanel extends React.Component {
     const foldersTree =
       treeFoldersLength > 0 ? treeFolders : requestedTreeFolders;
 
-    const passedId = id ? id : foldersTree[0].id;
+    const passedId = id ? id : foldersTree[0]?.id;
 
     if (foldersType === "third-party") {
       isFilesPanel && onSetBaseFolderPath && onSetBaseFolderPath(passedId);
