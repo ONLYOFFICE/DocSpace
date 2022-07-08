@@ -279,14 +279,6 @@ const Items = ({
     setEmptyTrashDialogVisible(true);
   };
 
-  const onClickBadge = (isTrash) => {
-    if (isTrash) {
-      onEmptyTrashAction();
-    } else {
-      onBadgeClick();
-    }
-  };
-
   const getItems = React.useCallback(
     (data) => {
       const items = data.map((item, index) => {
