@@ -233,7 +233,7 @@ const TfaActivationWrapper = (props) => {
       setSecretKey(manualEntryKey);
       setQrCode(qrCodeSetupImageUrl);
     } catch (e) {
-      setError(e);
+      setError(e.error);
       toastr.error(e);
     }
 
