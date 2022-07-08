@@ -67,7 +67,6 @@ class FilesApplication : WebApplicationFactory<Program>
 public class MySetUpClass
 {
     protected IServiceScope Scope { get; set; }
-    protected readonly string _pathToProducts = Path.Combine("..", "..", "..", "Data.Test");
 
     [OneTimeSetUp]
     public void CreateDb()
@@ -102,7 +101,7 @@ public class MySetUpClass
 
         try
         {
-            Directory.Delete(Path.Combine("..", "..", "..", _pathToProducts), true);
+            Directory.Delete(Path.Combine(Path.Combine("..", "..", "..", "..", "..", "..", "Data.Test")), true);
         }
         catch { }
     }

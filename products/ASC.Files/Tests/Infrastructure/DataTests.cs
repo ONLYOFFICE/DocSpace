@@ -81,8 +81,9 @@ public static class DataTests
     public const int RoomId = 18;
     public const int RoomIdForDelete = 19;
     public const int RoomIdForArchive = 20;
-    public const int RoomIdForUnarchive = 22;
     public const int RoomIdForUnpin = 21;
+    public const int RoomIdForUnarchive = 22;
+    public const int RoomIdWithTags = 24;
 
     public const string RoomLinkKey = "394892027511.N5UVJ8F6UJPGN0RZKWSOMEYVZVLTZLECGVHHSDSH7ZA";
     public const string TagNames = "name1,name2";

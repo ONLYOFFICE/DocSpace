@@ -126,17 +126,17 @@ public partial class BaseFilesTests
     public async Task AddTagsById(int id, string tagNames)
     {
         var folder = await PutAsync<FolderDto<int>>($"rooms/{id}/tags", JsonContent.Create(new { Names = tagNames.Split(',') }), _options);
-        Assert.IsNotNull(folder.Tags.Count() == 2);
+        Assert.IsTrue(folder.Tags.Count() == 2);
     }
 
-    [TestCase(DataTests.RoomId, DataTests.TagNames)]
+    [TestCase(DataTests.RoomIdWithTags, DataTests.TagNames)]
     [Category("Room")]
     [Order(10)]
     [Description("delete - rooms/{id}/tags - delete tags by id")]
     public async Task DeleteTagsById(int id, string tagNames)
     {
         var folder = await DeleteAsync<FolderDto<int>>($"rooms/{id}/tags", JsonContent.Create(new { Names = tagNames.Split(',') }), _options);
-        Assert.IsNotNull(folder.Tags.Count() == 0);
+        Assert.IsTrue(folder.Tags.Count() == 0);
     }
 
     [TestCase(DataTests.RoomId)]
