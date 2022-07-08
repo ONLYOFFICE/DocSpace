@@ -1,16 +1,18 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
+import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
 import find from "lodash/find";
 import result from "lodash/result";
-import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+
+import { getUser } from "@appserver/common/api/people";
 import { FilterType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
-import { isMobileOnly, isMobile } from "react-device-detect";
-import { inject, observer } from "mobx-react";
+
 import withLoader from "../../../../HOCs/withLoader";
-import { getUser } from "@appserver/common/api/people";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -47,8 +49,6 @@ const getSearchParams = (filterValues) => {
 
 const SectionFilterContent = ({
   t,
-  customNames,
-  user,
   filter,
   personal,
   isRecentFolder,
@@ -62,75 +62,125 @@ const SectionFilterContent = ({
   fetchFiles,
   infoPanelVisible,
 }) => {
-  const filterColumnCount =
-    window.innerWidth < 500
-      ? { filterColumnCount: 3 }
-      : { filterColumnCount: personal ? 2 : 3 };
+  const onFilter = React.useCallback(
+    (data) => {
+      const filterType = getFilterType(data) || null;
+      const authorType = !!getAuthorType(data)
+        ? getAuthorType(data).includes("user_")
+          ? getAuthorType(data)
+          : `user_${getAuthorType(data)}`
+        : null;
+      const withSubfolders = getSearchParams(data);
 
-  const onFilter = (data) => {
-    const filterType = getFilterType(data) || null;
-    const authorType = !!getAuthorType(data)
-      ? getAuthorType(data).includes("user_")
-        ? getAuthorType(data)
-        : `user_${getAuthorType(data)}`
-      : null;
-    const withSubfolders = getSearchParams(data);
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.filterType = filterType;
+      newFilter.authorType = authorType;
+      newFilter.withSubfolders = withSubfolders;
 
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.filterType = filterType;
-    newFilter.authorType = authorType;
-    newFilter.withSubfolders = withSubfolders;
+      setIsLoading(true);
 
-    setIsLoading(true);
+      fetchFiles(selectedFolderId, newFilter).finally(() =>
+        setIsLoading(false)
+      );
+    },
+    [fetchFiles, setIsLoading, filter, selectedFolderId]
+  );
 
-    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
-  };
+  const onSearch = React.useCallback(
+    (data = "") => {
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.search = data;
 
-  const onSearch = (data = "") => {
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.search = data;
+      setIsLoading(true);
 
-    setIsLoading(true);
+      fetchFiles(selectedFolderId, newFilter).finally(() =>
+        setIsLoading(false)
+      );
+    },
+    [setIsLoading, fetchFiles, selectedFolderId, filter]
+  );
 
-    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
-  };
+  const onSort = React.useCallback(
+    (sortId, sortDirection) => {
+      const sortBy = sortId;
+      const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
 
-  const onSort = (sortId, sortDirection) => {
-    const sortBy = sortId;
-    const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.sortBy = sortBy;
+      newFilter.sortOrder = sortOrder;
 
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.sortBy = sortBy;
-    newFilter.sortOrder = sortOrder;
+      setIsLoading(true);
 
-    setIsLoading(true);
+      fetchFiles(selectedFolderId, newFilter).finally(() =>
+        setIsLoading(false)
+      );
+    },
+    [setIsLoading, fetchFiles, selectedFolderId, filter]
+  );
 
-    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
-  };
-
-  const onChangeViewAs = (view) => {
-    if (view === "row") {
-      if (
-        (sectionWidth < 1025 && !infoPanelVisible) ||
-        (sectionWidth < 625 && infoPanelVisible) ||
-        isMobile
-      ) {
-        setViewAs("row");
+  const onChangeViewAs = React.useCallback(
+    (view) => {
+      if (view === "row") {
+        if (
+          (sectionWidth < 1025 && !infoPanelVisible) ||
+          (sectionWidth < 625 && infoPanelVisible) ||
+          isMobile
+        ) {
+          setViewAs("row");
+        } else {
+          setViewAs("table");
+        }
       } else {
-        setViewAs("table");
+        setViewAs(view);
       }
-    } else {
-      setViewAs(view);
+    },
+    [sectionWidth, infoPanelVisible, setViewAs]
+  );
+
+  const getSelectedInputValue = React.useCallback(() => {
+    return filter.search;
+  }, [filter.search]);
+
+  const getSelectedSortData = React.useCallback(() => {
+    return {
+      sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
+      sortId: filter.sortBy,
+    };
+  }, [filter.sortOrder, filter.sortBy]);
+
+  const getSelectedFilterData = React.useCallback(async () => {
+    const filterValues = [];
+
+    if (filter.filterType) {
+      filterValues.push({
+        key: `${filter.filterType}`,
+        group: "filter-filterType",
+      });
     }
-  };
 
-  const getFilterData = () => {
-    const { selectedItem } = filter;
-    const { usersCaption, groupsCaption } = customNames;
+    if (filter.authorType) {
+      const user = await getUser(filter.authorType.replace("user_", ""));
+      filterValues.push({
+        key: `${filter.authorType}`,
+        group: "filter-author",
+        label: user.displayName,
+      });
+    }
 
+    if (filter.withSubfolders === "false") {
+      filterValues.push({
+        key: filter.withSubfolders,
+        group: "filter-folders",
+      });
+    }
+
+    return filterValues;
+  }, [filter.withSubfolders, filter.authorType, filter.filterType]);
+
+  const getFilterData = React.useCallback(async () => {
     const folders =
       !isFavoritesFolder && !isRecentFolder
         ? [
@@ -252,44 +302,9 @@ const SectionFilterContent = ({
       );
 
     return filterOptions;
-  };
+  }, [isFavoritesFolder, isRecentFolder, t, personal]);
 
-  const getSelectedFilterData = async () => {
-    const selectedFilterData = {
-      filterValues: [],
-      sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
-      sortId: filter.sortBy,
-    };
-
-    selectedFilterData.inputValue = filter.search;
-
-    if (filter.filterType) {
-      selectedFilterData.filterValues.push({
-        key: `${filter.filterType}`,
-        group: "filter-filterType",
-      });
-    }
-
-    if (filter.authorType) {
-      const user = await getUser(filter.authorType.replace("user_", ""));
-      selectedFilterData.filterValues.push({
-        key: `${filter.authorType}`,
-        group: "filter-author",
-        label: user.displayName,
-      });
-    }
-
-    if (filter.withSubfolders === "false") {
-      selectedFilterData.filterValues.push({
-        key: filter.withSubfolders,
-        group: "filter-folders",
-      });
-    }
-
-    return selectedFilterData;
-  };
-
-  const getViewSettingsData = () => {
+  const getViewSettingsData = React.useCallback(() => {
     const viewSettings = [
       {
         value: "row",
@@ -305,9 +320,9 @@ const SectionFilterContent = ({
     ];
 
     return viewSettings;
-  };
+  }, [createThumbnails]);
 
-  const getSortData = () => {
+  const getSortData = React.useCallback(() => {
     const commonOptions = [
       { key: "AZ", label: t("ByTitle"), default: true },
       { key: "Type", label: t("Common:Type"), default: true },
@@ -324,26 +339,27 @@ const SectionFilterContent = ({
       });
     }
     return commonOptions;
-  };
+  }, []);
 
   return (
     <FilterInput
       t={t}
-      sectionWidth={sectionWidth}
-      getFilterData={getFilterData}
-      getSortData={getSortData}
-      getViewSettingsData={getViewSettingsData}
-      getSelectedFilterData={getSelectedFilterData}
       onFilter={onFilter}
-      onSearch={onSearch}
+      getFilterData={getFilterData}
+      getSelectedFilterData={getSelectedFilterData}
       onSort={onSort}
-      onChangeViewAs={onChangeViewAs}
+      getSortData={getSortData}
+      getSelectedSortData={getSelectedSortData}
       viewAs={viewAs}
-      placeholder={t("Common:Search")}
-      {...filterColumnCount}
-      contextMenuHeader={t("Filter")}
-      headerLabel={t("Translations:AddAuthor")}
       viewSelectorVisible={true}
+      onChangeViewAs={onChangeViewAs}
+      getViewSettingsData={getViewSettingsData}
+      onSearch={onSearch}
+      getSelectedInputValue={getSelectedInputValue}
+      filterHeader={t("Filter")}
+      placeholder={t("Common:Search")}
+      view={t("Common:View")}
+      headerLabel={t("Translations:AddAuthor")}
       isFavoritesFolder={isFavoritesFolder}
       isRecentFolder={isRecentFolder}
     />
