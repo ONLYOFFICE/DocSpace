@@ -86,7 +86,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
     public override FileOperationType OperationType => _copy ? FileOperationType.Copy : FileOperationType.Move;
 
-        public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data, ThumbnailSettings thumbnailSettings)
+    public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data, ThumbnailSettings thumbnailSettings)
         : base(serviceProvider, data)
     {
         _daoFolderId = data.DaoFolderId;
@@ -502,7 +502,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                 try
                 {
                     var conflict = _resolveType == FileConflictResolveType.Duplicate
-                        || file.RootFolderType == FolderType.Privacy
+                        || file.RootFolderType == FolderType.Privacy || file.Encrypted
                                        ? null
                                        : await fileDao.GetFileAsync(toFolderId, file.Title);
                     if (conflict == null)
