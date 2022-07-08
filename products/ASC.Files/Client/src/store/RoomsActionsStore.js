@@ -18,10 +18,31 @@ class RoomsActionsStore {
   roomsStore = null;
 
   constructor(roomsStore) {
-    makeAutoObservable();
+    this.roomsStore = roomsStore;
 
-    this.roomsStore = rooms;
+    makeAutoObservable(this);
   }
+
+  onSelectTag = (tag) => {
+    const { filterRooms, filter } = this.roomsStore;
+
+    const tags = filter.tags ? [...filter.tags] : [];
+
+    if (tags.length > 0) {
+      const idx = tags.findIndex((item) => item === tag);
+
+      if (idx > -1) {
+        //TODO: remove tag here if already selected
+        return;
+      } else {
+        tags.push(tag);
+      }
+    } else {
+      tags.push(tag);
+    }
+
+    filterRooms(null, null, tags);
+  };
 }
 
 export default RoomsActionsStore;
