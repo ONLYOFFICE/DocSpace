@@ -77,7 +77,6 @@ const StyledModalDialog = styled(ModalDialog)`
             `border: 1px solid ${props.theme.connectCloud.connectBtnTextBorder}`};
         }
 
-        /* git commmit -am 'fixed translations, styles and dark theme for ConnectCloud' */
         &-icon {
           width: 36px;
           border-radius: 3px;

@@ -94,14 +94,14 @@ class DeleteProfileEverDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <div className="delete-user-footer">
-            <Link
+            {/* <Link
               className="reassign-data"
               isHovered
               fontWeight={600}
               type={"action"}
             >
               {t("Translations:ReassignData")}
-            </Link>
+            </Link> */}
             <div className="delete-user-footer-buttons">
               <Button
                 key="OKBtn"
