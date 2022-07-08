@@ -63,7 +63,7 @@ class RoomsFilter {
     const types = (urlFilter[TYPES] && urlFilter[TYPES]) || defaultFilter.types;
 
     const subjectId =
-      (urlFilter[SUBJECT_ID] && +urlFilter[SUBJECT_ID]) ||
+      (urlFilter[SUBJECT_ID] && urlFilter[SUBJECT_ID]) ||
       defaultFilter.subjectId;
 
     const searchInContent =
