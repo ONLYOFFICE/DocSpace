@@ -257,16 +257,24 @@ class RoomsFilter {
   }
 
   equals(filter) {
+    const typesEqual =
+      this.types.length === filter.types.length &&
+      this.types.forEach((type) => filter.types.includes(type));
+
+    const tagsEqual =
+      this.tags.length === filter.tags.length &&
+      this.tags.forEach((tag) => filter.tags.includes(tag));
+
     const equals =
       this.page === filter.page &&
       this.pageCount === filter.pageCount &&
       this.filterValue === filter.filterValue &&
-      this.types === filter.types &&
+      typesEqual &&
       this.subjectId === filter.subjectId &&
       this.searchInContent === filter.searchInContent &&
       this.withSubfolders === filter.withSubfolders &&
       this.searchArea === filter.searchArea &&
-      this.tags === filter.tags &&
+      tagsEqual &&
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder;
 
