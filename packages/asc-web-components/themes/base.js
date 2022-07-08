@@ -613,7 +613,6 @@ const Base = {
     button: {
       marginRight: "8px",
       maxWidth: "110px",
-      padding: "6px 8px 10px",
     },
 
     page: {
@@ -2569,6 +2568,10 @@ const Base = {
     changePassword: {
       linkColor: link,
     },
+  },
+
+  downloadDialog: {
+    background: "#f8f9f9",
   },
 
   studio: {

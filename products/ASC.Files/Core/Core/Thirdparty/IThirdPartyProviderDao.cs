@@ -625,12 +625,16 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             q = q.Where(r => r.tag.Owner == subject);
         }
 
-        var qList = q
-            .Distinct()
-            .AsAsyncEnumerable();
+        var qList = await q
+        .Distinct()
+            .AsAsyncEnumerable()
+            .ToListAsync();
 
-        var tags = qList
-            .SelectAwait(async r => new Tag
+        var tags = new List<Tag>();
+
+        foreach (var r in qList)
+        {
+            tags.Add(new Tag
             {
                 Name = r.tag.Name,
                 Type = r.tag.Type,
@@ -640,22 +644,22 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
                 Count = r.tagLink.Count,
                 Id = r.tag.Id
             });
+        }
 
 
         if (deepSearch)
         {
-            await foreach (var e in tags.ConfigureAwait(false))
+            foreach (var e in tags)
             {
                 yield return e;
             }
-
             yield break;
         }
 
         var folderFileIds = new[] { parentFolder.Id }
             .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
-        await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())).ConfigureAwait(false))
+        foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
         {
             yield return e;
         }

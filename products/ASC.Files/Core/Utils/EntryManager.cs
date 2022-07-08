@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core;
-
 namespace ASC.Web.Files.Utils;
 
 [Scope]
@@ -269,11 +267,11 @@ public class EntryStatusManager
     {
         var tagDao = _daoFactory.GetTagDao<T>();
 
-        var tagsFavorite = tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Favorite, folders);
+        var tagsFavorite = await tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Favorite, folders).ToListAsync();
 
         foreach (var folder in folders)
         {
-            if (await tagsFavorite.AnyAsync(r => r.EntryId.Equals(folder.Id)))
+            if (tagsFavorite.Any(r => r.EntryId.Equals(folder.Id)))
             {
                 folder.IsFavorite = true;
             }
@@ -740,7 +738,7 @@ public class EntryManager
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
-                var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
+            var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
 
             var tmpFiles = await _fileSecurity.FilterReadAsync(files);
             files = tmpFiles.ToList();

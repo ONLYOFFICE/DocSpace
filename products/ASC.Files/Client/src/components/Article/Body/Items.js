@@ -9,6 +9,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import withLoader from "../../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
 import Loader from "@appserver/components/loader";
+import { isMobile } from "react-device-detect";
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
@@ -146,6 +147,8 @@ const Items = ({
 
   setEmptyTrashDialogVisible,
   trashIsEmpty,
+
+  onHide,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -272,6 +275,7 @@ const Items = ({
   );
 
   const onEmptyTrashAction = () => {
+    isMobile && onHide();
     setEmptyTrashDialogVisible(true);
   };
 
@@ -287,7 +291,9 @@ const Items = ({
     (data) => {
       const items = data.map((item, index) => {
         const isTrash = item.rootFolderType === FolderType.TRASH;
-        const showBadge = item.newItems ? item.newItems > 0 && true : false;
+        const showBadge = item.newItems
+          ? item.newItems > 0 && true
+          : isTrash && !trashIsEmpty;
         const labelBadge = showBadge ? item.newItems : null;
         const iconBadge = isTrash ? "images/clear.trash.react.svg" : null;
 
@@ -306,9 +312,9 @@ const Items = ({
             showText={showText}
             onClick={onClick}
             onMoveTo={onMoveTo}
-            onBadgeClick={() => onClickBadge(isTrash)}
+            onBadgeClick={isTrash ? onEmptyTrashAction : onBadgeClick}
             showDragItems={showDragItems}
-            showBadge={showBadge || (isTrash && !trashIsEmpty)}
+            showBadge={showBadge}
             labelBadge={labelBadge}
             iconBadge={iconBadge}
           />
@@ -378,6 +384,7 @@ Items.propTypes = {
   selectedTreeNode: PropTypes.array,
   onClick: PropTypes.func,
   onClickBadge: PropTypes.func,
+  onHide: PropTypes.func,
 };
 
 export default inject(

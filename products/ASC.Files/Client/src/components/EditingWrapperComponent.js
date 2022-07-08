@@ -105,12 +105,14 @@ const EditingWrapper = styled.div`
         border: none;
         background: none;
       `};
+
     ${(props) =>
       props.isUpdatingRowItem &&
       css`
         margin-left: 0;
         display: flex;
         align-items: center;
+        background: none !important;
       `}
 
     ${(props) => props.viewAs === "table" && `padding-left: 12px`}

@@ -26,6 +26,7 @@
 
 namespace ASC.Files.Core;
 
+[EnumExtensions]
 public enum SortedByType
 {
     DateAndTime,

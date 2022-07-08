@@ -320,7 +320,7 @@ class SectionBodyContent extends React.PureComponent {
                   onClick={(e) => this.unlinkAccount(item.provider, e)}
                   isHovered={true}
                 >
-                  {t("Disconnect")}
+                  {t("Common:Disconnect")}
                 </Link>
               </div>
             ) : (

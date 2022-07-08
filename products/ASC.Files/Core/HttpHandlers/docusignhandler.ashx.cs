@@ -136,7 +136,8 @@ public class DocuSignHandlerService
             var subject = GetSingleNode(envelopeStatusNode, "Subject", mgr).InnerText;
 
             var statusString = GetSingleNode(envelopeStatusNode, "Status", mgr).InnerText;
-            if (!Enum.TryParse(statusString, true, out DocuSignStatus status))
+
+            if (!DocuSignStatusExtensions.TryParse(statusString, true, out var status))
             {
                 throw new Exception("DocuSign webhook unknown status: " + statusString);
             }

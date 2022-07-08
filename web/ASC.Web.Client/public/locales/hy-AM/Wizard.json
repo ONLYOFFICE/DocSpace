@@ -1,0 +1,22 @@
+{
+  "ChangeEmailTitle": "Փոխել էլ․հասցեն",
+  "Desc": "Խնդրում ենք կարգավորել կայքէջի գրանցման տվյալները:",
+  "Domain": "Տիրույթ:",
+  "ErrorEmail": "Անվավեր էլ․ հասցե",
+  "ErrorInitWizard": "Ծառայությունը ներկայումս անհասանելի է, խնդրում ենք փորձել ավելի ուշ:",
+  "ErrorInitWizardButton": "Նորից փորձել",
+  "ErrorLicenseBody": "Լիցենզիան վավեր չէ:Համոզվեք, որ ընտրել եք ճիշտ ֆայլը։",
+  "ErrorLicenseRead": "Ընդունեք լիցենզային պայմանագիրը",
+  "ErrorLicenseTitle": "Բեռնման սխալ",
+  "ErrorParamsBody": "Մուտքագրված սխալ տվյալներ.",
+  "ErrorParamsTitle": "Գրանցման սխալ",
+  "ErrorPassword": "Գաղտնաբառը չի համապատասխանում պահանջներին",
+  "ErrorUploadLicenseFile": "Ընտրեք լիցենզիայի ֆայլ",
+  "GeneratePassword": "Ստեղծեք գաղտնաբառ",
+  "License": "Ընդունեք պայմանները՝ ",
+  "LicenseLink": "Լիցենզային պայմանագրեր",
+  "PlaceholderLicense": "Ձեր լիցենզիայի ֆայլը",
+  "Timezone": "Ժամային գոտի:",
+  "WelcomeTitle": "Բարի գալուստ Ձեր կայքէջ!",
+  "WizardTitle": "Ստեղծեք Ձեր կայքէջը"
+}

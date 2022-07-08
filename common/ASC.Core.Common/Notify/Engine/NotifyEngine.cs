@@ -664,7 +664,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
     }
 }
 
-[Scope]
+[Singletone]
 public class NotifyEngineQueue
 {
     private readonly NotifyEngine _notifyEngine;

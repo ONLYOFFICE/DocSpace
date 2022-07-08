@@ -27,7 +27,8 @@ const SingleItem = (props) => {
   const thumbnailBlank = getIcon(96, ".docxf");
 
   const thumbnailUrl =
-    selectedItem.attributes.template_image.data.attributes.formats.small.url;
+    selectedItem?.attributes?.template_image?.data.attributes?.formats?.small
+      ?.url;
 
   return (
     <>

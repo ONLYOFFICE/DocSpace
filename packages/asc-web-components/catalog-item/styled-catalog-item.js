@@ -376,7 +376,22 @@ const StyledCatalogItemContainer = styled.div`
   `}
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  .catalog-icon__badge {
+    display: none;
+  }
+
+  .catalog-icon__badge:target {
+    display: flex;
+  }
+
+  :hover {
+    .catalog-icon__badge {
+      display: flex;
+    }
+  }
 `;
+
 StyledCatalogItemContainer.defaultProps = { theme: Base };
 
 export {

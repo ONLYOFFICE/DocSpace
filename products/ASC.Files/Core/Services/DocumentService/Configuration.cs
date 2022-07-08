@@ -26,6 +26,7 @@
 
 namespace ASC.Web.Files.Services.DocumentService;
 
+[EnumExtensions]
 public enum EditorType
 {
     Desktop,

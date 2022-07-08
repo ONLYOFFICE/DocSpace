@@ -622,7 +622,7 @@ class ContextOptionsStore {
       },
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !isShareable,
@@ -663,7 +663,7 @@ class ContextOptionsStore {
       {
         key: "open-location",
         label: t("OpenLocation"),
-        icon: "images/download-as.react.svg",
+        icon: "images/folder.location.react.svg",
         onClick: () => this.onOpenLocation(item),
         disabled: false,
       },
@@ -742,7 +742,7 @@ class ContextOptionsStore {
       {
         key: "delete",
         label: isRootThirdPartyFolder
-          ? t("Translations:DeleteThirdParty")
+          ? t("Common:Disconnect")
           : t("Common:Delete"),
         icon: "images/trash.react.svg",
         onClick: () => this.onClickDelete(item, t),
@@ -807,7 +807,7 @@ class ContextOptionsStore {
     const options = [
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !sharingItems,
