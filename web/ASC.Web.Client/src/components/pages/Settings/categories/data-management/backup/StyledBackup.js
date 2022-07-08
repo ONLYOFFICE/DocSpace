@@ -184,8 +184,11 @@ const StyledAutoBackup = styled.div`
     background-color: ${(props) =>
       props.theme.studio.settings.backup.rectangleBackgroundColor};
     padding: 12px;
-    max-width: 1144px;
+    max-width: 724px;
+
     box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(100px, 724px);
   }
   .auto-backup_buttons {
     ${!isMobileOnly && "margin-bottom: 24px"}
@@ -279,6 +282,7 @@ const StyledModules = styled.div`
   .backup-description {
     ${(props) => props.isDisabled && `color: #A3A9AE`};
     margin-left: 24px;
+    max-width: 700px;
   }
 `;
 
