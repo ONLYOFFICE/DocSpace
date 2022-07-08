@@ -7,6 +7,8 @@ export function getRooms(filter) {
   };
 
   return request(options).then((res) => {
+    res.files = decodeDisplayName(res.files);
+    res.folders = decodeDisplayName(res.folders);
     return res;
   });
 }
@@ -18,6 +20,8 @@ export function getRoom(id) {
   };
 
   return request(options).then((res) => {
+    res.files = decodeDisplayName(res.files);
+    res.folders = decodeDisplayName(res.folders);
     return res;
   });
 }
