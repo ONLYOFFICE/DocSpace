@@ -13,7 +13,7 @@ export const toUrlParams = (obj, skipNull) => {
     }
 
     if (typeof obj[key] === "object") {
-      str += key + "=" + JSON.stringify(obj[key]);
+      str += key + "=" + encodeURIComponent(JSON.stringify(obj[key]));
     } else {
       str += key + "=" + encodeURIComponent(obj[key]);
     }
@@ -27,10 +27,18 @@ export function getObjectByLocation(location) {
 
   const searchUrl = location.search.substring(1);
   const decodedString = decodeURIComponent(searchUrl)
+    .replace(/\["/g, '["')
+    .replace(/"\]/g, '"]')
     .replace(/"/g, '\\"')
     .replace(/&/g, '","')
     .replace(/=/g, '":"')
-    .replace(/\\/g, "\\\\");
+    .replace(/\\/g, "\\\\")
+    .replace(/\[\\\\"/g, '["')
+    .replace(/\\\\"\]/g, '"]')
+    .replace(/"\[/g, "[")
+    .replace(/\]"/g, "]")
+    .replace(/\\\\",\\\\"/g, '","');
+
   const object = JSON.parse(`{"${decodedString}"}`);
 
   return object;
