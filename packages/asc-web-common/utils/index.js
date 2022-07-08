@@ -3,6 +3,9 @@ import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import history from "../history";
 import TopLoaderService from "@appserver/components/top-loading-indicator";
+
+import { Encoder } from "./encoder";
+
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
