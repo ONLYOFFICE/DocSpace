@@ -2684,6 +2684,8 @@ const Dark = {
 
         sso: {
           toggleContentBackground: "#474747",
+          iconButton: white,
+          iconButtonDisabled: "#333",
         },
       },
 

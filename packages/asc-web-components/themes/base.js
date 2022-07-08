@@ -2674,6 +2674,8 @@ const Base = {
 
         sso: {
           toggleContentBackground: grayLight,
+          iconButton: black,
+          iconButtonDisabled: grayLight,
         },
       },
 
