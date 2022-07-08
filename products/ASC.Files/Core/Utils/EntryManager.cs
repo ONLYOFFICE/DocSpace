@@ -879,6 +879,31 @@ public class EntryManager
                 }
 
                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
+            },
+            SortedByType.RoomType => (x, y) =>
+            {
+                var cmp = 0;
+
+                if (x is IFolder x1 && DocSpaceHelper.IsRoom(x1.FolderType)
+                    && y is IFolder x2 && DocSpaceHelper.IsRoom(x2.FolderType))
+                {
+                    cmp = c * Enum.GetName(x1.FolderType).EnumerableComparer(Enum.GetName(x2.FolderType));
+                }
+
+                return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
+            }
+            ,
+            SortedByType.Tags => (x, y) =>
+            {
+                var cmp = 0;
+
+                if (x is IFolder x1 && DocSpaceHelper.IsRoom(x1.FolderType)
+                    && y is IFolder x2 && DocSpaceHelper.IsRoom(x2.FolderType))
+                {
+                    cmp = c * x1.Tags.Count().CompareTo(x2.Tags.Count());
+                }
+
+                return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
             }
             ,
             SortedByType.Author => (x, y) =>
@@ -925,36 +950,19 @@ public class EntryManager
         };
         if (orderBy.SortedBy != SortedByType.New)
         {
-            var pinnedRooms = new List<FileEntry>();
+            var rooms = entries.Where(r => r.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((IFolder)r).FolderType)).ToList();
+            var pinnedRooms = rooms.Where(r => ((IFolder)r).Pinned).ToList();
+            rooms = rooms.Except(pinnedRooms).ToList();
 
-            if (!_coreBaseSettings.DisableDocSpace)
-            {
-                Func<FileEntry, bool> filter = (e) =>
-                {
-                    if (e.FileEntryType != FileEntryType.Folder)
-                    {
-                        return false;
-                    }
-
-                    if (((IFolder)e).Pinned)
-                    {
-                        return true;
-                    }
-
-                    return false;
-                };
-
-                pinnedRooms = entries.Where(filter).ToList();
-            }
-
-            // folders on top
-            var folders = entries.Where(r => r.FileEntryType == FileEntryType.Folder).Except(pinnedRooms).ToList();
+            var folders = entries.Where(r => r.FileEntryType == FileEntryType.Folder).Except(pinnedRooms).Except(rooms).ToList();
             var files = entries.Where(r => r.FileEntryType == FileEntryType.File).ToList();
+
             pinnedRooms.Sort(sorter);
+            rooms.Sort(sorter);
             folders.Sort(sorter);
             files.Sort(sorter);
 
-            return pinnedRooms.Concat(folders).Concat(files);
+            return pinnedRooms.Concat(rooms).Concat(folders).Concat(files);
         }
 
         var result = entries.ToList();
