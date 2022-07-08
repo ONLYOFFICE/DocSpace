@@ -201,6 +201,21 @@ const StyledStoragesModule = styled.div`
 const StyledRestoreBackup = styled.div`
   ${commonStyles}
 
+  .restore-backup_third-party-module {
+    margin-top: 16px;
+    .restore-backup_connection {
+      display: flex;
+    }
+    .restore-backup_third-party-combo {
+      max-width: 234px;
+      margin-right: 8px;
+    }
+    p {
+      margin-top: 16px;
+      max-width: 350px;
+    }
+  }
+
   .restore-description {
     max-width: ${TEXT_LENGTH};
     font-size: 12px;

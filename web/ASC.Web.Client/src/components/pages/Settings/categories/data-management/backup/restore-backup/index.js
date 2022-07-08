@@ -74,7 +74,7 @@ class RestoreBackup extends React.Component {
     try {
       getProgress(t);
       const [commonThirdPartyList, backupStorage] = await Promise.all([
-        getThirdPartyCommonFolderTree,
+        getThirdPartyCommonFolderTree(),
         getBackupStorage(),
       ]);
 
