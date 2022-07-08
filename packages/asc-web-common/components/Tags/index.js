@@ -4,7 +4,7 @@ import Tag from "@appserver/components/tag";
 
 import StyledTags from "./StyledTags";
 
-const Tags = ({ id, className, style, tags, columnCount }) => {
+const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
   const [renderedTags, setRenderedTags] = React.useState(null);
 
   const tagsRef = React.useRef(null);
@@ -86,6 +86,7 @@ const Tags = ({ id, className, style, tags, columnCount }) => {
             advancedOptions={tag.advancedOptions}
             tagMaxWidth={tag.maxWidth}
             isNewTag={false}
+            onClick={onSelectTag}
           />
         ))}
     </StyledTags>
