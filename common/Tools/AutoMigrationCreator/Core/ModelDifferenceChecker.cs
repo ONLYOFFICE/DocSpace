@@ -37,7 +37,7 @@ namespace AutoMigrationCreator;
 
 public class ModelDifferenceChecker
 {
-    private BaseDbContext _dbContext;
+    private readonly BaseDbContext _dbContext;
     public ModelDifferenceChecker(BaseDbContext context)
     {
         _dbContext = context;
@@ -58,7 +58,7 @@ public class ModelDifferenceChecker
         var lastModel = scaffolderDependecies.SnapshotModelProcessor.Process(modelSnapshot.Model)
             .GetRelationalModel();
 
-        if (modelSnapshot == null)
+        if (lastModel == null)
         {
             return true;
         }

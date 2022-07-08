@@ -25,10 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoMigrationCreator.Utils;
 public static class ArgsParser
@@ -43,10 +39,7 @@ public static class ArgsParser
             throw new Exception("Incorrect combination of parameters. First parametr: string path, Second parametr: bool created");
         }
 
-        if (args.Length < 2)
-        {
-            path = args[0];
-        }
+        path = args[0];
 
         if (args.Length == 2)
         {

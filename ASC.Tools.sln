@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Webhooks.Core", "common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.MessagingSystem", "common\ASC.MessagingSystem\ASC.MessagingSystem.csproj", "{E37086CF-3E93-475F-BE0D-A77EE144D9B9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.EventBus.Extensions.Logger", "common\ASC.EventBus.Extensions.Logger\ASC.EventBus.Extensions.Logger.csproj", "{254E71BE-4BA7-4CF4-8B35-162E46C53D71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{E37086CF-3E93-475F-BE0D-A77EE144D9B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E37086CF-3E93-475F-BE0D-A77EE144D9B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E37086CF-3E93-475F-BE0D-A77EE144D9B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{254E71BE-4BA7-4CF4-8B35-162E46C53D71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{254E71BE-4BA7-4CF4-8B35-162E46C53D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{254E71BE-4BA7-4CF4-8B35-162E46C53D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{254E71BE-4BA7-4CF4-8B35-162E46C53D71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

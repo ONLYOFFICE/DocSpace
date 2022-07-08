@@ -33,11 +33,11 @@ using Microsoft.Build.Construction;
 
 namespace AutoMigrationCreator.Core;
 
-public class Solution
+public static class Solution
 {
     private const string SOLUTION_NAME = "ASC.Tools.sln";
 
-    public IEnumerable<ProjectInfo> GetProjects()
+    public static IEnumerable<ProjectInfo> GetProjects()
     {
         var solutionPath = Path.GetFullPath(Path.Combine("..", "..", "..", "..", "..", "..", SOLUTION_NAME));
         var source = SolutionFile.Parse(solutionPath);
@@ -51,15 +51,5 @@ public class Solution
                     AssemblyName = p.ProjectName,
                     Path = p.AbsolutePath.Replace($"{p.ProjectName}.csproj", string.Empty)
                 });
-    }
-
-    public IEnumerable<Assembly> GetAssemblies(string path)
-    {
-        var assemblyPaths = Directory.GetFiles(path, "ASC.*.dll");
-
-        foreach (var assembly in assemblyPaths)
-        {
-            yield return Assembly.LoadFrom(assembly);
-        }
     }
 }

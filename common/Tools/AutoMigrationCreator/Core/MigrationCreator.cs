@@ -25,19 +25,21 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 using AutoMigrationCreator.Core;
 
 namespace AutoMigrationCreator;
 
-public class MigrationCreator
+public static class MigrationCreator
 {
     public static void RunCreateMigrations()
     {
         var counter = 0;
-        var solution = new Solution();
 
-        foreach (var projectInfo in solution.GetProjects())
+        foreach (var projectInfo in Solution.GetProjects())
         {
             var ctxTypesFinder = new ProjectInfoContextFinder(projectInfo);
 
@@ -67,9 +69,8 @@ public class MigrationCreator
     public static void RunApplyMigrations(string path)
     {
         var counter = 0;
-        var solution = new Solution();
 
-        foreach (var assembly in solution.GetAssemblies(path))
+        foreach (var assembly in GetAssemblies(path))
         {
             var ctxTypesFinder = new AssemblyContextFinder(assembly);
 
@@ -84,5 +85,15 @@ public class MigrationCreator
         }
 
         Console.WriteLine($"Applied {counter} migrations");
+    }
+
+    private static IEnumerable<Assembly> GetAssemblies(string path)
+    {
+        var assemblyPaths = Directory.GetFiles(path, "ASC.*.dll");
+
+        foreach (var assembly in assemblyPaths)
+        {
+            yield return Assembly.LoadFrom(assembly);
+        }
     }
 }
