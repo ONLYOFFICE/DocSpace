@@ -221,110 +221,8 @@ class TileContainer extends React.PureComponent {
     );
   }, areEqual);
 
-  getSortData = () => {
-    const { t, personal } = this.props;
-
-    const commonOptions = [
-      { key: "AZ", label: t("ByTitle"), default: true },
-      { key: "Type", label: t("Common:Type"), default: true },
-      { key: "Size", label: t("Common:Size"), default: true },
-      {
-        key: "DateAndTimeCreation",
-        label: t("ByCreationDate"),
-        default: true,
-      },
-      { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
-    ];
-
-    if (!personal) {
-      commonOptions.splice(1, 0, {
-        key: "Author",
-        label: t("ByAuthor"),
-        default: true,
-      });
-    }
-    return commonOptions;
-  };
-
-  onSort = (sortId, sortDirection) => {
-    const { filter, setIsLoading, fetchFiles, selectedFolderId } = this.props;
-
-    const sortBy = sortId;
-    const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
-
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.sortBy = sortBy;
-    newFilter.sortOrder = sortOrder;
-
-    setIsLoading(true);
-
-    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
-  };
-
-  onOptionClick = (e) => {
-    const key = e.target.closest(".option-item").dataset.value;
-
-    let sortDirection = this.state.selectedFilterData.sortDirection;
-
-    if (key === this.state.selectedFilterData.sortId) {
-      sortDirection = sortDirection === "desc" ? "asc" : "desc";
-    }
-
-    this.setState({
-      selectedFilterData: {
-        sortId: key,
-        sortDirection: sortDirection,
-      },
-    });
-
-    this.toggleDropdown();
-    this.onSort(key, sortDirection);
-  };
-
-  getAdvancedOptions = () => {
-    const { filter } = this.props;
-
-    const selectedFilterData = {
-      sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
-      sortId: filter.sortBy,
-    };
-
-    const data = this.getSortData();
-
-    data.forEach((item) => {
-      item.className = "option-item";
-      item.isSelected = false;
-      if (selectedFilterData.sortId === item.key) {
-        item.className = item.className + " selected-option-item";
-        item.isSelected = true;
-      }
-    });
-
-    return (
-      <>
-        {data.map((item, index) => (
-          <DropDownItem
-            onClick={this.onOptionClick}
-            className={item.className}
-            key={item.key}
-            data-value={item.key}
-          >
-            <Text fontWeight={600}>{item.label}</Text>
-            <SortDesc
-              className={`option-item__icon  ${
-                item.isSelected ? "selected-option-item__icon" : ""
-              }`}
-            />
-          </DropDownItem>
-        ))}
-      </>
-    );
-  };
-
   render() {
     const {
-      t,
       itemHeight,
       children,
       useReactWindow,
@@ -333,8 +231,6 @@ class TileContainer extends React.PureComponent {
       style,
       headingFolders,
       headingFiles,
-      isRecentFolder,
-      isFavoritesFolder,
     } = this.props;
 
     const Folders = [];
@@ -385,46 +281,6 @@ class TileContainer extends React.PureComponent {
       </List>
     );
 
-    const advancedOptions = this.getAdvancedOptions();
-
-    const renderSorting = () => {
-      return (
-        <>
-          {!isRecentFolder &&
-            !isFavoritesFolder &&
-            !isMobile &&
-            !isTablet() &&
-            !isMobileUtils() && (
-              <div onClick={this.toggleDropdown}>
-                <ComboBox
-                  opened={this.state.isOpen}
-                  className={"sort-combo-box"}
-                  options={[]}
-                  selectedOption={{}}
-                  directionX={"right"}
-                  directionY={"both"}
-                  scaled={false}
-                  size={"content"}
-                  advancedOptions={advancedOptions}
-                  disableIconClick={false}
-                  // disableItemClick={true}
-                  isDefaultMode={false}
-                  noBorder={true}
-                  manualY={"102%"}
-                >
-                  <IconButton
-                    className={"sort-icon"}
-                    iconName="/static/images/sort.react.svg"
-                    size={16}
-                  />
-                  {t("Common:Sorting")}
-                </ComboBox>
-              </div>
-            )}
-        </>
-      );
-    };
-
     return (
       <StyledTileContainer
         id={id}
@@ -440,7 +296,6 @@ class TileContainer extends React.PureComponent {
             className="tile-items-heading"
           >
             {Folders.length > 0 && headingFolders}
-            {Folders.length > 0 && renderSorting()}
           </Heading>
           {Folders.length > 0 && (
             <>
@@ -457,7 +312,6 @@ class TileContainer extends React.PureComponent {
           <>
             <Heading size="xsmall" className="tile-items-heading">
               {headingFiles}
-              {Folders.length === 0 && renderSorting()}
             </Heading>
             {useReactWindow ? (
               <AutoSizer>{renderList}</AutoSizer>
