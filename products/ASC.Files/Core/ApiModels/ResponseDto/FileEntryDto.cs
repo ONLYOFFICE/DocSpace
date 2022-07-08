@@ -28,6 +28,7 @@ namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public abstract class FileEntryDto
 {
+    protected internal abstract FileEntryType EntryType { get; }
     public string Title { get; set; }
     public FileShare Access { get; set; }
     public bool Shared { get; set; }

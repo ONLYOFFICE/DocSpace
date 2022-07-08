@@ -37,7 +37,7 @@ public class FolderDto<T> : FileEntryDto<T>
     public IEnumerable<string> Tags { get; set; }
     public Logo Logo { get; set; }
     public bool Pinned { get; set; }
-
+    protected internal override FileEntryType EntryType { get => FileEntryType.Folder; }
     public FolderDto() { }
 
     public static FolderDto<int> GetSample()
@@ -77,7 +77,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
         GlobalFolderHelper globalFolderHelper,
-        FileSharingHelper fileSharingHelper, 
+        FileSharingHelper fileSharingHelper,
         RoomLogoManager roomLogoManager)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
