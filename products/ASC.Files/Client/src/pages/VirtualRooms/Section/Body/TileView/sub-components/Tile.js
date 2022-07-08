@@ -138,6 +138,8 @@ const Tile = React.forwardRef(
       selectRoom,
       openContextMenu,
       closeContextMenu,
+
+      onSelectTag,
     },
     forwardRef
   ) => {
@@ -236,6 +238,7 @@ const Tile = React.forwardRef(
               className="virtual-rooms_tile-content-tags"
               tags={tags}
               columnCount={columnCount}
+              onSelectTag={onSelectTag}
             />
           )}
         </StyledContent>
@@ -244,27 +247,34 @@ const Tile = React.forwardRef(
   }
 );
 
-export default inject(({ contextOptionsStore, roomsStore }, { item }) => {
-  const { onClickPinRoom, getRoomsContextOptions } = contextOptionsStore;
+export default inject(
+  ({ contextOptionsStore, roomsStore, roomsActionsStore }, { item }) => {
+    const { onClickPinRoom, getRoomsContextOptions } = contextOptionsStore;
 
-  const {
-    selection,
-    bufferSelection,
-    selectRoom,
-    openContextMenu,
-    closeContextMenu,
-  } = roomsStore;
+    const {
+      selection,
+      bufferSelection,
+      selectRoom,
+      openContextMenu,
+      closeContextMenu,
+    } = roomsStore;
 
-  const isChecked = !!selection.find((room) => room.id === item.id);
-  const isHover = !isChecked && bufferSelection?.id === item.id;
+    const { onSelectTag } = roomsActionsStore;
 
-  return {
-    isChecked,
-    isHover,
-    onClickPinRoom,
-    getRoomsContextOptions,
-    selectRoom,
-    openContextMenu,
-    closeContextMenu,
-  };
-})(observer(Tile));
+    const isChecked = !!selection.find((room) => room.id === item.id);
+    const isHover = !isChecked && bufferSelection?.id === item.id;
+
+    return {
+      isChecked,
+      isHover,
+
+      onSelectTag,
+
+      onClickPinRoom,
+      getRoomsContextOptions,
+      selectRoom,
+      openContextMenu,
+      closeContextMenu,
+    };
+  }
+)(observer(Tile));

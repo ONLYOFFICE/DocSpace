@@ -85,6 +85,8 @@ const Row = React.forwardRef(
       openContextMenu,
       closeContextMenu,
       unpinRoom,
+
+      onSelectTag,
     },
     ref
   ) => {
@@ -147,7 +149,12 @@ const Row = React.forwardRef(
           type={item.roomType}
           sideColor={theme.filesSection.tableView.row.sideColor}
         />
-        <TagsCell ref={ref} tags={item.tags} tagCount={tagCount} />
+        <TagsCell
+          ref={ref}
+          tags={item.tags}
+          tagCount={tagCount}
+          onSelectTag={onSelectTag}
+        />
         <OwnerCell
           owner={item.createdBy}
           isMe={isMe}
@@ -159,31 +166,37 @@ const Row = React.forwardRef(
   }
 );
 
-export default inject(({ auth, contextOptionsStore, roomsStore }, { item }) => {
-  const { getRoomsContextOptions } = contextOptionsStore;
+export default inject(
+  ({ auth, contextOptionsStore, roomsStore, roomsActionsStore }, { item }) => {
+    const { getRoomsContextOptions } = contextOptionsStore;
 
-  const {
-    selection,
-    bufferSelection,
-    selectRoom,
-    openContextMenu,
-    closeContextMenu,
-    unpinRoom,
-  } = roomsStore;
+    const {
+      selection,
+      bufferSelection,
+      selectRoom,
+      openContextMenu,
+      closeContextMenu,
+      unpinRoom,
+    } = roomsStore;
 
-  const isChecked = !!selection.find((room) => room.id === item.id);
-  const isHover = !isChecked && bufferSelection?.id === item.id;
-  const isMe = item.createdBy.id === auth.userStore.user.id;
+    const { onSelectTag } = roomsActionsStore;
 
-  return {
-    isChecked,
-    isHover,
-    isMe,
+    const isChecked = !!selection.find((room) => room.id === item.id);
+    const isHover = !isChecked && bufferSelection?.id === item.id;
+    const isMe = item.createdBy.id === auth.userStore.user.id;
 
-    getRoomsContextOptions,
-    selectRoom,
-    openContextMenu,
-    closeContextMenu,
-    unpinRoom,
-  };
-})(observer(Row));
+    return {
+      isChecked,
+      isHover,
+      isMe,
+
+      getRoomsContextOptions,
+      selectRoom,
+      openContextMenu,
+      closeContextMenu,
+      unpinRoom,
+
+      onSelectTag,
+    };
+  }
+)(observer(Row));
