@@ -173,11 +173,9 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             }
         }
 
-        if (fileEntries.Any())
+        if (filesId.Any() || foldersId.Any())
         {
-            var fromQuery = await FromQueryAsync(_getTagsQuery(FilesDbContext, TenantID, subject, tagType, filesId, foldersId))
-                .ToListAsync()
-                ;
+            var fromQuery = await FromQueryAsync(_getTagsQuery(FilesDbContext, TenantID, subject, tagType, filesId, foldersId)).ToListAsync();
 
             return fromQuery
                 .GroupBy(r => r.EntryId)

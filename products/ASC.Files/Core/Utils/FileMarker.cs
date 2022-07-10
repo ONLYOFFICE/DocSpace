@@ -895,8 +895,9 @@ public class FileMarker
             return;
         }
 
-        var parentFolderTag = Equals(await _globalFolder.GetFolderShareAsync<T>(_daoFactory), parent.Id)
-                                    ? await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, await folderDao.GetFolderAsync(await _globalFolder.GetFolderShareAsync<T>(_daoFactory))).FirstOrDefaultAsync()
+        var shareFolder = await _globalFolder.GetFolderShareAsync<T>(_daoFactory);
+        var parentFolderTag = Equals(shareFolder, parent.Id)
+                                    ? await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, await folderDao.GetFolderAsync(shareFolder)).FirstOrDefaultAsync()
                                     : totalTags.FirstOrDefault(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.Id));
 
         totalTags = totalTags.Where(e => e != parentFolderTag).ToList();
@@ -941,7 +942,7 @@ public class FileMarker
                     }
                     else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootId, _globalFolder.GetFolderMy(this, _daoFactory)))
                     {
-                        cacheFolderId = rootFolderId = await _globalFolder.GetFolderShareAsync<T>(_daoFactory);
+                        cacheFolderId = rootFolderId = shareFolder;
                     }
 
                     if (rootFolderId != null)

@@ -203,13 +203,6 @@ public class EntryStatusManager
         await t2;
     }
 
-    public async Task SetFileStatusAsyncEnumerable(IAsyncEnumerable<FileEntry> asyncEnumerableFiles)
-    {
-        var files = await asyncEnumerableFiles.ToListAsync();
-        await SetFileStatusAsync(files.OfType<File<int>>().Where(r => r.Id != 0));
-        await SetFileStatusAsync(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.Id)));
-    }
-
     public async Task SetFileStatusAsync<T>(IEnumerable<File<T>> files)
     {
         if (!files.Any())
@@ -298,53 +291,6 @@ public class EntryStatusManager
             if (tagsFavorite.Any(r => r.EntryId.Equals(folder.Id)))
             {
                 folder.IsFavorite = true;
-            }
-        }
-    }
-
-    public async Task SetFileStatusAsyncEnumerable<T>(IAsyncEnumerable<File<T>> files)
-    {
-        var tagDao = _daoFactory.GetTagDao<T>();
-
-        var tags = await tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
-        var tagsNew = tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, files);
-
-        await foreach (var file in files)
-        {
-            foreach (var t in tags)
-            {
-                if (!t.Key.Equals(file.Id))
-                {
-                    continue;
-                }
-
-
-                if (t.Value.Any(r => r.Type == TagType.Favorite))
-                {
-                    file.IsFavorite = true;
-                }
-
-                if (t.Value.Any(r => r.Type == TagType.Template))
-                {
-                    file.IsTemplate = true;
-                }
-
-                var lockedTag = t.Value.FirstOrDefault(r => r.Type == TagType.Locked);
-                if (lockedTag != null)
-                {
-                    var lockedBy = lockedTag.Owner;
-                    file.Locked = lockedBy != Guid.Empty;
-                    file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
-                        ? _global.GetUserName(lockedBy)
-                        : null;
-
-                    continue;
-                }
-            }
-
-            if (await tagsNew.AnyAsync(r => r.EntryId.Equals(file.Id)))
-            {
-                file.IsNew = true;
             }
         }
     }
@@ -816,8 +762,6 @@ public class EntryManager
 
     public async IAsyncEnumerable<Folder<string>> GetThirpartyFoldersAsyncEnumerable<T>(Folder<T> parent, string searchText = null)
     {
-        var folderList = AsyncEnumerable.Empty<Folder<string>>();
-
         if ((parent.Id.Equals(_globalFolderHelper.FolderMy) || parent.Id.Equals(await _globalFolderHelper.FolderCommonAsync))
             && _thirdpartyConfiguration.SupportInclusion(_daoFactory)
             && (_filesSettingsHelper.EnableThirdParty
@@ -829,13 +773,7 @@ public class EntryManager
                 yield break;
             }
 
-            var fileSecurity = _fileSecurity;
-
             var providers = providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText);
-
-            folderList = providers
-                .Select(providerInfo => GetFakeThirdpartyFolder(providerInfo, parent.Id.ToString()))
-                .WhereAwait(async fake => await fileSecurity.CanReadAsync(fake));
 
             //var securityDao = _daoFactory.GetSecurityDao<string>();
             //var pureShareRecords = securityDao.GetPureShareRecordsAsyncEnumerable(folderList);
@@ -859,11 +797,15 @@ public class EntryManager
             //        folderList.First(y => y.Id.Equals(id)).Shared = true;
             //    }
             //}
-        }
 
-        await foreach (var e in folderList)
-        {
-            yield return e;
+            await foreach (var e in providers)
+            {
+                var fake = GetFakeThirdpartyFolder(e, parent.Id.ToString());
+                if (await _fileSecurity.CanReadAsync(fake))
+                {
+                    yield return fake;
+                }
+            }
         }
     }
 
