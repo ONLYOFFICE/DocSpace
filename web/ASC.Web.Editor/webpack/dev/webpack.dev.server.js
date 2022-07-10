@@ -24,9 +24,6 @@ const serverConfig = {
     filename: "[name].js",
     libraryTarget: "commonjs2",
     chunkFilename: "chunks/[name].js",
-    devtoolModuleFilenameTemplate: (info) =>
-      path.resolve(info.absoluteResourcePath).replace(/\\/g, "/"),
-    assetModuleFilename: "assets/[hash][ext][query]",
   },
   externals: [webpackNodeExternals()],
 };

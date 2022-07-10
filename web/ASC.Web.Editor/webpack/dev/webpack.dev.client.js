@@ -2,9 +2,6 @@ const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const path = require("path");
 const baseConfig = require("../webpack.base.js");
-const ROOT_DIR = path.resolve(__dirname, "../../");
-const resolvePath = (...args) => path.resolve(ROOT_DIR, ...args);
-//const BUILD_DIR = resolvePath("dist");
 const LoadablePlugin = require("@loadable/webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
@@ -15,13 +12,12 @@ const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const pkg = require("../../package.json");
-const homepage = pkg.homepage; // combineUrl(proxyURL, pkg.homepage);
-const BUILD_DIR = path.resolve(process.cwd(), "dist");
+const homepage = pkg.homepage;
 
 for (let dep in sharedDeps) {
   sharedDeps[dep].eager = true;
 }
-//&path=//localhost:5013/__webpack_hmr
+
 const clientConfig = {
   target: "web",
   mode: "development",
@@ -33,9 +29,7 @@ const clientConfig = {
   },
   devtool: "inline-cheap-module-source-map",
   devServer: {
-    //contentBase: "./dist",
-    //compress: true,
-    //historyApiFallback: true,
+    historyApiFallback: true,
     hot: true,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
@@ -53,15 +47,6 @@ const clientConfig = {
     port: 5013,
   },
   output: {
-    // path: resolvePath(BUILD_DIR, "client"),
-    // publicPath: "/client/",
-    // filename: "[name].js",
-    // chunkFilename: "[name].js",
-    // // Point sourcemap entries to original disk location (format as URL on Windows)
-    // devtoolModuleFilenameTemplate: (info) =>
-    //   path.resolve(info.absoluteResourcePath).replace(/\\/g, "/"),
-    // assetModuleFilename: "assets/[hash][ext][query]",
-
     path: path.resolve(process.cwd(), "dist/client"),
     filename: "static/js/[name].[contenthash].bundle.js",
     publicPath: "/products/files/doceditor/",
@@ -81,7 +66,6 @@ const clientConfig = {
           globOptions: {
             dot: true,
             gitignore: true,
-            ignore: ["**/index.html"],
           },
         },
       ],
@@ -91,7 +75,7 @@ const clientConfig = {
     new LoadablePlugin({
       outputAsset: false, // to avoid writing loadable-stats in the same output as client
       writeToDisk: true,
-      filename: `${BUILD_DIR}/loadable-stats.json`,
+      filename: path.resolve(process.cwd(), "dist/client/loadable-stats.json"),
     }),
     new ModuleFederationPlugin({
       name: "editor",
