@@ -217,7 +217,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
     private async Task<FolderContentDto<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
     {
         OrderBy orderBy = null;
-        if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
+        if (SortedByTypeExtensions.TryParse(_apiContext.SortBy, true, out var sortBy))
         {
             orderBy = new OrderBy(sortBy, !_apiContext.SortDescending);
         }

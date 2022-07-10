@@ -202,15 +202,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <param name="id">
     /// Room ID
     /// </param>
+    /// <param name="deleteAfter">
+    /// Delete after finished
+    /// </param>
     /// <returns>
     /// Result of the operation
     /// </returns>
     [HttpDelete("rooms/{id}")]
-    public async Task<FileOperationDto> DeleteRoomAsync(T id)
+    public async Task<FileOperationDto> DeleteRoomAsync(T id, DeleteRoomRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
-        var operationResult = _fileStorageService.DeleteFolder("delete", id, false, true, true)
+        var operationResult = _fileStorageService.DeleteFolder("delete", id, false, inDto.DeleteAfter, true)
             .FirstOrDefault();
 
         return await _fileOperationDtoHelper.GetAsync(operationResult);
@@ -225,18 +228,21 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <param name="id">
     /// Room ID
     /// </param>
+    /// <param name="deleteAfter">
+    /// Archive after finished
+    /// </param>
     /// <returns>
     /// Result of the operation
     /// </returns>
     [HttpPut("rooms/{id}/archive")]
-    public async Task<FileOperationDto> ArchiveRoomAsync(T id)
+    public async Task<FileOperationDto> ArchiveRoomAsync(T id, ArchiveRoomRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
         var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderArchiveAsync);
         var movableRoom = JsonSerializer.SerializeToElement(id);
 
-        var operationResult = _fileStorageService.MoveOrCopyItems(new List<JsonElement> { movableRoom }, new List<JsonElement>(), destFolder, FileConflictResolveType.Skip, false, true)
+        var operationResult = _fileStorageService.MoveOrCopyItems(new List<JsonElement> { movableRoom }, new List<JsonElement>(), destFolder, FileConflictResolveType.Skip, false, inDto.DeleteAfter)
             .FirstOrDefault();
 
         return await _fileOperationDtoHelper.GetAsync(operationResult);
@@ -251,18 +257,21 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <param name="id">
     /// Room ID
     /// </param>
+    /// <param name="deleteAfter">
+    /// Unarchive after finished
+    /// </param>
     /// <returns>
     /// Result of the operation
     /// </returns>
     [HttpPut("rooms/{id}/unarchive")]
-    public async Task<FileOperationDto> UnarchiveRoomAsync(T id)
+    public async Task<FileOperationDto> UnarchiveRoomAsync(T id, ArchiveRoomRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
         var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderVirtualRoomsAsync);
         var movableRoom = JsonSerializer.SerializeToElement(id);
 
-        var operationResult = _fileStorageService.MoveOrCopyItems(new List<JsonElement> { movableRoom }, new List<JsonElement>(), destFolder, FileConflictResolveType.Skip, false, true)
+        var operationResult = _fileStorageService.MoveOrCopyItems(new List<JsonElement> { movableRoom }, new List<JsonElement>(), destFolder, FileConflictResolveType.Skip, false, inDto.DeleteAfter)
             .FirstOrDefault();
 
         return await _fileOperationDtoHelper.GetAsync(operationResult);
@@ -655,7 +664,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var tagNames = !string.IsNullOrEmpty(tags) ? JsonSerializer.Deserialize<IEnumerable<string>>(tags) : null;
 
         OrderBy orderBy = null;
-        if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
+        if (SortedByTypeExtensions.TryParse(_apiContext.SortBy, true, out var sortBy))
         {
             orderBy = new OrderBy(sortBy, !_apiContext.SortDescending);
         }

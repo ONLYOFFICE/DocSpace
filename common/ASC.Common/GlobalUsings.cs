@@ -92,6 +92,8 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Primitives;
 global using Microsoft.Net.Http.Headers;
 
+global using NetEscapades.EnumGenerators;
+
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
 

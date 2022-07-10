@@ -103,6 +103,7 @@ const StyledSimpleFilesRow = styled(Row)`
     `
     & > div:last-child {
         width: 0px;
+        overflow: hidden;
       }
   `}
 

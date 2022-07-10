@@ -128,6 +128,8 @@ global using Microsoft.Extensions.Logging;
 
 global using MimeKit.Utils;
 
+global using NetEscapades.EnumGenerators;
+
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
 
