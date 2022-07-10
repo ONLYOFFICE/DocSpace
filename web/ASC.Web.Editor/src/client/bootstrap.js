@@ -14,14 +14,6 @@ const propsObj = window.__ASC_INITIAL_STATE__;
 const initialI18nStore = window.initialI18nStore;
 const initialLanguage = window.initialLanguage;
 
-delete window.__ASC_INITIAL_STATE__;
-delete window.initialI18nStore;
-delete window.initialLanguage;
-
-const stateInit = document.getElementById("__ASC_INITIAL_STATE__");
-const i18nInit = document.getElementById("__ASC_I18N_INIT__");
-stateInit.parentNode.removeChild(stateInit);
-i18nInit.parentNode.removeChild(i18nInit);
 const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
 
 const AppWrapper = () => {
