@@ -32,17 +32,14 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const sheet = new ServerStyleSheet();
-//const statsFile = path.resolve("clientBuild/stats.json");
-const loadableJson = path.resolve(__dirname, "./loadable-stats.json");
+const loadableJson = path.resolve(__dirname, "./client/loadable-stats.json");
 export default async (req) => {
   const props = await initDocEditor(req);
 
-  //const extractor = new ChunkExtractor({ statsFile });
   const extractor = new ChunkExtractor({
     statsFile: loadableJson,
     entrypoints: ["client"],
   });
-  const scriptTags = extractor.getScriptTags();
 
   const content = renderToString(
     sheet.collectStyles(
