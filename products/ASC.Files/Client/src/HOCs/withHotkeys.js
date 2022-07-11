@@ -177,7 +177,10 @@ const withHotkeys = (Component) => {
     );
 
     //Crete document
-    useHotkeys("Shift+d", () => onCreate("docx"), hotkeysFilter);
+    useHotkeys("Shift+d", () => onCreate("docx"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete spreadsheet
     useHotkeys("Shift+s", () => onCreate("xlsx"), {
