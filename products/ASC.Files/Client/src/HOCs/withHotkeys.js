@@ -66,10 +66,11 @@ const withHotkeys = (Component) => {
       isFavoritesFolder || isRecentFolder || isTrashFolder;
 
     const onCreate = (extension) => {
+      if (folderWithNoAction) return;
       const event = new Event(Events.CREATE);
 
       const payload = {
-        extension: format,
+        extension: extension,
         id: -1,
       };
 
