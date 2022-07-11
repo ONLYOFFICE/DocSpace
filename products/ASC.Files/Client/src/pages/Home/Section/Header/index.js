@@ -300,41 +300,8 @@ class SectionHeaderContent extends React.Component {
   };
 
   onBackToParentFolder = () => {
-    const {
-      fetchRooms,
-      isRoom,
-      history,
-      rootFolderType,
-      setIsLoading,
-    } = this.props;
-
-    if (isRoom) {
-      setIsLoading(true);
-
-      const searchArea =
-        rootFolderType === FolderType.Rooms
-          ? RoomSearchArea.Active
-          : RoomSearchArea.Archive;
-
-      fetchRooms(searchArea, null)
-        .then(() => {
-          const filter = RoomsFilter.getDefault();
-
-          const urlFilter = filter.toUrlParams();
-
-          history.push(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              config.homepage,
-              `/rooms?${urlFilter}`
-            )
-          );
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-
-      return;
+    if (this.props.isRoom) {
+      return this.moveToRoomsPage();
     }
 
     this.props.backToParentFolder();
@@ -376,42 +343,10 @@ class SectionHeaderContent extends React.Component {
   };
 
   onClickFolder = (id, isRootRoom) => {
-    const {
-      setSelectedNode,
-      setIsLoading,
-      fetchFiles,
-      fetchRooms,
-      rootFolderType,
-      history,
-    } = this.props;
+    const { setSelectedNode, setIsLoading, fetchFiles } = this.props;
 
     if (isRootRoom) {
-      setIsLoading(true);
-
-      const searchArea =
-        rootFolderType === FolderType.Rooms
-          ? RoomSearchArea.Active
-          : RoomSearchArea.Archive;
-
-      fetchRooms(searchArea, null)
-        .then(() => {
-          const filter = RoomsFilter.getDefault();
-
-          const urlFilter = filter.toUrlParams();
-
-          history.push(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              config.homepage,
-              `/rooms?${urlFilter}`
-            )
-          );
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-
-      return;
+      return this.moveToRoomsPage();
     }
 
     setSelectedNode(id);
@@ -419,6 +354,41 @@ class SectionHeaderContent extends React.Component {
     fetchFiles(id, null, true, false)
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
+  };
+
+  moveToRoomsPage = () => {
+    const {
+      setIsLoading,
+
+      fetchRooms,
+      rootFolderType,
+      history,
+    } = this.props;
+
+    setIsLoading(true);
+
+    const searchArea =
+      rootFolderType === FolderType.Rooms
+        ? RoomSearchArea.Active
+        : RoomSearchArea.Archive;
+
+    fetchRooms(searchArea, null)
+      .then(() => {
+        const filter = RoomsFilter.getDefault();
+
+        const urlFilter = filter.toUrlParams();
+
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/rooms?${urlFilter}`
+          )
+        );
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   render() {
