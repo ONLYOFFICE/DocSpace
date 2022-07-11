@@ -73,9 +73,6 @@
   <data name="TariffPerMonth" xml:space="preserve">
     <value>mēnesis</value>
   </data>
-  <data name="TariffPerYear" xml:space="preserve">
-    <value>gads</value>
-  </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Vārds</value>
   </data>

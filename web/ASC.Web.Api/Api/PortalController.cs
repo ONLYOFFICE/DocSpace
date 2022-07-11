@@ -217,8 +217,7 @@ public class PortalController : ControllerBase
         return _tenantManager.GetTenantQuotas().OrderBy(r => r.Price)
                             .FirstOrDefault(quota =>
                                             quota.ActiveUsers > needUsersCount
-                                            && quota.MaxTotalSize > usedSpace
-                                            && !quota.Year);
+                                            && quota.MaxTotalSize > usedSpace);
     }
 
 

@@ -73,9 +73,6 @@
   <data name="TariffPerMonth" xml:space="preserve">
     <value>Mês</value>
   </data>
-  <data name="TariffPerYear" xml:space="preserve">
-    <value>ano</value>
-  </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Nome</value>
   </data>

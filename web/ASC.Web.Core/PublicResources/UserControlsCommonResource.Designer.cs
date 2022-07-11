@@ -106,15 +106,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to year.
-        /// </summary>
-        public static string TariffPerYear {
-            get {
-                return ResourceManager.GetString("TariffPerYear", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to First Name.
         /// </summary>
         public static string UnknownFirstName {

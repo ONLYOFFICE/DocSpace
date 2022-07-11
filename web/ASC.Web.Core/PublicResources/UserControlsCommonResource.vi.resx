@@ -73,9 +73,6 @@
   <data name="TariffPerMonth" xml:space="preserve">
     <value>tháng</value>
   </data>
-  <data name="TariffPerYear" xml:space="preserve">
-    <value>năm</value>
-  </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Tên</value>
   </data>

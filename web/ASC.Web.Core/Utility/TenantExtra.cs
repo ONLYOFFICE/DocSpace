@@ -172,7 +172,7 @@ public class TenantExtra
     private TenantQuota GetPrevQuota(TenantQuota curQuota)
     {
         TenantQuota prev = null;
-        foreach (var quota in GetTenantQuotas().OrderBy(r => r.ActiveUsers).Where(r => r.Year == curQuota.Year))
+        foreach (var quota in GetTenantQuotas().OrderBy(r => r.ActiveUsers))
         {
             if (quota.Tenant == curQuota.Tenant)
             {
@@ -208,7 +208,6 @@ public class TenantExtra
         var quotas = GetTenantQuotas();
 
         return quotas.OrderBy(q => q.ActiveUsers)
-                     .ThenBy(q => q.Year)
                      .FirstOrDefault(q =>
                                      q.ActiveUsers > needUsersCount
                                      && q.MaxTotalSize > usedSpace

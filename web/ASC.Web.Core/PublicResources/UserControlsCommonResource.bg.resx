@@ -73,9 +73,6 @@
   <data name="TariffPerMonth" xml:space="preserve">
     <value>месец</value>
   </data>
-  <data name="TariffPerYear" xml:space="preserve">
-    <value>година</value>
-  </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Първо име</value>
   </data>
