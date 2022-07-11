@@ -197,12 +197,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("customization", value);
     }
 
-    public bool EnableMailServer
-    {
-        get => GetFeature("mailserver");
-        set => SetFeature("mailserver", value);
-    }
-
     public bool Custom
     {
         get => GetFeature("custom");
