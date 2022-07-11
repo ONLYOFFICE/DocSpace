@@ -46,7 +46,7 @@ const roomsStore = new RoomsStore(
   settingsStore
 );
 
-const roomsActionsStore = new RoomsActionsStore(roomsStore);
+const roomsActionsStore = new RoomsActionsStore(roomsStore, filesStore);
 
 const mediaViewerDataStore = new MediaViewerDataStore(
   filesStore,
