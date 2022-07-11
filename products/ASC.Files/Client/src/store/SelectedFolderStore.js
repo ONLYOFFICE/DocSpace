@@ -19,6 +19,8 @@ class SelectedFolderStore {
   pathParts = null;
   navigationPath = null;
   providerItem = null;
+  roomType = null;
+  pinned = null;
 
   settingsStore = null;
 
@@ -50,6 +52,8 @@ class SelectedFolderStore {
     this.pathParts = null;
     this.navigationPath = null;
     this.providerItem = null;
+    this.roomType = null;
+    this.pinned = null;
   };
 
   setParentId = (parentId) => {
