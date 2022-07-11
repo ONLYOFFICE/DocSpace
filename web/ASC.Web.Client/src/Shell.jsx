@@ -25,6 +25,7 @@ import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
 import { useThemeDetector } from "./helpers/utils";
+import { isMobileOnly } from "react-device-detect";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -520,7 +521,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       <Router history={history}>
         <ReactSmartBanner t={t} ready={ready} />
-        {isEditor ? <></> : <NavMenu />}
+        {isEditor || !isMobileOnly ? <></> : <NavMenu />}
         <ScrollToTop />
         <Main isDesktop={isDesktop}>
           <Switch>
