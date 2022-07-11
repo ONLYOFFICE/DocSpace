@@ -40,7 +40,34 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
     public int Tenant { get; set; }
     public string Name { get; set; }
     public long MaxFileSize { get; set; }
-    public long MaxTotalSize { get; set; }
+    public long MaxTotalSize
+    {
+        get
+        {
+            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
+            var totalSize = features.FirstOrDefault(f => f.StartsWith("total_size:"));
+            int maxTotalSize;
+            if (totalSize == null || !int.TryParse(totalSize.Replace("total_size:", ""), out maxTotalSize))
+            {
+                maxTotalSize = 0;
+            }
+
+            return ByteConverter.GetInBytes(maxTotalSize);
+        }
+        set
+        {
+            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
+            var maxTotalSize = features.FirstOrDefault(f => f.StartsWith("total_size:"));
+            features.Remove(maxTotalSize);
+            if (value > 0)
+            {
+                features.Add("total_size:" + ByteConverter.GetInMBytes(value));
+            }
+
+            Features = string.Join(",", features.ToArray());
+        }
+    }
+
     public int ActiveUsers { get; set; }
     public string Features { get; set; }
     public decimal Price { get; set; }
@@ -262,7 +289,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         profile.CreateMap<DbQuota, TenantQuota>()
             .ForMember(dest => dest.ActiveUsers, opt =>
                 opt.MapFrom(src => src.ActiveUsers != 0 ? src.ActiveUsers : int.MaxValue))
-            .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInBytes(src.MaxFileSize)))
-            .ForMember(dest => dest.MaxTotalSize, opt => opt.MapFrom(src => ByteConverter.GetInBytes(src.MaxTotalSize)));
+            .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInBytes(src.MaxFileSize)));
     }
 }

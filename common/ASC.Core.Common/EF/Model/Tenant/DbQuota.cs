@@ -32,7 +32,6 @@ public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
     public string Name { get; set; }
     public string Description { get; set; }
     public long MaxFileSize { get; set; }
-    public long MaxTotalSize { get; set; }
     public int ActiveUsers { get; set; }
     public string Features { get; set; }
     public decimal Price { get; set; }
@@ -47,8 +46,7 @@ public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<TenantQuota, DbQuota>()
-            .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInMBytes(src.MaxFileSize)))
-            .ForMember(dest => dest.MaxTotalSize, opt => opt.MapFrom(src => ByteConverter.GetInMBytes(src.MaxTotalSize)));
+            .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInMBytes(src.MaxFileSize)));
     }
 }
 public static class DbQuotaExtension
@@ -65,9 +63,8 @@ public static class DbQuotaExtension
                     Name = "default",
                     Description = null,
                     MaxFileSize = 102400,
-                    MaxTotalSize = 10995116277760,
                     ActiveUsers = 10000,
-                    Features = "domain,audit,ldap,sso,whitelabel,update,support,restore",
+                    Features = "domain,audit,ldap,sso,whitelabel,update,support,restore,total_size:10995116277760",
                     Price = decimal.Parse("0,00"),
                     ProductId = "0",
                     Visible = false
@@ -112,10 +109,6 @@ public static class DbQuotaExtension
 
             entity.Property(e => e.MaxFileSize)
                 .HasColumnName("max_file_size")
-                .HasDefaultValueSql("'0'");
-
-            entity.Property(e => e.MaxTotalSize)
-                .HasColumnName("max_total_size")
                 .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Name)
@@ -163,10 +156,6 @@ public static class DbQuotaExtension
 
             entity.Property(e => e.MaxFileSize)
                 .HasColumnName("max_file_size")
-                .HasDefaultValueSql("'0'");
-
-            entity.Property(e => e.MaxTotalSize)
-                .HasColumnName("max_total_size")
                 .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Name)
