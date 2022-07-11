@@ -44,7 +44,7 @@ const InfiniteLoaderComponent = ({
 
     return (
       <div
-        className="renderTable"
+        className="table-row-list-item"
         style={{
           ...style,
           display: "grid",

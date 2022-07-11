@@ -562,7 +562,7 @@ class TableHeader extends React.Component {
   updateTableRows = (str) => {
     if (!this.props.useReactWindow) return;
 
-    const rows = document.getElementsByClassName("table-row");
+    const rows = document.querySelectorAll(".table-row, .table-row-list-item");
 
     if (rows?.length) {
       for (let i = 0; i < rows.length; i++) {
