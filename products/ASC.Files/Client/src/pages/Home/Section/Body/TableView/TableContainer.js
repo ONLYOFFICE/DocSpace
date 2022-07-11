@@ -7,14 +7,6 @@ import TableBody from "@appserver/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
 import { Base } from "@appserver/components/themes";
-import Loaders from "@appserver/common/components/Loaders";
-
-const StyledLoader = styled.div`
-  grid-column-start: 1;
-  grid-column-end: -1;
-  display: grid;
-  padding-top: 16px;
-`;
 
 const marginCss = css`
   margin-top: -1px;
@@ -120,7 +112,9 @@ const Table = ({
   theme,
   infoPanelVisible,
   userId,
-  filesIsLoading,
+  fetchMoreFiles,
+  hasMoreFiles,
+  filterTotal,
 }) => {
   const ref = useRef(null);
 
@@ -144,7 +138,7 @@ const Table = ({
   const columnInfoPanelStorageName = `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
 
   return (
-    <StyledTableContainer forwardedRef={ref}>
+    <StyledTableContainer useReactWindow forwardedRef={ref}>
       <TableHeader
         sectionWidth={sectionWidth}
         containerRef={ref}
@@ -152,7 +146,15 @@ const Table = ({
         columnStorageName={columnStorageName}
         columnInfoPanelStorageName={columnInfoPanelStorageName}
       />
-      <TableBody>
+
+      <TableBody
+        fetchMoreFiles={fetchMoreFiles}
+        columnStorageName={columnStorageName}
+        filesListLength={filesList.length}
+        hasMoreFiles={hasMoreFiles}
+        itemCount={filterTotal}
+        useReactWindow
+      >
         {filesList.map((item, index) => (
           <TableRow
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
@@ -167,11 +169,6 @@ const Table = ({
             columnInfoPanelStorageName={columnInfoPanelStorageName}
           />
         ))}
-        {filesIsLoading && (
-          <StyledLoader>
-            <Loaders.TableLoader count={2} />
-          </StyledLoader>
-        )}
       </TableBody>
     </StyledTableContainer>
   );
@@ -186,7 +183,9 @@ export default inject(({ filesStore, auth }) => {
     setViewAs,
     setFirsElemChecked,
     setHeaderBorder,
-    filesIsLoading,
+    fetchMoreFiles,
+    hasMoreFiles,
+    filterTotal,
   } = filesStore;
 
   return {
@@ -198,6 +197,8 @@ export default inject(({ filesStore, auth }) => {
     theme: auth.settingsStore.theme,
     userId: auth.userStore.user.id,
     infoPanelVisible,
-    filesIsLoading,
+    fetchMoreFiles,
+    hasMoreFiles,
+    filterTotal,
   };
 })(observer(Table));

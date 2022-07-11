@@ -320,7 +320,7 @@ class PureHome extends React.Component {
         <DragTooltip />
         <Section
           dragging={dragging}
-          withBodyScroll
+          withBodyScroll={false}//TODO: inf-scroll
           withBodyAutoFocus={!isMobile}
           uploadFiles
           onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}

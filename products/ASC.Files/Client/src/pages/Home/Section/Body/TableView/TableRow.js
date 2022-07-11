@@ -273,6 +273,7 @@ const FilesTableRow = (props) => {
     showHotkeyBorder,
     tableColumns,
     id,
+    style: tableStyles,//TODO: inf-scroll
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 

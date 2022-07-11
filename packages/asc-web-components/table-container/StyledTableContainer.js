@@ -4,6 +4,19 @@ import { mobile, tablet, hugeMobile } from "../utils/device";
 import Scrollbar from "../scrollbar";
 import { isMobile } from "react-device-detect";
 
+const reactWindowContainerStyles = css`
+  height: 100%;
+  overflow: hidden;
+  display: block;
+  margin-top: 0;
+`;
+
+const reactWindowBodyStyles = css`
+  display: block;
+  height: 100%;
+  height: 95%; //TODO: inf-scroll
+`;
+
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
 
@@ -75,6 +88,8 @@ const StyledTableContainer = styled.div`
       width: 22px;
     }
   }
+
+  ${({ useReactWindow }) => useReactWindow && reactWindowContainerStyles}
 `;
 
 StyledTableContainer.defaultProps = { theme: Base };
@@ -278,6 +293,8 @@ StyledTableHeaderCell.defaultProps = { theme: Base };
 
 const StyledTableBody = styled.div`
   display: contents;
+
+  ${({ useReactWindow }) => useReactWindow && reactWindowBodyStyles}
 `;
 
 const StyledTableRow = styled.div`
@@ -372,6 +389,13 @@ const StyledScrollbar = styled(Scrollbar)`
   }
 `;
 
+const StyledLoader = styled.div`
+  grid-column-start: 1;
+  grid-column-end: -1;
+  display: grid;
+  padding-top: 16px;
+`;
+
 StyledTableRow.defaultProps = { theme: Base };
 
 export {
@@ -386,4 +410,5 @@ export {
   StyledInfoPanelToggleWrapper,
   StyledEmptyTableContainer,
   StyledScrollbar,
+  StyledLoader,
 };
