@@ -294,7 +294,7 @@ public class TenantManager
     public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(bool all = true)
     {
         var productIds = GetTenantQuotas(all)
-            .Select(p => p.AvangateId)
+            .Select(p => p.ProductId)
             .Where(id => !string.IsNullOrEmpty(id))
             .Distinct()
             .ToArray();

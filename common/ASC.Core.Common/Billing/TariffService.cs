@@ -156,7 +156,7 @@ public class TariffService : ITariffService
                           var client = GetBillingClient();
                           var lastPayment = client.GetLastPayment(GetPortalId(tenantId));
 
-                          var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == lastPayment.ProductId);
+                          var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == lastPayment.ProductId);
                           if (quota == null)
                           {
                               throw new InvalidOperationException($"Quota with id {lastPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
@@ -276,7 +276,7 @@ public class TariffService : ITariffService
                     var client = GetBillingClient();
                     foreach (var pi in client.GetPayments(GetPortalId(tenantId)))
                     {
-                        var quota = quotas.SingleOrDefault(q => q.AvangateId == pi.ProductRef);
+                        var quota = quotas.SingleOrDefault(q => q.ProductId == pi.ProductRef);
                         if (quota != null)
                         {
                             pi.QuotaId = quota.Tenant;
@@ -316,8 +316,8 @@ public class TariffService : ITariffService
                 try
                 {
                     var products = _quotaService.GetTenantQuotas()
-                                               .Where(q => !string.IsNullOrEmpty(q.AvangateId) && q.Visible == quota.Visible)
-                                               .Select(q => q.AvangateId)
+                                               .Where(q => !string.IsNullOrEmpty(q.ProductId) && q.Visible == quota.Visible)
+                                               .Select(q => q.ProductId)
                                                .ToArray();
 
                     var client = GetBillingClient();
@@ -343,7 +343,7 @@ public class TariffService : ITariffService
 
         ResetCacheExpiration();
 
-        if (!string.IsNullOrEmpty(quota.AvangateId) && urls.TryGetValue(quota.AvangateId, out var url))
+        if (!string.IsNullOrEmpty(quota.ProductId) && urls.TryGetValue(quota.ProductId, out var url))
         {
             if (url == null)
             {

@@ -44,7 +44,7 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
     public int ActiveUsers { get; set; }
     public string Features { get; set; }
     public decimal Price { get; set; }
-    public string AvangateId { get; set; }
+    public string ProductId { get; set; }
     public bool Visible { get; set; }
 
     public bool Year

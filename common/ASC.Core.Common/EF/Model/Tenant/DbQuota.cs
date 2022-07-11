@@ -36,7 +36,7 @@ public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
     public int ActiveUsers { get; set; }
     public string Features { get; set; }
     public decimal Price { get; set; }
-    public string AvangateId { get; set; }
+    public string ProductId { get; set; }
     public bool Visible { get; set; }
 
     public override object[] GetKeys()
@@ -69,7 +69,7 @@ public static class DbQuotaExtension
                     ActiveUsers = 10000,
                     Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore",
                     Price = decimal.Parse("0,00"),
-                    AvangateId = "0",
+                    ProductId = "0",
                     Visible = false
                 });
 
@@ -94,8 +94,8 @@ public static class DbQuotaExtension
                 .HasColumnName("active_users")
                 .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.AvangateId)
-                .HasColumnName("avangate_id")
+            entity.Property(e => e.ProductId)
+                .HasColumnName("product_id")
                 .HasColumnType("varchar(128)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
@@ -150,8 +150,8 @@ public static class DbQuotaExtension
 
             entity.Property(e => e.ActiveUsers).HasColumnName("active_users");
 
-            entity.Property(e => e.AvangateId)
-                .HasColumnName("avangate_id")
+            entity.Property(e => e.ProductId)
+                .HasColumnName("product_id")
                 .HasMaxLength(128)
                 .HasDefaultValueSql("NULL");
 
