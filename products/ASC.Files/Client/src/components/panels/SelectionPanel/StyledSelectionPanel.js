@@ -19,6 +19,10 @@ const commonStyles = css`
 `;
 
 const StyledModalDialog = styled(ModalDialog)`
+  #modal-dialog {
+    max-height: 560px;
+  }
+
   .select-panel-modal-header {
     margin-bottom: 0;
   }
@@ -38,7 +42,7 @@ const StyledModalDialog = styled(ModalDialog)`
 
 const StyledBody = styled.div`
   .selection-panel_body {
-    height: 495px;
+    height: 434px;
     display: grid;
     grid-template-columns: 245px 1fr;
     grid-template-areas: "tree files" "footer footer";
@@ -53,7 +57,7 @@ const StyledBody = styled.div`
       grid-template-rows: max-content auto;
     }
     .selection-panel_files-list-body {
-      height: 100%;
+      height: 384px;
     }
     .selection-panel_tree-body {
       grid-area: tree;
@@ -67,7 +71,9 @@ const StyledBody = styled.div`
         padding: 12px 20px 14px 0px;
       }
       .selection-panel_tree-folder {
-        margin-left: -12px;
+        height: 387px;
+        max-height: 384px;
+        margin-left: -17px;
       }
 
       .span.rc-tree-switcher {
