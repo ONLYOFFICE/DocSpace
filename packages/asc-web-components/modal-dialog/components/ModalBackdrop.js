@@ -22,7 +22,9 @@ const StyledModalBackdrop = styled.div.attrs((props) => ({
   },
 }))`
   display: block;
-  height: ${`${window.innerHeight}px`};
+  height: 100%;
+  min-height: fill-available;
+  max-height: 100vh;
   width: 100vw;
 
   position: fixed;
