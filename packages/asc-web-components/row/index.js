@@ -14,6 +14,8 @@ import {
 } from "./styled-row";
 import Loader from "../loader";
 
+import { isMobile } from "react-device-detect"; //TODO: isDesktop=true for IOS(Firefox & Safari)
+
 class Row extends React.Component {
   constructor(props) {
     super(props);
@@ -28,13 +30,13 @@ class Row extends React.Component {
       children,
       contentElement,
       contextButtonSpacerWidth,
-      contextOptions,
       data,
       element,
       indeterminate,
       onSelect,
       rowContextClick,
       sectionWidth,
+      getContextModel,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -47,13 +49,18 @@ class Row extends React.Component {
       "element"
     );
 
-    const renderContentElement =
-      Object.prototype.hasOwnProperty.call(this.props, "contentElement") &&
-      sectionWidth > 500;
+    const renderContentElement = Object.prototype.hasOwnProperty.call(
+      this.props,
+      "contentElement"
+    );
+
+    const contextData = data.contextOptions ? data : this.props;
 
     const renderContext =
-      Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
-      contextOptions.length > 0;
+      Object.prototype.hasOwnProperty.call(contextData, "contextOptions") &&
+      contextData &&
+      contextData.contextOptions &&
+      contextData.contextOptions.length > 0;
 
     const changeCheckbox = (e) => {
       onSelect && onSelect(e.target.checked, data);
@@ -61,40 +68,82 @@ class Row extends React.Component {
 
     const getOptions = () => {
       rowContextClick && rowContextClick();
-      return contextOptions;
+      return contextData.contextOptions;
     };
 
     const onContextMenu = (e) => {
-      rowContextClick && rowContextClick();
+      rowContextClick && rowContextClick(e.button === 2);
       if (!this.cm.current.menuRef.current) {
         this.row.current.click(e); //TODO: need fix context menu to global
       }
       this.cm.current.show(e);
     };
 
-    const { onRowClick, inProgress, ...rest } = this.props;
+    let contextMenuHeader = {};
+    if (children.props.item) {
+      contextMenuHeader = {
+        icon: children.props.item.icon,
+        title: children.props.item.title,
+      };
+    }
+
+    const { onRowClick, inProgress, mode, ...rest } = this.props;
+
+    const onElementClick = () => {
+      if (!isMobile) return;
+
+      onSelect && onSelect(true, data);
+    };
 
     return (
-      <StyledRow ref={this.row} {...rest} onContextMenu={onContextMenu}>
+      <StyledRow
+        ref={this.row}
+        {...rest}
+        mode={mode}
+        onContextMenu={onContextMenu}
+      >
         {inProgress ? (
           <Loader className="row-loader" type="oval" size="16px" />
         ) : (
-          renderCheckbox && (
-            <StyledCheckbox className="not-selectable">
-              <Checkbox
-                className="checkbox"
-                isChecked={checked}
-                isIndeterminate={indeterminate}
-                onChange={changeCheckbox}
-              />
-            </StyledCheckbox>
-          )
+          <>
+            {mode == "default" && renderCheckbox && (
+              <StyledCheckbox className="not-selectable">
+                <Checkbox
+                  className="checkbox"
+                  isChecked={checked}
+                  isIndeterminate={indeterminate}
+                  onChange={changeCheckbox}
+                />
+              </StyledCheckbox>
+            )}
+            {mode == "modern" && renderCheckbox && renderElement && (
+              <StyledCheckbox
+                className="not-selectable styled-checkbox-container"
+                checked={checked}
+                mode={mode}
+              >
+                <StyledElement
+                  onClick={onElementClick}
+                  className="styled-element"
+                >
+                  {element}
+                </StyledElement>
+                <Checkbox
+                  className="checkbox"
+                  isChecked={checked}
+                  isIndeterminate={indeterminate}
+                  onChange={changeCheckbox}
+                />
+              </StyledCheckbox>
+            )}
+          </>
         )}
-        {renderElement && (
+        {mode == "default" && renderElement && (
           <StyledElement onClick={onRowClick} className="styled-element">
             {element}
           </StyledElement>
         )}
+
         <StyledContent onClick={onRowClick} className="row_content">
           {children}
         </StyledContent>
@@ -107,8 +156,6 @@ class Row extends React.Component {
           )}
           {renderContext ? (
             <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
               className="expandButton"
               getData={getOptions}
               directionX="right"
@@ -118,7 +165,13 @@ class Row extends React.Component {
           ) : (
             <div className="expandButton"> </div>
           )}
-          <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
+          <ContextMenu
+            getContextModel={getContextModel}
+            model={contextData.contextOptions}
+            ref={this.cm}
+            header={contextMenuHeader}
+            withBackdrop={true}
+          ></ContextMenu>
         </StyledOptionButton>
       </StyledRow>
     );
@@ -156,10 +209,14 @@ Row.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   inProgress: PropTypes.bool,
+  getContextModel: PropTypes.func,
+  mode: PropTypes.string,
 };
 
 Row.defaultProps = {
   contextButtonSpacerWidth: "26px",
+  mode: "default",
+  data: {},
 };
 
 export default Row;

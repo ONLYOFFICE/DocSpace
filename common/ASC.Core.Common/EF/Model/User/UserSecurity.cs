@@ -22,14 +22,13 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUserSecurity, Provider.MySql)
-                .Add(PgSqlAddUserSecurity, Provider.Postgre)
+                .Add(PgSqlAddUserSecurity, Provider.PostgreSql)
                 .HasData(
                 new UserSecurity
                 {
                     Tenant = 1,
                     UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
-                    PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                    PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
+                    PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
                     LastModified = DateTime.UtcNow
                 });
 

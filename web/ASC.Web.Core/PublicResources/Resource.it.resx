@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Il campo Valida codice non può essere vuoto</value>
@@ -236,7 +236,7 @@
     <value>Carrello</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Inserisci il nome del carrello di Google Cloud in cui desideri archiviare i tuoi backup.</value>
+    <value>Immettere il nome del carrello di Google Cloud per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Connetti Google Cloud Storage al backup e archivia i dati del tuo portale.</value>
@@ -296,13 +296,13 @@
     <value>Contenitore privato</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Immettere l'indirizzo URL del contenitore privato Rackspace in cui si desidera archiviare i backup.</value>
+    <value>Immettere l'indirizzo URL del contenitore privato Rackspace per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Contenitore pubblico</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Immettere l'indirizzo URL del contenitore pubblico Rackspace in cui si desidera archiviare i backup.</value>
+    <value>Immettere l'indirizzo URL del contenitore pubblico Rackspace per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Regione</value>
@@ -317,7 +317,7 @@
     <value>Carrello</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Immettere il nome univoco del carrello Amazon in cui si desidera archiviare i backup.</value>
+    <value>Immettere il nome univoco del carrello Amazon per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Connetti Amazon AWS S3 al backup e archivia i dati del tuo portale.</value>
@@ -353,13 +353,13 @@
     <value>Contenitore privato</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Immettere il nome del contenitore privato Selectel in cui si desidera archiviare i backup.</value>
+    <value>Immettere il nome del contenitore privato Selectel per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Contenitore pubblico</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Immettere il nome del contenitore pubblico Selectel in cui si desidera archiviare i backup.</value>
+    <value>Immettere il nome del contenitore pubblico Selectel per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -503,6 +503,9 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Personalizzato</value>
   </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Un collegamento per confermare l'operazione è stato inviato all'indirizzo {0} (l'indirizzo email del proprietario del portale).</value>
+  </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>ID istanza errato.</value>
   </data>
@@ -584,6 +587,12 @@
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Il limite di richieste è stato superato</value>
   </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Il dominio Tenant non può essere vuoto.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Il nome del dominio deve essere composto da {0} a {1} caratteri.</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>L'utente non è stato trovato</value>
   </data>
@@ -591,7 +600,7 @@
     <value>E' impossibile trovare l'utente con l'indirizzo email "{0}"</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Regione UE (Irlanda)</value>
+    <value>Regione UE (Francoforte)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>E' stata superata la dimensione file massima</value>

@@ -107,28 +107,6 @@ const StyledFileRow = styled(Row)`
     padding-right: 12px;
   }
 
-  .__react_component_tooltip.type-light {
-    background-color: #f8f7bf !important;
-    box-shadow: none;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-  }
-  .__react_component_tooltip.place-left::after {
-    border-left: 6px solid #f8f7bf !important;
-  }
-
-  .__react_component_tooltip.place-right::after {
-    border-right: 6px solid #f8f7bf !important;
-  }
-
-  .__react_component_tooltip.place-top::after {
-    border-top: 6px solid #f8f7bf !important;
-  }
-
-  .__react_component_tooltip.place-bottom::after {
-    border-bottom: 6px solid #f8f7bf !important;
-  }
-
   .upload-panel_file-row-link {
     ${(props) =>
       !props.isMediaActive &&
@@ -175,12 +153,21 @@ class FileRow extends Component {
     const {
       setMediaViewerData,
       setUploadPanelVisible,
+      clearUploadedFilesHistory,
       isMediaActive,
+      setCurrentItem,
+      item,
+      uploaded,
     } = this.props;
-    if (!isMediaActive) return;
-    const item = { visible: true, id: id };
-    setMediaViewerData(item);
+    if (!isMediaActive) setCurrentItem(item);
+
+    const data = { visible: true, id: id };
+    setMediaViewerData(data);
     setUploadPanelVisible(false);
+
+    if (uploaded) {
+      clearUploadedFilesHistory();
+    }
   };
 
   hasError = () => {
@@ -276,7 +263,7 @@ class FileRow extends Component {
                 <Link
                   className="upload-panel_file-row-link"
                   fontWeight="600"
-                  color={item.error || !isMediaActive ? "#A3A9AE" : ""}
+                  color={item.error ? "#A3A9AE" : ""}
                   truncate
                   onClick={() => this.onMediaClick(item.fileId)}
                 >
@@ -337,7 +324,7 @@ class FileRow extends Component {
                 <Button
                   id="conversion-button"
                   className="conversion-password_button"
-                  size={"medium"}
+                  size={"small"}
                   scale
                   primary
                   label={t("Ready")}
@@ -361,15 +348,17 @@ export default inject(
     let name;
     let splitted;
     if (item.file) {
+      const exst = item?.fileInfo?.fileExst;
       splitted = item.file.name.split(".");
-      ext = splitted.length > 1 ? "." + splitted.pop() : "";
+
+      ext = exst ? exst : splitted.length > 1 ? "." + splitted.pop() : "";
       name = splitted[0];
     } else {
       ext = item.fileInfo.fileExst;
       splitted = item.fileInfo.title.split(".");
       name = splitted[0];
     }
-    const { personal } = auth.settingsStore;
+    const { personal, theme } = auth.settingsStore;
     const {
       canViewedDocs,
       isMediaOrImage,
@@ -385,8 +374,13 @@ export default inject(
       removeFileFromList,
       convertFile,
       files: uploadedFiles,
+      clearUploadedFilesHistory,
     } = uploadDataStore;
-    const { playlist, setMediaViewerData } = mediaViewerDataStore;
+    const {
+      playlist,
+      setMediaViewerData,
+      setCurrentItem,
+    } = mediaViewerDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
     const isMedia = isMediaOrImage(ext);
     const isMediaActive =
@@ -405,6 +399,7 @@ export default inject(
 
     return {
       isPersonal: personal,
+      theme,
       currentFileUploadProgress,
       uploaded,
       isMedia,
@@ -422,6 +417,9 @@ export default inject(
       cancelCurrentFileConversion,
       setMediaViewerData,
       setUploadPanelVisible,
+
+      setCurrentItem,
+      clearUploadedFilesHistory,
     };
   }
 )(withTranslation("UploadPanel")(observer(FileRow)));

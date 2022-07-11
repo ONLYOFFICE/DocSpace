@@ -33,7 +33,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFilesThirdpartyAccount, Provider.MySql)
-                .Add(PgSqlAddDbFilesThirdpartyAccount, Provider.Postgre);
+                .Add(PgSqlAddDbFilesThirdpartyAccount, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesThirdpartyAccount(this ModelBuilder modelBuilder)

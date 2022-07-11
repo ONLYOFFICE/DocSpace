@@ -47,7 +47,7 @@ namespace ASC.CRM.Core.EF
                                .AddDbRelationshipEvent()
                                .AddDbDeal()
                                .AddDbTask()
-                               .AddDbTenant();
+                               .AddDbTenant(); 
 
             modelBuilder.Entity<DbCurrencyInfo>(entity =>
             {

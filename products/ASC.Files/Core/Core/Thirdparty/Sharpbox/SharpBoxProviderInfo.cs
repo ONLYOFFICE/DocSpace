@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Threading.Tasks;
 
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
@@ -94,29 +95,30 @@ namespace ASC.Files.Thirdparty.Sharpbox
             get { return "sbox-" + ID; }
         }
 
-        public bool CheckAccess()
+        public Task<bool> CheckAccessAsync()
         {
             try
             {
-                return Storage.GetRoot() != null;
+                return Task.FromResult(Storage.GetRoot() != null);
             }
             catch (UnauthorizedAccessException)
             {
-                return false;
+                return Task.FromResult(false);
             }
             catch (SharpBoxException ex)
             {
                 Log.Error("Sharpbox CheckAccess error", ex);
-                return false;
+                return Task.FromResult(false);
             }
         }
 
-        public void InvalidateStorage()
+        public Task InvalidateStorageAsync()
         {
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
             }
+            return Task.CompletedTask;
         }
 
         public string ProviderKey
@@ -141,7 +143,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         internal CloudStorage CreateStorage(AuthData _authData, nSupportedCloudConfigurations _providerKey)
         {
-            var prms = new object[] { };
+            var prms = Array.Empty<object>();
             if (!string.IsNullOrEmpty(_authData.Url))
             {
                 var uri = _authData.Url;

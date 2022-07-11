@@ -30,7 +30,7 @@ namespace ASC.Core.Common.EF.Context
                 return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlDbContext() } ,
-                    { Provider.Postgre, () => new PostgreSqlDbContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlDbContext() } ,
                 };
             }
         }
@@ -39,7 +39,8 @@ namespace ASC.Core.Common.EF.Context
             ModelBuilderWrapper
                    .From(modelBuilder, Provider)
                    .AddMobileAppInstall()
-                   .AddDbipLocation();
+                   .AddDbipLocation()
+                   .AddRegions();
         }
     }
 

@@ -34,7 +34,6 @@ class TextChangeField extends React.Component {
 
       tooltipContent,
       helpButtonHeaderContent,
-      dataDialog,
       maxLabelWidth,
     } = this.props;
 
@@ -46,6 +45,8 @@ class TextChangeField extends React.Component {
         tooltipContent={tooltipContent}
         helpButtonHeaderContent={helpButtonHeaderContent}
         maxLabelWidth={maxLabelWidth}
+        offsetRight={100}
+        tooltipMaxWidth="300px"
       >
         <InputContainer>
           <TextInput
@@ -59,10 +60,9 @@ class TextChangeField extends React.Component {
             label={buttonText}
             onClick={buttonOnClick}
             isDisabled={buttonIsDisabled}
-            size="medium"
+            size="small"
             style={{ marginLeft: "8px" }}
             tabIndex={buttonTabIndex}
-            data-dialog={dataDialog}
           />
         </InputContainer>
       </FieldContainer>

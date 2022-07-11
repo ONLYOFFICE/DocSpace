@@ -11,16 +11,19 @@ namespace ASC.Core.Common.EF
     public class BaseDbContextManager<T> : OptionsManager<T>, IDisposable where T : class, IDisposable, IAsyncDisposable, new()
     {
         private Dictionary<string, T> Pairs { get; set; }
+        private MigrationHistory MigrationHistory {  get; set; }
         private List<T> AsyncList { get; set; }
         private IOptionsFactory<T> Factory { get; }
         private IConfiguration Configuration { get; }
 
-        public BaseDbContextManager(IOptionsFactory<T> factory, IConfiguration configuration) : base(factory)
+        public BaseDbContextManager(IOptionsFactory<T> factory, IConfiguration configuration,
+            MigrationHistory migrationHistory) : base(factory)
         {
             Pairs = new Dictionary<string, T>();
             AsyncList = new List<T>();
             Factory = factory;
             Configuration = configuration;
+            MigrationHistory = migrationHistory;
         }
 
         public override T Get(string name)
@@ -32,7 +35,8 @@ namespace ASC.Core.Common.EF
 
                 if (t is BaseDbContext dbContext)
                 {
-                    if (Configuration["migration:enabled"] == "true")
+                    if (Configuration["migration:enabled"] == "true"
+                        && MigrationHistory.TryAddMigratedContext(t.GetType()))
                     {
                         dbContext.Migrate();
                     }
@@ -68,14 +72,16 @@ namespace ASC.Core.Common.EF
     [Scope(typeof(ConfigureDbContext<>))]
     public class DbContextManager<T> : BaseDbContextManager<T> where T : BaseDbContext, new()
     {
-        public DbContextManager(IOptionsFactory<T> factory, IConfiguration configuration) : base(factory, configuration)
+        public DbContextManager(IOptionsFactory<T> factory, IConfiguration configuration,
+            MigrationHistory migrationHistory) : base(factory, configuration, migrationHistory)
         {
         }
     }
 
     public class MultiRegionalDbContextManager<T> : BaseDbContextManager<MultiRegionalDbContext<T>> where T : BaseDbContext, new()
     {
-        public MultiRegionalDbContextManager(IOptionsFactory<MultiRegionalDbContext<T>> factory, IConfiguration configuration) : base(factory, configuration)
+        public MultiRegionalDbContextManager(IOptionsFactory<MultiRegionalDbContext<T>> factory, IConfiguration configuration,
+            MigrationHistory migrationHistory) : base(factory, configuration, migrationHistory)
         {
         }
     }

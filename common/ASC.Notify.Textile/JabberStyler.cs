@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -48,22 +49,27 @@ namespace ASC.Notify.Textile
 
         public void ApplyFormating(NoticeMessage message)
         {
-            var body = string.Empty;
+            var sb = new StringBuilder();
             if (!string.IsNullOrEmpty(message.Subject))
             {
-                body += VelocityArguments.Replace(message.Subject, ArgMatchReplace) + Environment.NewLine;
+                sb.AppendLine(VelocityArguments.Replace(message.Subject, ArgMatchReplace));
                 message.Subject = string.Empty;
             }
             if (string.IsNullOrEmpty(message.Body)) return;
             var lines = message.Body.Split(new[] { Environment.NewLine, "\n" }, StringSplitOptions.None);
+
             for (var i = 0; i < lines.Length - 1; i++)
             {
-                if (string.IsNullOrEmpty(lines[i])) { body += Environment.NewLine; continue; }
-                lines[i] = VelocityArguments.Replace(lines[i], ArgMatchReplace);
-                body += LinkReplacer.Replace(lines[i], EvalLink) + Environment.NewLine;
+                ref var line = ref lines[i];
+                if (string.IsNullOrEmpty(line)) { sb.AppendLine(); continue; }
+                line = VelocityArguments.Replace(line, ArgMatchReplace);
+                sb.AppendLine(LinkReplacer.Replace(line, EvalLink));
             }
-            lines[^1] = VelocityArguments.Replace(lines[^1], ArgMatchReplace);
-            body += LinkReplacer.Replace(lines[^1], EvalLink);
+
+            ref var lastLine = ref lines[^1];
+            lastLine = VelocityArguments.Replace(lastLine, ArgMatchReplace);
+            sb.Append(LinkReplacer.Replace(lastLine, EvalLink));
+            var body = sb.ToString();
             body = TextileReplacer.Replace(HttpUtility.HtmlDecode(body), ""); //Kill textile markup
             body = BrReplacer.Replace(body, Environment.NewLine);
             body = ClosedTagsReplacer.Replace(body, Environment.NewLine);
@@ -72,7 +78,7 @@ namespace ASC.Notify.Textile
             message.Body = body;
         }
 
-        private static string EvalLink(Match match)
+        private string EvalLink(Match match)
         {
             if (match.Success)
             {
@@ -82,13 +88,13 @@ namespace ASC.Notify.Textile
                     {
                         return " " + match.Groups["text"].Value + " ";
                     }
-                    return match.Groups["text"].Value + string.Format(" ( {0} )", match.Groups["link"].Value);
+                    return match.Groups["text"].Value + $" ( {match.Groups["link"].Value} )";
                 }
             }
             return match.Value;
         }
 
-        private static string ArgMatchReplace(Match match)
+        private string ArgMatchReplace(Match match)
         {
             return match.Result("${arg}");
         }

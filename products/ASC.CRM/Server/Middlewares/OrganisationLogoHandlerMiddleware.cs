@@ -50,7 +50,7 @@ namespace ASC.Web.CRM.HttpHandlers
             _next = next;
         }
 
-        public async System.Threading.Tasks.Task Invoke(HttpContext context,
+        public System.Threading.Tasks.Task Invoke(HttpContext context,
             CrmSecurity crmSecurity,
             SetupInfo setupInfo,
             FileSizeComment fileSizeComment,
@@ -62,6 +62,16 @@ namespace ASC.Web.CRM.HttpHandlers
             if (!crmSecurity.IsAdmin)
                 throw crmSecurity.CreateSecurityException();
 
+            return InternalInvoke(context, crmSecurity, setupInfo, fileSizeComment, contactPhotoManager, organisationLogoManager);
+        }
+
+        private async System.Threading.Tasks.Task InternalInvoke(HttpContext context,
+            CrmSecurity crmSecurity,
+            SetupInfo setupInfo,
+            FileSizeComment fileSizeComment,
+            ContactPhotoManager contactPhotoManager,
+            OrganisationLogoManager organisationLogoManager)
+        { 
             var fileUploadResult = new FileUploadResult();
 
             if (context.Request.Form.Files.Count == 0)
@@ -95,7 +105,7 @@ namespace ASC.Web.CRM.HttpHandlers
             {
                 var imageData = Global.ToByteArray(context.Request.Form.Files[0].OpenReadStream());
                 var imageFormat = contactPhotoManager.CheckImgFormat(imageData);
-                var photoUri = organisationLogoManager.UploadLogo(imageData, imageFormat);
+                var photoUri = await organisationLogoManager.UploadLogoAsync(imageData, imageFormat);
 
                 fileUploadResult.Success = true;
                 fileUploadResult.Data = photoUri;

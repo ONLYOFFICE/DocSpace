@@ -81,11 +81,17 @@ class ModalDialog extends React.Component {
   componentDidMount() {
     window.addEventListener("resize", this.throttledResize);
     window.addEventListener("keyup", this.onKeyPress);
+
+    window.onpopstate = () => {
+      this.props.onClose();
+    };
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.throttledResize);
     window.removeEventListener("keyup", this.onKeyPress);
+
+    window.onpopstate = null;
   }
 
   onKeyPress = (event) => {
@@ -110,8 +116,11 @@ class ModalDialog extends React.Component {
       children,
       isLoading,
       contentPaddingBottom,
-      removeScroll,
+      withoutBodyScroll,
       modalLoaderBodyHeight,
+      withoutCloseButton,
+      theme,
+      width,
     } = this.props;
 
     let header = null;
@@ -146,6 +155,7 @@ class ModalDialog extends React.Component {
           isModalDialog
         >
           <Dialog
+            width={width}
             className={`${className} not-selectable`}
             id={id}
             style={style}
@@ -154,24 +164,35 @@ class ModalDialog extends React.Component {
               contentHeight={contentHeight}
               contentWidth={contentWidth}
               displayType={this.state.displayType}
+              className="modal-dialog-content"
             >
               {isLoading ? (
                 <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
               ) : (
                 <>
-                  <StyledHeader>
-                    <Heading className="heading" size="medium" truncate={true}>
-                      {header ? header.props.children : null}
-                    </Heading>
-                    <CloseButton
-                      className="modal-dialog-button_close"
-                      onClick={onClose}
-                    ></CloseButton>
-                  </StyledHeader>
+                  {header && (
+                    <StyledHeader>
+                      <Heading
+                        className="heading"
+                        size="medium"
+                        truncate={true}
+                      >
+                        {header ? header.props.children : null}
+                      </Heading>
+                      {!withoutCloseButton && (
+                        <CloseButton
+                          className="modal-dialog-button_close"
+                          onClick={onClose}
+                        ></CloseButton>
+                      )}
+                    </StyledHeader>
+                  )}
                   <BodyBox paddingProp={modalBodyPadding}>
                     {body ? body.props.children : null}
                   </BodyBox>
-                  <Box>{footer ? footer.props.children : null}</Box>
+                  <Box className="modal-dialog-modal-footer">
+                    {footer ? footer.props.children : null}
+                  </Box>
                 </>
               )}
             </Content>
@@ -189,15 +210,17 @@ class ModalDialog extends React.Component {
             visible={visible}
             scale={scale}
             zIndex={zIndex}
+            onClose={onClose}
             contentPaddingBottom={contentPaddingBottom}
             className="modal-dialog-aside not-selectable"
-            withoutBodyScroll={removeScroll}
+            withoutBodyScroll={withoutBodyScroll}
           >
             <Content
               contentHeight={contentHeight}
               contentWidth={contentWidth}
-              removeScroll={removeScroll}
+              withoutBodyScroll={withoutBodyScroll}
               displayType={this.state.displayType}
+              className="modal-dialog-content"
             >
               {isLoading ? (
                 <Loaders.DialogAsideLoader withoutAside />
@@ -212,7 +235,7 @@ class ModalDialog extends React.Component {
                   <BodyBox
                     className="modal-dialog-aside-body"
                     paddingProp={asideBodyPadding}
-                    removeScroll={removeScroll}
+                    withoutBodyScroll={withoutBodyScroll}
                   >
                     {body ? body.props.children : null}
                   </BodyBox>
@@ -244,6 +267,8 @@ ModalDialog.propTypes = {
   /** Will be triggered when a close button is clicked */
   onClose: PropTypes.func,
   onResize: PropTypes.func,
+  /**Display close button or not */
+  withoutCloseButton: PropTypes.bool,
   /** CSS z-index */
   zIndex: PropTypes.number,
   /** CSS padding props for body section */
@@ -252,12 +277,13 @@ ModalDialog.propTypes = {
   contentHeight: PropTypes.string,
   contentWidth: PropTypes.string,
   isLoading: PropTypes.bool,
-  removeScroll: PropTypes.bool,
+  withoutBodyScroll: PropTypes.bool,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   contentPaddingBottom: PropTypes.string,
   modalLoaderBodyHeight: PropTypes.string,
+  width: PropTypes.string,
 };
 
 ModalDialog.defaultProps = {
@@ -266,6 +292,8 @@ ModalDialog.defaultProps = {
   asideBodyPadding: "16px 0",
   modalBodyPadding: "12px 0",
   contentWidth: "100%",
+  withoutCloseButton: false,
+  withoutBodyScroll: false,
 };
 
 ModalDialog.Header = Header;

@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.ApiKeys", b =>
                 {
@@ -24,25 +24,24 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("int");
 
                     b.Property<string>("AccessToken")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasColumnName("access_token");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("api_keys");
+                    b.ToTable("ApiKeys");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.GreyListingWhiteList", b =>
                 {
                     b.Property<string>("Comment")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Source")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Comment");
 
-                    b.ToTable("greylisting_whitelist");
+                    b.ToTable("GreyListingWhiteList");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.Mailbox", b =>
@@ -57,7 +56,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("address")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("BeginDate")
                         .ValueGeneratedOnAdd()
@@ -97,7 +96,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("text")
                         .HasColumnName("email_in_folder")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Enabled")
                         .ValueGeneratedOnAdd()
@@ -118,7 +117,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("varchar(38)")
                         .HasColumnName("id_user")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Imap")
                         .HasColumnType("tinyint(1)")
@@ -128,7 +127,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("mediumtext")
                         .HasColumnName("imap_intervals")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("IsDefault")
                         .HasColumnType("tinyint(1)")
@@ -147,8 +146,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnName("is_server_mailbox");
 
                     b.Property<bool>("IsTeamlabMailbox")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_teamlab_mailbox");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("LoginDelay")
                         .ValueGeneratedOnAdd()
@@ -164,13 +162,13 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Pop3Password")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("pop3_password")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("QuotaError")
                         .HasColumnType("tinyint(1)")
@@ -184,7 +182,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("smtp_password")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Tenant")
                         .HasColumnType("int")
@@ -194,7 +192,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("text")
                         .HasColumnName("token")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("TokenType")
                         .HasColumnType("int")
@@ -235,26 +233,26 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("display_name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("DisplayShortName")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("display_short_name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Documentation")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("documentation")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
                         .HasColumnName("name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id");
 
@@ -1834,35 +1832,32 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("int");
 
                     b.Property<string>("Authentication")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Hostname")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("IdProvider")
-                        .HasColumnType("int")
-                        .HasColumnName("id_provider");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsUserData")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_user_data");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("Port")
                         .HasColumnType("int");
 
                     b.Property<string>("SocketType")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasColumnName("socket_type");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Type")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("mail_mailbox_server");
+                    b.ToTable("MailboxServer");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.ServerServer", b =>
@@ -1877,7 +1872,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("text")
                         .HasColumnName("connection_string")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("ImapSettingsId")
                         .HasColumnType("int")
@@ -1890,7 +1885,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnName("mx_record")
                         .HasDefaultValueSql("''")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("ServerType")
                         .HasColumnType("int")

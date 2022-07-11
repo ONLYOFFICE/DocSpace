@@ -23,6 +23,5 @@ if '%errorlevel%' NEQ '0' (
     exit /B 1
 
 :gotAdmin
-    pushd "%CD%"
     CD /D "%~dp0"
 :--------------------------------------  

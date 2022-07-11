@@ -6,9 +6,11 @@ import { withTranslation } from "react-i18next";
 import Headline from "@appserver/common/components/Headline";
 import IconButton from "@appserver/components/icon-button";
 import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
+import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import DropDownItem from "@appserver/components/drop-down-item";
-
+import LoaderSectionHeader from "../loaderSectionHeader";
 import { tablet, desktop } from "@appserver/components/utils/device";
+import withLoading from "../../../../../../HOCs/withLoading";
 
 import {
   getKeyByLink,
@@ -18,13 +20,17 @@ import {
 } from "../../../utils";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
+import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 
 const HeaderContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   max-width: calc(100vw - 32px);
+
+  h1 {
+    line-height: 53px;
+  }
 
   .action-wrapper {
     flex-grow: 1;
@@ -35,65 +41,57 @@ const HeaderContainer = styled.div`
   }
 
   .arrow-button {
-    margin-right: 16px;
+    margin-right: 12px;
 
     @media ${tablet} {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
     }
   }
+
+  ${isTablet &&
+  css`
+    h1 {
+      line-height: 61px;
+    }
+  `};
+
+  @media (min-width: 600px) and (max-width: 1024px) {
+    h1 {
+      line-height: 61px;
+    }
+  }
 `;
 
 const StyledContainer = styled.div`
   .group-button-menu-container {
-    margin: 0 -16px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-    ${isMobile &&
-    css`
-      position: sticky;
-    `}
-
     ${(props) =>
-      !props.isTabletView
-        ? props.width &&
-          isMobile &&
-          css`
-            width: ${props.width + 40 + "px"};
+      props.viewAs === "table"
+        ? css`
+            margin: 0px -20px;
+            width: calc(100% + 40px);
           `
-        : props.width &&
-          isMobile &&
-          css`
-            width: ${props.width + 32 + "px"};
+        : css`
+            margin: 0px -20px;
+            width: calc(100% + 40px);
           `}
 
     @media ${tablet} {
-      padding-bottom: 0;
-      ${!isMobile &&
-      css`
-        height: 56px;
-      `}
-      & > div:first-child {
-        ${(props) =>
-          !isMobile &&
-          props.width &&
-          css`
-            width: ${props.width + 16 + "px"};
-          `}
-
-        position: absolute;
-        ${(props) =>
-          !props.isDesktop &&
-          css`
-            top: 48px;
-          `}
-        z-index: 180;
-      }
+      margin: 0 -16px;
+      width: calc(100% + 32px);
     }
 
-    @media ${desktop} {
-      margin: 0 -24px;
-    }
+    ${isMobile &&
+    css`
+      margin: 0 -16px;
+      width: calc(100% + 32px);
+    `}
+
+    ${isMobileOnly &&
+    css`
+      margin: 0 -16px;
+      width: calc(100% + 32px);
+    `}
   }
 `;
 
@@ -111,7 +109,8 @@ class SectionHeaderContent extends React.Component {
     const arrayOfParams = resultPath.split("/");
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const header = getTKeyByKey(key, settingsTree);
+    const currKey = key.length > 3 ? key : key[0];
+    const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
       arrayOfParams,
       settingsTree,
@@ -131,10 +130,17 @@ class SectionHeaderContent extends React.Component {
   }
 
   componentDidUpdate() {
+    const { isLoaded, tReady, setIsLoadedSectionHeader } = this.props;
+
+    const isLoadedSetting = isLoaded && tReady;
+
+    if (isLoadedSetting) setIsLoadedSectionHeader(isLoadedSetting);
+
     const arrayOfParams = this.getArrayOfParams();
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const header = getTKeyByKey(key, settingsTree);
+    const currKey = key.length > 3 ? key : key[0];
+    const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
       arrayOfParams,
       settingsTree,
@@ -212,57 +218,58 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderVisible,
       selection,
+      isLoadedPage,
+      location,
     } = this.props;
     const { header, isCategoryOrHeader } = this.state;
     const arrayOfParams = this.getArrayOfParams();
 
-    const menuItems = [
-      {
-        label: t("Common:Select"),
-        isDropdown: true,
-        isSeparator: true,
-        isSelect: true,
-        fontWeight: "bold",
-        children: [
-          <DropDownItem
-            key="all"
-            label={t("Common:SelectAll")}
-            data-index={0}
-            onClick={this.onSelectAll}
-          />,
-        ],
-      },
+    const menuItems = (
+      <>
+        <DropDownItem
+          key="all"
+          label={t("Common:SelectAll")}
+          data-index={1}
+          onClick={this.onSelectAll}
+        />
+      </>
+    );
+
+    const headerMenu = [
       {
         label: t("Common:Delete"),
         disabled: !selection || !selection.length > 0,
         onClick: this.removeAdmins,
+        iconUrl: "/static/images/delete.react.svg",
       },
     ];
+
+    const commonSettings =
+      location.pathname.includes("common/customization") ||
+      location.pathname === "/settings";
+
+    const showLoader = commonSettings ? !isLoadedPage : false;
 
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
         {isHeaderVisible ? (
           <div className="group-button-menu-container">
-            <GroupButtonsMenu
-              checked={isHeaderChecked}
-              isIndeterminate={isHeaderIndeterminate}
+            <TableGroupMenu
+              checkboxOptions={menuItems}
               onChange={this.onCheck}
-              menuItems={menuItems}
-              visible={true}
-              moreLabel={t("Common:More")}
-              closeTitle={t("Common:CloseButton")}
-              onClose={this.onClose}
-              selected={menuItems[0].label}
+              isChecked={isHeaderChecked}
+              isIndeterminate={isHeaderIndeterminate}
+              headerMenu={headerMenu}
             />
           </div>
+        ) : showLoader ? (
+          <LoaderSectionHeader />
         ) : (
           <HeaderContainer>
             {!isCategoryOrHeader && arrayOfParams[0] && (
               <IconButton
                 iconName="/static/images/arrow.path.react.svg"
                 size="17"
-                color="#A3A9AE"
-                hoverColor="#657077"
                 isFill={true}
                 onClick={this.onBackToParent}
                 className="arrow-button"
@@ -276,8 +283,6 @@ class SectionHeaderContent extends React.Component {
                 <IconButton
                   iconName="/static/images/actions.header.touch.react.svg"
                   size="17"
-                  color="#A3A9AE"
-                  hoverColor="#657077"
                   isFill={true}
                   onClick={this.onToggleSelector}
                   className="action-button"
@@ -291,7 +296,7 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, common }) => {
   const { customNames } = auth.settingsStore;
   const { addUsers, removeAdmins } = setup.headerAction;
   const { toggleSelector } = setup;
@@ -306,7 +311,7 @@ export default inject(({ auth, setup }) => {
     selection,
   } = setup.selectionStore;
   const { admins, selectorIsOpen } = setup.security.accessRight;
-
+  const { isLoaded, setIsLoadedSectionHeader } = common;
   return {
     addUsers,
     removeAdmins,
@@ -322,9 +327,13 @@ export default inject(({ auth, setup }) => {
     toggleSelector,
     selectorIsOpen,
     selection,
+    isLoaded,
+    setIsLoadedSectionHeader,
   };
 })(
-  withRouter(
-    withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+  withLoading(
+    withRouter(
+      withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+    )
   )
 );

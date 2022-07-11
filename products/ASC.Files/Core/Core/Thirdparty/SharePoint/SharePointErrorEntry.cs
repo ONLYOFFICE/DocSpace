@@ -26,6 +26,8 @@
 
 using Microsoft.SharePoint.Client;
 
+using File = Microsoft.SharePoint.Client.File;
+
 namespace ASC.Files.Thirdparty.SharePoint
 {
     public class SharePointFileErrorEntry : File

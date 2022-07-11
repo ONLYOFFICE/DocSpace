@@ -106,7 +106,7 @@ namespace ASC.Core.Common.Notify
         public string CurrentRegistrationLink(Guid userId, int tenantId)
         {
             var token = GetCurrentToken(userId, tenantId);
-            if (token == null || token == "") return "";
+            if (token == null || token.Length == 0) return "";
 
             return GetLink(token);
         }
@@ -138,7 +138,7 @@ namespace ASC.Core.Common.Notify
 
             var buf = id.Concat(d).ToArray();
 
-            using var sha = new SHA256CryptoServiceProvider();
+            using var sha = SHA256.Create();
             return Convert.ToBase64String(sha.ComputeHash(buf))
                 .Replace('+', '-').Replace('/', '_').Replace("=", ""); // make base64 url safe
         }
@@ -149,7 +149,7 @@ namespace ASC.Core.Common.Notify
             var botname = tgProvider == null ? default : tgProvider.TelegramBotName;
             if (string.IsNullOrEmpty(botname)) return null;
 
-            return string.Format("t.me/{0}?start={1}", botname, token);
+            return $"t.me/{botname}?start={token}";
         }
 
         public bool TestingClient(TelegramBotClient telegramBotClient)

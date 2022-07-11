@@ -1,11 +1,9 @@
 {
+  "DocumentsFileType": "documentos",
   "FileLocation": "Abrir ubicación del archivo",
   "FileName": "Nombre de archivo",
-  "FolderForSave": "Carpeta para guardar",
-  "OpenSavedDocument": "Abrir el documento guardado en una nueva pestaña",
-  "SelectFilesType": "Seleccionar archivos de tipo: {{fileType}}",
   "ImageFileType": "imágenes",
-  "DocumentsFileType": "documentos",
   "MailMergeFileType": "Seleccionar archivo en formato XLSX",
-  "SelectFileTitle": "Seleccionar origen de datos"
+  "OpenSavedDocument": "Abrir el documento guardado en una nueva pestaña",
+  "SelectFilesType": "Seleccionar archivos de tipo: {{fileType}}"
 }

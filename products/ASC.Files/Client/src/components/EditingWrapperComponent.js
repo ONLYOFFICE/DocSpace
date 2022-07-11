@@ -7,26 +7,32 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 import CheckIcon from "../../public/images/check.react.svg";
 import CrossIcon from "../../../../../public/images/cross.react.svg";
+import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
   path {
-    fill: #a3a9ae;
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
   }
   :hover {
-    fill: #657077;
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
 `;
+
+StyledCheckIcon.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
   ${commonIconsStyles}
   path {
-    fill: #a3a9ae;
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
   }
   :hover {
-    fill: #657077;
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
 `;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 export const okIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
 export const cancelIcon = (
@@ -44,20 +50,37 @@ const EditingWrapper = styled.div`
       grid-column-start: 1;
       grid-column-end: -1;
 
-      border-bottom: 1px solid #eceef1;
+      border-bottom: ${(props) => props.theme.filesEditingWrapper.borderBottom};
       padding-bottom: 4px;
       margin-top: 4px;
-
-      margin-left: -4px;
     `}
 
   ${(props) =>
     props.viewAs === "tile" &&
-    `margin-right: 12px !important; margin-left: -4px;`}
+    css`
+      position: absolute;
+      width: calc(100% - 18px);
+      z-index: 1;
+      gap: 4px;
 
-  @media (max-width: 1024px) {
-    height: 56px;
+      background-color: ${(props) =>
+        props.theme.filesEditingWrapper.tile.background};
+
+      border: ${(props) => props.theme.filesEditingWrapper.border};
+      border-radius: ${(props) => (props.isFolder ? "6px" : "0 0 6px 6px")};
+
+      height: 43px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 9px 8px 9px 8px;
+    `}
+
+
+  @media ${tablet} {
+    height: ${(props) => (props.viewAs === "tile" ? "43px" : "56px")};
   }
+
   .edit-text {
     height: 32px;
     font-size: ${(props) =>
@@ -71,20 +94,66 @@ const EditingWrapper = styled.div`
     margin: 0;
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
-    color: #333333;
-    margin-left: 6px;
+    color: ${(props) => props.theme.filesEditingWrapper.color};
+    background: ${(props) =>
+      props.theme.filesEditingWrapper.row.itemBackground} !important;
+
+    ${(props) =>
+      props.viewAs === "tile" &&
+      css`
+        margin-right: 2px;
+        border: none;
+        background: none;
+      `};
+
     ${(props) =>
       props.isUpdatingRowItem &&
       css`
         margin-left: 0;
         display: flex;
         align-items: center;
+        background: none !important;
       `}
+
+    ${(props) => props.viewAs === "table" && `padding-left: 12px`}
+
+    ${(props) =>
+      props.viewAs === "tile" &&
+      !props.isUpdatingRowItem &&
+      css`
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
+        border: ${(props) =>
+          `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
+
+        &:focus {
+          border: ${(props) =>
+            `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
+        }
+      `};
+
+    ${({ isDisabled }) => isDisabled && "background-color: #fff"}
   }
+
   .edit-button {
     margin-left: 8px;
     height: 32px;
-    padding: 8px 7px 7px 7px;
+    padding: 0px 7px 0px 7px;
+
+    ${(props) =>
+      props.viewAs === "tile" &&
+      css`
+        margin-left: 0px;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
+        border: ${(props) =>
+          `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
+
+        &:hover {
+          border: ${(props) =>
+            `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
+        }
+      `};
 
     ${(props) =>
       props.viewAs === "table" &&
@@ -92,34 +161,30 @@ const EditingWrapper = styled.div`
         width: 24px;
         height: 24px;
         border: 1px transparent;
-        padding: 4px 0 0 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        :hover {
-          border: 1px solid #d0d5da;
+        &:hover {
+          border: ${(props) => props.theme.filesEditingWrapper.border};
         }
       `}
-
-    &:last-child {
-      margin-left: 4px;
-    }
   }
 
   .edit-ok-icon {
-    margin-top: -6px;
     width: 16px;
     height: 16px;
   }
 
   .edit-cancel-icon {
-    margin-top: -6px;
     width: 14px;
     height: 14px;
-  }
-
-  .is-edit {
-    margin-top: 4px;
+    padding: 1px;
   }
 `;
+
+EditingWrapper.defaultProps = { theme: Base };
 
 const EditingWrapperComponent = (props) => {
   const {
@@ -133,13 +198,19 @@ const EditingWrapperComponent = (props) => {
     elementIcon,
     isUpdatingRowItem,
     passwordEntryProcess,
+    isFolder,
   } = props;
 
   const isTable = viewAs === "table";
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
+  const [isTouchOK, setIsTouchOK] = useState(false);
+  const [isTouchCancel, setIsTouchCancel] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const inputRef = React.useRef(null);
 
   const onKeyUpUpdateItem = (e) => {
     if (isLoading) return;
@@ -149,11 +220,9 @@ const EditingWrapperComponent = (props) => {
       if (!isLoading) setIsLoading(true);
       return onClickUpdateItem(e);
     }
-    //if (code === 27) return cancelUpdateItem(e);
   };
   const onEscapeKeyPress = (e) => {
     if (e.keyCode === 27) return cancelUpdateItem(e);
-    return;
   };
 
   const setIsHoveredOkHandler = () => {
@@ -166,8 +235,16 @@ const EditingWrapperComponent = (props) => {
 
   const onFocus = (e) => e.target.select();
   const onBlur = (e) => {
-    if (e.relatedTarget && e.relatedTarget.classList.contains("edit-button"))
+    if (
+      (e.relatedTarget && e.relatedTarget.classList.contains("edit-button")) ||
+      OkIconIsHovered ||
+      CancelIconIsHovered ||
+      isTouchOK ||
+      isTouchCancel
+    )
       return false;
+
+    if (!document.hasFocus() && inputRef.current === e.target) return false;
 
     !passwordEntryProcess && onClickUpdateItem(e, false);
   };
@@ -176,6 +253,8 @@ const EditingWrapperComponent = (props) => {
     <EditingWrapper
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
+      isFolder={isFolder}
+      isDisabled={isLoading}
     >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (
@@ -196,20 +275,23 @@ const EditingWrapperComponent = (props) => {
           isDisabled={isLoading}
           data-itemid={itemId}
           withBorder={!isTable}
+          forwardedRef={inputRef}
         />
       )}
       {!isUpdatingRowItem && (
         <>
           <Button
             className="edit-button not-selectable"
-            size="medium"
+            size="small"
             isDisabled={isLoading}
             onClick={onClickUpdateItem}
             icon={okIcon}
             data-itemid={itemId}
             onMouseEnter={setIsHoveredOkHandler}
             onMouseLeave={setIsHoveredOkHandler}
+            onTouchStart={() => setIsTouchOK(true)}
             isHovered={OkIconIsHovered}
+            title=""
           />
           <Button
             className="edit-button not-selectable"
@@ -221,7 +303,9 @@ const EditingWrapperComponent = (props) => {
             data-action="cancel"
             onMouseEnter={setIsHoveredCancelHandler}
             onMouseLeave={setIsHoveredCancelHandler}
+            onTouchStart={() => setIsTouchCancel(true)}
             isHovered={CancelIconIsHovered}
+            title=""
           />
         </>
       )}

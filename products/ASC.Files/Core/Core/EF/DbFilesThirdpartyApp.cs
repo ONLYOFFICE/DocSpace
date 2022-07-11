@@ -26,7 +26,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFilesThirdpartyApp, Provider.MySql)
-                .Add(PgSqlAddDbFilesThirdpartyApp, Provider.Postgre);
+                .Add(PgSqlAddDbFilesThirdpartyApp, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesThirdpartyApp(this ModelBuilder modelBuilder)

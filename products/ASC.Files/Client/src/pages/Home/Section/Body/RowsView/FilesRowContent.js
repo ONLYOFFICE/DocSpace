@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
+import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { isMobile } from "react-device-detect";
+import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
@@ -10,39 +11,14 @@ import RowContent from "@appserver/components/row-content";
 
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
-
-const sideColor = "#A3A9AE";
+import { Base } from "@appserver/components/themes";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
     width: 100%;
-  }
-  .badge-ext {
-    margin-right: 8px;
-  }
-
-  .badge {
-    height: 14px;
-    width: 14px;
-    margin-right: 6px;
-  }
-  .lock-file {
-    cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
-  }
-  .badges {
-    display: flex;
-    align-items: center;
-    height: 19px;
-  }
-
-  .favorite {
-    cursor: pointer;
-    margin-right: 6px;
-  }
-
-  .share-icon {
-    margin-top: -4px;
-    padding-right: 8px;
+    max-width: min-content;
+    min-width: inherit;
+    margin-right: 0px;
   }
 
   .row_update-text {
@@ -50,13 +26,56 @@ const SimpleFilesRowContent = styled(RowContent)`
     text-overflow: ellipsis;
   }
 
-  .edit {
-    svg:not(:root) {
-      width: 12px;
-      height: 12px;
-    }
+  .new-items {
+    min-width: 12px;
+    width: max-content;
+    margin: 0 -2px -2px -2px;
   }
+
+  .badge-version {
+    width: max-content;
+    margin: -2px 6px -2px -2px;
+  }
+
+  .badge-new-version {
+    width: max-content;
+  }
+
+  ${(props) =>
+    ((props.sectionWidth <= 1024 && props.sectionWidth > 500) || isTablet) &&
+    `
+    .row-main-container-wrapper {
+      display: flex;
+      justify-content: space-between;
+      max-width: inherit;
+    }
+
+    .badges {
+      flex-direction: row-reverse;
+    }
+
+    .tablet-badge {
+      margin-top: 5px;
+    }
+
+    .tablet-edit,
+    .can-convert {
+     margin-top: 6px;
+     margin-right: 24px !important;
+    }
+
+    .badge-version {
+      margin-right: 22px;
+    }
+
+    .new-items {
+      min-width: 16px;
+      margin: 7px 22px 0 0;
+    }
+  `}
 `;
+
+SimpleFilesRowContent.defaultProps = { theme: Base };
 
 const FilesRowContent = ({
   t,
@@ -64,10 +83,10 @@ const FilesRowContent = ({
   sectionWidth,
   titleWithoutExt,
   updatedDate,
-  fileOwner,
   linkStyles,
   badgesComponent,
-  isAdmin,
+  quickButtons,
+  theme,
 }) => {
   const {
     contentLength,
@@ -75,22 +94,18 @@ const FilesRowContent = ({
     filesCount,
     foldersCount,
     providerKey,
-    access,
     title,
   } = item;
-
-  const withAccess = isAdmin || access === 0;
 
   return (
     <>
       <SimpleFilesRowContent
         sectionWidth={sectionWidth}
         isMobile={isMobile}
-        sideColor={sideColor}
         isFile={fileExst || contentLength}
-        withAccess={withAccess}
       >
         <Link
+          className="row-content-link"
           containerWidth="55%"
           type="page"
           title={title}
@@ -98,63 +113,40 @@ const FilesRowContent = ({
           fontSize="15px"
           target="_blank"
           {...linkStyles}
-          color="#333"
           isTextOverflow={true}
         >
           {titleWithoutExt}
-          {fileExst && (
-            <Text
-              className="badge-ext"
-              as="span"
-              color="#A3A9AE"
-              fontSize="15px"
-              fontWeight={600}
-              truncate={true}
-            >
-              {fileExst}
-            </Text>
-          )}
         </Link>
-        <div className="badges">{badgesComponent}</div>
-        <Text
-          containerMinWidth="120px"
-          containerWidth="15%"
-          as="div"
-          color={sideColor}
-          fontSize="12px"
-          fontWeight={400}
-          title={fileOwner}
-          truncate={true}
-        >
-          {fileOwner}
-        </Text>
+        <div className="badges">
+          {badgesComponent}
+          {quickButtons}
+        </div>
+
         <Text
           containerMinWidth="200px"
           containerWidth="15%"
-          title={updatedDate}
           fontSize="12px"
           fontWeight={400}
-          color={sideColor}
+          // color={sideColor}
           className="row_update-text"
         >
           {updatedDate && updatedDate}
         </Text>
+
         <Text
           containerMinWidth="90px"
           containerWidth="10%"
           as="div"
-          color={sideColor}
+          className="row-content-text"
           fontSize="12px"
           fontWeight={400}
           title=""
           truncate={true}
         >
-          {fileExst || contentLength
-            ? contentLength
-            : !providerKey
-            ? `${t("TitleDocuments")}: ${filesCount} | ${t(
-                "TitleSubfolders"
-              )}: ${foldersCount}`
+          {!fileExst && !contentLength && !providerKey && !isMobileOnly
+            ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
+            : fileExst
+            ? `${fileExst.toUpperCase().replace(/^\./, "")}`
             : ""}
         </Text>
       </SimpleFilesRowContent>
@@ -162,8 +154,14 @@ const FilesRowContent = ({
   );
 };
 
-export default withRouter(
-  withTranslation(["Home", "Translations"])(
-    withContent(withBadges(FilesRowContent))
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withRouter(
+      withTranslation(["Home", "Translations"])(
+        withContent(withBadges(FilesRowContent))
+      )
+    )
   )
 );

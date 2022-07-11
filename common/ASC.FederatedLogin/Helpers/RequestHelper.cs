@@ -27,20 +27,35 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+
+using ASC.Common;
 
 namespace ASC.FederatedLogin.Helpers
 {
+    [Singletone]
     public class RequestHelper
     {
-        public static string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
-        {
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException("uri");
+        private readonly IHttpClientFactory _httpClientFactory;
 
-            var request = WebRequest.Create(uri);
-            request.Method = method;
-            request.Timeout = timeout;
+        public RequestHelper(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+
+        public string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
+        {
+            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
+
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(uri);
+            request.Method = new HttpMethod(method);
+
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
+
             if (headers != null)
             {
                 foreach (var key in headers.Keys)
@@ -49,33 +64,22 @@ namespace ASC.FederatedLogin.Helpers
                 }
             }
 
-
-            if (!string.IsNullOrEmpty(contentType))
-            {
-                request.ContentType = contentType;
-            }
-
             var bytes = Encoding.UTF8.GetBytes(body ?? "");
-            if (request.Method != "GET" && bytes.Length > 0)
+            if (request.Method != HttpMethod.Get && bytes.Length > 0)
             {
-                request.ContentLength = bytes.Length;
-                using var stream = request.GetRequestStream();
-                stream.Write(bytes, 0, bytes.Length);
+                request.Content = new ByteArrayContent(bytes, 0, bytes.Length);
+                if (!string.IsNullOrEmpty(contentType))
+                {
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+                }
             }
 
-            try
-            {
-                using var response = request.GetResponse();
-                using var stream = response.GetResponseStream();
-                if (stream == null) return null;
-                using var readStream = new StreamReader(stream);
-                return readStream.ReadToEnd();
-            }
-            catch (WebException)
-            {
-                request.Abort();
-                throw;
-            }
+            using var response = httpClient.Send(request);
+            using var stream = response.Content.ReadAsStream();
+            if (stream == null) return null;
+            using var readStream = new StreamReader(stream);
+            return readStream.ReadToEnd();
+
         }
     }
 }

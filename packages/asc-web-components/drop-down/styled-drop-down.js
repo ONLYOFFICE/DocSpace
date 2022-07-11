@@ -2,6 +2,17 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 const StyledDropdown = styled.div`
+  @media (orientation: landscape) {
+    ${(props) =>
+      props.isPersonal &&
+      props.isExternalLink &&
+      window.innerHeight < 500 &&
+      css`
+        top: 10% !important;
+        left: 45% !important;
+      `}
+  }
+
   font-family: ${(props) => props.theme.fontFamily};
   font-style: normal;
   font-weight: ${(props) => props.theme.dropDown.fontWeight};
@@ -35,10 +46,12 @@ const StyledDropdown = styled.div`
     css`
       left: ${(props) => (props.manualX ? props.manualX : "0px")};
     `}
-  z-index: ${(props) => props.theme.dropDown.zIndex};
+  z-index: ${(props) =>
+    props.zIndex ? props.zIndex : props.theme.dropDown.zIndex};
   display: ${(props) =>
     props.open ? (props.columnCount ? "block" : "table") : "none"};
   background: ${(props) => props.theme.dropDown.background};
+  border: ${(props) => props.theme.dropDown.border};
   border-radius: ${(props) => props.theme.dropDown.borderRadius};
   -moz-border-radius: ${(props) => props.theme.dropDown.borderRadius};
   -webkit-border-radius: ${(props) => props.theme.dropDown.borderRadius};
@@ -57,6 +70,12 @@ const StyledDropdown = styled.div`
     -moz-column-count: ${props.columnCount};
           column-count: ${props.columnCount};
   `}
+
+  .scroll-drop-down-item {
+    .scroll-body {
+      padding-right: 0 !important;
+    }
+  }
 `;
 
 StyledDropdown.defaultProps = { theme: Base };

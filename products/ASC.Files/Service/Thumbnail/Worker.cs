@@ -21,6 +21,7 @@ using System.Threading;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Files.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -43,7 +44,7 @@ namespace ASC.Files.ThumbnailBuilder
             ThumbnailSettings settings)
         {
             this.serviceProvider = serviceProvider;
-            thumbnailSettings = settings;
+            this.thumbnailSettings = settings;
             logger = options.Get("ASC.Files.ThumbnailBuilder");
         }
 
@@ -64,7 +65,7 @@ namespace ASC.Files.ThumbnailBuilder
         }
 
 
-        private void Procedure(object _)
+        private async void Procedure(object _)
         {
             timer.Change(Timeout.Infinite, Timeout.Infinite);
             logger.Trace("Procedure: Start.");
@@ -81,7 +82,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var filesWithoutThumbnails = Launcher.Queue.Select(pair => pair.Value).ToList();
 
-            if (!filesWithoutThumbnails.Any())
+            if (filesWithoutThumbnails.Count == 0)
             {
                 logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", thumbnailSettings.LaunchFrequency);
                 timer.Change(TimeSpan.FromSeconds(thumbnailSettings.LaunchFrequency), TimeSpan.FromMilliseconds(-1));
@@ -98,7 +99,7 @@ namespace ASC.Files.ThumbnailBuilder
                     .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
                     .ToList();
 
-                builder.BuildThumbnails(filesWithoutThumbnails);
+                await builder.BuildThumbnails(filesWithoutThumbnails);
             }
 
             logger.Trace("Procedure: Finish.");
@@ -106,7 +107,7 @@ namespace ASC.Files.ThumbnailBuilder
         }
     }
 
-    public class WorkerExtension
+    public static class WorkerExtension
     {
         public static void Register(DIHelper services)
         {

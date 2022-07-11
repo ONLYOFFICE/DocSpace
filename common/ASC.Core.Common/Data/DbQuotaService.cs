@@ -62,12 +62,12 @@ namespace ASC.Core.Data
     [Scope]
     class DbQuotaService : IQuotaService
     {
-        private Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
-        private Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
+        private static Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
+        private static Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
         internal CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
         internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
 
-        public DbQuotaService()
+        static DbQuotaService()
         {
             FromDbQuotaToTenantQuota = r => new TenantQuota()
             {
@@ -91,7 +91,7 @@ namespace ASC.Core.Data
             };
         }
 
-        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager) : this()
+        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
         {
             LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
         }
@@ -115,7 +115,7 @@ namespace ASC.Core.Data
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
-            if (quota == null) throw new ArgumentNullException("quota");
+            if (quota == null) throw new ArgumentNullException(nameof(quota));
 
             var dbQuota = new DbQuota
             {
@@ -155,7 +155,7 @@ namespace ASC.Core.Data
 
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
-            if (row == null) throw new ArgumentNullException("row");
+            if (row == null) throw new ArgumentNullException(nameof(row));
 
             using var tx = CoreDbContext.Database.BeginTransaction();
 

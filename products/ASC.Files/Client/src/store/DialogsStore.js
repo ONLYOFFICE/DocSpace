@@ -7,6 +7,7 @@ class DialogsStore {
   treeFoldersStore;
   filesStore;
   selectedFolderStore;
+  versionHistoryStore;
 
   sharingPanelVisible = false;
   ownerPanelVisible = false;
@@ -24,6 +25,7 @@ class DialogsStore {
   convertDialogVisible = false;
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
+  isFolderActions = false;
 
   removeItem = null;
   connectItem = null;
@@ -37,17 +39,28 @@ class DialogsStore {
   convertItem = null;
   formCreationInfo = null;
 
-  constructor(authStore, treeFoldersStore, filesStore, selectedFolderStore) {
+  constructor(
+    authStore,
+    treeFoldersStore,
+    filesStore,
+    selectedFolderStore,
+    versionHistoryStore
+  ) {
     makeAutoObservable(this);
 
     this.treeFoldersStore = treeFoldersStore;
     this.filesStore = filesStore;
     this.selectedFolderStore = selectedFolderStore;
     this.authStore = authStore;
+    this.versionHistoryStore = versionHistoryStore;
   }
 
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
+  };
+
+  setIsFolderActions = (isFolderActions) => {
+    this.isFolderActions = isFolderActions;
   };
 
   setChangeOwnerPanelVisible = (ownerPanelVisible) => {
@@ -108,8 +121,13 @@ class DialogsStore {
     this.destFolderId = destFolderId;
   };
 
-  setNewFilesPanelVisible = async (visible, newIds, item) => {
-    const id = newIds && newIds[newIds.length - 1];
+  setNewFilesPanelVisible = async (visible, newId, item) => {
+    const { pathParts } = this.selectedFolderStore;
+
+    const id = visible && !newId ? item.id : newId;
+    const newIds = newId ? [newId] : pathParts;
+    item && pathParts.push(item.id);
+
     let newFilesPanelVisible = visible;
 
     if (visible) {
@@ -142,7 +160,6 @@ class DialogsStore {
       this.setNewFilesIds(null);
     }
 
-    this.authStore.settingsStore.hideArticle();
     this.newFilesPanelVisible = newFilesPanelVisible;
   };
 
@@ -208,6 +225,28 @@ class DialogsStore {
       templateId: fileInfo.id,
     });
   };
+
+  get someDialogIsOpen() {
+    return (
+      this.sharingPanelVisible ||
+      this.ownerPanelVisible ||
+      this.moveToPanelVisible ||
+      this.copyPanelVisible ||
+      this.deleteThirdPartyDialogVisible ||
+      this.connectDialogVisible ||
+      this.thirdPartyMoveDialogVisible ||
+      this.deleteDialogVisible ||
+      this.downloadDialogVisible ||
+      this.emptyTrashDialogVisible ||
+      this.thirdPartyDialogVisible ||
+      this.newFilesPanelVisible ||
+      this.conflictResolveDialogVisible ||
+      this.convertDialogVisible ||
+      this.selectFileDialogVisible ||
+      this.authStore.settingsStore.hotkeyPanelVisible ||
+      this.versionHistoryStore.isVisible
+    );
+  }
 
   deselectActiveFiles = () => {
     this.filesStore.setSelected("none");

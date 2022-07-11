@@ -66,7 +66,7 @@ namespace ASC.AuditTrail
             return Get(tenant, from, to, null);
         }
 
-        private class Query
+        private sealed class Query
         {
             public Core.Common.EF.Model.AuditEvent AuditEvent { get; set; }
             public User User { get; set; }
@@ -76,14 +76,14 @@ namespace ASC.AuditTrail
         {
             var query =
                from q in AuditTrailContext.AuditEvents
-               from p in AuditTrailContext.User.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+               from p in AuditTrailContext.Users.AsQueryable().Where(p => q.UserId == p.Id).DefaultIfEmpty()
                where q.TenantId == tenant
                orderby q.Date descending
                select new Query { AuditEvent = q, User = p };
 
             if (fromDate.HasValue && to.HasValue)
             {
-                query = query.Where(q => q.AuditEvent.Date >= fromDate & q.AuditEvent.Date <= to);
+                query = query.Where(q => q.AuditEvent.Date >= fromDate && q.AuditEvent.Date <= to);
             }
 
             if (limit.HasValue)
@@ -97,12 +97,13 @@ namespace ASC.AuditTrail
         public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
         {
             IQueryable<Core.Common.EF.Model.AuditEvent> query = AuditTrailContext.AuditEvents
+                .AsQueryable()
                 .Where(a => a.TenantId == tenant)
                 .OrderByDescending(a => a.Date);
 
             if (from.HasValue && to.HasValue)
             {
-                query = query.Where(a => a.Date >= from & a.Date <= to);
+                query = query.Where(a => a.Date >= from && a.Date <= to);
             }
 
             return query.Count();
@@ -129,7 +130,7 @@ namespace ASC.AuditTrail
                 if (query.AuditEvent.Description != null)
                 {
                     evt.Description = JsonConvert.DeserializeObject<IList<string>>(
-                        Convert.ToString(query.AuditEvent.Description),
+                        query.AuditEvent.Description,
                         new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Utc });
                 }
 

@@ -13,6 +13,7 @@ import {
   isRetina,
   getCookie,
   setCookie,
+  assign,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -42,6 +43,7 @@ import SharingDialog from "files/SharingDialog";
 import { getDefaultFileName, SaveAs } from "files/utils";
 import SelectFileDialog from "files/SelectFileDialog";
 import SelectFolderDialog from "files/SelectFolderDialog";
+import PreparationPortalDialog from "studio/PreparationPortalDialog";
 import { StyledSelectFolder } from "./StyledEditor";
 import i18n from "./i18n";
 import Text from "@appserver/components/text";
@@ -50,13 +52,16 @@ import Checkbox from "@appserver/components/checkbox";
 import { isMobile } from "react-device-detect";
 import store from "studio/store";
 
+import ThemeProvider from "@appserver/components/theme-provider";
+
 const { auth: authStore } = store;
+const theme = store.auth.settingsStore.theme;
 
 let documentIsReady = false;
 
-const text = "text";
-const spreadSheet = "spreadsheet";
-const presentation = "presentation";
+const text = "word";
+const spreadSheet = "cell";
+const presentation = "slide";
 const insertImageAction = "imageFileType";
 const mailMergeAction = "mailMergeFileType";
 const compareFilesAction = "documentsFileType";
@@ -69,11 +74,11 @@ let fileInfo;
 let successAuth;
 let isSharingAccess;
 let user = null;
-let personal;
+let personal = IS_PERSONAL || null;
 let config;
 let url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
-const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
+//const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
 
 toast.configure();
 
@@ -98,7 +103,19 @@ const Editor = () => {
   const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
+  const [settings, setSettings] = useState(null);
+
+  const [
+    preparationPortalDialogVisible,
+    setPreparationPortalDialogVisible,
+  ] = useState(false);
+
   let filesSettings;
+
+  useEffect(() => {
+    const tempElm = document.getElementById("loader");
+    tempElm.style.backgroundColor = theme.backgroundColor;
+  }, []);
 
   useEffect(() => {
     if (isRetina() && getCookie("is_retina") == null) {
@@ -214,9 +231,21 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
-        if (user) filesSettings = await getSettingsFiles();
+        if (user) {
+          filesSettings = await getSettingsFiles();
+          setSettings(filesSettings);
+        }
         personal = authStore.settingsStore.personal;
         successAuth = !!user;
+
+        const { socketHelper } = authStore.settingsStore;
+        socketHelper.emit({
+          command: "subscribe",
+          data: "backup-restore",
+        });
+        socketHelper.on("restore-backup", () => {
+          setPreparationPortalDialogVisible(true);
+        });
       } catch (e) {
         successAuth = false;
       }
@@ -318,13 +347,13 @@ const Editor = () => {
     if (!favicon) return;
     let icon = null;
     switch (documentType) {
-      case "text":
+      case text:
         icon = "text.ico";
         break;
-      case "presentation":
+      case presentation:
         icon = "presentation.ico";
         break;
-      case "spreadsheet":
+      case spreadSheet:
         icon = "spreadsheet.ico";
         break;
       default:
@@ -443,7 +472,7 @@ const Editor = () => {
         onRequestSharingSettings = onSDKRequestSharingSettings;
       }
 
-      if (fileInfo && fileInfo.canEdit) {
+      if (fileInfo && fileInfo.canEdit && !fileInfo.providerKey) {
         onRequestRename = onSDKRequestRename;
       }
 
@@ -484,6 +513,8 @@ const Editor = () => {
       const newConfig = Object.assign(config, events);
 
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
+
+      assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
     } catch (error) {
       console.log(error);
       toastr.error(error.message, null, 0, true);
@@ -601,19 +632,22 @@ const Editor = () => {
   const onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
 
-    const index = url.indexOf("#message/");
-    if (index > -1) {
-      const splitUrl = url.split("#message/");
-      const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
-      history.pushState({}, null, url.substring(0, index));
-      docEditor.showMessage(message);
-    } else {
-      if (config?.Error) docEditor.showMessage(config.Error);
-    }
-
     const tempElm = document.getElementById("loader");
     if (tempElm) {
       tempElm.outerHTML = "";
+    }
+
+    const index = url.indexOf("#message/");
+    if (index > -1) {
+      const splitUrl = url.split("#message/");
+      if (splitUrl.length === 2) {
+        let raw = splitUrl[1]?.trim();
+        const message = decodeURIComponent(raw).replace(/\+/g, " ");
+        docEditor.showMessage(message);
+        history.pushState({}, null, url.substring(0, index));
+      }
+    } else {
+      if (config?.Error) docEditor.showMessage(config.Error);
     }
   };
 
@@ -866,50 +900,48 @@ const Editor = () => {
   };
 
   return (
-    <Box
-      widthProp="100vw"
-      heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
-    >
-      <Toast />
+    <ThemeProvider theme={theme}>
+      <Box
+        widthProp="100vw"
+        heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
+      >
+        <Toast />
+        {!isLoading ? (
+          <>
+            <div id="editor"></div>
+            {isSharingAccess && isVisible && (
+              <SharingDialog
+                settings={settings} //TODO: Maybe init filesSettings in editor?
+                isVisible={isVisible}
+                sharingObject={fileInfo}
+                onCancel={onCancel}
+                onSuccess={loadUsersRightsList}
+              />
+            )}
 
-      {!isLoading ? (
-        <>
-          <div id="editor"></div>
-          {isSharingAccess && (
-            <SharingDialog
-              isVisible={isVisible}
-              sharingObject={fileInfo}
-              onCancel={onCancel}
-              onSuccess={loadUsersRightsList}
-            />
-          )}
+            {isFileDialogVisible && (
+              <SelectFileDialog
+                settings={settings} //TODO: Maybe init filesSettings in editor?
+                resetTreeFolders
+                onSelectFile={onSelectFile}
+                isPanelVisible={isFileDialogVisible}
+                onClose={onCloseFileDialog}
+                foldersType="exceptPrivacyTrashFolders"
+                {...fileTypeDetection()}
+                filesListTitle={selectFilesListTitle()}
+              />
+            )}
 
-          {isFileDialogVisible && (
-            <SelectFileDialog
-              resetTreeFolders
-              onSelectFile={onSelectFile}
-              isPanelVisible={isFileDialogVisible}
-              onClose={onCloseFileDialog}
-              foldersType="exceptPrivacyTrashFolders"
-              {...fileTypeDetection()}
-              titleFilesList={selectFilesListTitle()}
-              headerName={i18n.t("SelectFileTitle")}
-            />
-          )}
-
-          {isFolderDialogVisible && (
             <SelectFolderDialog
-              resetTreeFolders
-              showButtons
+              folderId={fileInfo?.folderId}
               isPanelVisible={isFolderDialogVisible}
-              isSetFolderImmediately
-              asideHeightContent="calc(100% - 50px)"
               onClose={onCloseFolderDialog}
               foldersType="exceptSortedByTags"
               onSave={onClickSaveSelectFolder}
+              isDisableButton={!titleSelectorFolder.trim()}
               header={
                 <StyledSelectFolder>
-                  <Text className="editor-select-folder_text">
+                  <Text className="editor-select-folder_text" fontWeight={600}>
                     {i18n.t("FileName")}
                   </Text>
                   <TextInput
@@ -920,7 +952,6 @@ const Editor = () => {
                   />
                 </StyledSelectFolder>
               }
-              headerName={i18n.t("FolderForSave")}
               {...(extension !== "fb2" && {
                 footer: (
                   <StyledSelectFolder>
@@ -934,12 +965,18 @@ const Editor = () => {
                 ),
               })}
             />
-          )}
-        </>
-      ) : (
-        <></>
-      )}
-    </Box>
+
+            {preparationPortalDialogVisible && (
+              <PreparationPortalDialog
+                visible={preparationPortalDialogVisible}
+              />
+            )}
+          </>
+        ) : (
+          <></>
+        )}
+      </Box>
+    </ThemeProvider>
   );
 };
 

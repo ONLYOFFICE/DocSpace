@@ -29,13 +29,13 @@ using System.Globalization;
 
 namespace ASC.Data.Storage
 {
-    public class TenantPath
+    public static class TenantPath
     {
         public static string CreatePath(string tenant)
         {
             if (tenant == null)
             {
-                throw new ArgumentNullException("tenant");
+                throw new ArgumentNullException(nameof(tenant));
             }
 
             if (long.TryParse(tenant, NumberStyles.Integer, CultureInfo.InvariantCulture, out var tenantId))

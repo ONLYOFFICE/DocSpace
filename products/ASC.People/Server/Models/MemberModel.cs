@@ -24,6 +24,7 @@ namespace ASC.People.Models
         public string Files { get; set; }
         public string Password { get; set; }
         public string PasswordHash { get; set; }
+        public string CultureName { get; set; }
         public bool FromInviteLink { get; set; }
     }
 
@@ -31,6 +32,5 @@ namespace ASC.People.Models
     {
         public string UserId { get; set; }
         public bool? Disable { get; set; }
-        public string CultureName { get; set; }
     }
 }

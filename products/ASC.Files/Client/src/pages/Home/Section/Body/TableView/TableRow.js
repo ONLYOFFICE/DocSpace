@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
+import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
 import ItemIcon from "../../../../../components/ItemIcon";
-import SharedButton from "../../../../../components/SharedButton";
 import { withTranslation } from "react-i18next";
 import TableRow from "@appserver/components/table-container/TableRow";
 import TableCell from "@appserver/components/table-container/TableCell";
@@ -15,45 +14,72 @@ import SizeCell from "./sub-components/SizeCell";
 import AuthorCell from "./sub-components/AuthorCell";
 import DateCell from "./sub-components/DateCell";
 import TypeCell from "./sub-components/TypeCell";
-import globalColors from "@appserver/components/utils/globalColors";
 import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
-import { isSafari } from "react-device-detect";
-const sideColor = globalColors.gray;
-const { acceptBackground, background } = Base.dragAndDrop;
+
+const hotkeyBorderStyle = css`
+  border-bottom: 1px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(to left, #2da7db 24px, #2da7db 24px);
+`;
 
 const rowCheckboxDraggingStyle = css`
-  border-image-source: linear-gradient(to right, #f8f7bf 24px, #eceef1 24px);
+  margin-left: -20px;
+  padding-left: 20px;
+
+  border-bottom: 1px solid;
+  border-image-slice: 1;
+  border-image-source: ${(props) => `linear-gradient(to right, 
+          ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
 `;
 
 const contextMenuWrapperDraggingStyle = css`
-  border-image-source: linear-gradient(to left, #f8f7bf 24px, #eceef1 24px);
-`;
+  margin-right: -20px;
+  padding-right: 20px;
 
-const rowCheckboxDraggingHoverStyle = css`
-  border-image-source: linear-gradient(
-    to right,
-    rgb(239, 239, 178) 24px,
-    #eceef1 24px
-  );
-`;
-const contextMenuWrapperDraggingHoverStyle = css`
-  border-image-source: linear-gradient(
-    to left,
-    rgb(239, 239, 178) 24px,
-    #eceef1 24px
-  );
+  border-bottom: 1px solid;
+  border-image-slice: 1;
+  border-image-source: ${(props) => `linear-gradient(to left,
+          ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
 `;
 
 const StyledTableRow = styled(TableRow)`
+  ${(props) =>
+    !props.isDragging &&
+    css`
+      :hover {
+        .table-container_cell {
+          cursor: pointer;
+          background: ${(props) =>
+            `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+
+          margin-top: -1px;
+          ${(props) =>
+            !props.showHotkeyBorder &&
+            css`
+              border-top: ${(props) =>
+                `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+            `}
+        }
+        .table-container_file-name-cell {
+          margin-left: -24px;
+          padding-left: 24px;
+        }
+        .table-container_row-context-menu-wrapper {
+          margin-right: -20px;
+          padding-right: 18px;
+        }
+      }
+    `}
+
   .table-container_cell {
-    /* ${isSafari && `border-image-slice: 0 !important`}; */
     background: ${(props) =>
-      (props.checked || props.isActive) && "#F3F4F4 !important"};
+      (props.checked || props.isActive) &&
+      `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
-      "url(/static/images/cursor.palm.react.svg), auto"};
+      "url(/static/images/cursor.palm.react.svg), auto !important"};
 
     ${(props) =>
       props.inProgress &&
@@ -61,68 +87,53 @@ const StyledTableRow = styled(TableRow)`
         pointer-events: none;
         /* cursor: wait; */
       `}
+
+    ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"}
   }
 
-  .table-container_element {
-    margin-left: ${(props) => (props.item.isFolder ? "-3px" : "-4px")};
+  .table-container_element-wrapper,
+  .table-container_quick-buttons-wrapper {
+    padding-right: 0px;
   }
 
-  &:hover {
-    .table-container_row-checkbox-wrapper {
-      ${(props) => props.dragging && rowCheckboxDraggingHoverStyle}
+  .table-container_element-wrapper,
+  .table-container_row-loader {
+    min-width: 36px;
+  }
+
+  .table-container_row-loader {
+    svg {
+      margin-left: 4px;
     }
-    .table-container_row-context-menu-wrapper {
-      ${(props) => props.dragging && contextMenuWrapperDraggingHoverStyle}
-    }
   }
 
-  .table-container_row-checkbox-wrapper {
-    width: 50px;
-    margin-left: -24px;
-    padding-left: 24px;
+  .table-container_row-checkbox {
+    padding-left: 16px;
+    width: 16px;
+  }
 
+  .table-container_file-name-cell {
     ${(props) =>
-      !props.isActive &&
-      !props.checked &&
+      props.showHotkeyBorder &&
       css`
-        border-image-slice: 1;
-        border-bottom: 1px solid;
-        border-image-source: linear-gradient(
-          to right,
-          #ffffff 17px,
-          #eceef1 31px
-        );
+        margin-left: -24px;
+        padding-left: 24px;
+        ${hotkeyBorderStyle}
       `};
-
-    border-top: 0;
-    border-right: 0;
-    border-left: 0;
-
     ${(props) => props.dragging && rowCheckboxDraggingStyle};
   }
 
   .table-container_row-context-menu-wrapper {
-    margin-right: -20x;
-    width: 28px;
-    padding-right: 18px;
-
-    ${(props) =>
-      !props.isActive &&
-      !props.checked &&
-      css`
-        border-bottom: 1px solid;
-        border-image-slice: 1;
-        border-image-source: linear-gradient(
-          to left,
-          #ffffff 17px,
-          #eceef1 31px
-        );
-      `};
-
-    border-top: 0;
-    border-left: 0;
+    padding-right: 0px;
 
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
+    ${(props) =>
+      props.showHotkeyBorder &&
+      css`
+        margin-right: -20px;
+        padding-right: 18px;
+        ${hotkeyBorderStyle}
+      `};
   }
 
   .edit {
@@ -131,61 +142,111 @@ const StyledTableRow = styled(TableRow)`
       height: 12px;
     }
   }
+
+  ${(props) =>
+    props.showHotkeyBorder &&
+    css`
+      .table-container_cell {
+        margin-top: -1px;
+        border-top: 1px solid #2da7db;
+        border-right: 0;
+        border-left: 0;
+      }
+      .table-container_file-name-cell > .table-container_cell {
+        margin-top: 0;
+      }
+    `}
 `;
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
 `;
 
-const StyledShare = styled.div`
-  cursor: pointer;
-  margin: 0 auto;
-
-  .share-button {
-    padding: 4px;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-    :hover {
-      border: 1px solid #a3a9ae;
-      svg {
-        cursor: pointer;
-      }
-    }
-
-    .share-button-icon {
-      margin-right: 4px;
-      padding-top: 3px;
-    }
-  }
-`;
-
 const StyledBadgesContainer = styled.div`
-  display: flex;
-  align-items: center;
-  height: 19px;
   margin-left: 8px;
 
   .badges {
     display: flex;
     align-items: center;
-    height: 19px;
     margin-right: 12px;
+  }
+
+  .badges:last-child {
+    margin-left: 0px;
   }
 
   .badge {
     cursor: pointer;
-    height: 14px;
-    width: 14px;
-    margin-right: 6px;
+    margin-right: 8px;
+  }
+
+  .new-items {
+    min-width: 12px;
+    width: max-content;
+    margin: 1px -2px -2px -2px;
+  }
+
+  .badge-version {
+    width: max-content;
+    margin: 0 5px -2px -2px;
+
+    > div {
+      padding: 0 3.3px 0 4px;
+      p {
+        letter-spacing: 0.5px;
+        font-size: 8px;
+        font-weight: 800;
+      }
+    }
+  }
+
+  .badge-new-version {
+    width: max-content;
   }
 `;
+
+const StyledQuickButtonsContainer = styled.div`
+  width: 100%;
+
+  .badges {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .badge {
+    margin-right: 14px;
+  }
+
+  .badge:last-child {
+    margin-right: 10px;
+  }
+
+  .lock-file {
+    svg {
+      height: 12px;
+    }
+  }
+
+  .favorite {
+    margin-top: 1px;
+  }
+
+  .share-button-icon:hover {
+    cursor: pointer;
+    path {
+      fill: ${(props) =>
+        props.theme.filesSection.tableView.row.shareHoverColor};
+    }
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+`;
+
+StyledQuickButtonsContainer.defaultProps = { theme: Base };
 
 const FilesTableRow = (props) => {
   const {
     t,
-    contextOptionsProps,
     fileContextClick,
     item,
     onContentFileSelect,
@@ -198,7 +259,6 @@ const FilesTableRow = (props) => {
     isDragging,
     onDrop,
     onMouseDown,
-    showShare,
     personal,
     isActive,
     onHideContextMenu,
@@ -206,18 +266,15 @@ const FilesTableRow = (props) => {
     inProgress,
     index,
     setFirsElemChecked,
+    setHeaderBorder,
+    theme,
+    quickButtonsComponent,
+    getContextModel,
+    showHotkeyBorder,
+    tableColumns,
+    id,
   } = props;
-
-  const sharedButton =
-    item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-        isSmallIcon={true}
-      />
-    ) : null;
+  const { acceptBackground, background } = theme.dragAndDrop;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -252,19 +309,50 @@ const FilesTableRow = (props) => {
   };
 
   React.useEffect(() => {
-    if (index === 0 && (checkedProps || isActive)) {
-      setFirsElemChecked(true);
-    } else {
-      index === 0 && setFirsElemChecked(false);
+    if (index === 0) {
+      if (checkedProps || isActive) {
+        setFirsElemChecked(true);
+      } else {
+        setFirsElemChecked(false);
+      }
+      if (showHotkeyBorder) {
+        setHeaderBorder(true);
+      } else {
+        setHeaderBorder(false);
+      }
     }
-  }, [checkedProps, isActive]);
+  }, [checkedProps, isActive, showHotkeyBorder]);
+
+  let availableColumns = [];
+  let authorAvailableDrag = true;
+  let createdAvailableDrag = true;
+  let modifiedAvailableDrag = true;
+  let sizeAvailableDrag = true;
+  let typeAvailableDrag = true;
+  let buttonsAvailableDrag = true;
+
+  if (dragging && isDragging) {
+    availableColumns = localStorage.getItem(tableColumns).split(",");
+
+    authorAvailableDrag = availableColumns.includes("Author");
+    createdAvailableDrag = availableColumns.includes("Created");
+    modifiedAvailableDrag = availableColumns.includes("Modified");
+    sizeAvailableDrag = availableColumns.includes("Size");
+    typeAvailableDrag = availableColumns.includes("Type");
+    buttonsAvailableDrag = availableColumns.includes("QuickButtons");
+  }
 
   return (
     <StyledDragAndDrop
+      id={id}
       data-title={item.title}
       value={value}
-      className={`files-item ${className} ${
-        checkedProps || isActive ? "table-row-selected" : ""
+      className={`files-item ${className} ${item.id}_${item.fileExst} ${
+        showHotkeyBorder
+          ? "table-hotkey-border"
+          : checkedProps || isActive
+          ? "table-row-selected"
+          : ""
       }`}
       onDrop={onDrop}
       onMouseDown={onMouseDown}
@@ -275,55 +363,123 @@ const FilesTableRow = (props) => {
       <StyledTableRow
         className="table-row"
         {...dragStyles}
+        isDragging={dragging}
         dragging={dragging && isDragging}
         selectionProp={selectionProp}
         key={item.id}
-        item={item}
-        element={element}
         fileContextClick={fileContextClick}
-        onContentSelect={onContentFileSelect}
         onClick={onMouseClick}
-        {...contextOptionsProps}
-        checked={checkedProps}
         isActive={isActive}
         inProgress={inProgress}
+        isFolder={item.isFolder}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
+        checked={checkedProps}
+        contextOptions={item.contextOptions}
+        getContextModel={getContextModel}
+        showHotkeyBorder={showHotkeyBorder}
+        title={
+          item.isFolder
+            ? t("Translations:TitleShowFolderActions")
+            : t("Translations:TitleShowActions")
+        }
       >
-        <TableCell {...dragStyles} {...selectionProp}>
-          <FileNameCell {...props} />
+        <TableCell
+          {...dragStyles}
+          className={`${selectionProp?.className} table-container_file-name-cell`}
+          value={value}
+        >
+          <FileNameCell
+            theme={theme}
+            onContentSelect={onContentFileSelect}
+            checked={checkedProps}
+            element={element}
+            inProgress={inProgress}
+            {...props}
+          />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
         {!personal && (
-          <TableCell {...dragStyles} {...selectionProp}>
-            <AuthorCell sideColor={sideColor} {...props} />
+          <TableCell
+            style={
+              !authorAvailableDrag ? { background: "none" } : dragStyles.style
+            }
+            {...selectionProp}
+          >
+            <AuthorCell
+              sideColor={theme.filesSection.tableView.row.sideColor}
+              {...props}
+            />
           </TableCell>
         )}
-        <TableCell {...dragStyles} {...selectionProp}>
-          <DateCell create sideColor={sideColor} {...props} />
+        <TableCell
+          style={
+            !createdAvailableDrag
+              ? { background: "none !important" }
+              : dragStyles.style
+          }
+          {...selectionProp}
+        >
+          <DateCell
+            create
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp}>
-          <DateCell sideColor={sideColor} {...props} />
+        <TableCell
+          style={
+            !modifiedAvailableDrag ? { background: "none" } : dragStyles.style
+          }
+          {...selectionProp}
+        >
+          <DateCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp}>
-          <SizeCell sideColor={sideColor} {...props} />
+        <TableCell
+          style={!sizeAvailableDrag ? { background: "none" } : dragStyles.style}
+          {...selectionProp}
+        >
+          <SizeCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp}>
-          <TypeCell sideColor={sideColor} {...props} />
+        <TableCell
+          style={
+            !typeAvailableDrag
+              ? { background: "none !important" }
+              : dragStyles.style
+          }
+          {...selectionProp}
+        >
+          <TypeCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp}>
-          <StyledShare>{sharedButton}</StyledShare>
+        <TableCell
+          style={
+            !buttonsAvailableDrag ? { background: "none" } : dragStyles.style
+          }
+          {...selectionProp}
+          className={`${selectionProp?.className} table-container_quick-buttons-wrapper`}
+        >
+          <StyledQuickButtonsContainer>
+            {quickButtonsComponent}
+          </StyledQuickButtonsContainer>
         </TableCell>
       </StyledTableRow>
     </StyledDragAndDrop>
   );
 };
 
-export default withTranslation("Home")(
-  withFileActions(
-    withRouter(withContextOptions(withContent(withBadges(FilesTableRow))))
+export default withTranslation(["Home", "Common", "InfoPanel"])(
+  withRouter(
+    withFileActions(withContent(withQuickButtons(withBadges(FilesTableRow))))
   )
 );

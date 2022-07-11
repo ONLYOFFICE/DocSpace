@@ -186,7 +186,7 @@ namespace System.Web
             }
 
             const StringComparison cmp = StringComparison.OrdinalIgnoreCase;
-            if (0 < s.Length && (s.StartsWith("0", cmp)))
+            if (0 < s.Length && s.StartsWith('0'))
             {
                 s = Uri.UriSchemeHttp + s.Substring(1);
             }
@@ -194,7 +194,7 @@ namespace System.Web
             {
                 s = Uri.UriSchemeHttp + s.Substring(3);
             }
-            else if (0 < s.Length && (s.StartsWith("1", cmp)))
+            else if (0 < s.Length && s.StartsWith('1'))
             {
                 s = Uri.UriSchemeHttps + s.Substring(1);
             }

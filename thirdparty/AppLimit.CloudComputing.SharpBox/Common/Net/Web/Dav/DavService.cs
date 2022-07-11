@@ -50,7 +50,10 @@ namespace AppLimit.CloudComputing.SharpBox.Common.Net.Web.Dav
 
             // set the content type
             request.ContentType = "application/octet-stream";
-#if NET5_0
+
+            // bug 53196
+            request.ServicePoint.Expect100Continue = true;
+#if NET6_0_OR_GREATER
             request.Headers.Add("Expect", "100-continue");
 #endif
             // go ahead

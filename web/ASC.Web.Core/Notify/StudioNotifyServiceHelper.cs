@@ -2,12 +2,15 @@
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Notify
 {
@@ -25,7 +28,8 @@ namespace ASC.Web.Core.Notify
             AuthContext authContext,
             TenantManager tenantManager,
             CommonLinkUtility commonLinkUtility,
-            ICacheNotify<NotifyItem> cache)
+            ICacheNotify<NotifyItem> cache,
+            IOptionsMonitor<ILog> options)
         {
             StudioNotifyHelper = studioNotifyHelper;
             AuthContext = authContext;
@@ -85,14 +89,14 @@ namespace ASC.Web.Core.Notify
 
             if (objectID != null)
             {
-                item.ObjectID = objectID;
+                item.ObjectId = objectID;
             }
 
             if (recipients != null)
             {
                 foreach (var r in recipients)
                 {
-                    var recipient = new Recipient { ID = r.ID, Name = r.Name };
+                    var recipient = new Recipient { Id = r.ID, Name = r.Name };
                     if (r is IDirectRecipient d)
                     {
                         recipient.Addresses.AddRange(d.Addresses);

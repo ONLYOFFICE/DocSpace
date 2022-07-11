@@ -54,7 +54,7 @@ namespace ASC.Core.Configuration
 
         public bool IsDefaultSettings { get; internal set; }
 
-        public static SmtpSettings Empty = new SmtpSettings();
+        public static readonly SmtpSettings Empty = new SmtpSettings();
 
         private SmtpSettings()
         {
@@ -83,17 +83,17 @@ namespace ASC.Core.Configuration
         {
             if (string.IsNullOrEmpty(host))
             {
-                throw new ArgumentException("Empty smtp host.", "host");
+                throw new ArgumentException("Empty smtp host.", nameof(host));
             }
             if (string.IsNullOrEmpty(senderAddress))
             {
-                throw new ArgumentException("Empty sender address.", "senderAddress");
+                throw new ArgumentException("Empty sender address.", nameof(senderAddress));
             }
 
             Host = host;
             Port = port;
             SenderAddress = senderAddress;
-            SenderDisplayName = senderDisplayName ?? throw new ArgumentNullException("senderDisplayName");
+            SenderDisplayName = senderDisplayName ?? throw new ArgumentNullException(nameof(senderDisplayName));
         }
 
         public void SetCredentials(string userName, string password)
@@ -105,11 +105,11 @@ namespace ASC.Core.Configuration
         {
             if (string.IsNullOrEmpty(userName))
             {
-                throw new ArgumentException("Empty user name.", "userName");
+                throw new ArgumentException("Empty user name.", nameof(userName));
             }
             if (string.IsNullOrEmpty(password))
             {
-                throw new ArgumentException("Empty password.", "password");
+                throw new ArgumentException("Empty password.", nameof(password));
             }
             CredentialsUserName = userName;
             CredentialsUserPassword = password;

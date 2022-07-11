@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Web.Files.Classes;
@@ -33,9 +34,9 @@ namespace ASC.Web.Files.Core.Compress
     {
         private readonly ICompress compress;
 
-        internal static string TarExt = ".tar.gz";
-        internal static string ZipExt = ".zip";
-        private static List<string> Exts = new List<string>(2) { TarExt, ZipExt };
+        internal static readonly string TarExt = ".tar.gz";
+        internal static readonly string ZipExt = ".zip";
+        private static readonly List<string> Exts = new List<string>(2) { TarExt, ZipExt };
 
         public CompressToArchive(FilesSettingsHelper filesSettings, CompressToTarGz compressToTarGz, CompressToZip compressToZip)
         {
@@ -63,7 +64,7 @@ namespace ASC.Web.Files.Core.Compress
         /// Transfer the file itself to the archive
         /// </summary>
         /// <param name="readStream">File data</param>
-        public void PutStream(Stream readStream) => compress.PutStream(readStream);
+        public async Task PutStream(Stream readStream) => await compress.PutStream(readStream);
 
         /// <summary>
         /// Put an entry on the output stream.

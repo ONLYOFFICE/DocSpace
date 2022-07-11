@@ -1,19 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <ProjectGuid>{77BA2F61-6155-4283-BB39-F8E42F46A0B0}</ProjectGuid>
-    <TargetFramework>net5.0</TargetFramework>
-    <FileUpgradeFlags />
-    <UpgradeBackupLocation />
+	  <TargetFramework>net6.0</TargetFramework>
+	  <IsPackable>false</IsPackable>
+	  <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
+	  <RazorCompileOnBuild>false</RazorCompileOnBuild>
+	  <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
     <AssemblyTitle>ASC.Files</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Files</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <EnableNETAnalyzers>false</EnableNETAnalyzers>
-    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
-    <RazorCompileOnBuild>false</RazorCompileOnBuild>
-    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -23,9 +19,10 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
+    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
+    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
@@ -35,7 +32,13 @@
     <None Update="DocStore\new\az-Latn-AZ\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\az-Latn-AZ\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\az-Latn-AZ\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\az-Latn-AZ\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\az-Latn-AZ\new.pptx">
@@ -53,7 +56,13 @@
     <None Update="DocStore\new\bg-BG\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\bg-BG\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\bg-BG\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\bg-BG\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\bg-BG\new.pptx">
@@ -71,7 +80,13 @@
     <None Update="DocStore\new\cs-CZ\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\cs-CZ\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\cs-CZ\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\cs-CZ\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\cs-CZ\new.pptx">
@@ -89,7 +104,13 @@
     <None Update="DocStore\new\de-DE\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\de-DE\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\de-DE\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\de-DE\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\de-DE\new.pptx">
@@ -107,7 +128,13 @@
     <None Update="DocStore\new\el-GR\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\el-GR\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\el-GR\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\el-GR\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\el-GR\new.pptx">
@@ -125,7 +152,13 @@
     <None Update="DocStore\new\en-GB\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\en-GB\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\en-GB\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\en-GB\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\en-GB\new.pptx">
@@ -143,7 +176,13 @@
     <None Update="DocStore\new\en-US\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\en-US\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\en-US\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\en-US\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\en-US\new.pptx">
@@ -161,7 +200,13 @@
     <None Update="DocStore\new\es-ES\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\es-ES\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\es-ES\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\es-ES\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\es-ES\new.pptx">
@@ -179,7 +224,13 @@
     <None Update="DocStore\new\fr-FR\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\fr-FR\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\fr-FR\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\fr-FR\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\fr-FR\new.pptx">
@@ -197,7 +248,13 @@
     <None Update="DocStore\new\it-IT\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\it-IT\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\it-IT\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\it-IT\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\it-IT\new.pptx">
@@ -215,7 +272,13 @@
     <None Update="DocStore\new\ja-JP\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\ja-JP\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\ja-JP\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\ja-JP\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\ja-JP\new.pptx">
@@ -233,7 +296,13 @@
     <None Update="DocStore\new\ko-KR\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\ko-KR\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\ko-KR\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\ko-KR\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\ko-KR\new.pptx">
@@ -251,7 +320,13 @@
     <None Update="DocStore\new\lv-LV\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\lv-LV\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\lv-LV\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\lv-LV\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\lv-LV\new.pptx">
@@ -269,7 +344,13 @@
     <None Update="DocStore\new\nl-NL\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\nl-NL\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\nl-NL\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\nl-NL\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\nl-NL\new.pptx">
@@ -287,7 +368,13 @@
     <None Update="DocStore\new\pl-PL\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\pl-PL\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\pl-PL\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\pl-PL\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\pl-PL\new.pptx">
@@ -305,7 +392,13 @@
     <None Update="DocStore\new\pt-BR\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\pt-BR\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\pt-BR\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\pt-BR\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\pt-BR\new.pptx">
@@ -323,7 +416,13 @@
     <None Update="DocStore\new\pt-PT\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\pt-PT\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\pt-PT\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\pt-PT\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\pt-PT\new.pptx">
@@ -341,7 +440,13 @@
     <None Update="DocStore\new\ru-RU\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\ru-RU\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\ru-RU\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\ru-RU\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\ru-RU\new.pptx">
@@ -359,7 +464,13 @@
     <None Update="DocStore\new\sk-SK\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\sk-SK\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\sk-SK\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\sk-SK\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\sk-SK\new.pptx">
@@ -377,7 +488,13 @@
     <None Update="DocStore\new\sv-SE\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\sv-SE\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\sv-SE\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\sv-SE\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\sv-SE\new.pptx">
@@ -392,10 +509,40 @@
     <None Update="DocStore\new\sv-SE\xlsx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\tr-TR\docx.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\tr-TR\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\tr-TR\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\tr-TR\new.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\tr-TR\new.pptx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\tr-TR\new.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\tr-TR\pptx.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\tr-TR\xlsx.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\uk-UA\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\uk-UA\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\uk-UA\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\uk-UA\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\uk-UA\new.pptx">
@@ -411,27 +558,39 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\vi-VN\docx.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\vi-VN\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\vi-VN\new.docx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\vi-VN\new.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\vi-VN\new.pptx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\vi-VN\new.xlsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\vi-VN\pptx.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\vi-VN\xlsx.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\zh-CN\docx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\new\zh-CN\docxf.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\new\zh-CN\new.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\new\zh-CN\new.docxf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\new\zh-CN\new.pptx">
@@ -446,6 +605,12 @@
     <None Update="DocStore\new\zh-CN\xlsx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\sample\de-DE\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\de-DE\my\ONLYOFFICE Sample Form.oform">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\sample\de-DE\my\ONLYOFFICE-Musteraudio.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -453,7 +618,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\de-DE\my\ONLYOFFICE-Musterpraesentation.pptx.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\de-DE\my\ONLYOFFICE-Musterpräsentation.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -468,6 +633,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Form.oform">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Presentation.pptx">
@@ -485,6 +656,12 @@
     <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Document.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Form.oform">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Presentation.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -498,6 +675,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Form.oform">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Presentation.pptx">
@@ -515,6 +698,12 @@
     <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Document.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Form.oform">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Presentation.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -528,6 +717,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Form.oform">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Presentation.pptx">

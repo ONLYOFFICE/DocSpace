@@ -62,7 +62,7 @@ namespace ASC.Files.Service.Core
 
                 var owner = (Guid)feed.Target;
                 var groupUsers = UserManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
-                if (!groupUsers.Any())
+                if (groupUsers.Count == 0)
                 {
                     groupUsers.Add(owner);
                 }
@@ -73,22 +73,22 @@ namespace ASC.Files.Service.Core
                 targetCond = true;
             }
 
-            return targetCond && FileSecurity.CanRead(folder, userId);
+            return targetCond && FileSecurity.CanReadAsync(folder, userId).Result;
         }
 
         public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
         {
-            return FolderDao.GetTenantsWithFeedsForFolders(fromTime);
+            return FolderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).Result;
         }
 
         public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
         {
-            var folders = FolderDao.GetFeedsForFolders(filter.Tenant, filter.Time.From, filter.Time.To)
+            var folders = FolderDao.GetFeedsForFoldersAsync(filter.Tenant, filter.Time.From, filter.Time.To).Result
                         .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
                         .ToList();
 
             var parentFolderIDs = folders.Select(r => r.Item1.FolderID).ToList();
-            var parentFolders = FolderDao.GetFolders(parentFolderIDs, checkShare: false);
+            var parentFolders = FolderDao.GetFoldersAsync(parentFolderIDs, checkShare: false).ToListAsync().Result;
 
             return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.ID.Equals(f.Item1.FolderID))), f));
         }
@@ -110,7 +110,7 @@ namespace ASC.Files.Service.Core
                     Title = folder.Title,
                     ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
                     ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(folder.FolderID, false) : string.Empty,
-                    Keywords = string.Format("{0}", folder.Title),
+                    Keywords = folder.Title,
                     HasPreview = false,
                     CanComment = false,
                     Target = shareRecord.ShareTo,
@@ -130,7 +130,7 @@ namespace ASC.Files.Service.Core
                 Title = folder.Title,
                 ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
                 ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(folder.FolderID, false) : string.Empty,
-                Keywords = string.Format("{0}", folder.Title),
+                Keywords = folder.Title,
                 HasPreview = false,
                 CanComment = false,
                 Target = null,

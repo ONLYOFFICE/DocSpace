@@ -69,7 +69,7 @@ namespace ASC.Notify.Model
                 if (subscriptionRecord != null)
                 {
                     var properties = subscriptionRecord.GetType().GetProperties();
-                    if (properties.Any())
+                    if (properties.Length > 0)
                     {
                         var property = properties.Single(p => p.Name == "Subscribed");
                         if (property != null)

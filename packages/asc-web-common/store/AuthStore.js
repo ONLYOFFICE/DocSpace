@@ -6,10 +6,11 @@ import ModuleStore from "./ModuleStore";
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
+import InfoPanelStore from "./InfoPanelStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
 import isEmpty from "lodash/isEmpty";
-import { AppServerConfig, LANGUAGE } from "../constants";
+import { AppServerConfig, LANGUAGE, TenantStatus } from "../constants";
 const { proxyURL } = AppServerConfig;
 
 class AuthStore {
@@ -17,6 +18,7 @@ class AuthStore {
   moduleStore = null;
   settingsStore = null;
   tfaStore = null;
+  infoPanelStore = null;
 
   isLoading = false;
   version = null;
@@ -29,6 +31,7 @@ class AuthStore {
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
     this.tfaStore = new TfaStore();
+    this.infoPanelStore = new InfoPanelStore();
 
     makeAutoObservable(this);
   }
@@ -39,19 +42,23 @@ class AuthStore {
 
     this.skipModules = skipModules;
 
-    await this.userStore.init();
+    try {
+      await this.userStore.init();
+    } catch (e) {
+      console.error(e);
+    }
 
     const requests = [];
     requests.push(this.settingsStore.init());
 
     if (this.isAuthenticated && !skipModules) {
-      requests.push(this.moduleStore.init());
+      this.userStore.user && requests.push(this.moduleStore.init());
     }
 
     return Promise.all(requests);
   };
   setLanguage() {
-    if (this.userStore.user.cultureName) {
+    if (this.userStore.user?.cultureName) {
       localStorage.getItem(LANGUAGE) !== this.userStore.user.cultureName &&
         localStorage.setItem(LANGUAGE, this.userStore.user.cultureName);
     } else {
@@ -61,9 +68,12 @@ class AuthStore {
   get isLoaded() {
     let success = false;
     if (this.isAuthenticated) {
-      success = this.userStore.isLoaded && this.settingsStore.isLoaded;
+      success =
+        (this.userStore.isLoaded && this.settingsStore.isLoaded) ||
+        this.settingsStore.tenantStatus === TenantStatus.PortalRestore;
 
-      if (!this.skipModules) success = success && this.moduleStore.isLoaded;
+      if (!this.skipModules && this.userStore.user)
+        success = success && this.moduleStore.isLoaded;
 
       success && this.setLanguage();
     } else {
@@ -211,7 +221,7 @@ class AuthStore {
     this.settingsStore = new SettingsStore();
   };
 
-  logout = async (redirectToLogin = true) => {
+  logout = async (redirectToLogin = true, redirectPath = null) => {
     await api.user.logout();
 
     //console.log("Logout response ", response);
@@ -223,6 +233,9 @@ class AuthStore {
     isDesktop && logoutDesktop();
 
     if (redirectToLogin) {
+      if (redirectPath) {
+        return window.location.replace(redirectPath);
+      }
       if (personal) {
         return window.location.replace("/");
       } else {
@@ -238,7 +251,10 @@ class AuthStore {
   };
 
   get isAuthenticated() {
-    return this.userStore.isAuthenticated;
+    return (
+      this.userStore.isAuthenticated ||
+      this.settingsStore.tenantStatus === TenantStatus.PortalRestore
+    );
   }
 
   getEncryptionAccess = (fileId) => {
@@ -309,6 +325,27 @@ class AuthStore {
 
   setProviders = (providers) => {
     this.providers = providers;
+  };
+
+  getOforms = () => {
+    const culture =
+      this.userStore.user.cultureName || this.settingsStore.culture;
+
+    const promise = new Promise(async (resolve, reject) => {
+      let oforms = await api.settings.getOforms(
+        `${this.settingsStore.urlOforms}${culture}`
+      );
+
+      if (!oforms?.data?.data.length) {
+        oforms = await api.settings.getOforms(
+          `${this.settingsStore.urlOforms}en`
+        );
+      }
+
+      resolve(oforms);
+    });
+
+    return promise;
   };
 }
 

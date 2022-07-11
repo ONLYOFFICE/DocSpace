@@ -62,7 +62,7 @@ namespace ASC.VoipService.Dao
             get
             {
                 if (string.IsNullOrWhiteSpace(Type)) return null;
-                if (TypeStatuses.ContainsKey(Type)) return TypeStatuses[Type];
+                if (TypeStatuses.TryGetValue(Type, out var status)) return status;
 
                 return null;
             }

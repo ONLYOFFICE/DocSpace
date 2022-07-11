@@ -32,9 +32,12 @@ class ComboButton extends React.Component {
       isOpen,
       scaled,
       size,
+      comboIcon,
+      fillIcon,
     } = this.props;
 
     const defaultOption = selectedOption.default;
+    const isSelected = selectedOption.key !== 0;
 
     return (
       <StyledComboButton
@@ -46,6 +49,7 @@ class ComboButton extends React.Component {
         onClick={onClick}
         scaled={scaled}
         size={size}
+        isSelected={isSelected}
         className="combo-button"
       >
         {innerContainer && (
@@ -62,10 +66,11 @@ class ComboButton extends React.Component {
             className="forceColor"
             isDisabled={isDisabled}
             defaultOption={defaultOption}
+            isSelected={isSelected}
           >
             <ReactSVG
               src={selectedOption.icon}
-              className="combo-button_selected-icon"
+              className={fillIcon ? "combo-button_selected-icon" : ""}
             />
           </StyledIcon>
         )}
@@ -85,12 +90,18 @@ class ComboButton extends React.Component {
           isOpen={isOpen}
           className="combo-buttons_arrow-icon"
         >
-          {(withOptions || withAdvancedOptions) && (
-            <StyledExpanderDownIcon
-              size="scale"
-              className="combo-buttons_expander-icon"
-            />
-          )}
+          {(withOptions || withAdvancedOptions) &&
+            (comboIcon ? (
+              <ReactSVG
+                src={comboIcon}
+                className="combo-buttons_expander-icon"
+              />
+            ) : (
+              <StyledExpanderDownIcon
+                size="scale"
+                className="combo-buttons_expander-icon"
+              />
+            ))}
         </StyledArrowIcon>
       </StyledComboButton>
     );
@@ -116,6 +127,8 @@ ComboButton.propTypes = {
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "content"]),
   scaled: PropTypes.bool,
   onClick: PropTypes.func,
+  comboIcon: PropTypes.string,
+  fillIcon: PropTypes.bool,
 };
 
 ComboButton.defaultProps = {

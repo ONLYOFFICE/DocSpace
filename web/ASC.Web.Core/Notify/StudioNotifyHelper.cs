@@ -170,7 +170,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var sended = spamEmailSettings.MailsSended;
 
                     var mayTake = Math.Max(0, CountMailsToNotActivated - sended);
-                    var tryCount = res.Count();
+                    var tryCount = res.Count;
                     if (mayTake < tryCount)
                     {
                         res = res.Take(mayTake).ToList();

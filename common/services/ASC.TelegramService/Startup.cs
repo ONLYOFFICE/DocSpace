@@ -36,7 +36,7 @@ namespace ASC.TelegramService
     {
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
         {
-
+            LoadProducts = false;
         }
 
         public override void ConfigureServices(IServiceCollection services)

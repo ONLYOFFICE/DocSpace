@@ -1,3 +1,4 @@
-﻿{
-    "NotAvailableFolder": "Nie sú k dispozícii žiadne priečinky"
+{
+  "FolderContents": "Obsah priečinka '{{folderTitle}}'",
+  "NotAvailableFolder": "Nie sú k dispozícii žiadne priečinky"
 }

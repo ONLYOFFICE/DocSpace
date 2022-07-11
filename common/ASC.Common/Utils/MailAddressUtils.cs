@@ -66,7 +66,7 @@ namespace ASC.Common.Utils
 
         private static string ToSmtpAddress(string address, string displayName)
         {
-            return string.Format("\"{0}\" <{1}>", displayName, address);
+            return $"\"{displayName}\" <{address}>";
         }
     }
 }

@@ -83,7 +83,6 @@ namespace ASC.Data.Storage.DiscStorage
                     {
                         await context.Response.SendFileAsync(path);
                     }
-
                     context.Response.ContentType = MimeMapping.GetMimeMapping(path);
                     //TODO
                     //context.Response.Cache.SetVaryByCustom("*");

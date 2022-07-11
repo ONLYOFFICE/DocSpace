@@ -1,2 +1,0 @@
-echo "RUN ASC.CRM.BackgroundTasks"
-call dotnet run --project ..\..\products\ASC.CRM\BackgroundTasks\ASC.CRM.BackgroundTasks.csproj --no-build --$STORAGE_ROOT=..\..\..\Data --log__dir=..\..\..\Logs --log__name=crm

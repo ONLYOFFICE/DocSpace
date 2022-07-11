@@ -32,6 +32,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 
 using AutoMapper;
@@ -81,6 +82,7 @@ namespace ASC.CRM.Core.Dao
         public List<CurrencyInfo> GetBasic()
         {
             var dbItems = CrmDbContext.CurrencyInfo
+                                        .AsQueryable()
                                         .Where(x => x.IsBasic)
                                         .ToList();
 
@@ -90,6 +92,7 @@ namespace ASC.CRM.Core.Dao
         public List<CurrencyInfo> GetOther()
         {
             var dbItems = CrmDbContext.CurrencyInfo
+                                       .AsQueryable()
                                        .Where(x => !x.IsBasic)
                                        .ToList();
 

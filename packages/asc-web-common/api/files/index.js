@@ -3,6 +3,8 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
+import { getFolderOptions } from "../../utils";
+import { Encoder } from "../../utils/encoder";
 
 export function openEdit(fileId, version, doc, view) {
   const params = []; // doc ? `?doc=${doc}` : "";
@@ -47,21 +49,32 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
+const decodeDisplayName = (items) => {
+  return items.map((item) => {
+    if (!item) return item;
+
+    if (item.updatedBy?.displayName) {
+      item.updatedBy.displayName = Encoder.htmlDecode(
+        item.updatedBy.displayName
+      );
+    }
+    if (item.createdBy?.displayName) {
+      item.createdBy.displayName = Encoder.htmlDecode(
+        item.createdBy.displayName
+      );
+    }
+    return item;
+  });
+};
+
 export function getFolder(folderId, filter) {
-  if (folderId && typeof folderId === "string") {
-    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
-  }
+  const options = getFolderOptions(folderId, filter);
+  return request(options).then((res) => {
+    res.files = decodeDisplayName(res.files);
+    res.folders = decodeDisplayName(res.folders);
 
-  const params =
-    filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toApiUrlParams()}`
-      : folderId;
-  const options = {
-    method: "get",
-    url: `/files/${params}`,
-  };
-
-  return request(options);
+    return res;
+  });
 }
 
 const getFolderClassNameByType = (folderType) => {
@@ -181,6 +194,38 @@ export function getFoldersTree() {
   );
 }
 
+export function getCommonFoldersTree() {
+  const index = 1;
+  return request({ method: "get", url: "/files/@common" }).then(
+    (commonFolders) => {
+      return [
+        {
+          id: commonFolders.current.id,
+          key: `0-${index}`,
+          parentId: commonFolders.current.parentId,
+          title: commonFolders.current.title,
+          rootFolderType: +commonFolders.current.rootFolderType,
+          rootFolderName: "@common",
+          pathParts: commonFolders.pathParts,
+          foldersCount: commonFolders.current.foldersCount,
+          newItems: commonFolders.new,
+        },
+      ];
+    }
+  );
+}
+
+export function getThirdPartyCommonFolderTree() {
+  return request({ method: "get", url: "/files/thirdparty/common" }).then(
+    (commonThirdPartyArray) => {
+      commonThirdPartyArray.map((currentValue, index) => {
+        commonThirdPartyArray[index].key = `0-${index}`;
+      });
+      return commonThirdPartyArray;
+    }
+  );
+}
+
 export function getMyFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
@@ -277,8 +322,8 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   return request(options);
 }
 
-export function createFile(folderId, title, templateId) {
-  const data = { title, templateId };
+export function createFile(folderId, title, templateId, formId) {
+  const data = { title, templateId, formId };
   const options = {
     method: "post",
     url: `/files/${folderId}/file`,
@@ -462,9 +507,10 @@ export function startUploadSession(
   fileName,
   fileSize,
   relativePath,
-  encrypted
+  encrypted,
+  createOn
 ) {
-  const data = { fileName, fileSize, relativePath, encrypted };
+  const data = { fileName, fileSize, relativePath, encrypted, createOn };
   return request({
     method: "post",
     url: `/files/${folderId}/upload/create_session.json`,

@@ -1,8 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { Trans } from "react-i18next";
-import { isMobile } from "react-device-detect";
-
 import toastr from "studio/toastr";
 import {
   AppServerConfig,
@@ -11,7 +8,8 @@ import {
   ShareAccessRights,
 } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
-
+import getCorrectDate from "@appserver/components/utils/getCorrectDate";
+import { LANGUAGE } from "@appserver/common/constants";
 import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
@@ -23,12 +21,19 @@ export default function withContent(WrappedContent) {
     constructor(props) {
       super(props);
 
-      const { item, fileActionId, fileActionExt, fileActionTemplateId } = props;
+      const {
+        item,
+        fileActionId,
+        fileActionExt,
+        fileActionTemplateId,
+        fromTemplate,
+      } = props;
       let titleWithoutExt = props.titleWithoutExt;
       if (
         fileActionId === -1 &&
         item.id === fileActionId &&
-        fileActionTemplateId === null
+        fileActionTemplateId === null &&
+        !fromTemplate
       ) {
         titleWithoutExt = getDefaultFileName(fileActionExt);
       }
@@ -113,7 +118,10 @@ export default function withContent(WrappedContent) {
                 })
               )
             )
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              toastr.error(err);
+              this.completeAction(fileActionId);
+            })
             .finally(() => {
               clearTimeout(timerId);
               timerId = null;
@@ -131,7 +139,10 @@ export default function withContent(WrappedContent) {
                 })
               )
             )
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              toastr.error(err);
+              this.completeAction(fileActionId);
+            })
             .finally(() => {
               clearTimeout(timerId);
               timerId = null;
@@ -178,7 +189,6 @@ export default function withContent(WrappedContent) {
         createFolder,
         fileActionTemplateId,
         isDesktop,
-        isLoading,
         isPrivacy,
         item,
         openDocEditor,
@@ -192,14 +202,16 @@ export default function withContent(WrappedContent) {
         clearActiveOperations,
         addActiveItems,
         fileCopyAs,
+        fromTemplate,
+        gallerySelected,
+        setCreatedItem,
       } = this.props;
       const { itemTitle } = this.state;
+      const { parentId, fileExst } = item;
 
       const isMakeFormFromFile = fileActionTemplateId ? true : false;
 
       let title = itemTitle;
-
-      if (isLoading) return;
 
       setIsLoading(true);
 
@@ -235,13 +247,18 @@ export default function withContent(WrappedContent) {
           .then((folder) => {
             createdFolderId = folder.id;
             addActiveItems(null, [folder.id]);
+            setCreatedItem({ id: createdFolderId, type: "folder" });
           })
           .then(() => this.completeAction(itemId))
-          .catch((e) => toastr.error(e))
+          .catch((e) => {
+            toastr.error(e);
+            this.completeAction(itemId);
+          })
           .finally(() => {
             const folderIds = [+itemId];
             createdFolderId && folderIds.push(createdFolderId);
 
+            setIsUpdatingRowItem(false);
             clearActiveOperations(null, folderIds);
 
             return setIsLoading(false);
@@ -261,37 +278,66 @@ export default function withContent(WrappedContent) {
             })
             .then(() => this.completeAction(itemId))
             .catch((err) => {
-              console.log("err", err);
-              const isPasswordError = new RegExp(/\(password\)*$/);
-
-              if (isPasswordError.test(err)) {
-                toastr.error(
-                  t("Translations:FileProtected"),
-                  t("Common:Warning")
-                );
-                setIsUpdatingRowItem(false);
-
-                setFormCreationInfo({
-                  newTitle: `${title}.${item.fileExst}`,
-                  fromExst: ".docx",
-                  toExst: item.fileExst,
-                  open,
-                  actionId: itemId,
-                  fileInfo: {
-                    id: fileActionTemplateId,
-                    folderId: item.parentId,
-                    fileExst: item.fileExst,
-                  },
-                });
-                setConvertPasswordDialogVisible(true);
-
-                open && openDocEditor(null, null, tab);
+              if (err.indexOf("password") == -1) {
+                toastr.error(err, t("Common:Warning"));
+                return;
               }
+
+              toastr.error(
+                t("Translations:FileProtected"),
+                t("Common:Warning")
+              );
+
+              setFormCreationInfo({
+                newTitle: `${title}.${item.fileExst}`,
+                fromExst: ".docx",
+                toExst: item.fileExst,
+                open,
+                actionId: itemId,
+                fileInfo: {
+                  id: fileActionTemplateId,
+                  folderId: item.parentId,
+                  fileExst: item.fileExst,
+                },
+              });
+              setConvertPasswordDialogVisible(true);
+
+              open && openDocEditor(null, null, tab);
             })
             .finally(() => {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
 
+              setIsUpdatingRowItem(false);
+              clearActiveOperations(fileIds);
+
+              return setIsLoading(false);
+            });
+        } else if (fromTemplate) {
+          createFile(
+            parentId,
+            `${itemTitle}.${fileExst}`,
+            undefined,
+            gallerySelected.id
+          )
+            .then((file) => {
+              createdFileId = file.id;
+              setCreatedItem({ id: createdFileId, type: "file" });
+              addActiveItems([file.id]);
+
+              return open && openDocEditor(file.id, file.providerKey, tab);
+            })
+            .then(() => this.completeAction(itemId))
+            .catch((e) => {
+              toastr.error(e);
+              tab && tab.close();
+              this.completeAction(itemId);
+            })
+            .finally(() => {
+              const fileIds = [+itemId];
+              createdFileId && fileIds.push(createdFileId);
+
+              setIsUpdatingRowItem(false);
               clearActiveOperations(fileIds);
 
               return setIsLoading(false);
@@ -300,6 +346,7 @@ export default function withContent(WrappedContent) {
           createFile(item.parentId, `${title}.${item.fileExst}`)
             .then((file) => {
               createdFileId = file.id;
+              setCreatedItem({ id: createdFileId, type: "file" });
               addActiveItems([file.id]);
 
               if (isPrivacy) {
@@ -319,11 +366,16 @@ export default function withContent(WrappedContent) {
               return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
-            .catch((e) => toastr.error(e))
+            .catch((e) => {
+              toastr.error(e);
+              tab && tab.close();
+              this.completeAction(itemId);
+            })
             .finally(() => {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
 
+              setIsUpdatingRowItem(false);
               clearActiveOperations(fileIds);
 
               return setIsLoading(false);
@@ -347,30 +399,16 @@ export default function withContent(WrappedContent) {
       return this.setState({ itemTitle: title });
     };
 
-    getStatusByDate = () => {
-      const { culture, t, item, sectionWidth, viewAs } = this.props;
-      const { created, updated, version, fileExst } = item;
+    getStatusByDate = (create) => {
+      const { culture, item, personal } = this.props;
+      const { created, updated } = item;
 
-      const title =
-        version > 1
-          ? t("TitleModified")
-          : fileExst
-          ? t("TitleUploaded")
-          : t("TitleCreated");
-
-      const date = fileExst ? updated : created;
-      const dateLabel = new Date(date).toLocaleString(culture);
-      const mobile =
-        (sectionWidth && sectionWidth <= 375) || isMobile || viewAs === "table";
-
-      return mobile ? dateLabel : `${title}: ${dateLabel}`;
-    };
-
-    getTableStatusByDate = (create) => {
-      const { created, updated } = this.props.item;
+      const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
 
       const date = create ? created : updated;
-      const dateLabel = new Date(date).toLocaleString(this.props.culture);
+
+      const dateLabel = getCorrectDate(locale, date);
+
       return dateLabel;
     };
 
@@ -398,14 +436,11 @@ export default function withContent(WrappedContent) {
         href,
         icon,
         id,
-        updated,
+        isFolder,
       } = item;
 
-      const updatedDate =
-        viewAs === "table"
-          ? this.getTableStatusByDate(false)
-          : updated && this.getStatusByDate();
-      const createdDate = this.getTableStatusByDate(true);
+      const updatedDate = this.getStatusByDate(false);
+      const createdDate = this.getStatusByDate(true);
 
       const fileOwner =
         createdBy &&
@@ -445,6 +480,7 @@ export default function withContent(WrappedContent) {
           cancelUpdateItem={this.cancelUpdateItem}
           isUpdatingRowItem={isUpdatingRowItem}
           passwordEntryProcess={passwordEntryProcess}
+          isFolder={item.fileExst ? false : true}
         />
       ) : (
         <WrappedContent
@@ -480,7 +516,6 @@ export default function withContent(WrappedContent) {
       const {
         createFile,
         createFolder,
-        isLoading,
         openDocEditor,
         renameFolder,
         setIsLoading,
@@ -490,6 +525,8 @@ export default function withContent(WrappedContent) {
         isUpdatingRowItem,
         passwordEntryProcess,
         addActiveItems,
+        gallerySelected,
+        setCreatedItem,
       } = filesStore;
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -499,10 +536,13 @@ export default function withContent(WrappedContent) {
         id: fileActionId,
         templateId: fileActionTemplateId,
         type: fileActionType,
+        fromTemplate,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
+
       const {
         culture,
+        personal,
         folderFormValidation,
         isDesktopClient,
       } = auth.settingsStore;
@@ -516,7 +556,7 @@ export default function withContent(WrappedContent) {
       const isEdit =
         item.id === fileActionId && item.fileExst === fileActionExt;
 
-      const titleWithoutExt = getTitleWithoutExst(item);
+      const titleWithoutExt = getTitleWithoutExst(item, fromTemplate);
 
       return {
         createFile,
@@ -530,7 +570,6 @@ export default function withContent(WrappedContent) {
         folderFormValidation,
         homepage: config.homepage,
         isDesktop: isDesktopClient,
-        isLoading,
         isPrivacy: isPrivacyFolder,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
@@ -552,6 +591,10 @@ export default function withContent(WrappedContent) {
         fileCopyAs,
         isEdit,
         titleWithoutExt,
+        fromTemplate,
+        gallerySelected,
+        setCreatedItem,
+        personal,
       };
     }
   )(observer(WithContent));

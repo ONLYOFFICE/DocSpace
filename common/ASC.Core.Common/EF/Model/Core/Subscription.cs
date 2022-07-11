@@ -24,7 +24,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddSubscription, Provider.MySql)
-                .Add(PgSqlAddSubscription, Provider.Postgre)
+                .Add(PgSqlAddSubscription, Provider.PostgreSql)
                 .HasData(
                 new Subscription { Source = "asc.web.studio", Action = "send_whats_new", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },
                 new Subscription { Source = "6504977c-75af-4691-9099-084d3ddeea04", Action = "new feed", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },

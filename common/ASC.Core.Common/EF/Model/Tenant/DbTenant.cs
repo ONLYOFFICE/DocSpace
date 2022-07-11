@@ -41,14 +41,14 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbTenant, Provider.MySql)
-                .Add(PgSqlAddDbTenant, Provider.Postgre)
+                .Add(PgSqlAddDbTenant, Provider.PostgreSql)
                 .HasData(
                 new DbTenant
                 {
                     Id = 1,
                     Alias = "localhost",
                     Name = "Web Office",
-                    CreationDateTime = DateTime.UtcNow,
+                    CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
                     OwnerId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef")
                 }
                 );

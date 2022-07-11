@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Validation code field cannot be empty</value>
@@ -254,7 +254,7 @@
     <value>Bucket</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Enter the name of the Google Cloud bucket where you want to store your backups.</value>
+    <value>Enter the name of the Google Cloud bucket for storing backups.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Connect Google Cloud Storage service to backup and store data from your portal.</value>
@@ -320,13 +320,13 @@
     <value>Private Container</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Enter the URL address of the Rackspace private container where you want to store your backups.</value>
+    <value>Enter the URL address of the Rackspace private container for storing backups.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Public Container</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Enter the URL address of the Rackspace public container where you want to store your backups.</value>
+    <value>Enter the URL address of the Rackspace public container for storing backups.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Region</value>
@@ -341,7 +341,7 @@
     <value>Bucket</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Enter the unique name of the Amazon bucket where you want to store your backups.</value>
+    <value>Enter the unique name of the Amazon bucket for storing backups.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Connect Amazon AWS S3 to backup and store data from your portal.</value>
@@ -377,13 +377,13 @@
     <value>Private container</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Enter the name of the Selectel private container where you want to store your backups.</value>
+    <value>Enter the name of the Selectel private container for storing backups.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Public container</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Enter the name of the Selectel public container where you want to store your backups.</value>
+    <value>Enter the name of the Selectel public container for storing backups.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -541,6 +541,9 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Custom</value>
   </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>A link to confirm the operation has been sent to {0} (the email address of the portal owner).</value>
+  </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Incorrect Instance id.</value>
   </data>
@@ -622,6 +625,12 @@
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Request limit is exceeded</value>
   </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>The tenant domain can not be empty.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>The domain name must be between {0} and {1} characters long.</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>The user could not be found</value>
   </data>
@@ -629,7 +638,7 @@
     <value>The user with "{0}" email could not be found</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>EU (Ireland) Region</value>
+    <value>EU (Frankfurt) Region</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>The maximum file size is exceeded</value>

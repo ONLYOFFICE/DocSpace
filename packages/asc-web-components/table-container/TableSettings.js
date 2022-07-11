@@ -5,13 +5,13 @@ import DropDown from "../drop-down";
 import { StyledTableSettings } from "./StyledTableContainer";
 import Checkbox from "../checkbox";
 
-const TableSettings = ({ columns }) => {
+const TableSettings = ({ columns, infoPanelVisible }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const ref = useRef();
 
   const onClick = () => {
-    setIsOpen(!isOpen);
+    !infoPanelVisible && setIsOpen(!isOpen);
   };
 
   const clickOutsideAction = (e) => {
@@ -28,12 +28,11 @@ const TableSettings = ({ columns }) => {
       ref={ref}
     >
       <IconButton
-        color="#A3A9AE"
-        hoverColor="#657077"
         size={12}
         isFill
-        iconName="/static/images/settings.react.svg"
+        iconName="/static/images/settings.desc.react.svg"
         onClick={onClick}
+        isDisabled={infoPanelVisible}
       />
       <DropDown
         className="table-container_settings"

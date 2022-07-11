@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.CRM.Core.Dao;
@@ -53,60 +54,65 @@ namespace ASC.CRM.Core
             _daoFactory = daoFactory;
         }
 
-
-        public bool CanCreate<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanCreateAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
-        public bool CanComment<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanCommentAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return CanEdit(entry, userId);
+            return CanEditAsync(entry, userId);
         }
 
-        public bool CanFillForms<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanFillFormsAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return CanEdit(entry, userId);
+            return CanEditAsync(entry, userId);
         }
 
-        public bool CanReview<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanReviewAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return CanEdit(entry, userId);
+            return CanEditAsync(entry, userId);
         }
 
-        public bool CanDelete<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanDeleteAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return CanEdit(entry, userId);
+            return CanEditAsync(entry, userId);
         }
 
-        public bool CanEdit<T>(FileEntry<T> entry, Guid userId)
+        public async Task<bool> CanEditAsync<T>(FileEntry<T> entry, Guid userId)
         {
             return
-                CanRead(entry, userId) &&
+                await CanReadAsync(entry, userId) &&
                 entry.CreateBy == userId || entry.ModifiedBy == userId || _crmSecurity.IsAdministrator(userId);
         }
 
-        public bool CanRead<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanReadAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            if (entry.FileEntryType == FileEntryType.Folder) return false;
+            if (entry.FileEntryType == FileEntryType.Folder) return Task.FromResult(false);
 
             var invoice = _daoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.ID));
             if (invoice != null)
-                return _crmSecurity.CanAccessTo(invoice, userId);
+                return Task.FromResult(_crmSecurity.CanAccessTo(invoice, userId));
 
-            var reportFile = _daoFactory.GetReportDao().GetFile(Convert.ToInt32(entry.ID), userId);
+            return InternalCanReadAsync(entry, userId);
+
+        }
+
+        private async Task<bool> InternalCanReadAsync<T>(FileEntry<T> entry, Guid userId)
+        {
+            var reportFile = await _daoFactory.GetReportDao().GetFileAsync(Convert.ToInt32(entry.ID), userId);
 
             if (reportFile != null)
                 return true;
 
             var tagDao = _filesIntegration.DaoFactory.GetTagDao<T>();
 
-            var eventIds = tagDao.GetTags(entry.ID, FileEntryType.File, TagType.System)
+            var eventIds = await tagDao.GetTagsAsync(entry.ID, FileEntryType.File, TagType.System)
                 .Where(x => x.TagName.StartsWith("RelationshipEvent_"))
                 .Select(x => Convert.ToInt32(x.TagName.Split(new[] { '_' })[1]))
-                .ToList();
+                .ToListAsync();
 
-            if (!eventIds.Any()) return false;
+            if (eventIds.Count == 0) return false;
 
             var eventItem = _daoFactory.GetRelationshipEventDao().GetByID(eventIds.First());
 
@@ -114,14 +120,14 @@ namespace ASC.CRM.Core
 
         }
 
-        public IEnumerable<Guid> WhoCanRead<T>(FileEntry<T> entry)
+        public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
         {
             throw new NotImplementedException();
         }
 
-        public bool CanCustomFilterEdit<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanCustomFilterEditAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return CanEdit(entry, userId);
+            return CanEditAsync(entry, userId);
         }
     }
 

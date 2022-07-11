@@ -41,6 +41,7 @@ namespace ASC.Web.CRM.Core.Search
 
             IQueryable<DbDeal> GetBaseQuery(DateTime lastIndexed) =>
                                 entityDao.CrmDbContext.Deals
+                                        .AsQueryable()
                                         .Where(r => r.LastModifedOn >= lastIndexed)
                                         .Join(entityDao.CrmDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { DbEntity = f, DbTenant = t })
                                         .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active)

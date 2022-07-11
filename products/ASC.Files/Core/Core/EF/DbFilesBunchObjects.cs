@@ -23,7 +23,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFilesBunchObjects, Provider.MySql)
-                .Add(PgSqlAddDbFilesBunchObjects, Provider.Postgre);
+                .Add(PgSqlAddDbFilesBunchObjects, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesBunchObjects(this ModelBuilder modelBuilder)

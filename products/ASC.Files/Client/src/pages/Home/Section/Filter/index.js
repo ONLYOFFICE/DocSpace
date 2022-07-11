@@ -7,10 +7,11 @@ import { FilterType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import withLoader from "../../../../HOCs/withLoader";
-import { FileAction } from "@appserver/common/constants";
+import { getUser } from "@appserver/common/api/people";
+
 const getFilterType = (filterValues) => {
   const filterType = result(
     find(filterValues, (value) => {
@@ -33,11 +34,6 @@ const getAuthorType = (filterValues) => {
   return authorType ? authorType : null;
 };
 
-const getSelectedItem = (filterValues, type) => {
-  const selectedItem = filterValues.find((item) => item.key === type);
-  return selectedItem || null;
-};
-
 const getSearchParams = (filterValues) => {
   const searchParams = result(
     find(filterValues, (value) => {
@@ -49,71 +45,89 @@ const getSearchParams = (filterValues) => {
   return searchParams || "true";
 };
 
-class SectionFilterContent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isReady: false,
-    };
-  }
+const SectionFilterContent = ({
+  t,
+  customNames,
+  user,
+  filter,
+  personal,
+  isRecentFolder,
+  isFavoritesFolder,
+  sectionWidth,
+  viewAs,
+  createThumbnails,
+  setViewAs,
+  setIsLoading,
+  selectedFolderId,
+  fetchFiles,
+  infoPanelVisible,
+}) => {
+  const filterColumnCount =
+    window.innerWidth < 500
+      ? { filterColumnCount: 3 }
+      : { filterColumnCount: personal ? 2 : 3 };
 
-  onFilter = (data) => {
-    const { setIsLoading, filter, selectedFolderId, fetchFiles } = this.props;
-
-    const filterType = getFilterType(data.filterValues) || null;
-    const search = data.inputValue || null;
-    const sortBy = data.sortId;
-    const sortOrder =
-      data.sortDirection === "desc" ? "descending" : "ascending";
-    const authorType = getAuthorType(data.filterValues);
-    const withSubfolders = getSearchParams(data.filterValues);
-
-    const selectedItem = authorType
-      ? getSelectedItem(data.filterValues, authorType)
+  const onFilter = (data) => {
+    const filterType = getFilterType(data) || null;
+    const authorType = !!getAuthorType(data)
+      ? getAuthorType(data).includes("user_")
+        ? getAuthorType(data)
+        : `user_${getAuthorType(data)}`
       : null;
-    const selectedFilterItem = {};
-    if (selectedItem) {
-      selectedFilterItem.key = selectedItem.selectedItem.key;
-      selectedFilterItem.label = selectedItem.selectedItem.label;
-      selectedFilterItem.type = selectedItem.typeSelector;
-    }
+    const withSubfolders = getSearchParams(data);
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.filterType = filterType;
+    newFilter.authorType = authorType;
+    newFilter.withSubfolders = withSubfolders;
+
+    setIsLoading(true);
+
+    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+  };
+
+  const onSearch = (data = "") => {
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.search = data;
+
+    setIsLoading(true);
+
+    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+  };
+
+  const onSort = (sortId, sortDirection) => {
+    const sortBy = sortId;
+    const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
 
     const newFilter = filter.clone();
     newFilter.page = 0;
     newFilter.sortBy = sortBy;
     newFilter.sortOrder = sortOrder;
-    newFilter.filterType = filterType;
-    newFilter.search = search;
-    newFilter.authorType = authorType;
-    newFilter.withSubfolders = withSubfolders;
-    newFilter.selectedItem = selectedFilterItem;
 
     setIsLoading(true);
+
     fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
   };
 
-  onChangeViewAs = (view) => {
-    const { setViewAs, sectionWidth } = this.props;
-
+  const onChangeViewAs = (view) => {
     if (view === "row") {
-      if (sectionWidth < 1025 || isMobile) setViewAs("row");
-      else setViewAs("table");
+      if (
+        (sectionWidth < 1025 && !infoPanelVisible) ||
+        (sectionWidth < 625 && infoPanelVisible) ||
+        isMobile
+      ) {
+        setViewAs("row");
+      } else {
+        setViewAs("table");
+      }
     } else {
       setViewAs(view);
     }
   };
 
-  getData = () => {
-    const {
-      t,
-      customNames,
-      user,
-      filter,
-      personal,
-      isRecentFolder,
-      isFavoritesFolder,
-      isRecycleBinFolder,
-    } = this.props;
+  const getFilterData = () => {
     const { selectedItem } = filter;
     const { usersCaption, groupsCaption } = customNames;
 
@@ -169,38 +183,38 @@ class SectionFilterContent extends React.Component {
         ]
       : "";
 
-    const options = [
+    const typeOptions = [
       {
         key: "filter-filterType",
         group: "filter-filterType",
         label: t("Common:Type"),
         isHeader: true,
       },
-      ...folders,
       {
         key: FilterType.DocumentsOnly.toString(),
         group: "filter-filterType",
         label: t("Common:Documents"),
       },
-      {
-        key: FilterType.PresentationsOnly.toString(),
-        group: "filter-filterType",
-        label: t("Translations:Presentations"),
-      },
+      ...folders,
       {
         key: FilterType.SpreadsheetsOnly.toString(),
         group: "filter-filterType",
         label: t("Translations:Spreadsheets"),
       },
+      ...archives,
+      {
+        key: FilterType.PresentationsOnly.toString(),
+        group: "filter-filterType",
+        label: t("Translations:Presentations"),
+      },
       ...images,
       ...media,
-      ...archives,
       ...allFiles,
     ];
 
-    const filterOptions = [...options];
+    const filterOptions = [];
 
-    if (!personal)
+    if (!personal) {
       filterOptions.push(
         {
           key: "filter-author",
@@ -211,68 +225,71 @@ class SectionFilterContent extends React.Component {
         {
           key: "user",
           group: "filter-author",
-          label: usersCaption,
+          label: t("Translations:AddAuthor"),
           isSelector: true,
-          defaultOptionLabel: t("Common:MeLabel"),
-          defaultSelectLabel: t("Common:Select"),
-          groupsCaption,
-          defaultOption: user,
-          selectedItem,
-        },
-        {
-          key: "group",
-          group: "filter-author",
-          label: groupsCaption,
-          defaultSelectLabel: t("Common:Select"),
-          isSelector: true,
-          selectedItem,
         }
       );
+    }
 
-    if (!isRecentFolder && !isFavoritesFolder && !isRecycleBinFolder)
+    filterOptions.push(...typeOptions);
+
+    if (!isRecentFolder && !isFavoritesFolder)
       filterOptions.push(
         {
           key: "filter-folders",
           group: "filter-folders",
           label: t("Translations:Folders"),
           isHeader: true,
+          withoutHeader: true,
+          isLast: true,
         },
         {
           key: "false",
           group: "filter-folders",
           label: t("NoSubfolders"),
+          isToggle: true,
         }
       );
-
-    //console.log("getData (filterOptions)", filterOptions);
 
     return filterOptions;
   };
 
-  getSortData = () => {
-    const { t, personal } = this.props;
+  const getSelectedFilterData = async () => {
+    const selectedFilterData = {
+      filterValues: [],
+      sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
+      sortId: filter.sortBy,
+    };
 
-    const commonOptions = [
-      { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
-      { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
-      { key: "AZ", label: t("ByTitle"), default: true },
-      { key: "Type", label: t("Common:Type"), default: true },
-      { key: "Size", label: t("Common:Size"), default: true },
-    ];
+    selectedFilterData.inputValue = filter.search;
 
-    if (!personal)
-      commonOptions.push({
-        key: "Author",
-        label: t("ByAuthor"),
-        default: true,
+    if (filter.filterType) {
+      selectedFilterData.filterValues.push({
+        key: `${filter.filterType}`,
+        group: "filter-filterType",
       });
+    }
 
-    return commonOptions;
+    if (filter.authorType) {
+      const user = await getUser(filter.authorType.replace("user_", ""));
+      selectedFilterData.filterValues.push({
+        key: `${filter.authorType}`,
+        group: "filter-author",
+        label: user.displayName,
+      });
+    }
+
+    if (filter.withSubfolders === "false") {
+      selectedFilterData.filterValues.push({
+        key: filter.withSubfolders,
+        group: "filter-folders",
+      });
+    }
+
+    return selectedFilterData;
   };
 
-  getViewSettingsData = () => {
-    const { t, createThumbnails } = this.props;
-
+  const getViewSettingsData = () => {
     const viewSettings = [
       {
         value: "row",
@@ -290,83 +307,48 @@ class SectionFilterContent extends React.Component {
     return viewSettings;
   };
 
-  getSelectedFilterData = () => {
-    const { filter } = this.props;
-    const selectedFilterData = {
-      filterValues: [],
-      sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
-      sortId: filter.sortBy,
-    };
+  const getSortData = () => {
+    const commonOptions = [
+      { key: "AZ", label: t("ByTitle"), default: true },
+      { key: "Type", label: t("Common:Type"), default: true },
+      { key: "Size", label: t("Common:Size"), default: true },
+      { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
+      { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
+    ];
 
-    selectedFilterData.inputValue = filter.search;
-
-    if (filter.filterType) {
-      selectedFilterData.filterValues.push({
-        key: `${filter.filterType}`,
-        group: "filter-filterType",
+    if (!personal) {
+      commonOptions.splice(1, 0, {
+        key: "Author",
+        label: t("ByAuthor"),
+        default: true,
       });
     }
-
-    if (filter.authorType) {
-      selectedFilterData.filterValues.push({
-        key: `${filter.authorType}`,
-        group: "filter-author",
-      });
-    }
-
-    if (filter.withSubfolders === "false") {
-      selectedFilterData.filterValues.push({
-        key: filter.withSubfolders,
-        group: "filter-folders",
-      });
-    }
-
-    // if (filter.group) {
-    //   selectedFilterData.filterValues.push({
-    //     key: filter.group,
-    //     group: "filter-group"
-    //   });
-    // }
-
-    return selectedFilterData;
+    return commonOptions;
   };
 
-  render() {
-    //console.log("Filter render");
-    const selectedFilterData = this.getSelectedFilterData();
-    const {
-      t,
-      sectionWidth,
-      isFiltered,
-      viewAs,
-      personal,
-      isFavoritesFolder,
-      isRecentFolder,
-    } = this.props;
-    const filterColumnCount =
-      window.innerWidth < 500 ? {} : { filterColumnCount: personal ? 2 : 3 };
-
-    return !isFiltered ? null : (
-      <FilterInput
-        sectionWidth={sectionWidth}
-        getFilterData={this.getData}
-        getSortData={this.getSortData}
-        getViewSettingsData={this.getViewSettingsData}
-        selectedFilterData={selectedFilterData}
-        onFilter={this.onFilter}
-        onChangeViewAs={this.onChangeViewAs}
-        viewAs={viewAs}
-        directionAscLabel={t("Common:DirectionAscLabel")}
-        directionDescLabel={t("Common:DirectionDescLabel")}
-        placeholder={t("Common:Search")}
-        isReady={this.state.isReady}
-        {...filterColumnCount}
-        contextMenuHeader={t("Common:AddFilter")}
-        sortItemsVisible={!isRecentFolder}
-      />
-    );
-  }
-}
+  return (
+    <FilterInput
+      t={t}
+      sectionWidth={sectionWidth}
+      getFilterData={getFilterData}
+      getSortData={getSortData}
+      getViewSettingsData={getViewSettingsData}
+      getSelectedFilterData={getSelectedFilterData}
+      onFilter={onFilter}
+      onSearch={onSearch}
+      onSort={onSort}
+      onChangeViewAs={onChangeViewAs}
+      viewAs={viewAs}
+      placeholder={t("Common:Search")}
+      {...filterColumnCount}
+      contextMenuHeader={t("Filter")}
+      headerLabel={t("Translations:AddAuthor")}
+      viewSelectorVisible={true}
+      isFavoritesFolder={isFavoritesFolder}
+      isRecentFolder={isRecentFolder}
+    />
+  );
+};
 
 export default inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
@@ -381,15 +363,9 @@ export default inject(
       createThumbnails,
     } = filesStore;
 
-    const { type: fileActionType } = filesStore.fileActionStore;
-
     const { user } = auth.userStore;
-    const { customNames, culture, personal } = auth.settingsStore;
-    const {
-      isFavoritesFolder,
-      isRecentFolder,
-      isRecycleBinFolder,
-    } = treeFoldersStore;
+    const { customNames, personal } = auth.settingsStore;
+    const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
 
     const { search, filterType, authorType } = filter;
     const isFiltered =
@@ -397,9 +373,10 @@ export default inject(
         !!folders.length ||
         search ||
         filterType ||
-        authorType ||
-        fileActionType === FileAction.Create) &&
+        authorType) &&
       !(treeFoldersStore.isPrivacyFolder && isMobile);
+
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     return {
       customNames,
@@ -411,7 +388,6 @@ export default inject(
       isFiltered,
       isFavoritesFolder,
       isRecentFolder,
-      isRecycleBinFolder,
 
       setIsLoading,
       fetchFiles,
@@ -419,6 +395,7 @@ export default inject(
       createThumbnails,
 
       personal,
+      infoPanelVisible,
     };
   }
 )(

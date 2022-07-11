@@ -2,10 +2,9 @@ import React, { useCallback, useState, useMemo } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 
-import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import DropDownItem from "@appserver/components/drop-down-item";
 import ContextMenuButton from "@appserver/components/context-menu-button";
-import { tablet, desktop } from "@appserver/components/utils/device";
+import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 
 import Headline from "@appserver/common/components/Headline";
@@ -14,55 +13,46 @@ import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
 import { AppServerConfig } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
+import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 
 const StyledContainer = styled.div`
   .group-button-menu-container {
-    margin: 0 -16px;
+    margin: 0 -20px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    ${isMobile &&
-    css`
-      position: sticky;
-    `}
-    ${(props) =>
-      !props.isTabletView
-        ? props.width &&
-          isMobile &&
-          css`
-            width: ${props.width + 40 + "px"};
-          `
-        : props.width &&
-          isMobile &&
-          css`
-            width: ${props.width + 24 + "px"};
-          `}
+
+    width: calc(100vw - 256px);
 
     @media ${tablet} {
-      padding-bottom: 0;
-      ${!isMobile &&
-      css`
-        height: 56px;
-      `}
-      & > div:first-child {
-        ${(props) =>
-          !isMobile &&
-          props.width &&
-          css`
-            width: ${props.width + 16 + "px"};
-          `}
+      width: ${(props) =>
+        props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
 
-        position: absolute;
-        top: 48px;
-        z-index: 180;
-      }
+      margin: 0 -16px;
     }
 
-    @media ${desktop} {
-      margin: 0 -24px;
+    ${isMobile &&
+    css`
+      width: ${(props) =>
+        props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+
+      margin: 0 -16px;
+    `}
+
+    @media ${mobile} {
+      width: 100vw;
+
+      margin: 0 -16px;
     }
+
+    ${isMobileOnly &&
+    css`
+      width: 100vw !important;
+
+      margin: 0 -16px;
+    `}
   }
 
   .header-container {
@@ -78,6 +68,7 @@ const StyledContainer = styled.div`
         }
       `}
 
+    margin-bottom: 3px;
     align-items: center;
     max-width: calc(100vw - 32px);
 
@@ -91,6 +82,12 @@ const StyledContainer = styled.div`
           padding: 8px 16px 8px 16px;
           margin-right: -16px;
         }
+      }
+    }
+
+    .headline-header {
+      @media ${tablet} {
+        padding: 4px 0;
       }
     }
   }
@@ -114,7 +111,7 @@ const SectionHeaderContent = (props) => {
     resetFilter,
     getHeaderMenu,
     setInvitationDialogVisible,
-    viewAs,
+    showText,
   } = props;
 
   const {
@@ -126,57 +123,51 @@ const SectionHeaderContent = (props) => {
 
   //console.log("SectionHeaderContent render", props.isTabletView);
 
-  const onCheck = (checked) => {
-    setSelected(checked ? "all" : "close");
+  const onChange = (checked) => {
+    setSelected(checked ? "all" : "none");
   };
-  const onSelect = useCallback((selected) => setSelected(selected), [
-    setSelected,
-  ]);
-
-  const onClose = () => setSelected("none");
+  const onSelect = useCallback(
+    (e) => {
+      const key = e.currentTarget.dataset.key;
+      setSelected(key);
+    },
+    [setSelected]
+  );
 
   const onSelectorSelect = useCallback(
     (item) => {
-      onSelect && onSelect(item.key);
+      setSelected(item.key);
     },
     [onSelect]
   );
 
   let menuItems = useMemo(
-    () => [
-      ...[
-        {
-          label: t("Common:Select"),
-          isDropdown: true,
-          isSeparator: true,
-          isSelect: true,
-          fontWeight: "bold",
-          children: [
-            <DropDownItem
-              key="active"
-              label={t("Common:Active")}
-              data-index={0}
-            />,
-            <DropDownItem
-              key="disabled"
-              label={t("Translations:DisabledEmployeeStatus")}
-              data-index={1}
-            />,
-            <DropDownItem
-              key="invited"
-              label={t("LblInvited")}
-              data-index={2}
-            />,
-          ],
-          onSelect: onSelectorSelect,
-        },
-      ],
-    ],
+    () => (
+      <>
+        <DropDownItem
+          key="active"
+          label={t("Common:Active")}
+          data-key={"active"}
+          onClick={onSelect}
+        />
+        <DropDownItem
+          key="disabled"
+          label={t("Translations:DisabledEmployeeStatus")}
+          data-key={"disabled"}
+          onClick={onSelect}
+        />
+        <DropDownItem
+          key="invited"
+          label={t("LblInvited")}
+          data-key={"invited"}
+          onClick={onSelect}
+        />
+      </>
+    ),
     [t, onSelectorSelect]
   );
 
   const headerMenu = getHeaderMenu(t);
-  menuItems = [...menuItems, ...headerMenu];
 
   const onEditGroup = useCallback(
     () =>
@@ -280,20 +271,16 @@ const SectionHeaderContent = (props) => {
           isLoaded={isLoaded}
           width={context.sectionWidth}
           isTabletView={isTabletView}
+          showText={showText}
         >
-          {isHeaderVisible && viewAs !== "table" ? (
+          {isHeaderVisible ? (
             <div className="group-button-menu-container">
-              <GroupButtonsMenu
-                checked={isHeaderChecked}
+              <TableGroupMenu
+                checkboxOptions={menuItems}
+                onChange={onChange}
+                isChecked={isHeaderChecked}
                 isIndeterminate={isHeaderIndeterminate}
-                onChange={onCheck}
-                menuItems={menuItems}
-                visible={isHeaderVisible}
-                moreLabel={t("Common:More")}
-                closeTitle={t("Common:CloseButton")}
-                onClose={onClose}
-                selected={menuItems[0].label}
-                sectionWidth={context.sectionWidth}
+                headerMenu={headerMenu}
               />
             </div>
           ) : (
@@ -314,7 +301,6 @@ const SectionHeaderContent = (props) => {
                       title={t("Common:Actions")}
                       iconName="/static/images/vertical-dots.react.svg"
                       size={17}
-                      color="#A3A9AE"
                       getData={getContextOptionsGroup}
                       isDisabled={false}
                     />
@@ -337,8 +323,6 @@ const SectionHeaderContent = (props) => {
                         title={t("Common:Actions")}
                         iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
-                        color="#A3A9AE"
-                        hoverColor="#657077"
                         getData={getContextOptionsPlus}
                         isDisabled={false}
                       />
@@ -357,7 +341,7 @@ const SectionHeaderContent = (props) => {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { settingsStore, isLoaded, isAdmin } = auth;
-    const { customNames, isTabletView } = settingsStore;
+    const { customNames, isTabletView, showText } = settingsStore;
 
     const {
       resetFilter,
@@ -368,7 +352,6 @@ export default withRouter(
       selectedGroupStore,
       getHeaderMenu,
       dialogStore,
-      viewAs,
     } = peopleStore;
     const { getUsersList, removeUser, updateUserStatus } = usersStore;
     const {
@@ -408,7 +391,7 @@ export default withRouter(
       isTabletView,
       getHeaderMenu,
       setInvitationDialogVisible,
-      viewAs,
+      showText,
     };
   })(
     withTranslation(["Home", "Common", "Translations"])(

@@ -14,7 +14,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddFilesConverts, Provider.MySql)
-                .Add(PgSqlAddFilesConverts, Provider.Postgre)
+                .Add(PgSqlAddFilesConverts, Provider.PostgreSql)
                 .HasData(
                new FilesConverts { Input = ".csv", Output = ".ods" },
                new FilesConverts { Input = ".csv", Output = ".pdf" },

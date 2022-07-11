@@ -60,8 +60,8 @@ namespace ASC.VoipService.Twilio
 
         public TwilioProvider(string accountSid, string authToken, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
-            if (string.IsNullOrEmpty(accountSid)) throw new ArgumentNullException("accountSid");
-            if (string.IsNullOrEmpty(authToken)) throw new ArgumentNullException("authToken");
+            if (string.IsNullOrEmpty(accountSid)) throw new ArgumentNullException(nameof(accountSid));
+            if (string.IsNullOrEmpty(authToken)) throw new ArgumentNullException(nameof(authToken));
 
             this.authToken = authToken;
             AuthContext = authContext;

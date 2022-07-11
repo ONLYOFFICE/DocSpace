@@ -8,13 +8,12 @@ import FilesTileContent from "./FilesTileContent";
 import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
+import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
-import SharedButton from "../../../../../components/SharedButton";
+import withBadges from "../../../../../HOCs/withBadges";
 
-const FilesTile = (props) => {
+const FileTile = (props) => {
   const {
-    t,
     item,
     sectionWidth,
     dragging,
@@ -27,17 +26,22 @@ const FilesTile = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    //sharedButton,
-    contextOptionsProps,
     checkedProps,
-    //element,
     getIcon,
     onFilesClick,
     onMouseClick,
-    showShare,
     isActive,
     isEdit,
     inProgress,
+    quickButtonsComponent,
+    showHotkeyBorder,
+    badgesComponent,
+    t,
+    getContextModel,
+    onHideContextMenu,
+    thumbSize,
+    setSelection,
+    id,
   } = props;
 
   const temporaryExtension =
@@ -51,68 +55,74 @@ const FilesTile = (props) => {
   );
 
   const { thumbnailUrl } = item;
-  const sharedButton =
-    item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-      />
-    ) : null;
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
 
   return (
-    <div ref={props.selectableRef}>
+    <div ref={props.selectableRef} id={id}>
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className}`}
+        className={`files-item ${className} ${item.id}_${item.fileExst}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
-        {...contextOptionsProps}
+        contextOptions={item.contextOptions}
       >
         <Tile
           key={item.id}
           item={item}
           temporaryIcon={temporaryIcon}
-          thumbnail={thumbnailUrl}
+          thumbnail={
+            thumbnailUrl && thumbSize
+              ? `${thumbnailUrl}&size=${thumbSize}`
+              : thumbnailUrl
+          }
           element={element}
           sectionWidth={sectionWidth}
-          contentElement={sharedButton}
+          contentElement={quickButtonsComponent}
           onSelect={onContentFileSelect}
           tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
+          isDragging={dragging}
           dragging={dragging && isDragging}
           onClick={onMouseClick}
           thumbnailClick={onFilesClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}
-          {...contextOptionsProps}
+          contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
           inProgress={inProgress}
           isEdit={isEdit}
+          getContextModel={getContextModel}
+          hideContextMenu={onHideContextMenu}
+          t={t}
+          showHotkeyBorder={showHotkeyBorder}
+          setSelection={setSelection}
         >
           <FilesTileContent
             item={item}
             sectionWidth={sectionWidth}
             onFilesClick={onFilesClick}
           />
+          {badgesComponent}
         </Tile>
       </DragAndDrop>
     </div>
   );
 };
 
-export default inject(({ settingsStore }) => {
+export default inject(({ settingsStore, filesStore }) => {
   const { getIcon } = settingsStore;
-  return { getIcon };
+  const { setSelection } = filesStore;
+
+  return { getIcon, setSelection };
 })(
-  withTranslation("Home")(
-    withFileActions(withContextOptions(withRouter(observer(FilesTile))))
+  withTranslation(["Home", "InfoPanel"])(
+    withRouter(
+      withFileActions(withBadges(withQuickButtons(observer(FileTile))))
+    )
   )
 );

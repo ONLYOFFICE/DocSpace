@@ -4,12 +4,13 @@ import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import toastr from "studio/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { tryRedirectTo } from "@appserver/common/utils";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 import { HomeIllustration, ModuleTile, HomeContainer } from "./sub-components";
 import Heading from "@appserver/components/heading";
+import AppLoader from "@appserver/common/components/AppLoader";
 
 const Tiles = ({ availableModules, displayName, t }) => {
   let index = 0;
@@ -53,17 +54,24 @@ Tiles.propTypes = {
   t: PropTypes.func,
 };
 
-const Body = ({ match, isLoaded, availableModules, displayName }) => {
-  const { t } = useTranslation(["Home", "translation"]);
+const Body = ({
+  match,
+  isLoaded,
+  availableModules,
+  displayName,
+  snackbarExist,
+  theme,
+}) => {
+  const { t, ready } = useTranslation("Home");
   const { error } = match.params;
   setDocumentTitle();
 
   useEffect(() => error && toastr.error(error), [error]);
 
-  return !isLoaded ? (
-    <></>
+  return !isLoaded || !ready ? (
+    <AppLoader />
   ) : (
-    <HomeContainer>
+    <HomeContainer snackbarExist={snackbarExist}>
       <Tiles
         availableModules={availableModules}
         displayName={displayName}
@@ -73,8 +81,12 @@ const Body = ({ match, isLoaded, availableModules, displayName }) => {
       <HomeIllustration />
 
       {!availableModules || !availableModules.length ? (
-        <Text className="home-error-text" fontSize="14px" color="#c30">
-          {t("translation:NoOneModulesAvailable")}
+        <Text
+          className="home-error-text"
+          fontSize="14px"
+          color={theme.studio.home.textColorError}
+        >
+          {t("NoOneModulesAvailable")}
         </Text>
       ) : null}
     </HomeContainer>
@@ -92,11 +104,11 @@ const Home = ({ defaultPage, ...rest }) => {
   return tryRedirectTo(defaultPage) ? (
     <></>
   ) : (
-    <PageLayout isHomepage>
-      <PageLayout.SectionBody>
+    <Section isHomepage>
+      <Section.SectionBody>
         <Body {...rest} />
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 };
 
@@ -109,13 +121,15 @@ Home.propTypes = {
 
 export default inject(({ auth }) => {
   const { isLoaded, settingsStore, availableModules, userStore } = auth;
-  const { defaultPage } = settingsStore;
+  const { defaultPage, snackbarExist, theme } = settingsStore;
   const { displayName } = userStore.user;
 
   return {
+    theme,
     defaultPage,
     isLoaded,
     availableModules,
     displayName,
+    snackbarExist,
   };
 })(withRouter(observer(Home)));

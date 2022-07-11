@@ -135,7 +135,7 @@ namespace ASC.Feed.Aggregator
                     var toTime = DateTime.UtcNow;
 
                     var tenants = Attempt(10, () => module.GetTenantsWithFeeds(fromTime)).ToList();
-                    Log.DebugFormat("Find {1} tenants for module {0}.", module.GetType().Name, tenants.Count());
+                    Log.DebugFormat("Find {1} tenants for module {0}.", module.GetType().Name, tenants.Count);
 
                     foreach (var tenant in tenants)
                     {
@@ -336,7 +336,7 @@ namespace ASC.Feed.Aggregator
         }
     }
 
-    public class FeedAggregatorServiceExtension
+    public static class FeedAggregatorServiceExtension
     {
         public static void Register(DIHelper services)
         {

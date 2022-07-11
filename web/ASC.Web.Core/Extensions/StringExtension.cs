@@ -52,7 +52,7 @@ namespace System
         /// <returns></returns>
         public static string ReplaceSingleQuote(this string str)
         {
-            return str?.Replace("'", "′");
+            return str?.Replace('\'', '′');
         }
 
         public static bool TestEmailRegex(this string emailAddress)
@@ -65,7 +65,7 @@ namespace System
         {
             var bytes = Encoding.Unicode.GetBytes(str);
 
-            using var CSP = new MD5CryptoServiceProvider();
+            using var CSP = MD5.Create();
 
             var byteHash = CSP.ComputeHash(bytes);
 

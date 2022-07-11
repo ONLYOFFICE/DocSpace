@@ -25,8 +25,10 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Web;
 
 using ASC.Common;
@@ -55,6 +57,7 @@ namespace ASC.IPSecurity
         private SettingsManager SettingsManager { get; }
 
         private readonly string CurrentIpForTest;
+        private readonly string MyNetworks;
 
         public IPSecurity(
             IConfiguration configuration,
@@ -72,6 +75,7 @@ namespace ASC.IPSecurity
             IPRestrictionsService = iPRestrictionsService;
             SettingsManager = settingsManager;
             CurrentIpForTest = configuration["ipsecurity:test"];
+            MyNetworks = configuration["ipsecurity:mynetworks"];
             var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
         }
@@ -79,7 +83,6 @@ namespace ASC.IPSecurity
         public bool Verify()
         {
             var tenant = TenantManager.GetCurrentTenant();
-            var settings = SettingsManager.Load<IPRestrictionsSettings>();
 
             if (!IpSecurityEnabled) return true;
 
@@ -92,19 +95,25 @@ namespace ASC.IPSecurity
             {
                 var restrictions = IPRestrictionsService.Get(tenant.TenantId).ToList();
 
-                if (!restrictions.Any()) return true;
+                if (restrictions.Count == 0) return true;
 
-                if (string.IsNullOrWhiteSpace(requestIps = CurrentIpForTest))
+                requestIps = CurrentIpForTest;
+
+                if (string.IsNullOrWhiteSpace(requestIps))
                 {
                     var request = HttpContextAccessor.HttpContext.Request;
                     requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();
                 }
 
                 var ips = string.IsNullOrWhiteSpace(requestIps)
-                              ? new string[] { }
+                              ? Array.Empty<string>()
                               : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (ips.Any(requestIp => restrictions.Any(restriction => MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
+                {
+                    return true;
+                }
+                if (IsMyNetwork(ips))
                 {
                     return true;
                 }
@@ -122,7 +131,7 @@ namespace ASC.IPSecurity
         private static bool MatchIPs(string requestIp, string restrictionIp)
         {
             var dividerIdx = restrictionIp.IndexOf('-');
-            if (restrictionIp.IndexOf('-') > 0)
+            if (dividerIdx > -1)
             {
                 var lower = IPAddress.Parse(restrictionIp.Substring(0, dividerIdx).Trim());
                 var upper = IPAddress.Parse(restrictionIp.Substring(dividerIdx + 1).Trim());
@@ -138,6 +147,43 @@ namespace ASC.IPSecurity
         {
             var portIdx = ip.IndexOf(':');
             return portIdx > 0 ? ip.Substring(0, portIdx) : ip;
+        }
+
+        private bool IsMyNetwork(string[] ips)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(MyNetworks))
+                {
+                    var myNetworkIps = MyNetworks.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (ips.Any(requestIp => myNetworkIps.Any(ipAddress => MatchIPs(GetIpWithoutPort(requestIp), ipAddress))))
+                    {
+                        return true;
+                    }
+                }
+
+                var hostName = Dns.GetHostName();
+                var hostAddresses = Dns.GetHostAddresses(Dns.GetHostName());
+
+                var localIPs = new List<IPAddress> { IPAddress.IPv6Loopback, IPAddress.Loopback };
+
+                localIPs.AddRange(hostAddresses.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6));
+
+                foreach (var ipAddress in localIPs)
+                {
+                    if (ips.Contains(ipAddress.ToString()))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Can't verify local network from request with IP-address: {0}", string.Join(",", ips), ex);
+            }
+
+            return false;
         }
     }
 }

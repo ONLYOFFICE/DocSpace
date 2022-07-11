@@ -26,7 +26,7 @@
 
 namespace ASC.Data.Storage
 {
-    public class Wildcard
+    public static class Wildcard
     {
         public static bool IsMatch(string pattern, string input)
         {
@@ -38,8 +38,8 @@ namespace ASC.Data.Storage
             var offsetInput = 0;
             var isAsterix = false;
 
-            int i;
-            for (i = 0; i < pattern.Length;)
+            int i = 0;
+            while (i < pattern.Length)
             {
                 switch (pattern[i])
                 {
@@ -90,7 +90,7 @@ namespace ASC.Data.Storage
             }
             // final evaluation. The index should be pointing at the
             // end of the string.
-            return (offsetInput == input.Length);
+            return offsetInput == input.Length;
         }
     }
 }

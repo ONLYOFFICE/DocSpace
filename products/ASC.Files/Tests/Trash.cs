@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Api.Documents;
-using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
 using NUnit.Framework;
@@ -11,24 +10,31 @@ using NUnit.Framework;
 namespace ASC.Files.Tests
 {
     [TestFixture]
-    class Trash :BaseFilesTests
+    class Trash : BaseFilesTests
     {
         private FolderWrapper<int> TestFolder { get; set; }
         public FileWrapper<int> TestFile { get; private set; }
 
         [OneTimeSetUp]
-        public override void SetUp()
+        public override async Task SetUp()
         {
-            base.SetUp();
-            TestFolder = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolder");
-            TestFile = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, "TestFile", default);
+            await base.SetUp();
+            TestFolder = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
+            TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default);
 
         }
-        [OneTimeTearDown]
-        public void TearDown()
+
+        [OneTimeSetUp]
+        public void Authenticate()
         {
-            DeleteFile(TestFile.Id);
-            DeleteFolder(TestFolder.Id);
+            SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
+        }
+
+        [OneTimeTearDown]
+        public async Task TearDown()
+        {
+            await DeleteFileAsync(TestFile.Id);
+            await DeleteFolderAsync(TestFolder.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
@@ -36,24 +42,24 @@ namespace ASC.Files.Tests
         [Order(1)]
         public void CreateFolderReturnsFolderWrapper(string folderTitle)
         {
-            var folderWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.CreateFolder((int)GlobalFolderHelper.FolderTrash, folderTitle));
+            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FilesControllerHelper.CreateFolderAsync((int)GlobalFolderHelper.FolderTrash, folderTitle));
             Assert.That(folderWrapper.Message == "You don't have enough permission to create");
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
         [Category("File")]
         [Order(2)]
-        public void CreateFileReturnsFolderWrapper(string fileTitle)
+        public async Task CreateFileReturnsFolderWrapper(string fileTitle)
         {
-            var fileWrapper = FilesControllerHelper.CreateFile((int)GlobalFolderHelper.FolderTrash, fileTitle, default);
+            var fileWrapper = await FilesControllerHelper.CreateFileAsync((int)GlobalFolderHelper.FolderTrash, fileTitle, default);
             Assert.AreEqual(fileWrapper.FolderId, GlobalFolderHelper.FolderMy);
         }
 
         [Test]
         [Category("Folder")]
         [Order(2)]
-        public void DeleteFileFromTrash()
+        public async Task DeleteFileFromTrash()
         {
-            var Empty = FilesControllerHelper.EmptyTrash();
+            var Empty = await FilesControllerHelper.EmptyTrashAsync();
 
             List<FileOperationResult> statuses;
 
@@ -63,7 +69,7 @@ namespace ASC.Files.Tests
 
                 if (statuses.TrueForAll(r => r.Finished))
                     break;
-                Thread.Sleep(100);
+                await Task.Delay(100);
             }
             Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
         }

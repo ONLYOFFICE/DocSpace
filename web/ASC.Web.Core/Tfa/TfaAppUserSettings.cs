@@ -82,7 +82,7 @@ namespace ASC.Web.Studio.Core.TFA
             var settings = settingsManager.LoadForUser<TfaAppUserSettings>(userId);
             var query = settings.CodesSetting.Where(x => x.GetEncryptedCode(instanceCrypto, signature) == code).ToList();
 
-            if (query.Any())
+            if (query.Count > 0)
                 query.First().IsUsed = true;
 
             settingsManager.SaveForUser(settings, userId);

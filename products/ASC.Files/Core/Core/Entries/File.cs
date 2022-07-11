@@ -30,6 +30,7 @@ using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Web.Core.Files;
+using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
 namespace ASC.Files.Core
@@ -70,9 +71,10 @@ namespace ASC.Files.Core
             FileEntryType = FileEntryType.File;
         }
 
-        public File(FileHelper fileHelper) : this()
+        public File(FileHelper fileHelper, Global global): this()
         {
             FileHelper = fileHelper;
+            Global = global;
         }
 
         public int Version { get; set; }

@@ -50,7 +50,7 @@ namespace ASC.MessagingSystem.DbSender
     [Singletone(Additional = typeof(MessagesRepositoryExtension))]
     public class MessagesRepository: IDisposable
     {
-        private static DateTime lastSave = DateTime.UtcNow;
+        private DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
         private readonly IDictionary<string, EventMessage> Cache;
         private Parser Parser { get; set; }
@@ -120,7 +120,7 @@ namespace ASC.MessagingSystem.DbSender
             if (events == null) return;
 
             using var scope = ServiceProvider.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+            using var ef = scope.ServiceProvider.GetService<DbContextManager<Messages>>().Get("messages");
             using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 
@@ -133,9 +133,9 @@ namespace ASC.MessagingSystem.DbSender
 
                         ClientInfo clientInfo;
 
-                        if (dict.ContainsKey(message.UAHeader))
+                        if (dict.TryGetValue(message.UAHeader, out clientInfo))
                         {
-                            clientInfo = dict[message.UAHeader];
+
                         }
                         else
                         {
@@ -181,7 +181,7 @@ namespace ASC.MessagingSystem.DbSender
                 Action = (int)message.Action
             };
 
-            if (message.Description != null && message.Description.Any())
+            if (message.Description != null && message.Description.Count > 0)
             {
                 le.Description =
                     JsonConvert.SerializeObject(message.Description, new JsonSerializerSettings
@@ -194,7 +194,7 @@ namespace ASC.MessagingSystem.DbSender
             dbContext.SaveChanges();
         }
 
-        private static void AddAuditEvent(EventMessage message, MessagesContext dbContext)
+        private static void AddAuditEvent(EventMessage message, Messages dbContext)
         {
             var ae = new AuditEvent
             {
@@ -210,7 +210,7 @@ namespace ASC.MessagingSystem.DbSender
                 Target = message.Target?.ToString()
             };
 
-            if (message.Description != null && message.Description.Any())
+            if (message.Description != null && message.Description.Count > 0)
             {
                 ae.Description =
                     JsonConvert.SerializeObject(GetSafeDescription(message.Description), new JsonSerializerSettings
@@ -251,14 +251,14 @@ namespace ASC.MessagingSystem.DbSender
         {
             return clientInfo == null
                        ? null
-                       : string.Format("{0} {1}", clientInfo.UA.Family, clientInfo.UA.Major);
+                       : $"{clientInfo.UA.Family} {clientInfo.UA.Major}";
         }
 
         private static string GetPlatform(ClientInfo clientInfo)
         {
             return clientInfo == null
                        ? null
-                       : string.Format("{0} {1}", clientInfo.OS.Family, clientInfo.OS.Major);
+                       : $"{clientInfo.OS.Family} {clientInfo.OS.Major}";
         }
 
         public void Dispose()
@@ -270,7 +270,13 @@ namespace ASC.MessagingSystem.DbSender
         }
     }
 
-    public class MessagesRepositoryExtension
+    public class Messages : MessagesContext
+    {
+        public DbSet<AuditEvent> AuditEvents { get; set; }
+        public DbSet<DbTenant> Tenants { get; set; }
+        public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
+    }
+    public static class MessagesRepositoryExtension
     {
         public static void Register(DIHelper services)
         {

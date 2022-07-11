@@ -62,6 +62,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void OnMessage(NotifyItem item)
         {
             using var scope = ServiceProvider.CreateScope();
+
             var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
             commonLinkUtilitySettings.ServerUri = item.BaseUrl;
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
@@ -99,9 +100,9 @@ namespace ASC.Web.Studio.Core.Notify
 
             client.SendNoticeToAsync(
                 (NotifyAction)item.Action,
-                item.ObjectID,
-                item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.ID, r.Name) : (IRecipient)new DirectRecipient(r.ID, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
-                item.SenderNames.Any() ? item.SenderNames.ToArray() : null,
+                item.ObjectId,
+                item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
+                item.SenderNames.Count > 0 ? item.SenderNames.ToArray() : null,
                 item.CheckSubsciption,
                 item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
         }
@@ -149,7 +150,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             //remove client
             using var scope = ServiceProvider.CreateScope();
-            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLetters(EMailSenderName, scheduleDate);
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLettersAsync(EMailSenderName, scheduleDate).Wait();
         }
 
         public void SendEnterpriseTariffLetters(DateTime scheduleDate)

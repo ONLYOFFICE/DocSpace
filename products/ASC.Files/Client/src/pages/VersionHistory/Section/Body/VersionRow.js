@@ -15,13 +15,16 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
 import { Encoder } from "@appserver/common/utils/encoder";
+import { Base } from "@appserver/components/themes";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#333333";
+    fill: ${(props) => props.theme.filesVersionHistory.fill};
   }
 `;
+
+StyledExternalLinkIcon.defaultProps = { theme: Base };
 const VersionRow = (props) => {
   const {
     info,
@@ -37,6 +40,7 @@ const VersionRow = (props) => {
     onUpdateHeight,
     versionsListLength,
     isEditing,
+    theme,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
@@ -91,7 +95,7 @@ const VersionRow = (props) => {
     canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
     canEdit && {
       key: "restore",
-      label: t("Translations:Restore"),
+      label: t("Common:Restore"),
       onClick: onRestoreClick,
     },
     {
@@ -121,8 +125,9 @@ const VersionRow = (props) => {
       isEditing={isEditing}
     >
       <div className={`version-row_${index}`}>
-        <Box displayProp="flex">
+        <Box displayProp="flex" className="row-header">
           <VersionBadge
+            theme={theme}
             className={`version_badge ${
               isVersion ? "versioned" : "not-versioned"
             }`}
@@ -142,17 +147,15 @@ const VersionRow = (props) => {
           >
             {title}
           </Link>
-          <Link className="icon-link" onClick={onOpenFile}>
-            <StyledExternalLinkIcon size="scale" />
-          </Link>
-          <Text
+
+          {/*<Text
             className="version_content-length"
             fontWeight={600}
-            color="#A3A9AE"
+            color={theme.filesVersionHistory.color}
             fontSize="14px"
           >
             {info.contentLength}
-          </Text>
+          </Text>*/}
         </Box>
         <Box
           className="version-comment-wrapper"
@@ -169,72 +172,14 @@ const VersionRow = (props) => {
                   heightTextArea={54}
                   value={commentValue}
                   isDisabled={isSavingComment}
+                  autoFocus={true}
+                  areaSelect={true}
                 />
-                <Box className="version_modal-dialog">
-                  <ModalDialog
-                    displayType="aside"
-                    visible={showEditPanel}
-                    onClose={onEditComment}
-                  >
-                    <ModalDialog.Header className="header-version-modal-dialog">
-                      {t("EditComment")}
-                    </ModalDialog.Header>
-                    <ModalDialog.Body>
-                      <Textarea
-                        className="text-area-mobile-edit-comment"
-                        style={{ margin: "8px 24px 8px 0" }}
-                        //placeholder="Add comment"
-                        onChange={onChange}
-                        heightTextArea={298}
-                        value={commentValue}
-                        isDisabled={isSavingComment}
-                      />
-                    </ModalDialog.Body>
-                    <ModalDialog.Footer>
-                      <Button
-                        isDisabled={isSavingComment}
-                        className="version_save-button"
-                        label={t("Common:SaveButton")}
-                        size="big"
-                        primary
-                        onClick={onSaveClick}
-                      />
-                    </ModalDialog.Footer>
-                  </ModalDialog>
-                </Box>
               </>
             )}
 
-            <Link
-              type="action"
-              isHovered={!isEditing}
-              noHover={isEditing}
-              onClick={onEditComment}
-              className="version_link"
-            >
-              {info.comment}
-            </Link>
             <Text className="version_text">{info.comment}</Text>
           </>
-
-          <div className="version_links-container">
-            {canEdit && (
-              <Link
-                onClick={onRestoreClick}
-                {...linkStyles}
-                className="version_link-action"
-              >
-                {t("Translations:Restore")}
-              </Link>
-            )}
-            <Link
-              onClick={onDownloadAction}
-              {...linkStyles}
-              className="version_link-action"
-            >
-              {t("Common:Download")}
-            </Link>
-          </div>
         </Box>
         {showEditPanel && (
           <Box className="version_edit-comment" marginProp="8px 0 2px 70px">
@@ -244,7 +189,7 @@ const VersionRow = (props) => {
             >
               <Button
                 isDisabled={isSavingComment}
-                size="base"
+                size="extraSmall"
                 scale={true}
                 primary
                 onClick={onSaveClick}
@@ -257,7 +202,7 @@ const VersionRow = (props) => {
             >
               <Button
                 isDisabled={isSavingComment}
-                size="base"
+                size="extraSmall"
                 scale={true}
                 onClick={onCancelClick}
                 label={t("Common:CancelButton")}
@@ -284,6 +229,7 @@ export default inject(({ auth, versionHistoryStore }) => {
   } = versionHistoryStore;
 
   return {
+    theme: auth.settingsStore.theme,
     culture: language,
     isTabletView,
     markAsVersion,

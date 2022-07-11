@@ -63,7 +63,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
-    public class GoogleDriveDaoSelectorExtension
+    public static class GoogleDriveDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {

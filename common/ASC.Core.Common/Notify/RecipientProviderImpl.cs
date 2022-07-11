@@ -38,7 +38,7 @@ namespace ASC.Core.Notify
         private UserManager UserManager { get; }
 
         public RecipientProviderImpl(UserManager userManager) =>
-            (UserManager) = (userManager);
+            UserManager = userManager;
         public virtual IRecipient GetRecipient(string id)
         {
             if (TryParseGuid(id, out var recID))
@@ -54,11 +54,10 @@ namespace ASC.Core.Notify
 
         public virtual IRecipient[] GetGroupEntries(IRecipientsGroup group)
         {
-            if (group == null) throw new ArgumentNullException("group");
+            if (group == null) throw new ArgumentNullException(nameof(group));
 
             var result = new List<IRecipient>();
-            var groupID = Guid.Empty;
-            if (TryParseGuid(group.ID, out groupID))
+            if (TryParseGuid(group.ID, out var groupID))
             {
                 var coreGroup = UserManager.GetGroupInfo(groupID);
                 if (coreGroup.ID != Constants.LostGroupInfo.ID)
@@ -72,7 +71,7 @@ namespace ASC.Core.Notify
 
         public virtual IRecipientsGroup[] GetGroups(IRecipient recipient)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             var result = new List<IRecipientsGroup>();
             if (TryParseGuid(recipient.ID, out var recID))
@@ -99,7 +98,7 @@ namespace ASC.Core.Notify
 
         public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             if (TryParseGuid(recipient.ID, out var userID))
             {
@@ -112,7 +111,7 @@ namespace ASC.Core.Notify
                     if (senderName == ASC.Core.Configuration.Constants.NotifyTelegramSenderSysName) return new[] { user.ID.ToString() };
                 }
             }
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         /// <summary>
@@ -126,7 +125,7 @@ namespace ASC.Core.Notify
             if (recipient.CheckActivation)
             {
                 //It's direct email
-                if (recipient.Addresses != null && recipient.Addresses.Any())
+                if (recipient.Addresses != null && recipient.Addresses.Length > 0)
                 {
                     //Filtering only missing users and users who activated already
                     var filteredAddresses = from address in recipient.Addresses

@@ -1,3 +1,4 @@
-﻿{
-    "NotAvailableFolder": "Brak dostępnych folderów"
+{
+  "FolderContents": "Zawartość katalogu '{{folderTitle}}'",
+  "NotAvailableFolder": "Brak dostępnych folderów"
 }

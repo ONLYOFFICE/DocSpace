@@ -1,0 +1,12 @@
+{
+  "EmptyScreenText": "Здесь будут представлены свойства файлов и папок",
+  "FileExtension": "Расширение файла",
+  "ItemsSelected": "Выбрано элементов",
+  "LastModifiedBy": "Автор последнего корректива",
+  "Members": "участников",
+  "OpenSharingSettings": "Открыть настройки общего доступа",
+  "SystemProperties": "Системные свойства",
+  "Versions": "Версии",
+  "ViewDetails": "Просмотреть подробную информацию",
+  "WhoHasAccess": "У кого есть доступ"
+}

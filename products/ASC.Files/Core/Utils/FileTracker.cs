@@ -63,10 +63,10 @@ namespace ASC.Web.Files.Utils
             var tracker = GetTracker(fileId);
             if (tracker != null && IsEditing(fileId))
             {
-                if (tracker.EditingBy.Keys.Contains(tabId))
+                if (tracker.EditingBy.TryGetValue(tabId, out var trackInfo))
                 {
-                    tracker.EditingBy[tabId].TrackTime = DateTime.UtcNow;
-                    checkRight = (DateTime.UtcNow - tracker.EditingBy[tabId].CheckRightTime > CheckRightTimeout);
+                    trackInfo.TrackTime = DateTime.UtcNow;
+                    checkRight = DateTime.UtcNow - tracker.EditingBy[tabId].CheckRightTime > CheckRightTimeout;
                 }
                 else
                 {
@@ -97,8 +97,8 @@ namespace ASC.Web.Files.Utils
                 if (userId != default)
                 {
                     var listForRemove = tracker.EditingBy
-                                               .Where(b => tracker.EditingBy[b.Key].UserId == userId)
-                                               .ToList();
+                                               .Where(b => tracker.EditingBy[b.Key].UserId == userId);
+
                     foreach (var editTab in listForRemove)
                     {
                         tracker.EditingBy.Remove(editTab.Key);
@@ -117,8 +117,8 @@ namespace ASC.Web.Files.Utils
             if (tracker != null)
             {
                 var listForRemove = tracker.EditingBy
-                                           .Where(b => b.Value.UserId != userId)
-                                           .ToList();
+                                           .Where(b => b.Value.UserId != userId);
+
                 if (listForRemove.Count() != tracker.EditingBy.Count)
                 {
                     foreach (var forRemove in listForRemove)
@@ -138,8 +138,8 @@ namespace ASC.Web.Files.Utils
             if (tracker != null)
             {
                 var listForRemove = tracker.EditingBy
-                                           .Where(e => !e.Value.NewScheme && (DateTime.UtcNow - e.Value.TrackTime).Duration() > TrackTimeout)
-                                           .ToList();
+                                           .Where(e => !e.Value.NewScheme && (DateTime.UtcNow - e.Value.TrackTime).Duration() > TrackTimeout);
+
                 foreach (var editTab in listForRemove)
                 {
                     tracker.EditingBy.Remove(editTab.Key);
@@ -169,16 +169,13 @@ namespace ASC.Web.Files.Utils
             var tracker = GetTracker(fileId);
             if (tracker != null)
             {
-
-                tracker.EditingBy.Values
-                       .ToList()
-                       .ForEach(i =>
-                       {
-                           if (i.UserId == userId || userId == Guid.Empty)
-                           {
-                               i.CheckRightTime = check ? DateTime.MinValue : DateTime.UtcNow;
-                           }
-                       });
+                foreach(var value in tracker.EditingBy.Values)
+                {
+                    if (value.UserId == userId || userId == Guid.Empty)
+                    {
+                        value.CheckRightTime = check ? DateTime.MinValue : DateTime.UtcNow;
+                    }
+                }
                 SetTracker(fileId, tracker);
             }
             else

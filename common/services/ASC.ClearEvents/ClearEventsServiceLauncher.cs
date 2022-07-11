@@ -87,14 +87,14 @@ namespace ASC.Thumbnails.Svc
             }
         }
 
-        private void GetOldEvents<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
+        private void GetOldEvents<T>(Expression<Func<Messages, DbSet<T>>> func, string settings) where T : MessageEvent
         {
             List<T> ids;
             var compile = func.Compile();
             do
             {
                 using var scope = ServiceProvider.CreateScope();
-                using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+                using var ef = scope.ServiceProvider.GetService<DbContextManager<Messages>>().Get("messages");
                 var table = compile.Invoke(ef);
 
                 var ae = table
@@ -115,16 +115,23 @@ namespace ASC.Thumbnails.Svc
 
                 ids = ae.Select(r => r.ef).ToList();
 
-                if (!ids.Any()) return;
+                if (ids.Count == 0) return;
 
                 table.RemoveRange(ids);
                 ef.SaveChanges();
 
-            } while (ids.Any());
+            } while (ids.Count > 0);
         }
     }
 
-    public class MessagesRepositoryExtension
+    public class Messages : MessagesContext
+    {
+        public DbSet<AuditEvent> AuditEvents { get; }
+        public DbSet<DbTenant> Tenants { get; }
+        public DbSet<DbWebstudioSettings> WebstudioSettings { get; }
+    }
+    
+    public static class MessagesRepositoryExtension
     {
         public static void Register(DIHelper services)
         {

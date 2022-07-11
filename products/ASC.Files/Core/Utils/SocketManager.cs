@@ -25,6 +25,7 @@
 
 
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.Documents;
@@ -67,35 +68,40 @@ namespace ASC.Web.Files.Utils
         public void StopEdit<T>(T fileId)
         {
             var room = GetFileRoom(fileId);
-            var file = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
 
-            var serializerSettings = new JsonSerializerOptions()
-            {
-                WriteIndented = false,
-                IgnoreNullValues = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            serializerSettings.Converters.Add(new ApiDateTimeConverter());
-            serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-            var data = JsonSerializer.Serialize(FilesWrapperHelper.Get(file), serializerSettings);
-
-            _signalrServiceClient.StopEdit(fileId, room, data);
+            _signalrServiceClient.StopEdit(fileId, room);
         }
 
-        public void CreateFile<T>(File<T> file)
+        public async Task CreateFileAsync<T>(File<T> file)
         {
             var room = GetFolderRoom(file.FolderID);
             var serializerSettings = new JsonSerializerOptions()
             {
                 WriteIndented = false,
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
             serializerSettings.Converters.Add(new ApiDateTimeConverter());
             serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-            var data = JsonSerializer.Serialize(FilesWrapperHelper.Get(file), serializerSettings);
+            var data = JsonSerializer.Serialize(await FilesWrapperHelper.GetAsync(file), serializerSettings);
 
             _signalrServiceClient.CreateFile(file.ID, room, data);
+        }
+
+        public async Task UpdateFileAsync<T>(File<T> file)
+        {
+            var room = GetFolderRoom(file.FolderID);
+            var serializerSettings = new JsonSerializerOptions()
+            {
+                WriteIndented = false,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            serializerSettings.Converters.Add(new ApiDateTimeConverter());
+            serializerSettings.Converters.Add(new FileEntryWrapperConverter());
+            var data = JsonSerializer.Serialize(await FilesWrapperHelper.GetAsync(file), serializerSettings);
+
+            _signalrServiceClient.UpdateFile(file.ID, room, data);
         }
 
         public void DeleteFile<T>(File<T> file)

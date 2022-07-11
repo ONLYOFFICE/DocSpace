@@ -40,8 +40,8 @@ const Paging = (props) => {
   return (
     <StyledPaging id={id} className={className} style={style}>
       <Button
-        className="buttonCustomStyle"
-        size="medium"
+        className="not-selectable"
+        size="small"
         scale={true}
         label={previousLabel}
         onClick={previousAction}
@@ -51,6 +51,7 @@ const Paging = (props) => {
       {pageItems && (
         <StyledPage>
           <ComboBox
+            isDisabled={disablePrevious && disableNext}
             className="manualWidth"
             directionY={openDirection}
             options={pageItems}
@@ -62,8 +63,8 @@ const Paging = (props) => {
         </StyledPage>
       )}
       <Button
-        className="buttonCustomStyle"
-        size="medium"
+        className="not-selectable"
+        size="small"
         scale={true}
         label={nextLabel}
         onClick={nextAction}

@@ -10,6 +10,8 @@ import {
   StyledLinkWithDropdown,
   Caret,
 } from "./styled-link-with-dropdown";
+import { isMobileOnly } from "react-device-detect";
+import Scrollbar from "@appserver/components/scrollbar";
 
 class LinkWithDropdown extends React.Component {
   constructor(props) {
@@ -17,6 +19,7 @@ class LinkWithDropdown extends React.Component {
 
     this.state = {
       isOpen: props.isOpen,
+      orientation: window.orientation,
     };
 
     this.ref = React.createRef();
@@ -35,6 +38,16 @@ class LinkWithDropdown extends React.Component {
     this.setIsOpen(!this.state.isOpen);
   };
 
+  onSetOrientation = () => {
+    this.setState({
+      orientation: window.orientation,
+    });
+  };
+
+  componentDidMount() {
+    window.addEventListener("orientationchange", this.onSetOrientation);
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.dropdownType !== prevProps.dropdownType) {
       if (this.props.isOpen !== prevProps.isOpen) {
@@ -45,11 +58,24 @@ class LinkWithDropdown extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("orientationchange", this.onSetOrientation);
+  }
+
   onClickDropDownItem = (e) => {
     const { key } = e.target.dataset;
     const item = this.props.data.find((x) => x.key === key);
     this.setIsOpen(!this.state.isOpen);
     item && item.onClick && item.onClick(e);
+  };
+
+  onCheckManualWidth = () => {
+    const padding = 32;
+    const width = this.ref.current
+      ?.querySelector(".text")
+      .getBoundingClientRect().width;
+
+    return width + padding + "px";
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -73,8 +99,24 @@ class LinkWithDropdown extends React.Component {
       style,
       isDisabled,
       directionY,
+      theme,
+      hasScroll,
       ...rest
     } = this.props;
+
+    const showScroll =
+      hasScroll && isMobileOnly && this.state.orientation === 90;
+
+    const dropDownItem = data.map((item) => (
+      <DropDownItem
+        className="drop-down-item"
+        key={item.key}
+        {...item}
+        onClick={this.onClickDropDownItem}
+        data-key={item.key}
+        textOverflow={isTextOverflow}
+      />
+    ));
 
     return (
       <StyledSpan className={className} id={id} style={style} ref={this.ref}>
@@ -86,6 +128,7 @@ class LinkWithDropdown extends React.Component {
             isDisabled={isDisabled}
           >
             <StyledText
+              className="text"
               isTextOverflow={isTextOverflow}
               truncate={isTextOverflow}
               fontSize={fontSize}
@@ -108,6 +151,7 @@ class LinkWithDropdown extends React.Component {
         </span>
         <DropDown
           className="fixed-max-width"
+          manualWidth={showScroll ? this.onCheckManualWidth() : null}
           open={this.state.isOpen}
           withArrow={false}
           forwardedRef={this.ref}
@@ -115,16 +159,18 @@ class LinkWithDropdown extends React.Component {
           clickOutsideAction={this.onClose}
           {...rest}
         >
-          {data.map((item) => (
-            <DropDownItem
-              className="drop-down-item"
-              key={item.key}
-              {...item}
-              onClick={this.onClickDropDownItem}
-              data-key={item.key}
-              textOverflow={isTextOverflow}
-            />
-          ))}
+          {showScroll ? (
+            <Scrollbar
+              className="scroll-drop-down-item"
+              style={{
+                height: 108,
+              }}
+            >
+              {dropDownItem}
+            </Scrollbar>
+          ) : (
+            dropDownItem
+          )}
         </DropDown>
       </StyledSpan>
     );
@@ -165,10 +211,10 @@ LinkWithDropdown.propTypes = {
   isDisabled: PropTypes.bool,
   /** Sets the opening direction relative to the parent */
   directionY: PropTypes.oneOf(["bottom", "top", "both"]),
+  hasScroll: PropTypes.bool,
 };
 
 LinkWithDropdown.defaultProps = {
-  color: "#333333",
   data: [],
   dropdownType: "alwaysDashed",
   fontSize: "13px",
@@ -178,6 +224,7 @@ LinkWithDropdown.defaultProps = {
   isOpen: false,
   className: "",
   isDisabled: false,
+  hasScroll: false,
 };
 
 export default LinkWithDropdown;

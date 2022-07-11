@@ -70,9 +70,7 @@ const DeleteThirdPartyDialog = (props) => {
       zIndex={310}
       onClose={onClose}
     >
-      <ModalDialog.Header>
-        {t("Translations:DeleteThirdParty")}
-      </ModalDialog.Header>
+      <ModalDialog.Header>{t("Common:Disconnect")}</ModalDialog.Header>
       <ModalDialog.Body>
         {t("DeleteThirdPartyAlert", { service: removeItem.title })}
       </ModalDialog.Body>
@@ -80,7 +78,7 @@ const DeleteThirdPartyDialog = (props) => {
         <Button
           isLoading={isLoading}
           label={t("Common:OKButton")}
-          size="big"
+          size="normal"
           primary
           onClick={onDeleteThirdParty}
         />

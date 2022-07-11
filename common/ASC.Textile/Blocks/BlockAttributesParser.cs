@@ -17,7 +17,7 @@ using System.Text.RegularExpressions;
 
 namespace Textile.Blocks
 {
-    public class BlockAttributesParser
+    public static class BlockAttributesParser
     {
         public static StyleReader Styler { get; set; }
 
@@ -45,7 +45,6 @@ namespace Textile.Blocks
             var colspan = string.Empty;
             var rowspan = string.Empty;
             var id = string.Empty;
-            var atts = string.Empty;
 
             if (Styler != null)
             {
@@ -53,7 +52,7 @@ namespace Textile.Blocks
             }
 
             if (input.Length == 0)
-                return (style.Length > 0 ? " style=\"" + style + "\"" : "");
+                return style.Length > 0 ? " style=\"" + style + "\"" : "";
 
 
             Match m;
@@ -134,14 +133,14 @@ namespace Textile.Blocks
 
 
 
-            return (
+            return 
                     (style.Length > 0 ? " style=\"" + style + "\"" : "") +
                     (cssClass.Length > 0 ? " class=\"" + cssClass + "\"" : "") +
                     (lang.Length > 0 ? " lang=\"" + lang + "\"" : "") +
                     (id.Length > 0 ? " id=\"" + id + "\"" : "") +
                     (colspan.Length > 0 ? " colspan=\"" + colspan + "\"" : "") +
                     (rowspan.Length > 0 ? " rowspan=\"" + rowspan + "\"" : "")
-                   );
+                   ;
         }
 
         private static string GetStyle(string element, string style)

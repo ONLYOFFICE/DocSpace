@@ -118,7 +118,7 @@ namespace ASC.CRM.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbDeal, Provider.MySql)
-                .Add(PgSqlAddDbDeal, Provider.Postgre);
+                .Add(PgSqlAddDbDeal, Provider.PostgreSql);
 
             return modelBuilder;
         }

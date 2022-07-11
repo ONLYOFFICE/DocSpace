@@ -1,4 +1,5 @@
 {
+  "AllUsers": "All users",
   "CustomAllGroups": "All {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "There are no users with such name",
   "EmptyUsers": "There are no users",

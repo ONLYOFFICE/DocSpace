@@ -1,10 +1,40 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
+
 import Avatar from "@appserver/components/avatar";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Link from "@appserver/components/link";
 import ProfileMenu from "./profile-menu";
 import api from "@appserver/common/api";
+
+import ToggleButton from "@appserver/components/toggle-button";
+import Button from "@appserver/components/button";
+
+const StyledDiv = styled.div`
+  width: 32px;
+  height: 32px;
+
+  ${isMobileOnly &&
+  css`
+    @media (min-width: 428px) {
+      .backdrop-active {
+        background-color: unset;
+        backdrop-filter: unset;
+      }
+    }
+  `}
+`;
+
+const StyledButtonWrapper = styled.div`
+  width: 100%;
+
+  padding: 12px 16px;
+
+  box-sizing: border-box;
+`;
+
 class ProfileActions extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -59,11 +89,23 @@ class ProfileActions extends React.PureComponent {
     const dropDownItem = path ? path.find((x) => x === this.ref.current) : null;
     if (dropDownItem) return;
 
+    const navElement = document.getElementsByClassName("profileMenuIcon");
+
+    if (navElement?.length > 0) {
+      navElement[0].style.setProperty("z-index", 180, "important");
+    }
+
     this.setOpened(!this.state.opened);
   };
 
   onClick = (action, e) => {
     action.onClick && action.onClick(e);
+
+    const navElement = document.getElementsByClassName("profileMenuIcon");
+
+    if (navElement?.length > 0) {
+      navElement[0].style.setProperty("z-index", 210, "important");
+    }
 
     this.setOpened(!this.state.opened);
   };
@@ -86,8 +128,9 @@ class ProfileActions extends React.PureComponent {
     const userRole = this.getUserRole(user);
 
     return (
-      <div ref={this.ref}>
+      <StyledDiv isProduct={this.props.isProduct} ref={this.ref}>
         <Avatar
+          style={{ width: "32px", height: "32px" }}
           onClick={this.onClick}
           role={userRole}
           size="min"
@@ -107,8 +150,18 @@ class ProfileActions extends React.PureComponent {
         >
           <div style={{ paddingTop: "8px" }}>
             {this.props.userActions.map(
-              (action) =>
-                action && (
+              (action, index) =>
+                action &&
+                (action?.isButton ? (
+                  <StyledButtonWrapper key={action.key}>
+                    <Button
+                      size={"small"}
+                      scale={true}
+                      label={action.label}
+                      onClick={action.onClick}
+                    />
+                  </StyledButtonWrapper>
+                ) : (
                   <Link
                     noHover={true}
                     key={action.key}
@@ -117,11 +170,11 @@ class ProfileActions extends React.PureComponent {
                   >
                     <DropDownItem {...action} />
                   </Link>
-                )
+                ))
             )}
           </div>
         </ProfileMenu>
-      </div>
+      </StyledDiv>
     );
   }
 }
@@ -132,6 +185,7 @@ ProfileActions.propTypes = {
   userActions: PropTypes.array,
   userIsUpdate: PropTypes.bool,
   setUserIsUpdate: PropTypes.func,
+  isProduct: PropTypes.bool,
 };
 
 ProfileActions.defaultProps = {
@@ -139,6 +193,7 @@ ProfileActions.defaultProps = {
   user: {},
   userActions: [],
   userIsUpdate: false,
+  isProduct: false,
 };
 
 export default ProfileActions;

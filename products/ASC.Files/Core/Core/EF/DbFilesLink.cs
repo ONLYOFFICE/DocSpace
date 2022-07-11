@@ -27,7 +27,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFilesLink, Provider.MySql)
-                .Add(PgSqlAddDbFilesLink, Provider.Postgre);
+                .Add(PgSqlAddDbFilesLink, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesLink(this ModelBuilder modelBuilder)

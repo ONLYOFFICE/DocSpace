@@ -46,11 +46,10 @@ namespace ASC.ApiSystem
         public async static Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-
             await host.RunAsync();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) => 
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSystemd()
                 .UseWindowsService()
@@ -94,6 +93,8 @@ namespace ASC.ApiSystem
                     .AddJsonFile("storage.json")
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddJsonFile("redis.json")
+                    .AddJsonFile($"redis.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddEnvironmentVariables()
                     .AddCommandLine(args)
                     .AddInMemoryCollection(new Dictionary<string, string>

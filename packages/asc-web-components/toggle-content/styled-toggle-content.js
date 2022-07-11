@@ -5,9 +5,19 @@ import Base from "../themes/base";
 const StyledContainer = styled.div`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+  .toggle-container {
+    display: inline-block;
+  }
+
   .span-toggle-content {
     cursor: pointer;
     user-select: none;
+
+    display: grid;
+    grid-template-columns: ${(props) =>
+      props.enableToggle ? "16px 1fr" : "1fr"};
+    grid-column-gap: 9px;
+    max-width: 660px;
 
     svg {
       ${(props) =>
@@ -23,13 +33,13 @@ const StyledContainer = styled.div`
   }
 
   .arrow-toggle-content {
-    margin-right: ${(props) => props.theme.toggleContent.arrowMarginRight};
-    margin-bottom: ${(props) => props.theme.toggleContent.arrowMarginBottom};
-
-    transform: ${(props) => props.open && props.theme.toggleContent.transform};
+    margin: auto 0;
+    transform: ${(props) =>
+      props.isOpen && props.theme.toggleContent.transform};
   }
 
   .heading-toggle-content {
+    display: inline-block;
     height: ${(props) => props.theme.toggleContent.headingHeight};
     line-height: ${(props) => props.theme.toggleContent.headingHeight};
     box-sizing: border-box;

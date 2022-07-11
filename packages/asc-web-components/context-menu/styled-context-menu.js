@@ -1,17 +1,103 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
+import { isMobile, isMobileOnly } from "react-device-detect";
+import { tablet, mobile } from "../utils/device";
+
+const styledTabletView = css`
+  position: fixed;
+  width: ${(props) => props.theme.newContextMenu.devices.tabletWidth};
+  max-width: ${(props) => props.theme.newContextMenu.devices.tabletWidth};
+  max-height: ${(props) => props.theme.newContextMenu.devices.maxHeight};
+  left: ${(props) => props.theme.newContextMenu.devices.left};
+  right: ${(props) => props.theme.newContextMenu.devices.right};
+  bottom: ${(props) => props.theme.newContextMenu.devices.bottom};
+  margin: ${(props) => props.theme.newContextMenu.devices.margin};
+`;
+
+const styledMobileView = css`
+  position: fixed;
+  width: ${(props) => props.theme.newContextMenu.devices.mobileWidth};
+  max-width: ${(props) => props.theme.newContextMenu.devices.mobileWidth};
+  max-height: ${(props) => props.theme.newContextMenu.devices.maxHeight};
+  left: ${(props) => props.theme.newContextMenu.devices.left};
+  bottom: ${(props) => props.theme.newContextMenu.devices.bottom};
+  border-radius: ${(props) => props.theme.newContextMenu.mobileBorderRadius};
+`;
 
 const StyledContextMenu = styled.div`
   .p-contextmenu {
     position: absolute;
-    background: ${(props) => props.theme.dropDown.background};
-    border-radius: ${(props) => props.theme.dropDown.borderRadius};
-    -moz-border-radius: ${(props) => props.theme.dropDown.borderRadius};
-    -webkit-border-radius: ${(props) => props.theme.dropDown.borderRadius};
-    box-shadow: ${(props) => props.theme.dropDown.boxShadow};
-    -moz-box-shadow: ${(props) => props.theme.dropDown.boxShadow};
-    -webkit-box-shadow: ${(props) => props.theme.dropDown.boxShadow};
-    padding: 4px 0px;
+    background: ${(props) => props.theme.newContextMenu.background};
+    border: ${(props) => props.theme.newContextMenu.border};
+    border-radius: ${(props) => props.theme.newContextMenu.borderRadius};
+    -moz-border-radius: ${(props) => props.theme.newContextMenu.borderRadius};
+    -webkit-border-radius: ${(props) =>
+      props.theme.newContextMenu.borderRadius};
+    box-shadow: ${(props) => props.theme.newContextMenu.boxShadow};
+    -moz-box-shadow: ${(props) => props.theme.newContextMenu.boxShadow};
+    -webkit-box-shadow: ${(props) => props.theme.newContextMenu.boxShadow};
+    padding: ${(props) => props.theme.newContextMenu.padding};
+
+    @media ${tablet} {
+      ${(props) => props.changeView && !isMobile && styledTabletView}
+    }
+
+    @media ${mobile} {
+      ${(props) => props.changeView && !isMobile && styledMobileView}
+    }
+
+    ${(props) =>
+      props.changeView
+        ? isMobileOnly
+          ? styledMobileView
+          : styledTabletView
+        : null}
+  }
+
+  .contextmenu-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: ${(props) => props.theme.menuItem.header.height};
+    max-height: ${(props) => props.theme.menuItem.header.height};
+    border-bottom: ${(props) => props.theme.menuItem.header.borderBottom};
+    margin: 0;
+    margin-bottom: ${(props) => props.theme.menuItem.header.marginBottom};
+    padding: ${(props) => props.theme.menuItem.mobile.padding};
+
+    cursor: default;
+
+    box-sizing: border-box;
+    background: none;
+    outline: 0 !important;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    .icon-wrapper {
+      display: flex;
+      align-items: center;
+      width: ${(props) => props.theme.menuItem.iconWrapper.header.width};
+      height: ${(props) => props.theme.menuItem.iconWrapper.header.height};
+
+      svg {
+        &:not(:root) {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+
+    .text {
+      width: 100%;
+      font-size: ${(props) => props.theme.menuItem.text.header.fontSize};
+      font-weight: 600;
+      line-height: ${(props) => props.theme.menuItem.text.header.lineHeight};
+      margin: ${(props) => props.theme.menuItem.text.margin};
+      color: ${(props) => props.theme.menuItem.text.color};
+      text-align: left;
+      text-transform: none;
+      text-decoration: none;
+      user-select: none;
+    }
   }
 
   .p-contextmenu ul {
@@ -23,6 +109,7 @@ const StyledContextMenu = styled.div`
   .p-contextmenu .p-submenu-list {
     position: absolute;
     background: ${(props) => props.theme.dropDown.background};
+    border: ${(props) => props.theme.dropDown.border};
     border-radius: ${(props) => props.theme.dropDown.borderRadius};
     -moz-border-radius: ${(props) => props.theme.dropDown.borderRadius};
     -webkit-border-radius: ${(props) => props.theme.dropDown.borderRadius};
@@ -60,6 +147,8 @@ const StyledContextMenu = styled.div`
     color: ${(props) => props.theme.dropDownItem.color};
     text-transform: none;
 
+    -webkit-touch-callout: none;
+
     &:hover {
       background-color: ${(props) =>
         props.noHover
@@ -79,18 +168,17 @@ const StyledContextMenu = styled.div`
   }
 
   .p-contextmenu .p-menuitem-text {
-    line-height: ${(props) => props.theme.dropDownItem.lineHeight};
+    line-height: 36px;
   }
 
   .p-contextmenu .p-menu-separator {
-    cursor: default;
-    padding: 0px 16px;
-    margin: 4px 16px 4px;
-    border-bottom: 1px solid #eceef1;
-    width: calc(90%-32px);
-
+    border-bottom: ${(props) => props.theme.menuItem.separator.borderBottom};
+    cursor: default !important;
+    margin: ${(props) => props.theme.menuItem.separator.margin};
+    height: ${(props) => props.theme.menuItem.separator.height};
+    width: ${(props) => props.theme.menuItem.separator.width};
     &:hover {
-      cursor: default;
+      cursor: default !important;
     }
   }
 
@@ -109,13 +197,25 @@ const StyledContextMenu = styled.div`
       height: 16px;
       width: 16px;
     }
-    path {
+    path[fill],
+    circle[fill],
+    rect[fill] {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
     }
 
+    path[stroke],
+    circle[stroke],
+    rect[stroke] {
+      stroke: ${(props) => props.theme.dropDownItem.icon.color};
+    }
+
     &.p-disabled {
-      path {
+      path[fill] {
         fill: ${(props) => props.theme.dropDownItem.icon.disableColor};
+      }
+
+      path[stroke] {
+        stroke: ${(props) => props.theme.dropDownItem.icon.disableColor};
       }
     }
 
@@ -125,6 +225,13 @@ const StyledContextMenu = styled.div`
   .p-submenu-icon {
     margin-left: auto;
     padding-left: 8px;
+    path[fill] {
+      fill: ${(props) => props.theme.dropDownItem.icon.color};
+    }
+
+    path[stroke] {
+      stroke: ${(props) => props.theme.dropDownItem.icon.color};
+    }
   }
 
   .p-contextmenu-enter {

@@ -33,7 +33,7 @@ namespace ASC.Web.Core.Calendars
     {
         internal TimeZoneInfo TimeZone { get; set; }
 
-        public BaseTodo()
+        protected BaseTodo()
         {
             this.Context = new TodoContext();
         }
@@ -81,18 +81,26 @@ namespace ASC.Web.Core.Calendars
             var sb = new StringBuilder();
 
             sb.AppendLine("BEGIN:TODO");
-            sb.AppendLine(string.Format("UID:{0}", string.IsNullOrEmpty(this.Uid) ? this.Id : this.Uid));
-            sb.AppendLine(string.Format("SUMMARY:{0}", this.Name));
+
+            var id = string.IsNullOrEmpty(this.Uid) ? this.Id : this.Uid;
+
+            sb.AppendLine($"UID:{id}");
+            sb.AppendLine($"SUMMARY:{Name}");
 
             if (!string.IsNullOrEmpty(this.Description))
-                sb.AppendLine(string.Format("DESCRIPTION:{0}", this.Description.Replace("\n", "\\n")));
+                sb.AppendLine($"DESCRIPTION:{Description.Replace("\n", "\\n")}");
 
 
             if (this.UtcStartDate != DateTime.MinValue)
-                sb.AppendLine(string.Format("DTSTART:{0}", this.UtcStartDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
-
+            {
+                var utcStart = UtcStartDate.ToString("yyyyMMdd'T'HHmmss'Z'");
+                sb.AppendLine($"DTSTART:{utcStart}");
+            }
             if (this.Completed != DateTime.MinValue)
-                sb.AppendLine(string.Format("COMPLETED:{0}", this.Completed.ToString("yyyyMMdd'T'HHmmss'Z'")));
+            {
+                var completed = Completed.ToString("yyyyMMdd'T'HHmmss'Z'");
+                sb.AppendLine($"COMPLETED:{completed}");
+            }
 
             sb.Append("END:TODO");
             return sb.ToString();

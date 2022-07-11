@@ -73,7 +73,7 @@ namespace ASC.CRM.Core
         public override bool Equals(object obj)
         {
             var ci = obj as CurrencyInfo;
-            return ci != null && string.Compare(Title, ci.Title, true) == 0;
+            return ci != null && string.Equals(Title, ci.Title, StringComparison.OrdinalIgnoreCase);
         }
 
         public override int GetHashCode()

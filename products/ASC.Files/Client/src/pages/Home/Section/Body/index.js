@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
+
 import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./RowsView/FilesRowContainer";
 import FilesTileContainer from "./TilesView/FilesTileContainer";
 import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
+import withHotkeys from "../../../../HOCs/withHotkeys";
 import { Consumer } from "@appserver/components/utils/context";
+import { isElementInViewport } from "@appserver/common/utils";
 
 let currentDroppable = null;
 let isDragActive = false;
@@ -32,6 +35,12 @@ const SectionBodyContent = (props) => {
     setBufferSelection,
     tooltipPageX,
     tooltipPageY,
+    setHotkeyCaretStart,
+    setHotkeyCaret,
+    scrollToItem,
+    setScrollToItem,
+    filesList,
+    uploaded,
   } = props;
 
   useEffect(() => {
@@ -43,7 +52,8 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    !isMobile && window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("beforeunload", onBeforeunload);
+    window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
 
@@ -52,6 +62,7 @@ const SectionBodyContent = (props) => {
     document.addEventListener("drop", onDropEvent);
 
     return () => {
+      window.removeEventListener("beforeunload", onBeforeunload);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mousemove", onMouseMove);
@@ -60,19 +71,55 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
     };
-  }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
+  }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs, uploaded]);
+
+  useEffect(() => {
+    if (scrollToItem) {
+      const { type, id } = scrollToItem;
+
+      const targetElement = document.getElementById(`${type}_${id}`);
+
+      if (!targetElement) return;
+
+      let isInViewport = isElementInViewport(targetElement);
+
+      if (!isInViewport || viewAs === "table") {
+        const bodyScroll = isMobileOnly
+          ? document.querySelector("#customScrollBar > .scroll-body")
+          : document.querySelector(".section-scroll");
+
+        const count =
+          filesList.findIndex((elem) => elem.id === scrollToItem.id) *
+          (isMobileOnly ? 57 : viewAs === "table" ? 40 : 48);
+
+        bodyScroll.scrollTo(0, count);
+      }
+      setScrollToItem(null);
+    }
+  }, [scrollToItem]);
+
+  const onBeforeunload = (e) => {
+    if (!uploaded) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  };
 
   const onMouseDown = (e) => {
     if (
       (e.target.closest(".scroll-body") &&
         !e.target.closest(".files-item") &&
-        !e.target.closest(".not-selectable")) ||
+        !e.target.closest(".not-selectable") &&
+        !e.target.closest(".info-panel") &&
+        !e.target.closest(".table-container_group-menu")) ||
       e.target.closest(".files-main-button") ||
       e.target.closest(".add-button") ||
       e.target.closest(".search-input-block")
     ) {
       setSelection([]);
       setBufferSelection(null);
+      setHotkeyCaretStart(null);
+      setHotkeyCaret(null);
     }
   };
 
@@ -117,8 +164,12 @@ const SectionBodyContent = (props) => {
           const value = currentDroppable.getAttribute("value");
           const classElements = document.getElementsByClassName(value);
 
+          // add check for column with width = 0, because without it dark theme d`n`d have bug color
+          // 30 - it`s column padding
           for (let cl of classElements) {
-            cl.classList.add("droppable-hover");
+            if (cl.clientWidth - 30) {
+              cl.classList.add("droppable-hover");
+            }
           }
         } else {
           currentDroppable.classList.add("droppable-hover");
@@ -161,7 +212,7 @@ const SectionBodyContent = (props) => {
   const onMoveTo = (destFolderId, title, providerKey) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
     moveDragItems(id, title, providerKey, {
-      copy: t("Translations:CopyOperation"),
+      copy: t("Common:CopyOperation"),
       move: t("Translations:MoveToOperation"),
     }); //TODO: then catch
   };
@@ -188,20 +239,29 @@ const SectionBodyContent = (props) => {
   };
 
   //console.log("Files Home SectionBodyContent render", props);
+
   return (
     <Consumer>
       {(context) =>
         (!fileActionId && isEmptyFilesList) || null ? (
-          <EmptyContainer />
+          <>
+            <EmptyContainer />
+          </>
         ) : viewAs === "tile" ? (
-          <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+          <>
+            <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+          </>
         ) : viewAs === "table" ? (
-          <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+          <>
+            <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+          </>
         ) : (
-          <FilesRowContainer
-            sectionWidth={context.sectionWidth}
-            tReady={tReady}
-          />
+          <>
+            <FilesRowContainer
+              sectionWidth={context.sectionWidth}
+              tReady={tReady}
+            />
+          </>
         )
       }
     </Consumer>
@@ -214,6 +274,7 @@ export default inject(
     selectedFolderStore,
     treeFoldersStore,
     filesActionsStore,
+    uploadDataStore,
   }) => {
     const {
       fileActionStore,
@@ -228,8 +289,12 @@ export default inject(
       tooltipPageX,
       tooltipPageY,
       setBufferSelection,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
+      scrollToItem,
+      setScrollToItem,
+      filesList,
     } = filesStore;
-
     return {
       dragging,
       startDrag,
@@ -246,12 +311,18 @@ export default inject(
       setBufferSelection,
       tooltipPageX,
       tooltipPageY,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
+      scrollToItem,
+      setScrollToItem,
+      filesList,
+      uploaded: uploadDataStore.uploaded,
     };
   }
 )(
   withRouter(
-    withTranslation(["Home", "Translations"])(
-      withLoader(observer(SectionBodyContent))()
+    withTranslation(["Home", "Common", "Translations"])(
+      withLoader(withHotkeys(observer(SectionBodyContent)))()
     )
   )
 );

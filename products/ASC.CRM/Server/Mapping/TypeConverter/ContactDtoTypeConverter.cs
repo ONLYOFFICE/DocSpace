@@ -219,8 +219,6 @@ namespace ASC.CRM.Mapping
         {
             if (source == null) return null;
 
-            if (source == null) return null;
-
             var contactBaseDto = context.Mapper.Map<ContactBaseDto>(source);
 
             var result = new ContactBaseWithPhoneDto

@@ -7,14 +7,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Frontend.Translations.Tests.Models;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
-
-using UtfUnknown;
 
 using WeCantSpell.Hunspell;
 
@@ -31,20 +27,31 @@ namespace Frontend.Translations.Tests
         }
 
         public List<string> Workspaces { get; set; }
-
         public List<TranslationFile> TranslationFiles { get; set; }
         public List<JavaScriptFile> JavaScriptFiles { get; set; }
         public List<ModuleFolder> ModuleFolders { get; set; }
         public List<KeyValuePair<string, string>> NotTranslatedToasts { get; set; }
         public List<LanguageItem> CommonTranslations { get; set; }
         public List<ParseJsonError> ParseJsonErrors { get; set; }
-        public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
+        //public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
+
+        private static string _md5ExcludesPath = "../../../md5-excludes.json";
+
+        //private static string _encodingExcludesPath = "../../../encoding-excludes.json";
+
+        private static List<string> md5Excludes = File.Exists(_md5ExcludesPath)
+            ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_md5ExcludesPath))
+            : new List<string>();
+
+        //private static List<string> encodingExcludes = File.Exists(_encodingExcludesPath)
+        //    ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_encodingExcludesPath))
+        //    : new List<string>();
 
         [OneTimeSetUp]
         public void Setup()
         {
             ParseJsonErrors = new List<ParseJsonError>();
-            WrongEncodingJsonErrors = new List<JsonEncodingError>();
+            //WrongEncodingJsonErrors = new List<JsonEncodingError>();
 
             var packageJsonPath = Path.Combine(BasePath, @"package.json");
 
@@ -52,7 +59,7 @@ namespace Frontend.Translations.Tests
 
             var moduleWorkspaces = ((JArray)jsonPackage["workspaces"])
                 .Select(p => ((string)p).Replace("/", "\\"))
-                .Where(w => !w.Contains("asc-web-components"))
+                //.Where(w => !w.Contains("asc-web-components"))
                 .ToList();
 
             Workspaces = new List<string>();
@@ -73,15 +80,18 @@ namespace Frontend.Translations.Tests
             {
                 try
                 {
-                    var result = CharsetDetector.DetectFromFile(path);
+                    //var result = CharsetDetector.DetectFromFile(path);
 
-                    if (result.Detected.EncodingName != "utf-8"
-                    && result.Detected.EncodingName != "ascii")
-                    {
-                        WrongEncodingJsonErrors.Add(
-                            new JsonEncodingError(path, result.Detected));
-                    }
+                    //if (!encodingExcludes.Contains(result.Detected.EncodingName))
+                    //{
+                    //    WrongEncodingJsonErrors.Add(
+                    //        new JsonEncodingError(path, result.Detected));
+                    //}
 
+#if SORT
+
+                    JObject jsonSorted;
+#endif
                     using (var md5 = MD5.Create())
                     {
                         using (var stream = File.OpenRead(path))
@@ -100,20 +110,19 @@ namespace Frontend.Translations.Tests
                                     .ToList(), md5hash);
 
                                 TranslationFiles.Add(translationFile);
+
+#if SORT
+                                var orderedList = jsonTranslation.Properties().OrderBy(t => t.Name);
+                                jsonSorted = new JObject(orderedList);
+#endif
                             }
-
                         }
+#if SORT
+                        //   Re-write by order 
+                        var sortedJsonString = JsonConvert.SerializeObject(jsonSorted, Formatting.Indented);
+                        File.WriteAllText(path, sortedJsonString, Encoding.UTF8);
+#endif
                     }
-
-                    /*   Re-write by order */
-
-                    //var orderedList = jsonTranslation.Properties().OrderBy(t => t.Name);
-
-                    //var result = new JObject(orderedList);
-
-                    //var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
-
-                    //File.WriteAllText(path, sortedJsonString);
                 }
                 catch (Exception ex)
                 {
@@ -153,15 +162,18 @@ namespace Frontend.Translations.Tests
             {
                 var jsFileText = File.ReadAllText(path);
 
-                var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
-
-                if (toastMatches.Any())
+                if (!path.Contains("asc-web-components"))
                 {
-                    foreach (var toastMatch in toastMatches)
+                    var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
+
+                    if (toastMatches.Any())
                     {
-                        var found = toastMatch.Value;
-                        if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
-                            NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
+                        foreach (var toastMatch in toastMatches)
+                        {
+                            var found = toastMatch.Value;
+                            if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
+                                NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
+                        }
                     }
                 }
 
@@ -204,7 +216,6 @@ namespace Frontend.Translations.Tests
                 {
                     ModulePath = g.Key,
                     Languages = g.ToList().Select(t => t.Language).ToList()
-                    .ToList()
                 })
                 .ToList();
 
@@ -223,17 +234,17 @@ namespace Frontend.Translations.Tests
                 })
                 .ToList();
 
-            foreach (var ws in moduleWorkspaces)
+            foreach (var wsPath in moduleWorkspaces)
             {
-                var t = moduleTranslations.FirstOrDefault(t => t.ModulePath == ws);
-                var j = moduleJsTranslatedFiles.FirstOrDefault(t => t.ModulePath == ws);
+                var t = moduleTranslations.FirstOrDefault(t => t.ModulePath == wsPath);
+                var j = moduleJsTranslatedFiles.FirstOrDefault(t => t.ModulePath == wsPath);
 
                 if (j == null && t == null)
                     continue;
 
                 ModuleFolders.Add(new ModuleFolder
                 {
-                    Path = ws,
+                    Path = wsPath,
                     AvailableLanguages = t?.Languages,
                     AppliedJsTranslationKeys = j?.TranslationKeys
                 });
@@ -256,11 +267,32 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, ParseJsonErrors.Count, string.Join("\r\n", ParseJsonErrors.Select(e => $"File path = '{e.Path}' failed to parse with error: '{e.Exception.Message}'")));
         }
 
+        public static Tuple<string, string> getPaths(string language)
+        {
+            const string dictionariesPath = @"..\..\..\dictionaries";
+            const string additionalPath = @"..\..\..\additional";
+
+            var path = dictionariesPath;
+
+            switch (language)
+            {
+                case "fi":
+                    path = additionalPath;
+                    break;
+                default:
+                    break;
+            }
+
+            var dicPath = Path.Combine(path, language, $"{language}.dic");
+            var affPath = Path.Combine(path, language, $"{language}.aff");
+
+            return new Tuple<string, string>(dicPath, affPath);
+        }
+
         [Test]
         [Category("LongRunning")]
         public void SpellCheckTest()
         {
-            const string dictionariesPath = @"..\..\..\dictionaries";
             var i = 0;
             var errorsCount = 0;
             var message = $"Next keys have spell check issues:\r\n\r\n";
@@ -280,12 +312,12 @@ namespace Frontend.Translations.Tests
             {
                 try
                 {
-                    var language = SpellCheck.GetDictionaryLanguage(group.Language);
+                    var dicPaths = SpellCheck.GetDictionaryPaths(group.Language);
 
                     //var spellCheckExclude = new SpellCheckExclude(group.Language);
 
-                    using (var dictionaryStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.dic")))
-                    using (var affixStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.aff")))
+                    using (var dictionaryStream = File.OpenRead(dicPaths.DictionaryPath))
+                    using (var affixStream = File.OpenRead(dicPaths.AffixPath))
                     {
                         var dictionary = WordList.CreateFromStreams(dictionaryStream, affixStream);
 
@@ -327,23 +359,28 @@ namespace Frontend.Translations.Tests
             }
 
             //string json = JsonConvert.SerializeObject(list, Formatting.Indented);
-            //File.WriteAllText("../../../spellcheck-excludes.json", json);
+            //File.WriteAllText("../../../spellcheck-excludes.json", json, Encoding.UTF8);
 
             Assert.AreEqual(0, errorsCount, message);
         }
 
         [Test]
         [Category("FastRunning")]
+        public void SingleKeyFilesTest()
+        {
+            var singleKeyTranslationFiles = TranslationFiles
+                .Where(t => t.Language == "en" && t.Translations.Count == 1)
+                .ToList();
+
+            Assert.AreEqual(0, singleKeyTranslationFiles.Count, "Translations files with single key:\r\n" + string.Join("\r\n", singleKeyTranslationFiles.Select(d => $"\r\nKey='{d.Translations.First().Key}':\r\n{d.FilePath}'")));
+        }
+
+        [Test]
+        [Category("FastRunning")]
         public void DublicatesFilesByMD5HashTest()
         {
-            var skipHashes = new List<string>() {
-                "bcba174a8dadc0ff97f37f9a2d816d88",
-                "2a506ed97d0fbd0858192b755ae122d0",
-                "ec73989085d4e1b984c1c9dca10524da"
-            };
-
             var duplicatesByMD5 = TranslationFiles
-                .Where(t => !skipHashes.Contains(t.Md5Hash))
+                .Where(t => !md5Excludes.Contains(t.Md5Hash))
                 .GroupBy(t => t.Md5Hash)
                 .Where(grp => grp.Count() > 1)
                 .Select(grp => new { Key = grp.Key, Count = grp.Count(), Paths = grp.ToList().Select(f => f.FilePath) })
@@ -446,7 +483,7 @@ namespace Frontend.Translations.Tests
             if (!Directory.Exists(fullPathOnly))
                 Directory.CreateDirectory(fullPathOnly);
 
-            File.WriteAllText(notExistJsonPath, sortedJsonString);
+            File.WriteAllText(notExistJsonPath, sortedJsonString, Encoding.UTF8);
         }
 
         [Test]
@@ -523,7 +560,7 @@ namespace Frontend.Translations.Tests
 
             var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            File.WriteAllText(pathToJson, sortedJsonString);
+            File.WriteAllText(pathToJson, sortedJsonString, Encoding.UTF8);
         }
 
         [Test]
@@ -624,7 +661,9 @@ namespace Frontend.Translations.Tests
         {
             var notFoundi18nKeys = new List<KeyValuePair<string, List<string>>>();
 
-            var message = $"Some i18n-keys are not found in js: \r\nKeys: \r\n\r\n";
+            var message = $"Some i18n-keys are not found in Module or Common translations: \r\nKeys: \r\n\r\n";
+
+            var index = 0;
 
             for (int i = 0; i < ModuleFolders.Count; i++)
             {
@@ -632,7 +671,7 @@ namespace Frontend.Translations.Tests
 
                 if (module.AppliedJsTranslationKeys == null && module.AvailableLanguages != null)
                 {
-                    message += $"{i}. 'ANY LANGUAGES' '{module.Path}' NOT USES";
+                    message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' NOT USES";
 
                     var list = module.AvailableLanguages
                         .SelectMany(l => l.Translations.Select(t => t.Key).ToList())
@@ -645,12 +684,16 @@ namespace Frontend.Translations.Tests
 
                 var notCommonKeys = module.AppliedJsTranslationKeys
                     .Where(k => !k.StartsWith("Common:"))
+                    .OrderBy(t => t)
                     .ToList();
 
                 var onlyCommonKeys = module.AppliedJsTranslationKeys
                     .Except(notCommonKeys)
                     .Select(k => k.Replace("Common:", ""))
+                    .OrderBy(t => t)
                     .ToList();
+
+                notCommonKeys = notCommonKeys.Select(k => k.Substring(k.IndexOf(":") + 1)).ToList();
 
                 if (onlyCommonKeys.Any())
                 {
@@ -663,7 +706,7 @@ namespace Frontend.Translations.Tests
                         if (!list.Any())
                             continue;
 
-                        message += $"{i}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
+                        message += $"{++index}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
 
                         notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
                     }
@@ -673,7 +716,7 @@ namespace Frontend.Translations.Tests
                 {
                     if (notCommonKeys.Any())
                     {
-                        message += $"{i}. 'ANY LANGUAGES' '{module.Path}' \r\n {string.Join("\r\n", notCommonKeys)} \r\n";
+                        message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' \r\n {string.Join("\r\n", notCommonKeys)} \r\n";
 
                         notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>("ANY LANGUAGES", notCommonKeys));
                     }
@@ -685,13 +728,13 @@ namespace Frontend.Translations.Tests
                 {
                     var list = lng.Translations
                          .Select(t => t.Key)
-                         .Except(notCommonKeys.Select(k => k.Substring(k.IndexOf(":") + 1)))
+                         .Except(notCommonKeys)
                          .ToList();
 
                     if (!list.Any())
                         continue;
 
-                    message += $"{i}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
+                    message += $"{++index}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
 
                     notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
                 }
@@ -761,7 +804,7 @@ namespace Frontend.Translations.Tests
 
             var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            File.WriteAllText(pathToJson, sortedJsonString);
+            File.WriteAllText(pathToJson, sortedJsonString, Encoding.UTF8);
         }
 
         public static void RemoveEmptyKeys(string pathToJson, List<string> emptyKeys)
@@ -777,7 +820,7 @@ namespace Frontend.Translations.Tests
 
             var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            File.WriteAllText(pathToJson, sortedJsonString);
+            File.WriteAllText(pathToJson, sortedJsonString, Encoding.UTF8);
         }
 
         public string GetWorkspace(string path)
@@ -1051,25 +1094,25 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, errorsCount, message);
         }
 
-        [Test]
-        [Category("FastRunning")]
-        public void TranslationsEncodingTest()
-        {
-            /*//Convert to UTF-8
-            foreach (var issue in WrongEncodingJsonErrors)
-            {
-                if (issue.DetectionDetail.Encoding == null)
-                    continue;
+        //[Test]
+        //[Category("FastRunning")]
+        //public void TranslationsEncodingTest()
+        //{
+        //    /*//Convert to UTF-8
+        //    foreach (var issue in WrongEncodingJsonErrors)
+        //    {
+        //        if (issue.DetectionDetail.Encoding == null)
+        //            continue;
 
-                ConvertFileEncoding(issue.Path, issue.Path, issue.DetectionDetail.Encoding, Encoding.UTF8);
-            }*/
+        //        ConvertFileEncoding(issue.Path, issue.Path, issue.DetectionDetail.Encoding, Encoding.UTF8);
+        //    }*/
 
-            var message = $"Next files have encoding issues:\r\n\r\n";
+        //    var message = $"Next files have encoding issues:\r\n\r\n";
 
-            Assert.AreEqual(0, WrongEncodingJsonErrors.Count,
-               message + string.Join("\r\n", WrongEncodingJsonErrors
-                    .Select(e => $"File path = '{e.Path}' potentially wrong file encoding: {e.DetectionDetail.EncodingName}")));
-        }
+        //    Assert.AreEqual(0, WrongEncodingJsonErrors.Count,
+        //       message + string.Join("\r\n", WrongEncodingJsonErrors
+        //            .Select(e => $"File path = '{e.Path}' potentially wrong file encoding: {e.DetectionDetail.EncodingName}")));
+        //}
 
         /// <summary>
         /// Converts a file from one encoding to another.
@@ -1078,46 +1121,46 @@ namespace Frontend.Translations.Tests
         /// <param name=”destPath”>the destination for the converted file</param>
         /// <param name=”sourceEncoding”>the original file encoding</param>
         /// <param name=”destEncoding”>the encoding to which the contents should be converted</param>
-        public static void ConvertFileEncoding(string sourcePath, string destPath,
-                                               Encoding sourceEncoding, Encoding destEncoding)
-        {
-            // If the destination’s parent doesn’t exist, create it.
-            var parent = Path.GetDirectoryName(Path.GetFullPath(destPath));
-            if (!Directory.Exists(parent))
-            {
-                Directory.CreateDirectory(parent);
-            }
-            // If the source and destination encodings are the same, just copy the file.
-            if (sourceEncoding == destEncoding)
-            {
-                File.Copy(sourcePath, destPath, true);
-                return;
-            }
-            // Convert the file.
-            string tempName = null;
-            try
-            {
-                tempName = Path.GetTempFileName();
-                using (StreamReader sr = new StreamReader(sourcePath, sourceEncoding, false))
-                {
-                    using (StreamWriter sw = new StreamWriter(tempName, false, destEncoding))
-                    {
-                        int charsRead;
-                        char[] buffer = new char[128 * 1024];
-                        while ((charsRead = sr.ReadBlock(buffer, 0, buffer.Length)) > 0)
-                        {
-                            sw.Write(buffer, 0, charsRead);
-                        }
-                    }
-                }
-                File.Delete(destPath);
-                File.Move(tempName, destPath);
-            }
-            finally
-            {
-                File.Delete(tempName);
-            }
-        }
+        //public static void ConvertFileEncoding(string sourcePath, string destPath,
+        //                                       Encoding sourceEncoding, Encoding destEncoding)
+        //{
+        //    // If the destination’s parent doesn’t exist, create it.
+        //    var parent = Path.GetDirectoryName(Path.GetFullPath(destPath));
+        //    if (!Directory.Exists(parent))
+        //    {
+        //        Directory.CreateDirectory(parent);
+        //    }
+        //    // If the source and destination encodings are the same, just copy the file.
+        //    if (sourceEncoding == destEncoding)
+        //    {
+        //        File.Copy(sourcePath, destPath, true);
+        //        return;
+        //    }
+        //    // Convert the file.
+        //    string tempName = null;
+        //    try
+        //    {
+        //        tempName = Path.GetTempFileName();
+        //        using (StreamReader sr = new StreamReader(sourcePath, sourceEncoding, false))
+        //        {
+        //            using (StreamWriter sw = new StreamWriter(tempName, false, destEncoding))
+        //            {
+        //                int charsRead;
+        //                char[] buffer = new char[128 * 1024];
+        //                while ((charsRead = sr.ReadBlock(buffer, 0, buffer.Length)) > 0)
+        //                {
+        //                    sw.Write(buffer, 0, charsRead);
+        //                }
+        //            }
+        //        }
+        //        File.Delete(destPath);
+        //        File.Move(tempName, destPath);
+        //    }
+        //    finally
+        //    {
+        //        File.Delete(tempName);
+        //    }
+        //}
 
         /*[Test]
         public void TempTest()

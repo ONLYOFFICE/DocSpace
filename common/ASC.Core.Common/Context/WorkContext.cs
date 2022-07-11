@@ -171,7 +171,7 @@ namespace ASC.Core
         }
     }
 
-    public class WorkContextExtension
+    public static class WorkContextExtension
     {
         public static void Register(DIHelper dIHelper)
         {

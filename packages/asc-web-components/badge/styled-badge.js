@@ -1,5 +1,14 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
+
+import Text from "../text";
+
+const hoveredCss = css`
+  border-color: ${(props) =>
+    props.backgroundColor
+      ? props.backgroundColor
+      : props.theme.badge.backgroundColor};
+`;
 
 const StyledBadge = styled.div`
   display: ${(props) =>
@@ -12,20 +21,34 @@ const StyledBadge = styled.div`
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
 
-  :hover {
-    border-color: ${(props) => props.backgroundColor};
+  &:hover {
+    ${(props) => !props.noHover && hoveredCss};
   }
+
+  ${(props) => !props.noHover && props.isHovered && hoveredCss}
 `;
 StyledBadge.defaultProps = { theme: Base };
 
 const StyledInner = styled.div`
-  background-color: ${(props) => props.backgroundColor};
+  background-color: ${(props) =>
+    props.backgroundColor
+      ? props.backgroundColor
+      : props.theme.badge.backgroundColor};
   border-radius: ${(props) => props.borderRadius};
   padding: ${(props) => props.padding};
   max-width: ${(props) => props.maxWidth};
   text-align: center;
   user-select: none;
-  line-height: 1.5;
+  line-height: ${(props) => props.lineHeight};
 `;
 
-export { StyledBadge, StyledInner };
+StyledInner.defaultProps = { theme: Base };
+
+const StyledText = styled(Text)`
+  color: ${(props) =>
+    props.color ? props.color : props.theme.badge.color} !important;
+`;
+
+StyledText.defaultProps = { theme: Base };
+
+export { StyledBadge, StyledInner, StyledText };

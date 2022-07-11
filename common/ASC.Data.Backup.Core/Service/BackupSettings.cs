@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using ASC.Common.Utils;
 
-namespace ASC.Data.Backup.Service
+namespace ASC.Data.Backup.Services
 {
     public class BackupSettings
     {

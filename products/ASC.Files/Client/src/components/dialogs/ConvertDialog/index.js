@@ -124,7 +124,7 @@ const ConvertDialogComponent = (props) => {
             className="convert_dialog_button-accept"
             key="ContinueButton"
             label={t("Common:ContinueButton")}
-            size="medium"
+            size="small"
             primary
             onClick={onConvert}
           />
@@ -132,7 +132,7 @@ const ConvertDialogComponent = (props) => {
             className="convert_dialog_button"
             key="CloseButton"
             label={t("Common:CloseButton")}
-            size="medium"
+            size="small"
             onClick={onClose}
           />
         </div>

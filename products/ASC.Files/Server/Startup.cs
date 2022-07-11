@@ -1,9 +1,11 @@
+using System;
 using System.Text;
 using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Files.Core.Security;
+using ASC.Files.Core.Services.OFormService;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
 using ASC.Web.Studio.Core.Notify;
@@ -40,7 +42,9 @@ namespace ASC.Files
             DIHelper.TryAdd<ChunkedUploaderHandlerService>();
             DIHelper.TryAdd<DocuSignHandlerService>();
             DIHelper.TryAdd<ThirdPartyAppHandlerService>();
+            DIHelper.TryAdd<OFormService>();
 
+            services.AddHostedService<OFormService>();
             NotifyConfigurationExtension.Register(DIHelper);
         }
 
@@ -55,28 +59,28 @@ namespace ASC.Files
             base.Configure(app, env);
 
             app.MapWhen(
-                context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),
+                context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx", StringComparison.OrdinalIgnoreCase),
                 appBranch =>
                 {
                     appBranch.UseFileHandler();
                 });
 
             app.MapWhen(
-                context => context.Request.Path.ToString().EndsWith("ChunkedUploader.ashx"),
+                context => context.Request.Path.ToString().EndsWith("ChunkedUploader.ashx", StringComparison.OrdinalIgnoreCase),
                 appBranch =>
                 {
                     appBranch.UseChunkedUploaderHandler();
                 });
 
             app.MapWhen(
-                context => context.Request.Path.ToString().EndsWith("ThirdPartyAppHandler.ashx"),
+                context => context.Request.Path.ToString().EndsWith("ThirdPartyApp", StringComparison.OrdinalIgnoreCase),
                 appBranch =>
                 {
                     appBranch.UseThirdPartyAppHandler();
                 });
 
             app.MapWhen(
-                context => context.Request.Path.ToString().EndsWith("DocuSignHandler.ashx"),
+                context => context.Request.Path.ToString().EndsWith("httphandlers/DocuSignHandler.ashx", StringComparison.OrdinalIgnoreCase),
                 appBranch =>
                 {
                     appBranch.UseDocuSignHandler();

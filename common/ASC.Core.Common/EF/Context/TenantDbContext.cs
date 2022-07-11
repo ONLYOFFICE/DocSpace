@@ -13,8 +13,6 @@ namespace ASC.Core.Common.EF.Context
     public class TenantDbContext : BaseDbContext
     {
         public DbSet<DbTenant> Tenants { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserSecurity> UserSecurity { get; set; }
         public DbSet<DbTenantVersion> TenantVersion { get; set; }
         public DbSet<DbTenantPartner> TenantPartner { get; set; }
         public DbSet<DbTenantForbiden> TenantForbiden { get; set; }
@@ -34,7 +32,7 @@ namespace ASC.Core.Common.EF.Context
                 return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlTenantDbContext() } ,
-                    { Provider.Postgre, () => new PostgreSqlTenantDbContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlTenantDbContext() } ,
                 };
             }
         }
@@ -42,10 +40,8 @@ namespace ASC.Core.Common.EF.Context
         {
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
-                .AddUser()
                 .AddDbTenant()
                 .AddCoreSettings()
-                .AddUserSecurity()
                 .AddDbTenantForbiden()
                 .AddTenantIpRestrictions()
                 .AddDbTenantPartner()

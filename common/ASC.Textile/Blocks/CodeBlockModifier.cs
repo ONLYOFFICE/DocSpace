@@ -49,7 +49,7 @@ namespace Textile.Blocks
             return line;
         }
 
-        static public string CodeFormatMatchEvaluator(Match m)
+        public string CodeFormatMatchEvaluator(Match m)
         {
             var res = m.Groups["before"].Value + "<code";
             if (m.Groups["lang"].Length > 0)

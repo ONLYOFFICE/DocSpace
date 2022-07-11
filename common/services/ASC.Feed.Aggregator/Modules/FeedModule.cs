@@ -49,7 +49,7 @@ namespace ASC.Feed.Aggregator.Modules
         protected TenantManager TenantManager { get; }
         protected WebItemSecurity WebItemSecurity { get; }
 
-        public FeedModule(TenantManager tenantManager, WebItemSecurity webItemSecurity)
+        protected FeedModule(TenantManager tenantManager, WebItemSecurity webItemSecurity)
         {
             TenantManager = tenantManager;
             WebItemSecurity = webItemSecurity;

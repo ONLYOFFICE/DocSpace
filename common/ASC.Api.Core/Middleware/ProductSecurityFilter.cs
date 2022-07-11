@@ -103,16 +103,16 @@ namespace ASC.Api.Core.Middleware
                 if (!string.IsNullOrEmpty(url))
                 {
                     var module = url.Split('/')[0];
-                    if (products.ContainsKey(module))
+                    if (products.TryGetValue(module, out var communityProduct))
                     {
-                        return products[module];
+                        return communityProduct;
                     }
                 }
             }
 
-            if (products.ContainsKey(name))
+            if (products.TryGetValue(name, out var product))
             {
-                return products[name];
+                return product;
             }
             return default;
         }

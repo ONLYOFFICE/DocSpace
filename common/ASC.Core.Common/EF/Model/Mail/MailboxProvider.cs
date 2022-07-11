@@ -16,7 +16,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         {
             modelBuilder
                 .Add(MySqlAddMailboxProvider, Provider.MySql)
-                .Add(PgSqlAddMailboxProvider, Provider.Postgre)
+                .Add(PgSqlAddMailboxProvider, Provider.PostgreSql)
                 .HasData(
                 new MailboxProvider { Id = 1, Name = "1und1.de", DisplayName = "1&1", DisplayShortName = "1&1", Documentation = "http://hilfe-center.1und1.de/access/search/go.php?t=e698123" },
                 new MailboxProvider { Id = 2, Name = "abc.plala.or.jp", DisplayName = "???", DisplayShortName = "???", Documentation = null },

@@ -1,12 +1,5 @@
-﻿using ASC.Api.Core;
-using ASC.Web.Core.Calendars;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using static ASC.Calendar.Controllers.CalendarController;
 
 namespace ASC.Calendar.Models
 {

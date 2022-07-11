@@ -1,22 +1,23 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import {
-  FolderType,
-  FilterType,
-  FileType,
-  FileAction,
   AppServerConfig,
+  FileAction,
+  FileType,
+  FilterType,
+  FolderType,
   FileStatus,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
-import { loopTreeFolders } from "../helpers/files-helpers";
-import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
-import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
-import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
+
+import config from "../../package.json";
+import { thumbnailStatuses } from "../helpers/constants";
+import { loopTreeFolders } from "../helpers/files-helpers";
+import { openDocEditor as openEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -45,6 +46,7 @@ class FilesStore {
   startDrag = false;
 
   firstLoad = true;
+
   files = [];
   folders = [];
   selection = [];
@@ -52,12 +54,25 @@ class FilesStore {
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
+  hotkeyCaret = null;
+  hotkeyCaretStart = null;
   activeFiles = [];
   activeFolders = [];
 
   firstElemChecked = false;
+  headerBorder = false;
 
-  isPrevSettingsModule = false;
+  enabledHotkeys = true;
+  oformFiles = null;
+  gallerySelected = null;
+
+  createdItem = null;
+  scrollToItem = null;
+
+  isLoadingFilesFind = false;
+  pageItemsLength = null;
+  isHidePagination = false;
+  trashIsEmpty = false;
 
   constructor(
     authStore,
@@ -104,6 +119,37 @@ class FilesStore {
             this.setFiles(newFiles);
           }
           break;
+        case "update":
+          if (opt?.type == "file" && opt?.data) {
+            const file = JSON.parse(opt?.data);
+
+            if (!file || !file.id) return;
+
+            this.getFileInfo(file.id); //this.setFile(file);
+
+            if (this.selection) {
+              const foundIndex = this.selection?.findIndex(
+                (x) => x.id === file.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.selection[foundIndex] = file;
+                });
+              }
+            }
+
+            if (this.bufferSelection) {
+              const foundIndex = [this.bufferSelection].findIndex(
+                (x) => x.id === file.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.bufferSelection[foundIndex] = file;
+                });
+              }
+            }
+          }
+          break;
         case "delete":
           if (opt?.type == "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
@@ -114,6 +160,21 @@ class FilesStore {
                 return index !== foundIndex;
               })
             );
+
+            // Hide pagination when deleting files
+            runInAction(() => {
+              this.isHidePagination = true;
+            });
+
+            runInAction(() => {
+              if (
+                this.files.length === 0 &&
+                this.folders.length === 0 &&
+                this.pageItemsLength > 1
+              ) {
+                this.isLoadingFilesFind = true;
+              }
+            });
           }
           break;
       }
@@ -137,34 +198,49 @@ class FilesStore {
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
+        true
+      );
+
       this.updateFileStatus(
         foundIndex,
         this.files[foundIndex].fileStatus | FileStatus.IsEditing
       );
     });
 
-    socketHelper.on("s:stop-edit-file", (id, data) => {
-      //console.log(`Call s:stop-edit-file (id=${id})`);
+    socketHelper.on("s:stop-edit-file", (id) => {
+      console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
-      let file;
-
-      if (data) {
-        file = JSON.parse(data);
-        console.log(`socket stop-edit-file (id=${id}`, file);
-      }
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
+        false
+      );
 
       this.updateFileStatus(
         foundIndex,
-        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
-        file
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing
       );
+
+      if (typeof id == "string") {
+        this.getFileInfo(id);
+      } else {
+        this.createThumbnail(id);
+      }
     });
   }
 
-  setIsPrevSettingsModule = (isSettings) => {
-    this.isPrevSettingsModule = isSettings;
+  updateSelectionStatus = (id, status, isEditing) => {
+    const index = this.selection.findIndex((x) => x.id === id);
+
+    if (index !== -1) {
+      this.selection[index].fileStatus = status;
+      this.selection[index].isEditing = isEditing;
+    }
   };
 
   addActiveItems = (files, folders) => {
@@ -200,6 +276,10 @@ class FilesStore {
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
+  };
+
+  setPageItemsLength = (pageItemsLength) => {
+    this.pageItemsLength = pageItemsLength;
   };
 
   setDragging = (dragging) => {
@@ -283,8 +363,26 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
+    requests.push(this.getOforms());
+    requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => (this.isInit = true));
+  };
+
+  getOforms = async () => {
+    const oformData = await this.authStore.getOforms();
+
+    runInAction(() => {
+      this.oformFiles = oformData?.data?.data ? oformData.data.data : [];
+    });
+  };
+
+  get hasGalleryFiles() {
+    return this.oformFiles && !!this.oformFiles.length;
+  }
+
+  setGallerySelected = (gallerySelected) => {
+    this.gallerySelected = gallerySelected;
   };
 
   setFirstLoad = (firstLoad) => {
@@ -317,12 +415,13 @@ class FilesStore {
     this.folders = folders;
   };
 
-  updateFileStatus = (index, status, file) => {
-    if (index < 0) return;
+  getFileIndex = (id) => {
+    const index = this.files.findIndex((x) => x.id === id);
+    return index;
+  };
 
-    if (file) {
-      this.files[index] = file;
-    }
+  updateFileStatus = (index, status) => {
+    if (index < 0) return;
 
     this.files[index].fileStatus = status;
   };
@@ -381,12 +480,27 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
-    if (selected === "close" || selected === "none")
+    if (selected === "close" || selected === "none") {
       this.setBufferSelection(null);
+      this.setHotkeyCaretStart(null);
+      this.setHotkeyCaret(null);
+    }
 
     this.selected = selected;
-    const files = this.files.concat(this.folders);
+    const files = this.filesList;
     this.selection = this.getFilesBySelected(files, selected);
+  };
+
+  setHotkeyCaret = (hotkeyCaret) => {
+    if (hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    } else if (this.hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    }
+  };
+
+  setHotkeyCaretStart = (hotkeyCaretStart) => {
+    this.hotkeyCaretStart = hotkeyCaretStart;
   };
 
   setSelection = (selection) => {
@@ -398,13 +512,25 @@ class FilesStore {
   };
 
   //TODO: FILTER
-  setFilesFilter = (filter, isPrefSettings) => {
+  setFilesFilter = (filter) => {
     const key = `UserFilter=${this.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
-    !isPrefSettings && this.setFilterUrl(filter);
+    this.setFilterUrl(filter);
     this.filter = filter;
+
+    runInAction(() => {
+      if (filter && this.isHidePagination) {
+        this.isHidePagination = false;
+      }
+    });
+
+    runInAction(() => {
+      if (filter && this.isLoadingFilesFind) {
+        this.isLoadingFilesFind = false;
+      }
+    });
   };
 
   setFilter = (filter) => {
@@ -446,11 +572,16 @@ class FilesStore {
     return newFilter;
   };
 
+  refreshFiles = () => {
+    return this.fetchFiles(this.selectedFolderStore.id, this.filter);
+  };
+
   fetchFiles = (
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false
+    withSubfolders = false,
+    clearSelection = true
   ) => {
     const {
       treeFolders,
@@ -459,9 +590,6 @@ class FilesStore {
       selectedTreeNode,
     } = this.treeFoldersStore;
     const { id } = this.selectedFolderStore;
-
-    const isPrefSettings = isNaN(+selectedTreeNode) && !id;
-    isPrefSettings && this.setIsPrevSettingsModule(true);
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -518,26 +646,62 @@ class FilesStore {
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
-          this.setFilesFilter(filterData, isPrefSettings); //TODO: FILTER
-          this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
-          this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+          this.setFilesFilter(filterData); //TODO: FILTER
+
+          runInAction(() => {
+            this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
+            this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+          });
 
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
-            this.setSelected("close");
+            if (clearSelection) {
+              this.setSelected("close");
+            }
           }
+
+          const navigationPath = await Promise.all(
+            data.pathParts.map(async (folder) => {
+              const data = await api.files.getFolderInfo(folder);
+
+              return { id: folder, title: data.title };
+            })
+          ).then((res) => {
+            return res
+              .filter((item, index) => index !== res.length - 1)
+              .reverse();
+          });
 
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
             ...data.current,
             pathParts: data.pathParts,
+            navigationPath: navigationPath,
             ...{ new: data.new },
           });
 
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
+
           this.viewAs === "tile" && this.createThumbnails();
+
+          if (this.createdItem) {
+            const newItem = this.filesList.find(
+              (item) => item.id === this.createdItem.id
+            );
+
+            if (newItem) {
+              this.setBufferSelection(newItem);
+              this.setScrollToItem({
+                id: newItem.id,
+                type: this.createdItem.type,
+              });
+            }
+
+            this.setCreatedItem(null);
+          }
+
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -608,8 +772,17 @@ class FilesStore {
   deselectFile = (file) => {
     const { id, parentId } = file;
     const isFileSelected = this.isFileSelected(id, parentId);
-    if (isFileSelected)
-      this.selection = this.selection.filter((x) => x.id !== id);
+    if (isFileSelected) {
+      let selectionIndex = this.selection.findIndex(
+        (x) => x.parentId === parentId && x.id === id
+      );
+
+      if (selectionIndex !== -1) {
+        this.selection = this.selection.filter(
+          (x, index) => index !== selectionIndex
+        );
+      }
+    }
   };
 
   removeOptions = (options, toRemoveArray) =>
@@ -626,7 +799,7 @@ class FilesStore {
     const isThirdPartyItem = !!item.providerKey;
     const hasNew =
       item.new > 0 || (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
-    const canConvert = false; //TODO: fix of added convert check;
+    const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
@@ -682,6 +855,7 @@ class FilesStore {
         "version", //category
         "finalize-version",
         "show-version-history",
+        "show-info",
         "block-unblock-version", //need split
         "separator1",
         "open-location",
@@ -722,7 +896,7 @@ class FilesStore {
         }
       }
 
-      if (!this.canConvertSelected) {
+      if (!canConvert) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
       }
 
@@ -747,7 +921,7 @@ class FilesStore {
           "separator2",
           "delete",
         ]);
-        if (isThirdPartyFolder) {
+        if (isThirdPartyItem) {
           fileOptions = this.removeOptions(fileOptions, ["rename"]);
         }
       }
@@ -969,6 +1143,7 @@ class FilesStore {
         "separator0",
         "sharing-settings",
         "owner-change",
+        "show-info",
         "link-for-portal-users",
         "separator1",
         "open-location",
@@ -1134,10 +1309,12 @@ class FilesStore {
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
-  createFile = (folderId, title, templateId) => {
-    return api.files.createFile(folderId, title, templateId).then((file) => {
-      return Promise.resolve(file);
-    });
+  createFile = (folderId, title, templateId, formId) => {
+    return api.files
+      .createFile(folderId, title, templateId, formId)
+      .then((file) => {
+        return Promise.resolve(file);
+      });
   };
 
   createFolder(parentFolderId, title) {
@@ -1292,6 +1469,10 @@ class FilesStore {
     this.firstElemChecked = checked;
   };
 
+  setHeaderBorder = (headerBorder) => {
+    this.headerBorder = headerBorder;
+  };
+
   get canCreate() {
     switch (this.selectedFolderStore.rootFolderType) {
       case FolderType.USER:
@@ -1314,13 +1495,21 @@ class FilesStore {
     }
   }
 
+  get filterType() {
+    return this.filter.filterType;
+  }
+
+  get filterSearch() {
+    return this.filter.search;
+  }
+
   onCreateAddTempItem = (items) => {
     const { getFileIcon, getFolderIcon } = this.filesSettingsStore;
     const { extension, title } = this.fileActionStore;
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
 
-    const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
+    const iconSize = this.viewAs === "table" ? 24 : 32;
     const icon = extension
       ? getFileIcon(`.${extension}`, iconSize)
       : getFolderIcon(null, iconSize);
@@ -1396,12 +1585,12 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
-      const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
+      const iconSize = this.viewAs === "table" ? 24 : 32;
       const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;
       this.folders.map((x) => {
-        if (x.id === item.id) isFolder = true;
+        if (x.id === item.id && x.parentId === item.parentId) isFolder = true;
       });
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
@@ -1564,11 +1753,13 @@ class FilesStore {
       other: [],
     };
 
-    const selection = this.selection.length
+    let selection = this.selection.length
       ? this.selection
       : this.bufferSelection
       ? [this.bufferSelection]
       : [];
+
+    selection = JSON.parse(JSON.stringify(selection));
 
     for (let item of selection) {
       item.checked = true;
@@ -1682,6 +1873,13 @@ class FilesStore {
   get isEmptyFilesList() {
     const filesList = [...this.files, ...this.folders];
     return filesList.length <= 0;
+  }
+
+  get hasNew() {
+    const newFiles = [...this.files, ...this.folders].filter(
+      (item) => (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew
+    );
+    return newFiles.length > 0;
   }
 
   get allFilesIsEditing() {
@@ -1857,16 +2055,27 @@ class FilesStore {
     return fileInfo;
   };
 
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openEditor(id, providerKey, tab, url);
-  };
-
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
+    return folderInfo;
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    const foundIndex = this.files.findIndex((x) => x.id === id);
+    if (foundIndex !== -1) {
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
+        true
+      );
+
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing
+      );
+    }
+
     const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
     return openEditor(id, providerKey, tab, url, isPrivacy);
   };
@@ -1884,12 +2093,40 @@ class FilesStore {
     if (fileIds.length) return api.files.createThumbnails(fileIds);
   };
 
+  createThumbnail = async (fileId) => {
+    if (!fileId) return;
+
+    await api.files.createThumbnails([fileId]);
+  };
+
   setIsUpdatingRowItem = (updating) => {
     this.isUpdatingRowItem = updating;
   };
 
   setPasswordEntryProcess = (process) => {
     this.passwordEntryProcess = process;
+  };
+
+  setEnabledHotkeys = (enabledHotkeys) => {
+    this.enabledHotkeys = enabledHotkeys;
+  };
+
+  setCreatedItem = (createdItem) => {
+    this.createdItem = createdItem;
+  };
+
+  setScrollToItem = (item) => {
+    this.scrollToItem = item;
+  };
+
+  getIsEmptyTrash = async () => {
+    const res = await api.files.getTrashFolderList();
+    const items = [...res.files, ...res.folders];
+    this.setTrashIsEmpty(items.length === 0 ? true : false);
+  };
+
+  setTrashIsEmpty = (isEmpty) => {
+    this.trashIsEmpty = isEmpty;
   };
 }
 

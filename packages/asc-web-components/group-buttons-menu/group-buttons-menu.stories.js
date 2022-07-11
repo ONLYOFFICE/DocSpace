@@ -158,7 +158,7 @@ const Template = ({
       <Button
         label={`${isVisible ? "Hide" : "Show"} menu`}
         primary
-        size="medium"
+        size="small"
         onClick={toggleVisible}
       />
 

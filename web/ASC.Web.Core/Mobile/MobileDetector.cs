@@ -78,7 +78,8 @@ namespace ASC.Web.Core.Mobile
                 }
                 else
                 {
-                    cache.Insert(key, (result = regex.IsMatch(ua)).ToString(), TimeSpan.FromMinutes(10));
+                    result = regex.IsMatch(ua);
+                    cache.Insert(key, result.ToString(), TimeSpan.FromMinutes(10));
                 }
             }
             return result.GetValueOrDefault();

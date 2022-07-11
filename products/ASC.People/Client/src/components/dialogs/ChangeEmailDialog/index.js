@@ -15,13 +15,10 @@ class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { user } = props;
-    const { email } = user;
-
     this.state = {
       isEmailValid: true,
       isRequestRunning: false,
-      email,
+      email: "",
       hasError: false,
       errorMessage: "",
       emailErrors: [],
@@ -30,14 +27,6 @@ class ChangeEmailDialogComponent extends React.Component {
 
   componentDidMount() {
     window.addEventListener("keyup", this.onKeyPress);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { user } = this.props;
-    const { email } = user;
-    if (prevProps.user.email !== email) {
-      this.setState({ email });
-    }
   }
 
   componentWillUnmount() {
@@ -78,7 +67,7 @@ class ChangeEmailDialogComponent extends React.Component {
     if (isEmailValid) {
       const sameEmailError = email.toLowerCase() === user.email.toLowerCase();
       if (sameEmailError) {
-        this.setState({ errorMessage: t("SameEmail"), hasError: true });
+        this.setState({ errorMessage: t("Common:SameEmail"), hasError: true });
       } else {
         this.setState({ errorMessage: "", hasError: false });
         this.onSendEmailChangeInstructions();
@@ -87,27 +76,27 @@ class ChangeEmailDialogComponent extends React.Component {
       const translatedErrors = emailErrors.map((errorKey) => {
         switch (errorKey) {
           case errorKeys.LocalDomain:
-            return t("LocalDomain");
+            return t("Common:LocalDomain");
           case errorKeys.IncorrectDomain:
-            return t("IncorrectDomain");
+            return t("Common:IncorrectDomain");
           case errorKeys.DomainIpAddress:
-            return t("DomainIpAddress");
+            return t("Common:DomainIpAddress");
           case errorKeys.PunycodeDomain:
-            return t("PunycodeDomain");
+            return t("Common:PunycodeDomain");
           case errorKeys.PunycodeLocalPart:
-            return t("PunycodeLocalPart");
+            return t("Common:PunycodeLocalPart");
           case errorKeys.IncorrectLocalPart:
-            return t("IncorrectLocalPart");
+            return t("Common:IncorrectLocalPart");
           case errorKeys.SpacesInLocalPart:
-            return t("SpacesInLocalPart");
+            return t("Common:SpacesInLocalPart");
           case errorKeys.MaxLengthExceeded:
-            return t("MaxLengthExceeded");
+            return t("Common:MaxLengthExceeded");
           case errorKeys.IncorrectEmail:
-            return t("IncorrectEmail");
+            return t("Common:IncorrectEmail");
           case errorKeys.ManyEmails:
-            return t("ManyEmails");
+            return t("Common:ManyEmails");
           case errorKeys.EmptyEmail:
-            return t("EmptyEmail");
+            return t("Common:EmptyEmail");
           default:
             throw new Error("Unknown translation key");
         }
@@ -134,7 +123,7 @@ class ChangeEmailDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
-        isTabletView={isTabletView}
+        displayType="modal"
       >
         <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
@@ -156,6 +145,7 @@ class ChangeEmailDialogComponent extends React.Component {
                 onValidateInput={this.onValidateEmailInput}
                 onKeyUp={this.onKeyPress}
                 hasError={hasError}
+                placeholder={t("EnterEmail")}
               />
             </FieldContainer>
           </>
@@ -164,7 +154,7 @@ class ChangeEmailDialogComponent extends React.Component {
           <Button
             key="SendBtn"
             label={t("Common:SendButton")}
-            size="medium"
+            size="small"
             primary={true}
             onClick={this.onValidateEmail}
             isLoading={isRequestRunning}

@@ -17,6 +17,8 @@ import { combineUrl, convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import { Base } from "@appserver/components/themes";
+import { isMobileOnly } from "react-device-detect";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -30,19 +32,23 @@ const InfoItem = styled.div`
   font-size: 13px;
   line-height: 24px;
   display: flex;
-  width: 360px;
+  width: 344px;
 `;
 
 const InfoItemLabel = styled.div`
   width: 200px;
+  min-width: 150px;
 
   @media (max-width: 620px) {
     width: 130px;
+    min-width: 120px;
   }
 
   white-space: nowrap;
-  color: #83888d;
+  color: ${(props) => props.theme.profileInfo.color};
 `;
+
+InfoItemLabel.defaultProps = { theme: Base };
 
 const InfoItemValue = styled.div`
   width: 260px;
@@ -68,7 +74,7 @@ const InfoItemValue = styled.div`
       margin-top: 6px;
     }
     @media (max-width: 1024px) {
-      padding: 6px 24px 8px 8px;
+      padding: 6px 8px 8px 8px;
       margin-left: -8px;
     }
   }
@@ -88,6 +94,10 @@ const IconButtonWrapper = styled.div`
       fill: #3b72a7;
     }
   }
+`;
+
+const LangSelectorContainer = styled.div`
+  display: flex;
 `;
 
 class ProfileInfo extends React.PureComponent {
@@ -205,6 +215,8 @@ class ProfileInfo extends React.PureComponent {
       isSelf,
       culture,
       personal,
+      theme,
+      helpLink,
     } = this.props;
 
     const {
@@ -252,14 +264,19 @@ class ProfileInfo extends React.PureComponent {
         <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
-          <Link href={`mailto:${supportEmail}`} isHovered={true}>
+          <Link
+            href={`mailto:${supportEmail}`}
+            isHovered={true}
+            color={theme.profileInfo.tooltipLinkColor}
+          >
             {{ supportEmail }}
           </Link>
           to take part in the translation and get up to 1 year free of charge."
-        </Trans>
+        </Trans>{" "}
         <Link
+          color={theme.profileInfo.tooltipLinkColor}
           isHovered={true}
-          href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
+          href={`${helpLink}/guides/become-translator.aspx`}
           target="_blank"
         >
           {t("Common:LearnMore")}
@@ -286,35 +303,39 @@ class ProfileInfo extends React.PureComponent {
                     title={t("Translations:PendingTitle")}
                   >
                     <IconButton
-                      color="#C96C27"
+                      color={theme.profileInfo.iconColor}
                       size={16}
                       iconName="images/danger.react.svg"
                       isFill={true}
                     />
                   </IconButtonWrapper>
                 )}
-                <Link
-                  className="email-link"
-                  type="page"
-                  fontSize="13px"
-                  isHovered={true}
-                  title={email}
-                  data-email={email}
-                  onClick={this.onEmailClick}
-                >
-                  {email}
-                </Link>
+                {isSelf ? (
+                  <Text>{email}</Text>
+                ) : (
+                  <Link
+                    className="email-link"
+                    type="page"
+                    fontSize="13px"
+                    isHovered={true}
+                    title={email}
+                    data-email={email}
+                    onClick={this.onEmailClick}
+                  >
+                    {email}
+                  </Link>
+                )}
               </>
             </InfoItemValue>
           </InfoItem>
         )}
         {mobilePhone && (
           <InfoItem>
-            <InfoItemLabel>{t("PhoneLbl")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Profile:PhoneLbl")}:</InfoItemLabel>
             <InfoItemValue>{mobilePhone}</InfoItemValue>
           </InfoItem>
         )}
-        {sex && (
+        {!personal && sex && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Sex")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_sex">
@@ -322,7 +343,7 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         )}
-        {birthday && (
+        {!personal && birthday && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Birthdate")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_birthdate">
@@ -346,9 +367,9 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         )}
-        {location && (
+        {!personal && location && (
           <InfoItem>
-            <InfoItemLabel>{t("Translations:Location")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Location")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_location">
               {location}
             </InfoItemValue>
@@ -367,7 +388,7 @@ class ProfileInfo extends React.PureComponent {
             <InfoItemLabel>{t("Common:Language")}:</InfoItemLabel>
             <InfoItemValue>
               {cultureNames ? (
-                <>
+                <LangSelectorContainer>
                   <ComboBox
                     directionY="both"
                     options={cultureNames}
@@ -381,7 +402,11 @@ class ProfileInfo extends React.PureComponent {
                     className="language-combo"
                     showDisabledItems={true}
                     dropDownMaxHeight={364}
-                    manualWidth="240px"
+                    manualWidth="320px"
+                    isDefaultMode={!isMobileOnly}
+                    withBlur={isMobileOnly}
+                    fillIcon={false}
+                    offsetLeft={-16}
                   />
                   <HelpButton
                     place="bottom"
@@ -391,7 +416,7 @@ class ProfileInfo extends React.PureComponent {
                     helpButtonHeaderContent={t("Common:Language")}
                     className="help-icon"
                   />
-                </>
+                </LangSelectorContainer>
               ) : (
                 <Loaders.Text />
               )}
@@ -406,7 +431,7 @@ class ProfileInfo extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { settingsStore } = auth;
-    const { culture, customNames } = settingsStore;
+    const { culture, customNames, theme, helpLink } = settingsStore;
     const {
       groupCaption,
       regDateCaption,
@@ -425,6 +450,7 @@ export default withRouter(
     const { setIsLoading, isLoading } = loadingStore;
     const { updateProfileCulture } = targetUserStore;
     return {
+      theme,
       culture,
       groupCaption,
       regDateCaption,
@@ -437,6 +463,7 @@ export default withRouter(
       isLoading,
       updateProfileCulture,
       personal: auth.settingsStore.personal,
+      helpLink,
     };
   })(
     observer(

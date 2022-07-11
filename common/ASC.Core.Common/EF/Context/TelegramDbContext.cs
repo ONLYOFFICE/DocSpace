@@ -26,7 +26,7 @@ namespace ASC.Core.Common.EF.Context
                 return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlTelegramDbContext() } ,
-                    { Provider.Postgre, () => new PostgreSqlTelegramDbContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlTelegramDbContext() } ,
                 };
             }
         }

@@ -23,7 +23,7 @@ class FirebaseHelper {
     this.remoteConfig = firebase.remoteConfig();
 
     this.remoteConfig.settings = {
-      fetchTimeMillis: 3600000,
+      fetchTimeoutMillis: 3600000,
       minimumFetchIntervalMillis: 3600000,
     };
 
@@ -68,6 +68,27 @@ class FirebaseHelper {
       return Promise.resolve(null);
     }
     return await Promise.resolve(JSON.parse(maintenance.asString()));
+  }
+
+  async checkBar() {
+    if (!this.isEnabled) return Promise.reject("Not enabled");
+
+    const res = await this.remoteConfig.fetchAndActivate();
+    const barValue = this.remoteConfig.getValue("bar");
+    const barString = barValue && barValue.asString();
+
+    if (!barValue || !barString) {
+      return Promise.resolve([]);
+    }
+    const list = JSON.parse(barString);
+
+    if (!list || !(list instanceof Array)) return Promise.resolve([]);
+
+    const bar = list.filter((element) => {
+      return typeof element === "string" && element.length > 0;
+    });
+
+    return await Promise.resolve(bar);
   }
 
   async checkCampaigns() {

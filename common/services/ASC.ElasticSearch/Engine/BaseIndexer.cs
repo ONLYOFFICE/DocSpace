@@ -89,7 +89,7 @@ namespace ASC.ElasticSearch
         private bool IsExist { get; set; }
         private Client Client { get; }
         private ILog Log { get; }
-        private TenantManager TenantManager { get; }
+        protected TenantManager TenantManager { get; }
         private BaseIndexerHelper BaseIndexerHelper { get; }
         private Settings Settings { get; }
         private IServiceProvider ServiceProvider { get; }
@@ -116,15 +116,16 @@ namespace ASC.ElasticSearch
 
         internal void Index(T data, bool immediately = true)
         {
-            CreateIfNotExist(data);
+            if (!BeforeIndex(data)) return;
+
             Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
         }
 
         internal void Index(List<T> data, bool immediately = true)
         {
-            if (!data.Any()) return;
+            if (data.Count == 0) return;
 
-            CreateIfNotExist(data[0]);
+            if (!CheckExist(data[0])) return;
 
             if (data[0] is ISearchItemDocument)
             {
@@ -136,6 +137,8 @@ namespace ASC.ElasticSearch
                 {
                     var t = data[i];
                     var runBulk = i == data.Count - 1;
+
+                    BeforeIndex(t);
 
                     if (!(t is ISearchItemDocument wwd) || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
                     {
@@ -208,13 +211,18 @@ namespace ASC.ElasticSearch
             }
             else
             {
+                foreach (var item in data)
+                {
+                    BeforeIndex(item);
+                }
+
                 Client.Instance.Bulk(r => r.IndexMany(data, GetMeta));
             }
         }
 
         internal async Task IndexAsync(List<T> data, bool immediately = true)
         {
-            CreateIfNotExist(data[0]);
+            if (!CheckExist(data[0])) return;
 
             if (data is ISearchItemDocument)
             {
@@ -226,6 +234,8 @@ namespace ASC.ElasticSearch
                 {
                     var t = data[i];
                     var runBulk = i == data.Count - 1;
+
+                    await BeforeIndexAsync(t);
 
                     var wwd = t as ISearchItemDocument;
 
@@ -258,7 +268,6 @@ namespace ASC.ElasticSearch
                             {
                                 wwd.Document.Data = null;
                                 wwd.Document = null;
-                                wwd = null;
                                 GC.Collect();
                             }
                             continue;
@@ -288,7 +297,6 @@ namespace ASC.ElasticSearch
                                 doc.Document.Data = null;
                                 doc.Document = null;
                             }
-                            doc = null;
                         }
 
                         portionStart = i;
@@ -300,31 +308,36 @@ namespace ASC.ElasticSearch
             }
             else
             {
+                foreach (var item in data)
+                {
+                    await BeforeIndexAsync(item);
+                }
+
                 await Client.Instance.BulkAsync(r => r.IndexMany(data, GetMeta));
             }
         }
 
         internal void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            CreateIfNotExist(data);
+            if (!CheckExist(data)) return;
             Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, immediately, fields));
         }
 
         internal void Update(T data, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
-            CreateIfNotExist(data);
+            if (!CheckExist(data)) return;
             Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, action, fields, immediately));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            CreateIfNotExist(data);
+            if (!CheckExist(data)) return;
             Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, immediately, fields));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
-            CreateIfNotExist(data);
+            if (!CheckExist(data)) return;
             Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, action, fields, immediately));
         }
 
@@ -357,8 +370,6 @@ namespace ASC.ElasticSearch
 
                 lock (Locker)
                 {
-                    if (isExist) return true;
-
                     isExist = Client.Instance.Indices.Exists(data.IndexName).Exists;
 
                     BaseIndexerHelper.IsExist.TryUpdate(data.IndexName, IsExist, false);
@@ -394,7 +405,6 @@ namespace ASC.ElasticSearch
             Log.DebugFormat("Delete {0}", Wrapper.IndexName);
             Client.Instance.Indices.Delete(Wrapper.IndexName);
             BaseIndexerHelper.Clear(Wrapper);
-            CreateIfNotExist(Wrapper);
         }
 
         internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
@@ -415,6 +425,16 @@ namespace ASC.ElasticSearch
             return result.Documents;
         }
 
+        protected virtual bool BeforeIndex(T data)
+        {
+            return CheckExist(data);
+        }
+
+        protected virtual Task<bool> BeforeIndexAsync(T data)
+        {
+            return Task.FromResult(CheckExist(data));
+        }
+
         public void CreateIfNotExist(T data)
         {
             try
@@ -428,33 +448,33 @@ namespace ASC.ElasticSearch
                         foreach (var c in Enum.GetNames(typeof(Analyzer)))
                         {
                             var c1 = c;
-                            b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                            b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(nameof(Filter.lowercase)).CharFilters(nameof(CharFilter.io)));
                         }
 
                         foreach (var c in Enum.GetNames(typeof(CharFilter)))
                         {
-                            if (c == CharFilter.io.ToString()) continue;
+                            if (c == nameof(CharFilter.io)) continue;
 
-                            var charFilters = new List<string>() { CharFilter.io.ToString(), c };
+                            var charFilters = new List<string>() { nameof(CharFilter.io), c };
                             var c1 = c;
-                            b.Custom(c1 + "custom", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(charFilters));
+                            b.Custom(c1 + "custom", ca => ca.Tokenizer(nameof(Analyzer.whitespace)).Filters(nameof(Filter.lowercase)).CharFilters(charFilters));
                         }
 
                         if (data is ISearchItemDocument)
                         {
-                            b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                            b.Custom("document", ca => ca.Tokenizer(nameof(Analyzer.whitespace)).Filters(nameof(Filter.lowercase)).CharFilters(nameof(CharFilter.io)));
                         }
 
                         return b;
                     }
 
-                    var createIndexResponse = Client.Instance.Indices.Create(data.IndexName,
-                        c =>
-                        c.Map<T>(m => m.AutoMap())
-                        .Settings(r => r.Analysis(a =>
-                                        a.Analyzers(analyzers)
-                                        .CharFilters(d => d.HtmlStrip(CharFilter.html.ToString())
-                                        .Mapping(CharFilter.io.ToString(), m => m.Mappings("ё => е", "Ё => Е"))))));
+                    Client.Instance.Indices.Create(data.IndexName,
+                       c =>
+                       c.Map<T>(m => m.AutoMap())
+                       .Settings(r => r.Analysis(a =>
+                                       a.Analyzers(analyzers)
+                                       .CharFilters(d => d.HtmlStrip(CharFilter.html.ToString())
+                                       .Mapping(CharFilter.io.ToString(), m => m.Mappings("ё => е", "Ё => Е"))))));
 
                     IsExist = true;
                 }
@@ -497,7 +517,7 @@ namespace ASC.ElasticSearch
         {
             var result = request.Index(IndexName);
 
-            if (fields.Any())
+            if (fields.Length > 0)
             {
                 result.Script(GetScriptUpdateByQuery(data, fields));
             }
@@ -521,11 +541,12 @@ namespace ASC.ElasticSearch
 
             for (var i = 0; i < fields.Length; i++)
             {
-                var func = fields[i].Compile();
+                var field = fields[i];
+                var func = field.Compile();
                 var newValue = func(data);
                 string name;
 
-                var expression = fields[i].Body;
+                var expression = field.Body;
                 var isList = expression.Type.IsGenericType && expression.Type.GetGenericTypeDefinition() == typeof(List<>);
 
 
@@ -545,12 +566,12 @@ namespace ASC.ElasticSearch
                 {
                     if (newValue == default(T))
                     {
-                        source.AppendFormat("ctx._source.remove('{0}');", sourceExprText.Substring(1));
+                        source.Append($"ctx._source.remove('{sourceExprText.Substring(1)}');");
                     }
                     else
                     {
                         var pkey = "p" + sourceExprText.Replace(".", "");
-                        source.AppendFormat("ctx._source{0} = params.{1};", sourceExprText, pkey);
+                        source.Append($"ctx._source{sourceExprText} = params.{pkey};");
                         parameters.Add(pkey, newValue);
                     }
                 }
@@ -607,22 +628,22 @@ namespace ASC.ElasticSearch
                     for (var i = 0; i < newValue.Count; i++)
                     {
                         parameters.Add(paramKey + i, newValue[i]);
-                        source.AppendFormat("if (!ctx._source{0}.contains(params.{1})){{ctx._source{0}.add(params.{1})}}", key, paramKey + i);
+                        source.Append($"if (!ctx._source{key}.contains(params.{paramKey + i})){{ctx._source{key}.add(params.{paramKey + i})}}");
                     }
                     break;
                 case UpdateAction.Replace:
                     parameters.Add(paramKey, newValue);
-                    source.AppendFormat("ctx._source{0} = params.{1};", key, paramKey);
+                    source.Append($"ctx._source{key} = params.{paramKey};");
                     break;
                 case UpdateAction.Remove:
                     for (var i = 0; i < newValue.Count; i++)
                     {
                         parameters.Add(paramKey + i, newValue[i]);
-                        source.AppendFormat("ctx._source{0}.removeIf(item -> item.id == params.{1}.id)", key, paramKey + i);
+                        source.Append($"ctx._source{key}.removeIf(item -> item.id == params.{paramKey + i}.id)");
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("action", action, null);
+                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
             }
         }
 

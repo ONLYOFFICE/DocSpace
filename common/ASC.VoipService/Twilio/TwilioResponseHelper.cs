@@ -77,7 +77,7 @@ namespace ASC.VoipService.Twilio
             {
                 if (!string.IsNullOrEmpty(settings.GreetingAudio))
                 {
-                    response.Play(Uri.EscapeUriString(settings.GreetingAudio));
+                    response.Play(Uri.EscapeDataString(settings.GreetingAudio));
                 }
 
                 response.Enqueue(settings.Queue.Name, GetEcho("Enqueue", agent != null), "POST",
@@ -129,7 +129,7 @@ namespace ASC.VoipService.Twilio
             if (!string.IsNullOrEmpty(queue.WaitUrl))
             {
                 var gather = new Gather(method: "POST", action: GetEcho("gatherQueue"));
-                gather.Play(Uri.EscapeUriString(queue.WaitUrl));
+                gather.Play(Uri.EscapeDataString(queue.WaitUrl));
                 response.Gather(gather);
             }
             else
@@ -156,7 +156,7 @@ namespace ASC.VoipService.Twilio
         {
             if (to == "hold")
             {
-                return new VoiceResponse().Play(Uri.EscapeUriString(settings.HoldAudio), 0);
+                return new VoiceResponse().Play(Uri.EscapeDataString(settings.HoldAudio), 0);
             }
 
 
@@ -199,7 +199,7 @@ namespace ASC.VoipService.Twilio
         {
             return string.IsNullOrEmpty(settings.VoiceMail)
                        ? response.Say("")
-                       : response.Play(Uri.EscapeUriString(settings.VoiceMail)).Record(method: "POST", action: GetEcho("voiceMail"), maxLength: 30);
+                       : response.Play(Uri.EscapeDataString(settings.VoiceMail)).Record(method: "POST", action: GetEcho("voiceMail"), maxLength: 30);
         }
 
         public string GetEcho(string action, bool user = true)

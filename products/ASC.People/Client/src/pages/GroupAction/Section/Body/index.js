@@ -140,6 +140,7 @@ const SectionBodyContent = ({
         return {
           key: option.key,
           label: option.label,
+          groups: option.groups,
         };
       })
     );
@@ -205,18 +206,6 @@ const SectionBodyContent = ({
   };
 
   const onCancelSelector = (e) => {
-    if (
-      (isHeadSelectorOpen &&
-        (e.target.id === "head-selector_button" ||
-          e.target.closest("#head-selector_button"))) ||
-      (isUsersSelectorOpen &&
-        (e.target.id === "users-selector_button" ||
-          e.target.closest("#users-selector_button")))
-    ) {
-      // Skip double set of isOpen property
-      return;
-    }
-
     setIsHeadSelectorOpen(false);
     setIsUsersSelectorOpen(false);
   };
@@ -275,7 +264,7 @@ const SectionBodyContent = ({
               newGroupManager.default ||
               newGroupManager.key === ID_NO_GROUP_MANAGER ||
               newGroupManager.displayName === "profile removed"
-                ? { ...newGroupManager, label: t("SelectAction") }
+                ? { ...newGroupManager, label: t("Common:SelectAction") }
                 : newGroupManager
             }
             scaled={true}
@@ -286,16 +275,19 @@ const SectionBodyContent = ({
           >
             <CatalogGuestIcon size="medium" />
           </ComboBox>
-          <PeopleSelector
-            isOpen={isHeadSelectorOpen}
-            onSelect={onGroupManagerSelect}
-            onCancel={onCancelSelector}
-            groupsCaption={groupsCaption}
-            defaultOption={me}
-            defaultOptionLabel={t("Common:MeLabel")}
-            employeeStatus={1}
-            groupList={groups}
-          />
+          {isHeadSelectorOpen && (
+            <PeopleSelector
+              isOpen={isHeadSelectorOpen}
+              onSelect={onGroupManagerSelect}
+              onCancel={onCancelSelector}
+              onArrowClick={onCancelSelector}
+              groupsCaption={groupsCaption}
+              employeeStatus={1}
+              headerLabel={t("AddHeadOfDepartment")}
+
+              // groupList={groups}
+            />
+          )}
         </FieldContainer>
         <FieldContainer
           className="members_container"
@@ -322,19 +314,21 @@ const SectionBodyContent = ({
           >
             <CatalogGuestIcon size="medium" />
           </ComboBox>
-          <PeopleSelector
-            isOpen={isUsersSelectorOpen}
-            isMultiSelect={true}
-            onSelect={onUsersSelectorSelect}
-            onCancel={onCancelSelector}
-            searchPlaceHolderLabel={t("SearchAddedMembers")}
-            groupsCaption={groupsCaption}
-            defaultOption={me}
-            defaultOptionLabel={t("Common:MeLabel")}
-            selectedOptions={newGroupMembers}
-            employeeStatus={1}
-            groupList={groups}
-          />
+          {isUsersSelectorOpen && (
+            <PeopleSelector
+              isOpen={isUsersSelectorOpen}
+              isMultiSelect={true}
+              onSelect={onUsersSelectorSelect}
+              onCancel={onCancelSelector}
+              onArrowClick={onCancelSelector}
+              searchPlaceHolderLabel={t("SearchAddedMembers")}
+              groupsCaption={groupsCaption}
+              selectedOptions={newGroupMembers}
+              employeeStatus={1}
+              showCounter={true}
+              headerLabel={t("Translations:AddMembers")}
+            />
+          )}
         </FieldContainer>
         {newGroupMembers && newGroupMembers.length > 0 && (
           <>
@@ -368,14 +362,14 @@ const SectionBodyContent = ({
             primary
             type="submit"
             isLoading={inLoading}
-            size="big"
+            size="normal"
             tabIndex={4}
             onClick={onSave}
           />
           <Button
             label={t("Common:CancelButton")}
             className="cancel-button"
-            size="big"
+            size="normal"
             isDisabled={inLoading}
             onClick={onCancel}
             tabIndex={5}

@@ -1,44 +1,110 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+
+import { isMobile } from "react-device-detect";
+import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
+
 import Selector from "./sub-components/Selector";
-import utils from "@appserver/components/utils";
 import Backdrop from "@appserver/components/backdrop";
-import DropDown from "@appserver/components/drop-down";
-import Aside from "@appserver/components/aside";
 
-import throttle from "lodash/throttle";
-const { desktop } = utils.device;
+import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 
-const displayTypes = ["dropdown", "aside", "auto"];
-const sizes = ["compact", "full"];
+const StyledBlock = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  width: 480px;
+  max-width: 100%;
+  height: 100%;
+
+  z-index: 400;
+
+  display: flex;
+  flex-direction: column;
+
+  background: ${(props) => props.theme.filterInput.filter.background};
+
+  @media ${tablet} {
+    max-width: calc(100% - 69px);
+  }
+
+  ${isMobile &&
+  css`
+    max-width: calc(100% - 69px);
+  `}
+
+  @media (max-width: 428px) {
+    bottom: 0;
+    top: unset;
+    height: calc(100% - 64px);
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .people-selector {
+    height: 100%;
+    width: 100%;
+
+    .selector-wrapper,
+    .column-options {
+      width: 100%;
+    }
+  }
+`;
+
+StyledBlock.defaultProps = { theme: Base };
+
+const StyledControlContainer = styled.div`
+  display: flex;
+
+  width: 24px;
+  height: 24px;
+  position: absolute;
+
+  border-radius: 100px;
+  cursor: pointer;
+
+  align-items: center;
+  justify-content: center;
+  z-index: 450;
+
+  top: 14px;
+  left: -34px;
+
+  ${isMobile &&
+  css`
+    top: 14px;
+  `}
+
+  @media (max-width: 428px) {
+    top: -34px;
+    right: 10px;
+    left: unset;
+  }
+`;
+
+StyledControlContainer.defaultProps = { theme: Base };
+
+const StyledCrossIcon = styled(CrossIcon)`
+  width: 17px;
+  height: 17px;
+  z-index: 455;
+  path {
+    fill: ${(props) => props.theme.catalog.control.fill};
+  }
+`;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 class AdvancedSelector extends React.Component {
   constructor(props) {
     super(props);
 
     this.ref = React.createRef();
-    this.state = {
-      displayType: this.getTypeByWidth(),
-    };
-
-    this.throttledResize = throttle(this.resize, 300);
   }
-
-  componentDidMount() {
-    if (this.props.isOpen) {
-      window.addEventListener("resize", this.throttledResize);
-    }
-  }
-
-  resize = () => {
-    if (this.props.displayType !== "auto") return;
-
-    const type = this.getTypeByWidth();
-
-    if (type === this.state.displayType) return;
-
-    this.setState({ displayType: type });
-  };
 
   onClose = (e) => {
     //console.log("onClose");
@@ -46,95 +112,42 @@ class AdvancedSelector extends React.Component {
     this.props.onCancel && this.props.onCancel(e);
   };
 
-  componentDidUpdate(prevProps) {
-    if (this.props.isOpen !== prevProps.isOpen) {
-      //console.log(`ADSelector componentDidUpdate isOpen=${this.props.isOpen}`);
-      if (this.props.isOpen) {
-        this.resize();
-        window.addEventListener("resize", this.throttledResize);
-      } else {
-        this.throttledResize.cancel();
-        window.removeEventListener("resize", this.throttledResize);
-      }
-    }
-
-    if (this.props.displayType !== prevProps.displayType) {
-      //console.log(`ADSelector componentDidUpdate displayType=${this.props.displayType}`);
-      this.setState({ displayType: this.getTypeByWidth() });
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.throttledResize) {
-      this.throttledResize && this.throttledResize.cancel();
-      window.removeEventListener("resize", this.throttledResize);
-    }
-  }
-
-  getTypeByWidth = () => {
-    const displayType =
-      this.props.displayType !== "auto"
-        ? this.props.displayType
-        : window.innerWidth < desktop.match(/\d+/)[0]
-        ? "aside"
-        : "dropdown";
-
-    //console.log("AdvancedSelector2 displayType", displayType);
-
-    return displayType;
-  };
-
   render() {
-    const { displayType } = this.state;
-    const {
-      isOpen,
-      id,
-      className,
-      style,
-      withoutAside,
-      isDefaultDisplayDropDown,
-      smallSectionWidth,
-    } = this.props;
-
-    //console.log(`AdvancedSelector render() isOpen=${isOpen} displayType=${displayType}`);
+    const { isOpen, id, className, style, withoutAside } = this.props;
 
     return (
-      <div id={id} className={className} style={style}>
-        {displayType === "dropdown" ? (
-          <DropDown
-            forwardedRef={this.ref}
-            open={isOpen}
-            className="selector_dropdown-container"
-            smallSectionWidth={smallSectionWidth}
-            isDefaultMode={isDefaultDisplayDropDown}
-            className="dropdown-container"
-            clickOutsideAction={this.onClose}
-          >
-            <Selector {...this.props} displayType={displayType} />
-          </DropDown>
-        ) : withoutAside ? (
-          <Selector {...this.props} displayType={displayType} />
-        ) : (
-          <>
-            <Backdrop
-              onClick={this.onClose}
-              visible={isOpen}
-              zIndex={310}
-              isAside={true}
-            />
-            <Aside visible={isOpen} scale={false} className="aside-container">
-              <Selector {...this.props} displayType={displayType} />
-            </Aside>
-          </>
+      <>
+        {isOpen && (
+          <div id={id} className={className} style={style}>
+            {withoutAside ? (
+              <Selector {...this.props} />
+            ) : (
+              <>
+                <Backdrop
+                  onClick={this.onClose}
+                  visible={isOpen}
+                  zIndex={310}
+                  isAside={true}
+                />
+                <StyledBlock>
+                  <Selector {...this.props} />
+
+                  <StyledControlContainer onClick={this.onClose}>
+                    <StyledCrossIcon />
+                  </StyledControlContainer>
+                </StyledBlock>
+              </>
+            )}
+          </div>
         )}
-      </div>
+      </>
     );
   }
 }
 
 AdvancedSelector.propTypes = {
   id: PropTypes.string,
-  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
   options: PropTypes.array,
   selectedOptions: PropTypes.array,
@@ -145,9 +158,6 @@ AdvancedSelector.propTypes = {
   placeholder: PropTypes.string,
   selectAllLabel: PropTypes.string,
   buttonLabel: PropTypes.string,
-
-  size: PropTypes.oneOf(sizes),
-  displayType: PropTypes.oneOf(displayTypes),
 
   maxHeight: PropTypes.number,
 
@@ -178,7 +188,6 @@ AdvancedSelector.defaultProps = {
   selectAllLabel: "Select all",
   allowGroupSelection: false,
   allowAnyClickClose: true,
-  displayType: "auto",
   options: [],
   isDefaultDisplayDropDown: true,
 };

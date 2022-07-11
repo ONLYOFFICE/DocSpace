@@ -30,7 +30,7 @@ import withLoader from "../../../HOCs/withLoader";
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
 class NewFilesPanel extends React.Component {
-  state = { readingFiles: [] };
+  state = { readingFiles: [], inProgress: false };
 
   onClose = () => {
     this.props.setNewFilesPanelVisible(false);
@@ -60,11 +60,21 @@ class NewFilesPanel extends React.Component {
       else folderIds.push(item.id);
     }
 
+    this.setState({ inProgress: true });
+
     this.props
       .markAsRead(folderIds, fileIds)
       .then(() => this.setNewBadgeCount())
+      .then(() => {
+        const { hasNew, refreshFiles } = this.props;
+
+        return hasNew ? refreshFiles() : Promise.resolve();
+      })
       .catch((err) => toastr.error(err))
-      .finally(() => this.onClose());
+      .finally(() => {
+        this.setState({ inProgress: false });
+        this.onClose();
+      });
   };
 
   onNewFileClick = (e) => {
@@ -151,13 +161,13 @@ class NewFilesPanel extends React.Component {
         updateFilesBadge();
       }
     } else {
-      updateFolderBadge(+newFilesIds[newFilesIds.length - 1], filesCount);
+      updateFolderBadge(newFilesIds[newFilesIds.length - 1], filesCount);
     }
   };
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible, isLoading, newFiles } = this.props;
+    const { t, visible, isLoading, newFiles, theme } = this.props;
     const zIndex = 310;
 
     return (
@@ -168,7 +178,11 @@ class NewFilesPanel extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel" visible={visible}>
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          onClose={this.onClose}
+        >
           <StyledContent>
             <StyledHeaderContent>
               <Heading
@@ -200,7 +214,19 @@ class NewFilesPanel extends React.Component {
                           data-id={file.id}
                           data-extension={file.fileExst}
                         >
-                          {file.title}
+                          <Link
+                            containerWidth="100%"
+                            type="page"
+                            fontWeight="bold"
+                            color={theme.filesPanels.color}
+                            isTextOverflow
+                            truncate
+                            title={file.title}
+                            fontSize="14px"
+                            className="files-new-link"
+                          >
+                            {file.title}
+                          </Link>
                         </Link>
                       </Row>
                     );
@@ -219,14 +245,15 @@ class NewFilesPanel extends React.Component {
               <Button
                 className="new_files_panel-button"
                 label={t("MarkAsRead")}
-                size="big"
+                size="normal"
                 primary
                 onClick={this.onMarkAsRead}
+                isLoading={this.state.inProgress}
               />
               <Button
                 className="sharing_panel-button"
                 label={t("Common:CloseButton")}
-                size="big"
+                size="normal"
                 onClick={this.onClose}
               />
             </StyledFooter>
@@ -239,6 +266,7 @@ class NewFilesPanel extends React.Component {
 
 export default inject(
   ({
+    auth,
     filesStore,
     mediaViewerDataStore,
     treeFoldersStore,
@@ -256,6 +284,8 @@ export default inject(
       updateFilesBadge,
       updateFolderBadge,
       updateFoldersBadge,
+      hasNew,
+      refreshFiles,
     } = filesStore;
     const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
@@ -290,6 +320,10 @@ export default inject(
       updateFolderBadge,
       updateFoldersBadge,
       updateFilesBadge,
+
+      theme: auth.settingsStore.theme,
+      hasNew,
+      refreshFiles,
     };
   }
 )(

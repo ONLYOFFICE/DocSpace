@@ -81,8 +81,10 @@ class AvatarEditor extends React.Component {
   };
 
   onClose = () => {
-    this.setState({ visible: false });
-    this.props.onClose();
+    if (this.state.visible) {
+      this.setState({ visible: false });
+      this.props.onClose();
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -92,6 +94,20 @@ class AvatarEditor extends React.Component {
     if (this.props.image !== prevProps.image) {
       this.setState({ existImage: !!this.props.image });
     }
+  }
+
+  keyPress = (e) => {
+    if (e.keyCode === 13) {
+      this.onSaveButtonClick();
+    }
+  };
+
+  componentDidMount() {
+    addEventListener("keydown", this.keyPress, false);
+  }
+
+  componentWillUnmount() {
+    removeEventListener("keydown", this.keyPress, false);
   }
 
   render() {
@@ -157,7 +173,7 @@ class AvatarEditor extends React.Component {
             label={saveButtonLabel}
             isLoading={saveButtonLoading}
             primary={true}
-            size="big"
+            size="normal"
             onClick={this.onSaveButtonClick}
           />
         </ModalDialog.Footer>
@@ -191,14 +207,14 @@ class AvatarEditor extends React.Component {
             label={saveButtonLabel}
             isLoading={saveButtonLoading}
             primary={true}
-            size="big"
+            size="normal"
             onClick={this.onSaveButtonClick}
           />
           <Button
             key="CancelBtn"
             label={cancelButtonLabel}
             primary={false}
-            size="big"
+            size="normal"
             onClick={this.onCancelButtonClick}
           />
         </StyledButtonsWrapper>

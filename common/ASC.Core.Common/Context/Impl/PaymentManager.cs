@@ -27,8 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -39,8 +38,6 @@ using ASC.Core.Billing;
 
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-
-using Newtonsoft.Json;
 
 
 namespace ASC.Core
@@ -54,14 +51,16 @@ namespace ASC.Core
 
         private TenantManager TenantManager { get; }
         private IConfiguration Configuration { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
-        public PaymentManager(TenantManager tenantManager, ITariffService tariffService, IConfiguration configuration)
+        public PaymentManager(TenantManager tenantManager, ITariffService tariffService, IConfiguration configuration, IHttpClientFactory clientFactory)
         {
             TenantManager = tenantManager;
             this.tariffService = tariffService;
             Configuration = configuration;
             partnerUrl = (Configuration["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
-            partnerKey = (Configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
+            partnerKey = Configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF";
+            ClientFactory = clientFactory;
         }
 
 
@@ -105,26 +104,20 @@ namespace ASC.Core
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
 
             var now = DateTime.UtcNow;
             var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(TenantManager.GetCurrentTenant().TenantAlias);
-            using var webClient = new WebClient();
-            webClient.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
-            try
-            {
-                webClient.DownloadData(partnerUrl + actionUrl);
-            }
-            catch (WebException we)
-            {
-                var error = GetException(we);
-                if (error != null)
-                {
-                    throw error;
-                }
-                throw;
-            }
+
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
+            request.RequestUri = new Uri(partnerUrl + actionUrl);
+
+            var httpClient = ClientFactory.CreateClient();
+
+            using var response = httpClient.Send(request);
+
             tariffService.ClearCache(TenantManager.GetCurrentTenant().TenantId);
 
             var timeout = DateTime.UtcNow - now - TimeSpan.FromSeconds(5);
@@ -142,30 +135,8 @@ namespace ASC.Core
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
             var data = string.Join("\n", now, "/api/" + url.TrimStart('/')); //data: UTC DateTime (yyyy:MM:dd HH:mm:ss) + \n + url
             var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(data)));
-            return string.Format("ASC :{0}:{1}", now, hash);
+            return $"ASC :{now}:{hash}";
         }
 
-        private static Exception GetException(WebException we)
-        {
-            var response = (HttpWebResponse)we.Response;
-            if (response.StatusCode == HttpStatusCode.InternalServerError)
-            {
-                using var stream = response.GetResponseStream();
-                using var reader = new StreamReader(stream, Encoding.UTF8);
-                var result = reader.ReadToEnd();
-                var excInfo = JsonConvert.DeserializeObject<ExceptionJson>(result);
-                return (Exception)Activator.CreateInstance(Type.GetType(excInfo.exceptionType, true), excInfo.exceptionMessage);
-            }
-            return null;
-        }
-
-
-        private class ExceptionJson
-        {
-            public string message = null;
-            public string exceptionMessage = null;
-            public string exceptionType = null;
-            public string stackTrace = null;
-        }
     }
 }

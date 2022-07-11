@@ -2,17 +2,12 @@ import React from "react";
 import TableHeader from "@appserver/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { FilterType } from "@appserver/common/constants";
-import DropDownItem from "@appserver/components/drop-down-item";
-
-const TABLE_COLUMNS = "filesTableColumns";
-const COLUMNS_SIZE = "filesColumnsSize";
 
 class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, withContent, personal, userId } = props;
+    const { t, personal, tableStorageName } = props;
 
     const defaultColumns = [
       {
@@ -22,7 +17,7 @@ class FilesTableHeader extends React.Component {
         enable: true,
         default: true,
         sortBy: "AZ",
-        minWidth: 180,
+        minWidth: 210,
         onClick: this.onFilter,
       },
       {
@@ -37,7 +32,7 @@ class FilesTableHeader extends React.Component {
       {
         key: "Created",
         title: t("ByCreationDate"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "DateAndTimeCreation",
         onClick: this.onFilter,
@@ -64,24 +59,24 @@ class FilesTableHeader extends React.Component {
       {
         key: "Type",
         title: t("Common:Type"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "Type",
         onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
-        key: "Share",
+        key: "QuickButtons",
         title: "",
-        enable: withContent,
-        defaultSize: 120,
+        enable: true,
+        defaultSize: 75,
         resizable: false,
       },
     ];
 
     personal && defaultColumns.splice(1, 1);
 
-    const storageColumns = localStorage.getItem(`${TABLE_COLUMNS}=${userId}`);
+    const storageColumns = localStorage.getItem(tableStorageName);
     const splitColumns = storageColumns && storageColumns.split(",");
     const columns = this.getColumns(defaultColumns, splitColumns);
     const resetColumnsSize =
@@ -98,7 +93,7 @@ class FilesTableHeader extends React.Component {
   }
 
   setTableColumns = (tableColumns) => {
-    localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
+    localStorage.setItem(this.props.tableStorageName, tableColumns);
   };
 
   componentDidMount() {
@@ -111,21 +106,22 @@ class FilesTableHeader extends React.Component {
     const { firstElemChecked } = this.props;
 
     const currentScrollPosition = this.customScrollElm.scrollTop;
+    const elem = document.getElementById("table-container_caption-header");
 
     if (currentScrollPosition === 0) {
       this.isBeginScrolling = false;
 
-      !firstElemChecked &&
-        document
-          .getElementById("table-container_caption-header")
-          ?.classList?.remove("lengthen-header");
+      this.props.headerBorder &&
+        elem?.classList?.add("hotkeys-lengthen-header");
+
+      !firstElemChecked && elem?.classList?.remove("lengthen-header");
       return;
     }
 
-    !this.isBeginScrolling &&
-      document
-        .getElementById("table-container_caption-header")
-        ?.classList?.add("lengthen-header");
+    if (!this.isBeginScrolling) {
+      elem?.classList?.remove("hotkeys-lengthen-header");
+      elem?.classList?.add("lengthen-header");
+    }
 
     this.isBeginScrolling = true;
   };
@@ -137,6 +133,14 @@ class FilesTableHeader extends React.Component {
 
       columns[columnIndex].enable = this.props.withContent;
       this.setState({ columns });
+    }
+
+    if (this.props.headerBorder) {
+      const elem = document.getElementById("table-container_caption-header");
+      elem?.classList?.add("hotkeys-lengthen-header");
+    } else {
+      const elem = document.getElementById("table-container_caption-header");
+      elem?.classList?.remove("hotkeys-lengthen-header");
     }
   }
 
@@ -187,55 +191,21 @@ class FilesTableHeader extends React.Component {
     fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
   };
 
-  onChange = (checked) => {
-    this.props.setSelected(checked ? "all" : "none");
-  };
-
-  onSelect = (e) => {
-    const key = e.currentTarget.dataset.key;
-    this.props.setSelected(key);
-  };
-
-  setSelected = (checked) => {
-    this.props.setSelected && this.props.setSelected(checked ? "all" : "none");
-  };
-
   render() {
     const {
-      t,
       containerRef,
-      isHeaderVisible,
       isHeaderChecked,
-      isHeaderIndeterminate,
-      getHeaderMenu,
       filter,
       sectionWidth,
-      userId,
-      cbMenuItems,
-      getCheckboxItemLabel,
       firstElemChecked,
       sortingVisible,
+      infoPanelVisible,
+      columnStorageName,
+      columnInfoPanelStorageName,
     } = this.props;
 
     const { sortBy, sortOrder } = filter;
-
     const { columns, resetColumnsSize } = this.state;
-
-    const checkboxOptions = (
-      <>
-        {cbMenuItems.map((key) => {
-          const label = getCheckboxItemLabel(t, key);
-          return (
-            <DropDownItem
-              key={key}
-              label={label}
-              data-key={key}
-              onClick={this.onSelect}
-            />
-          );
-        })}
-      </>
-    );
 
     return (
       <TableHeader
@@ -243,59 +213,39 @@ class FilesTableHeader extends React.Component {
         checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
-        setSelected={this.setSelected}
         containerRef={containerRef}
         columns={columns}
-        columnStorageName={`${COLUMNS_SIZE}=${userId}`}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
         sectionWidth={sectionWidth}
-        isHeaderVisible={isHeaderVisible}
-        checkboxOptions={checkboxOptions}
-        onChange={this.onChange}
-        isChecked={isHeaderChecked}
-        isIndeterminate={isHeaderIndeterminate}
-        headerMenu={getHeaderMenu(t)}
         resetColumnsSize={resetColumnsSize}
         sortingVisible={sortingVisible}
+        infoPanelVisible={infoPanelVisible}
       />
     );
   }
 }
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    filesActionsStore,
-    selectedFolderStore,
-    treeFoldersStore,
-  }) => {
+  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+
     const {
-      setSelected,
-      isHeaderVisible,
-      isHeaderIndeterminate,
       isHeaderChecked,
       setIsLoading,
       filter,
       fetchFiles,
       canShare,
-      cbMenuItems,
-      getCheckboxItemLabel,
       firstElemChecked,
+      headerBorder,
     } = filesStore;
-    const { getHeaderMenu } = filesActionsStore;
-    const {
-      isPrivacyFolder,
-      isFavoritesFolder,
-      isRecentFolder,
-    } = treeFoldersStore;
+    const { isPrivacyFolder, isRecentFolder } = treeFoldersStore;
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
     const sortingVisible = !isRecentFolder;
     const { personal } = auth.settingsStore;
 
     return {
-      isHeaderVisible,
-      isHeaderIndeterminate,
       isHeaderChecked,
       filter,
       selectedFolderId: selectedFolderStore.id,
@@ -303,15 +253,13 @@ export default inject(
       personal,
       sortingVisible,
 
-      setSelected,
       setIsLoading,
       fetchFiles,
-      getHeaderMenu,
-      userId: auth.userStore.user.id,
-      cbMenuItems,
-      getCheckboxItemLabel,
 
       firstElemChecked,
+      headerBorder,
+
+      infoPanelVisible,
     };
   }
 )(

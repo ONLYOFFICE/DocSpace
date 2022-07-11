@@ -140,7 +140,7 @@ namespace ASC.Web.Api.Controllers
 
         private static string AppendCode(string url, string code = null, string error = null)
         {
-            url += (url.Contains("#") ? "&" : "#")
+            url += (url.Contains('#') ? "&" : "#")
                    + (string.IsNullOrEmpty(error)
                           ? (string.IsNullOrEmpty(code)
                                  ? string.Empty

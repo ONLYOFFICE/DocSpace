@@ -27,7 +27,7 @@ const Template = (args) => {
       <Button
         label="Show Backdrop"
         primary
-        size="medium"
+        size="small"
         onClick={toggleVisible}
       />
       <Backdrop

@@ -5,7 +5,6 @@ import {
   AppServerConfig,
   FileStatus,
 } from "@appserver/common/constants";
-import toastr from "@appserver/components/toast/toastr";
 import { combineUrl } from "@appserver/common/utils";
 
 import Badges from "../components/Badges";
@@ -13,29 +12,6 @@ import config from "../../package.json";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
-    state = { isLoading: false };
-
-    onClickLock = () => {
-      const { item, lockFileAction, isAdmin } = this.props;
-      const { locked, id, access } = item;
-
-      if ((isAdmin || access === 0) && !this.state.isLoading) {
-        this.setState({ isLoading: true });
-        return lockFileAction(id, !locked)
-          .catch((err) => toastr.error(err))
-          .finally(() => this.setState({ isLoading: false }));
-      }
-      return;
-    };
-
-    onClickFavorite = () => {
-      const { t, item, setFavoriteAction } = this.props;
-
-      setFavoriteAction("remove", item.id)
-        .then(() => toastr.success(t("RemovedFromFavorites")))
-        .catch((err) => toastr.error(err));
-    };
-
     onShowVersionHistory = () => {
       const {
         homepage,
@@ -47,29 +23,16 @@ export default function withBadges(WrappedComponent) {
         isTrashFolder,
       } = this.props;
       if (isTrashFolder) return;
-
-      if (!isTabletView) {
-        fetchFileVersions(item.id + "");
-        setIsVerHistoryPanel(true);
-      } else {
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, homepage, `/${item.id}/history`)
-        );
-      }
+      fetchFileVersions(item.id + "");
+      setIsVerHistoryPanel(true);
     };
+
     onBadgeClick = () => {
-      const {
-        item,
-        selectedFolderPathParts,
-        markAsRead,
-        setNewFilesPanelVisible,
-      } = this.props;
+      const { item, markAsRead, setNewFilesPanelVisible } = this.props;
       if (item.fileExst) {
         markAsRead([], [item.id], item);
       } else {
-        const newFolderIds = selectedFolderPathParts;
-        newFolderIds.push(item.id);
-        setNewFilesPanelVisible(true, newFolderIds, item);
+        setNewFilesPanelVisible(true, null, item);
       }
     };
 
@@ -81,14 +44,17 @@ export default function withBadges(WrappedComponent) {
     render() {
       const {
         t,
+        theme,
         item,
         canWebEdit,
         isTrashFolder,
         isPrivacyFolder,
         canConvert,
-        onFilesClick, // from withFileAction HOC
+        onFilesClick,
         isAdmin,
         isDesktopClient,
+        sectionWidth,
+        viewAs,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -103,22 +69,23 @@ export default function withBadges(WrappedComponent) {
       const badgesComponent = (
         <Badges
           t={t}
+          theme={theme}
           item={item}
           isAdmin={isAdmin}
           showNew={showNew}
           newItems={newItems}
+          sectionWidth={sectionWidth}
           canWebEdit={canWebEdit}
           canConvert={canConvert}
           isTrashFolder={isTrashFolder}
           isPrivacyFolder={isPrivacyFolder}
           isDesktopClient={isDesktopClient}
           accessToEdit={accessToEdit}
-          onClickLock={this.onClickLock}
-          onClickFavorite={this.onClickFavorite}
           onShowVersionHistory={this.onShowVersionHistory}
           onBadgeClick={this.onBadgeClick}
           setConvertDialogVisible={this.setConvertDialogVisible}
           onFilesClick={onFilesClick}
+          viewAs={viewAs}
         />
       );
 
@@ -135,7 +102,6 @@ export default function withBadges(WrappedComponent) {
         treeFoldersStore,
         filesActionsStore,
         versionHistoryStore,
-        selectedFolderStore,
         dialogsStore,
         filesStore,
         settingsStore,
@@ -143,12 +109,8 @@ export default function withBadges(WrappedComponent) {
       { item }
     ) => {
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
-      const {
-        lockFileAction,
-        setFavoriteAction,
-        markAsRead,
-      } = filesActionsStore;
-      const { isTabletView, isDesktopClient } = auth.settingsStore;
+      const { markAsRead } = filesActionsStore;
+      const { isTabletView, isDesktopClient, theme } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const {
         setNewFilesPanelVisible,
@@ -161,18 +123,16 @@ export default function withBadges(WrappedComponent) {
       const canConvert = settingsStore.canConvert(item.fileExst);
 
       return {
+        theme,
         isAdmin: auth.isAdmin,
         canWebEdit,
         canConvert,
         isTrashFolder: isRecycleBinFolder,
         isPrivacyFolder,
-        lockFileAction,
-        setFavoriteAction,
         homepage: config.homepage,
         isTabletView,
         setIsVerHistoryPanel,
         fetchFileVersions,
-        selectedFolderPathParts: selectedFolderStore.pathParts,
         markAsRead,
         setNewFilesPanelVisible,
         setIsLoading,

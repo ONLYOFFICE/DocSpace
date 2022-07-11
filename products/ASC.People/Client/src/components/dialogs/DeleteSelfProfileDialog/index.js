@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 
 import Button from "@appserver/components/button";
@@ -40,7 +41,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
 
   render() {
     console.log("DeleteSelfProfileDialog render");
-    const { t, tReady, visible, email, onClose } = this.props;
+    const { t, tReady, visible, email, onClose, theme } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
@@ -57,7 +58,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
               type="page"
               href={`mailto:${email}`}
               noHover
-              color="#316DAA"
+              color={theme.peopleDialogs.deleteSelf.linkColor}
               title={email}
             >
               {email}
@@ -68,7 +69,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
           <Button
             key="SendBtn"
             label={t("Common:SendButton")}
-            size="medium"
+            size="small"
             primary={true}
             onClick={this.onDeleteSelfProfileInstructions}
             isLoading={isRequestRunning}
@@ -77,7 +78,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
             className="button-dialog"
             key="CloseBtn"
             label={t("Common:CloseButton")}
-            size="medium"
+            size="small"
             onClick={onClose}
             isDisabled={isRequestRunning}
           />
@@ -87,10 +88,15 @@ class DeleteSelfProfileDialogComponent extends React.Component {
   }
 }
 
-const DeleteSelfProfileDialog = withTranslation([
-  "DeleteSelfProfileDialog",
-  "Common",
-])(DeleteSelfProfileDialogComponent);
+const DeleteSelfProfileDialog = inject(({ auth }) => ({
+  theme: auth.settingsStore.theme,
+}))(
+  observer(
+    withTranslation(["DeleteSelfProfileDialog", "Common"])(
+      DeleteSelfProfileDialogComponent
+    )
+  )
+);
 
 DeleteSelfProfileDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

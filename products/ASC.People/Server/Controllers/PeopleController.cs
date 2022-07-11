@@ -1,15 +1,15 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Security;
+using System.Security.Claims;
 using System.ServiceModel.Security;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Api.Core;
@@ -47,6 +47,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -98,6 +101,7 @@ namespace ASC.Employee.Core.Controllers
         private Constants Constants { get; }
         private Recaptcha Recaptcha { get; }
         private ILog Log { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public PeopleController(
             MessageService messageService,
@@ -139,7 +143,8 @@ namespace ASC.Employee.Core.Controllers
             MobileDetector mobileDetector,
             ProviderManager providerManager,
             Constants constants,
-            Recaptcha recaptcha
+            Recaptcha recaptcha,
+            IHttpClientFactory clientFactory
             )
         {
             Log = option.Get("ASC.Api");
@@ -182,6 +187,7 @@ namespace ASC.Employee.Core.Controllers
             ProviderManager = providerManager;
             Constants = constants;
             Recaptcha = recaptcha;
+            ClientFactory = clientFactory;
         }
 
         [Read("info")]
@@ -214,7 +220,11 @@ namespace ASC.Employee.Core.Controllers
         [Read("@self")]
         public EmployeeWraper Self()
         {
-            return EmployeeWraperFullHelper.GetFull(UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeWraperFullHelper.GetExpression(ApiContext)));
+            var result = EmployeeWraperFullHelper.GetFull(UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeWraperFullHelper.GetExpression(ApiContext)));
+
+            result.Theme = SettingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
+
+            return result;
         }
 
         [Read("email")]
@@ -231,10 +241,17 @@ namespace ASC.Employee.Core.Controllers
             return EmployeeWraperFullHelper.GetFull(user);
         }
 
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
         [Read("{username}", order: int.MaxValue)]
         public EmployeeWraperFull GetById(string username)
         {
             if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
+
+            var isInvite = ApiContext.HttpContextAccessor.HttpContext.User.Claims
+                .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
+
+            ApiContext.AuthByClaim();
+
             var user = UserManager.GetUserByUserName(username);
             if (user.ID == Constants.LostUser.ID)
             {
@@ -251,6 +268,11 @@ namespace ASC.Employee.Core.Controllers
             if (user.ID == Constants.LostUser.ID)
             {
                 throw new ItemNotFoundException("User not found");
+            }
+
+            if (isInvite)
+            {
+                return EmployeeWraperFullHelper.GetSimple(user);
             }
 
             return EmployeeWraperFullHelper.GetFull(user);
@@ -427,10 +449,15 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create(@"register")]
-        public string RegisterUserOnPersonal(RegisterPersonalUserModel model)
+        public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserModel model)
         {
             if (!CoreBaseSettings.Personal) throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
 
+            return InternalRegisterUserOnPersonalAsync(model);
+        }
+
+        private async Task<string> InternalRegisterUserOnPersonalAsync(RegisterPersonalUserModel model)
+        {
             try
             {
                 if (CoreBaseSettings.CustomMode) model.Lang = "ru-RU";
@@ -452,7 +479,7 @@ namespace ASC.Employee.Core.Controllers
                     var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
 
                     if (string.IsNullOrEmpty(model.RecaptchaResponse)
-                        || !Recaptcha.ValidateRecaptcha(model.RecaptchaResponse, ip))
+                        || !await Recaptcha.ValidateRecaptchaAsync(model.RecaptchaResponse, ip))
                     {
                         throw new RecaptchaException(Resource.RecaptchaInvalid);
                     }
@@ -495,7 +522,7 @@ namespace ASC.Employee.Core.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Log.Debug(String.Format("ERROR write to template_unsubscribe {0}, email:{1}", ex.Message, model.Email.ToLowerInvariant()));
+                        Log.Debug($"ERROR write to template_unsubscribe {ex.Message}, email:{model.Email.ToLowerInvariant()}");
                     }
                 }
 
@@ -551,7 +578,9 @@ namespace ASC.Employee.Core.Controllers
             //Validate email
             var address = new MailAddress(memberModel.Email);
             user.Email = address.Address;
+
             //Set common fields
+            user.CultureName = memberModel.CultureName;
             user.FirstName = memberModel.Firstname;
             user.LastName = memberModel.Lastname;
             user.Title = memberModel.Title;
@@ -561,8 +590,8 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
-            user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
+            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(memberModel.Birthday) : null;
+            user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
 
@@ -630,8 +659,8 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
-            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
+            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(memberModel.Birthday) : null;
+            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
 
@@ -697,13 +726,13 @@ namespace ASC.Employee.Core.Controllers
             return EmployeeWraperFullHelper.GetFull(user);
         }
 
-        [Update("{userid}")]
+        [Update("{userid}", order: int.MaxValue, DisableFormat = true)]
         public EmployeeWraperFull UpdateMemberFromBody(string userid, [FromBody] UpdateMemberModel memberModel)
         {
             return UpdateMember(userid, memberModel);
         }
 
-        [Update("{userid}")]
+        [Update("{userid}", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull UpdateMemberFromForm(string userid, [FromForm] UpdateMemberModel memberModel)
         {
@@ -750,14 +779,14 @@ namespace ASC.Employee.Core.Controllers
                             ? true
                             : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null)) ?? user.Sex;
 
-            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : user.BirthDate;
+            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(memberModel.Birthday) : user.BirthDate;
 
             if (user.BirthDate == resetDate)
             {
                 user.BirthDate = null;
             }
 
-            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : user.WorkFromDate;
+            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : user.WorkFromDate;
 
             if (user.WorkFromDate == resetDate)
             {
@@ -784,7 +813,7 @@ namespace ASC.Employee.Core.Controllers
             }
 
             // change user type
-            var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(UserManager) && !user.GetListAdminModules(WebItemSecurity).Any() && !user.IsMe(AuthContext);
+            var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(UserManager) && user.GetListAdminModules(WebItemSecurity).Count == 0 && !user.IsMe(AuthContext);
 
             if (memberModel.IsVisitor && !user.IsVisitor(UserManager) && canBeGuestFlag)
             {
@@ -933,6 +962,7 @@ namespace ASC.Employee.Core.Controllers
             if (UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
+            user.ContactsList.Clear();
             UpdateContacts(memberModel.Contacts, user);
             UserManager.SaveUserInfo(user);
             return EmployeeWraperFullHelper.GetFull(user);
@@ -1046,7 +1076,7 @@ namespace ASC.Employee.Core.Controllers
                 }
 
             }
-            catch (UnknownImageFormatException)
+            catch (Web.Core.Users.UnknownImageFormatException)
             {
                 result.Success = false;
                 result.Message = PeopleResource.ErrorUnknownFileImageType;
@@ -1183,8 +1213,8 @@ namespace ASC.Employee.Core.Controllers
 
         private object SendUserPassword(MemberModel memberModel)
         {
-            string error;
-            if (!string.IsNullOrEmpty(error = UserManagerWrapper.SendUserPassword(memberModel.Email)))
+            string error = UserManagerWrapper.SendUserPassword(memberModel.Email);
+            if (!string.IsNullOrEmpty(error))
             {
                 Log.ErrorFormat("Password recovery ({0}): {1}", memberModel.Email, error);
             }
@@ -1386,7 +1416,7 @@ namespace ASC.Employee.Core.Controllers
 
             foreach (var user in users)
             {
-                if (user.IsOwner(Tenant) || user.IsAdmin(UserManager) || user.IsMe(AuthContext) || user.GetListAdminModules(WebItemSecurity).Any())
+                if (user.IsOwner(Tenant) || user.IsAdmin(UserManager) || user.IsMe(AuthContext) || user.GetListAdminModules(WebItemSecurity).Count > 0)
                     continue;
 
                 switch (type)
@@ -1469,6 +1499,36 @@ namespace ASC.Employee.Core.Controllers
             return users.Select(EmployeeWraperFullHelper.GetFull);
         }
 
+        [Read("theme")]
+        public DarkThemeSettings GetTheme()
+        {
+            return SettingsManager.LoadForCurrentUser<DarkThemeSettings>();
+        }
+
+        [Update("theme")]
+        public DarkThemeSettings ChangeThemeFromBody([FromBody] DarkThemeSettingsModel model)
+        {
+            return ChangeTheme(model);
+        }
+
+        [Update("theme")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public DarkThemeSettings ChangeThemeFromForm([FromForm] DarkThemeSettingsModel model)
+        {
+            return ChangeTheme(model);
+        }
+
+        private DarkThemeSettings ChangeTheme(DarkThemeSettingsModel model)
+        {
+            var darkThemeSettings = new DarkThemeSettings
+            {
+                Theme = model.Theme
+            };
+
+            SettingsManager.SaveForCurrentUser(darkThemeSettings);
+
+            return darkThemeSettings;
+        }
 
         [Update("invite")]
         public IEnumerable<EmployeeWraperFull> ResendUserInvitesFromBody([FromBody] UpdateMembersModel model)
@@ -1494,8 +1554,6 @@ namespace ASC.Employee.Core.Controllers
             {
                 if (user.IsActive) continue;
                 var viewer = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-
-                if (user == null) throw new Exception(Resource.ErrorUserNotFound);
 
                 if (viewer == null) throw new Exception(Resource.ErrorAccessDenied);
 
@@ -1604,7 +1662,7 @@ namespace ASC.Employee.Core.Controllers
 
             foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
             {
-                if (inviteView && provider.ToLower() == "twitter") continue;
+                if (inviteView && provider.Equals("twitter", StringComparison.OrdinalIgnoreCase)) continue;
 
                 var loginProvider = ProviderManager.GetLoginProvider(provider);
                 if (loginProvider != null && loginProvider.IsEnabled)
@@ -1861,9 +1919,12 @@ namespace ASC.Employee.Core.Controllers
         {
             using (var memstream = new MemoryStream())
             {
-                var req = WebRequest.Create(url);
-                using (var response = req.GetResponse())
-                using (var stream = response.GetResponseStream())
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(url);
+
+                var httpClient = ClientFactory.CreateClient();
+                using (var response = httpClient.Send(request))
+                using (var stream = response.Content.ReadAsStream())
                 {
                     var buffer = new byte[512];
                     int bytesRead;
@@ -2106,25 +2167,26 @@ namespace ASC.Employee.Core.Controllers
 
             if (!files.StartsWith("http://") && !files.StartsWith("https://"))
             {
-                files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Scheme | UriPartial.Authority) + "/" + files.TrimStart('/');
+                files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority) + "/" + files.TrimStart('/');
             }
-            var request = WebRequest.Create(files);
-            using var response = (HttpWebResponse)request.GetResponse();
-            using var inputStream = response.GetResponseStream();
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(files);
+
+            var httpClient = ClientFactory.CreateClient();
+            using var response = httpClient.Send(request);
+            using var inputStream = response.Content.ReadAsStream();
             using var br = new BinaryReader(inputStream);
-            var imageByteArray = br.ReadBytes((int)response.ContentLength);
+            var imageByteArray = br.ReadBytes((int)inputStream.Length);
             UserPhotoManager.SaveOrUpdatePhoto(user.ID, imageByteArray);
         }
 
         private static void CheckImgFormat(byte[] data)
         {
-            ImageFormat imgFormat;
-
+            IImageFormat imgFormat;
             try
             {
-                using var stream = new MemoryStream(data);
-                using var img = new Bitmap(stream);
-                imgFormat = img.RawFormat;
+                using var img = Image.Load(data, out var format);
+                imgFormat = format;
             }
             catch (OutOfMemoryException)
             {
@@ -2132,12 +2194,12 @@ namespace ASC.Employee.Core.Controllers
             }
             catch (ArgumentException error)
             {
-                throw new UnknownImageFormatException(error);
+                throw new Web.Core.Users.UnknownImageFormatException(error);
             }
 
-            if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
+            if (imgFormat.Name != "PNG" && imgFormat.Name != "JPEG")
             {
-                throw new UnknownImageFormatException();
+                throw new Web.Core.Users.UnknownImageFormatException();
             }
         }
     }

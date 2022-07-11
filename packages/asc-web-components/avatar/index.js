@@ -11,11 +11,10 @@ import {
   NamedAvatar,
   StyledImage,
   StyledAvatar,
+  StyledIconWrapper,
 } from "./styled-avatar";
 import IconButton from "../icon-button";
 import commonIconsStyles from "../utils/common-icons-style";
-
-const whiteColor = "#FFFFFF";
 
 const StyledGuestIcon = styled(GuestIcon)`
   ${commonIconsStyles}
@@ -29,11 +28,11 @@ const StyledOwnerIcon = styled(OwnerIcon)`
 const getRoleIcon = (role) => {
   switch (role) {
     case "guest":
-      return <StyledGuestIcon size="scale" />;
+      return <StyledGuestIcon size="scale" className="guest_icon" />;
     case "admin":
-      return <StyledAdministratorIcon size="scale" />;
+      return <StyledAdministratorIcon size="scale" className="admin_icon" />;
     case "owner":
-      return <StyledOwnerIcon size="scale" />;
+      return <StyledOwnerIcon size="scale" className="owner_icon" />;
     default:
       return null;
   }
@@ -57,9 +56,20 @@ Initials.propTypes = {
 const Avatar = (props) => {
   //console.log("Avatar render");
   const { size, source, userName, role, editing, editAction } = props;
+  let isDefault = false,
+    isIcon = false;
+
+  if (source?.includes("default_user_photo")) isDefault = true;
+  else if (source?.includes(".svg")) isIcon = true;
 
   const avatarContent = source ? (
-    <StyledImage src={source} />
+    isIcon ? (
+      <StyledIconWrapper>
+        <IconButton iconName={source} className="icon" isDisabled={true} />
+      </StyledIconWrapper>
+    ) : (
+      <StyledImage src={source} isDefault={isDefault} />
+    )
   ) : userName ? (
     <Initials userName={userName} size={size} />
   ) : (
@@ -76,7 +86,7 @@ const Avatar = (props) => {
       {editing && size === "max" && (
         <EditContainer>
           <IconButton
-            color={whiteColor}
+            className="edit_icon"
             iconName="/static/images/pencil.react.svg"
             onClick={editAction}
             size={16}
@@ -93,8 +103,9 @@ Avatar.propTypes = {
   size: PropTypes.oneOf(["max", "big", "medium", "small", "min"]),
   /** Adds a user role table */
   role: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
-  /** The address of the image for an image avatar */
+  /** Provide either a url to display as `Picture` or path to **.svg** file to display as `Icon` */
   source: PropTypes.string,
+  /** Provide this and leave `source` empty to display as initials */
   userName: PropTypes.string,
   editing: PropTypes.bool,
   /** Function called when the avatar change button is pressed */

@@ -10,6 +10,7 @@ import Box from "../../box";
 import ContextMenuButton from "../../context-menu-button";
 import IconButton from "../../icon-button";
 
+import Slider from "../../slider";
 import {
   isDesktop,
   //isTablet,
@@ -27,7 +28,6 @@ import {
   StyledAvatarEditorBody,
   StyledAvatarContainer,
   DropZoneContainer,
-  Slider,
   StyledErrorContainer,
 } from "./styled-avatar-editor-body";
 
@@ -329,19 +329,13 @@ class AvatarEditorBody extends React.Component {
 
     return (
       <Text as="span" textAlign={!desktopMode ? labelAlign : "left"}>
-        <Link
-          type="action"
-          fontWeight={600}
-          isHovered
-          color="#316DAA"
-          {...onClickProp}
-        >
+        <Link type="action" fontWeight={600} isHovered {...onClickProp}>
           {selectNewPhotoLabel}
         </Link>{" "}
         {desktopMode && orDropFileHereLabel}
         <Text
           as="p"
-          color="#A3A9AE"
+          // color="#A3A9AE"
           fontSize="12px"
           fontWeight="600"
           textAlign={labelAlign}
@@ -440,7 +434,6 @@ class AvatarEditorBody extends React.Component {
                           iconName={"/static/images/catalog.trash.react.svg"}
                           isFill={true}
                           isClickable={true}
-                          color="#FFFFFF"
                           className="editor-button"
                         />
                       </Box>
@@ -458,11 +451,11 @@ class AvatarEditorBody extends React.Component {
                           id="scale"
                           type="range"
                           className="custom-range"
-                          onChange={this.handleScale}
                           min={this.state.allowZoomOut ? "0.1" : min}
                           max={max}
                           step={step}
                           value={this.state.scale}
+                          onChange={this.handleScale}
                         />
                         <IconButton
                           size="16"

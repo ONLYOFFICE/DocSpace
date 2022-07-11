@@ -41,32 +41,32 @@ namespace ASC.Core.Notify
 
         public DirectSubscriptionProvider(string sourceID, SubscriptionManager subscriptionManager, IRecipientProvider recipientProvider)
         {
-            if (string.IsNullOrEmpty(sourceID)) throw new ArgumentNullException("sourceID");
+            if (string.IsNullOrEmpty(sourceID)) throw new ArgumentNullException(nameof(sourceID));
             this.sourceID = sourceID;
-            this.subscriptionManager = subscriptionManager ?? throw new ArgumentNullException("subscriptionManager");
-            this.recipientProvider = recipientProvider ?? throw new ArgumentNullException("recipientProvider");
+            this.subscriptionManager = subscriptionManager ?? throw new ArgumentNullException(nameof(subscriptionManager));
+            this.recipientProvider = recipientProvider ?? throw new ArgumentNullException(nameof(recipientProvider));
         }
 
 
         public object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             return subscriptionManager.GetSubscriptionRecord(sourceID, action.ID, recipient.ID, objectID);
         }
 
         public string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscribe = true)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             return subscriptionManager.GetSubscriptions(sourceID, action.ID, recipient.ID, checkSubscribe);
         }
 
         public IRecipient[] GetRecipients(INotifyAction action, string objectID)
         {
-            if (action == null) throw new ArgumentNullException("action");
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
             return subscriptionManager.GetRecipients(sourceID, action.ID, objectID)
                 .Select(r => recipientProvider.GetRecipient(r))
@@ -76,53 +76,53 @@ namespace ASC.Core.Notify
 
         public string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             return subscriptionManager.GetSubscriptionMethod(sourceID, action.ID, recipient.ID);
         }
 
         public void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
             subscriptionManager.UpdateSubscriptionMethod(sourceID, action.ID, recipient.ID, senderNames);
         }
 
         public bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
-            if (action == null) throw new ArgumentNullException("action");
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
             return subscriptionManager.IsUnsubscribe(sourceID, recipient.ID, action.ID, objectID);
         }
 
         public void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             subscriptionManager.Subscribe(sourceID, action.ID, objectID, recipient.ID);
         }
 
         public void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             subscriptionManager.Unsubscribe(sourceID, action.ID, objectID, recipient.ID);
         }
 
         public void UnSubscribe(INotifyAction action)
         {
-            if (action == null) throw new ArgumentNullException("action");
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
             subscriptionManager.UnsubscribeAll(sourceID, action.ID);
         }
 
         public void UnSubscribe(INotifyAction action, string objectID)
         {
-            if (action == null) throw new ArgumentNullException("action");
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
             subscriptionManager.UnsubscribeAll(sourceID, action.ID, objectID);
         }

@@ -620,7 +620,7 @@ class CreateUserForm extends React.Component {
               locale={language}
             />
             <TextField
-              labelText={`${t("Translations:Location")}:`}
+              labelText={`${t("Common:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}
@@ -652,7 +652,7 @@ class CreateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer
-          headerText={t("Translations:Comments")}
+          headerText={t("Common:Comments")}
           marginBottom={"42px"}
         >
           <Textarea
@@ -700,7 +700,7 @@ class CreateUserForm extends React.Component {
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             tabIndex={10}
             className="create-user_save-btn"
           />
@@ -708,7 +708,7 @@ class CreateUserForm extends React.Component {
             label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             style={{ marginLeft: "8px" }}
             tabIndex={11}
             className="create-user_cancel-btn"

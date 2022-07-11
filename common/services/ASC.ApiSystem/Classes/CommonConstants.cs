@@ -61,9 +61,9 @@ namespace ASC.ApiSystem.Classes
 
             MaxAttemptsCount = Convert.ToInt32(configuration["max-attempts-count"] ?? "10");
 
-            MaxAttemptsTimeInterval = TimeSpan.Parse(Convert.ToString(configuration["max-attempts-interval"] ?? "00:05:00"));
+            MaxAttemptsTimeInterval = TimeSpan.Parse(configuration["max-attempts-interval"] ?? "00:05:00");
 
-            WebApiBaseUrl = Convert.ToString(configuration["api:url"] ?? "/api/2.0/");
+            WebApiBaseUrl = configuration["api:url"] ?? "/api/2.0/";
 
         }
 

@@ -1,6 +1,7 @@
 import authStore from "@appserver/common/store/AuthStore";
 import { toCommunityHostname } from "@appserver/common/utils";
 import history from "@appserver/common/history";
+import { useEffect, useState } from "react";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
@@ -68,4 +69,44 @@ export const onItemClick = (e) => {
   }
 
   history.push(link);
+};
+
+export const getPasswordErrorMessage = (t, settings) => {
+  return `${t("Common:PasswordMinimumLength")} ${
+    settings ? settings.minLength : 8
+  } ${settings.digits ? t("Common:PasswordLimitDigits") : ""} ${
+    settings.upperCase ? t("Common:PasswordLimitUpperCase") : ""
+  } ${settings.specSymbols ? t("Common:PasswordLimitSpecialSymbols") : ""}`;
+};
+
+export const useThemeDetector = () => {
+  const isDesktopClient = window["AscDesktopEditor"] !== undefined;
+  const [systemTheme, setSystemTheme] = useState(
+    isDesktopClient
+      ? window.RendererProcessVariable?.theme?.type === "dark"
+        ? "Dark"
+        : "Base"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "Dark"
+      : "Base"
+  );
+
+  const systemThemeListener = (e) => {
+    setSystemTheme(e.matches ? "Dark" : "Base");
+  };
+
+  useEffect(() => {
+    if (isDesktopClient) return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addListener(systemThemeListener);
+
+    return () => {
+      if (isDesktopClient) return;
+
+      mediaQuery.removeListener(systemThemeListener);
+    };
+  }, []);
+
+  return systemTheme;
 };

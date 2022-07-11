@@ -1,8 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Data.Storage.Encryption;
-
-message ProgressEncryption {
-    double Progress = 1;
-    int32 TenantId = 2;
-}

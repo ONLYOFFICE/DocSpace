@@ -24,7 +24,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFolderTree, Provider.MySql)
-                .Add(PgSqlAddDbFolderTree, Provider.Postgre);
+                .Add(PgSqlAddDbFolderTree, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddDbFolderTree(this ModelBuilder modelBuilder)

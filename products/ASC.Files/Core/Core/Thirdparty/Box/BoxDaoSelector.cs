@@ -63,7 +63,7 @@ namespace ASC.Files.Thirdparty.Box
             return base.GetSecurityDao<BoxSecurityDao>(id);
         }
     }
-    public class BoxDaoSelectorExtension
+    public static class BoxDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {

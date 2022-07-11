@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Row from "@appserver/components/row";
 import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledBody = styled.div`
   height: 100%;
@@ -30,7 +31,8 @@ const StyledVersionList = styled.div`
           ${(props) =>
             props.isRestoreProcess &&
             `
-              fill: #d0d5da;
+              fill: ${(props) =>
+                props.theme.filesVersionHistory.versionList.fill};
             `};
         }
       }
@@ -49,7 +51,7 @@ const StyledVersionList = styled.div`
       ${(props) =>
         props.isRestoreProcess &&
         `
-          color: #d0d5da;
+          color:${(props) => props.theme.filesVersionHistory.versionList.color};
           touch-action: none;
           pointer-events: none;
         `}
@@ -70,7 +72,8 @@ const StyledVersionList = styled.div`
           ${(props) =>
             props.isRestoreProcess &&
             `
-              fill: #d0d5da;
+              fill: ${(props) =>
+                props.theme.filesVersionHistory.versionList.fill};
             `};
         }
       }
@@ -83,7 +86,8 @@ const StyledVersionList = styled.div`
           ${(props) =>
             props.isRestoreProcess &&
             `
-              stroke: #d0d5da;
+              stroke: ${(props) =>
+                props.theme.filesVersionHistory.versionList.stroke};
             `};
         }
       }
@@ -99,25 +103,24 @@ const StyledVersionList = styled.div`
         `}
       svg {
         path {
-          ${(props) => props.isRestoreProcess && " fill: #d0d5da"}
+          ${(props) =>
+            props.isRestoreProcess &&
+            `fill: ${(props) =>
+              props.theme.filesVersionHistory.versionList.fill}`}
         }
       }
     }
   }
 `;
 
-const StyledVersionRow = styled(Row)`
-  @media ${tablet} {
-    box-sizing: border-box;
-    position: relative;
-  }
+StyledVersionList.defaultProps = { theme: Base };
 
+const StyledVersionRow = styled(Row)`
   .row_content {
     position: relative;
     padding-top: 12px;
     padding-bottom: 12px;
-
-    ${(props) => props.isTabletView && "height: auto"};
+    height: auto;
     ${(props) => !props.isTabletView && "padding-right:16px"};
   }
 
@@ -137,6 +140,10 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version-link-file {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     @media ${tablet} {
       margin-top: -1px;
     }
@@ -146,27 +153,14 @@ const StyledVersionRow = styled(Row)`
     width: 10px;
     height: 10px;
     margin-left: 9px;
-    margin-right: 16px;
+    margin-right: 32px;
     @media ${tablet} {
       margin-top: -1px;
     }
   }
 
-  .version_modal-dialog {
-    display: none;
-
-    @media ${tablet} {
-      display: block;
-    }
-  }
-
   .version_edit-comment {
     display: block;
-
-    @media ${tablet} {
-      display: none;
-      margin-left: 63px;
-    }
   }
 
   .textarea-desktop {
@@ -199,37 +193,14 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_text {
-    display: ${(props) => (props.canEdit ? "none" : "block")};
+    display: ${(props) => (props.showEditPanel ? "none" : "block")};
     margin-left: -7px;
     margin-top: 5px;
 
     @media ${tablet} {
-      display: inline-block;
-      margin-left: 1px;
+      display: ${(props) => (props.showEditPanel ? "none" : "inline-block")};
+      margin-left: -7px;
       margin-top: 5px;
-    }
-  }
-
-  .version_links-container {
-    display: flex;
-    margin-left: auto;
-
-    .version_link-action {
-      display: block;
-      margin-left: auto;
-      margin-top: 5px;
-      ${(props) =>
-        props.isRestoring &&
-        css`
-          cursor: default;
-        `}
-      :last-child {
-        margin-left: 8px;
-      }
-
-      @media ${tablet} {
-        display: none;
-      }
     }
   }
 
@@ -238,9 +209,10 @@ const StyledVersionRow = styled(Row)`
   }
 
   .row_context-menu-wrapper {
-    display: none;
-
+    display: block;
+    position: absolute;
     right: 16px !important;
+    top: 6px;
 
     .expandButton {
       ${(props) =>
@@ -254,17 +226,11 @@ const StyledVersionRow = styled(Row)`
           ${(props) =>
             props.isSavingComment &&
             `
-              fill: #d0d5da;
+              fill: ${(props) =>
+                props.theme.filesVersionHistory.versionList.fill};
             `};
         }
       }
-    }
-
-    @media ${tablet} {
-      display: block;
-      position: absolute;
-      right: 0px;
-      top: 6px;
     }
   }
 
@@ -275,7 +241,8 @@ const StyledVersionRow = styled(Row)`
       ${(props) =>
         props.isSavingComment &&
         `
-          color: #d0d5da;
+          color: ${(props) =>
+            props.theme.filesVersionHistory.versionList.color};
           touch-action: none;
           pointer-events: none;
         `}
@@ -303,6 +270,12 @@ const StyledVersionRow = styled(Row)`
   .version_modal-dialog .modal-dialog-aside-body {
     margin-top: -24px;
   }
+
+  .row-header {
+    max-width: 350px;
+  }
 `;
+
+StyledVersionRow.defaultProps = { theme: Base };
 
 export { StyledBody, StyledVersionRow, StyledVersionList };

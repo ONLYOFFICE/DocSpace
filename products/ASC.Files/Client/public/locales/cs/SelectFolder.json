@@ -1,3 +1,4 @@
-﻿{
-    "NotAvailableFolder": "Nejsou k dispozici žádné složky"
+{
+  "FolderContents": "Obsah složky '{{folderTitle}}'",
+  "NotAvailableFolder": "Nejsou k dispozici žádné složky"
 }

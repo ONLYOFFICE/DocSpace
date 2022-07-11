@@ -13,7 +13,7 @@ import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@appserver/components/theme-provider";
-import { Base } from "@appserver/components/themes";
+
 import store from "studio/store";
 import config from "../package.json";
 import { I18nextProvider, useTranslation } from "react-i18next";
@@ -23,6 +23,8 @@ import System from "./components/System";
 import { AppServerConfig } from "@appserver/common/constants";
 import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
+import ReactSmartBanner from "./components/SmartBanner";
+import { useThemeDetector } from "./helpers/utils";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -37,7 +39,6 @@ const WIZARD_URL = combineUrl(PROXY_HOMEPAGE_URL, "/wizard");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const LOGIN_URLS = [
   combineUrl(PROXY_HOMEPAGE_URL, "/login"),
-  combineUrl(PROXY_HOMEPAGE_URL, "/login/error=:error"),
   combineUrl(PROXY_HOMEPAGE_URL, "/login/confirmed-email=:confirmedEmail"),
 ];
 const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
@@ -46,6 +47,12 @@ const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
 const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
 const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
+const ENTER_CODE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/code");
+const INVALID_URL = combineUrl(PROXY_HOMEPAGE_URL, "/login/error=:error");
+const PREPARATION_PORTAL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/preparation-portal"
+);
 
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -56,8 +63,16 @@ const About = React.lazy(() => import("./components/pages/About"));
 const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
-const Confirm = React.lazy(() => import("./components/pages/Confirm"));
+const Confirm =
+  !IS_PERSONAL && React.lazy(() => import("./components/pages/Confirm"));
 const MyProfile = React.lazy(() => import("people/MyProfile"));
+const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
+const InvalidError = React.lazy(() =>
+  import("./components/pages/Errors/Invalid")
+);
+const PreparationPortal = React.lazy(() =>
+  import("./components/pages/PreparationPortal")
+);
 
 const SettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -97,10 +112,20 @@ const HomeRoute = (props) => (
   </React.Suspense>
 );
 
-const ConfirmRoute = (props) => (
+const ConfirmRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <Confirm {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
+
+const PreparationPortalRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
-      <Confirm {...props} />
+      <PreparationPortal {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -137,6 +162,24 @@ const MyProfileRoute = (props) => (
   </React.Suspense>
 );
 
+const EnterCodeRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <EnterCode {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
+
+const InvalidRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <InvalidError {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
@@ -148,6 +191,15 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     language,
     FirebaseHelper,
     personal,
+    setCheckedMaintenance,
+    socketHelper,
+    setPreparationPortalDialogVisible,
+    isBase,
+    setTheme,
+    setMaintenanceExist,
+    roomsMode,
+    setSnackbarExist,
+    userTheme,
   } = rest;
 
   useEffect(() => {
@@ -175,7 +227,17 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     }
   }, []);
 
-  const { t } = useTranslation("Common");
+  useEffect(() => {
+    socketHelper.emit({
+      command: "subscribe",
+      data: "backup-restore",
+    });
+    socketHelper.on("restore-backup", () => {
+      setPreparationPortalDialogVisible(true);
+    });
+  }, [socketHelper]);
+
+  const { t, ready } = useTranslation(["Common", "SmartBanner"]);
 
   let snackTimer = null;
   let fbInterval = null;
@@ -198,6 +260,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const showSnackBar = (campaign) => {
     clearSnackBarTimer();
 
+    let skipMaintenance;
+
     const { fromDate, toDate, desktop } = campaign;
 
     console.log(
@@ -206,16 +270,17 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     if (!campaign || !fromDate || !toDate) {
       console.log("Skip snackBar by empty campaign params");
-      return;
+      skipMaintenance = true;
     }
 
     const to = moment(toDate).local();
 
     const watchedCampaignDateStr = localStorage.getItem(LS_CAMPAIGN_DATE);
+
     const campaignDateStr = to.format(DATE_FORMAT);
     if (campaignDateStr == watchedCampaignDateStr) {
       console.log("Skip snackBar by already watched");
-      return;
+      skipMaintenance = true;
     }
 
     const from = moment(fromDate).local();
@@ -226,18 +291,23 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
       Snackbar.close();
       console.log(`Show snackBar has been delayed for 1 minute`, now);
-      return;
+      skipMaintenance = true;
     }
 
     if (now.isAfter(to)) {
       console.log("Skip snackBar by current date", now);
       Snackbar.close();
-      return;
+      skipMaintenance = true;
     }
 
     if (isDesktop && !desktop) {
       console.log("Skip snackBar by desktop", desktop);
       Snackbar.close();
+      skipMaintenance = true;
+    }
+
+    if (skipMaintenance) {
+      setCheckedMaintenance(true);
       return;
     }
 
@@ -246,12 +316,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (!document.getElementById("main-bar")) return;
 
     const campaignStr = JSON.stringify(campaign);
-    let skipRender = lastCampaignStr === campaignStr;
+    // let skipRender = lastCampaignStr === campaignStr;
 
-    skipRender =
-      skipRender && document.getElementById("main-bar").hasChildNodes();
+    const hasChild = document.getElementById("main-bar").hasChildNodes();
 
-    if (skipRender) return;
+    if (hasChild) return;
 
     lastCampaignStr = campaignStr;
 
@@ -259,17 +328,23 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const barConfig = {
       parentElementId: "main-bar",
+      headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
-      onAction: () => {
+      isMaintenance: true,
+      clickAction: () => {
+        setMaintenanceExist(false);
+        setSnackbarExist(false);
         Snackbar.close();
         localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
       },
       opacity: 1,
-      style: {
-        marginTop: "10px",
+      onLoad: () => {
+        setCheckedMaintenance(true);
+        setSnackbarExist(true);
+        setMaintenanceExist(true);
       },
     };
 
@@ -284,12 +359,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         .then((campaign) => {
           console.log("checkMaintenance", campaign);
           if (!campaign) {
+            setCheckedMaintenance(true);
             clearSnackBarTimer();
             Snackbar.close();
             return;
           }
 
-          showSnackBar(campaign);
+          setTimeout(() => showSnackBar(campaign), 1000);
         })
         .catch((err) => {
           console.error(err);
@@ -301,6 +377,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const fetchBanners = () => {
     if (!FirebaseHelper.isEnabled) return;
+
+    FirebaseHelper.checkBar()
+      .then((bar) => {
+        localStorage.setItem("bar", bar);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
     FirebaseHelper.checkCampaigns()
       .then((campaigns) => {
@@ -317,6 +401,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     updateTempContent();
 
     if (!FirebaseHelper.isEnabled) {
+      setCheckedMaintenance(true);
       localStorage.setItem("campaigns", "");
       return;
     }
@@ -338,6 +423,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   useEffect(() => {
     console.log("Current page ", page);
   }, [page]);
+
+  useEffect(() => {
+    if (userTheme) setTheme(userTheme);
+  }, [userTheme]);
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
@@ -388,11 +477,18 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const loginRoutes = [];
 
-  if (isLoaded && !personal) {
+  if (isLoaded && !IS_PERSONAL) {
+    let module;
+    if (roomsMode) {
+      module = "./roomsLogin";
+    } else {
+      module = "./login";
+    }
+
     const loginSystem = {
       url: combineUrl(AppServerConfig.proxyURL, "/login/remoteEntry.js"),
       scope: "login",
-      module: "./app",
+      module: module,
     };
     loginRoutes.push(
       <PublicRoute
@@ -405,60 +501,91 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     );
   }
 
+  const roomsRoutes = [];
+
+  if (!IS_PERSONAL && roomsMode) {
+    roomsRoutes.push(
+      <Route path={ENTER_CODE_URL} component={EnterCodeRoute} />
+    );
+  }
+
+  const currentTheme = isBase ? "Base" : "Dark";
+  const systemTheme = useThemeDetector();
+  useEffect(() => {
+    if (userTheme === "System" && currentTheme !== systemTheme)
+      setTheme(systemTheme);
+  }, [systemTheme]);
+
   return (
     <Layout>
       <Router history={history}>
-        <>
-          {isEditor ? <></> : <NavMenu />}
-          <ScrollToTop />
-          <Main isDesktop={isDesktop}>
-            <Switch>
-              <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
-              <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
-              <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
-              {loginRoutes}
+        <ReactSmartBanner t={t} ready={ready} />
+        {isEditor ? <></> : <NavMenu />}
+        <ScrollToTop />
+        <Main isDesktop={isDesktop}>
+          <Switch>
+            <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
+            <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
+            <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
+            {loginRoutes}
+            {roomsRoutes}
+            {!IS_PERSONAL && (
               <Route path={CONFIRM_URL} component={ConfirmRoute} />
-              <PrivateRoute
-                path={COMING_SOON_URLS}
-                component={ComingSoonRoute}
-              />
-              <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
+            )}
+            <Route path={INVALID_URL} component={InvalidRoute} />
+            <PrivateRoute path={COMING_SOON_URLS} component={ComingSoonRoute} />
+            <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
+            {!personal && (
               <PrivateRoute
                 restricted
                 path={SETTINGS_URL}
                 component={SettingsRoute}
               />
-              <PrivateRoute
-                exact
-                allowForMe
-                path={PROFILE_MY_URL}
-                component={MyProfileRoute}
-              />
-              {dynamicRoutes}
-              <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
-              <PrivateRoute
-                component={!personal ? Error404Route : RedirectToHome}
-              />
-            </Switch>
-          </Main>
-        </>
+            )}
+            <PrivateRoute
+              exact
+              allowForMe
+              path={PROFILE_MY_URL}
+              component={MyProfileRoute}
+            />
+            <PrivateRoute
+              path={PREPARATION_PORTAL}
+              component={PreparationPortalRoute}
+            />
+            {dynamicRoutes}
+            <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
+            <PrivateRoute
+              component={!personal ? Error404Route : RedirectToHome}
+            />
+          </Switch>
+        </Main>
       </Router>
     </Layout>
   );
 };
 
-const ShellWrapper = inject(({ auth }) => {
+const ShellWrapper = inject(({ auth, backup }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
+
   const {
     personal,
+    roomsMode,
     isDesktopClient,
     firebaseHelper,
     setModuleInfo,
+    setCheckedMaintenance,
+    setMaintenanceExist,
+    setSnackbarExist,
+    socketHelper,
+    setTheme,
   } = settingsStore;
+  const isBase = settingsStore.theme.isBase;
+  const { setPreparationPortalDialogVisible } = backup;
 
   return {
-    loadBaseInfo: () => {
-      init();
+    loadBaseInfo: async () => {
+      await init();
+
       setModuleInfo(config.homepage, "home");
       setProductVersion(config.version);
 
@@ -472,15 +599,34 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktop: isDesktopClient,
     FirebaseHelper: firebaseHelper,
     personal,
+    setCheckedMaintenance,
+    setMaintenanceExist,
+    socketHelper,
+    setPreparationPortalDialogVisible,
+    isBase,
+    setTheme,
+    roomsMode,
+    setSnackbarExist,
+    userTheme: isDesktopClient
+      ? window.RendererProcessVariable?.theme?.type === "dark"
+        ? "Dark"
+        : "Base"
+      : auth?.userStore?.user?.theme,
   };
 })(observer(Shell));
 
+const ThemeProviderWrapper = inject(({ auth }) => {
+  const { settingsStore } = auth;
+
+  return { theme: settingsStore.theme };
+})(observer(ThemeProvider));
+
 export default () => (
-  <ThemeProvider theme={Base}>
-    <MobxProvider {...store}>
-      <I18nextProvider i18n={i18n}>
+  <MobxProvider {...store}>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProviderWrapper>
         <ShellWrapper />
-      </I18nextProvider>
-    </MobxProvider>
-  </ThemeProvider>
+      </ThemeProviderWrapper>
+    </I18nextProvider>
+  </MobxProvider>
 );

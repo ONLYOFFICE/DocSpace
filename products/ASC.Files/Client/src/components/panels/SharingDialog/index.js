@@ -15,6 +15,9 @@ const SharingDialog = ({
   setSharingPanelVisible,
   onCancel,
   setSelection,
+  theme,
+  sharingPanelVisible,
+  settings,
 }) => {
   useEffect(() => {
     setSharingPanelVisible(isVisible);
@@ -26,12 +29,14 @@ const SharingDialog = ({
 
   return (
     <>
-      {isVisible && (
+      {sharingPanelVisible && (
         <SharingPanel
           key="sharing-panel"
           uploadPanelVisible={false}
           onSuccess={onSuccess}
           onCancel={onCancel}
+          theme={theme}
+          settings={settings}
         />
       )}
     </>
@@ -40,11 +45,12 @@ const SharingDialog = ({
 
 const SharingDialogWrapper = inject(({ dialogsStore, filesStore }) => {
   const { getShareUsers, setSelection } = filesStore;
-  const { setSharingPanelVisible } = dialogsStore;
+  const { setSharingPanelVisible, sharingPanelVisible } = dialogsStore;
   return {
     setSharingPanelVisible,
     getShareUsers,
     setSelection,
+    sharingPanelVisible,
   };
 })(observer(SharingDialog));
 

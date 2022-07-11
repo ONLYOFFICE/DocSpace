@@ -27,7 +27,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddAcl, Provider.MySql)
-                .Add(PgSqlAddAcl, Provider.Postgre)
+                .Add(PgSqlAddAcl, Provider.PostgreSql)
                 .HasData(
                     new Acl { Tenant = -1, Subject = Guid.Parse("5d5b7260-f7f7-49f1-a1c9-95fbb6a12604"), Action = Guid.Parse("ef5e6790-f346-4b6e-b662-722bc28cb0db"), Object = "", AceType = 0 },
                     new Acl { Tenant = -1, Subject = Guid.Parse("5d5b7260-f7f7-49f1-a1c9-95fbb6a12604"), Action = Guid.Parse("f11e8f3f-46e6-4e55-90e3-09c22ec565bd"), Object = "", AceType = 0 },

@@ -23,17 +23,27 @@ const EditContainer = styled.div`
   width: ${(props) => props.theme.avatar.editContainer.width};
   align-items: center;
   justify-content: center;
+
+  .edit_icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.avatar.editContainer.fill};
+      }
+    }
+  }
 `;
 EditContainer.defaultProps = { theme: Base };
 
 const AvatarWrapper = styled.div`
   border-radius: ${(props) => props.theme.avatar.imageContainer.borderRadius};
   height: ${(props) => props.theme.avatar.imageContainer.height};
+
   background-color: ${(props) =>
-    (props.source === "" &&
-      props.userName !== "" &&
-      props.theme.avatar.imageContainer.backgroundImage) ||
-    props.theme.avatar.imageContainer.background};
+    props.source
+      ? props.theme.avatar.icon.background
+      : props.userName
+      ? props.theme.avatar.imageContainer.backgroundImage
+      : props.theme.avatar.imageContainer.background};
 
   & > svg {
     display: ${(props) => props.theme.avatar.imageContainer.svg.display};
@@ -41,6 +51,9 @@ const AvatarWrapper = styled.div`
     height: ${(props) =>
       props.theme.avatar.imageContainer.svg.height} !important;
     margin: ${(props) => props.theme.avatar.imageContainer.svg.margin};
+    path {
+      fill: ${(props) => props.theme.avatar.imageContainer.svg.fill};
+    }
   }
 `;
 AvatarWrapper.defaultProps = { theme: Base };
@@ -90,10 +103,28 @@ const StyledImage = styled.img`
   width: ${(props) => props.theme.avatar.image.width};
   height: ${(props) => props.theme.avatar.image.height};
   border-radius: ${(props) => props.theme.avatar.image.borderRadius};
-
-  ${NoUserSelect}
+  content: ${(props) => props.isDefault && props.theme.avatar.defaultImage};
+  ${NoUserSelect};
 `;
 StyledImage.defaultProps = { theme: Base };
+
+const StyledIconWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .icon,
+  .icon:hover {
+    width: 50%;
+    height: 50%;
+    path {
+      fill: ${(props) => props.theme.avatar.icon.color};
+    }
+  }
+`;
+StyledIconWrapper.defaultProps = { theme: Base };
 
 const widthStyle = (props) => props.theme.avatar.width[props.size];
 const heightStyle = (props) => props.theme.avatar.height[props.size];
@@ -104,6 +135,42 @@ const StyledAvatar = styled.div`
   height: ${(props) => heightStyle(props)};
   font-family: ${(props) => props.theme.fontFamily};
   font-style: normal;
+
+  .admin_icon {
+    rect:nth-child(1) {
+      fill: ${(props) => props.theme.avatar.administrator.fill};
+    }
+    rect:nth-child(2) {
+      stroke: ${(props) => props.theme.avatar.administrator.stroke};
+    }
+    path {
+      fill: ${(props) => props.theme.avatar.administrator.color};
+    }
+  }
+
+  .guest_icon {
+    rect:nth-child(1) {
+      fill: ${(props) => props.theme.avatar.guest.fill};
+    }
+    rect:nth-child(2) {
+      stroke: ${(props) => props.theme.avatar.guest.stroke};
+    }
+    path {
+      fill: ${(props) => props.theme.avatar.guest.color};
+    }
+  }
+
+  .owner_icon {
+    rect:nth-child(1) {
+      fill: ${(props) => props.theme.avatar.owner.fill};
+    }
+    rect:nth-child(2) {
+      stroke: ${(props) => props.theme.avatar.owner.stroke};
+    }
+    path {
+      fill: ${(props) => props.theme.avatar.owner.color};
+    }
+  }
 `;
 StyledAvatar.defaultProps = { theme: Base };
 
@@ -114,5 +181,6 @@ export {
   RoleWrapper,
   NamedAvatar,
   StyledImage,
+  StyledIconWrapper,
   StyledAvatar,
 };

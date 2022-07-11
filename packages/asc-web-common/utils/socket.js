@@ -37,7 +37,11 @@ class SocketIOHelper {
 
     if (!client.connected) {
       client.on("connect", () => {
-        room ? client.to(room).emit(command, data) : client.emit(command, data);
+        if (room !== null) {
+          client.to(room).emit(command, data);
+        } else {
+          client.emit(command, data);
+        }
       });
     } else {
       room ? client.to(room).emit(command, data) : client.emit(command, data);
@@ -46,6 +50,7 @@ class SocketIOHelper {
 
   on = (eventName, callback) => {
     if (!this.isEnabled) return;
+
     if (!client.connected) {
       client.on("connect", () => {
         client.on(eventName, callback);

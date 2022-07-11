@@ -37,7 +37,7 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ASC.Web.Core.Files
 {
-    public class JsonWebToken
+    public static class JsonWebToken
     {
         public static string Encode(object payload, string key)
         {

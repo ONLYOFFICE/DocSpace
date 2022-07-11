@@ -1,2 +1,4 @@
-echo "RUN ASC.Web.HealthChecks.UI"
-call dotnet run --project ..\..\web\ASC.Web.HealthChecks.UI\ASC.Web.HealthChecks.UI.csproj --no-build
+@echo off
+
+PUSHD %~dp0..\..
+set servicepath=%cd%\web\ASC.Web.HealthChecks.UI\bin\Debug\ASC.Web.HealthChecks.UI.exe urls=http://0.0.0.0:5027

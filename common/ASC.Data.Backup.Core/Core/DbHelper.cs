@@ -12,7 +12,8 @@ using System.Xml.XPath;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Data.Backup.EF.Context;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -29,12 +30,14 @@ namespace ASC.Data.Backup
         private readonly bool mysql;
         private readonly IDictionary<string, string> whereExceptions = new Dictionary<string, string>();
         private readonly ILog log;
-        private readonly BackupsContext backupsContext;
+        private readonly TenantDbContext tenantDbContext;
+        private readonly CoreDbContext coreDbContext;
 
-        public DbHelper(IOptionsMonitor<ILog> options, ConnectionStringSettings connectionString, BackupsContext backupsContext)
+        public DbHelper(IOptionsMonitor<ILog> options, ConnectionStringSettings connectionString, TenantDbContext tenantDbContext, CoreDbContext coreDbContext)
         {
             log = options.CurrentValue;
-            this.backupsContext = backupsContext;
+            this.tenantDbContext = tenantDbContext;
+            this.coreDbContext = coreDbContext;
             var file = connectionString.ElementInformation.Source;
             if ("web.connections.config".Equals(Path.GetFileName(file), StringComparison.InvariantCultureIgnoreCase))
             {
@@ -48,7 +51,7 @@ namespace ASC.Data.Backup
             connect.ConnectionString = connectionString.ConnectionString;
             connect.Open();
 
-            mysql = connectionString.ProviderName.ToLower().Contains("mysql");
+            mysql = connectionString.ProviderName.Contains("mysql", StringComparison.OrdinalIgnoreCase);
             if (mysql)
             {
                 CreateCommand("set @@session.sql_mode = concat(@@session.sql_mode, ',NO_AUTO_VALUE_ON_ZERO')").ExecuteNonQuery();
@@ -113,7 +116,7 @@ namespace ASC.Data.Backup
                 tables = connect
                     .GetSchema("Tables")
                     .Select(@"TABLE_TYPE <> 'SYSTEM_TABLE'")
-                    .Select(row => ((string)row["TABLE_NAME"]));
+                    .Select(row => (string)row["TABLE_NAME"]);
             }
 
             return tables
@@ -150,11 +153,11 @@ namespace ASC.Data.Backup
                 if ("tenants_tenants".Equals(table.TableName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     // remove last tenant
-                    var tenant = backupsContext.Tenants.LastOrDefault();
+                    var tenant = tenantDbContext.Tenants.LastOrDefault();
                     if (tenant != null)
                     {
-                        backupsContext.Tenants.Remove(tenant);
-                        backupsContext.SaveChanges();
+                        tenantDbContext.Tenants.Remove(tenant);
+                        tenantDbContext.SaveChanges();
                     }
                     /*  var tenantid = CreateCommand("select id from tenants_tenants order by id desc limit 1").ExecuteScalar();
                          CreateCommand("delete from tenants_tenants where id = " + tenantid).ExecuteNonQuery();*/
@@ -165,11 +168,11 @@ namespace ASC.Data.Backup
                             r[table.Columns["mappeddomain"]] = null;
                             if (table.Columns.Contains("id"))
                             {
-                                var tariff = backupsContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
+                                var tariff = coreDbContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
                                 tariff.Tenant = (int)r[table.Columns["id"]];
                                 //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
-                                backupsContext.Entry(tariff).State = EntityState.Modified;
-                                backupsContext.SaveChanges();
+                                coreDbContext.Entry(tariff).State = EntityState.Modified;
+                                coreDbContext.SaveChanges();
                             }
                         }
                     }
@@ -181,13 +184,13 @@ namespace ASC.Data.Backup
                     .Intersect(table.Columns.Cast<DataColumn>().Select(c => c.ColumnName), StringComparer.InvariantCultureIgnoreCase)
                     .ToList();
 
-                tableColumns.ForEach(column => sql.AppendFormat("{0}, ", Quote(column)));
+                tableColumns.ForEach(column => sql.Append($"{Quote(column)}, "));
                 sql.Replace(", ", ") values (", sql.Length - 2, 2);
 
                 var insert = connect.CreateCommand();
                 tableColumns.ForEach(column =>
                 {
-                    sql.AppendFormat("@{0}, ", column);
+                    sql.Append($"@{column}, ");
                     var p = insert.CreateParameter();
                     p.ParameterName = "@" + column;
                     insert.Parameters.Add(p);
@@ -251,7 +254,7 @@ namespace ASC.Data.Backup
             }
             else
             {
-                return columns.Select(string.Format("TABLE_NAME = '{0}'", table))
+                return columns.Select($"TABLE_NAME = '{table}'")
                     .Select(r => r["COLUMN_NAME"].ToString());
             }
         }
@@ -260,11 +263,11 @@ namespace ASC.Data.Backup
         {
             if (tenant == -1) return string.Empty;
 
-            if (whereExceptions.ContainsKey(tableName.ToLower()))
+            if (whereExceptions.TryGetValue(tableName.ToLower(), out var exc))
             {
-                return string.Format(whereExceptions[tableName.ToLower()], tenant);
+                return string.Format(exc, tenant);
             }
-            var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.ToLower().StartsWith("tenant"));
+            var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.StartsWith("tenant", StringComparison.OrdinalIgnoreCase));
             return tenantColumn != null ?
                 " where " + Quote(tenantColumn) + " = " + tenant :
                 " where 1 = 0";

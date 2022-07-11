@@ -2,31 +2,37 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 import axios from "axios";
 import toastr from "@appserver/components/toast/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { getGroup } from "@appserver/common/api/groups";
 import { getUserById } from "@appserver/common/api/people";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  ArticleBodyContent,
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
+
 import {
   SectionBodyContent,
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
+  Bar,
 } from "./Section";
+import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
+
+import { ArticleMainButtonContent } from "../../components/Article";
 
 import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
+import { Consumer } from "@appserver/components/utils/context";
+import { FileAction } from "@appserver/common/constants";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -41,8 +47,9 @@ class PureHome extends React.Component {
       playlist,
       isMediaOrImage,
       getFileInfo,
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
+      gallerySelected,
+      setAction,
+      setIsUpdatingRowItem,
     } = this.props;
 
     if (!window.location.href.includes("#preview")) {
@@ -60,16 +67,18 @@ class PureHome extends React.Component {
       const pathname = window.location.href;
       const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
-      getFileInfo(fileId)
-        .then((data) => {
-          const canOpenPlayer = isMediaOrImage(data.fileExst);
-          const file = { ...data, canOpenPlayer };
-          setToPreviewFile(file, true);
-        })
-        .catch((err) => {
-          toastr.error(err);
-          this.fetchDefaultFiles();
-        });
+      setTimeout(() => {
+        getFileInfo(fileId)
+          .then((data) => {
+            const canOpenPlayer = isMediaOrImage(data.fileExst);
+            const file = { ...data, canOpenPlayer };
+            setToPreviewFile(file, true);
+          })
+          .catch((err) => {
+            toastr.error(err);
+            this.fetchDefaultFiles();
+          });
+      }, 1);
 
       return;
     }
@@ -87,11 +96,6 @@ class PureHome extends React.Component {
 
         return;
       }
-    }
-
-    if (isPrevSettingsModule) {
-      setIsPrevSettingsModule(false);
-      return;
     }
 
     if (!filterObj) return;
@@ -162,6 +166,18 @@ class PureHome extends React.Component {
 
         return Promise.resolve();
       })
+      .then(() => {
+        if (gallerySelected) {
+          setIsUpdatingRowItem(false);
+          setAction({
+            type: FileAction.Create,
+            extension: "docxf",
+            fromTemplate: true,
+            title: gallerySelected.attributes.name_form,
+            id: -1,
+          });
+        }
+      })
       .finally(() => {
         setIsLoading(false);
         setFirstLoad(false);
@@ -180,9 +196,24 @@ class PureHome extends React.Component {
   };
 
   onDrop = (files, uploadToFolder) => {
-    const { t, startUpload, setDragging, dragging } = this.props;
+    const {
+      t,
+      startUpload,
+      setDragging,
+      dragging,
+      uploadEmptyFolders,
+    } = this.props;
     dragging && setDragging(false);
-    startUpload(files, uploadToFolder, t);
+    const emptyFolders = files.filter((f) => f.isEmptyDirectory);
+
+    if (emptyFolders.length > 0) {
+      uploadEmptyFolders(emptyFolders, uploadToFolder).then(() => {
+        const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+        if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
+      });
+    } else {
+      startUpload(files, uploadToFolder, t);
+    }
   };
 
   showOperationToast = (type, qty, title) => {
@@ -223,12 +254,11 @@ class PureHome extends React.Component {
     const {
       uploaded,
       converted,
-      uploadPanelVisible,
       setUploadPanelVisible,
       clearPrimaryProgressData,
       primaryProgressDataVisible,
     } = this.props;
-    setUploadPanelVisible(!uploadPanelVisible);
+    setUploadPanelVisible(true);
 
     if (primaryProgressDataVisible && uploaded && converted)
       clearPrimaryProgressData();
@@ -237,8 +267,8 @@ class PureHome extends React.Component {
     const {
       isProgressFinished,
       secondaryProgressDataStoreIcon,
-      selectionLength,
-      selectionTitle,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = this.props;
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
@@ -250,8 +280,8 @@ class PureHome extends React.Component {
     ) {
       this.showOperationToast(
         secondaryProgressDataStoreIcon,
-        selectionLength,
-        selectionTitle
+        itemsSelectionLength,
+        itemsSelectionTitle
       );
     }
   }
@@ -270,6 +300,7 @@ class PureHome extends React.Component {
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearUploadedFilesHistory,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
@@ -278,12 +309,17 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
+      personal,
+      checkedMaintenance,
+      setMaintenanceExist,
+      snackbarExist,
     } = this.props;
+
     return (
       <>
         <MediaViewer />
         <DragTooltip />
-        <PageLayout
+        <Section
           dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -298,6 +334,7 @@ class PureHome extends React.Component {
           secondaryProgressBarValue={secondaryProgressDataStorePercent}
           secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
           showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
+          clearUploadedFilesHistory={clearUploadedFilesHistory}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||
@@ -308,35 +345,47 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
-          dragging={dragging}
         >
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent onTreeDrop={this.onDrop} />
-          </PageLayout.ArticleBody>
-          <PageLayout.SectionHeader>
+          <Section.SectionHeader>
             <SectionHeaderContent />
-          </PageLayout.SectionHeader>
+          </Section.SectionHeader>
 
-          <PageLayout.SectionFilter>
+          <Section.SectionBar>
+            {checkedMaintenance && !snackbarExist && (
+              <Bar
+                firstLoad={firstLoad}
+                personal={personal}
+                setMaintenanceExist={setMaintenanceExist}
+              />
+            )}
+          </Section.SectionBar>
+
+          <Section.SectionFilter>
             <SectionFilterContent />
-          </PageLayout.SectionFilter>
+          </Section.SectionFilter>
 
-          <PageLayout.SectionBody>
-            <SectionBodyContent />
-          </PageLayout.SectionBody>
+          <Section.SectionBody>
+            <Consumer>
+              {(context) => (
+                <>
+                  <SectionBodyContent sectionWidth={context.sectionWidth} />
+                </>
+              )}
+            </Consumer>
+          </Section.SectionBody>
 
-          <PageLayout.SectionPaging>
+          <Section.InfoPanelHeader>
+            <InfoPanelHeaderContent />
+          </Section.InfoPanelHeader>
+
+          <Section.InfoPanelBody>
+            <InfoPanelBodyContent />
+          </Section.InfoPanelBody>
+
+          <Section.SectionPaging>
             <SectionPagingContent tReady={tReady} />
-          </PageLayout.SectionPaging>
-        </PageLayout>
+          </Section.SectionPaging>
+        </Section>
       </>
     );
   }
@@ -352,10 +401,12 @@ export default inject(
     treeFoldersStore,
     mediaViewerDataStore,
     settingsStore,
+    filesActionsStore,
   }) => {
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
+      clearUploadedFilesHistory,
     } = uploadDataStore;
     const {
       firstLoad,
@@ -370,11 +421,11 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
+      gallerySelected,
+      setIsUpdatingRowItem,
     } = filesStore;
 
-    const { id } = fileActionStore;
+    const { id, setAction } = fileActionStore;
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
@@ -396,6 +447,8 @@ export default inject(
       icon: secondaryProgressDataStoreIcon,
       alert: secondaryProgressDataStoreAlert,
       isSecondaryProgressFinished: isProgressFinished,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = secondaryProgressDataStore;
 
     const {
@@ -404,6 +457,8 @@ export default inject(
       uploaded,
       converted,
     } = uploadDataStore;
+
+    const { uploadEmptyFolders } = filesActionsStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -430,6 +485,9 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
+      checkedMaintenance: auth.settingsStore.checkedMaintenance,
+      setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
+      snackbarExist: auth.settingsStore.snackbarExist,
       expandedKeys,
 
       primaryProgressDataVisible,
@@ -437,6 +495,8 @@ export default inject(
       primaryProgressDataIcon,
       primaryProgressDataAlert,
       clearPrimaryProgressData,
+
+      clearUploadedFilesHistory,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
@@ -447,6 +507,9 @@ export default inject(
       isProgressFinished,
       selectionTitle,
 
+      itemsSelectionLength,
+      itemsSelectionTitle,
+
       setExpandedKeys,
       setFirstLoad,
       setDragging,
@@ -455,15 +518,17 @@ export default inject(
       setUploadPanelVisible,
       setSelections,
       startUpload,
+      uploadEmptyFolders,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
+      personal: auth.settingsStore.personal,
       setToPreviewFile,
       playlist,
       isMediaOrImage: settingsStore.isMediaOrImage,
       getFileInfo,
-
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
+      gallerySelected,
+      setAction,
+      setIsUpdatingRowItem,
     };
   }
 )(withRouter(observer(Home)));

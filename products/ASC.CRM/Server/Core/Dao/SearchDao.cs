@@ -1,3 +1,4 @@
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -34,6 +35,7 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
@@ -341,7 +343,7 @@ namespace ASC.CRM.Core.Dao
 
                     result.Add(new SearchResultItem
                     {
-                        Name = x.IsCompany ? x.CompanyName : String.Format("{0} {1}", x.FirstName, x.LastName),
+                        Name = x.IsCompany ? x.CompanyName : $"{x.FirstName} {x.LastName}",
                         Description = HtmlUtil.GetText(x.Notes, 120),
                         URL = String.Concat(_pathProvider.BaseAbsolutePath, String.Format("default.aspx?id={0}", x.Id)),
                         Date = _tenantUtil.DateTimeFromUtc(x.CreateOn),

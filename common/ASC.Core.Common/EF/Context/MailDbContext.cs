@@ -29,7 +29,7 @@ namespace ASC.Core.Common.EF.Context
                 return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlMailDbContext() } ,
-                    { Provider.Postgre, () => new PostgreSqlMailDbContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlMailDbContext() } ,
                 };
             }
         }
@@ -39,7 +39,8 @@ namespace ASC.Core.Common.EF.Context
                 .From(modelBuilder, Provider)
                 .AddMailbox()
                 .AddMailboxProvider()
-                .AddServerServer();
+                .AddServerServer()
+                .AddGreyListingWhiteList();
         }
     }
     public static class MailDbExtension

@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.AccountLinks", b =>
                 {
@@ -23,13 +23,13 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
                         .HasColumnType("varchar(200)")
                         .HasColumnName("id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("UId")
                         .HasColumnType("varchar(200)")
                         .HasColumnName("uid")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("Linked")
                         .HasColumnType("datetime")
@@ -40,13 +40,13 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
                         .HasColumnType("text")
                         .HasColumnName("profile")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Provider")
                         .HasColumnType("char(60)")
                         .HasColumnName("provider")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id", "UId")
                         .HasName("PRIMARY");

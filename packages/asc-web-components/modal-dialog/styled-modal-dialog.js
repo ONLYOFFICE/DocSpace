@@ -9,7 +9,7 @@ const Dialog = styled.div`
   cursor: default;
   align-items: center;
 
-  width: ${(props) => props.theme.modalDialog.width};
+  width: ${(props) => props.width || props.theme.modalDialog.width};
   max-width: ${(props) => props.theme.modalDialog.maxwidth};
   margin: ${(props) => props.theme.modalDialog.margin};
   min-height: ${(props) => props.theme.modalDialog.minHeight};
@@ -31,6 +31,11 @@ const Content = styled.div`
   border-radius: ${(props) =>
     props.theme.modalDialog.content.modalBorderRadius};
 
+  .modal-dialog-aside-header {
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
   .heading {
     max-width: ${(props) => props.theme.modalDialog.content.heading.maxWidth};
     margin: ${(props) => props.theme.modalDialog.content.heading.margin};
@@ -47,7 +52,7 @@ const Content = styled.div`
   }
 
   ${(props) =>
-    props.removeScroll &&
+    props.withoutBodyScroll &&
     css`
       overflow: hidden;
     `}
@@ -85,7 +90,7 @@ const BodyBox = styled(Box)`
   position: relative;
 
   ${(props) =>
-    props.removeScroll &&
+    props.withoutBodyScroll &&
     css`
       height: 100%;
     `}

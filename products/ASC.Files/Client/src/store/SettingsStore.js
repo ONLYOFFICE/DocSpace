@@ -1,11 +1,11 @@
-import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
-import axios from "axios";
 import {
   setFavoritesSetting,
   setRecentSetting,
 } from "@appserver/common/api/files";
 import { FolderType } from "@appserver/common/constants";
+import axios from "axios";
+import { makeAutoObservable } from "mobx";
 import { presentInArray } from "../helpers/files-helpers";
 
 class SettingsStore {
@@ -140,10 +140,10 @@ class SettingsStore {
       .changeDeleteConfirm(data)
       .then((res) => this.setFilesSetting(setting, res));
 
-  setStoreForceSave = (data, setting) =>
-    api.files
-      .storeForceSave(data)
-      .then((res) => this.setFilesSetting(setting, res));
+  setStoreForceSave = (data) =>
+    api.files.storeForceSave(data).then((res) => this.setStoreForcesave(res));
+
+  setStoreForcesave = (val) => (this.storeForcesave = val);
 
   setEnableThirdParty = async (data, setting) => {
     const res = await api.files.thirdParty(data);
@@ -167,8 +167,10 @@ class SettingsStore {
     }
   };
 
-  setForceSave = (data, setting) =>
-    api.files.forceSave(data).then((res) => this.setFilesSetting(setting, res));
+  setForceSave = (data) =>
+    api.files.forceSave(data).then((res) => this.setForcesave(res));
+
+  setForcesave = (val) => (this.forcesave = val);
 
   updateRootTreeFolders = (set, rootFolderIndex, folderType) => {
     const {
@@ -233,7 +235,8 @@ class SettingsStore {
   isMediaOrImage = (fileExst) => {
     if (
       this.extsVideo.includes(fileExst) ||
-      this.extsImage.includes(fileExst)
+      this.extsImage.includes(fileExst) ||
+      this.extsAudio.includes(fileExst)
     ) {
       return true;
     }

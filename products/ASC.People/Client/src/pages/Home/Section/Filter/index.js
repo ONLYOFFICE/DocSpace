@@ -8,6 +8,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import { withLayoutSize } from "@appserver/common/utils";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import withLoader from "../../../../HOCs/withLoader";
 
 const getEmployeeStatus = (filterValues) => {
   const employeeStatus = result(
@@ -45,7 +46,7 @@ const getRole = (filterValues) => {
 const getGroup = (filterValues) => {
   const groupId = result(
     find(filterValues, (value) => {
-      return value.group === "filter-group";
+      return value.group === "filter-other";
     }),
     "key"
   );
@@ -53,35 +54,62 @@ const getGroup = (filterValues) => {
   return groupId || null;
 };
 
-class SectionFilterContent extends React.Component {
-  onFilter = (data) => {
-    const { setIsLoading, fetchPeople, filter } = this.props;
-
-    const employeeStatus = getEmployeeStatus(data.filterValues);
-    const activationStatus = getActivationStatus(data.filterValues);
-    const role = getRole(data.filterValues);
-    const group = getGroup(data.filterValues);
-    const search = data.inputValue || "";
-    const sortBy = data.sortId;
-    const sortOrder =
-      data.sortDirection === "desc" ? "descending" : "ascending";
+const SectionFilterContent = ({
+  t,
+  isLoaded,
+  sectionWidth,
+  tReady,
+  viewAs,
+  setIsLoading,
+  fetchPeople,
+  filter,
+  groups,
+  customNames,
+  isAdmin,
+}) => {
+  const onFilter = (data) => {
+    const employeeStatus = getEmployeeStatus(data);
+    const activationStatus = getActivationStatus(data);
+    const role = getRole(data);
+    const group = getGroup(data);
 
     const newFilter = filter.clone();
     newFilter.page = 0;
-    newFilter.sortBy = sortBy;
-    newFilter.sortOrder = sortOrder;
+
     newFilter.employeeStatus = employeeStatus;
     newFilter.activationStatus = activationStatus;
     newFilter.role = role;
-    newFilter.search = search;
     newFilter.group = group;
 
     setIsLoading(true);
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
-  getData = () => {
-    const { groups, t, customNames, isAdmin } = this.props;
+  const onSort = (sortId, sortDirection) => {
+    const sortBy = sortId;
+    const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.sortBy = sortBy;
+    newFilter.sortOrder = sortOrder;
+
+    setIsLoading(true);
+
+    fetchPeople(newFilter).finally(() => setIsLoading(false));
+  };
+
+  const onSearch = (data = "") => {
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.search = data;
+
+    setIsLoading(true);
+
+    fetchPeople(newFilter).finally(() => setIsLoading(false));
+  };
+
+  const getData = () => {
     const { guestCaption, userCaption, groupCaption } = customNames;
 
     const options = !isAdmin
@@ -105,33 +133,8 @@ class SectionFilterContent extends React.Component {
           },
         ];
 
-    const groupOptions = groups.map((group) => {
-      return {
-        key: group.id,
-        inSubgroup: true,
-        group: "filter-group",
-        label: group.name,
-      };
-    });
-
     const filterOptions = [
       ...options,
-      {
-        key: "filter-email",
-        group: "filter-email",
-        label: t("Common:Email"),
-        isHeader: true,
-      },
-      {
-        key: "1",
-        group: "filter-email",
-        label: t("Common:Active"),
-      },
-      {
-        key: "2",
-        group: "filter-email",
-        label: t("Translations:PendingTitle"),
-      },
       {
         key: "filter-type",
         group: "filter-type",
@@ -150,29 +153,40 @@ class SectionFilterContent extends React.Component {
         label: guestCaption,
       },
       {
-        key: "filter-other",
-        group: "filter-other",
-        label: t("LblOther"),
+        key: "filter-email",
+        group: "filter-email",
+        label: t("Common:Email"),
         isHeader: true,
       },
       {
-        key: "filter-type-group",
-        group: "filter-other",
-        subgroup: "filter-group",
-        label: groupCaption,
-        defaultSelectLabel: t("Common:Select"),
+        key: "1",
+        group: "filter-email",
+        label: t("Common:Active"),
       },
-      ...groupOptions,
-    ];
+      {
+        key: "2",
+        group: "filter-email",
+        label: t("Translations:PendingTitle"),
+      },
 
-    //console.log("getData (filterOptions)", filterOptions);
+      {
+        key: "filter-other",
+        group: "filter-other",
+        label: t("Common:Department"),
+        isHeader: true,
+      },
+      {
+        key: "group",
+        group: "filter-other",
+        label: t("GroupSelector:AddDepartmentsButtonLabel"),
+        isSelector: true,
+      },
+    ];
 
     return filterOptions;
   };
 
-  getSortData = () => {
-    const { t } = this.props;
-
+  const getSortData = () => {
     return [
       {
         key: "firstname",
@@ -183,9 +197,7 @@ class SectionFilterContent extends React.Component {
     ];
   };
 
-  getSelectedFilterData = () => {
-    const { filter } = this.props;
-
+  const getSelectedFilterData = () => {
     const selectedFilterData = {
       filterValues: [],
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
@@ -216,39 +228,39 @@ class SectionFilterContent extends React.Component {
     }
 
     if (filter.group) {
-      selectedFilterData.filterValues.push({
-        key: filter.group,
-        group: "filter-group",
-      });
+      const group = groups.find((group) => group.id === filter.group);
+
+      if (group) {
+        selectedFilterData.filterValues.push({
+          key: filter.group,
+          label: group.name,
+          group: "filter-other",
+        });
+      }
     }
 
     return selectedFilterData;
   };
 
-  render() {
-    const selectedFilterData = this.getSelectedFilterData();
-    const { t, isLoaded, sectionWidth, tReady, viewAs } = this.props;
-
-    return isLoaded && tReady ? (
-      <FilterInput
-        sectionWidth={sectionWidth}
-        getFilterData={this.getData}
-        getSortData={this.getSortData}
-        selectedFilterData={selectedFilterData}
-        onFilter={this.onFilter}
-        directionAscLabel={t("Common:DirectionAscLabel")}
-        directionDescLabel={t("Common:DirectionDescLabel")}
-        placeholder={t("Common:Search")}
-        contextMenuHeader={t("Common:AddFilter")}
-        isMobile={isMobileOnly}
-        viewAs={viewAs}
-        viewSelectorVisible={false}
-      />
-    ) : (
-      <Loaders.Filter />
-    );
-  }
-}
+  return isLoaded && tReady ? (
+    <FilterInput
+      sectionWidth={sectionWidth}
+      getFilterData={getData}
+      getSortData={getSortData}
+      getSelectedFilterData={getSelectedFilterData}
+      onFilter={onFilter}
+      onSort={onSort}
+      onSearch={onSearch}
+      contextMenuHeader={t("Common:AddFilter")}
+      placeholder={t("Common:Search")}
+      isMobile={isMobileOnly}
+      viewAs={viewAs}
+      viewSelectorVisible={false}
+    />
+  ) : (
+    <Loaders.Filter />
+  );
+};
 
 export default withRouter(
   inject(({ auth, peopleStore }) => {
@@ -281,8 +293,8 @@ export default withRouter(
   })(
     observer(
       withLayoutSize(
-        withTranslation(["Home", "Common", "Translations"])(
-          SectionFilterContent
+        withTranslation(["Home", "Common", "Translations", "GroupSelector"])(
+          withLoader(SectionFilterContent)(<Loaders.Filter />)
         )
       )
     )

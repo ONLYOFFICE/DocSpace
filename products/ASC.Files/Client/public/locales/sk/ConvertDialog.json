@@ -3,8 +3,8 @@
   "ConversionMessage": "Všetky vami nahrané dokumenty budú konvertované do formátu Office Open XML (docx, xlsx alebo pptx) pre rýchlejšie úpravy.",
   "ConversionTitle": "Nahrávanie dokumentu",
   "ConvertAndOpenTitle": "Konvertovať a otvoriť dokument",
-  "HideMessage": "Túto správu viac nezobrazovať",
-  "SaveOriginalFormatMessage": "Uložiť kópiu súboru v pôvodnom formáte",
   "ConvertedFileDestination": "Kópia súboru sa vytvorí v priečinku <strong>{{folderTitle}}</strong>",
-  "InfoCreateFileIn": "Nový '{{fileTitle}}' súbor je vytvorený v '{{folderTitle}}'"
+  "HideMessage": "Túto správu viac nezobrazovať",
+  "InfoCreateFileIn": "Nový '{{fileTitle}}' súbor je vytvorený v '{{folderTitle}}'",
+  "SaveOriginalFormatMessage": "Uložiť kópiu súboru v pôvodnom formáte"
 }

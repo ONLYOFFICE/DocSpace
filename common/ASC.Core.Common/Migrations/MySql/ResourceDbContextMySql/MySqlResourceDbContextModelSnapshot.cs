@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Resource.ResAuthors", b =>
                 {
@@ -23,7 +23,7 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(150)")
                         .HasColumnName("login")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("tinyint(1)")
@@ -42,7 +42,7 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("password")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Login")
                         .HasName("PRIMARY");
@@ -56,7 +56,7 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("authorLogin")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("FileId")
                         .HasColumnType("int")
@@ -81,13 +81,13 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("authorLogin")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("CultureTitle")
                         .HasColumnType("varchar(20)")
                         .HasColumnName("cultureTitle")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("AuthorLogin", "CultureTitle")
                         .HasName("PRIMARY");
@@ -104,7 +104,7 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(120)")
                         .HasColumnName("title")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Available")
                         .HasColumnType("tinyint(1)")
@@ -121,7 +121,7 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(120)")
                         .HasColumnName("value")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Title")
                         .HasName("PRIMARY");
@@ -139,13 +139,13 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(20)")
                         .HasColumnName("cultureTitle")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Title")
                         .HasColumnType("varchar(120)")
                         .HasColumnName("title")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("AuthorLogin")
                         .IsRequired()
@@ -154,13 +154,13 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnName("authorLogin")
                         .HasDefaultValueSql("'Console'")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Flag")
                         .HasColumnType("int")
@@ -175,19 +175,19 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(120)")
                         .HasColumnName("link")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("ResourceType")
                         .HasColumnType("varchar(20)")
                         .HasColumnName("resourceType")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("TextValue")
                         .HasColumnType("text")
                         .HasColumnName("textValue")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("TimeChanges")
                         .ValueGeneratedOnAddOrUpdate()
@@ -239,21 +239,21 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("moduleName")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("ProjectName")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasColumnName("projectName")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("ResName")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasColumnName("resName")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id");
 
@@ -274,13 +274,13 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("varchar(120)")
                         .HasColumnName("title")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("CultureTitle")
                         .HasColumnType("varchar(20)")
                         .HasColumnName("cultureTitle")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Flag")
                         .HasColumnType("int")
@@ -295,7 +295,7 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                         .HasColumnType("text")
                         .HasColumnName("textValue")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("FileId", "Title", "CultureTitle")
                         .HasName("PRIMARY");

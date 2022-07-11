@@ -1,3 +1,4 @@
-﻿{
-    "NotAvailableFolder": "Δεν υπάρχουν διαθέσιμοι φάκελοι"
+{
+  "FolderContents": "Τα περιεχόμενα του φακέλου '{{folderTitle}}'",
+  "NotAvailableFolder": "Δεν υπάρχουν διαθέσιμοι φάκελοι"
 }

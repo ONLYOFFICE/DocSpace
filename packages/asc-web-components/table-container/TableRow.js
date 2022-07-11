@@ -4,8 +4,6 @@ import { StyledTableRow } from "./StyledTableContainer";
 import TableCell from "./TableCell";
 import ContextMenu from "../context-menu";
 import ContextMenuButton from "../context-menu-button";
-import Checkbox from "../checkbox";
-import Loader from "../loader";
 
 const TableRow = (props) => {
   const {
@@ -13,15 +11,11 @@ const TableRow = (props) => {
     onHideContextMenu,
     children,
     contextOptions,
-    checked,
-    element,
-    onContentSelect,
-    item,
     className,
     style,
     selectionProp,
-    hasAccess,
-    inProgress,
+    title,
+    getContextModel,
     ...rest
   } = props;
 
@@ -29,7 +23,7 @@ const TableRow = (props) => {
   const row = useRef();
 
   const onContextMenu = (e) => {
-    fileContextClick && fileContextClick();
+    fileContextClick && fileContextClick(e.button === 2);
     if (cm.current && !cm.current.menuRef.current) {
       row.current.click(e);
     }
@@ -45,40 +39,12 @@ const TableRow = (props) => {
     return contextOptions;
   };
 
-  const onChange = (e) => {
-    onContentSelect && onContentSelect(e.target.checked, item);
-  };
-
   return (
     <StyledTableRow
       onContextMenu={onContextMenu}
       className={`${className} table-container_row`}
       {...rest}
     >
-      <TableCell
-        hasAccess={hasAccess}
-        checked={checked}
-        {...selectionProp}
-        style={style}
-        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
-      >
-        {inProgress ? (
-          <Loader
-            className="table-container_row-loader"
-            type="oval"
-            size="16px"
-          />
-        ) : (
-          <>
-            <div className="table-container_element">{element}</div>
-            <Checkbox
-              className="table-container_row-checkbox not-selectable"
-              onChange={onChange}
-              isChecked={checked}
-            />
-          </>
-        )}
-      </TableCell>
       {children}
       <div>
         <TableCell
@@ -91,16 +57,17 @@ const TableRow = (props) => {
             onHide={onHideContextMenu}
             ref={cm}
             model={contextOptions}
+            getContextModel={getContextModel}
+            withBackdrop={true}
           ></ContextMenu>
           {renderContext ? (
             <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
               className="expandButton"
               getData={getOptions}
               directionX="right"
               isNew={true}
               onClick={onContextMenu}
+              title={title}
             />
           ) : (
             <div className="expandButton"> </div>
@@ -111,24 +78,16 @@ const TableRow = (props) => {
   );
 };
 
-TableRow.defaultProps = {
-  hasAccess: true,
-};
-
 TableRow.propTypes = {
   fileContextClick: PropTypes.func,
   children: PropTypes.any,
   contextOptions: PropTypes.array,
-  checked: PropTypes.bool,
-  element: PropTypes.any,
-  onContentSelect: PropTypes.func,
   onHideContextMenu: PropTypes.func,
-  item: PropTypes.object,
   selectionProp: PropTypes.object,
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
-  hasAccess: PropTypes.bool,
-  inProgress: PropTypes.bool,
+  title: PropTypes.string,
+  getContextModel: PropTypes.func,
 };
 
 export default TableRow;

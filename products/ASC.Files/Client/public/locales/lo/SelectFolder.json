@@ -1,3 +1,4 @@
-﻿{
-    "NotAvailableFolder": "ບໍ່ມີໂຟນເດີ"
+{
+  "FolderContents": "ເນື້ອໃນຂອງໂຟນເດີ '{{ folderTitle }}'",
+  "NotAvailableFolder": "ບໍ່ມີໂຟນເດີ"
 }

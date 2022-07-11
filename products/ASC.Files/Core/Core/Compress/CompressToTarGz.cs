@@ -16,6 +16,7 @@
 
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Files.Core.Resources;
@@ -34,12 +35,6 @@ namespace ASC.Web.Files.Core.Compress
         private GZipOutputStream gzoStream;
         private TarOutputStream gzip;
         private TarEntry tarEntry;
-        private TempStream TempStream { get; }
-
-        public CompressToTarGz(TempStream tempStream)
-        {
-            TempStream = tempStream;
-        }
 
         /// <summary></summary>
         /// <param name="stream">Accepts a new stream, it will contain an archive upon completion of work</param>
@@ -63,14 +58,10 @@ namespace ASC.Web.Files.Core.Compress
         /// Transfer the file itself to the archive
         /// </summary>
         /// <param name="readStream">File data</param>
-        public void PutStream(Stream readStream)
+        public async Task PutStream(Stream readStream)
         {
-            using (var buffered = TempStream.GetBuffered(readStream))
-            {
-                tarEntry.Size = buffered.Length;
-                gzip.PutNextEntry(tarEntry);
-                buffered.CopyTo(gzip);
-            }
+            PutNextEntry();
+            await readStream.CopyToAsync(gzip);
         }
 
         /// <summary>

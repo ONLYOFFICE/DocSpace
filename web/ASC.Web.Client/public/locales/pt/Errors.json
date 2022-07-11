@@ -1,0 +1,9 @@
+{
+  "Error401Text": "Desculpe, este recurso não está acessível de momento.",
+  "Error403Text": "Desculpe, acesso negado.",
+  "Error404Text": "Desculpe, o recurso não foi encontrado.",
+  "ErrorEmptyResponse": "Resposta vazia",
+  "ErrorInvalidHeader": "E-mail incorreto ou link expirado",
+  "ErrorInvalidText": "Em 10 segundos será redirecionado para a <1>página de login</1>",
+  "ErrorOfflineText": "Não foi encontrada qualquer conexão à internet."
+}

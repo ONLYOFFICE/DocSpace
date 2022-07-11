@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -35,29 +37,38 @@ namespace ASC.Web.Core.Files
         public CoreBaseSettings CoreBaseSettings { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private FileUtility FileUtility { get; }
+        private IHttpClientFactory ClientFactory { get; }
+
 
         public DocumentServiceLicense(
             ICache cache,
             CoreBaseSettings coreBaseSettings,
             FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility)
+            FileUtility fileUtility,
+            IHttpClientFactory clientFactory)
         {
             Cache = cache;
             CoreBaseSettings = coreBaseSettings;
             FilesLinkUtility = filesLinkUtility;
             FileUtility = fileUtility;
+            ClientFactory = clientFactory;
         }
 
-        private CommandResponse GetDocumentServiceLicense()
+        private Task<CommandResponse> GetDocumentServiceLicenseAsync()
         {
-            if (!CoreBaseSettings.Standalone) return null;
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl)) return null;
+            if (!CoreBaseSettings.Standalone) return Task.FromResult<CommandResponse>(null);
+            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl)) return Task.FromResult<CommandResponse>(null);
 
+            return InternalGetDocumentServiceLicenseAsync();
+        }
+
+        private async Task<CommandResponse> InternalGetDocumentServiceLicenseAsync()
+        {
             var cacheKey = "DocumentServiceLicense";
             var commandResponse = Cache.Get<CommandResponse>(cacheKey);
             if (commandResponse == null)
             {
-                commandResponse = DocumentService.CommandRequest(
+                commandResponse = await DocumentService.CommandRequestAsync(
                        FileUtility,
                        FilesLinkUtility.DocServiceCommandUrl,
                        DocumentService.CommandMethod.License,
@@ -65,16 +76,18 @@ namespace ASC.Web.Core.Files
                        null,
                        null,
                        null,
-                       FileUtility.SignatureSecret);
+                       FileUtility.SignatureSecret,
+                       ClientFactory
+                       );
                 Cache.Insert(cacheKey, commandResponse, DateTime.UtcNow.Add(CACHE_EXPIRATION));
             }
 
             return commandResponse;
         }
 
-        public Dictionary<string, DateTime> GetLicenseQuota()
+        public async Task<Dictionary<string, DateTime>> GetLicenseQuotaAsync()
         {
-            var commandResponse = GetDocumentServiceLicense();
+            var commandResponse = await GetDocumentServiceLicenseAsync();
             if (commandResponse == null
                 || commandResponse.Quota == null
                 || commandResponse.Quota.Users == null)
@@ -85,9 +98,9 @@ namespace ASC.Web.Core.Files
             return result;
         }
 
-        public License GetLicense()
+        public async Task<License> GetLicenseAsync()
         {
-            var commandResponse = GetDocumentServiceLicense();
+            var commandResponse = await GetDocumentServiceLicenseAsync();
             if (commandResponse == null)
                 return null;
 

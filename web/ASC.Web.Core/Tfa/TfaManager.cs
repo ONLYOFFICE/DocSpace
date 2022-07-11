@@ -57,16 +57,16 @@ namespace ASC.Web.Studio.Core.TFA
 
         public string GetEncryptedCode(InstanceCrypto InstanceCrypto, Signature Signature)
         {
-            try
-            {
+                try
+                {
                 return InstanceCrypto.Decrypt(Code);
-            }
-            catch
-            {
-                //support old scheme stored in the DB
+                }
+                catch
+                {
+                    //support old scheme stored in the DB
                 return Signature.Read<string>(Code);
+                }
             }
-        }
 
         public void SetEncryptedCode(InstanceCrypto InstanceCrypto, string code)
         {
@@ -146,7 +146,7 @@ namespace ASC.Web.Studio.Core.TFA
                 }
             }
 
-            Cache.Insert("tfa/" + user.ID, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+            Cache.Insert("tfa/" + user.ID, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
             if (!SecurityContext.IsAuthenticated)
             {
@@ -170,26 +170,23 @@ namespace ASC.Web.Studio.Core.TFA
 
             const string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_";
 
-            var data = new byte[length];
+            byte[] data;
 
             var list = new List<BackupCode>();
 
-            using (var rngCrypto = new RNGCryptoServiceProvider())
+            for (var i = 0; i < count; i++)
             {
-                for (var i = 0; i < count; i++)
-                {
-                    rngCrypto.GetBytes(data);
+                data = RandomNumberGenerator.GetBytes(length);
 
-                    var result = new StringBuilder(length);
-                    foreach (var b in data)
-                    {
-                        result.Append(alphabet[b % (alphabet.Length)]);
-                    }
+                var result = new StringBuilder(length);
+                foreach (var b in data)
+                {
+                    result.Append(alphabet[b % alphabet.Length]);
+                }
 
                     var code = new BackupCode();
                     code.SetEncryptedCode(InstanceCrypto, result.ToString());
                     list.Add(code);
-                }
             }
             var settings = SettingsManager.LoadForCurrentUser<TfaAppUserSettings>();
             settings.CodesSetting = list;

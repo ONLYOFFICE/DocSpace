@@ -34,6 +34,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
@@ -90,6 +91,7 @@ namespace ASC.CRM.Core.Dao
         public String[] GetAllTags(EntityType entityType)
         {
             return CrmDbContext.Tags
+                .AsQueryable()
                 .Where(x => x.EntityType == entityType)
                 .OrderBy(x => x.Title)
                 .Select(x => x.Title)
@@ -156,7 +158,7 @@ namespace ASC.CRM.Core.Dao
         public string[] GetUnusedTags(EntityType entityType)
         {
             return Query(CrmDbContext.Tags)
-                    .Join(CrmDbContext.EntityTags.DefaultIfEmpty(),
+                    .Join(CrmDbContext.EntityTags.AsQueryable().DefaultIfEmpty(),
                                x => x.Id,
                                y => y.TagId,
                                (x, y) => new { x, y })
@@ -189,7 +191,7 @@ namespace ASC.CRM.Core.Dao
 
             if (tagID == 0) return;
 
-            var itemsToRemove = CrmDbContext.EntityTags.Where(x => x.EntityType == entityType && x.TagId == tagID);
+            var itemsToRemove = CrmDbContext.EntityTags.AsQueryable().Where(x => x.EntityType == entityType && x.TagId == tagID);
 
             if (entityID > 0)
                 itemsToRemove = itemsToRemove.Where(x => x.EntityId == entityID);
@@ -206,7 +208,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (entityID <= 0) return;
 
-            var itemsToRemove = CrmDbContext.EntityTags.Where(x => x.EntityType == entityType && x.EntityId == entityID);
+            var itemsToRemove = CrmDbContext.EntityTags.AsQueryable().Where(x => x.EntityType == entityType && x.EntityId == entityID);
 
             CrmDbContext.EntityTags.RemoveRange(itemsToRemove);
 
@@ -219,7 +221,7 @@ namespace ASC.CRM.Core.Dao
                 throw new ArgumentException();
 
             var itemToDelete = Query(CrmDbContext.Tags)
-                                    .Join(CrmDbContext.EntityTags.DefaultIfEmpty(),
+                                    .Join(CrmDbContext.EntityTags.AsQueryable().DefaultIfEmpty(),
                                         x => x.Id,
                                         y => y.TagId,
                                         (x, y) => new { x, y })
@@ -370,6 +372,7 @@ namespace ASC.CRM.Core.Dao
 
             var itemsToRemove = CrmDbContext
                                         .EntityTags
+                                        .AsQueryable()
                                         .Where(x => x.EntityType == EntityType.Contact &&
                                                     x.TagId == tagID &&
                                                     contactID.Contains(x.EntityId));
@@ -387,7 +390,7 @@ namespace ASC.CRM.Core.Dao
         {
             using var tx = CrmDbContext.Database.BeginTransaction();
 
-            var itemsToDelete = CrmDbContext.EntityTags.Where(x => x.EntityId == entityID && x.EntityType == entityType);
+            var itemsToDelete = CrmDbContext.EntityTags.AsQueryable().Where(x => x.EntityId == entityID && x.EntityType == entityType);
 
             CrmDbContext.EntityTags.RemoveRange(itemsToDelete);
 
@@ -427,7 +430,7 @@ namespace ASC.CRM.Core.Dao
             tx.Commit();
         }
 
-        private static string CorrectTag(string tag)
+        private string CorrectTag(string tag)
         {
             return tag == null
                        ? null

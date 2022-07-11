@@ -198,7 +198,7 @@ namespace ASC.Core
 
         public Tenant SetTenantVersion(Tenant tenant, int version)
         {
-            if (tenant == null) throw new ArgumentNullException("tenant");
+            if (tenant == null) throw new ArgumentNullException(nameof(tenant));
             if (tenant.Version != version)
             {
                 tenant.Version = version;

@@ -163,6 +163,10 @@ class ContextMenuButton extends React.Component {
       isFill, // eslint-disable-line react/prop-types
       asideHeader, // eslint-disable-line react/prop-types
       isNew,
+      title,
+      zIndex,
+      usePortal,
+      dropDownClassName,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
@@ -190,9 +194,11 @@ class ContextMenuButton extends React.Component {
           onMouseLeave={onMouseLeave}
           onMouseOver={onMouseOver}
           onMouseOut={onMouseOut}
+          title={title}
         />
         {displayType === "dropdown" ? (
           <DropDown
+            className={dropDownClassName}
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
@@ -200,6 +206,8 @@ class ContextMenuButton extends React.Component {
             clickOutsideAction={this.clickOutsideAction}
             columnCount={columnCount}
             withBackdrop={!!isMobile}
+            zIndex={zIndex}
+            isDefaultMode={usePortal}
           >
             {this.state.data.map(
               (item, index) =>
@@ -221,7 +229,12 @@ class ContextMenuButton extends React.Component {
               zIndex={310}
               isAside={true}
             />
-            <Aside visible={isOpen} scale={false} zIndex={310}>
+            <Aside
+              visible={isOpen}
+              scale={false}
+              zIndex={310}
+              onClose={this.onClose}
+            >
               <StyledContent>
                 <StyledHeaderContent>
                   <Heading className="header" size="medium" truncate={true}>
@@ -307,6 +320,8 @@ ContextMenuButton.propTypes = {
   /** Set the display type */
   displayType: PropTypes.string,
   isNew: PropTypes.bool,
+  usePortal: PropTypes.bool,
+  dropDownClassName: PropTypes.string,
 };
 
 ContextMenuButton.defaultProps = {
@@ -320,6 +335,7 @@ ContextMenuButton.defaultProps = {
   isFill: false,
   displayType: "dropdown",
   isNew: false,
+  usePortal: true,
 };
 
 export default ContextMenuButton;
