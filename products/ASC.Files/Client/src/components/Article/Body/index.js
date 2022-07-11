@@ -21,6 +21,7 @@ import withLoader from "../../../HOCs/withLoader";
 import { withTranslation } from "react-i18next";
 import { FolderType } from "@appserver/common/constants";
 import RoomsFilter from "@appserver/common/api/rooms/filter";
+import Profile from "./Profile";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
@@ -157,6 +158,7 @@ const ArticleBodyContent = (props) => {
             campaigns.length > 0 && <Banner FirebaseHelper={FirebaseHelper} />}
         </StyledBlock>
       )}
+      <Profile />
     </>
   );
 };
