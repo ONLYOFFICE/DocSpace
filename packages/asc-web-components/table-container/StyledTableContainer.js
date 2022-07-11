@@ -389,13 +389,6 @@ const StyledScrollbar = styled(Scrollbar)`
   }
 `;
 
-const StyledLoader = styled.div`
-  grid-column-start: 1;
-  grid-column-end: -1;
-  display: grid;
-  padding-top: 16px;
-`;
-
 StyledTableRow.defaultProps = { theme: Base };
 
 export {
@@ -410,5 +403,4 @@ export {
   StyledInfoPanelToggleWrapper,
   StyledEmptyTableContainer,
   StyledScrollbar,
-  StyledLoader,
 };

@@ -150,7 +150,7 @@ const Table = ({
       <TableBody
         fetchMoreFiles={fetchMoreFiles}
         columnStorageName={columnStorageName}
-        filesListLength={filesList.length}
+        filesLength={filesList.length}
         hasMoreFiles={hasMoreFiles}
         itemCount={filterTotal}
         useReactWindow

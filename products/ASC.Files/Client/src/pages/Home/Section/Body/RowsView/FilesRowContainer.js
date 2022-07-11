@@ -6,11 +6,6 @@ import { isMobile } from "react-device-detect";
 import styled from "styled-components";
 import marginStyles from "./CommonStyles";
 import { Base } from "@appserver/components/themes";
-import Loaders from "@appserver/common/components/Loaders";
-
-const StyledLoader = styled.div`
-  padding-top: 16px;
-`;
 
 const StyledRowContainer = styled(RowContainer)`
   .row-selected + .row-wrapper:not(.row-selected) {
@@ -68,7 +63,9 @@ const FilesRowContainer = ({
   viewAs,
   setViewAs,
   infoPanelVisible,
-  filesIsLoading,
+  filterTotal,
+  fetchMoreFiles,
+  hasMoreFiles,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -88,8 +85,12 @@ const FilesRowContainer = ({
   return (
     <StyledRowContainer
       className="files-row-container"
+      filesLength={filesList.length}
+      itemCount={filterTotal}
+      fetchMoreFiles={fetchMoreFiles}
+      hasMoreFiles={hasMoreFiles}
       draggable
-      useReactWindow={false}
+      useReactWindow
     >
       {filesList.map((item, index) => (
         <SimpleFilesRow
@@ -99,23 +100,27 @@ const FilesRowContainer = ({
           sectionWidth={sectionWidth}
         />
       ))}
-      {filesIsLoading && (
-        <StyledLoader>
-          <Loaders.Rows count={2} />
-        </StyledLoader>
-      )}
     </StyledRowContainer>
   );
 };
 
 export default inject(({ filesStore, auth }) => {
-  const { filesList, viewAs, setViewAs, filesIsLoading } = filesStore;
+  const {
+    filesList,
+    viewAs,
+    setViewAs,
+    filterTotal,
+    fetchMoreFiles,
+    hasMoreFiles,
+  } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   return {
     filesList,
     viewAs,
     setViewAs,
     infoPanelVisible,
-    filesIsLoading,
+    filterTotal,
+    fetchMoreFiles,
+    hasMoreFiles,
   };
 })(observer(FilesRowContainer));
