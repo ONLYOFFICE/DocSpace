@@ -32,7 +32,6 @@ public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
     public string Name { get; set; }
     public string Description { get; set; }
     public long MaxFileSize { get; set; }
-    public int ActiveUsers { get; set; }
     public string Features { get; set; }
     public decimal Price { get; set; }
     public string ProductId { get; set; }
@@ -63,8 +62,7 @@ public static class DbQuotaExtension
                     Name = "default",
                     Description = null,
                     MaxFileSize = 102400,
-                    ActiveUsers = 10000,
-                    Features = "domain,audit,ldap,sso,whitelabel,update,support,restore,total_size:10995116277760",
+                    Features = "domain,audit,ldap,sso,whitelabel,update,support,restore,total_size:10995116277760,users:10000",
                     Price = decimal.Parse("0,00"),
                     ProductId = "0",
                     Visible = false
@@ -86,10 +84,6 @@ public static class DbQuotaExtension
             entity.Property(e => e.Tenant)
                 .HasColumnName("tenant")
                 .ValueGeneratedNever();
-
-            entity.Property(e => e.ActiveUsers)
-                .HasColumnName("active_users")
-                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.ProductId)
                 .HasColumnName("product_id")
@@ -140,8 +134,6 @@ public static class DbQuotaExtension
             entity.Property(e => e.Tenant)
                 .HasColumnName("tenant")
                 .ValueGeneratedNever();
-
-            entity.Property(e => e.ActiveUsers).HasColumnName("active_users");
 
             entity.Property(e => e.ProductId)
                 .HasColumnName("product_id")

@@ -68,7 +68,34 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         }
     }
 
-    public int ActiveUsers { get; set; }
+    public int ActiveUsers
+    {
+        get
+        {
+            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
+            var users = features.FirstOrDefault(f => f.StartsWith("users:"));
+            int activeUsers;
+            if (users == null || !int.TryParse(users.Replace("users:", ""), out activeUsers))
+            {
+                activeUsers = 0;
+            }
+
+            return activeUsers;
+        }
+        set
+        {
+            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
+            var activeUsers = features.FirstOrDefault(f => f.StartsWith("users:"));
+            features.Remove(activeUsers);
+            if (value > 0)
+            {
+                features.Add("users:" + value);
+            }
+
+            Features = string.Join(",", features.ToArray());
+        }
+    }
+
     public string Features { get; set; }
     public decimal Price { get; set; }
     public string ProductId { get; set; }
@@ -287,8 +314,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<DbQuota, TenantQuota>()
-            .ForMember(dest => dest.ActiveUsers, opt =>
-                opt.MapFrom(src => src.ActiveUsers != 0 ? src.ActiveUsers : int.MaxValue))
             .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInBytes(src.MaxFileSize)));
     }
 }
