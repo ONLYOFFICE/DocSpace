@@ -57,7 +57,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
         }
 
         return result;
@@ -72,7 +72,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
         }
 
         return result;
@@ -86,7 +86,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
         }
 
         return result;
@@ -101,7 +101,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
         }
 
         return result;
@@ -188,11 +188,11 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         var fileDao = selector.GetFileDao(parentId);
         var files = fileDao.GetFilesAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
-        var result = files.Where(r => r != null);
+        var result = await files.Where(r => r != null).ToListAsync();
 
-        await SetSharedPropertyAsync(result).ConfigureAwait(false);
+        await SetSharedPropertyAsync(result);
 
-        await foreach (var r in result.ConfigureAwait(false))
+        foreach (var r in result)
         {
             yield return r;
         }
@@ -464,7 +464,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         var selector = GetSelector(file.Id);
         var fileDao = selector.GetFileDao(file.Id);
 
-        return UseTrashForRemove(file);
+        return fileDao.UseTrashForRemove(file);
     }
 
     #region chunking
@@ -520,5 +520,19 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         return file;
     }
+
+    public override Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+        var selector = GetSelector(fileId);
+        var fileDao = selector.GetFileDao(fileId);
+        return fileDao.GetThumbnailAsync(fileId, width, height);
+    }
+
+    public override Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
+    {
+        var fileDao = GetFileDao(file);
+        return fileDao.GetThumbnailAsync(file, width, height);
+    }
+
     #endregion
 }

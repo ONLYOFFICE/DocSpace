@@ -39,6 +39,9 @@ const FileTile = (props) => {
     t,
     getContextModel,
     onHideContextMenu,
+    thumbSize,
+    setSelection,
+    id,
   } = props;
 
   const temporaryExtension =
@@ -57,7 +60,7 @@ const FileTile = (props) => {
   );
 
   return (
-    <div ref={props.selectableRef}>
+    <div ref={props.selectableRef} id={id}>
       <DragAndDrop
         data-title={item.title}
         value={value}
@@ -71,13 +74,18 @@ const FileTile = (props) => {
           key={item.id}
           item={item}
           temporaryIcon={temporaryIcon}
-          thumbnail={thumbnailUrl}
+          thumbnail={
+            thumbnailUrl && thumbSize
+              ? `${thumbnailUrl}&size=${thumbSize}`
+              : thumbnailUrl
+          }
           element={element}
           sectionWidth={sectionWidth}
           contentElement={quickButtonsComponent}
           onSelect={onContentFileSelect}
           tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
+          isDragging={dragging}
           dragging={dragging && isDragging}
           onClick={onMouseClick}
           thumbnailClick={onFilesClick}
@@ -91,12 +99,8 @@ const FileTile = (props) => {
           getContextModel={getContextModel}
           hideContextMenu={onHideContextMenu}
           t={t}
-          title={
-            item.isFolder
-              ? t("Translations:TitleShowFolderActions")
-              : t("Translations:TitleShowActions")
-          }
           showHotkeyBorder={showHotkeyBorder}
+          setSelection={setSelection}
         >
           <FilesTileContent
             item={item}
@@ -110,13 +114,15 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ settingsStore }) => {
+export default inject(({ settingsStore, filesStore }) => {
   const { getIcon } = settingsStore;
-  return { getIcon };
+  const { setSelection } = filesStore;
+
+  return { getIcon, setSelection };
 })(
-  withTranslation(["Home", "VersionBadge", "InfoPanel"])(
-    withFileActions(
-      withRouter(withBadges(withQuickButtons(observer(FileTile))))
+  withTranslation(["Home", "InfoPanel"])(
+    withRouter(
+      withFileActions(withBadges(withQuickButtons(observer(FileTile))))
     )
   )
 );

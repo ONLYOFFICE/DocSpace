@@ -78,6 +78,21 @@ public class GroupController : ControllerBase
         return result.Select(r => _groupFullDtoHelper.Get(r, true));
     }
 
+    [HttpGet("search")]
+    public IEnumerable<GroupSummaryDto> GetTagsByName(string groupName)
+    {
+        groupName = (groupName ?? "").Trim();
+
+        if (string.IsNullOrEmpty(groupName))
+        {
+            return new List<GroupSummaryDto>();
+        }
+
+        return _userManager.GetDepartments()
+            .Where(x => x.Name.Contains(groupName))
+            .Select(x => new GroupSummaryDto(x, _userManager));
+    }
+
     [HttpGet("{groupid}")]
     public GroupDto GetById(Guid groupid)
     {

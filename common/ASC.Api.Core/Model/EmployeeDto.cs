@@ -55,6 +55,7 @@ public class EmployeeDtoHelper
     private readonly ApiContext _httpContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly ConcurrentDictionary<Guid, EmployeeDto> _concurrentDictionary;
 
     public EmployeeDtoHelper(
         ApiContext httpContext,
@@ -68,11 +69,12 @@ public class EmployeeDtoHelper
         _httpContext = httpContext;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _commonLinkUtility = commonLinkUtility;
+        _concurrentDictionary = new ConcurrentDictionary<Guid, EmployeeDto>();
     }
 
     public EmployeeDto Get(UserInfo userInfo)
     {
-        return Init(new EmployeeDto(), userInfo);
+        return _concurrentDictionary.GetOrAdd(userInfo.Id, (id) => Init(new EmployeeDto(), userInfo));
     }
 
     public EmployeeDto Get(Guid userId)

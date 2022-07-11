@@ -35,12 +35,6 @@ public class CompressToTarGz : ICompress
     private GZipOutputStream _gzoStream;
     private TarOutputStream _gzip;
     private TarEntry _tarEntry;
-    private readonly TempStream _tempStream;
-
-    public CompressToTarGz(TempStream tempStream)
-    {
-        _tempStream = tempStream;
-    }
 
     /// <summary></summary>
     /// <param name="stream">Accepts a new stream, it will contain an archive upon completion of work</param>
@@ -55,23 +49,23 @@ public class CompressToTarGz : ICompress
     /// The record name is created (the name of a separate file in the archive)
     /// </summary>
     /// <param name="title">File name with extension, this name will have the file in the archive</param>
-    public void CreateEntry(string title)
+    public void CreateEntry(string title, DateTime? lastModification = null)
     {
         _tarEntry = TarEntry.CreateTarEntry(title);
+        if (lastModification.HasValue)
+        {
+            _tarEntry.ModTime = lastModification.Value;
+        }
     }
 
     /// <summary>
     /// Transfer the file itself to the archive
     /// </summary>
     /// <param name="readStream">File data</param>
-    public void PutStream(Stream readStream)
+    public async Task PutStream(Stream readStream)
     {
-        using (var buffered = _tempStream.GetBuffered(readStream))
-        {
-            _tarEntry.Size = buffered.Length;
-            _gzip.PutNextEntry(_tarEntry);
-            buffered.CopyTo(_gzip);
-        }
+        PutNextEntry();
+        await readStream.CopyToAsync(_gzip);
     }
 
     /// <summary>

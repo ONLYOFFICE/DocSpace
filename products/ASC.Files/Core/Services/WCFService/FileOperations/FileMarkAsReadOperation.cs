@@ -28,13 +28,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
 class FileMarkAsReadOperationData<T> : FileOperationData<T>
 {
-    public FileMarkAsReadOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, bool holdResult = true)
-        : this(folders.OfType<T>(), files.OfType<T>(), tenant, holdResult)
-    {
-    }
+    public IDictionary<string, StringValues> Headers { get; }
 
-    public FileMarkAsReadOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, bool holdResult = true) : base(folders, files, tenant, holdResult)
+    public FileMarkAsReadOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, IDictionary<string, StringValues> headers, bool holdResult = true) : base(folders, files, tenant, holdResult)
     {
+        Headers = headers;
     }
 }
 
@@ -53,10 +51,12 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
 {
     public override FileOperationType OperationType => FileOperationType.MarkAsRead;
 
+    private readonly IDictionary<string, StringValues> _headers;
 
     public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileMarkAsReadOperationData<T> fileOperationData)
         : base(serviceProvider, fileOperationData)
     {
+        _headers = fileOperationData.Headers;
     }
 
     protected override int InitTotalProgressSteps()
@@ -67,34 +67,38 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
     protected override async Task DoAsync(IServiceScope scope)
     {
         var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
+        var filesMessageService = scope.ServiceProvider.GetRequiredService<FilesMessageService>();
         var (fileMarker, globalFolder, daoFactory, settingsManager) = scopeClass;
-        var entries = AsyncEnumerable.Empty<FileEntry<T>>();
+        var entries = Enumerable.Empty<FileEntry<T>>();
         if (Folders.Count > 0)
         {
-            entries.Concat(FolderDao.GetFoldersAsync(Folders));
+            entries = entries.Concat(await FolderDao.GetFoldersAsync(Folders).ToListAsync());
         }
         if (Files.Count > 0)
         {
-            entries.Concat(FileDao.GetFilesAsync(Files));
+            entries = entries.Concat(await FileDao.GetFilesAsync(Files).ToListAsync());
         }
 
-        await entries.ForEachAwaitAsync(async x =>
+        foreach (var entry in entries)
         {
             CancellationToken.ThrowIfCancellationRequested();
 
-            await fileMarker.RemoveMarkAsNewAsync(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+            await fileMarker.RemoveMarkAsNewAsync(entry, ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID);
 
-            if (x.FileEntryType == FileEntryType.File)
+            if (entry.FileEntryType == FileEntryType.File)
             {
-                ProcessedFile(((File<T>)x).Id);
+                ProcessedFile(((File<T>)entry).Id);
+                filesMessageService.Send(entry, _headers, MessageAction.FileMarkedAsRead, entry.Title);
             }
             else
             {
-                ProcessedFolder(((Folder<T>)x).Id);
+                ProcessedFolder(((Folder<T>)entry).Id);
+                filesMessageService.Send(entry, _headers, MessageAction.FolderMarkedAsRead, entry.Title);
             }
 
             ProgressStep();
-        });
+        }
+
 
         var rootIds = new List<int>
             {
@@ -102,6 +106,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
                 await globalFolder.GetFolderCommonAsync(fileMarker, daoFactory),
                 await globalFolder.GetFolderShareAsync(daoFactory),
                 await globalFolder.GetFolderProjectsAsync(daoFactory),
+                await globalFolder.GetFolderVirtualRoomsAsync(daoFactory),
             };
 
         if (PrivacyRoomSettings.GetEnabled(settingsManager))
@@ -111,7 +116,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
 
         var newrootfolder = new List<string>();
 
-        foreach (var r in rootIds)
+        foreach (var r in rootIds.Where(id => id != 0))
         {
             var item = new KeyValuePair<int, int>(r, await fileMarker.GetRootFoldersIdMarkedAsNewAsync(r));
             newrootfolder.Add($"new_{{\"key\"? \"{item.Key}\", \"value\"? \"{item.Value}\"}}");

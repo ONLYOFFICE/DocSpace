@@ -33,6 +33,7 @@ public class AuditEvent : MessageEvent, IMapFrom<EventMessage>
 
     public void Mapping(Profile profile)
     {
+        profile.CreateMap<MessageEvent, AuditEvent>();
         profile.CreateMap<EventMessage, AuditEvent>()
             .ConvertUsing<EventTypeConverter>();
     }

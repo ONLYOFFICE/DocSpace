@@ -8,15 +8,45 @@ import Button from "@appserver/components/button";
 import { inject, observer } from "mobx-react";
 import toastr from "@appserver/components/toast/toastr";
 import { connectedCloudsTypeTitleTranslation } from "../../../helpers/utils";
+import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 const StyledOperationDialog = styled(ModalDialog)`
-  .operation-button {
-    margin-right: 8px;
-  }
-
   .modal-dialog-aside-footer {
     display: flex;
     width: 90%;
+  }
+  .third-party-move-radio-button {
+    margin-top: 12px;
+    label:not(:last-child) {
+      margin-bottom: 12px;
+    }
+  }
+  .modal-dialog-modal-footer {
+    border-top: ${(props) => props.theme.button.border.baseDisabled};
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    .operation-button {
+      margin-right: 8px;
+    }
+  }
+  .modal-dialog-aside-footer {
+    border-top: ${(props) => props.theme.button.border.baseDisabled};
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 16px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    width: 100%;
+  }
+  .third-party-move-dialog-text {
+    margin-top: 16px;
   }
 `;
 
@@ -34,21 +64,25 @@ const PureThirdPartyMoveContainer = ({
   setBufferSelection,
   itemOperationToFolder,
   setMoveToPanelVisible,
+  conflictResolveDialogVisible,
 }) => {
   const zIndex = 310;
   const deleteAfter = false; // TODO: get from settings
 
   const [isLoading, setIsLoading] = useState(false);
+  const [actionType, setActionType] = useState("move");
 
-  const onClose = () => {
+  const onClosePanels = () => {
     setDestFolderId(false);
     setThirdPartyMoveDialogVisible(false);
     setMoveToPanelVisible(false);
     setBufferSelection(null);
   };
+  const onClose = () => setThirdPartyMoveDialogVisible(false);
 
-  const startOperation = (e) => {
-    const isCopy = e.target.dataset.copy;
+  const startOperation = () => {
+    const isCopy = actionType === "copy";
+
     const folderIds = [];
     const fileIds = [];
 
@@ -80,7 +114,7 @@ const PureThirdPartyMoveContainer = ({
           setIsLoading(false);
         } else {
           setIsLoading(false);
-          onClose();
+          onClosePanels();
           await itemOperationToFolder(data);
         }
       })
@@ -92,47 +126,72 @@ const PureThirdPartyMoveContainer = ({
 
   const providerTitle = connectedCloudsTypeTitleTranslation(provider, t);
 
+  const onSelectActionType = (e) => setActionType(e.target.value);
+
+  const radioOptions = [
+    {
+      label: (
+        <div>
+          <Text fontWeight={600} fontSize={"14px"}>
+            {t("Translations:Move")}
+          </Text>
+        </div>
+      ),
+      value: "move",
+    },
+    {
+      label: (
+        <div>
+          <Text fontWeight={600} fontSize={"14px"}>
+            {t("Translations:Copy")}
+          </Text>
+        </div>
+      ),
+
+      value: "copy",
+    },
+  ];
   return (
     <StyledOperationDialog
       isLoading={!tReady}
-      visible={visible}
+      visible={conflictResolveDialogVisible ? false : visible}
       zIndex={zIndex}
       onClose={onClose}
-      displayType="aside"
     >
       <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text>{t("MoveConfirmationMessage", { provider: providerTitle })}</Text>
-        <br />
-        <Text>{t("MoveConfirmationAlert")}</Text>
+
+        <Text className="third-party-move-dialog-text">
+          {t("ConflictResolveDialog:ConflictResolveSelectAction")}
+        </Text>
+        <RadioButtonGroup
+          className="third-party-move-radio-button"
+          orientation="vertical"
+          fontSize="13px"
+          fontWeight="400"
+          name="group"
+          onClick={onSelectActionType}
+          options={radioOptions}
+          selected={actionType}
+        />
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
         <Button
           className="operation-button"
-          label={t("Translations:Move")}
-          size="normal"
-          scale
+          label={t("Common:OKButton")}
+          size="normalTouchscreen"
           primary
           onClick={startOperation}
           isLoading={isLoading}
           isDisabled={isLoading}
         />
-        <Button
-          data-copy="copy"
-          className="operation-button"
-          label={t("Translations:Copy")}
-          size="normal"
-          scale
-          onClick={startOperation}
-          isLoading={isLoading}
-          isDisabled={isLoading}
-        />
+
         <Button
           className="operation-button"
           label={t("Common:CancelButton")}
-          size="normal"
-          scale
+          size="normalTouchscreen"
           onClick={onClose}
           isLoading={isLoading}
           isDisabled={isLoading}
@@ -150,6 +209,7 @@ export default inject(
       destFolderId,
       setDestFolderId,
       setMoveToPanelVisible,
+      conflictResolveDialogVisible,
     } = dialogsStore;
     const { bufferSelection, setBufferSelection } = filesStore;
     const { checkFileConflicts, setConflictDialogData } = filesActionsStore;
@@ -164,17 +224,21 @@ export default inject(
       setThirdPartyMoveDialogVisible,
       destFolderId,
       setDestFolderId,
-      provider: selection[0].providerKey,
+      provider: selection[0]?.providerKey,
       checkFileConflicts,
       selection,
       setBufferSelection,
       setConflictDialogData,
       itemOperationToFolder,
       setMoveToPanelVisible,
+      conflictResolveDialogVisible,
     };
   }
 )(
-  withTranslation(["ThirdPartyMoveDialog", "Common", "Translations"])(
-    observer(PureThirdPartyMoveContainer)
-  )
+  withTranslation([
+    "ThirdPartyMoveDialog",
+    "Common",
+    "Translations",
+    "ConflictResolveDialog",
+  ])(observer(PureThirdPartyMoveContainer))
 );

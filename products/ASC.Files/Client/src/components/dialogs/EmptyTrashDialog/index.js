@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import styled from "styled-components";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import Text from "@appserver/components/text";
@@ -6,6 +7,15 @@ import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+
+const StyledModal = styled(ModalDialogContainer)`
+  max-width: 400px;
+
+  .cancel-btn {
+    display: inline-block;
+    margin-left: 8px;
+  }
+`;
 
 const EmptyTrashDialogComponent = (props) => {
   const {
@@ -16,6 +26,12 @@ const EmptyTrashDialogComponent = (props) => {
     setEmptyTrashDialogVisible,
     emptyTrash,
   } = props;
+
+  useEffect(() => {
+    window.addEventListener("keydown", onKeyPress);
+
+    return () => window.removeEventListener("keydown", onKeyPress);
+  }, []);
 
   const onClose = () => setEmptyTrashDialogVisible(false);
 
@@ -28,11 +44,18 @@ const EmptyTrashDialogComponent = (props) => {
     emptyTrash(translations);
   };
 
+  const onKeyPress = (e) => {
+    if (e.keyCode === 13) {
+      onEmptyTrash();
+    }
+  };
+
   return (
-    <ModalDialogContainer
+    <StyledModal
       isLoading={!tReady}
       visible={visible}
       onClose={onClose}
+      displayType="modal"
     >
       <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
@@ -48,7 +71,7 @@ const EmptyTrashDialogComponent = (props) => {
           isLoading={isLoading}
         />
         <Button
-          className="button-dialog"
+          className="cancel-btn"
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="small"
@@ -56,7 +79,7 @@ const EmptyTrashDialogComponent = (props) => {
           isLoading={isLoading}
         />
       </ModalDialog.Footer>
-    </ModalDialogContainer>
+    </StyledModal>
   );
 };
 

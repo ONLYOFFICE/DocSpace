@@ -4,7 +4,7 @@ import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
 
 const Error401 = () => {
-  const { t } = useTranslation("Error401");
+  const { t } = useTranslation("Errors");
 
   return <ErrorContainer headerText={t("Error401Text")} />;
 };

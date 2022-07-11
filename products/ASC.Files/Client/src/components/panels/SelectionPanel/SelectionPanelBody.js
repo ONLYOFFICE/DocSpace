@@ -45,119 +45,113 @@ const SelectionPanelBody = ({
   page,
   newFilter,
   isDisableButton,
+  parentId,
+  selectionFiles,
 }) => {
-  const onMouseEvent = (event) => {
-    event.stopPropagation();
-  };
-
   return (
-    <div onMouseUp={onMouseEvent} onMouseDown={onMouseEvent}>
-      <StyledModalDialog
-        theme={theme}
-        visible={isPanelVisible}
-        onClose={onClose}
-        className="select-file-modal-dialog"
-        style={{ maxWidth: "773px" }}
-        displayType="modal"
-        modalBodyPadding="0px"
-        isLoading={isLoading}
-      >
-        <ModalDialog.Header theme={theme}>{dialogName}</ModalDialog.Header>
-        <ModalDialog.Body
-          theme={theme}
-          className="select-file_body-modal-dialog"
-        >
-          <StyledBody header={!!header} footer={!!footer}>
-            <div className="selection-panel_body">
-              <div className="selection-panel_tree-body">
-                <Text
-                  fontWeight="700"
-                  fontSize="18px"
-                  className="selection-panel_folder-title"
-                >
-                  {t("Translations:Documents")}
-                </Text>
+    <StyledModalDialog
+      theme={theme}
+      visible={isPanelVisible}
+      onClose={onClose}
+      style={{ maxWidth: "773px" }}
+      displayType="modal"
+      modalBodyPadding="0px"
+      isLoading={isLoading}
+    >
+      <ModalDialog.Header theme={theme}>{dialogName}</ModalDialog.Header>
+      <ModalDialog.Body theme={theme} className="select-file_body-modal-dialog">
+        <StyledBody header={!!header} footer={!!footer}>
+          <div className="selection-panel_body">
+            <div className="selection-panel_tree-body">
+              <Text
+                fontWeight="700"
+                fontSize="18px"
+                className="selection-panel_folder-title"
+              >
+                {t("Common:Documents")}
+              </Text>
 
-                {folderId && resultingFolderTree ? (
-                  <FolderTreeBody
+              {folderId && resultingFolderTree ? (
+                <FolderTreeBody
+                  selectionFiles={selectionFiles}
+                  theme={theme}
+                  folderTree={resultingFolderTree}
+                  onSelect={onSelectFolder}
+                  withoutProvider={withoutProvider}
+                  certainFolders
+                  isAvailable={isAvailable}
+                  selectedKeys={[`${folderId}`]}
+                  parentId={parentId}
+                  expandedKeys={expandedKeys}
+                  isDisableTree={isDisableTree}
+                  displayType="modal"
+                />
+              ) : (
+                <Loaders.NewTreeFolders />
+              )}
+            </div>
+            <div className="selection-panel_files-body">
+              <>
+                <div className="selection-panel_files-header">
+                  {header}
+
+                  <Text
+                    color="#A3A9AE"
                     theme={theme}
-                    folderTree={resultingFolderTree}
-                    onSelect={onSelectFolder}
-                    withoutProvider={withoutProvider}
-                    certainFolders
-                    isAvailable={isAvailable}
-                    selectedKeys={[`${folderId}`]}
-                    expandedKeys={expandedKeys}
-                    isDisableTree={isDisableTree}
-                    displayType="modal"
-                  />
-                ) : (
-                  <Loaders.NewTreeFolders />
-                )}
-              </div>
-              <div className="selection-panel_files-body">
-                <>
-                  <div className="selection-panel_files-header">
-                    {header}
-
-                    <Text
-                      color="#A3A9AE"
-                      theme={theme}
-                      className="selection-panel_title"
-                    >
-                      {folderSelection
-                        ? t("FolderContents", { folderTitle })
-                        : filesListTitle}
-                    </Text>
-                  </div>
-
-                  <FilesListWrapper
-                    theme={theme}
-                    onSelectFile={onSelectFile}
-                    folderId={folderId}
-                    displayType={"modal"}
-                    folderSelection={folderSelection}
-                    newFilter={newFilter}
-                    fileId={fileId}
-                  />
-                </>
-              </div>
-
-              <div className="selection-panel_footer">
-                <div>{footer}</div>
-
-                <div className="selection-panel_buttons">
-                  <Button
-                    theme={theme}
-                    className="select-file-modal-dialog-buttons-save"
-                    primary
-                    size="normalTouchscreen"
-                    label={primaryButtonName}
-                    onClick={onButtonClick}
-                    isDisabled={
-                      isDisableButton ||
-                      isDisableTree ||
-                      isLoadingData ||
-                      (!fileId && !folderSelection) ||
-                      !canCreate
-                    }
-                    isLoading={isDisableTree}
-                  />
-                  <Button
-                    theme={theme}
-                    className="modal-dialog-button"
-                    size="normalTouchscreen"
-                    label={t("Common:CancelButton")}
-                    onClick={onClose}
-                    isDisabled={isLoadingData}
-                  />
+                    className="selection-panel_title"
+                  >
+                    {folderSelection
+                      ? t("FolderContents", { folderTitle })
+                      : filesListTitle}
+                  </Text>
                 </div>
+
+                <FilesListWrapper
+                  theme={theme}
+                  onSelectFile={onSelectFile}
+                  folderId={folderId}
+                  displayType={"modal"}
+                  folderSelection={folderSelection}
+                  newFilter={newFilter}
+                  fileId={fileId}
+                />
+              </>
+            </div>
+
+            <div className="selection-panel_footer">
+              <div>{footer}</div>
+
+              <div className="selection-panel_buttons">
+                <Button
+                  theme={theme}
+                  className="select-file-modal-dialog-buttons-save"
+                  primary
+                  size="normalTouchscreen"
+                  label={primaryButtonName}
+                  onClick={onButtonClick}
+                  isDisabled={
+                    isDisableButton ||
+                    isDisableTree ||
+                    isLoadingData ||
+                    (!fileId && !folderSelection) ||
+                    !canCreate
+                  }
+                  isLoading={isDisableTree}
+                />
+                <Button
+                  theme={theme}
+                  className="modal-dialog-button"
+                  size="normalTouchscreen"
+                  label={t("Common:CancelButton")}
+                  onClick={onClose}
+                  isDisabled={isLoadingData}
+                />
               </div>
             </div>
-          </StyledBody>
-        </ModalDialog.Body>
-      </StyledModalDialog>
-    </div>
+          </div>
+        </StyledBody>
+      </ModalDialog.Body>
+    </StyledModalDialog>
   );
 };
 

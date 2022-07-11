@@ -3,30 +3,52 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 //import equal from "fast-deep-equal/react";
 //import { LayoutContextConsumer } from "studio/Layout/context";
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly, isDesktop } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@appserver/components/scrollbar";
 import DragAndDrop from "@appserver/components/drag-and-drop";
-import { tablet, mobile, desktop } from "@appserver/components/utils/device";
+import {
+  tablet,
+  mobile,
+  desktop,
+  smallTablet,
+} from "@appserver/components/utils/device";
 
 const paddingStyles = css`
-  padding: 19px 7px 16px 20px;
+  padding: ${(props) =>
+    props.settingsStudio
+      ? "0 7px 16px 24px"
+      : props.viewAs === "row"
+      ? "19px 3px 16px 16px"
+      : "19px 3px 16px 20px"};
+
   @media ${tablet} {
-    padding: 19px 0 16px 24px;
+    padding: ${(props) =>
+      props.settingsStudio ? "0 0 16px 24px" : "19px 0 16px 24px"};
   }
+
+  @media ${smallTablet} {
+    padding: ${(props) =>
+      props.settingsStudio ? "8px 0 16px 24px" : "19px 0 16px 24px"};
+  }
+
   @media ${mobile} {
-    padding: 19px 0 16px 24px;
+    padding: ${(props) =>
+      props.settingsStudio ? "8px 0 16px 24px" : "19px 0 16px 24px"};
   }
+
   ${isMobile &&
   css`
     padding: 0 0 16px 24px !important;
   `};
+
   ${isMobileOnly &&
   css`
     padding: 0px 0 16px 24px !important;
   `};
 `;
+
 const commonStyles = css`
   flex-grow: 1;
 
@@ -64,8 +86,18 @@ const commonStyles = css`
     .files-row-container {
       margin-top: -22px;
 
+      ${isDesktop &&
+      css`
+        margin-top: -17px;
+      `}
+
       @media ${desktop} {
-        ${(props) => props.viewAs === "row" && `margin-top: -9px;`}
+        ${(props) =>
+          props.viewAs === "row" &&
+          css`
+            margin-top: -15px;
+            margin-right: 4px;
+          `}
       }
     }
   }
@@ -169,6 +201,7 @@ class SectionBody extends React.Component {
       isLoaded,
       isDesktop,
       isHomepage,
+      settingsStudio,
     } = this.props;
 
     const focusProps = autoFocus
@@ -187,6 +220,7 @@ class SectionBody extends React.Component {
         pinned={pinned}
         isLoaded={isLoaded}
         isDesktop={isDesktop}
+        settingsStudio={settingsStudio}
         className="section-body"
       >
         {withScroll ? (
@@ -221,6 +255,7 @@ class SectionBody extends React.Component {
         pinned={pinned}
         isLoaded={isLoaded}
         isDesktop={isDesktop}
+        settingsStudio={settingsStudio}
       >
         {withScroll ? (
           !isMobileOnly ? (
@@ -268,6 +303,7 @@ SectionBody.propTypes = {
   viewAs: PropTypes.string,
   isLoaded: PropTypes.bool,
   isHomepage: PropTypes.bool,
+  settingsStudio: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {
@@ -276,6 +312,7 @@ SectionBody.defaultProps = {
   uploadFiles: false,
   withScroll: true,
   isHomepage: false,
+  settingsStudio: false,
 };
 
 export default inject(({ auth }) => {

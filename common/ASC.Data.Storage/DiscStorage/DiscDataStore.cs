@@ -140,13 +140,18 @@ public class DiscDataStore : BaseStorage
     {
         return SaveAsync(domain, path, stream);
     }
+        private bool EnableQuotaCheck(string domain)
+        {
+            return (QuotaController != null) && !domain.EndsWith("_temp");
+        }
 
     public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
         Logger.DebugSavePath(path);
 
         var buffered = _tempStream.GetBuffered(stream);
-        if (QuotaController != null)
+            
+            if (EnableQuotaCheck(domain))
         {
             QuotaController.QuotaUsedCheck(buffered.Length);
         }
@@ -508,11 +513,6 @@ public class DiscDataStore : BaseStorage
     }
 
     public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize, string contentType, string contentDisposition, string submitLabel)
-    {
-        throw new NotSupportedException("This operation supported only on s3 storage");
-    }
-
-    public override Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
     {
         throw new NotSupportedException("This operation supported only on s3 storage");
     }

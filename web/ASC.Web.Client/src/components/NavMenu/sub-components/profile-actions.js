@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
+
 import Avatar from "@appserver/components/avatar";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Link from "@appserver/components/link";
@@ -13,6 +15,16 @@ import Button from "@appserver/components/button";
 const StyledDiv = styled.div`
   width: 32px;
   height: 32px;
+
+  ${isMobileOnly &&
+  css`
+    @media (min-width: 428px) {
+      .backdrop-active {
+        background-color: unset;
+        backdrop-filter: unset;
+      }
+    }
+  `}
 `;
 
 const StyledButtonWrapper = styled.div`
@@ -77,11 +89,23 @@ class ProfileActions extends React.PureComponent {
     const dropDownItem = path ? path.find((x) => x === this.ref.current) : null;
     if (dropDownItem) return;
 
+    const navElement = document.getElementsByClassName("profileMenuIcon");
+
+    if (navElement?.length > 0) {
+      navElement[0].style.setProperty("z-index", 180, "important");
+    }
+
     this.setOpened(!this.state.opened);
   };
 
   onClick = (action, e) => {
     action.onClick && action.onClick(e);
+
+    const navElement = document.getElementsByClassName("profileMenuIcon");
+
+    if (navElement?.length > 0) {
+      navElement[0].style.setProperty("z-index", 210, "important");
+    }
 
     this.setOpened(!this.state.opened);
   };
@@ -125,9 +149,10 @@ class ProfileActions extends React.PureComponent {
           forwardedRef={this.ref}
         >
           <div style={{ paddingTop: "8px" }}>
-            {this.props.userActions.map((action, index) =>
-              action ? (
-                action?.isButton ? (
+            {this.props.userActions.map(
+              (action, index) =>
+                action &&
+                (action?.isButton ? (
                   <StyledButtonWrapper key={action.key}>
                     <Button
                       size={"small"}
@@ -145,10 +170,7 @@ class ProfileActions extends React.PureComponent {
                   >
                     <DropDownItem {...action} />
                   </Link>
-                )
-              ) : (
-                <React.Fragment key="index"></React.Fragment>
-              )
+                ))
             )}
           </div>
         </ProfileMenu>

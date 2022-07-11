@@ -34,12 +34,6 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
   }
 
-  .button-dialog-accept {
-    @media ${tablet} {
-      width: 100%;
-    }
-  }
-
   .warning-text {
     margin: 20px 0;
   }
@@ -67,29 +61,18 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
   }
 
-  .delete_dialog-header-text {
-    padding-bottom: 8px;
-  }
-
-  .delete_dialog-text {
-    padding-bottom: 8px;
-  }
-
   .modal-dialog-content {
     padding: 8px 16px;
     border: ${(props) => props.theme.filesModalDialog.border};
 
     @media ${tablet} {
-      padding: 0;
+      //padding: 0;
+      padding-top: 0;
       border: 0;
     }
 
     .modal-dialog-checkbox:not(:last-child) {
       padding-bottom: 4px;
-    }
-
-    .delete_dialog-text:not(:first-child) {
-      padding-top: 8px;
     }
   }
 

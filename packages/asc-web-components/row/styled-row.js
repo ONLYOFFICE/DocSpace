@@ -1,7 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { tablet } from "../utils/device";
 import Base from "../themes/base";
+import { isMobile } from "react-device-detect";
 
 const StyledRow = styled.div`
   cursor: default;
@@ -29,8 +30,27 @@ const StyledRow = styled.div`
   align-content: center;
 
   .row-loader {
-    padding: 15px 12px 12px 0px;
+    padding: 0;
+    margin-left: 9px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    min-width: 32px;
   }
+
+  ${(props) =>
+    props.mode == "modern" &&
+    css`
+      .checkbox {
+        display: ${(props) => (props.checked ? "flex" : "none")};
+        margin-left: 4px;
+        padding-right: 2.5px;
+      }
+
+      .styled-element {
+        display: ${(props) => (props.checked ? "none" : "flex")};
+      }
+    `}
 `;
 StyledRow.defaultProps = { theme: Base };
 
@@ -50,15 +70,29 @@ const StyledContent = styled.div`
 StyledContent.defaultProps = { theme: Base };
 
 const StyledCheckbox = styled.div`
+  display: flex;
   flex: 0 0 16px;
+  height: 56px;
+  max-height: 56px;
+  justify-content: center;
+  align-items: center;
 
-  .checkbox {
-    padding: 7px 0;
-
-    @media ${tablet} {
-      padding: 10px 0;
-    }
-  }
+  ${(props) =>
+    props.mode == "modern" &&
+    !isMobile &&
+    css`
+      :hover {
+        .checkbox {
+          display: flex;
+          opacity: 1;
+          user-select: none;
+          padding-right: 2.5px;
+        }
+        .styled-element {
+          display: none;
+        }
+      }
+    `}
 `;
 
 const StyledElement = styled.div`

@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 global using System.Data;
+global using System.Text.Json.Nodes;
 
 global using ASC.Common;
 global using ASC.Common.Mapping;

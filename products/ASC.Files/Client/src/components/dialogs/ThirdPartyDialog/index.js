@@ -7,7 +7,10 @@ import { withTranslation } from "react-i18next";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
-import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import {
+  connectedCloudsTypeTitleTranslation,
+  connectedCloudsTitleTranslation,
+} from "../../../helpers/utils";
 import { Base } from "@appserver/components/themes";
 import Button from "@appserver/components/button";
 import SelectorAddButton from "@appserver/components/selector-add-button";
@@ -58,14 +61,12 @@ const StyledModalDialog = styled(ModalDialog)`
 
       .service-btn {
         margin-left: auto;
-
-        svg {
-          path {
-            fill: #333;
-          }
-        }
       }
     }
+  }
+
+  .modal-dialog-aside {
+    padding-bottom: 0;
   }
 `;
 
@@ -78,19 +79,22 @@ const ServiceItem = (props) => {
     className,
     getThirdPartyIcon,
     serviceName,
+    serviceKey,
     onClick,
   } = props;
 
-  const capabilityName = capability[0];
+  const capabilityKey = capability[0];
   const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
-    "data-title": capabilityName,
-    "data-key": capabilityName,
+    "data-title": capabilityKey,
+    "data-key": capabilityKey,
   };
 
-  const src = getThirdPartyIcon(capabilityName);
+  const src = getThirdPartyIcon(serviceKey || capabilityKey);
+
+  const capabilityName = connectedCloudsTypeTitleTranslation(capabilityKey, t);
 
   return (
     <div className="service-item-container">
@@ -167,8 +171,8 @@ const ThirdPartyDialog = (props) => {
 
   const onShowService = (e) => {
     setThirdPartyDialogVisible(false);
-    const item = e.currentTarget.dataset;
-    const showAccountSetting = !e.currentTarget.dataset.link;
+    const item = e.currentTarget.dataset || e.target.dataset;
+    const showAccountSetting = !item.link;
     if (!showAccountSetting) {
       let authModal = window.open(
         "",
@@ -277,7 +281,8 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               t={t}
               serviceName="Nextcloud"
-              capability={webDavConnectItem}
+              serviceKey="NextCloud"
+              capability={nextCloudConnectItem}
               onClick={onShowService}
               getThirdPartyIcon={getThirdPartyIcon}
             />
@@ -287,7 +292,8 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               t={t}
               serviceName="ownCloud"
-              capability={webDavConnectItem}
+              serviceKey="OwnCloud"
+              capability={ownCloudConnectItem}
               onClick={onShowService}
               getThirdPartyIcon={getThirdPartyIcon}
             />

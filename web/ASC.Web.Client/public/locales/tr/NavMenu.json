@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "Bu program hakkında",
   "LogoutButton": "Çıkış",
   "RecoverAccess": "Erişimi kurtar",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "Sorununuzu tarif edin",
   "RecoverTextBody": "Eğer hesabınıza giriş yapamıyorsanız veya yeni kullanıcı olarak kayıt olmak istiyorsanız, portal yöneticisi ile iletişime geçin. ",
   "RecoverTitle": "Erişim kurtarma",
-  "TurnOnDesktopVersion": "Masaüstü sürümünü aç"
+  "TurnOnDesktopVersion": "Masaüstü sürümünü aç",
+  "HelpCenter": "Yardım Merkezi"
 }

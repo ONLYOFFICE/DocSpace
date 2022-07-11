@@ -8,7 +8,7 @@ const ListLoader = ({ count, ...props }) => {
   for (var i = 0; i < count; i++) {
     items.push(<ListItemLoader key={`list_loader_${i}`} {...props} />);
   }
-  return <StyledList>{items}</StyledList>;
+  return <StyledList className="list-loader-wrapper">{items}</StyledList>;
 };
 
 ListLoader.propTypes = {

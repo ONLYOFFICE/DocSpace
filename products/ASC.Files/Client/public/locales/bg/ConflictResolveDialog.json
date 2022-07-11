@@ -1,4 +1,4 @@
-﻿{
+{
   "ConflictResolveDescription": "Файл с име <1>{{file}}</1> вече съществува в папка <1>{{folder}}</1>.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} документа с едно и също име вече съществуват в папката <1>{{folder}}<1>.",
   "ConflictResolveSelectAction": "Моля, изберете действие:",

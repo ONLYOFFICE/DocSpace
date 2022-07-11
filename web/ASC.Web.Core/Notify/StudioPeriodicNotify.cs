@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Log;
-
 namespace ASC.Web.Studio.Core.Notify;
 
 [Scope]
@@ -43,7 +41,6 @@ public class StudioPeriodicNotify
     private readonly ApiSystemHelper _apiSystemHelper;
     private readonly SetupInfo _setupInfo;
     private readonly DbContextManager<FeedDbContext> _dbContextManager;
-    private readonly CouponManager _couponManager;
     private readonly IConfiguration _configuration;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -66,7 +63,6 @@ public class StudioPeriodicNotify
         ApiSystemHelper apiSystemHelper,
         SetupInfo setupInfo,
         DbContextManager<FeedDbContext> dbContextManager,
-        CouponManager couponManager,
         IConfiguration configuration,
         SettingsManager settingsManager,
         CoreBaseSettings coreBaseSettings,
@@ -86,7 +82,6 @@ public class StudioPeriodicNotify
         _apiSystemHelper = apiSystemHelper;
         _setupInfo = setupInfo;
         _dbContextManager = dbContextManager;
-        _couponManager = couponManager;
         _configuration = configuration;
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
@@ -138,8 +133,6 @@ public class StudioPeriodicNotify
                 var toadmins = false;
                 var tousers = false;
                 var toowner = false;
-
-                var coupon = string.Empty;
 
                 Func<string> greenButtonText = () => string.Empty;
 
@@ -319,32 +312,6 @@ public class StudioPeriodicNotify
                     {
                         toadmins = true;
                         action = Actions.SaasAdminTrialWarningBefore5V115;
-                        coupon = "PortalCreation10%";
-
-                        if (string.IsNullOrEmpty(coupon))
-                        {
-                            try
-                            {
-                                _log.InformationStartCreateCoupon(tenant.Alias);
-
-                                coupon = SetupInfo.IsSecretEmail(_userManager.GetUsers(tenant.OwnerId).Email)
-                                        ? tenant.Alias
-                                            : _couponManager.CreateCoupon(_tenantManager);
-
-                                _log.InformationEndCreateCoupon(tenant.Alias, coupon);
-                            }
-                            catch (AggregateException ae)
-                            {
-                                foreach (var ex in ae.InnerExceptions)
-                                {
-                                    _log.ErrorWithException(ex);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                _log.ErrorSendSaasLettersAsync(ex);
-                            }
-                        }
 
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
                         greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
@@ -482,8 +449,7 @@ public class StudioPeriodicNotify
                         TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
                         TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
                         TagValues.TableBottom(),
-                            new TagValue(CommonTags.Footer, u.IsAdmin(_userManager) ? "common" : "social"),
-                        new TagValue(Tags.Coupon, coupon));
+                        new TagValue(CommonTags.Footer, u.IsAdmin(_userManager) ? "common" : "social"));
                 }
             }
             catch (Exception err)
@@ -995,39 +961,24 @@ public class StudioPeriodicNotify
 
                     var dayAfterRegister = (int)scheduleDate.Date.Subtract(user.CreateDate.Date).TotalDays;
 
-                    if (_coreBaseSettings.CustomMode)
+                    switch (dayAfterRegister)
                     {
-                        switch (dayAfterRegister)
-                        {
-                            case 7:
-                                action = Actions.PersonalCustomModeAfterRegistration7;
-                                break;
-                            default:
-                                continue;
-                        }
-                    }
-                    else
-                    {
-
-                        switch (dayAfterRegister)
-                        {
-                            case 7:
-                                action = Actions.PersonalAfterRegistration7;
-                                break;
-                            case 14:
-                                action = Actions.PersonalAfterRegistration14;
-                                break;
-                            case 21:
-                                action = Actions.PersonalAfterRegistration21;
-                                break;
-                            case 28:
-                                action = Actions.PersonalAfterRegistration28;
-                                greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
-                                greenButtonUrl = "https://www.onlyoffice.com/download-workspace.aspx";
-                                break;
-                            default:
-                                continue;
-                        }
+                        case 7:
+                            action = Actions.PersonalAfterRegistration7;
+                            break;
+                        case 14:
+                            action = Actions.PersonalAfterRegistration14;
+                            break;
+                        case 21:
+                            action = Actions.PersonalAfterRegistration21;
+                            break;
+                        case 28:
+                            action = Actions.PersonalAfterRegistration28;
+                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
+                            greenButtonUrl = "https://www.onlyoffice.com/download-workspace.aspx";
+                            break;
+                        default:
+                            continue;
                     }
 
                     if (action == null)

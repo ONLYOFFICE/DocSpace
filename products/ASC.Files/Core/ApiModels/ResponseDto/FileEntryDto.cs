@@ -65,21 +65,21 @@ public abstract class FileEntryDto
     protected FileEntryDto() { }
 }
 
-public abstract class FileEntryWrapper<T> : FileEntryDto
+public abstract class FileEntryDto<T> : FileEntryDto
 {
     public T Id { get; set; }
     public T RootFolderId { get; set; }
     public bool CanShare { get; set; }
     public bool CanEdit { get; set; }
 
-    protected FileEntryWrapper(FileEntry<T> entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+    protected FileEntryDto(FileEntry<T> entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
         : base(entry, employeeWraperHelper, apiDateTimeHelper)
     {
         Id = entry.Id;
         RootFolderId = entry.RootId;
     }
 
-    protected FileEntryWrapper() { }
+    protected FileEntryDto() { }
 }
 
 [Scope]
@@ -102,7 +102,7 @@ public class FileEntryDtoHelper
         _fileSecurity = fileSecurity;
     }
 
-    protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
+    protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryDto<TId>, new()
     {
         return new T
         {

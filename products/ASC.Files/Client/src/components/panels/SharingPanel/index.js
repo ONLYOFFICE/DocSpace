@@ -3,7 +3,7 @@ import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
 
 import Aside from "@appserver/components/aside";
-
+import SaveCancelButton from "@appserver/components/save-cancel-buttons";
 import { withTranslation, Trans } from "react-i18next";
 import toastr from "studio/toastr";
 import { ShareAccessRights } from "@appserver/common/constants";
@@ -351,15 +351,16 @@ class SharingPanelComponent extends React.Component {
           ? shareDataItems.find((x) => x.sharedTo.shareLink)?.access
           : null;
 
-        this.setState({
-          baseShareData,
-          shareDataItems,
-          accessOptions,
-          externalAccessOptions,
-          //showPanel: true,
-          filesOwnerId,
-          baseExternalAccess,
-        });
+        this._isMounted &&
+          this.setState({
+            baseShareData,
+            shareDataItems,
+            accessOptions,
+            externalAccessOptions,
+            //showPanel: true,
+            filesOwnerId,
+            baseExternalAccess,
+          });
       })
 
       .catch((err) => {
@@ -368,9 +369,10 @@ class SharingPanelComponent extends React.Component {
       })
       .finally(() => {
         setTimeout(() => {
-          return this.setState({
-            isLoading: false,
-          });
+          if (this._isMounted)
+            return this.setState({
+              isLoading: false,
+            });
         }, 500);
       });
   };
@@ -417,13 +419,20 @@ class SharingPanelComponent extends React.Component {
   };
 
   componentDidMount() {
+    const { settings, setFilesSettings } = this.props;
+    settings && setFilesSettings(settings); // Remove after initialization settings in Editor
+
     this.getShareData();
 
+    this._isMounted = true;
     document.addEventListener("keyup", this.onKeyPress);
+    window.addEventListener("popstate", () => this.onClose());
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     document.removeEventListener("keyup", this.onKeyPress);
+    window.removeEventListener("popstate", () => this.onClose());
   }
 
   onKeyPress = (event) => {
@@ -624,18 +633,12 @@ class SharingPanelComponent extends React.Component {
                 {!showEmbeddingContent && (
                   <ModalDialog.Footer>
                     <StyledModalFooter>
-                      <Button
-                        size={"normal"}
-                        label={t("Common:SaveButton")}
-                        primary
-                        onClick={this.onSaveClick}
-                        scale
-                      />
-                      <Button
-                        size={"normal"}
-                        label={t("Common:CancelButton")}
-                        scale
-                        onClick={this.onClose}
+                      <SaveCancelButton
+                        saveButtonLabel={t("Common:SaveButton")}
+                        onSaveClick={this.onSaveClick}
+                        cancelButtonLabel={t("Common:CancelButton")}
+                        onCancelClick={this.onClose}
+                        showReminder={true}
                       />
                     </StyledModalFooter>
                   </ModalDialog.Footer>
@@ -692,18 +695,13 @@ class SharingPanelComponent extends React.Component {
                 {!showEmbeddingContent && (
                   <ModalDialog.Footer>
                     <StyledModalFooter>
-                      <Button
-                        size={"normal"}
-                        label={t("Common:SaveButton")}
-                        primary
-                        onClick={this.onSaveClick}
-                        scale
-                      />
-                      <Button
-                        size={"normal"}
-                        label={t("Common:CancelButton")}
-                        scale
-                        onClick={this.onClose}
+                      <SaveCancelButton
+                        saveButtonLabel={t("Common:SaveButton")}
+                        onSaveClick={this.onSaveClick}
+                        cancelButtonLabel={t("Common:CancelButton")}
+                        onCancelClick={this.onClose}
+                        showReminder={this.state.isUpdated}
+                        cancelEnable={true}
                       />
                     </StyledModalFooter>
                   </ModalDialog.Footer>
@@ -723,6 +721,7 @@ class SharingPanelComponent extends React.Component {
               className="header_aside-panel"
               visible={visible}
               withoutBodyScroll={true}
+              onClose={this.onClose}
             >
               {!isLoading ? (
                 <StyledContent isNotifyUsers={isNotifyUsers}>
@@ -832,12 +831,13 @@ const SharingPanel = inject(
       dialogsStore,
       treeFoldersStore,
       selectedFolderStore,
+      settingsStore,
     },
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { personal, customNames, isDesktopClient } = auth.settingsStore;
-    const { user } = auth.userStore;
+    const { setFilesSettings } = settingsStore;
 
     const { id, access } = selectedFolderStore;
 
@@ -868,6 +868,13 @@ const SharingPanel = inject(
       selectUploadedFile,
       updateUploadedItem,
     } = uploadDataStore;
+
+    const isShared =
+      selection.length > 0 && selection[0].shared
+        ? selection[0].shared
+        : bufferSelection?.shared
+        ? bufferSelection.shared
+        : false;
 
     return {
       theme: auth.settingsStore.theme,
@@ -905,7 +912,8 @@ const SharingPanel = inject(
       id,
       setBufferSelection,
       access,
-      isShared: selection[0]?.shared ? selection[0].shared : false,
+      isShared: isShared,
+      setFilesSettings,
     };
   }
 )(

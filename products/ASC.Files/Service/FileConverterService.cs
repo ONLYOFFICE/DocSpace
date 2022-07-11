@@ -24,19 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Globalization;
-using System.Text.Json;
-
-using ASC.Common.Log;
-using ASC.Core.Common.Hosting;
-using ASC.Core.Common.Hosting.Interfaces;
-using ASC.Files.Core.Log;
-using ASC.Files.Core.Resources;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using static ASC.Web.Core.Files.DocumentService;
-
 namespace ASC.Files.ThumbnailBuilder;
 
 [Singletone(Additional = typeof(FileConverterQueueExtension))]
@@ -57,7 +44,7 @@ internal class FileConverterService<T> : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.DebugFileConverterServiceRuning();
-       
+
         stoppingToken.Register(() => _logger.DebugFileConverterServiceStopping());
 
         while (!stoppingToken.IsCancellationRequested)
@@ -96,7 +83,7 @@ internal class FileConverterService<T> : BackgroundService
         FileConverterQueue<T> fileConverterQueue;
 
         var logger = scope.ServiceProvider.GetService<ILogger<FileConverterQueue<T>>>();
-        
+
         try
         {
             var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
@@ -114,6 +101,8 @@ internal class FileConverterService<T> : BackgroundService
 
             foreach (var converter in filesIsConverting)
             {
+                converter.Processed = "1";
+
                 var fileId = JsonDocument.Parse(converter.Source).RootElement.GetProperty("id").Deserialize<T>();
                 var fileVersion = JsonDocument.Parse(converter.Source).RootElement.GetProperty("version").Deserialize<int>();
 
@@ -160,7 +149,7 @@ internal class FileConverterService<T> : BackgroundService
                     var docKey = documentServiceHelper.GetDocKey(file);
 
                     fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                    (operationResultProgress, convertedFileUrl) = documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, null, null, true).Result;
+                    (operationResultProgress, convertedFileUrl) = documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, true).Result;
                 }
                 catch (Exception exception)
                 {
@@ -196,7 +185,7 @@ internal class FileConverterService<T> : BackgroundService
                 {
                     var operationResult = converter;
 
-                    if (DateTime.Now - operationResult.StartDateTime > TimeSpan.FromMinutes(10))
+                    if (DateTime.UtcNow - operationResult.StartDateTime > TimeSpan.FromMinutes(10))
                     {
                         operationResult.StopDateTime = DateTime.UtcNow;
                         operationResult.Error = FilesCommonResource.ErrorMassage_ConvertTimeout;

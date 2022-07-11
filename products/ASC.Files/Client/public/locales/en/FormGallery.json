@@ -1,7 +1,6 @@
 {
-  "GalleryEmptyScreenHeader": "Failed to load form templates",
-  "GalleryEmptyScreenDescription": "Select any form template to see the details",
   "EmptyScreenDescription": "Please check your Internet connection and refresh the page or try later",
-  "TemplateInfo": "Template info",
-  "FormTemplateInfo": "Form template info"
+  "GalleryEmptyScreenDescription": "Select any form template to see the details",
+  "GalleryEmptyScreenHeader": "Failed to load form templates",
+  "TemplateInfo": "Template info"
 }

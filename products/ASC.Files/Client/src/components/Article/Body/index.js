@@ -37,6 +37,7 @@ const ArticleBodyContent = (props) => {
     isVisitor,
     FirebaseHelper,
     theme,
+    toggleArticleOpen,
   } = props;
 
   const campaigns = (localStorage.getItem("campaigns") || "")
@@ -65,7 +66,7 @@ const ArticleBodyContent = (props) => {
         if (!filesSection) {
           const filter = FilesFilter.getDefault();
 
-          filter.folder = data[0];
+          filter.folder = data;
 
           const urlFilter = filter.toUrlParams();
 
@@ -98,6 +99,7 @@ const ArticleBodyContent = (props) => {
         onClick={onClick}
         onBadgeClick={onShowNewFilesPanel}
         showText={showText}
+        onHide={toggleArticleOpen}
       />
       {!personal && !firstLoad && <SettingsItems />}
       {!isDesktopClient && showText && (

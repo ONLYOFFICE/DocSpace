@@ -6,9 +6,10 @@ import { classNames } from "../../utils/classNames";
 import { CSSTransition } from "react-transition-group";
 import { ReactSVG } from "react-svg";
 import ArrowIcon from "../svg/arrow.right.react.svg";
-import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
+import Scrollbar from "../../scrollbar";
 
-import { VariableSizeList } from "react-window";
+//import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
+//import { VariableSizeList } from "react-window";
 
 const SubMenu = (props) => {
   const { onLeafClick, root, resetMenu, model, changeView } = props;
@@ -176,6 +177,7 @@ const SubMenu = (props) => {
 
     return (
       <li
+        id={item.id}
         key={item.key}
         role="none"
         className={className}
@@ -224,27 +226,38 @@ const SubMenu = (props) => {
           return 36;
         });
 
-        const getItemSize = (index) => rowHeights[index];
+        //const getItemSize = (index) => rowHeights[index];
 
         const height = rowHeights.reduce((a, b) => a + b);
 
         const viewport = DomHelpers.getViewport();
 
         const listHeight =
-          height + 61 > viewport.height - 64 ? viewport.height - 125 : height;
+          height + 61 > viewport.height - 64
+            ? viewport.height - 125
+            : height + 5;
 
         return (
-          <VariableSizeList
-            height={listHeight}
-            width={"auto"}
-            itemCount={newModel.length}
-            itemSize={getItemSize}
-            itemData={newModel}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {renderItem}
-          </VariableSizeList>
+          <Scrollbar style={{ height: listHeight }} stype="mediumBlack">
+            {model.map((item, index) => {
+              if (item.disabled) return null;
+              return renderItem(item, index);
+            })}
+          </Scrollbar>
         );
+
+        // return (
+        //   <VariableSizeList
+        //     height={listHeight}
+        //     width={"auto"}
+        //     itemCount={newModel.length}
+        //     itemSize={getItemSize}
+        //     itemData={newModel}
+        //     outerElementType={CustomScrollbarsVirtualList}
+        //   >
+        //     {renderItem}
+        //   </VariableSizeList>
+        // );
       }
 
       return model.map((item, index) => {

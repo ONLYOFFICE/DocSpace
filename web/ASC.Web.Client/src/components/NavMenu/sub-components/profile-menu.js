@@ -1,36 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
+
 import Avatar from "@appserver/components/avatar";
 import DropDown from "@appserver/components/drop-down";
 
 import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
-import {
-  isDesktop,
-  isTablet,
-  isMobile,
-  isMobileOnly,
-} from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 import { mobile, tablet } from "@appserver/components/utils/device";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
+import Portal from "@appserver/components/portal";
+
+const StyledWrapper = styled.div`
+  @media (min-width: 428px) {
+    .backdrop-active {
+      background-color: unset;
+      backdrop-filter: unset;
+    }
+  }
+`;
 
 const StyledDropDown = styled(DropDown)`
-  z-index: 500;
+  z-index: 500 !important;
 
-  top: 54px !important;
+  top: ${(props) =>
+    props.isBannerVisible && props.withPortal ? "134px" : "54px"} !important;
   right: 20px !important;
 
   @media ${tablet} {
     right: 16px !important;
   }
 
-  ${isMobile &&
-  css`
-    right: 16px !important;
-  `}
-
-  @media ${mobile} {
+  @media (max-width: 428px) {
     position: fixed;
 
     top: unset !important;
@@ -43,22 +46,6 @@ const StyledDropDown = styled(DropDown)`
 
     border-radius: 6px 6px 0px 0px !important;
   }
-
-  ${isMobileOnly &&
-  css`
-    position: fixed;
-
-    top: unset !important;
-    right: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-
-    width: 100vw;
-
-    border: none !important;
-
-    border-radius: 6px 6px 0px 0px !important;
-  `}
 `;
 
 const StyledControlContainer = styled.div`
@@ -70,12 +57,12 @@ const StyledControlContainer = styled.div`
   right: 10px;
   border-radius: 100px;
   cursor: pointer;
-  display: ${isMobileOnly ? "flex" : "none"};
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 290;
 
-  @media ${mobile} {
+  @media (max-width: 428px) {
     display: flex;
   }
 `;
@@ -97,6 +84,9 @@ const commonStyle = css`
   font-style: normal;
   color: ${(props) => props.theme.menuContainer.color};
   max-width: 300px;
+  @media ${mobile} {
+    max-width: calc(100vw - 84px);
+  }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -124,9 +114,15 @@ export const MenuContainer = styled.div`
   cursor: default;
   box-sizing: border-box;
 
+  @media ${mobile} {
+    max-width: 100vw;
+  }
+
   .avatar {
     height: 40px;
     width: 40px;
+    min-height: 40px;
+    min-width: 40px;
   }
 `;
 
@@ -135,6 +131,12 @@ MenuContainer.defaultProps = { theme: Base };
 export const MainLabelContainer = styled.div`
   font-size: 16px;
   line-height: 28px;
+
+  width: auto;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   ${commonStyle}
 `;
@@ -156,7 +158,7 @@ class ProfileMenu extends React.Component {
     super(props);
   }
 
-  render() {
+  renderDropDown = () => {
     const {
       avatarRole,
       avatarSource,
@@ -167,6 +169,7 @@ class ProfileMenu extends React.Component {
       clickOutsideAction,
       open,
       forwardedRef,
+      isBannerVisible,
     } = this.props;
 
     return (
@@ -177,6 +180,9 @@ class ProfileMenu extends React.Component {
         clickOutsideAction={clickOutsideAction}
         forwardedRef={forwardedRef}
         isDefaultMode={false}
+        withBlur={isMobileOnly}
+        isBannerVisible={isBannerVisible}
+        withPortal={isMobileOnly}
       >
         <StyledProfileMenu>
           <MenuContainer>
@@ -199,6 +205,22 @@ class ProfileMenu extends React.Component {
         {children}
       </StyledDropDown>
     );
+  };
+
+  render() {
+    const { open } = this.props;
+
+    const element = this.renderDropDown();
+
+    if (isMobileOnly) {
+      const root = document.getElementById("root");
+
+      const wrapper = <StyledWrapper>{element}</StyledWrapper>;
+
+      return <>{<Portal element={wrapper} appendTo={root} visible={open} />}</>;
+    }
+
+    return <>{element}</>;
   }
 }
 
@@ -217,4 +239,8 @@ ProfileMenu.propTypes = {
   clickOutsideAction: PropTypes.func,
 };
 
-export default ProfileMenu;
+export default inject(({ bannerStore }) => {
+  const { isBannerVisible } = bannerStore;
+
+  return { isBannerVisible };
+})(observer(ProfileMenu));

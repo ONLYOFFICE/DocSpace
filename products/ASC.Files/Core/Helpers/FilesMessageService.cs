@@ -54,15 +54,14 @@ public class FilesMessageService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public void Send(IDictionary<string, StringValues> headers, MessageAction action)
+    public void Send(IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
-        SendHeadersMessage(headers, action, null);
+        SendHeadersMessage(headers, action, null, description);
     }
 
     public void Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
-        // do not log actions in users folder
-        if (entry == null || entry.RootFolderType == FolderType.USER)
+        if (entry == null)
         {
             return;
         }
@@ -72,8 +71,7 @@ public class FilesMessageService
 
     public void Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
-        // do not log actions in users folder
-        if (entry1 == null || entry2 == null || entry1.RootFolderType == FolderType.USER || entry2.RootFolderType == FolderType.USER)
+        if (entry1 == null || entry2 == null)
         {
             return;
         }
@@ -83,7 +81,7 @@ public class FilesMessageService
 
     private void SendHeadersMessage(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
     {
-        if (headers == null)
+        if (headers == null)//todo check need if
         {
             _logger.DebugEmptyRequestHeaders(action);
 
@@ -93,10 +91,9 @@ public class FilesMessageService
         _messageService.Send(headers, action, target, description);
     }
 
-    public void Send<T>(FileEntry<T> entry, MessageAction action, params string[] description)
+    public void Send<T>(FileEntry<T> entry, MessageAction action, string description)
     {
-        // do not log actions in users folder
-        if (entry == null || entry.RootFolderType == FolderType.USER)
+        if (entry == null)
         {
             return;
         }
@@ -111,9 +108,25 @@ public class FilesMessageService
         _messageService.Send(action, _messageTarget.Create(entry.Id), description);
     }
 
+    public void Send<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
+    {
+        if (entry == null)
+        {
+            return;
+        }
+
+        if (_httpContextAccessor == null)
+        {
+            _logger.DebugEmptyHttpRequest(action);
+            return;
+        }
+
+        _messageService.Send(action, _messageTarget.Create(entry.Id), d1, d2);
+    }
+
     public void Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
     {
-        if (entry == null || entry.RootFolderType == FolderType.USER)
+        if (entry == null)
         {
             return;
         }

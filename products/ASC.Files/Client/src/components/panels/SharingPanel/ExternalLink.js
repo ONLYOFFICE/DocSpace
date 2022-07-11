@@ -176,7 +176,7 @@ const ExternalLink = ({
           </div>
           <div className="external-link__access-rights">
             <Text className="external-link__access-rights_text">
-              {t("AccessRights")}:
+              {t("Common:AccessRights")}:
             </Text>
             <AccessComboBox
               t={t}
@@ -191,6 +191,7 @@ const ExternalLink = ({
               isExternalLink={true}
               isDefaultMode={false}
               fixedDirection={true}
+              isPersonal={isPersonal}
             />
           </div>
         </>

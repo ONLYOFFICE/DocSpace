@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "Giới thiệu về chương trình này",
   "LogoutButton": "Đăng xuất",
   "RecoverAccess": "Khôi phục quyền truy cập",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "Mô tả vấn đề của bạn",
   "RecoverTextBody": "Nếu bạn không thể đăng nhập bằng tài khoản hiện có của mình hoặc muốn đăng ký làm người dùng mới, hãy liên hệ với quản trị viên cổng thông tin.",
   "RecoverTitle": "Khôi phục truy cập",
-  "TurnOnDesktopVersion": "Bật phiên bản dành cho máy tính"
+  "TurnOnDesktopVersion": "Bật phiên bản dành cho máy tính",
+  "HelpCenter": "Trung tâm Hỗ trợ"
 }

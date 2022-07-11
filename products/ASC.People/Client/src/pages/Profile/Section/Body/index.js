@@ -31,11 +31,7 @@ import {
   providersData,
   ThemeKeys,
 } from "@appserver/common/constants";
-import {
-  unlinkOAuth,
-  linkOAuth,
-  changeTheme,
-} from "@appserver/common/api/people";
+import { unlinkOAuth, linkOAuth } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import { Trans, useTranslation } from "react-i18next";
 import {
@@ -154,25 +150,14 @@ class SectionBodyContent extends React.PureComponent {
       tfa: null,
     };
   }
-  async componentDidMount() {
+
+  fetchData = async () => {
     const {
-      //cultures,
-      //getPortalCultures,
-      //profile,
-      //viewer,
-      isSelf,
       setProviders,
       getTfaType,
       getBackupCodes,
       setBackupCodes,
     } = this.props;
-
-    //const isSelf = isMe(viewer, profile.userName);
-    //if (isSelf && !cultures.length) {
-    //getPortalCultures();
-    //}
-
-    if (!isSelf) return;
 
     try {
       await getAuthProviders().then((providers) => {
@@ -183,13 +168,36 @@ class SectionBodyContent extends React.PureComponent {
     }
 
     const type = await getTfaType();
-    this.setState({ tfa: type });
-
+    this._isMounted && this.setState({ tfa: type });
     if (type && type !== "none") {
       const codes = await getBackupCodes();
       setBackupCodes(codes);
     }
+  };
+
+  componentDidMount() {
+    const {
+      //cultures,
+      //getPortalCultures,
+      //profile,
+      //viewer,
+      isSelf,
+    } = this.props;
+    this._isMounted = true;
+    //const isSelf = isMe(viewer, profile.userName);
+    //if (isSelf && !cultures.length) {
+    //getPortalCultures();
+    //}
+
+    if (!isSelf) return;
+
+    this.fetchData();
     window.loginCallback = this.loginCallback;
+  }
+
+  componentWillUnmount() {
+    window.loginCallback = null;
+    this._isMounted = false;
   }
 
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
@@ -312,7 +320,7 @@ class SectionBodyContent extends React.PureComponent {
                   onClick={(e) => this.unlinkAccount(item.provider, e)}
                   isHovered={true}
                 >
-                  {t("Disconnect")}
+                  {t("Common:Disconnect")}
                 </Link>
               </div>
             ) : (
@@ -508,7 +516,11 @@ class SectionBodyContent extends React.PureComponent {
 
         {isSelf && (
           <ToggleWrapper>
-            <ToggleContent label={t("InterfaceTheme")} isOpen={true}>
+            <ToggleContent
+              label={t("InterfaceTheme")}
+              isOpen={true}
+              enableToggle={false}
+            >
               <RadioButtonGroup
                 orientation={"vertical"}
                 name={"interface-theme"}
@@ -525,23 +537,23 @@ class SectionBodyContent extends React.PureComponent {
           </ToggleWrapper>
         )}
 
-        {profile.notes && (
+        {!personal && profile.notes && (
           <ToggleWrapper isContacts={true}>
-            <ToggleContent label={t("Translations:Comments")} isOpen={true}>
+            <ToggleContent label={t("Common:Comments")} isOpen={true}>
               <Text className="profile-comments" as="span">
                 {profile.notes}
               </Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
-        {profile.contacts && (
+        {!personal && profile.contacts && (
           <ToggleWrapper isContacts={true}>
             <ToggleContent label={t("ContactInformation")} isOpen={true}>
               <Text as="span">{infoContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
-        {socialContacts && (
+        {!personal && socialContacts && (
           <ToggleWrapper isContacts={true}>
             <ToggleContent
               label={t("Translations:SocialProfiles")}

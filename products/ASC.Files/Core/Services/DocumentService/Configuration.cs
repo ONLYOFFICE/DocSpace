@@ -26,6 +26,7 @@
 
 namespace ASC.Web.Files.Services.DocumentService;
 
+[EnumExtensions]
 public enum EditorType
 {
     Desktop,
@@ -38,9 +39,9 @@ public class Configuration<T>
 {
     internal static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
     {
-        { FileType.Document, "text" },
-        { FileType.Spreadsheet, "spreadsheet" },
-        { FileType.Presentation, "presentation" }
+        { FileType.Document, "word" },
+        { FileType.Spreadsheet, "cell" },
+        { FileType.Presentation, "slide" }
     };
 
     private FileType _fileTypeCache = FileType.Unknown;
@@ -175,6 +176,8 @@ public class InfoConfig<T>
 
     public EditorType Type { get; set; } = EditorType.Desktop;
     private string _breadCrumbs;
+    private bool? _favorite;
+    private bool _favoriteIsSet;
 
     public InfoConfig(BreadCrumbsManager breadCrumbsManager, FileSharing fileSharing, SecurityContext securityContext, UserManager userManager)
     {
@@ -188,17 +191,27 @@ public class InfoConfig<T>
     {
         get
         {
+            if (_favoriteIsSet)
+            {
+                return _favorite;
+            }
+
             if (!_securityContext.IsAuthenticated || _userManager.GetUsers(_securityContext.CurrentAccount.ID).IsVisitor(_userManager))
             {
                 return null;
             }
 
-            if (_file.Encrypted)
+            if (_file.ParentId == null || _file.Encrypted)
             {
                 return null;
             }
 
             return _file.IsFavorite;
+        }
+        set
+        {
+            _favoriteIsSet = true;
+            _favorite = value;
         }
     }
 
@@ -257,7 +270,6 @@ public class InfoConfig<T>
 
 public class PermissionsConfig
 {
-    //todo: obsolete since DS v5.5
     public bool ChangeHistory { get; set; }
     public bool Comment { get; set; } = true;
     public bool Download { get; set; } = true;
@@ -265,8 +277,6 @@ public class PermissionsConfig
     public bool FillForms { get; set; } = true;
     public bool Print { get; set; } = true;
     public bool ModifyFilter { get; set; } = true;
-
-    //todo: obsolete since DS v6.0
     public bool Rename { get; set; }
     public bool Review { get; set; } = true;
 }
@@ -274,6 +284,16 @@ public class PermissionsConfig
 [Transient]
 public class EditorConfiguration<T>
 {
+    private readonly UserManager _userManager;
+    private readonly AuthContext _authContext;
+    private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly FileUtility _fileUtility;
+    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+    private readonly FilesSettingsHelper _filesSettingsHelper;
+    private readonly IDaoFactory _daoFactory;
+    private readonly EntryManager _entryManager;
+    private readonly DocumentServiceTrackerHelper _documentServiceTrackerHelper;
+
     public EditorConfiguration(
         UserManager userManager,
         AuthContext authContext,
@@ -286,7 +306,8 @@ public class EditorConfiguration<T>
         CustomizationConfig<T> customizationConfig,
         FilesSettingsHelper filesSettingsHelper,
         IDaoFactory daoFactory,
-        EntryManager entryManager)
+        EntryManager entryManager,
+        DocumentServiceTrackerHelper documentServiceTrackerHelper)
     {
         _userManager = userManager;
         _authContext = authContext;
@@ -297,6 +318,7 @@ public class EditorConfiguration<T>
         _filesSettingsHelper = filesSettingsHelper;
         _daoFactory = daoFactory;
         _entryManager = entryManager;
+        _documentServiceTrackerHelper = documentServiceTrackerHelper;
         Plugins = pluginsConfig;
         Embedded = embeddedConfig;
         _userInfo = userManager.GetUsers(authContext.CurrentAccount.ID);
@@ -325,6 +347,21 @@ public class EditorConfiguration<T>
     private EmbeddedConfig _embeddedConfig;
 
     public ActionLinkConfig ActionLink { get; set; }
+
+    public CoEditingConfig CoEditing
+    {
+        set { }
+        get
+        {
+            return !ModeWrite && User == null
+              ? new CoEditingConfig
+              {
+                  Fast = false,
+                  Change = false
+              }
+              : null;
+        }
+    }
 
     public string ActionLinkString
     {
@@ -387,7 +424,6 @@ public class EditorConfiguration<T>
                                     new TemplatesConfig
                                     {
                                         Image = _baseCommonLinkUtility.GetFullAbsolutePath("skins/default/images/filetype/thumb/" + extension + ".png"),
-                                        Name = file.Title,
                                         Title = file.Title,
                                         Url = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.Id))
                                     };
@@ -395,7 +431,13 @@ public class EditorConfiguration<T>
         }
     }
 
-    public string CallbackUrl { get; set; }
+    public string CallbackUrl
+    {
+        get
+        {
+            return ModeWrite ? _documentServiceTrackerHelper.GetCallbackUrl(_configuration.Document.Info.GetFile().Id.ToString()) : null;
+        }
+    }
 
     public string CreateUrl
     {
@@ -418,9 +460,6 @@ public class EditorConfiguration<T>
     public PluginsConfig Plugins { get; set; }
 
     public CustomizationConfig<T> Customization { get; set; }
-    private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly IDaoFactory _daoFactory;
-    private readonly EntryManager _entryManager;
 
     public EmbeddedConfig Embedded
     {
@@ -435,12 +474,6 @@ public class EditorConfiguration<T>
     public string Lang => _userInfo.GetCulture().Name;
 
     public string Mode => ModeWrite ? "edit" : "view";
-
-    private readonly UserManager _userManager;
-    private readonly AuthContext _authContext;
-    private readonly FilesLinkUtility _filesLinkUtility;
-    private readonly FileUtility _fileUtility;
-    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
 
     public string SaveAsUrl { get; set; }
     public List<RecentConfig> Recent
@@ -535,6 +568,17 @@ public class ActionLinkConfig
     {
         return JsonSerializer.Serialize(actionLinkConfig);
     }
+}
+public class CoEditingConfig
+{
+    public bool Fast { get; set; }
+
+    public string Mode
+    {
+        get { return Fast ? "fast" : "strict"; }
+    }
+
+    public bool Change { get; set; }
 }
 
 [Transient]
@@ -633,7 +677,9 @@ public class CustomizationConfig<T>
         PathProvider pathProvider,
         CustomerConfig<T> customerConfig,
         LogoConfig<T> logoConfig,
-        FileSharing fileSharing)
+        FileSharing fileSharing,
+        CommonLinkUtility commonLinkUtility,
+        ThirdPartySelector thirdPartySelector)
     {
         _coreBaseSettings = coreBaseSettings;
         _settingsManager = settingsManager;
@@ -647,18 +693,31 @@ public class CustomizationConfig<T>
         Customer = customerConfig;
         Logo = logoConfig;
         FileSharing = fileSharing;
+        _thirdPartySelector = thirdPartySelector;
+        _commonLinkUtility = commonLinkUtility;
     }
 
     private Configuration<T> _configuration;
+    private readonly ThirdPartySelector _thirdPartySelector;
 
     internal void SetConfiguration(Configuration<T> configuration)
     {
         _configuration = configuration;
-        Customer.SetConfiguration(_configuration);
+
+        if (_coreBaseSettings.Standalone)
+        {
+            Customer.SetConfiguration(_configuration);
+        }
+        else
+        {
+            Customer = null;
+        }
+
         Logo.SetConfiguration(_configuration);
     }
 
-    //private string _gobackUrl;
+    [JsonIgnore]
+    public string GobackUrl;
     public bool IsRetina { get; set; }
 
     public bool About => !_coreBaseSettings.Standalone && !_coreBaseSettings.CustomMode;
@@ -674,17 +733,16 @@ public class CustomizationConfig<T>
                 return null;
             }
 
-            var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
-            if (!settings.FeedbackAndSupportEnabled)
+            var link = _commonLinkUtility.GetFeedbackAndSupportLink(_settingsManager, true);
+
+            if (string.IsNullOrEmpty(link))
             {
                 return null;
             }
 
             return new FeedbackConfig
             {
-                Url = BaseCommonLinkUtility.GetRegionalUrl(
-                        settings.FeedbackAndSupportUrl,
-                        CultureInfo.CurrentCulture.TwoLetterISOLanguageName),
+                Url = link
             };
         }
     }
@@ -695,7 +753,7 @@ public class CustomizationConfig<T>
         {
             return _fileUtility.CanForcesave
                    && !_configuration.Document.Info.GetFile().ProviderEntry
-                   && ThirdPartySelector.GetAppByFileId(_configuration.Document.Info.GetFile().Id.ToString()) == null
+                   && _thirdPartySelector.GetAppByFileId(_configuration.Document.Info.GetFile().Id.ToString()) == null
                    && _filesSettingsHelper.Forcesave;
         }
     }
@@ -713,24 +771,23 @@ public class CustomizationConfig<T>
             {
                 return null;
             }
-            //if (_gobackUrl != null)
-            //{
-            //    return new GobackConfig
-            //    {
-            //        Url = _gobackUrl,
-            //    };
-            //}
+            if (GobackUrl != null)
+            {
+                return new GobackConfig
+                {
+                    Url = GobackUrl,
+                };
+            }
 
             var folderDao = _daoFactory.GetFolderDao<T>();
             try
             {
                 var parent = folderDao.GetFolderAsync(_configuration.Document.Info.GetFile().ParentId).Result;
-                var fileSecurity = _fileSecurity;
                 if (_configuration.Document.Info.GetFile().RootFolderType == FolderType.USER
                     && !Equals(_configuration.Document.Info.GetFile().RootId, _globalFolderHelper.FolderMy)
-                    && !fileSecurity.CanReadAsync(parent).Result)
+                    && !_fileSecurity.CanReadAsync(parent).Result)
                 {
-                    if (fileSecurity.CanReadAsync(_configuration.Document.Info.GetFile()).Result)
+                    if (_fileSecurity.CanReadAsync(_configuration.Document.Info.GetFile()).Result)
                     {
                         return new GobackConfig
                         {
@@ -743,7 +800,7 @@ public class CustomizationConfig<T>
 
                 if (_configuration.Document.Info.GetFile().Encrypted
                     && _configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy
-                    && !fileSecurity.CanReadAsync(parent).Result)
+                    && !_fileSecurity.CanReadAsync(parent).Result)
                 {
                     parent = folderDao.GetFolderAsync(_globalFolderHelper.GetFolderPrivacyAsync<T>().Result).Result;
                 }
@@ -778,6 +835,38 @@ public class CustomizationConfig<T>
         get { return _configuration.EditorConfig.ModeWrite ? null : "markup"; }
     }
 
+    public bool SubmitForm
+    {
+        get
+        {
+            if (_configuration.EditorConfig.ModeWrite
+              && _configuration.Document.Info.GetFile().Access == ASC.Files.Core.Security.FileShare.FillForms)
+            {
+                var linkDao = _daoFactory.GetLinkDao();
+                var sourceId = linkDao.GetSourceAsync(_configuration.Document.Info.GetFile().Id.ToString()).Result;
+
+                if (sourceId != null)
+                {
+                    EntryProperties properties;
+
+                    if (int.TryParse(sourceId, out var sourceInt))
+                    {
+                        properties = _daoFactory.GetFileDao<int>().GetProperties(sourceInt).Result;
+                    }
+                    else
+                    {
+                        properties = _daoFactory.GetFileDao<string>().GetProperties(sourceId).Result;
+                    }
+
+                    return properties != null
+                        && properties.FormFilling != null
+                        && properties.FormFilling.CollectFillForm;
+                }
+            }
+            return false;
+        }
+    }
+
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly SettingsManager _settingsManager;
     private readonly FileUtility _fileUtility;
@@ -787,37 +876,45 @@ public class CustomizationConfig<T>
     private readonly IDaoFactory _daoFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly PathProvider _pathProvider;
+    private readonly CommonLinkUtility _commonLinkUtility;
 }
 
 [Transient]
 public class CustomerConfig<T>
 {
+    private readonly SettingsManager _settingsManager;
+    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+    private readonly TenantLogoHelper _tenantLogoHelper;
+    private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;
+    private Configuration<T> _configuration;
+
     public CustomerConfig(
         SettingsManager settingsManager,
         BaseCommonLinkUtility baseCommonLinkUtility,
-        TenantLogoHelper tenantLogoHelper)
+        TenantLogoHelper tenantLogoHelper,
+        TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper)
     {
         _settingsManager = settingsManager;
         _baseCommonLinkUtility = baseCommonLinkUtility;
         _tenantLogoHelper = tenantLogoHelper;
+        _tenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
     }
-
-    private Configuration<T> _configuration;
 
     internal void SetConfiguration(Configuration<T> configuration)
     {
         _configuration = configuration;
     }
 
+    public string Address => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().Address;
+
     public string Logo => _baseCommonLinkUtility.GetFullAbsolutePath(
-        _tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.Dark, !_configuration.EditorConfig.Customization.IsRetina));
+        _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Dark, !_configuration.EditorConfig.Customization.IsRetina));
 
-    public string Name => (_settingsManager.Load<TenantWhiteLabelSettings>().GetLogoText(_settingsManager) ?? "")
-                .Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("/", "\\/");
+    public string Mail => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().Email;
 
-    private readonly SettingsManager _settingsManager;
-    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
-    private readonly TenantLogoHelper _tenantLogoHelper;
+    public string Name => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().CompanyName;
+
+    public string Www => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().Site;
 }
 
 public class FeedbackConfig
@@ -902,9 +999,6 @@ public class RecentConfig
 public class TemplatesConfig
 {
     public string Image { get; set; }
-
-    //todo: obsolete since DS v6.0
-    public string Name { get; set; }
     public string Title { get; set; }
     public string Url { get; set; }
 }

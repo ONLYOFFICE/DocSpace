@@ -1,10 +1,9 @@
-﻿{
+{
   "ChangeEmailSuccess": "Email успешно изменен",
   "ChangesApplied": "Изменения успешно применены",
   "ContactInformation": "Контактные данные",
   "CountCodesRemaining": "оставшиеся коды",
   "DarkTheme": "Тёмная тема",
-  "Disconnect": "Отключить",
   "EditPhoto": "Изменить фотографию",
   "EditSubscriptionsBtn": "Изменить подписки",
   "EditUser": "Редактировать",
@@ -17,6 +16,8 @@
   "ProviderSuccessfullyConnected": "Провайдер успешно подключен",
   "ProviderSuccessfullyDisconnected": "Провайдер успешно отключен",
   "ShowBackupCodes": "Показать резервные коды",
+  "SubscriptionEmailTipsToggleLbl": "Оповещения по электронной почте с полезными советами",
+  "SubscriptionTurnOffToast": "Вы успешно отписались от почтовой рассылки. <1>Подписаться снова</1>",
   "Subscriptions": "Подписки",
   "SystemTheme": "Использовать тему системы",
   "TfaLoginSettings": "Настройки входа",

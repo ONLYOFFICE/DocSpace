@@ -380,13 +380,13 @@ const Dark = {
   iconButton: { color: "#858585", hoverColor: grayMaxLight },
   selectorAddButton: {
     background: "#292929",
-    activeBackground: black,
+    activeBackground: darkBlack,
 
-    border: `1px solid ${black}`,
+    border: `none`,
     boxSizing: "border-box",
     borderRadius: "3px",
-    height: " 34px",
-    width: "34px",
+    height: " 32px",
+    width: "32px",
     padding: "9px",
     color: "#858585",
     hoverColor: grayMaxLight,
@@ -572,6 +572,8 @@ const Dark = {
     margin: " 0 auto",
     minHeight: "100%",
 
+    colorDisabledFileIcons: "#5c5c5c",
+
     content: {
       backgroundColor: black,
       modalBorderRadius: "6px",
@@ -579,7 +581,7 @@ const Dark = {
       asidePadding: "0 16px 16px",
 
       heading: {
-        maxWidth: "500px",
+        maxWidth: "calc(100% - 18px)",
         margin: "0",
         fontWeight: "700",
         modalLineHeight: "40px",
@@ -609,7 +611,6 @@ const Dark = {
     button: {
       marginRight: "8px",
       maxWidth: "110px",
-      padding: "6px 8px 10px",
     },
 
     page: {
@@ -1070,6 +1071,11 @@ const Dark = {
       borderRadius: "50%",
     },
 
+    icon: {
+      background: grayMain,
+      color: globalColors.lightHover,
+    },
+
     width: {
       min: "32px",
       small: "36px",
@@ -1224,6 +1230,9 @@ const Dark = {
   },
 
   treeNode: {
+    background: "#3D3D3D",
+    disableColor: "#858585",
+
     dragging: {
       draggable: {
         background: "rgba(230, 211, 138, 0.12)",
@@ -1338,7 +1347,7 @@ const Dark = {
     icon: {
       width: "16px",
       marginRight: "8px",
-      lineHeight: "14px",
+      lineHeight: "10px",
 
       color: grayMaxLight,
       disableColor: gray,
@@ -1808,7 +1817,7 @@ const Dark = {
     },
     control: {
       background: "#a3a3a3",
-      fill: "#333333",
+      fill: "#ffffff",
     },
 
     headerBurgerColor: "#606060",
@@ -1878,7 +1887,7 @@ const Dark = {
       marginLeft: "8px",
       marginRight: "-2px",
       tablet: {
-        width: "48px",
+        width: "44px",
         height: "44px",
         marginRight: "-16px",
       },
@@ -1952,6 +1961,7 @@ const Dark = {
     sectionHeaderToggleBgActive: "#292929",
 
     backgroundColor: black,
+    blurColor: "rgba(20, 20, 20, 0.8)",
     borderColor: "#292929",
     thumbnailBorderColor: grayLightMid,
     textColor: white,
@@ -2080,6 +2090,8 @@ const Dark = {
       hoverIconColor: grayMaxLight,
 
       borderImageSource: `linear-gradient(to right,${black} 21px,#474747 21px,#474747 calc(100% - 20px),${black} calc(100% - 20px))`,
+      lengthenBorderImageSource: `linear-gradient(to right, #474747, #474747)`,
+      hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 
     tableCell: {
@@ -2141,7 +2153,7 @@ const Dark = {
           "linear-gradient(to right, #333333 25px, #474747 24px)",
         borderImageLeft: "linear-gradient(to left, #333333 20px, #474747 24px)",
 
-        borderColor: "#858585",
+        borderColor: "#474747",
         borderColorTransition: "#474747",
       },
     },
@@ -2231,6 +2243,12 @@ const Dark = {
 
   filesThirdPartyDialog: {
     border: "1px solid #474747",
+  },
+
+  connectedClouds: {
+    color: "#eeeeee",
+    borderBottom: `1px solid #474747`,
+    borderRight: `1px solid #474747`,
   },
 
   filesModalDialog: {
@@ -2338,7 +2356,7 @@ const Dark = {
       borderBottom: "1px solid #474747",
       borderTop: "1px solid #474747",
       externalLinkBackground: "#292929",
-      externalLinkSvg: "#858585",
+      externalLinkSvg: "#eeeeee",
 
       internalLinkBorder: "1px dashed #eeeeee",
 
@@ -2418,8 +2436,9 @@ const Dark = {
     },
   },
   newContextMenu: {
-    background: "#3D3D3D",
+    background: black,
     borderRadius: "6px",
+    mobileBorderRadius: "6px 6px 0 0",
     boxShadow:
       "0px 12px 24px rgba(0, 0, 0, 0.12), 0px 8px 16px rgba(0, 0, 0, 0.08), 0px 3.2px 2.6px rgba(0, 0, 0, 0.08)",
     padding: "6px 0px",
@@ -2463,6 +2482,10 @@ const Dark = {
       itemActiveBorder: "#eeeeee",
     },
 
+    row: {
+      itemBackground: globalColors.black,
+    },
+
     fill: "#858585",
     hoverFill: "#eeeeee",
   },
@@ -2497,8 +2520,8 @@ const Dark = {
 
     badge: {
       color: black,
-      stroke: "#474747",
-      fill: "#858585",
+      stroke: "#ADADAD",
+      fill: "#ADADAD",
       defaultFill: black,
       badgeFill: "#F58D31",
     },
@@ -2555,6 +2578,10 @@ const Dark = {
     changePassword: {
       linkColor: "#e06a1b",
     },
+  },
+
+  downloadDialog: {
+    background: "#282828",
   },
 
   studio: {
@@ -2655,6 +2682,11 @@ const Dark = {
         separatorBorder: "1px solid #474747",
         linkColor: "#E06A1B",
       },
+
+      backup: {
+        rectangleBackgroundColor: "#292929",
+        separatorBorder: "1px solid #474747",
+      },
     },
 
     wizard: {
@@ -2687,6 +2719,15 @@ const Dark = {
 
   submenu: {
     lineColor: "#474747",
+    backgroundColor: "#333",
+    textColor: "#E06A1B",
+    bottomLineColor: "#E06A1B",
+  },
+
+  hotkeys: {
+    key: {
+      color: "#C4C4C4",
+    },
   },
 };
 

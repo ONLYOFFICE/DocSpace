@@ -151,7 +151,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
 
     private Task<List<FileShareRecord>> GetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
     {
-        if (folders.Count > 0)
+        if (folders.Count == 0)
         {
             return Task.FromResult(new List<FileShareRecord>());
         }
@@ -173,7 +173,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
             }
 
             var parentFolders = await folderDao.GetParentFoldersAsync(selector.ConvertId(folder.Id));
-            if (parentFolders == null || parentFolders.Count > 0)
+            if (parentFolders == null || parentFolders.Count == 0)
             {
                 continue;
             }
@@ -209,7 +209,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         return _securityDao.RemoveSubjectAsync(subject);
     }
 
-    public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+        public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
     {
         return _securityDao.GetSharesAsync(subjects);
     }
@@ -229,7 +229,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         return _securityDao.DeleteShareRecordsAsync(records);
     }
 
-    public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
+    public Task<bool> IsSharedAsync(string entryId, FileEntryType type)
     {
         return _securityDao.IsSharedAsync(entryId, type);
     }

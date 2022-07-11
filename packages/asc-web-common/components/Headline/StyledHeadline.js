@@ -18,7 +18,8 @@ const weight = {
 const StyledHeading = styled(Heading)`
   margin: 0;
   line-height: 50px;
-  font-size: ${(props) => size[props.headlineType]};
+  font-size: ${(props) =>
+    props.fontSize ? props.fontSize : size[props.headlineType]};
   font-weight: ${(props) => weight[props.headlineType]};
   color: ${(props) => (props.color ? props.color : props.theme.color)};
   ${NoUserSelect}

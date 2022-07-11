@@ -26,6 +26,9 @@ const PROFILE_SELF_URL = combineUrl(
   "/products/people/view/@self"
 );
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
+const COMMUNITY_URL = "https://forum.onlyoffice.com/c/personal/43";
+const HELP_URL =
+  "https://helpcenter.onlyoffice.com/userguides/workspace-personal.aspx";
 
 const StyledNav = styled.nav`
   display: flex;
@@ -34,7 +37,7 @@ const StyledNav = styled.nav`
   position: absolute;
   right: 0;
   height: 48px;
-  z-index: 203 !important;
+  z-index: 180 !important;
 
   & > div {
     margin: 0 0 0 16px;
@@ -76,6 +79,8 @@ const HeaderNav = ({
   buildVersionInfo,
   debugInfo,
   settingsModule,
+  setHotkeyPanelVisible,
+  currentProductId,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -93,6 +98,18 @@ const HeaderNav = ({
     } else {
       history.push(ABOUT_URL);
     }
+  }, []);
+
+  const onHotkeysClick = useCallback(() => {
+    setHotkeyPanelVisible(true);
+  }, []);
+
+  const onCommunityClick = useCallback(() => {
+    window.open(COMMUNITY_URL, "_blank");
+  }, []);
+
+  const onHelpClick = useCallback(() => {
+    window.open(HELP_URL, "_blank");
   }, []);
 
   const onCloseDialog = () => setVisibleDialog(false);
@@ -131,6 +148,38 @@ const HeaderNav = ({
           }
         : null;
 
+    let hotkeys = null;
+    if (modules) {
+      const moduleIndex = modules.findIndex((m) => m.appName === "files");
+
+      if (
+        moduleIndex !== -1 &&
+        modules[moduleIndex].id === currentProductId &&
+        !isMobile
+      ) {
+        hotkeys = {
+          key: "HotkeysBtn",
+          label: t("Common:Hotkeys"),
+          onClick: onHotkeysClick,
+        };
+      }
+    }
+
+    const communityForum = isPersonal
+      ? {
+          key: "CommunityBtn",
+          label: t("CommunityForum"),
+          onClick: onCommunityClick,
+        }
+      : null;
+
+    const helpCenter = isPersonal
+      ? {
+          key: "HelpBtn",
+          label: t("HelpCenter"),
+          onClick: onHelpClick,
+        }
+      : null;
     const actions = [
       {
         key: "ProfileBtn",
@@ -148,6 +197,9 @@ const HeaderNav = ({
           target: "_self",
         }),
       },
+      hotkeys,
+      communityForum,
+      helpCenter,
       {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),
@@ -171,7 +223,7 @@ const HeaderNav = ({
     }
 
     return actions;
-  }, [onProfileClick, onAboutClick, onLogoutClick]);
+  }, [onProfileClick, onAboutClick, onLogoutClick, currentProductId]);
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
@@ -241,6 +293,7 @@ export default withRouter(
       toggleArticleOpen,
       buildVersionInfo,
       debugInfo,
+      setHotkeyPanelVisible,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
@@ -264,6 +317,7 @@ export default withRouter(
       buildVersionInfo,
       debugInfo,
       settingsModule,
+      setHotkeyPanelVisible,
     };
   })(observer(HeaderNav))
 );

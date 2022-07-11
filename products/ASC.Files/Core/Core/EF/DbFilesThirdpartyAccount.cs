@@ -36,9 +36,11 @@ public class DbFilesThirdpartyAccount : BaseEntity, IDbFile, IDbSearch
     public string Token { get; set; }
     public Guid UserId { get; set; }
     public FolderType FolderType { get; set; }
+    public FolderType RoomType { get; set; }
     public DateTime CreateOn { get; set; }
     public string Url { get; set; }
     public int TenantId { get; set; }
+    public string FolderId { get; set; }
 
     public override object[] GetKeys()
     {
@@ -64,6 +66,8 @@ public static class DbFilesThirdpartyAccountExtension
             entity.ToTable("files_thirdparty_account")
                 .HasCharSet("utf8");
 
+            entity.HasIndex(e => e.TenantId).HasDatabaseName("tenant_id");
+
             entity.Property(e => e.Id).HasColumnName("id");
 
             entity.Property(e => e.CreateOn)
@@ -80,6 +84,7 @@ public static class DbFilesThirdpartyAccountExtension
             entity.Property(e => e.FolderType)
                 .HasColumnName("folder_type")
                 .HasDefaultValueSql("'0'");
+            entity.Property(e => e.RoomType).HasColumnName("room_type");
 
             entity.Property(e => e.Password)
                 .IsRequired()
@@ -123,6 +128,12 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasColumnType("varchar(100)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
+
+            entity.Property(e => e.FolderId)
+                .HasColumnName("folder_id")
+                .HasColumnType("text")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
         });
     }
     public static void PgSqlAddDbFilesThirdpartyAccount(this ModelBuilder modelBuilder)
@@ -130,6 +141,8 @@ public static class DbFilesThirdpartyAccountExtension
         modelBuilder.Entity<DbFilesThirdpartyAccount>(entity =>
         {
             entity.ToTable("files_thirdparty_account", "onlyoffice");
+
+            entity.HasIndex(e => e.TenantId).HasDatabaseName("tenant_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
 
@@ -141,6 +154,7 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasMaxLength(400);
 
             entity.Property(e => e.FolderType).HasColumnName("folder_type");
+            entity.Property(e => e.RoomType).HasColumnName("room_type");
 
             entity.Property(e => e.Password)
                 .IsRequired()

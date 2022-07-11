@@ -24,17 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+global using System.Collections;
 global using System.Globalization;
+global using System.Linq.Expressions;
 global using System.Reflection;
 global using System.Text;
 
-global using ASC.AuditTrail.Attributes;
 global using ASC.AuditTrail.Log;
 global using ASC.AuditTrail.Mappers;
 global using ASC.AuditTrail.Models;
 global using ASC.AuditTrail.Models.Mappings;
+global using ASC.AuditTrail.Types;
 global using ASC.Common;
 global using ASC.Common.Mapping;
+global using ASC.Core;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Users;
 global using ASC.MessagingSystem.Core;
@@ -53,5 +56,7 @@ global using CsvHelper;
 global using CsvHelper.Configuration;
 
 global using Microsoft.Extensions.Logging;
+
+global using NetEscapades.EnumGenerators;
 
 global using Newtonsoft.Json;

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using AutoMapper.QueryableExtensions;
-
 namespace ASC.Core.Data;
 
 [Scope]
@@ -147,34 +145,15 @@ public class DbTenantService : ITenantService
         if (Guid.TryParse(login, out var userId))
         {
             var pwdHash = GetPasswordHash(userId, passwordHash);
-            var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
             var q = query()
                 .Where(r => r.User.Id == userId)
-                .Where(r => r.UserSecurity.PwdHash == pwdHash || r.UserSecurity.PwdHash == oldHash)  //todo: remove old scheme
+                .Where(r => r.UserSecurity.PwdHash == pwdHash)
                 ;
 
             return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
         }
         else
         {
-            var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
-
-            var q =
-                query()
-                .Where(r => r.UserSecurity.PwdHash == oldHash);
-
-            if (login.Contains('@'))
-            {
-                q = q.Where(r => r.User.Email == login);
-            }
-            else if (Guid.TryParse(login, out var uId))
-            {
-                q = q.Where(r => r.User.Id == uId);
-            }
-
-            //old password
-            var result = q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
-
             var usersQuery = UserDbContext.Users
                 .Where(r => r.Email == login)
                 .Where(r => r.Status == EmployeeStatus.Active)
@@ -184,13 +163,10 @@ public class DbTenantService : ITenantService
 
             var passwordHashs = usersQuery.Select(r => GetPasswordHash(r, passwordHash)).ToList();
 
-            q = query()
+            var q = query()
                 .Where(r => passwordHashs.Any(p => r.UserSecurity.PwdHash == p) && r.DbTenant.Status == TenantStatus.Active);
 
-            //new password
-            result = result.Concat(q.ProjectTo<Tenant>(_mapper.ConfigurationProvider)).ToList();
-
-            return result.Distinct();
+            return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
         }
     }
 
@@ -459,7 +435,7 @@ public class DbTenantService : ITenantService
             // cut number suffix
             while (true)
             {
-                if (6 < domain.Length && char.IsNumber(domain, domain.Length - 1))
+                if (TenantDomainValidator.MinLength < domain.Length && char.IsNumber(domain, domain.Length - 1))
                 {
                     domain = domain[0..^1];
                 }

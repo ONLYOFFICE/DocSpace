@@ -29,7 +29,10 @@ namespace ASC.Files.Thirdparty.ProviderDao;
 [Scope]
 internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 {
+    private readonly SetupInfo _setupInfo;
+
     public ProviderFolderDao(
+        SetupInfo setupInfo,
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
         SecurityDao<string> securityDao,
@@ -37,6 +40,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         CrossDao crossDao)
         : base(serviceProvider, tenantManager, securityDao, tagDao, crossDao)
     {
+        _setupInfo = setupInfo;
     }
 
     public Task<Folder<string>> GetFolderAsync(string folderId)
@@ -53,11 +57,11 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     private async Task<Folder<string>> InternalGetFolderAsync(string folderId, IDaoSelector selector)
     {
         var folderDao = selector.GetFolderDao(folderId);
-        var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId)).ConfigureAwait(false);
+        var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId));
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result });
         }
 
         return result;
@@ -95,22 +99,40 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folders.Where(r => r != null);
     }
 
-    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<string> tagNames = null)
     {
         var selector = GetSelector(parentId);
         var folderDao = selector.GetFolderDao(parentId);
         var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders);
-        var result = folders.Where(r => r != null);
+        var result = await folders.Where(r => r != null).ToListAsync();
 
-        await SetSharedPropertyAsync(result).ConfigureAwait(false);
+        await SetSharedPropertyAsync(result);
 
-        await foreach (var r in result.ConfigureAwait(false))
+        foreach (var r in result)
         {
             yield return r;
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<string> tagNames = null)
+    {
+        var selector = GetSelector(parentId);
+        var folderDao = selector.GetFolderDao(parentId);
+        var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterTypes, subjectGroup, subjectID, searchText, withSubfolders);
+        var result = await folders.Where(r => r != null).ToListAsync();
+
+        await SetSharedPropertyAsync(result);
+
+        foreach (var r in result)
+        {
+            yield return r;
+        }
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
     {
         var result = AsyncEnumerable.Empty<Folder<string>>();
 
@@ -131,7 +153,37 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
 
                     return folderDao.GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
-                        filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
+                        filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
+                })
+                .Where(r => r != null));
+        }
+
+        return result.Distinct();
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
+    {
+        var result = AsyncEnumerable.Empty<Folder<string>>();
+
+        foreach (var selector in GetSelectors())
+        {
+            var selectorLocal = selector;
+            var matchedIds = folderIds.Where(selectorLocal.IsMatch).ToList();
+
+            if (matchedIds.Count == 0)
+            {
+                continue;
+            }
+
+            result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
+                .ToAsyncEnumerable()
+                .SelectMany(matchedId =>
+                {
+                    var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
+
+                    return folderDao.GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
+                        filterTypes, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
                 })
                 .Where(r => r != null));
         }
@@ -280,7 +332,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
     public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
     {
-        if (folderIds.Length > 0)
+        if (folderIds.Length == 0)
         {
             return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }
@@ -288,7 +340,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var selector = GetSelector(to);
         var matchedIds = folderIds.Where(selector.IsMatch).ToArray();
 
-        if (matchedIds.Length > 0)
+        if (matchedIds.Length == 0)
         {
             return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }
@@ -383,7 +435,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
         if (storageMaxUploadSize == -1 || storageMaxUploadSize == long.MaxValue)
         {
-            storageMaxUploadSize = 1024L * 1024L * 1024L;
+            storageMaxUploadSize = _setupInfo.ProviderMaxUploadSize;
         }
 
         return storageMaxUploadSize;

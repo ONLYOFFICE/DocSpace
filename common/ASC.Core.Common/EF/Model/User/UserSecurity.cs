@@ -31,7 +31,6 @@ public class UserSecurity : BaseEntity
     public int Tenant { get; set; }
     public Guid UserId { get; set; }
     public string PwdHash { get; set; }
-    public string PwdHashSha512 { get; set; }
     public DateTime? LastModified { get; set; }
     public override object[] GetKeys()
     {
@@ -90,12 +89,6 @@ public static class UserSecurityExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.PwdHashSha512)
-                .HasColumnName("pwdhashsha512")
-                .HasColumnType("varchar(512)")
-                .HasCharSet("utf8")
-                .UseCollation("utf8_general_ci");
-
             entity.Property(e => e.Tenant).HasColumnName("tenant");
         });
     }
@@ -122,11 +115,6 @@ public static class UserSecurityExtension
 
             entity.Property(e => e.PwdHash)
                 .HasColumnName("pwdhash")
-                .HasMaxLength(512)
-                .HasDefaultValueSql("NULL");
-
-            entity.Property(e => e.PwdHashSha512)
-                .HasColumnName("pwdhashsha512")
                 .HasMaxLength(512)
                 .HasDefaultValueSql("NULL");
 

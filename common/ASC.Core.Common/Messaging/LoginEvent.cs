@@ -30,6 +30,7 @@ namespace ASC.MessagingSystem.EF.Model;
 public class LoginEvent : MessageEvent, IMapFrom<EventMessage>
 {
     public string Login { get; set; }
+    public bool Active { get; set; }
 
     public void Mapping(Profile profile)
     {
@@ -108,7 +109,11 @@ public static class LoginEventsExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+            entity.Property(e => e.TenantId)
+                .HasColumnName("tenant_id");
+
+            entity.Property(e => e.Active)
+                .HasColumnName("active");
 
             entity.Property(e => e.UserId)
                 .IsRequired()
@@ -167,6 +172,8 @@ public static class LoginEventsExtension
                 .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+
+            entity.Property(e => e.Active).HasColumnName("active");
 
             entity.Property(e => e.UserId)
                 .IsRequired()

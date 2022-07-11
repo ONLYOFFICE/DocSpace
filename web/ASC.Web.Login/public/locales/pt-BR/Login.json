@@ -1,11 +1,17 @@
-﻿{
+{
   "Authorization": "Autorização",
+  "CodeSubtitle": "Enviamos um código de 6 dígitos para {{email}}. O código tem um período de validade limitado, insira-o o mais rápido possível.",
+  "CodeTitle": "O código foi enviado por e-mail para você",
   "CookieSettingsTitle": "Vida útil da sessão",
-  "ForgotPassword": "Esqueceu sua senha?",
+  "ExpiredCode": "Este código não é mais válido. Solicite um novo código e tente novamente",
+  "ForgotPassword": "Esqueceu-se da senha?",
+  "InvalidCode": "Este código é inválido. Tente novamente",
+  "LoginDescription": "Nós lhe enviaremos um código mágico para fazer login sem senha. Ou você pode <1>fazer login manualmente.</1>",
   "MessageAuthorize": "Log in para continuar",
-  "MessageEmailConfirmed": "Seu email foi ativado com sucesso",
+  "MessageEmailConfirmed": "Seu email foi ativado com sucesso.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Por favor, digite o e-mail que você usou para o registro. As instruções de recuperação da senha serão enviadas a ele.",
-  "Or": "Ou",
+  "NotFoundCode": "Você não consegue encontrar o código? Verifique sua pasta «Spam».",
+  "Or": "OU",
   "PasswordRecoveryTitle": "Recuperação de senha",
   "Register": "Registro",
   "RegisterSendButton": "Enviar solicitação",
@@ -15,5 +21,6 @@
   "RegistrationEmail": "Seu email de registro",
   "RegistrationEmailWatermark": "Email",
   "Remember": "Lembre-se de mim",
-  "RememberHelper": "A duração padrão da sessão é de 20 minutos. Marque esta opção para defini-la como 1 ano. Para definir seu próprio valor, vá para Configurações"
+  "RememberHelper": "A duração padrão da sessão é de 20 minutos. Marque esta opção para defini-la como 1 ano. Para definir seu próprio valor, vá para Configurações",
+  "ResendCode": "Reenviar código"
 }

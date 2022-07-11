@@ -34,8 +34,9 @@ public sealed class ResizeWorkerItem : DistributedTask
 
     }
 
-    public ResizeWorkerItem(Guid userId, byte[] data, long maxFileSize, Size size, IDataStore dataStore, UserPhotoThumbnailSettings settings) : base()
+    public ResizeWorkerItem(int tenantId, Guid userId, byte[] data, long maxFileSize, Size size, IDataStore dataStore, UserPhotoThumbnailSettings settings) : base()
     {
+        TenantId = tenantId;
         UserId = userId;
         Data = data;
         MaxFileSize = maxFileSize;
@@ -51,7 +52,7 @@ public sealed class ResizeWorkerItem : DistributedTask
     public long MaxFileSize { get; }
 
     public byte[] Data { get; }
-
+    public int TenantId { get; }
     public Guid UserId { get; }
 
     public UserPhotoThumbnailSettings Settings { get; }
@@ -100,44 +101,56 @@ public sealed class ResizeWorkerItem : DistributedTask
 [Singletone]
 public class UserPhotoManagerCache
 {
-    private readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> _photofiles;
+    private readonly ConcurrentDictionary<Guid, ConcurrentDictionary<CacheSize, string>> _photofiles;
     private readonly ICacheNotify<UserPhotoManagerCacheItem> _cacheNotify;
     private readonly HashSet<int> _tenantDiskCache;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public UserPhotoManagerCache(ICacheNotify<UserPhotoManagerCacheItem> notify)
+    public UserPhotoManagerCache(ICacheNotify<UserPhotoManagerCacheItem> notify, IServiceScopeFactory serviceScopeFactory)
     {
         try
         {
-            _photofiles = new ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>>();
+            _photofiles = new ConcurrentDictionary<Guid, ConcurrentDictionary<CacheSize, string>>();
             _tenantDiskCache = new HashSet<int>();
             _cacheNotify = notify;
 
             _cacheNotify.Subscribe((data) =>
             {
-                var userId = new Guid(data.UserId);
-                _photofiles.GetOrAdd(data.Size, (r) => new ConcurrentDictionary<Guid, string>())[userId] = data.FileName;
+                _photofiles.GetOrAdd(new Guid(data.UserId), (r) => new ConcurrentDictionary<CacheSize, string>())
+                              .AddOrUpdate(data.Size, data.FileName, (key, oldValue) => data.FileName);
             }, CacheNotifyAction.InsertOrUpdate);
 
             _cacheNotify.Subscribe((data) =>
             {
-                var userId = new Guid(data.UserId);
+                ConcurrentDictionary<CacheSize, string> removedValue;
 
-                try
+                if (_photofiles.TryRemove(new Guid(data.UserId), out removedValue))
                 {
-                    foreach (var s in (CacheSize[])Enum.GetValues(typeof(CacheSize)))
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    scope.ServiceProvider.GetRequiredService<TenantManager>().SetCurrentTenant(data.TenantId);
+                    var storageFactory = scope.ServiceProvider.GetRequiredService<StorageFactory>();
+
+                    var storage = storageFactory.GetStorage(data.TenantId.ToString(), "userPhotos");
+
+                    try
                     {
-                        _photofiles.TryGetValue(s, out var dict);
-                        dict?.TryRemove(userId, out _);
+                        storage.DeleteFilesAsync("", data.UserId + "*.*", false).Wait();
                     }
+                    catch (Exception ex)
+                    {
+                        scope.ServiceProvider.GetRequiredService<ILogger<UserPhotoManagerCache>>().ErrorWithException("Trying remove and add photos in same time", ex);
+                    }
+
+
                     SetCacheLoadedForTenant(false, data.TenantId);
                 }
-                catch { }
             }, CacheNotifyAction.Remove);
         }
         catch (Exception)
         {
 
         }
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public bool IsCacheLoadedForTenant(int tenantId)
@@ -169,15 +182,19 @@ public class UserPhotoManagerCache
     public string SearchInCache(Guid userId, Size size)
     {
         string fileName = null;
-        _photofiles.TryGetValue(UserPhotoManager.ToCache(size), out var photo);
 
-        if (size != Size.Empty)
+        if (!_photofiles.TryGetValue(userId, out var val))
         {
-            photo?.TryGetValue(userId, out fileName);
+            return null;
+        }
+
+        if (size != Size.Empty && !val.TryGetValue(UserPhotoManager.ToCache(size), out fileName))
+        {
+            return null;
         }
         else
         {
-            fileName = (photo?.FirstOrDefault(x => x.Key == userId && !string.IsNullOrEmpty(x.Value) && x.Value.Contains("_orig_")))?.Value;
+            fileName = val.Values.FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
         }
 
         return fileName;
@@ -705,7 +722,7 @@ public class UserPhotoManager
             throw new ImageWeightLimitException();
         }
 
-        var resizeTask = new ResizeWorkerItem(userID, data, maxFileSize, size, GetDataStore(), _settingsManager.LoadForUser<UserPhotoThumbnailSettings>(userID));
+        var resizeTask = new ResizeWorkerItem(_tenantManager.GetCurrentTenant().Id, userID, data, maxFileSize, size, GetDataStore(), _settingsManager.LoadForUser<UserPhotoThumbnailSettings>(userID));
         var key = $"{userID}{size}";
         resizeTask["key"] = key;
 
@@ -731,6 +748,8 @@ public class UserPhotoManager
     {
         try
         {
+            _tenantManager.SetCurrentTenant(item.TenantId);
+
             var data = item.Data;
             using var stream = new MemoryStream(data);
             using var img = Image.Load(stream, out var format);
@@ -1062,6 +1081,7 @@ public static class ResizeWorkerItemExtension
 {
     public static void Register(DIHelper services)
     {
+        services.TryAdd<ResizeWorkerItem>();
         services.Configure<DistributedTaskQueueFactoryOptions>(UserPhotoManager.CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME, options =>
         {
             options.MaxThreadsCount = 2;

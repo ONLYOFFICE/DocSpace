@@ -73,6 +73,28 @@ public class GlobalNotify
     }
 }
 
+[EnumExtensions]
+public enum ThumbnailExtension
+{
+    bmp,
+    gif,
+    jpg,
+    png,
+    pbm,
+    tiff,
+    tga,
+    webp
+}
+
+[EnumExtensions]
+public enum DocThumbnailExtension
+{
+    bmp,
+    gif,
+    jpg,
+    png
+}
+
 [Scope]
 public class Global
 {
@@ -101,12 +123,20 @@ public class Global
         _customNamingPeople = customNamingPeople;
         _fileSecurityCommon = fileSecurityCommon;
 
-        ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "jpg";
+        if (!DocThumbnailExtensionExtensions.TryParse(configuration["files:thumbnail:docs-exts"] ?? "jpg", true, out DocThumbnailExtension))
+        {
+            DocThumbnailExtension = DocThumbnailExtension.jpg;
+        }
+        if (!ThumbnailExtensionExtensions.TryParse(configuration["files:thumbnail:exts"] ?? "webp", true, out ThumbnailExtension))
+        {
+            ThumbnailExtension = ThumbnailExtension.jpg;
+        }
     }
 
     #region Property
 
-    public string ThumbnailExtension { get; set; }
+    public DocThumbnailExtension DocThumbnailExtension;
+    public ThumbnailExtension ThumbnailExtension;
 
     public const int MaxTitle = 170;
 
@@ -266,7 +296,8 @@ public class GlobalFolder
         GlobalStore globalStore,
         ILoggerProvider options,
         IServiceProvider serviceProvider,
-        Global global
+            Global global,
+            ThumbnailSettings thumbnailSettings
     )
     {
         _coreBaseSettings = coreBaseSettings;
@@ -280,6 +311,7 @@ public class GlobalFolder
         _serviceProvider = serviceProvider;
         _global = global;
         _logger = options.CreateLogger("ASC.Files");
+        _thumbnailSettings = thumbnailSettings;
     }
 
     internal static readonly IDictionary<int, int> ProjectsRootFolderCache =
@@ -311,6 +343,57 @@ public class GlobalFolder
     public async ValueTask<T> GetFolderProjectsAsync<T>(IDaoFactory daoFactory)
     {
         return (T)Convert.ChangeType(await GetFolderProjectsAsync(daoFactory), typeof(T));
+    }
+
+    internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache = 
+        new ConcurrentDictionary<string, int>();
+
+    public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory)
+    {
+        if (_coreBaseSettings.DisableDocSpace)
+        {
+            return default;
+        }
+
+        var key = $"vrooms/{_tenantManager.GetCurrentTenant().Id}";
+
+        if (!DocSpaceFolderCache.TryGetValue(key, out var result))
+        {
+            result = await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(true);
+
+            DocSpaceFolderCache[key] = result;
+        }
+
+        return result;
+    }
+
+    public async ValueTask<T> GetFolderVirtualRoomsAsync<T>(IDaoFactory daoFactory)
+    {
+        return (T)Convert.ChangeType(await GetFolderVirtualRoomsAsync(daoFactory), typeof(T));
+    }
+
+    public async ValueTask<int> GetFolderArchiveAsync(IDaoFactory daoFactory)
+    {
+        if (_coreBaseSettings.DisableDocSpace)
+        {
+            return default;
+        }
+
+        var key = $"archive/{_tenantManager.GetCurrentTenant().Id}";
+
+        if (!DocSpaceFolderCache.TryGetValue(key, out var result))
+        {
+            result = await daoFactory.GetFolderDao<int>().GetFolderIDArchive(true);
+
+            DocSpaceFolderCache[key] = result;
+        }
+
+        return result;
+    }
+
+    public async ValueTask<T> GetFolderArchive<T>(IDaoFactory daoFactory)
+    {
+        return (T)Convert.ChangeType(await GetFolderArchiveAsync(daoFactory), typeof(T));
     }
 
     internal static readonly ConcurrentDictionary<string, Lazy<int>> UserRootFolderCache =
@@ -550,6 +633,7 @@ public class GlobalFolder
 
     internal static readonly IDictionary<string, object> TrashFolderCache =
         new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
+    private readonly ThumbnailSettings _thumbnailSettings;
 
     public async Task<T> GetFolderTrashAsync<T>(IDaoFactory daoFactory)
     {
@@ -622,9 +706,10 @@ public class GlobalFolder
 
     private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
     {
-        await foreach (var file in storeTemplate.ListFilesRelativeAsync("", path, "*", false))
+            var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false).ToListAsync();
+            foreach (var file in files)
         {
-            await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate);
+                await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files);
         }
 
         await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
@@ -639,17 +724,18 @@ public class GlobalFolder
         }
     }
 
-    private async Task SaveFileAsync(FileMarker fileMarker, FileDao fileDao, int folder, string filePath, IDataStore storeTemp)
+        private async Task SaveFileAsync(FileMarker fileMarker, FileDao fileDao, int folder, string filePath, IDataStore storeTemp, IEnumerable<string> files)
     {
         try
         {
-            if (FileUtility.GetFileExtension(filePath) == "." + _global.ThumbnailExtension
-                && await storeTemp.IsFileAsync("", Regex.Replace(filePath, "\\." + _global.ThumbnailExtension + "$", "")))
-            {
-                return;
-            }
+                var fileName = Path.GetFileName(filePath);
+                foreach (var ext in Enum.GetValues<ThumbnailExtension>())
+                {
+                    if (FileUtility.GetFileExtension(filePath) == "." + ext
+                        && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
+                        return;
+                }
 
-            var fileName = Path.GetFileName(filePath);
             var file = _serviceProvider.GetService<File<int>>();
 
             file.Title = fileName;
@@ -660,16 +746,6 @@ public class GlobalFolder
             {
                 file.ContentLength = stream.CanSeek ? stream.Length : await storeTemp.GetFileSizeAsync("", filePath);
                 file = await fileDao.SaveFileAsync(file, stream, false);
-            }
-
-            var pathThumb = filePath + "." + _global.ThumbnailExtension;
-            if (await storeTemp.IsFileAsync("", pathThumb))
-            {
-                using (var streamThumb = await storeTemp.GetReadStreamAsync("", pathThumb))
-                {
-                    await fileDao.SaveThumbnailAsync(file, streamThumb);
-                }
-                file.ThumbnailStatus = Thumbnail.Created;
             }
 
             await fileMarker.MarkAsNewAsync(file);
@@ -704,6 +780,8 @@ public class GlobalFolderHelper
     public ValueTask<int> FolderRecentAsync => _globalFolder.GetFolderRecentAsync(_daoFactory);
     public ValueTask<int> FolderFavoritesAsync => _globalFolder.GetFolderFavoritesAsync(_daoFactory);
     public ValueTask<int> FolderTemplatesAsync => _globalFolder.GetFolderTemplatesAsync(_daoFactory);
+    public ValueTask<int> FolderVirtualRoomsAsync => _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
+    public ValueTask<int> FolderArchiveAsync => _globalFolder.GetFolderArchiveAsync(_daoFactory);
 
     public T GetFolderMy<T>()
     {
@@ -728,6 +806,16 @@ public class GlobalFolderHelper
     public async ValueTask<T> GetFolderPrivacyAsync<T>()
     {
         return (T)Convert.ChangeType(await FolderPrivacyAsync, typeof(T));
+    }
+
+    public async ValueTask<T> GetFolderVirtualRooms<T>()
+    {
+        return (T)Convert.ChangeType(await FolderVirtualRoomsAsync, typeof(T));
+    }
+
+    public async ValueTask<T> GetFolderArchive<T>()
+    {
+        return (T)Convert.ChangeType(await FolderArchiveAsync, typeof(T));
     }
 
     public void SetFolderMy<T>(T val)

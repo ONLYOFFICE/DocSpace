@@ -1,0 +1,9 @@
+{
+  "Error401Text": "Przepraszamy, wybrany zasób jest w tej chwili niedostępny.",
+  "Error403Text": "Przepraszamy, odmówiono dostępu.",
+  "Error404Text": "Przepraszamy, nie znaleziono zasobu.",
+  "ErrorEmptyResponse": "Pusta odpowiedź",
+  "ErrorInvalidHeader": "Nieprawidłowy adres e-mail lub nieaktualny link",
+  "ErrorInvalidText": "Za 10 sekund nastąpi przekierowanie na <1>stronę logowania</1>",
+  "ErrorOfflineText": "Brak połączenia z Internetem."
+}

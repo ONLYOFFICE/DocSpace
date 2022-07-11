@@ -1,13 +1,125 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import CatalogItem from "@appserver/components/catalog-item";
 import { FolderType, ShareAccessRights } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
+import DragAndDrop from "@appserver/components/drag-and-drop";
 import withLoader from "../../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
 import Loader from "@appserver/components/loader";
+import { isMobile } from "react-device-detect";
 
+const StyledDragAndDrop = styled(DragAndDrop)`
+  display: contents;
+`;
+
+const Item = ({
+  t,
+  item,
+  dragging,
+  getFolderIcon,
+  isActive,
+  getEndOfBlock,
+  showText,
+  onClick,
+  onMoveTo,
+  onBadgeClick,
+  showDragItems,
+  startUpload,
+  uploadEmptyFolders,
+  setDragging,
+  showBadge,
+  labelBadge,
+  iconBadge,
+}) => {
+  const [isDragActive, setIsDragActive] = React.useState(false);
+
+  const isDragging = dragging ? showDragItems(item) : false;
+
+  let value = "";
+  if (isDragging) value = `${item.id} dragging`;
+
+  const onDropZoneUpload = React.useCallback(
+    (files, uploadToFolder) => {
+      dragging && setDragging(false);
+      const emptyFolders = files.filter((f) => f.isEmptyDirectory);
+
+      if (emptyFolders.length > 0) {
+        uploadEmptyFolders(emptyFolders, uploadToFolder).then(() => {
+          const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+          if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
+        });
+      } else {
+        startUpload(files, uploadToFolder, t);
+      }
+    },
+    [t, dragging, setDragging, startUpload, uploadEmptyFolders]
+  );
+
+  const onDrop = React.useCallback(
+    (items) => {
+      if (!isDragging) return dragging && setDragging(false);
+
+      const { fileExst, id } = item;
+
+      if (!fileExst) {
+        onDropZoneUpload(items, id);
+      } else {
+        onDropZoneUpload(items);
+      }
+    },
+    [item, startUpload, dragging, setDragging]
+  );
+
+  const onDragOver = React.useCallback(
+    (dragActive) => {
+      if (dragActive !== isDragActive) {
+        setIsDragActive(dragActive);
+      }
+    },
+    [isDragActive]
+  );
+
+  const onDragLeave = React.useCallback(() => {
+    setIsDragActive(false);
+  }, []);
+
+  return (
+    <StyledDragAndDrop
+      key={item.id}
+      data-title={item.title}
+      value={value}
+      onDrop={onDrop}
+      dragging={dragging && isDragging}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+    >
+      <CatalogItem
+        key={item.id}
+        id={item.id}
+        className={`tree-drag ${item.folderClassName}`}
+        icon={getFolderIcon(item)}
+        showText={showText}
+        text={item.title}
+        isActive={isActive(item)}
+        onClick={onClick}
+        onDrop={onMoveTo}
+        isEndOfBlock={getEndOfBlock(item)}
+        isDragging={isDragging}
+        isDragActive={isDragActive && isDragging}
+        value={value}
+        showBadge={showBadge}
+        labelBadge={labelBadge}
+        onClickBadge={onBadgeClick}
+        iconBadge={iconBadge}
+      />
+    </StyledDragAndDrop>
+  );
+};
+
+let dataMainTree = [];
 const Items = ({
   t,
   data,
@@ -18,6 +130,10 @@ const Items = ({
   onBadgeClick,
 
   dragging,
+  setDragging,
+  startUpload,
+  uploadEmptyFolders,
+
   isAdmin,
   myId,
   commonId,
@@ -25,11 +141,27 @@ const Items = ({
   draggableItems,
 
   moveDragItems,
+
+  setEmptyTrashDialogVisible,
+  trashIsEmpty,
+
+  onHide,
 }) => {
+  useEffect(() => {
+    data.forEach((elem) => {
+      const elemId = elem.id;
+      dataMainTree.push(elemId.toString());
+    });
+  }, [data]);
+
   const isActive = React.useCallback(
     (item) => {
       if (selectedTreeNode.length > 0) {
-        if (pathParts && pathParts.includes(item.id)) return true;
+        const isMainFolder = dataMainTree.indexOf(selectedTreeNode[0]) !== -1;
+
+        if (pathParts && pathParts.includes(item.id) && !isMainFolder)
+          return true;
+
         if (selectedTreeNode[0] === "@my" && item.key === "0-0") return true;
         return `${item.id}` === selectedTreeNode[0];
       }
@@ -163,39 +295,48 @@ const Items = ({
     [moveDragItems, t]
   );
 
+  const onEmptyTrashAction = () => {
+    isMobile && onHide();
+    setEmptyTrashDialogVisible(true);
+  };
+
   const getItem = React.useCallback(
     (data) => {
-      const items = data.map((item) => {
-        const showBadge = item.newItems ? item.newItems > 0 && true : false;
-
-        const isDragging = dragging ? showDragItems(item) : false;
-
-        let value = "";
-        if (isDragging) value = `${item.id} dragging`;
+      const items = data.map((item, index) => {
+        const isTrash = item.rootFolderType === FolderType.TRASH;
+        const showBadge = item.newItems
+          ? item.newItems > 0 && true
+          : isTrash && !trashIsEmpty;
+        const labelBadge = showBadge ? item.newItems : null;
+        const iconBadge = isTrash ? "images/clear.trash.react.svg" : null;
 
         return (
-          <CatalogItem
-            key={item.id}
-            id={item.id}
-            className={`tree-drag ${item.folderClassName}`}
-            icon={getFolderIcon(item)}
+          <Item
+            key={`${item.id}_${index}`}
+            t={t}
+            setDragging={setDragging}
+            startUpload={startUpload}
+            uploadEmptyFolders={uploadEmptyFolders}
+            item={item}
+            dragging={dragging}
+            getFolderIcon={getFolderIcon}
+            isActive={isActive}
+            getEndOfBlock={getEndOfBlock}
             showText={showText}
-            text={item.title}
-            isActive={isActive(item)}
             onClick={onClick}
-            onDrop={onMoveTo}
-            isEndOfBlock={getEndOfBlock(item)}
-            isDragging={isDragging}
-            value={value}
+            onMoveTo={onMoveTo}
+            onBadgeClick={isTrash ? onEmptyTrashAction : onBadgeClick}
+            showDragItems={showDragItems}
             showBadge={showBadge}
-            labelBadge={showBadge ? item.newItems : null}
-            onClickBadge={onBadgeClick}
+            labelBadge={labelBadge}
+            iconBadge={iconBadge}
           />
         );
       });
       return items;
     },
     [
+      t,
       dragging,
       getFolderIcon,
       isActive,
@@ -205,6 +346,10 @@ const Items = ({
       onBadgeClick,
       showDragItems,
       showText,
+      setDragging,
+      startUpload,
+      uploadEmptyFolders,
+      trashIsEmpty,
     ]
   );
 
@@ -217,6 +362,7 @@ Items.propTypes = {
   selectedTreeNode: PropTypes.array,
   onClick: PropTypes.func,
   onClickBadge: PropTypes.func,
+  onHide: PropTypes.func,
 };
 
 export default inject(
@@ -226,8 +372,18 @@ export default inject(
     selectedFolderStore,
     filesStore,
     filesActionsStore,
+    uploadDataStore,
+    dialogsStore,
   }) => {
-    const { selection, dragging, setDragging, setStartDrag } = filesStore;
+    const {
+      selection,
+      dragging,
+      setDragging,
+      setStartDrag,
+      trashIsEmpty,
+    } = filesStore;
+
+    const { startUpload } = uploadDataStore;
 
     const {
       selectedTreeNode,
@@ -238,6 +394,8 @@ export default inject(
     } = treeFoldersStore;
 
     const { id } = selectedFolderStore;
+    const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
+    const { setEmptyTrashDialogVisible } = dialogsStore;
 
     return {
       isAdmin: auth.isAdmin,
@@ -253,7 +411,11 @@ export default inject(
       dragging,
       setDragging,
       setStartDrag,
-      moveDragItems: filesActionsStore.moveDragItems,
+      moveDragItems,
+      startUpload,
+      uploadEmptyFolders,
+      setEmptyTrashDialogVisible,
+      trashIsEmpty,
     };
   }
 )(withTranslation(["Home", "Common", "Translations"])(observer(Items)));

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using AutoMapper.QueryableExtensions;
-
 namespace ASC.Core.Data;
 
 [Scope]
@@ -119,10 +117,7 @@ public class EFUserService : IUserService
 
         if (Guid.TryParse(login, out var userId))
         {
-            RegeneratePassword(tenant, userId);
-
             var pwdHash = GetPasswordHash(userId, passwordHash);
-            var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
 
             var q = GetUserQuery(tenant)
                 .Where(r => !r.Removed)
@@ -132,7 +127,7 @@ public class EFUserService : IUserService
                     User = user,
                     UserSecurity = security
                 })
-                .Where(r => r.UserSecurity.PwdHash == pwdHash || r.UserSecurity.PwdHash == oldHash)  //todo: remove old scheme
+                .Where(r => r.UserSecurity.PwdHash == pwdHash)
                 ;
 
             if (tenant != Tenant.DefaultTenant)
@@ -151,31 +146,20 @@ public class EFUserService : IUserService
                 .Where(r => r.Email == login);
 
             var users = q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider).ToList();
-            UserInfo result = null;
             foreach (var user in users)
             {
-                RegeneratePassword(tenant, user.Id);
-
                 var pwdHash = GetPasswordHash(user.Id, passwordHash);
-                var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
 
                 var any = UserDbContext.UserSecurity
-                    .Any(r => r.UserId == user.Id && (r.PwdHash == pwdHash || r.PwdHash == oldHash));//todo: remove old scheme
+                    .Any(r => r.UserId == user.Id && (r.PwdHash == pwdHash));
 
                 if (any)
                 {
-                    if (tenant != Tenant.DefaultTenant)
-                    {
-                        return user;
-                    }
-
-                    //need for regenerate all passwords only
-                    //todo: remove with old scheme
-                    result = user;
+                    return user;
                 }
             }
 
-            return result;
+            return null;
         }
     }
 
@@ -186,31 +170,6 @@ public class EFUserService : IUserService
             .Where(r => !r.Removed);
 
         return q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider).ToList();
-    }
-
-    //todo: remove
-    private void RegeneratePassword(int tenant, Guid userId)
-    {
-        var q = UserDbContext.UserSecurity
-            .Where(r => r.UserId == userId);
-
-        if (tenant != Tenant.DefaultTenant)
-        {
-            q = q.Where(r => r.Tenant == tenant);
-        }
-
-        var h2 = q.Select(r => new { r.Tenant, r.PwdHashSha512 })
-            .Take(1)
-            .FirstOrDefault();
-
-        if (h2 == null || string.IsNullOrEmpty(h2.PwdHashSha512))
-        {
-            return;
-        }
-
-        var password = Crypto.GetV(h2.PwdHashSha512, 1, false);
-        var passwordHash = _passwordHasher.GetClientPassword(password);
-        SetUserPasswordHash(h2.Tenant, userId, passwordHash);
     }
 
     public UserGroupRef GetUserGroupRef(int tenant, Guid groupId, UserGroupRefType refType)
@@ -550,7 +509,6 @@ public class EFUserService : IUserService
             Tenant = tenant,
             UserId = id,
             PwdHash = h1,
-            PwdHashSha512 = null,//todo: remove
             LastModified = DateTime.UtcNow
         };
 
@@ -743,6 +701,16 @@ public class EFUserService : IUserService
         {
             return q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider).FirstOrDefault();
         }
+    }
+
+    public IEnumerable<string> GetDavUserEmails(int tenant)
+    {
+        return (from usersDav in UserDbContext.UsersDav
+                join users in UserDbContext.Users on new { tenant = usersDav.TenantId, userId = usersDav.UserId } equals new { tenant = users.Tenant, userId = users.Id }
+                where usersDav.TenantId == tenant
+                select users.Email)
+                .Distinct()
+                .ToList();
     }
 
     protected string GetPasswordHash(Guid userId, string password)

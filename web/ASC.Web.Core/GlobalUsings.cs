@@ -60,7 +60,6 @@ global using ASC.Common.Web;
 global using ASC.Core;
 global using ASC.Core.Billing;
 global using ASC.Core.Common;
-global using ASC.Core.Common.Billing;
 global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
@@ -130,6 +129,8 @@ global using Microsoft.Extensions.Logging;
 
 global using MimeKit.Utils;
 
+global using NetEscapades.EnumGenerators;
+
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
 
@@ -150,3 +151,5 @@ global using static ASC.Web.Core.Files.DocumentService;
 
 global using License = ASC.Core.Billing.License;
 global using SecurityContext = ASC.Core.SecurityContext;
+
+global using ASC.MessagingSystem.EF.Model;

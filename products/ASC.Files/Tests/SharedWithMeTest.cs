@@ -27,7 +27,7 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-class SharedWithMeTest : BaseFilesTests
+public partial class BaseFilesTests
 {
     private IEnumerable<FileShareParams> _testFolderParamRead;
     private IEnumerable<FileShareParams> _testFolderParamReadAndWrite;
@@ -177,7 +177,7 @@ class SharedWithMeTest : BaseFilesTests
     [TestCase(DataTests.SharedForReadFolderId, DataTests.DeleteAfter, DataTests.Immediately)]
     [TestCase(DataTests.SharedForReadAndWriteFolderId, DataTests.DeleteAfter, DataTests.Immediately)]
     [Category("Folder")]
-    [Order(5)]
+    [Order(50)]
     [Description("delete - files/folder/{folderId} - try delete shared folder")]
     public async Task DeleteSharedFolderReturnsFolderWrapperRead(int folderId, bool deleteAfter, bool immediately)
     {

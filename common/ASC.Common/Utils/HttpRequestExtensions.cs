@@ -174,9 +174,14 @@ public static class HttpRequestExtensions
                    || !string.IsNullOrEmpty(request.Headers[HeaderNames.UserAgent]) && request.Headers[HeaderNames.UserAgent].ToString().Contains("SailfishOS"));
     }
 
+    public static bool MobileApp(this HttpRequest request)
+    {
+        return !string.IsNullOrEmpty(request.Headers[HeaderNames.UserAgent]) && (request.Headers[HeaderNames.UserAgent].Contains("iOS") || request.Headers[HeaderNames.UserAgent].Contains("Android"));
+    }
+
     public static string GetUserHostAddress(this HttpRequest request)
     {
-        return request.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString();
+        return request.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
     }
 
     private static Uri ParseRewriterUrl(string s)

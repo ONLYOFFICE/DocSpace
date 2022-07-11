@@ -56,7 +56,7 @@ class ContextMenu extends Component {
     this.currentEvent = e;
 
     if (this.state.visible) {
-      this.setState({ reshow: true });
+      !isMobileOnly && this.setState({ reshow: true });
     } else {
       this.setState({ visible: true }, () => {
         if (this.props.onShow) {
@@ -119,7 +119,7 @@ class ContextMenu extends Component {
     if (event) {
       const rects = this.props.containerRef?.current.getBoundingClientRect();
 
-      let left = rects ? rects.left : event.pageX + 1;
+      let left = rects ? rects.left - this.props.leftOffset : event.pageX + 1;
       let top = rects ? rects.top : event.pageY + 1;
       let width = this.menuRef.current.offsetParent
         ? this.menuRef.current.offsetWidth
@@ -351,7 +351,11 @@ class ContextMenu extends Component {
     return (
       <>
         {this.props.withBackdrop && (
-          <Backdrop visible={this.state.visible} withBackground={true} />
+          <Backdrop
+            visible={this.state.visible}
+            withBackground={false}
+            withoutBlur={true}
+          />
         )}
         <Portal element={element} appendTo={this.props.appendTo} />
       </>
@@ -388,7 +392,10 @@ ContextMenu.propTypes = {
   containerRef: PropTypes.any,
   /** Scale with by container component*/
   scaled: PropTypes.bool,
+
   getContextModel: PropTypes.func,
+
+  leftOffset: PropTypes.number,
 };
 
 ContextMenu.defaultProps = {
@@ -403,6 +410,7 @@ ContextMenu.defaultProps = {
   onHide: null,
   scaled: false,
   containerRef: null,
+  leftOffset: 0,
 };
 
 export default ContextMenu;

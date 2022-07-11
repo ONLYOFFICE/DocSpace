@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using JWT;
+using JWT.Algorithms;
+using JWT.Serializers;
+
 namespace ASC.Web.Core.Files;
 
 /// <summary>
@@ -90,6 +94,7 @@ public static class DocumentService
         string toExtension,
         string documentRevisionId,
         string password,
+        string region,
         ThumbnailData thumbnail,
         SpreadsheetLayout spreadsheetLayout,
         bool isAsync,
@@ -107,7 +112,7 @@ public static class DocumentService
             throw new ArgumentNullException(nameof(toExtension), "Extension for conversion is not known");
         }
 
-        return InternalGetConvertedUriAsync(fileUtility, documentConverterUrl, documentUri, fromExtension, toExtension, documentRevisionId, password, thumbnail, spreadsheetLayout, isAsync, signatureSecret, clientFactory);
+        return InternalGetConvertedUriAsync(fileUtility, documentConverterUrl, documentUri, fromExtension, toExtension, documentRevisionId, password, region, thumbnail, spreadsheetLayout, isAsync, signatureSecret, clientFactory);
     }
 
     private static async Task<(int ResultPercent, string ConvertedDocumentUri)> InternalGetConvertedUriAsync(
@@ -118,6 +123,7 @@ public static class DocumentService
        string toExtension,
        string documentRevisionId,
        string password,
+       string region,
        ThumbnailData thumbnail,
        SpreadsheetLayout spreadsheetLayout,
        bool isAsync,
@@ -152,6 +158,7 @@ public static class DocumentService
             Thumbnail = thumbnail,
             SpreadsheetLayout = spreadsheetLayout,
             Url = documentUri,
+            Region = region
         };
 
         if (!string.IsNullOrEmpty(password))
@@ -165,11 +172,18 @@ public static class DocumentService
                     {
                         { "payload", body }
                     };
-            var token = JsonWebToken.Encode(payload, signatureSecret);
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            var encoder = new JwtEncoder(new HMACSHA256Algorithm(),
+                                             new JsonNetSerializer(),
+                                             new JwtBase64UrlEncoder());
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            var token = encoder.Encode(payload, signatureSecret);
             //todo: remove old scheme
             request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
-            token = JsonWebToken.Encode(body, signatureSecret);
+            token = encoder.Encode(body, signatureSecret);
             body.Token = token;
         }
 
@@ -290,11 +304,17 @@ public static class DocumentService
                     { "payload", body }
                 };
 
-            var token = JsonWebToken.Encode(payload, signatureSecret);
+#pragma warning disable CS0618 // Type or member is obsolete
+            var encoder = new JwtEncoder(new HMACSHA256Algorithm(),
+                                                              new JsonNetSerializer(),
+                                                              new JwtBase64UrlEncoder());
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            var token = encoder.Encode(payload, signatureSecret);
             //todo: remove old scheme
             request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
-            token = JsonWebToken.Encode(body, signatureSecret);
+            token = encoder.Encode(body, signatureSecret);
             body.Token = token;
         }
 
@@ -733,6 +753,9 @@ public static class DocumentService
         [JsonPropertyName("url")]
         public string Url { get; set; }
 
+        [JsonPropertyName("region")]
+        public string Region { get; set; }
+
         [JsonPropertyName("token")]
         public string Token { get; set; }
     }
@@ -798,7 +821,7 @@ public static class DocumentService
 
         public static void ProcessResponseError(string errorCode)
         {
-            if (!Enum.TryParse(errorCode, true, out ErrorCode code))
+            if (!ErrorCodeExtensions.TryParse(errorCode, true, out ErrorCode code))
             {
                 code = ErrorCode.Unknown;
             }
@@ -822,6 +845,7 @@ public static class DocumentService
             throw new DocumentServiceException(code, errorMessage);
         }
 
+        [EnumExtensions]
         public enum ErrorCode
         {
             VkeyUserCountExceed = -22,

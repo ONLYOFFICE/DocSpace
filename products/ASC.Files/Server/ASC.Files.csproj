@@ -11,7 +11,6 @@
     <Product>ASC.Files</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -604,6 +603,12 @@
     <None Update="DocStore\new\zh-CN\xlsx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\sample\de-DE\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\de-DE\my\ONLYOFFICE Sample Form.oform">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\sample\de-DE\my\ONLYOFFICE-Musteraudio.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -611,7 +616,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\de-DE\my\ONLYOFFICE-Musterpraesentation.pptx.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\de-DE\my\ONLYOFFICE-Musterpräsentation.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -626,6 +631,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Form.oform">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Presentation.pptx">
@@ -643,6 +654,12 @@
     <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Document.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Form.oform">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Presentation.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -656,6 +673,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Form.oform">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Presentation.pptx">
@@ -673,6 +696,12 @@
     <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Document.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Form.oform">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Presentation.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -686,6 +715,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Form.oform">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Presentation.pptx">

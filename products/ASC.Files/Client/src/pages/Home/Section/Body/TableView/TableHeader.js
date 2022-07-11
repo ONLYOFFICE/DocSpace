@@ -3,15 +3,11 @@ import TableHeader from "@appserver/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
-const TABLE_VERSION = "2";
-const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
-const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
-
 class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, personal, userId } = props;
+    const { t, personal, tableStorageName } = props;
 
     const defaultColumns = [
       {
@@ -21,7 +17,7 @@ class FilesTableHeader extends React.Component {
         enable: true,
         default: true,
         sortBy: "AZ",
-        minWidth: 180,
+        minWidth: 210,
         onClick: this.onFilter,
       },
       {
@@ -73,14 +69,14 @@ class FilesTableHeader extends React.Component {
         key: "QuickButtons",
         title: "",
         enable: true,
-        defaultSize: 120,
+        defaultSize: 75,
         resizable: false,
       },
     ];
 
     personal && defaultColumns.splice(1, 1);
 
-    const storageColumns = localStorage.getItem(`${TABLE_COLUMNS}=${userId}`);
+    const storageColumns = localStorage.getItem(tableStorageName);
     const splitColumns = storageColumns && storageColumns.split(",");
     const columns = this.getColumns(defaultColumns, splitColumns);
     const resetColumnsSize =
@@ -97,7 +93,7 @@ class FilesTableHeader extends React.Component {
   }
 
   setTableColumns = (tableColumns) => {
-    localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
+    localStorage.setItem(this.props.tableStorageName, tableColumns);
   };
 
   componentDidMount() {
@@ -107,22 +103,25 @@ class FilesTableHeader extends React.Component {
   }
 
   onBeginScroll = () => {
-    const { firstElemChecked, headerBorder } = this.props;
+    const { firstElemChecked } = this.props;
 
     const currentScrollPosition = this.customScrollElm.scrollTop;
-
     const elem = document.getElementById("table-container_caption-header");
-    if (elem && headerBorder) elem.style.borderColor = "#2da7db";
 
     if (currentScrollPosition === 0) {
       this.isBeginScrolling = false;
+
+      this.props.headerBorder &&
+        elem?.classList?.add("hotkeys-lengthen-header");
 
       !firstElemChecked && elem?.classList?.remove("lengthen-header");
       return;
     }
 
-    if (elem) elem.style.borderColor = "#ECEEF1";
-    !this.isBeginScrolling && elem?.classList?.add("lengthen-header");
+    if (!this.isBeginScrolling) {
+      elem?.classList?.remove("hotkeys-lengthen-header");
+      elem?.classList?.add("lengthen-header");
+    }
 
     this.isBeginScrolling = true;
   };
@@ -136,9 +135,12 @@ class FilesTableHeader extends React.Component {
       this.setState({ columns });
     }
 
-    if (this.props.firstElemChecked && this.props.headerBorder) {
+    if (this.props.headerBorder) {
       const elem = document.getElementById("table-container_caption-header");
-      if (elem) elem.style.borderColor = "#2da7db";
+      elem?.classList?.add("hotkeys-lengthen-header");
+    } else {
+      const elem = document.getElementById("table-container_caption-header");
+      elem?.classList?.remove("hotkeys-lengthen-header");
     }
   }
 
@@ -195,9 +197,11 @@ class FilesTableHeader extends React.Component {
       isHeaderChecked,
       filter,
       sectionWidth,
-      userId,
       firstElemChecked,
       sortingVisible,
+      infoPanelVisible,
+      columnStorageName,
+      columnInfoPanelStorageName,
     } = this.props;
 
     const { sortBy, sortOrder } = filter;
@@ -211,10 +215,12 @@ class FilesTableHeader extends React.Component {
         sortBy={sortBy}
         containerRef={containerRef}
         columns={columns}
-        columnStorageName={`${COLUMNS_SIZE}=${userId}`}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
         sectionWidth={sectionWidth}
         resetColumnsSize={resetColumnsSize}
         sortingVisible={sortingVisible}
+        infoPanelVisible={infoPanelVisible}
       />
     );
   }
@@ -222,6 +228,8 @@ class FilesTableHeader extends React.Component {
 
 export default inject(
   ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+
     const {
       isHeaderChecked,
       setIsLoading,
@@ -247,10 +255,11 @@ export default inject(
 
       setIsLoading,
       fetchFiles,
-      userId: auth.userStore.user.id,
 
       firstElemChecked,
       headerBorder,
+
+      infoPanelVisible,
     };
   }
 )(

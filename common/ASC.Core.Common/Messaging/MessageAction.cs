@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -26,6 +26,7 @@
 
 namespace ASC.MessagingSystem.Core;
 
+[EnumExtensions]
 public enum MessageAction
 {
     None = -1,
@@ -109,6 +110,7 @@ public enum MessageAction
     SubtaskUpdated = 2035,
     SubtaskUpdatedStatus = 2036,
     SubtaskDeleted = 2037,
+    SubtaskMoved = 2058,
 
     DiscussionCreated = 2038,
     DiscussionUpdated = 2039,
@@ -379,6 +381,10 @@ public enum MessageAction
     UserDataReassigns = 4030,
     UserDataRemoving = 4031,
 
+    UserLogoutActiveConnections = 4034,
+    UserLogoutActiveConnection = 4035,
+    UserLogoutActiveConnectionsForUser = 4036,
+
     #endregion
 
     #region Documents
@@ -394,10 +400,15 @@ public enum MessageAction
     FileLocked = 5006,
     FileUnlocked = 5007,
     FileUpdatedAccess = 5008,
+    FileUpdatedAccessFor = 5068,
     FileSendAccessLink = 5036, // not used
+    FileOpenedForChange = 5054,
+    FileRemovedFromList = 5058,
+    FileExternalLinkAccessUpdated = 5060,
 
     FileDownloaded = 5009,
     FileDownloadedAs = 5010,
+    FileRevisionDownloaded = 5062,
 
     FileUploaded = 5011,
     FileImported = 5012,
@@ -407,18 +418,23 @@ public enum MessageAction
     FileMoved = 5015,
     FileMovedWithOverwriting = 5016,
     FileMovedToTrash = 5017,
-    FileDeleted = 5018, // not used
+    FileDeleted = 5018,
 
     FolderCreated = 5019,
     FolderRenamed = 5020,
     FolderUpdatedAccess = 5021,
+    FolderUpdatedAccessFor = 5066,
 
     FolderCopied = 5022,
     FolderCopiedWithOverwriting = 5023,
     FolderMoved = 5024,
+    FolderMovedFrom = 5067,
     FolderMovedWithOverwriting = 5025,
     FolderMovedToTrash = 5026,
-    FolderDeleted = 5027, // not used
+    FolderDeleted = 5027,
+    FolderRemovedFromList = 5059,
+
+    FolderDownloaded = 5057,
 
     ThirdPartyCreated = 5028,
     ThirdPartyUpdated = 5029,
@@ -426,9 +442,10 @@ public enum MessageAction
 
     DocumentsThirdPartySettingsUpdated = 5031,
     DocumentsOverwritingSettingsUpdated = 5032,
-    DocumentsForcesave = 5049, // last
+    DocumentsForcesave = 5049,
     DocumentsStoreForcesave = 5048,
     DocumentsUploadingFormatsSettingsUpdated = 5033,
+    DocumentsExternalShareSettingsUpdated = 5069, // last
 
     FileConverted = 5035,
 
@@ -436,6 +453,30 @@ public enum MessageAction
 
     DocumentSignComplete = 5046,
     DocumentSendToSign = 5045,
+
+    FileMarkedAsFavorite = 5055,
+    FileRemovedFromFavorite = 5056,
+    FileMarkedAsRead = 5063,
+    FileReaded = 5064,
+
+    TrashEmptied = 5061,
+
+    FolderMarkedAsRead = 5065,
+
+    RoomCreated = 5070,
+    RoomRenamed = 5071,
+    RoomArchived = 5072,
+    RoomUnarchived = 5073,
+    RoomDeleted = 5074,
+    RoomUpdateAccess = 5075,
+
+    TagCreated = 5076,
+    TagsDeleted = 5077,
+    AddedRoomTags = 5078,
+    DeletedRoomTags = 5079,
+
+    RoomLogoCreated = 5080,
+    RoomLogoDeleted = 5081,
 
     #endregion
 
@@ -518,6 +559,9 @@ public enum MessageAction
     #region others
 
     ContactAdminMailSent = 7000,
+    RoomInviteLinkUsed = 7001,
+    UserCreatedAndAddedToRoom = 7002,
+    GuestCreatedAndAddedToRoom = 7003,
 
     #endregion
 

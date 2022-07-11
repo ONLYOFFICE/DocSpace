@@ -102,6 +102,11 @@ class ComboBox extends React.Component {
       manualWidth,
       displaySelectedOption,
       fixedDirection,
+      withBlur,
+      fillIcon,
+      isExternalLink,
+      isPersonal,
+      offsetLeft,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -122,9 +127,7 @@ class ComboBox extends React.Component {
       ? 0
       : 1;
 
-    const advancedOptionsLength = advancedOptions
-      ? advancedOptions.props.children.length
-      : 0;
+    const withAdvancedOptions = !!advancedOptions?.props.children;
 
     return (
       <StyledComboBox
@@ -143,13 +146,14 @@ class ComboBox extends React.Component {
           selectedOption={selectedOption}
           withOptions={optionsLength > 0}
           optionsLength={optionsLength}
-          withAdvancedOptions={advancedOptionsLength > 0}
+          withAdvancedOptions={withAdvancedOptions}
           innerContainer={children}
           innerContainerClassName="optionalBlock"
           isOpen={isOpen}
           size={size}
           scaled={scaled}
           comboIcon={comboIcon}
+          fillIcon={fillIcon}
         />
         {displayType !== "toggle" && (
           <DropDown
@@ -167,6 +171,10 @@ class ComboBox extends React.Component {
             showDisabledItems={showDisabledItems}
             isDefaultMode={isDefaultMode}
             fixedDirection={fixedDirection}
+            withBlur={withBlur}
+            isExternalLink={isExternalLink}
+            isPersonal={isPersonal}
+            offsetLeft={offsetLeft}
           >
             {advancedOptions
               ? advancedOptions
@@ -183,6 +191,7 @@ class ComboBox extends React.Component {
                       key={option.key}
                       disabled={disabled}
                       onClick={this.optionClick.bind(this, option)}
+                      fillIcon={fillIcon}
                     />
                   );
                 })}
@@ -251,6 +260,12 @@ ComboBox.propTypes = {
   fixedDirection: PropTypes.bool,
   /** Disable clicking on the item */
   disableItemClick: PropTypes.bool,
+
+  fillIcon: PropTypes.bool,
+  isExternalLink: PropTypes.bool,
+  isPersonal: PropTypes.bool,
+
+  offsetLeft: PropTypes.number,
 };
 
 ComboBox.defaultProps = {
@@ -268,6 +283,7 @@ ComboBox.defaultProps = {
   displaySelectedOption: false,
   fixedDirection: false,
   disableItemClick: false,
+  isExternalLink: false,
 };
 
 export default ComboBox;

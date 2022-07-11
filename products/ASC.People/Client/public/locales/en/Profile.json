@@ -1,10 +1,9 @@
-﻿{
-  "ChangeEmailSuccess": "Email has been changed successfully ",
+{
+  "ChangeEmailSuccess": "Email has been changed successfully",
   "ChangesApplied": "Changes are applied",
   "ContactInformation": "Contact Information",
   "CountCodesRemaining": "codes remaining",
   "DarkTheme": "Dark theme",
-  "Disconnect": "Disconnect",
   "EditPhoto": "Edit photo",
   "EditSubscriptionsBtn": "Edit subscriptions",
   "EditUser": "Edit profile",
@@ -17,9 +16,9 @@
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
   "ShowBackupCodes": "Show backup codes",
-  "Subscriptions": "Subscriptions",
   "SubscriptionEmailTipsToggleLbl": "Email notification with tips and tricks",
   "SubscriptionTurnOffToast": "You have been successfully unsubscribed from the the mailing list. <1>Subscribe again</1>",
+  "Subscriptions": "Subscriptions",
   "SystemTheme": "Use system theme",
   "TfaLoginSettings": "Login settings",
   "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin."

@@ -6,33 +6,41 @@ import IconButton from "@appserver/components/icon-button";
 import { isMobile } from "react-device-detect";
 import { tablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
+import ToggleInfoPanelButton from "./toggle-infopanel-btn";
+import PlusButton from "./plus-btn";
 
 const StyledContainer = styled.div`
   margin-left: 20px;
   display: flex;
   align-items: center;
 
+  height: 32px;
+
   .add-button {
     margin-right: 16px;
     min-width: 15px;
 
-    ${(props) =>
-      !props.isDropBox &&
-      css`
-        @media ${tablet} {
-          display: none;
-        }
-      `}
+    @media ${tablet} {
+      display: none;
+    }
 
     ${isMobile &&
     css`
-      ${(props) => !props.isDropBox && "display: none"};
+      display: none;
     `}
+  }
+
+  .add-drop-down {
+    margin-top: 8px;
   }
 
   .option-button {
     margin-right: 16px;
     min-width: 15px;
+
+    @media ${tablet} {
+      margin-right: 9px;
+    }
   }
 
   .trash-button {
@@ -92,6 +100,8 @@ const ControlButtons = ({
   isInfoPanelVisible,
   toggleInfoPanel,
   toggleDropBox,
+  isDesktop,
+  titles,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -102,17 +112,15 @@ const ControlButtons = ({
     <StyledContainer isDropBox={isDropBox}>
       {!isRootFolder && canCreate ? (
         <>
-          <ContextMenuButton
-            className="add-button"
-            directionX="right"
-            iconName="images/plus.svg"
-            size={15}
-            isFill
-            getData={getContextOptionsPlus}
-            isDisabled={false}
-          />
+          {!isMobile && (
+            <PlusButton
+              className="add-button"
+              getData={getContextOptionsPlus}
+            />
+          )}
           {!personal && (
             <ContextMenuButton
+              zIndex={402}
               className="option-button"
               directionX="right"
               iconName="images/vertical-dots.react.svg"
@@ -122,73 +130,58 @@ const ControlButtons = ({
               isDisabled={false}
             />
           )}
-          <StyledInfoPanelToggleWrapper
-            isRootFolder={isRootFolder}
-            isInfoPanelVisible={isInfoPanelVisible}
-          >
-            <div className="info-panel-toggle-bg">
-              <IconButton
-                className="info-panel-toggle"
-                iconName="images/panel.react.svg"
-                size="15"
-                isFill={true}
-                onClick={toggleInfoPanelAction}
-              />
-            </div>
-          </StyledInfoPanelToggleWrapper>
+          {!isDesktop && (
+            <ToggleInfoPanelButton
+              isRootFolder={isRootFolder}
+              isInfoPanelVisible={isInfoPanelVisible}
+              toggleInfoPanel={toggleInfoPanelAction}
+            />
+          )}
         </>
       ) : canCreate ? (
         <>
-          <ContextMenuButton
-            className="add-button"
-            directionX="right"
-            iconName="images/plus.svg"
-            size={15}
-            isFill
-            getData={getContextOptionsPlus}
-            isDisabled={false}
-          />
-          <StyledInfoPanelToggleWrapper
-            isRootFolder={isRootFolder}
-            isInfoPanelVisible={isInfoPanelVisible}
-          >
-            <div className="info-panel-toggle-bg">
-              <IconButton
-                className="info-panel-toggle"
-                iconName="images/panel.react.svg"
-                size="15"
-                isFill={true}
-                onClick={toggleInfoPanelAction}
-              />
-            </div>
-          </StyledInfoPanelToggleWrapper>
+          {!isMobile && (
+            <PlusButton
+              className="add-button"
+              getData={getContextOptionsPlus}
+            />
+          )}
+          {!isDesktop && (
+            <ToggleInfoPanelButton
+              isRootFolder={isRootFolder}
+              isInfoPanelVisible={isInfoPanelVisible}
+              toggleInfoPanel={toggleInfoPanelAction}
+            />
+          )}
         </>
       ) : isRecycleBinFolder && !isEmptyFilesList ? (
         <>
           <IconButton
-            iconName="images/clear.active.react.svg"
+            iconName="images/clear.trash.react.svg"
             size={15}
             isFill={true}
             onClick={clearTrash}
             className="trash-button"
+            title={(titles && titles["trash"]) || ""}
           />
-          <StyledInfoPanelToggleWrapper
-            isRootFolder={isRootFolder}
-            isInfoPanelVisible={isInfoPanelVisible}
-          >
-            <div className="info-panel-toggle-bg">
-              <IconButton
-                className="info-panel-toggle"
-                iconName="images/panel.react.svg"
-                size="15"
-                isFill={true}
-                onClick={toggleInfoPanelAction}
-              />
-            </div>
-          </StyledInfoPanelToggleWrapper>
+          {!isDesktop && (
+            <ToggleInfoPanelButton
+              isRootFolder={isRootFolder}
+              isInfoPanelVisible={isInfoPanelVisible}
+              toggleInfoPanel={toggleInfoPanelAction}
+            />
+          )}
         </>
       ) : (
-        <></>
+        <>
+          {!isDesktop && (
+            <ToggleInfoPanelButton
+              isRootFolder={isRootFolder}
+              isInfoPanelVisible={isInfoPanelVisible}
+              toggleInfoPanel={toggleInfoPanelAction}
+            />
+          )}
+        </>
       )}
     </StyledContainer>
   );

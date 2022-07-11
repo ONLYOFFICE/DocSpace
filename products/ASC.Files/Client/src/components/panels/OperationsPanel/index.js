@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
 import SelectFolderDialog from "../SelectFolderDialog";
 
-let operationData, fileWithConflicts, timerId;
+let timerId;
 const OperationsPanelComponent = (props) => {
   const {
     t,
@@ -31,25 +31,12 @@ const OperationsPanelComponent = (props) => {
     parentFolderId,
     conflictResolveDialogVisible,
     clearActiveOperations,
+    thirdPartyMoveDialogVisible,
   } = props;
 
   const deleteAfter = false; // TODO: get from settings
 
   const [isLoading, setIsLoading] = useState(false);
-  const [intermediateHidden, setIntermediateHidden] = useState(false);
-
-  useEffect(() => {
-    if (conflictResolveDialogVisible === false) {
-      intermediateHidden && setIntermediateHidden(false);
-    } else {
-      isLoading && setIsLoading(false);
-    }
-  }, [conflictResolveDialogVisible]);
-
-  useEffect(() => {
-    intermediateHidden &&
-      setConflictDialogData(fileWithConflicts, operationData);
-  }, [intermediateHidden]);
 
   useEffect(() => {
     return () => {
@@ -113,7 +100,7 @@ const OperationsPanelComponent = (props) => {
 
     if (!folderIds.length && !fileIds.length) return;
 
-    operationData = {
+    const operationData = {
       destFolderId,
       folderIds,
       fileIds,
@@ -134,8 +121,7 @@ const OperationsPanelComponent = (props) => {
     checkFileConflicts(destFolderId, folderIds, fileIds)
       .then(async (conflicts) => {
         if (conflicts.length) {
-          fileWithConflicts = conflicts;
-          setIntermediateHidden(true);
+          setConflictDialogData(conflicts, operationData);
           setIsLoading(false);
         } else {
           setIsLoading(false);
@@ -155,9 +141,14 @@ const OperationsPanelComponent = (props) => {
   };
 
   // console.log("Operations panel render", expandedKeys);
-  const isVisible = intermediateHidden ? false : visible;
+  const isVisible =
+    conflictResolveDialogVisible || thirdPartyMoveDialogVisible
+      ? false
+      : visible;
+
   return (
     <SelectFolderDialog
+      selectionFiles={selection}
       isDisableTree={isLoading}
       foldersType="exceptSortedByTags"
       isPanelVisible={isVisible}
@@ -179,16 +170,15 @@ const OperationsPanelComponent = (props) => {
           ? t("Translations:CopyHere")
           : t("Translations:MoveHere")
       }
+      isRecycleBin={isRecycleBin}
+      currentFolderId={currentFolderId}
     ></SelectFolderDialog>
   );
 };
 
-const OperationsPanel = withTranslation([
-  "OperationsPanel",
-  "Translations",
-  "Common",
-  "Home",
-])(OperationsPanelComponent);
+const OperationsPanel = withTranslation(["Translations", "Common", "Home"])(
+  OperationsPanelComponent
+);
 
 export default inject(
   (
@@ -221,6 +211,7 @@ export default inject(
       setThirdPartyMoveDialogVisible,
       setIsFolderActions,
       conflictResolveDialogVisible,
+      thirdPartyMoveDialogVisible,
     } = dialogsStore;
 
     const selections = selection.length ? selection : [bufferSelection];
@@ -252,6 +243,7 @@ export default inject(
       checkFileConflicts,
       conflictResolveDialogVisible,
       clearActiveOperations,
+      thirdPartyMoveDialogVisible,
     };
   }
 )(withRouter(observer(OperationsPanel)));

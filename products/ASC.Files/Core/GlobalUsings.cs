@@ -76,6 +76,7 @@ global using ASC.Data.Storage;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Core;
 global using ASC.ElasticSearch.Service;
+global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.Helpers;
@@ -87,6 +88,8 @@ global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.Core.Entries;
 global using ASC.Files.Core.Data;
 global using ASC.Files.Core.EF;
+global using ASC.Files.Core.Entries;
+global using ASC.Files.Core.Helpers;
 global using ASC.Files.Core.IntegrationEvents.Events;
 global using ASC.Files.Core.Log;
 global using ASC.Files.Core.Mapping;
@@ -95,6 +98,7 @@ global using ASC.Files.Core.Security;
 global using ASC.Files.Core.Services.NotifyService;
 global using ASC.Files.Core.Services.OFormService;
 global using ASC.Files.Core.Thirdparty;
+global using ASC.Files.Core.VirtualRooms;
 global using ASC.Files.Thirdparty;
 global using ASC.Files.Thirdparty.Box;
 global using ASC.Files.Thirdparty.Dropbox;
@@ -103,6 +107,7 @@ global using ASC.Files.Thirdparty.OneDrive;
 global using ASC.Files.Thirdparty.ProviderDao;
 global using ASC.Files.Thirdparty.SharePoint;
 global using ASC.Files.Thirdparty.Sharpbox;
+global using ASC.Files.ThumbnailBuilder;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.EF.Model;
 global using ASC.Notify.Model;
@@ -164,6 +169,8 @@ global using ICSharpCode.SharpZipLib.GZip;
 global using ICSharpCode.SharpZipLib.Tar;
 global using ICSharpCode.SharpZipLib.Zip;
 
+global using JWT.Algorithms;
+global using JWT.Builder;
 global using JWT.Exceptions;
 
 global using Microsoft.AspNetCore.Builder;
@@ -188,10 +195,16 @@ global using Microsoft.SharePoint.Client;
 
 global using Nest;
 
+global using NetEscapades.EnumGenerators;
+
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
 
 global using ProtoBuf;
+
+global using SixLabors.ImageSharp;
+
+global using StackExchange.Redis;
 
 global using static ASC.Files.Core.Data.AbstractDao;
 global using static ASC.Web.Core.Files.DocumentService;
@@ -211,9 +224,11 @@ global using Thumbnail = ASC.Files.Core.Thumbnail;
 global using FileType = ASC.Web.Core.Files.FileType;
 global using Token = ASC.Web.Files.ThirdPartyApp.Token;
 global using FileShareLink = ASC.Web.Files.Utils.FileShareLink;
+global using SocketManager = ASC.Web.Files.Utils.SocketManager;
 global using ModelSnapshot = Microsoft.EntityFrameworkCore.Infrastructure.ModelSnapshot;
 global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 global using ContentType = System.Net.Mime.ContentType;
+global using EnumMemberAttribute = System.Runtime.Serialization.EnumMemberAttribute;
 global using JsonSerializer = System.Text.Json.JsonSerializer;
 global using JsonTokenType = System.Text.Json.JsonTokenType;
 global using JsonConverter = System.Text.Json.Serialization.JsonConverter;

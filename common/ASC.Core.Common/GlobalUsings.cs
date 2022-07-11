@@ -35,6 +35,7 @@ global using System.Globalization;
 global using System.Linq;
 global using System.Linq.Expressions;
 global using System.Net;
+global using System.Net.Http.Headers;
 global using System.Reflection;
 global using System.Runtime.Serialization;
 global using System.Security;
@@ -55,6 +56,7 @@ global using Amazon.Runtime;
 global using Amazon.SimpleEmail;
 global using Amazon.SimpleEmail.Model;
 
+global using ASC.AuditTrail.Models;
 global using ASC.Collections;
 global using ASC.Common;
 global using ASC.Common.Caching;
@@ -65,6 +67,8 @@ global using ASC.Common.Mapping;
 global using ASC.Common.Module;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Notify.Patterns;
+global using ASC.Common.Radicale;
+global using ASC.Common.Radicale.Core;
 global using ASC.Common.Security;
 global using ASC.Common.Security.Authentication;
 global using ASC.Common.Security.Authorizing;
@@ -74,7 +78,6 @@ global using ASC.Core;
 global using ASC.Core.Billing;
 global using ASC.Core.Caching;
 global using ASC.Core.Common;
-global using ASC.Core.Common.Billing;
 global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
@@ -105,6 +108,7 @@ global using ASC.Geolocation;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.EF.Model;
 global using ASC.MessagingSystem.Mapping;
+global using ASC.MessagingSystem.EF.Context;
 global using ASC.Notify;
 global using ASC.Notify.Channels;
 global using ASC.Notify.Cron;
@@ -120,6 +124,7 @@ global using ASC.Web.Studio.Utility;
 global using Autofac;
 
 global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
 
 global using MailKit.Security;
 
@@ -139,6 +144,8 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
 global using MimeKit;
+
+global using NetEscapades.EnumGenerators;
 
 global using Newtonsoft.Json;
 
