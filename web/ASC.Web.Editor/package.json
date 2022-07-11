@@ -13,7 +13,7 @@
     "build": "yarn clean && yarn build:client && yarn build:server",
     "start:watch-client": "webpack --config webpack/dev/webpack.dev.client.js --watch --no-cache",
     "start:watch-server": "webpack --config webpack/dev/webpack.dev.server.js ",
-    "start:server": "yarn build:dev-client && yarn build:dev-server &&  nodemon  --exec node dist/server.js",
+    "start:server": "yarn build:dev-client && yarn build:dev-server &&  nodemon --watch dist/server.js --exec node dist/server.js",
     "start-dev": "npm-run-all --parallel start:*",
     "start-test": "shx rm -rf dist && webpack --mode=development --config webpack/dev/webpack.dev.server.js --config webpack/dev/webpack.dev.client.js && nodemon --watch dist/server.js --exec node dist/server.js"
   },
@@ -47,9 +47,9 @@
     "style-loader": "^3.3.1",
     "styled-components": "^5.3.5",
     "terser-webpack-plugin": "^5.1.2",
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.9.0",
-    "webpack-dev-server": "^3.11.2",
+    "webpack": "5.52.0",
+    "webpack-cli": "4.9.2",
+    "webpack-dev-server": "4.3.1",
     "webpack-hot-middleware": "^2.25.0",
     "webpack-merge": "^5.7.3",
     "webpack-node-externals": "^3.0.0"
