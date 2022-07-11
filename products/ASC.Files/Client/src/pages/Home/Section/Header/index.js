@@ -375,11 +375,48 @@ class SectionHeaderContent extends React.Component {
     this.props.setSelected(checked ? "all" : "none");
   };
 
-  onClickFolder = (data) => {
-    const { setSelectedNode, setIsLoading, fetchFiles } = this.props;
-    setSelectedNode(data);
+  onClickFolder = (id, isRootRoom) => {
+    const {
+      setSelectedNode,
+      setIsLoading,
+      fetchFiles,
+      fetchRooms,
+      rootFolderType,
+      history,
+    } = this.props;
+
+    if (isRootRoom) {
+      setIsLoading(true);
+
+      const searchArea =
+        rootFolderType === FolderType.Rooms
+          ? RoomSearchArea.Active
+          : RoomSearchArea.Archive;
+
+      fetchRooms(searchArea, null)
+        .then(() => {
+          const filter = RoomsFilter.getDefault();
+
+          const urlFilter = filter.toUrlParams();
+
+          history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              config.homepage,
+              `/rooms?${urlFilter}`
+            )
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+
+      return;
+    }
+
+    setSelectedNode(id);
     setIsLoading(true);
-    fetchFiles(data, null, true, false)
+    fetchFiles(id, null, true, false)
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   };
