@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
+import { useTranslation } from "react-i18next";
 import Avatar from "@appserver/components/avatar";
 import Text from "@appserver/components/text";
 import ContextMenuButton from "@appserver/components/context-menu-button";
+import { isDesktop, isMobile, isMobileOnly } from "react-device-detect";
 
 const StyledProfile = styled.div`
   position: fixed;
@@ -20,8 +23,18 @@ const StyledProfile = styled.div`
 `;
 
 const Profile = (props) => {
-  const { user } = props;
-  console.log(user);
+  const {
+    history,
+    user,
+    isPersonal,
+    modules,
+    settingsModule,
+    currentProductId,
+    debugInfo,
+    peopleAvailable,
+  } = props;
+
+  const { t } = useTranslation("Common");
 
   const getUserRole = (user) => {
     let isModuleAdmin = user.listAdminModules && user.listAdminModules.length;
@@ -34,8 +47,94 @@ const Profile = (props) => {
 
   const userRole = getUserRole(user);
 
+  const onProfileClick = () => {
+    console.log("onProfileClick");
+  };
+
+  const onSettingsClick = () => {
+    console.log("onSettingsClick");
+  };
+
+  const onHotkeysClick = () => {
+    console.log("onHotkeysClick");
+  };
+
+  const onAboutClick = () => {
+    console.log("onAboutClick");
+  };
+
+  const onLogoutClick = () => {
+    console.log("onLogoutClick");
+  };
+
+  const onDebugClick = () => {
+    console.log("onDebugClick");
+  };
+
   const getContextOptions = () => {
-    return [];
+    const settings =
+      settingsModule && !isPersonal
+        ? {
+            key: "SettingsBtn",
+            icon: "/static/images/catalog.settings.react.svg",
+            label: t("Common:Settings"),
+            onClick: onSettingsClick,
+          }
+        : null;
+
+    let hotkeys = null;
+    if (modules) {
+      const moduleIndex = modules.findIndex((m) => m.appName === "files");
+
+      if (
+        moduleIndex !== -1 &&
+        modules[moduleIndex].id === currentProductId &&
+        !isMobile
+      ) {
+        hotkeys = {
+          key: "HotkeysBtn",
+          icon: "/static/images/hotkeys.react.svg",
+          label: t("Common:Hotkeys"),
+          onClick: onHotkeysClick,
+        };
+      }
+    }
+    const actions = [
+      {
+        key: "ProfileBtn",
+        icon: "/static/images/profile.react.svg",
+        label: t("Common:Profile"),
+        onClick: onProfileClick,
+      },
+      settings,
+      hotkeys,
+      {
+        key: "AboutBtn",
+        icon: "/static/images/info.react.svg",
+        label: t("AboutCompanyTitle"),
+        onClick: onAboutClick,
+      },
+      {
+        isSeparator: true,
+        key: "separator",
+      },
+      {
+        key: "LogoutBtn",
+        icon: "/static/images/logout.react.svg",
+        label: t("LogoutButton"),
+        onClick: onLogoutClick,
+      },
+    ];
+
+    if (debugInfo) {
+      actions.splice(3, 0, {
+        key: "DebugBtn",
+        label: "Debug Info",
+        onClick: onDebugClick,
+      });
+    }
+
+    return actions;
   };
 
   return (
@@ -66,9 +165,22 @@ const Profile = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
-  const { userStore } = auth;
-  const { user } = userStore;
+export default withRouter(
+  inject(({ auth }) => {
+    const { userStore, settingsStore } = auth;
+    const { user } = userStore;
+    const { personal: isPersonal, currentProductId, debugInfo } = settingsStore;
+    const modules = auth.availableModules;
+    const settingsModule = modules.find((module) => module.id === "settings");
 
-  return { user };
-})(observer(Profile));
+    return {
+      user,
+      isPersonal,
+      modules,
+      settingsModule,
+      currentProductId,
+      peopleAvailable: modules.some((m) => m.appName === "people"),
+      debugInfo,
+    };
+  })(observer(Profile))
+);
