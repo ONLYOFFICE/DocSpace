@@ -35,7 +35,6 @@ public class Tariff
     public DateTime DueDate { get; set; }
     public DateTime DelayDueDate { get; set; }
     public DateTime LicenseDate { get; set; }
-    public bool Prolongable { get; set; }
     public int Quantity { get; set; }
 
     public static Tariff CreateDefault()

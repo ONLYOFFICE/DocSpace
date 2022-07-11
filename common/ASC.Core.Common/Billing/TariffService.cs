@@ -193,7 +193,6 @@ public class TariffService : ITariffService
                           {
                               var asynctariff = Tariff.CreateDefault();
                               asynctariff.DueDate = DateTime.Today.AddDays(-1);
-                              asynctariff.Prolongable = false;
                               asynctariff.State = TariffState.NotPaid;
 
                               if (SaveBillingInfo(tenantId, asynctariff))
@@ -624,10 +623,6 @@ public class TariffService : ITariffService
                 tariff = unlimTariff;
             }
         }
-
-        tariff.Prolongable = tariff.DueDate == DateTime.MinValue || tariff.DueDate == DateTime.MaxValue ||
-                             tariff.State == TariffState.Trial ||
-                             new DateTime(tariff.DueDate.Year, tariff.DueDate.Month, 1) <= new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).AddMonths(1);
 
         return tariff;
     }
