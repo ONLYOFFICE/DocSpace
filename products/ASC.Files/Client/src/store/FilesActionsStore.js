@@ -20,7 +20,7 @@ import {
 import { makeAutoObservable } from "mobx";
 import toastr from "studio/toastr";
 
-import { TIMEOUT } from "../helpers/constants";
+import { Events, TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -453,16 +453,16 @@ class FilesActionStore {
     return this.downloadFiles(fileIds, folderIds, label);
   };
 
-  editCompleteAction = async (id, selectedItem, isCancelled = false) => {
+  editCompleteAction = async (id, selectedItem, isCancelled = false, type) => {
     const {
       filter,
       folders,
       files,
-      fileActionStore,
+
       fetchFiles,
       setIsLoading,
     } = this.filesStore;
-    const { type, setAction } = fileActionStore;
+
     const { treeFolders, setTreeFolders } = this.treeFoldersStore;
 
     const items = [...folders, ...files];
@@ -480,14 +480,7 @@ class FilesActionStore {
           setTreeFolders(treeFolders);
         }
       }
-      setAction({
-        type: null,
-        id: null,
-        extension: null,
-        title: "",
-        templateId: null,
-        fromTemplate: null,
-      });
+
       setIsLoading(false);
       type === FileAction.Rename &&
         this.onSelectItem(
