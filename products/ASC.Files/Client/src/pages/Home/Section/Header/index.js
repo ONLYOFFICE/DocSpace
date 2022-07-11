@@ -4,7 +4,12 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import { AppServerConfig, FileAction } from "@appserver/common/constants";
+import {
+  AppServerConfig,
+  FileAction,
+  FolderType,
+  RoomSearchArea,
+} from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet } from "react-device-detect";
 import DropDownItem from "@appserver/components/drop-down-item";
@@ -15,6 +20,7 @@ import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu
 import Navigation from "@appserver/common/components/Navigation";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
+import RoomsFilter from "@appserver/common/api/rooms/filter";
 
 const StyledContainer = styled.div`
   .table-container_group-menu {
@@ -293,7 +299,46 @@ class SectionHeaderContent extends React.Component {
     ];
   };
 
-  onBackToParentFolder = () => this.props.backToParentFolder();
+  onBackToParentFolder = () => {
+    const {
+      fetchRooms,
+      isRoom,
+      history,
+      rootFolderType,
+      setIsLoading,
+    } = this.props;
+
+    if (isRoom) {
+      setIsLoading(true);
+
+      const searchArea =
+        rootFolderType === FolderType.Rooms
+          ? RoomSearchArea.Active
+          : RoomSearchArea.Archive;
+
+      fetchRooms(searchArea, null)
+        .then(() => {
+          const filter = RoomsFilter.getDefault();
+
+          const urlFilter = filter.toUrlParams();
+
+          history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              config.homepage,
+              `/rooms?${urlFilter}`
+            )
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+
+      return;
+    }
+
+    this.props.backToParentFolder();
+  };
 
   onSelect = (e) => {
     const key = e.currentTarget.dataset.key;
@@ -436,6 +481,7 @@ export default inject(
   ({
     auth,
     filesStore,
+    roomsStore,
     dialogsStore,
     selectedFolderStore,
     treeFoldersStore,
@@ -462,6 +508,7 @@ export default inject(
       activeFiles,
       activeFolders,
     } = filesStore;
+    const { fetchRooms } = roomsStore;
     const { setAction } = fileActionStore;
     const {
       setSharingPanelVisible,
@@ -483,13 +530,24 @@ export default inject(
 
     const { toggleIsVisible, isVisible } = auth.infoPanelStore;
 
-    const { title, id, pathParts, navigationPath } = selectedFolderStore;
+    const {
+      title,
+      id,
+      roomType,
+      rootFolderType,
+      pathParts,
+      navigationPath,
+    } = selectedFolderStore;
+
+    const isRoom = !!roomType;
 
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: pathParts?.length === 1,
       title,
+      isRoom,
+      rootFolderType,
       currentFolderId: id,
       pathParts: pathParts,
       navigationPath: navigationPath,
@@ -531,6 +589,7 @@ export default inject(
 
       setIsLoading,
       fetchFiles,
+      fetchRooms,
 
       activeFiles,
       activeFolders,
