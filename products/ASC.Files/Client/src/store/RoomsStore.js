@@ -1,10 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
-import {
-  AppServerConfig,
-  RoomsType,
-  FolderType,
-} from "@appserver/common/constants";
+import { AppServerConfig, RoomsType } from "@appserver/common/constants";
 
 import toastr from "studio/toastr";
 
@@ -171,6 +167,8 @@ class RoomsStore {
     return request();
   };
 
+  fetchRoomInfo = (id) => api.rooms.getRoom(id);
+
   selectRoom = (checked, item) => {
     this.setBufferSelection(null);
 
@@ -192,8 +190,6 @@ class RoomsStore {
   closeContextMenu = () => {
     this.bufferSelection = null;
   };
-
-  getRoomInfo = (id) => api.rooms.getRoom(id);
 
   createRoom = (title = "Room 4", roomType = RoomsType.ReadOnlyRoom) => {
     const data = { title, roomType };
