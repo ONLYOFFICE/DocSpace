@@ -15,12 +15,15 @@ const StyledModal = styled.div`
 `;
 
 const Dialog = styled.div`
+  height: ${`${window.innerHeight}px`};
   display: flex;
+
   align-items: center;
-  justify-content: center;
-  width: auto;
-  margin: 0 auto;
-  min-height: 100%;
+  justify-content: ${(props) =>
+    props.currentDisplayType === "modal" ? "center" : "flex-end"};
+  @media ${smallTablet} {
+    align-items: flex-end;
+  }
 `;
 
 const Content = styled.div.attrs((props) => ({
@@ -47,10 +50,6 @@ const Content = styled.div.attrs((props) => ({
 
           border-radius: 6px;
           @media ${smallTablet} {
-            transform: translateY(${(props) => (props.visible ? "0" : "100%")});
-            transition: transform 0.3s ease-in-out;
-            position: absolute;
-            bottom: 0;
             width: 100%;
             height: auto;
             border-radius: 6px 6px 0 0;
@@ -61,18 +60,9 @@ const Content = styled.div.attrs((props) => ({
           display: flex;
           flex-direction: column;
           position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          transform: translateX(${(props) => (props.visible ? "0" : "100%")});
-          transition: transform 0.3s ease-in-out;
           @media ${smallTablet} {
-            transform: translateY(${(props) => (props.visible ? "0" : "100%")});
             height: calc(100vh - 64px);
             width: 100%;
-            left: 0;
-            top: auto;
-            bottom: 0;
           }
         `}
 `;
