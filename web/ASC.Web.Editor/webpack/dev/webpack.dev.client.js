@@ -1,10 +1,11 @@
-const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const path = require("path");
 const baseConfig = require("../webpack.base.js");
 const LoadablePlugin = require("@loadable/webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const HotModuleReplacementPlugin = require("webpack")
+  .HotModuleReplacementPlugin;
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 const { proxyURL } = AppServerConfig;
@@ -29,8 +30,8 @@ const clientConfig = {
   },
   devtool: "inline-cheap-module-source-map",
   devServer: {
-    historyApiFallback: true,
-    hot: true,
+    //historyApiFallback: true,
+    hot: false,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
       // See https://github.com/facebook/create-react-app/issues/387.
@@ -70,7 +71,6 @@ const clientConfig = {
         },
       ],
     }),
-    new webpack.HotModuleReplacementPlugin(),
     //loadable plugin will create all the chunks
     new LoadablePlugin({
       outputAsset: false, // to avoid writing loadable-stats in the same output as client
@@ -93,8 +93,7 @@ const clientConfig = {
       shared: { ...sharedDeps },
     }),
     new ExternalTemplateRemotesPlugin(),
-
-    // you can add additional plugins here like BundleAnalyzerPlugin, Copy Plugin etc.
+    new HotModuleReplacementPlugin(),
   ],
   optimization: {
     runtimeChunk: "single", // creates a runtime file to be shared for all generated chunks.
