@@ -2139,8 +2139,12 @@ class FilesStore {
     this.trashIsEmpty = isEmpty;
   };
 
+  get filterTotal() {
+    return this.filter.total;
+  }
+
   get hasMoreFiles() {
-    return this.filesList.length < this.filter.total;
+    return this.filesList.length < this.filterTotal;
   }
 
   setFilesIsLoading = (filesIsLoading) => {
