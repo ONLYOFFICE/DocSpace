@@ -78,7 +78,7 @@ public static class BackupScheduleExtension
 
             entity.Property(e => e.BackupMail)
                 .HasColumnName("backup_mail")
-                .HasColumnType("int(10)")
+                .HasColumnType("tinyint(1)")
                 .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Cron)

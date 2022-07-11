@@ -128,11 +128,12 @@ public static class CrmContactExtension
                 .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.IsCompany)
+                .HasColumnType("tinyint(1)")
                 .HasColumnName("is_company");
 
             entity.Property(e => e.IsShared)
                 .HasColumnName("is_shared")
-                .HasColumnType("tinyint")
+                .HasColumnType("tinyint(1)")
                 .IsRequired(false);
 
             entity.Property(e => e.LastModifedBy)

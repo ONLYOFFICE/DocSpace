@@ -98,7 +98,7 @@ public static class BackupRecordExtension
             entity.Property(e => e.IsScheduled)
                 .IsRequired()
                 .HasColumnName("is_scheduled")
-                .HasColumnType("int(10)");
+                .HasColumnType("tinyint(1)");
 
             entity.Property(e => e.Name)
                 .IsRequired()

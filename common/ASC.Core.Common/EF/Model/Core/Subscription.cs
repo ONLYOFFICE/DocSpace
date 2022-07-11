@@ -112,7 +112,7 @@ public static class SubscriptionExtension
 
             entity.Property(e => e.Unsubscribed)
                 .HasColumnName("unsubscribed")
-                .HasColumnType("int")
+                .HasColumnType("tinyint(1)")
                 .HasDefaultValueSql("'0'");
                 
         });

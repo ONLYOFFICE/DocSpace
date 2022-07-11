@@ -77,7 +77,7 @@ public static class DbTenantVersionExtension
 
             entity.Property(e => e.Visible)
                 .HasColumnName("visible")
-                .HasColumnType("int")
+                .HasColumnType("tinyint(1)")
                 .HasDefaultValueSql("'0'");
         });
 

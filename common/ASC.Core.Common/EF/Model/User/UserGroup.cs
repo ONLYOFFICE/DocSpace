@@ -96,7 +96,7 @@ public static class DbUserGroupExtension
 
             entity.Property(e => e.Removed)
             .HasColumnName("removed")
-            .HasColumnType("int")
+            .HasColumnType("tinyint(1)")
             .HasDefaultValueSql("'0'");
         });
     }

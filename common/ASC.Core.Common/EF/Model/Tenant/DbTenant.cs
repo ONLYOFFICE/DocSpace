@@ -53,9 +53,9 @@ public class DbTenant : IMapFrom<Tenant>
         set { StatusChanged = value; }
     }
     public DateTime CreationDateTime { get; set; }
-    public Guid OwnerId { get; set; }
+    public Guid? OwnerId { get; set; }
     public string PaymentId { get; set; }
-    public TenantIndustry? Industry { get; set; }
+    public TenantIndustry Industry { get; set; }
     public DateTime LastModified { get; set; }
     public bool Spam { get; set; }
     public bool Calls { get; set; }
@@ -117,6 +117,10 @@ public static class DbTenantExtension
             entity.HasIndex(e => e.Version)
                 .HasDatabaseName("version");
 
+            entity.HasIndex(e => e.Alias)
+                .HasDatabaseName("alias")
+                .IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
 
             entity.Property(e => e.Alias)
@@ -129,7 +133,7 @@ public static class DbTenantExtension
             entity.Property(e => e.Calls)
                 .HasColumnName("calls")
                 .HasDefaultValueSql("'1'")
-                .HasColumnType("int");
+                .HasColumnType("tinyint(1)");
 
             entity.Property(e => e.CreationDateTime)
                 .HasColumnName("creationdatetime")
@@ -168,6 +172,7 @@ public static class DbTenantExtension
             entity.Property(e => e.OwnerId)
                 .HasColumnName("owner_id")
                 .HasColumnType("varchar(38)")
+                .IsRequired(false)
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
@@ -180,7 +185,7 @@ public static class DbTenantExtension
             entity.Property(e => e.Spam)
                 .HasColumnName("spam")
                 .HasDefaultValueSql("'1'")
-                .HasColumnType("int");
+                .HasColumnType("tinyint(1)");
 
             entity.Property(e => e.Status)
                 .HasColumnName("status")

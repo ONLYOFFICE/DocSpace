@@ -165,7 +165,7 @@ public static class DbFileExtension
 
             entity.Property(e => e.CurrentVersion)
                 .HasColumnName("current_version")
-                .HasColumnType("int")
+                .HasColumnType("tinyint(1)")
                 .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.ThumbnailStatus)
@@ -173,7 +173,7 @@ public static class DbFileExtension
                 .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Encrypted)
-                .HasColumnType("int")
+                .HasColumnType("tinyint(1)")
                 .HasColumnName("encrypted")
                 .HasDefaultValueSql("'0'");
 

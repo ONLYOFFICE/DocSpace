@@ -98,7 +98,7 @@ public static class DbGroupExtension
 
             entity.Property(e => e.Removed)
             .HasColumnName("removed")
-            .HasColumnType("int")
+            .HasColumnType("tinyint(1)")
             .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Sid)
