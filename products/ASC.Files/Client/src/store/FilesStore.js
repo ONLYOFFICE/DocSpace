@@ -664,7 +664,17 @@ class FilesStore {
             data.pathParts.map(async (folder) => {
               const data = await api.files.getFolderInfo(folder);
 
-              return { id: folder, title: data.title };
+              const isRootRoom =
+                data.rootFolderId === data.id &&
+                (data.rootFolderType === FolderType.Rooms ||
+                  data.rootFolderType === FolderType.Archive);
+
+              return {
+                id: folder,
+                title: data.title,
+                isRoom: !!data.roomType,
+                isRootRoom: isRootRoom,
+              };
             })
           ).then((res) => {
             return res
