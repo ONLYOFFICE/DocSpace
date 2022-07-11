@@ -19,7 +19,6 @@ const StyledModalDialog = styled(ModalDialog)`
   }
 
   .markdown-wrapper {
-    height: 372px;
     width: 100%;
   }
 `;
@@ -65,7 +64,7 @@ const DebugInfoDialog = (props) => {
         <Box
           className="markdown-wrapper"
           overflowProp="auto"
-          heightProp={"372px"}
+          heightProp={"362px"}
         >
           <Scrollbar stype="mediumBlack">
             {md && <ReactMarkdown children={md} />}
