@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
+
 import Avatar from "@appserver/components/avatar";
 import DropDown from "@appserver/components/drop-down";
 
@@ -9,11 +11,22 @@ import { isMobileOnly } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 import { mobile, tablet } from "@appserver/components/utils/device";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
+import Portal from "@appserver/components/portal";
+
+const StyledWrapper = styled.div`
+  @media (min-width: 428px) {
+    .backdrop-active {
+      background-color: unset;
+      backdrop-filter: unset;
+    }
+  }
+`;
 
 const StyledDropDown = styled(DropDown)`
   z-index: 500 !important;
 
-  top: 54px !important;
+  top: ${(props) =>
+    props.isBannerVisible && props.withPortal ? "134px" : "54px"} !important;
   right: 20px !important;
 
   @media ${tablet} {
@@ -145,7 +158,7 @@ class ProfileMenu extends React.Component {
     super(props);
   }
 
-  render() {
+  renderDropDown = () => {
     const {
       avatarRole,
       avatarSource,
@@ -156,6 +169,7 @@ class ProfileMenu extends React.Component {
       clickOutsideAction,
       open,
       forwardedRef,
+      isBannerVisible,
     } = this.props;
 
     return (
@@ -166,7 +180,9 @@ class ProfileMenu extends React.Component {
         clickOutsideAction={clickOutsideAction}
         forwardedRef={forwardedRef}
         isDefaultMode={false}
-        withBlur={window.innerWidth <= 428}
+        withBlur={isMobileOnly}
+        isBannerVisible={isBannerVisible}
+        withPortal={isMobileOnly}
       >
         <StyledProfileMenu>
           <MenuContainer>
@@ -189,6 +205,22 @@ class ProfileMenu extends React.Component {
         {children}
       </StyledDropDown>
     );
+  };
+
+  render() {
+    const { open } = this.props;
+
+    const element = this.renderDropDown();
+
+    if (isMobileOnly) {
+      const root = document.getElementById("root");
+
+      const wrapper = <StyledWrapper>{element}</StyledWrapper>;
+
+      return <>{<Portal element={wrapper} appendTo={root} visible={open} />}</>;
+    }
+
+    return <>{element}</>;
   }
 }
 
@@ -207,4 +239,8 @@ ProfileMenu.propTypes = {
   clickOutsideAction: PropTypes.func,
 };
 
-export default ProfileMenu;
+export default inject(({ bannerStore }) => {
+  const { isBannerVisible } = bannerStore;
+
+  return { isBannerVisible };
+})(observer(ProfileMenu));

@@ -1,15 +1,20 @@
 import Base from "@appserver/components/themes/base";
 import styled, { keyframes, css } from "styled-components";
 import { desktop, tablet } from "@appserver/components/utils/device";
+import { isDesktop } from "react-device-detect";
 
 const StyledFloatingButtonWrapper = styled.div`
   @media ${desktop} {
     position: absolute;
     z-index: 300;
-    width: 100px;
-    height: 70px;
     right: 0;
     bottom: 0;
+
+    ${isDesktop &&
+    css`
+      width: 100px;
+      height: 70px;
+    `}
   }
 
   .layout-progress-bar_close-icon {

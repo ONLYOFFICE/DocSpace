@@ -37,6 +37,7 @@ const ArticleBodyContent = (props) => {
     isVisitor,
     FirebaseHelper,
     theme,
+    toggleArticleOpen,
   } = props;
 
   const campaigns = (localStorage.getItem("campaigns") || "")
@@ -98,6 +99,7 @@ const ArticleBodyContent = (props) => {
         onClick={onClick}
         onBadgeClick={onShowNewFilesPanel}
         showText={showText}
+        onHide={toggleArticleOpen}
       />
       {!personal && !firstLoad && <SettingsItems />}
       {!isDesktopClient && showText && (

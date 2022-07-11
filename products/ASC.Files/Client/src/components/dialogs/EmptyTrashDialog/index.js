@@ -10,6 +10,11 @@ import { inject, observer } from "mobx-react";
 
 const StyledModal = styled(ModalDialogContainer)`
   max-width: 400px;
+
+  .cancel-btn {
+    display: inline-block;
+    margin-left: 8px;
+  }
 `;
 
 const EmptyTrashDialogComponent = (props) => {
@@ -66,7 +71,7 @@ const EmptyTrashDialogComponent = (props) => {
           isLoading={isLoading}
         />
         <Button
-          className="button-dialog"
+          className="cancel-btn"
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="small"

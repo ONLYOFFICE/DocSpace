@@ -125,7 +125,7 @@ class FilesStore {
 
             if (!file || !file.id) return;
 
-            this.setFile(file);
+            this.getFileInfo(file.id); //this.setFile(file);
 
             if (this.selection) {
               const foundIndex = this.selection?.findIndex(
@@ -139,7 +139,7 @@ class FilesStore {
             }
 
             if (this.bufferSelection) {
-              const foundIndex = this.bufferSelection?.findIndex(
+              const foundIndex = [this.bufferSelection].findIndex(
                 (x) => x.id === file.id
               );
               if (foundIndex > -1) {
@@ -221,12 +221,21 @@ class FilesStore {
         false
       );
 
-      this.getFileInfo(id);
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing
+      );
+
+      if (typeof id == "string") {
+        this.getFileInfo(id);
+      } else {
+        this.createThumbnail(id);
+      }
     });
   }
 
   updateSelectionStatus = (id, status, isEditing) => {
-    const index = this.selection.findIndex((x) => x.id === id && x.fileExst);
+    const index = this.selection.findIndex((x) => x.id === id);
 
     if (index !== -1) {
       this.selection[index].fileStatus = status;
@@ -355,6 +364,7 @@ class FilesStore {
     }
     requests.push(getFilesSettings());
     requests.push(this.getOforms());
+    requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => (this.isInit = true));
   };
@@ -691,8 +701,6 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
-
-          this.getIsEmptyTrash(); //TODO:
 
           return Promise.resolve(selectedFolder);
         })
@@ -2047,10 +2055,6 @@ class FilesStore {
     return fileInfo;
   };
 
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openEditor(id, providerKey, tab, url);
-  };
-
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
@@ -2058,6 +2062,20 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    const foundIndex = this.files.findIndex((x) => x.id === id);
+    if (foundIndex !== -1) {
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
+        true
+      );
+
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing
+      );
+    }
+
     const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
     return openEditor(id, providerKey, tab, url, isPrivacy);
   };

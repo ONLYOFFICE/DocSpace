@@ -20,6 +20,7 @@ const StyledToastContainer = styled(ToastContainer)`
     animation: Toastify__trackProgress linear 1 forwards;
   }
   .Toastify__toast-body {
+    overflow-wrap: anywhere;
     margin: auto 0;
     -ms-flex: 1;
     flex: 1;
