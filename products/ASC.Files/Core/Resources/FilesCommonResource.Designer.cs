@@ -286,6 +286,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submitted form.
+        /// </summary>
+        public static string CommentSubmitFillForm {
+            get {
+                return ResourceManager.GetString("CommentSubmitFillForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uploaded.
         /// </summary>
         public static string CommentUpload {
@@ -777,6 +786,33 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMassage_ViewTrashItem {
             get {
                 return ResourceManager.GetString("ErrorMassage_ViewTrashItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to archive the room.
+        /// </summary>
+        public static string ErrorMessage_ArchiveRoom {
+            get {
+                return ResourceManager.GetString("ErrorMessage_ArchiveRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to archive the room.
+        /// </summary>
+        public static string ErrorMessage_UnarchiveRoom {
+            get {
+                return ResourceManager.GetString("ErrorMessage_UnarchiveRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot edit archived rooms.
+        /// </summary>
+        public static string ErrorMessage_UpdateArchivedRoom {
+            get {
+                return ResourceManager.GetString("ErrorMessage_UpdateArchivedRoom", resourceCulture);
             }
         }
         

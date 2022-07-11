@@ -133,6 +133,9 @@
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Restored from the document change of {0}</value>
   </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Submitted form</value>
+  </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Uploaded</value>
   </data>
@@ -297,6 +300,15 @@
   </data>
   <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
     <value>You are not allowed to preview the elements in the Trash</value>
+  </data>
+  <data name="ErrorMessage_ArchiveRoom" xml:space="preserve">
+    <value>You don't have enough permission to archive the room</value>
+  </data>
+  <data name="ErrorMessage_UnarchiveRoom" xml:space="preserve">
+    <value>You don't have enough permission to archive the room</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>You cannot edit archived rooms</value>
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Everyone</value>

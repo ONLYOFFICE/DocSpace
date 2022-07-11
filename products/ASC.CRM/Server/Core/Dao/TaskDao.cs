@@ -32,10 +32,8 @@ using System.Text.RegularExpressions;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
@@ -46,7 +44,7 @@ using ASC.Web.CRM.Core.Search;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -66,7 +64,7 @@ namespace ASC.CRM.Core.Dao
                        CrmSecurity crmSecurity,
                        TenantUtil tenantUtil,
                        FactoryIndexerTask factoryIndexer,
-                       IOptionsMonitor<ILog> logger,
+                       ILogger logger,
                        ICache ascCache,
                        DbContextManager<UserDbContext> userDbContext,
                        IMapper mapper) :
@@ -333,7 +331,7 @@ namespace ASC.CRM.Core.Dao
 
             int result;
 
-            _logger.DebugFormat("Starting GetTasksCount: {0}", DateTime.Now.ToString());
+            _logger.LogDebug("Starting GetTasksCount: {0}", DateTime.Now.ToString());
 
             var cacheKey = TenantID.ToString(CultureInfo.InvariantCulture) +
                            "tasks" +
@@ -348,7 +346,7 @@ namespace ASC.CRM.Core.Dao
 
             if (!String.IsNullOrEmpty(_cache.Get<String>(cacheKey)))
             {
-                _logger.DebugFormat("End GetTasksCount: {0}. From cache", DateTime.Now.ToString());
+                _logger.LogDebug("End GetTasksCount: {0}. From cache", DateTime.Now.ToString());
 
                 return Convert.ToInt32(_cache.Get<String>(cacheKey));
             }

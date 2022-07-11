@@ -133,6 +133,9 @@
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Restaurada del cambio de documento de {0}</value>
   </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Formulario enviado</value>
+  </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Subido</value>
   </data>
