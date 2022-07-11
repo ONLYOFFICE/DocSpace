@@ -56,7 +56,7 @@ const HeaderUnAuth = ({
   isAuthenticated,
   isLoaded,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("NavMenu");
 
   return (
     <Header isLoaded={isLoaded} className="navMenuHeaderUnAuth">
