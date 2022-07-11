@@ -66,7 +66,7 @@ class ContextMenuButton extends React.Component {
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
   onClose = () => {
     this.setState({ isOpen: !this.state.isOpen });
-    this.props?.onClose();
+    this.props.onClose && this.props.onClose();
   };
 
   componentDidUpdate(prevProps) {
