@@ -164,7 +164,6 @@ public class TariffService : ITariffService
 
                           var asynctariff = Tariff.CreateDefault();
                           asynctariff.QuotaId = quota.Tenant;
-                          asynctariff.Autorenewal = lastPayment.Autorenewal;
                           asynctariff.DueDate = 9999 <= lastPayment.EndDate.Year ? DateTime.MaxValue : lastPayment.EndDate;
 
                           if (quota.ActiveUsers == -1
@@ -195,7 +194,6 @@ public class TariffService : ITariffService
                               var asynctariff = Tariff.CreateDefault();
                               asynctariff.DueDate = DateTime.Today.AddDays(-1);
                               asynctariff.Prolongable = false;
-                              asynctariff.Autorenewal = false;
                               asynctariff.State = TariffState.NotPaid;
 
                               if (SaveBillingInfo(tenantId, asynctariff))
