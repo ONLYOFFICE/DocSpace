@@ -322,6 +322,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Room Invite.
+        /// </summary>
+        public static string ButtonConfirmRoomInvite {
+            get {
+                return ResourceManager.GetString("ButtonConfirmRoomInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm account termination.
         /// </summary>
         public static string ButtonConfirmTermination {
@@ -1054,7 +1063,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The link is only valid for 7 days.
         ///
-        ///You will get more tips on how to use your we-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
+        ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
         /// </summary>
         public static string pattern_enterprise_whitelabel_user_activation_v10 {
             get {

@@ -54,6 +54,11 @@ public class FilesMessageService
         _httpContextAccessor = httpContextAccessor;
     }
 
+    public void Send(IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    {
+        SendHeadersMessage(headers, action, null, description);
+    }
+
     public void Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
         if (entry == null)

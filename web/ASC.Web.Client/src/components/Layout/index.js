@@ -78,10 +78,29 @@ const Layout = (props) => {
     changeRootHeight();
   }, [isBannerVisible]);
 
+  useEffect(() => {
+    const htmlEl = document.getElementsByTagName("html")[0];
+    const bodyEl = document.getElementsByTagName("body")[0];
+
+    if (isMobileOnly || (isTablet && isChrome)) {
+      htmlEl.style.height = bodyEl.style.height = "100%";
+      htmlEl.style.overflow = "hidden";
+    }
+
+    if (isMobileOnly) {
+      bodyEl.style.overflow = "auto";
+    }
+
+    if (isTablet) {
+      bodyEl.style.overflow = "hidden";
+    }
+  }, []);
+
   const onWidthChange = (e) => {
     const { matches } = e;
     setIsTabletView(matches);
   };
+
   const onResize = () => {
     changeRootHeight();
   };
@@ -109,7 +128,7 @@ const Layout = (props) => {
 
       if (isMobileOnly && isIOS && isChrome) {
         if (window.innerHeight < window.innerWidth && isPortrait) {
-          height = window.screen.availWidth - correctorMobileChrome;
+          height = window.screen.availWidth - correctorMobileChrome + "px";
         }
       }
 
@@ -125,7 +144,6 @@ const Layout = (props) => {
       const bannerHeight = isBannerVisible ? 80 : 0;
       let vh = (windowHeight - 48 - bannerHeight) * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
-
       setContentHeight(height);
     };
     intervalHandler = setInterval(() => {
@@ -167,7 +185,6 @@ Layout.propTypes = {
 export default inject(({ auth, bannerStore }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
-
     setIsTabletView: auth.settingsStore.setIsTabletView,
     isBannerVisible: bannerStore.isBannerVisible,
   };

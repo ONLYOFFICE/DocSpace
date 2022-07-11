@@ -30,6 +30,7 @@ const CreateEvent = ({
   openDocEditor,
   setIsUpdatingRowItem,
   gallerySelected,
+  setCreatedItem,
 
   parentId,
 
@@ -100,6 +101,7 @@ const CreateEvent = ({
           item = folder;
           createdFolderId = folder.id;
           addActiveItems(null, [folder.id]);
+          setCreatedItem({ id: createdFolderId, type: "folder" });
         })
         .then(() => editCompleteAction(id, item, false, type))
         .catch((e) => toastr.error(e))
@@ -129,8 +131,6 @@ const CreateEvent = ({
             }
 
             toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
-
-            setIsUpdatingRowItem(false);
 
             setVisible(false);
 
@@ -168,6 +168,7 @@ const CreateEvent = ({
           .then((file) => {
             item = file;
             createdFileId = file.id;
+            setCreatedItem({ id: createdFileId, type: "file" });
             addActiveItems([file.id]);
 
             return open && openDocEditor(file.id, file.providerKey, tab);
@@ -187,6 +188,7 @@ const CreateEvent = ({
           .then((file) => {
             createdFileId = file.id;
             item = file;
+            setCreatedItem({ id: createdFileId, type: "file" });
             addActiveItems([file.id]);
 
             if (isPrivacy) {
@@ -259,6 +261,7 @@ export default inject(
       openDocEditor,
       setIsUpdatingRowItem,
       gallerySelected,
+      setCreatedItem,
     } = filesStore;
 
     const { editCompleteAction } = filesActionsStore;
@@ -287,6 +290,7 @@ export default inject(
       openDocEditor,
       setIsUpdatingRowItem,
       gallerySelected,
+      setCreatedItem,
 
       parentId,
 

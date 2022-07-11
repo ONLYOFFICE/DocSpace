@@ -95,6 +95,9 @@ const EditingWrapper = styled.div`
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: ${(props) => props.theme.filesEditingWrapper.color};
+    background: ${(props) =>
+      props.theme.filesEditingWrapper.row.itemBackground} !important;
+
     ${(props) =>
       props.viewAs === "tile" &&
       css`
@@ -102,12 +105,14 @@ const EditingWrapper = styled.div`
         border: none;
         background: none;
       `};
+
     ${(props) =>
       props.isUpdatingRowItem &&
       css`
         margin-left: 0;
         display: flex;
         align-items: center;
+        background: none !important;
       `}
 
     ${(props) => props.viewAs === "table" && `padding-left: 12px`}

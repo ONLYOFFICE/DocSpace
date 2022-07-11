@@ -37,10 +37,14 @@ global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Web;
 
+global using ASC.ActiveDirectory.Base;
+global using ASC.ActiveDirectory.Base.Settings;
+global using ASC.ActiveDirectory.ComplexOperations;
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;
+global using ASC.Api.Core.Security;
 global using ASC.Api.Settings;
 global using ASC.Api.Settings.Smtp;
 global using ASC.Api.Utils;
@@ -84,11 +88,13 @@ global using ASC.FederatedLogin.Profile;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Models;
+global using ASC.Notify.Cron;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api;
 global using ASC.Web.Api.ApiModel.RequestsDto;
 global using ASC.Web.Api.ApiModel.ResponseDto;
 global using ASC.Web.Api.ApiModels.RequestsDto;
+global using ASC.Web.Api.ApiModels.ResponseDto;
 global using ASC.Web.Api.Core;
 global using ASC.Web.Api.Log;
 global using ASC.Web.Api.Models;
@@ -136,6 +142,7 @@ global using Microsoft.Extensions.Options;
 
 global using MimeKit;
 
+global using static ASC.ActiveDirectory.Base.Settings.LdapSettings;
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 global using SecurityContext = ASC.Core.SecurityContext;

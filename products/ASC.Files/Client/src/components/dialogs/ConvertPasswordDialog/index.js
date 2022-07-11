@@ -121,6 +121,7 @@ const ConvertPasswordDialogComponent = (props) => {
               toastr.error(err, t("Common:Warning"));
               return;
             }
+
             toastr.error(t("CreationError"), t("Common:Warning"));
             open && openDocEditor(null, null, tab);
             if (_isMounted) {

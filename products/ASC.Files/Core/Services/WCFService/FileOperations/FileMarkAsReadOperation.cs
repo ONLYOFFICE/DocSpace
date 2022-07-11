@@ -83,7 +83,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
         {
             CancellationToken.ThrowIfCancellationRequested();
 
-            await fileMarker.RemoveMarkAsNewAsync(entry, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+            await fileMarker.RemoveMarkAsNewAsync(entry, ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID);
 
             if (entry.FileEntryType == FileEntryType.File)
             {
@@ -106,6 +106,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
                 await globalFolder.GetFolderCommonAsync(fileMarker, daoFactory),
                 await globalFolder.GetFolderShareAsync(daoFactory),
                 await globalFolder.GetFolderProjectsAsync(daoFactory),
+                await globalFolder.GetFolderVirtualRoomsAsync(daoFactory),
             };
 
         if (PrivacyRoomSettings.GetEnabled(settingsManager))
@@ -115,7 +116,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
 
         var newrootfolder = new List<string>();
 
-        foreach (var r in rootIds)
+        foreach (var r in rootIds.Where(id => id != 0))
         {
             var item = new KeyValuePair<int, int>(r, await fileMarker.GetRootFoldersIdMarkedAsNewAsync(r));
             newrootfolder.Add($"new_{{\"key\"? \"{item.Key}\", \"value\"? \"{item.Value}\"}}");

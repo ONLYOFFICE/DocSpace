@@ -61,7 +61,7 @@ public class FilesControllerThirdparty : FilesController<string>
         _documentServiceHelper = documentServiceHelper;
     }
 
-    [HttpGet("file/app-{fileId}", Order = int.MaxValue)]
+    [HttpGet("file/app-{fileId}", Order = 1)]
     public async Task<FileEntryDto> GetFileInfoThirdPartyAsync(string fileId)
     {
         fileId = "app-" + fileId;

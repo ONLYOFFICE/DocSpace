@@ -70,7 +70,7 @@ public class AzRecord : IMapFrom<Acl>
 
         result.Object = cache.ObjectId;
 
-        if (Enum.TryParse<AceType>(cache.Reaction, out var reaction))
+        if (AceTypeExtensions.TryParse(cache.Reaction, out var reaction))
         {
             result.AceType = reaction;
         }

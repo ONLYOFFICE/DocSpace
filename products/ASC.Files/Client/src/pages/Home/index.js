@@ -66,16 +66,18 @@ class PureHome extends React.Component {
       const pathname = window.location.href;
       const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
-      getFileInfo(fileId)
-        .then((data) => {
-          const canOpenPlayer = isMediaOrImage(data.fileExst);
-          const file = { ...data, canOpenPlayer };
-          setToPreviewFile(file, true);
-        })
-        .catch((err) => {
-          toastr.error(err);
-          this.fetchDefaultFiles();
-        });
+      setTimeout(() => {
+        getFileInfo(fileId)
+          .then((data) => {
+            const canOpenPlayer = isMediaOrImage(data.fileExst);
+            const file = { ...data, canOpenPlayer };
+            setToPreviewFile(file, true);
+          })
+          .catch((err) => {
+            toastr.error(err);
+            this.fetchDefaultFiles();
+          });
+      }, 1);
 
       return;
     }

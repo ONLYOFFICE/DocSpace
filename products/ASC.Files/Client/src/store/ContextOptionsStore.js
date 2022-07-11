@@ -73,6 +73,7 @@ class ContextOptionsStore {
         toastr.error(err, t("Common:Warning"));
         return;
       }
+
       toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
       setFormCreationInfo({
         newTitle,
@@ -369,12 +370,14 @@ class ContextOptionsStore {
                 {
                   key: "finalize-version",
                   label: t("FinalizeVersion"),
+                  icon: "images/history-finalized.react.svg",
                   onClick: () => this.finalizeVersion(item.id),
                   disabled: false,
                 },
                 {
                   key: "show-version-history",
                   label: t("ShowVersionHistory"),
+                  icon: "images/history.react.svg",
                   onClick: () => this.showVersionHistory(item.id),
                   disabled: false,
                 },
@@ -410,18 +413,21 @@ class ContextOptionsStore {
                 {
                   key: "move-to",
                   label: t("MoveTo"),
+                  icon: "images/move.react.svg",
                   onClick: this.onMoveAction,
                   disabled: false,
                 },
                 {
                   key: "copy-to",
                   label: t("Translations:Copy"),
+                  icon: "/static/images/copy.react.svg",
                   onClick: this.onCopyAction,
                   disabled: false,
                 },
                 {
                   key: "copy",
                   label: t("Common:Duplicate"),
+                  icon: "/static/images/duplicate.react.svg",
                   onClick: () => this.onDuplicate(item, t),
                   disabled: false,
                 },
@@ -446,7 +452,7 @@ class ContextOptionsStore {
             {
               key: "copy",
               label: t("Common:Duplicate"),
-              icon: "/static/images/copy.react.svg",
+              icon: "/static/images/duplicate.react.svg",
               onClick: () => this.onDuplicate(item, t),
               disabled: false,
             },
@@ -501,7 +507,7 @@ class ContextOptionsStore {
       },
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !isShareable,
@@ -509,7 +515,7 @@ class ContextOptionsStore {
       {
         key: "owner-change",
         label: t("Translations:OwnerChange"),
-        icon: "/static/images/catalog.user.react.svg",
+        icon: "images/file.actions.owner.react.svg",
         onClick: this.onOwnerChange,
         disabled: false,
       },
@@ -542,7 +548,7 @@ class ContextOptionsStore {
       {
         key: "open-location",
         label: t("OpenLocation"),
-        icon: "images/download-as.react.svg",
+        icon: "images/folder.location.react.svg",
         onClick: () => this.onOpenLocation(item),
         disabled: false,
       },
@@ -621,7 +627,7 @@ class ContextOptionsStore {
       {
         key: "delete",
         label: isRootThirdPartyFolder
-          ? t("Translations:DeleteThirdParty")
+          ? t("Common:Disconnect")
           : t("Common:Delete"),
         icon: "images/trash.react.svg",
         onClick: () => this.onClickDelete(item, t),
@@ -686,7 +692,7 @@ class ContextOptionsStore {
     const options = [
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !sharingItems,

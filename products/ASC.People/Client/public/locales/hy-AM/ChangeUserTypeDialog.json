@@ -1,0 +1,7 @@
+{
+  "ChangeUserTypeButton": "Փոխել տեսակը",
+  "ChangeUserTypeHeader": "Փոխել օգտվողի տեսակը",
+  "ChangeUserTypeMessage": "'{{ firstType }}'տեսակի օգտատերերը կտեղափոխվեն '{{ secondType }}' տեսակի.",
+  "ChangeUserTypeMessageWarning": "Դուք չեք կարող փոխել տեսակը կայքէջի ադմինիստրատորների և Ձեզ համար",
+  "SuccessChangeUserType": "Օգտատիրոջ տեսակը հաջողությամբ փոխվել է"
+}
