@@ -374,13 +374,13 @@ public class EntryManager
     }
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
-        SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
+        SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null)
     {
-        return await GetEntriesAsync(parent, from, count, new[] { filterType }, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
+        return await GetEntriesAsync(parent, from, count, new[] { filterType }, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, withoutTags, tagNames);
     }
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
-        SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
+        SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null)
     {
         var total = 0;
 
@@ -557,7 +557,7 @@ public class EntryManager
         }
         else if (parent.FolderType == FolderType.VirtualRooms && !parent.ProviderEntry)
         {
-            entries = await fileSecurity.GetVirtualRoomsAsync(filterTypes, subjectId, searchText, searchInContent, withSubfolders, searchArea, tagNames);
+            entries = await fileSecurity.GetVirtualRoomsAsync(filterTypes, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames);
 
             CalculateTotal();
         }

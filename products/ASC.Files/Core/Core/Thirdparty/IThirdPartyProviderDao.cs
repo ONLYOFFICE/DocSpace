@@ -402,8 +402,15 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, IEnumerable<string> tagNames)
+    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, bool withoutTags, IEnumerable<string> tagNames)
     {
+        if (withoutTags)
+        {
+            return folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+                .WhereAwait(async r => !await FilesDbContext.TagLink.ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
+                .Select(r => r.folder);
+        }
+
         if (tagNames == null || !tagNames.Any())
         {
             return folders;

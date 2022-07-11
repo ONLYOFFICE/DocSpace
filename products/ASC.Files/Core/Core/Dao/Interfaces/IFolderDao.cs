@@ -76,7 +76,7 @@ public interface IFolderDao<T>
     /// <param name="tagIds"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
-        IEnumerable<string> tagNames = null);
+        bool withoutTags = false, IEnumerable<string> tagNames = null);
 
     /// <summary>
     /// Get a list of folders.
@@ -90,7 +90,7 @@ public interface IFolderDao<T>
     /// <param name="withSubfolders"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
-        IEnumerable<string> tagNames = null);
+       bool withoutTags = false, IEnumerable<string> tagNames = null);
 
     /// <summary>
     /// Gets the folder (s) by ID (s)
@@ -105,7 +105,7 @@ public interface IFolderDao<T>
     /// <param name="tagIds"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterTypes = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        IEnumerable<string> tagNames = null);
+        bool withoutTags = false, IEnumerable<string> tagNames = null);
 
     /// <summary>
     /// Gets the folder (s) by ID (s)
@@ -119,7 +119,7 @@ public interface IFolderDao<T>
     /// <param name="checkShare"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        IEnumerable<string> tagNames = null);
+        bool withoutTags = false, IEnumerable<string> tagNames = null);
 
     /// <summary>
     ///     Get folder, contains folder with id
