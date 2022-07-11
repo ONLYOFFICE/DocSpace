@@ -107,12 +107,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("year", value);
     }
 
-    public bool Year3
-    {
-        get => GetFeature("year3");
-        set => SetFeature("year3", value);
-    }
-
     public bool NonProfit
     {
         get => GetFeature("non-profit");

@@ -172,7 +172,7 @@ public class TenantExtra
     private TenantQuota GetPrevQuota(TenantQuota curQuota)
     {
         TenantQuota prev = null;
-        foreach (var quota in GetTenantQuotas().OrderBy(r => r.ActiveUsers).Where(r => r.Year == curQuota.Year && r.Year3 == curQuota.Year3))
+        foreach (var quota in GetTenantQuotas().OrderBy(r => r.ActiveUsers).Where(r => r.Year == curQuota.Year))
         {
             if (quota.Tenant == curQuota.Tenant)
             {
