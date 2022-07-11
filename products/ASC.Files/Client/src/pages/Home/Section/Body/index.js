@@ -41,7 +41,6 @@ const SectionBodyContent = (props) => {
     setScrollToItem,
     filesList,
     uploaded,
-    fetchMoreFiles,
   } = props;
 
   useEffect(() => {
@@ -62,12 +61,6 @@ const SectionBodyContent = (props) => {
     document.addEventListener("dragleave", onDragLeaveDoc);
     document.addEventListener("drop", onDropEvent);
 
-    const scrollElem = document.getElementById("sectionScroll");
-
-    const scroll = scrollElem ? scrollElem.childNodes[0] : customScrollElm;
-
-    scroll.addEventListener("scroll", onScroll);
-
     return () => {
       window.removeEventListener("beforeunload", onBeforeunload);
       window.removeEventListener("mousedown", onMouseDown);
@@ -77,7 +70,6 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragover", onDragOver);
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
-      scroll && scroll.removeEventListener("scroll", onScroll);
     };
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs, uploaded]);
 
@@ -105,12 +97,6 @@ const SectionBodyContent = (props) => {
       setScrollToItem(null);
     }
   }, [scrollToItem]);
-
-  const onScroll = (e) => {
-    if (window.innerHeight + e.target.scrollTop + 1 > e.target.scrollHeight) {
-      fetchMoreFiles();
-    }
-  };
 
   const onBeforeunload = (e) => {
     if (!uploaded) {
@@ -308,7 +294,6 @@ export default inject(
       scrollToItem,
       setScrollToItem,
       filesList,
-      fetchMoreFiles,
     } = filesStore;
     return {
       dragging,
@@ -332,7 +317,6 @@ export default inject(
       setScrollToItem,
       filesList,
       uploaded: uploadDataStore.uploaded,
-      fetchMoreFiles,
     };
   }
 )(
