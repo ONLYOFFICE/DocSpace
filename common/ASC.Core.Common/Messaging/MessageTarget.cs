@@ -26,19 +26,70 @@
 
 namespace ASC.MessagingSystem.EF.Model;
 
-public class EventMessage
+[Singletone]
+public class MessageTarget
 {
-    public int Id { get; set; }
-    public string Ip { get; set; }
-    public string Initiator { get; set; }
-    public string Browser { get; set; }
-    public string Platform { get; set; }
-    public DateTime Date { get; set; }
-    public int TenantId { get; set; }
-    public Guid UserId { get; set; }
-    public string Page { get; set; }
-    public MessageAction Action { get; set; }
-    public IList<string> Description { get; set; }
-    public MessageTarget Target { get; set; }
-    public string UAHeader { get; set; }
+    private IEnumerable<string> _items;
+    private readonly ILogger _logger;
+    private readonly ILoggerProvider _option;
+
+    public MessageTarget(ILoggerProvider option)
+    {
+        _logger = option.CreateLogger("ASC.Messaging");
+        _option = option;
+    }
+
+    public MessageTarget Create<T>(T value)
+    {
+        var res = new List<string>(1);
+        if (value != null)
+        {
+            res.Add(value.ToString());
+        }
+
+        return new MessageTarget(_option)
+        {
+            _items = res
+        };
+    }
+
+    public MessageTarget CreateFromGroupValues(IEnumerable<string> value)
+    {
+        var res = new MessageTarget(_option)
+        {
+            _items = new List<string>()
+        };
+
+        if (value != null)
+        {
+            res._items = value.Select(r => r.ToString()).ToList();
+        }
+
+        return res;
+    }
+
+    public MessageTarget Parse(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return null;
+        }
+
+        var items = value.Split(',');
+
+        if (items.Length == 0)
+        {
+            return null;
+        }
+
+        return new MessageTarget(_option)
+        {
+            _items = items
+        };
+    }
+    public IEnumerable<string> GetItems() { return _items.ToList(); }
+    public override string ToString()
+    {
+        return string.Join(",", _items);
+    }
 }
