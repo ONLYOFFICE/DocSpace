@@ -81,8 +81,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.VoipDbContextPostgreSql
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_company");
 
-                    b.Property<sbyte?>("IsShared")
-                        .HasColumnType("tinyint")
+                    b.Property<bool?>("IsShared")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("is_shared");
 
                     b.Property<string>("LastModifedBy")

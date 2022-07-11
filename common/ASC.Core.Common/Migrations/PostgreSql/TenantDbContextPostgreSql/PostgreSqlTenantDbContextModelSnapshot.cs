@@ -85,9 +85,9 @@ namespace ASC.Core.Common.Migrations.PostgreSql.TenantDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("Calls")
+                    b.Property<bool>("Calls")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("calls")
                         .HasDefaultValueSql("'1'");
 
@@ -128,7 +128,6 @@ namespace ASC.Core.Common.Migrations.PostgreSql.TenantDbContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("OwnerId")
-                        .IsRequired()
                         .HasColumnType("varchar(38)")
                         .HasColumnName("owner_id")
                         .UseCollation("utf8_general_ci")
@@ -140,9 +139,9 @@ namespace ASC.Core.Common.Migrations.PostgreSql.TenantDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("Spam")
+                    b.Property<bool>("Spam")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("spam")
                         .HasDefaultValueSql("'1'");
 
@@ -186,6 +185,10 @@ namespace ASC.Core.Common.Migrations.PostgreSql.TenantDbContextPostgreSql
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Alias")
+                        .IsUnique()
+                        .HasDatabaseName("alias");
+
                     b.HasIndex("LastModified")
                         .HasDatabaseName("last_modified");
 
@@ -204,12 +207,13 @@ namespace ASC.Core.Common.Migrations.PostgreSql.TenantDbContextPostgreSql
                         {
                             Id = 1,
                             Alias = "localhost",
-                            Calls = 0,
+                            Calls = false,
                             CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
                             LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Web Office",
                             OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            Spam = 0,
+                            Spam = false,
                             Status = 0,
                             TrustedDomainsEnabled = 0,
                             Version = 0
@@ -300,9 +304,9 @@ namespace ASC.Core.Common.Migrations.PostgreSql.TenantDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("Visible")
+                    b.Property<bool>("Visible")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("visible")
                         .HasDefaultValueSql("'0'");
 

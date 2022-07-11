@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
+namespace ASC.Core.Common.Migrations.PostgreSql.MessagesContextPostgreSql
 {
     [DbContext(typeof(PostgreSqlMessagesContext))]
     partial class PostgreSqlMessagesContextModelSnapshot : ModelSnapshot
@@ -33,9 +33,9 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("Calls")
+                    b.Property<bool>("Calls")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("calls")
                         .HasDefaultValueSql("'1'");
 
@@ -76,7 +76,6 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("OwnerId")
-                        .IsRequired()
                         .HasColumnType("varchar(38)")
                         .HasColumnName("owner_id")
                         .UseCollation("utf8_general_ci")
@@ -88,9 +87,9 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("Spam")
+                    b.Property<bool>("Spam")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("spam")
                         .HasDefaultValueSql("'1'");
 
@@ -134,6 +133,10 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Alias")
+                        .IsUnique()
+                        .HasDatabaseName("alias");
+
                     b.HasIndex("LastModified")
                         .HasDatabaseName("last_modified");
 
@@ -152,12 +155,13 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
                         {
                             Id = 1,
                             Alias = "localhost",
-                            Calls = 0,
+                            Calls = false,
                             CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
                             LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Web Office",
                             OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            Spam = 0,
+                            Spam = false,
                             Status = 0,
                             TrustedDomainsEnabled = 0,
                             Version = 0
@@ -291,14 +295,14 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("Removed")
+                    b.Property<bool>("Removed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("removed")
                         .HasDefaultValueSql("'0'");
 
-                    b.Property<int?>("Sex")
-                        .HasColumnType("int")
+                    b.Property<bool?>("Sex")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("sex");
 
                     b.Property<string>("Sid")
@@ -376,7 +380,7 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
                             LastModified = new DateTime(2021, 3, 9, 9, 52, 55, 765, DateTimeKind.Utc).AddTicks(1420),
                             LastName = "",
                             MobilePhoneActivation = 0,
-                            Removed = 0,
+                            Removed = false,
                             Status = 1,
                             Tenant = 1,
                             UserName = "administrator",
@@ -410,9 +414,9 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
                         .HasColumnType("timestamp")
                         .HasColumnName("last_modified");
 
-                    b.Property<int>("Removed")
+                    b.Property<bool>("Removed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("removed")
                         .HasDefaultValueSql("'0'");
 
@@ -517,6 +521,10 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
                         .HasColumnType("int")
                         .HasColumnName("action");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("active");
+
                     b.Property<string>("Browser")
                         .HasColumnType("varchar(200)")
                         .HasColumnName("browser")
@@ -560,10 +568,6 @@ namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql
                     b.Property<int>("TenantId")
                         .HasColumnType("int")
                         .HasColumnName("tenant_id");
-
-                    b.Property<int>("Active")
-                        .HasColumnType("int")
-                        .HasColumnName("active");
 
                     b.Property<string>("UserId")
                         .IsRequired()

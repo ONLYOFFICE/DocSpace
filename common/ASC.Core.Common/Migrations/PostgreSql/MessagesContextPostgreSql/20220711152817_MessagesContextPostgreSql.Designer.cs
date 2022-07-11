@@ -3,16 +3,18 @@ using System;
 using ASC.MessagingSystem.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
+namespace ASC.Core.Common.Migrations.PostgreSql.MessagesContextPostgreSql
 {
-    [DbContext(typeof(MySqlMessagesContext))]
-    partial class MySqlMessagesContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(PostgreSqlMessagesContext))]
+    [Migration("20220711152817_MessagesContextPostgreSql")]
+    partial class MessagesContextPostgreSql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

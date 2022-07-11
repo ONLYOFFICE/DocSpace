@@ -100,9 +100,9 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                         .HasColumnName("price")
                         .HasDefaultValueSql("'0.00'");
 
-                    b.Property<int>("Visible")
+                    b.Property<bool>("Visible")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("visible")
                         .HasDefaultValueSql("'0'");
 
@@ -119,12 +119,12 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
                             Tenant = -1,
                             ActiveUsers = 10000,
                             AvangateId = "0",
-                            Features = "update",
+                            Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore",
                             MaxFileSize = 102400L,
                             MaxTotalSize = 10995116277760L,
                             Name = "default",
                             Price = 0.00m,
-                            Visible = 0
+                            Visible = false
                         });
                 });
 
