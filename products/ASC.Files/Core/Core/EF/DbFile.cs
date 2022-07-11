@@ -126,7 +126,9 @@ public static class DbFileExtension
 
             entity.Property(e => e.Version).HasColumnName("version");
 
-            entity.Property(e => e.Category).HasColumnName("category");
+            entity.Property(e => e.Category)
+                .HasColumnName("category")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Changes)
                 .HasColumnName("changes")

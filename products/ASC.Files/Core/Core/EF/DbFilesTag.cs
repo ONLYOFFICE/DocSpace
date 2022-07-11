@@ -57,7 +57,9 @@ public static class DbFilesTagExtension
 
             entity.Property(e => e.Id).HasColumnName("id");
 
-            entity.Property(e => e.Type).HasColumnName("flag");
+            entity.Property(e => e.Type)
+                .HasColumnName("flag")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Name)
                 .IsRequired()
