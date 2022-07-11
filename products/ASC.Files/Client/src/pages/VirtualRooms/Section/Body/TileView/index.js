@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 import elementResizeDetectorMaker from "element-resize-detector";
 
@@ -9,7 +10,7 @@ const containerPadding = 32;
 const tagMaxWidth = 100;
 const gridGap = 4;
 
-const VirtualRoomsTile = ({ rooms, sectionWidth }) => {
+const VirtualRoomsTile = ({ rooms, history, sectionWidth }) => {
   const [columnCount, setColumnCount] = React.useState(null);
 
   const firstTile = React.useRef(null);
@@ -54,10 +55,17 @@ const VirtualRoomsTile = ({ rooms, sectionWidth }) => {
             columnCount={columnCount}
             {...room}
             item={room}
+            history={history}
             ref={firstTile}
           />
         ) : (
-          <Tile key={room.id} columnCount={columnCount} item={room} {...room} />
+          <Tile
+            key={room.id}
+            columnCount={columnCount}
+            item={room}
+            history={history}
+            {...room}
+          />
         );
       })}
     </TileContainer>
@@ -68,4 +76,4 @@ export default inject(({ roomsStore }) => {
   const { rooms } = roomsStore;
 
   return { rooms };
-})(observer(VirtualRoomsTile));
+})(withRouter(observer(VirtualRoomsTile)));

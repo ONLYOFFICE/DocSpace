@@ -117,6 +117,10 @@ const RoomsRow = ({
   openContextMenu,
   closeContextMenu,
   getRoomsContextOptions,
+
+  onOpenRoom,
+
+  history,
 }) => {
   const onContextMenu = React.useCallback(
     (e) => {
@@ -139,6 +143,13 @@ const RoomsRow = ({
   const getRoomsContextOptionsActions = React.useCallback(() => {
     return getRoomsContextOptions && getRoomsContextOptions(item);
   }, [getRoomsContextOptions, item]);
+
+  const onOpenRoomAction = React.useCallback(
+    (e) => {
+      onOpenRoom && onOpenRoom(e, item.id, history);
+    },
+    [onOpenRoom, item.id, history]
+  );
 
   const element = (
     <RoomLogo
@@ -164,6 +175,7 @@ const RoomsRow = ({
           className={`rooms-row`}
           data={item}
           isEdit={false}
+          onClick={onOpenRoomAction}
           element={element}
           sectionWidth={sectionWidth}
           isActive={isActive}
@@ -180,26 +192,32 @@ const RoomsRow = ({
   );
 };
 
-export default inject(({ roomsStore, contextOptionsStore }, { item }) => {
-  const {
-    selectRoom,
-    selection,
-    bufferSelection,
-    openContextMenu,
-    closeContextMenu,
-  } = roomsStore;
+export default inject(
+  ({ roomsStore, roomsActionsStore, contextOptionsStore }, { item }) => {
+    const {
+      selectRoom,
+      selection,
+      bufferSelection,
+      openContextMenu,
+      closeContextMenu,
+    } = roomsStore;
 
-  const { getRoomsContextOptions } = contextOptionsStore;
+    const { onOpenRoom } = roomsActionsStore;
 
-  const isChecked = !!selection.find((room) => room.id === item.id);
-  const isActive = !isChecked && bufferSelection?.id === item.id;
+    const { getRoomsContextOptions } = contextOptionsStore;
 
-  return {
-    isChecked,
-    isActive,
-    selectRoom,
-    getRoomsContextOptions,
-    openContextMenu,
-    closeContextMenu,
-  };
-})(observer(RoomsRow));
+    const isChecked = !!selection.find((room) => room.id === item.id);
+    const isActive = !isChecked && bufferSelection?.id === item.id;
+
+    return {
+      isChecked,
+      isActive,
+      selectRoom,
+      getRoomsContextOptions,
+      openContextMenu,
+      closeContextMenu,
+
+      onOpenRoom,
+    };
+  }
+)(observer(RoomsRow));

@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import elementResizeDetectorMaker from "element-resize-detector";
@@ -89,6 +90,7 @@ const VirtualRoomsTable = ({
   sectionWidth,
   theme,
   getRoomsContextOptions,
+  history,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
 
@@ -157,6 +159,7 @@ const VirtualRoomsTable = ({
               ref={firstRowRef}
               tagCount={tagCount}
               getContextModel={getRoomsContextOptions}
+              history={history}
             />
           ) : (
             <Row
@@ -165,6 +168,7 @@ const VirtualRoomsTable = ({
               theme={theme}
               tagCount={tagCount}
               getContextModel={getRoomsContextOptions}
+              history={history}
             />
           )
         )}
@@ -194,4 +198,4 @@ export default inject(
       rooms,
     };
   }
-)(observer(VirtualRoomsTable));
+)(withRouter(observer(VirtualRoomsTable)));

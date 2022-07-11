@@ -1,4 +1,5 @@
 import React from "react";
+
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
@@ -139,7 +140,11 @@ const Tile = React.forwardRef(
       openContextMenu,
       closeContextMenu,
 
+      onOpenRoom,
+      onSelectRoom,
       onSelectTag,
+
+      history,
     },
     forwardRef
   ) => {
@@ -148,10 +153,6 @@ const Tile = React.forwardRef(
 
     const onBadgeClick = React.useCallback(() => {
       console.log("on badge click");
-    }, []);
-
-    const onTileClick = React.useCallback(() => {
-      console.log("tile click");
     }, []);
 
     const onContextMenu = React.useCallback(
@@ -180,13 +181,20 @@ const Tile = React.forwardRef(
       return getRoomsContextOptions && getRoomsContextOptions(item);
     }, [getRoomsContextOptions, item]);
 
+    const onOpenRoomAction = React.useCallback(
+      (e) => {
+        onOpenRoom && onOpenRoom(e, item.id, history);
+      },
+      [onOpenRoom, item.id, history]
+    );
+
     return (
       <StyledTile
         ref={tileRef}
         isChecked={isChecked}
         isHover={isHover}
         onContextMenu={onContextMenu}
-        onClick={onTileClick}
+        onClick={onOpenRoomAction}
       >
         <StyledHeader
           className="tile-header"
@@ -259,7 +267,7 @@ export default inject(
       closeContextMenu,
     } = roomsStore;
 
-    const { onSelectTag } = roomsActionsStore;
+    const { onOpenRoom, onSelectRoom, onSelectTag } = roomsActionsStore;
 
     const isChecked = !!selection.find((room) => room.id === item.id);
     const isHover = !isChecked && bufferSelection?.id === item.id;
@@ -268,6 +276,8 @@ export default inject(
       isChecked,
       isHover,
 
+      onOpenRoom,
+      onSelectRoom,
       onSelectTag,
 
       onClickPinRoom,

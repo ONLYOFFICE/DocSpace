@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 
@@ -88,6 +89,8 @@ const VirtualRoomsRow = ({
 
   rooms,
   sectionWidth,
+
+  history,
 }) => {
   React.useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
@@ -102,7 +105,12 @@ const VirtualRoomsRow = ({
   return (
     <StyledRowContainer className="rooms-row-container" useReactWindow={false}>
       {rooms.map((item) => (
-        <RoomsRow key={item.id} item={item} sectionWidth={sectionWidth} />
+        <RoomsRow
+          key={item.id}
+          item={item}
+          sectionWidth={sectionWidth}
+          history={history}
+        />
       ))}
     </StyledRowContainer>
   );
@@ -129,4 +137,4 @@ export default inject(
       rooms,
     };
   }
-)(observer(VirtualRoomsRow));
+)(withRouter(observer(VirtualRoomsRow)));

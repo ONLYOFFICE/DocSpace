@@ -86,7 +86,10 @@ const Row = React.forwardRef(
       closeContextMenu,
       unpinRoom,
 
+      onOpenRoom,
       onSelectTag,
+
+      history,
     },
     ref
   ) => {
@@ -120,6 +123,13 @@ const Row = React.forwardRef(
       console.log("on badge click");
     }, []);
 
+    const onOpenRoomAction = React.useCallback(
+      (e) => {
+        onOpenRoom && onOpenRoom(e, item.id);
+      },
+      [onOpenRoom, item.id, history]
+    );
+
     return (
       <StyledTableRow
         className={`table-row${
@@ -132,6 +142,7 @@ const Row = React.forwardRef(
         onHideContextMenu={onCloseContextMenu}
         isChecked={isChecked}
         isHover={isHover}
+        onClick={onOpenRoomAction}
       >
         <FileNameCell
           theme={theme}
@@ -179,7 +190,7 @@ export default inject(
       unpinRoom,
     } = roomsStore;
 
-    const { onSelectTag } = roomsActionsStore;
+    const { onOpenRoom, onSelectTag } = roomsActionsStore;
 
     const isChecked = !!selection.find((room) => room.id === item.id);
     const isHover = !isChecked && bufferSelection?.id === item.id;
@@ -196,6 +207,7 @@ export default inject(
       closeContextMenu,
       unpinRoom,
 
+      onOpenRoom,
       onSelectTag,
     };
   }
