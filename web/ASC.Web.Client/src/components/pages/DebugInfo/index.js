@@ -36,6 +36,8 @@ const DebugInfoDialog = (props) => {
           onClose={onClose}
           isLarge
           displayType="modal"
+          autoMaxHeight
+          autoMaxWidth
         >
           <ModalDialog.Header>Debug Info</ModalDialog.Header>
           <ModalDialog.Body>
@@ -47,10 +49,7 @@ const DebugInfoDialog = (props) => {
             )}
             <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
             <hr />
-            <Box
-              overflowProp="auto"
-              heightProp={modalType === "modal" ? "300px" : "70vh"}
-            >
+            <Box overflowProp="auto" heightProp={"300px"}>
               <Scrollbar stype="mediumBlack">
                 {md && <ReactMarkdown children={md} />}
               </Scrollbar>

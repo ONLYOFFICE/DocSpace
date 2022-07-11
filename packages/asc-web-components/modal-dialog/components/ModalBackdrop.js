@@ -7,9 +7,9 @@ const StyledModalBackdrop = styled.div.attrs((props) => ({
     backdropFilter: `${
       props.modalSwipeOffset
         ? `blur(${
-            props.modalSwipeOffset < 0 && 18 - props.modalSwipeOffset * -0.14
+            props.modalSwipeOffset < 0 && 8 - props.modalSwipeOffset * -0.0667
           }px)`
-        : "blur(18px)"
+        : "blur(8px)"
     }`,
 
     background: `${
