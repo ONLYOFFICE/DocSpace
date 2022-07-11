@@ -7,6 +7,22 @@ import Text from "@appserver/components/text";
 import Box from "@appserver/components/box";
 import Scrollbar from "@appserver/components/scrollbar";
 import axios from "axios";
+import styled from "styled-components";
+
+const StyledModalDialog = styled(ModalDialog)`
+  #modal-dialog {
+    min-height: 560px;
+    max-height: 560px;
+    max-width: 733px;
+    height: auto;
+    width: auto;
+  }
+
+  .markdown-wrapper {
+    height: 372px;
+    width: 100%;
+  }
+`;
 
 const DebugInfoDialog = (props) => {
   const { visible, onClose, user } = props;
@@ -29,35 +45,34 @@ const DebugInfoDialog = (props) => {
   }, [md, visible]);
 
   return (
-    <>
-      {visible && (
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          isLarge
-          displayType="modal"
-          autoMaxHeight
-          autoMaxWidth
+    <StyledModalDialog
+      withFooterBorder
+      visible={visible}
+      onClose={onClose}
+      displayType="modal"
+    >
+      <ModalDialog.Header>Debug Info</ModalDialog.Header>
+      <ModalDialog.Body className="debug-info-body">
+        {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
+        <Text>{`# Version: ${VERSION}`}</Text>
+        <Text>{`# Build date: ${BUILD_AT}`}</Text>
+        {user && (
+          <Text>{`# Current User: ${user?.displayName} (id:${user?.id})`}</Text>
+        )}
+        <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Box
+          className="markdown-wrapper"
+          overflowProp="auto"
+          heightProp={"372px"}
         >
-          <ModalDialog.Header>Debug Info</ModalDialog.Header>
-          <ModalDialog.Body>
-            {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
-            <Text>{`# Version: ${VERSION}`}</Text>
-            <Text>{`# Build date: ${BUILD_AT}`}</Text>
-            {user && (
-              <Text>{`# Current User: ${user?.displayName} (id:${user?.id})`}</Text>
-            )}
-            <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
-            <hr />
-            <Box overflowProp="auto" heightProp={"300px"}>
-              <Scrollbar stype="mediumBlack">
-                {md && <ReactMarkdown children={md} />}
-              </Scrollbar>
-            </Box>
-          </ModalDialog.Body>
-        </ModalDialog>
-      )}
-    </>
+          <Scrollbar stype="mediumBlack">
+            {md && <ReactMarkdown children={md} />}
+          </Scrollbar>
+        </Box>
+      </ModalDialog.Footer>
+    </StyledModalDialog>
   );
 };
 
