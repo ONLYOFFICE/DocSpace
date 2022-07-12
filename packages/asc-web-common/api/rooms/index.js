@@ -1,5 +1,6 @@
 import { request } from "../client";
 import { decodeDisplayName } from "../../utils";
+import { FolderType } from "../../constants";
 
 export function getRooms(filter) {
   const options = {
@@ -10,6 +11,11 @@ export function getRooms(filter) {
   return request(options).then((res) => {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
+
+    if (res.current.rootFolderType === FolderType.Archive) {
+      res.folders.forEach((room) => (room.isArchive = true));
+    }
+
     return res;
   });
 }
