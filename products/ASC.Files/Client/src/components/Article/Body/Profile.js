@@ -179,7 +179,7 @@ const Profile = (props) => {
       />
       {(!tablet || showText) && (
         <>
-          <Text fontSize="12px" fontWeight={600}>
+          <Text fontSize="12px" fontWeight={600} noSelect>
             {user.displayName}
           </Text>
           <div className="option-button">
