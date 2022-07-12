@@ -2240,11 +2240,11 @@ const Dark = {
   },
 
   connectCloud: {
-    connectBtnContent: white,
+    connectBtnContent: silver,
     connectBtnTextBg: "none",
-    connectBtnIconBg: "#292929",
-    connectBtnTextBorder: white,
-    connectBtnIconBorder: "#292929",
+    connectBtnIconBg: "#none",
+    connectBtnTextBorder: silver,
+    connectBtnIconBorder: "#474747",
   },
 
   filesThirdPartyDialog: {
