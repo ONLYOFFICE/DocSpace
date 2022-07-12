@@ -237,6 +237,34 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         }
     }
 
+    public int CountRoom
+    {
+        get
+        {
+            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
+            var room = features.FirstOrDefault(f => f.StartsWith("room:"));
+            int countRoom;
+            if (room == null || !int.TryParse(room.Replace("room:", ""), out countRoom))
+            {
+                countRoom = int.MaxValue;
+            }
+
+            return countRoom;
+        }
+        set
+        {
+            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
+            var room = features.FirstOrDefault(f => f.StartsWith("room:"));
+            features.Remove(room);
+            if (value > 0)
+            {
+                features.Add("room:" + value);
+            }
+
+            Features = string.Join(",", features.ToArray());
+        }
+    }
+
     public bool Restore
     {
         get => GetFeature("restore");
