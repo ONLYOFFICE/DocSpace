@@ -129,6 +129,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
     }
     #endregion
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{05d35540-c80b-4b17-9277-abd9e543bf93}"); }
@@ -466,13 +467,13 @@ public class TenantWhiteLabelSettingsHelper
 
         return type switch
         {
-                WhiteLabelLogoTypeEnum.LightSmall =>  _webImageSupplier.GetAbsoluteWebPath("logo/light_small_doc_space.svg"),
-                WhiteLabelLogoTypeEnum.Dark => _webImageSupplier.GetAbsoluteWebPath("logo/dark_doc_space.svg"),
-                WhiteLabelLogoTypeEnum.DocsEditor => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo.png"),
-                WhiteLabelLogoTypeEnum.DocsEditorEmbed => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed.png"),
-                WhiteLabelLogoTypeEnum.Favicon => general ? _webImageSupplier.GetAbsoluteWebPath("logo/favicon_general.ico") : _webImageSupplier.GetAbsoluteWebPath("logo/favicon.ico"),
-                WhiteLabelLogoTypeEnum.LeftMenu => _webImageSupplier.GetAbsoluteWebPath("logo/left_menu_general.svg"),
-                WhiteLabelLogoTypeEnum.AboutPage => _webImageSupplier.GetAbsoluteWebPath("logo/about_doc_space.svg"),
+            WhiteLabelLogoTypeEnum.LightSmall => _webImageSupplier.GetAbsoluteWebPath("logo/light_small_doc_space.svg"),
+            WhiteLabelLogoTypeEnum.Dark => _webImageSupplier.GetAbsoluteWebPath("logo/dark_doc_space.svg"),
+            WhiteLabelLogoTypeEnum.DocsEditor => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo.png"),
+            WhiteLabelLogoTypeEnum.DocsEditorEmbed => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed.png"),
+            WhiteLabelLogoTypeEnum.Favicon => general ? _webImageSupplier.GetAbsoluteWebPath("logo/favicon_general.ico") : _webImageSupplier.GetAbsoluteWebPath("logo/favicon.ico"),
+            WhiteLabelLogoTypeEnum.LeftMenu => _webImageSupplier.GetAbsoluteWebPath("logo/left_menu_general.svg"),
+            WhiteLabelLogoTypeEnum.AboutPage => _webImageSupplier.GetAbsoluteWebPath("logo/about_doc_space.svg"),
             _ => "",
         };
     }
