@@ -67,7 +67,7 @@ const Content = styled.div.attrs((props) => ({
           transition: transform 0.3s ease-in-out;
           @media ${smallTablet} {
             transform: translateY(${(props) => (props.visible ? "0" : "100%")});
-            height: calc(100vh - 64px);
+            height: calc(100% - 64px);
             width: 100%;
             left: 0;
             top: auto;
