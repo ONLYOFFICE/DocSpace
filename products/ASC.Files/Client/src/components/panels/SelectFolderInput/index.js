@@ -11,10 +11,10 @@ import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 class SelectFolderInput extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { id, foldersType } = this.props;
+    const { id, foldersType, withoutBasicSelection } = this.props;
 
     const isNeedLoader =
-      !!id || foldersType !== "third-party" || foldersType === "common";
+      !!id || !withoutBasicSelection || foldersType === "common";
 
     this.state = {
       isLoading: isNeedLoader,
@@ -35,7 +35,7 @@ class SelectFolderInput extends React.PureComponent {
       id,
       onSelectFolder,
       foldersList,
-      withoutBasicSelection = false,
+      withoutBasicSelection,
     } = this.props;
 
     setFirstLoad(false);
@@ -53,26 +53,28 @@ class SelectFolderInput extends React.PureComponent {
         this.onSetBaseFolderPath,
         onSelectFolder,
         foldersList,
-        false,
+
         withoutBasicSelection
       );
     } catch (e) {
       toastr.error(e);
+      this.setState({
+        isLoading: false,
+      });
       return;
     }
 
     this.setState({
       resultingFolderTree,
       baseId: resultingId,
-      isLoading: false,
     });
   }
 
   componentDidUpdate(prevProps) {
-    const { isSuccessSave, isReset, setFolderId, id } = this.props;
-    const { newFolderPath, baseFolderPath, baseId } = this.state;
+    const { isSuccessSave, isReset, id } = this.props;
+    const { newFolderPath, baseFolderPath } = this.state;
 
-    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
+    if (!isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
       newFolderPath &&
         this.setState({
           baseFolderPath: newFolderPath,
@@ -81,9 +83,7 @@ class SelectFolderInput extends React.PureComponent {
         });
     }
 
-    if (isReset && isReset !== prevProps.isReset) {
-      setFolderId(baseId !== id && id ? id : baseId);
-
+    if (!isReset && isReset !== prevProps.isReset) {
       this.setState({
         newFolderPath: baseFolderPath,
         baseId: id,

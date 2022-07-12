@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
+
 const ButtonContainer = ({
   isLoadingData,
   buttonSize,
@@ -8,8 +9,24 @@ const ButtonContainer = ({
   onCancelModuleSettings,
   isChanged,
   isThirdStorageChanged,
+  setSavingProcess,
   t,
+  setResetProcess,
 }) => {
+  const prevChange = useRef();
+
+  useEffect(() => {
+    //console.log("isChanged", isChanged, prevChange);
+    if (!isChanged && isChanged !== prevChange.current) {
+      setSavingProcess(false);
+      setResetProcess(false);
+    }
+  }, [isChanged]);
+
+  useEffect(() => {
+    prevChange.current = isChanged;
+  }, [isChanged]);
+
   return (
     (isThirdStorageChanged || isChanged) && (
       <div className="auto-backup_buttons">
@@ -34,10 +51,17 @@ const ButtonContainer = ({
 };
 
 export default inject(({ backup }) => {
-  const { isChanged, isThirdStorageChanged } = backup;
+  const {
+    isChanged,
+    isThirdStorageChanged,
+    setSavingProcess,
+    setResetProcess,
+  } = backup;
 
   return {
     isChanged,
     isThirdStorageChanged,
+    setSavingProcess,
+    setResetProcess,
   };
 })(observer(ButtonContainer));

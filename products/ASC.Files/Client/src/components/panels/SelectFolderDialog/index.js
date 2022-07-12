@@ -79,7 +79,7 @@ class SelectFolderDialog extends React.Component {
     const resId = isNeedArrowIcon || withInput ? id : resultingId;
 
     onSelectFolder && onSelectFolder(resId);
-    isNeedArrowIcon && onSetBaseFolderPath(resId);
+    // isNeedArrowIcon && onSetBaseFolderPath(resId);
 
     setFolderId(resId);
 

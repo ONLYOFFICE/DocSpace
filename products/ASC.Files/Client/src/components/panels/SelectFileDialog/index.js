@@ -90,6 +90,7 @@ class SelectFileDialog extends React.Component {
       displayType,
       setFolderId,
       folderId,
+      withoutBasicSelection,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -109,7 +110,7 @@ class SelectFileDialog extends React.Component {
         onSetBaseFolderPath,
         onSelectFolder,
         foldersList,
-        true
+        withoutBasicSelection
       );
     } catch (e) {
       toastr.error(e);

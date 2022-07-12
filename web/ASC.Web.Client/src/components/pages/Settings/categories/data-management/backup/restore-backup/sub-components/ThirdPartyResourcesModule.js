@@ -82,7 +82,7 @@ const ThirdPartyResources = (props) => {
 export default inject(({ backup }) => {
   const { commonThirdPartyList } = backup;
 
-  const isDocSpace = true;
+  const isDocSpace = false;
 
   return {
     commonThirdPartyList,

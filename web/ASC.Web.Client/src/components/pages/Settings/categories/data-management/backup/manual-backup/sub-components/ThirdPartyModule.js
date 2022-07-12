@@ -162,7 +162,7 @@ class ThirdPartyModule extends React.Component {
             isError={isError}
             foldersType="third-party"
             foldersList={commonThirdPartyList}
-            ignoreSelectedFolderTree
+            withoutBasicSelection
           />
         </div>
         <div className="manual-backup_buttons">
@@ -220,7 +220,7 @@ class ThirdPartyModule extends React.Component {
 }
 export default inject(({ backup }) => {
   const { commonThirdPartyList } = backup;
-  const isDocSpace = true;
+  const isDocSpace = false;
   return {
     commonThirdPartyList,
     isDocSpace,

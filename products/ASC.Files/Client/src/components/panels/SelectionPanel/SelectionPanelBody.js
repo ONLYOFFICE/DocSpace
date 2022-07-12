@@ -176,7 +176,6 @@ class SelectionPanel extends React.Component {
     onSetBaseFolderPath,
     onSelectFolder,
     foldersList,
-    isFilesPanel = false,
     withoutBasicSelection = false
   ) => {
     const getRequestFolderTree = () => {
@@ -248,11 +247,9 @@ class SelectionPanel extends React.Component {
 
     const passedId = id ? id : foldersTree[0]?.id;
 
-    if (foldersType === "third-party") {
-      isFilesPanel && onSetBaseFolderPath && onSetBaseFolderPath(passedId);
-    } else {
-      onSetBaseFolderPath && onSetBaseFolderPath(passedId);
-    }
+    !withoutBasicSelection &&
+      onSetBaseFolderPath &&
+      onSetBaseFolderPath(passedId);
 
     !withoutBasicSelection && onSelectFolder && onSelectFolder(passedId);
 

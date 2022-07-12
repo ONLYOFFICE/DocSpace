@@ -59,6 +59,9 @@ class BackupStore {
   selectedEnableSchedule = false;
   defaultEnableSchedule = false;
 
+  isSavingProcess = false;
+  isResetProcess = false;
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -535,6 +538,13 @@ class BackupStore {
   setSelectedEnableSchedule = () => {
     const isEnable = this.selectedEnableSchedule;
     this.selectedEnableSchedule = !isEnable;
+  };
+  setSavingProcess = (process) => {
+    if (process !== this.isSavingProcess) this.isSavingProcess = process;
+  };
+
+  setResetProcess = (process) => {
+    if (process !== this.isResetProcess) this.isResetProcess = process;
   };
 }
 export default BackupStore;

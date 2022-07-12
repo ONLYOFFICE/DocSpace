@@ -86,11 +86,12 @@ class ThirdPartyModule extends React.PureComponent {
       commonThirdPartyList,
       isDocSpace,
       isResourcesDefault,
-
+      isResetProcess,
+      isSavingProcess,
       t,
       ...rest
     } = this.props;
-    console.log(isLoadingData, !isConnected);
+    console.log("passedId", passedId);
     return (
       <>
         {!isDocSpace ? (
@@ -104,8 +105,8 @@ class ThirdPartyModule extends React.PureComponent {
               foldersType="third-party"
               isDisabled={commonThirdPartyList.length === 0 || isLoadingData}
               id={passedId}
-              isReset={isReset}
-              isSuccessSave={isSuccessSave}
+              isReset={isResetProcess}
+              isSuccessSave={isSavingProcess}
               foldersList={commonThirdPartyList}
               withoutBasicSelection={isResourcesDefault ? false : true}
             />
@@ -129,8 +130,8 @@ class ThirdPartyModule extends React.PureComponent {
               foldersType="third-party"
               isDisabled={isLoadingData || !isConnected}
               id={passedId}
-              isReset={isReset}
-              isSuccessSave={isSuccessSave}
+              isReset={isResetProcess}
+              isSuccessSave={isSavingProcess}
               foldersList={commonThirdPartyList}
               withoutBasicSelection={isResourcesDefault ? false : true}
             />
@@ -149,14 +150,18 @@ export default inject(({ backup }) => {
     defaultStorageType,
     commonThirdPartyList,
     defaultFolderId,
+    isResetProcess,
+    isSavingProcess,
   } = backup;
 
   const isResourcesDefault =
     defaultStorageType === `${BackupStorageType.ResourcesModuleType}`;
 
   const passedId = isResourcesDefault ? defaultFolderId : "";
-  const isDocSpace = true;
+  const isDocSpace = false;
   return {
+    isResetProcess,
+    isSavingProcess,
     setSelectedFolder,
     passedId,
     commonThirdPartyList,

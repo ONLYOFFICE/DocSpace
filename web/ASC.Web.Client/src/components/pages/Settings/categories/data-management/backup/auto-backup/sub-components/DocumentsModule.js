@@ -27,6 +27,7 @@ class DocumentsModule extends React.PureComponent {
 
   onSelectFolder = (id) => {
     const { setSelectedFolder } = this.props;
+
     setSelectedFolder(`${id}`);
   };
 
@@ -35,9 +36,10 @@ class DocumentsModule extends React.PureComponent {
     const {
       isError,
       isLoadingData,
-      isReset,
-      isSuccessSave,
+      savingProcess,
       passedId,
+      isSavingProcess,
+      isResetProcess,
       ...rest
     } = this.props;
 
@@ -54,8 +56,8 @@ class DocumentsModule extends React.PureComponent {
             withoutProvider
             isDisabled={isLoadingData}
             id={passedId}
-            isReset={isReset}
-            isSuccessSave={isSuccessSave}
+            isReset={isResetProcess}
+            isSuccessSave={isSavingProcess}
           />
         </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
@@ -70,6 +72,8 @@ export default inject(({ backup }) => {
     selectedFolderId,
     defaultStorageType,
     defaultFolderId,
+    isSavingProcess,
+    isResetProcess,
   } = backup;
 
   const isDocumentsDefault =
@@ -78,7 +82,11 @@ export default inject(({ backup }) => {
   const passedId = isDocumentsDefault ? defaultFolderId : "";
 
   return {
+    defaultFolderId,
+    selectedFolderId,
     setSelectedFolder,
     passedId,
+    isSavingProcess,
+    isResetProcess,
   };
 })(observer(DocumentsModule));

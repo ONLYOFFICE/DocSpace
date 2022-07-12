@@ -186,12 +186,15 @@ class AutomaticBackup extends React.PureComponent {
       toDefault,
       resetStorageSettings,
       isCheckedThirdPartyStorage,
+      isCheckedThirdParty,
+      isCheckedDocuments,
+      setResetProcess,
     } = this.props;
 
     toDefault();
 
     isCheckedThirdPartyStorage && resetStorageSettings();
-
+    (isCheckedThirdParty || isCheckedDocuments) && setResetProcess(true);
     this.setState({
       ...(isError && { isError: false }),
     });
@@ -244,7 +247,7 @@ class AutomaticBackup extends React.PureComponent {
     }
 
     if (!this.canSave()) return;
-
+    //return;
     this.setState({ isLoadingData: true }, function () {
       let day, period;
 
@@ -274,7 +277,7 @@ class AutomaticBackup extends React.PureComponent {
         selectedStorageId
       );
 
-      console.log("storageParams", storageParams);
+      //console.log("storageParams", storageParams);
       //return;
       this.createSchedule(
         storageType.toString(),
@@ -302,9 +305,14 @@ class AutomaticBackup extends React.PureComponent {
       setBackupSchedule,
       updateStorageDefaultSettings,
       isCheckedThirdPartyStorage,
+      isCheckedThirdParty,
+      isCheckedDocuments,
+      setSavingProcess,
     } = this.props;
 
     try {
+      (isCheckedThirdParty || isCheckedDocuments) && setSavingProcess(true);
+
       await createBackupSchedule(
         storageType,
         storageParams,
@@ -331,6 +339,9 @@ class AutomaticBackup extends React.PureComponent {
       });
     } catch (e) {
       toastr.error(e);
+
+      (isCheckedThirdParty || isCheckedDocuments) && setSavingProcess(true);
+
       this.setState({
         isLoadingData: false,
       });
@@ -396,7 +407,7 @@ class AutomaticBackup extends React.PureComponent {
       className: "backup_radio-button",
       onClick: this.onClickShowStorage,
     };
-    console.log("render backup");
+
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -528,13 +539,16 @@ const { organizationName, theme } = settingsStore;
     resetNewFormSettings: resetStorageSettings,
     setSelectedEnableSchedule,
     selectedEnableSchedule,
+    updatePathSettings,
+    setSavingProcess,
+    setResetProcess,
   } = backup;
 
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
   const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
     selectedStorageType === `${StorageModuleType}`;
-  const isDocSpace = true;
+  const isDocSpace = false;
   return {
     theme,
     language,
@@ -574,5 +588,8 @@ const { organizationName, theme } = settingsStore;
     setSelectedEnableSchedule,
     selectedEnableSchedule,
     isDocSpace,
+    updatePathSettings,
+    setSavingProcess,
+    setResetProcess,
   };
 })(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));
