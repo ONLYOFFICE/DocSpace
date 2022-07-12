@@ -190,7 +190,7 @@ const SessionLifetime = (props) => {
             {t("Lifetime")}
           </Text>
           <TextInput
-            isAutoFocussed={true}
+            isAutoFocussed={false}
             value={sessionLifetime}
             onChange={onChangeInput}
             onBlur={onBlurInput}
