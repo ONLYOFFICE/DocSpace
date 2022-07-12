@@ -1,60 +1,213 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-
 import { isMobile } from "react-device-detect";
+
 import { tablet } from "@appserver/components/utils/device";
 
-import Headline from "@appserver/common/components/Headline";
-
-import IconButton from "@appserver/components/icon-button";
-import withLoader from "../../../../HOCs/withLoader";
+import Navigation from "@appserver/common/components/Navigation";
 import Loaders from "@appserver/common/components/Loaders";
 
+import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
+
+import withLoader from "../../../../HOCs/withLoader";
+import { Consumer } from "@appserver/components/utils/context";
+import { FolderType } from "@appserver/common/constants";
+import DropDownItem from "@appserver/components/drop-down-item";
+
 const StyledContainer = styled.div`
-  width: 100%;
-  height: 53px;
-  display: flex;
-  align-items: center;
-`;
+  .table-container_group-menu {
+    ${(props) =>
+      props.viewAs === "table"
+        ? css`
+            margin: 0px -20px;
+            width: calc(100% + 40px);
+          `
+        : css`
+            margin: 0px -20px;
+            width: calc(100% + 40px);
+          `}
 
-const StyledHeadline = styled(Headline)`
-  font-weight: 700;
-  font-size: ${isMobile ? "21px !important" : "18px"};
-  line-height: ${isMobile ? "28px !important" : "24px"};
+    @media ${tablet} {
+      margin: 0 -16px;
+      width: calc(100% + 32px);
+    }
 
-  margin-right: 16px;
-
-  @media ${tablet} {
-    font-size: 21px;
-    line-height: 28px;
+    ${isMobile &&
+    css`
+      margin: 0 -16px;
+      width: calc(100% + 32px);
+    `}
   }
 `;
 
-const SectionHeaderContent = ({ createRoom, title }) => {
-  return (
-    <StyledContainer>
-      <StyledHeadline>{title}</StyledHeadline>
-      <IconButton
-        zIndex={402}
-        className="create-button"
-        directionX="right"
-        iconName="images/plus.svg"
-        size={15}
-        isFill
-        onClick={createRoom}
-        isDisabled={false}
+const SectionHeaderContent = ({
+  t,
+
+  createRoom,
+  viewAs,
+  title,
+  showText,
+  isArchive,
+  isDesktop,
+  isTabletView,
+  tReady,
+  navigationPath,
+
+  isHeaderVisible,
+  isHeaderChecked,
+  isHeaderIndeterminate,
+  checkboxMenuItems,
+  getRoomCheckboxTitle,
+  setSelected,
+
+  getHeaderMenu,
+
+  toggleInfoPanel,
+  isInfoPanelVisible,
+}) => {
+  const getContextOptionsPlus = () => {
+    return [];
+  };
+
+  const getContextOptionsFolder = () => {
+    return [];
+  };
+
+  const renderGroupMenu = React.useCallback(() => {
+    const onSelected = (e) => {
+      setSelected && setSelected(e.target.dataset.key);
+    };
+
+    const onChange = (checked) => {
+      setSelected && setSelected(checked ? "all" : "none");
+    };
+
+    const menuItems = (
+      <>
+        {checkboxMenuItems.map((key) => {
+          const label = getRoomCheckboxTitle(t, key);
+
+          return (
+            <DropDownItem
+              key={key}
+              label={label}
+              data-key={key}
+              onClick={onSelected}
+            />
+          );
+        })}
+      </>
+    );
+
+    const headerMenu = getHeaderMenu(t);
+
+    return (
+      <TableGroupMenu
+        checkboxOptions={menuItems}
+        onChange={onChange}
+        isChecked={isHeaderChecked}
+        isIndeterminate={isHeaderIndeterminate}
+        headerMenu={headerMenu}
+        isInfoPanelVisible={isInfoPanelVisible}
+        toggleInfoPanel={toggleInfoPanel}
       />
-    </StyledContainer>
+    );
+  }, [
+    t,
+    isHeaderChecked,
+    isHeaderIndeterminate,
+    checkboxMenuItems,
+    getRoomCheckboxTitle,
+    getHeaderMenu,
+    setSelected,
+    toggleInfoPanel,
+    isInfoPanelVisible,
+  ]);
+
+  return (
+    <Consumer>
+      {(context) => (
+        <StyledContainer width={context.sectionWidth} viewAs={viewAs}>
+          {isHeaderVisible ? (
+            renderGroupMenu()
+          ) : (
+            <div className="header-container">
+              <Navigation
+                sectionWidth={context.sectionWidth}
+                showText={showText}
+                isRootFolder={true}
+                canCreate={!isArchive}
+                title={title}
+                isDesktop={isDesktop}
+                isTabletView={isTabletView}
+                personal={false}
+                tReady={tReady}
+                navigationItems={navigationPath}
+                getContextOptionsPlus={getContextOptionsPlus}
+                getContextOptionsFolder={getContextOptionsFolder}
+                // toggleInfoPanel={toggleInfoPanel} TODO: return after adding info-panel for rooms
+                isInfoPanelVisible={isInfoPanelVisible}
+              />
+            </div>
+          )}
+        </StyledContainer>
+      )}
+    </Consumer>
   );
 };
 
-export default inject(({ roomsStore, selectedFolderStore }) => {
-  const { createRoom } = roomsStore;
+export default inject(
+  ({
+    auth,
+    roomsStore,
+    roomsActionsStore,
+    filesStore,
+    selectedFolderStore,
+  }) => {
+    const {
+      isHeaderVisible,
+      isHeaderChecked,
+      isHeaderIndeterminate,
+      checkboxMenuItems,
+      getRoomCheckboxTitle,
+      setSelected,
+    } = roomsStore;
 
-  return { createRoom, title: selectedFolderStore.title };
-})(
+    const { getHeaderMenu } = roomsActionsStore;
+
+    const { viewAs } = filesStore;
+
+    const { toggleIsVisible, isVisible } = auth.infoPanelStore;
+
+    const { title, rootFolderType, navigationPath } = selectedFolderStore;
+
+    const isArchive = rootFolderType === FolderType.Archive;
+
+    return {
+      showText: auth.settingsStore.showText,
+      isDesktop: auth.settingsStore.isDesktopClient,
+      isTabletView: auth.settingsStore.isTabletView,
+      viewAs,
+      title,
+      isArchive,
+      navigationPath,
+
+      isHeaderVisible,
+      isHeaderChecked,
+      isHeaderIndeterminate,
+      checkboxMenuItems,
+      getRoomCheckboxTitle,
+      setSelected,
+
+      getHeaderMenu,
+
+      toggleInfoPanel: toggleIsVisible,
+      isInfoPanelVisible: isVisible,
+    };
+  }
+)(
   withTranslation([])(
     withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
   )

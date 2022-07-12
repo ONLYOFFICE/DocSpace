@@ -87,6 +87,10 @@ class RoomsStore {
     this.bufferSelection = item;
   };
 
+  setHeaderVisible = (isHeaderVisible) => {
+    this.isHeaderVisible = isHeaderVisible;
+  };
+
   sortRooms = (sortBy, sortOrder) => {
     const newFilter = this.filter.clone();
 
@@ -181,6 +185,22 @@ class RoomsStore {
     }
   };
 
+  setSelected = (selected) => {
+    if (selected === "none") {
+      this.setBufferSelection(null);
+    }
+
+    const newSelection = [];
+
+    this.rooms.forEach((room) => {
+      const checked = this.getRoomChecked(room, selected);
+
+      if (checked) newSelection.push(room);
+    });
+
+    this.selection = newSelection;
+  };
+
   openContextMenu = (item) => {
     if (this.selection.length > 0) return;
 
@@ -256,6 +276,88 @@ class RoomsStore {
 
     return request();
   };
+
+  getRoomCheckboxTitle = (t, key) => {
+    switch (key) {
+      case "all":
+        return t("All");
+      case RoomsType.FillingFormsRoom:
+        return "Filling form rooms";
+      case RoomsType.CustomRoom:
+        return "Custom rooms";
+      case RoomsType.EditingRoom:
+        return "Editing rooms";
+      case RoomsType.ReviewRoom:
+        return "Review rooms";
+      case RoomsType.ReadOnlyRoom:
+        return "Read-only rooms";
+      default:
+        return "";
+    }
+  };
+
+  getRoomChecked = (room, selected) => {
+    const type = room.roomType;
+
+    switch (selected) {
+      case "all":
+        return true;
+      case RoomsType.FillingFormsRoom:
+        return type === RoomsType.FillingFormsRoom;
+      case RoomsType.CustomRoom:
+        return type === RoomsType.CustomRoom;
+      case RoomsType.EditingRoom:
+        return type === RoomsType.EditingRoom;
+      case RoomsType.ReviewRoom:
+        return type === RoomsType.ReviewRoom;
+      case RoomsType.ReadOnlyRoom:
+        return type === RoomsType.ReadOnlyRoom;
+      default:
+        return false;
+    }
+  };
+
+  get isHeaderVisible() {
+    return this.selection.length > 0;
+  }
+
+  get isHeaderIndeterminate() {
+    return this.isHeaderVisible && this.selection.length
+      ? this.selection.length < this.rooms.length
+      : false;
+  }
+
+  get isHeaderChecked() {
+    return this.isHeaderVisible && this.selection.length === this.rooms.length;
+  }
+
+  get checkboxMenuItems() {
+    let cbMenu = ["all"];
+
+    for (const item of this.rooms) {
+      switch (item.roomType) {
+        case RoomsType.FillingFormsRoom:
+          cbMenu.push(RoomsType.FillingFormsRoom);
+          break;
+        case RoomsType.CustomRoom:
+          cbMenu.push(RoomsType.CustomRoom);
+          break;
+        case RoomsType.EditingRoom:
+          cbMenu.push(RoomsType.EditingRoom);
+          break;
+        case RoomsType.ReviewRoom:
+          cbMenu.push(RoomsType.ReviewRoom);
+          break;
+        case RoomsType.ReadOnlyRoom:
+          cbMenu.push(RoomsType.ReadOnlyRoom);
+          break;
+      }
+    }
+
+    cbMenu = cbMenu.filter((item, index) => cbMenu.indexOf(item) === index);
+
+    return cbMenu;
+  }
 }
 
 export default RoomsStore;

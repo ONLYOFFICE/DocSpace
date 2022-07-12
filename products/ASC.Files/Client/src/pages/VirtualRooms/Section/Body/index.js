@@ -13,7 +13,37 @@ import VirtualRoomsTable from "./TableView";
 
 import withLoader from "../../../../HOCs/withLoader";
 
-const SectionBodyContent = ({ isEmpty, viewAs }) => {
+const SectionBodyContent = ({
+  isEmpty,
+  viewAs,
+
+  setSelection,
+  setBufferSelection,
+}) => {
+  React.useEffect(() => {
+    window.addEventListener("mousedown", onMouseDown);
+
+    return () => {
+      window.removeEventListener("mousedown", onMouseDown);
+    };
+  }, []);
+
+  const onMouseDown = React.useCallback((e) => {
+    if (
+      (e.target.closest(".scroll-body") &&
+        !e.target.closest(".rooms-item") &&
+        !e.target.closest(".not-selectable") &&
+        !e.target.closest(".info-panel") &&
+        !e.target.closest(".table-container_group-menu")) ||
+      e.target.closest(".files-main-button") ||
+      e.target.closest(".add-button") ||
+      e.target.closest(".search-input-block")
+    ) {
+      setSelection([]);
+      setBufferSelection(null);
+    }
+  }, []);
+
   return (
     <Consumer>
       {(context) =>
@@ -34,9 +64,9 @@ const SectionBodyContent = ({ isEmpty, viewAs }) => {
 export default inject(({ filesStore, roomsStore }) => {
   const { viewAs } = filesStore;
 
-  const { rooms } = roomsStore;
+  const { rooms, setSelection, setBufferSelection } = roomsStore;
 
-  const isEmpty = rooms.length < 1;
+  const isEmpty = rooms.length === 0;
 
-  return { viewAs, isEmpty };
+  return { viewAs, isEmpty, setSelection, setBufferSelection };
 })(withTranslation([])(withLoader(observer(SectionBodyContent))()));

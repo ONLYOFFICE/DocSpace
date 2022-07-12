@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, FolderType } from "@appserver/common/constants";
 
 import toastr from "studio/toastr";
 
@@ -62,8 +62,60 @@ class RoomsActionsStore {
     }
   };
 
-  onSelectRoom = (id) => {
-    console.log(id);
+  getHeaderMenu = (t) => {
+    const { selection } = this.roomsStore;
+
+    if (selection.length === 0) return;
+
+    const pinOption =
+      selection.findIndex((room) => !room.pinned) > -1
+        ? this.getOption("pin", t)
+        : this.getOption("unpin", t);
+
+    const archiveOption =
+      selection.findIndex((room) => room.rootFolderType === FolderType.Rooms) >
+      -1
+        ? this.getOption("archive", t)
+        : this.getOption("unarchive", t);
+
+    return [pinOption, archiveOption];
+  };
+
+  getOption = (option, t) => {
+    switch (option) {
+      case "pin":
+        return {
+          key: "pin",
+          label: "Pin to top",
+          iconUrl: "/static/images/pin.react.svg",
+          onClick: () => console.log("pin"),
+          disabled: false,
+        };
+      case "unpin":
+        return {
+          key: "unpin",
+          label: "Unpin",
+          iconUrl: "/static/images/unpin.react.svg",
+          onClick: () => console.log("unpin"),
+          disabled: false,
+        };
+      case "archive":
+        return {
+          key: "archive",
+          label: "Move to archive",
+          iconUrl: "/static/images/room.archive.svg",
+          onClick: () => console.log("to archive"),
+          disabled: false,
+        };
+      case "unarchive":
+        return {
+          key: "unarchive",
+          label: "Move from archive",
+          iconUrl: "/static/images/room.archive.svg",
+          onClick: () => console.log("from archive"),
+          disabled: false,
+        };
+    }
   };
 
   onSelectTag = (tag) => {
