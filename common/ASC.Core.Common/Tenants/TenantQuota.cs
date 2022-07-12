@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Tenants;
 
-[DebuggerDisplay("{Name}")]
+[DebuggerDisplay("{Tenant} {Name}")]
 public class TenantQuota : ICloneable, IMapFrom<DbQuota>
 {
     public static readonly TenantQuota Default = new TenantQuota(Tenants.Tenant.DefaultTenant)
@@ -35,6 +35,8 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         MaxFileSize = 25 * 1024 * 1024, // 25Mb
         MaxTotalSize = long.MaxValue,
         ActiveUsers = int.MaxValue,
+        CountAdmin = int.MaxValue,
+        CountRoom = int.MaxValue
     };
 
     public int Tenant { get; set; }
@@ -46,10 +48,10 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         {
             var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
             var totalSize = features.FirstOrDefault(f => f.StartsWith("total_size:"));
-            int maxTotalSize;
-            if (totalSize == null || !int.TryParse(totalSize.Replace("total_size:", ""), out maxTotalSize))
+            long maxTotalSize;
+            if (totalSize == null || !long.TryParse(totalSize.Replace("total_size:", ""), out maxTotalSize))
             {
-                maxTotalSize = 0;
+                maxTotalSize = Default.MaxTotalSize;
             }
 
             return ByteConverter.GetInBytes(maxTotalSize);
@@ -77,7 +79,7 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
             int activeUsers;
             if (users == null || !int.TryParse(users.Replace("users:", ""), out activeUsers))
             {
-                activeUsers = 0;
+                activeUsers = Default.ActiveUsers;
             }
 
             return activeUsers;
@@ -200,7 +202,7 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
             int countAdmin;
             if (admin == null || !int.TryParse(admin.Replace("admin:", ""), out countAdmin))
             {
-                countAdmin = int.MaxValue;
+                countAdmin = Default.CountAdmin;
             }
 
             return countAdmin;
@@ -228,7 +230,7 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
             int countRoom;
             if (room == null || !int.TryParse(room.Replace("room:", ""), out countRoom))
             {
-                countRoom = int.MaxValue;
+                countRoom = Default.CountRoom;
             }
 
             return countRoom;
@@ -314,6 +316,53 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         }
 
         Features = string.Join(",", features.ToArray());
+    }
+
+    public TenantQuota Concat(TenantQuota quota)
+    {
+        var newQuota = (TenantQuota)this.Clone();
+        newQuota.Name = "";
+        newQuota.MaxFileSize = Math.Max(newQuota.MaxFileSize, quota.MaxFileSize);
+        newQuota.Price += quota.Price;
+        newQuota.Visible &= quota.Visible;
+        newQuota.ProductId = "";
+
+        newQuota.Features = ((newQuota.Features ?? "") + "," + quota.Features).Trim(',');
+        var features = newQuota.Features.Split(' ', ',', ';').ToList();
+        for (var i = 0; i < features.Count - 1; i++)
+        {
+            for (var j = i + 1; j < features.Count; j++)
+            {
+                if (features[i].Contains(':'))
+                {
+                    if (features[j].Contains(':'))
+                    {
+                        var pref1 = features[i].Split(':')[0];
+                        var pref2 = features[j].Split(':')[0];
+                        if (pref1 == pref2)
+                        {
+                            int val1;
+                            int val2;
+                            if (int.TryParse(features[i].Replace(pref1 + ":", ""), out val1)
+                                && int.TryParse(features[j].Replace(pref1 + ":", ""), out val2))
+                            {
+                                features[i] = pref1 + ":" + (val1 + val2);
+                                features.RemoveAt(j);
+                                j--;
+                            }
+                        }
+                    }
+                }
+                else if (features[i] == features[j])
+                {
+                    features.RemoveAt(j);
+                    j--;
+                }
+            }
+        }
+        newQuota.Features = string.Join(",", features.ToArray());
+
+        return newQuota;
     }
 
     public object Clone()

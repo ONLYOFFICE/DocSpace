@@ -49,31 +49,31 @@ public class BillingClient
     {
         _test = test;
         _httpClientFactory = httpClientFactory;
-        var billingDomain = configuration["core:payment-url"];
+        var billingDomain = configuration["core:payment:url"];
 
         _billingDomain = (billingDomain ?? "").Trim().TrimEnd('/');
         if (!string.IsNullOrEmpty(_billingDomain))
         {
             _billingDomain += "/billing/";
 
-            _billingKey = configuration["core:payment-key"];
-            _billingSecret = configuration["core:payment-secret"];
+            _billingKey = configuration["core:payment:key"];
+            _billingSecret = configuration["core:payment:secret"];
 
             Configured = true;
         }
     }
 
-    public PaymentLast GetLastPayment(string portalId)
+    public PaymentLast[] GetCurrentPayments(string portalId)
     {
-        var result = Request("GetActiveResource", portalId);
-        var paymentLast = JsonSerializer.Deserialize<PaymentLast>(result);
+        var result = Request("GetActiveResources", portalId);
+        var payments = JsonSerializer.Deserialize<PaymentLast[]>(result);
 
-        if (!_test && paymentLast.PaymentStatus == 4)
+        if (!_test)
         {
-            throw new BillingException("Can not accept test payment.", new { PortalId = portalId });
+            payments = payments.Where(payment => payment.PaymentStatus != 4).ToArray();
         }
 
-        return paymentLast;
+        return payments;
     }
 
     public IEnumerable<PaymentInfo> GetPayments(string portalId)
@@ -271,7 +271,7 @@ public class BillingClient
         {
             throw new BillingNotConfiguredException("Billing response is null");
         }
-        if (!result.StartsWith("{\"Message\":\"error"))
+        if (!result.StartsWith("{\"Message\":\"error", true, null))
         {
             return result;
         }

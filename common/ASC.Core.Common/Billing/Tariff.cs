@@ -26,46 +26,47 @@
 
 namespace ASC.Core.Billing;
 
-[DebuggerDisplay("{QuotaId} ({State} before {DueDate})")]
+[DebuggerDisplay("{State} before {DueDate}")]
 [Serializable]
 public class Tariff
 {
-    public int QuotaId { get; set; }
     public TariffState State { get; set; }
     public DateTime DueDate { get; set; }
     public DateTime DelayDueDate { get; set; }
     public DateTime LicenseDate { get; set; }
-    public int Quantity { get; set; }
+    public List<Tuple<int, int>> Quotas { get; set; }
 
-    public static Tariff CreateDefault()
+    public static Tariff CreateDefault(bool empty = false)
     {
+        var quotas = new List<Tuple<int, int>>();
+        if (!empty) quotas.Add(new Tuple<int, int>(Tenant.DefaultTenant, 1));
+
         return new Tariff
         {
-            QuotaId = Tenant.DefaultTenant,
             State = TariffState.Paid,
             DueDate = DateTime.MaxValue,
             DelayDueDate = DateTime.MaxValue,
             LicenseDate = DateTime.MaxValue,
-            Quantity = 1
+            Quotas = quotas
         };
     }
 
 
     public override int GetHashCode()
     {
-        return QuotaId.GetHashCode();
+        return DueDate.GetHashCode();
     }
 
     public override bool Equals(object obj)
     {
-        return obj is Tariff t && t.QuotaId == QuotaId;
+        return obj is Tariff t && t.DueDate == DueDate;
     }
 
     public bool EqualsByParams(Tariff t)
     {
         return t != null
-            && t.QuotaId == QuotaId
             && t.DueDate == DueDate
-            && t.Quantity == Quantity;
+            && t.Quotas.Count == Quotas.Count
+            && t.Quotas.Any(q => Quotas.Contains(q));
     }
 }

@@ -168,7 +168,7 @@ public class LicenseController : BaseSettingsController
 
         var tariff = new Tariff
         {
-            QuotaId = quota.Tenant,
+            Quotas = new List<Tuple<int, int>> { new Tuple<int, int>(quota.Tenant, 1) },
             DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
         };
 

@@ -32,7 +32,6 @@ public class DbTariff
     public int Tenant { get; set; }
     public int Tariff { get; set; }
     public DateTime Stamp { get; set; }
-    public int Quantity { get; set; }
     public string Comment { get; set; }
     public DateTime CreateOn { get; set; }
 }
@@ -68,11 +67,6 @@ public static class DbTariffExtension
                 .HasColumnName("create_on")
                 .HasColumnType("timestamp");
 
-            entity.Property(e => e.Quantity)
-                .HasColumnName("quantity")
-                .HasColumnType("int")
-                .HasDefaultValueSql("'1'");
-
             entity.Property(e => e.Stamp)
                 .HasColumnName("stamp")
                 .HasColumnType("datetime");
@@ -103,8 +97,6 @@ public static class DbTariffExtension
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.Property(e => e.Stamp).HasColumnName("stamp");
-
-            entity.Property(e => e.Quantity).HasColumnName("quantity");
 
             entity.Property(e => e.Tariff).HasColumnName("tariff");
 

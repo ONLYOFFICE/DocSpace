@@ -64,6 +64,7 @@ public class FilesDbContext : DbContext
             .AddDbFilesLink()
             .AddDbFilesProperties()
             .AddDbTariff()
+            .AddDbTariffRow()
             .AddDbQuota()
             .AddDbTenant()
             .AddFilesConverts();

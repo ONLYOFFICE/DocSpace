@@ -154,24 +154,23 @@ public class TariffService : ITariffService
                       try
                       {
                           var client = GetBillingClient();
-                          var lastPayment = client.GetLastPayment(GetPortalId(tenantId));
+                          var currentPayments = client.GetCurrentPayments(GetPortalId(tenantId));
 
-                          var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == lastPayment.ProductId);
-                          if (quota == null)
+                          var asynctariff = Tariff.CreateDefault(true);
+
+                          foreach (var currentPayment in currentPayments)
                           {
-                              throw new InvalidOperationException($"Quota with id {lastPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
-                          }
+                              var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == currentPayment.ProductId);
+                              if (quota == null)
+                              {
+                                  throw new InvalidOperationException($"Quota with id {currentPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
+                              }
 
-                          var asynctariff = Tariff.CreateDefault();
-                          asynctariff.QuotaId = quota.Tenant;
-                          asynctariff.DueDate = 9999 <= lastPayment.EndDate.Year ? DateTime.MaxValue : lastPayment.EndDate;
+                              var paymentEndDate = 9999 <= currentPayment.EndDate.Year ? DateTime.MaxValue : currentPayment.EndDate;
+                              asynctariff.DueDate = DateTime.Compare(asynctariff.DueDate, paymentEndDate) < 0 ? asynctariff.DueDate : paymentEndDate;
 
-                          if (quota.ActiveUsers == -1
-                              && lastPayment.Quantity < _activeUsersMin)
-                          {
-                              throw new BillingException(string.Format("The portal {0} is paid for {1} users", tenantId, lastPayment.Quantity));
+                              asynctariff.Quotas.Add(new Tuple<int, int>(quota.Tenant, currentPayment.Quantity));
                           }
-                          asynctariff.Quantity = lastPayment.Quantity;
 
                           if (SaveBillingInfo(tenantId, asynctariff, false))
                           {
@@ -182,14 +181,18 @@ public class TariffService : ITariffService
                       }
                       catch (BillingNotFoundException)
                       {
-                          var q = _quotaService.GetTenantQuota(tariff.QuotaId);
+                          var freeTariff = tariff.Quotas.Exists(tariffRow =>
+                          {
+                              var q = _quotaService.GetTenantQuota(tariffRow.Item1);
+                              return q == null
+                                  || q.Trial
+                                  || q.Free
+                                  || q.NonProfit
+                                  || q.Open
+                                  || q.Custom;
+                          });
 
-                          if (q != null
-                              && !q.Trial
-                              && !q.Free
-                              && !q.NonProfit
-                              && !q.Open
-                              && !q.Custom)
+                          if (!freeTariff)
                           {
                               var asynctariff = Tariff.CreateDefault();
                               asynctariff.DueDate = DateTime.Today.AddDays(-1);
@@ -218,14 +221,15 @@ public class TariffService : ITariffService
     {
         ArgumentNullException.ThrowIfNull(tariff);
 
-        var q = _quotaService.GetTenantQuota(tariff.QuotaId);
-        if (q == null)
+        List<TenantQuota> quotas = null;
+        if (tariff.Quotas == null ||
+            (quotas = tariff.Quotas.Select(q => _quotaService.GetTenantQuota(q.Item1)).ToList()).Any(q => q == null))
         {
             return;
         }
 
         SaveBillingInfo(tenantId, tariff);
-        if (q.Trial)
+        if (quotas.Any(q => q.Trial))
         {
             // reset trial date
             var tenant = _tenantService.GetTenant(tenantId);
@@ -473,10 +477,13 @@ public class TariffService : ITariffService
             return Tariff.CreateDefault();
         }
 
-        var tariff = Tariff.CreateDefault();
-        tariff.QuotaId = r.Tariff;
+        var tariff = Tariff.CreateDefault(true);
         tariff.DueDate = r.Stamp.Year < 9999 ? r.Stamp : DateTime.MaxValue;
-        tariff.Quantity = r.Quantity;
+
+        var tariffRows = coreDbContext.TariffRows
+            .Where(row => row.Id == r.Tariff && row.Tenant == tenant);
+
+        tariff.Quotas = tariffRows.Select(r => new Tuple<int, int>(r.Quota, r.Quantity)).ToList();
 
         return tariff;
     }
@@ -496,17 +503,29 @@ public class TariffService : ITariffService
                 using var tx = dbContext.Database.BeginTransaction();
 
                 // last record is not the same
-                var any = dbContext.Tariffs
-                    .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
+                var any = false;
+                // think about tariffrows ?
+                //dbContext.Tariffs
+                //    .Any(r => r.Tenant == tenant && r.Stamp == tariffInfo.DueDate);
 
                 if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
                 {
+                    var tariffRowId = dbContext.TariffRows.Any() ? dbContext.TariffRows.Max(r => r.Id) + 1 : 1;
+
+                    var tariffRows = tariffInfo.Quotas.Select(q => new DbTariffRow
+                    {
+                        Id = tariffRowId,
+                        Quota = q.Item1,
+                        Quantity = q.Item2,
+                        Tenant = tenant
+                    });
+                    dbContext.TariffRows.AddRange(tariffRows);
+
                     var efTariff = new DbTariff
                     {
                         Tenant = tenant,
-                        Tariff = tariffInfo.QuotaId,
+                        Tariff = tariffRowId,
                         Stamp = tariffInfo.DueDate,
-                        Quantity = tariffInfo.Quantity,
                         CreateOn = DateTime.UtcNow
                     };
 
@@ -556,16 +575,16 @@ public class TariffService : ITariffService
     private Tariff CalculateTariff(int tenantId, Tariff tariff)
     {
         tariff.State = TariffState.Paid;
-        var q = _quotaService.GetTenantQuota(tariff.QuotaId);
 
-        if (q == null || q.GetFeature("old"))
+        if (tariff.Quotas.Count == 0)
         {
-            tariff.QuotaId = Tenant.DefaultTenant;
-            q = _quotaService.GetTenantQuota(tariff.QuotaId);
+            tariff.Quotas.Add(new Tuple<int, int>(Tenant.DefaultTenant, 1));
         }
 
+        var trial = tariff.Quotas.Exists(q => _quotaService.GetTenantQuota(q.Item1).Trial);
+
         var delay = 0;
-        if (q != null && q.Trial)
+        if (trial)
         {
             tariff.State = TariffState.Trial;
             if (tariff.DueDate == DateTime.MinValue || tariff.DueDate == DateTime.MaxValue)
@@ -604,24 +623,6 @@ public class TariffService : ITariffService
             tariff.DueDate != DateTime.MaxValue && tariff.DueDate.Date.AddDays(delay) < DateTime.Today)
         {
             tariff.State = TariffState.NotPaid;
-
-            if (_coreBaseSettings.Standalone)
-            {
-                if (q != null)
-                {
-                    var defaultQuota = _quotaService.GetTenantQuota(Tenant.DefaultTenant);
-                    defaultQuota.Name = "overdue";
-
-                    defaultQuota.Features = q.Features;
-
-                    _quotaService.SaveTenantQuota(defaultQuota);
-                }
-
-                var unlimTariff = Tariff.CreateDefault();
-                unlimTariff.LicenseDate = tariff.DueDate;
-
-                tariff = unlimTariff;
-            }
         }
 
         return tariff;

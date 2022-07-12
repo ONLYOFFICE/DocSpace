@@ -272,20 +272,29 @@ public class TenantManager
         if (defaultQuota.Tenant != tenant && TariffService != null)
         {
             var tariff = TariffService.GetTariff(tenant);
-            var currentQuota = QuotaService.GetTenantQuota(tariff.QuotaId);
-            if (currentQuota != null)
+
+            TenantQuota currentQuota = null;
+            foreach (var tariffRow in tariff.Quotas)
             {
-                currentQuota = (TenantQuota)currentQuota.Clone();
+                var qty = tariffRow.Item2;
 
-                if (currentQuota.ActiveUsers == -1)
+                var quota = (TenantQuota)QuotaService.GetTenantQuota(tariffRow.Item1).Clone();
+                quota.Price *= qty;
+                if (quota.MaxTotalSize != long.MaxValue) quota.MaxTotalSize *= qty;
+                if (quota.ActiveUsers != int.MaxValue) quota.ActiveUsers *= qty;
+                if (quota.CountAdmin != int.MaxValue) quota.CountAdmin *= qty;
+                if (quota.CountRoom != int.MaxValue) quota.CountRoom *= qty;
+
+                if (currentQuota == null)
                 {
-                    currentQuota.ActiveUsers = tariff.Quantity;
-                    currentQuota.MaxTotalSize *= currentQuota.ActiveUsers;
-                    currentQuota.Price *= currentQuota.ActiveUsers;
+                    currentQuota = quota;
                 }
-
-                return currentQuota;
+                else
+                {
+                    currentQuota = currentQuota.Concat(quota);
+                }
             }
+            return currentQuota;
         }
 
         return defaultQuota;
