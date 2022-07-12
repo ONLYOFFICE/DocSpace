@@ -219,6 +219,7 @@ public class SettingsController : BaseSettingsController
 
         if (inDto.Type == TenantTrustedDomainsType.Custom)
         {
+            Tenant.TrustedDomainsRaw = "";
             Tenant.TrustedDomains.Clear();
             foreach (var d in inDto.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
             {

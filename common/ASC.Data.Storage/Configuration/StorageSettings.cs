@@ -97,6 +97,7 @@ public abstract class BaseStorageSettings<T> : ISettings<BaseStorageSettings<T>>
 [Serializable]
 public class StorageSettings : BaseStorageSettings<StorageSettings>, ISettings<StorageSettings>
 {
+    [JsonIgnore]
     public override Guid ID => new Guid("F13EAF2D-FA53-44F1-A6D6-A5AEDA46FA2B");
 
     StorageSettings ISettings<StorageSettings>.GetDefault()
@@ -109,6 +110,7 @@ public class StorageSettings : BaseStorageSettings<StorageSettings>, ISettings<S
 [Serializable]
 public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>, ISettings<CdnStorageSettings>
 {
+    [JsonIgnore]
     public override Guid ID => new Guid("0E9AE034-F398-42FE-B5EE-F86D954E9FB2");
 
     public override Func<DataStoreConsumer, DataStoreConsumer> Switch => d => d.Cdn;
