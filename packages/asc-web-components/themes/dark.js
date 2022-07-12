@@ -988,6 +988,7 @@ const Dark = {
       fontSize: {
         min: "12px",
         small: "12px",
+        base: "16px",
         medium: "20px",
         big: "34px",
         max: "72px",
@@ -998,6 +999,7 @@ const Dark = {
       left: {
         min: "-2px",
         small: "-2px",
+        base: "-2px",
         medium: "-4px",
         big: "0px",
         max: "0px",
@@ -1006,6 +1008,7 @@ const Dark = {
       bottom: {
         min: "3px",
         small: "3px",
+        base: "4px",
         medium: "6px",
         big: "5px",
         max: "0px",
@@ -1079,6 +1082,7 @@ const Dark = {
     width: {
       min: "32px",
       small: "36px",
+      base: "40px",
       medium: "48px",
       big: "82px",
       max: "160px",
@@ -1087,6 +1091,7 @@ const Dark = {
     height: {
       min: "32px",
       small: "36px",
+      base: "40px",
       medium: "48px",
       big: "82px",
       max: "160px",
