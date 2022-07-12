@@ -56,7 +56,6 @@ const SelectionPanelBody = ({
       displayType="modal"
       isLoading={isLoading}
       withFooterBorder
-      autoMaxHeight
       autoMaxWidth
     >
       <ModalDialog.Header theme={theme} className={"select-panel-modal-header"}>

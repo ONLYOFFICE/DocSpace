@@ -65,6 +65,7 @@ public class DbTenant : IMapFrom<Tenant>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<Tenant, DbTenant>()
+            .ForMember(dest => dest.TrustedDomainsEnabled, opt => opt.MapFrom(dest => dest.TrustedDomainsType))
             .ForMember(dest => dest.TrustedDomainsRaw, opt => opt.MapFrom(dest => dest.GetTrustedDomains()))
             .ForMember(dest => dest.Alias, opt => opt.MapFrom(dest => dest.Alias.ToLowerInvariant()))
             .ForMember(dest => dest.LastModified, opt => opt.MapFrom(dest => DateTime.UtcNow))

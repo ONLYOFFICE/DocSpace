@@ -8,7 +8,6 @@ const StyledModal = styled.div`
   &.modal-active {
     pointer-events: all;
   }
-
   .loader-wrapper {
     padding: 0 16px 16px;
   }

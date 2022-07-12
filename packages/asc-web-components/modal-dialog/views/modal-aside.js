@@ -52,6 +52,7 @@ const Modal = ({
       >
         <Dialog
           className={`${className} dialog not-selectable`}
+          currentDisplayType={currentDisplayType}
           id={id}
           style={style}
           onClick={onClose}
