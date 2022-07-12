@@ -40,7 +40,7 @@ const FilterInput = React.memo(
     const [inputValue, setInputValue] = React.useState("");
 
     React.useEffect(() => {
-      const value = getViewSettingsData();
+      const value = getViewSettingsData && getViewSettingsData();
 
       if (value) setViewSettings(value);
     }, [getViewSettingsData]);

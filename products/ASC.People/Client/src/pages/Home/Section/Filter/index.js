@@ -109,7 +109,7 @@ const SectionFilterContent = ({
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
-  const getData = () => {
+  const getData = async () => {
     const { guestCaption, userCaption, groupCaption } = customNames;
 
     const options = !isAdmin
@@ -197,31 +197,36 @@ const SectionFilterContent = ({
     ];
   };
 
-  const getSelectedFilterData = () => {
-    const selectedFilterData = {
-      filterValues: [],
+  const getSelectedInputValue = React.useCallback(() => {
+    return filter.search;
+  }, [filter.search]);
+
+  const getSelectedSortData = React.useCallback(() => {
+    return {
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
       sortId: filter.sortBy,
     };
+  }, [filter.sortOrder, filter.sortBy]);
 
-    selectedFilterData.inputValue = filter.search;
+  const getSelectedFilterData = async () => {
+    const filterValues = [];
 
     if (filter.employeeStatus) {
-      selectedFilterData.filterValues.push({
+      filterValues.push({
         key: `${filter.employeeStatus}`,
         group: "filter-status",
       });
     }
 
     if (filter.activationStatus) {
-      selectedFilterData.filterValues.push({
+      filterValues.push({
         key: `${filter.activationStatus}`,
         group: "filter-email",
       });
     }
 
     if (filter.role) {
-      selectedFilterData.filterValues.push({
+      filterValues.push({
         key: filter.role,
         group: "filter-type",
       });
@@ -231,7 +236,7 @@ const SectionFilterContent = ({
       const group = groups.find((group) => group.id === filter.group);
 
       if (group) {
-        selectedFilterData.filterValues.push({
+        filterValues.push({
           key: filter.group,
           label: group.name,
           group: "filter-other",
@@ -239,18 +244,20 @@ const SectionFilterContent = ({
       }
     }
 
-    return selectedFilterData;
+    return filterValues;
   };
 
   return isLoaded && tReady ? (
     <FilterInput
-      sectionWidth={sectionWidth}
-      getFilterData={getData}
-      getSortData={getSortData}
-      getSelectedFilterData={getSelectedFilterData}
+      t={t}
       onFilter={onFilter}
+      getFilterData={getData}
+      getSelectedFilterData={getSelectedFilterData}
       onSort={onSort}
+      getSortData={getSortData}
+      getSelectedSortData={getSelectedSortData}
       onSearch={onSearch}
+      getSelectedInputValue={getSelectedInputValue}
       contextMenuHeader={t("Common:AddFilter")}
       placeholder={t("Common:Search")}
       isMobile={isMobileOnly}
