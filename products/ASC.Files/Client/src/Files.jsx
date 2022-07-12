@@ -29,7 +29,7 @@ import {
   ArticleMainButtonContent,
 } from "./components/Article";
 import FormGallery from "./pages/FormGallery";
-import ConvertPasswordDialog from "./components/dialogs/ConvertPasswordDialog";
+import GlobalEvents from "./components/GlobalEvents";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -174,6 +174,7 @@ class FilesContent extends React.Component {
 
     return (
       <>
+        <GlobalEvents />
         <Panels />
         {isFrame ? (
           showArticle && <FilesArticle history={this.props.history} />
