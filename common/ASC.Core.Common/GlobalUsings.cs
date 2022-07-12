@@ -160,3 +160,5 @@ global using ProtoBuf;
 global using Telegram.Bot;
 
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
+
+global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
