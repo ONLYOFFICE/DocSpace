@@ -4,23 +4,34 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
-import Link from "@appserver/components/link";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
-import { LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
+import { LearnMoreWrapper } from "../StyledSecurity";
 import UserFields from "../sub-components/user-fields";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import isEqual from "lodash/isEqual";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { isMobile } from "react-device-detect";
-import TrustedMailLoader from "../sub-components/loaders/trusted-mail-loader";
+import IpSecurityLoader from "../sub-components/loaders/ip-security-loader";
 
 const MainContainer = styled.div`
   width: 100%;
 
+  .page-subtitle {
+    margin-bottom: 10px;
+  }
+
+  .user-fields {
+    margin-bottom: 18px;
+  }
+
   .box {
     margin-bottom: 11px;
+  }
+
+  .warning-text {
+    margin-bottom: 9px;
   }
 
   .save-cancel-buttons {
@@ -28,113 +39,116 @@ const MainContainer = styled.div`
   }
 `;
 
-const TrustedMail = (props) => {
+const IpSecurity = (props) => {
   const {
     t,
     history,
-    trustedDomainsType,
-    trustedDomains,
-    setMailDomainSettings,
-    helpLink,
+    ipRestrictionEnable,
+    setIpRestrictionsEnable,
+    ipRestrictions,
+    setIpRestrictions,
+    initSettings,
+    isInit,
   } = props;
 
-  const regexp = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{1,})+/; //check domain name valid
+  const regexp = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/; //check ip valid
 
-  const [type, setType] = useState("0");
-  const [domains, setDomains] = useState([]);
+  const [enable, setEnable] = useState(false);
+  const [ips, setIps] = useState();
   const [showReminder, setShowReminder] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const getSettings = () => {
-    const currentSettings = getFromSessionStorage("currentTrustedMailSettings");
-
+    const currentSettings = getFromSessionStorage("currentIPSettings");
     const defaultData = {
-      type: String(trustedDomainsType),
-      domains: trustedDomains,
+      enable: ipRestrictionEnable,
+      ips: ipRestrictions,
     };
-    saveToSessionStorage("defaultTrustedMailSettings", defaultData);
+    saveToSessionStorage("defaultIPSettings", defaultData);
 
     if (currentSettings) {
-      setType(currentSettings.type);
-      setDomains(currentSettings.domains);
+      setEnable(currentSettings.enable);
+      setIps(currentSettings.ips);
     } else {
-      setType(String(trustedDomainsType));
-      setDomains(trustedDomains);
+      setEnable(ipRestrictionEnable);
+      setIps(ipRestrictions);
     }
-    setIsLoading(true);
   };
 
   useEffect(() => {
     checkWidth();
-    getSettings();
     window.addEventListener("resize", checkWidth);
+
+    if (!isInit) initSettings().then(() => setIsLoading(true));
+    else setIsLoading(true);
+
     return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  useEffect(() => {
+    if (!isInit) return;
+    getSettings();
   }, [isLoading]);
 
   useEffect(() => {
     if (!isLoading) return;
-    const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
+
+    const defaultSettings = getFromSessionStorage("defaultIPSettings");
     const newSettings = {
-      type: type,
-      domains: domains,
+      enable: enable,
+      ips: ips,
     };
-    saveToSessionStorage("currentTrustedMailSettings", newSettings);
+    saveToSessionStorage("currentIPSettings", newSettings);
 
     if (isEqual(defaultSettings, newSettings)) {
       setShowReminder(false);
     } else {
       setShowReminder(true);
     }
-  }, [type, domains]);
+  }, [enable, ips]);
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("trusted-mail") &&
+      history.location.pathname.includes("ip") &&
       history.push("/settings/security/access-portal");
   };
 
-  const onSelectDomainType = (e) => {
-    if (type !== e.target.value) {
-      setType(e.target.value);
-    }
-  };
-
-  const onClickAdd = () => {
-    setDomains([...domains, ""]);
+  const onSelectType = (e) => {
+    setEnable(e.target.value === "enable" ? true : false);
   };
 
   const onChangeInput = (e, index) => {
-    let newInputs = Array.from(domains);
+    let newInputs = Array.from(ips);
     newInputs[index] = e.target.value;
-    setDomains(newInputs);
+    setIps(newInputs);
   };
 
   const onDeleteInput = (index) => {
-    let newInputs = Array.from(domains);
+    let newInputs = Array.from(ips);
     newInputs.splice(index, 1);
-    setDomains(newInputs);
+    setIps(newInputs);
+  };
+
+  const onClickAdd = () => {
+    setIps([...ips, ""]);
   };
 
   const onSaveClick = async () => {
     setIsSaving(true);
-    const valid = domains.map((domain) => regexp.test(domain));
-    if (type === "1" && valid.includes(false)) {
+    const valid = ips.map((ip) => regexp.test(ip));
+    if (valid.includes(false)) {
       setIsSaving(false);
-      toastr.error(t("Common:IncorrectDomain"));
       return;
     }
 
     try {
-      const data = {
-        type: Number(type),
-        domains: domains,
-        inviteUsersAsVisitors: true,
-      };
-      await setMailDomainSettings(data);
-      saveToSessionStorage("defaultTrustedMailSettings", {
-        type: type,
-        domains: domains,
+      await setIpRestrictions(ips);
+      await setIpRestrictionsEnable(enable);
+
+      saveToSessionStorage("defaultIPSettings", {
+        enable: enable,
+        ips: ips,
       });
       setShowReminder(false);
       toastr.success(t("SuccessfullySaveSettingsMessage"));
@@ -146,29 +160,20 @@ const TrustedMail = (props) => {
   };
 
   const onCancelClick = () => {
-    const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
-    setType(defaultSettings.type);
-    setDomains(defaultSettings.domains);
+    const defaultSettings = getFromSessionStorage("defaultIPSettings");
+    setEnable(defaultSettings.enable);
+    setIps(defaultSettings.ips);
     setShowReminder(false);
   };
 
-
-  if (isMobile && !isLoading) {
-    return <TrustedMailLoader />;
+  if (isMobile && !isInit && !isLoading) {
+    return <IpSecurityLoader />;
   }
 
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="learn-subtitle">{t("TrustedMailHelper")}</Text>
-        <Link
-          color="#316DAA"
-          target="_blank"
-          isHovered
-          href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
-        >
-          {t("Common:LearnMore")}
-        </Link>
+        <Text className="page-subtitle">{t("IPSecurityHelper")}</Text>
       </LearnMoreWrapper>
 
       <RadioButtonGroup
@@ -181,30 +186,41 @@ const TrustedMail = (props) => {
         options={[
           {
             label: t("Disabled"),
-            value: "0",
+            value: "disabled",
           },
           {
-            label: t("AllDomains"),
-            value: "2",
-          },
-          {
-            label: t("CustomDomains"),
-            value: "1",
+            label: t("Common:Enable"),
+            value: "enable",
           },
         ]}
-        selected={type}
-        onClick={onSelectDomainType}
+        selected={enable ? "enable" : "disabled"}
+        onClick={onSelectType}
       />
 
-      {type === "1" && (
+      {enable && (
         <UserFields
-          inputs={domains}
-          buttonLabel={t("AddTrustedDomain")}
+          className="user-fields"
+          inputs={ips}
+          buttonLabel={t("AddAllowedIP")}
           onChangeInput={onChangeInput}
           onDeleteInput={onDeleteInput}
           onClickAdd={onClickAdd}
           regexp={regexp}
         />
+      )}
+
+      {enable && (
+        <>
+          <Text
+            color="#F21C0E"
+            fontSize="16px"
+            fontWeight="700"
+            className="warning-text"
+          >
+            {t("Common:Warning")}!
+          </Text>
+          <Text>{t("IPSecurityWarningHelper")}</Text>
+        </>
       )}
 
       <SaveCancelButtons
@@ -223,18 +239,22 @@ const TrustedMail = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const {
-    trustedDomainsType,
-    trustedDomains,
-    setMailDomainSettings,
-    helpLink,
+    ipRestrictionEnable,
+    setIpRestrictionsEnable,
+    ipRestrictions,
+    setIpRestrictions,
   } = auth.settingsStore;
 
+  const { initSettings, isInit } = setup;
+
   return {
-    trustedDomainsType,
-    trustedDomains,
-    setMailDomainSettings,
-    helpLink,
+    ipRestrictionEnable,
+    setIpRestrictionsEnable,
+    ipRestrictions,
+    setIpRestrictions,
+    initSettings,
+    isInit,
   };
-})(withTranslation(["Settings", "Common"])(withRouter(observer(TrustedMail))));
+})(withTranslation(["Settings", "Common"])(withRouter(observer(IpSecurity))));
