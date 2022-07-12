@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import Avatar from "@appserver/components/avatar";
 import Text from "@appserver/components/text";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import { isDesktop, isMobile, isMobileOnly } from "react-device-detect";
+import { isTablet } from "@appserver/components/utils/device";
 
 const StyledProfile = styled.div`
   position: fixed;
@@ -16,6 +17,18 @@ const StyledProfile = styled.div`
   align-items: center;
   flex-flow: row wrap;
   gap: 16px;
+  width: ${(props) =>
+    !props.tablet
+      ? "211px"
+      : props.tablet && props.showText
+      ? "211px"
+      : "44px"};
+
+  ${(props) =>
+    props.tablet &&
+    css`
+      padding: 14px 6px;
+    `}
 
   .option-button {
     margin-left: auto;
@@ -32,8 +45,8 @@ const Profile = (props) => {
     currentProductId,
     debugInfo,
     peopleAvailable,
+    showText,
   } = props;
-
   const { t } = useTranslation("Common");
 
   const getUserRole = (user) => {
@@ -44,8 +57,6 @@ const Profile = (props) => {
     if (user.isVisitor) return "guest";
     return "user";
   };
-
-  const userRole = getUserRole(user);
 
   const onProfileClick = () => {
     console.log("onProfileClick");
@@ -137,30 +148,38 @@ const Profile = (props) => {
     return actions;
   };
 
+  const tablet = isTablet();
+  const avatarSize = tablet ? "min" : "base";
+  const userRole = getUserRole(user);
+
   return (
-    <StyledProfile>
+    <StyledProfile showText={showText} tablet={tablet}>
       <Avatar
-        size="small"
+        size={avatarSize}
         role={userRole}
         source={user.avatar}
         userName={user.displayName}
       />
-      <Text fontSize="12px" fontWeight={600}>
-        {user.displayName}
-      </Text>
-      <div className="option-button">
-        <ContextMenuButton
-          zIndex={402}
-          directionX="left"
-          directionY="top"
-          iconName="images/vertical-dots.react.svg"
-          size={15}
-          isFill
-          getData={getContextOptions}
-          isDisabled={false}
-          usePortal={true}
-        />
-      </div>
+      {(!tablet || showText) && (
+        <>
+          <Text fontSize="12px" fontWeight={600}>
+            {user.displayName}
+          </Text>
+          <div className="option-button">
+            <ContextMenuButton
+              zIndex={402}
+              directionX="left"
+              directionY="top"
+              iconName="images/vertical-dots.react.svg"
+              size={15}
+              isFill
+              getData={getContextOptions}
+              isDisabled={false}
+              usePortal={true}
+            />
+          </div>
+        </>
+      )}
     </StyledProfile>
   );
 };

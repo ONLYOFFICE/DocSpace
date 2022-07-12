@@ -158,7 +158,7 @@ const ArticleBodyContent = (props) => {
             campaigns.length > 0 && <Banner FirebaseHelper={FirebaseHelper} />}
         </StyledBlock>
       )}
-      <Profile />
+      <Profile showText={showText} />
     </>
   );
 };
