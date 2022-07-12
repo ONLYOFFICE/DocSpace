@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Folder = Microsoft.OneDrive.Sdk.Folder;
+
 namespace ASC.Files.Thirdparty;
 
 internal abstract class ThirdPartyProviderDao
@@ -239,11 +241,12 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     protected readonly ILogger _logger;
     protected readonly FileUtility _fileUtility;
     protected readonly TempPath _tempPath;
+    protected readonly AuthContext _authContext;
     protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
     protected T ProviderInfo { get; set; }
     protected string PathPrefix { get; private set; }
-    protected List<FilterType> _constraintFolderFilters =
-        new List<FilterType> { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly,
+    private readonly List<FilterType> _constraintFolderFilters =
+        new() { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly,
             FilterType.PresentationsOnly, FilterType.SpreadsheetsOnly, FilterType.ArchiveOnly, FilterType.MediaOnly };
 
     protected abstract string Id { get; }
@@ -257,7 +260,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         SetupInfo setupInfo,
         ILogger logger,
         FileUtility fileUtility,
-        TempPath tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
     {
         _serviceProvider = serviceProvider;
         _userManager = userManager;
@@ -268,6 +272,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         _fileUtility = fileUtility;
         _tempPath = tempPath;
         TenantID = tenantManager.GetCurrentTenant().Id;
+        _authContext = authContext;
     }
 
     public void Init(BaseProviderInfo<T> providerInfo, RegexDaoSelectorBase<T> selectorBase)
@@ -425,24 +430,39 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return filtered;
     }
 
-    protected IAsyncEnumerable<Folder<string>> SetFilterByTypes(IAsyncEnumerable<Folder<string>> folders, IEnumerable<FilterType> filterTypes)
+    protected IAsyncEnumerable<Folder<string>> FilterByRoomTypes(IAsyncEnumerable<Folder<string>> rooms, IEnumerable<FilterType> filterTypes)
     {
-        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None))
+        if (!filterTypes.Any() || filterTypes.Contains(FilterType.None))
         {
-            var filter = filterTypes.Select(f => f switch
-            {
-                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
-                FilterType.EditingRooms => FolderType.EditingRoom,
-                FilterType.ReviewRooms => FolderType.ReviewRoom,
-                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
-                FilterType.CustomRooms => FolderType.CustomRoom,
-                _ => FolderType.CustomRoom
-            }).ToHashSet();
-
-            return folders.Where(f => filter.Contains(f.FolderType));
+            return rooms;
         }
 
-        return folders;
+        var filter = filterTypes.Select(f => f switch
+        {
+            FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+            FilterType.EditingRooms => FolderType.EditingRoom,
+            FilterType.ReviewRooms => FolderType.ReviewRoom,
+            FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+            FilterType.CustomRooms => FolderType.CustomRoom,
+            _ => FolderType.CustomRoom
+        }).ToHashSet();
+
+        return rooms.Where(f => filter.Contains(f.FolderType));
+    }
+
+    protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)
+    {
+        if (ownerId != Guid.Empty && !withoutMe)
+        {
+            rooms = rooms.Where(f => f.CreateBy == ownerId);
+        }
+
+        if (ownerId == Guid.Empty && withoutMe)
+        {
+            rooms = rooms.Where((f => f.CreateBy != _authContext.CurrentAccount.ID));
+        }
+
+        return rooms;
     }
 
     protected bool CheckForInvalidFilters(IEnumerable<FilterType> filterTypes)

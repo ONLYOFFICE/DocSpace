@@ -47,9 +47,9 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
         BoxDaoSelector boxDaoSelector,
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
-        TempPath tempPath
-        )
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _crossDao = crossDao;
         _boxDaoSelector = boxDaoSelector;
@@ -72,6 +72,52 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     public Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
     {
         return GetRootFolderAsync(fileId);
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, IEnumerable<FilterType> filterTypes, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, 
+        bool withoutTags, bool withoutMe)
+    {
+        if (!CheckForInvalidFilters(filterTypes))
+        {
+            return AsyncEnumerable.Empty<Folder<string>>();
+        }
+        
+        var rooms = GetFoldersAsync(parentId);
+
+        rooms = FilterByRoomTypes(rooms, filterTypes);
+        rooms = FilterByOwner(rooms, ownerId, withoutMe);
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            rooms = rooms.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
+
+        rooms = FilterByTags(rooms, withoutTags, tags);
+
+        return rooms;
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, IEnumerable<FilterType> filterTypes, IEnumerable<string> tags, Guid ownerId, string searchText, 
+        bool withSubfolders, bool withoutTags, bool withoutMe)
+    {
+        if (!CheckForInvalidFilters(filterTypes))
+        {
+            return AsyncEnumerable.Empty<Folder<string>>();
+        }
+
+        var folders = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
+
+        folders = FilterByRoomTypes(folders, filterTypes);
+        folders = FilterByOwner(folders, ownerId, withoutMe);
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
+
+        folders = FilterByTags(folders, withoutTags, tags);
+
+        return folders;
     }
 
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
@@ -99,7 +145,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
         var folders = GetFoldersAsync(parentId); //TODO:!!!
 
-        folders = SetFilterByTypes(folders, filterTypes);
+        folders = FilterByRoomTypes(folders, filterTypes);
 
         if (subjectID != Guid.Empty)
         {
@@ -148,7 +194,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
-        folders = SetFilterByTypes(folders, filterTypes);
+        folders = FilterByRoomTypes(folders, filterTypes);
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
