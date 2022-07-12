@@ -41,7 +41,7 @@ class AutomaticBackup extends React.PureComponent {
 
     this.state = {
       isLoadingData: false,
-      isInitialLoading: !isMobileOnly ? false : true,
+      isInitialLoading: true,
       isError: false,
     };
 
@@ -97,13 +97,13 @@ class AutomaticBackup extends React.PureComponent {
       thirdPartyList && setCommonThirdPartyList(thirdPartyList);
 
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
-
-      this.setState({
-        isInitialLoading: false,
-      });
     } catch (error) {
       toastr.error(error);
     }
+
+    this.setState({
+      isInitialLoading: false,
+    });
   };
 
   componentDidMount() {

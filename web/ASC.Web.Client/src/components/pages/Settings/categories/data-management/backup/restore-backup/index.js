@@ -46,7 +46,7 @@ class RestoreBackup extends React.Component {
       isCheckedLocalFile: false,
       selectedFileId: "",
       selectedFile: "",
-      isStorageFillingError: {},
+
       isFileSelectedError: false,
       isInitialLoading: true,
       checkingRecoveryData: false,
@@ -60,7 +60,6 @@ class RestoreBackup extends React.Component {
     ];
 
     this.storageId = "";
-    this.formSettings = "";
   }
 
   setBasicSettings = async () => {
@@ -291,27 +290,10 @@ class RestoreBackup extends React.Component {
       });
   };
 
-  onSetRequiredFormNames = (namesArray) => {
-    this.formNames = namesArray;
-  };
-
-  onResetFormSettings = () => {
-    this.formSettings = {};
-    this.setState({
-      isStorageFillingError: {},
-    });
-  };
-
   onSetStorageId = (storageId) => {
     this.storageId = storageId;
   };
 
-  onSetFormSettings = (name, value) => {
-    this.formSettings = {
-      ...this.formSettings,
-      ...{ [name]: value },
-    };
-  };
   render() {
     const {
       t,
@@ -416,11 +398,8 @@ class RestoreBackup extends React.Component {
           )}
           {isCheckedThirdPartyStorage && (
             <ThirdPartyStorages
-              onSetRequiredFormNames={this.onSetRequiredFormNames}
               onResetFormSettings={this.onResetFormSettings}
-              isErrors={isStorageFillingError}
               onSetStorageId={this.onSetStorageId}
-              onSetFormSettings={this.onSetFormSettings}
             />
           )}
           {isCheckedLocalFile && (

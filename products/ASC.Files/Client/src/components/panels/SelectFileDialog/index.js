@@ -82,7 +82,6 @@ class SelectFileDialog extends React.Component {
     const {
       treeFolders,
       foldersType,
-      id,
       onSetBaseFolderPath,
       onSelectFolder,
       foldersList,
@@ -192,17 +191,8 @@ class SelectFileDialog extends React.Component {
   };
 
   onClickSave = () => {
-    const {
-      onSetFileNameAndLocation,
-      onClose,
-      onSelectFile,
-      fileInfo,
-      folderId,
-    } = this.props;
+    const { onClose, onSelectFile, fileInfo } = this.props;
 
-    const fileName = fileInfo.title;
-
-    onSetFileNameAndLocation && onSetFileNameAndLocation(fileName, folderId);
     onSelectFile && onSelectFile(fileInfo);
     onClose && onClose();
   };
