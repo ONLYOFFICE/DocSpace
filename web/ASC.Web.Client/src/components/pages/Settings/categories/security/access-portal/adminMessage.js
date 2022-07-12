@@ -11,50 +11,59 @@ import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import isEqual from "lodash/isEqual";
 import { isMobile } from "react-device-detect";
-import TfaLoader from "../sub-components/loaders/tfa-loader";
+import AdmMsgLoader from "../sub-components/loaders/admmsg-loader";
 
 const MainContainer = styled.div`
   width: 100%;
+
+  .page-subtitle {
+    margin-bottom: 10px;
+  }
 
   .box {
     margin-bottom: 24px;
   }
 `;
 
-const TwoFactorAuth = (props) => {
-  const { t, history, initSettings, isInit, setIsInit, helpLink } = props;
-  const [type, setType] = useState("none");
-
-  const [smsDisabled, setSmsDisabled] = useState(false);
-  const [appDisabled, setAppDisabled] = useState(false);
+const AdminMessage = (props) => {
+  const {
+    t,
+    history,
+    enableAdmMess,
+    setMessageSettings,
+    initSettings,
+    isInit,
+    helpLink,
+  } = props;
+  const [type, setType] = useState("");
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
 
   const getSettings = () => {
-    const { tfaSettings, smsAvailable, appAvailable } = props;
-    const currentSettings = getFromSessionStorage("currentTfaSettings");
+    const currentSettings = getFromSessionStorage(
+      "currentAdminMessageSettings"
+    );
 
-    saveToSessionStorage("defaultTfaSettings", tfaSettings);
+    const enable = enableAdmMess ? "enable" : "disabled";
+
+    saveToSessionStorage("defaultAdminMessageSettings", enable);
 
     if (currentSettings) {
       setType(currentSettings);
     } else {
-      setType(tfaSettings);
+      setType(enable);
     }
-
-    setSmsDisabled(smsAvailable);
-    setAppDisabled(appAvailable);
   };
 
   useEffect(() => {
     checkWidth();
-    window.addEventListener("resize", checkWidth);
 
     if (!isInit) initSettings().then(() => setIsLoading(true));
     else setIsLoading(true);
 
+    window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
@@ -66,10 +75,12 @@ const TwoFactorAuth = (props) => {
   useEffect(() => {
     if (!isLoading) return;
 
-    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
-    saveToSessionStorage("currentTfaSettings", type);
+    const defaultSettings = getFromSessionStorage(
+      "defaultAdminMessageSettings"
+    );
+    saveToSessionStorage("currentAdminMessageSettings", type);
 
-    if (defaultSettings === type) {
+    if (isEqual(defaultSettings, type)) {
       setShowReminder(false);
     } else {
       setShowReminder(true);
@@ -78,59 +89,45 @@ const TwoFactorAuth = (props) => {
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("tfa") &&
+      history.location.pathname.includes("admin-message") &&
       history.push("/settings/security/access-portal");
   };
 
-  const onSelectTfaType = (e) => {
+  const onSelectType = (e) => {
     if (type !== e.target.value) {
       setType(e.target.value);
     }
   };
 
-  const onSaveClick = async () => {
-    const { t, setTfaSettings, getTfaConfirmLink, history } = props;
-
-    setIsSaving(true);
-
-    try {
-      await setTfaSettings(type);
-
-      toastr.success(t("SuccessfullySaveSettingsMessage"));
-      saveToSessionStorage("defaultTfaSettings", type);
-      setIsSaving(false);
-      setShowReminder(false);
-
-      if (type !== "none") {
-        setIsInit(false);
-        const link = await getTfaConfirmLink();
-        history.push(link.replace(window.location.origin, ""));
-      }
-    } catch (error) {
-      toastr.error(error);
-    }
+  const onSaveClick = () => {
+    const turnOn = type === "enable" ? true : false;
+    setMessageSettings(turnOn);
+    toastr.success(t("SuccessfullySaveSettingsMessage"));
+    saveToSessionStorage("defaultAdminMessageSettings", type);
+    setShowReminder(false);
   };
 
   const onCancelClick = () => {
-    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
+    const defaultSettings = getFromSessionStorage(
+      "defaultAdminMessageSettings"
+    );
     setType(defaultSettings);
     setShowReminder(false);
   };
 
-
   if (isMobile && !isInit && !isLoading) {
-    return <TfaLoader />;
+    return <AdmMsgLoader />;
   }
 
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="learn-subtitle">{t("TwoFactorAuthHelper")}</Text>
+        <Text className="page-subtitle">{t("AdminsMessageHelper")}</Text>
         <Link
           color="#316DAA"
           target="_blank"
           isHovered
-          href={`${helpLink}/administration/two-factor-authentication.aspx`}
+          href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -146,21 +143,15 @@ const TwoFactorAuth = (props) => {
         options={[
           {
             label: t("Disabled"),
-            value: "none",
+            value: "disabled",
           },
           {
-            label: t("BySms"),
-            value: "sms",
-            disabled: !smsDisabled,
-          },
-          {
-            label: t("ByApp"),
-            value: "app",
-            disabled: !appDisabled,
+            label: t("Common:Enable"),
+            value: "enable",
           },
         ]}
         selected={type}
-        onClick={onSelectTfaType}
+        onClick={onSelectType}
       />
 
       <SaveCancelButtons
@@ -173,35 +164,20 @@ const TwoFactorAuth = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
-        isSaving={isSaving}
       />
     </MainContainer>
   );
 };
 
 export default inject(({ auth, setup }) => {
-  const {
-    setTfaSettings,
-    getTfaConfirmLink,
-    tfaSettings,
-    smsAvailable,
-    appAvailable,
-  } = auth.tfaStore;
-
-  const { isInit, initSettings, setIsInit } = setup;
-  const { helpLink } = auth.settingsStore;
+  const { enableAdmMess, setMessageSettings, helpLink } = auth.settingsStore;
+  const { initSettings, isInit } = setup;
 
   return {
-    setTfaSettings,
-    getTfaConfirmLink,
-    tfaSettings,
-    smsAvailable,
-    appAvailable,
-    isInit,
+    enableAdmMess,
+    setMessageSettings,
     initSettings,
-    setIsInit,
+    isInit,
     helpLink,
   };
-})(
-  withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))
-);
+})(withTranslation(["Settings", "Common"])(withRouter(observer(AdminMessage))));
