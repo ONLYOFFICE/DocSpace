@@ -1,5 +1,4 @@
 import FilesStore from "./FilesStore";
-import fileActionStore from "./FileActionStore";
 import SelectedFolderStore from "./SelectedFolderStore";
 import TreeFoldersStore from "./TreeFoldersStore";
 import thirdPartyStore from "./ThirdPartyStore";
@@ -26,7 +25,6 @@ const filesStore = new FilesStore(
   store.auth,
   store.auth.settingsStore,
   store.auth.userStore,
-  fileActionStore,
   selectedFolderStore,
   treeFoldersStore,
   settingsStore,

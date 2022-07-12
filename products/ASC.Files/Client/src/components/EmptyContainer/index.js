@@ -5,6 +5,7 @@ import EmptyFilterContainer from "./EmptyFilterContainer";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import { FileAction } from "@appserver/common/constants";
 import { isMobile } from "react-device-detect";
+import { Events } from "../../helpers/constants";
 
 const linkStyles = {
   isHovered: true,
@@ -16,7 +17,6 @@ const linkStyles = {
 
 const EmptyContainer = ({
   isFiltered,
-  setAction,
   isPrivacyFolder,
   parentId,
   isEncryptionSupport,
@@ -26,11 +26,16 @@ const EmptyContainer = ({
 
   const onCreate = (e) => {
     const format = e.currentTarget.dataset.format || null;
-    setAction({
-      type: FileAction.Create,
+
+    const event = new Event(Events.CREATE);
+
+    const payload = {
       extension: format,
       id: -1,
-    });
+    };
+    event.payload = payload;
+
+    window.dispatchEvent(event);
   };
 
   return isFiltered ? (
@@ -59,7 +64,6 @@ export default inject(
       isEncryptionSupport: auth.settingsStore.isEncryptionSupport,
       theme: auth.settingsStore.theme,
       isFiltered,
-      setAction: filesStore.fileActionStore.setAction,
       isPrivacyFolder,
       parentId: selectedFolderStore.parentId,
     };

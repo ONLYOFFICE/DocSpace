@@ -29,6 +29,7 @@ import {
   ArticleMainButtonContent,
 } from "./components/Article";
 import FormGallery from "./pages/FormGallery";
+import GlobalEvents from "./components/GlobalEvents";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -169,6 +170,7 @@ class FilesContent extends React.Component {
 
     return (
       <>
+        <GlobalEvents />
         <Panels />
         <FilesArticle history={this.props.history} />
         <FilesSection />
