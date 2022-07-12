@@ -93,7 +93,7 @@ const SessionLifetime = (props) => {
       "defaultSessionLifetimeSettings"
     );
     const newSettings = {
-      lifetime: sessionLifetime,
+      lifetime: type === false ? "0" : sessionLifetime,
       type: type,
     };
 
@@ -131,10 +131,11 @@ const SessionLifetime = (props) => {
   const onSaveClick = async () => {
     if (error) return;
     try {
-      setSessionLifetimeSettings(sessionLifetime);
+      const lft = type === false ? "0" : sessionLifetime;
+      setSessionLifetimeSettings(lft);
       toastr.success(t("SuccessfullySaveSettingsMessage"));
       saveToSessionStorage("defaultSessionLifetimeSettings", {
-        lifetime: lifetime,
+        lifetime: lft,
         type: type,
       });
       setShowReminder(false);
