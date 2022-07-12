@@ -29,6 +29,7 @@ namespace ASC.Web.Core.Users;
 [Serializable]
 public class PeopleNamesSettings : ISettings<PeopleNamesSettings>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("47F34957-6A70-4236-9681-C8281FB762FA"); }

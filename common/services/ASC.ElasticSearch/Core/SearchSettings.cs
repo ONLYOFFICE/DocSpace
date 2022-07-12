@@ -30,6 +30,8 @@ namespace ASC.ElasticSearch.Core;
 public class SearchSettings : ISettings<SearchSettings>
 {
     public string Data { get; set; }
+
+    [JsonIgnore]
     public Guid ID => new Guid("{93784AB2-10B5-4C2F-9B36-F2662CCCF316}");
     internal List<SearchSettingsItem> Items
     {

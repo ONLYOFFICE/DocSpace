@@ -46,6 +46,7 @@ public class TenantInfoSettings : ISettings<TenantInfoSettings>
         };
     }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{5116B892-CCDD-4406-98CD-4F18297C0C0A}"); }
