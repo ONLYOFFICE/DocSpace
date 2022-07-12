@@ -13,6 +13,7 @@ import { Consumer } from "@appserver/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import Navigation from "@appserver/common/components/Navigation";
+import { Events } from "../../../../helpers/constants";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 
@@ -49,11 +50,16 @@ class SectionHeaderContent extends React.Component {
   }
 
   onCreate = (format) => {
-    this.props.setAction({
-      type: FileAction.Create,
+    const event = new Event(Events.CREATE);
+
+    const payload = {
       extension: format,
       id: -1,
-    });
+    };
+
+    event.payload = payload;
+
+    window.dispatchEvent(event);
   };
 
   createDocument = () => this.onCreate("docx");
@@ -445,7 +451,7 @@ export default inject(
     const {
       setSelected,
       setSelection,
-      fileActionStore,
+
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -462,7 +468,7 @@ export default inject(
       activeFiles,
       activeFolders,
     } = filesStore;
-    const { setAction } = fileActionStore;
+
     const {
       setSharingPanelVisible,
       setMoveToPanelVisible,
@@ -509,7 +515,7 @@ export default inject(
 
       setSelected,
       setSelection,
-      setAction,
+
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,

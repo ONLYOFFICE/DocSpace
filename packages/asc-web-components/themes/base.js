@@ -1931,7 +1931,7 @@ const Base = {
 
   header: {
     backgroundColor: "#0F4071",
-
+    recoveryColor: "#27537F",
     linkColor: "#7a95b0",
     productColor: white,
   },
