@@ -154,6 +154,7 @@ class RoomsStore {
 
           runInAction(() => {
             this.setRooms(data.folders);
+            this.fetchTags();
           });
 
           this.selectedFolderStore.setSelectedFolder({

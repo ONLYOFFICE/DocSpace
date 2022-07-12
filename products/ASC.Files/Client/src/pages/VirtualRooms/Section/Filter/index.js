@@ -61,6 +61,7 @@ const SectionFilterContent = ({
   sortRooms,
   filterRooms,
   searchRooms,
+  tags,
   fetchTags,
 
   viewAs,
@@ -253,7 +254,7 @@ const SectionFilterContent = ({
 
     filterOptions.push(...typeOptions);
 
-    const tags = await fetchTags();
+    // const tags = await fetchTags();
 
     const tagsOptions = tags.map((tag) => ({
       key: tag,
@@ -273,7 +274,7 @@ const SectionFilterContent = ({
     filterOptions.push(...tagsOptions);
 
     return filterOptions;
-  }, [fetchTags]);
+  }, [tags]);
 
   const getViewSettingsData = React.useCallback(() => {
     const viewSettings = [
@@ -331,7 +332,14 @@ const SectionFilterContent = ({
 export default inject(({ auth, filesStore, roomsStore }) => {
   const { setIsLoading, setViewAs, viewAs } = filesStore;
 
-  const { fetchTags, filter, sortRooms, filterRooms, searchRooms } = roomsStore;
+  const {
+    tags,
+    fetchTags,
+    filter,
+    sortRooms,
+    filterRooms,
+    searchRooms,
+  } = roomsStore;
 
   const { user } = auth.userStore;
 
@@ -341,6 +349,7 @@ export default inject(({ auth, filesStore, roomsStore }) => {
     userId: user.id,
     infoPanelVisible,
 
+    tags,
     fetchTags,
     filter,
     sortRooms,
