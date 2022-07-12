@@ -9,6 +9,7 @@ import TypeCell from "./cells/TypeCell";
 import OwnerCell from "./cells/OwnerCell";
 import DateCell from "./cells/DateCell";
 import TagsCell from "./cells/TagsCell";
+import { FolderType } from "@appserver/common/constants";
 
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
@@ -17,10 +18,10 @@ const StyledTableRow = styled(TableRow)`
     min-height: 48px;
 
     background: ${(props) =>
-      (props.isChecked || props.isHover) &&
+      (props.isChecked || props.isActive) &&
       `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
     cursor: ${(props) =>
-      (props.isChecked || props.isHover) &&
+      (props.isChecked || props.isActive) &&
       "url(/static/images/cursor.palm.react.svg), auto"};
   }
 
@@ -55,7 +56,7 @@ const StyledTableRow = styled(TableRow)`
   }
 
   ${(props) =>
-    (props.isHover || props.isChecked) &&
+    (props.isActive || props.isChecked) &&
     css`
       .room-name_cell {
         .room-logo_icon-container {
@@ -77,7 +78,7 @@ const Row = React.forwardRef(
       theme,
 
       isChecked,
-      isHover,
+      isActive,
       isMe,
 
       getRoomsContextOptions,
@@ -125,15 +126,16 @@ const Row = React.forwardRef(
 
     const onOpenRoomAction = React.useCallback(
       (e) => {
-        onOpenRoom && onOpenRoom(e, item.id);
+        if (item.isArchive) return;
+        onOpenRoom && onOpenRoom(e, item.id, history);
       },
-      [onOpenRoom, item.id, history]
+      [onOpenRoom, item.id, history, item.isArchive]
     );
 
     return (
       <StyledTableRow
         className={`table-row${
-          isHover || isChecked ? " table-row-selected" : ""
+          isActive || isChecked ? " table-row-selected" : ""
         }`}
         key={item.id}
         contextOptions={getRoomsContextOptionsActions()}
@@ -141,17 +143,18 @@ const Row = React.forwardRef(
         fileContextClick={onContextMenu}
         onHideContextMenu={onCloseContextMenu}
         isChecked={isChecked}
-        isHover={isHover}
+        isActive={isActive}
         onClick={onOpenRoomAction}
       >
         <FileNameCell
           theme={theme}
           label={item.title}
           type={item.roomType}
-          isPrivacy={item.isPrivacy}
-          isChecked={isChecked}
           pinned={item.pinned}
           badgeLabel={item.new}
+          isPrivacy={item.isPrivacy}
+          isArchive={item.isArchive}
+          isChecked={isChecked}
           onRoomSelect={onRoomSelect}
           onClickUnpinRoom={onClickUnpinRoomAction}
           onBadgeClick={onBadgeClick}
@@ -193,12 +196,12 @@ export default inject(
     const { onOpenRoom, onSelectTag } = roomsActionsStore;
 
     const isChecked = !!selection.find((room) => room.id === item.id);
-    const isHover = !isChecked && bufferSelection?.id === item.id;
+    const isActive = !isChecked && bufferSelection?.id === item.id;
     const isMe = item.createdBy.id === auth.userStore.user.id;
 
     return {
       isChecked,
-      isHover,
+      isActive,
       isMe,
 
       getRoomsContextOptions,

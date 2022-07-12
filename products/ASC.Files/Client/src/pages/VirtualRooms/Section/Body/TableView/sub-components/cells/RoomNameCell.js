@@ -5,7 +5,6 @@ import { ReactSVG } from "react-svg";
 import TableCell from "@appserver/components/table-container/TableCell";
 import RoomLogo from "@appserver/components/room-logo";
 import Text from "@appserver/components/text";
-import Checkbox from "@appserver/components/checkbox";
 import Badge from "@appserver/components/badge";
 
 const StyledText = styled(Text)`
@@ -24,6 +23,7 @@ const FileNameCell = ({
   type,
   isPrivacy,
   isChecked,
+  isArchive,
   theme,
   pinned,
   badgeLabel,
@@ -41,6 +41,7 @@ const FileNameCell = ({
           withCheckbox={true}
           isChecked={isChecked}
           isIndeterminate={false}
+          isArchive={isArchive}
           onChange={onRoomSelect}
         />
       </div>

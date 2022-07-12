@@ -13,6 +13,7 @@ import ContextMenu from "@appserver/components/context-menu";
 import { Base } from "@appserver/components/themes";
 
 import RoomsBadges from "../../../../components/Badges";
+import { FolderType } from "@appserver/common/constants";
 
 const StyledTile = styled.div`
   border: 1px solid #eceef1;
@@ -39,28 +40,11 @@ const StyledTile = styled.div`
   }
 
   ${(props) =>
-    props.isHover &&
+    (props.isActive || props.isChecked) &&
     css`
       .tile-header {
         background: ${(props) =>
           props.theme.filesSection.tilesView.tile.checkedColor} !important;
-
-        .room-logo_icon-container {
-          display: none !important;
-        }
-
-        .room-logo_checkbox {
-          display: flex !important;
-        }
-      }
-    `}
-
-  ${(props) =>
-    props.isChecked &&
-    css`
-      .tile-header {
-        background: ${props.theme.filesSection.tilesView.tile
-          .checkedColor} !important;
 
         .room-logo_icon-container {
           display: none !important;
@@ -131,9 +115,13 @@ const Tile = React.forwardRef(
       pinned,
       badge,
       tags,
+      isArchive,
+
       columnCount,
+
       isChecked,
-      isHover,
+      isActive,
+
       onClickPinRoom,
       getRoomsContextOptions,
       selectRoom,
@@ -183,16 +171,17 @@ const Tile = React.forwardRef(
 
     const onOpenRoomAction = React.useCallback(
       (e) => {
+        if (isArchive) return;
         onOpenRoom && onOpenRoom(e, item.id, history);
       },
-      [onOpenRoom, item.id, history]
+      [onOpenRoom, item.id, history, isArchive]
     );
 
     return (
       <StyledTile
         ref={tileRef}
         isChecked={isChecked}
-        isHover={isHover}
+        isActive={isActive}
         onContextMenu={onContextMenu}
         onClick={onOpenRoomAction}
       >
@@ -204,10 +193,10 @@ const Tile = React.forwardRef(
           <RoomLogo
             className={"tile-header_logo"}
             type={roomType}
-            isPrivacy={isPrivacy}
             withCheckbox={true}
             isChecked={isChecked}
             isIndeterminate={false}
+            isArchive={isArchive}
             onChange={onRoomSelect}
           />
 
@@ -270,11 +259,11 @@ export default inject(
     const { onOpenRoom, onSelectRoom, onSelectTag } = roomsActionsStore;
 
     const isChecked = !!selection.find((room) => room.id === item.id);
-    const isHover = !isChecked && bufferSelection?.id === item.id;
+    const isActive = !isChecked && bufferSelection?.id === item.id;
 
     return {
       isChecked,
-      isHover,
+      isActive,
 
       onOpenRoom,
       onSelectRoom,

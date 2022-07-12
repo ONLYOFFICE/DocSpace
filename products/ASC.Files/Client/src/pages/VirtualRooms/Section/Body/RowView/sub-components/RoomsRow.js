@@ -9,6 +9,7 @@ import RoomLogo from "@appserver/components/room-logo";
 import { Base } from "@appserver/components/themes";
 
 import RoomsRowContent from "./RoomsRowContent";
+import { FolderType } from "@appserver/common/constants";
 
 const marginStyles = css`
   margin-left: -24px;
@@ -109,10 +110,13 @@ const StyledRoomsRow = styled(Row)`
 StyledRoomsRow.defaultProps = { theme: Base };
 
 const RoomsRow = ({
-  item,
-  selectRoom,
   isChecked,
   isActive,
+  isArchive,
+
+  item,
+  selectRoom,
+
   sectionWidth,
   openContextMenu,
   closeContextMenu,
@@ -146,9 +150,10 @@ const RoomsRow = ({
 
   const onOpenRoomAction = React.useCallback(
     (e) => {
+      if (item.isArchive) return;
       onOpenRoom && onOpenRoom(e, item.id, history);
     },
-    [onOpenRoom, item.id, history]
+    [onOpenRoom, item.id, history, item.isArchive]
   );
 
   const element = (
@@ -156,7 +161,7 @@ const RoomsRow = ({
       className="room-row_logo"
       type={item.roomType}
       isPrivacy={false}
-      isArchive={false}
+      isArchive={item.isArchive}
       withCheckbox={true}
       isChecked={isChecked}
       isIndeterminate={false}
@@ -212,6 +217,7 @@ export default inject(
     return {
       isChecked,
       isActive,
+
       selectRoom,
       getRoomsContextOptions,
       openContextMenu,
