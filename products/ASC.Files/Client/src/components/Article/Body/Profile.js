@@ -57,6 +57,7 @@ const Profile = (props) => {
     debugInfo,
     peopleAvailable,
     showText,
+    setHotkeyPanelVisible,
   } = props;
   const { t } = useTranslation("Common");
 
@@ -82,7 +83,7 @@ const Profile = (props) => {
   };
 
   const onHotkeysClick = () => {
-    console.log("onHotkeysClick");
+    setHotkeyPanelVisible(true);
   };
 
   const onAboutClick = () => {
@@ -203,7 +204,12 @@ export default withRouter(
   inject(({ auth }) => {
     const { userStore, settingsStore } = auth;
     const { user } = userStore;
-    const { personal: isPersonal, currentProductId, debugInfo } = settingsStore;
+    const {
+      personal: isPersonal,
+      currentProductId,
+      debugInfo,
+      setHotkeyPanelVisible,
+    } = settingsStore;
     const modules = auth.availableModules;
     const settingsModule = modules.find((module) => module.id === "settings");
 
@@ -215,6 +221,7 @@ export default withRouter(
       currentProductId,
       peopleAvailable: modules.some((m) => m.appName === "people"),
       debugInfo,
+      setHotkeyPanelVisible,
     };
   })(observer(Profile))
 );
