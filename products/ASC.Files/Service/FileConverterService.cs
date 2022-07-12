@@ -86,9 +86,6 @@ internal class FileConverterService<T> : BackgroundService
 
         try
         {
-            var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
-            (_, tenantManager, userManager, securityContext, daoFactory, fileSecurity, pathProvider, setupInfo, fileUtility, documentServiceHelper, documentServiceConnector, entryManager, fileConverter) = scopeClass;
-
             fileConverterQueue = scope.ServiceProvider.GetService<FileConverterQueue<T>>();
 
             var _conversionQueue = fileConverterQueue.GetAllTask().ToList();
@@ -111,6 +108,9 @@ internal class FileConverterService<T> : BackgroundService
 
                 var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
                 commonLinkUtilitySettings.ServerUri = converter.ServerRootPath;
+
+                var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
+                (_, tenantManager, userManager, securityContext, daoFactory, fileSecurity, pathProvider, setupInfo, fileUtility, documentServiceHelper, documentServiceConnector, entryManager, fileConverter) = scopeClass;
 
                 tenantManager.SetCurrentTenant(converter.TenantId);
 

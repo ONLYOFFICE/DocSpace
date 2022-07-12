@@ -891,7 +891,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [HttpPut("{userid}")]
+    [HttpPut("{userid}", Order = 1)]
     public async Task<EmployeeDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);

@@ -154,7 +154,7 @@ public class TfaappController : BaseSettingsController
     }
 
     [HttpPut("tfaapp")]
-    public bool TfaSettings(TfaRequestsDto inDto)
+    public async Task<bool> TfaSettings(TfaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -228,7 +228,7 @@ public class TfaappController : BaseSettingsController
 
         if (result)
         {
-            _cookiesManager.ResetTenantCookie();
+            await _cookiesManager.ResetTenantCookie();
         }
 
         _messageService.Send(action);

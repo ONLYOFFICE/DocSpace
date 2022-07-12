@@ -14,6 +14,7 @@ import MobileView from "./MobileView";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../package.json";
 import withLoader from "../../../HOCs/withLoader";
+import { Events } from "../../../helpers/constants";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -47,11 +48,16 @@ const ArticleMainButtonContent = (props) => {
   const onCreate = React.useCallback(
     (e) => {
       const format = e.action || null;
-      setAction({
-        type: FileAction.Create,
+
+      const event = new Event(Events.CREATE);
+
+      const payload = {
         extension: format,
         id: -1,
-      });
+      };
+      event.payload = payload;
+
+      window.dispatchEvent(event);
     },
     [setAction]
   );
@@ -286,13 +292,7 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const {
-      isLoaded,
-      firstLoad,
-      isLoading,
-      fileActionStore,
-      canCreate,
-    } = filesStore;
+    const { isLoaded, firstLoad, isLoading, canCreate } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -321,7 +321,6 @@ export default inject(
       isShareFolder,
       canCreate,
 
-      setAction: fileActionStore.setAction,
       startUpload,
 
       setSelectFileDialogVisible,

@@ -10,6 +10,7 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
+import { Events } from "../helpers/constants";
 
 class ContextOptionsStore {
   authStore;
@@ -246,12 +247,11 @@ class ContextOptionsStore {
   };
 
   onClickRename = (item) => {
-    const { id, fileExst } = item;
-    this.filesStore.fileActionStore.setAction({
-      type: FileAction.Rename,
-      extension: fileExst,
-      id,
-    });
+    const event = new Event(Events.RENAME);
+
+    event.item = item;
+
+    window.dispatchEvent(event);
   };
 
   onChangeThirdPartyInfo = (providerKey) => {
@@ -793,13 +793,11 @@ class ContextOptionsStore {
 
   getModel = (item, t) => {
     const { selection } = this.filesStore;
-    const { type, id, extension } = this.filesStore.fileActionStore;
+
     const { fileExst, contextOptions } = item;
 
-    const isEdit = !!type && id === item.id && fileExst === extension;
-
     const contextOptionsProps =
-      !isEdit && contextOptions && contextOptions.length > 0
+      contextOptions && contextOptions.length > 0
         ? selection.length > 1
           ? this.getGroupContextOptions(t)
           : this.getFilesContextOptions(item, t)
