@@ -8,6 +8,17 @@ import Text from "@appserver/components/text";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import { isDesktop, isMobile, isMobileOnly } from "react-device-detect";
 import { isTablet } from "@appserver/components/utils/device";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+
+const { proxyURL } = AppServerConfig;
+
+const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
+const PROFILE_SELF_URL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/products/people/view/@self"
+);
+const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 
 const StyledProfile = styled.div`
   position: fixed;
@@ -59,11 +70,15 @@ const Profile = (props) => {
   };
 
   const onProfileClick = () => {
-    console.log("onProfileClick");
+    peopleAvailable
+      ? history.push(PROFILE_SELF_URL)
+      : history.push(PROFILE_MY_URL);
   };
 
   const onSettingsClick = () => {
-    console.log("onSettingsClick");
+    const settingsUrl =
+      settingsModule && combineUrl(PROXY_HOMEPAGE_URL, settingsModule.link);
+    history.push(settingsUrl);
   };
 
   const onHotkeysClick = () => {
