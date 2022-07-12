@@ -58,6 +58,7 @@ const Profile = (props) => {
     peopleAvailable,
     showText,
     setHotkeyPanelVisible,
+    logout,
   } = props;
   const { t } = useTranslation("Common");
 
@@ -91,7 +92,7 @@ const Profile = (props) => {
   };
 
   const onLogoutClick = () => {
-    console.log("onLogoutClick");
+    logout && logout();
   };
 
   const onDebugClick = () => {
@@ -202,7 +203,7 @@ const Profile = (props) => {
 
 export default withRouter(
   inject(({ auth }) => {
-    const { userStore, settingsStore } = auth;
+    const { userStore, settingsStore, logout } = auth;
     const { user } = userStore;
     const {
       personal: isPersonal,
@@ -222,6 +223,7 @@ export default withRouter(
       peopleAvailable: modules.some((m) => m.appName === "people"),
       debugInfo,
       setHotkeyPanelVisible,
+      logout,
     };
   })(observer(Profile))
 );
