@@ -128,23 +128,15 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
-        bool withoutTags = false, IEnumerable<string> tagNames = null)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
     {
-        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, withoutTags, tagNames);
-    }
-
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
-        bool withoutTags = false, IEnumerable<string> tagNames = null)
-    {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly or FilterType.SpreadsheetsOnly
+            or FilterType.ArchiveOnly or FilterType.MediaOnly)
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = GetFoldersAsync(parentId); //TODO:!!!
-
-        folders = FilterByRoomTypes(folders, filterTypes);
 
         if (subjectID != Guid.Empty)
         {
@@ -158,12 +150,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        folders = FilterByTags(folders, withoutTags,tagNames);
-
-        if (orderBy == null)
-        {
-            orderBy = new OrderBy(SortedByType.DateAndTime, false);
-        }
+        orderBy ??= new OrderBy(SortedByType.DateAndTime, false);
 
         folders = orderBy.SortedBy switch
         {
@@ -176,24 +163,16 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
 
         return folders;
     }
-
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        bool withoutTags = false, IEnumerable<string> tagNames = null)
+    
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
     {
-        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, withoutTags, tagNames);
-    }
-
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        bool withoutTags = false, IEnumerable<string> tagNames = null)
-    {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly or FilterType.SpreadsheetsOnly
+            or FilterType.ArchiveOnly or FilterType.MediaOnly)
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
-
-        folders = FilterByRoomTypes(folders, filterTypes);
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
@@ -206,8 +185,6 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
-
-        folders = FilterByTags(folders, withoutTags, tagNames);
 
         return folders;
     }
