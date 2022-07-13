@@ -46,7 +46,7 @@ const StyledProfile = styled.div`
   }
 `;
 
-const Profile = (props) => {
+const ArticleProfile = (props) => {
   const {
     history,
     user,
@@ -187,7 +187,7 @@ const Profile = (props) => {
               zIndex={402}
               directionX="left"
               directionY="top"
-              iconName="images/vertical-dots.react.svg"
+              iconName="/static/images/vertical-dots.react.svg"
               size={15}
               isFill
               getData={getContextOptions}
@@ -225,5 +225,5 @@ export default withRouter(
       setHotkeyPanelVisible,
       logout,
     };
-  })(observer(Profile))
+  })(observer(ArticleProfile))
 );
