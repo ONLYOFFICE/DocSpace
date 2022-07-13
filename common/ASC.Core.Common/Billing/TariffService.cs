@@ -149,8 +149,8 @@ public class TariffService : ITariffService
 
             if (_billingClient.Configured && withRequestToPaymentSystem)
             {
-                Task.Run(() =>
-                  {
+                //Task.Run(() =>
+                //  {
                       try
                       {
                           var client = GetBillingClient();
@@ -210,7 +210,7 @@ public class TariffService : ITariffService
                       {
                           LogError(error, tenantId.ToString());
                       }
-                  });
+                  //});
             }
         }
 
