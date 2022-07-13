@@ -38,8 +38,7 @@ public partial class BaseFilesTests
     [Description("post - files/folder/{folderId} - attempt to create a folder when it is forbidden")]
     public async Task CreateFolderReturnsFolderWrapperAsync(int folderId)
     {
-        var response = await _client.PostAsync("folder/" + folderId, JsonContent.Create(new { Title = "test" }));
-        var result = await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
+        var result = await SendAsync(HttpMethod.Post, "folder/" + folderId, new { Title = "test" });
         Assert.AreEqual(HttpStatusCode.Forbidden, result.StatusCode);
     }
 
@@ -52,7 +51,7 @@ public partial class BaseFilesTests
     [Order(1)]
     public async Task CreateFileReturnsFolderWrapperAsync(int folderId)
     {
-        var file = await PostAsync<FileDto<int>>(folderId + "/file", JsonContent.Create(new { Title = "test" }));
+        var file = await PostAsync<FileDto<int>>($"{folderId}/file", new { Title = "test" });
         Assert.AreEqual(file.FolderId, 1);
     }
 }

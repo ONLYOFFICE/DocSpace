@@ -35,7 +35,7 @@ public partial class BaseFilesTests
     [Description("post - files/folder/{folderId} - create new folder")]
     public async Task CreateFolderReturnsFolderWrapper(int folderId, string title)
     {
-        var folder = await PostAsync<FolderDto<int>>("folder/" + folderId, JsonContent.Create(new { Title = title }));
+        var folder = await PostAsync<FolderDto<int>>($"folder/{folderId}", new { Title = title });
         Assert.IsNotNull(folder);
         Assert.AreEqual(title, folder.Title);
         Assert.AreEqual(folderId, folder.ParentId);
@@ -61,7 +61,7 @@ public partial class BaseFilesTests
     [Description("get - files/folder/{folderId} - get folder info")]
     public async Task GetFolderInfoReturnsFolderWrapper(int folderId, string folderName, int parentId)
     {
-        var folder = await GetAsync<FolderDto<int>>("folder/" + folderId);
+        var folder = await GetAsync<FolderDto<int>>($"folder/{folderId}");
 
         Assert.IsNotNull(folder);
         Assert.AreEqual(folderName, folder.Title);
@@ -75,7 +75,7 @@ public partial class BaseFilesTests
     [Description("put - files/folder/{folderId} - rename folder")]
     public async Task RenameFolderReturnsFolderWrapper(int folderId, string newTitle)
     {
-        var folder = await PutAsync<FolderDto<int>>("folder/" + folderId, JsonContent.Create(new { Title = newTitle }));
+        var folder = await PutAsync<FolderDto<int>>($"folder/{folderId}", new { Title = newTitle });
 
         Assert.IsNotNull(folder);
         Assert.AreEqual(folderId, folder.Id);
@@ -88,7 +88,7 @@ public partial class BaseFilesTests
     [Description("delete - files/folder/{folderId} - delete folder")]
     public async Task DeleteFolderReturnsFolderWrapper(int folderId, bool deleteAfter, bool immediately)
     {
-        await DeleteAsync("folder/" + folderId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }));
+        await DeleteAsync($"folder/{folderId}", new { DeleteAfter = deleteAfter, Immediately = immediately });
         var statuses = await WaitLongOperation();
         CheckStatuses(statuses);
     }
@@ -99,7 +99,7 @@ public partial class BaseFilesTests
     [Description("post - files/@my/file - create file in myFolder")]
     public async Task CreateFileReturnsFileWrapper(string newTitle)
     {
-        var file = await PostAsync<FileDto<int>>("@my/file", JsonContent.Create(new { Title = newTitle }));
+        var file = await PostAsync<FileDto<int>>("@my/file", new { Title = newTitle });
 
         Assert.IsNotNull(file);
         Assert.AreEqual($"{newTitle}.docx", file.Title);
@@ -112,7 +112,7 @@ public partial class BaseFilesTests
     [Description("get - files/file/{fileId} - get file info")]
     public async Task GetFileInfoReturnsFilesWrapper(int fileId, string fileName)
     {
-        var file = await GetAsync<FileDto<int>>("file/" + fileId);
+        var file = await GetAsync<FileDto<int>>($"file/{fileId}");
 
         Assert.IsNotNull(file);
         Assert.AreEqual(fileName, file.Title);
@@ -124,7 +124,7 @@ public partial class BaseFilesTests
     [Description("put - files/file/{fileId} - update file")]
     public async Task UpdateFileReturnsFileWrapper(int fileId, string newTitle, int lastVersion)
     {
-        var file = await PutAsync<FileDto<int>>("file/" + fileId, JsonContent.Create(new { Title = newTitle, LastVersion = lastVersion }));
+        var file = await PutAsync<FileDto<int>>($"file/{fileId}", new { Title = newTitle, LastVersion = lastVersion });
 
         Assert.IsNotNull(file);
         Assert.AreEqual(newTitle + ".docx", file.Title);
@@ -136,7 +136,7 @@ public partial class BaseFilesTests
     [Description("delete - files/file/{fileId} - delete file")]
     public async Task DeleteFileReturnsFileWrapper(int fileId, bool deleteAfter, bool immediately)
     {
-        await DeleteAsync("file/" + fileId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }));
+        await DeleteAsync($"file/{fileId}", new { DeleteAfter = deleteAfter, Immediately = immediately });
         var statuses = await WaitLongOperation();
         CheckStatuses(statuses);
     }
@@ -148,7 +148,7 @@ public partial class BaseFilesTests
     {
         var batchModel = GetBatchModel(json);
 
-        var statuses = await PutAsync<IEnumerable<FileOperationDto>>("fileops/move", JsonContent.Create(batchModel));
+        var statuses = await PutAsync<IEnumerable<FileOperationDto>>("fileops/move", batchModel);
 
         FileOperationDto status = null;
         foreach (var item in statuses)
@@ -171,7 +171,7 @@ public partial class BaseFilesTests
     {
         var batchModel = GetBatchModel(json);
 
-        var statuses = await PutAsync<IEnumerable<FileOperationDto>>("fileops/copy", JsonContent.Create(batchModel));
+        var statuses = await PutAsync<IEnumerable<FileOperationDto>>("fileops/copy", batchModel);
 
         FileOperationDto status = null;
         foreach (var item in statuses)

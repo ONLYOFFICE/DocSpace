@@ -35,7 +35,7 @@ public partial class BaseFilesTests
     [Description("post - file/{fileId}/recent - add file to recent")]
     public async Task RecentFileReturnsFolderWrapper(int fileId, string fileName)
     {
-        var file = await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null);
+        var file = await PostAsync<FileDto<int>>($"file/{fileId}/recent");
         Assert.IsNotNull(file);
         Assert.AreEqual(fileName, file.Title);
     }
@@ -46,9 +46,9 @@ public partial class BaseFilesTests
     [Description("delete - file/{fileId}/recent - delete file which added to recent")]
     public async Task DeleteRecentFileReturnsFolderWrapper(int fileId, string fileTitleExpected)
     {
-        await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null);
+        await PostAsync<FileDto<int>>($"file/{fileId}/recent");
 
-        await DeleteAsync("file/" + fileId, JsonContent.Create(new { DeleteAfter = false, Immediately = true }));
+        await DeleteAsync($"file/{fileId}", new { DeleteAfter = false, Immediately = true });
         await WaitLongOperation();
 
         var recents = await GetAsync<FolderContentDto<int>>("@recent");
@@ -60,7 +60,7 @@ public partial class BaseFilesTests
     [Order(3)]
     public async Task ShareFileToAnotherUserAddToRecent(int fileId, string fileName)
     {
-        var file = await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null);
+        var file = await PostAsync<FileDto<int>>($"file/{fileId}/recent");
 
         Assert.IsNotNull(file);
         Assert.AreEqual(fileName, file.Title);

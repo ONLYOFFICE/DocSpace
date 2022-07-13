@@ -37,7 +37,7 @@ public partial class BaseFilesTests
     [Description("post - rooms - create room")]
     public async Task CreateRoom(string title, int roomType)
     {
-        var room = await PostAsync<FolderDto<int>>("rooms", JsonContent.Create(new { Title = title, RoomType = roomType }));
+        var room = await PostAsync<FolderDto<int>>("rooms", new { Title = title, RoomType = roomType });
         Assert.IsNotNull(room);
         Assert.AreEqual(title, room.Title);
     }
@@ -48,7 +48,7 @@ public partial class BaseFilesTests
     [Description("put - rooms/{id} - rename room")]
     public async Task RenameRoom(int id, string newTitle)
     {
-        var room = await PutAsync<FolderDto<int>>($"rooms/{id}", JsonContent.Create(new { Title = newTitle }));
+        var room = await PutAsync<FolderDto<int>>($"rooms/{id}", new { Title = newTitle });
         Assert.IsNotNull(room);
         Assert.AreEqual(newTitle, room.Title);
     }
@@ -59,7 +59,7 @@ public partial class BaseFilesTests
     [Description("delete - rooms/{id} - delete room")]
     public async Task DeleteRoom(int id, bool deleteAfter)
     {
-        await DeleteAsync<FileOperationDto>($"rooms/{id}", JsonContent.Create(new { DeleteAfter = deleteAfter }));
+        await DeleteAsync<FileOperationDto>($"rooms/{id}", new { DeleteAfter = deleteAfter });
         var statuses = await WaitLongOperation();
         CheckStatuses(statuses);
     }
@@ -70,7 +70,7 @@ public partial class BaseFilesTests
     [Description("put - rooms/{id}/archive - archive a room")]
     public async Task ArchiveRoom(int id, bool deleteAfter)
     {
-        await PutAsync<FileOperationDto>($"rooms/{id}/archive", JsonContent.Create(new { DeleteAfter = deleteAfter }));
+        await PutAsync<FileOperationDto>($"rooms/{id}/archive", new { DeleteAfter = deleteAfter });
         var statuses = await WaitLongOperation();
         CheckStatuses(statuses);
     }
@@ -81,7 +81,7 @@ public partial class BaseFilesTests
     [Description("put - rooms/{id}/archive - unarchive a room")]
     public async Task UnarchiveRoom(int id, bool deleteAfter)
     {
-        await PutAsync<FileOperationDto>($"rooms/{id}/unarchive", JsonContent.Create(new { DeleteAfter = deleteAfter }));
+        await PutAsync<FileOperationDto>($"rooms/{id}/unarchive", new { DeleteAfter = deleteAfter });
         var statuses = await WaitLongOperation();
         CheckStatuses(statuses);
     }
@@ -95,7 +95,7 @@ public partial class BaseFilesTests
         var newUser = _userManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
         var testRoomParamRead = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = newUser.Id } };
 
-        var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", JsonContent.Create(new { Share = testRoomParamRead, Notify = notify, SharingMessage = message }));
+        var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", new { Share = testRoomParamRead, Notify = notify, SharingMessage = message });
         Assert.IsNotNull(share);
     }
 
@@ -125,7 +125,7 @@ public partial class BaseFilesTests
     [Description("put - rooms/{id}/tags - add tags by id")]
     public async Task AddTagsById(int id, string tagNames)
     {
-        var folder = await PutAsync<FolderDto<int>>($"rooms/{id}/tags", JsonContent.Create(new { Names = tagNames.Split(',') }));
+        var folder = await PutAsync<FolderDto<int>>($"rooms/{id}/tags", new { Names = tagNames.Split(',') });
         Assert.IsTrue(folder.Tags.Count() == 2);
     }
 
@@ -135,7 +135,7 @@ public partial class BaseFilesTests
     [Description("delete - rooms/{id}/tags - delete tags by id")]
     public async Task DeleteTagsById(int id, string tagNames)
     {
-        var folder = await DeleteAsync<FolderDto<int>>($"rooms/{id}/tags", JsonContent.Create(new { Names = tagNames.Split(',') }));
+        var folder = await DeleteAsync<FolderDto<int>>($"rooms/{id}/tags", new { Names = tagNames.Split(',') });
         Assert.IsTrue(folder.Tags.Count() == 0);
     }
 
@@ -145,7 +145,7 @@ public partial class BaseFilesTests
     [Description("put - rooms/{id}/pin - pin a room")]
     public async Task PinRoom(int id)
     {
-        var folder = await PutAsync<FolderDto<int>>($"rooms/{id}/pin", null);
+        var folder = await PutAsync<FolderDto<int>>($"rooms/{id}/pin");
         Assert.IsTrue(folder.Pinned);
     }
 
@@ -155,7 +155,7 @@ public partial class BaseFilesTests
     [Description("put - rooms/{id}/unpin - unpin a room")]
     public async Task UnpinRoom(int id)
     {
-        var folder = await PutAsync<FolderDto<int>>($"rooms/{id}/unpin", null);
+        var folder = await PutAsync<FolderDto<int>>($"rooms/{id}/unpin");
         Assert.IsFalse(folder.Pinned);
     }
 
@@ -165,7 +165,7 @@ public partial class BaseFilesTests
     [Description("put - rooms/{id}/links/send - send invitation links to email")]
     public async Task SendLink(int id, string email)
     {
-        var invites = await PutAsync<IEnumerable<InviteResultDto>>($"rooms/{id}/links/send", JsonContent.Create(new { Emails = new List<string>() { email }, EmployeeType = EmployeeType.All, Access = Core.Security.FileShare.Read }));
+        var invites = await PutAsync<IEnumerable<InviteResultDto>>($"rooms/{id}/links/send", new { Emails = new List<string>() { email }, EmployeeType = EmployeeType.All, Access = Core.Security.FileShare.Read });
         Assert.IsTrue(invites.First().Success);
     }
 
@@ -175,7 +175,7 @@ public partial class BaseFilesTests
     [Description("put - rooms/{id}/share - share a room by link")]
     public async Task ShareRoomByLink(int id, string key)
     {
-        var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", JsonContent.Create(new { Access = Core.Security.FileShare.Read, Key = key }));
+        var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", new { Access = Core.Security.FileShare.Read, Key = key });
         Assert.IsNotNull(share);
     }
 
@@ -185,7 +185,7 @@ public partial class BaseFilesTests
     [Description("get - rooms/{id}/links - get invitation links")]
     public async Task GetLink(int id)
     {
-        var invites = await GetAsync<string>($"rooms/{id}/links", JsonContent.Create(new { Access = Core.Security.FileShare.Read }));
+        var invites = await GetAsync<string>($"rooms/{id}/links?access=2");
         Assert.IsNotNull(invites);
         Assert.IsNotEmpty(invites);
     }
