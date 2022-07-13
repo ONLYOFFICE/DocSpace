@@ -40,25 +40,51 @@ const StyledComponent = styled(ModalDialog)`
   .hex-color-picker {
     position: fixed;
     bottom: 0;
+    left: 0;
     width: 100%;
+    padding: 0 16px 16px 16px;
     box-sizing: border-box;
-    box-shadow: 0px -4px 60px rgba(4, 15, 27, 0.12);
-    border-radius: 6px;
+    box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
   }
 
   .react-colorful {
     width: auto;
+    height: 239px;
   }
 
-  .react-colorful__saturation {
-    // width: 195px;
-    height: 195px;
-  }
-
-  .react-colorful__saturation-pointer {
+  .react-colorful__pointer {
     width: 14px;
     height: 14px;
-    border: 0;
+  }
+
+  .react-colorful__hue-pointer {
+    width: 24px;
+    height: 24px;
+    border: 6px solid #fff;
+  }
+
+  .react-colorful__last-control {
+    border-radius: 6px;
+    height: 12px;
+    margin: 16px 0;
+  }
+
+  .hex-value {
+    padding: 6px 8px;
+    border: 1px solid #d0d5da;
+    border-radius: 3px;
+    margin: 16px 0;
+  }
+
+  .hex-button {
+    display: flex;
+
+    .apply-button {
+      margin-right: 8px;
+    }
+  }
+
+  @media (min-width: 428px) {
   }
 `;
 
@@ -84,27 +110,23 @@ const ColorSchemeDialog = (props) => {
           <div className="text">Buttons</div>
           <div className="color-button" onClick={onClick}></div>
         </div>
-
         {openHexColorPicker && (
           <div className="hex-color-picker">
+            <div className="hex-value">{color.toUpperCase()}</div>
             <HexColorPicker color={color} onChange={setColor} />
-
-            <div className="value" style={{ borderLeftColor: color }}>
-              Current color is {color}
-            </div>
 
             <div className="hex-button">
               <Button
                 label="Apply"
-                size="normal"
-                className="save-button"
+                size="small"
+                className="apply-button"
                 primary={true}
                 scale={true}
               />
               <Button
                 label="Cancel"
                 className="button"
-                size="normal"
+                size="small"
                 scale={true}
               />
             </div>
