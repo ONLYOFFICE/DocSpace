@@ -206,7 +206,7 @@ const ConflictResolveDialog = (props) => {
           {singleFile ? (
             <Trans
               t={t}
-              i18nKey="SingleConflictResolveMessage"
+              i18nKey="ConflictResolveDescription"
               ns="ConflictResolveDialog"
             >
               {{ file, folder: folderTitle }}
@@ -214,7 +214,7 @@ const ConflictResolveDialog = (props) => {
           ) : (
             <Trans
               t={t}
-              i18nKey="SeveralConflictsResolveMessage"
+              i18nKey="ConflictResolveDescriptionFiles"
               ns="ConflictResolveDialog"
             >
               {{ filesCount, folder: folderTitle }}
