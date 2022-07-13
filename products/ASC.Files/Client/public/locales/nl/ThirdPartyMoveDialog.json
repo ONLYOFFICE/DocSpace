@@ -1,4 +1,3 @@
 {
-  "MoveConfirmation": "Bevestigen van verplaatsen",
-  "MoveConfirmationMessage": "U staat op het punt om elementen uit de {{provider}} directory te verplaatsen. Deze worden verwijderd uit uw {{provider}} account en zullen niet langer beschikbaar zijn voor andere gebruikers."
+  "MoveConfirmation": "Bevestigen van verplaatsen"
 }

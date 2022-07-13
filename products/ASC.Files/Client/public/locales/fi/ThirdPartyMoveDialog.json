@@ -1,4 +1,3 @@
 {
-  "MoveConfirmation": "Siirron vahvistus",
-  "MoveConfirmationMessage": "Olet siirtämässä elementtejä hakemistosta {{provider}}. Ne poistetaan {{provider}} -tililtäsi, eivätkä muut käyttäjät voi enää käyttää niitä."
+  "MoveConfirmation": "Siirron vahvistus"
 }

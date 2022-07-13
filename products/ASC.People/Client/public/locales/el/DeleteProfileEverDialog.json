@@ -1,4 +1,3 @@
 {
-  "DeleteUserConfirmation": "Ο χρήστης {{userCaption}} <strong>{{user}}</strong> θα διαγραφεί.",
   "SuccessfullyDeleteUserInfoMessage": "Ο χρήστης έχει διαγραφεί επιτυχώς"
 }

@@ -1,4 +1,3 @@
 {
-  "MoveConfirmation": "Potvrzení přesunu",
-  "MoveConfirmationMessage": "Chystáte se přesunout prvky z adresáře {{provider}}. Budou smazány z vašeho účtu {{provider}} a nebudou již přístupné ostatním uživatelům."
+  "MoveConfirmation": "Potvrzení přesunu"
 }

@@ -1,6 +1,6 @@
 {
-  "SingleConflictResolveMessage": "The file with the name <strong>«{{file}}»</strong> already exists in the folder <strong>«{{folder}}»</strong>.",
-  "SeveralConflictsResolveMessage": "{{filesCount}} documents with the same name already exist in the folder <strong>«{{folder}}»</strong>.",
+  "ConflictResolveDescription": "The file with the name <1>{{file}}</1> already exists in the folder <1>{{folder}}</1>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} documents with the same name already exist in the folder <1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Please select the action:",
   "ConflictResolveTitle": "Overwrite confirmation",
   "CreateDescription": "There will be two different files in the folder.",

@@ -1,4 +1,3 @@
 {
-  "MoveConfirmation": "Confirmación de movimiento",
-  "MoveConfirmationMessage": "Está a punto de mover elementos del directorio {{provider}}. Se eliminarán de su cuenta {{provider}} y ya no serán accesibles para otros usuarios."
+  "MoveConfirmation": "Confirmación de movimiento"
 }

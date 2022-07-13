@@ -1,5 +1,3 @@
 {
-  "DeleteGroupUsersMessage": "Die ausgewählten deaktivierten Benutzer werden gelöscht.",
-  "DeleteGroupUsersMessageHeader": "Löschung der Benutzer aus dem Portal",
   "DeleteGroupUsersSuccessMessage": "Benutzer wurden erfolgreich gelöscht."
 }
