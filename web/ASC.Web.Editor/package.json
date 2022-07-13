@@ -12,10 +12,9 @@
     "build:dev-client": "webpack --config webpack/dev/webpack.dev.client.js",
     "build": "yarn clean && yarn build:client && yarn build:server",
     "start:watch-client": "webpack --config webpack/dev/webpack.dev.client.js --watch --no-cache",
-    "start:watch-server": "webpack --config webpack/dev/webpack.dev.server.js ",
-    "start:server": "yarn build:dev-client && yarn build:dev-server &&  nodemon --watch dist/server.js --exec node dist/server.js",
-    "start-dev": "npm-run-all --parallel start:*",
-    "start-test": "shx rm -rf dist && webpack --mode=development --config webpack/dev/webpack.dev.server.js --config webpack/dev/webpack.dev.client.js && nodemon --watch dist/server.js --exec node dist/server.js"
+    "start:server": "nodemon  --watch src --exec cross-env NODE_ENV=development node src/server/index.js",
+    "start-dev": "shx rm -rf dist && npm-run-all --parallel start:*",
+    "start-test": "shx rm -rf dist && webpack --mode=development --config webpack/dev/webpack.dev.client.js && yarn start:server"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
@@ -24,6 +23,7 @@
     "@babel/plugin-transform-runtime": "^7.18.6",
     "@babel/preset-env": "^7.14.4",
     "@babel/preset-react": "^7.13.13",
+    "@babel/register": "^7.18.6",
     "@loadable/babel-plugin": "^5.13.2",
     "@loadable/component": "^5.15.2",
     "@loadable/server": "^5.15.2",
@@ -33,10 +33,12 @@
     "babel-plugin-styled-components": "^1.12.0",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "dotenv": "^16.0.1",
     "external-remotes-plugin": "^1.0.0",
     "file-loader": "^6.2.0",
+    "html-webpack-plugin": "5.3.2",
     "json-loader": "^0.5.7",
     "nodemon": "^2.0.7",
     "npm-run-all": "^4.1.5",
@@ -47,10 +49,11 @@
     "style-loader": "^3.3.1",
     "styled-components": "^5.3.5",
     "terser-webpack-plugin": "^5.1.2",
-    "webpack": "5.52.0",
-    "webpack-cli": "4.9.2",
+    "webpack": "5.52.1",
+    "webpack-cli": "4.10.0",
     "webpack-dev-server": "4.3.1",
     "webpack-hot-middleware": "^2.25.0",
+    "webpack-manifest-plugin": "^5.0.0",
     "webpack-merge": "^5.7.3",
     "webpack-node-externals": "^3.0.0"
   },
@@ -58,6 +61,7 @@
   "title": "ONLYOFFICE",
   "dependencies": {
     "compression": "^1.7.4",
+    "ejs": "^3.1.8",
     "express": "^4.18.1",
     "i18next-express-middleware": "^2.0.0",
     "i18next-fs-backend": "^1.1.4"
