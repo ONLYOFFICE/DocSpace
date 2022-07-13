@@ -163,12 +163,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return GetFoldersAsync(parentId, default, FilterType.None, false, default, string.Empty);
     }
 
-    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
-        bool withoutTags = false, IEnumerable<string> tagNames = null)
-    {
-        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, withoutTags, tagNames);
-    }
-
     public IAsyncEnumerable<Folder<int>> GetRoomsAsync(int parentId, IEnumerable<FilterType> filterTypes, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, 
         bool withoutTags, bool withoutMe)
     {
@@ -227,125 +221,24 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
 
-    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
-        bool withoutTags = false, IEnumerable<string> tagNames = null)
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
     {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly or FilterType.SpreadsheetsOnly
+            or FilterType.ArchiveOnly or FilterType.MediaOnly)
         {
             return AsyncEnumerable.Empty<Folder<int>>();
         }
-
-        var filter = GetRoomTypeFilter(filterTypes);
-
-        if (orderBy == null)
-        {
-            orderBy = new OrderBy(SortedByType.DateAndTime, false);
-        }
-
-        var searchByTags = tagNames != null && tagNames.Any() && !withoutTags;
-        var searchByFilter = filterTypes.Any() && !filterTypes.Contains(FilterType.None);
+        
+        orderBy ??= new OrderBy(SortedByType.DateAndTime, false);
 
         var q = GetFolderQuery(r => r.ParentId == parentId).AsNoTracking();
 
-        if (searchByFilter && !withSubfolders)
-        {
-            q = q.Where(r => filter.Contains(r.FolderType));
-        }
-
-        if (searchByTags && !withSubfolders)
-        {
-            q = q.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tag) => new { folder, tag.TagId })
-                .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, result.TagId, tagInfo.Name })
-                .Where(r => tagNames.Contains(r.Name))
-                .Select(r => r.folder).Distinct();
-        }
-
-        if (withoutTags && !withSubfolders)
-        {
-            q = q.Where(r => !FilesDbContext.TagLink.Any(t => t.EntryId == r.Id.ToString()));
-        }
-
         if (withSubfolders)
         {
-            var q1 = GetFolderQuery(r => r.ParentId == parentId).AsNoTracking();
-
-            if (searchByFilter)
-            {
-                q1 = q1.Where(r => filter.Contains(r.FolderType));
-            }
-
-            if (searchByTags)
-            {
-                var q2 = q1.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tagLink) => new { folder, tagLink.TagId })
-                    .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tag) => new { result.folder, tag.Name })
-                    .Where(r => tagNames.Contains(r.Name))
-                    .Select(r => r.folder.Id).Distinct();
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q2.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-        }
-
-        if (withSubfolders)
-        {
-            if (searchByTags && searchByFilter)
-            {
-                var q1 = GetFolderQuery(f => f.ParentId == parentId && filter.Contains(f.FolderType)).AsNoTracking()
-                    .Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tagLink) => new { folder, tagLink.TagId })
-                    .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tag) => new { result.folder, tag.Name })
-                    .Where(r => tagNames.Contains(r.Name))
-                    .Select(r => r.folder.Id).Distinct();
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else if (searchByTags)
-            {
-                var q1 = GetFolderQuery(f => f.ParentId == parentId).AsNoTracking()
-                    .Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tagLink) => new { folder, tagLink.TagId })
-                    .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tag) => new { result.folder, tag.Name })
-                    .Where(r => tagNames.Contains(r.Name))
-                    .Select(r => r.folder.Id).Distinct();
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else if (searchByFilter && withoutTags)
-            {
-                var q1 = GetFolderQuery(r => r.ParentId == parentId && filter.Contains(r.FolderType) && !FilesDbContext.TagLink.Any(t  => t.EntryId == r.Id.ToString()))
-                    .AsNoTracking().Select(f => f.Id);
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else if (searchByFilter)
-            {
-                var q1 = GetFolderQuery(r => r.ParentId == parentId && filter.Contains(r.FolderType)).AsNoTracking().Select(f => f.Id);
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else if (withoutTags)
-            {
-                var q1 = GetFolderQuery(r => r.ParentId == parentId && !FilesDbContext.TagLink.Any(t => t.EntryId == r.Id.ToString()))
-                    .AsNoTracking().Select(f => f.Id);
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else
-            {
-                q = GetFolderQuery().AsNoTracking()
+            q = GetFolderQuery().AsNoTracking()
                 .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
                 .Where(r => r.tree.ParentId == parentId && r.tree.Level != 0)
                 .Select(r => r.folder);
-            }
         }
 
         if (!string.IsNullOrEmpty(searchText))
@@ -386,103 +279,23 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
-
-    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, bool withoutTags = false, IEnumerable<string> tagNames = null)
+    
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
     {
-        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, withoutTags, tagNames);
-    }
-
-    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, bool withoutTags = false, IEnumerable<string> tagNames = null)
-    {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly or FilterType.SpreadsheetsOnly
+            or FilterType.ArchiveOnly or FilterType.MediaOnly)
         {
             return AsyncEnumerable.Empty<Folder<int>>();
         }
 
-        var filter = GetRoomTypeFilter(filterTypes);
-
-        var searchByTags = tagNames != null && tagNames.Any() && !withoutTags;
-        var searchByFilter = filterTypes.Any() && !filterTypes.Contains(FilterType.None);
-
         var q = GetFolderQuery(r => folderIds.Contains(r.Id)).AsNoTracking();
-
-        if (searchByFilter && !searchSubfolders)
-        {
-            q = q.Where(r => filter.Contains(r.FolderType));
-        }
-
-        if (searchByTags && !searchSubfolders)
-        {
-            q = q.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tag) => new { folder, tag.TagId })
-                .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, result.TagId, tagInfo.Name })
-                .Where(r => tagNames.Contains(r.Name))
-                .Select(r => r.folder).Distinct();
-        }
-
-        if (withoutTags && !searchSubfolders)
-        {
-            q = q.Where(r => !FilesDbContext.TagLink.Any(t => t.EntryId == r.Id.ToString()));
-        }
 
         if (searchSubfolders)
         {
-            if (searchByTags && searchByFilter)
-            {
-                var q1 = GetFolderQuery(f => folderIds.Contains(f.Id) && filter.Contains(f.FolderType)).AsNoTracking()
-                    .Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tagLink) => new { folder, tagLink.TagId })
-                    .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tag) => new { result.folder, tag.Name })
-                    .Where(r => tagNames.Contains(r.Name))
-                    .Select(r => r.folder.Id).Distinct();
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else if (searchByTags)
-            {
-                var q1 = GetFolderQuery(f => folderIds.Contains(f.Id)).AsNoTracking()
-                    .Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tagLink) => new { folder, tagLink.TagId })
-                    .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tag) => new { result.folder, tag.Name })
-                    .Where(r => tagNames.Contains(r.Name))
-                    .Select(r => r.folder.Id).Distinct();
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else if (searchByFilter && withoutTags)
-            {
-                var q1 = GetFolderQuery(r => folderIds.Contains(r.Id) && filter.Contains(r.FolderType) && !FilesDbContext.TagLink.Any(t => t.EntryId == r.Id.ToString()))
-                    .AsNoTracking().Select(f => f.Id);
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else if (searchByFilter)
-            {
-                var q1 = GetFolderQuery(r => folderIds.Contains(r.Id) && filter.Contains(r.FolderType)).AsNoTracking().Select(f => f.Id);
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else if (withoutTags)
-            {
-                var q1 = GetFolderQuery(r => folderIds.Contains(r.Id) && !FilesDbContext.TagLink.Any(t => t.EntryId == r.Id.ToString()))
-                    .AsNoTracking().Select(f => f.Id);
-
-                q = GetFolderQuery().AsNoTracking().Join(FilesDbContext.Tree, f => f.Id, t => t.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => q1.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
-            else
-            {
-                q = GetFolderQuery().AsNoTracking()
-                    .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => folderIds.Contains(r.tree.ParentId))
-                    .Select(r => r.folder);
-            }
+            q = GetFolderQuery().AsNoTracking()
+                .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
+                .Where(r => folderIds.Contains(r.tree.ParentId))
+                .Select(r => r.folder);
         }
 
         if (!string.IsNullOrEmpty(searchText))
@@ -1619,7 +1432,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 .Select(r => r.folder);
         }
 
-        if (!searchByFilter && !searchByTags && !withoutTags)
+        if (!searchByFilter && !searchByTags && !withoutTags && !withoutMe)
         {
             return GetFolderQuery().AsNoTracking()
                 .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
@@ -1651,7 +1464,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 .Select(r => r.folder);
         }
 
-        if (!searchByFilter && !searchByTags && !withoutTags)
+        if (!searchByFilter && !searchByTags && !withoutTags && !withoutMe)
         {
             return GetFolderQuery().AsNoTracking()
                 .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
