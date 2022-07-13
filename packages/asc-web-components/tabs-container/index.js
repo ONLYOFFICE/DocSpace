@@ -55,7 +55,7 @@ class TabContainer extends Component {
       activeTab === nextState.activeTab &&
       isDisabled === nextProps.isDisabled &&
       onScrollHide === nextState.onScrollHide &&
-      elements.length === nextProps.elements.length
+      elements === nextProps.elements
     ) {
       return false;
     }
