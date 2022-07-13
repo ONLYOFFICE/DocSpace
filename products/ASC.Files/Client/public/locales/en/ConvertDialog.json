@@ -1,12 +1,8 @@
 {
   "FileUploadTitle": "File upload",
   "DocumentConversionTitle": "Document conversion",
-
   "ConversionMessage": "All the documents you upload will be converted into Office Open XML format (docx, xlsx or pptx) for faster editing.",
   "OpenFileMessage": "The document file you open will be converted to the Office Open XML format for quick viewing and editing.",
-
-  "ConversionTitle": "Document uploading",
-  "ConvertAndOpenTitle": "Convert and open document",
   "ConvertedFileDestination": "The file copy will be created in the <strong>{{folderTitle}}</strong> folder",
   "HideMessage": "Do not show this message again",
   "InfoCreateFileIn": "The new '{{fileTitle}}' file is created in '{{folderTitle}}'",

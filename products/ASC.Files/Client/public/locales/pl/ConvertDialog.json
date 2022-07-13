@@ -1,7 +1,5 @@
 {
   "ConversionMessage": "Wszystkie wgrane przez Ciebie dokumenty zostaną przekonwertowane do formatu Office Open XML (docx, xlsx lub pptx), aby umożliwić szybszy podgląd oraz edycję.",
-  "ConversionTitle": "Wgrywanie dokumentu",
-  "ConvertAndOpenTitle": "Przekonwertuj i otwórz dokument",
   "ConvertedFileDestination": "Kopia pliku zostanie umieszczona w folderze <strong>{{folderTitle}}</strong>",
   "HideMessage": "Nie wyświetlaj więcej tego komunikatu",
   "InfoCreateFileIn": "Nowy '{{fileTitle}}' plik zostanie utworzony w '{{folderTitle}}'",

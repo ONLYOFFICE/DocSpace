@@ -1,7 +1,5 @@
 {
   "ConversionMessage": "ເອກະສານທັງໝົດທີ່ທ່ານອັບໂຫລດຈະຖືກປ່ຽນເປັນຮູບແບບ Office Open XML (docx, xlsx ຫຼື pptx) ເພື່ອໃຫ້ແກ້ໄຂໄວຂື້ນ.",
-  "ConversionTitle": "ການອັບໂຫລດເອກະສານ",
-  "ConvertAndOpenTitle": "ແປງເອກະສານແລ້ວເປີດ",
   "ConvertedFileDestination": "ສຳເນົາໄຟລ໌ຈະຖືກສ້າງຢູ່ໃນໂຟນເດີ <strong>{{ folderTitle }}</strong>",
   "HideMessage": "ບໍ່ສະແດງຂໍ້ຄວາມນີ້ອີກຄັ້ງ",
   "InfoCreateFileIn": "ໄຟລ໌ '{{ fileTitle }}' ໃໝ່ຖືກສ້າງຂື້ນໃນ '{{ folderTitle }}'",

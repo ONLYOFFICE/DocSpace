@@ -1,7 +1,5 @@
 {
   "ConversionMessage": "Все документы, которые Вы загружаете, будут сконвертированы в соответствующий формат Office Open XML (docx, xlsx или pptx) для быстрого редактирования.",
-  "ConversionTitle": "Загрузка документа",
-  "ConvertAndOpenTitle": "Конвертация и открытие документа",
   "ConvertedFileDestination": "Копия файла будет создана в папке <strong>{{folderTitle}}</strong>",
   "HideMessage": "Больше не показывать это сообщение",
   "InfoCreateFileIn": "Новый файл '{{fileTitle}}' создан в '{{folderTitle}}'",

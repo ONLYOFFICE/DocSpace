@@ -1,7 +1,5 @@
 {
   "ConversionMessage": "Ձեր վերբեռնած բոլոր փաստաթղթերը կփոխակերպվեն Office Open XML ձևաչափի (docx, xlsx կամ pptx)՝ ավելի արագ խմբագրման համար:",
-  "ConversionTitle": "Փաստաթղթի վերբեռնում",
-  "ConvertAndOpenTitle": "Փոխարկել և բացել փաստաթուղթը",
   "ConvertedFileDestination": "Ֆայլի պատճենը կստեղծվի՝ <strong>{{folderTitle}}</strong> պանակ",
   "HideMessage": "Այլևս չցուցադրել այս ուղերձը",
   "InfoCreateFileIn": "Նոր ֆայլը'{{fileTitle}}' ֆայլը ստեղծվում է '{{folderTitle}}'",
