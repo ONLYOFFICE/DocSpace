@@ -150,3 +150,4 @@ global using static ASC.Web.Core.Files.DocumentService;
 
 global using License = ASC.Core.Billing.License;
 global using SecurityContext = ASC.Core.SecurityContext;
+global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
