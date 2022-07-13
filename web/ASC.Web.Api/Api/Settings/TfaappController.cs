@@ -299,8 +299,9 @@ public class TfaappController : BaseSettingsController
     public object TfaAppNewApp(TfaRequestsDto inDto)
     {
         var id = inDto?.Id ?? Guid.Empty;
-        var isMe = id.Equals(Guid.Empty);
-        var user = _userManager.GetUsers(isMe ? _authContext.CurrentAccount.ID : id);
+        var isMe = id.Equals(Guid.Empty) || id.Equals(_authContext.CurrentAccount.ID);
+
+        var user = _userManager.GetUsers(id);
 
         if (!isMe && !_permissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser))
         {
