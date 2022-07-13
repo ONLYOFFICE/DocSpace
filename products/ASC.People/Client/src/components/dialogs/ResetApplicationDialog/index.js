@@ -13,11 +13,11 @@ class ResetApplicationDialogComponent extends React.Component {
   }
 
   resetApp = async () => {
-    const { resetTfaApp, history, id } = this.props;
-
+    const { resetTfaApp, id, onClose } = this.props;
+    onClose && onClose();
     try {
       const res = await resetTfaApp(id);
-      if (res) history.push(res);
+      if (res) window.location = res;
     } catch (e) {
       toastr.error(e);
     }
