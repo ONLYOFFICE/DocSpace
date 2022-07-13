@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Text.Json.Serialization;
+
 namespace ASC.IPSecurity;
 
 [Serializable]
@@ -31,6 +33,7 @@ public class IPRestrictionsSettings : ISettings<IPRestrictionsSettings>
 {
     public bool Enable { get; set; }
 
+    [JsonIgnore]
     public Guid ID => new Guid("{2EDDDF64-F792-4498-A638-2E3E6EBB13C9}");
 
     public IPRestrictionsSettings GetDefault()

@@ -31,6 +31,7 @@ public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
     [JsonPropertyName("enbaled")]
     public bool EnabledSetting { get; set; }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{FCF002BC-EC4B-4DAB-A6CE-BDE0ABDA44D3}"); }
