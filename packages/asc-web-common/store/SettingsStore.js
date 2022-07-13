@@ -127,6 +127,8 @@ class SettingsStore {
   helpLink = null;
   hotkeyPanelVisible = false;
 
+  colorScheme = 1;
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -524,6 +526,10 @@ class SettingsStore {
 
   setHotkeyPanelVisible = (hotkeyPanelVisible) => {
     this.hotkeyPanelVisible = hotkeyPanelVisible;
+  };
+
+  setColorScheme = (colorScheme) => {
+    this.colorScheme = colorScheme;
   };
 }
 
