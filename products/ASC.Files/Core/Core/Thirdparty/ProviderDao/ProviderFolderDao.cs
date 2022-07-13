@@ -382,7 +382,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folderDao.IsEmptyAsync(selector.ConvertId(folderId));
     }
 
-    public Task<bool> UseTrashForRemoveAsync(Folder<string> folder)
+    public bool UseTrashForRemoveAsync(Folder<string> folder)
     {
         var selector = GetSelector(folder.Id);
         var folderDao = selector.GetFolderDao(folder.Id);

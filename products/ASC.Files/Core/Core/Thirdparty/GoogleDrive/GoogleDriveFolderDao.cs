@@ -463,9 +463,9 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         return entries.Count == 0;
     }
 
-    public Task<bool> UseTrashForRemoveAsync(Folder<string> folder)
+    public bool UseTrashForRemoveAsync(Folder<string> folder)
     {
-        return Task.FromResult(false);
+        return false;
     }
 
     public bool UseRecursiveOperation(string folderId, string toRootFolderId)

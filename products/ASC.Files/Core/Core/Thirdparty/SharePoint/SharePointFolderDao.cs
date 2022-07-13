@@ -395,9 +395,9 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return folder.ItemCount == 0;
     }
 
-    public Task<bool> UseTrashForRemoveAsync(Folder<string> folder)
+    public bool UseTrashForRemoveAsync(Folder<string> folder)
     {
-        return Task.FromResult(false);
+        return false;
     }
 
     public bool UseRecursiveOperation<TTo>(string folderId, TTo toRootFolderId)

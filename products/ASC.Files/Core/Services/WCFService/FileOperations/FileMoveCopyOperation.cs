@@ -42,7 +42,7 @@ class FileMoveCopyOperation : ComposeFileOperation<FileMoveCopyOperationData<str
 
 internal class FileMoveCopyOperationData<T> : FileOperationData<T>
 {
-    public string ThirdpartyFolderId { get; }
+    public string ThirdPartyFolderId { get; }
     public int DaoFolderId { get; }
     public bool Copy { get; }
     public FileConflictResolveType ResolveType { get; }
@@ -55,7 +55,7 @@ internal class FileMoveCopyOperationData<T> : FileOperationData<T>
         {
             if (!int.TryParse(toFolderId.GetString(), out var i))
             {
-                ThirdpartyFolderId = toFolderId.GetString();
+                ThirdPartyFolderId = toFolderId.GetString();
             }
             else
             {
@@ -90,7 +90,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         : base(serviceProvider, data)
     {
         _daoFolderId = data.DaoFolderId;
-        _thirdpartyFolderId = data.ThirdpartyFolderId;
+        _thirdpartyFolderId = data.ThirdPartyFolderId;
         _copy = data.Copy;
         _resolveType = data.ResolveType;
 
