@@ -37,6 +37,7 @@ public class FolderDto<T> : FileEntryDto<T>
     public IEnumerable<string> Tags { get; set; }
     public Logo Logo { get; set; }
     public bool Pinned { get; set; }
+    public bool Private { get; set; }
 
     public FolderDto() { }
 
@@ -150,6 +151,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         result.IsFavorite = folder.IsFavorite.NullIfDefault();
         result.New = folder.NewForMe;
         result.Pinned = folder.Pinned;
+        result.Private = folder.Private;
 
         return result;
     }

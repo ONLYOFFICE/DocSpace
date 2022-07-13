@@ -559,7 +559,7 @@ public class FileStorageService<T> //: IFileStorageService
             newFolder.Title = title;
             newFolder.ParentId = parent.Id;
             newFolder.FolderType = folderType;
-            newFolder.Private = privacy;
+            newFolder.Private = parent.Private ? parent.Private : privacy;
 
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
