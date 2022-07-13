@@ -8,6 +8,9 @@ import globalColors from "@appserver/components/utils/globalColors";
 import styled from "styled-components";
 import TabContainer from "@appserver/components/tabs-container";
 import Preview from "./settingsAppearance/preview";
+
+import ColorSchemeDialog from "./sub-components/colorSchemeDialog";
+
 const StyledComponent = styled.div`
   .container {
     display: flex;
@@ -39,10 +42,23 @@ const StyledComponent = styled.div`
   #color-scheme_7 {
     background: ${globalColors.colorSchemeDefault_7};
   }
+
+  .add-theme {
+    background: #d0d5da;
+    padding-top: 16px;
+    padding-left: 16px;
+    box-sizing: border-box;
+  }
 `;
 
 const Appearance = (props) => {
+  const { setColorScheme, colorScheme } = props;
+
   const [selectedColor, setSelectedColor] = useState(1);
+
+  const [previewTheme, setPreviewTheme] = useState("Light theme");
+
+  const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
   const checkImg = <img src="/static/images/check.white.svg" />;
 
@@ -51,18 +67,20 @@ const Appearance = (props) => {
       {
         key: "0",
         title: "Light theme",
-        content: <Preview selectedColor={selectedColor} />,
+        content: (
+          <Preview previewTheme={previewTheme} selectedColor={selectedColor} />
+        ),
       },
       {
         key: "1",
         title: "Dark theme",
-        content: <Preview selectedColor={selectedColor} />,
+        content: (
+          <Preview previewTheme={previewTheme} selectedColor={selectedColor} />
+        ),
       },
     ],
-    [selectedColor]
+    [selectedColor, previewTheme]
   );
-
-  useEffect(() => {}, [selectedColor]);
 
   const onColorSelection = (e) => {
     if (!e.target.id) return;
@@ -75,10 +93,31 @@ const Appearance = (props) => {
     return selectedColor && selectedColor === colorNumber && checkImg;
   };
 
+  const onChangePreviewTheme = (e) => {
+    setPreviewTheme(e.title);
+  };
+
+  const onSaveSelectedColor = () => {
+    setColorScheme(selectedColor);
+  };
+
+  const onClickEdit = () => {
+    console.log("onClickEdit");
+
+    setShowColorSchemeDialog(true);
+  };
+
+  // TODO: true?
+  const onCloseEdit = () => {
+    setShowColorSchemeDialog(false);
+  };
+
+  console.log("colorScheme", colorScheme);
+
   return (
     <StyledComponent>
       <div>Color</div>
-      <div>Header color is displayed only when light theme is applied</div>
+
       <div className="container">
         <div id="color-scheme_1" className="box" onClick={onColorSelection}>
           {onShowCheck(1)}
@@ -101,19 +140,29 @@ const Appearance = (props) => {
         <div id="color-scheme_7" className="box" onClick={onColorSelection}>
           {onShowCheck(7)}
         </div>
+        <div className="add-theme box">
+          <img src="/static/images/plus.theme.svg" />
+        </div>
       </div>
-      <div>Preview</div>
-      <TabContainer elements={array_items} />
-      <Button
-        label="Save"
-        onClick={function noRefCheck() {}}
-        primary
-        size="small"
+
+      <div onClick={onClickEdit}>Edit color scheme</div>
+      <ColorSchemeDialog
+        visible={showColorSchemeDialog}
+        onClose={onCloseEdit}
       />
+      <div>Preview</div>
+      <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />
+      <Button label="Save" onClick={onSaveSelectedColor} primary size="small" />
     </StyledComponent>
   );
 };
 
-export default inject(({ auth, setup, common }) => {})(
-  withLoading(withTranslation(["Settings", "Common"])(observer(Appearance)))
-);
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { colorScheme, setColorScheme } = settingsStore;
+
+  return {
+    colorScheme,
+    setColorScheme,
+  };
+})(observer(Appearance));
