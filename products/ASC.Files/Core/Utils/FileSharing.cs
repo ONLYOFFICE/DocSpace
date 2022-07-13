@@ -26,6 +26,8 @@
 
 using ASC.Files.Core.Helpers;
 
+using Folder = DocuSign.eSign.Model.Folder;
+
 namespace ASC.Web.Files.Utils;
 
 [Scope]
@@ -83,6 +85,11 @@ public class FileSharingAceHelper<T>
         }
 
         if (!await _fileSharingHelper.CanSetAccessAsync(entry, invite))
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        }
+        
+        if (entry is Folder<T> { Private: true } && advancedSettings is not { AllowSharingPrivateRoom: true })
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }

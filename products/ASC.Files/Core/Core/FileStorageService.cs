@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.ApiModels;
+
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -77,9 +79,9 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly TenantManager _tenantManager;
     private readonly FileTrackerHelper _fileTracker;
     private readonly IEventBus _eventBus;
-
     private readonly EntryStatusManager _entryStatusManager;
     private readonly ILogger _logger;
+    private readonly FileShareParamsHelper _fileShareParamsHelper;
 
     public FileStorageService(
         Global global,
@@ -129,7 +131,8 @@ public class FileStorageService<T> //: IFileStorageService
         MessageService messageService,
         IServiceScopeFactory serviceScopeFactory,
         ThirdPartySelector thirdPartySelector,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        FileShareParamsHelper fileShareParamsHelper)
     {
         _global = global;
         _globalStore = globalStore;
@@ -179,6 +182,7 @@ public class FileStorageService<T> //: IFileStorageService
         _serviceScopeFactory = serviceScopeFactory;
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;
+        _fileShareParamsHelper = fileShareParamsHelper;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -417,16 +421,21 @@ public class FileStorageService<T> //: IFileStorageService
             throw new ArgumentException();
         }
 
-        return InternalCreateNewFolderAsync(parentId, title, FolderType.DEFAULT);
+        return InternalCreateNewFolderAsync(parentId, title);
     }
 
-    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool privacy)
+    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool privacy, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
+        if (privacy && (share == null || !share.Any()))
+        {
+            throw new ArgumentNullException(nameof(share));
+        }
+
         var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
 
-        return roomType switch
+        var room =  roomType switch
         {
             RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, privacy),
             RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, privacy),
@@ -435,9 +444,32 @@ public class FileStorageService<T> //: IFileStorageService
             RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, privacy),
             _ => await CreateCustomRoomAsync(title, parentId, privacy),
         };
+
+        if (privacy)
+        {
+            var list = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject));
+            
+            var advancedSettings = new AceAdvancedSettingsWrapper
+            {
+                AllowSharingPrivateRoom = true
+            };
+            
+            var aceCollection = new AceCollection<T>
+            {
+                Folders = new[] { room.Id },
+                Files = Array.Empty<T>(),
+                Aces = list,
+                Message = sharingMessage,
+                AdvancedSettings = advancedSettings
+            };
+            
+            await SetAceObjectAsync(aceCollection, notify);
+        }
+
+        return room;
     }
 
-    public async Task<Folder<T>> CreateThirdpartyRoomAsync(string title, RoomType roomType, T parentId, bool privacy)
+    public async Task<Folder<T>> CreateThirdPartyRoomAsync(string title, RoomType roomType, T parentId, bool privacy)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
         ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
