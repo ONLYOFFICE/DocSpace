@@ -1409,7 +1409,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private IQueryable<DbFolder> SetFilterByTypes(IQueryable<DbFolder> q, IEnumerable<FilterType> filterTypes)
     {
-        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None))
+        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None) && !filterTypes.Contains(FilterType.FoldersOnly))
         {
             var filter = filterTypes.Select(f => f switch
             {

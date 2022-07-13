@@ -232,6 +232,126 @@ public partial class TestFilesMigration : Migration
             values: new object[] { 16, 6, 0 });
 
         migrationBuilder.InsertData(
+            table: "files_folder",
+            columns: new[] { "id", "parent_id", "title", "folder_type", "create_by", "create_on", "modified_by", "modified_on", "tenant_id", "foldersCount", "filesCount" },
+            values: new object[] { 17, 0, "virtualrooms", 14, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 1, 0, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 17, 17, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_bunch_objects",
+            columns: new[] { "tenant_id", "right_node", "left_node" },
+            values: new object[] { 1, "files/virtualrooms/", "17" });
+
+        migrationBuilder.InsertData(
+            table: "files_folder",
+            columns: new[] { "id", "parent_id", "title", "folder_type", "create_by", "create_on", "modified_by", "modified_on", "tenant_id", "foldersCount", "filesCount" },
+            values: new object[] { 18, 17, "Room_Title", 19, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 1, 0, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 18, 18, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 18, 17, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder",
+            columns: new[] { "id", "parent_id", "title", "folder_type", "create_by", "create_on", "modified_by", "modified_on", "tenant_id", "foldersCount", "filesCount" },
+            values: new object[] { 19, 17, "Room_Title", 19, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 1, 0, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 19, 19, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 19, 17, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder",
+            columns: new[] { "id", "parent_id", "title", "folder_type", "create_by", "create_on", "modified_by", "modified_on", "tenant_id", "foldersCount", "filesCount" },
+            values: new object[] { 20, 17, "Room_Title", 19, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 1, 0, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 20, 20, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 20, 17, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder",
+            columns: new[] { "id", "parent_id", "title", "folder_type", "create_by", "create_on", "modified_by", "modified_on", "tenant_id", "foldersCount", "filesCount" },
+            values: new object[] { 21, 17, "Room_Title", 20, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 1, 0, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 21, 21, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 21, 17, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder",
+            columns: new[] { "id", "parent_id", "title", "folder_type", "create_by", "create_on", "modified_by", "modified_on", "tenant_id", "foldersCount", "filesCount" },
+            values: new object[] { 22, 23, "Room_Title", 19, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 1, 0, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 22, 22, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 22, 23, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder",
+            columns: new[] { "id", "parent_id", "title", "folder_type", "create_by", "create_on", "modified_by", "modified_on", "tenant_id", "foldersCount", "filesCount" },
+            values: new object[] { 23, 17, "arhive", 20, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 1, 0, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 23, 23, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 23, 17, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder",
+            columns: new[] { "id", "parent_id", "title", "folder_type", "create_by", "create_on", "modified_by", "modified_on", "tenant_id", "foldersCount", "filesCount" },
+            values: new object[] { 24, 17, "Room_Title", 19, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 1, 0, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 24, 24, 0 });
+
+        migrationBuilder.InsertData(
+            table: "files_folder_tree",
+            columns: new[] { "folder_id", "parent_id", "level" },
+            values: new object[] { 24, 17, 0 });
+
+        migrationBuilder.InsertData(
             table: "files_file",
             columns: new[] {
                 "id", "version", "version_group", "current_version", "folder_id", "title", "content_length", "file_status", "category", "create_by",
@@ -326,15 +446,60 @@ public partial class TestFilesMigration : Migration
             values: new object[]{
                 1, "16", 1, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5", 1, new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842)
             });
-        /*
+        
         migrationBuilder.InsertData(
             table: "files_tag",
             columns: new[]{
                 "id","tenant_id","name","owner","flag",
             },
             values: new object[]{
-                1, 1, "recent", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", 16
-            });*/
+                1, 1, "name1", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", 64
+            });
+
+        migrationBuilder.InsertData(
+            table: "files_tag_link",
+            columns: new[]{
+                "tenant_id","tag_id","entry_type","entry_id","create_by","create_on","tag_count",
+            },
+            values: new object[]{
+                1, 1, 1, "24", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 0
+            });
+
+        migrationBuilder.InsertData(
+            table: "files_tag",
+            columns: new[]{
+                "id","tenant_id","name","owner","flag",
+            },
+            values: new object[]{
+                2, 1, "name2", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", 64
+            });
+
+        migrationBuilder.InsertData(
+            table: "files_tag_link",
+            columns: new[]{
+                "tenant_id","tag_id","entry_type","entry_id","create_by","create_on","tag_count",
+            },
+            values: new object[]{
+                1, 2, 1, "24", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 0
+            });
+
+        migrationBuilder.InsertData(
+            table: "files_tag",
+            columns: new[]{
+                "id","tenant_id","name","owner","flag",
+            },
+            values: new object[]{
+                3, 1, "pin", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", 128
+            });
+
+        migrationBuilder.InsertData(
+            table: "files_tag_link",
+            columns: new[]{
+                "tenant_id","tag_id","entry_type","entry_id","create_by","create_on","tag_count",
+            },
+            values: new object[]{
+                1, 3, 1, "21", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(1842), 0
+            });
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

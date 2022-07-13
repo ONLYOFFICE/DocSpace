@@ -45,7 +45,6 @@ public class DbLoginEventsManager
         (int)MessageAction.LoginSuccessViaApiTfa
     };
 
-    private readonly ICache _cache;
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
     private readonly IMapper _mapper;
@@ -54,14 +53,11 @@ public class DbLoginEventsManager
     private readonly Lazy<MessagesContext> _lazyLoginEventContext;
 
     public DbLoginEventsManager(
-        ICache cache,
         TenantManager tenantManager,
         AuthContext authContext,
         DbContextManager<MessagesContext> dbContextManager,
-        TenantUtil tenantUtil,
         IMapper mapper)
     {
-        _cache = cache;
         _tenantManager = tenantManager;
         _authContext = authContext;
         _mapper = mapper;
@@ -70,23 +66,11 @@ public class DbLoginEventsManager
 
     public async Task<List<int>> GetLoginEventIds(int tenantId, Guid userId)
     {
-        var commonKey = GetCacheKey(tenantId, userId);
-        var cacheKeys = _cache.Get<List<int>>(commonKey);
-        if (cacheKeys != null)
-        {
-            return cacheKeys;
-        }
-
         var date = DateTime.UtcNow.AddYears(-1);
         var resultList = await LoginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action) && r.Date >= date && r.Active)
             .Select(r => r.Id)
             .ToListAsync();
-
-        if (resultList != null)
-        {
-            _cache.Insert(commonKey, resultList, _expirationTimeout);
-        }
 
         return resultList;
     }
@@ -174,7 +158,6 @@ public class DbLoginEventsManager
     public void ResetCache(int tenantId, Guid userId)
     {
         var key = GetCacheKey(tenantId, userId);
-        _cache.Remove(key);
     }
 
     private string GetCacheKey(int tenantId, Guid userId)
