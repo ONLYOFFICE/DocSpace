@@ -569,6 +569,7 @@ class SectionBodyContent extends React.PureComponent {
             onClose={this.toggleResetAppDialogVisible}
             resetTfaApp={this.props.resetTfaApp}
             id={profile.id}
+            logout={this.props.logout}
           />
         )}
         {backupCodesDialogVisible && (
@@ -588,7 +589,7 @@ class SectionBodyContent extends React.PureComponent {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => {
-    const { isAdmin, userStore, settingsStore, tfaStore } = auth;
+    const { isAdmin, userStore, settingsStore, tfaStore, logout } = auth;
     const { user: viewer, changeTheme } = userStore;
 
     const {
@@ -649,6 +650,7 @@ export default withRouter(
       changeTheme,
       selectedTheme: viewer.theme,
       setIsLoading: loadingStore.setIsLoading,
+      logout,
     };
   })(
     observer(
