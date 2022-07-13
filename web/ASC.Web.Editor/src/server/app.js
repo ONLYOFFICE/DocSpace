@@ -7,10 +7,7 @@ const compression = require("compression");
 const i18nextMiddleware = require("i18next-express-middleware");
 const i18next = require("i18next");
 const Backend = require("i18next-fs-backend");
-
-// const webpack = require("webpack");
-// const WebpackDevMiddleware = require("webpack-dev-middleware");
-// const WebpackHotMiddleware = require("webpack-hot-middleware");
+const process = require("process");
 
 const pkg = require("../../package.json");
 const title = pkg.title;
@@ -55,20 +52,6 @@ i18next.use(Backend).init({
   },
 });
 
-// if (process.env.NODE_ENV === "development") {
-//   console.log("its work dev!!!!!");
-//   const webpackConfig = require("../../webpack/dev/webpack.dev.client.js");
-//   const compiler = webpack(webpackConfig);
-//   app.use(
-//     WebpackDevMiddleware(compiler, {
-//       publicPath: webpackConfig.output.publicPath,
-//       serverSideRender: true,
-//     })
-//   );
-
-//   app.use(WebpackHotMiddleware(compiler));
-// }
-
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -91,7 +74,7 @@ app.get("/products/files/doceditor", async (req, res) => {
     path.join(process.cwd(), "dist/manifest.json"),
     "utf-8"
   );
-  console.log("its get");
+
   const assets = JSON.parse(manifest);
   const component = ReactDOMServer.renderToString(React.createElement(App));
 
@@ -125,6 +108,26 @@ app.get("/products/files/doceditor", async (req, res) => {
   });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server is listening on port <http://localhost:${port}>`);
 });
+
+if (process.env.NODE_ENV === "development") {
+  const ws = require("./websocket");
+
+  const wss = ws(server);
+  const manifestFile = path.resolve(process.cwd(), "dist/manifest.json");
+
+  let fsWait = false;
+  fs.watch(manifestFile, (event, filename) => {
+    if (filename && event === "change") {
+      if (fsWait) return;
+      fsWait = true;
+      fsWait = setTimeout(() => {
+        fsWait = false;
+      }, 100);
+
+      wss.broadcast("reload");
+    }
+  });
+}

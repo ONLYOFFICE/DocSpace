@@ -1,19 +1,20 @@
 const { merge } = require("webpack-merge");
 const path = require("path");
 const baseConfig = require("../webpack.base.js");
-const LoadablePlugin = require("@loadable/webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const HotModuleReplacementPlugin = require("webpack")
   .HotModuleReplacementPlugin;
+const DefinePlugin = require("webpack").DefinePlugin;
+const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
+const minifyJson = require("@appserver/common/utils/minifyJson");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 const { proxyURL } = AppServerConfig;
 const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
-const pkg = require("../../package.json");
-const homepage = pkg.homepage;
 
 for (let dep in sharedDeps) {
   sharedDeps[dep].eager = true;
@@ -23,32 +24,12 @@ const clientConfig = {
   target: "web",
   mode: "development",
   entry: {
-    client: [
-      "webpack-hot-middleware/client?reload=true&noInfo=true&path=//localhost:5013/__webpack_hmr",
-      "./src/client/index.js",
-    ],
+    client: ["./src/client/index.js"],
   },
   devtool: "inline-cheap-module-source-map",
-  devServer: {
-    //historyApiFallback: true,
-    hot: false,
-    historyApiFallback: {
-      // Paths with dots should still use the history fallback.
-      // See https://github.com/facebook/create-react-app/issues/387.
-      disableDotRule: true,
-      index: homepage,
-    },
-    static: {
-      directory: path.join(__dirname, "dist"),
-      publicPath: homepage,
-    },
-    devMiddleware: {
-      publicPath: homepage,
-    },
-    port: 5013,
-  },
+
   output: {
-    path: path.resolve(process.cwd(), "dist/client"),
+    path: path.resolve(process.cwd(), "dist"),
     filename: "static/js/[name].[contenthash].bundle.js",
     publicPath: "/products/files/doceditor/",
     chunkFilename: "static/js/[id].[contenthash].js",
@@ -60,23 +41,7 @@ const clientConfig = {
     ...baseConfig.module,
   },
   plugins: [
-    new CopyPlugin({
-      patterns: [
-        {
-          from: "public",
-          globOptions: {
-            dot: true,
-            gitignore: true,
-          },
-        },
-      ],
-    }),
-    //loadable plugin will create all the chunks
-    new LoadablePlugin({
-      outputAsset: false, // to avoid writing loadable-stats in the same output as client
-      writeToDisk: true,
-      filename: path.resolve(process.cwd(), "dist/client/loadable-stats.json"),
-    }),
+    new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "editor",
       filename: "remoteEntry.js",
@@ -93,6 +58,24 @@ const clientConfig = {
       shared: { ...sharedDeps },
     }),
     new ExternalTemplateRemotesPlugin(),
+    new CopyPlugin({
+      patterns: [
+        {
+          context: path.resolve(process.cwd(), "public"),
+          from: "images/**/*.*",
+        },
+        {
+          context: path.resolve(process.cwd(), "public"),
+          from: "locales/**/*.json",
+          transform: minifyJson,
+        },
+      ],
+    }),
+    new WebpackManifestPlugin(),
+    new DefinePlugin({
+      IS_DEVELOPMENT: process.env.NODE_ENV === "development",
+      PORT: process.env.PORT,
+    }),
     new HotModuleReplacementPlugin(),
   ],
   optimization: {

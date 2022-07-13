@@ -1,18 +1,19 @@
 import React, { Suspense } from "react";
-import { hydrate, render } from "react-dom";
+import { hydrate } from "react-dom";
 import { registerSW } from "@appserver/common/sw/helper";
-import App from "./App.js";
+import { App } from "./App.js";
 import { useSSR } from "react-i18next";
 import useMfScripts from "../helpers/useMfScripts";
 import initDesktop from "../helpers/initDesktop";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import ErrorBoundary from "../components/ErrorBoundary";
-import { loadableReady } from "@loadable/component";
+import pkg from "../../package.json";
 
 const propsObj = window.__ASC_INITIAL_STATE__;
 const initialI18nStore = window.initialI18nStore;
 const initialLanguage = window.initialLanguage;
+const socketPath = pkg.socketPath;
 
 const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
 
@@ -44,28 +45,36 @@ const AppWrapper = () => {
   );
 };
 
-//hydrate(<AppWrapper />, document.getElementById("root"));
+hydrate(<AppWrapper />, document.getElementById("root"));
 
-const renderApp = () => {
-  const rootContent = document.getElementById("root");
-  const renderMethod = module.hot ? render : hydrate;
+if (IS_DEVELOPMENT) {
+  const port = PORT || 5013;
+  const ws = new WebSocket(`ws://localhost:${port}${socketPath}`);
+  let isErrorConnection = false;
 
-  if (typeof window !== undefined) {
-    window.testWork = true;
-  }
-  renderMethod(
-    <AppWrapper />,
+  ws.onopen = (event) => {
+    console.log("[editor-dev] Socket is connected. Live reload enabled");
+  };
 
-    rootContent
-  );
-};
+  ws.onmessage = function (event) {
+    if (event.data === "reload") {
+      console.log("[editor-dev] App updated. Reloading...");
+      location.reload();
+    }
+  };
 
-loadableReady(() => {
-  renderApp();
-});
+  ws.onclose = function (event) {
+    console.log("close");
+    console.log("[editor-dev] Socket is disconnected! Reloading...");
+    setTimeout(() => {
+      !isErrorConnection && location.reload();
+    }, 1000);
+  };
 
-if (module.hot) {
-  module.hot.accept();
+  ws.onerror = (event) => {
+    isErrorConnection = true;
+    console.log("[editor-dev] Socket connect error!");
+  };
 }
 
 registerSW();
