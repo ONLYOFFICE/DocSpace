@@ -29,6 +29,7 @@ namespace ASC.Web.Core.Utility;
 [Serializable]
 public sealed class PasswordSettings : ISettings<PasswordSettings>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("aa93a4d1-012d-4ccd-895a-e094e809c840"); }

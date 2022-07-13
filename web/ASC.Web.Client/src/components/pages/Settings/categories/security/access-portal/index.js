@@ -7,6 +7,9 @@ import { MainContainer } from "../StyledSecurity";
 import TfaSection from "./tfa";
 import PasswordStrengthSection from "./passwordStrength";
 import TrustedMailSection from "./trustedMail";
+import IpSecuritySection from "./ipSecurity";
+import AdminMessageSection from "./adminMessage";
+import SessionLifetimeSection from "./sessionLifetime";
 import MobileView from "./mobileView";
 import CategoryWrapper from "../sub-components/category-wrapper";
 import { size } from "@appserver/components/utils/device";
@@ -56,6 +59,30 @@ const AccessPortal = (props) => {
         tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
       />
       <TrustedMailSection />
+      <hr />
+      <CategoryWrapper
+        t={t}
+        title={t("IPSecurity")}
+        tooltipContent={t("IPSecurityDescription")}
+        tooltipTitle={t("IPSecurityDescription")}
+      />
+      <IpSecuritySection />
+      <hr />
+      <CategoryWrapper
+        t={t}
+        title={t("AdminsMessage")}
+        tooltipTitle={t("AdminsMessageDescription")}
+        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+      />
+      <AdminMessageSection />
+
+      <hr />
+      <CategoryWrapper
+        t={t}
+        title={t("SessionLifetime")}
+        tooltipTitle={t("SessionLifetimeDescription")}
+      />
+      <SessionLifetimeSection />
     </MainContainer>
   );
 };

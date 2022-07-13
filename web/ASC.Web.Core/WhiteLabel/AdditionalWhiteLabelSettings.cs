@@ -78,6 +78,7 @@ public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettin
                 LicenseAgreementsUrl == defaultSettings.LicenseAgreementsUrl;
     }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{0108422F-C05D-488E-B271-30C4032494DA}"); }
