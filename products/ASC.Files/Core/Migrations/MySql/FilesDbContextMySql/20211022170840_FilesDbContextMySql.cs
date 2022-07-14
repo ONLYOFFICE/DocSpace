@@ -208,7 +208,10 @@ public partial class FilesDbContextMySql : Migration
                 create_on = table.Column<DateTime>(type: "datetime", nullable: false),
                 url = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
-                tenant_id = table.Column<int>(type: "int", nullable: false)
+                tenant_id = table.Column<int>(type: "int", nullable: false),
+                folder_id = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                room_type = table.Column<int>(type: "int", nullable: false)
             },
             constraints: table =>
             {
