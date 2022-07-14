@@ -41,13 +41,8 @@ public class BillingClient
 
 
     public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
-        : this(false, configuration, httpClientFactory)
     {
-    }
-
-    public BillingClient(bool test, IConfiguration configuration, IHttpClientFactory httpClientFactory)
-    {
-        _test = test;
+        _test = Convert.ToBoolean(configuration["core:payment:test"] ?? "false");
         _httpClientFactory = httpClientFactory;
         var billingDomain = configuration["core:payment:url"];
 

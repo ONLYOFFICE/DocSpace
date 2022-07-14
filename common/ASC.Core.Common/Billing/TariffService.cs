@@ -71,7 +71,6 @@ public class TariffService : ITariffService
     private readonly ILogger<TariffService> _logger;
     private readonly IQuotaService _quotaService;
     private readonly ITenantService _tenantService;
-    private readonly bool _test;
     private readonly int _paymentDelay;
     private TimeSpan _cacheExpiration;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -112,7 +111,6 @@ public class TariffService : ITariffService
         _billingClient = billingClient;
         _httpClientFactory = httpClientFactory;
         _coreBaseSettings = coreBaseSettings;
-        _test = configuration["core:payment:test"] == "true";
         int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
 
         _paymentDelay = paymentDelay;
@@ -639,7 +637,7 @@ public class TariffService : ITariffService
     {
         try
         {
-            return new BillingClient(_test, _configuration, _httpClientFactory);
+            return new BillingClient(_configuration, _httpClientFactory);
         }
         catch (InvalidOperationException ioe)
         {
