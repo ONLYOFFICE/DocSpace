@@ -424,17 +424,21 @@ export function getTfaSecretKeyAndQR(confirmKey = null) {
   return request(options);
 }
 
-export function validateTfaCode(code) {
+export function validateTfaCode(code, confirmKey = null) {
   const data = {
     code,
   };
 
-  return request({
+  const options = {
     method: "post",
     url: "/settings/tfaapp/validate",
     skipLogout: true,
     data,
-  });
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
 }
 
 export function getBackupStorage() {
