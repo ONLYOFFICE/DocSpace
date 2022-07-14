@@ -8,10 +8,11 @@ const i18nextMiddleware = require("i18next-express-middleware");
 const i18next = require("i18next");
 const Backend = require("i18next-fs-backend");
 const process = require("process");
-
+const { ServerStyleSheet } = require("styled-components");
 const pkg = require("../../package.json");
 const title = pkg.title;
 const { App } = require("../client/App");
+const initDocEditor = require("./lib/initDocEditor");
 
 const loadPath = (lng, ns) => {
   let resourcePath = path.resolve(
@@ -74,13 +75,16 @@ app.get("/products/files/doceditor", async (req, res) => {
     path.join(process.cwd(), "dist/manifest.json"),
     "utf-8"
   );
+  const initialState = await initDocEditor(req);
 
   const assets = JSON.parse(manifest);
-  const component = ReactDOMServer.renderToString(React.createElement(App));
-
-  const userLng = "en"; //props?.user?.cultureName || "en";
+  const sheet = new ServerStyleSheet();
+  const component = ReactDOMServer.renderToString(
+    sheet.collectStyles(React.createElement(App))
+  );
+  const styleTags = sheet.getStyleTags();
+  const userLng = initialState?.props?.user?.cultureName || "en";
   const initialI18nStore = {};
-  const initialState = { test: "test" };
 
   i18next.changeLanguage(userLng).then(() => {
     const initialLanguage = userLng;
@@ -96,6 +100,7 @@ app.get("/products/files/doceditor", async (req, res) => {
 
     const parsedI18nStore = JSON.stringify(initialI18nStore);
     const parsedInitialState = JSON.stringify(initialState);
+    const docApiUrl = initialState?.props?.docApiUrl || "";
 
     res.render("editor", {
       assets,
@@ -104,6 +109,8 @@ app.get("/products/files/doceditor", async (req, res) => {
       parsedI18nStore,
       initialLanguage,
       parsedInitialState,
+      docApiUrl,
+      styleTags,
     });
   });
 });

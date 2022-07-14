@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <%- styleTags %>
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -18,6 +19,7 @@
     <!-- Tell iOS it's a PWA -->
     <!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
     <link rel="apple-touch-icon" href="/appIcon-180.png" />
+    
     <style type="text/css">
       .loadmask {
         left: 0;
@@ -344,5 +346,6 @@
 
       console.log("It's Editor INIT");
     </script>
+    <script defer type='text/javascript' id='scripDocServiceAddress' src="<%= docApiUrl%>" async></script>
   </body>
 </html>
