@@ -60,6 +60,15 @@ const Appearance = (props) => {
 
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
+  const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
+    "Edit color scheme"
+  );
+
+  const [
+    selectedAccentColorAndButtonsMain,
+    setSelectedAccentColorAndButtonsMain,
+  ] = useState({});
+
   const checkImg = <img src="/static/images/check.white.svg" />;
 
   const array_items = useMemo(
@@ -102,17 +111,31 @@ const Appearance = (props) => {
   };
 
   const onClickEdit = () => {
-    console.log("onClickEdit");
+    // TODO: give store Accent color and Buttons main to id
+    setSelectedAccentColorAndButtonsMain({
+      accentColor: "#F97A0B",
+      buttonsMain: "#FF9933",
+    });
+
+    setHeaderColorSchemeDialog("Edit color scheme");
 
     setShowColorSchemeDialog(true);
   };
 
-  // TODO: true?
   const onCloseEdit = () => {
     setShowColorSchemeDialog(false);
   };
 
-  console.log("colorScheme", colorScheme);
+  const onAddTheme = () => {
+    setSelectedAccentColorAndButtonsMain({
+      addColor:
+        "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA",
+    });
+
+    setHeaderColorSchemeDialog("New color scheme");
+
+    setShowColorSchemeDialog(true);
+  };
 
   return (
     <StyledComponent>
@@ -140,7 +163,7 @@ const Appearance = (props) => {
         <div id="color-scheme_7" className="box" onClick={onColorSelection}>
           {onShowCheck(7)}
         </div>
-        <div className="add-theme box">
+        <div className="add-theme box" onClick={onAddTheme}>
           <img src="/static/images/plus.theme.svg" />
         </div>
       </div>
@@ -149,6 +172,8 @@ const Appearance = (props) => {
       <ColorSchemeDialog
         visible={showColorSchemeDialog}
         onClose={onCloseEdit}
+        header={headerColorSchemeDialog}
+        selectedAccentColorAndButtonsMain={selectedAccentColorAndButtonsMain}
       />
       <div>Preview</div>
       <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />

@@ -30,7 +30,20 @@ const StyledComponent = styled(ModalDialog)`
   .color-button {
     width: 46px;
     height: 46px;
-    background: green;
+  }
+
+  .accent {
+    background: ${(props) =>
+      props.selectedAccentColorAndButtonsMain.accentColor
+        ? props.selectedAccentColorAndButtonsMain.accentColor
+        : props.selectedAccentColorAndButtonsMain.addColor};
+  }
+
+  .buttons {
+    background: ${(props) =>
+      props.selectedAccentColorAndButtonsMain.buttonsMain
+        ? props.selectedAccentColorAndButtonsMain.buttonsMain
+        : props.selectedAccentColorAndButtonsMain.addColor};
   }
 
   .save-button {
@@ -89,7 +102,13 @@ const StyledComponent = styled(ModalDialog)`
 `;
 
 const ColorSchemeDialog = (props) => {
-  const { visible, onClose, t } = props;
+  const {
+    visible,
+    onClose,
+    header,
+    selectedAccentColorAndButtonsMain,
+    t,
+  } = props;
 
   const [color, setColor] = useState("#b32aa9");
   const [openHexColorPicker, setOpenHexColorPicker] = useState(false);
@@ -99,16 +118,20 @@ const ColorSchemeDialog = (props) => {
   };
 
   return (
-    <StyledComponent visible={visible} onClose={onClose}>
-      <ModalDialog.Header>Edit color scheme</ModalDialog.Header>
+    <StyledComponent
+      selectedAccentColorAndButtonsMain={selectedAccentColorAndButtonsMain}
+      visible={visible}
+      onClose={onClose}
+    >
+      <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <div className="flex">
           <div className="text">Accent</div>
-          <div className="color-button" onClick={onClick}></div>
+          <div className="color-button accent" onClick={onClick}></div>
         </div>
         <div className="flex">
           <div className="text">Buttons</div>
-          <div className="color-button" onClick={onClick}></div>
+          <div className="color-button buttons" onClick={onClick}></div>
         </div>
         {openHexColorPicker && (
           <div className="hex-color-picker">
