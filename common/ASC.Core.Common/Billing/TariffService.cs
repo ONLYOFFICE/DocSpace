@@ -153,12 +153,13 @@ public class TariffService : ITariffService
                       {
                           var client = GetBillingClient();
                           var currentPayments = client.GetCurrentPayments(GetPortalId(tenantId));
+                          if (currentPayments.Length == 0) throw new BillingNotFoundException("Empty PaymentLast");
 
                           var asynctariff = Tariff.CreateDefault(true);
 
                           foreach (var currentPayment in currentPayments)
                           {
-                              var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == currentPayment.ProductId);
+                              var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == currentPayment.ProductId.ToString());
                               if (quota == null)
                               {
                                   throw new InvalidOperationException($"Quota with id {currentPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
@@ -552,12 +553,12 @@ public class TariffService : ITariffService
                 using var tx = dbContext.Database.BeginTransaction();
 
                 // last record is not the same
-                var any = false;
+                var exist = false;
                 // think about tariffrows ?
                 //dbContext.Tariffs
                 //    .Any(r => r.Tenant == tenant && r.Stamp == tariffInfo.DueDate);
 
-                if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
+                if (tariffInfo.DueDate == DateTime.MaxValue || renewal || !exist)
                 {
                     var tariffRowId = dbContext.TariffRows.Any() ? dbContext.TariffRows.Max(r => r.Id) + 1 : 1;
 
