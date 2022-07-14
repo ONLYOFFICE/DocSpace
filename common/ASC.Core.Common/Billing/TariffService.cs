@@ -71,6 +71,7 @@ public class TariffService : ITariffService
     private readonly ILogger<TariffService> _logger;
     private readonly IQuotaService _quotaService;
     private readonly ITenantService _tenantService;
+    private readonly IUserService _userService;
     private readonly int _paymentDelay;
     private TimeSpan _cacheExpiration;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -91,6 +92,7 @@ public class TariffService : ITariffService
     public TariffService(
         IQuotaService quotaService,
         ITenantService tenantService,
+        IUserService userService,
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings,
         IConfiguration configuration,
@@ -105,6 +107,7 @@ public class TariffService : ITariffService
         _logger = logger;
         _quotaService = quotaService;
         _tenantService = tenantService;
+        _userService = userService;
         _coreSettings = coreSettings;
         _configuration = configuration;
         _tariffServiceStorage = tariffServiceStorage;
@@ -156,6 +159,7 @@ public class TariffService : ITariffService
                           if (currentPayments.Length == 0) throw new BillingNotFoundException("Empty PaymentLast");
 
                           var asynctariff = Tariff.CreateDefault(true);
+                          string email = null;
 
                           foreach (var currentPayment in currentPayments)
                           {
@@ -169,6 +173,13 @@ public class TariffService : ITariffService
                               asynctariff.DueDate = DateTime.Compare(asynctariff.DueDate, paymentEndDate) < 0 ? asynctariff.DueDate : paymentEndDate;
 
                               asynctariff.Quotas.Add(new Tuple<int, int>(quota.Tenant, currentPayment.Quantity));
+                              email = currentPayment.PaymentEmail;
+                          }
+
+                          if (!string.IsNullOrEmpty(email))
+                          {
+                              var customer = _userService.GetUser(tenantId, email);
+                              asynctariff.CustomerId = customer != null && !customer.Removed ? customer.Id : Guid.Empty;
                           }
 
                           if (SaveBillingInfo(tenantId, asynctariff))
@@ -298,7 +309,7 @@ public class TariffService : ITariffService
         return payments;
     }
 
-    public Uri GetShoppingUri(int tenant, string currency = null, string language = null, string customerId = null, string quantity = null)
+    public Uri GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, string quantity = null)
     {
         var key = "shopingurl_all";
         var url = _cache.Get<string>(key);
@@ -322,7 +333,7 @@ public class TariffService : ITariffService
                             null,
                             !string.IsNullOrEmpty(currency) ? "__Currency__" : null,
                             !string.IsNullOrEmpty(language) ? "__Language__" : null,
-                            !string.IsNullOrEmpty(customerId) ? "__CustomerID__" : null,
+                            !string.IsNullOrEmpty(customerEmail) ? "__CustomerEmail__" : null,
                             !string.IsNullOrEmpty(quantity) ? "__Quantity__" : null
                             );
                 }
@@ -345,7 +356,7 @@ public class TariffService : ITariffService
                                .Replace("__Tenant__", HttpUtility.UrlEncode(GetPortalId(tenant)))
                                .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
                                .Replace("__Language__", HttpUtility.UrlEncode((language ?? "").ToLower()))
-                               .Replace("__CustomerID__", HttpUtility.UrlEncode(customerId ?? ""))
+                               .Replace("__CustomerEmail__", HttpUtility.UrlEncode(customerEmail ?? ""))
                                .Replace("__Quantity__", HttpUtility.UrlEncode(quantity ?? "")));
         return result;
     }
@@ -529,6 +540,7 @@ public class TariffService : ITariffService
 
         var tariff = Tariff.CreateDefault(true);
         tariff.DueDate = r.Stamp.Year < 9999 ? r.Stamp : DateTime.MaxValue;
+        tariff.CustomerId = r.CustomerId;
 
         var tariffRows = coreDbContext.TariffRows
             .Where(row => row.Key == r.Tariff && row.Tenant == tenant);
@@ -568,6 +580,7 @@ public class TariffService : ITariffService
                     Tenant = tenant,
                     Tariff = tariffRowId,
                     Stamp = tariffInfo.DueDate,
+                    CustomerId = tariffInfo.CustomerId,
                     CreateOn = DateTime.UtcNow
                 };
 

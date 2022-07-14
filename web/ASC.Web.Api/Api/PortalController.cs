@@ -197,7 +197,7 @@ public class PortalController : ControllerBase
     }
 
     [HttpGet("payment/url")]
-    public Uri GetPaymentUrl()
+    public Uri GetPaymentUrl(string currency)
     {
         if (_paymentManager.GetTariffPayments(Tenant.Id).Any()
             || !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
@@ -205,7 +205,9 @@ public class PortalController : ControllerBase
             return null;
         }
 
-        return _paymentManager.GetShoppingUri();
+        return _paymentManager.GetShoppingUri(currency,
+            Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
+            _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email);
     }
 
     [HttpGet("tariff")]

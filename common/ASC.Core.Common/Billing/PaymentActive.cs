@@ -30,6 +30,7 @@ namespace ASC.Core.Billing;
 public class PaymentLast
 {
     public DateTime EndDate { get; set; }
+    public string PaymentEmail { get; set; }
     public int PaymentStatus { get; set; }
     public int ProductId { get; set; }
     public int Quantity { get; set; }

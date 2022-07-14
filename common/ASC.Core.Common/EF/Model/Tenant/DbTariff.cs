@@ -32,6 +32,7 @@ public class DbTariff
     public int Tenant { get; set; }
     public int Tariff { get; set; }
     public DateTime Stamp { get; set; }
+    public Guid CustomerId { get; set; }
     public string Comment { get; set; }
     public DateTime CreateOn { get; set; }
 }
@@ -71,6 +72,12 @@ public static class DbTariffExtension
                 .HasColumnName("stamp")
                 .HasColumnType("datetime");
 
+            entity.Property(e => e.CustomerId)
+                .HasColumnName("customer_id")
+                .HasColumnType("varchar(38)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
+
             entity.Property(e => e.Tariff).HasColumnName("tariff");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
@@ -97,6 +104,11 @@ public static class DbTariffExtension
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.Property(e => e.Stamp).HasColumnName("stamp");
+
+            entity.Property(e => e.CustomerId)
+                .HasColumnName("customer_id")
+                .HasMaxLength(38)
+                .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.Tariff).HasColumnName("tariff");
 

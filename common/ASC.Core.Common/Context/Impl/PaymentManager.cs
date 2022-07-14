@@ -73,9 +73,9 @@ public class PaymentManager
         return _tariffService.GetProductPriceInfo(productIds);
     }
 
-    public Uri GetShoppingUri(string currency = null, string language = null, string customerId = null, string quantity = null)
+    public Uri GetShoppingUri(string currency = null, string language = null, string customerEmail = null, string quantity = null)
     {
-        return _tariffService.GetShoppingUri(_tenantManager.GetCurrentTenant().Id, currency, language, customerId, quantity);
+        return _tariffService.GetShoppingUri(_tenantManager.GetCurrentTenant().Id, currency, language, customerEmail, quantity);
     }
 
     public void ActivateKey(string key)

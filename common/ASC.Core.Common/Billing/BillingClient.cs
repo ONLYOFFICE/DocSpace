@@ -133,7 +133,7 @@ public class BillingClient
         return urls;
     }
 
-    public string GetPaymentUrl(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerId = null, string quantity = null)
+    public string GetPaymentUrl(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerEmail = null, string quantity = null)
     {
         var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", StripePaymentSystemId.ToString()) };
         if (!string.IsNullOrEmpty(affiliateId))
@@ -152,9 +152,9 @@ public class BillingClient
         {
             additionalParameters.Add(Tuple.Create("Language", language));
         }
-        if (!string.IsNullOrEmpty(customerId))
+        if (!string.IsNullOrEmpty(customerEmail))
         {
-            additionalParameters.Add(Tuple.Create("CustomerID", customerId));
+            additionalParameters.Add(Tuple.Create("CustomerEmail", customerEmail));
         }
         if (!string.IsNullOrEmpty(quantity))
         {
