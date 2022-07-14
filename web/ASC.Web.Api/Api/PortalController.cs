@@ -223,6 +223,12 @@ public class PortalController : ControllerBase
         return _paymentManager.GetAccountLink(Tenant.Id, backUrl);
     }
 
+    [HttpGet("payment/prices")]
+    public object GetPrices()
+    {
+        return _tenantManager.GetProductPriceInfo();
+    }
+
     [HttpGet("tariff")]
     public Tariff GetTariff()
     {

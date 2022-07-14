@@ -300,15 +300,18 @@ public class TenantManager
         return defaultQuota;
     }
 
-    public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(bool all = true)
+    public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo()
     {
-        var productIds = GetTenantQuotas(all)
+        var quotas = GetTenantQuotas(false);
+        var productIds = quotas
             .Select(p => p.ProductId)
             .Where(id => !string.IsNullOrEmpty(id))
             .Distinct()
             .ToArray();
 
-        return TariffService.GetProductPriceInfo(productIds);
+        var prices = TariffService.GetProductPriceInfo(productIds);
+        var result = prices.ToDictionary(price => quotas.First(quota => quota.ProductId == price.Key).Name, price => price.Value);
+        return result;
     }
 
     public TenantQuota SaveTenantQuota(TenantQuota quota)
