@@ -210,6 +210,18 @@ public class PortalController : ControllerBase
             _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email);
     }
 
+    [HttpGet("payment/account")]
+    public Uri GetPaymentAccount()
+    { 
+        var payerId = _paymentManager.GetTariff(Tenant.Id).CustomerId;
+
+        if (_securityContext.CurrentAccount.ID != payerId
+            && _securityContext.CurrentAccount.ID != Tenant.OwnerId)
+            return null;
+
+        return _paymentManager.GetAccountLink(Tenant.Id);
+    }
+
     [HttpGet("tariff")]
     public Tariff GetTariff()
     {

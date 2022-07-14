@@ -289,7 +289,7 @@ public class TariffService : ITariffService
                     var client = GetBillingClient();
                     foreach (var pi in client.GetPayments(GetPortalId(tenantId)))
                     {
-                        var quota = quotas.SingleOrDefault(q => q.ProductId == pi.ProductRef);
+                        var quota = quotas.SingleOrDefault(q => q.ProductId == pi.ProductRef.ToString());
                         if (quota != null)
                         {
                             pi.QuotaId = quota.Tenant;
@@ -499,6 +499,33 @@ public class TariffService : ITariffService
         }
     }
 
+    public Uri GetAccountLink(int tenant)
+    {
+        var key = "accountlink_" + tenant;
+        var url = _cache.Get<string>(key);
+        if (url == null)
+        {
+            if (_billingClient.Configured)
+            {
+                try
+                {
+                    var client = GetBillingClient();
+                    url = client.GetAccountLink(GetPortalId(tenant));
+                }
+                catch (Exception error)
+                {
+                    LogError(error);
+                }
+            }
+            _cache.Insert(key, url, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
+        }
+        if (!string.IsNullOrEmpty(url))
+        {
+            return new Uri(url);
+        }
+
+        return null;
+    }
 
     public string GetButton(int tariffId, string partnerId)
     {

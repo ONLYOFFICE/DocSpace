@@ -58,6 +58,13 @@ public class BillingClient
         }
     }
 
+    public string GetAccountLink(string portalId)
+    {
+        var result = Request("GetAccountLink", portalId);
+        var link = JsonConvert.DeserializeObject<string>(result);
+        return link;
+    }
+
     public PaymentLast[] GetCurrentPayments(string portalId)
     {
         var result = Request("GetActiveResources", portalId);

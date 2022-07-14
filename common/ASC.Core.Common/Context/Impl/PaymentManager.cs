@@ -78,6 +78,11 @@ public class PaymentManager
         return _tariffService.GetShoppingUri(_tenantManager.GetCurrentTenant().Id, currency, language, customerEmail, quantity);
     }
 
+    public Uri GetAccountLink(int tenantId)
+    {
+        return _tariffService.GetAccountLink(tenantId);
+    }
+
     public void ActivateKey(string key)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
