@@ -119,7 +119,7 @@ public class TfaappController : BaseSettingsController
     }
 
     [HttpPost("tfaapp/validate")]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,Everyone")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,TfaAuth,Everyone")]
     public bool TfaValidateAuthCode(TfaValidateRequestsDto inDto)
     {
         ApiContext.AuthByClaim();
