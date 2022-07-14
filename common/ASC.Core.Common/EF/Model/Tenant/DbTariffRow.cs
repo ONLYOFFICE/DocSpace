@@ -29,6 +29,7 @@ namespace ASC.Core.Common.EF;
 public class DbTariffRow
 {
     public int Id { get; set; }
+    public int Key { get; set; }
     public int Quota { get; set; }
     public int Quantity { get; set; }
     public int Tenant { get; set; }
@@ -38,8 +39,7 @@ public static class DbTariffRowExtension
     public static ModelBuilderWrapper AddDbTariffRow(this ModelBuilderWrapper modelBuilder)
     {
         modelBuilder
-            .Add(MySqlAddDbTariffRow, Provider.MySql)
-            .Add(PgSqlAddDbTariffRow, Provider.PostgreSql);
+            .Add(MySqlAddDbTariffRow, Provider.MySql);
 
         return modelBuilder;
     }
@@ -49,8 +49,12 @@ public static class DbTariffRowExtension
         {
             entity.ToTable("tenants_tariffrow");
 
-            entity.HasIndex(e => e.Id)
-                .HasDatabaseName("id");
+            entity.HasKey(e => e.Id)
+                .HasName("PRIMARY");
+
+            entity.Property(e => e.Key)
+                .HasColumnName("key")
+                .HasColumnType("int");
 
             entity.Property(e => e.Quota)
                 .HasColumnName("quota")
@@ -63,24 +67,6 @@ public static class DbTariffRowExtension
             entity.Property(e => e.Tenant)
                 .HasColumnName("tenant")
                 .HasColumnType("int");
-        });
-    }
-    public static void PgSqlAddDbTariffRow(this ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<DbTariffRow>(entity =>
-        {
-            entity.ToTable("tenants_tariffrow", "onlyoffice");
-
-            entity.HasIndex(e => e.Id)
-                .HasDatabaseName("id_tenants_tariffrow");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-
-            entity.Property(e => e.Quota).HasColumnName("quota");
-
-            entity.Property(e => e.Quantity).HasColumnName("quantity");
-
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
         });
     }
 }
