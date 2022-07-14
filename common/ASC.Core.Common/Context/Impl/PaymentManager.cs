@@ -73,14 +73,14 @@ public class PaymentManager
         return _tariffService.GetProductPriceInfo(productIds);
     }
 
-    public Uri GetShoppingUri(string currency = null, string language = null, string customerEmail = null, string quantity = null)
+    public Uri GetShoppingUri(string currency = null, string language = null, string customerEmail = null, string quantity = null, string backUrl = null)
     {
-        return _tariffService.GetShoppingUri(_tenantManager.GetCurrentTenant().Id, currency, language, customerEmail, quantity);
+        return _tariffService.GetShoppingUri(_tenantManager.GetCurrentTenant().Id, currency, language, customerEmail, quantity, backUrl);
     }
 
-    public Uri GetAccountLink(int tenantId)
+    public Uri GetAccountLink(int tenantId, string backUrl)
     {
-        return _tariffService.GetAccountLink(tenantId);
+        return _tariffService.GetAccountLink(tenantId, backUrl);
     }
 
     public void ActivateKey(string key)

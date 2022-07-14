@@ -309,7 +309,7 @@ public class TariffService : ITariffService
         return payments;
     }
 
-    public Uri GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, string quantity = null)
+    public Uri GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, string quantity = null, string backUrl = null)
     {
         var key = "shopingurl_all";
         var url = _cache.Get<string>(key);
@@ -334,7 +334,8 @@ public class TariffService : ITariffService
                             !string.IsNullOrEmpty(currency) ? "__Currency__" : null,
                             !string.IsNullOrEmpty(language) ? "__Language__" : null,
                             !string.IsNullOrEmpty(customerEmail) ? "__CustomerEmail__" : null,
-                            !string.IsNullOrEmpty(quantity) ? "__Quantity__" : null
+                            !string.IsNullOrEmpty(quantity) ? "__Quantity__" : null,
+                            !string.IsNullOrEmpty(backUrl) ? "__BackUrl__" : null
                             );
                 }
                 catch (Exception error)
@@ -357,7 +358,8 @@ public class TariffService : ITariffService
                                .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
                                .Replace("__Language__", HttpUtility.UrlEncode((language ?? "").ToLower()))
                                .Replace("__CustomerEmail__", HttpUtility.UrlEncode(customerEmail ?? ""))
-                               .Replace("__Quantity__", HttpUtility.UrlEncode(quantity ?? "")));
+                               .Replace("__Quantity__", HttpUtility.UrlEncode(quantity ?? ""))
+                                .Replace("__BackUrl__", HttpUtility.UrlEncode(backUrl ?? "")));
         return result;
     }
 
@@ -499,7 +501,7 @@ public class TariffService : ITariffService
         }
     }
 
-    public Uri GetAccountLink(int tenant)
+    public Uri GetAccountLink(int tenant, string backUrl)
     {
         var key = "accountlink_" + tenant;
         var url = _cache.Get<string>(key);
@@ -510,7 +512,7 @@ public class TariffService : ITariffService
                 try
                 {
                     var client = GetBillingClient();
-                    url = client.GetAccountLink(GetPortalId(tenant));
+                    url = client.GetAccountLink(GetPortalId(tenant), backUrl);
                 }
                 catch (Exception error)
                 {

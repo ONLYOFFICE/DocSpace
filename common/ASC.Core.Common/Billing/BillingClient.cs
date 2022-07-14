@@ -58,9 +58,9 @@ public class BillingClient
         }
     }
 
-    public string GetAccountLink(string portalId)
+    public string GetAccountLink(string portalId, string backUrl)
     {
-        var result = Request("GetAccountLink", portalId);
+        var result = Request("GetAccountLink", portalId, Tuple.Create("BackRef", backUrl));
         var link = JsonConvert.DeserializeObject<string>(result);
         return link;
     }
@@ -140,7 +140,7 @@ public class BillingClient
         return urls;
     }
 
-    public string GetPaymentUrl(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerEmail = null, string quantity = null)
+    public string GetPaymentUrl(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerEmail = null, string quantity = null, string backUrl = null)
     {
         var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", StripePaymentSystemId.ToString()) };
         if (!string.IsNullOrEmpty(affiliateId))
@@ -166,6 +166,11 @@ public class BillingClient
         if (!string.IsNullOrEmpty(quantity))
         {
             additionalParameters.Add(Tuple.Create("Quantity", quantity));
+        }
+        if (!string.IsNullOrEmpty(backUrl))
+        {
+            additionalParameters.Add(Tuple.Create("BackRef", backUrl));
+            additionalParameters.Add(Tuple.Create("ShopUrl", backUrl));
         }
 
         var parameters = products
