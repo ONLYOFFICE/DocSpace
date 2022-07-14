@@ -103,7 +103,7 @@ const Modal = ({
                 )}
                 {body && (
                   <StyledBody
-                    withoutBodyScroll={true}
+                    withBodyScroll={withBodyScroll}
                     hasFooter={1 && footer}
                     currentDisplayType={currentDisplayType}
                     {...body.props}

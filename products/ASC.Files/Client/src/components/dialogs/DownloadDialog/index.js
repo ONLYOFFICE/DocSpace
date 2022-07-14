@@ -250,6 +250,16 @@ class DownloadDialogComponent extends React.Component {
       getItemIcon: this.getItemIcon,
     };
 
+    const totalItemsNum =
+      this.state.documents.files.length +
+      this.state.spreadsheets.files.length +
+      this.state.presentations.files.length +
+      this.state.other.files.length +
+      (this.state.documents.files.length > 1 && 1) +
+      (this.state.spreadsheets.files.length > 1 && 1) +
+      (this.state.presentations.files.length > 1 && 1) +
+      (this.state.other.files.length > 1 && 1);
+
     return (
       <StyledDownloadDialog
         visible={visible}
@@ -259,7 +269,7 @@ class DownloadDialogComponent extends React.Component {
         autoMaxWidth
         isLarge
         isLoading={!tReady}
-        withBodyScroll
+        withBodyScroll={totalItemsNum > 11}
       >
         <ModalDialog.Header>{t("Translations:DownloadAs")}</ModalDialog.Header>
 
