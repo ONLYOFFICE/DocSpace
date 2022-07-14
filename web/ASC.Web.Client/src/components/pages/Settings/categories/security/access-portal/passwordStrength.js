@@ -14,6 +14,8 @@ import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import isEqual from "lodash/isEqual";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import { isMobile } from "react-device-detect";
+import PasswordLoader from "../sub-components/loaders/password-loader";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -174,6 +176,10 @@ const PasswordStrength = (props) => {
     setUseSpecialSymbols(defaultSettings.specSymbols);
     setShowReminder(false);
   };
+
+  if (isMobile && !isInit && !isLoading) {
+    return <PasswordLoader />;
+  }
 
   return (
     <MainContainer>

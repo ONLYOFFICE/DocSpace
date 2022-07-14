@@ -37,6 +37,24 @@ const MobileView = (props) => {
         url="/settings/security/access-portal/trusted-mail"
         onClickLink={onClickLink}
       />
+      <MobileCategoryWrapper
+        title={t("IPSecurity")}
+        subtitle={t("IPSecurityDescription")}
+        url="/settings/security/access-portal/ip"
+        onClickLink={onClickLink}
+      />
+      <MobileCategoryWrapper
+        title={t("AdminsMessage")}
+        subtitle={t("AdminsMessageDescription")}
+        url="/settings/security/access-portal/admin-message"
+        onClickLink={onClickLink}
+      />
+      <MobileCategoryWrapper
+        title={t("SessionLifetime")}
+        subtitle={t("SessionLifetimeDescription")}
+        url="/settings/security/access-portal/lifetime"
+        onClickLink={onClickLink}
+      />
     </MainContainer>
   );
 };

@@ -60,6 +60,7 @@ public class IPRestrictionsRepository
 
             var restrictions = TenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ToList();
             TenantDbContext.TenantIpRestrictions.RemoveRange(restrictions);
+            TenantDbContext.SaveChanges();
 
             var ipsList = ips.Select(r => new TenantIpRestrictions
             {
@@ -68,6 +69,7 @@ public class IPRestrictionsRepository
             });
 
             TenantDbContext.TenantIpRestrictions.AddRange(ipsList);
+            TenantDbContext.SaveChanges();
 
             tx.Commit();
         });

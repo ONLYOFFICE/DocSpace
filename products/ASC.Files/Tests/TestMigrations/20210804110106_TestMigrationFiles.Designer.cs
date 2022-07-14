@@ -301,6 +301,83 @@ namespace ASC.Core.Common.Migrations
 
                 b.ToTable("files_security");
             });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTag", b =>
+            {
+                b.Property<int>("Id")
+                    .HasColumnType("int")
+                    .HasColumnName("id");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("char(255)")
+                    .HasColumnName("name")
+                    .UseCollation("utf8_general_ci")
+                    .HasAnnotation("MySql:CharSet", "utf8");
+
+                b.Property<string>("Owner")
+                    .IsRequired()
+                    .HasColumnType("char(38)")
+                    .HasColumnName("owner")
+                    .UseCollation("utf8_general_ci")
+                    .HasAnnotation("MySql:CharSet", "utf8");
+
+                b.Property<int>("Type")
+                   .HasColumnType("int")
+                   .HasColumnName("flag");
+
+                b.Property<int>("TenantId")
+                   .HasColumnType("int")
+                   .HasColumnName("tenant_id");
+
+                b.ToTable("files_tag");
+            });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTagLink", b =>
+            {
+                b.Property<int>("TenantId")
+                    .HasColumnType("int")
+                    .HasColumnName("tenant_id");
+
+                b.Property<int>("TagId")
+                    .HasColumnType("int")
+                    .HasColumnName("tag_id");
+
+                b.Property<int>("EntryType")
+                    .HasColumnType("int")
+                    .HasColumnName("entry_type");
+
+                b.Property<string>("EntryId")
+                   .IsRequired()
+                   .HasColumnType("varchar(32)")
+                   .HasColumnName("entry_id")
+                   .UseCollation("utf8_general_ci")
+                   .HasAnnotation("MySql:CharSet", "utf8");
+
+                b.Property<string>("CreateBy")
+                    .IsRequired()
+                    .HasColumnType("char(38)")
+                    .HasColumnName("create_by")
+                    .UseCollation("utf8_general_ci")
+                    .HasAnnotation("MySql:CharSet", "utf8");
+
+                b.Property<string>("CreateBy")
+                    .IsRequired()
+                    .HasColumnType("char(38)")
+                    .HasColumnName("create_by")
+                    .UseCollation("utf8_general_ci")
+                    .HasAnnotation("MySql:CharSet", "utf8");
+
+                b.Property<DateTime>("CreateOn")
+                    .HasColumnType("datetime")
+                    .HasColumnName("create_on");
+
+                b.Property<int>("Count")
+                    .HasColumnType("int")
+                    .HasColumnName("tag_count");
+
+                b.ToTable("files_tag_link");
+            });
 #pragma warning restore 612, 618
         }
     }
