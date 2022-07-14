@@ -863,6 +863,10 @@ const Dark = {
 
     span: { maxWidth: "300px" },
 
+    expander: {
+      iconColor: white,
+    },
+
     caret: {
       width: "5px",
       minWidth: "5px",

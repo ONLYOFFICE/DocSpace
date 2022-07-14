@@ -866,6 +866,10 @@ const Base = {
 
     span: { maxWidth: "300px" },
 
+    expander: {
+      iconColor: black,
+    },
+
     caret: {
       width: "5px",
       minWidth: "5px",

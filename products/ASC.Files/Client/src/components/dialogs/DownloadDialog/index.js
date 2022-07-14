@@ -259,6 +259,7 @@ class DownloadDialogComponent extends React.Component {
         autoMaxWidth
         isLarge
         isLoading={!tReady}
+        withBodyScroll
       >
         <ModalDialog.Header>{t("Translations:DownloadAs")}</ModalDialog.Header>
 
@@ -313,6 +314,10 @@ class DownloadDialogComponent extends React.Component {
               title={t("Other")}
             />
           )}
+
+          <div className="download-dialog-convert-message">
+            <Text noSelect>{t("ConvertMessage")}</Text>
+          </div>
         </ModalDialog.Body>
 
         <ModalDialog.Footer>
