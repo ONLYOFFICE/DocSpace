@@ -37,7 +37,7 @@ public class BillingClient
     private readonly string _billingSecret;
     private readonly bool _test;
     private readonly IHttpClientFactory _httpClientFactory;
-    private const int AvangatePaymentSystemId = 1;
+    private const int StripePaymentSystemId = 9;
 
 
     public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
@@ -88,7 +88,7 @@ public class BillingClient
     {
         var urls = new Dictionary<string, Uri>();
 
-        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()) };
+        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", StripePaymentSystemId.ToString()) };
         if (!string.IsNullOrEmpty(affiliateId))
         {
             additionalParameters.Add(Tuple.Create("AffiliateId", affiliateId));
@@ -140,7 +140,7 @@ public class BillingClient
 
     public string GetPaymentUrl(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerId = null, string quantity = null)
     {
-        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()) };
+        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", StripePaymentSystemId.ToString()) };
         if (!string.IsNullOrEmpty(affiliateId))
         {
             additionalParameters.Add(Tuple.Create("AffiliateId", affiliateId));
@@ -183,12 +183,12 @@ public class BillingClient
         ArgumentNullException.ThrowIfNull(productIds);
 
         var parameters = productIds.Select(pid => Tuple.Create("ProductId", pid)).ToList();
-        parameters.Add(Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()));
+        parameters.Add(Tuple.Create("PaymentSystemId", StripePaymentSystemId.ToString()));
 
         var result = Request("GetProductsPrices", null, parameters.ToArray());
         var prices = JsonSerializer.Deserialize<Dictionary<int, Dictionary<string, Dictionary<string, decimal>>>>(result);
 
-        if (prices.TryGetValue(AvangatePaymentSystemId, out var pricesPaymentSystem))
+        if (prices.TryGetValue(StripePaymentSystemId, out var pricesPaymentSystem))
         {
             return productIds.Select(productId =>
             {
