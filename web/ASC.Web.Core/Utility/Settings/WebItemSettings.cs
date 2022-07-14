@@ -30,6 +30,7 @@ public class WebItemSettings : ISettings<WebItemSettings>
 {
     private readonly WebItemManager _webItemManager;
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{C888CF56-585B-4c78-9E64-FE1093649A62}"); }

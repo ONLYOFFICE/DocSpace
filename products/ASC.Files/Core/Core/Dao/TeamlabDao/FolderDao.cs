@@ -49,7 +49,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly IMapper _mapper;
 
     private static readonly List<FilterType> _constraintFolderFilters =
-        new List<FilterType> { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly, 
+        new List<FilterType> { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly,
             FilterType.PresentationsOnly, FilterType.SpreadsheetsOnly, FilterType.ArchiveOnly, FilterType.MediaOnly };
 
     public FolderDao(
@@ -350,14 +350,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 folderId = await InternalSaveFolderToDbAsync(folder);
 
-                await tx.CommitAsync().ConfigureAwait(false);            
+                await tx.CommitAsync().ConfigureAwait(false);
             });
         }
         else
         {
             folderId = await InternalSaveFolderToDbAsync(folder);
         }
-   
+
         //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
         return folderId;
     }
@@ -1365,7 +1365,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private IQueryable<DbFolder> SetFilterByTypes(IQueryable<DbFolder> q, IEnumerable<FilterType> filterTypes)
     {
-        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None))
+        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None) && !filterTypes.Contains(FilterType.FoldersOnly))
         {
             var filter = filterTypes.Select(f => f switch
             {

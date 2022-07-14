@@ -36,6 +36,7 @@ public class EventTypeConverter : ITypeConverter<EventMessage, LoginEvent>, ITyp
         var loginEvent = context.Mapper.Map<MessageEvent, LoginEvent>(messageEvent);
 
         loginEvent.Login = source.Initiator;
+        loginEvent.Active = source.Active;
 
         if (source.Description != null && source.Description.Count > 0)
         {

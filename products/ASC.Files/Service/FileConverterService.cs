@@ -86,9 +86,6 @@ internal class FileConverterService<T> : BackgroundService
 
         try
         {
-            var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
-            (_, tenantManager, userManager, securityContext, daoFactory, fileSecurity, pathProvider, setupInfo, fileUtility, documentServiceHelper, documentServiceConnector, entryManager, fileConverter) = scopeClass;
-
             fileConverterQueue = scope.ServiceProvider.GetService<FileConverterQueue<T>>();
 
             var _conversionQueue = fileConverterQueue.GetAllTask().ToList();
@@ -112,6 +109,9 @@ internal class FileConverterService<T> : BackgroundService
                 var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
                 commonLinkUtilitySettings.ServerUri = converter.ServerRootPath;
 
+                var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
+                (_, tenantManager, userManager, securityContext, daoFactory, fileSecurity, pathProvider, setupInfo, fileUtility, documentServiceHelper, documentServiceConnector, entryManager, fileConverter) = scopeClass;
+
                 tenantManager.SetCurrentTenant(converter.TenantId);
 
                 securityContext.AuthenticateMeWithoutCookie(converter.Account);
@@ -131,7 +131,7 @@ internal class FileConverterService<T> : BackgroundService
                     Thread.CurrentThread.CurrentCulture = culture;
                     Thread.CurrentThread.CurrentUICulture = culture;
 
-                    if (!fileSecurity.CanReadAsync(file).Result && file.RootFolderType != FolderType.BUNCH)
+                    if (!await fileSecurity.CanReadAsync(file) && file.RootFolderType != FolderType.BUNCH)
                     {
                         //No rights in CRM after upload before attach
                         throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
@@ -149,7 +149,7 @@ internal class FileConverterService<T> : BackgroundService
                     var docKey = documentServiceHelper.GetDocKey(file);
 
                     fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                    (operationResultProgress, convertedFileUrl) = documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, true).Result;
+                    (operationResultProgress, convertedFileUrl) = await documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, true);
                 }
                 catch (Exception exception)
                 {
@@ -210,7 +210,7 @@ internal class FileConverterService<T> : BackgroundService
 
                 try
                 {
-                    newFile = fileConverter.SaveConvertedFileAsync(file, convertedFileUrl).Result;
+                    newFile = await fileConverter.SaveConvertedFileAsync(file, convertedFileUrl);
                 }
                 catch (Exception e)
                 {
@@ -233,8 +233,8 @@ internal class FileConverterService<T> : BackgroundService
                         if (newFile != null)
                         {
                             var folderDao = daoFactory.GetFolderDao<T>();
-                            var folder = folderDao.GetFolderAsync(newFile.ParentId).Result;
-                            var folderTitle = fileSecurity.CanReadAsync(folder).Result ? folder.Title : null;
+                            var folder = await folderDao.GetFolderAsync(newFile.ParentId);
+                            var folderTitle = await fileSecurity.CanReadAsync(folder) ? folder.Title : null;
 
                             operationResult.Result = fileConverterQueue.FileJsonSerializerAsync(entryManager, newFile, folderTitle).Result;
                         }
