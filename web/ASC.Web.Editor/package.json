@@ -13,7 +13,7 @@
     "build": "yarn clean && yarn build:client && yarn build:server",
     "start:watch-client": "cross-env NODE_ENV=development webpack --config webpack/dev/webpack.dev.client.js --watch --no-cache",
     "start:server": "yarn build:dev-client && cross-env NODE_ENV=development nodemon --watch src/server src/server/index.js",
-    "start-dev": "yarn clean && npm-run-all --parallel start:*"
+    "start": "yarn clean && npm-run-all --parallel start:*"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
