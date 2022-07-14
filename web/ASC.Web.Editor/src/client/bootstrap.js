@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { hydrate } from "react-dom";
 import { registerSW } from "@appserver/common/sw/helper";
 import { App } from "./App.js";
+import Editor from "./Editor";
 import { useSSR } from "react-i18next";
 import useMfScripts from "../helpers/useMfScripts";
 import initDesktop from "../helpers/initDesktop";
@@ -10,7 +11,7 @@ import { combineUrl } from "@appserver/common/utils";
 import ErrorBoundary from "../components/ErrorBoundary";
 import pkg from "../../package.json";
 
-const propsObj = window.__ASC_INITIAL_STATE__;
+const propsObj = window.__ASC_INITIAL_STATE__.props;
 const initialI18nStore = window.initialI18nStore;
 const initialLanguage = window.initialLanguage;
 const socketPath = pkg.socketPath;
@@ -20,7 +21,12 @@ const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
 const AppWrapper = () => {
   const [isInitialized, isErrorLoading] = useMfScripts();
   useSSR(initialI18nStore, initialLanguage);
-
+  React.useEffect(() => {
+    const tempElm = document.getElementById("loader");
+    if (tempElm) {
+      tempElm.outerHTML = "";
+    }
+  }, []);
   const onError = () =>
     window.open(
       combineUrl(
@@ -29,11 +35,11 @@ const AppWrapper = () => {
       ),
       "_self"
     );
-
+  console.log(propsObj);
   return (
     <ErrorBoundary onError={onError}>
       <Suspense fallback={<div />}>
-        <App
+        <Editor
           {...propsObj}
           mfReady={isInitialized}
           mfFailed={isErrorLoading}

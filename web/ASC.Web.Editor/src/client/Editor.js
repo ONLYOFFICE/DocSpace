@@ -101,7 +101,7 @@ function Editor({
   const [version, setVersion] = useState(rest.version);
 
   const { t } = useTranslation(["Editor", "Common"]);
-
+  console.log(rest);
   useEffect(() => {
     if (error) {
       if (error?.unAuthorized && error?.redirectPath) {
@@ -454,9 +454,7 @@ function Editor({
         const filterObj = FilesFilter.getDefault();
         filterObj.folder = fileInfo.folderId;
         const urlFilter = filterObj.toUrlParams();
-
         const filesUrl = url.substring(0, url.indexOf("/doceditor"));
-
         goBack = {
           blank: true,
           requestClose: false,
@@ -569,11 +567,11 @@ function Editor({
       window.toastr.error(error.message, null, 0, true);
     }
   };
-
+  console.log("editor render");
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
       <div id="editor"></div>
-      {(!isLoaded || needLoader) && LoaderComponent}
+      {/* {(!isLoaded || needLoader) && LoaderComponent} */}
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}
