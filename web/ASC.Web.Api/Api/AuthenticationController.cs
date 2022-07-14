@@ -144,7 +144,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [AllowNotPayment]
-    [HttpPost("{code}", Order = int.MaxValue)]
+    [HttpPost("{code}", Order = 1)]
     public AuthenticationTokenDto AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;

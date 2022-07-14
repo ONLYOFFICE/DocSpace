@@ -320,7 +320,7 @@ class SectionBodyContent extends React.PureComponent {
                   onClick={(e) => this.unlinkAccount(item.provider, e)}
                   isHovered={true}
                 >
-                  {t("Disconnect")}
+                  {t("Common:Disconnect")}
                 </Link>
               </div>
             ) : (
@@ -516,7 +516,11 @@ class SectionBodyContent extends React.PureComponent {
 
         {isSelf && (
           <ToggleWrapper>
-            <ToggleContent label={t("InterfaceTheme")} isOpen={true}>
+            <ToggleContent
+              label={t("InterfaceTheme")}
+              isOpen={true}
+              enableToggle={false}
+            >
               <RadioButtonGroup
                 orientation={"vertical"}
                 name={"interface-theme"}

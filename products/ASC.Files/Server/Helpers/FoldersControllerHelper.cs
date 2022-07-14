@@ -155,7 +155,8 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             folders.Add(_globalFolderHelper.FolderMy);
         }
 
-        if (!_coreBaseSettings.Personal && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOutsider(_userManager))
+        if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace 
+            && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOutsider(_userManager))
         {
             folders.Add(await _globalFolderHelper.FolderShareAsync);
         }
@@ -171,18 +172,20 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
                 folders.Add(await _globalFolderHelper.FolderRecentAsync);
             }
 
-            if (!_coreBaseSettings.Personal && PrivacyRoomSettings.IsAvailable())
+            if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace
+                && PrivacyRoomSettings.IsAvailable())
             {
                 folders.Add(await _globalFolderHelper.FolderPrivacyAsync);
             }
         }
 
-        if (!_coreBaseSettings.Personal)
+        if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace)
         {
             folders.Add(await _globalFolderHelper.FolderCommonAsync);
         }
 
         if (!IsVisitor
+           && _coreBaseSettings.DisableDocSpace
            && !withoutAdditionalFolder
            && _fileUtility.ExtsWebTemplate.Count > 0
            && _filesSettingsHelper.TemplatesSection)
@@ -193,6 +196,12 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         if (!withoutTrash)
         {
             folders.Add((int)_globalFolderHelper.FolderTrash);
+        }
+
+        if (!_coreBaseSettings.DisableDocSpace)
+        {
+            folders.Add(await _globalFolderHelper.FolderVirtualRoomsAsync);
+            folders.Add(await _globalFolderHelper.FolderArchiveAsync);
         }
 
         return folders;
@@ -208,7 +217,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
     private async Task<FolderContentDto<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
     {
         OrderBy orderBy = null;
-        if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
+        if (SortedByTypeExtensions.TryParse(_apiContext.SortBy, true, out var sortBy))
         {
             orderBy = new OrderBy(sortBy, !_apiContext.SortDescending);
         }

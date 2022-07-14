@@ -13,6 +13,7 @@ import {
   isRetina,
   getCookie,
   setCookie,
+  assign,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -512,6 +513,8 @@ const Editor = () => {
       const newConfig = Object.assign(config, events);
 
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
+
+      assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
     } catch (error) {
       console.log(error);
       toastr.error(error.message, null, 0, true);

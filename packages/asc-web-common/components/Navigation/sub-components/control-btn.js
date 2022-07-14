@@ -7,6 +7,7 @@ import { isMobile } from "react-device-detect";
 import { tablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 import ToggleInfoPanelButton from "./toggle-infopanel-btn";
+import PlusButton from "./plus-btn";
 
 const StyledContainer = styled.div`
   margin-left: 20px;
@@ -27,6 +28,10 @@ const StyledContainer = styled.div`
     css`
       display: none;
     `}
+  }
+
+  .add-drop-down {
+    margin-top: 8px;
   }
 
   .option-button {
@@ -108,15 +113,9 @@ const ControlButtons = ({
       {!isRootFolder && canCreate ? (
         <>
           {!isMobile && (
-            <ContextMenuButton
-              zIndex={402}
+            <PlusButton
               className="add-button"
-              directionX="right"
-              iconName="images/plus.svg"
-              size={15}
-              isFill
               getData={getContextOptionsPlus}
-              isDisabled={false}
             />
           )}
           {!personal && (
@@ -142,15 +141,9 @@ const ControlButtons = ({
       ) : canCreate ? (
         <>
           {!isMobile && (
-            <ContextMenuButton
-              zIndex={402}
+            <PlusButton
               className="add-button"
-              directionX="right"
-              iconName="images/plus.svg"
-              size={15}
-              isFill
               getData={getContextOptionsPlus}
-              isDisabled={false}
             />
           )}
           {!isDesktop && (
@@ -164,7 +157,7 @@ const ControlButtons = ({
       ) : isRecycleBinFolder && !isEmptyFilesList ? (
         <>
           <IconButton
-            iconName="images/clear.active.react.svg"
+            iconName="images/clear.trash.react.svg"
             size={15}
             isFill={true}
             onClick={clearTrash}

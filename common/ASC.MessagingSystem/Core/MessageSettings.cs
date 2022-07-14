@@ -78,7 +78,10 @@ public class MessageSettings
         if (request != null)
         {
             var str = request.Headers[ForwardedHeader].FirstOrDefault() ?? request.GetUserHostAddress();
-            return str.Substring(0, str.IndexOf(':') != -1 ? str.IndexOf(':') : str.Length);
+            if (str != null)
+            {
+                return str.Substring(0, str.IndexOf(':') != -1 ? str.IndexOf(':') : str.Length);
+            }
         }
         return null;
     }

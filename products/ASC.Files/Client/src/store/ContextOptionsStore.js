@@ -10,6 +10,7 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
+import { Events } from "../helpers/constants";
 
 class ContextOptionsStore {
   authStore;
@@ -68,19 +69,19 @@ class ContextOptionsStore {
       this.settingsStore.extsWebRestrictedEditing[0];
 
     this.uploadDataStore.copyAsAction(id, newTitle, folderId).catch((err) => {
-      console.log("err", err);
-      const isPasswordError = new RegExp(/\(password\)*$/);
-
-      if (isPasswordError.test(err)) {
-        toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
-        setFormCreationInfo({
-          newTitle,
-          fromExst: fileExst,
-          toExst: this.settingsStore.extsWebRestrictedEditing[0],
-          fileInfo: item,
-        });
-        setConvertPasswordDialogVisible(true);
+      if (err.indexOf("password") == -1) {
+        toastr.error(err, t("Common:Warning"));
+        return;
       }
+
+      toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
+      setFormCreationInfo({
+        newTitle,
+        fromExst: fileExst,
+        toExst: this.settingsStore.extsWebRestrictedEditing[0],
+        fileInfo: item,
+      });
+      setConvertPasswordDialogVisible(true);
     });
   };
 
@@ -246,12 +247,11 @@ class ContextOptionsStore {
   };
 
   onClickRename = (item) => {
-    const { id, fileExst } = item;
-    this.filesStore.fileActionStore.setAction({
-      type: FileAction.Rename,
-      extension: fileExst,
-      id,
-    });
+    const event = new Event(Events.RENAME);
+
+    event.item = item;
+
+    window.dispatchEvent(event);
   };
 
   onChangeThirdPartyInfo = (providerKey) => {
@@ -370,12 +370,14 @@ class ContextOptionsStore {
                 {
                   key: "finalize-version",
                   label: t("FinalizeVersion"),
+                  icon: "images/history-finalized.react.svg",
                   onClick: () => this.finalizeVersion(item.id),
                   disabled: false,
                 },
                 {
                   key: "show-version-history",
                   label: t("ShowVersionHistory"),
+                  icon: "images/history.react.svg",
                   onClick: () => this.showVersionHistory(item.id),
                   disabled: false,
                 },
@@ -411,18 +413,21 @@ class ContextOptionsStore {
                 {
                   key: "move-to",
                   label: t("MoveTo"),
+                  icon: "images/move.react.svg",
                   onClick: this.onMoveAction,
                   disabled: false,
                 },
                 {
                   key: "copy-to",
                   label: t("Translations:Copy"),
+                  icon: "/static/images/copy.react.svg",
                   onClick: this.onCopyAction,
                   disabled: false,
                 },
                 {
                   key: "copy",
                   label: t("Common:Duplicate"),
+                  icon: "/static/images/duplicate.react.svg",
                   onClick: () => this.onDuplicate(item, t),
                   disabled: false,
                 },
@@ -447,7 +452,7 @@ class ContextOptionsStore {
             {
               key: "copy",
               label: t("Common:Duplicate"),
-              icon: "/static/images/copy.react.svg",
+              icon: "/static/images/duplicate.react.svg",
               onClick: () => this.onDuplicate(item, t),
               disabled: false,
             },
@@ -502,7 +507,7 @@ class ContextOptionsStore {
       },
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !isShareable,
@@ -510,7 +515,7 @@ class ContextOptionsStore {
       {
         key: "owner-change",
         label: t("Translations:OwnerChange"),
-        icon: "/static/images/catalog.user.react.svg",
+        icon: "images/file.actions.owner.react.svg",
         onClick: this.onOwnerChange,
         disabled: false,
       },
@@ -543,7 +548,7 @@ class ContextOptionsStore {
       {
         key: "open-location",
         label: t("OpenLocation"),
-        icon: "images/download-as.react.svg",
+        icon: "images/folder.location.react.svg",
         onClick: () => this.onOpenLocation(item),
         disabled: false,
       },
@@ -622,7 +627,7 @@ class ContextOptionsStore {
       {
         key: "delete",
         label: isRootThirdPartyFolder
-          ? t("Translations:DeleteThirdParty")
+          ? t("Common:Disconnect")
           : t("Common:Delete"),
         icon: "images/trash.react.svg",
         onClick: () => this.onClickDelete(item, t),
@@ -687,7 +692,7 @@ class ContextOptionsStore {
     const options = [
       {
         key: "sharing-settings",
-        label: t("SharingSettings"),
+        label: t("SharingPanel:SharingSettingsTitle"),
         icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !sharingItems,
@@ -788,13 +793,11 @@ class ContextOptionsStore {
 
   getModel = (item, t) => {
     const { selection } = this.filesStore;
-    const { type, id, extension } = this.filesStore.fileActionStore;
+
     const { fileExst, contextOptions } = item;
 
-    const isEdit = !!type && id === item.id && fileExst === extension;
-
     const contextOptionsProps =
-      !isEdit && contextOptions && contextOptions.length > 0
+      contextOptions && contextOptions.length > 0
         ? selection.length > 1
           ? this.getGroupContextOptions(t)
           : this.getFilesContextOptions(item, t)

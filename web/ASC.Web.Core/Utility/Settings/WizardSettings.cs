@@ -31,6 +31,7 @@ public class WizardSettings : ISettings<WizardSettings>
 {
     public bool Completed { get; set; }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{9A925891-1F92-4ed7-B277-D6F649739F06}"); }

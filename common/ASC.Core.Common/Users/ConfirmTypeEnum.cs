@@ -35,6 +35,7 @@ namespace ASC.Web.Studio.Utility;
 //  portal-remove - confirm portal deletation - Tenant.SetStatus(TenantStatus.RemovePending)
 //  DnsChange - change Portal Address and/or Custom domain name
 [JsonConverter(typeof(JsonStringEnumConverter))]
+[EnumExtensions]
 public enum ConfirmType
 {
     EmpInvite,
@@ -54,5 +55,5 @@ public enum ConfirmType
     Auth,
     TfaActivation,
     TfaAuth,
-    Wizard
+    Wizard,
 }

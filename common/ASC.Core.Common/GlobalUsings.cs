@@ -148,6 +148,8 @@ global using Microsoft.Extensions.Options;
 
 global using MimeKit;
 
+global using NetEscapades.EnumGenerators;
+
 global using Newtonsoft.Json;
 
 global using NVelocity;
@@ -158,3 +160,5 @@ global using ProtoBuf;
 global using Telegram.Bot;
 
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
+
+global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;

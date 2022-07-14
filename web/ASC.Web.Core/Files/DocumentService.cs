@@ -821,7 +821,7 @@ public static class DocumentService
 
         public static void ProcessResponseError(string errorCode)
         {
-            if (!Enum.TryParse(errorCode, true, out ErrorCode code))
+            if (!ErrorCodeExtensions.TryParse(errorCode, true, out ErrorCode code))
             {
                 code = ErrorCode.Unknown;
             }
@@ -845,6 +845,7 @@ public static class DocumentService
             throw new DocumentServiceException(code, errorMessage);
         }
 
+        [EnumExtensions]
         public enum ErrorCode
         {
             VkeyUserCountExceed = -22,

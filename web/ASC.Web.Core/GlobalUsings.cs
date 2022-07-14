@@ -128,6 +128,8 @@ global using Microsoft.Extensions.Logging;
 
 global using MimeKit.Utils;
 
+global using NetEscapades.EnumGenerators;
+
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
 
@@ -148,3 +150,4 @@ global using static ASC.Web.Core.Files.DocumentService;
 
 global using License = ASC.Core.Billing.License;
 global using SecurityContext = ASC.Core.SecurityContext;
+global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;

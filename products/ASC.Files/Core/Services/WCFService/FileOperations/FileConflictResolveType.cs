@@ -27,6 +27,7 @@
 namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
+[EnumExtensions]
 public enum FileConflictResolveType
 {
     Skip = 0,

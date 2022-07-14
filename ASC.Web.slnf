@@ -2,6 +2,7 @@
   "solution": {
     "path": "ASC.Web.sln",
     "projects": [
+      "common\\ASC.ActiveDirectory\\ASC.ActiveDirectory.csproj",
       "common\\ASC.Api.Core\\ASC.Api.Core.csproj",
       "common\\ASC.Common\\ASC.Common.csproj",
       "common\\ASC.Core.Common\\ASC.Core.Common.csproj",

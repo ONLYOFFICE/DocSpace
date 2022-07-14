@@ -93,10 +93,6 @@ module.exports = {
     singleton: true,
     requiredVersion: deps["react-i18next"],
   },
-  "i18next-http-backend": {
-    singleton: true,
-    requiredVersion: deps["i18next-http-backend"],
-  },
   "prop-types": {
     singleton: true,
     requiredVersion: deps["prop-types"],

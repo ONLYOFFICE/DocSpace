@@ -24,25 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2021
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
-*/
-
-
 namespace ASC.MessagingSystem.Core;
 
+[EnumExtensions]
 public enum MessageAction
 {
     None = -1,
@@ -479,6 +463,21 @@ public enum MessageAction
 
     FolderMarkedAsRead = 5065,
 
+    RoomCreated = 5070,
+    RoomRenamed = 5071,
+    RoomArchived = 5072,
+    RoomUnarchived = 5073,
+    RoomDeleted = 5074,
+    RoomUpdateAccess = 5075,
+
+    TagCreated = 5076,
+    TagsDeleted = 5077,
+    AddedRoomTags = 5078,
+    DeletedRoomTags = 5079,
+
+    RoomLogoCreated = 5080,
+    RoomLogoDeleted = 5081,
+
     #endregion
 
     #region Settings
@@ -560,6 +559,9 @@ public enum MessageAction
     #region others
 
     ContactAdminMailSent = 7000,
+    RoomInviteLinkUsed = 7001,
+    UserCreatedAndAddedToRoom = 7002,
+    GuestCreatedAndAddedToRoom = 7003,
 
     #endregion
 

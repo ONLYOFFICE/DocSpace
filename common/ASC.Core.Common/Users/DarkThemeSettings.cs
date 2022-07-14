@@ -29,7 +29,7 @@ namespace ASC.Web.Core.Users;
 [Serializable]
 public class DarkThemeSettings : ISettings<DarkThemeSettings>
 {
-    [System.Text.Json.Serialization.JsonIgnore]
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{38362061-066D-4C57-A23E-8953CF34EFC3}"); }
@@ -41,7 +41,7 @@ public class DarkThemeSettings : ISettings<DarkThemeSettings>
     {
         return new DarkThemeSettings
         {
-            Theme = DarkThemeSettingsEnum.Base,
+            Theme = DarkThemeSettingsEnum.System,
         };
     }
 }

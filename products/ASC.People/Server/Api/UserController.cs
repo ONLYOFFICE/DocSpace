@@ -64,6 +64,9 @@ public class UserController : PeopleControllerBase
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
     private readonly SettingsManager _settingsManager;
+    private readonly FileSecurity _fileSecurity;
+    private readonly IDaoFactory _daoFactory;
+    private readonly EmailValidationKeyProvider _validationKeyProvider;
 
     public UserController(
         ICache cache,
@@ -100,7 +103,10 @@ public class UserController : PeopleControllerBase
         UserPhotoManager userPhotoManager,
         IHttpClientFactory httpClientFactory,
         IHttpContextAccessor httpContextAccessor,
-        SettingsManager settingsManager)
+        SettingsManager settingsManager,
+        FileSecurity fileSecurity,
+        IDaoFactory daoFactory,
+        EmailValidationKeyProvider validationKeyProvider)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -132,6 +138,9 @@ public class UserController : PeopleControllerBase
         _authContext = authContext;
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
+        _fileSecurity = fileSecurity;
+        _daoFactory = daoFactory;
+        _validationKeyProvider = validationKeyProvider;
     }
 
     [HttpPost("active")]
@@ -193,11 +202,48 @@ public class UserController : PeopleControllerBase
 
     [HttpPost]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    public EmployeeDto AddMember(MemberRequestDto inDto)
+    public async Task<EmployeeDto> AddMember(MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+
+        var success = int.TryParse(inDto.RoomId, out var id);
+
+        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        {
+            var employeeType = inDto.IsVisitor ? EmployeeType.Visitor : EmployeeType.User;
+            var resultWithEmail = _validationKeyProvider.ValidateEmailKey(inDto.Email + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
+                _validationKeyProvider.ValidEmailKeyInterval);
+            var resultWithoutEmail = _validationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
+                _validationKeyProvider.ValidEmailKeyInterval);
+
+            if (resultWithEmail != EmailValidationKeyProvider.ValidationResult.Ok && resultWithoutEmail != EmailValidationKeyProvider.ValidationResult.Ok)
+            {
+                throw new SecurityException("Invalid data");
+            }
+
+            if (success)
+            {
+                var folderDao = _daoFactory.GetFolderDao<int>();
+                var folder = await folderDao.GetFolderAsync(id);
+
+                if (folder == null)
+                {
+                    throw new ItemNotFoundException("Virtual room not found");
+                }
+            }
+            else
+            {
+                var folderDao = _daoFactory.GetFolderDao<string>();
+                var folder = await folderDao.GetFolderAsync(inDto.RoomId);
+
+                if (folder == null)
+                {
+                    throw new ItemNotFoundException("Virtual room not found");
+                }
+            }
+        }
 
         inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
         if (string.IsNullOrEmpty(inDto.PasswordHash))
@@ -221,6 +267,7 @@ public class UserController : PeopleControllerBase
         var address = new MailAddress(inDto.Email);
         user.Email = address.Address;
         //Set common fields
+        user.CultureName = inDto.CultureName;
         user.FirstName = inDto.Firstname;
         user.LastName = inDto.Lastname;
         user.Title = inDto.Title;
@@ -237,14 +284,33 @@ public class UserController : PeopleControllerBase
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
         user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true);
 
-        var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-        _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-
         UpdateDepartments(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
             UpdatePhotoUrl(inDto.Files, user);
+        }
+
+        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        {
+            if (success)
+            {
+                _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
+                    .GetAwaiter().GetResult();
+            }
+            else
+            {
+                _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
+                    .GetAwaiter().GetResult();
+            }
+
+            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreatedAndAddedToRoom : MessageAction.UserCreatedAndAddedToRoom;
+            _messageService.Send(messageAction, _messageTarget.Create(new[] { user.Id.ToString(), inDto.RoomId }), user.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+        else
+        {
+            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
+            _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
         }
 
         return _employeeFullDtoHelper.GetFull(user);
@@ -446,7 +512,7 @@ public class UserController : PeopleControllerBase
         }
 
         var isInvite = _httpContextAccessor.HttpContext.User.Claims
-               .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
+               .Any(role => role.Type == ClaimTypes.Role && ConfirmTypeExtensions.TryParse(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
 
         _apiContext.AuthByClaim();
 
@@ -825,7 +891,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [HttpPut("{userid}")]
+    [HttpPut("{userid}", Order = 1)]
     public async Task<EmployeeDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);

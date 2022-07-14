@@ -32,7 +32,7 @@ import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 import { Consumer } from "@appserver/components/utils/context";
-import { FileAction } from "@appserver/common/constants";
+import { Events } from "../../helpers/constants";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -48,7 +48,6 @@ class PureHome extends React.Component {
       isMediaOrImage,
       getFileInfo,
       gallerySelected,
-      setAction,
       setIsUpdatingRowItem,
     } = this.props;
 
@@ -67,16 +66,18 @@ class PureHome extends React.Component {
       const pathname = window.location.href;
       const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
-      getFileInfo(fileId)
-        .then((data) => {
-          const canOpenPlayer = isMediaOrImage(data.fileExst);
-          const file = { ...data, canOpenPlayer };
-          setToPreviewFile(file, true);
-        })
-        .catch((err) => {
-          toastr.error(err);
-          this.fetchDefaultFiles();
-        });
+      setTimeout(() => {
+        getFileInfo(fileId)
+          .then((data) => {
+            const canOpenPlayer = isMediaOrImage(data.fileExst);
+            const file = { ...data, canOpenPlayer };
+            setToPreviewFile(file, true);
+          })
+          .catch((err) => {
+            toastr.error(err);
+            this.fetchDefaultFiles();
+          });
+      }, 1);
 
       return;
     }
@@ -167,13 +168,19 @@ class PureHome extends React.Component {
       .then(() => {
         if (gallerySelected) {
           setIsUpdatingRowItem(false);
-          setAction({
-            type: FileAction.Create,
+
+          const event = new Event(Events.CREATE);
+
+          const payload = {
             extension: "docxf",
+            id: -1,
             fromTemplate: true,
             title: gallerySelected.attributes.name_form,
-            id: -1,
-          });
+          };
+
+          event.payload = payload;
+
+          window.dispatchEvent(event);
         }
       })
       .finally(() => {
@@ -288,7 +295,7 @@ class PureHome extends React.Component {
     //console.log("Home render");
     const {
       viewAs,
-      fileActionId,
+
       firstLoad,
       isHeaderVisible,
       isPrivacyFolder,
@@ -335,9 +342,7 @@ class PureHome extends React.Component {
           clearUploadedFilesHistory={clearUploadedFilesHistory}
           viewAs={viewAs}
           hideAside={
-            !!fileActionId ||
-            primaryProgressDataVisible ||
-            secondaryProgressDataStoreVisible //TODO: use hideArticle action
+            primaryProgressDataVisible || secondaryProgressDataStoreVisible //TODO: use hideArticle action
           }
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
@@ -410,7 +415,6 @@ export default inject(
       firstLoad,
       setFirstLoad,
       fetchFiles,
-      fileActionStore,
       selection,
       setSelections,
       dragging,
@@ -423,7 +427,6 @@ export default inject(
       setIsUpdatingRowItem,
     } = filesStore;
 
-    const { id, setAction } = fileActionStore;
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
@@ -476,7 +479,6 @@ export default inject(
       homepage: config.homepage,
       firstLoad,
       dragging,
-      fileActionId: id,
       viewAs,
       uploaded,
       converted,
@@ -525,7 +527,6 @@ export default inject(
       isMediaOrImage: settingsStore.isMediaOrImage,
       getFileInfo,
       gallerySelected,
-      setAction,
       setIsUpdatingRowItem,
     };
   }

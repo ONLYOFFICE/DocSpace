@@ -38,6 +38,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private const string Privacy = "privacy";
     private const string Trash = "trash";
     private const string Projects = "projects";
+    private const string VirtualRooms = "virtualrooms";
+    private const string Archive = "archive";
 
     private readonly FactoryIndexerFolder _factoryIndexer;
     private readonly GlobalSpace _globalSpace;
@@ -45,6 +47,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly ProviderFolderDao _providerFolderDao;
     private readonly CrossDao _crossDao;
     private readonly IMapper _mapper;
+
+    private static readonly List<FilterType> _constraintFolderFilters =
+        new List<FilterType> { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly,
+            FilterType.PresentationsOnly, FilterType.SpreadsheetsOnly, FilterType.ArchiveOnly, FilterType.MediaOnly };
 
     public FolderDao(
         FactoryIndexerFolder factoryIndexer,
@@ -154,15 +160,19 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId)
     {
-        return GetFoldersAsync(parentId, default, default, false, default, string.Empty);
+        return GetFoldersAsync(parentId, default, FilterType.None, false, default, string.Empty);
     }
 
-    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<string> tagNames = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagNames);
+    }
+
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<string> tagNames = null)
+    {
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<int>>();
         }
@@ -173,6 +183,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
 
         var q = GetFolderQuery(r => r.ParentId == parentId).AsNoTracking();
+
+        q = SetFilterByTypes(q, filterTypes);
 
         if (withSubfolders)
         {
@@ -215,22 +227,36 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
+        if (tagNames != null && tagNames.Any())
+        {
+            q = q.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tag) => new { folder, tag.TagId })
+                .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, result.TagId, tagInfo.Name })
+                .Where(r => tagNames.Contains(r.Name))
+                .Select(r => r.folder).Distinct();
+        }
+
         var dbFolders = FromQueryWithShared(q).AsAsyncEnumerable();
 
         return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
 
-    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
+    }
+
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<string> tagNames = null)
+    {
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<int>>();
         }
 
         var q = GetFolderQuery(r => folderIds.Contains(r.Id)).AsNoTracking();
+
+        q = SetFilterByTypes(q, filterTypes);
 
         if (searchSubfolders)
         {
@@ -269,6 +295,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             {
                 q = q.Where(r => r.CreateBy == subjectID);
             }
+        }
+
+        if (tagNames != null && tagNames.Any())
+        {
+            q = q.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tag) => new { folder, tag.TagId })
+                .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, result.TagId, tagInfo.Name })
+                .Where(r => tagNames.Contains(r.Name))
+                .Select(r => r.folder).Distinct();
         }
 
         var dbFolders = (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable();
@@ -316,14 +350,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 folderId = await InternalSaveFolderToDbAsync(folder);
 
-                await tx.CommitAsync().ConfigureAwait(false);            
+                await tx.CommitAsync().ConfigureAwait(false);
             });
         }
         else
         {
             folderId = await InternalSaveFolderToDbAsync(folder);
         }
-   
+
         //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
         return folderId;
     }
@@ -543,7 +577,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             {
                 var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
 
-                if (folder.FolderType != FolderType.DEFAULT)
+                if (folder.FolderType != FolderType.DEFAULT && !DocSpaceHelper.IsRoom(folder.FolderType))
                 {
                     throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
                 }
@@ -990,6 +1024,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                         folder.FolderType = FolderType.Projects;
                         folder.Title = Projects;
                         break;
+                    case VirtualRooms:
+                        folder.FolderType = FolderType.VirtualRooms;
+                        folder.Title = VirtualRooms;
+                        break;
+                    case Archive:
+                        folder.FolderType = FolderType.Archive;
+                        folder.Title = Archive;
+                        break;
                     default:
                         folder.FolderType = FolderType.BUNCH;
                         folder.Title = key;
@@ -1092,6 +1134,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                     folder.FolderType = FolderType.Projects;
                     folder.Title = Projects;
                     break;
+                case VirtualRooms:
+                    folder.FolderType = FolderType.VirtualRooms;
+                    folder.Title = VirtualRooms;
+                    break;
+                case Archive:
+                    folder.FolderType = FolderType.Archive;
+                    folder.Title = Archive;
+                    break;
                 default:
                     folder.FolderType = FolderType.BUNCH;
                     folder.Title = key;
@@ -1164,6 +1214,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
     {
         return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Privacy, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
+    }
+
+    public Task<int> GetFolderIDVirtualRooms(bool createIfNotExists)
+    {
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, VirtualRooms, null, createIfNotExists);
+    }
+
+    public Task<int> GetFolderIDArchive(bool createIfNotExists)
+    {
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Archive, null, createIfNotExists);
     }
 
     #endregion
@@ -1294,6 +1354,33 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .ConfigureAwait(false);
 
         return q1.Union(q2);
+    }
+
+    private bool CheckForInvalidFilters(IEnumerable<FilterType> filterTypes)
+    {
+        var intersection = filterTypes.Intersect(_constraintFolderFilters);
+
+        return !intersection.Any();
+    }
+
+    private IQueryable<DbFolder> SetFilterByTypes(IQueryable<DbFolder> q, IEnumerable<FilterType> filterTypes)
+    {
+        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None) && !filterTypes.Contains(FilterType.FoldersOnly))
+        {
+            var filter = filterTypes.Select(f => f switch
+            {
+                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+                FilterType.EditingRooms => FolderType.EditingRoom,
+                FilterType.ReviewRooms => FolderType.ReviewRoom,
+                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+                FilterType.CustomRooms => FolderType.CustomRoom,
+                _ => FolderType.CustomRoom
+            }).ToHashSet();
+
+            q = q.Where(r => filter.Contains(r.FolderType));
+        }
+
+        return q;
     }
 
     private string GetProjectTitle(object folderID)

@@ -438,6 +438,7 @@ public class DocuSignData
     public List<Guid> Users { get; set; }
 }
 
+[EnumExtensions]
 public enum DocuSignStatus
 {
     Draft,

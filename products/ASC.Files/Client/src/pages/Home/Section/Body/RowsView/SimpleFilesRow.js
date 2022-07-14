@@ -103,6 +103,7 @@ const StyledSimpleFilesRow = styled(Row)`
     `
     & > div:last-child {
         width: 0px;
+        overflow: hidden;
       }
   `}
 
@@ -254,6 +255,7 @@ const SimpleFilesRow = (props) => {
           data={item}
           isEdit={isEdit}
           element={element}
+          mode={"modern"}
           sectionWidth={sectionWidth}
           contentElement={isSmallContainer ? null : quickButtonsComponent}
           onSelect={onContentFileSelect}

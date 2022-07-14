@@ -56,6 +56,11 @@ public class Client
                     return _client;
                 }
 
+                if (string.IsNullOrEmpty(_settings.Scheme) || string.IsNullOrEmpty(_settings.Host) || !_settings.Port.HasValue)
+                {
+                    return null;
+                }
+
                 var uri = new Uri(string.Format("{0}://{1}:{2}", _settings.Scheme, _settings.Host, _settings.Port));
                 var settings = new ConnectionSettings(new SingleNodeConnectionPool(uri))
                     .RequestTimeout(TimeSpan.FromMinutes(5))

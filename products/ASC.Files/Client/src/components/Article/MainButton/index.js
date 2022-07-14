@@ -5,10 +5,6 @@ import { inject, observer } from "mobx-react";
 import MainButton from "@appserver/components/main-button";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import {
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-} from "@appserver/components/utils/device";
 import Loaders from "@appserver/common/components/Loaders";
 import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
@@ -18,6 +14,7 @@ import MobileView from "./MobileView";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../package.json";
 import withLoader from "../../../HOCs/withLoader";
+import { Events } from "../../../helpers/constants";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -51,11 +48,16 @@ const ArticleMainButtonContent = (props) => {
   const onCreate = React.useCallback(
     (e) => {
       const format = e.action || null;
-      setAction({
-        type: FileAction.Create,
+
+      const event = new Event(Events.CREATE);
+
+      const payload = {
         extension: format,
         id: -1,
-      });
+      };
+      event.payload = payload;
+
+      window.dispatchEvent(event);
     },
     [setAction]
   );
@@ -119,68 +121,40 @@ const ArticleMainButtonContent = (props) => {
         ]
       : [];
 
-    const formActions =
-      !isMobile && !isTabletUtils()
-        ? [
-            {
-              className: "main-button_drop-down",
-              icon: "images/form.react.svg",
-              label: t("Translations:NewForm"),
-              key: "new-form",
-              items: [
-                {
-                  className: "main-button_drop-down_sub",
-                  label: t("Translations:SubNewForm"),
-                  onClick: onCreate,
-                  action: "docxf",
-                  key: "docxf",
-                },
-                {
-                  className: "main-button_drop-down_sub",
-                  label: t("Translations:SubNewFormFile"),
-                  onClick: onShowSelectFileDialog,
-                  disabled: isPrivacy,
-                  key: "form-file",
-                },
-                {
-                  className: "main-button_drop-down_sub",
-                  label: t("Common:OFORMsGallery"),
-                  onClick: onShowGallery,
-                  disabled: isPrivacy,
-                  key: "form-gallery",
-                },
-              ],
-            },
-          ]
-        : [
-            {
-              className: "main-button_drop-down_sub",
-              icon: "images/form.react.svg",
-              label: t("Translations:NewForm"),
-              onClick: onCreate,
-              action: "docxf",
-              key: "docxf",
-            },
-            {
-              className: "main-button_drop-down_sub",
-              icon: "images/form.file.react.svg",
-              label: t("Translations:NewFormFile"),
-              onClick: onShowSelectFileDialog,
-              disabled: isPrivacy,
-              key: "form-file",
-            },
-          ];
-
-    if (isMobile || isTabletUtils()) {
-      formActions.push({
-        className: "main-button_drop-down_sub",
+    const formActions = [
+      {
+        className: "main-button_drop-down",
         icon: "images/form.react.svg",
-        label: t("Common:OFORMsGallery"),
-        onClick: onShowGallery,
-        disabled: isPrivacy,
-        key: "form-gallery",
-      });
-    }
+        label: t("Translations:NewForm"),
+        key: "new-form",
+        items: [
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.blank.react.svg",
+            label: t("Translations:SubNewForm"),
+            onClick: onCreate,
+            action: "docxf",
+            key: "docxf",
+          },
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.file.react.svg",
+            label: t("Translations:SubNewFormFile"),
+            onClick: onShowSelectFileDialog,
+            disabled: isPrivacy,
+            key: "form-file",
+          },
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.gallery.react.svg",
+            label: t("Common:OFORMsGallery"),
+            onClick: onShowGallery,
+            disabled: isPrivacy,
+            key: "form-gallery",
+          },
+        ],
+      },
+    ];
 
     const actions = [
       {
@@ -318,13 +292,7 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const {
-      isLoaded,
-      firstLoad,
-      isLoading,
-      fileActionStore,
-      canCreate,
-    } = filesStore;
+    const { isLoaded, firstLoad, isLoading, canCreate } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -353,7 +321,6 @@ export default inject(
       isShareFolder,
       canCreate,
 
-      setAction: fileActionStore.setAction,
       startUpload,
 
       setSelectFileDialogVisible,

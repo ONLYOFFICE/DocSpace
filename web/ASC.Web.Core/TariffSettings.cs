@@ -50,6 +50,7 @@ public class TariffSettings : ISettings<TariffSettings>
         };
     }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{07956D46-86F7-433b-A657-226768EF9B0D}"); }
