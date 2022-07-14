@@ -12,6 +12,8 @@ export function getRooms(filter) {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
 
+    res.folders.forEach((room) => (room.isRoom = !!room.roomType));
+
     if (res.current.rootFolderType === FolderType.Archive) {
       res.folders.forEach((room) => (room.isArchive = true));
     }
