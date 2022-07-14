@@ -73,25 +73,9 @@ public class PaymentManager
         return _tariffService.GetProductPriceInfo(productIds);
     }
 
-    public Uri GetShoppingUri(int quotaId, bool forCurrentTenant = true, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null)
+    public Uri GetShoppingUri(string currency = null, string language = null, string customerId = null, string quantity = null)
     {
-        return _tariffService.GetShoppingUri(forCurrentTenant ? _tenantManager.GetCurrentTenant().Id : (int?)null, quotaId, affiliateId, currency, language, customerId, quantity);
-    }
-
-    public Uri GetShoppingUri(int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null)
-    {
-        return _tariffService.GetShoppingUri(null, quotaId, affiliateId, currency, language, customerId, quantity);
-    }
-
-    public Uri GetShoppingUri(string productId, string currency = null, string language = null, string customerId = null, string quantity = null, string affiliateId = null)
-    {
-        return _tariffService.GetShoppingUri(new[] { productId }, affiliateId, currency, language, customerId, quantity);
-    }
-
-    // used in www
-    public Uri GetShoppingUri(string[] productIds, string currency = null, string language = null, string customerId = null, string quantity = null, string affiliateId = null)
-    {
-        return _tariffService.GetShoppingUri(productIds, affiliateId, currency, language, customerId, quantity);
+        return _tariffService.GetShoppingUri(_tenantManager.GetCurrentTenant().Id, currency, language, customerId, quantity);
     }
 
     public void ActivateKey(string key)

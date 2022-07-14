@@ -33,6 +33,7 @@ public interface ITariffService
     IEnumerable<PaymentInfo> GetPayments(int tenantId);
     string GetButton(int tariffId, string partnerId);
     Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true);
+    Uri GetShoppingUri(int tenant, string currency = null, string language = null, string customerId = null, string quantity = null);
     Uri GetShoppingUri(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null);
     Uri GetShoppingUri(string[] productIds, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null);
     void ClearCache(int tenantId);

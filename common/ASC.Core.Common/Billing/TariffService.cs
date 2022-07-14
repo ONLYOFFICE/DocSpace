@@ -297,6 +297,58 @@ public class TariffService : ITariffService
         return payments;
     }
 
+    public Uri GetShoppingUri(int tenant, string currency = null, string language = null, string customerId = null, string quantity = null)
+    {
+        var key = "shopingurl_all";
+        var url = _cache.Get<string>(key);
+        if (url == null)
+        {
+            url = string.Empty;
+            if (_billingClient.Configured)
+            {
+                try
+                {
+                    var productIds = _quotaService.GetTenantQuotas()
+                                               .Where(q => !string.IsNullOrEmpty(q.ProductId) && q.Visible)
+                                               .Select(q => q.ProductId);
+
+                    var client = GetBillingClient();
+                    url =
+                        client.GetPaymentUrl(
+                            "__Tenant__",
+                            productIds.ToArray(),
+                            null,
+                            null,
+                            !string.IsNullOrEmpty(currency) ? "__Currency__" : null,
+                            !string.IsNullOrEmpty(language) ? "__Language__" : null,
+                            !string.IsNullOrEmpty(customerId) ? "__CustomerID__" : null,
+                            !string.IsNullOrEmpty(quantity) ? "__Quantity__" : null
+                            );
+                }
+                catch (Exception error)
+                {
+                    _logger.ErrorWithException(error);
+                }
+            }
+            _cache.Insert(key, url, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
+        }
+
+        ResetCacheExpiration();
+
+        if (string.IsNullOrEmpty(url))
+        {
+            return null;
+        }
+
+        var result = new Uri(url.ToString()
+                               .Replace("__Tenant__", HttpUtility.UrlEncode(GetPortalId(tenant)))
+                               .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
+                               .Replace("__Language__", HttpUtility.UrlEncode((language ?? "").ToLower()))
+                               .Replace("__CustomerID__", HttpUtility.UrlEncode(customerId ?? ""))
+                               .Replace("__Quantity__", HttpUtility.UrlEncode(quantity ?? "")));
+        return result;
+    }
+
     public Uri GetShoppingUri(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null)
     {
         var quota = _quotaService.GetTenantQuota(quotaId);
@@ -394,7 +446,6 @@ public class TariffService : ITariffService
         }
 
         ResetCacheExpiration();
-
 
         if (string.IsNullOrEmpty(url))
         {

@@ -196,6 +196,18 @@ public class PortalController : ControllerBase
         return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
     }
 
+    [HttpGet("payment/url")]
+    public Uri GetPaymentUrl()
+    {
+        if (_paymentManager.GetTariffPayments(Tenant.Id).Any()
+            || !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
+        {
+            return null;
+        }
+
+        return _paymentManager.GetShoppingUri();
+    }
+
     [HttpGet("tariff")]
     public Tariff GetTariff()
     {
