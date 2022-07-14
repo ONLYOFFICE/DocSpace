@@ -261,8 +261,6 @@ public class CookiesManager
         _tenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
 
         await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenant(tenant.Id);
-
-        AuthenticateMeAndSetCookies(tenant.Id, _securityContext.CurrentAccount.ID, MessageAction.LoginSuccess);
     }
 
     public string AuthenticateMeAndSetCookies(int tenantId, Guid userId, MessageAction action, bool session = false)

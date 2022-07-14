@@ -235,6 +235,17 @@ public class TfaappController : BaseSettingsController
         return result;
     }
 
+    [HttpPut("tfaappwithlink")]
+    public async Task<object> TfaSettingsLink(TfaRequestsDto inDto)
+    {
+        if (await TfaSettings(inDto))
+        {
+            return TfaConfirmUrl();
+        }
+
+        return string.Empty;
+    }
+
     [HttpGet("tfaapp/setup")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation")]
     public SetupCode TfaAppGenerateSetupCode()
