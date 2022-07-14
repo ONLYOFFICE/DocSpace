@@ -45,6 +45,7 @@ public class TfaappController : BaseSettingsController
     private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly Signature _signature;
+    private readonly SecurityContext _securityContext;
 
     public TfaappController(
         MessageService messageService,
@@ -65,6 +66,7 @@ public class TfaappController : BaseSettingsController
         IMemoryCache memoryCache,
         InstanceCrypto instanceCrypto,
         Signature signature,
+        SecurityContext securityContext,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _smsProviderManager = smsProviderManager;
@@ -82,6 +84,7 @@ public class TfaappController : BaseSettingsController
         _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
         _instanceCrypto = instanceCrypto;
         _signature = signature;
+        _securityContext = securityContext;
     }
 
     [HttpGet("tfaapp")]
@@ -124,6 +127,7 @@ public class TfaappController : BaseSettingsController
     {
         ApiContext.AuthByClaim();
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        _securityContext.Logout();
         return _tfaManager.ValidateAuthCode(user, inDto.Code);
     }
 
