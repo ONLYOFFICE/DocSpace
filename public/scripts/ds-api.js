@@ -1,8 +1,9 @@
 (function (DocSpace) {
   const defaultConfig = {
-    src: "http://192.168.1.60:8092/products/files/",
-    width: "1024px",
-    height: "800px",
+    src: "http://192.168.1.60:8092/",
+    rootPath: "products/files/",
+    width: "100%",
+    height: "100%",
     name: "frameDocSpace",
     type: "desktop",
     frameId: "ds-frame",
@@ -56,10 +57,11 @@
       ? `filter?${new URLSearchParams(config.filter).toString()}`
       : ``;
 
-    iframe.src = config.src + filter;
+    iframe.src = config.src + config.rootPath + filter;
     iframe.width = config.width;
     iframe.height = config.height;
     iframe.name = config.name;
+    iframe.id = config.frameId;
 
     iframe.align = "top";
     iframe.frameBorder = 0;
@@ -78,35 +80,22 @@
   };
 
   DocSpace = () => {
-    const config = getConfigFromParams();
+    let config = getConfigFromParams();
+    let iframe;
 
-    const onMessage = (msg) => {
-      if (msg) {
-        if (msg.type === "onMessage") {
-          sendCommand(msg);
-        } else if (msg.type === "onCallback") {
-          postMessage(window.parent, msg);
-        }
+    const initFrame = (frameConfig) => {
+      config = { ...config, ...frameConfig };
+
+      const target = document.getElementById(config.frameId);
+
+      if (target) {
+        iframe = createIframe(config);
+
+        target.parentNode && target.parentNode.replaceChild(iframe, target);
+
+        localStorage.setItem("dsFrameConfig", JSON.stringify(config));
       }
     };
-
-    const target = document.getElementById(config.frameId);
-    let iframe;
-    let msgDispatcher;
-
-    if (target) {
-      iframe = createIframe(config);
-
-      target.parentNode && target.parentNode.replaceChild(iframe, target);
-      msgDispatcher = new MessageDispatcher(onMessage, this);
-
-      localStorage.setItem("dsFrameConfig", JSON.stringify(config));
-
-      postMessage(window.parent, {
-        frameId: config.frameId,
-        message: "Frame inserted!",
-      });
-    }
 
     const destroyFrame = () => {
       var target = document.createElement("div");
@@ -115,64 +104,29 @@
       target.innerHTML = config.destroyText;
 
       if (iframe) {
-        msgDispatcher && msgDispatcher.unbindEvents();
         iframe.parentNode && iframe.parentNode.replaceChild(target, iframe);
-
-        localStorage.removeItem("dsFrameConfig");
       }
     };
 
-    const sendCommand = (command) => {
-      if (iframe && iframe.contentWindow)
-        postMessage(iframe.contentWindow, command);
+    const getFolderInfo = () => {
+      return "test";
     };
 
-    /*     const getItems = () => {
-      sendCommand("getItems");
-    }; */
+    const getUserInfo = () => {
+      return "test";
+    };
+
+    const getConfig = () => config;
+
+    initFrame(config);
 
     return {
+      initFrame,
       destroyFrame,
+      getConfig,
+      getFolderInfo,
+      getUserInfo,
     };
-  };
-
-  MessageDispatcher = function (fn, scope) {
-    const callFunction = fn;
-    const msgScope = scope;
-    const eventFn = (message) => {
-      onMessage(message);
-    };
-
-    const bindEvents = () => {
-      window.addEventListener("message", eventFn, false);
-    };
-
-    const unbindEvents = () => {
-      window.removeEventListener("message", eventFn, false);
-    };
-
-    const onMessage = (msg) => {
-      if (msg && window.JSON && msgScope.frameOrigin == msg.origin) {
-        try {
-          const msg = window.JSON.parse(msg.data);
-          if (callFunction) {
-            callFunction.call(msgScope, msg);
-          }
-        } catch (e) {}
-      }
-    };
-
-    bindEvents.call(this);
-
-    return {
-      unbindEvents: unbindEvents,
-    };
-  };
-
-  const postMessage = (wnd, message) => {
-    if (wnd && wnd.postMessage && window.JSON) {
-      wnd.postMessage(message, "*"); //window.JSON.stringify(message)
-    }
   };
 
   window.DocSpace = DocSpace();
