@@ -376,7 +376,7 @@ export function getTfaSettings() {
 export function setTfaSettings(type) {
   return request({
     method: "put",
-    url: "/settings/tfaapp",
+    url: "/settings/tfaappwithlink",
     data: { type: type },
   });
 }
