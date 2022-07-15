@@ -24,39 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System;
-global using System.Collections;
-global using System.Collections.Concurrent;
-global using System.Collections.Generic;
-global using System.ComponentModel.Design;
-global using System.Diagnostics;
-global using System.IO;
-global using System.Linq;
+global using System.Configuration;
 global using System.Reflection;
-global using System.Resources;
-global using System.Text;
-global using System.Text.Encodings.Web;
-global using System.Text.Json;
 global using System.Text.RegularExpressions;
-global using System.Text.Unicode;
-global using System.Threading.Tasks;
-global using System.Xml;
-global using System.Xml.Linq;
 
-global using ASC.Common;
-global using ASC.Common.Utils;
 global using ASC.Core.Common.EF;
-global using ASC.Resource.Manager.EF.Context;
-global using ASC.Resource.Manager.EF.Model;
 
 global using Autofac;
 
-global using CommandLine;
+global using AutoMigrationCreator.Core;
 
+global using Microsoft.Build.Construction;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Design;
 global using Microsoft.EntityFrameworkCore.Infrastructure;
-global using Microsoft.Extensions.Configuration;
+global using Microsoft.EntityFrameworkCore.Migrations.Design;
+global using Microsoft.EntityFrameworkCore.Migrations.Operations;
+global using Microsoft.EntityFrameworkCore.Storage;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Hosting.Internal;
-global using Microsoft.Extensions.Logging;

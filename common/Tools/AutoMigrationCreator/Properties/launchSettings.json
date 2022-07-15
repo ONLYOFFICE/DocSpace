@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AutoMigrationCreator": {
+      "commandName": "Project",
+      "launchBrowser": false
+    }
+  }
+}
