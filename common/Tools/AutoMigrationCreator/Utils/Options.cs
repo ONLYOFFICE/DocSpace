@@ -34,6 +34,6 @@ public class Options
     [Option(shortName: 'c', longName: "create", Default = false, HelpText = "Do you want to apply migrations?", MetaValue = "boolean")]
     public bool? Create { get; set; }
 
-    [Option(shortName: 'd', longName: "db-connection-string", Default = "", HelpText = "connection string for your database", MetaValue = "string")]
+    [Option(shortName: 'd', longName: "db-connection-string", Default = "", HelpText = "Сonnection string for your database", MetaValue = "string")]
     public string DbConnectionString { get; set; }
 }
