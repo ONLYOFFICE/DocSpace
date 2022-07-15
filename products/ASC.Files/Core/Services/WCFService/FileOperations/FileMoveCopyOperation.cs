@@ -738,11 +738,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
         else
         {
-            entryParentRoom = (await FolderDao.GetParentFoldersAsync(entry.ParentId)).FirstOrDefault(f => f.Private);
+            entryParentRoom = (await FolderDao.GetParentFoldersAsync(entry.ParentId)).FirstOrDefault(f => f.Private && DocSpaceHelper.IsRoom(f.FolderType));
             _parentRooms.Add(entry.ParentId, entryParentRoom);
         }
 
-        var toFolderParentRoom = toFolderParents.FirstOrDefault(f => f.Private);
+        var toFolderParentRoom = toFolderParents.FirstOrDefault(f => f.Private && DocSpaceHelper.IsRoom(f.FolderType));
 
         if (entryParentRoom == null && toFolderParentRoom == null)
         {
