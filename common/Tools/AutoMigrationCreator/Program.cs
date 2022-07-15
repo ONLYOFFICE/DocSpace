@@ -24,12 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-
-using AutoMigrationCreator.Utils;
-
-using CommandLine;
-
 namespace AutoMigrationCreator;
 
 class Program
@@ -38,6 +32,19 @@ class Program
     {
         Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
         {
+            if (o.DbConnectionString == "")
+            {
+                var builder = new ConfigurationBuilder()
+                 .AddJsonFile($"appsettings.json", true);
+                var config = builder.Build();
+
+                DbContextActivator.DbConnectionString = config["ConnectionString"];
+            }
+            else
+            {
+                DbContextActivator.DbConnectionString = o.DbConnectionString;
+            }
+
             if (o.Create == true)
             {
                 MigrationCreator.RunCreateMigrations();
@@ -48,9 +55,19 @@ class Program
                 MigrationCreator.RunApplyMigrations(o.Path);
             }
 
+
             if (!(bool)o.Create && o.Path == "")
             {
-                throw new Exception("Incorrect combination of parameters.\r\n First parametr: -p string, --path=string\r\n Second parametr: -c boolean, create=boolean");
+                throw new Exception("Incorrect combination of parameters.\r\n " +
+                    "First parametr: -p string, --path=string\r\n" +
+                    "Second parametr: -c boolean, --create=boolean\r\n"+
+                    "Third parametr: -d string, --db-connetion-string=string\r\n"+
+                    "First and second parameters are mutually exclusive");
+            }
+
+            if ((bool)o.Create && o.Path != "")
+            {
+                throw new Exception("Incorrect combination of parameters. First and second parameters are mutually exclusive");
             }
 
         });

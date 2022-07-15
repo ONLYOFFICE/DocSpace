@@ -33,6 +33,9 @@ global using ASC.Core.Common.EF;
 global using Autofac;
 
 global using AutoMigrationCreator.Core;
+global using AutoMigrationCreator.Utils;
+
+global using CommandLine;
 
 global using Microsoft.Build.Construction;
 global using Microsoft.EntityFrameworkCore;

@@ -24,9 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using CommandLine;
-
 namespace AutoMigrationCreator.Utils;
+
 public class Options
 {
     [Option(shortName: 'p', longName: "path", Default = "", HelpText = "Path to dll files for migrations", MetaValue = "string")]
@@ -34,4 +33,7 @@ public class Options
 
     [Option(shortName: 'c', longName: "create", Default = false, HelpText = "Do you want to apply migrations?", MetaValue = "boolean")]
     public bool? Create { get; set; }
+
+    [Option(shortName: 'd', longName: "db-connection-string", Default = "", HelpText = "connection string for your database", MetaValue = "string")]
+    public string DbConnectionString { get; set; }
 }

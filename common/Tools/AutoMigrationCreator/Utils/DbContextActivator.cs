@@ -28,13 +28,13 @@ namespace AutoMigrationCreator;
 
 public class DbContextActivator
 {
-    private const string FAKE_CONNECTION_STRING = "Server=localhost;Database=onlyoffice;User ID=root;Password=onlyoffice";
+    public static string DbConnectionString { get; set; }
     public static BaseDbContext CreateInstance(Type contextType)
     {
         var context = (BaseDbContext)Activator.CreateInstance(contextType);
         context.ConnectionStringSettings = new ConnectionStringSettings
         {
-            ConnectionString = FAKE_CONNECTION_STRING
+            ConnectionString = DbConnectionString
         };
 
         return context;
