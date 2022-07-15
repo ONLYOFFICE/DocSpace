@@ -32,6 +32,20 @@ class Program
     {
         Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
         {
+            if (!(bool)o.Create && o.Path == "")
+            {
+                throw new Exception("Incorrect combination of parameters.\r\n" +
+                    "First parametr: -p string, --path=string\r\n" +
+                    "Second parametr: -c boolean, --create=boolean\r\n" +
+                    "Third parametr: -d string, --db-connetion-string=string\r\n" +
+                    "First and second parameters are mutually exclusive");
+            }
+
+            if ((bool)o.Create && o.Path != "")
+            {
+                throw new Exception("Incorrect combination of parameters. First and second parameters are mutually exclusive");
+            }
+
             if (o.DbConnectionString == "")
             {
                 var builder = new ConfigurationBuilder()
@@ -53,21 +67,6 @@ class Program
             if (o.Path != "")
             {
                 MigrationCreator.RunApplyMigrations(o.Path);
-            }
-
-
-            if (!(bool)o.Create && o.Path == "")
-            {
-                throw new Exception("Incorrect combination of parameters.\r\n " +
-                    "First parametr: -p string, --path=string\r\n" +
-                    "Second parametr: -c boolean, --create=boolean\r\n"+
-                    "Third parametr: -d string, --db-connetion-string=string\r\n"+
-                    "First and second parameters are mutually exclusive");
-            }
-
-            if ((bool)o.Create && o.Path != "")
-            {
-                throw new Exception("Incorrect combination of parameters. First and second parameters are mutually exclusive");
             }
 
         });
