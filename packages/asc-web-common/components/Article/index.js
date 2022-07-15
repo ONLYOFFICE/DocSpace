@@ -132,7 +132,9 @@ const Article = ({
         ) : null}
         <SubArticleBody showText={showText}>
           {articleBodyContent ? articleBodyContent.props.children : null}
-          {!hideProfileBlock && <ArticleProfile showText={showText} />}
+          {!hideProfileBlock && !isMobileOnly && (
+            <ArticleProfile showText={showText} />
+          )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
