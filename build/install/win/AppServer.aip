@@ -93,10 +93,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
-    <ROW Directory="ASC.ApiSystem_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.API|ASC.ApiSystem"/>
     <ROW Directory="ASC.Data.Backup_Dir" Directory_Parent="services_Dir" DefaultDir="ASCDAT~1.BAC|ASC.Data.Backup"/>
-    <ROW Directory="ASC.Data.Storage.Encryption_Dir" Directory_Parent="services_Dir" DefaultDir="ASCDAT~1.ENC|ASC.Data.Storage.Encryption"/>
-    <ROW Directory="ASC.Data.Storage.Migration_Dir" Directory_Parent="services_Dir" DefaultDir="ASCDAT~1.MIG|ASC.Data.Storage.Migration"/>
     <ROW Directory="ASC.Files.Service_Dir" Directory_Parent="services_Dir" DefaultDir="ASCFIL~1.SER|ASC.Files.Service"/>
     <ROW Directory="ASC.Files.Tests_Dir" Directory_Parent="services_Dir" DefaultDir="ASCFIL~1.TES|ASC.Files.Tests"/>
     <ROW Directory="ASC.Files_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.FIL|ASC.Files"/>
@@ -126,13 +123,10 @@
     <ROW Directory="service_16_Dir" Directory_Parent="ASC.Web.Studio_Dir" DefaultDir="service"/>
     <ROW Directory="service_1_Dir" Directory_Parent="ASC.Socket.IO_Dir" DefaultDir="service"/>
     <ROW Directory="service_2_Dir" Directory_Parent="ASC.Data.Backup_Dir" DefaultDir="service"/>
-    <ROW Directory="service_3_Dir" Directory_Parent="ASC.Data.Storage.Encryption_Dir" DefaultDir="service"/>
-    <ROW Directory="service_4_Dir" Directory_Parent="ASC.Data.Storage.Migration_Dir" DefaultDir="service"/>
     <ROW Directory="service_5_Dir" Directory_Parent="ASC.SsoAuth_Dir" DefaultDir="service"/>
     <ROW Directory="service_7_Dir" Directory_Parent="ASC.Files.Service_Dir" DefaultDir="service"/>
     <ROW Directory="service_8_Dir" Directory_Parent="ASC.Files.Tests_Dir" DefaultDir="service"/>
     <ROW Directory="service_9_Dir" Directory_Parent="ASC.Notify_Dir" DefaultDir="service"/>
-    <ROW Directory="service_Dir" Directory_Parent="ASC.ApiSystem_Dir" DefaultDir="service"/>
     <ROW Directory="services_Dir" Directory_Parent="APPDIR" DefaultDir="services"/>
     <ROW Directory="tools_Dir" Directory_Parent="APPDIR" DefaultDir="tools"/>
   </COMPONENT>
@@ -141,10 +135,7 @@
     <ROW Component="AI_DisableModify" ComponentId="{E036B14F-E2E4-4247-B9AB-55C1F6142BF9}" Directory_="APPDIR" Attributes="4" KeyPath="NoModify" Options="1"/>
     <ROW Component="AI_ExePath" ComponentId="{EDF666FF-8C56-4EB7-8255-67DA879A090C}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
     <ROW Component="APPDIR" ComponentId="{E32A4F89-E985-4E8E-AB26-DFCD685A316B}" Directory_="APPDIR" Attributes="0"/>
-    <ROW Component="ASC.ApiSystem.exe" ComponentId="{B781377D-457D-4304-B43D-A80B609B13E5}" Directory_="service_Dir" Attributes="256" KeyPath="ASC.ApiSystem.exe"/>
     <ROW Component="ASC.Data.Backup.exe" ComponentId="{240665F1-DDCF-4FFB-ABEE-2F784ACD87E6}" Directory_="service_2_Dir" Attributes="256" KeyPath="ASC.Data.Backup.exe"/>
-    <ROW Component="ASC.Data.Storage.Encryption.exe" ComponentId="{40FBFC2F-6F8C-4E0A-8302-7F7343D200AB}" Directory_="service_3_Dir" Attributes="256" KeyPath="ASC.Data.Storage.Encryption.exe"/>
-    <ROW Component="ASC.Data.Storage.Migration.exe" ComponentId="{32BD001D-1BB0-432C-8B79-023AB1DA8261}" Directory_="service_4_Dir" Attributes="256" KeyPath="ASC.Data.Storage.Migration.exe"/>
     <ROW Component="ASC.Files.Service.exe" ComponentId="{14D153CC-E7A6-4818-A310-9CE1F332DCDA}" Directory_="service_7_Dir" Attributes="256" KeyPath="ASC.Files.Service.exe"/>
     <ROW Component="ASC.Files.exe" ComponentId="{4D48DD81-BABF-4E1C-A216-C72C1EA8428B}" Directory_="server_2_Dir" Attributes="256" KeyPath="ASC.Files.exe"/>
     <ROW Component="ASC.Files.exe_1" ComponentId="{1FCFC78C-9BF5-412A-AA03-732736177E66}" Directory_="service_8_Dir" Attributes="256" KeyPath="ASC.Files.exe_1"/>
@@ -173,10 +164,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
     <ROW File="ASC.Files.exe" Component_="ASC.Files.exe" FileName="ASCFIL~1.EXE|ASC.Files.exe" Attributes="0" SourcePath="Files\products\ASC.Files\server\ASC.Files.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.People.exe" Component_="ASC.People.exe" FileName="ASCPEO~1.EXE|ASC.People.exe" Attributes="0" SourcePath="Files\products\ASC.People\server\ASC.People.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="ASC.ApiSystem.exe" Component_="ASC.ApiSystem.exe" FileName="ASCAPI~1.EXE|ASC.ApiSystem.exe" Attributes="0" SourcePath="Files\services\ASC.ApiSystem\service\ASC.ApiSystem.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Data.Backup.exe" Component_="ASC.Data.Backup.exe" FileName="ASCDAT~1.EXE|ASC.Data.Backup.exe" Attributes="0" SourcePath="Files\services\ASC.Data.Backup\service\ASC.Data.Backup.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="ASC.Data.Storage.Encryption.exe" Component_="ASC.Data.Storage.Encryption.exe" FileName="ASCDAT~1.EXE|ASC.Data.Storage.Encryption.exe" Attributes="0" SourcePath="Files\services\ASC.Data.Storage.Encryption\service\ASC.Data.Storage.Encryption.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="ASC.Data.Storage.Migration.exe" Component_="ASC.Data.Storage.Migration.exe" FileName="ASCDAT~1.EXE|ASC.Data.Storage.Migration.exe" Attributes="0" SourcePath="Files\services\ASC.Data.Storage.Migration\service\ASC.Data.Storage.Migration.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Files.Service.exe" Component_="ASC.Files.Service.exe" FileName="ASCFIL~1.EXE|ASC.Files.Service.exe" Attributes="0" SourcePath="Files\services\ASC.Files.Service\service\ASC.Files.Service.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Files.exe_1" Component_="ASC.Files.exe_1" FileName="ASCFIL~1.EXE|ASC.Files.exe" Attributes="0" SourcePath="Files\services\ASC.Files.Tests\service\ASC.Files.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Notify.exe" Component_="ASC.Notify.exe" FileName="ASCNOT~1.EXE|ASC.Notify.exe" Attributes="0" SourcePath="Files\services\ASC.Notify\service\ASC.Notify.exe" SelfReg="false" DigSign="true"/>
@@ -655,10 +643,7 @@
     <ROW Feature_="MainFeature" Component_="ProductInformation"/>
     <ROW Feature_="MainFeature" Component_="AI_ExePath"/>
     <ROW Feature_="MainFeature" Component_="ASC.People.exe"/>
-    <ROW Feature_="MainFeature" Component_="ASC.ApiSystem.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Data.Backup.exe"/>
-    <ROW Feature_="MainFeature" Component_="ASC.Data.Storage.Encryption.exe"/>
-    <ROW Feature_="MainFeature" Component_="ASC.Data.Storage.Migration.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Files.Service.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Files.exe_1"/>
     <ROW Feature_="MainFeature" Component_="ASC.Notify.exe"/>
@@ -782,12 +767,9 @@
     <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName" VirtualValue="#"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigComponent">
-    <ROW MsiServiceConfig="ServiceName_ApiSystemService" Name="[ServiceName_ApiSystemService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.ApiSystem.exe"/>
     <ROW MsiServiceConfig="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Backup.exe"/>
-    <ROW MsiServiceConfig="ServiceName_EncryptionService" Name="[ServiceName_EncryptionService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Storage.Encryption.exe"/>
     <ROW MsiServiceConfig="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Files.exe"/>
     <ROW MsiServiceConfig="ServiceName_FileService" Name="[ServiceName_FileService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Files.Service.exe"/>
-    <ROW MsiServiceConfig="ServiceName_MigrationService" Name="[ServiceName_MigrationService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Storage.Migration.exe"/>
     <ROW MsiServiceConfig="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Notify.exe"/>
     <ROW MsiServiceConfig="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.People.exe"/>
     <ROW MsiServiceConfig="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ConfigType="3" Argument="1" Component_="proxy.exe"/>
@@ -801,12 +783,9 @@
     <ROW MsiServiceConfig="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigFailureActionsComponent">
-    <ROW MsiServiceConfigFailureActions="ServiceName_ApiSystemService" Name="[ServiceName_ApiSystemService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.ApiSystem.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Data.Backup.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_EncryptionService" Name="[ServiceName_EncryptionService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Data.Storage.Encryption.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Files.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_FileService" Name="[ServiceName_FileService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Files.Service.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_MigrationService" Name="[ServiceName_MigrationService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Data.Storage.Migration.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Notify.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.People.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="proxy.exe"/>
@@ -820,12 +799,9 @@
     <ROW MsiServiceConfigFailureActions="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
-    <ROW ServiceControl="ServiceName_ApiSystemService" Name="[ServiceName_ApiSystemService]" Event="161" Wait="0" Component_="ASC.ApiSystem.exe"/>
     <ROW ServiceControl="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="161" Wait="0" Component_="ASC.Data.Backup.exe"/>
-    <ROW ServiceControl="ServiceName_EncryptionService" Name="[ServiceName_EncryptionService]" Event="161" Wait="0" Component_="ASC.Data.Storage.Encryption.exe"/>
     <ROW ServiceControl="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="161" Wait="0" Component_="ASC.Files.exe"/>
     <ROW ServiceControl="ServiceName_FileService" Name="[ServiceName_FileService]" Event="161" Wait="0" Component_="ASC.Files.Service.exe"/>
-    <ROW ServiceControl="ServiceName_MigrationService" Name="[ServiceName_MigrationService]" Event="161" Wait="0" Component_="ASC.Data.Storage.Migration.exe"/>
     <ROW ServiceControl="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="161" Wait="0" Component_="ASC.Notify.exe"/>
     <ROW ServiceControl="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="161" Wait="0" Component_="ASC.People.exe"/>
     <ROW ServiceControl="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="161" Wait="0" Component_="proxy.exe"/>
@@ -839,12 +815,9 @@
     <ROW ServiceControl="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="161" Wait="0" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServInstComponent">
-    <ROW ServiceInstall="ServiceName_ApiSystemService" Name="[ServiceName_ApiSystemService]" DisplayName="[ServiceName_ApiSystemService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5010 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_ApiSystemService]" Component_="ASC.ApiSystem.exe"/>
     <ROW ServiceInstall="ServiceName_BackupService" Name="[ServiceName_BackupService]" DisplayName="[ServiceName_BackupService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5012 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Data.Backup.exe"/>
-    <ROW ServiceInstall="ServiceName_EncryptionService" Name="[ServiceName_EncryptionService]" DisplayName="[ServiceName_EncryptionService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5019 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_EncryptionService]" Component_="ASC.Data.Storage.Encryption.exe"/>
     <ROW ServiceInstall="ServiceName_FileServer" Name="[ServiceName_FileServer]" DisplayName="[ServiceName_FileServer]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5007 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_FileServer]" Component_="ASC.Files.exe"/>
     <ROW ServiceInstall="ServiceName_FileService" Name="[ServiceName_FileService]" DisplayName="[ServiceName_FileService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5009 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_FileService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Files.Service.exe"/>
-    <ROW ServiceInstall="ServiceName_MigrationService" Name="[ServiceName_MigrationService]" DisplayName="[ServiceName_MigrationService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5018 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_MigrationService]" Component_="ASC.Data.Storage.Migration.exe"/>
     <ROW ServiceInstall="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" DisplayName="[ServiceName_NotifyService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5005 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_NotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Notify.exe"/>
     <ROW ServiceInstall="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" DisplayName="[ServiceName_PeopleServer]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5004 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_PeopleServer]" Component_="ASC.People.exe"/>
     <ROW ServiceInstall="ServiceName_Proxy" Name="[ServiceName_Proxy]" DisplayName="[ServiceName_Proxy]" ServiceType="16" StartType="2" ErrorControl="1" Component_="proxy.exe"/>
@@ -925,9 +898,15 @@
   <COMPONENT cid="caphyon.advinst.msicomp.SqlReplaceComponent">
     <ROW ScriptName="docspace_upgrade1" Token="DELIMITER DLM00" Flags="0"/>
     <ROW ScriptName="docspace_upgrade1" Token="DELIMITER ;" Flags="0"/>
+    <ROW ScriptName="app" Token="DELIMITER ;" Flags="0"/>
+    <ROW ScriptName="app" Token="DELIMITER DLM00" Flags="0"/>
+    <ROW ScriptName="app.data" Token="DELIMITER ;" Flags="0"/>
+    <ROW ScriptName="app.data" Token="DELIMITER DLM00" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
-    <ROW ScriptName="docspace_upgrade1" ConnectionName="MySql.Connection" Condition="OLDPRODUCTS &lt;&gt; &quot;&quot;" Separator="DLM00" ScriptText="..\..\..\sql\docspace_upgrade1.sql" Flags="18" Order="0"/>
+    <ROW ScriptName="app" ConnectionName="MySql.Connection" Condition="OLDPRODUCTS = &quot;&quot;" Separator=";" ScriptText="..\..\..\sql\app.sql" Flags="18" Order="0"/>
+    <ROW ScriptName="app.data" ConnectionName="MySql.Connection" Condition="OLDPRODUCTS = &quot;&quot;" Separator="DLM00" ScriptText="..\..\..\sql\app.data.sql" Flags="18" Order="1"/>
+    <ROW ScriptName="docspace_upgrade1" ConnectionName="MySql.Connection" Condition="OLDPRODUCTS &lt;&gt; &quot;&quot;" Separator="DLM00" ScriptText="..\..\..\sql\docspace_upgrade1.sql" Flags="18" Order="2"/>
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
@@ -944,7 +923,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
     <ROW Key="YourFile.txt" Component="AI_ExePath" FileName="elastic.json" Directory="config_Dir" Options="17"/>
-    <ROW Key="appsettings.test.json" Component="ASC.ApiSystem.exe" FileName="*.json" Directory="config_Dir" Options="17"/>
+    <ROW Key="appsettings.test.json" Component="Socket.IO.exe" FileName="*.json" Directory="config_Dir" Options="17"/>
     <ROW Key="config.json" Component="proxy.xml" FileName="config.json" Directory="config_2_Dir" Options="17"/>
     <ROW Key="config.json_1" Component="proxy.xml" FileName="config.json" Directory="NewFolder_1_Dir" Options="17"/>
     <ROW Key="json" Component="proxy.xml" FileName="config.json" Directory="config_1_Dir" Options="17"/>
