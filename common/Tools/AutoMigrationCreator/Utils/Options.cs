@@ -24,33 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
+using CommandLine;
 
 namespace AutoMigrationCreator.Utils;
-public static class ArgsParser
+public class Options
 {
-    public static (string path, bool create) Parse(string[] args)
-    {
-        var path = "";
-        var create = false;
+    [Option(shortName: 'p', longName: "path", Default = "", HelpText = "Path to dll files for migrations", MetaValue = "string")]
+    public string Path { get; set; }
 
-        if (args.Length == 0 || args.Length > 2)
-        {
-            throw new Exception("Incorrect combination of parameters. First parametr: string path, Second parametr: bool created");
-        }
-
-        path = args[0];
-
-        if (args.Length == 2)
-        {
-            create = Convert.ToBoolean(args[1]);
-        }
-
-        if (!create && path == "")
-        {
-            throw new Exception("Incorrect combination of parameters. First parametr: string path, Second parametr: bool created");
-        }
-
-        return (path, create);
-    }
+    [Option(shortName: 'c', longName: "create", Default = false, HelpText = "Do you want to apply migrations?", MetaValue = "boolean")]
+    public bool? Create { get; set; }
 }

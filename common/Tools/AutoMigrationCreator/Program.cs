@@ -24,7 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System;
+
 using AutoMigrationCreator.Utils;
+
+using CommandLine;
 
 namespace AutoMigrationCreator;
 
@@ -32,16 +36,23 @@ class Program
 {
     static void Main(string[] args)
     {
-        var (path, create) = ArgsParser.Parse(args);
-
-        if (create)
+        Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
         {
-            MigrationCreator.RunCreateMigrations();
-        }
+            if (o.Create == true)
+            {
+                MigrationCreator.RunCreateMigrations();
+            }
 
-        if (path != "")
-        {
-            MigrationCreator.RunApplyMigrations(path);
-        }
+            if (o.Path != "")
+            {
+                MigrationCreator.RunApplyMigrations(path);
+            }
+
+            if (!(bool)o.Create && o.Path == "")
+            {
+                throw new Exception("Incorrect combination of parameters.\r\n First parametr: -p string, --path=string\r\n Second parametr: -c boolean, create=boolean");
+            }
+
+        });
     }
 }
