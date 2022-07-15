@@ -3,5 +3,6 @@
   "ConvertedFileDestination": "Kopia pliku zostanie umieszczona w folderze <strong>{{folderTitle}}</strong>",
   "HideMessage": "Nie wyświetlaj więcej tego komunikatu",
   "InfoCreateFileIn": "Nowy '{{fileTitle}}' plik zostanie utworzony w '{{folderTitle}}'",
+  "OpenFileMessage": "Otwarty plik dokumentu zostanie przekonwertowany do formatu Office Open XML w celu szybszego przeglądania i edycji.",
   "SaveOriginalFormatMessage": "Zapisz kopię pliku w oryginalnym formacie"
 }

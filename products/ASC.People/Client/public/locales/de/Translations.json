@@ -1,8 +1,8 @@
 {
   "AddMembers": "Mitglieder hinzufügen",
   "Birthdate": "Geburtsdatum",
-  "DeleteUserDataConfirmation": "Freigegebene Dokumente dieses Benutzers werden gelöscht. Um dies zu vermeiden, weisen Sie Daten neu zu.",
   "DeleteSelfProfile": "Profil löschen",
+  "DeleteUserDataConfirmation": "Freigegebene Dokumente dieses Benutzers werden gelöscht. Um dies zu vermeiden, weisen Sie Daten neu zu.",
   "DisableUserButton": "Deaktivieren",
   "DisabledEmployeeStatus": "Deaktiviert",
   "EmailChangeButton": "E-Mail-Adresse ändern",

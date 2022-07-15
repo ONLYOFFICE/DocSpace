@@ -1,8 +1,8 @@
 {
   "AddMembers": "Pridať členov",
   "Birthdate": "Dátum narodenia",
-  "DeleteUserDataConfirmation": "Dokumenty používateľov zdieľané s ostatnými budú odstránené. Aby ste tomu zabránili, znova priraďte údaje.",
   "DeleteSelfProfile": "Odstrániť profil",
+  "DeleteUserDataConfirmation": "Dokumenty používateľov zdieľané s ostatnými budú odstránené. Aby ste tomu zabránili, znova priraďte údaje.",
   "DisableUserButton": "Deaktivovať",
   "DisabledEmployeeStatus": "Deaktivovaný",
   "EmailChangeButton": "Zmeniť e-mail",

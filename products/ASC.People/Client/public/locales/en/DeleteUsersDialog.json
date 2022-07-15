@@ -1,5 +1,5 @@
 {
-  "DeleteUsersMessage": "The selected disabled users will be deleted from the portal. Personal documents of these users which are available to others will be deleted. To avoid this, you must start the data transfer process before deleting.",
+  "DeleteGroupUsersSuccessMessage": "Users have been successfully deleted.",
   "DeleteUsers": "Delete users",
-  "DeleteGroupUsersSuccessMessage": "Users have been successfully deleted."
+  "DeleteUsersMessage": "The selected disabled users will be deleted from the portal. Personal documents of these users which are available to others will be deleted. To avoid this, you must start the data transfer process before deleting."
 }

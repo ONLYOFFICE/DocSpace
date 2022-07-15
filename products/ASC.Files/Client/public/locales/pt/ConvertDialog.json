@@ -3,5 +3,6 @@
   "ConvertedFileDestination": "A copia do ficheiro será criada na pasta <strong>{{folderTitle}}</strong>",
   "HideMessage": "Não mostre esta mensagem novamente",
   "InfoCreateFileIn": "O novo ficheiro '{{fileTitle}}' foi criado em '{{folderTitle}}'",
+  "OpenFileMessage": "O documento que abriu será convertido para formato Office Open XML para uma visualização e edição rápida.",
   "SaveOriginalFormatMessage": "Guardar a cópia do ficheiro no formato original"
 }

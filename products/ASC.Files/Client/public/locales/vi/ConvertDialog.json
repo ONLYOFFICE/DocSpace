@@ -3,5 +3,6 @@
   "ConvertedFileDestination": "Bản sao của file sẽ được tạo trong thư mục <strong>{{folderTitle}}</strong>",
   "HideMessage": "Không hiển thị lại thông báo này",
   "InfoCreateFileIn": "File '{{fileTitle}}' được tạo trong '{{folderTitle}}'",
+  "OpenFileMessage": "Tài liệu bạn mở sẽ được chuyển sang định dạng Office Open XML giúp sửa và xem nhanh hơn.",
   "SaveOriginalFormatMessage": "Lưu bản sao tệp ở định dạng gốc"
 }

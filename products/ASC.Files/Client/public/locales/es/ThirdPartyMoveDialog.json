@@ -1,3 +1,5 @@
 {
-  "MoveConfirmation": "Confirmación de movimiento"
+  "CreateFileCopyOption": "Crear una copia de archivo",
+  "MoveConfirmation": "Confirmación de movimiento",
+  "MoveFileOption": "Mover el archivo"
 }

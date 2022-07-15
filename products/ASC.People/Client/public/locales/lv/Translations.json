@@ -1,8 +1,8 @@
 {
   "AddMembers": "Pievienot dalībniekus",
   "Birthdate": "Dzimšanas datums",
-  "DeleteUserDataConfirmation": "Lietotāja dokumenti, kas kopīgoti ar citiem, tiks dzēsti. Lai no tā izvairītos, atkārtoti piešķiriet datus.",
   "DeleteSelfProfile": "Dzēst profilu",
+  "DeleteUserDataConfirmation": "Lietotāja dokumenti, kas kopīgoti ar citiem, tiks dzēsti. Lai no tā izvairītos, atkārtoti piešķiriet datus.",
   "DisableUserButton": "Atspējot",
   "DisabledEmployeeStatus": "Atspējots",
   "EmailChangeButton": "Mainīt e-pastu",

@@ -3,5 +3,6 @@
   "ConvertedFileDestination": "파일 복사가 <strong>{{folderTitle}}</strong> 폴더에 생성됩니다",
   "HideMessage": "이 메시지 다시 표시 안함",
   "InfoCreateFileIn": "새 '{{fileTitle}}' 파일이 '{{folderTitle}}'에 생성되었습니다",
+  "OpenFileMessage": "당신이 열 문서 파일을 빠르게 확인하고 수정할 Office Open XML 형식 로 변환됩니다.",
   "SaveOriginalFormatMessage": "파일 복사본을 원본 형식으로 저장"
 }
