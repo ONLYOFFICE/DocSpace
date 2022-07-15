@@ -449,6 +449,17 @@ public class FileStorageService<T> //: IFileStorageService
         {
             var list = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject));
             
+            var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
+            var onlyFilesAdmins = _userManager.GetUsersByGroup(WebItemManager.DocumentsProductID);
+
+            var userInfos = admins.Union(onlyFilesAdmins).ToList();
+
+            list.AddRange(admins.Select(admin => new AceWrapper
+            {
+                Share = FileShare.ReadWrite, 
+                SubjectId = admin.Id
+            }));
+
             var advancedSettings = new AceAdvancedSettingsWrapper
             {
                 AllowSharingPrivateRoom = true
