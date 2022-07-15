@@ -1930,9 +1930,9 @@ const Base = {
   },
 
   header: {
-    backgroundColor: "#0F4071",
-    recoveryColor: "#27537F",
-    linkColor: "#7a95b0",
+    backgroundColor: "#F8F9F9",
+    recoveryColor: "#657077",
+    linkColor: "#657077",
     productColor: white,
   },
 
