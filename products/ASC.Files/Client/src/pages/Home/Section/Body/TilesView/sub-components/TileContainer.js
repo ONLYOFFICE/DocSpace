@@ -16,8 +16,8 @@ import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
 import ComboBox from "@appserver/components/combobox";
 import { Base } from "@appserver/components/themes";
-
 import SortDesc from "../../../../../../../../../../public/images/sort.desc.react.svg";
+import InfiniteGrid from "./InfiniteGrid";
 
 const paddingCss = css`
   @media ${desktop} {
@@ -55,6 +55,7 @@ const StyledGridWrapper = styled.div`
 
 const StyledTileContainer = styled.div`
   position: relative;
+  height: 100%;
 
   .tile-item-wrapper {
     position: relative;
@@ -361,14 +362,8 @@ class TileContainer extends React.PureComponent {
       );
     };
 
-    return (
-      <StyledTileContainer
-        id={id}
-        className={className}
-        style={style}
-        useReactWindow={useReactWindow}
-        isDesc={selectedFilterData.sortDirection === "desc"}
-      >
+    const renderTile = (
+      <>
         {Folders.length > 0 && (
           <Heading
             size="xsmall"
@@ -379,7 +374,9 @@ class TileContainer extends React.PureComponent {
             {renderSorting()}
           </Heading>
         )}
-        {Folders.length > 0 && (
+        {Folders.length > 0 && useReactWindow ? (
+          Folders
+        ) : (
           <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
         )}
 
@@ -389,7 +386,27 @@ class TileContainer extends React.PureComponent {
             {Folders.length === 0 && renderSorting()}
           </Heading>
         )}
-        {Files.length > 0 && <StyledGridWrapper>{Files}</StyledGridWrapper>}
+        {Files.length > 0 && useReactWindow ? (
+          Files
+        ) : (
+          <StyledGridWrapper>{Files}</StyledGridWrapper>
+        )}
+      </>
+    );
+
+    return (
+      <StyledTileContainer
+        id={id}
+        className={className}
+        style={style}
+        useReactWindow={useReactWindow}
+        isDesc={selectedFilterData.sortDirection === "desc"}
+      >
+        {useReactWindow ? (
+          <InfiniteGrid>{renderTile}</InfiniteGrid>
+        ) : (
+          renderTile
+        )}
       </StyledTileContainer>
     );
   }

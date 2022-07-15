@@ -70,7 +70,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
     <TileContainer
       className="tile-container"
       draggable
-      useReactWindow={false}
+      useReactWindow
       headingFolders={t("Folders")}
       headingFiles={t("Files")}
     >
