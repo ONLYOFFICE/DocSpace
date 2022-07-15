@@ -27,6 +27,8 @@ import SharingPanelLoader from "./SharingPanelLoader";
 import SharingPanelLoaderModal from "./SharingPanelLoader/modal";
 import InfoPanelBodyLoader from "./InfoPanelBodyLoader";
 import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
+import DataBackupLoader from "./DataBackupLoader";
+import AutoBackupLoader from "./AutoBackupLoader";
 
 export default {
   Rectangle,
@@ -58,4 +60,6 @@ export default {
   SharingPanelLoaderModal,
   InfoPanelBodyLoader,
   InfoPanelHeaderLoader,
+  DataBackupLoader,
+  AutoBackupLoader,
 };

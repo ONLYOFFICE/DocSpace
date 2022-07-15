@@ -1,6 +1,5 @@
 import React from "react";
 import moment from "moment";
-import { isMobileOnly } from "react-device-detect";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButton from "@appserver/components/radio-button";
@@ -10,7 +9,6 @@ import {
   getBackupSchedule,
   createBackupSchedule,
 } from "@appserver/common/api/portal";
-import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import {
   BackupStorageType,
@@ -24,6 +22,7 @@ import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 import ButtonContainer from "./sub-components/ButtonContainer";
+import AutoBackupLoader from "@appserver/common/components/Loaders/AutoBackupLoader";
 
 const {
   DocumentModuleType,
@@ -409,7 +408,7 @@ class AutomaticBackup extends React.PureComponent {
     };
 
     return isInitialLoading ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
+      <AutoBackupLoader />
     ) : (
       <StyledAutoBackup theme={theme}>
         <div className="backup_modules-header_wrapper">
@@ -510,7 +509,7 @@ class AutomaticBackup extends React.PureComponent {
 }
 export default inject(({ auth, backup }) => {
   const { language, settingsStore } = auth;
-const { organizationName, theme } = settingsStore;
+  const { organizationName, theme } = settingsStore;
   const {
     backupSchedule,
     commonThirdPartyList,

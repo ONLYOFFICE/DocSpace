@@ -1,13 +1,11 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import { startBackup } from "@appserver/common/api/portal";
 import RadioButton from "@appserver/components/radio-button";
 import toastr from "@appserver/components/toast/toastr";
-import Loader from "@appserver/components/loader";
 import { BackupStorageType } from "@appserver/common/constants";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
@@ -15,6 +13,7 @@ import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
 import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
+import DataBackupLoader from "@appserver/common/components/Loaders/DataBackupLoader";
 
 let selectedStorageType = "";
 
@@ -216,7 +215,7 @@ class ManualBackup extends React.Component {
     };
 
     return isInitialLoading ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
+      <DataBackupLoader />
     ) : (
       <StyledManualBackup>
         <div className="backup_modules-header_wrapper">
