@@ -11,4 +11,17 @@ const StyledRowLoader = styled.div`
   padding-top: 16px;
 `;
 
-export { StyledTableLoader, StyledRowLoader };
+const StyledCard = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+
+  //gap: 14px 16px;
+`;
+
+const StyledItem = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+  gap: 14px 16px;
+`;
+
+export { StyledTableLoader, StyledRowLoader, StyledCard, StyledItem };

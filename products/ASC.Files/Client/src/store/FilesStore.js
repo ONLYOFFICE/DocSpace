@@ -2,7 +2,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import {
   AppServerConfig,
-  FileAction,
   FileType,
   FilterType,
   FolderType,
