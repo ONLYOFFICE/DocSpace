@@ -103,6 +103,8 @@ const StyledBody = styled(Box)`
   padding-bottom: ${(props) =>
     props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
 
+  margin-right: ${(props) => (props.withBodyScroll ? "-16px" : "0")};
+
   ${(props) =>
     props.currentDisplayType === "aside" &&
     css`
