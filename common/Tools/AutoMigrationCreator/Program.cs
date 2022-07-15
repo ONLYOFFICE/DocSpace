@@ -45,7 +45,7 @@ class Program
 
             if (o.Path != "")
             {
-                MigrationCreator.RunApplyMigrations(path);
+                MigrationCreator.RunApplyMigrations(o.Path);
             }
 
             if (!(bool)o.Create && o.Path == "")
