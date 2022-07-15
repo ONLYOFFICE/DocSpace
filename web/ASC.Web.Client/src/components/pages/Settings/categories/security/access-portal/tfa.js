@@ -11,6 +11,8 @@ import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import { isMobile } from "react-device-detect";
+import TfaLoader from "../sub-components/loaders/tfa-loader";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -114,6 +116,11 @@ const TwoFactorAuth = (props) => {
     setType(defaultSettings);
     setShowReminder(false);
   };
+
+
+  if (isMobile && !isInit && !isLoading) {
+    return <TfaLoader />;
+  }
 
   return (
     <MainContainer>
