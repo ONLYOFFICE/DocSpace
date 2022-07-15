@@ -12,14 +12,9 @@ const serverConfig = {
   entry: {
     server: "./src/server/index.js",
   },
-  resolve: {
-    ...baseConfig.resolve,
-  },
-  module: {
-    ...baseConfig.module,
-  },
+  
   output: {
-    path: path.resolve(process.cwd(), "dist/server"),
+    path: path.resolve(process.cwd(), "dist/"),
     filename: "[name].js",
     libraryTarget: "commonjs2",
     chunkFilename: "chunks/[name].js",
@@ -29,19 +24,13 @@ const serverConfig = {
 
 module.exports = (env, argv) => {
   if (argv.mode === "production") {
-    baseConfig.mode = "production";
-    baseConfig.optimization = {
-      splitChunks: { chunks: "all" },
-      minimize: !env.minimize,
-      minimizer: [new TerserPlugin()],
-    };
-    baseConfig.plugins = [
+    serverConfig.plugins = [
       new DefinePlugin({
         IS_DEVELOPMENT: false,
       }),
     ];
   } else {
-    baseConfig.plugins = [
+    serverConfig.plugins = [
       new DefinePlugin({
         IS_DEVELOPMENT: true,
       }),
