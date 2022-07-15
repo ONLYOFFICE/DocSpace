@@ -24,11 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System;
-global using System.Collections.Generic;
 global using System.Configuration;
-global using System.IO;
-global using System.Linq;
 global using System.Reflection;
 global using System.Text.RegularExpressions;
 
@@ -37,7 +33,6 @@ global using ASC.Core.Common.EF;
 global using Autofac;
 
 global using AutoMigrationCreator.Core;
-global using AutoMigrationCreator.Utils;
 
 global using Microsoft.Build.Construction;
 global using Microsoft.EntityFrameworkCore;
