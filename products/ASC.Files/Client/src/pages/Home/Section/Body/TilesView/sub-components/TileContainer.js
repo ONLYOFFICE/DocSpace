@@ -1,14 +1,9 @@
-/* eslint-disable react/display-name */
-import React, { memo } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 import Heading from "@appserver/components/heading";
-import ContextMenu from "@appserver/components/context-menu";
-import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
 import { isMobile } from "react-device-detect";
 import {
   tablet,
@@ -21,7 +16,6 @@ import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
 import ComboBox from "@appserver/components/combobox";
 import { Base } from "@appserver/components/themes";
-import Loaders from "@appserver/common/components/Loaders";
 
 import SortDesc from "../../../../../../../../../../public/images/sort.desc.react.svg";
 
@@ -176,7 +170,6 @@ class TileContainer extends React.PureComponent {
     super(props);
 
     this.state = {
-      contextOptions: [],
       isOpen: false,
       selectedFilterData: {
         sortId: props.filter.sortBy,
@@ -185,50 +178,11 @@ class TileContainer extends React.PureComponent {
     };
   }
 
-  onRowContextClick = (options) => {
-    if (Array.isArray(options)) {
-      this.setState({
-        contextOptions: options,
-      });
-    }
-  };
-
   toggleDropdown = () => {
     this.setState((prev) => ({
       isOpen: !prev.isOpen,
     }));
   };
-
-  componentDidMount() {
-    window.addEventListener("contextmenu", this.onRowContextClick);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("contextmenu", this.onRowContextClick);
-  }
-
-  renderFolders = () => {
-    return <div />;
-  };
-
-  renderFiles = () => {
-    return <div />;
-  };
-
-  // eslint-disable-next-line react/prop-types
-  renderTile = memo(({ data, index, style }) => {
-    // eslint-disable-next-line react/prop-types
-    const options = data[index].props.contextOptions;
-
-    return (
-      <div
-        onContextMenu={this.onRowContextClick.bind(this, options)}
-        style={style}
-      >
-        {data[index]}
-      </div>
-    );
-  }, areEqual);
 
   getSortData = () => {
     const { t, personal } = this.props;
@@ -331,45 +285,9 @@ class TileContainer extends React.PureComponent {
     );
   };
 
-  getTilesLoaders = (folders, files) => {
-    const { getCountTilesInRow } = this.props;
-
-    const countTilesInRow = getCountTilesInRow();
-    const loaders = [];
-
-    if (files.length === 0) {
-      let count = countTilesInRow - (folders.length % countTilesInRow);
-      while (count !== 0) {
-        loaders.push(
-          <Loaders.Tile
-            key={`tiles-loader_${count}`}
-            className="tiles-loader"
-            isFolder
-          />
-        );
-        count--;
-      }
-    } else {
-      let count = countTilesInRow - (files.length % countTilesInRow);
-      while (count !== 0) {
-        loaders.push(
-          <Loaders.Tile
-            key={`tiles-loader_${count}`}
-            className="tiles-loader"
-            isFolder={false}
-          />
-        );
-        count--;
-      }
-    }
-
-    return loaders;
-  };
-
   render() {
     const {
       t,
-      itemHeight,
       children,
       useReactWindow,
       id,
@@ -379,8 +297,9 @@ class TileContainer extends React.PureComponent {
       headingFiles,
       isRecentFolder,
       isFavoritesFolder,
-      filesIsLoading,
     } = this.props;
+
+    const { isOpen, selectedFilterData } = this.state;
 
     const Folders = [];
     const Files = [];
@@ -389,46 +308,18 @@ class TileContainer extends React.PureComponent {
       const { isFolder, fileExst, id } = item.props.item;
       if ((isFolder || id === -1) && !fileExst) {
         Folders.push(
-          <div
-            className="tile-item-wrapper folder"
-            key={index}
-            onContextMenu={this.onRowContextClick.bind(
-              this,
-              item.props.contextOptions
-            )}
-          >
+          <div className="tile-item-wrapper folder" key={index}>
             {item}
           </div>
         );
       } else {
         Files.push(
-          <div
-            className="tile-item-wrapper file"
-            key={index}
-            onContextMenu={this.onRowContextClick.bind(
-              this,
-              item.props.contextOptions
-            )}
-          >
+          <div className="tile-item-wrapper file" key={index}>
             {item}
           </div>
         );
       }
     });
-
-    const renderList = ({ height, width }) => (
-      <List
-        className="list"
-        height={height}
-        width={width}
-        itemSize={itemHeight}
-        itemCount={children.length}
-        itemData={children}
-        outerElementType={CustomScrollbarsVirtualList}
-      >
-        {this.renderTile}
-      </List>
-    );
 
     const advancedOptions = this.getAdvancedOptions();
 
@@ -442,7 +333,7 @@ class TileContainer extends React.PureComponent {
             !isMobileUtils() && (
               <div onClick={this.toggleDropdown}>
                 <ComboBox
-                  opened={this.state.isOpen}
+                  opened={isOpen}
                   className={"sort-combo-box"}
                   options={[]}
                   selectedOption={{}}
@@ -470,65 +361,41 @@ class TileContainer extends React.PureComponent {
       );
     };
 
-    const loaders = filesIsLoading ? this.getTilesLoaders(Folders, Files) : [];
-
     return (
       <StyledTileContainer
         id={id}
         className={className}
         style={style}
         useReactWindow={useReactWindow}
-        isDesc={this.state.selectedFilterData.sortDirection === "desc"}
+        isDesc={selectedFilterData.sortDirection === "desc"}
       >
-        <>
+        {Folders.length > 0 && (
           <Heading
             size="xsmall"
             id={"folder-tile-heading"}
             className="tile-items-heading"
           >
-            {Folders.length > 0 && headingFolders}
-            {Folders.length > 0 && renderSorting()}
+            {headingFolders}
+            {renderSorting()}
           </Heading>
-          {Folders.length > 0 && (
-            <>
-              {useReactWindow ? (
-                <AutoSizer>{renderList}</AutoSizer>
-              ) : (
-                <StyledGridWrapper isFolders>
-                  {Folders}
-                  {Files.length === 0 && filesIsLoading && loaders}
-                </StyledGridWrapper>
-              )}
-            </>
-          )}
-        </>
-
-        {Files.length > 0 && (
-          <>
-            <Heading size="xsmall" className="tile-items-heading">
-              {headingFiles}
-              {Folders.length === 0 && renderSorting()}
-            </Heading>
-            {useReactWindow ? (
-              <AutoSizer>{renderList}</AutoSizer>
-            ) : (
-              <StyledGridWrapper>
-                {Files}
-                {filesIsLoading && loaders}
-              </StyledGridWrapper>
-            )}
-          </>
+        )}
+        {Folders.length > 0 && (
+          <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
         )}
 
-        <ContextMenu targetAreaId={id} options={this.state.contextOptions} />
+        {Files.length > 0 && (
+          <Heading size="xsmall" className="tile-items-heading">
+            {headingFiles}
+            {Folders.length === 0 && renderSorting()}
+          </Heading>
+        )}
+        {Files.length > 0 && <StyledGridWrapper>{Files}</StyledGridWrapper>}
       </StyledTileContainer>
     );
   }
 }
 
 TileContainer.propTypes = {
-  itemHeight: PropTypes.number,
-  manualHeight: PropTypes.string,
   children: PropTypes.any.isRequired,
   useReactWindow: PropTypes.bool,
   className: PropTypes.string,
@@ -537,58 +404,24 @@ TileContainer.propTypes = {
 };
 
 TileContainer.defaultProps = {
-  itemHeight: 50,
   useReactWindow: true,
-  id: "rowContainer",
+  id: "tileContainer",
 };
 
 export default inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const {
-      fetchFiles,
-      filter,
-      setIsLoading,
-      setViewAs,
-      viewAs,
-      files,
-      folders,
-      createThumbnails,
-      filesIsLoading,
-      getCountTilesInRow,
-    } = filesStore;
-
-    const { user } = auth.userStore;
-    const { customNames, personal } = auth.settingsStore;
+    const { personal } = auth.settingsStore;
+    const { fetchFiles, filter, setIsLoading } = filesStore;
     const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
 
-    const { search, filterType, authorType } = filter;
-    const isFiltered =
-      (!!files.length ||
-        !!folders.length ||
-        search ||
-        filterType ||
-        authorType) &&
-      !(treeFoldersStore.isPrivacyFolder && isMobile);
-
     return {
-      customNames,
-      user,
-      selectedFolderId: selectedFolderStore.id,
-      selectedItem: filter.selectedItem,
+      personal,
+      fetchFiles,
       filter,
-      viewAs,
-      isFiltered,
+      setIsLoading,
       isFavoritesFolder,
       isRecentFolder,
-
-      setIsLoading,
-      fetchFiles,
-      setViewAs,
-      createThumbnails,
-      filesIsLoading,
-      getCountTilesInRow,
-
-      personal,
+      selectedFolderId: selectedFolderStore.id,
     };
   }
 )(observer(withTranslation(["Home", "Common"])(TileContainer)));
