@@ -11,6 +11,10 @@ import Preview from "./settingsAppearance/preview";
 
 import ColorSchemeDialog from "./sub-components/colorSchemeDialog";
 
+import DropDownItem from "@appserver/components/drop-down-item";
+import DropDownContainer from "@appserver/components/drop-down";
+
+import HexColorPickerComponent from "./sub-components/hexColorPicker";
 const StyledComponent = styled.div`
   .container {
     display: flex;
@@ -64,10 +68,20 @@ const Appearance = (props) => {
     "Edit color scheme"
   );
 
-  const [
-    selectedAccentColorAndButtonsMain,
-    setSelectedAccentColorAndButtonsMain,
-  ] = useState({});
+  const [currentColorAccent, setCurrentColorAccent] = useState(null);
+  const [currentColorButtons, setCurrentColorButtons] = useState(null);
+
+  const [openHexColorPickerAccent, setOpenHexColorPickerAccent] = useState(
+    false
+  );
+  const [openHexColorPickerButtons, setOpenHexColorPickerButtons] = useState(
+    false
+  );
+
+  //TODO: Add default color
+  const [color, setColor] = useState("#FF9933");
+  const [appliedColorAccent, setAppliedColorAccent] = useState("#FF9933");
+  const [appliedColorButtons, setAppliedColorButtons] = useState("#FF9999");
 
   const checkImg = <img src="/static/images/check.white.svg" />;
 
@@ -112,10 +126,8 @@ const Appearance = (props) => {
 
   const onClickEdit = () => {
     // TODO: give store Accent color and Buttons main to id
-    setSelectedAccentColorAndButtonsMain({
-      accentColor: "#F97A0B",
-      buttonsMain: "#FF9933",
-    });
+    setCurrentColorAccent("#F97A0B");
+    setCurrentColorButtons("#FF9933");
 
     setHeaderColorSchemeDialog("Edit color scheme");
 
@@ -127,15 +139,98 @@ const Appearance = (props) => {
   };
 
   const onAddTheme = () => {
-    setSelectedAccentColorAndButtonsMain({
-      addColor:
-        "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA",
-    });
+    setCurrentColorAccent(
+      "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA"
+    );
+    setCurrentColorButtons(
+      "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA"
+    );
 
     setHeaderColorSchemeDialog("New color scheme");
 
     setShowColorSchemeDialog(true);
   };
+
+  const onClickColor = (e) => {
+    if (e.target.id === "accent") {
+      setOpenHexColorPickerAccent(true);
+    } else {
+      setOpenHexColorPickerButtons(true);
+    }
+  };
+
+  const onCloseHexColorPicker = () => {
+    setOpenHexColorPickerAccent(false);
+    setOpenHexColorPickerButtons(false);
+  };
+
+  const onAppliedColorAccent = () => {
+    setCurrentColorAccent(appliedColorAccent);
+    onCloseHexColorPicker();
+  };
+
+  const onAppliedColorButtons = () => {
+    setCurrentColorButtons(appliedColorButtons);
+    onCloseHexColorPicker();
+  };
+
+  const nodeHexColorPickerButtons = (
+    <DropDownContainer
+      directionX="right"
+      withBackdrop={false}
+      isDefaultMode={false}
+      open={openHexColorPickerButtons}
+      clickOutsideAction={onCloseHexColorPicker}
+    >
+      <DropDownItem>
+        <HexColorPickerComponent
+          id="buttons-hex"
+          onCloseHexColorPicker={onCloseHexColorPicker}
+          onAppliedColor={onAppliedColorButtons}
+          color={appliedColorButtons}
+          setColor={setAppliedColorButtons}
+        />
+      </DropDownItem>
+    </DropDownContainer>
+  );
+
+  const nodeHexColorPickerAccent = (
+    <DropDownContainer
+      directionX="right"
+      withBackdrop={false}
+      isDefaultMode={false}
+      open={openHexColorPickerAccent}
+      clickOutsideAction={onCloseHexColorPicker}
+    >
+      <DropDownItem>
+        <HexColorPickerComponent
+          id="accent-hex"
+          onCloseHexColorPicker={onCloseHexColorPicker}
+          onAppliedColor={onAppliedColorAccent}
+          color={appliedColorAccent}
+          setColor={setAppliedColorAccent}
+        />
+      </DropDownItem>
+    </DropDownContainer>
+  );
+
+  const nodeAccentColor = (
+    <div
+      id="accent"
+      style={{ background: currentColorAccent }}
+      className="color-button"
+      onClick={onClickColor}
+    ></div>
+  );
+
+  const nodeButtonsColor = (
+    <div
+      id="buttons"
+      style={{ background: currentColorButtons }}
+      className="color-button"
+      onClick={onClickColor}
+    ></div>
+  );
 
   return (
     <StyledComponent>
@@ -170,10 +265,13 @@ const Appearance = (props) => {
 
       <div onClick={onClickEdit}>Edit color scheme</div>
       <ColorSchemeDialog
+        nodeButtonsColor={nodeButtonsColor}
+        nodeAccentColor={nodeAccentColor}
+        nodeHexColorPickerAccent={nodeHexColorPickerAccent}
+        nodeHexColorPickerButtons={nodeHexColorPickerButtons}
         visible={showColorSchemeDialog}
         onClose={onCloseEdit}
         header={headerColorSchemeDialog}
-        selectedAccentColorAndButtonsMain={selectedAccentColorAndButtonsMain}
       />
       <div>Preview</div>
       <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />

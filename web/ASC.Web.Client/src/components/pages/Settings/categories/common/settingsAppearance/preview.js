@@ -226,7 +226,6 @@ const Preview = (props) => {
     setColor(selectedColor);
   }, [selectedColor]);
 
-  console.log("previewTheme", previewTheme);
   return (
     <StyledComponent color={color} previewTheme={previewTheme}>
       <div className="menu border-color">

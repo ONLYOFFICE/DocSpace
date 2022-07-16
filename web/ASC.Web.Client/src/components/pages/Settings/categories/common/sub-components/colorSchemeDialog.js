@@ -3,8 +3,6 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
-import { HexColorPicker, HexColorInput } from "react-colorful";
-import InputBlock from "@appserver/components/input-block";
 
 const StyledComponent = styled(ModalDialog)`
   .modal-dialog-aside-footer {
@@ -33,25 +31,15 @@ const StyledComponent = styled(ModalDialog)`
     height: 46px;
   }
 
-  .accent {
-    background: ${(props) =>
-      props.selectedAccentColorAndButtonsMain.accentColor
-        ? props.selectedAccentColorAndButtonsMain.accentColor
-        : props.selectedAccentColorAndButtonsMain.addColor};
-  }
-
-  .buttons {
-    background: ${(props) =>
-      props.selectedAccentColorAndButtonsMain.buttonsMain
-        ? props.selectedAccentColorAndButtonsMain.buttonsMain
-        : props.selectedAccentColorAndButtonsMain.addColor};
+  .relative {
+    position: relative;
   }
 
   .save-button {
     margin-right: 10px;
   }
 
-  .hex-color-picker {
+  /* .hex-color-picker {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -59,7 +47,7 @@ const StyledComponent = styled(ModalDialog)`
     padding: 0 16px 16px 16px;
     box-sizing: border-box;
     box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
-  }
+  } */
 
   .hex-color-picker .react-colorful {
     width: auto;
@@ -116,69 +104,37 @@ const ColorSchemeDialog = (props) => {
     visible,
     onClose,
     header,
-    selectedAccentColorAndButtonsMain,
+
+    nodeButtonsColor,
+    nodeAccentColor,
+    nodeHexColorPickerAccent,
+    nodeHexColorPickerButtons,
     t,
   } = props;
 
-  const [color, setColor] = useState("#FF9933");
-  const [openHexColorPicker, setOpenHexColorPicker] = useState(false);
-
-  const onClick = () => {
-    setOpenHexColorPicker(true);
-  };
-
   return (
-    <StyledComponent
-      selectedAccentColorAndButtonsMain={selectedAccentColorAndButtonsMain}
-      visible={visible}
-      onClose={onClose}
-    >
+    <StyledComponent visible={visible} onClose={onClose}>
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <div>
-          <div>
-            <div className="flex">
-              <div className="text">Accent</div>
-              <div className="color-button accent" onClick={onClick}></div>
-            </div>
-            <div className="flex">
-              <div className="text">Buttons</div>
-              <div className="color-button buttons" onClick={onClick}></div>
-            </div>
+          <div className="flex relative">
+            <div className="text">Accent</div>
+            {nodeAccentColor}
+
+            {nodeHexColorPickerAccent}
           </div>
 
-          {openHexColorPicker && (
-            <div className="hex-color-picker">
-              <HexColorInput
-                className="hex-value"
-                prefixed
-                color={color.toUpperCase()}
-                onChange={setColor}
-              />
-              <HexColorPicker color={color} onChange={setColor} />
+          <div className="flex relative">
+            <div className="text">Buttons</div>
+            {nodeButtonsColor}
 
-              <div className="hex-button">
-                <Button
-                  label="Apply"
-                  size="small"
-                  className="apply-button"
-                  primary={true}
-                  scale={true}
-                />
-                <Button
-                  label="Cancel"
-                  className="button"
-                  size="small"
-                  scale={true}
-                />
-              </div>
-            </div>
-          )}
+            {nodeHexColorPickerButtons}
+          </div>
         </div>
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        {!openHexColorPicker && (
+        {/* {!openHexColorPicker && (
           <>
             <Button
               label="Save"
@@ -194,7 +150,7 @@ const ColorSchemeDialog = (props) => {
               scale={true}
             />
           </>
-        )}
+        )} */}
       </ModalDialog.Footer>
     </StyledComponent>
   );
