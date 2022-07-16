@@ -83,38 +83,6 @@ class RoomsActionsStore {
 
   getOption = (option, t) => {
     switch (option) {
-      case "pin":
-        return {
-          key: "pin",
-          label: "Pin to top",
-          iconUrl: "/static/images/pin.react.svg",
-          onClick: () => console.log("pin"),
-          disabled: false,
-        };
-      case "unpin":
-        return {
-          key: "unpin",
-          label: "Unpin",
-          iconUrl: "/static/images/unpin.react.svg",
-          onClick: () => console.log("unpin"),
-          disabled: false,
-        };
-      case "archive":
-        return {
-          key: "archive",
-          label: "Move to archive",
-          iconUrl: "/static/images/room.archive.svg",
-          onClick: () => console.log("to archive"),
-          disabled: false,
-        };
-      case "unarchive":
-        return {
-          key: "unarchive",
-          label: "Move from archive",
-          iconUrl: "/static/images/room.archive.svg",
-          onClick: () => console.log("from archive"),
-          disabled: false,
-        };
     }
   };
 

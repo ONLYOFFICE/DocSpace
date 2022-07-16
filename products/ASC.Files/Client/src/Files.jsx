@@ -96,8 +96,9 @@ const FilesSection = React.memo(() => {
       <PrivateRoute exact path={HOME_URL} component={Home} />
       <PrivateRoute path={FILTER_URL} component={Home} />
       <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
+      <PrivateRoute path={ROOMS_URL} component={Home} />
       <PrivateRoute path={FORM_GALLERY_URL} component={FormGallery} />
-      <PrivateRoute path={ROOMS_URL} component={VirtualRooms} />
+      {/* <PrivateRoute path={ROOMS_URL} component={VirtualRooms} /> */}
       <PrivateRoute component={Error404Route} />
     </Switch>
   );

@@ -125,7 +125,8 @@ export default function withFileActions(WrappedFileItem) {
         e.target.closest(".expandButton") ||
         e.target.querySelector(".expandButton") ||
         e.target.closest(".badges") ||
-        e.target.closest(".not-selectable")
+        e.target.closest(".not-selectable") ||
+        e.target.closest(".tag")
       )
         return;
 
@@ -137,12 +138,21 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onFilesClick = (e) => {
-      const { item, openFileAction, setParentId, isTrashFolder } = this.props;
+      const {
+        item,
+        openFileAction,
+        setParentId,
+        isTrashFolder,
+        isArchiveFolder,
+      } = this.props;
+
       if (
         (e && e.target.tagName === "INPUT") ||
         !!e.target.closest(".lock-file") ||
         !!e.target.closest(".additional-badges") ||
-        isTrashFolder
+        e.target.closest(".tag") ||
+        isTrashFolder ||
+        isArchiveFolder
       )
         return;
 
@@ -158,6 +168,10 @@ export default function withFileActions(WrappedFileItem) {
       }
 
       openFileAction(item);
+    };
+
+    onSelectTag = (tag) => {
+      this.props.selectTag(tag);
     };
 
     getContextModel = () => {
@@ -220,6 +234,7 @@ export default function withFileActions(WrappedFileItem) {
           onFilesClick={this.onFilesClick}
           onMouseClick={this.onMouseClick}
           onHideContextMenu={this.onHideContextMenu}
+          onSelectTag={this.onSelectTag}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
@@ -253,6 +268,7 @@ export default function withFileActions(WrappedFileItem) {
     ) => {
       const {
         selectRowAction,
+        selectTag,
         onSelectItem,
         setNewBadgeCount,
         openFileAction,
@@ -262,6 +278,8 @@ export default function withFileActions(WrappedFileItem) {
       const {
         isPrivacyFolder,
         isRecycleBinFolder,
+        isRoomsFolder,
+        isArchiveFolder,
         //addExpandedKeys,
       } = treeFoldersStore;
       const {
@@ -318,8 +336,11 @@ export default function withFileActions(WrappedFileItem) {
         item,
         selectRowAction,
         onSelectItem,
+        selectTag,
         setSharingPanelVisible,
         isPrivacy: isPrivacyFolder,
+        isRoomsFolder,
+        isArchiveFolder,
         dragging,
         setDragging,
         startUpload,

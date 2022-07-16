@@ -11,6 +11,7 @@ import { isDesktop, isMobile } from "react-device-detect";
 import Link from "@appserver/components/link";
 import Loader from "@appserver/components/loader";
 import { Base } from "@appserver/components/themes";
+import Tags from "@appserver/common/components/Tags";
 
 const svgLoader = () => <div style={{ width: "96px" }} />;
 
@@ -24,8 +25,44 @@ const FlexBoxStyles = css`
   align-content: center;
 `;
 
+const roomsStyles = css`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+
+  justify-content: flex-start;
+  align-items: center;
+  align-content: center;
+
+  .room-tile_top-content {
+    width: 100%;
+    height: 64px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;
+
+    border-bottom: ${(props) => props.theme.filesSection.tilesView.tile.border};
+  }
+
+  .room-tile_bottom-content {
+    width: 100%;
+    height: 56px;
+
+    box-sizing: border-box;
+
+    padding: 16px;
+  }
+`;
+
 const FolderStyles = css`
-  height: 64px;
+  height: ${(props) => (props.isRoom ? "120px" : "64px")};
 `;
 
 const FileStyles = css`
@@ -43,7 +80,8 @@ const bottomFileBorder = css`
 `;
 
 const StyledTile = styled.div`
-  cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
+  cursor: ${(props) =>
+    !props.isRecycleBin && !props.isArchiveFolder ? "pointer" : "default"};
   ${(props) =>
     props.inProgress &&
     css`
@@ -58,7 +96,7 @@ const StyledTile = styled.div`
   ${(props) => props.isFolder && "border-top-left-radius: 6px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  ${(props) => props.isFolder && FlexBoxStyles};
+  ${(props) => props.isFolder && (props.isRoom ? roomsStyles : FlexBoxStyles)};
   ${(props) => (props.isFolder ? FolderStyles : FileStyles)};
   ${(props) =>
     !props.isEdit &&
@@ -134,8 +172,10 @@ const StyledTile = styled.div`
   .file-icon_container {
     width: 32px;
     height: 32px;
-    margin-left: ${(props) => (props.isFolder ? "15px" : "16px")};
-    margin-right: ${(props) => (props.isFolder ? "7px" : "8px")};
+    margin-left: ${(props) =>
+      props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
+    margin-right: ${(props) =>
+      props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
   }
 
   .tile-folder-loader {
@@ -250,7 +290,7 @@ const StyledContent = styled.div`
 const StyledElement = styled.div`
   flex: 0 0 auto;
   display: flex;
-  margin-right: 4px;
+  margin-right: ${(props) => (props.isRoom ? "8px" : "4px")};
   user-select: none;
   margin-top: 3px;
 
@@ -382,7 +422,8 @@ class Tile extends React.PureComponent {
     if (
       e.detail === 1 &&
       !e.target.closest(".badge") &&
-      !e.target.closest(".item-file-name")
+      !e.target.closest(".item-file-name") &&
+      !e.target.closest(".tag")
     ) {
       if (
         e.target.nodeName !== "IMG" &&
@@ -410,6 +451,7 @@ class Tile extends React.PureComponent {
       dragging,
       isDragging,
       isRecycleBin,
+      isArchiveFolder,
       item,
       isActive,
       inProgress,
@@ -419,8 +461,10 @@ class Tile extends React.PureComponent {
       showHotkeyBorder,
       hideContextMenu,
       t,
+      columnCount,
+      selectTag,
     } = this.props;
-    const { isFolder, id, fileExst } = item;
+    const { isFolder, isRoom, id, fileExst } = item;
 
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -471,70 +515,142 @@ class Tile extends React.PureComponent {
         dragging={dragging && isFolder}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
+        isArchiveFolder={isArchiveFolder}
         checked={checked}
         isActive={isActive}
+        isRoom={isRoom}
         inProgress={inProgress}
         isDesktop={isDesktop}
         showHotkeyBorder={showHotkeyBorder}
         onClick={this.onFileClick}
       >
         {isFolder || (!fileExst && id === -1) ? (
-          <>
-            {renderElement && !(!fileExst && id === -1) && !isEdit && (
-              <>
-                {!inProgress ? (
-                  <div className="file-icon_container">
-                    <StyledElement
-                      className="file-icon"
-                      onClick={this.onFileIconClick}
-                    >
-                      {element}
-                    </StyledElement>
+          isRoom ? (
+            <>
+              <div className="room-tile_top-content">
+                {renderElement && !(!fileExst && id === -1) && !isEdit && (
+                  <>
+                    {!inProgress ? (
+                      <div className="file-icon_container">
+                        <StyledElement
+                          className="file-icon"
+                          isRoom={isRoom}
+                          onClick={this.onFileIconClick}
+                        >
+                          {element}
+                        </StyledElement>
 
-                    <Checkbox
-                      className="checkbox file-checkbox"
-                      isChecked={checked}
-                      isIndeterminate={indeterminate}
-                      onChange={this.changeCheckbox}
-                    />
-                  </div>
-                ) : (
-                  <Loader
-                    className="tile-folder-loader"
-                    type="oval"
-                    size="16px"
-                  />
+                        <Checkbox
+                          className="checkbox file-checkbox"
+                          isChecked={checked}
+                          isIndeterminate={indeterminate}
+                          onChange={this.changeCheckbox}
+                        />
+                      </div>
+                    ) : (
+                      <Loader
+                        className="tile-folder-loader"
+                        type="oval"
+                        size="16px"
+                      />
+                    )}
+                  </>
                 )}
-              </>
-            )}
-            <StyledContent
-              isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
-            >
-              {FilesTileContent}
-              {badges}
-            </StyledContent>
-            <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
-              {renderContext ? (
-                <ContextMenuButton
-                  className="expandButton"
-                  directionX="right"
-                  getData={getOptions}
-                  isNew={true}
-                  onClick={onContextMenu}
-                  title={title}
+                <StyledContent
+                  isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
+                >
+                  {FilesTileContent}
+                  {badges}
+                </StyledContent>
+                <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
+                  {renderContext ? (
+                    <ContextMenuButton
+                      className="expandButton"
+                      directionX="right"
+                      getData={getOptions}
+                      isNew={true}
+                      onClick={onContextMenu}
+                      title={title}
+                    />
+                  ) : (
+                    <div className="expandButton" />
+                  )}
+                  <ContextMenu
+                    onHide={hideContextMenu}
+                    getContextModel={getContextModel}
+                    ref={this.cm}
+                    header={contextMenuHeader}
+                    withBackdrop={true}
+                  />
+                </StyledOptionButton>
+              </div>
+              <div className="room-tile_bottom-content">
+                <Tags
+                  columnCount={columnCount}
+                  onSelectTag={selectTag}
+                  tags={item.tags}
                 />
-              ) : (
-                <div className="expandButton" />
+              </div>
+            </>
+          ) : (
+            <>
+              {renderElement && !(!fileExst && id === -1) && !isEdit && (
+                <>
+                  {!inProgress ? (
+                    <div className="file-icon_container">
+                      <StyledElement
+                        className="file-icon"
+                        isRoom={isRoom}
+                        onClick={this.onFileIconClick}
+                      >
+                        {element}
+                      </StyledElement>
+
+                      <Checkbox
+                        className="checkbox file-checkbox"
+                        isChecked={checked}
+                        isIndeterminate={indeterminate}
+                        onChange={this.changeCheckbox}
+                      />
+                    </div>
+                  ) : (
+                    <Loader
+                      className="tile-folder-loader"
+                      type="oval"
+                      size="16px"
+                    />
+                  )}
+                </>
               )}
-              <ContextMenu
-                onHide={hideContextMenu}
-                getContextModel={getContextModel}
-                ref={this.cm}
-                header={contextMenuHeader}
-                withBackdrop={true}
-              />
-            </StyledOptionButton>
-          </>
+              <StyledContent
+                isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
+              >
+                {FilesTileContent}
+                {badges}
+              </StyledContent>
+              <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
+                {renderContext ? (
+                  <ContextMenuButton
+                    className="expandButton"
+                    directionX="right"
+                    getData={getOptions}
+                    isNew={true}
+                    onClick={onContextMenu}
+                    title={title}
+                  />
+                ) : (
+                  <div className="expandButton" />
+                )}
+                <ContextMenu
+                  onHide={hideContextMenu}
+                  getContextModel={getContextModel}
+                  ref={this.cm}
+                  header={contextMenuHeader}
+                  withBackdrop={true}
+                />
+              </StyledOptionButton>
+            </>
+          )
         ) : (
           <>
             <StyledFileTileTop

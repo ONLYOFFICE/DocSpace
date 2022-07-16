@@ -52,6 +52,7 @@ export default function withContent(WrappedContent) {
         element,
         isDesktop,
         isTrashFolder,
+        isArchiveFolder,
         item,
         onFilesClick,
         t,
@@ -99,6 +100,7 @@ export default function withContent(WrappedContent) {
           showNew={showNew}
           isTrashFolder={isTrashFolder}
           onFilesClick={onFilesClick}
+          isArchiveFolder={isArchiveFolder}
           {...this.props}
         />
       );
@@ -134,7 +136,11 @@ export default function withContent(WrappedContent) {
         setCreatedItem,
       } = filesStore;
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
-      const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+      const {
+        isRecycleBinFolder,
+        isPrivacyFolder,
+        isArchiveFolder,
+      } = treeFoldersStore;
 
       const { replaceFileStream, setEncryptionAccess } = auth;
 
@@ -164,6 +170,7 @@ export default function withContent(WrappedContent) {
         isDesktop: isDesktopClient,
         isPrivacy: isPrivacyFolder,
         isTrashFolder: isRecycleBinFolder,
+        isArchiveFolder,
         openDocEditor,
         renameFolder,
         replaceFileStream,

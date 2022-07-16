@@ -228,24 +228,12 @@ class RoomsStore {
     return api.rooms.deleteRoom(selectedRoom.id);
   };
 
-  pinRoom = (room) => {
-    const selectedRoom = room
-      ? room
-      : this.selection.length > 0
-      ? this.selection[0]
-      : this.bufferSelection;
-
-    return api.rooms.pinRoom(selectedRoom.id);
+  pinRoom = (id) => {
+    return api.rooms.pinRoom(id);
   };
 
-  unpinRoom = (room) => {
-    const selectedRoom = room
-      ? room
-      : this.selection.length > 0
-      ? this.selection[0]
-      : this.bufferSelection;
-
-    return api.rooms.unpinRoom(selectedRoom.id);
+  unpinRoom = (id) => {
+    return api.rooms.unpinRoom(id);
   };
 
   moveToArchive = (room) => {

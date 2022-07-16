@@ -7,80 +7,139 @@ class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, personal, tableStorageName } = props;
+    const { t, personal, tableStorageName, isRooms } = props;
 
-    const defaultColumns = [
-      {
-        key: "Name",
-        title: t("Common:Name"),
-        resizable: true,
-        enable: true,
-        default: true,
-        sortBy: "AZ",
-        minWidth: 210,
-        onClick: this.onFilter,
-      },
-      {
-        key: "Author",
-        title: t("ByAuthor"),
-        enable: false,
-        resizable: true,
-        sortBy: "Author",
-        onClick: this.onFilter,
-        onChange: this.onColumnChange,
-      },
-      {
-        key: "Created",
-        title: t("ByCreationDate"),
-        enable: true,
-        resizable: true,
-        sortBy: "DateAndTimeCreation",
-        onClick: this.onFilter,
-        onChange: this.onColumnChange,
-      },
-      {
-        key: "Modified",
-        title: t("ByLastModifiedDate"),
-        enable: true,
-        resizable: true,
-        sortBy: "DateAndTime",
-        onClick: this.onFilter,
-        onChange: this.onColumnChange,
-      },
-      {
-        key: "Size",
-        title: t("Common:Size"),
-        enable: true,
-        resizable: true,
-        sortBy: "Size",
-        onClick: this.onFilter,
-        onChange: this.onColumnChange,
-      },
-      {
-        key: "Type",
-        title: t("Common:Type"),
-        enable: true,
-        resizable: true,
-        sortBy: "Type",
-        onClick: this.onFilter,
-        onChange: this.onColumnChange,
-      },
-      {
-        key: "QuickButtons",
-        title: "",
-        enable: true,
-        defaultSize: 75,
-        resizable: false,
-      },
-    ];
+    const defaultColumns = [];
+    if (isRooms) {
+      const columns = [
+        {
+          key: "Name",
+          title: "Name",
+          resizable: true,
+          enable: true,
+          default: true,
+          sortBy: "AZ",
+          minWidth: 210,
+          onClick: this.onRoomsFilter,
+        },
+        {
+          key: "Type",
+          title: "Type",
+          enable: false,
+          resizable: true,
+          sortBy: "Type",
+          onChange: this.onColumnChange,
+          onClick: this.onRoomsFilter,
+        },
+        {
+          key: "Tags",
+          title: "Tags",
+          enable: true,
+          resizable: true,
+          sortBy: "Tags",
+          onChange: this.onColumnChange,
+          onClick: this.onRoomsFilter,
+        },
+        {
+          key: "Owner",
+          title: "Owner",
+          enable: false,
+          resizable: true,
+          sortBy: "Author",
+          onChange: this.onColumnChange,
+          onClick: this.onRoomsFilter,
+        },
+        {
+          key: "Activity",
+          title: "Last activity",
+          enable: true,
+          resizable: true,
+          sortBy: "DateAndTime",
+          onChange: this.onColumnChange,
+          onClick: this.onRoomsFilter,
+        },
+      ];
 
-    personal && defaultColumns.splice(1, 1);
+      defaultColumns.push(...columns);
+    } else {
+      const columns = [
+        {
+          key: "Name",
+          title: t("Common:Name"),
+          resizable: true,
+          enable: true,
+          default: true,
+          sortBy: "AZ",
+          minWidth: 210,
+          onClick: this.onFilter,
+        },
+        {
+          key: "Author",
+          title: t("ByAuthor"),
+          enable: false,
+          resizable: true,
+          sortBy: "Author",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "Created",
+          title: t("ByCreationDate"),
+          enable: true,
+          resizable: true,
+          sortBy: "DateAndTimeCreation",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "Modified",
+          title: t("ByLastModifiedDate"),
+          enable: true,
+          resizable: true,
+          sortBy: "DateAndTime",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "Size",
+          title: t("Common:Size"),
+          enable: true,
+          resizable: true,
+          sortBy: "Size",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "Type",
+          title: t("Common:Type"),
+          enable: true,
+          resizable: true,
+          sortBy: "Type",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "QuickButtons",
+          title: "",
+          enable: true,
+          defaultSize: 75,
+          resizable: false,
+        },
+      ];
+
+      personal && columns.splice(1, 1);
+
+      defaultColumns.push(...columns);
+    }
 
     const storageColumns = localStorage.getItem(tableStorageName);
     const splitColumns = storageColumns && storageColumns.split(",");
     const columns = this.getColumns(defaultColumns, splitColumns);
     const resetColumnsSize =
-      (splitColumns && splitColumns.length !== columns.length) || !splitColumns;
+      (splitColumns && splitColumns.length !== columns.length) ||
+      !splitColumns ||
+      isRooms;
+
     const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
 
@@ -191,11 +250,33 @@ class FilesTableHeader extends React.Component {
     fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
   };
 
+  onRoomsFilter = (sortBy) => {
+    const {
+      roomsFilter,
+      selectedFolderId,
+      setIsLoading,
+      fetchRooms,
+    } = this.props;
+
+    const newFilter = roomsFilter.clone();
+    if (newFilter.sortBy !== sortBy) {
+      newFilter.sortBy = sortBy;
+    } else {
+      newFilter.sortOrder =
+        newFilter.sortOrder === "ascending" ? "descending" : "ascending";
+    }
+
+    setIsLoading(true);
+    fetchRooms(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+  };
+
   render() {
     const {
       containerRef,
       isHeaderChecked,
       filter,
+      roomsFilter,
+      isRooms,
       sectionWidth,
       firstElemChecked,
       sortingVisible,
@@ -204,8 +285,11 @@ class FilesTableHeader extends React.Component {
       columnInfoPanelStorageName,
     } = this.props;
 
-    const { sortBy, sortOrder } = filter;
+    // const { sortBy, sortOrder } = filter;
     const { columns, resetColumnsSize } = this.state;
+
+    const sortBy = isRooms ? roomsFilter.sortBy : filter.sortBy;
+    const sortOrder = isRooms ? roomsFilter.sortOrder : filter.sortOrder;
 
     return (
       <TableHeader
@@ -238,6 +322,9 @@ export default inject(
       canShare,
       firstElemChecked,
       headerBorder,
+
+      roomsFilter,
+      fetchRooms,
     } = filesStore;
     const { isPrivacyFolder, isRecentFolder } = treeFoldersStore;
 
@@ -255,6 +342,9 @@ export default inject(
 
       setIsLoading,
       fetchFiles,
+
+      roomsFilter,
+      fetchRooms,
 
       firstElemChecked,
       headerBorder,

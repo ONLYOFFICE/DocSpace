@@ -54,6 +54,7 @@ const ArticleBodyContent = (props) => {
       fetchFiles,
 
       fetchRooms,
+      setAlreadyFetchingRooms,
 
       homepage,
       history,
@@ -69,7 +70,10 @@ const ArticleBodyContent = (props) => {
       showLoader();
     }
 
+    console.log(data, roomsFolderId,archiveFolderId, data === roomsFolderId,  data === archiveFolderId )
+
     if (data === roomsFolderId || data === archiveFolderId) {
+      setAlreadyFetchingRooms(true);
       fetchRooms(data, null)
         .then(() => {
           if (filesSection) {
@@ -169,6 +173,7 @@ export default inject(
     const {
       fetchFiles,
       fetchRooms,
+      setAlreadyFetchingRooms,
       setIsLoading,
       setFirstLoad,
       firstLoad,
@@ -215,6 +220,7 @@ export default inject(
       homepage: config.homepage,
 
       fetchRooms,
+      setAlreadyFetchingRooms,
 
       personal,
       docSpace,

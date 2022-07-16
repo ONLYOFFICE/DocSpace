@@ -228,7 +228,12 @@ const SimpleFilesRow = (props) => {
   const isSmallContainer = sectionWidth <= 500;
 
   const element = (
-    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+    <ItemIcon
+      id={item.id}
+      icon={item.icon}
+      fileExst={item.fileExst}
+      isRoom={item.isRoom}
+    />
   );
 
   return (

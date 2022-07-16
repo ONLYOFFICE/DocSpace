@@ -12,8 +12,6 @@ export function getRooms(filter) {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
 
-    res.folders.forEach((room) => (room.isRoom = !!room.roomType));
-
     if (res.current.rootFolderType === FolderType.Archive) {
       res.folders.forEach((room) => (room.isArchive = true));
     }
@@ -22,7 +20,7 @@ export function getRooms(filter) {
   });
 }
 
-export function getRoom(id) {
+export function getRoomInfo(id) {
   const options = {
     method: "get",
     url: `/files/rooms/${id}`,
@@ -59,10 +57,13 @@ export function unpinRoom(id) {
   });
 }
 
-export function deleteRoom(id) {
+export function deleteRoom(id, deleteAfter = true) {
+  const data = { deleteAfter };
+
   const options = {
     method: "delete",
     url: `/files/rooms/${id}`,
+    data,
   };
 
   return request(options).then((res) => {
@@ -70,10 +71,13 @@ export function deleteRoom(id) {
   });
 }
 
-export function archiveRoom(id) {
+export function archiveRoom(id, deleteAfter = true) {
+  const data = { deleteAfter };
+
   const options = {
     method: "put",
     url: `/files/rooms/${id}/archive`,
+    data,
   };
 
   return request(options).then((res) => {
@@ -81,10 +85,12 @@ export function archiveRoom(id) {
   });
 }
 
-export function unarchiveRoom(id) {
+export function unarchiveRoom(id, deleteAfter = true) {
+  const data = { deleteAfter };
   const options = {
     method: "put",
     url: `/files/rooms/${id}/unarchive`,
+    data,
   };
 
   return request(options).then((res) => {

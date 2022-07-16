@@ -16,13 +16,8 @@ import {
   isTablet,
   isMobile as isMobileUtils,
 } from "@appserver/components/utils/device";
-import DropDownItem from "@appserver/components/drop-down-item";
-import Text from "@appserver/components/text";
-import IconButton from "@appserver/components/icon-button";
-import ComboBox from "@appserver/components/combobox";
-import { Base } from "@appserver/components/themes";
 
-import SortDesc from "../../../../../../../../../../public/images/sort.desc.react.svg";
+import { Base } from "@appserver/components/themes";
 
 const paddingCss = css`
   @media ${desktop} {
@@ -37,7 +32,10 @@ const paddingCss = css`
 
 const StyledGridWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+  grid-template-columns: ${(props) =>
+    props.isRooms
+      ? "repeat(auto-fill, minmax(274px, 1fr))"
+      : "repeat(auto-fill, minmax(216px, 1fr))"};
   width: 100%;
   margin-bottom: ${(props) => (props.isFolders ? "23px" : 0)};
   box-sizing: border-box;
@@ -233,13 +231,27 @@ class TileContainer extends React.PureComponent {
       headingFiles,
     } = this.props;
 
+    const Rooms = [];
     const Folders = [];
     const Files = [];
 
     React.Children.map(children, (item, index) => {
-      const { isFolder, fileExst, id } = item.props.item;
-      if ((isFolder || id === -1) && !fileExst) {
+      const { isFolder, isRoom, fileExst, id } = item.props.item;
+      if ((isFolder || id === -1) && !fileExst && !isRoom) {
         Folders.push(
+          <div
+            className="tile-item-wrapper folder"
+            key={index}
+            onContextMenu={this.onRowContextClick.bind(
+              this,
+              item.props.contextOptions
+            )}
+          >
+            {item}
+          </div>
+        );
+      } else if (isRoom) {
+        Rooms.push(
           <div
             className="tile-item-wrapper folder"
             key={index}
@@ -289,24 +301,39 @@ class TileContainer extends React.PureComponent {
         useReactWindow={useReactWindow}
         isDesc={this.state.selectedFilterData.sortDirection === "desc"}
       >
-        <>
-          <Heading
-            size="xsmall"
-            id={"folder-tile-heading"}
-            className="tile-items-heading"
-          >
-            {Folders.length > 0 && headingFolders}
-          </Heading>
-          {Folders.length > 0 && (
-            <>
-              {useReactWindow ? (
-                <AutoSizer>{renderList}</AutoSizer>
-              ) : (
-                <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
-              )}
-            </>
-          )}
-        </>
+        {Rooms.length > 0 && (
+          <>
+            <Heading
+              size="xsmall"
+              id={"room-tile-heading"}
+              className="tile-items-heading"
+            >
+              {"Rooms"}
+            </Heading>
+            {useReactWindow ? (
+              <AutoSizer>{renderList}</AutoSizer>
+            ) : (
+              <StyledGridWrapper isRooms>{Rooms}</StyledGridWrapper>
+            )}
+          </>
+        )}
+
+        {Folders.length > 0 && (
+          <>
+            <Heading
+              size="xsmall"
+              id={"folder-tile-heading"}
+              className="tile-items-heading"
+            >
+              {headingFolders}
+            </Heading>
+            {useReactWindow ? (
+              <AutoSizer>{renderList}</AutoSizer>
+            ) : (
+              <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
+            )}
+          </>
+        )}
 
         {Files.length > 0 && (
           <>

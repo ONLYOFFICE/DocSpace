@@ -494,7 +494,7 @@ export default inject(
   ({
     auth,
     filesStore,
-    roomsStore,
+
     dialogsStore,
     selectedFolderStore,
     treeFoldersStore,
@@ -518,10 +518,10 @@ export default inject(
       viewAs,
       setIsLoading,
       fetchFiles,
+      fetchRooms,
       activeFiles,
       activeFolders,
     } = filesStore;
-    const { fetchRooms } = roomsStore;
 
     const {
       setSharingPanelVisible,

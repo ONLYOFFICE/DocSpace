@@ -95,7 +95,14 @@ const FilesRowContent = ({
     foldersCount,
     providerKey,
     title,
+    isRoom,
   } = item;
+
+  let tags = null;
+
+  if (isRoom && item.tags.length > 0) {
+    tags = item?.tags.join(" | ");
+  }
 
   return (
     <>
@@ -119,20 +126,20 @@ const FilesRowContent = ({
         </Link>
         <div className="badges">
           {badgesComponent}
-          {quickButtons}
+          {!isRoom && quickButtons}
         </div>
-
-        <Text
-          containerMinWidth="200px"
-          containerWidth="15%"
-          fontSize="12px"
-          fontWeight={400}
-          // color={sideColor}
-          className="row_update-text"
-        >
-          {updatedDate && updatedDate}
-        </Text>
-
+        {!isRoom && (
+          <Text
+            containerMinWidth="200px"
+            containerWidth="15%"
+            fontSize="12px"
+            fontWeight={400}
+            // color={sideColor}
+            className="row_update-text"
+          >
+            {updatedDate && updatedDate}
+          </Text>
+        )}
         <Text
           containerMinWidth="90px"
           containerWidth="10%"
@@ -143,7 +150,9 @@ const FilesRowContent = ({
           title=""
           truncate={true}
         >
-          {!fileExst && !contentLength && !providerKey && !isMobileOnly
+          {isRoom && tags
+            ? tags
+            : !fileExst && !contentLength && !providerKey && !isMobileOnly
             ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
             : fileExst
             ? `${fileExst.toUpperCase().replace(/^\./, "")}`
