@@ -3,6 +3,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
+import { isMobileOnly } from "react-device-detect";
 
 const StyledComponent = styled(ModalDialog)`
   .modal-dialog-aside-footer {
@@ -112,6 +113,7 @@ const ColorSchemeDialog = (props) => {
     t,
   } = props;
 
+  console.log(!isMobileOnly, !window.innerWidth <= 428);
   return (
     <StyledComponent visible={visible} onClose={onClose}>
       <ModalDialog.Header>{header}</ModalDialog.Header>
@@ -121,20 +123,27 @@ const ColorSchemeDialog = (props) => {
             <div className="text">Accent</div>
             {nodeAccentColor}
 
-            {nodeHexColorPickerAccent}
+            {!(isMobileOnly || window.innerWidth <= 428) &&
+              nodeHexColorPickerAccent}
           </div>
 
           <div className="flex relative">
             <div className="text">Buttons</div>
             {nodeButtonsColor}
 
-            {nodeHexColorPickerButtons}
+            {!(isMobileOnly || window.innerWidth <= 428) &&
+              nodeHexColorPickerButtons}
           </div>
         </div>
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        {/* {!openHexColorPicker && (
+        {(isMobileOnly || window.innerWidth <= 428) && nodeHexColorPickerAccent}
+
+        {(isMobileOnly || window.innerWidth <= 428) &&
+          nodeHexColorPickerButtons}
+
+        {!(nodeHexColorPickerButtons || nodeHexColorPickerAccent) && (
           <>
             <Button
               label="Save"
@@ -150,7 +159,7 @@ const ColorSchemeDialog = (props) => {
               scale={true}
             />
           </>
-        )} */}
+        )}
       </ModalDialog.Footer>
     </StyledComponent>
   );

@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import withLoading from "../../../../../HOCs/withLoading";
 import globalColors from "@appserver/components/utils/globalColors";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import TabContainer from "@appserver/components/tabs-container";
 import Preview from "./settingsAppearance/preview";
 
@@ -15,6 +15,7 @@ import DropDownItem from "@appserver/components/drop-down-item";
 import DropDownContainer from "@appserver/components/drop-down";
 
 import HexColorPickerComponent from "./sub-components/hexColorPicker";
+import { isMobileOnly } from "react-device-detect";
 const StyledComponent = styled.div`
   .container {
     display: flex;
@@ -53,6 +54,38 @@ const StyledComponent = styled.div`
     padding-left: 16px;
     box-sizing: border-box;
   }
+
+  .drop-down-container {
+    position: absolute;
+    left: -16px;
+    bottom: 0;
+  }
+`;
+
+const StyledComponentDropDownContainer = styled(DropDownContainer)`
+  left: -16px;
+  bottom: -16px;
+  width: 100%;
+  border-radius: inherit;
+  box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
+
+  .drop-down-item-hex {
+    display: block;
+  }
+
+  //TODO:mobile horizontal orientation
+  @media (min-width: 428px) {
+    ${!isMobileOnly &&
+    css`
+      left: auto;
+      bottom: auto;
+      border: none;
+      width: auto;
+      .drop-down-item-hex {
+        display: flex;
+      }
+    `}
+  }
 `;
 
 const Appearance = (props) => {
@@ -79,7 +112,6 @@ const Appearance = (props) => {
   );
 
   //TODO: Add default color
-  const [color, setColor] = useState("#FF9933");
   const [appliedColorAccent, setAppliedColorAccent] = useState("#FF9933");
   const [appliedColorButtons, setAppliedColorButtons] = useState("#FF9999");
 
@@ -175,14 +207,14 @@ const Appearance = (props) => {
   };
 
   const nodeHexColorPickerButtons = (
-    <DropDownContainer
+    <StyledComponentDropDownContainer
       directionX="right"
       withBackdrop={false}
       isDefaultMode={false}
       open={openHexColorPickerButtons}
       clickOutsideAction={onCloseHexColorPicker}
     >
-      <DropDownItem>
+      <DropDownItem className="drop-down-item-hex">
         <HexColorPickerComponent
           id="buttons-hex"
           onCloseHexColorPicker={onCloseHexColorPicker}
@@ -191,18 +223,18 @@ const Appearance = (props) => {
           setColor={setAppliedColorButtons}
         />
       </DropDownItem>
-    </DropDownContainer>
+    </StyledComponentDropDownContainer>
   );
 
   const nodeHexColorPickerAccent = (
-    <DropDownContainer
+    <StyledComponentDropDownContainer
       directionX="right"
       withBackdrop={false}
       isDefaultMode={false}
       open={openHexColorPickerAccent}
       clickOutsideAction={onCloseHexColorPicker}
     >
-      <DropDownItem>
+      <DropDownItem className="drop-down-item-hex">
         <HexColorPickerComponent
           id="accent-hex"
           onCloseHexColorPicker={onCloseHexColorPicker}
@@ -211,7 +243,7 @@ const Appearance = (props) => {
           setColor={setAppliedColorAccent}
         />
       </DropDownItem>
-    </DropDownContainer>
+    </StyledComponentDropDownContainer>
   );
 
   const nodeAccentColor = (

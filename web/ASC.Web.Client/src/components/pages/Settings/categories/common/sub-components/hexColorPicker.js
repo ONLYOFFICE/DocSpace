@@ -10,16 +10,6 @@ const StyledComponent = styled.div`
     margin-right: 10px;
   }
 
-  /* .hex-color-picker {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 0 16px 16px 16px;
-    box-sizing: border-box;
-    box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
-  } */
-
   .hex-color-picker .react-colorful {
     width: auto;
     height: 195px;
@@ -60,12 +50,14 @@ const StyledComponent = styled.div`
 
   .hex-button {
     display: flex;
+    padding-bottom: 16px;
 
     .apply-button {
       margin-right: 8px;
     }
   }
 
+  //TODO:mobile horizontal orientation
   @media (min-width: 428px) {
   }
 `;
