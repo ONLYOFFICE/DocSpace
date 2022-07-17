@@ -101,7 +101,7 @@ function Editor({
   const [version, setVersion] = useState(rest.version);
 
   const { t } = useTranslation(["Editor", "Common"]);
-  console.log(rest);
+
   useEffect(() => {
     if (error) {
       if (error?.unAuthorized && error?.redirectPath) {
@@ -567,7 +567,7 @@ function Editor({
       window.toastr.error(error.message, null, 0, true);
     }
   };
-  console.log("editor render");
+
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
       <div id="editor"></div>

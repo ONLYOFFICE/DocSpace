@@ -2,7 +2,6 @@ import React, { Suspense } from "react";
 import { hydrate } from "react-dom";
 import { registerSW } from "@appserver/common/sw/helper";
 import { App } from "./App.js";
-import Editor from "./Editor";
 import { useSSR } from "react-i18next";
 import useMfScripts from "../helpers/useMfScripts";
 import initDesktop from "../helpers/initDesktop";
@@ -11,7 +10,7 @@ import { combineUrl } from "@appserver/common/utils";
 import ErrorBoundary from "../components/ErrorBoundary";
 import pkg from "../../package.json";
 
-const propsObj = window.__ASC_INITIAL_STATE__.props;
+const propsObj = window.__ASC_INITIAL_STATE__;
 const initialI18nStore = window.initialI18nStore;
 const initialLanguage = window.initialLanguage;
 const socketPath = pkg.socketPath;
@@ -35,18 +34,18 @@ const AppWrapper = () => {
       ),
       "_self"
     );
-  console.log(propsObj);
+
   return (
     <ErrorBoundary onError={onError}>
-      <Suspense fallback={<div />}>
-        <Editor
-          {...propsObj}
-          mfReady={isInitialized}
-          mfFailed={isErrorLoading}
-          isDesktopEditor={isDesktopEditor}
-          initDesktop={initDesktop}
-        />
-      </Suspense>
+      {/* <Suspense fallback={<div />}> */}
+      <App
+        {...propsObj}
+        mfReady={isInitialized}
+        mfFailed={isErrorLoading}
+        isDesktopEditor={isDesktopEditor}
+        initDesktop={initDesktop}
+      />
+      {/* </Suspense> */}
     </ErrorBoundary>
   );
 };
@@ -74,7 +73,7 @@ if (IS_DEVELOPMENT) {
     console.log("[editor-dev] Socket is disconnected! Reloading...");
     setTimeout(() => {
       !isErrorConnection && location.reload();
-    }, 1000);
+    }, 1500);
   };
 
   ws.onerror = (event) => {
