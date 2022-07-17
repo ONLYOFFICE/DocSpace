@@ -83,21 +83,19 @@ export const initDocEditor = async (req) => {
     const actionLink = config?.editorConfig?.actionLink || null;
 
     return {
-      props: {
-        fileInfo,
-        docApiUrl,
-        config,
-        personal,
-        successAuth,
-        user,
-        error,
-        actionLink,
-        isSharingAccess,
-        url,
-        doc,
-        fileId,
-        view,
-      },
+      fileInfo,
+      docApiUrl,
+      config,
+      personal,
+      successAuth,
+      user,
+      error,
+      actionLink,
+      isSharingAccess,
+      url,
+      doc,
+      fileId,
+      view,
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };
