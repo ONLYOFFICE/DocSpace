@@ -2,8 +2,6 @@ const { merge } = require("webpack-merge");
 const path = require("path");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
-const HotModuleReplacementPlugin = require("webpack")
-  .HotModuleReplacementPlugin;
 const DefinePlugin = require("webpack").DefinePlugin;
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
@@ -73,7 +71,6 @@ const clientConfig = {
       ],
     }),
     new WebpackManifestPlugin(),
-    new HotModuleReplacementPlugin(),
   ],
 };
 
@@ -89,6 +86,7 @@ module.exports = (env, argv) => {
       ...clientConfig.plugins,
       new DefinePlugin({
         IS_DEVELOPMENT: false,
+        PORT: process.env.PORT || 5013,
       }),
     ];
   } else {

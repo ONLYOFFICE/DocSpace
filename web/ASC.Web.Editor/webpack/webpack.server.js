@@ -12,7 +12,7 @@ const serverConfig = {
   entry: {
     server: "./src/server/index.js",
   },
-  
+
   output: {
     path: path.resolve(process.cwd(), "dist/"),
     filename: "[name].js",
@@ -27,12 +27,14 @@ module.exports = (env, argv) => {
     serverConfig.plugins = [
       new DefinePlugin({
         IS_DEVELOPMENT: false,
+        PORT: process.env.PORT || 5013,
       }),
     ];
   } else {
     serverConfig.plugins = [
       new DefinePlugin({
         IS_DEVELOPMENT: true,
+        PORT: process.env.PORT || 5013,
       }),
     ];
   }
