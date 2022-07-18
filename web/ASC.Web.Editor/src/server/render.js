@@ -2,7 +2,7 @@ import { getFavicon } from "../helpers/utils";
 import pkg from "../../package.json";
 
 export default function template(
-  initialState = {},
+  initialEditorState = {},
   appComponent = "",
   styleTags,
   initialI18nStoreASC,
@@ -10,14 +10,16 @@ export default function template(
   assets
 ) {
   const { title } = pkg;
-  const { docApiUrl } = initialState;
-  const faviconHref = getFavicon(initialState?.config?.documentType);
+  const { docApiUrl } = initialEditorState;
+  const faviconHref = getFavicon(initialEditorState?.config?.documentType);
 
   const scripts = `   
-    <script id="__ASC_INITIAL_STATE__">
-      window.__ASC_INITIAL_STATE__ = ${JSON.stringify(initialState)}
+    <script id="__ASC_INITIAL_EDITOR_STATE__">
+      window.__ASC_INITIAL_EDITOR_STATE__ = ${JSON.stringify(
+        initialEditorState
+      )}
     </script>
-    <script id="__ASC_I18N_INIT__">
+    <script id="__ASC_INITIAL_EDITOR_I18N__">
       window.initialI18nStoreASC = ${JSON.stringify(initialI18nStoreASC)}
       window.initialLanguage = '${initialLanguage}'
     </script>

@@ -39,14 +39,14 @@ export default async (req, res, next) => {
     "utf-8"
   );
 
-  req.initialState = await initDocEditor(req);
+  req.initialEditorState = await initDocEditor(req);
   req.assets = JSON.parse(manifest);
 
   req.appComponent = renderToString(
     sheet.collectStyles(
       <I18nextProvider i18n={req.i18n}>
         <GlobalStyle />
-        <App {...req.initialState} />
+        <App {...req.initialEditorState} />
       </I18nextProvider>
     )
   );

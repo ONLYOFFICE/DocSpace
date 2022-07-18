@@ -10,7 +10,7 @@ import { combineUrl } from "@appserver/common/utils";
 import ErrorBoundary from "../components/ErrorBoundary";
 import pkg from "../../package.json";
 
-const propsObj = window.__ASC_INITIAL_STATE__;
+const propsObj = window.__ASC_INITIAL_EDITOR_STATE__;
 const initialI18nStoreASC = window.initialI18nStoreASC;
 const initialLanguage = window.initialLanguage;
 
@@ -40,12 +40,12 @@ if (initialI18nStoreASC && !window.i18n) {
   }
 }
 
-delete window.__ASC_INITIAL_STATE__;
+delete window.__ASC_INITIAL_EDITOR_STATE__;
 delete window.initialI18nStoreASC;
 delete window.initialLanguage;
 
-const stateInit = document.getElementById("__ASC_INITIAL_STATE__");
-const i18nInit = document.getElementById("__ASC_I18N_INIT__");
+const stateInit = document.getElementById("__ASC_INITIAL_EDITOR_STATE__");
+const i18nInit = document.getElementById("__ASC_INITIAL_EDITOR_I18N__");
 stateInit.parentNode.removeChild(stateInit);
 i18nInit.parentNode.removeChild(i18nInit);
 

@@ -64,14 +64,14 @@ app.use(express.static(path.resolve(process.cwd(), "dist/client")));
 app.use(initMiddleware);
 app.use(logger("dev", { stream: winston.stream }));
 app.get("/products/files/doceditor", async (req, res) => {
-  const { i18n, initialState, appComponent, styleTags, assets } = req;
-  const userLng = initialState?.user?.cultureName || "en";
+  const { i18n, initialEditorState, appComponent, styleTags, assets } = req;
+  const userLng = initialEditorState?.user?.cultureName || "en";
 
   await i18next.changeLanguage(userLng);
   const initialI18nStoreASC = i18n.services.resourceStore.data;
 
   const htmlString = template(
-    initialState,
+    initialEditorState,
     appComponent,
     styleTags,
     initialI18nStoreASC,
