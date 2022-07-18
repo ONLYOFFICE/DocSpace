@@ -96,9 +96,10 @@ const FilterBlock = ({
   }, [selectedFilterValue.length]);
 
   const changeFilterValue = React.useCallback(
-    (group, key, isSelected, label, isMultiSelect) => {
+    (group, key, isSelected, label, isMultiSelect, withOptions) => {
       let value = filterValues.map((value) => {
-        if (typeof value.key === "object") {
+        //TODO: remove typeof
+        if (typeof value.key === "object" || isMultiSelect) {
           const newKey = [...value.key];
           value.key = newKey;
         }
@@ -211,6 +212,13 @@ const FilterBlock = ({
                   groupItem.key
                 );
               }
+
+              if (groupItem.withOptions) {
+                groupItem.options.forEach(
+                  (option) =>
+                    (option.isSelected = option.key === selectedValue.key)
+                );
+              }
             });
           }
         });
@@ -285,9 +293,11 @@ const FilterBlock = ({
         (item) => item.group === value.group
       );
 
-      let isMultiSelectEqual = true;
+      let isMultiSelectEqual = false;
+      let withOptionsEqual = false;
 
       if (typeof value.key === "object") {
+        isMultiSelectEqual = true;
         value.key.forEach(
           (item) =>
             (isMultiSelectEqual =
@@ -295,10 +305,18 @@ const FilterBlock = ({
         );
       }
 
+      if (value.options) {
+        withOptionsEqual = true;
+        value.options.forEach(
+          (option) =>
+            (withOptionsEqual =
+              isMultiSelectEqual && option.key === oldValue.key)
+        );
+      }
+
       isEqual =
         isEqual &&
-        (oldValue?.key === value.key ||
-          (isMultiSelectEqual && typeof value.key === "object"));
+        (oldValue?.key === value.key || isMultiSelectEqual || withOptionsEqual);
     });
 
     return !isEqual;
@@ -361,6 +379,7 @@ const FilterBlock = ({
                     groupItem={item.groupItem}
                     isLast={item.isLast}
                     withoutHeader={item.withoutHeader}
+                    withoutSeparator={item.withoutSeparator}
                     changeFilterValue={changeFilterValue}
                     showSelector={changeShowSelector}
                   />

@@ -69,9 +69,9 @@ const FilterInput = React.memo(
       value.forEach((item) => {
         if (item.isMultiSelect) {
           const newKeys = item.key.map((oldKey) => ({
-            key: oldKey,
+            key: oldKey.key ? oldKey.key : oldKey,
             group: item.group,
-            label: oldKey,
+            label: oldKey.label ? oldKey.label : oldKey,
           }));
 
           return newSelectedItems.push(...newKeys);
