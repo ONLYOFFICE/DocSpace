@@ -10,6 +10,12 @@ import {
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
 import Submenu from "@appserver/components/submenu";
+import { isMobile } from "react-device-detect";
+import {
+  isDesktop,
+  isMobile as isMobileUtils,
+  isTablet,
+} from "@appserver/components/utils/device";
 
 const InfoPanelHeaderContent = ({
   t,
