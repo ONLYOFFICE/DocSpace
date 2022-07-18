@@ -1942,8 +1942,8 @@ const Base = {
   },
 
   menuContainer: {
-    background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
-    color: white,
+    background: "#F3F4F4",
+    color: black,
   },
 
   article: {
