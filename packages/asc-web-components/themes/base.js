@@ -1826,6 +1826,11 @@ const Base = {
     },
 
     headerBurgerColor: "#657077",
+
+    profile: {
+      borderTop: "1px solid #eceef1",
+      background: "#f3f4f4",
+    },
   },
 
   catalogItem: {

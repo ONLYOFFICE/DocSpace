@@ -1826,6 +1826,11 @@ const Dark = {
     },
 
     headerBurgerColor: "#606060",
+
+    profile: {
+      borderTop: "1px solid #474747",
+      background: "#3D3D3D",
+    },
   },
 
   catalogItem: {
