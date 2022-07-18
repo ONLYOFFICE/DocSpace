@@ -3,13 +3,14 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
-import { isMobileOnly } from "react-device-detect";
 
 const StyledComponent = styled(ModalDialog)`
   .modal-dialog-aside-footer {
     width: 100%;
-    display: flex;
-    padding-right: 32px;
+    bottom: 0 !important;
+    left: 0;
+    padding: 16px;
+    box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
   }
 
   .flex {
@@ -35,69 +36,6 @@ const StyledComponent = styled(ModalDialog)`
   .relative {
     position: relative;
   }
-
-  .save-button {
-    margin-right: 10px;
-  }
-
-  /* .hex-color-picker {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 0 16px 16px 16px;
-    box-sizing: border-box;
-    box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
-  } */
-
-  .hex-color-picker .react-colorful {
-    width: auto;
-    height: 195px;
-    padding-bottom: 16px;
-  }
-
-  .react-colorful__saturation {
-    margin: 16px 0;
-  }
-
-  .hex-color-picker .react-colorful__saturation-pointer {
-    width: 14px;
-    height: 14px;
-    transform: none !important;
-  }
-
-  .hex-color-picker .react-colorful__hue {
-    border-radius: 6px;
-    height: 12px;
-  }
-
-  .hex-color-picker .react-colorful__hue-pointer {
-    width: 24px;
-    height: 24px;
-    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.25);
-    border: 6px solid #fff;
-  }
-
-  .hex-value {
-    outline: none;
-    padding: 6px 8px;
-    border: 1px solid #d0d5da;
-    border-radius: 3px;
-    margin-top: 16px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .hex-button {
-    display: flex;
-
-    .apply-button {
-      margin-right: 8px;
-    }
-  }
-
-  @media (min-width: 428px) {
-  }
 `;
 
 const ColorSchemeDialog = (props) => {
@@ -110,12 +48,20 @@ const ColorSchemeDialog = (props) => {
     nodeAccentColor,
     nodeHexColorPickerAccent,
     nodeHexColorPickerButtons,
+    viewMobile,
+    openHexColorPickerButtons,
+    openHexColorPickerAccent,
     t,
   } = props;
 
-  console.log(!isMobileOnly, !window.innerWidth <= 428);
+  useEffect(() => {
+    return () => {
+      console.log("dd");
+    };
+  });
+
   return (
-    <StyledComponent visible={visible} onClose={onClose}>
+    <StyledComponent visible={visible} onClose={onClose} displayType="aside">
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <div>
@@ -123,27 +69,24 @@ const ColorSchemeDialog = (props) => {
             <div className="text">Accent</div>
             {nodeAccentColor}
 
-            {!(isMobileOnly || window.innerWidth <= 428) &&
-              nodeHexColorPickerAccent}
+            {!viewMobile && nodeHexColorPickerAccent}
           </div>
 
           <div className="flex relative">
             <div className="text">Buttons</div>
             {nodeButtonsColor}
 
-            {!(isMobileOnly || window.innerWidth <= 428) &&
-              nodeHexColorPickerButtons}
+            {!viewMobile && nodeHexColorPickerButtons}
           </div>
         </div>
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        {(isMobileOnly || window.innerWidth <= 428) && nodeHexColorPickerAccent}
+        {viewMobile && openHexColorPickerAccent && nodeHexColorPickerAccent}
 
-        {(isMobileOnly || window.innerWidth <= 428) &&
-          nodeHexColorPickerButtons}
+        {viewMobile && openHexColorPickerButtons && nodeHexColorPickerButtons}
 
-        {!(nodeHexColorPickerButtons || nodeHexColorPickerAccent) && (
+        {!viewMobile && (
           <>
             <Button
               label="Save"

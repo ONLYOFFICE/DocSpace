@@ -62,32 +62,6 @@ const StyledComponent = styled.div`
   }
 `;
 
-const StyledComponentDropDownContainer = styled(DropDownContainer)`
-  left: -16px;
-  bottom: -16px;
-  width: 100%;
-  border-radius: inherit;
-  box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
-
-  .drop-down-item-hex {
-    display: block;
-  }
-
-  //TODO:mobile horizontal orientation
-  @media (min-width: 428px) {
-    ${!isMobileOnly &&
-    css`
-      left: auto;
-      bottom: auto;
-      border: none;
-      width: auto;
-      .drop-down-item-hex {
-        display: flex;
-      }
-    `}
-  }
-`;
-
 const Appearance = (props) => {
   const { setColorScheme, colorScheme } = props;
 
@@ -115,6 +89,8 @@ const Appearance = (props) => {
   const [appliedColorAccent, setAppliedColorAccent] = useState("#FF9933");
   const [appliedColorButtons, setAppliedColorButtons] = useState("#FF9999");
 
+  const [viewMobile, setViewMobile] = useState(false);
+
   const checkImg = <img src="/static/images/check.white.svg" />;
 
   const array_items = useMemo(
@@ -136,6 +112,21 @@ const Appearance = (props) => {
     ],
     [selectedColor, previewTheme]
   );
+
+  useEffect(() => {
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+
+    return () => window.removeEventListener("resize", onCheckView);
+  }, []);
+
+  const onCheckView = () => {
+    if (isMobileOnly || window.innerWidth <= 428) {
+      setViewMobile(true);
+    } else {
+      setViewMobile(false);
+    }
+  };
 
   const onColorSelection = (e) => {
     if (!e.target.id) return;
@@ -166,8 +157,10 @@ const Appearance = (props) => {
     setShowColorSchemeDialog(true);
   };
 
-  const onCloseEdit = () => {
+  const onCloseColorSchemeDialog = () => {
     setShowColorSchemeDialog(false);
+    setOpenHexColorPickerAccent(false);
+    setOpenHexColorPickerButtons(false);
   };
 
   const onAddTheme = () => {
@@ -186,8 +179,10 @@ const Appearance = (props) => {
   const onClickColor = (e) => {
     if (e.target.id === "accent") {
       setOpenHexColorPickerAccent(true);
+      setOpenHexColorPickerButtons(false);
     } else {
       setOpenHexColorPickerButtons(true);
+      setOpenHexColorPickerAccent(false);
     }
   };
 
@@ -206,9 +201,19 @@ const Appearance = (props) => {
     onCloseHexColorPicker();
   };
 
-  const nodeHexColorPickerButtons = (
-    <StyledComponentDropDownContainer
+  const nodeHexColorPickerButtons = viewMobile ? (
+    <HexColorPickerComponent
+      id="buttons-hex"
+      onCloseHexColorPicker={onCloseHexColorPicker}
+      onAppliedColor={onAppliedColorButtons}
+      color={appliedColorButtons}
+      setColor={setAppliedColorButtons}
+      viewMobile={viewMobile}
+    />
+  ) : (
+    <DropDownContainer
       directionX="right"
+      manualY="62px"
       withBackdrop={false}
       isDefaultMode={false}
       open={openHexColorPickerButtons}
@@ -221,18 +226,30 @@ const Appearance = (props) => {
           onAppliedColor={onAppliedColorButtons}
           color={appliedColorButtons}
           setColor={setAppliedColorButtons}
+          viewMobile={viewMobile}
         />
       </DropDownItem>
-    </StyledComponentDropDownContainer>
+    </DropDownContainer>
   );
 
-  const nodeHexColorPickerAccent = (
-    <StyledComponentDropDownContainer
+  const nodeHexColorPickerAccent = viewMobile ? (
+    <HexColorPickerComponent
+      id="accent-hex"
+      onCloseHexColorPicker={onCloseHexColorPicker}
+      onAppliedColor={onAppliedColorAccent}
+      color={appliedColorAccent}
+      setColor={setAppliedColorAccent}
+      viewMobile={viewMobile}
+    />
+  ) : (
+    <DropDownContainer
       directionX="right"
+      manualY="62px"
       withBackdrop={false}
       isDefaultMode={false}
       open={openHexColorPickerAccent}
       clickOutsideAction={onCloseHexColorPicker}
+      viewMobile={viewMobile}
     >
       <DropDownItem className="drop-down-item-hex">
         <HexColorPickerComponent
@@ -241,9 +258,10 @@ const Appearance = (props) => {
           onAppliedColor={onAppliedColorAccent}
           color={appliedColorAccent}
           setColor={setAppliedColorAccent}
+          viewMobile={viewMobile}
         />
       </DropDownItem>
-    </StyledComponentDropDownContainer>
+    </DropDownContainer>
   );
 
   const nodeAccentColor = (
@@ -302,8 +320,11 @@ const Appearance = (props) => {
         nodeHexColorPickerAccent={nodeHexColorPickerAccent}
         nodeHexColorPickerButtons={nodeHexColorPickerButtons}
         visible={showColorSchemeDialog}
-        onClose={onCloseEdit}
+        onClose={onCloseColorSchemeDialog}
         header={headerColorSchemeDialog}
+        viewMobile={viewMobile}
+        openHexColorPickerButtons={openHexColorPickerButtons}
+        openHexColorPickerAccent={openHexColorPickerAccent}
       />
       <div>Preview</div>
       <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />
