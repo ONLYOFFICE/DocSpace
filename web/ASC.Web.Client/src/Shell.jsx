@@ -576,7 +576,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 };
 
-const ShellWrapper = inject(({ auth, backup, aboutDialogStore }) => {
+const ShellWrapper = inject(({ auth, backup, profileActionsStore }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
 
   const {
@@ -594,7 +594,7 @@ const ShellWrapper = inject(({ auth, backup, aboutDialogStore }) => {
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
-  const { isAboutDialogVisible, setIsAboutDialogVisible } = aboutDialogStore;
+  const { isAboutDialogVisible, setIsAboutDialogVisible } = profileActionsStore;
 
   return {
     loadBaseInfo: async () => {

@@ -6,7 +6,7 @@ import ConfirmStore from "./ConfirmStore";
 import BackupStore from "./BackupStore";
 import CommonStore from "./CommonStore";
 import BannerStore from "./BannerStore";
-import AboutDialogStore from "./AboutDialog";
+import ProfileActionsStore from "./ProfileActionsStore";
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();
@@ -15,7 +15,7 @@ const confirmStore = new ConfirmStore();
 const backupStore = new BackupStore();
 const commonStore = new CommonStore();
 const bannerStore = new BannerStore();
-const aboutDialogStore = new AboutDialogStore();
+const profileActionsStore = new ProfileActionsStore();
 
 const store = {
   auth: authStore,
@@ -26,7 +26,7 @@ const store = {
   backup: backupStore,
   common: commonStore,
   bannerStore: bannerStore,
-  aboutDialogStore: aboutDialogStore,
+  profileActionsStore: profileActionsStore,
 };
 
 export default store;
