@@ -170,7 +170,7 @@ class ThirdPartyModule extends React.Component {
             label={t("Common:Duplicate")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={isModuleDisabled}
+            isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
             size={buttonSize}
           />
           {!isMaxProgress && (
