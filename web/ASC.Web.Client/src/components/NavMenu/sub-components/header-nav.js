@@ -76,14 +76,13 @@ const HeaderNav = ({
   isPersonal,
   userIsUpdate,
   setUserIsUpdate,
-  buildVersionInfo,
   debugInfo,
   settingsModule,
   setHotkeyPanelVisible,
   currentProductId,
+  setIsAboutDialogVisible,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
-  const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
   const [visibleDebugDialog, setVisibleDebugDialog] = useState(false);
 
   const onProfileClick = useCallback(() => {
@@ -94,7 +93,7 @@ const HeaderNav = ({
 
   const onAboutClick = useCallback(() => {
     if (isDesktop) {
-      setVisibleAboutDialog(true);
+      setIsAboutDialogVisible(true);
     } else {
       history.push(ABOUT_URL);
     }
@@ -117,7 +116,6 @@ const HeaderNav = ({
     setVisibleDebugDialog(true);
   }, []);
 
-  const onCloseAboutDialog = () => setVisibleAboutDialog(false);
   const onCloseDebugDialog = () => setVisibleDebugDialog(false);
 
   const onSwitchToDesktopClick = useCallback(() => {
@@ -244,14 +242,6 @@ const HeaderNav = ({
         <></>
       )}
 
-      <AboutDialog
-        t={t}
-        visible={visibleAboutDialog}
-        onClose={onCloseAboutDialog}
-        personal={isPersonal}
-        buildVersionInfo={buildVersionInfo}
-      />
-
       {debugInfo && (
         <DebugInfoDialog
           visible={visibleDebugDialog}
@@ -276,7 +266,7 @@ HeaderNav.propTypes = {
 };
 
 export default withRouter(
-  inject(({ auth }) => {
+  inject(({ auth, aboutDialogStore }) => {
     const {
       settingsStore,
       userStore,
@@ -291,13 +281,13 @@ export default withRouter(
       version: versionAppServer,
       currentProductId,
       toggleArticleOpen,
-      buildVersionInfo,
       debugInfo,
       setHotkeyPanelVisible,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
     const settingsModule = modules.find((module) => module.id === "settings");
+    const { setIsAboutDialogVisible } = aboutDialogStore;
 
     return {
       isPersonal,
@@ -314,10 +304,10 @@ export default withRouter(
       setUserIsUpdate,
       currentProductId,
       toggleArticleOpen,
-      buildVersionInfo,
       debugInfo,
       settingsModule,
       setHotkeyPanelVisible,
+      setIsAboutDialogVisible,
     };
   })(observer(HeaderNav))
 );
