@@ -18,7 +18,7 @@ const SUBJECT_ID = "subjectId";
 const DEFAULT_SUBJECT_ID = null;
 
 const SEARCH_IN_CONTENT = "searchInContent";
-const DEFAULT_SEARCH_IN_CONTENT = null;
+const DEFAULT_SEARCH_IN_CONTENT = false;
 
 const SEARCH_TYPE = "withSubfolders";
 const DEFAULT_SEARCH_TYPE = true;
@@ -67,9 +67,9 @@ class RoomsFilter {
       (urlFilter[SUBJECT_ID] && urlFilter[SUBJECT_ID]) ||
       defaultFilter.subjectId;
 
-    const searchInContent =
-      (urlFilter[SEARCH_IN_CONTENT] && +urlFilter[SEARCH_IN_CONTENT]) ||
-      defaultFilter.searchInContent;
+    const searchInContent = urlFilter[SEARCH_IN_CONTENT]
+      ? urlFilter[SEARCH_IN_CONTENT] === "true"
+      : defaultFilter.searchInContent;
 
     const withSubfolders = urlFilter[SEARCH_TYPE]
       ? urlFilter[SEARCH_TYPE] === "true"
