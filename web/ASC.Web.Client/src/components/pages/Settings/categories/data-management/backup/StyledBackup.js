@@ -125,6 +125,11 @@ const StyledAutoBackup = styled.div`
   .backup_toggle-btn-description {
     margin-left: 37px;
     max-width: 1024px;
+
+    color: ${(props) =>
+      props.isEnableAuto
+        ? props.theme.text.color
+        : props.theme.text.disableColor};
   }
   .toggle-button-text {
     font-weight: 600;

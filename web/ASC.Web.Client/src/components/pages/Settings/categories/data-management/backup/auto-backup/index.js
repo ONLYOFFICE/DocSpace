@@ -8,6 +8,7 @@ import {
   deleteBackupSchedule,
   getBackupSchedule,
   createBackupSchedule,
+  enableAutoBackup,
 } from "@appserver/common/api/portal";
 import toastr from "@appserver/components/toast/toastr";
 import {
@@ -42,6 +43,7 @@ class AutomaticBackup extends React.PureComponent {
       isLoadingData: false,
       isInitialLoading: true,
       isError: false,
+      isEnableAuto: false,
     };
 
     this.periodsObject = [
@@ -78,6 +80,7 @@ class AutomaticBackup extends React.PureComponent {
       setCommonThirdPartyList,
       getProgress,
     } = this.props;
+
     try {
       getProgress(t);
 
@@ -85,10 +88,12 @@ class AutomaticBackup extends React.PureComponent {
         thirdPartyList,
         backupSchedule,
         backupStorage,
+        enableAuto,
       ] = await Promise.all([
         getThirdPartyCommonFolderTree(),
         getBackupSchedule(),
         getBackupStorage(),
+        enableAutoBackup(),
       ]);
 
       setThirdPartyStorage(backupStorage);
@@ -96,13 +101,17 @@ class AutomaticBackup extends React.PureComponent {
       thirdPartyList && setCommonThirdPartyList(thirdPartyList);
 
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
+
+      this.setState({
+        isInitialLoading: false,
+        isEnableAuto: enableAuto,
+      });
     } catch (error) {
       toastr.error(error);
+      this.setState({
+        isInitialLoading: false,
+      });
     }
-
-    this.setState({
-      isInitialLoading: false,
-    });
   };
 
   componentDidMount() {
@@ -383,7 +392,12 @@ class AutomaticBackup extends React.PureComponent {
       isDocSpace,
     } = this.props;
 
-    const { isInitialLoading, isLoadingData, isError } = this.state;
+    const {
+      isInitialLoading,
+      isLoadingData,
+      isError,
+      isEnableAuto,
+    } = this.state;
 
     const isDisabledThirdPartyList =
       isCheckedThirdParty || isDocSpace
@@ -410,7 +424,7 @@ class AutomaticBackup extends React.PureComponent {
     return isInitialLoading ? (
       <AutoBackupLoader />
     ) : (
-      <StyledAutoBackup theme={theme}>
+      <StyledAutoBackup theme={theme} isEnableAuto={isEnableAuto}>
         <div className="backup_modules-header_wrapper">
           <Text isBold fontSize="16px">
             {t("AutoBackup")}
@@ -430,13 +444,13 @@ class AutomaticBackup extends React.PureComponent {
             label={t("EnableAutomaticBackup")}
             onChange={this.onClickPermissions}
             isChecked={selectedEnableSchedule}
-            isDisabled={isLoadingData}
+            isDisabled={isLoadingData || !isEnableAuto}
           />
           <Text className="backup_toggle-btn-description">
             {t("EnableAutomaticBackupDescription")}
           </Text>
         </div>
-        {selectedEnableSchedule && (
+        {selectedEnableSchedule && isEnableAuto && (
           <div className="backup_modules">
             <StyledModules>
               <RadioButton
