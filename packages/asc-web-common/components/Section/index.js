@@ -9,6 +9,7 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 import { Provider } from "@appserver/components/utils/context";
 import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
 
@@ -38,6 +39,8 @@ const StyledSelectoWrapper = styled.div`
 
 const StyledMainBar = styled.div`
   box-sizing: border-box;
+
+  ${NoUserSelect}
 
   margin-left: -20px;
 

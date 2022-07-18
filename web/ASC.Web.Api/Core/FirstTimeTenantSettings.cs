@@ -1,304 +1,290 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Web.Studio.UserControls.FirstTime;
 
-using System;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.IO;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Models;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility.Settings;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.UserControls.Management;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Web.Studio.UserControls.FirstTime
+[Transient]
+public class FirstTimeTenantSettings
 {
-    [Transient]
-    public class FirstTimeTenantSettings
+    private readonly ILogger<FirstTimeTenantSettings> _log;
+    private readonly TenantManager _tenantManager;
+    private readonly TenantExtra _tenantExtra;
+    private readonly SettingsManager _settingsManager;
+    private readonly UserManager _userManager;
+    private readonly SetupInfo _setupInfo;
+    private readonly SecurityContext _securityContext;
+    private readonly PaymentManager _paymentManager;
+    private readonly MessageService _messageService;
+    private readonly LicenseReader _licenseReader;
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly TimeZoneConverter _timeZoneConverter;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IHttpClientFactory _clientFactory;
+
+    public FirstTimeTenantSettings(
+        ILogger<FirstTimeTenantSettings> logger,
+        TenantManager tenantManager,
+        TenantExtra tenantExtra,
+        SettingsManager settingsManager,
+        UserManager userManager,
+        SetupInfo setupInfo,
+        SecurityContext securityContext,
+        PaymentManager paymentManager,
+        MessageService messageService,
+        LicenseReader licenseReader,
+        StudioNotifyService studioNotifyService,
+        TimeZoneConverter timeZoneConverter,
+        CoreBaseSettings coreBaseSettings,
+        IHttpClientFactory clientFactory)
     {
-        private ILog Log { get; }
-        private TenantManager TenantManager { get; }
-        private TenantExtra TenantExtra { get; }
-        private SettingsManager SettingsManager { get; }
-        private UserManager UserManager { get; }
-        private SetupInfo SetupInfo { get; }
-        private SecurityContext SecurityContext { get; }
-        private PaymentManager PaymentManager { get; }
-        private MessageService MessageService { get; }
-        private LicenseReader LicenseReader { get; }
-        private StudioNotifyService StudioNotifyService { get; }
-        private TimeZoneConverter TimeZoneConverter { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IHttpClientFactory ClientFactory { get; }
+        _log = logger;
+        _tenantManager = tenantManager;
+        _tenantExtra = tenantExtra;
+        _settingsManager = settingsManager;
+        _userManager = userManager;
+        _setupInfo = setupInfo;
+        _securityContext = securityContext;
+        _paymentManager = paymentManager;
+        _messageService = messageService;
+        _licenseReader = licenseReader;
+        _studioNotifyService = studioNotifyService;
+        _timeZoneConverter = timeZoneConverter;
+        _coreBaseSettings = coreBaseSettings;
+        _clientFactory = clientFactory;
+    }
 
-        public FirstTimeTenantSettings(
-            IOptionsMonitor<ILog> options,
-            TenantManager tenantManager,
-            TenantExtra tenantExtra,
-            SettingsManager settingsManager,
-            UserManager userManager,
-            SetupInfo setupInfo,
-            SecurityContext securityContext,
-            PaymentManager paymentManager,
-            MessageService messageService,
-            LicenseReader licenseReader,
-            StudioNotifyService studioNotifyService,
-            TimeZoneConverter timeZoneConverter,
-            CoreBaseSettings coreBaseSettings,
-            IHttpClientFactory clientFactory)
+    public WizardSettings SaveData(WizardRequestsDto inDto)
+    {
+        try
         {
-            Log = options.CurrentValue;
-            TenantManager = tenantManager;
-            TenantExtra = tenantExtra;
-            SettingsManager = settingsManager;
-            UserManager = userManager;
-            SetupInfo = setupInfo;
-            SecurityContext = securityContext;
-            PaymentManager = paymentManager;
-            MessageService = messageService;
-            LicenseReader = licenseReader;
-            StudioNotifyService = studioNotifyService;
-            TimeZoneConverter = timeZoneConverter;
-            CoreBaseSettings = coreBaseSettings;
-            ClientFactory = clientFactory;
-        }
+            var (email, passwordHash, lng, timeZone, promocode, amiid, subscribeFromSite) = inDto;
 
-        public WizardSettings SaveData(WizardModel wizardModel)
-        {
-            try
+            var tenant = _tenantManager.GetCurrentTenant();
+            var settings = _settingsManager.Load<WizardSettings>();
+            if (settings.Completed)
             {
-                var (email, passwordHash, lng, timeZone, promocode, amiid, subscribeFromSite) = wizardModel;
+                throw new Exception("Wizard passed.");
+            }
 
-                var tenant = TenantManager.GetCurrentTenant();
-                var settings = SettingsManager.Load<WizardSettings>();
-                if (settings.Completed)
-                {
-                    throw new Exception("Wizard passed.");
-                }
+            if (!string.IsNullOrEmpty(_setupInfo.AmiMetaUrl) && IncorrectAmiId(amiid))
+            {
+                //throw new Exception(Resource.EmailAndPasswordIncorrectAmiId); TODO
+            }
 
-                if (!string.IsNullOrEmpty(SetupInfo.AmiMetaUrl) && IncorrectAmiId(amiid))
-                {
-                    //throw new Exception(Resource.EmailAndPasswordIncorrectAmiId); TODO
-                }
-
+            if (tenant.OwnerId == Guid.Empty)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(6)); // wait cache interval
+                tenant = _tenantManager.GetTenant(tenant.Id);
                 if (tenant.OwnerId == Guid.Empty)
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(6)); // wait cache interval
-                    tenant = TenantManager.GetTenant(tenant.TenantId);
-                    if (tenant.OwnerId == Guid.Empty)
-                    {
-                        Log.Error(tenant.TenantId + ": owner id is empty.");
-                    }
+                    _log.ErrorOwnerEmpty(tenant.Id);
                 }
-
-                var currentUser = UserManager.GetUsers(TenantManager.GetCurrentTenant().OwnerId);
-
-                if (!UserManagerWrapper.ValidateEmail(email))
-                {
-                    throw new Exception(Resource.EmailAndPasswordIncorrectEmail);
-                }
-
-                if (string.IsNullOrEmpty(passwordHash))
-                    throw new Exception(Resource.ErrorPasswordEmpty);
-
-                SecurityContext.SetUserPasswordHash(currentUser.ID, passwordHash);
-
-                email = email.Trim();
-                if (currentUser.Email != email)
-                {
-                    currentUser.Email = email;
-                    currentUser.ActivationStatus = EmployeeActivationStatus.NotActivated;
-                }
-                UserManager.SaveUserInfo(currentUser);
-
-                if (!string.IsNullOrWhiteSpace(promocode))
-                {
-                    try
-                    {
-                        PaymentManager.ActivateKey(promocode);
-                    }
-                    catch (Exception err)
-                    {
-                        Log.Error("Incorrect Promo: " + promocode, err);
-                        throw new Exception(Resource.EmailAndPasswordIncorrectPromocode);
-                    }
-                }
-
-                if (RequestLicense)
-                {
-                    TariffSettings.SetLicenseAccept(SettingsManager);
-                    MessageService.Send(MessageAction.LicenseKeyUploaded);
-
-                    LicenseReader.RefreshLicense();
-                }
-
-                settings.Completed = true;
-                SettingsManager.Save(settings);
-
-                TrySetLanguage(tenant, lng);
-
-                tenant.TimeZone = TimeZoneConverter.GetTimeZone(timeZone).Id;
-
-                TenantManager.SaveTenant(tenant);
-
-                StudioNotifyService.SendCongratulations(currentUser);
-                StudioNotifyService.SendRegData(currentUser);
-
-                if (subscribeFromSite && TenantExtra.Opensource && !CoreBaseSettings.CustomMode)
-                {
-                    SubscribeFromSite(currentUser);
-                }
-
-                return settings;
             }
-            catch (BillingNotFoundException)
-            {
-                throw new Exception(UserControlsCommonResource.LicenseKeyNotFound);
-            }
-            catch (BillingNotConfiguredException)
-            {
-                throw new Exception(UserControlsCommonResource.LicenseKeyNotCorrect);
-            }
-            catch (BillingException)
-            {
-                throw new Exception(UserControlsCommonResource.LicenseException);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-                throw;
-            }
-        }
 
-        public bool RequestLicense
-        {
-            get
+            var currentUser = _userManager.GetUsers(_tenantManager.GetCurrentTenant().OwnerId);
+
+            if (!UserManagerWrapper.ValidateEmail(email))
             {
-                return TenantExtra.EnableTariffSettings && TenantExtra.Enterprise
-                    && !File.Exists(LicenseReader.LicensePath);
+                throw new Exception(Resource.EmailAndPasswordIncorrectEmail);
             }
-        }
 
-        private void TrySetLanguage(Tenant tenant, string lng)
-        {
-            if (string.IsNullOrEmpty(lng)) return;
-
-            try
+            if (string.IsNullOrEmpty(passwordHash))
             {
-                var culture = CultureInfo.GetCultureInfo(lng);
-                tenant.Language = culture.Name;
+                throw new Exception(Resource.ErrorPasswordEmpty);
             }
-            catch (Exception err)
+
+            _securityContext.SetUserPasswordHash(currentUser.Id, passwordHash);
+
+            email = email.Trim();
+            if (currentUser.Email != email)
             {
-                Log.Error(err);
+                currentUser.Email = email;
+                currentUser.ActivationStatus = EmployeeActivationStatus.NotActivated;
             }
-        }
+            _userManager.SaveUserInfo(currentUser);
 
-        private static string _amiId;
-
-        private bool IncorrectAmiId(string customAmiId)
-        {
-            customAmiId = (customAmiId ?? "").Trim();
-            if (string.IsNullOrEmpty(customAmiId)) return true;
-
-            if (string.IsNullOrEmpty(_amiId))
+            if (!string.IsNullOrWhiteSpace(promocode))
             {
-                var getAmiIdUrl = SetupInfo.AmiMetaUrl + "instance-id";
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri(getAmiIdUrl);
-
                 try
                 {
-                    var httpClient = ClientFactory.CreateClient();
-                    using (var response = httpClient.Send(request))
-                    using (var responseStream = response.Content.ReadAsStream())
-                    using (var reader = new StreamReader(responseStream))
-                    {
-                        _amiId = reader.ReadToEnd();
-                    }
-
-                    Log.Debug("Instance id: " + _amiId);
+                    _paymentManager.ActivateKey(promocode);
                 }
-                catch (Exception e)
+                catch (Exception err)
                 {
-                    Log.Error("Request AMI id", e);
+                    _log.ErrorIncorrectPromo(promocode, err);
+                    throw new Exception(Resource.EmailAndPasswordIncorrectPromocode);
                 }
             }
 
-            return string.IsNullOrEmpty(_amiId) || _amiId != customAmiId;
+            if (RequestLicense)
+            {
+                TariffSettings.SetLicenseAccept(_settingsManager);
+                _messageService.Send(MessageAction.LicenseKeyUploaded);
+
+                _licenseReader.RefreshLicense();
+            }
+
+            settings.Completed = true;
+            _settingsManager.Save(settings);
+
+            TrySetLanguage(tenant, lng);
+
+            tenant.TimeZone = _timeZoneConverter.GetTimeZone(timeZone).Id;
+
+            _tenantManager.SaveTenant(tenant);
+
+            _studioNotifyService.SendCongratulations(currentUser);
+            _studioNotifyService.SendRegData(currentUser);
+
+            if (subscribeFromSite && _tenantExtra.Opensource && !_coreBaseSettings.CustomMode)
+            {
+                SubscribeFromSite(currentUser);
+            }
+
+            return settings;
+        }
+        catch (BillingNotFoundException)
+        {
+            throw new Exception(UserControlsCommonResource.LicenseKeyNotFound);
+        }
+        catch (BillingNotConfiguredException)
+        {
+            throw new Exception(UserControlsCommonResource.LicenseKeyNotCorrect);
+        }
+        catch (BillingException)
+        {
+            throw new Exception(UserControlsCommonResource.LicenseException);
+        }
+        catch (Exception ex)
+        {
+            _log.ErrorFirstTimeTenantSettings(ex);
+            throw;
+        }
+    }
+
+    public bool RequestLicense
+    {
+        get
+        {
+            return _tenantExtra.EnableTariffSettings && _tenantExtra.Enterprise
+                && !File.Exists(_licenseReader.LicensePath);
+        }
+    }
+
+    private void TrySetLanguage(Tenant tenant, string lng)
+    {
+        if (string.IsNullOrEmpty(lng))
+        {
+            return;
         }
 
-        private void SubscribeFromSite(UserInfo user)
+        try
         {
+            var culture = CultureInfo.GetCultureInfo(lng);
+            tenant.Language = culture.Name;
+        }
+        catch (Exception err)
+        {
+            _log.ErrorTrySetLanguage(err);
+        }
+    }
+
+    private static string _amiId;
+
+    private bool IncorrectAmiId(string customAmiId)
+    {
+        customAmiId = (customAmiId ?? "").Trim();
+        if (string.IsNullOrEmpty(customAmiId))
+        {
+            return true;
+        }
+
+        if (string.IsNullOrEmpty(_amiId))
+        {
+            var getAmiIdUrl = _setupInfo.AmiMetaUrl + "instance-id";
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(getAmiIdUrl)
+            };
+
             try
             {
-                var url = (SetupInfo.TeamlabSiteRedirect ?? "").Trim().TrimEnd('/');
+                var httpClient = _clientFactory.CreateClient();
+                using (var response = httpClient.Send(request))
+                using (var responseStream = response.Content.ReadAsStream())
+                using (var reader = new StreamReader(responseStream))
+                {
+                    _amiId = reader.ReadToEnd();
+                }
 
-                if (string.IsNullOrEmpty(url)) return;
-
-                url += "/post.ashx";
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri(url);
-                var values = new NameValueCollection
-                        {
-                            { "type", "sendsubscription" },
-                            { "subscr_type", "Opensource" },
-                            { "email", user.Email }
-                        };
-                var data = JsonSerializer.Serialize(values);
-                request.Content = new StringContent(data);
-
-                var httpClient = ClientFactory.CreateClient();
-                using var response = httpClient.Send(request);
-
-                Log.Debug("Subscribe response: " + response);//toto write
-
+                _log.DebugInstanceId(_amiId);
             }
             catch (Exception e)
             {
-                Log.Error("Subscribe request", e);
+                _log.ErrorRequestAMIId(e);
             }
+        }
+
+        return string.IsNullOrEmpty(_amiId) || _amiId != customAmiId;
+    }
+
+    private void SubscribeFromSite(UserInfo user)
+    {
+        try
+        {
+            var url = (_setupInfo.TeamlabSiteRedirect ?? "").Trim().TrimEnd('/');
+
+            if (string.IsNullOrEmpty(url))
+            {
+                return;
+            }
+
+            url += "/post.ashx";
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(url)
+            };
+            var values = new NameValueCollection
+                    {
+                        { "type", "sendsubscription" },
+                        { "subscr_type", "Opensource" },
+                        { "email", user.Email }
+                    };
+            var data = JsonSerializer.Serialize(values);
+            request.Content = new StringContent(data);
+
+            var httpClient = _clientFactory.CreateClient();
+            using var response = httpClient.Send(request);
+
+            _log.DebugSubscribeResponse(response);//toto write
+
+        }
+        catch (Exception e)
+        {
+            _log.ErrorSubscribeRequest(e);
         }
     }
 }

@@ -18,19 +18,18 @@ export default function withFileActions(WrappedFileItem) {
       const { onSelectItem, item } = this.props;
       const { id, isFolder } = item;
 
-      id !== -1 && onSelectItem({ id, isFolder });
+      id !== -1 && onSelectItem({ id, isFolder }, true, false);
     };
 
-    onFileContextClick = (isSingleFile) => {
+    onFileContextClick = (withSelect) => {
       const { onSelectItem } = this.props;
       const { id, isFolder } = this.props.item;
 
-      id !== -1 &&
-        onSelectItem({ id, isFolder }, false, !isSingleFile || isMobile);
+      id !== -1 && onSelectItem({ id, isFolder }, false, false, !withSelect);
     };
 
     onHideContextMenu = () => {
-      //this.props.setBufferSelection(null);
+      //this.props.setSelected("none");
       this.props.setEnabledHotkeys(true);
     };
 
@@ -173,9 +172,7 @@ export default function withFileActions(WrappedFileItem) {
         draggable,
         allowShareIn,
         isPrivacy,
-        actionType,
-        actionExtension,
-        actionId,
+
         sectionWidth,
         checked,
         dragging,
@@ -186,9 +183,6 @@ export default function withFileActions(WrappedFileItem) {
         canViewedDocs,
       } = this.props;
       const { fileExst, access, id } = item;
-
-      const isEdit =
-        actionType !== null && actionId === id && fileExst === actionExtension;
 
       const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
@@ -210,13 +204,12 @@ export default function withFileActions(WrappedFileItem) {
 
       const showShare =
         !isShareable ||
-        isEdit ||
         (isPrivacy && (!isDesktop || !fileExst)) ||
         (personal && !canWebEdit && !canViewedDocs)
           ? false
           : true;
 
-      const checkedProps = isEdit || id <= 0 ? false : checked;
+      const checkedProps = id <= 0 ? false : checked;
 
       return (
         <WrappedFileItem
@@ -236,7 +229,6 @@ export default function withFileActions(WrappedFileItem) {
           showShare={showShare}
           checkedProps={checkedProps}
           dragging={dragging}
-          isEdit={isEdit}
           getContextModel={this.getContextModel}
           {...this.props}
         />
@@ -278,7 +270,7 @@ export default function withFileActions(WrappedFileItem) {
         selection,
         setTooltipPosition,
         setStartDrag,
-        fileActionStore,
+
         getFolderInfo,
         viewAs,
         bufferSelection,
@@ -287,17 +279,16 @@ export default function withFileActions(WrappedFileItem) {
         activeFiles,
         activeFolders,
         setEnabledHotkeys,
+        setSelected,
       } = filesStore;
 
       const { startUpload } = uploadDataStore;
-      const { type, extension, id } = fileActionStore;
 
       const selectedItem = selection.find(
         (x) => x.id === item.id && x.fileExst === item.fileExst
       );
 
-      const draggable =
-        !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
+      const draggable = !isRecycleBinFolder && selectedItem;
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
       const canWebEdit = settingsStore.canWebEdit(item.fileExst);
@@ -338,9 +329,7 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         isFolder,
         allowShareIn: filesStore.canShare,
-        actionType: type,
-        actionExtension: extension,
-        actionId: id,
+
         checked: !!selectedItem,
         //parentFolder: selectedFolderStore.parentId,
         setParentId: selectedFolderStore.setParentId,
@@ -360,6 +349,7 @@ export default function withFileActions(WrappedFileItem) {
         showHotkeyBorder,
         openFileAction,
         setEnabledHotkeys,
+        setSelected,
       };
     }
   )(observer(WithFileActions));

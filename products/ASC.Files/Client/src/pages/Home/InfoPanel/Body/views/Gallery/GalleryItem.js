@@ -27,7 +27,8 @@ const SingleItem = (props) => {
   const thumbnailBlank = getIcon(96, ".docxf");
 
   const thumbnailUrl =
-    selectedItem.attributes.template_image.data.attributes.formats.small.url;
+    selectedItem?.attributes?.template_image?.data.attributes?.formats?.small
+      ?.url;
 
   return (
     <>
@@ -71,22 +72,6 @@ const SingleItem = (props) => {
             {selectedItem.attributes.file_pages}
           </Text>
         </div>
-        <Text
-          as="div"
-          fontSize="12px"
-          fontWeight={400}
-          className="oforms-description"
-        >
-          <Trans t={t} i18nKey="OFORMsDescription" ns="InfoPanel">
-            Fill out the form online and get a simple Design Project Proposal
-            ready, or just download the fillable template in the desirable
-            format: DOCXF, OFORM, or PDF.
-            <p className="oforms-description-text">
-              Propose a project or a series of projects to an freelance designer
-              team. Outline project and task structure, payments, and terms.
-            </p>
-          </Trans>
-        </Text>
       </StyledProperties>
     </>
   );

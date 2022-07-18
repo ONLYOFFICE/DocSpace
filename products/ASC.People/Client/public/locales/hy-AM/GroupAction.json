@@ -1,0 +1,8 @@
+{
+  "AddHeadOfDepartment": "Ավելացնել բաժնի պետ",
+  "CustomNewDepartment": "{{groupCaption}} (Ստեղծում)",
+  "GroupAction": "Խմբային գործողություն",
+  "Members": "Անդամներ",
+  "SearchAddedMembers": "Որոնեք ավելացված անդամներ",
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' հաջողությամբ պահպանվել է"
+}

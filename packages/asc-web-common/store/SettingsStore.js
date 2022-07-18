@@ -16,6 +16,8 @@ const themes = {
   Base: Base,
 };
 
+const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
+
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
@@ -27,9 +29,16 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = Base;
+  theme = isDesktopEditors
+    ? window.RendererProcessVariable?.theme?.type === "dark"
+      ? Dark
+      : Base
+    : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
+  ipRestrictionEnable = false;
+  ipRestrictions = [];
+  sessionLifetime = "1440";
   timezone = "UTC";
   timezones = [];
   tenantAlias = "";
@@ -66,7 +75,7 @@ class SettingsStore {
     guestCaption: "Guest",
     guestsCaption: "Guests",
   };
-  isDesktopClient = window["AscDesktopEditor"] !== undefined;
+  isDesktopClient = isDesktopEditors;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
@@ -466,6 +475,47 @@ class SettingsStore {
 
   setTenantAlias = (tenantAlias) => {
     this.tenantAlias = tenantAlias;
+  };
+
+  getIpRestrictions = async () => {
+    const res = await api.settings.getIpRestrictions();
+    this.ipRestrictions = res?.map((el) => el.ip);
+  };
+
+  setIpRestrictions = async (ips) => {
+    const data = {
+      ips: ips,
+    };
+    const res = await api.settings.setIpRestrictions(data);
+    this.ipRestrictions = res;
+  };
+
+  getIpRestrictionsEnable = async () => {
+    const res = await api.settings.getIpRestrictionsEnable();
+    this.ipRestrictionEnable = res.enable;
+  };
+
+  setIpRestrictionsEnable = async (enable) => {
+    const data = {
+      enable: enable,
+    };
+    const res = await api.settings.setIpRestrictionsEnable(data);
+    this.ipRestrictionEnable = res.enable;
+  };
+
+  setMessageSettings = async (turnOn) => {
+    await api.settings.setMessageSettings(turnOn);
+    this.enableAdmMess = turnOn;
+  };
+
+  getSessionLifetime = async () => {
+    const res = await api.settings.getCookieSettings();
+    this.sessionLifetime = res;
+  };
+
+  setSessionLifetimeSettings = async (lifeTime) => {
+    const res = await api.settings.setCookieSettings(lifeTime);
+    this.sessionLifetime = lifeTime;
   };
 
   setIsBurgerLoading = (isBurgerLoading) => {

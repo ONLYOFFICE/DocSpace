@@ -238,19 +238,6 @@ Le lien est valide 7 jours seulement.
 
 Si vous ne voulez pas changer votre adresse mail, ignorez ce message. </value>
   </data>
-  <data name="pattern_change_password" xml:space="preserve">
-    <value>h1.Demande de changement de mot de passe pour le portail "${__VirtualRootPath}":"${__VirtualRootPath}"
-
-Il y a eu une demande pour changer votre mot de passe utilisé pour entrer au portail "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Veuillez suivre le lien ci-dessous pour modifier votre mot de passe:
-
-$GreenButton
-
-*Note*: ce lien est valable pour 7 jours seulement. Veuillez compléter le processus de changement de mot de passe au cours de cette période.
-
-Si vous ne voulez pas changer votre mot de passe ou recevez ce message par erreur, veuillez l'ignorer ou contacter l'administrateur de votre portail "${__VirtualRootPath}":"${__VirtualRootPath}" pour en savoir plus.</value>
-  </data>
   <data name="pattern_change_phone" xml:space="preserve">
     <value>h1.Demande de changement de téléphone mobile 
 
@@ -1007,20 +994,6 @@ Le lien est valide 7 jours seulement.
 
 Si vous ne voulez pas changer votre adresse mail, ignorez ce message.</value>
   </data>
-  <data name="pattern_personal_change_password" xml:space="preserve">
-    <value>Il y a eu une demande de modification du mot de passe utilisé pour accéder au portail "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Veuillez suivre le lien ci-dessous pour changer votre mot de passe:
-
-$GreenButton
-
-*Remarque*: ce lien est valide seulement pour 7 jours. Veuillez compléter le processus de changement de mot de passe au cours de cette période.
-
-Si vous ne souhaitez pas modifier votre mot de passe ou avez reçu cet e-mail par erreur, ignorez-le.
-
-Cordialement,
-L'équipe ONLYOFFICE</value>
-  </data>
   <data name="pattern_personal_confirmation" xml:space="preserve">
     <value>Bonjour,
 
@@ -1488,7 +1461,7 @@ Equipe ONLYOFFICE
     <value>Téléchargez les applications pour travailler sur les documents &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://www.onlyoffice.com/apps.aspx"&gt;en mode déconnecté&lt;/a&gt; aussi bien que sur les appareils &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://itunes.apple.com/us/app/onlyoffice-documents/id944896972"&gt;iOS&lt;/a&gt; et &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://play.google.com/store/apps/details?id=com.onlyoffice.documents"&gt;Android&lt;/a&gt;.</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_apps_hdr" xml:space="preserve">
-    <value>*Téléchargez les applications*</value>
+    <value>*Créez des formulaires à remplir*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_attach" xml:space="preserve">
     <value>Le module Documents est intégré avec d'autres modules ONLYOFFICE pour ne plus avoir à charger et télécharger les documents depuis d'autres endroits</value>
@@ -1506,7 +1479,7 @@ Equipe ONLYOFFICE
     <value>Créez des formulaires à remplir, partagez-les et remplissez-les.</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr" xml:space="preserve">
-    <value>*Créez des formulaires à remplir*</value>
+    <value>*Créez des formulaires d'aspect professionnel*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_differences" xml:space="preserve">
     <value>Identifiez rapidement les différence entre deux versions du même document grâce à l'outil Comparaison des documents.</value>
@@ -1736,9 +1709,6 @@ Le lien est valide pendant 7 jours.</value>
   <data name="subject_change_email_v115" xml:space="preserve">
     <value>Confirmez le changement de votre mail</value>
   </data>
-  <data name="subject_change_password" xml:space="preserve">
-    <value>Assistance avec les mots de passe ${LetterLogoText}</value>
-  </data>
   <data name="subject_change_phone" xml:space="preserve">
     <value>${LetterLogoText}. Demande de changement de téléphone mobile </value>
   </data>
@@ -1886,9 +1856,6 @@ Le lien est valide pendant 7 jours.</value>
   <data name="subject_personal_after_registration7" xml:space="preserve">
     <value>Connectez votre stockage cloud préféré à ONLYOFFICE</value>
   </data>
-  <data name="subject_personal_change_password" xml:space="preserve">
-    <value>Assistance du mot de passe ONLYOFFICE Personal</value>
-  </data>
   <data name="subject_personal_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Veuillez activer votre adresse mail</value>
   </data>
@@ -1942,7 +1909,7 @@ Le lien est valide pendant 7 jours.</value>
 </value>
   </data>
   <data name="subject_saas_admin_activation_v115" xml:space="preserve">
-    <value>Bienvenue dans ONLYOFFICE cloud!</value>
+    <value>Merci de confirmer votre adresse e-mail</value>
   </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Astuces pour le travail efficace</value>

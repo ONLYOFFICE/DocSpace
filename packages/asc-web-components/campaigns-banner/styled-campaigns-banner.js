@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Base from "../themes/base";
+import NoUserSelect from "../utils/commonStyles";
 
 const BannerWrapper = styled.div`
   max-width: 185px;
@@ -30,6 +31,10 @@ const BannerWrapper = styled.div`
 
   .banner-sub-header {
     line-height: 1.5;
+  }
+
+  .banner-img {
+    ${NoUserSelect}
   }
 
   .banner-btn {

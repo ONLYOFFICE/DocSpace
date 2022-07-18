@@ -12,12 +12,11 @@ import Box from "@appserver/components/box";
 import withLoader from "../withLoader";
 import toastr from "studio/toastr";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
-import { mobile, tablet } from "@appserver/components/utils/device";
+import { hugeMobile, tablet } from "@appserver/components/utils/device";
 import Link from "@appserver/components/link";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
-  width: 960px;
   display: flex;
   flex: 1fr 1fr;
   gap: 80px;
@@ -31,9 +30,9 @@ const StyledForm = styled(Box)`
     gap: 32px;
   }
 
-  @media ${mobile} {
-    margin: 72px 16px auto 8px;
-    width: 311px;
+  @media ${hugeMobile} {
+    margin-top: 72px;
+    width: 100%;
     flex: 1fr;
     flex-direction: column;
     gap: 0px;
@@ -43,6 +42,11 @@ const StyledForm = styled(Box)`
     @media ${tablet} {
       flex-direction: column;
     }
+  }
+
+  .set-app-description {
+    width: 100%;
+    max-width: 500px;
   }
 
   .set-app-title {
@@ -62,7 +66,7 @@ const StyledForm = styled(Box)`
     border-radius: 6px;
     margin-bottom: 32px;
 
-    @media ${mobile} {
+    @media ${hugeMobile} {
       display: none;
     }
   }
@@ -106,113 +110,95 @@ const TfaActivationForm = withLoader((props) => {
     if (target.code === "Enter" || target.code === "NumpadEnter") onSubmit();
   };
 
-  const width = window.innerWidth;
-
   return (
-    <Section>
-      <Section.SectionBody>
-        <StyledForm className="set-app-container">
-          <div>
-            <Box className="set-app-description" marginProp="0 0 32px 0">
-              <Text isBold fontSize="14px" className="set-app-title">
-                {t("SetAppTitle")}
-              </Text>
+    <StyledForm className="set-app-container">
+      <Box className="set-app-description" marginProp="0 0 32px 0">
+        <Text isBold fontSize="14px" className="set-app-title">
+          {t("SetAppTitle")}
+        </Text>
 
-              <Trans t={t} i18nKey="SetAppDescription" ns="Confirm">
-                The two-factor authentication is enabled to provide additional
-                portal security. Configure your authenticator application to
-                continue work on the portal. For example you could use Google
-                Authenticator for
-                <Link isHovered href={props.tfaAndroidAppUrl} target="_blank">
-                  Android
-                </Link>
-                and{" "}
-                <Link isHovered href={props.tfaIosAppUrl} target="_blank">
-                  iOS
-                </Link>{" "}
-                or Authenticator for{" "}
-                <Link isHovered href={props.tfaWinAppUrl} target="_blank">
-                  Windows Phone
-                </Link>{" "}
-                .
-              </Trans>
+        <Trans t={t} i18nKey="SetAppDescription" ns="Confirm">
+          The two-factor authentication is enabled to provide additional portal
+          security. Configure your authenticator application to continue work on
+          the portal. For example you could use Google Authenticator for
+          <Link isHovered href={props.tfaAndroidAppUrl} target="_blank">
+            Android
+          </Link>
+          and{" "}
+          <Link isHovered href={props.tfaIosAppUrl} target="_blank">
+            iOS
+          </Link>{" "}
+          or Authenticator for{" "}
+          <Link isHovered href={props.tfaWinAppUrl} target="_blank">
+            Windows Phone
+          </Link>{" "}
+          .
+        </Trans>
 
-              <Text className="set-app-text">
-                <Trans
-                  t={t}
-                  i18nKey="SetAppInstallDescription"
-                  ns="Confirm"
-                  key={secretKey}
-                >
-                  To connect your apllication scan the QR code or manually enter
-                  your secret key <strong>{{ secretKey }}</strong> then enter
-                  6-digit code from your application in the field below.
-                </Trans>
-              </Text>
-            </Box>
-          </div>
-          <div>
-            <Box
-              displayProp="flex"
-              flexDirection="column"
-              className="app-code-wrapper"
-            >
-              <div className="qrcode-wrapper">
-                <img
-                  src={qrCode}
-                  height="180px"
-                  width="180px"
-                  alt="QR-code"
-                ></img>
-              </div>
-              <Box className="app-code-input">
-                <FieldContainer
-                  labelVisible={false}
-                  hasError={error ? true : false}
-                  errorMessage={error}
-                >
-                  <TextInput
-                    id="code"
-                    name="code"
-                    type="text"
-                    size="large"
-                    scale
-                    isAutoFocussed
-                    tabIndex={1}
-                    placeholder={t("EnterCodePlaceholder")}
-                    isDisabled={isLoading}
-                    maxLength={6}
-                    onChange={(e) => {
-                      setCode(e.target.value);
-                      setError("");
-                    }}
-                    value={code}
-                    hasError={error ? true : false}
-                    onKeyDown={onKeyPress}
-                  />
-                </FieldContainer>
-              </Box>
-              <Box className="app-code-continue-btn">
-                <Button
-                  scale
-                  primary
-                  size="medium"
-                  tabIndex={3}
-                  label={
-                    isLoading
-                      ? t("Common:LoadingProcessing")
-                      : t("SetAppButton")
-                  }
-                  isDisabled={!code.length || isLoading}
-                  isLoading={isLoading}
-                  onClick={onSubmit}
-                />
-              </Box>
-            </Box>
-          </div>
-        </StyledForm>
-      </Section.SectionBody>
-    </Section>
+        <Text className="set-app-text">
+          <Trans
+            t={t}
+            i18nKey="SetAppInstallDescription"
+            ns="Confirm"
+            key={secretKey}
+          >
+            To connect your apllication scan the QR code or manually enter your
+            secret key <strong>{{ secretKey }}</strong> then enter 6-digit code
+            from your application in the field below.
+          </Trans>
+        </Text>
+      </Box>
+      <Box
+        displayProp="flex"
+        flexDirection="column"
+        className="app-code-wrapper"
+      >
+        <div className="qrcode-wrapper">
+          <img src={qrCode} height="180px" width="180px" alt="QR-code"></img>
+        </div>
+        <Box className="app-code-input">
+          <FieldContainer
+            labelVisible={false}
+            hasError={error ? true : false}
+            errorMessage={error}
+          >
+            <TextInput
+              id="code"
+              name="code"
+              type="text"
+              size="large"
+              scale
+              isAutoFocussed
+              tabIndex={1}
+              placeholder={t("EnterCodePlaceholder")}
+              isDisabled={isLoading}
+              maxLength={6}
+              onChange={(e) => {
+                setCode(e.target.value);
+                setError("");
+              }}
+              value={code}
+              hasError={error ? true : false}
+              onKeyDown={onKeyPress}
+            />
+          </FieldContainer>
+        </Box>
+        <Box className="app-code-continue-btn">
+          <Button
+            scale
+            primary
+            size="medium"
+            tabIndex={3}
+            label={
+              isLoading ? t("Common:LoadingProcessing") : t("SetAppButton")
+            }
+            isDisabled={!code.length || isLoading}
+            isLoading={isLoading}
+            onClick={onSubmit}
+          />
+        </Box>
+      </Box>
+    </StyledForm>
   );
 });
 
@@ -233,7 +219,7 @@ const TfaActivationWrapper = (props) => {
       setSecretKey(manualEntryKey);
       setQrCode(qrCodeSetupImageUrl);
     } catch (e) {
-      setError(e);
+      setError(e.error);
       toastr.error(e);
     }
 
@@ -244,7 +230,11 @@ const TfaActivationWrapper = (props) => {
   return error ? (
     <ErrorContainer bodyText={error} />
   ) : (
-    <TfaActivationForm secretKey={secretKey} qrCode={qrCode} {...props} />
+    <Section>
+      <Section.SectionBody>
+        <TfaActivationForm secretKey={secretKey} qrCode={qrCode} {...props} />
+      </Section.SectionBody>
+    </Section>
   );
 };
 

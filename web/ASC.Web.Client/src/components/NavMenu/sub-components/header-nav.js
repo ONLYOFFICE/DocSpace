@@ -26,6 +26,9 @@ const PROFILE_SELF_URL = combineUrl(
   "/products/people/view/@self"
 );
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
+const COMMUNITY_URL = "https://forum.onlyoffice.com/c/personal/43";
+const HELP_URL =
+  "https://helpcenter.onlyoffice.com/userguides/workspace-personal.aspx";
 
 const StyledNav = styled.nav`
   display: flex;
@@ -101,6 +104,14 @@ const HeaderNav = ({
     setHotkeyPanelVisible(true);
   }, []);
 
+  const onCommunityClick = useCallback(() => {
+    window.open(COMMUNITY_URL, "_blank");
+  }, []);
+
+  const onHelpClick = useCallback(() => {
+    window.open(HELP_URL, "_blank");
+  }, []);
+
   const onCloseDialog = () => setVisibleDialog(false);
   const onDebugClick = useCallback(() => {
     setVisibleDebugDialog(true);
@@ -140,7 +151,12 @@ const HeaderNav = ({
     let hotkeys = null;
     if (modules) {
       const moduleIndex = modules.findIndex((m) => m.appName === "files");
-      if (moduleIndex !== -1 && modules[moduleIndex].id === currentProductId) {
+
+      if (
+        moduleIndex !== -1 &&
+        modules[moduleIndex].id === currentProductId &&
+        !isMobile
+      ) {
         hotkeys = {
           key: "HotkeysBtn",
           label: t("Common:Hotkeys"),
@@ -149,6 +165,21 @@ const HeaderNav = ({
       }
     }
 
+    const communityForum = isPersonal
+      ? {
+          key: "CommunityBtn",
+          label: t("CommunityForum"),
+          onClick: onCommunityClick,
+        }
+      : null;
+
+    const helpCenter = isPersonal
+      ? {
+          key: "HelpBtn",
+          label: t("HelpCenter"),
+          onClick: onHelpClick,
+        }
+      : null;
     const actions = [
       {
         key: "ProfileBtn",
@@ -167,6 +198,8 @@ const HeaderNav = ({
         }),
       },
       hotkeys,
+      communityForum,
+      helpCenter,
       {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),

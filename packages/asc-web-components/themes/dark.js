@@ -611,7 +611,6 @@ const Dark = {
     button: {
       marginRight: "8px",
       maxWidth: "110px",
-      padding: "6px 8px 10px",
     },
 
     page: {
@@ -1348,7 +1347,7 @@ const Dark = {
     icon: {
       width: "16px",
       marginRight: "8px",
-      lineHeight: "14px",
+      lineHeight: "10px",
 
       color: grayMaxLight,
       disableColor: gray,
@@ -1927,7 +1926,7 @@ const Dark = {
 
   header: {
     backgroundColor: "#1f1f1f ",
-
+    recoveryColor: "#4C4C4C",
     linkColor: "#606060",
     productColor: "#eeeeee",
   },
@@ -2365,7 +2364,7 @@ const Dark = {
       borderBottom: "1px solid #474747",
       borderTop: "1px solid #474747",
       externalLinkBackground: "#292929",
-      externalLinkSvg: "#858585",
+      externalLinkSvg: "#eeeeee",
 
       internalLinkBorder: "1px dashed #eeeeee",
 
@@ -2491,6 +2490,10 @@ const Dark = {
       itemActiveBorder: "#eeeeee",
     },
 
+    row: {
+      itemBackground: globalColors.black,
+    },
+
     fill: "#858585",
     hoverFill: "#eeeeee",
   },
@@ -2525,8 +2528,8 @@ const Dark = {
 
     badge: {
       color: black,
-      stroke: "#474747",
-      fill: "#858585",
+      stroke: "#ADADAD",
+      fill: "#ADADAD",
       defaultFill: black,
       badgeFill: "#F58D31",
     },
@@ -2583,6 +2586,10 @@ const Dark = {
     changePassword: {
       linkColor: "#e06a1b",
     },
+  },
+
+  downloadDialog: {
+    background: "#282828",
   },
 
   studio: {
@@ -2723,6 +2730,12 @@ const Dark = {
     backgroundColor: "#333",
     textColor: "#E06A1B",
     bottomLineColor: "#E06A1B",
+  },
+
+  hotkeys: {
+    key: {
+      color: "#C4C4C4",
+    },
   },
 };
 

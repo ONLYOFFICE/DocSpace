@@ -577,17 +577,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Contraseña debe contener</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>La contraseña debe contener</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>dígitos</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>no hay espacios</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>caracteres especiales</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>letras mayúsculas</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>solo letras latinas</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Límite de solicitudes es excedido</value>

@@ -149,14 +149,6 @@ const StyledProperties = styled.div`
       font-size: 13px;
     }
   }
-
-  .oforms-description {
-    margin-top: 36px;
-
-    .oforms-description-text {
-      margin: 0;
-    }
-  }
 `;
 
 const StyledAccess = styled.div`

@@ -5,6 +5,7 @@
 	  <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
 	  <RazorCompileOnBuild>false</RazorCompileOnBuild>
 	  <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+	  <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyTitle>ASC.Files</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Files</Product>
@@ -18,12 +19,9 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
-    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
-    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<InternalsVisibleTo Include="ASC.Files.Tests" />
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\Core\ASC.Files.Core.csproj" />
@@ -605,6 +603,12 @@
     <None Update="DocStore\new\zh-CN\xlsx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\sample\de-DE\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\de-DE\my\ONLYOFFICE Sample Form.oform">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\sample\de-DE\my\ONLYOFFICE-Musteraudio.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -612,7 +616,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\de-DE\my\ONLYOFFICE-Musterpraesentation.pptx.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\de-DE\my\ONLYOFFICE-Musterpräsentation.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -627,6 +631,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Form.oform">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\en-US\my\ONLYOFFICE Sample Presentation.pptx">
@@ -644,6 +654,12 @@
     <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Document.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Form.oform">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\sample\es-ES\my\ONLYOFFICE Sample Presentation.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -657,6 +673,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Form.oform">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\fr-FR\my\ONLYOFFICE Sample Presentation.pptx">
@@ -674,6 +696,12 @@
     <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Document.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Form.oform">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DocStore\sample\it-IT\my\ONLYOFFICE Sample Presentation.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -687,6 +715,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Form Template.docxf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Form.oform">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DocStore\sample\ru-RU\my\ONLYOFFICE Sample Presentation.pptx">

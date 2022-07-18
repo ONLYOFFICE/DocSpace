@@ -34,15 +34,17 @@ const InfoPanelHeaderContent = ({
           isRootFolder={true}
           isInfoPanelVisible={true}
         >
-          <div className="info-panel-toggle-bg">
-            <IconButton
-              className="info-panel-toggle"
-              iconName="images/panel.react.svg"
-              size="16"
-              isFill={true}
-              onClick={closeInfoPanel}
-            />
-          </div>
+          {!(isTablet() || isMobile || isMobileUtils() || !isDesktop()) && (
+            <div className="info-panel-toggle-bg">
+              <IconButton
+                className="info-panel-toggle"
+                iconName="images/panel.react.svg"
+                size="16"
+                isFill={true}
+                onClick={closeInfoPanel}
+              />
+            </div>
+          )}
         </StyledInfoPanelToggleWrapper>
       </div>
 

@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 import styled from "styled-components";
 import Button from "../button";
-import { mobile, tablet } from "../utils/device";
+import { mobile, tablet, hugeMobile } from "../utils/device";
 import { Base } from "../themes";
+import { isChrome, browserVersion } from "react-device-detect";
 
 const StyledButton = styled(Button)`
   border: none;
@@ -60,6 +61,19 @@ const StyledButton = styled(Button)`
       flex-direction: column;
       gap: 0px;
     }
+
+    ${isChrome &&
+    browserVersion <= 85 &&
+    `
+    /* TODO: remove if editors core version 85+ */
+      > div {
+        margin-right: 8px;
+
+        @media ${tablet} {
+          margin-right: 0px;
+        }
+      }
+    `}
   }
 
   @media ${tablet} {
@@ -74,7 +88,7 @@ const StyledButton = styled(Button)`
     }
   }
 
-  @media ${mobile} {
+  @media ${mobile}, ${hugeMobile} {
     padding: 0 16px;
     height: 50px;
     font-size: 0;

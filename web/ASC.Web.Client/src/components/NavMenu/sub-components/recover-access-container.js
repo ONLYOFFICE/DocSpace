@@ -9,6 +9,7 @@ import UnionIcon from "../svg/union.react.svg";
 import RecoverAccessModalDialog from "./recover-access-modal-dialog";
 import { sendRecoverRequest } from "@appserver/common/api/settings/index";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { Base } from "@appserver/components/themes";
 
 const StyledUnionIcon = styled(UnionIcon)`
   ${commonIconsStyles}
@@ -16,6 +17,7 @@ const StyledUnionIcon = styled(UnionIcon)`
 
 const RecoverContainer = styled(Box)`
   cursor: pointer;
+  background-color: ${(props) => props.theme.header.recoveryColor};
 
   .recover-icon {
     @media (max-width: 450px) {
@@ -28,6 +30,8 @@ const RecoverContainer = styled(Box)`
     }
   }
 `;
+
+RecoverContainer.defaultProps = { theme: Base };
 
 const RecoverAccess = ({ t }) => {
   const [visible, setVisible] = useState(false);
@@ -88,7 +92,6 @@ const RecoverAccess = ({ t }) => {
         alignItems="center"
       >
         <RecoverContainer
-          backgroundProp="#27537F"
           heightProp="100%"
           displayProp="flex"
           onClick={onRecoverClick}

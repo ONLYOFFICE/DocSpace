@@ -235,7 +235,8 @@ class SettingsStore {
   isMediaOrImage = (fileExst) => {
     if (
       this.extsVideo.includes(fileExst) ||
-      this.extsImage.includes(fileExst)
+      this.extsImage.includes(fileExst) ||
+      this.extsAudio.includes(fileExst)
     ) {
       return true;
     }

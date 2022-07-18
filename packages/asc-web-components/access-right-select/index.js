@@ -20,6 +20,8 @@ const AccessRightSelect = ({
   onSelect,
   advancedOptions,
   selectedOption,
+  isExternalLink,
+  isPersonal,
   ...props
 }) => {
   const [currentItem, setCurrentItem] = useState(selectedOption);
@@ -97,6 +99,8 @@ const AccessRightSelect = ({
           label: currentItem?.title,
         }}
         size="content"
+        isExternalLink={isExternalLink}
+        isPersonal={isPersonal}
       />
     </StyledAccessRightWrapper>
   );
@@ -111,6 +115,8 @@ AccessRightSelect.propTypes = {
   advancedOptions: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   /** The option that is selected by default */
   selectedOption: PropTypes.object,
+  isExternalLink: PropTypes.bool,
+  isPersonal: PropTypes.bool,
 };
 
 export default React.memo(AccessRightSelect);

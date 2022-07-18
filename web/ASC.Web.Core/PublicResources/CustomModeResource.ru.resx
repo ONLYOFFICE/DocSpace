@@ -152,20 +152,6 @@ $GreenButton
 
 Не хотите менять адрес электронной почты? Просто проигнорируйте это сообщение.</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Был получен запрос на смену пароля, который Вы используете для входа на портал "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Пожалуйста, перейдите по ссылке ниже, чтобы сменить Ваш пароль:
-
-$GreenButton
-
-*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните смену пароля в течение этого времени.
-
-Если Вы не хотите менять Ваш пароль или получили это письмо по ошибке, пожалуйста, проигнорируйте его.
-
-С уважением,
-Команда Р7-Офис</value>
-  </data>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Здравствуйте,
 
@@ -220,12 +206,6 @@ $GreenButton
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Добро пожаловать в ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Работайте над документами совместно в тестовом облаке Р7-Офис</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Р7-Офис. Помощь с паролем</value>
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Р7-Офис. Пожалуйста, активируйте Ваш адрес электронной почты</value>

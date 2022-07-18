@@ -11,7 +11,11 @@ import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import toastr from "studio/toastr";
 import withLoader from "../withLoader";
-import { mobile, tablet } from "@appserver/components/utils/device";
+import {
+  hugeMobile,
+  smallTablet,
+  tablet,
+} from "@appserver/components/utils/device";
 
 const StyledForm = styled(Box)`
   margin: 63px auto;
@@ -24,9 +28,15 @@ const StyledForm = styled(Box)`
     margin: 120px auto;
     width: 480px;
   }
-  @media ${mobile} {
-    margin: 72px 16px auto 8px;
-    width: 311px;
+
+  @media ${smallTablet} {
+    width: 400px;
+  }
+
+  @media ${hugeMobile} {
+    margin: 72px 8px auto 8px;
+    padding: 16px;
+    width: 100%;
   }
 
   .app-code-wrapper {

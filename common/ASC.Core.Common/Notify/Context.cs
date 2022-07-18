@@ -1,147 +1,81 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Notify;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Notify.Channels;
-using ASC.Notify.Engine;
-using ASC.Notify.Model;
-using ASC.Notify.Sinks;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Notify
+[Singletone]
+public sealed class Context : INotifyRegistry
 {
-    [Singletone]
-    public sealed class Context : INotifyRegistry
+    public const string SysRecipient = "_#" + SysRecipientId + "#_";
+    internal const string SysRecipientId = "SYS_RECIPIENT_ID";
+    internal const string SysRecipientName = "SYS_RECIPIENT_NAME";
+    internal const string SysRecipientAddress = "SYS_RECIPIENT_ADDRESS";
+
+    private readonly Dictionary<string, ISenderChannel> _channels = new Dictionary<string, ISenderChannel>(2);
+    private readonly ILoggerProvider _options;
+
+    public event Action<Context, INotifyClient> NotifyClientRegistration;
+
+    public Context(ILoggerProvider options)
     {
-        public const string SYS_RECIPIENT_ID = "_#" + _SYS_RECIPIENT_ID + "#_";
-        internal const string _SYS_RECIPIENT_ID = "SYS_RECIPIENT_ID";
-        internal const string _SYS_RECIPIENT_NAME = "SYS_RECIPIENT_NAME";
-        internal const string _SYS_RECIPIENT_ADDRESS = "SYS_RECIPIENT_ADDRESS";
+        _options = options;
+    }
 
-        private readonly Dictionary<string, ISenderChannel> channels = new Dictionary<string, ISenderChannel>(2);
-
-
-        public NotifyEngine NotifyEngine
+    public void RegisterSender(DispatchEngine dispatchEngine, string senderName, ISink senderSink)
+    {
+        lock (_channels)
         {
-            get;
-            private set;
+            _channels[senderName] = new SenderChannel(dispatchEngine, senderName, null, senderSink);
         }
+    }
 
-        public INotifyRegistry NotifyService
+    public void UnregisterSender(string senderName)
+    {
+        lock (_channels)
         {
-            get { return this; }
+            _channels.Remove(senderName);
         }
+    }
 
-        public DispatchEngine DispatchEngine
+    public ISenderChannel GetSender(string senderName)
+    {
+        lock (_channels)
         {
-            get;
-            private set;
+            _channels.TryGetValue(senderName, out var channel);
+
+            return channel;
         }
+    }
 
+    public INotifyClient RegisterClient(NotifyEngineQueue notifyEngineQueue, INotifySource source)
+    {
+        //ValidateNotifySource(source);
+        var client = new NotifyClientImpl(_options, notifyEngineQueue, source);
+        NotifyClientRegistration?.Invoke(this, client);
 
-        public event Action<Context, INotifyClient> NotifyClientRegistration;
-
-        private ILog Log { get; set; }
-
-        public Context(IServiceProvider serviceProvider)
-        {
-            var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
-            Log = options.CurrentValue;
-            NotifyEngine = new NotifyEngine(this, serviceProvider);
-            DispatchEngine = new DispatchEngine(this, serviceProvider.GetService<IConfiguration>(), options);
-        }
-
-
-        void INotifyRegistry.RegisterSender(string senderName, ISink senderSink)
-        {
-            lock (channels)
-            {
-                channels[senderName] = new SenderChannel(this, senderName, null, senderSink);
-            }
-        }
-
-        void INotifyRegistry.UnregisterSender(string senderName)
-        {
-            lock (channels)
-            {
-                channels.Remove(senderName);
-            }
-        }
-
-        ISenderChannel INotifyRegistry.GetSender(string senderName)
-        {
-            lock (channels)
-            {
-                channels.TryGetValue(senderName, out var channel);
-                return channel;
-            }
-        }
-
-        INotifyClient INotifyRegistry.RegisterClient(INotifySource source, IServiceScope serviceScope)
-        {
-            //ValidateNotifySource(source);
-            var client = new NotifyClientImpl(this, source, serviceScope);
-            NotifyClientRegistration?.Invoke(this, client);
-            return client;
-        }
-
-
-        private void ValidateNotifySource(INotifySource source)
-        {
-            foreach (var a in source.GetActionProvider().GetActions())
-            {
-                IEnumerable<string> senderNames;
-                lock (channels)
-                {
-                    senderNames = channels.Values.Select(s => s.SenderName);
-                }
-                foreach (var s in senderNames)
-                {
-                    try
-                    {
-                        var pattern = source.GetPatternProvider().GetPattern(a, s);
-                        if (pattern == null)
-                        {
-                            throw new NotifyException($"In notify source {source.ID} pattern not found for action {a.ID} and sender {s}");
-                        }
-                    }
-                    catch (Exception error)
-                    {
-                        Log.ErrorFormat("Source: {0}, action: {1}, sender: {2}, error: {3}", source.ID, a.ID, s, error);
-                    }
-                }
-            }
-        }
+        return client;
     }
 }

@@ -106,11 +106,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CRMTaskResource.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\CRMVoipResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CRMVoipResource.resx</DependentUpon>
-    </Compile>
     <Compile Update="Services\NotifyService\CRMPatternResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -166,10 +161,6 @@
     <EmbeddedResource Update="Resources\CRMTaskResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CRMTaskResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\CRMVoipResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>CRMVoipResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Services\NotifyService\CRMPatternResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

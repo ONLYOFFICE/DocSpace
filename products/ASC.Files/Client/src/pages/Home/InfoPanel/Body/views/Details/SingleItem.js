@@ -167,6 +167,9 @@ const SingleItem = (props) => {
         },
       ];
 
+      if (item.providerKey && item.isFolder)
+        result = result.filter((x) => x.id !== "Size");
+
       if (dontShowOwner) result.shift();
       if (item.isFolder) return result;
 

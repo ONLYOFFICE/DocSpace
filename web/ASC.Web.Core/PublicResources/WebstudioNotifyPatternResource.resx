@@ -239,30 +239,6 @@ The link is valid for 7 days.
 
 Don’t want to change your email? Just ignore this message.</value>
   </data>
-  <data name="pattern_change_password" xml:space="preserve">
-    <value>h1.Password change request for the "${__VirtualRootPath}":"${__VirtualRootPath}" portal
-
-There has been a request to change your password used to enter the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
-
-Please follow the link below to change your password:
-
-$GreenButton
-
-*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-
-If you do not want to change your password or received this email by mistake, please ignore it or contact your "${__VirtualRootPath}":"${__VirtualRootPath}" portal administrator to find out the details.</value>
-  </data>
-  <data name="pattern_change_phone" xml:space="preserve">
-    <value>h1.Mobile phone change request
-
-You have requested to change your mobile phone used to enter the ${LetterLogoText} portal.
-
-Please follow the link below to change your mobile phone:
-
-$GreenButton
-
-If you do not want to change your mobile phone or received this email by mistake, please ignore it or contact your portal administrator to find out the details.</value>
-  </data>
   <data name="pattern_change_tfa" xml:space="preserve">
     <value>h1.Security notification
 
@@ -322,7 +298,7 @@ $TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $Tabl
 
 Configure Right Now
 $GreenButton
-
+   
 Done. It's time to invite teammates to your web-office!
 
 More information in our "Help Center":"${__HelpLink}".</value>
@@ -378,7 +354,7 @@ Please note that your ONLYOFFICE subscription is about to expire in a week. To e
 Click on the link below to start the renewal process:
 "Pricing page":"$PricingPage"
 
-For any further ONLYOFFICE installation, activation and technical support issues, please contact our support team at "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
+For any further ONLYOFFICE installation, activation and technical support issues, please contact our support team  at "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
   </data>
   <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
     <value>Hello, $UserName!
@@ -608,7 +584,7 @@ $GreenButton
 
 The link is only valid for 7 days.
 
-You will get more tips on how to use your we-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
+You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
   </data>
   <data name="pattern_enterprise_whitelabel_user_welcome_v10" xml:space="preserve">
     <value>Hello, $UserName!
@@ -1030,20 +1006,6 @@ The link is valid for 7 days.
 
 Don’t want to change your email? Just ignore this message.</value>
   </data>
-  <data name="pattern_personal_change_password" xml:space="preserve">
-    <value>There has been a request to change your password used to enter the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
-
-Please follow the link below to change your password:
-
-$GreenButton
-
-*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-
-If you do not want to change your password or received this email by mistake, please ignore it.
-
-Sincerely,
-ONLYOFFICE team</value>
-  </data>
   <data name="pattern_personal_confirmation" xml:space="preserve">
     <value>Hello,
 
@@ -1057,7 +1019,7 @@ ONLYOFFICE team</value>
   <data name="pattern_personal_profile_delete" xml:space="preserve">
     <value>You have requested a termination of your account at personal.onlyoffice.com. Follow the link to complete the request (the link is active for a 7-day period): 
 
-Confirm account termination
+$GreenButton
 
 *Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our "Privacy statement":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
 
@@ -1359,7 +1321,7 @@ ONLYOFFICE Team
   <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Hello, $UserName!
 
-We have prepared several tips to make your work with ONLYOFFICE more comfortable.
+We have prepared several tips to make your work with ONLYOFFICE  more comfortable.
 
 *#1 Get quick answers*
 Browse "Help Center":"${__HelpLink}" when you are not sure how to perform your task. Contact "our support team":"https://helpdesk.onlyoffice.com" if you face tech problems.
@@ -1374,7 +1336,7 @@ You’ll get notified about shared docs, projects updates, and your colleagues b
 To ensure your quick start with ONLYOFFICE, we provide training courses on how to use all the modules and features. "Learn more":"https://www.onlyoffice.com/training-courses.aspx".
 
 *#5 Consider VIP cloud*
-VIP cloud is offered to those who need enterprise-grade security and scalability:
+VIP cloud is offered to those who need enterprise-grade security and scalability: 
 ·	Dedicated server from a European provider. 
 ·	Multitenancy: separate portals for company branches.
 ·	Encryption at rest and encrypted collaboration via Private Rooms.
@@ -1471,7 +1433,7 @@ ONLYOFFICE Team
 
 The trial period for your portal at "${__VirtualRootPath}":"${__VirtualRootPath}" is due to expire today. To continue using ONLYOFFICE Business, "buy subscription":"$PricingPage".
 
-To extend your trial, contact our "sales team":"mailto:sales@onlyoffice.com".
+To extend your trial, contact our "sales team":"mailto:sales@onlyoffice.com". 
 
 You can switch to free Startup plan on "Payments page":"$PricingPage". Free plan has up to 10 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. "Compare plans":"https://www.onlyoffice.com/saas.aspx"
 
@@ -1571,11 +1533,11 @@ ONLYOFFICE Team
 Test ONLYOFFICE Business cloud for 30 days for free:
 
 # *Edit unlimited number of docs*, sheets, slides, and forms simultaneously.
-# *Customize your online office* style to match your branding. 
+# *Customize your online office* style to match your branding.
 # *Ensure security:* enable 2FA, configure automatic backups, track user actions.
 # *Integrate with your infrastructure:* use LDAP, SSO, and your domain name for portal address.
 # *Connect apps for productive work:* Twilio, DocuSign, etc.
- 
+
 If you need instructions on configuring/using ONLYOFFICE, visit our "Help Center":"${__HelpLink}".
 
 You can purchase subscription on "Payments page":"$PricingPage" or ask us to extend your trial if you need more time for testing.
@@ -1600,7 +1562,7 @@ ONLYOFFICE Team
   <data name="pattern_saas_guest_welcome_v115" xml:space="preserve">
     <value>Hello, $UserName!
 
-Your guest profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
+Your guest profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}".  Now you can:
 
 1. Edit your "profile":"$MyStaffLink".
 2. View and comment the content available in the "Community":"${__VirtualRootPath}/Products/Community/" and "Projects":"${__VirtualRootPath}/Products/Projects/".
@@ -1765,9 +1727,6 @@ The link is only valid for 7 days.</value>
   <data name="subject_change_email_v115" xml:space="preserve">
     <value>Confirm changing your email</value>
   </data>
-  <data name="subject_change_password" xml:space="preserve">
-    <value>${LetterLogoText} password assistance</value>
-  </data>
   <data name="subject_change_phone" xml:space="preserve">
     <value>${LetterLogoText}. Mobile phone change request</value>
   </data>
@@ -1915,12 +1874,6 @@ The link is only valid for 7 days.</value>
   <data name="subject_personal_after_registration7" xml:space="preserve">
     <value>Connect your favorite cloud storage to ONLYOFFICE</value>
   </data>
-  <data name="subject_personal_already_exist" xml:space="preserve">
-    <value>Log in to your ONLYOFFICE Personal account</value>
-  </data>
-  <data name="subject_personal_change_password" xml:space="preserve">
-    <value>ONLYOFFICE Personal password assistance</value>
-  </data>
   <data name="subject_personal_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Please activate your email address</value>
   </data>
@@ -2049,5 +2002,29 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>You’re invited to join ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
+
+$GreenButton
+
+The link is valid for 7 days.
+
+Don’t want to change your password? Just ignore this message&lt;/value&gt;
+  &lt;/data&gt;
+  &lt;data name="pattern_personal_change_password_v115" xml:space="preserve"&gt;
+    &lt;value&gt;Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
+
+$GreenButton 
+
+The link is valid for 7 days.
+
+Don’t want to change your password? Just ignore this message.</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Confirm changing your password</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Confirm Room Invite</value>
   </data>
 </root>

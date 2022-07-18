@@ -33,7 +33,6 @@ using System.Text;
 using System.Text.Json;
 using System.Web;
 
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.CRM.Classes;
@@ -42,7 +41,8 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
-using ASC.MessagingSystem;
+using ASC.MessagingSystem.Core;
+using ASC.MessagingSystem.Models;
 using ASC.Web.Core;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Configuration;
@@ -50,7 +50,7 @@ using ASC.Web.CRM.Services.NotifyService;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.CRM.HttpHandlers
 {
@@ -64,7 +64,7 @@ namespace ASC.Web.CRM.HttpHandlers
         public SecurityContext SecurityContext { get; set; }
         public CrmSecurity CRMSecurity { get; set; }
         public MessageTarget MessageTarget { get; set; }
-        public ILog Logger { get; set; }
+        public ILogger Logger { get; set; }
         public NotifyClient NotifyClient { get; set; }
         public MessageService MessageService { get; set; }
         public SettingsManager SettingsManager { get; set; }
@@ -109,7 +109,7 @@ namespace ASC.Web.CRM.HttpHandlers
             MessageTarget messageTarget,
             MessageService messageService,
             Global global,
-            IOptionsMonitor<ILog> logger,
+            ILogger logger,
             NotifyClient notifyClient,
             SettingsManager settingsManager,
             DaoFactory daoFactory)
@@ -122,7 +122,7 @@ namespace ASC.Web.CRM.HttpHandlers
                 MessageTarget = messageTarget;
                 MessageService = messageService;
                 Global = global;
-                Logger = logger.Get("ASC.CRM");
+                Logger = logger;
                 NotifyClient = notifyClient;
                 SettingsManager = settingsManager;
 
@@ -362,7 +362,7 @@ namespace ASC.Web.CRM.HttpHandlers
             }
             catch (Exception error)
             {
-                Logger.Error(error);
+                Logger.LogError(error.ToString());
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
                 await context.Response.WriteAsync(HttpUtility.HtmlEncode(error.Message));

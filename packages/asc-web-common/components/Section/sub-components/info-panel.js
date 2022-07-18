@@ -30,6 +30,16 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
     left: 0;
     right: 0;
   }
+
+  ${isMobile &&
+  css`
+    z-index: 309;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  `}
 `;
 
 const StyledInfoPanel = styled.div`
@@ -52,6 +62,15 @@ const StyledInfoPanel = styled.div`
     max-width: calc(100vw - 69px);
   }
 
+  ${isMobile &&
+  css`
+    position: absolute;
+    border: none;
+    right: 0;
+    width: 480px;
+    max-width: calc(100vw - 69px);
+  `}
+
   @media (max-width: 428px) {
     bottom: 0;
     height: calc(100% - 64px);
@@ -73,7 +92,6 @@ const StyledControlContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 450;
-  /* background: ${(props) => props.theme.catalog.control.background}; */
 
   @media ${tablet} {
     display: flex;
@@ -81,6 +99,14 @@ const StyledControlContainer = styled.div`
     top: 16px;
     left: -34px;
   }
+
+  ${isMobile &&
+  css`
+    display: flex;
+
+    top: 16px;
+    left: -34px;
+  `}
 
   @media (max-width: 428px) {
     display: flex;

@@ -97,7 +97,7 @@ const CatalogItem = (props) => {
           {!iconBadge ? (
             <Badge className="catalog-item__badge" label={labelBadge} />
           ) : (
-            <ReactSVG src={iconBadge} />
+            <ReactSVG className="catalog-icon__badge" src={iconBadge} />
           )}
         </StyledCatalogItemBadgeWrapper>
       )}
