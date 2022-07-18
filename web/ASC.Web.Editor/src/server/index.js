@@ -8,6 +8,12 @@ import path from "path";
 import compression from "compression";
 import ws from "./websocket";
 import fs from "fs";
+import logger from "morgan";
+import winston from "./logger.js";
+
+winston.stream = {
+  write: (message) => winston.info(message),
+};
 
 const loadPath = (lng, ns) => {
   let resourcePath =
@@ -54,6 +60,7 @@ app.use(
 );
 app.use(express.static(path.resolve(process.cwd(), "dist/client")));
 app.use(initMiddleware);
+app.use(logger("dev", { stream: winston.stream }));
 app.get("/products/files/doceditor", async (req, res) => {
   const { i18n, initialState, appComponent, styleTags, assets } = req;
   const userLng = initialState?.user?.cultureName || "en";
@@ -81,7 +88,7 @@ app.get("/products/files/doceditor", async (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
+  winston.info(`Server is listening on port ${port}`);
 });
 
 if (IS_DEVELOPMENT) {
