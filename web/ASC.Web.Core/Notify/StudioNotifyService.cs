@@ -149,20 +149,6 @@ public class StudioNotifyService
                              new TagValue(Tags.Body, message));
     }
 
-    #region Voip
-
-    public void SendToAdminVoipWarning(double balance)
-    {
-        _client.SendNoticeAsync(Actions.VoipWarning, null, new TagValue(Tags.Body, balance));
-    }
-
-    public void SendToAdminVoipBlocked()
-    {
-        _client.SendNoticeAsync(Actions.VoipBlocked, null);
-    }
-
-    #endregion
-
     #region User Password
 
     public void UserPasswordChange(UserInfo userInfo)
