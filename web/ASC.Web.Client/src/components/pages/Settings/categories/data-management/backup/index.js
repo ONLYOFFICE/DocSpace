@@ -66,7 +66,7 @@ const Backup = ({ helpUrlCreatingBackup, buttonSize, t, history }) => {
       )
     );
   };
-  console.log("BACKUP INDEX");
+
   return (
     <Submenu data={data} startSelect={data[0]} onSelect={(e) => onSelect(e)} />
   );
