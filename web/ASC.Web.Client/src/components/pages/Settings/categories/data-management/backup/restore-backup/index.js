@@ -24,6 +24,7 @@ import LocalFile from "./sub-components/LocalFileModule";
 import config from "../../../../../../../../package.json";
 import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 import { getBackupStorage } from "@appserver/common/api/settings";
+import { enableRestore } from "@appserver/common/api/portal";
 
 const {
   DocumentModuleType,
@@ -50,6 +51,7 @@ class RestoreBackup extends React.Component {
       isFileSelectedError: false,
       isInitialLoading: true,
       checkingRecoveryData: false,
+      isEnableRestore: false,
     };
 
     this.switches = [
@@ -72,21 +74,31 @@ class RestoreBackup extends React.Component {
 
     try {
       getProgress(t);
-      const [commonThirdPartyList, backupStorage] = await Promise.all([
+      const [
+        commonThirdPartyList,
+        backupStorage,
+        isEnableRestore,
+      ] = await Promise.all([
         getThirdPartyCommonFolderTree(),
         getBackupStorage(),
+        enableRestore(),
       ]);
 
       setThirdPartyStorage(backupStorage);
 
       commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+
+      this.setState({
+        isInitialLoading: false,
+        isEnableRestore,
+      });
     } catch (error) {
       toastr.error(error);
-    }
 
-    this.setState({
-      isInitialLoading: false,
-    });
+      this.setState({
+        isInitialLoading: false,
+      });
+    }
   };
 
   componentDidMount() {
@@ -313,9 +325,9 @@ class RestoreBackup extends React.Component {
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
       isCheckedLocalFile,
-      isStorageFillingError,
       checkingRecoveryData,
       isFileSelectedError,
+      isEnableRestore,
     } = this.state;
 
     const commonRadioButtonProps = {
@@ -326,6 +338,10 @@ class RestoreBackup extends React.Component {
       onClick: this.onClickShowStorage,
     };
 
+    const onClickVersionListProp = isEnableRestore
+      ? { onClick: this.onClickBackupList }
+      : {};
+
     const isDisabledThirdParty = commonThirdPartyList?.length === 0;
 
     const isMaxProgress = downloadingProgress === 100;
@@ -333,7 +349,7 @@ class RestoreBackup extends React.Component {
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledRestoreBackup theme={theme}>
+      <StyledRestoreBackup theme={theme} isEnableRestore={isEnableRestore}>
         <div className="restore-description">
           <Text className="restore-description">
             {t("RestoreBackupDescription")}
@@ -344,7 +360,7 @@ class RestoreBackup extends React.Component {
           name={"isCheckedDocuments"}
           key={1}
           isChecked={isCheckedDocuments}
-          isDisabled={false}
+          isDisabled={!isEnableRestore}
           {...commonRadioButtonProps}
         />
 
@@ -353,7 +369,7 @@ class RestoreBackup extends React.Component {
           name={"isCheckedThirdParty"}
           key={2}
           isChecked={isCheckedThirdParty}
-          isDisabled={isDisabledThirdParty}
+          isDisabled={isDisabledThirdParty || !isEnableRestore}
           {...commonRadioButtonProps}
         />
 
@@ -362,7 +378,7 @@ class RestoreBackup extends React.Component {
           name={"isCheckedThirdPartyStorage"}
           key={3}
           isChecked={isCheckedThirdPartyStorage}
-          isDisabled={false}
+          isDisabled={!isEnableRestore}
           {...commonRadioButtonProps}
         />
 
@@ -371,13 +387,14 @@ class RestoreBackup extends React.Component {
           name={"isCheckedLocalFile"}
           key={4}
           isChecked={isCheckedLocalFile}
-          isDisabled={false}
+          isDisabled={!isEnableRestore}
           {...commonRadioButtonProps}
         />
 
         <div className="restore-backup_modules">
           {isCheckedDocuments && (
             <Documents
+              isDisabled={!isEnableRestore}
               t={t}
               isPanelVisible={isPanelVisible}
               onClose={this.onPanelClose}
@@ -410,7 +427,11 @@ class RestoreBackup extends React.Component {
           )}
         </div>
 
-        <Text className="restore-backup_list" onClick={this.onClickBackupList}>
+        <Text
+          className="restore-backup_list"
+          {...onClickVersionListProp}
+          noSelect
+        >
           {t("BackupList")}
         </Text>
 
@@ -429,16 +450,17 @@ class RestoreBackup extends React.Component {
           onChange={this.onChangeCheckboxNotify}
           isChecked={isNotify}
           label={t("SendNotificationAboutRestoring")}
+          isDisabled={!isEnableRestore}
         />
 
-        <Text className="restore-backup_warning">
+        <Text className="restore-backup_warning" noSelect>
           {t("Common:Warning")}
           {"!"}
         </Text>
-        <Text className="restore-backup_warning-description">
+        <Text className="restore-backup_warning-description" noSelect>
           {t("RestoreBackupWarningText")}
         </Text>
-        <Text className="restore-backup_warning-link">
+        <Text className="restore-backup_warning-link" noSelect>
           {t("RestoreBackupResetInfoWarningText")}
         </Text>
 
@@ -448,6 +470,7 @@ class RestoreBackup extends React.Component {
           onChange={this.onChangeCheckbox}
           isChecked={isChecked}
           label={t("UserAgreement")}
+          isDisabled={!isEnableRestore}
         />
 
         <Button
@@ -455,7 +478,12 @@ class RestoreBackup extends React.Component {
           label={t("Common:Restore")}
           onClick={this.onRestoreClick}
           primary
-          isDisabled={checkingRecoveryData || !isMaxProgress || !isChecked}
+          isDisabled={
+            checkingRecoveryData ||
+            !isMaxProgress ||
+            !isChecked ||
+            !isEnableRestore
+          }
           isLoading={checkingRecoveryData}
           size={buttonSize}
           tabIndex={10}
@@ -467,7 +495,7 @@ class RestoreBackup extends React.Component {
 
 export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
-  const { socketHelper, theme } = settingsStore;
+  const { socketHelper, theme, isTabletView } = settingsStore;
   const {
     downloadingProgress,
     getProgress,
@@ -478,6 +506,8 @@ export default inject(({ auth, backup }) => {
     isFormReady,
     getStorageParams,
   } = backup;
+
+  const buttonSize = isTabletView ? "normal" : "small";
 
   return {
     setThirdPartyStorage,
@@ -490,5 +520,6 @@ export default inject(({ auth, backup }) => {
     getProgress,
     isFormReady,
     getStorageParams,
+    buttonSize,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));

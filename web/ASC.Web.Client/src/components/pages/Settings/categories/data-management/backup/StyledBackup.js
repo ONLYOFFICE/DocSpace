@@ -200,7 +200,9 @@ const StyledRestoreBackup = styled.div`
     margin-top: 24px;
     margin-bottom: 8px;
     font-size: 16px;
-    color: #f21c0e;
+
+    color: ${(props) =>
+      props.isEnableRestore ? "#F21C0E" : props.theme.text.disableColor};
   }
   .restore-backup_warning-link {
     margin: 16px 0 24px 0;
@@ -213,16 +215,29 @@ const StyledRestoreBackup = styled.div`
     margin-bottom: 24px;
   }
   .restore-backup-checkbox_notification {
-    margin-top: 15px;
+    margin-top: 11px;
     max-width: ${TEXT_LENGTH};
     .checkbox-text {
       white-space: normal;
     }
   }
+
+  .restore-backup_warning-link,
+  .restore-backup-checkbox_notification,
+  .restore-backup_warning-description {
+    color: ${(props) =>
+      props.isEnableRestore
+        ? props.theme.text.color
+        : props.theme.text.disableColor};
+  }
+
   .restore-backup_list {
-    color: ${(props) => props.theme.text.color};
+    color: ${(props) =>
+      props.isEnableRestore
+        ? props.theme.text.color
+        : props.theme.text.disableColor};
     text-decoration: underline dotted;
-    cursor: pointer;
+    cursor: ${(props) => (props.isEnableRestore ? "pointer" : "cursor")};
     font-weight: 600;
   }
 
