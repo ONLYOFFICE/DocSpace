@@ -21,7 +21,7 @@ const SEARCH_IN_CONTENT = "searchInContent";
 const DEFAULT_SEARCH_IN_CONTENT = null;
 
 const SEARCH_TYPE = "withSubfolders";
-const DEFAULT_SEARCH_TYPE = false;
+const DEFAULT_SEARCH_TYPE = true;
 
 const SEARCH_AREA = "searchArea";
 const DEFAULT_SEARCH_AREA = RoomSearchArea.Active;
@@ -71,9 +71,9 @@ class RoomsFilter {
       (urlFilter[SEARCH_IN_CONTENT] && +urlFilter[SEARCH_IN_CONTENT]) ||
       defaultFilter.searchInContent;
 
-    const withSubfolders =
-      (urlFilter[SEARCH_TYPE] && urlFilter[SEARCH_TYPE]) ||
-      defaultFilter.withSubfolders;
+    const withSubfolders = urlFilter[SEARCH_TYPE]
+      ? urlFilter[SEARCH_TYPE] === "true"
+      : defaultFilter.withSubfolders;
 
     const searchArea =
       (urlFilter[SEARCH_AREA] && urlFilter[SEARCH_AREA]) ||
@@ -211,10 +211,6 @@ class RoomsFilter {
       dtoFilter[SEARCH_IN_CONTENT] = searchInContent;
     }
 
-    if (withSubfolders) {
-      dtoFilter[SEARCH_TYPE] = withSubfolders;
-    }
-
     if (searchArea) {
       dtoFilter[SEARCH_AREA] = searchArea;
     }
@@ -230,8 +226,9 @@ class RoomsFilter {
     dtoFilter[PAGE] = page + 1;
     dtoFilter[SORT_BY] = sortBy;
     dtoFilter[SORT_ORDER] = sortOrder;
+    dtoFilter[SEARCH_TYPE] = withSubfolders;
 
-    const str = toUrlParams(dtoFilter, true);
+    const str = toUrlParams(dtoFilter, false);
     return str;
   };
 
