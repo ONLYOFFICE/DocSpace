@@ -59,6 +59,7 @@ const ArticleProfile = (props) => {
     showText,
     setHotkeyPanelVisible,
     logout,
+    setIsAboutDialogVisible,
   } = props;
   const { t } = useTranslation("Common");
 
@@ -88,7 +89,7 @@ const ArticleProfile = (props) => {
   };
 
   const onAboutClick = () => {
-    console.log("onAboutClick");
+    setIsAboutDialogVisible(true);
   };
 
   const onLogoutClick = () => {
@@ -202,7 +203,7 @@ const ArticleProfile = (props) => {
 };
 
 export default withRouter(
-  inject(({ auth }) => {
+  inject(({ auth, aboutDialogStore }) => {
     const { userStore, settingsStore, logout } = auth;
     const { user } = userStore;
     const {
@@ -213,6 +214,7 @@ export default withRouter(
     } = settingsStore;
     const modules = auth.availableModules;
     const settingsModule = modules.find((module) => module.id === "settings");
+    const { setIsAboutDialogVisible } = aboutDialogStore;
 
     return {
       user,
@@ -224,6 +226,7 @@ export default withRouter(
       debugInfo,
       setHotkeyPanelVisible,
       logout,
+      setIsAboutDialogVisible,
     };
   })(observer(ArticleProfile))
 );
