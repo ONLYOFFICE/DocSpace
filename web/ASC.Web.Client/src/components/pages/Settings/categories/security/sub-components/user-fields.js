@@ -92,13 +92,25 @@ const UserFields = (props) => {
     <div className={className}>
       {inputs ? (
         inputs.map((input, index) => {
-          const error = !regexp.test(input);
+          let newInput1;
+          let newInput2;
+
+          if (input.includes("-")) {
+            newInput1 = input.split("-")[0];
+            newInput2 = input.split("-")[1];
+          }
+
+          const error = newInput2
+            ? input.split("-").length - 1 > 1 ||
+              !regexp.test(newInput1) ||
+              !regexp.test(newInput2)
+            : !regexp.test(input);
 
           return (
-            <StyledInputWrapper key={`domain-input-${index}`}>
+            <StyledInputWrapper key={`user-input-${index}`}>
               <TextInput
-                id={`domain-input-${index}`}
-                isAutoFocussed={true}
+                id={`user-input-${index}`}
+                isAutoFocussed={false}
                 value={input}
                 onChange={(e) => onChangeInput(e, index)}
                 onBlur={() => onBlur(index)}

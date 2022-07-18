@@ -67,8 +67,6 @@ export default function withQuickButtons(WrappedComponent) {
         isTrashFolder,
         isAdmin,
         showShare,
-        fileActionExt,
-        fileActionId,
         sectionWidth,
         viewAs,
       } = this.props;
@@ -79,9 +77,7 @@ export default function withQuickButtons(WrappedComponent) {
         access === ShareAccessRights.FullAccess ||
         access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
-      const isEdit = id === fileActionId && fileExst === fileActionExt;
-
-      const quickButtonsComponent = !isEdit ? (
+      const quickButtonsComponent = (
         <QuickButtons
           t={t}
           theme={theme}
@@ -98,7 +94,7 @@ export default function withQuickButtons(WrappedComponent) {
           onClickFavorite={this.onClickFavorite}
           onClickShare={this.onClickShare}
         />
-      ) : null;
+      );
 
       return (
         <WrappedComponent
@@ -125,10 +121,6 @@ export default function withQuickButtons(WrappedComponent) {
         onSelectItem,
       } = filesActionsStore;
 
-      const {
-        extension: fileActionExt,
-        id: fileActionId,
-      } = filesStore.fileActionStore;
       const { setSharingPanelVisible } = dialogsStore;
       const { canWebEdit } = settingsStore;
       return {
@@ -137,8 +129,6 @@ export default function withQuickButtons(WrappedComponent) {
         isTrashFolder: isRecycleBinFolder,
         lockFileAction,
         setFavoriteAction,
-        fileActionExt,
-        fileActionId,
         onSelectItem,
         setSharingPanelVisible,
         canWebEdit,

@@ -94,7 +94,6 @@ public class SetupInfo
     public string ShareFacebookUrl { get; private set; }
     public string ControlPanelUrl { get; private set; }
     public string FontOpenSansUrl { get; private set; }
-    public bool VoipEnabled { get; private set; }
     public string StartProductList { get; private set; }
     public string SsoSamlLoginUrl { get; private set; }
     public string DownloadForDesktopUrl { get; private set; }
@@ -179,7 +178,6 @@ public class SetupInfo
         ShareFacebookUrl = GetAppSettings("web.share.facebook", "");
         ControlPanelUrl = GetAppSettings("web:controlpanel:url", "");
         FontOpenSansUrl = GetAppSettings("web.font.opensans.url", "");
-        VoipEnabled = GetAppSettings("voip.enabled", true);
         StartProductList = GetAppSettings("web.start.product.list", "");
         SsoSamlLoginUrl = GetAppSettings("web.sso.saml.login.url", "");
         SsoSamlLogoutUrl = GetAppSettings("web.sso.saml.logout.url", "");
