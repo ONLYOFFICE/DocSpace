@@ -242,6 +242,58 @@ const StyledCrossIcon = styled(CrossIcon)`
 
 StyledCrossIcon.defaultProps = { theme: Base };
 
+const StyledArticleProfile = styled.div`
+  position: fixed;
+  bottom: 0;
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  flex-flow: row wrap;
+  gap: 16px;
+  width: ${(props) =>
+    !props.tablet
+      ? "211px"
+      : props.tablet && props.showText
+      ? "211px"
+      : "44px"};
+
+  ${(props) =>
+    props.tablet &&
+    css`
+      padding: 14px 6px;
+    `}
+
+  padding-left: 20px;
+  margin-left: -20px;
+  padding-right: 20px;
+  margin-right: -20px;
+
+  @media ${tablet} {
+    padding-left: 8px;
+    margin-left: -8px;
+    padding-right: 8px;
+    margin-right: -8px;
+
+    ${(props) =>
+      props.showText &&
+      css`
+        padding-left: 24px;
+        margin-left: -24px;
+        padding-right: 24px;
+        margin-right: -24px;
+      `}
+  }
+
+  border-top: ${(props) => props.theme.catalog.profile.borderTop};
+  background-color: ${(props) => props.theme.catalog.profile.background};
+
+  .option-button {
+    margin-left: auto;
+  }
+`;
+
+StyledArticleProfile.defaultProps = { theme: Base };
+
 export {
   StyledArticle,
   StyledArticleHeader,
@@ -251,4 +303,5 @@ export {
   StyledArticleMainButton,
   StyledControlContainer,
   StyledCrossIcon,
+  StyledArticleProfile,
 };

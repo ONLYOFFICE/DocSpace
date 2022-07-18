@@ -10,6 +10,7 @@ import { isDesktop, isMobile, isMobileOnly } from "react-device-detect";
 import { isTablet } from "@appserver/components/utils/device";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import { StyledArticleProfile } from "../styled-article";
 
 const { proxyURL } = AppServerConfig;
 
@@ -19,32 +20,6 @@ const PROFILE_SELF_URL = combineUrl(
   "/products/people/view/@self"
 );
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
-
-const StyledProfile = styled.div`
-  position: fixed;
-  bottom: 0;
-  padding: 16px 0;
-  display: flex;
-  align-items: center;
-  flex-flow: row wrap;
-  gap: 16px;
-  width: ${(props) =>
-    !props.tablet
-      ? "211px"
-      : props.tablet && props.showText
-      ? "211px"
-      : "44px"};
-
-  ${(props) =>
-    props.tablet &&
-    css`
-      padding: 14px 6px;
-    `}
-
-  .option-button {
-    margin-left: auto;
-  }
-`;
 
 const ArticleProfile = (props) => {
   const {
@@ -171,7 +146,7 @@ const ArticleProfile = (props) => {
   const userRole = getUserRole(user);
 
   return (
-    <StyledProfile showText={showText} tablet={tablet}>
+    <StyledArticleProfile showText={showText} tablet={tablet}>
       <Avatar
         size={avatarSize}
         role={userRole}
@@ -198,7 +173,7 @@ const ArticleProfile = (props) => {
           </div>
         </>
       )}
-    </StyledProfile>
+    </StyledArticleProfile>
   );
 };
 
