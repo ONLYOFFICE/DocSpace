@@ -1,9 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { isMobileOnly } from "react-device-detect";
 import Button from "@appserver/components/button";
-import Loader from "@appserver/components/loader";
 import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
 import RadioButton from "@appserver/components/radio-button";
@@ -25,6 +23,7 @@ import config from "../../../../../../../../package.json";
 import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 import { getBackupStorage } from "@appserver/common/api/settings";
 import { enableRestore } from "@appserver/common/api/portal";
+import RestoreBackupLoader from "@appserver/common/components/Loaders/RestoreBackupLoader";
 
 const {
   DocumentModuleType,
@@ -347,7 +346,7 @@ class RestoreBackup extends React.Component {
     const isMaxProgress = downloadingProgress === 100;
 
     return isInitialLoading ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
+      <RestoreBackupLoader />
     ) : (
       <StyledRestoreBackup theme={theme} isEnableRestore={isEnableRestore}>
         <div className="restore-description">

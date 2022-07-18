@@ -29,6 +29,7 @@ import InfoPanelBodyLoader from "./InfoPanelBodyLoader";
 import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
 import DataBackupLoader from "./DataBackupLoader";
 import AutoBackupLoader from "./AutoBackupLoader";
+import RestoreBackupLoader from "./RestoreBackupLoader";
 
 export default {
   Rectangle,
@@ -62,4 +63,5 @@ export default {
   InfoPanelHeaderLoader,
   DataBackupLoader,
   AutoBackupLoader,
+  RestoreBackupLoader,
 };
