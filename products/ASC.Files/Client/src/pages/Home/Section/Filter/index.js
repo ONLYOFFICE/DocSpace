@@ -6,6 +6,8 @@ import { withTranslation } from "react-i18next";
 import find from "lodash/find";
 import result from "lodash/result";
 
+import { FilterGroups, FilterKeys } from "../../../../helpers/constants";
+
 import { getUser } from "@appserver/common/api/people";
 import { FilterType, RoomsType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
@@ -17,7 +19,7 @@ import withLoader from "../../../../HOCs/withLoader";
 const getFilterType = (filterValues) => {
   const filterType = result(
     find(filterValues, (value) => {
-      return value.group === "filter-filterType";
+      return value.group === FilterGroups.filterType;
     }),
     "key"
   );
@@ -28,7 +30,7 @@ const getFilterType = (filterValues) => {
 const getAuthorType = (filterValues) => {
   const authorType = result(
     find(filterValues, (value) => {
-      return value.group === "filter-author";
+      return value.group === FilterGroups.filterAuthor;
     }),
     "key"
   );
@@ -39,7 +41,7 @@ const getAuthorType = (filterValues) => {
 const getSearchParams = (filterValues) => {
   const searchParams = result(
     find(filterValues, (value) => {
-      return value.group === "filter-folders";
+      return value.group === FilterGroups.filterFolders;
     }),
     "key"
   );
@@ -49,7 +51,7 @@ const getSearchParams = (filterValues) => {
 
 const getTypes = (filterValues) => {
   const filterTypes = filterValues.find(
-    (value) => value.group === "filter-types"
+    (value) => value.group === FilterGroups.roomFilterType
   )?.key;
 
   const types =
@@ -65,7 +67,7 @@ const getTypes = (filterValues) => {
 const getOwner = (filterValues) => {
   const filterOwner = result(
     find(filterValues, (value) => {
-      return value.group === "filter-owner";
+      return value.group === FilterGroups.roomFilterOwner;
     }),
     "key"
   );
@@ -73,9 +75,32 @@ const getOwner = (filterValues) => {
   return filterOwner ? filterOwner : null;
 };
 
+const getFilterFolders = (filterValues) => {
+  const filterFolders = result(
+    find(filterValues, (value) => {
+      return value.group === FilterGroups.roomFilterFolders;
+    }),
+    "key"
+  );
+
+  return filterFolders ? filterFolders : null;
+};
+
+const getFilterContent = (filterValues) => {
+  const filterContent = result(
+    find(filterValues, (value) => {
+      return value.group === FilterGroups.roomFilterContent;
+    }),
+    "key"
+  );
+
+  return filterContent ? filterContent : null;
+};
+
 const getTags = (filterValues) => {
-  const filterTags = filterValues.find((value) => value.group === "filter-tags")
-    ?.key;
+  const filterTags = filterValues.find(
+    (value) => value.group === FilterGroups.roomFilterTags
+  )?.key;
 
   const tags = filterTags?.length > 0 ? filterTags : null;
 
@@ -109,9 +134,17 @@ const SectionFilterContent = ({
 
         const owner = getOwner(data) || null;
 
-        const subjectId = owner === "me" || owner === "other" ? userId : owner;
+        const subjectId =
+          owner === FilterKeys.me || owner === FilterKeys.other
+            ? userId
+            : owner;
 
         const tags = getTags(data) || null;
+
+        const withSubfolders =
+          getFilterFolders(data) === FilterKeys.withSubfolders;
+
+        const withContent = getFilterContent(data) === FilterKeys.withContent;
 
         setIsLoading(true);
 
@@ -121,6 +154,8 @@ const SectionFilterContent = ({
         newFilter.types = types ? types : null;
         newFilter.subjectId = subjectId ? subjectId : null;
         newFilter.tags = tags ? tags : null;
+        newFilter.withSubfolders = withSubfolders;
+        newFilter.searchInContent = withContent;
 
         fetchRooms(selectedFolderId, newFilter).finally(() =>
           setIsLoading(false)
@@ -263,36 +298,34 @@ const SectionFilterContent = ({
     const filterValues = [];
 
     if (isRooms) {
+      if (!roomsFilter.withSubfolders) {
+        filterValues.push({
+          key: FilterKeys.excludeSubfolders,
+          label: "Exclude subfolders",
+          group: FilterGroups.roomFilterFolders,
+        });
+      }
+
+      if (roomsFilter.searchInContent) {
+        filterValues.push({
+          key: FilterKeys.withContent,
+          label: "File contents",
+          group: FilterGroups.roomFilterContent,
+        });
+      }
+
       if (roomsFilter.types) {
         const key =
           typeof roomsFilter.types === "object"
             ? roomsFilter.types[0]
             : roomsFilter.types; //Remove it if filter types will be multi select
 
-        let label = "";
-
-        switch (key) {
-          case RoomsType.CustomRoom:
-            label = "Custom room";
-            break;
-          case RoomsType.FillingFormsRoom:
-            label = "Filling form";
-            break;
-          case RoomsType.EditingRoom:
-            label = "Editing";
-            break;
-          case RoomsType.ReviewRoom:
-            label = "Review";
-            break;
-          case RoomsType.ReadOnlyRoom:
-            label = "View-only";
-            break;
-        }
+        const label = getDefaultRoomName(key, t);
 
         filterValues.push({
           key: key,
           label: label,
-          group: "filter-types",
+          group: FilterGroups.roomFilterType,
         });
       }
 
@@ -308,8 +341,8 @@ const SectionFilterContent = ({
         }
 
         filterValues.push({
-          key: isMe ? "me" : roomsFilter.subjectId,
-          group: "filter-owner",
+          key: isMe ? FilterKeys.me : roomsFilter.subjectId,
+          group: FilterGroups.roomFilterOwner,
           label: label,
         });
       }
@@ -317,7 +350,7 @@ const SectionFilterContent = ({
       if (roomsFilter.tags) {
         filterValues.push({
           key: roomsFilter.tags,
-          group: "filter-tags",
+          group: FilterGroups.roomFilterTags,
           isMultiSelect: true,
         });
       }
@@ -355,7 +388,7 @@ const SectionFilterContent = ({
         filterValues.push({
           key: `${filter.filterType}`,
           label: label,
-          group: "filter-filterType",
+          group: FilterGroups.filterType,
         });
       }
 
@@ -363,7 +396,7 @@ const SectionFilterContent = ({
         const user = await getUser(filter.authorType.replace("user_", ""));
         filterValues.push({
           key: `${filter.authorType}`,
-          group: "filter-author",
+          group: FilterGroups.filterAuthor,
           label: user.displayName,
         });
       }
@@ -372,7 +405,7 @@ const SectionFilterContent = ({
         filterValues.push({
           key: filter.withSubfolders,
           label: "Exclude subfolders",
-          group: "filter-folders",
+          group: FilterGroups.filterFolders,
         });
       }
     }
@@ -386,6 +419,8 @@ const SectionFilterContent = ({
     roomsFilter.subjectId,
     roomsFilter.tags,
     roomsFilter.tags?.length,
+    roomsFilter.withSubfolders,
+    roomsFilter.searchInContent,
     userId,
     isRooms,
   ]);
@@ -396,7 +431,7 @@ const SectionFilterContent = ({
         ? [
             {
               key: FilterType.FoldersOnly.toString(),
-              group: "filter-filterType",
+              group: FilterGroups.filterType,
               label: t("Translations:Folders"),
             },
           ]
@@ -407,7 +442,7 @@ const SectionFilterContent = ({
         ? [
             {
               key: FilterType.FilesOnly.toString(),
-              group: "filter-filterType",
+              group: FilterGroups.filterType,
               label: t("AllFiles"),
             },
           ]
@@ -417,7 +452,7 @@ const SectionFilterContent = ({
       ? [
           {
             key: FilterType.ImagesOnly.toString(),
-            group: "filter-filterType",
+            group: FilterGroups.filterType,
             label: t("Images"),
           },
         ]
@@ -427,7 +462,7 @@ const SectionFilterContent = ({
       ? [
           {
             key: FilterType.ArchiveOnly.toString(),
-            group: "filter-filterType",
+            group: FilterGroups.filterType,
             label: t("Archives"),
           },
         ]
@@ -437,7 +472,7 @@ const SectionFilterContent = ({
       ? [
           {
             key: FilterType.MediaOnly.toString(),
-            group: "filter-filterType",
+            group: FilterGroups.filterType,
             label: t("Media"),
           },
         ]
@@ -446,59 +481,59 @@ const SectionFilterContent = ({
     const typeOptions = isRooms
       ? [
           {
-            key: "filter-filterType",
-            group: "filter-types",
+            key: FilterGroups.filterType,
+            group: FilterGroups.roomFilterType,
             label: t("Common:Type"),
             isHeader: true,
           },
           {
             key: RoomsType.CustomRoom,
-            group: "filter-types",
+            group: FilterGroups.roomFilterType,
             label: "Custom room",
           },
           {
             key: RoomsType.FillingFormsRoom,
-            group: "filter-types",
+            group: FilterGroups.roomFilterType,
             label: "Filling form",
           },
           {
             key: RoomsType.EditingRoom,
-            group: "filter-types",
+            group: FilterGroups.roomFilterType,
             label: "Editing",
           },
           {
             key: RoomsType.ReviewRoom,
-            group: "filter-types",
+            group: FilterGroups.roomFilterType,
             label: "Review",
           },
           {
             key: RoomsType.ReadOnlyRoom,
-            group: "filter-types",
+            group: FilterGroups.roomFilterType,
             label: "View-only",
           },
         ]
       : [
           {
-            key: "filter-filterType",
-            group: "filter-filterType",
+            key: FilterGroups.filterType,
+            group: FilterGroups.filterType,
             label: t("Common:Type"),
             isHeader: true,
           },
           {
             key: FilterType.DocumentsOnly.toString(),
-            group: "filter-filterType",
+            group: FilterGroups.filterType,
             label: t("Common:Documents"),
           },
           ...folders,
           {
             key: FilterType.SpreadsheetsOnly.toString(),
-            group: "filter-filterType",
+            group: FilterGroups.filterType,
             label: t("Translations:Spreadsheets"),
           },
           ...archives,
           {
             key: FilterType.PresentationsOnly.toString(),
-            group: "filter-filterType",
+            group: FilterGroups.filterType,
             label: t("Translations:Presentations"),
           },
           ...images,
@@ -508,32 +543,70 @@ const SectionFilterContent = ({
 
     const ownerOptions = [
       {
-        key: "filter-owner",
-        group: "filter-owner",
+        key: FilterGroups.roomFilterOwner,
+        group: FilterGroups.roomFilterOwner,
         label: t("ByAuthor"),
         isHeader: true,
       },
       {
-        key: "me",
-        group: "filter-owner",
+        key: FilterKeys.me,
+        group: FilterGroups.roomFilterOwner,
         label: "Me",
       },
       {
-        key: "other",
-        group: "filter-owner",
+        key: FilterKeys.other,
+        group: FilterGroups.roomFilterOwner,
         label: "Other",
       },
       {
-        key: "user",
-        group: "filter-owner",
+        key: FilterKeys.user,
+        group: FilterGroups.roomFilterOwner,
         label: t("Translations:AddAuthor"),
         isSelector: true,
+      },
+    ];
+
+    const foldersOptions = [
+      {
+        key: FilterGroups.roomFilterFolders,
+        group: FilterGroups.roomFilterFolders,
+        label: "Search",
+        isHeader: true,
+        withoutSeparator: true,
+      },
+      {
+        key: "folders",
+        group: FilterGroups.roomFilterFolders,
+        label: "",
+        withOptions: true,
+        options: [
+          { key: FilterKeys.withSubfolders, label: "With subfolders" },
+          { key: FilterKeys.excludeSubfolders, label: "Exclude subfolders" },
+        ],
+      },
+    ];
+
+    const contentOptions = [
+      {
+        key: FilterGroups.roomFilterContent,
+        group: FilterGroups.roomFilterContent,
+        isHeader: true,
+        withoutHeader: true,
+      },
+      {
+        key: FilterKeys.withContent,
+        group: FilterGroups.roomFilterContent,
+        label: "Search by file contents",
+        isCheckbox: true,
       },
     ];
 
     const filterOptions = [];
 
     if (isRooms) {
+      filterOptions.push(...foldersOptions);
+      filterOptions.push(...contentOptions);
+
       filterOptions.push(...ownerOptions);
 
       filterOptions.push(...typeOptions);
@@ -543,14 +616,14 @@ const SectionFilterContent = ({
       if (tags) {
         const tagsOptions = tags.map((tag) => ({
           key: tag,
-          group: "filter-tags",
+          group: FilterGroups.roomFilterTags,
           label: tag,
           isMultiSelect: true,
         }));
 
         filterOptions.push({
-          key: "filter-tags",
-          group: "filter-tags",
+          key: FilterGroups.roomFilterTags,
+          group: FilterGroups.roomFilterTags,
           label: "Tags",
           isHeader: true,
           isLast: true,
@@ -562,14 +635,14 @@ const SectionFilterContent = ({
       if (!personal) {
         filterOptions.push(
           {
-            key: "filter-author",
-            group: "filter-author",
+            key: FilterGroups.filterAuthor,
+            group: FilterGroups.filterAuthor,
             label: t("ByAuthor"),
             isHeader: true,
           },
           {
             key: "user",
-            group: "filter-author",
+            group: FilterGroups.filterAuthor,
             label: t("Translations:AddAuthor"),
             isSelector: true,
           }
@@ -581,8 +654,8 @@ const SectionFilterContent = ({
       if (!isRecentFolder && !isFavoritesFolder) {
         filterOptions.push(
           {
-            key: "filter-folders",
-            group: "filter-folders",
+            key: FilterGroups.filterFolders,
+            group: FilterGroups.filterFolders,
             label: t("Translations:Folders"),
             isHeader: true,
             withoutHeader: true,
@@ -590,7 +663,7 @@ const SectionFilterContent = ({
           },
           {
             key: "false",
-            group: "filter-folders",
+            group: FilterGroups.filterFolders,
             label: t("NoSubfolders"),
             isToggle: true,
           }
@@ -657,7 +730,7 @@ const SectionFilterContent = ({
 
         const newFilter = roomsFilter.clone();
 
-        if (group === "filter-types") {
+        if (group === FilterGroups.roomFilterType) {
           const newTypes = newFilter.types;
 
           const idx = newTypes.findIndex((type) => type === key);
@@ -667,11 +740,11 @@ const SectionFilterContent = ({
           newFilter.types = newTypes.length > 0 ? newTypes : null;
         }
 
-        if (group === "filter-owner") {
+        if (group === FilterGroups.roomFilterOwner) {
           newFilter.subjectId = null;
         }
 
-        if (group === "filter-tags") {
+        if (group === FilterGroups.roomFilterTags) {
           const newTags = newFilter.tags;
 
           const idx = newTags.findIndex((tag) => tag === key);
@@ -681,23 +754,28 @@ const SectionFilterContent = ({
           newFilter.tags = newTags.length > 0 ? newTags : null;
         }
 
+        if (group === FilterGroups.roomFilterContent) {
+          newFilter.searchInContent = false;
+        }
+
+        if (group === FilterGroups.roomFilterFolders) {
+          newFilter.withSubfolders = true;
+        }
+
         newFilter.page = 0;
-        // newFilter.types = types ? types : null;
-        // newFilter.subjectId = subjectId ? subjectId : null;
-        // newFilter.tags = tags ? tags : null;
 
         fetchRooms(selectedFolderId, newFilter).finally(() =>
           setIsLoading(false)
         );
       } else {
         const newFilter = filter.clone();
-        if (group === "filter-filterType") {
+        if (group === FilterGroups.filterType) {
           newFilter.filterType = null;
         }
-        if (group === "filter-author") {
+        if (group === FilterGroups.filterAuthor) {
           newFilter.authorType = null;
         }
-        if (group === "filter-folders") {
+        if (group === FilterGroups.filterFolders) {
           newFilter.withSubfolders = null;
         }
 
