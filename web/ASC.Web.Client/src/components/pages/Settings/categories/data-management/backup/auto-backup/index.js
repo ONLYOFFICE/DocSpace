@@ -41,7 +41,8 @@ class AutomaticBackup extends React.PureComponent {
 
     this.state = {
       isLoadingData: false,
-      isInitialLoading: true,
+      isInitialLoading: false,
+      isEmptyContentBeforeLoader: true,
       isError: false,
       isEnableAuto: false,
     };
@@ -60,7 +61,7 @@ class AutomaticBackup extends React.PureComponent {
         label: t("EveryMonth"),
       },
     ];
-
+    this.timerId = null;
     this.hoursArray = [];
     this.monthNumbersArray = [];
     this.maxNumberCopiesArray = [];
@@ -102,13 +103,20 @@ class AutomaticBackup extends React.PureComponent {
 
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
 
+      clearTimeout(this.timerId);
+      this.timerId = null;
+
       this.setState({
+        isEmptyContentBeforeLoader: false,
         isInitialLoading: false,
         isEnableAuto: enableAuto,
       });
     } catch (error) {
       toastr.error(error);
+      clearTimeout(this.timerId);
+      this.timerId = null;
       this.setState({
+        isEmptyContentBeforeLoader: false,
         isInitialLoading: false,
       });
     }
@@ -117,11 +125,17 @@ class AutomaticBackup extends React.PureComponent {
   componentDidMount() {
     this.getWeekdays();
 
+    this.timerId = setTimeout(() => {
+      this.setState({ isInitialLoading: true });
+    }, 200);
+
     this.setBasicSettings();
   }
 
   componentWillUnmount() {
     const { clearProgressInterval } = this.props;
+    clearTimeout(this.timerId);
+    this.timerId = null;
     clearProgressInterval();
   }
 
@@ -397,6 +411,7 @@ class AutomaticBackup extends React.PureComponent {
       isLoadingData,
       isError,
       isEnableAuto,
+      isEmptyContentBeforeLoader,
     } = this.state;
 
     const isDisabledThirdPartyList =
@@ -421,7 +436,9 @@ class AutomaticBackup extends React.PureComponent {
       onClick: this.onClickShowStorage,
     };
 
-    return isInitialLoading ? (
+    return isEmptyContentBeforeLoader && !isInitialLoading ? (
+      <></>
+    ) : isInitialLoading ? (
       <AutoBackupLoader />
     ) : (
       <StyledAutoBackup theme={theme} isEnableAuto={isEnableAuto}>

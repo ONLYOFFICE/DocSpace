@@ -36,10 +36,13 @@ class ManualBackup extends React.Component {
       ? selectedStorageType === "ThirdPartyStorage"
       : false;
 
+    this.timerId = null;
+
     this.state = {
       selectedFolder: "",
       isPanelVisible: false,
-      isInitialLoading: true,
+      isInitialLoading: false,
+      isEmptyContentBeforeLoader: true,
       isCheckedTemporaryStorage: checkedTemporary,
       isCheckedDocuments: checkedDocuments,
       isCheckedThirdParty: checkedThirdPartyResource,
@@ -69,21 +72,32 @@ class ManualBackup extends React.Component {
         commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
       }
     } catch (error) {
-      console.error(error);
+      toastr.error(error);
       this.clearSessionStorage();
     }
 
+    clearTimeout(this.timerId);
+    this.timerId = null;
+
     this.setState({
       isInitialLoading: false,
+      isEmptyContentBeforeLoader: false,
     });
   };
 
   componentDidMount() {
+    this.timerId = setTimeout(() => {
+      this.setState({ isInitialLoading: true });
+    }, 200);
+
     this.setBasicSettings();
   }
 
   componentWillUnmount() {
     const { clearProgressInterval } = this.props;
+    clearTimeout(this.timerId);
+    this.timerId = null;
+
     clearProgressInterval();
   }
 
@@ -162,7 +176,7 @@ class ManualBackup extends React.Component {
       );
     }
     console.log("storageParams", storageParams);
-    return;
+    // return;
     try {
       await startBackup(moduleType, storageParams);
       setDownloadingProgress(1);
@@ -192,6 +206,7 @@ class ManualBackup extends React.Component {
       isCheckedDocuments,
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
+      isEmptyContentBeforeLoader,
     } = this.state;
 
     const isMaxProgress = downloadingProgress === 100;
@@ -214,7 +229,9 @@ class ManualBackup extends React.Component {
       buttonSize,
     };
 
-    return isInitialLoading ? (
+    return isEmptyContentBeforeLoader && !isInitialLoading ? (
+      <></>
+    ) : isInitialLoading ? (
       <DataBackupLoader />
     ) : (
       <StyledManualBackup>
