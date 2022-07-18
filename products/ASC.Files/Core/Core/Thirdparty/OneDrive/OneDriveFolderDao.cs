@@ -74,16 +74,16 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         return GetRootFolderAsync(fileId);
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, IEnumerable<FilterType> filterTypes, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
     {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (CheckInvalidFilter(filterType))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
         
         var rooms = GetFoldersAsync(parentId);
 
-        rooms = FilterByRoomTypes(rooms, filterTypes);
+        rooms = FilterByRoomType(rooms, filterType);
         rooms = FilterByOwner(rooms, ownerId, withoutMe);
 
         if (!string.IsNullOrEmpty(searchText))
@@ -96,16 +96,16 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         return rooms;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, IEnumerable<FilterType> filterTypes, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
     {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (CheckInvalidFilter(filterType))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
-        folders = FilterByRoomTypes(folders, filterTypes);
+        folders = FilterByRoomType(folders, filterType);
         folders = FilterByOwner(folders, ownerId, withoutMe);
 
         if (!string.IsNullOrEmpty(searchText))

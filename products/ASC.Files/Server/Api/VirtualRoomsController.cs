@@ -649,16 +649,14 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// Virtual Rooms content
     /// </returns>
     [HttpGet("rooms")]
-    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(string types, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea, bool withoutTags, string tags,
+    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomType type, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea, bool withoutTags, string tags,
         bool withoutMe)
     {
         ErrorIfNotDocSpace();
 
         var parentId = await _globalFolderHelper.GetFolderVirtualRooms<int>();
 
-        var roomTypes = !string.IsNullOrEmpty(types) ? JsonSerializer.Deserialize<IEnumerable<RoomType>>(types) : null;
-
-        var filterTypes = roomTypes != null ? roomTypes.Select(t => t switch
+        var filterType = type switch
         {
             RoomType.FillingFormsRoom => FilterType.FillingFormsRooms,
             RoomType.ReadOnlyRoom => FilterType.ReadOnlyRooms,
@@ -666,7 +664,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
             RoomType.ReviewRoom => FilterType.ReviewRooms,
             RoomType.CustomRoom => FilterType.CustomRooms,
             _ => FilterType.None
-        }) : new[] { FilterType.None };
+        };
 
         var tagNames = !string.IsNullOrEmpty(tags) ? JsonSerializer.Deserialize<IEnumerable<string>>(tags) : null;
 
@@ -680,7 +678,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var filterValue = _apiContext.FilterValue;
 
-        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filterTypes, false, subjectId, filterValue, 
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filterType, false, subjectId, filterValue, 
             searchInContent, withSubfolders, orderBy, searchArea, withoutTags, tagNames, withoutMe);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);

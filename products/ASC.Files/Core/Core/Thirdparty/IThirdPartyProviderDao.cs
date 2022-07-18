@@ -245,9 +245,6 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
     protected T ProviderInfo { get; set; }
     protected string PathPrefix { get; private set; }
-    private readonly List<FilterType> _constraintFolderFilters =
-        new() { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly,
-            FilterType.PresentationsOnly, FilterType.SpreadsheetsOnly, FilterType.ArchiveOnly, FilterType.MediaOnly };
 
     protected abstract string Id { get; }
 
@@ -412,7 +409,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         if (withoutTags)
         {
             return folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
-                .WhereAwait(async r => !await FilesDbContext.TagLink.ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
+                .WhereAwait(async r => !await FilesDbContext.TagLink.Join(FilesDbContext.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
+                .Where(r => r.tag.Type == TagType.Custom).ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
                 .Select(r => r.folder);
         }
 
@@ -430,24 +428,24 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return filtered;
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByRoomTypes(IAsyncEnumerable<Folder<string>> rooms, IEnumerable<FilterType> filterTypes)
+    protected IAsyncEnumerable<Folder<string>> FilterByRoomType(IAsyncEnumerable<Folder<string>> rooms, FilterType filterType)
     {
-        if (!filterTypes.Any() || filterTypes.Contains(FilterType.None))
+        if (filterType == FilterType.None)
         {
             return rooms;
         }
 
-        var filter = filterTypes.Select(f => f switch
+        var filter = filterType switch
         {
             FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
             FilterType.EditingRooms => FolderType.EditingRoom,
             FilterType.ReviewRooms => FolderType.ReviewRoom,
             FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
             FilterType.CustomRooms => FolderType.CustomRoom,
-            _ => FolderType.CustomRoom
-        }).ToHashSet();
+            _ => FolderType.CustomRoom,
+        };
 
-        return rooms.Where(f => filter.Contains(f.FolderType));
+        return rooms.Where(f => f.FolderType == filter);
     }
 
     protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)
@@ -465,11 +463,10 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return rooms;
     }
 
-    protected bool CheckForInvalidFilters(IEnumerable<FilterType> filterTypes)
+    protected bool CheckInvalidFilter(FilterType filterType)
     {
-        var intersection = filterTypes.Intersect(_constraintFolderFilters);
-
-        return !intersection.Any();
+        return filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly
+            or FilterType.SpreadsheetsOnly or FilterType.ArchiveOnly or FilterType.MediaOnly;
     }
 
     protected abstract string MakeId(string path = null);

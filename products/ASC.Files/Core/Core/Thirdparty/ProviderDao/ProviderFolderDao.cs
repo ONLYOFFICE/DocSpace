@@ -90,11 +90,11 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folderDao.GetRootFolderByFileAsync(selector.ConvertId(fileId));
     }
 
-    public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, IEnumerable<FilterType> filterTypes, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
     {
         var selector = GetSelector(parentId);
         var folderDao = selector.GetFolderDao(parentId);
-        var rooms = folderDao.GetRoomsAsync(selector.ConvertId(parentId), filterTypes, tags, ownerId, searchText, withSubfolders, withoutTags, withoutMe);
+        var rooms = folderDao.GetRoomsAsync(selector.ConvertId(parentId), filterType, tags, ownerId, searchText, withSubfolders, withoutTags, withoutMe);
         var result = await rooms.Where(r => r != null).ToListAsync();
         
         await SetSharedPropertyAsync(result);
@@ -105,7 +105,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, IEnumerable<FilterType> filterTypes, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
     {
         var result = AsyncEnumerable.Empty<Folder<string>>();
 
@@ -125,7 +125,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
                 {
                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
 
-                    return folderDao.GetRoomsAsync(matchedId.Select(selectorLocal.ConvertId).ToList(), filterTypes, tags, ownerId, searchText, withSubfolders, withoutTags, withoutMe);
+                    return folderDao.GetRoomsAsync(matchedId.Select(selectorLocal.ConvertId).ToList(), filterType, tags, ownerId, searchText, withSubfolders, withoutTags, withoutMe);
                 })
                 .Where(r => r != null));
         }

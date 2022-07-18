@@ -237,14 +237,7 @@ public class FileStorageService<T> //: IFileStorageService
         }));
     }
 
-    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, FilterType filter, bool subjectGroup, string subject, string searchText, bool searchInContent, 
-        bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null, bool withoutMe = false)
-    {
-        return await GetFolderItemsAsync(parentId, from, count, new[] { filter }, subjectGroup, subject, searchText, searchInContent, withSubfolders, orderBy, searchArea, withoutTags,
-            tagNames, withoutMe);
-    }
-
-    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, IEnumerable<FilterType> filterTypes, bool subjectGroup, string subject, string searchText, 
+    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, FilterType filterType, bool subjectGroup, string subject, string searchText, 
         bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null, bool withoutMe = false)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
@@ -292,7 +285,7 @@ public class FileStorageService<T> //: IFileStorageService
         IEnumerable<FileEntry> entries;
         try
         {
-            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterTypes, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, 
+            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, 
                 withoutTags, tagNames, withoutMe);
         }
         catch (Exception e)
