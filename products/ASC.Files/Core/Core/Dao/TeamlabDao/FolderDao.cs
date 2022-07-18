@@ -367,14 +367,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 folderId = await InternalSaveFolderToDbAsync(folder);
 
-                await tx.CommitAsync().ConfigureAwait(false);            
+                await tx.CommitAsync().ConfigureAwait(false);
             });
         }
         else
         {
             folderId = await InternalSaveFolderToDbAsync(folder);
         }
-   
+
         //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
         return folderId;
     }

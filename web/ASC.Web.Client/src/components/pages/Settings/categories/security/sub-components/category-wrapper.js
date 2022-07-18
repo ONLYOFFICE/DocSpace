@@ -10,10 +10,12 @@ const CategoryWrapper = (props) => {
 
   const tooltip = () => (
     <StyledTooltip>
-      <Text className="subtitle">{tooltipTitle}</Text>
-      <Link target="_blank" isHovered href={tooltipUrl}>
-        {t("Common:LearnMore")}
-      </Link>
+      <Text className={tooltipUrl ? "subtitle" : ""}>{tooltipTitle}</Text>
+      {tooltipUrl && (
+        <Link target="_blank" isHovered href={tooltipUrl}>
+          {t("Common:LearnMore")}
+        </Link>
+      )}
     </StyledTooltip>
   );
 

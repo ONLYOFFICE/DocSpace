@@ -330,13 +330,13 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// Invitation link
     /// </returns>
     [HttpGet("rooms/{id}/links")]
-    public async Task<object> GetInvitationLinkAsync(T id, InviteLinkDto inDto)
+    public async Task<object> GetInvitationLinkAsync(T id, FileShare access)
     {
         ErrorIfNotDocSpace();
 
-        await ErrorIfNotRights(id, inDto.Access);
+        await ErrorIfNotRights(id, access);
 
-        return _roomLinksService.GenerateLink(id, (int)inDto.Access, EmployeeType.User, _authContext.CurrentAccount.ID);
+        return _roomLinksService.GenerateLink(id, (int)access, EmployeeType.User, _authContext.CurrentAccount.ID);
     }
 
     /// <summary>
