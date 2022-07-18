@@ -30,13 +30,15 @@ const loadPath = (lng, ns) => {
 const port = PORT || 5013;
 const app = express();
 
+const fallbackLng = "en";
+
 i18next.use(Backend).init({
   backend: {
     loadPath: loadPath,
     allowMultiLoading: true,
     crossDomain: false,
   },
-  fallbackLng: "en",
+  fallbackLng: fallbackLng,
   load: "currentOnly",
 
   saveMissing: true,
@@ -64,22 +66,15 @@ app.use(logger("dev", { stream: winston.stream }));
 app.get("/products/files/doceditor", async (req, res) => {
   const { i18n, initialState, appComponent, styleTags, assets } = req;
   const userLng = initialState?.user?.cultureName || "en";
-  const initialI18nStore = {};
 
   await i18next.changeLanguage(userLng);
-  const usedNamespaces = i18n.reportNamespaces.getUsedNamespaces();
-
-  initialI18nStore[userLng] = {};
-  usedNamespaces.forEach((namespace) => {
-    initialI18nStore[namespace] =
-      i18n.services.resourceStore.data[userLng][namespace];
-  });
+  const initialI18nStoreASC = i18n.services.resourceStore.data;
 
   const htmlString = template(
     initialState,
     appComponent,
     styleTags,
-    initialI18nStore,
+    initialI18nStoreASC,
     userLng,
     assets
   );

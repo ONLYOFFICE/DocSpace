@@ -5,7 +5,7 @@ export default function template(
   initialState = {},
   appComponent = "",
   styleTags,
-  initialI18nStore,
+  initialI18nStoreASC,
   initialLanguage,
   assets
 ) {
@@ -18,7 +18,7 @@ export default function template(
       window.__ASC_INITIAL_STATE__ = ${JSON.stringify(initialState)}
     </script>
     <script id="__ASC_I18N_INIT__">
-      window.initialI18nStore = ${JSON.stringify(initialI18nStore)}
+      window.initialI18nStoreASC = ${JSON.stringify(initialI18nStoreASC)}
       window.initialLanguage = '${initialLanguage}'
     </script>
     <script>

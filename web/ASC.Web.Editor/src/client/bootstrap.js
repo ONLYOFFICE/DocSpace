@@ -11,15 +11,50 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import pkg from "../../package.json";
 
 const propsObj = window.__ASC_INITIAL_STATE__;
-const initialI18nStore = window.initialI18nStore;
+const initialI18nStoreASC = window.initialI18nStoreASC;
 const initialLanguage = window.initialLanguage;
-const socketPath = pkg.socketPath;
+
+if (initialI18nStoreASC && !window.i18n) {
+  const { homepage } = pkg;
+
+  window.i18n = {};
+  window.i18n.inLoad = [];
+  window.i18n.loaded = {};
+
+  for (let lng in initialI18nStoreASC) {
+    for (let ns in initialI18nStoreASC[lng]) {
+      if (ns === "Common") {
+        window.i18n.loaded[`/static/locales/${lng}/${ns}.json`] = {
+          namespaces: ns,
+          data: initialI18nStoreASC[lng][ns],
+          work: true,
+        };
+      } else {
+        window.i18n.loaded[`${homepage}/locales/${lng}/${ns}.json`] = {
+          namespaces: ns,
+          data: initialI18nStoreASC[lng][ns],
+          work: true,
+        };
+      }
+    }
+  }
+}
+
+delete window.__ASC_INITIAL_STATE__;
+delete window.initialI18nStoreASC;
+delete window.initialLanguage;
+
+const stateInit = document.getElementById("__ASC_INITIAL_STATE__");
+const i18nInit = document.getElementById("__ASC_I18N_INIT__");
+stateInit.parentNode.removeChild(stateInit);
+i18nInit.parentNode.removeChild(i18nInit);
 
 const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
 
 const AppWrapper = () => {
   const [isInitialized, isErrorLoading] = useMfScripts();
-  useSSR(initialI18nStore, initialLanguage);
+  useSSR(initialI18nStoreASC, initialLanguage);
+
   React.useEffect(() => {
     const tempElm = document.getElementById("loader");
     if (tempElm) {
@@ -54,6 +89,8 @@ hydrate(<AppWrapper />, document.getElementById("root"));
 
 if (IS_DEVELOPMENT) {
   const port = PORT || 5013;
+  const socketPath = pkg.socketPath;
+
   const ws = new WebSocket(`ws://localhost:${port}${socketPath}`);
   let isErrorConnection = false;
 
