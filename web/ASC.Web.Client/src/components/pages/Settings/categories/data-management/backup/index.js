@@ -1,47 +1,16 @@
-import React, { useState, useEffect } from "react";
-import Submenu from "@appserver/components/submenu";
+import React from "react";
 import { withTranslation, Trans } from "react-i18next";
-import { enableAutoBackup } from "@appserver/common/api/portal";
+import Submenu from "@appserver/components/submenu";
 import Link from "@appserver/components/link";
+import HelpButton from "@appserver/components/help-button";
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
-
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
-import toastr from "@appserver/components/toast/toastr";
-import { getBackupStorage } from "@appserver/common/api/settings";
-import HelpButton from "@appserver/components/help-button";
+import config from "../../../../../../../package.json";
 
-const Backup = ({
-  setThirdPartyStorage,
-  helpUrlCreatingBackup,
-  getProgress,
-  buttonSize,
-  t,
-}) => {
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [enableAuto, setEnableAuto] = useState(false);
-
-  useEffect(() => {
-    setBasicSettings();
-  }, []);
-  const setBasicSettings = async () => {
-    const requests = [enableAutoBackup(), getBackupStorage()];
-
-    try {
-      getProgress();
-
-      const [enableAuto, backupStorage] = await Promise.all(requests);
-
-      setThirdPartyStorage(backupStorage);
-
-      setIsInitialLoading(false);
-      setEnableAuto(enableAuto);
-    } catch (error) {
-      toastr.error(error);
-      setIsInitialLoading(false);
-    }
-  };
-
+const Backup = ({ helpUrlCreatingBackup, buttonSize, t, history }) => {
   const renderTooltip = (helpInfo) => {
     return (
       <>
@@ -88,42 +57,29 @@ const Backup = ({
     },
   ];
 
-  const onSelect = () => {};
-
-  return isInitialLoading ? (
-    <></>
-  ) : (
+  const onSelect = (e) => {
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/settings/backup/${e.id}`
+      )
+    );
+  };
+  console.log("BACKUP INDEX");
+  return (
     <Submenu data={data} startSelect={data[0]} onSelect={(e) => onSelect(e)} />
   );
 };
 
-export default inject(({ auth, backup }) => {
-  const { language, settingsStore } = auth;
-  const {
-    helpUrlCreatingBackup,
-    organizationName,
-    isTabletView,
-  } = settingsStore;
-  const {
-    setThirdPartyStorage,
-    setBackupSchedule,
-    setCommonThirdPartyList,
-    getProgress,
-    clearProgressInterval,
-    downloadingProgress,
-  } = backup;
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { helpUrlCreatingBackup, isTabletView } = settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
+
   return {
     helpUrlCreatingBackup,
-    language,
-    setThirdPartyStorage,
-    setBackupSchedule,
-    setCommonThirdPartyList,
-    getProgress,
-    clearProgressInterval,
-    downloadingProgress,
-    organizationName,
     buttonSize,
   };
 })(observer(withTranslation(["Settings", "Common"])(Backup)));

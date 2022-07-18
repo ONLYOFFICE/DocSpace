@@ -5,6 +5,7 @@ import Layout from "./Layout";
 import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 import { inject, observer } from "mobx-react";
+
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 const Admins = lazy(() => import("./categories/security/access-rights/admins"));
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
@@ -42,18 +43,10 @@ const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")
 );
-const DataManagementSettings = lazy(() =>
-  import("./categories/data-management/backup")
-);
+const Backup = lazy(() => import("./categories/data-management/backup"));
 
-const AutomaticBackup = lazy(() =>
-  import("./categories/data-management/backup/auto-backup")
-);
-const ManualBackup = lazy(() =>
-  import("./categories/data-management/backup/manual-backup")
-);
 const RestoreBackup = lazy(() =>
-  import("./categories/data-management/backup/restore-backup")
+  import("./categories/data-management/backup/restore-backup/index")
 );
 
 const WhiteLabel = lazy(() =>
@@ -77,6 +70,16 @@ const CUSTOMIZATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/common"),
   PROXY_BASE_URL,
 ];
+
+const BACKUP_URLS = [
+  PROXY_BASE_URL,
+  combineUrl(PROXY_BASE_URL, "/backup"),
+  combineUrl(PROXY_BASE_URL, "/backup/data-backup"),
+  combineUrl(PROXY_BASE_URL, "/backup/auto-backup"),
+];
+
+const RESTORE_DATA_URL = combineUrl(PROXY_BASE_URL, "/restore");
+
 const LTZ_URL = combineUrl(
   PROXY_BASE_URL,
   "/common/customization/language-and-time-zone"
@@ -124,12 +127,6 @@ const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
-);
-const DATA_MANAGEMENT_URL = combineUrl(PROXY_BASE_URL, "/backup");
-
-const RESTORE_DATA_MANAGEMENT_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/restore-backup"
 );
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
@@ -186,13 +183,10 @@ const Settings = (props) => {
             path={SESSION_LIFETIME_PAGE_URL}
             component={SessionLifetimePage}
           />
-
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
-          <Route
-            path={DATA_MANAGEMENT_URL}
-            component={DataManagementSettings}
-          />
-          <Route path={RESTORE_DATA_MANAGEMENT_URL} component={RestoreBackup} />
+          <Route exact path={BACKUP_URLS} component={Backup} />
+
+          <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
           {/* <Redirect
             to={{
               pathname: ERROR_404_URL,
