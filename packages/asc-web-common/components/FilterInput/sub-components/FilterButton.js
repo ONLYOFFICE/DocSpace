@@ -28,24 +28,13 @@ const FilterButton = ({
   t,
   onFilter,
   getFilterData,
-  getSelectedFilterData,
+
+  selectedFilterValue,
 
   filterHeader,
   selectorLabel,
 }) => {
   const [showFilterBlock, setShowFilterBlock] = React.useState(false);
-
-  const [selectedFilterValue, setSelectedFilterValue] = React.useState(null);
-
-  React.useEffect(() => {
-    getSelectedFilterDataAction();
-  }, [getSelectedFilterDataAction, getSelectedFilterData]);
-
-  const getSelectedFilterDataAction = React.useCallback(async () => {
-    const value = await getSelectedFilterData();
-
-    setSelectedFilterValue(value);
-  }, [getSelectedFilterData]);
 
   const changeShowFilterBlock = React.useCallback(() => {
     setShowFilterBlock((value) => !value);
