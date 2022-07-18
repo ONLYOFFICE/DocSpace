@@ -391,6 +391,8 @@ class BackupStore {
             return;
           }
         } else {
+          this.timerId && toastr.error(t("BackupCreatedError"));
+          this.downloadingProgress = 100;
           clearInterval(this.timerId);
           this.clearSessionStorage();
           this.timerId = null;
