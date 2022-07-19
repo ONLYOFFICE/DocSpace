@@ -20,6 +20,7 @@ import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
 import { canConvert, convertDocumentUrl } from "../helpers/utils";
+import { assign } from "@appserver/common/utils";
 
 const LoaderComponent = (
   <Loader
@@ -433,9 +434,13 @@ function Editor({
 
     if (index > -1) {
       const splitUrl = url.split("#message/");
-      const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
-      history.pushState({}, null, url.substring(0, index));
-      docEditor.showMessage(message);
+      if (splitUrl.length === 2) {
+        const message = decodeURIComponent(raw).replace(/\+/g, " ");
+        docEditor.showMessage(message);
+        history.pushState({}, null, url.substring(0, index));
+      } else {
+        if (config?.Error) docEditor.showMessage(config.Error);
+      }
     }
   };
 
@@ -561,6 +566,8 @@ function Editor({
         "editor",
         newConfig
       );
+
+      assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
 
       setIsLoaded(true);
     } catch (error) {

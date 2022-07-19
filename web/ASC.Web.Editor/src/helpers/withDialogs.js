@@ -247,6 +247,7 @@ const withDialogs = (WrappedComponent) => {
         sharingObject={fileInfo}
         onCancel={onCancel}
         onSuccess={loadUsersRightsList}
+        settings={props.filesSettings}
       />
     );
 
@@ -266,6 +267,7 @@ const withDialogs = (WrappedComponent) => {
         {...fileTypeDetection()}
         titleFilesList={selectFilesListTitle()}
         headerName={t("SelectFileTitle")}
+        settings={props.filesSettings}
       />
     );
 

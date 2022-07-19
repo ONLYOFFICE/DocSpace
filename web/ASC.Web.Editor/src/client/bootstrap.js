@@ -9,6 +9,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import ErrorBoundary from "../components/ErrorBoundary";
 import pkg from "../../package.json";
+import { isRetina, getCookie, setCookie } from "@appserver/common/utils";
 
 const propsObj = window.__ASC_INITIAL_EDITOR_STATE__;
 const initialI18nStoreASC = window.initialI18nStoreASC;
@@ -59,6 +60,10 @@ const AppWrapper = () => {
     const tempElm = document.getElementById("loader");
     if (tempElm) {
       tempElm.outerHTML = "";
+    }
+
+    if (isRetina() && getCookie("is_retina") == null) {
+      setCookie("is_retina", true, { path: "/" });
     }
   }, []);
   const onError = () =>

@@ -8,6 +8,7 @@ import {
   getFileInfo,
   openEdit,
   convertFile,
+  getSettingsFiles,
 } from "@appserver/common/api/files";
 
 import pkg from "../../package.json";
@@ -48,7 +49,11 @@ export const initDocEditor = async (req) => {
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
-    const [user, settings] = await Promise.all([getUser(), getSettings()]);
+    const [user, settings, filesSettings] = await Promise.all([
+      getUser(),
+      getSettings(),
+      getSettingsFiles(),
+    ]);
 
     const successAuth = !!user;
     const personal = settings?.personal;
@@ -96,6 +101,7 @@ export const initDocEditor = async (req) => {
       doc,
       fileId,
       view,
+      filesSettings,
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };
