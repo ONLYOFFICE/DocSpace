@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
-import { smallTablet, tablet } from "../utils/device";
+import { mobile, smallTablet, tablet } from "../utils/device";
+import { isMobile } from "react-device-detect";
 
 const StyledModal = styled.div`
   pointer-events: none;
@@ -103,11 +104,13 @@ const StyledBody = styled(Box)`
   padding-bottom: ${(props) =>
     props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
 
-  margin-right: ${(props) => (props.withBodyScroll ? "-16px" : "0")};
-
   ${(props) =>
     props.currentDisplayType === "aside" &&
     css`
+      .body_content-with_scroll {
+        ${isMobile && "margin-right: 8px;"}
+      }
+      margin-right: ${props.withBodyScroll ? "-16px" : "0"};
       padding-bottom: 8px;
       height: 100%;
       min-height: auto;
