@@ -21,6 +21,7 @@ import {
   ThirdPartyDialog,
   ConflictResolveDialog,
   ConvertDialog,
+  CreateRoomDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 
@@ -47,6 +48,7 @@ const Panels = (props) => {
     setSelectFileDialogVisible,
     hotkeyPanelVisible,
     convertPasswordDialogVisible,
+    createRoomDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -86,6 +88,7 @@ const Panels = (props) => {
       <ConflictResolveDialog key="conflict-resolve-dialog" />
     ),
     convertDialogVisible && <ConvertDialog key="convert-dialog" />,
+    createRoomDialogVisible && <CreateRoomDialog key="create-room-dialog" />,
     selectFileDialogVisible && (
       <SelectFileDialog
         key="select-file-dialog"
@@ -126,6 +129,7 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
+      createRoomDialogVisible,
       convertPasswordDialogVisible,
       connectItem, //TODO:
 
@@ -155,6 +159,7 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
+      createRoomDialogVisible,
       convertPasswordDialogVisible,
       selectFileDialogVisible,
       createMasterForm,

@@ -28,6 +28,7 @@ const ArticleMainButtonContent = (props) => {
     encrypted,
     startUpload,
     setAction,
+    setCreateRoomDialogVisible,
     setSelectFileDialogVisible,
     isArticleLoading,
     isFavoritesFolder,
@@ -66,6 +67,7 @@ const ArticleMainButtonContent = (props) => {
 
   const onCreateRoom = React.useCallback(() => {
     console.log("create room");
+    setCreateRoomDialogVisible(true);
   }, []);
 
   const onShowSelectFileDialog = React.useCallback(() => {
@@ -327,7 +329,10 @@ export default inject(
       isArchiveFolder,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-    const { setSelectFileDialogVisible } = dialogsStore;
+    const {
+      setCreateRoomDialogVisible,
+      setSelectFileDialogVisible,
+    } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
@@ -351,6 +356,7 @@ export default inject(
 
       startUpload,
 
+      setCreateRoomDialogVisible,
       setSelectFileDialogVisible,
 
       isLoading,

@@ -7,6 +7,7 @@ import ConnectDialog from "./ConnectDialog";
 import ThirdPartyMoveDialog from "./ThirdPartyMoveDialog";
 import ThirdPartyDialog from "./ThirdPartyDialog";
 import ConflictResolveDialog from "./ConflictResolveDialog";
+import CreateRoomDialog from "./CreateRoomDialog";
 
 export {
   EmptyTrashDialog,
@@ -18,4 +19,5 @@ export {
   ThirdPartyMoveDialog,
   ThirdPartyDialog,
   ConflictResolveDialog,
+  CreateRoomDialog,
 };

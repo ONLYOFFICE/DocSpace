@@ -24,6 +24,7 @@ class DialogsStore {
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
+  createRoomDialogVisible = false;
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   isFolderActions = false;
@@ -196,6 +197,10 @@ class DialogsStore {
     this.convertDialogVisible = visible;
   };
 
+  setConvertDialogVisible = (visible) => {
+    this.createRoomDialogVisible = visible;
+  };
+
   setConvertPasswordDialogVisible = (visible) => {
     this.convertPasswordDialogVisible = visible;
   };
@@ -246,6 +251,7 @@ class DialogsStore {
       this.newFilesPanelVisible ||
       this.conflictResolveDialogVisible ||
       this.convertDialogVisible ||
+      this.createRoomDialogVisible ||
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
       this.versionHistoryStore.isVisible
