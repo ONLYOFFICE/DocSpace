@@ -206,6 +206,7 @@ const Table = ({
               columnInfoPanelStorageName={columnInfoPanelStorageName}
               tagRef={tagRef}
               tagCount={tagCount}
+              isRooms={isRooms}
             />
           ) : (
             <TableRow
@@ -220,6 +221,7 @@ const Table = ({
               columnStorageName={columnStorageName}
               columnInfoPanelStorageName={columnInfoPanelStorageName}
               tagCount={tagCount}
+              isRooms={isRooms}
             />
           );
         })}
