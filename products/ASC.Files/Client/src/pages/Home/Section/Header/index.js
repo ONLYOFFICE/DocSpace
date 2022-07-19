@@ -382,18 +382,16 @@ class SectionHeaderContent extends React.Component {
       setIsLoading,
 
       fetchRooms,
-      rootFolderType,
       history,
+
+      setAlreadyFetchingRooms,
     } = this.props;
 
     setIsLoading(true);
 
-    const searchArea =
-      rootFolderType === FolderType.Rooms
-        ? RoomSearchArea.Active
-        : RoomSearchArea.Archive;
+    setAlreadyFetchingRooms(true);
 
-    fetchRooms(searchArea, null)
+    fetchRooms(null, null)
       .then(() => {
         const filter = RoomsFilter.getDefault();
 
@@ -536,6 +534,8 @@ export default inject(
       fetchRooms,
       activeFiles,
       activeFolders,
+
+      setAlreadyFetchingRooms,
     } = filesStore;
 
     const {
@@ -629,6 +629,8 @@ export default inject(
 
       isRoomsFolder,
       isArchiveFolder,
+
+      setAlreadyFetchingRooms,
     };
   }
 )(
