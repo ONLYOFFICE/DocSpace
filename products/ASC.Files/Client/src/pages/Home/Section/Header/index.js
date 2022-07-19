@@ -68,6 +68,10 @@ class SectionHeaderContent extends React.Component {
     window.dispatchEvent(event);
   };
 
+  onCreateRoom = () => {
+    console.log("create room");
+  };
+
   createDocument = () => this.onCreate("docx");
 
   createSpreadsheet = () => this.onCreate("xlsx");
@@ -97,61 +101,70 @@ class SectionHeaderContent extends React.Component {
   uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
-    const { t, isPrivacyFolder } = this.props;
+    const { t, isPrivacyFolder, isRoomsFolder } = this.props;
 
-    return [
-      {
-        key: "new-document",
-        label: t("NewDocument"),
-        onClick: this.createDocument,
-        icon: "images/actions.documents.react.svg",
-      },
-      {
-        key: "new-spreadsheet",
-        label: t("NewSpreadsheet"),
-        onClick: this.createSpreadsheet,
-        icon: "images/spreadsheet.react.svg",
-      },
-      {
-        key: "new-presentation",
-        label: t("NewPresentation"),
-        onClick: this.createPresentation,
-        icon: "images/actions.presentation.react.svg",
-      },
-      {
-        icon: "images/form.react.svg",
-        label: t("Translations:NewForm"),
-        key: "new-form-base",
-        items: [
+    const options = isRoomsFolder
+      ? [
           {
-            key: "new-form",
-            label: t("Translations:SubNewForm"),
-            icon: "images/form.blank.react.svg",
-            onClick: this.createForm,
+            key: "new-room",
+            label: "New room",
+            onClick: this.onCreateRoom,
+            icon: "images/folder.locked.react.svg",
+          },
+        ]
+      : [
+          {
+            key: "new-document",
+            label: t("NewDocument"),
+            onClick: this.createDocument,
+            icon: "images/actions.documents.react.svg",
           },
           {
-            key: "new-form-file",
-            label: t("Translations:SubNewFormFile"),
-            icon: "images/form.file.react.svg",
-            onClick: this.createFormFromFile,
-            disabled: isPrivacyFolder,
+            key: "new-spreadsheet",
+            label: t("NewSpreadsheet"),
+            onClick: this.createSpreadsheet,
+            icon: "images/spreadsheet.react.svg",
           },
           {
-            key: "oforms-gallery",
-            label: t("Common:OFORMsGallery"),
-            icon: "images/form.gallery.react.svg",
-            onClick: this.onShowGallery,
-            disabled: isPrivacyFolder || (isMobile && isTablet),
+            key: "new-presentation",
+            label: t("NewPresentation"),
+            onClick: this.createPresentation,
+            icon: "images/actions.presentation.react.svg",
           },
-        ],
-      },
-      {
-        key: "new-folder",
-        label: t("NewFolder"),
-        onClick: this.createFolder,
-        icon: "images/catalog.folder.react.svg",
-      },
-      /*{ key: "separator", isSeparator: true },
+          {
+            icon: "images/form.react.svg",
+            label: t("Translations:NewForm"),
+            key: "new-form-base",
+            items: [
+              {
+                key: "new-form",
+                label: t("Translations:SubNewForm"),
+                icon: "images/form.blank.react.svg",
+                onClick: this.createForm,
+              },
+              {
+                key: "new-form-file",
+                label: t("Translations:SubNewFormFile"),
+                icon: "images/form.file.react.svg",
+                onClick: this.createFormFromFile,
+                disabled: isPrivacyFolder,
+              },
+              {
+                key: "oforms-gallery",
+                label: t("Common:OFORMsGallery"),
+                icon: "images/form.gallery.react.svg",
+                onClick: this.onShowGallery,
+                disabled: isPrivacyFolder || (isMobile && isTablet),
+              },
+            ],
+          },
+          {
+            key: "new-folder",
+            label: t("NewFolder"),
+            onClick: this.createFolder,
+            icon: "images/catalog.folder.react.svg",
+          },
+          /*{ key: "separator", isSeparator: true },
       {
         key: "upload-to-folder",
         label: t("UploadToFolder"),
@@ -159,7 +172,9 @@ class SectionHeaderContent extends React.Component {
         disabled: true,
         icon: "images/actions.upload.react.svg",
       },*/
-    ];
+        ];
+
+    return options;
   };
 
   createLinkForPortalUsers = () => {
@@ -533,7 +548,12 @@ export default inject(
       setIsFolderActions,
     } = dialogsStore;
 
-    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = treeFoldersStore;
     const {
       deleteAction,
       downloadAction,
@@ -606,6 +626,9 @@ export default inject(
 
       activeFiles,
       activeFolders,
+
+      isRoomsFolder,
+      isArchiveFolder,
     };
   }
 )(
