@@ -187,7 +187,11 @@ const Table = ({
         containerRef={ref}
         tableStorageName={tableColumns}
         columnStorageName={columnStorageName}
+        filesColumnStorageName={`${COLUMNS_SIZE}=${userId}`}
+        roomsColumnStorageName={`${COLUMNS_ROOMS_SIZE}=${userId}`}
         columnInfoPanelStorageName={columnInfoPanelStorageName}
+        filesColumnInfoPanelStorageName={`${COLUMNS_SIZE_INFO_PANEL}=${userId}`}
+        roomsColumnInfoPanelStorageName={`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`}
         isRooms={isRooms}
       />
       <TableBody>
@@ -235,7 +239,10 @@ export default inject(({ filesStore, treeFoldersStore, auth }) => {
 
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-  const isRooms = isRoomsFolder || isArchiveFolder;
+  const isRooms =
+    isRoomsFolder ||
+    isArchiveFolder ||
+    window.location.href.includes("/rooms?");
 
   const {
     filesList,
