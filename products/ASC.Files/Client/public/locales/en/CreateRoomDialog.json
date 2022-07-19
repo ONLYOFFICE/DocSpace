@@ -1,0 +1,16 @@
+{
+  "CreateRoom": "Create room",
+  "ChooseRoomType": "Choose room type",
+
+  "FillingFormsRoomTitle": "Filling forms room",
+  "CollaborationRoomTitle": "Collaboration room",
+  "ReviewRoomTitle": "Review room",
+  "ViewOnlyRoomTitle": "View-only room",
+  "CustomRoomTitle": "Custom room",
+
+  "FillingFormsRoomDescription": "Build, share and fill document templates or work with the ready presets to quickly create documents of any type",
+  "CollaborationRoomDescription": "Collaborate on one or multiple documents with your team",
+  "ReviewRoomDescription": "Request a review or comments on the documents",
+  "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing",
+  "CustomRoomDescription": "Apply your own settings to use this room for any custom purpose"
+}
