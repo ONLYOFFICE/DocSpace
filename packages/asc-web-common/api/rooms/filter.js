@@ -18,10 +18,10 @@ const SUBJECT_ID = "subjectId";
 const DEFAULT_SUBJECT_ID = null;
 
 const SEARCH_IN_CONTENT = "searchInContent";
-const DEFAULT_SEARCH_IN_CONTENT = false;
+const DEFAULT_SEARCH_IN_CONTENT = null;
 
 const SEARCH_TYPE = "withSubfolders";
-const DEFAULT_SEARCH_TYPE = true;
+const DEFAULT_SEARCH_TYPE = null;
 
 const SEARCH_AREA = "searchArea";
 const DEFAULT_SEARCH_AREA = RoomSearchArea.Active;
@@ -67,13 +67,17 @@ class RoomsFilter {
       (urlFilter[SUBJECT_ID] && urlFilter[SUBJECT_ID]) ||
       defaultFilter.subjectId;
 
-    const searchInContent = urlFilter[SEARCH_IN_CONTENT]
-      ? urlFilter[SEARCH_IN_CONTENT] === "true"
-      : defaultFilter.searchInContent;
+    //TODO: remove it if search with subfolders and in content will be available
+    // const searchInContent = urlFilter[SEARCH_IN_CONTENT]
+    //   ? urlFilter[SEARCH_IN_CONTENT] === "true"
+    //   : defaultFilter.searchInContent;
 
-    const withSubfolders = urlFilter[SEARCH_TYPE]
-      ? urlFilter[SEARCH_TYPE] === "true"
-      : defaultFilter.withSubfolders;
+    // const withSubfolders = urlFilter[SEARCH_TYPE]
+    //   ? urlFilter[SEARCH_TYPE] === "true"
+    //   : defaultFilter.withSubfolders;
+
+    const searchInContent = false;
+    const withSubfolders = false;
 
     const searchArea =
       (urlFilter[SEARCH_AREA] && urlFilter[SEARCH_AREA]) ||
@@ -228,7 +232,7 @@ class RoomsFilter {
     dtoFilter[SORT_ORDER] = sortOrder;
     dtoFilter[SEARCH_TYPE] = withSubfolders;
 
-    const str = toUrlParams(dtoFilter, false);
+    const str = toUrlParams(dtoFilter, true);
     return str;
   };
 
