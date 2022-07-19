@@ -15,12 +15,8 @@ import GlobalStyle from "../components/GlobalStyle.js";
 import ThemeProvider from "@appserver/components/theme-provider";
 import store from "studio/store";
 import { inject, observer, Provider as MobxProvider } from "mobx-react";
-
-const ThemeProviderWrapper = inject(({ auth }) => {
-  const { settingsStore } = auth;
-  console.log(settingsStore.theme);
-  return { theme: settingsStore.theme };
-})(observer(ThemeProvider));
+import i18n from "./i18n";
+import { I18nextProvider } from "react-i18next";
 
 const propsObj = window.__ASC_INITIAL_EDITOR_STATE__;
 const initialI18nStoreASC = window.initialI18nStoreASC;
@@ -39,13 +35,13 @@ if (initialI18nStoreASC && !window.i18n) {
         window.i18n.loaded[`/static/locales/${lng}/${ns}.json`] = {
           namespaces: ns,
           data: initialI18nStoreASC[lng][ns],
-          work: true,
+          fromEditor: true,
         };
       } else {
         window.i18n.loaded[`${homepage}/locales/${lng}/${ns}.json`] = {
           namespaces: ns,
           data: initialI18nStoreASC[lng][ns],
-          work: true,
+          fromEditor: true,
         };
       }
     }
@@ -62,6 +58,11 @@ stateInit.parentNode.removeChild(stateInit);
 i18nInit.parentNode.removeChild(i18nInit);
 
 const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
+
+const ThemeProviderWrapper = inject(({ auth }) => {
+  const { settingsStore } = auth;
+  return { theme: settingsStore.theme };
+})(observer(ThemeProvider));
 
 const AppWrapper = () => {
   const [isInitialized, isErrorLoading] = useMfScripts();
@@ -89,18 +90,18 @@ const AppWrapper = () => {
   return (
     <ErrorBoundary onError={onError}>
       <MobxProvider {...store}>
-        <ThemeProviderWrapper>
-          {/* <Suspense fallback={<div />}> */}
-          <GlobalStyle fonts={fonts} />
-          <App
-            {...propsObj}
-            mfReady={isInitialized}
-            mfFailed={isErrorLoading}
-            isDesktopEditor={isDesktopEditor}
-            initDesktop={initDesktop}
-          />
-          {/* </Suspense> */}
-        </ThemeProviderWrapper>
+        <I18nextProvider i18n={i18n}>
+          <ThemeProviderWrapper>
+            <GlobalStyle fonts={fonts} />
+            <App
+              {...propsObj}
+              mfReady={isInitialized}
+              mfFailed={isErrorLoading}
+              isDesktopEditor={isDesktopEditor}
+              initDesktop={initDesktop}
+            />
+          </ThemeProviderWrapper>
+        </I18nextProvider>
       </MobxProvider>
     </ErrorBoundary>
   );

@@ -264,8 +264,7 @@ const withDialogs = (WrappedComponent) => {
         onSelectFile={onSelectFile}
         onClose={onCloseFileDialog}
         {...fileTypeDetection()}
-        titleFilesList={selectFilesListTitle()}
-        headerName={t("SelectFileTitle")}
+        filesListTitle={selectFilesListTitle()}
         settings={props.filesSettings}
       />
     );
