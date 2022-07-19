@@ -1679,6 +1679,7 @@ class FilesStore {
   get canCreate() {
     switch (this.selectedFolderStore.rootFolderType) {
       case FolderType.USER:
+      case FolderType.Rooms:
         return true;
       case FolderType.SHARE:
         const canCreateInSharedFolder = this.selectedFolderStore.access === 1;
@@ -1692,6 +1693,7 @@ class FilesStore {
         );
       case FolderType.COMMON:
         return this.authStore.isAdmin;
+      case FolderType.Archive:
       case FolderType.TRASH:
       default:
         return false;
