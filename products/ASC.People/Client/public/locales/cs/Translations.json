@@ -1,8 +1,8 @@
 {
   "AddMembers": "Přidat členy",
   "Birthdate": "Datum narození",
-  "DeleteUserDataConfirmation": "Dokumenty uživatele sdílené s ostatními budou smazány. Chcete-li tomu zabránit, přiřaďte data znovu.",
   "DeleteSelfProfile": "Smazat profil",
+  "DeleteUserDataConfirmation": "Dokumenty uživatele sdílené s ostatními budou smazány. Chcete-li tomu zabránit, přiřaďte data znovu.",
   "DisableUserButton": "Deaktivovat",
   "DisabledEmployeeStatus": "Deaktivováno",
   "EmailChangeButton": "Změnit emailovou adresu",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Muž",
   "MaxSizeLabel": "(JPG nebo PNG, max. 1 MB)",
-  "NotBeUndone": "Poznámka: tento krok nelze vrátit zpět.",
   "PasswordChangeButton": "Změnit heslo",
   "PendingTitle": "Čekající",
   "ReassignData": "Znovu přiřadit data",

@@ -202,7 +202,7 @@ public class UserController : PeopleControllerBase
 
     [HttpPost]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    public EmployeeDto AddMember(MemberRequestDto inDto)
+    public async Task<EmployeeDto> AddMember(MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
@@ -226,7 +226,7 @@ public class UserController : PeopleControllerBase
             if (success)
             {
                 var folderDao = _daoFactory.GetFolderDao<int>();
-                var folder = folderDao.GetFolderAsync(id).Result;
+                var folder = await folderDao.GetFolderAsync(id);
 
                 if (folder == null)
                 {
@@ -236,7 +236,7 @@ public class UserController : PeopleControllerBase
             else
             {
                 var folderDao = _daoFactory.GetFolderDao<string>();
-                var folder = folderDao.GetFolderAsync(inDto.RoomId).Result;
+                var folder = await folderDao.GetFolderAsync(inDto.RoomId);
 
                 if (folder == null)
                 {

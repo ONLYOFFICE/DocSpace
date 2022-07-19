@@ -37,10 +37,9 @@ const SelectFileDialogAsideView = ({
     <ModalDialog
       visible={isPanelVisible}
       onClose={onClose}
-      contentHeight="100%"
-      contentPaddingBottom="0px"
       displayType="aside"
       withoutBodyScroll
+      withFooterBorder
     >
       <ModalDialog.Header>{dialogName}</ModalDialog.Header>
       <ModalDialog.Body className="select-file_body-modal-dialog">
@@ -90,28 +89,27 @@ const SelectFileDialogAsideView = ({
                 newFilter={newFilter}
               />
             </div>
-            <div className="selection-panel_aside-footer">
-              {footer}
-              <div className="selection-panel_aside-buttons">
-                <Button
-                  theme={theme}
-                  primary
-                  size="normalTouchscreen"
-                  label={primaryButtonName}
-                  onClick={onButtonClick}
-                  isDisabled={!fileId}
-                />
-                <Button
-                  theme={theme}
-                  size="normalTouchscreen"
-                  label={t("Common:CancelButton")}
-                  onClick={onClose}
-                />
-              </div>
-            </div>
           </div>
         </StyledAsideBody>
       </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          theme={theme}
+          primary
+          scale
+          size="normalTouchscreen"
+          label={primaryButtonName}
+          onClick={onButtonClick}
+          isDisabled={!fileId}
+        />
+        <Button
+          theme={theme}
+          scale
+          size="normalTouchscreen"
+          label={t("Common:CancelButton")}
+          onClick={onClose}
+        />
+      </ModalDialog.Footer>
     </ModalDialog>
   );
 };

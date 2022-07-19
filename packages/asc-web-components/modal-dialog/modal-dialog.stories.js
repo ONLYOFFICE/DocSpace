@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import ModalDialog from ".";
+import ModalDialog from "./index.js";
 import Button from "../button";
+import PropTypes from "prop-types";
 
 export default {
   title: "Components/ModalDialog",
@@ -13,64 +14,63 @@ export default {
     },
   },
   argTypes: {
-    onClick: { action: "onClick" },
-    onClose: { action: "onClose" },
-    onOk: { action: "onOk", table: { disable: true } },
+    onOk: { action: "onOk" },
   },
 };
 
-const Template = ({ onClick, onClose, onOk, ...args }) => {
-  const [isVisible, setIsVisible] = useState(args.visible);
+const Template = ({ onOk, ...args }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-  const toggleVisible = (e) => {
-    setIsVisible(!isVisible);
-    onClick(e);
-  };
+  const openModal = () => setIsVisible(true);
+  const closeModal = () => setIsVisible(false);
 
   return (
-    <div>
-      <Button
-        label="Show"
-        primary={true}
-        size="small"
-        onClick={toggleVisible}
-      />
-      <ModalDialog
-        {...args}
-        visible={isVisible}
-        onClose={(e) => {
-          onClose(e);
-          setIsVisible(!isVisible);
-        }}
-      >
-        <ModalDialog.Header>{"Change password"}</ModalDialog.Header>
+    <>
+      <Button label="Show" primary={true} size="medium" onClick={openModal} />
+      <ModalDialog {...args} visible={isVisible} onClose={closeModal}>
+        <ModalDialog.Header>Change password</ModalDialog.Header>
         <ModalDialog.Body>
-          <div>
+          <span>
             Send the password change instruction to the{" "}
             <a href="mailto:asc@story.book">asc@story.book</a> email address
-          </div>
+          </span>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
             label="Send"
             primary={true}
-            size="small"
-            onClick={(e) => {
-              onOk(e);
-              setIsVisible(!isVisible);
+            scale
+            size="normal"
+            onClick={() => {
+              onOk();
+              closeModal();
             }}
+          />
+          <Button
+            key="CloseBtn"
+            label="Cancel"
+            scale
+            size="normal"
+            onClick={closeModal}
           />
         </ModalDialog.Footer>
       </ModalDialog>
-    </div>
+    </>
   );
+};
+
+Template.propTypes = {
+  onOk: PropTypes.func,
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  scale: false,
-  displayType: "auto",
-  zIndex: 310,
-  headerContent: "Change password",
+  displayType: "aside",
+  displayTypeDetailed: {
+    desktop: "modal",
+    tablet: "aside",
+    smallTablet: "modal",
+    mobile: "aside",
+  },
 };
