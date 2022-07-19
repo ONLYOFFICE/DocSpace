@@ -1983,15 +1983,15 @@ class FilesStore {
       case FilterType.FilesOnly:
         return t("AllFiles");
       case `room-${RoomsType.FillingFormsRoom}`:
-        return "Filling forms";
+        return t("FillingFormRooms");
       case `room-${RoomsType.CustomRoom}`:
-        return "Custom";
+        return t("CustomRooms");
       case `room-${RoomsType.EditingRoom}`:
-        return "Editing";
+        return t("CollaborationRooms");
       case `room-${RoomsType.ReviewRoom}`:
-        return "Review";
+        return t("ReviewRooms");
       case `room-${RoomsType.ReadOnlyRoom}`:
-        return "View-only";
+        return t("ViewOnlyRooms");
 
       default:
         return "";
