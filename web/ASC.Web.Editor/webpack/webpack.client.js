@@ -82,23 +82,18 @@ module.exports = (env, argv) => {
       minimize: !env.minimize,
       minimizer: [new TerserPlugin()],
     };
-    clientConfig.plugins = [
-      ...clientConfig.plugins,
-      new DefinePlugin({
-        IS_DEVELOPMENT: false,
-        PORT: process.env.PORT || 5013,
-      }),
-    ];
   } else {
     clientConfig.devtool = "cheap-module-source-map";
-    clientConfig.plugins = [
-      ...clientConfig.plugins,
-      new DefinePlugin({
-        IS_DEVELOPMENT: true,
-        PORT: process.env.PORT || 5013,
-      }),
-    ];
   }
+
+  clientConfig.plugins = [
+    ...clientConfig.plugins,
+    new DefinePlugin({
+      IS_DEVELOPMENT: argv.mode !== "production",
+      PORT: process.env.PORT || 5013,
+      IS_PERSONAL: env.personal || false,
+    }),
+  ];
 
   return merge(baseConfig, clientConfig);
 };

@@ -1,7 +1,6 @@
 const { merge } = require("webpack-merge");
 const baseConfig = require("./webpack.base.js");
 const webpackNodeExternals = require("webpack-node-externals");
-const TerserPlugin = require("terser-webpack-plugin");
 const path = require("path");
 const DefinePlugin = require("webpack").DefinePlugin;
 
@@ -23,21 +22,12 @@ const serverConfig = {
 };
 
 module.exports = (env, argv) => {
-  if (argv.mode === "production") {
-    serverConfig.plugins = [
-      new DefinePlugin({
-        IS_DEVELOPMENT: false,
-        PORT: process.env.PORT || 5013,
-      }),
-    ];
-  } else {
-    serverConfig.plugins = [
-      new DefinePlugin({
-        IS_DEVELOPMENT: true,
-        PORT: process.env.PORT || 5013,
-      }),
-    ];
-  }
+  serverConfig.plugins = [
+    new DefinePlugin({
+      IS_DEVELOPMENT: argv.mode !== "production",
+      PORT: process.env.PORT || 5013,
+    }),
+  ];
 
   return merge(baseConfig, serverConfig);
 };
