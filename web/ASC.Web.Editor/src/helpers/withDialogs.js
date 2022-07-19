@@ -271,21 +271,18 @@ const withDialogs = (WrappedComponent) => {
 
     const selectFolderDialog = mfReady && props.successAuth && (
       <DynamicComponent
-        resetTreeFolders
-        showButtons
-        isSetFolderImmediately
-        needProxy
-        asideHeightContent="calc(100% - 50px)"
-        foldersType="exceptSortedByTags"
         system={{
           scope: FILES_SCOPE,
           url: FILES_REMOTE_ENTRY_URL,
           module: "./SelectFolderDialog",
         }}
+        needProxy
+        folderId={fileInfo?.folderId}
         isPanelVisible={isFolderDialogVisible}
         onClose={onCloseFolderDialog}
+        foldersType="exceptSortedByTags"
         onSave={onClickSaveSelectFolder}
-        headerName={t("FolderForSave")}
+        isDisableButton={!titleSelectorFolder.trim()}
         header={
           <StyledSelectFolder>
             <Text className="editor-select-folder_text">{t("FileName")}</Text>

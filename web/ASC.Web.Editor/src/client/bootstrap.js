@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { hydrate } from "react-dom";
 import { registerSW } from "@appserver/common/sw/helper";
 import { App } from "./App.js";
@@ -128,7 +128,6 @@ if (IS_DEVELOPMENT) {
   };
 
   ws.onclose = function (event) {
-    console.log("close");
     console.log("[editor-dev] Socket is disconnected! Reloading...");
     setTimeout(() => {
       !isErrorConnection && location.reload();
