@@ -569,7 +569,6 @@ class SectionBodyContent extends React.PureComponent {
             onClose={this.toggleResetAppDialogVisible}
             resetTfaApp={this.props.resetTfaApp}
             id={profile.id}
-            logout={this.props.logout}
           />
         )}
         {backupCodesDialogVisible && (
