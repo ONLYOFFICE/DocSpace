@@ -70,8 +70,6 @@ const ArticleBodyContent = (props) => {
       showLoader();
     }
 
-    console.log(data, roomsFolderId,archiveFolderId, data === roomsFolderId,  data === archiveFolderId )
-
     if (data === roomsFolderId || data === archiveFolderId) {
       setAlreadyFetchingRooms(true);
       fetchRooms(data, null)
