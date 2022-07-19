@@ -261,6 +261,7 @@ const StyledArticleProfile = styled.div`
     props.tablet &&
     css`
       padding: 14px 6px;
+      justify-content: ${(props) => !props.showText && "center"};
     `}
 
   padding-left: 20px;
