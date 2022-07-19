@@ -35,6 +35,7 @@ public class LoginEvent : MessageEvent, IMapFrom<EventMessage>
 
     public void Mapping(Profile profile)
     {
+        profile.CreateMap<MessageEvent, LoginEvent>();
         profile.CreateMap<EventMessage, LoginEvent>()
             .ConvertUsing<EventTypeConverter>();
     }
