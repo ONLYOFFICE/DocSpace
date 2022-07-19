@@ -14,6 +14,10 @@ const PROFILE_SELF_URL = combineUrl(
 );
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
+const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
+const HELP_URL = "https://onlyoffice.com/";
+const SUPPORT_URL = "https://onlyoffice.com/";
+const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
 
 class ProfileActionsStore {
   authStore = null;
@@ -50,6 +54,22 @@ class ProfileActionsStore {
 
   onSettingsClick = (settingsUrl) => {
     history.push(settingsUrl);
+  };
+
+  onPaymentsClick = () => {
+    history.push(PAYMENTS_URL);
+  };
+
+  onHelpCenterClick = () => {
+    window.open(HELP_URL, "_blank");
+  };
+
+  onSupportClick = () => {
+    window.open(SUPPORT_URL, "_blank");
+  };
+
+  onVideoGuidesClick = () => {
+    window.open(VIDEO_GUIDES_URL, "_blank");
   };
 
   onHotkeysClick = () => {
@@ -122,6 +142,34 @@ class ProfileActionsStore {
         url: peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL,
       },
       settings,
+      {
+        key: "PaymentsBtn",
+        icon: "/static/images/payments.react.svg",
+        label: t("Payments"),
+        onClick: this.onPaymentsClick,
+        url: PAYMENTS_URL,
+      },
+      {
+        key: "HelpCenterBtn",
+        icon: "/static/images/help.center.react.svg",
+        label: "Help Center",
+        onClick: this.onHelpCenterClick,
+        url: HELP_URL,
+      },
+      {
+        key: "SupportBtn",
+        icon: "/static/images/support.react.svg",
+        label: "Feedback & Support",
+        onClick: this.onSupportClick,
+        url: SUPPORT_URL,
+      },
+      {
+        key: "VideoBtn",
+        icon: "/static/images/video.guides.react.svg",
+        label: "Video Guides",
+        onClick: this.onVideoGuidesClick,
+        url: VIDEO_GUIDES_URL,
+      },
       hotkeys,
       {
         key: "AboutBtn",
