@@ -87,6 +87,7 @@ const FilesRowContent = ({
   badgesComponent,
   quickButtons,
   theme,
+  isRooms,
 }) => {
   const {
     contentLength,
@@ -126,7 +127,7 @@ const FilesRowContent = ({
         </Link>
         <div className="badges">
           {badgesComponent}
-          {!isRoom && quickButtons}
+          {!isRoom && !isRooms && quickButtons}
         </div>
         {!isRoom && (
           <Text

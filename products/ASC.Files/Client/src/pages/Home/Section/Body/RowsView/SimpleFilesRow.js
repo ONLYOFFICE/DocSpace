@@ -222,6 +222,7 @@ const SimpleFilesRow = (props) => {
     getContextModel,
     showHotkeyBorder,
     id,
+    isRooms,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
@@ -262,7 +263,9 @@ const SimpleFilesRow = (props) => {
           element={element}
           mode={"modern"}
           sectionWidth={sectionWidth}
-          contentElement={isSmallContainer ? null : quickButtonsComponent}
+          contentElement={
+            isSmallContainer || isRooms ? null : quickButtonsComponent
+          }
           onSelect={onContentFileSelect}
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
@@ -285,7 +288,10 @@ const SimpleFilesRow = (props) => {
             item={item}
             sectionWidth={sectionWidth}
             onFilesClick={onFilesClick}
-            quickButtons={isSmallContainer ? quickButtonsComponent : null}
+            quickButtons={
+              isSmallContainer || isRooms ? quickButtonsComponent : null
+            }
+            isRooms={isRooms}
           />
         </StyledSimpleFilesRow>
       </DragAndDrop>
