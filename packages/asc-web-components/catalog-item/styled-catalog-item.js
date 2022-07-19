@@ -100,6 +100,11 @@ const StyledCatalogItemBadgeWrapper = styled.div`
   margin-left: ${(props) => props.theme.catalogItem.badgeWrapper.marginLeft};
   margin-right: ${(props) => props.theme.catalogItem.badgeWrapper.marginRight};
 
+  div {
+    display: flex;
+    align-items: center;
+  }
+
   @media ${tablet} {
     display: flex;
     align-items: center;
