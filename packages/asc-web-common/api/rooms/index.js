@@ -41,6 +41,18 @@ export function createRoom(data) {
   });
 }
 
+export function createRoomInThirdpary(id, data) {
+  const options = {
+    method: "post",
+    url: `/files/rooms/thirdparty/:${id}`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
 export function pinRoom(id) {
   const options = { method: "put", url: `/files/rooms/${id}/pin` };
 

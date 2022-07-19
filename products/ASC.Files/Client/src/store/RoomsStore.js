@@ -212,10 +212,11 @@ class RoomsStore {
     this.bufferSelection = null;
   };
 
-  createRoom = (title = "Room 4", roomType = RoomsType.ReadOnlyRoom) => {
-    const data = { title, roomType };
-
-    return api.rooms.createRoom(data);
+  createRoom = (data) => {
+    const isInThirdparty = !!data.storageLocation;
+    return isInThirdparty
+      ? api.rooms.createRoomInThirdpary(data.storageLocation.id, data)
+      : api.rooms.createRoom(data);
   };
 
   deleteRoom = (room) => {
