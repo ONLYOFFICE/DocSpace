@@ -80,7 +80,7 @@ Scenario("Login page components render test", async ({ I }) => {
   if (!isModel) {
     I.seeVisualDiff(`1.login-page-render.png`, {
       tolerance: 1,
-      prepareBaseImage: false,
+      prepareBaseImage: true,
     });
   }
 });
@@ -109,28 +109,7 @@ Scenario("Reset mail tab render test", async ({ I }) => {
   if (!isModel) {
     I.seeVisualDiff(`2.reset-mail-tab.png`, {
       tolerance: 1,
-      prepareBaseImage: false,
-    });
-  }
-});
-
-Scenario("Registration tab render test", async ({ I }) => {
-  I.click({ react: "Register" });
-
-  I.see("Registration request");
-  I.see(
-    "To register, enter your email and click Send request. An activation link will be sent to you."
-  );
-  I.seeElement({
-    react: "TextInput",
-  });
-  I.see("Send request");
-
-  I.saveScreenshot(`3.registration-mail-tab.png`);
-  if (!isModel) {
-    I.seeVisualDiff(`3.registration-mail-tab.png`, {
-      tolerance: 1,
-      prepareBaseImage: false,
+      prepareBaseImage: true,
     });
   }
 });
@@ -155,29 +134,83 @@ if (browser === "webkit" || deviceType === "desktop") {
       "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings."
     );
 
-    I.saveScreenshot(`4.help-button-modal.png`);
+    I.saveScreenshot(`3.help-button-modal.png`);
     if (!isModel) {
-      I.seeVisualDiff(`4.help-button-modal.png`, {
+      I.seeVisualDiff(`3.help-button-modal.png`, {
         tolerance: 1,
-        prepareBaseImage: false,
+        prepareBaseImage: true,
       });
     }
   });
 }
 
-Scenario("More login modal render test", async ({ I }) => {
+Scenario("Modal - Password recovery test", async ({ I }) => {
+  I.seeElement({
+    react: "Link",
+    props: {
+      className: "login-link",
+    },
+  });
+
+  I.click({
+    react: "Link",
+    props: {
+      className: "login-link",
+    },
+  });
+
+  I.wait(2);
+
+  I.see("Password recovery");
+  I.see(
+    "Please, enter the email you used for registration. The password recovery instructions will be sent to it."
+  );
+  I.seeElement({
+    react: "EmailInput",
+  });
+  I.see("Send");
+  I.see("Cancel");
+
+  I.saveScreenshot(`4.modal-password-recovery.png`);
+  if (!isModel) {
+    I.seeVisualDiff(`4.modal-password-recovery.png`, {
+      tolerance: 1,
+      prepareBaseImage: true,
+    });
+  }
+});
+
+Scenario("Modal - Registration test", async ({ I }) => {
+  I.click({
+    react: "Register",
+  });
+
+  I.wait(2);
+
+  I.see("Registration request");
+  I.seeElement({
+    react: "EmailInput",
+  });
+  I.see("Send request");
+  I.see("Cancel");
+
+  I.saveScreenshot(`5.modal-registration-request.png`);
+  if (!isModel) {
+    I.seeVisualDiff(`6.modal-registration-request.png`, {
+      tolerance: 1,
+      prepareBaseImage: true,
+    });
+  }
+});
+
+Scenario("Modal - Authorization test", async ({ I }) => {
   I.seeElement({
     react: "Link",
     props: {
       className: "more-label",
     },
   });
-  I.click({
-    react: "Link",
-    props: {
-      className: "more-label",
-    },
-  });
+  I.click("Show more");
 
   I.wait(2);
 
@@ -187,11 +220,11 @@ Scenario("More login modal render test", async ({ I }) => {
   I.see("Sign in with Facebook");
   I.see("Sign in with LinkedIn");
 
-  I.saveScreenshot(`5.more-login-modal.png`);
+  I.saveScreenshot(`7.modal-authorization.png`);
   if (!isModel) {
-    I.seeVisualDiff(`5.more-login-modal.png`, {
+    I.seeVisualDiff(`7.modal-authorization.png`, {
       tolerance: 1,
-      prepareBaseImage: false,
+      prepareBaseImage: true,
     });
   }
 });

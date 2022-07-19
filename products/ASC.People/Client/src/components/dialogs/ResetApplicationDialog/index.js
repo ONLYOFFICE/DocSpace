@@ -35,23 +35,22 @@ class ResetApplicationDialogComponent extends React.Component {
       >
         <ModalDialog.Header>{t("ResetApplicationTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <Text className="text-dialog">
-            {t("ResetApplicationDescription")}
-          </Text>
+          <Text>{t("ResetApplicationDescription")}</Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
             label={t("Common:ResetApplication")}
-            size="small"
+            size="normal"
+            scale
             primary={true}
             onClick={this.resetApp}
           />
           <Button
             key="CloseBtn"
-            className="button-dialog"
             label={t("Common:CloseButton")}
-            size="small"
+            size="normal"
+            scale
             primary={false}
             onClick={onClose}
           />

@@ -121,6 +121,7 @@ const StyledArticle = styled.article`
 
   .article-body__scrollbar {
     .scroll-body {
+      padding-top: 16px;
       padding-right: 0px !important;
 
       @media ${mobile} {
@@ -158,7 +159,7 @@ const StyledArticleHeader = styled.div`
   @media ${mobile} {
     border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
     padding: 12px 16px 12px;
-    margin-bottom: 16px !important;
+    //margin-bottom: 16px !important;
   }
 
   ${isTablet &&
@@ -173,7 +174,7 @@ const StyledArticleHeader = styled.div`
     border-bottom: ${(props) =>
       props.theme.catalog.header.borderBottom} !important;
     padding: 12px 16px 12px !important;
-    margin-bottom: 16px !important;
+    //margin-bottom: 16px !important;
   `}
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -262,11 +263,10 @@ const StyledArticleMainButton = styled.div`
 `;
 
 const StyledControlContainer = styled.div`
-  background: ${(props) => props.theme.catalog.control.background};
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
   position: absolute;
-  top: 30px;
+  top: 37px;
   right: 10px;
   border-radius: 100px;
   cursor: pointer;
@@ -279,8 +279,8 @@ const StyledControlContainer = styled.div`
 StyledControlContainer.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 12px;
-  height: 12px;
+  width: 17px;
+  height: 17px;
   path {
     fill: ${(props) => props.theme.catalog.control.fill};
   }

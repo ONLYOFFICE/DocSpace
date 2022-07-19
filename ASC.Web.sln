@@ -24,8 +24,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.FederatedLogin", "commo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Web.Core", "web\ASC.Web.Core\ASC.Web.Core.csproj", "{02C40A64-FE22-41D0-9037-69F0D6F787A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.VoipService", "common\ASC.VoipService\ASC.VoipService.csproj", "{988536C1-4B89-4649-8F77-5C16F55D95D1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.MessagingSystem", "common\ASC.MessagingSystem\ASC.MessagingSystem.csproj", "{BD8A18A5-60C5-4411-9719-0AA11B4BE0E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.IPSecurity", "common\ASC.IPSecurity\ASC.IPSecurity.csproj", "{2FF2177F-2D1A-4396-84EB-51F14FD99385}"
@@ -53,8 +51,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ApiSystem", "common\services\ASC.ApiSystem\ASC.ApiSystem.csproj", "{C2BB03A0-C35B-433F-96D4-3A06CBC06AD7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Feed.Aggregator", "common\services\ASC.Feed.Aggregator\ASC.Feed.Aggregator.csproj", "{07CCC11F-76CB-448E-B15A-72E09FBB348B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Thumbnails.Svc", "common\services\ASC.Thumbnails.Svc\ASC.Thumbnails.Svc.csproj", "{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Files.Core", "products\ASC.Files\Core\ASC.Files.Core.csproj", "{F0A39728-940D-4DBE-A37A-05D4EB57F342}"
 EndProject
@@ -147,10 +143,6 @@ Global
 		{02C40A64-FE22-41D0-9037-69F0D6F787A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02C40A64-FE22-41D0-9037-69F0D6F787A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02C40A64-FE22-41D0-9037-69F0D6F787A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{988536C1-4B89-4649-8F77-5C16F55D95D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{988536C1-4B89-4649-8F77-5C16F55D95D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{988536C1-4B89-4649-8F77-5C16F55D95D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{988536C1-4B89-4649-8F77-5C16F55D95D1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD8A18A5-60C5-4411-9719-0AA11B4BE0E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD8A18A5-60C5-4411-9719-0AA11B4BE0E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD8A18A5-60C5-4411-9719-0AA11B4BE0E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -207,10 +199,6 @@ Global
 		{07CCC11F-76CB-448E-B15A-72E09FBB348B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07CCC11F-76CB-448E-B15A-72E09FBB348B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07CCC11F-76CB-448E-B15A-72E09FBB348B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F0A39728-940D-4DBE-A37A-05D4EB57F342}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F0A39728-940D-4DBE-A37A-05D4EB57F342}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0A39728-940D-4DBE-A37A-05D4EB57F342}.Release|Any CPU.ActiveCfg = Release|Any CPU

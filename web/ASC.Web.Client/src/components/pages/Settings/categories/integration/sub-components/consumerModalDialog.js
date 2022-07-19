@@ -149,7 +149,11 @@ class ConsumerModalDialog extends React.Component {
     } = this;
 
     return (
-      <ModalDialogContainer visible={dialogVisible} onClose={onModalClose}>
+      <ModalDialogContainer
+        visible={dialogVisible}
+        onClose={onModalClose}
+        displayType="aside"
+      >
         <ModalDialog.Header>{selectedConsumer.title}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text as="div">{consumerInstruction}</Text>
@@ -185,14 +189,21 @@ class ConsumerModalDialog extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            className="modal-dialog-button"
             primary
             size="normal"
-            label={isLoading ? t("Common:Sending") : t("Common:Enable")}
-            tabIndex={1}
+            label={isLoading ? t("Common:Sending") : t("Common:Connect")}
             isLoading={isLoading}
             isDisabled={isLoading}
+            scale
             onClick={updateConsumerValues}
+          />
+          <Button
+            size="normal"
+            scale
+            label={t("Common:CancelButton")}
+            isLoading={isLoading}
+            isDisabled={isLoading}
+            onClick={onModalClose}
           />
         </ModalDialog.Footer>
       </ModalDialogContainer>

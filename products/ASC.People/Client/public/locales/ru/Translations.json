@@ -1,8 +1,8 @@
 {
   "AddMembers": "Добавить участников",
   "Birthdate": "Дата рождения",
-  "DeleteUserDataConfirmation": "Будут удалены личные документы пользователя, доступные для других. Чтобы избежать этого, нужно перед удалением запустить процесс передачи данных.",
   "DeleteSelfProfile": "Удалить профиль",
+  "DeleteUserDataConfirmation": "Будут удалены личные документы пользователя, доступные для других. Чтобы избежать этого, нужно перед удалением запустить процесс передачи данных.",
   "DisableUserButton": "Заблокировать",
   "DisabledEmployeeStatus": "Заблокирован",
   "EmailChangeButton": "Изменить email",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Мужской",
   "MaxSizeLabel": "(JPG или PNG, максимум 1 Мб)",
-  "NotBeUndone": "Внимание: это действие необратимо.",
   "PasswordChangeButton": "Изменить пароль",
   "PendingTitle": "Ожидание",
   "ReassignData": "Передать данные",
