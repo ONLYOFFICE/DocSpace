@@ -4,9 +4,13 @@ import { StyledUser } from "../../styles/VirtualRoom/members";
 import Avatar from "@appserver/components/avatar";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 
-const User = ({ t, user, selfId }) => {
+const User = ({ t, user, selfId, isExpect }) => {
   return (
-    <StyledUser key={user.id} canEdit>
+    <StyledUser
+      isExpect={isExpect}
+      key={user.id}
+      canEditRole={user.role !== "Owner"}
+    >
       <Avatar
         role="user"
         className="avatar"
@@ -17,12 +21,12 @@ const User = ({ t, user, selfId }) => {
         }
         userName={user.displayName}
       />
-      <div className="name">
-        {user.displayName || user.email}
-        {selfId === user.id && (
-          <span className="secondary-info">{` (${t("Common:MeLabel")})`}</span>
-        )}
-      </div>
+
+      <div className="name">{user.displayName || user.email}</div>
+      {selfId === user.id && (
+        <div className="me-label">&nbsp;{`(${t("Common:MeLabel")})`}</div>
+      )}
+
       <div className="role-wrapper">
         <LinkWithDropdown
           className="role"
@@ -33,25 +37,31 @@ const User = ({ t, user, selfId }) => {
           fontWeight={600}
           hasScroll={true}
           withBackdrop={false}
-          dropdownType="alwaysDashed"
+          dropdownType="apparDashedAfterHover"
+          isDisabled={user.role === "Owner"}
           data={[
             {
               key: "key1",
-              label: "Button 1",
+              label: "Room manager",
               onClick: () => {},
             },
             {
               key: "key2",
-              label: "Button 2",
+              label: "Co-worker",
+              onClick: function noRefCheck() {},
+            },
+            {
+              key: "key3",
+              label: "Viewer",
               onClick: function noRefCheck() {},
             },
             {
               isSeparator: true,
-              key: "key3",
+              key: "key4",
             },
             {
-              key: "key4",
-              label: "Button 3",
+              key: "key5",
+              label: "Remove",
               onClick: function noRefCheck() {},
             },
           ]}

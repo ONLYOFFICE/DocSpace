@@ -35,40 +35,8 @@ const Members = ({ t, selfId }) => {
 
       <UserList t={t} users={data.members.inRoom} selfId={selfId} />
 
-      {/* <StyledUserList>
-        {data.members.inRoom.map((user) => (
-          <StyledUser key={user.id} canEdit>
-            <Avatar
-              role="user"
-              className="avatar"
-              size="min"
-              source={
-                user.avatar ||
-                (user.displayName
-                  ? ""
-                  : user.email && "/static/images/@.react.svg")
-              }
-              userName={user.displayName}
-            />
-            <div className="name">
-              {user.displayName || user.email}
-              {selfId === user.id && (
-                <span className="secondary-info">
-                  {" (" + t("Common:MeLabel") + ")"}
-                </span>
-              )}
-            </div>
-            <div className="role-wrapper">
-        
-            </div>
-          </StyledUser>
-        ))}
-      </StyledUserList> */}
-
       <StyledUserTypeHeader>
-        <Text className="title">
-          {t("Expect people")} : {data.members.expect.length}
-        </Text>
+        <Text className="title">{`${t("Expect people")}:`}</Text>
         <IconButton
           className={"icon"}
           title={t("Repeat invitation")}
@@ -80,29 +48,7 @@ const Members = ({ t, selfId }) => {
         />
       </StyledUserTypeHeader>
 
-      <UserList t={t} users={data.members.expect} />
-
-      {/* <StyledUserList>
-        {data.members.expect.map((user) => (
-          <StyledUser key={user.id} canEdit>
-            <Avatar
-              role="user"
-              className="avatar"
-              size="min"
-              source={
-                user.avatar ||
-                (user.displayName
-                  ? ""
-                  : user.email && "/static/images/@.react.svg")
-              }
-              userName={user.displayName}
-            />
-            <Text truncate className="name">
-              {user.displayName || user.email}
-            </Text>
-          </StyledUser>
-        ))}
-      </StyledUserList> */}
+      <UserList t={t} users={data.members.expect} isExpect />
     </>
   );
 };

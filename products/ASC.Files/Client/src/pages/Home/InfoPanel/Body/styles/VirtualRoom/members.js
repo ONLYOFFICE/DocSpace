@@ -8,8 +8,6 @@ const StyledUserTypeHeader = styled.div`
   padding: 24px 0 16px;
 
   .title {
-    font-family: "Open Sans";
-    font-style: normal;
     font-weight: 600;
     font-size: 13px;
     line-height: 20px;
@@ -36,40 +34,54 @@ const StyledUser = styled.div`
   padding: 8px 0;
 
   .avatar {
+    opacity: ${(props) => (props.isExpect ? 0.5 : 1)};
     min-width: 32px;
     min-height: 32px;
   }
 
   .name {
-    font-family: "Open Sans";
-    font-style: normal;
+    opacity: ${(props) => (props.isExpect ? 0.5 : 1)};
     font-weight: 600;
     font-size: 14px;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
 
-    .secondary-info {
-      color: #a3a9ae;
-    }
+  .me-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #a3a9ae;
+    margin-left: -8px;
   }
 
   .role-wrapper {
+    padding-left: 8px;
     margin-left: auto;
 
-    font-family: "Open Sans";
-    font-style: normal;
     font-weight: 600;
     font-size: 13px;
     line-height: 20px;
     white-space: nowrap;
 
-    color: #555f65;
-
     .role {
       a {
-        padding: 0;
+        padding-right: ${(props) => (props.canEditRole ? "16px" : "0")};
+        margin-right: ${(props) => (props.canEditRole ? "-6px" : "0")};
+        span {
+          color: ${(props) => (props.canEditRole ? "#555f65" : "#A3A9AE")};
+        }
+        &:hover {
+          text-decoration: none;
+        }
+
+        svg {
+          ${(props) => !props.canEditRole && "display: none"};
+          path {
+            fill: #a3a9ae;
+          }
+        }
       }
     }
   }
