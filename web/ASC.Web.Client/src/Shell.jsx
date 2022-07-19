@@ -27,6 +27,7 @@ import ReactSmartBanner from "./components/SmartBanner";
 import { useThemeDetector } from "./helpers/utils";
 import { isMobileOnly } from "react-device-detect";
 import AboutDialog from "./components/pages/About/AboutDialog";
+import DebugInfoDialog from "./components/pages/DebugInfo";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -205,6 +206,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     isAboutDialogVisible,
     setIsAboutDialogVisible,
     buildVersionInfo,
+    isDebugDialogVisible,
+    setIsDebugDialogVisible,
   } = rest;
 
   useEffect(() => {
@@ -534,6 +537,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
           personal={personal}
           buildVersionInfo={buildVersionInfo}
         />
+        <DebugInfoDialog
+          visible={isDebugDialogVisible}
+          onClose={() => setIsDebugDialogVisible(false)}
+        />
         <Main isDesktop={isDesktop}>
           <Switch>
             <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
@@ -594,7 +601,12 @@ const ShellWrapper = inject(({ auth, backup, profileActionsStore }) => {
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
-  const { isAboutDialogVisible, setIsAboutDialogVisible } = profileActionsStore;
+  const {
+    isAboutDialogVisible,
+    setIsAboutDialogVisible,
+    isDebugDialogVisible,
+    setIsDebugDialogVisible,
+  } = profileActionsStore;
 
   return {
     loadBaseInfo: async () => {
@@ -629,6 +641,8 @@ const ShellWrapper = inject(({ auth, backup, profileActionsStore }) => {
     isAboutDialogVisible,
     setIsAboutDialogVisible,
     buildVersionInfo,
+    isDebugDialogVisible,
+    setIsDebugDialogVisible,
   };
 })(observer(Shell));
 

@@ -18,6 +18,7 @@ const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 class ProfileActionsStore {
   authStore = null;
   isAboutDialogVisible = false;
+  isDebugDialogVisible = false;
 
   constructor() {
     this.authStore = authStore;
@@ -26,6 +27,10 @@ class ProfileActionsStore {
 
   setIsAboutDialogVisible = (visible) => {
     this.isAboutDialogVisible = visible;
+  };
+
+  setIsDebugDialogVisible = (visible) => {
+    this.isDebugDialogVisible = visible;
   };
 
   getUserRole = (user) => {
@@ -64,7 +69,7 @@ class ProfileActionsStore {
   };
 
   onDebugClick = () => {
-    console.log("on debug click");
+    this.setIsDebugDialogVisible(true);
   };
 
   getActions = (t) => {
