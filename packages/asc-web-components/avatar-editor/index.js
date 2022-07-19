@@ -135,7 +135,7 @@ class AvatarEditor extends React.Component {
     return useModalDialog ? (
       <ModalDialog
         visible={this.state.visible}
-        displayType={displayType}
+        displayType="aside"
         scale={false}
         contentHeight="initial"
         contentWidth="initial"
@@ -174,7 +174,15 @@ class AvatarEditor extends React.Component {
             isLoading={saveButtonLoading}
             primary={true}
             size="normal"
+            scale
             onClick={this.onSaveButtonClick}
+          />
+          <Button
+            key="CancelBtn"
+            label={cancelButtonLabel}
+            size="normal"
+            scale
+            onClick={this.onCancelButtonClick}
           />
         </ModalDialog.Footer>
       </ModalDialog>

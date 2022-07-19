@@ -1,8 +1,8 @@
 {
   "AddMembers": "Adăugați membrii",
   "Birthdate": "Data de naștere",
-  "DeleteUserDataConfirmation": "Documentele utilizatorului care au fost partajate cu alții vor fi șterse. Pentru a evita acest risc, reasignați datele.",
   "DeleteSelfProfile": "Ștergere profil",
+  "DeleteUserDataConfirmation": "Documentele utilizatorului care au fost partajate cu alții vor fi șterse. Pentru a evita acest risc, reasignați datele.",
   "DisableUserButton": "Dezactivează",
   "DisabledEmployeeStatus": "Dezactivat",
   "EmailChangeButton": "Schimbare email",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Masculin",
   "MaxSizeLabel": "((JPG sau PNG, max 1 MB))",
-  "NotBeUndone": "Remarcă: această acțiune nu poate fi anulată.",
   "PasswordChangeButton": "Schimbare parola",
   "PendingTitle": "În așteptare",
   "ReassignData": "Reasignarea datelor",

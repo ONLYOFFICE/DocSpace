@@ -1,8 +1,8 @@
 {
   "AddMembers": "Thêm thành viên ",
   "Birthdate": "Ngày sinh",
-  "DeleteUserDataConfirmation": "Tài liệu của người dùng đã chia sẻ với người khác sẽ bị xóa. Để tránh điều này, hãy chuyển lại dữ liệu cho người khác.",
   "DeleteSelfProfile": "Xóa hồ sơ",
+  "DeleteUserDataConfirmation": "Tài liệu của người dùng đã chia sẻ với người khác sẽ bị xóa. Để tránh điều này, hãy chuyển lại dữ liệu cho người khác.",
   "DisableUserButton": "Vô hiệu hóa",
   "DisabledEmployeeStatus": "Đã vô hiệu hóa",
   "EmailChangeButton": "Thay đổi email",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Nam",
   "MaxSizeLabel": "(JPG hoặc PNG, tối đa 1 MB)",
-  "NotBeUndone": "Lưu ý: không thể hoàn tác hành động này.",
   "PasswordChangeButton": "Thay đổi mật khẩu",
   "PendingTitle": "Đang chờ xử lý",
   "ReassignData": "Chuyển dữ liệu cho người khác",

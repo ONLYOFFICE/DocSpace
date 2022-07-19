@@ -104,7 +104,7 @@ const ModalContainer = ({
   return (
     <ModalDialog
       visible={visible}
-      displayType="auto"
+      displayType="modal"
       zIndex={310}
       onClose={onCloseModal}
     >
