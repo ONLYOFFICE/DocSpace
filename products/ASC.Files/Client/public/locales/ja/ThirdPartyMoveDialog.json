@@ -1,4 +1,6 @@
 {
+  "CreateFileCopyOption": "ファイルのコピーを作成する",
   "MoveConfirmation": "移動確認",
-  "MoveConfirmationMessage": "現在、{{provider}}ディレクトリから要素を移動しようとしています。これらの要素はあなたの{{provider}}アカウントから削除され、他のユーザーがアクセスすることはできなくなります。"
+  "MoveConfirmationAlert": "{{provider}}のディレクトリから要素を移動しようとしています。この場合、これらの要素は{{provider}}アカウントから削除され、以前共有されていた場合、他のユーザがアクセスできなくなります。",
+  "MoveFileOption": "ファイルの移動"
 }

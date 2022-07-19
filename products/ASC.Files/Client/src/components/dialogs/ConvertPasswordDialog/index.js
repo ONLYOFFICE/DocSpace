@@ -155,7 +155,13 @@ const ConvertPasswordDialogComponent = (props) => {
   );
 
   return (
-    <ModalDialog visible={visible} onClose={onClose}>
+    <ModalDialog
+      visible={visible}
+      onClose={onClose}
+      isLarge
+      autoMaxHeight
+      autoMaxWidth
+    >
       <ModalDialog.Header>{dialogHeading}</ModalDialog.Header>
       <ModalDialog.Body>
         <StyledComponent>
