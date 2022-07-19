@@ -168,7 +168,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_new-room",
             className: "main-button_drop-down",
             icon: "images/folder.locked.react.svg",
-            label: "New room",
+            label: t("NewRoom"),
             onClick: onCreateRoom,
             action: "room",
             key: "room",

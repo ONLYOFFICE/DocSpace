@@ -107,7 +107,7 @@ class SectionHeaderContent extends React.Component {
       ? [
           {
             key: "new-room",
-            label: "New room",
+            label: t("NewRoom"),
             onClick: this.onCreateRoom,
             icon: "images/folder.locked.react.svg",
           },
