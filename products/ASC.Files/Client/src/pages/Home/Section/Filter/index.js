@@ -75,27 +75,29 @@ const getOwner = (filterValues) => {
   return filterOwner ? filterOwner : null;
 };
 
-const getFilterFolders = (filterValues) => {
-  const filterFolders = result(
-    find(filterValues, (value) => {
-      return value.group === FilterGroups.roomFilterFolders;
-    }),
-    "key"
-  );
+//TODO: restore all comments if search with subfolders and in content will be available for rooms filter
 
-  return filterFolders ? filterFolders : null;
-};
+// const getFilterFolders = (filterValues) => {
+//   const filterFolders = result(
+//     find(filterValues, (value) => {
+//       return value.group === FilterGroups.roomFilterFolders;
+//     }),
+//     "key"
+//   );
 
-const getFilterContent = (filterValues) => {
-  const filterContent = result(
-    find(filterValues, (value) => {
-      return value.group === FilterGroups.roomFilterContent;
-    }),
-    "key"
-  );
+//   return filterFolders ? filterFolders : null;
+// };
 
-  return filterContent ? filterContent : null;
-};
+// const getFilterContent = (filterValues) => {
+//   const filterContent = result(
+//     find(filterValues, (value) => {
+//       return value.group === FilterGroups.roomFilterContent;
+//     }),
+//     "key"
+//   );
+
+//   return filterContent ? filterContent : null;
+// };
 
 const getTags = (filterValues) => {
   const filterTags = filterValues.find(
@@ -141,10 +143,10 @@ const SectionFilterContent = ({
 
         const tags = getTags(data) || null;
 
-        const withSubfolders =
-          getFilterFolders(data) === FilterKeys.withSubfolders;
+        // const withSubfolders =
+        //   getFilterFolders(data) === FilterKeys.withSubfolders;
 
-        const withContent = getFilterContent(data) === FilterKeys.withContent;
+        // const withContent = getFilterContent(data) === FilterKeys.withContent;
 
         setIsLoading(true);
 
@@ -154,8 +156,8 @@ const SectionFilterContent = ({
         newFilter.types = types ? types : null;
         newFilter.subjectId = subjectId ? subjectId : null;
         newFilter.tags = tags ? tags : null;
-        newFilter.withSubfolders = withSubfolders;
-        newFilter.searchInContent = withContent;
+        // newFilter.withSubfolders = withSubfolders;
+        // newFilter.searchInContent = withContent;
 
         fetchRooms(selectedFolderId, newFilter).finally(() =>
           setIsLoading(false)
@@ -298,21 +300,21 @@ const SectionFilterContent = ({
     const filterValues = [];
 
     if (isRooms) {
-      if (!roomsFilter.withSubfolders) {
-        filterValues.push({
-          key: FilterKeys.excludeSubfolders,
-          label: "Exclude subfolders",
-          group: FilterGroups.roomFilterFolders,
-        });
-      }
+      // if (!roomsFilter.withSubfolders) {
+      //   filterValues.push({
+      //     key: FilterKeys.excludeSubfolders,
+      //     label: "Exclude subfolders",
+      //     group: FilterGroups.roomFilterFolders,
+      //   });
+      // }
 
-      if (roomsFilter.searchInContent) {
-        filterValues.push({
-          key: FilterKeys.withContent,
-          label: "File contents",
-          group: FilterGroups.roomFilterContent,
-        });
-      }
+      // if (roomsFilter.searchInContent) {
+      //   filterValues.push({
+      //     key: FilterKeys.withContent,
+      //     label: "File contents",
+      //     group: FilterGroups.roomFilterContent,
+      //   });
+      // }
 
       if (roomsFilter.types) {
         const key =
@@ -419,8 +421,8 @@ const SectionFilterContent = ({
     roomsFilter.subjectId,
     roomsFilter.tags,
     roomsFilter.tags?.length,
-    roomsFilter.withSubfolders,
-    roomsFilter.searchInContent,
+    // roomsFilter.withSubfolders,
+    // roomsFilter.searchInContent,
     userId,
     isRooms,
   ]);
@@ -566,46 +568,46 @@ const SectionFilterContent = ({
       },
     ];
 
-    const foldersOptions = [
-      {
-        key: FilterGroups.roomFilterFolders,
-        group: FilterGroups.roomFilterFolders,
-        label: "Search",
-        isHeader: true,
-        withoutSeparator: true,
-      },
-      {
-        key: "folders",
-        group: FilterGroups.roomFilterFolders,
-        label: "",
-        withOptions: true,
-        options: [
-          { key: FilterKeys.withSubfolders, label: "With subfolders" },
-          { key: FilterKeys.excludeSubfolders, label: "Exclude subfolders" },
-        ],
-      },
-    ];
+    // const foldersOptions = [
+    //   {
+    //     key: FilterGroups.roomFilterFolders,
+    //     group: FilterGroups.roomFilterFolders,
+    //     label: "Search",
+    //     isHeader: true,
+    //     withoutSeparator: true,
+    //   },
+    //   {
+    //     key: "folders",
+    //     group: FilterGroups.roomFilterFolders,
+    //     label: "",
+    //     withOptions: true,
+    //     options: [
+    //       { key: FilterKeys.withSubfolders, label: "With subfolders" },
+    //       { key: FilterKeys.excludeSubfolders, label: "Exclude subfolders" },
+    //     ],
+    //   },
+    // ];
 
-    const contentOptions = [
-      {
-        key: FilterGroups.roomFilterContent,
-        group: FilterGroups.roomFilterContent,
-        isHeader: true,
-        withoutHeader: true,
-      },
-      {
-        key: FilterKeys.withContent,
-        group: FilterGroups.roomFilterContent,
-        label: "Search by file contents",
-        isCheckbox: true,
-      },
-    ];
+    // const contentOptions = [
+    //   {
+    //     key: FilterGroups.roomFilterContent,
+    //     group: FilterGroups.roomFilterContent,
+    //     isHeader: true,
+    //     withoutHeader: true,
+    //   },
+    //   {
+    //     key: FilterKeys.withContent,
+    //     group: FilterGroups.roomFilterContent,
+    //     label: "Search by file contents",
+    //     isCheckbox: true,
+    //   },
+    // ];
 
     const filterOptions = [];
 
     if (isRooms) {
-      filterOptions.push(...foldersOptions);
-      filterOptions.push(...contentOptions);
+      // filterOptions.push(...foldersOptions);
+      // filterOptions.push(...contentOptions);
 
       filterOptions.push(...ownerOptions);
 
@@ -696,7 +698,7 @@ const SectionFilterContent = ({
     const commonOptions = isRooms
       ? [
           { key: "AZ", label: "Name", default: true },
-          { key: "Type", label: t("Common:Type"), default: true },
+          { key: "roomType", label: t("Common:Type"), default: true },
           { key: "Tags", label: "Tags", default: true },
           { key: "Author", label: "Owner", default: true },
           { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
@@ -754,13 +756,13 @@ const SectionFilterContent = ({
           newFilter.tags = newTags.length > 0 ? newTags : null;
         }
 
-        if (group === FilterGroups.roomFilterContent) {
-          newFilter.searchInContent = false;
-        }
+        // if (group === FilterGroups.roomFilterContent) {
+        //   newFilter.searchInContent = false;
+        // }
 
-        if (group === FilterGroups.roomFilterFolders) {
-          newFilter.withSubfolders = true;
-        }
+        // if (group === FilterGroups.roomFilterFolders) {
+        //   newFilter.withSubfolders = true;
+        // }
 
         newFilter.page = 0;
 
