@@ -101,11 +101,11 @@ class BackupCodesDialogComponent extends React.Component {
             size="normal"
             onClick={this.props.onClose}
           />
-          <div className="backup-codes-print-link-wrapper">
+          {/* <div className="backup-codes-print-link-wrapper">
             <Link type="action" fontSize="13px" isBold={true} isHovered={true}>
               {t("PrintButton")}
             </Link>
-          </div>
+          </div> */}
         </ModalDialog.Footer>
       </ModalDialogContainer>
     );
