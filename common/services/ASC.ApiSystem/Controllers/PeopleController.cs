@@ -48,7 +48,7 @@ namespace ASC.ApiSystem.Controllers;
 [Route("[controller]")]
 public class PeopleController : ControllerBase
 {
-    private ILog Log { get; }
+    private ILogger<PeopleController> Log { get; }
     private HostedSolution HostedSolution { get; }
     private UserFormatter UserFormatter { get; }
     private ICache Cache { get; }
@@ -57,7 +57,7 @@ public class PeopleController : ControllerBase
     public IHttpContextAccessor HttpContextAccessor { get; }
 
     public PeopleController(
-        IOptionsMonitor<ILog> option,
+        ILogger<PeopleController> option,
         IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
         UserFormatter userFormatter,
         ICache cache,
@@ -65,7 +65,7 @@ public class PeopleController : ControllerBase
         CommonLinkUtility commonLinkUtility,
         IHttpContextAccessor httpContextAccessor)
     {
-        Log = option.Get("ASC.ApiSystem.People");
+        Log = option;
         HostedSolution = hostedSolutionOptions.Value;
         UserFormatter = userFormatter;
         Cache = cache;
@@ -107,7 +107,7 @@ public class PeopleController : ControllerBase
             link = GetUserProfileLink(user)
         });
 
-        Log.DebugFormat("People find {0} / {1}; Elapsed {2} ms", result.Count(), userIds.Count(), sw.ElapsedMilliseconds);
+        Log.LogDebug("People find {0} / {1}; Elapsed {2} ms", result.Count(), userIds.Count(), sw.ElapsedMilliseconds);
         sw.Stop();
 
         return Ok(new

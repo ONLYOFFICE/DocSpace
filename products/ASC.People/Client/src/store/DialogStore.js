@@ -13,6 +13,7 @@ class DialogStore {
   disableDialogVisible = false;
   sendInviteDialogVisible = false;
   invitationDialogVisible = false;
+  deleteDialogVisible = false;
 
   constructor() {
     makeAutoObservable(this);

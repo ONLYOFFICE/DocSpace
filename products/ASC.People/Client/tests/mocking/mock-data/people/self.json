@@ -23,7 +23,8 @@
     "id": "fcfa85e3-15fc-11ec-8f4f-80ce62334fc7",
     "displayName": "Administrator ",
     "avatarSmall": "/images/default_user_photo_size_32-32.png",
-    "profileUrl": "http://localhost:8092/products/people/view/administrator"
+    "profileUrl": "http://localhost:8092/products/people/view/administrator",
+    "editProfileUrl": "http://localhost:8092/products/people/edit/administrator"
   },
   "status": 0,
   "statusCode": 200

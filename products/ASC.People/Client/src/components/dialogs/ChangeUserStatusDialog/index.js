@@ -124,6 +124,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
+        autoMaxHeight
       >
         <ModalDialog.Header>
           {t("ChangeUserStatusDialogHeader")}
@@ -136,28 +137,21 @@ class ChangeUserStatusDialogComponent extends React.Component {
             })}
           </Text>
           <Text>{t("ChangeUserStatusDialogMessage")}</Text>
-          <ToggleContent
-            className="toggle-content-dialog"
-            label={t("Common:ShowUsersList")}
-          >
-            <div style={containerStyles} className="modal-dialog-content">
-              <AutoSizer>{renderList}</AutoSizer>
-            </div>
-          </ToggleContent>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             label={t("ChangeUsersStatusButton")}
-            size="small"
+            size="normal"
             primary
+            scale
             onClick={this.onChangeUserStatus}
             isLoading={isRequestRunning}
             isDisabled={!userIds.length}
           />
           <Button
-            className="button-dialog"
             label={t("Common:CancelButton")}
-            size="small"
+            size="normal"
+            scale
             onClick={onClose}
             isDisabled={isRequestRunning}
           />

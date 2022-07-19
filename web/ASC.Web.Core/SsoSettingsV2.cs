@@ -29,6 +29,7 @@ namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 [Serializable]
 public class SsoSettingsV2 : ISettings<SsoSettingsV2>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{1500187F-B8AB-406F-97B8-04BFE8261DBE}"); }

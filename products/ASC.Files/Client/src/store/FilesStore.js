@@ -26,7 +26,7 @@ class FilesStore {
   authStore;
   settingsStore;
   userStore;
-  fileActionStore;
+
   selectedFolderStore;
   treeFoldersStore;
   filesSettingsStore;
@@ -78,7 +78,7 @@ class FilesStore {
     authStore,
     settingsStore,
     userStore,
-    fileActionStore,
+
     selectedFolderStore,
     treeFoldersStore,
     filesSettingsStore
@@ -90,7 +90,7 @@ class FilesStore {
     this.authStore = authStore;
     this.settingsStore = settingsStore;
     this.userStore = userStore;
-    this.fileActionStore = fileActionStore;
+
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
     this.filesSettingsStore = filesSettingsStore;
@@ -654,7 +654,6 @@ class FilesStore {
           });
 
           if (clearFilter) {
-            this.fileActionStore.setAction({ type: null });
             if (clearSelection) {
               this.setSelected("close");
             }
@@ -1668,10 +1667,6 @@ class FilesStore {
         isEditing,
       };
     });
-
-    if (this.fileActionStore.type === FileAction.Create) {
-      this.onCreateAddTempItem(newItem);
-    }
 
     return newItem;
   }

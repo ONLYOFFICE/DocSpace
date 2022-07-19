@@ -1,3 +1,29 @@
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -45,7 +71,6 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Files.Core;
-using ASC.VoipService;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
 
@@ -66,15 +91,15 @@ namespace ASC.CRM.Core.Dao
         const string TimeFormat = "[h]:mm:ss;@";
         const string ShortDateFormat = "M/d/yyyy";
 
-        private IServiceProvider _serviceProvider;
-        private TenantManager _tenantManager;
-        private UserManager _userManager;
-        private Global _global;
-        private CurrencyInfo _defaultCurrency;
-        private TenantUtil _tenantUtil;
-        private DaoFactory _daoFactory;
-        private IDaoFactory _daoFilesFactory;
-        private DisplayUserSettingsHelper _displayUserSettings;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly TenantManager _tenantManager;
+        private readonly UserManager _userManager;
+        private readonly Global _global;
+        private readonly CurrencyInfo _defaultCurrency;
+        private readonly TenantUtil _tenantUtil;
+        private readonly DaoFactory _daoFactory;
+        private readonly IDaoFactory _daoFilesFactory;
+        private readonly DisplayUserSettingsHelper _displayUserSettings;
 
         #region Constructor
 
@@ -1664,123 +1689,6 @@ namespace ASC.CRM.Core.Dao
         #endregion
 
 
-        #region GetWorkloadByViopReport
-
-        public bool CheckWorkloadByViopReportData(ReportTimePeriod timePeriod, Guid[] managers)
-        {
-            DateTime fromDate;
-            DateTime toDate;
-
-            GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-            return Query(CrmDbContext.VoipCalls)
-                        .Where(x => x.ParentCallId == "")
-                        .Where(x => managers != null && managers.Any() ? managers.ToList().Contains(x.AnsweredBy) : true)
-                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ?
-                                    true :
-                                    x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
-                        .Any();
-        }
-
-        public object GetWorkloadByViopReportData(ReportTimePeriod timePeriod, Guid[] managers)
-        {
-            var reportData = BuildWorkloadByViopReport(timePeriod, managers);
-
-            return reportData == null || !reportData.Any() ? null : GenerateReportData(timePeriod, reportData);
-        }
-
-        private List<WorkloadByViop> BuildWorkloadByViopReport(ReportTimePeriod timePeriod, Guid[] managers)
-        {
-            DateTime fromDate;
-            DateTime toDate;
-
-            GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-            var result = Query(CrmDbContext.VoipCalls)
-                            .Where(x => x.ParentCallId == "")
-                            .Where(x => managers != null && managers.Any() ? managers.Contains(x.AnsweredBy) : true)
-                            .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
-                            .GroupBy(x => new { x.AnsweredBy, x.Status })
-                            .Select(x => new
-                            {
-                                answered_by = x.Key.AnsweredBy,
-                                status = x.Key.Status,
-                                calls_count = x.Count(),
-                                duration = x.Sum(x => x.DialDuration)
-                            })
-                            .ToList()
-                            .ConvertAll(x => new WorkloadByViop
-                            {
-                                UserId = x.answered_by,
-                                UserName = _displayUserSettings.GetFullUserName(x.answered_by),
-                                Status = x.status,
-                                Count = x.calls_count,
-                                Duration = x.duration ?? x.duration.Value
-                            });
-
-            return result;
-        }
-
-        private WorkloadByViop ToWorkloadByViop(object[] row)
-        {
-            return new WorkloadByViop
-            {
-                UserId = string.IsNullOrEmpty(Convert.ToString(row[0])) ? Guid.Empty : new Guid(Convert.ToString(row[0])),
-                UserName = Convert.ToString(row[1] ?? string.Empty),
-                Status = (VoipCallStatus)Convert.ToInt32(row[2] ?? 0),
-                Count = Convert.ToInt32(row[3]),
-                Duration = Convert.ToInt32(row[4])
-            };
-        }
-
-        private object GenerateReportData(ReportTimePeriod timePeriod, List<WorkloadByViop> data)
-        {
-            var reportData = data.Select(item => new List<object>
-                {
-                    item.UserId,
-                    item.UserName,
-                    (int) item.Status,
-                    item.Count,
-                    new {format = TimeFormat, value = SecondsToTimeFormat(item.Duration)}
-                }).ToList();
-
-            return new
-            {
-                resource = new
-                {
-                    header = CRMReportResource.WorkloadByVoipReport,
-                    sheetName = CRMReportResource.WorkloadByVoipReport,
-                    dateRangeLabel = CRMReportResource.TimePeriod + ":",
-                    dateRangeValue = GetTimePeriodText(timePeriod),
-
-                    chartName = CRMReportResource.CallsCount,
-                    chartName1 = CRMReportResource.CallsDuration,
-
-                    header1 = CRMReportResource.CallsCount,
-                    header2 = CRMReportResource.CallsDuration,
-
-                    manager = CRMReportResource.Manager,
-                    total = CRMReportResource.Total,
-
-                    incoming = CRMReportResource.Incoming,
-                    outcoming = CRMReportResource.Outcoming,
-
-                    timeFormat = TimeFormat
-                },
-                data = reportData
-            };
-        }
-
-        private string SecondsToTimeFormat(int duration)
-        {
-            var timeSpan = TimeSpan.FromSeconds(duration);
-
-            return $"{(timeSpan.TotalHours < 10 ? "0" : "") + (int)timeSpan.TotalHours}:{(timeSpan.Minutes < 10 ? "0" : "") + timeSpan.Minutes}:{(timeSpan.Seconds < 10 ? "0" : "") + timeSpan.Seconds}";
-        }
-
-        #endregion
-
-
         #region SummaryForThePeriodReport
 
         public bool CheckSummaryForThePeriodReportData(ReportTimePeriod timePeriod, Guid[] managers)
@@ -1832,20 +1740,12 @@ namespace ASC.CRM.Core.Dao
                                       .Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                       .Any();
 
-
-            var voipSqlQuery = Query(CrmDbContext.VoipCalls)
-                          .Where(x => x.ParentCallId == "")
-                          .Where(x => managers != null && managers.Any() ? managers.Contains(x.AnsweredBy) : true)
-                          .Where(x => x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
-                          .Any();
-
             return newDealsSqlQuery ||
                    closedDealsSqlQuery ||
                    overdueDealsSqlQuery ||
                    invoicesSqlQuery ||
                    contactsSqlQuery ||
-                   tasksSqlQuery ||
-                   voipSqlQuery;
+                   tasksSqlQuery;
         }
 
         public object GetSummaryForThePeriodReportData(ReportTimePeriod timePeriod, Guid[] managers, string defaultCurrency)
@@ -2002,18 +1902,6 @@ namespace ASC.CRM.Core.Dao
                               .ToList();
             //    .OrderBy("i.sort_order, i.title", true);
 
-            var voipSqlQuery = Query(CrmDbContext.VoipCalls)
-                                .Where(x => String.IsNullOrEmpty(x.ParentCallId))
-                                .Where(x => managers != null && managers.Any() ? managers.Contains(x.AnsweredBy) : true)
-                                .Where(x => x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
-                                .GroupBy(x => x.Status)
-                                .Select(x => new
-                                {
-                                    status = x.Key,
-                                    calls_count = x.Count(),
-                                    duration = x.Sum(x => x.DialDuration)
-                                })
-                                .ToList();
             return new
             {
                 DealsInfo = new
@@ -2025,8 +1913,7 @@ namespace ASC.CRM.Core.Dao
                 },
                 InvoicesInfo = invoicesSqlQuery,
                 ContactsInfo = contactsSqlQuery,
-                TasksInfo = tasksSqlQuery,
-                VoipInfo = voipSqlQuery
+                TasksInfo = tasksSqlQuery
             };
         }
 

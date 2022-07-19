@@ -1,4 +1,3 @@
 {
-  "DeleteThirdPartyAlert": "Remover {{service}} do módulo 'Documentos'? Isto não afetará de forma alguma sua conta {{account}}.",
   "SuccessDeleteThirdParty": "O {{service}} de terceiros é excluído"
 }

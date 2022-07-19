@@ -1,8 +1,8 @@
 {
   "AddMembers": "Додати учасників",
   "Birthdate": "Дата народження",
-  "DeleteUserDataConfirmation": "Документи користувача, до яких надано спільний доступ, будуть видалені. Щоб цього уникнути, перепризначте дані.",
   "DeleteSelfProfile": "Видалити профіль",
+  "DeleteUserDataConfirmation": "Документи користувача, до яких надано спільний доступ, будуть видалені. Щоб цього уникнути, перепризначте дані.",
   "DisableUserButton": "Відключити",
   "DisabledEmployeeStatus": "Відключено",
   "EmailChangeButton": "Змінити електронну пошту",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Чоловік",
   "MaxSizeLabel": "(JPG або PNG, максимум 1 Мб)",
-  "NotBeUndone": "Примітка. Цю дію неможна відмінити.",
   "PasswordChangeButton": "Змінити пароль",
   "PendingTitle": "Очікування",
   "ReassignData": "Перепризначити дані",

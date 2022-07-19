@@ -19,6 +19,14 @@ const commonStyles = css`
 `;
 
 const StyledModalDialog = styled(ModalDialog)`
+  #modal-dialog {
+    max-height: 560px;
+  }
+
+  .select-panel-modal-header {
+    margin-bottom: 0;
+  }
+
   .heading {
     line-height: 52px;
     font-size: 21px;
@@ -26,24 +34,30 @@ const StyledModalDialog = styled(ModalDialog)`
   .modal-dialog-aside-header {
     height: 53px;
   }
+
+  .select-file_body-modal-dialog {
+    padding-bottom: 0;
+  }
 `;
 
 const StyledBody = styled.div`
   .selection-panel_body {
-    height: 495px;
+    height: 434px;
     display: grid;
     grid-template-columns: 245px 1fr;
     grid-template-areas: "tree files" "footer footer";
     grid-template-rows: auto max-content;
     margin-right: -4px;
+    padding-bottom: 0;
 
     .selection-panel_files-body {
+      width: 500px;
       grid-area: files;
       display: grid;
       grid-template-rows: max-content auto;
     }
     .selection-panel_files-list-body {
-      height: 100%;
+      height: 384px;
     }
     .selection-panel_tree-body {
       grid-area: tree;
@@ -57,7 +71,9 @@ const StyledBody = styled.div`
         padding: 12px 20px 14px 0px;
       }
       .selection-panel_tree-folder {
-        margin-left: -12px;
+        height: 387px;
+        max-height: 384px;
+        margin-left: -17px;
       }
 
       .span.rc-tree-switcher {
@@ -169,7 +185,7 @@ const StyledAsideBody = styled.div`
   height: 100%;
 
   .selection-panel_aside-body {
-    height: calc(100% - 32px);
+    height: 100%;
     display: grid;
     grid-template-rows: max-content auto max-content;
   }
@@ -210,13 +226,9 @@ const StyledAsideBody = styled.div`
   }
 
   .selection-panel_aside-footer {
+    width: 100%;
+    height: 100%;
     border-top: 1px solid ${(props) => props.theme.row.borderBottom};
-    margin-left: -13px;
-    margin-right: -13px;
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-top: 16px;
-    padding-bottom: 12px;
 
     .selection-panel_aside-buttons {
       ${(props) => props.footer && "margin-top:16px"};

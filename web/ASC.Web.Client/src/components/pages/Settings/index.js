@@ -14,6 +14,15 @@ const PasswordStrengthPage = lazy(() =>
 const TrustedMailPage = lazy(() =>
   import("./categories/security/access-portal/trustedMail")
 );
+const IpSecurityPage = lazy(() =>
+  import("./categories/security/access-portal/ipSecurity")
+);
+const AdminMessagePage = lazy(() =>
+  import("./categories/security/access-portal/adminMessage")
+);
+const SessionLifetimePage = lazy(() =>
+  import("./categories/security/access-portal/sessionLifetime")
+);
 
 const CommonSettings = lazy(() => import("./categories/common/index.js"));
 
@@ -103,6 +112,18 @@ const TRUSTED_MAIL_PAGE_URL = combineUrl(
   PROXY_BASE_URL,
   "/security/access-portal/trusted-mail"
 );
+const IP_SECURITY_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/ip"
+);
+const ADMIN_MESSAGE_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/admin-message"
+);
+const SESSION_LIFETIME_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/lifetime"
+);
 
 const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 
@@ -163,6 +184,17 @@ const Settings = (props) => {
             exact
             path={TRUSTED_MAIL_PAGE_URL}
             component={TrustedMailPage}
+          />
+          <Route exact path={IP_SECURITY_PAGE_URL} component={IpSecurityPage} />
+          <Route
+            exact
+            path={ADMIN_MESSAGE_PAGE_URL}
+            component={AdminMessagePage}
+          />
+          <Route
+            exact
+            path={SESSION_LIFETIME_PAGE_URL}
+            component={SessionLifetimePage}
           />
 
           <Route exact path={INTEGRATION_URLS} component={Integration} />

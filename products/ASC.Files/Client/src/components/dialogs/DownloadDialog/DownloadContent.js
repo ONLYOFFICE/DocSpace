@@ -106,38 +106,43 @@ const DownloadContent = (props) => {
   return (
     <StyledDownloadContent isOpen={showHeader ? isOpen : true} theme={theme}>
       {showHeader && (
-        <div className="download-dialog_content-wrapper">
-          <Checkbox
-            data-item-id="All"
-            data-type={type}
-            isChecked={isChecked}
-            isIndeterminate={isIndeterminate}
-            onChange={onRowSelect}
-            className="download-dialog-checkbox"
-          />
-          <div
-            onClick={onOpen}
-            className="download-dialog-heading download-dialog_row-text"
-          >
-            <Text noSelect fontSize="16px" fontWeight={600}>
-              {title}
-            </Text>
-            <ArrowIcon className="download-dialog-icon" />
-          </div>
-
-          {(isChecked || isIndeterminate) && !isOther && (
-            <LinkWithDropdown
-              containerMinWidth="fit-content"
-              data={titleData}
-              directionX="left"
-              directionY="bottom"
-              dropdownType="alwaysDashed"
-              fontSize="13px"
-              fontWeight={600}
+        <div className="download-dialog_content-wrapper download-dialog-row">
+          <div className="download-dialog-main-content">
+            <Checkbox
+              data-item-id="All"
+              data-type={type}
+              isChecked={isChecked}
+              isIndeterminate={isIndeterminate}
+              onChange={onRowSelect}
+              className="download-dialog-checkbox"
+            />
+            <div
+              onClick={onOpen}
+              className="download-dialog-heading download-dialog-title"
             >
-              {titleFormat}
-            </LinkWithDropdown>
-          )}
+              <Text noSelect fontSize="16px" fontWeight={600}>
+                {title}
+              </Text>
+              <ArrowIcon className="download-dialog-icon" />
+            </div>
+          </div>
+          <div className="download-dialog-actions">
+            {(isChecked || isIndeterminate) && !isOther && (
+              <LinkWithDropdown
+                className="download-dialog-link"
+                containerMinWidth="fit-content"
+                data={titleData}
+                directionX="left"
+                directionY="bottom"
+                dropdownType="alwaysDashed"
+                fontSize="13px"
+                fontWeight={600}
+                withExpander
+              >
+                {titleFormat}
+              </LinkWithDropdown>
+            )}
+          </div>
         </div>
       )}
       <div className="download-dialog_hidden-items">
