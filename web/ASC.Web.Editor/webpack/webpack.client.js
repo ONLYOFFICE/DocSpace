@@ -39,6 +39,38 @@ const clientConfig = {
     maxAssetSize: 512000,
   },
 
+  module: {
+    rules: [
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          {
+            loader: "css-loader",
+            options: {
+              url: {
+                filter: (url, resourcePath) => {
+                  // resourcePath - path to css file
+
+                  // Don't handle `/static` urls
+                  if (url.startsWith("/static") || url.startsWith("data:")) {
+                    return false;
+                  }
+
+                  return true;
+                },
+              },
+            },
+          },
+          // Compiles Sass to CSS
+          "sass-loader",
+        ],
+      },
+    ],
+  },
+
   plugins: [
     new CleanWebpackPlugin(),
     new ModuleFederationPlugin({

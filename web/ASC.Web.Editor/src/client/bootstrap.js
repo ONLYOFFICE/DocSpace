@@ -10,6 +10,8 @@ import { combineUrl } from "@appserver/common/utils";
 import ErrorBoundary from "../components/ErrorBoundary";
 import pkg from "../../package.json";
 import { isRetina, getCookie, setCookie } from "@appserver/common/utils";
+import { fonts } from "@appserver/common/fonts.js";
+import GlobalStyle from "../components/GlobalStyle.js";
 
 const propsObj = window.__ASC_INITIAL_EDITOR_STATE__;
 const initialI18nStoreASC = window.initialI18nStoreASC;
@@ -78,6 +80,7 @@ const AppWrapper = () => {
   return (
     <ErrorBoundary onError={onError}>
       {/* <Suspense fallback={<div />}> */}
+      <GlobalStyle fonts={fonts} />
       <App
         {...propsObj}
         mfReady={isInitialized}
