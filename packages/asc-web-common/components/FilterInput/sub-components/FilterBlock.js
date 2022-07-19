@@ -1,5 +1,7 @@
 import React from "react";
 
+import Loaders from "../../Loaders";
+
 import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
 import Heading from "@appserver/components/heading";
@@ -37,6 +39,7 @@ const FilterBlock = ({
   });
   const [filterData, setFilterData] = React.useState([]);
   const [filterValues, setFilterValues] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const changeShowSelector = React.useCallback((isAuthor, group) => {
     setShowSelector((val) => {
@@ -180,6 +183,7 @@ const FilterBlock = ({
   );
 
   const getDefaultFilterData = React.useCallback(async () => {
+    setIsLoading(true);
     const data = await getFilterData();
 
     const items = data.filter((item) => item.isHeader === true);
@@ -238,6 +242,10 @@ const FilterBlock = ({
 
     setFilterData(items);
     setFilterValues(newFilterValues);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
   }, []);
 
   React.useEffect(() => {
@@ -368,24 +376,28 @@ const FilterBlock = ({
             />
           </StyledFilterBlockHeader>
           <div className="filter-body">
-            <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
-              {filterData.map((item) => {
-                return (
-                  <FilterBlockItem
-                    key={item.key}
-                    label={item.label}
-                    keyProp={item.key}
-                    group={item.group}
-                    groupItem={item.groupItem}
-                    isLast={item.isLast}
-                    withoutHeader={item.withoutHeader}
-                    withoutSeparator={item.withoutSeparator}
-                    changeFilterValue={changeFilterValue}
-                    showSelector={changeShowSelector}
-                  />
-                );
-              })}
-            </Scrollbar>
+            {isLoading ? (
+              <Loaders.FilterBlock />
+            ) : (
+              <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
+                {filterData.map((item) => {
+                  return (
+                    <FilterBlockItem
+                      key={item.key}
+                      label={item.label}
+                      keyProp={item.key}
+                      group={item.group}
+                      groupItem={item.groupItem}
+                      isLast={item.isLast}
+                      withoutHeader={item.withoutHeader}
+                      withoutSeparator={item.withoutSeparator}
+                      changeFilterValue={changeFilterValue}
+                      showSelector={changeShowSelector}
+                    />
+                  );
+                })}
+              </Scrollbar>
+            )}
           </div>
           {showFooter && (
             <StyledFilterBlockFooter>
