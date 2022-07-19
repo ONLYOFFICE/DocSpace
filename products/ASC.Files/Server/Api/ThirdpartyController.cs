@@ -41,6 +41,7 @@ public class ThirdpartyController : ApiControllerBase
     private readonly WordpressHelper _wordpressHelper;
     private readonly WordpressToken _wordpressToken;
     private readonly RequestHelper _requestHelper;
+    private readonly FileSecurityCommon _fileSecurityCommon;
 
     public ThirdpartyController(
         CoreBaseSettings coreBaseSettings,
@@ -55,7 +56,8 @@ public class ThirdpartyController : ApiControllerBase
         UserManager userManager,
         WordpressHelper wordpressHelper,
         WordpressToken wordpressToken,
-        RequestHelper requestHelper)
+        RequestHelper requestHelper,
+        FileSecurityCommon fileSecurityCommon)
     {
         _coreBaseSettings = coreBaseSettings;
         _entryManager = entryManager;
@@ -70,6 +72,7 @@ public class ThirdpartyController : ApiControllerBase
         _wordpressHelper = wordpressHelper;
         _wordpressToken = wordpressToken;
         _requestHelper = requestHelper;
+        _fileSecurityCommon = fileSecurityCommon;
     }
 
     /// <summary>
@@ -193,6 +196,18 @@ public class ThirdpartyController : ApiControllerBase
         return await _fileStorageServiceThirdparty.GetThirdPartyAsync();
     }
 
+    /// <summary>
+    ///    Return connected third party backup services
+    /// </summary>
+    /// <category>Third-Party Integration</category>
+    /// <short>Get third party list</short>
+    /// <returns>Connected providers</returns>
+    [HttpGet("thirdparty/backup")]
+    public async Task<ThirdPartyParams> GetBackupThirdPartyAccountAsync()
+    {
+        return await _fileStorageServiceThirdparty.GetBackupThirdPartyAsync();
+    }
+
     /// <visible>false</visible>
     [HttpGet("wordpress-info")]
     public object GetWordpressInfo()
@@ -240,17 +255,41 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty")]
     public async Task<FolderDto<string>> SaveThirdPartyAsync(ThirdPartyRequestDto inDto)
     {
+        return await SaveThirdPartyBackupAsync(inDto);
+    }
+
+    /// <summary>
+    ///   Saves the third party backup file storage service account
+    /// </summary>
+    /// <short>Save third party account</short>
+    /// <param name="url">Connection url for SharePoint</param>
+    /// <param name="login">Login</param>
+    /// <param name="password">Password</param>
+    /// <param name="token">Authentication token</param>
+    /// <param name="customerTitle">Title</param>
+    /// <param name="providerKey">Provider Key</param>
+    /// <param name="providerId">Provider ID</param>
+    /// <category>Third-Party Integration</category>
+    /// <returns>Folder contents</returns>
+    /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
+    /// <exception cref="ArgumentException"></exception>
+    [HttpPost("thirdparty/backup")]
+    public async Task<FolderDto<string>> SaveThirdPartyBackupAsync(ThirdPartyRequestDto inDto)
+    {
+        if (!_fileSecurityCommon.IsAdministrator(_securityContext.CurrentAccount.ID))
+        {
+            throw new InvalidOperationException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+        }
+
         var thirdPartyParams = new ThirdPartyParams
         {
             AuthData = new AuthData(inDto.Url, inDto.Login, inDto.Password, inDto.Token),
-            Corporate = inDto.IsRoomsStorage ? false : inDto.IsCorporate,
-            RoomsStorage = inDto.IsCorporate ? false : inDto.IsRoomsStorage,
             CustomerTitle = inDto.CustomerTitle,
             ProviderId = inDto.ProviderId,
             ProviderKey = inDto.ProviderKey,
         };
 
-        var folder = await _fileStorageServiceThirdparty.SaveThirdPartyAsync(thirdPartyParams);
+        var folder = await _fileStorageServiceThirdparty.SaveThirdPartyBackupAsync(thirdPartyParams);
 
         return await _folderDtoHelper.GetAsync(folder);
     }

@@ -1547,7 +1547,7 @@ public class FileStorageService<T> //: IFileStorageService
         return internalGetThirdPartyAsync(providerDao);
     }
 
-    public async Task<List<ThirdPartyParams>> internalGetThirdPartyAsync(IProviderDao providerDao)
+    private async Task<List<ThirdPartyParams>> internalGetThirdPartyAsync(IProviderDao providerDao)
     {
         var providersInfo = await providerDao.GetProvidersInfoAsync().ToListAsync();
 
@@ -1562,6 +1562,34 @@ public class FileStorageService<T> //: IFileStorageService
                     });
 
         return new List<ThirdPartyParams>(resultList.ToList());
+    }
+
+    public Task<ThirdPartyParams> GetBackupThirdPartyAsync()
+    {
+        var providerDao = GetProviderDao();
+        if (providerDao == null)
+        {
+            return null;
+        }
+
+        return InternalBackupGetThirdPartyAsync(providerDao);
+    }
+
+    private async Task<ThirdPartyParams> InternalBackupGetThirdPartyAsync(IProviderDao providerDao)
+    {
+        var providersInfo = await providerDao.GetProvidersInfoAsync(FolderType.ThirdpartyBackup).ToListAsync();
+
+        var resultList = providersInfo
+            .Select(r =>
+                    new ThirdPartyParams
+                    {
+                        CustomerTitle = r.CustomerTitle,
+                        Corporate = r.RootFolderType == FolderType.ThirdpartyBackup,
+                        ProviderId = r.ID.ToString(),
+                        ProviderKey = r.ProviderKey
+                    });
+
+        return resultList.SingleOrDefault();
     }
 
     public Task<List<FileEntry>> GetThirdPartyFolderAsync(int folderType = 0)
@@ -1604,7 +1632,7 @@ public class FileStorageService<T> //: IFileStorageService
             return Task.FromResult<Folder<T>>(null);
         }
 
-        return InternalSaveThirdPartyAsync(thirdPartyParams, providerDao);
+        return InternalSaveThirdPartyBackupAsync(thirdPartyParams, providerDao);
     }
 
     private async Task<Folder<T>> InternalSaveThirdPartyAsync(ThirdPartyParams thirdPartyParams, IProviderDao providerDao)
@@ -1684,6 +1712,72 @@ public class FileStorageService<T> //: IFileStorageService
         {
             await _fileMarker.MarkAsNewAsync(folder);
         }
+
+        return folder;
+    }
+
+    public Task<Folder<T>> SaveThirdPartyBackupAsync(ThirdPartyParams thirdPartyParams)
+    {
+        var providerDao = GetProviderDao();
+
+        if (providerDao == null)
+        {
+            return Task.FromResult<Folder<T>>(null);
+        }
+
+        return InternalSaveThirdPartyBackupAsync(thirdPartyParams, providerDao);
+    }
+
+    private async Task<Folder<T>> InternalSaveThirdPartyBackupAsync(ThirdPartyParams thirdPartyParams, IProviderDao providerDao)
+    {
+        ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
+        ErrorIf(!_filesSettingsHelper.EnableThirdParty, FilesCommonResource.ErrorMassage_SecurityException_Create);
+
+        var folderType = FolderType.ThirdpartyBackup;
+
+        int curProviderId;
+
+        MessageAction messageAction;
+        if (string.IsNullOrEmpty(thirdPartyParams.ProviderId))
+        {
+            ErrorIf(!_thirdpartyConfiguration.SupportInclusion(_daoFactory)
+                    ||
+                    (!_filesSettingsHelper.EnableThirdParty
+                     && !_coreBaseSettings.Personal)
+                    , FilesCommonResource.ErrorMassage_SecurityException_Create);
+
+            thirdPartyParams.CustomerTitle = Global.ReplaceInvalidCharsAndTruncate(thirdPartyParams.CustomerTitle);
+            ErrorIf(string.IsNullOrEmpty(thirdPartyParams.CustomerTitle), FilesCommonResource.ErrorMassage_InvalidTitle);
+
+            try
+            {
+                curProviderId = await providerDao.SaveProviderInfoAsync(thirdPartyParams.ProviderKey, thirdPartyParams.CustomerTitle, thirdPartyParams.AuthData, folderType);
+                messageAction = MessageAction.ThirdPartyCreated;
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                throw GenerateException(e, true);
+            }
+            catch (Exception e)
+            {
+                throw GenerateException(e.InnerException ?? e);
+            }
+        }
+        else
+        {
+            curProviderId = Convert.ToInt32(thirdPartyParams.ProviderId);
+            curProviderId = await providerDao.UpdateProviderInfoAsync(curProviderId, thirdPartyParams.CustomerTitle, thirdPartyParams.AuthData, folderType);
+            messageAction = MessageAction.ThirdPartyUpdated;
+        }
+
+        var provider = await providerDao.GetProviderInfoAsync(curProviderId);
+        await provider.InvalidateStorageAsync();
+
+        var folderDao1 = GetFolderDao();
+        var folder = await folderDao1.GetFolderAsync((T)Convert.ChangeType(provider.RootFolderId, typeof(T)));
+        ErrorIf(!await _fileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
+
+        _filesMessageService.Send(GetHttpHeaders(), messageAction, folder.Id.ToString(), provider.ProviderKey);
 
         return folder;
     }

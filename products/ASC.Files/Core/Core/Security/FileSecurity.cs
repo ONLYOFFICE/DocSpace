@@ -494,7 +494,8 @@ public class FileSecurity : IFileSecurity
                  f.RootFolderType == FolderType.Privacy ||
                  f.RootFolderType == FolderType.Projects ||
                  f.RootFolderType == FolderType.VirtualRooms ||
-                 f.RootFolderType == FolderType.Archive;
+                 f.RootFolderType == FolderType.Archive ||
+                 f.RootFolderType == FolderType.ThirdpartyBackup;
 
         var isVisitor = user.IsVisitor(_userManager);
 
@@ -670,6 +671,12 @@ public class FileSecurity : IFileSecurity
                     continue;
                 }
 
+                if (e.RootFolderType == FolderType.ThirdpartyBackup && _fileSecurityCommon.IsAdministrator(userId))
+                {
+                    result.Add(e);
+                    continue;
+                }
+
                 if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && _fileSecurityCommon.IsAdministrator(userId))
                 {
                     result.Add(e);
@@ -724,6 +731,8 @@ public class FileSecurity : IFileSecurity
                         : DefaultCommonShare;
 
                 e.Access = ace != null ? ace.Share : defaultShare;
+
+                e.Access = e.RootFolderType == FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
 
                 if (action == FilesSecurityActions.Read && e.Access != FileShare.Restrict)
                 {
