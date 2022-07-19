@@ -26,11 +26,11 @@ const people = [
   {
     email: "nikita.mushka@onlyoffice.com",
     avatar:
-      "/storage/userPhotos/root/2af62a34-b6c8-11ec-b1d9-b42e99bd46a3_size_82-82.jpeg?_=1354477264",
+      "http://192.168.0.102:8092/images/default_user_photo_size_82-82.png",
     isOwner: true,
-    id: "2af62a34-b6c8-11ec-b1d9-b42e99bd46a3",
+    id: "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
     displayName: "Мушка Никита",
-    profileUrl: "http://localhost:8092/products/people/view/administrator",
+    profileUrl: "http://192.168.9.102:8092/products/people/view/administrator",
     role: "Owner",
   },
   {

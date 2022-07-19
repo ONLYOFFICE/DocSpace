@@ -55,7 +55,7 @@ const StyledUser = styled.div`
     }
   }
 
-  .role {
+  .role-wrapper {
     margin-left: auto;
 
     font-family: "Open Sans";
@@ -66,6 +66,12 @@ const StyledUser = styled.div`
     white-space: nowrap;
 
     color: #555f65;
+
+    .role {
+      a {
+        padding: 0;
+      }
+    }
   }
 `;
 
