@@ -11,9 +11,41 @@ import { connectedCloudsTypeTitleTranslation } from "../../../helpers/utils";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 const StyledOperationDialog = styled(ModalDialog)`
-  .modal-dialog-aside-footer {
-    display: flex;
-    width: 90%;
+  .operation-button {
+    margin-right: 8px;
+  }
+
+  .select-action-wrapper {
+    margin-top: 16px;
+
+    .select-action {
+      margin-bottom: 12px;
+    }
+
+    .conflict-resolve-radio-button {
+      label {
+        display: flex;
+        align-items: center;
+        &:not(:last-child) {
+          margin-bottom: 12px;
+        }
+      }
+
+      svg {
+        overflow: visible;
+        margin-right: 8px;
+      }
+
+      span {
+        display: flex;
+        align-items: center;
+        .radio-option-title {
+          font-weight: 600;
+          font-size: 14px;
+          line-height: 16px;
+        }
+      }
+    }
   }
   .third-party-move-radio-button {
     margin-top: 12px;
@@ -70,7 +102,6 @@ const PureThirdPartyMoveContainer = ({
   const deleteAfter = false; // TODO: get from settings
 
   const [isLoading, setIsLoading] = useState(false);
-  const [actionType, setActionType] = useState("move");
 
   const onClosePanels = () => {
     setDestFolderId(false);
@@ -80,11 +111,30 @@ const PureThirdPartyMoveContainer = ({
   };
   const onClose = () => setThirdPartyMoveDialogVisible(false);
 
-  const startOperation = () => {
-    const isCopy = actionType === "copy";
+  const providerTitle = connectedCloudsTypeTitleTranslation(provider, t);
 
+  const [resolveType, setResolveType] = useState("move");
+  const onSelectResolveType = (e) => setResolveType(e.target.value);
+
+  const radioOptions = [
+    {
+      label: <Text className="radio-option-title">{t("MoveFileOption")}</Text>,
+      value: "move",
+    },
+    {
+      label: (
+        <Text className="radio-option-title">{t("CreateFileCopyOption")}</Text>
+      ),
+      value: "copy",
+    },
+  ];
+
+  const startOperation = (e) => {
+    const isCopy = resolveType === "copy";
     const folderIds = [];
     const fileIds = [];
+
+    console.log(isCopy);
 
     for (let item of selection) {
       if (item.fileExst) {
@@ -100,10 +150,6 @@ const PureThirdPartyMoveContainer = ({
       fileIds,
       deleteAfter,
       isCopy,
-      translations: {
-        copy: t("Common:CopyOperation"),
-        move: t("Translations:MoveToOperation"),
-      },
     };
 
     setIsLoading(true);
@@ -124,74 +170,48 @@ const PureThirdPartyMoveContainer = ({
       });
   };
 
-  const providerTitle = connectedCloudsTypeTitleTranslation(provider, t);
-
-  const onSelectActionType = (e) => setActionType(e.target.value);
-
-  const radioOptions = [
-    {
-      label: (
-        <div>
-          <Text fontWeight={600} fontSize={"14px"}>
-            {t("Translations:Move")}
-          </Text>
-        </div>
-      ),
-      value: "move",
-    },
-    {
-      label: (
-        <div>
-          <Text fontWeight={600} fontSize={"14px"}>
-            {t("Translations:Copy")}
-          </Text>
-        </div>
-      ),
-
-      value: "copy",
-    },
-  ];
   return (
     <StyledOperationDialog
       isLoading={!tReady}
       visible={conflictResolveDialogVisible ? false : visible}
       zIndex={zIndex}
       onClose={onClose}
+      displayType="modal"
+      isLarge
     >
       <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text>{t("MoveConfirmationMessage", { provider: providerTitle })}</Text>
+        <Text>{t("MoveConfirmationAlert", { provider: providerTitle })}</Text>
 
-        <Text className="third-party-move-dialog-text">
-          {t("ConflictResolveDialog:ConflictResolveSelectAction")}
-        </Text>
-        <RadioButtonGroup
-          className="third-party-move-radio-button"
-          orientation="vertical"
-          fontSize="13px"
-          fontWeight="400"
-          name="group"
-          onClick={onSelectActionType}
-          options={radioOptions}
-          selected={actionType}
-        />
+        <div className="select-action-wrapper">
+          <Text className="select-action">
+            {t("ConflictResolveDialog:ConflictResolveSelectAction")}
+          </Text>
+          <RadioButtonGroup
+            className="conflict-resolve-radio-button"
+            orientation="vertical"
+            fontSize="13px"
+            fontWeight="400"
+            name="group"
+            onClick={onSelectResolveType}
+            options={radioOptions}
+            selected="move"
+          />
+        </div>
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
         <Button
-          className="operation-button"
           label={t("Common:OKButton")}
-          size="normalTouchscreen"
+          size="normal"
           primary
           onClick={startOperation}
           isLoading={isLoading}
           isDisabled={isLoading}
         />
-
         <Button
-          className="operation-button"
           label={t("Common:CancelButton")}
-          size="normalTouchscreen"
+          size="normal"
           onClick={onClose}
           isLoading={isLoading}
           isDisabled={isLoading}
@@ -237,8 +257,8 @@ export default inject(
 )(
   withTranslation([
     "ThirdPartyMoveDialog",
+    "ConflictResolveDialog",
     "Common",
     "Translations",
-    "ConflictResolveDialog",
   ])(observer(PureThirdPartyMoveContainer))
 );

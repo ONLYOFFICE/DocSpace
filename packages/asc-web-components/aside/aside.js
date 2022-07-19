@@ -9,7 +9,6 @@ import {
 } from "./styled-aside";
 
 const Aside = React.memo((props) => {
-  //console.log("Aside render");
   const {
     visible,
     children,
@@ -29,6 +28,7 @@ const Aside = React.memo((props) => {
       contentPaddingBottom={contentPaddingBottom}
       className={`${className} not-selectable aside`}
     >
+      {/* <CloseButton  displayType="aside" zIndex={zIndex}/> */}
       {withoutBodyScroll ? (
         children
       ) : (

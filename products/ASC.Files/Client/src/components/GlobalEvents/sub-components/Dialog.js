@@ -1,38 +1,10 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import styled from "styled-components";
 
 import toastr from "@appserver/components/toast/toastr";
 import ModalDialog from "@appserver/components/modal-dialog";
 import TextInput from "@appserver/components/text-input";
-import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
-
-const StyledModalDialog = styled(ModalDialog)`
-  width: 400px;
-
-  @media (max-width: 400px) {
-    width: 100%;
-  }
-`;
-
-const StyledSaveCancelButtons = styled(SaveCancelButtons)`
-  position: relative !important;
-
-  padding: 8px 0 0;
-
-  .buttons-flex {
-    width: 100%;
-
-    display: grid;
-    align-items: center;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 8px;
-  }
-
-  button {
-    width: 100%;
-  }
-`;
+import Button from "@appserver/components/button";
 
 const Dialog = ({
   t,
@@ -80,7 +52,7 @@ const Dialog = ({
   }, []);
 
   return (
-    <StyledModalDialog
+    <ModalDialog
       visible={visible}
       displayType={"modal"}
       scale={true}
@@ -101,15 +73,23 @@ const Dialog = ({
         />
       </ModalDialog.Body>
       <ModalDialog.Footer>
-        <StyledSaveCancelButtons
-          saveButtonLabel={"Save"}
-          cancelButtonLabel={"Cancel"}
-          onSaveClick={onSaveAction}
-          onCancelClick={onCancelAction}
-          showReminder={!isDisabled}
+        <Button
+          key="SendBtn"
+          label={t("Common:SaveButton")}
+          size="normal"
+          scale
+          primary
+          onClick={onSaveAction}
+        />
+        <Button
+          key="CloseBtn"
+          label={t("Common:CancelButton")}
+          size="normal"
+          scale
+          onClick={onCancelAction}
         />
       </ModalDialog.Footer>
-    </StyledModalDialog>
+    </ModalDialog>
   );
 };
 
