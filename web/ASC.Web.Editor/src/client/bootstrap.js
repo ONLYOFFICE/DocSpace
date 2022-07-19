@@ -12,6 +12,15 @@ import pkg from "../../package.json";
 import { isRetina, getCookie, setCookie } from "@appserver/common/utils";
 import { fonts } from "@appserver/common/fonts.js";
 import GlobalStyle from "../components/GlobalStyle.js";
+import ThemeProvider from "@appserver/components/theme-provider";
+import store from "studio/store";
+import { inject, observer, Provider as MobxProvider } from "mobx-react";
+
+const ThemeProviderWrapper = inject(({ auth }) => {
+  const { settingsStore } = auth;
+  console.log(settingsStore.theme);
+  return { theme: settingsStore.theme };
+})(observer(ThemeProvider));
 
 const propsObj = window.__ASC_INITIAL_EDITOR_STATE__;
 const initialI18nStoreASC = window.initialI18nStoreASC;
@@ -79,16 +88,20 @@ const AppWrapper = () => {
 
   return (
     <ErrorBoundary onError={onError}>
-      {/* <Suspense fallback={<div />}> */}
-      <GlobalStyle fonts={fonts} />
-      <App
-        {...propsObj}
-        mfReady={isInitialized}
-        mfFailed={isErrorLoading}
-        isDesktopEditor={isDesktopEditor}
-        initDesktop={initDesktop}
-      />
-      {/* </Suspense> */}
+      <MobxProvider {...store}>
+        <ThemeProviderWrapper>
+          {/* <Suspense fallback={<div />}> */}
+          <GlobalStyle fonts={fonts} />
+          <App
+            {...propsObj}
+            mfReady={isInitialized}
+            mfFailed={isErrorLoading}
+            isDesktopEditor={isDesktopEditor}
+            initDesktop={initDesktop}
+          />
+          {/* </Suspense> */}
+        </ThemeProviderWrapper>
+      </MobxProvider>
     </ErrorBoundary>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DynamicComponent from "../components/DynamicComponent";
 import { getPresignedUri } from "@appserver/common/api/files";
 import {
@@ -37,7 +37,7 @@ const withDialogs = (WrappedComponent) => {
 
     const { fileInfo, fileId, mfReady } = props;
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (window.authStore) {
         initSocketHelper();
       }
@@ -259,7 +259,6 @@ const withDialogs = (WrappedComponent) => {
           module: "./SelectFileDialog",
         }}
         resetTreeFolders
-        needProxy
         foldersType="exceptPrivacyTrashFolders"
         isPanelVisible={isFileDialogVisible}
         onSelectFile={onSelectFile}
