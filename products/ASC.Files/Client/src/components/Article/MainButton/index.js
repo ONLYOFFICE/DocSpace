@@ -268,6 +268,7 @@ const ArticleMainButtonContent = (props) => {
                 titleProp={t("Upload")}
                 actionOptions={actions}
                 buttonOptions={uploadActions}
+                isRooms={isRoomsFolder}
               />
             )}
         </>
