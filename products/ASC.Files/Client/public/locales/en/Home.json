@@ -1,4 +1,5 @@
 {
+  "AdvancedFilter": "Advanced search options",
   "All": "All",
   "AllFiles": "All files",
   "Archives": "Archives",
@@ -74,6 +75,7 @@
   "ShowVersionHistory": "Show version history",
   "Spreadsheet": "Spreadsheet",
   "SubheadingEmptyText": "No files to be displayed in this section",
+  "Tags": "Tags",
   "TooltipElementCopyMessage": "Copy {{element}}",
   "TooltipElementsCopyMessage": "Copy {{element}} elements",
   "TooltipElementsMoveMessage": "Move {{element}} elements",

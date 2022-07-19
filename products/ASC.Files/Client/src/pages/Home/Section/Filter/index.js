@@ -334,7 +334,7 @@ const SectionFilterContent = ({
       // TODO: add logic to other key
       if (roomsFilter.subjectId) {
         const isMe = userId === roomsFilter.subjectId;
-        let label = null;
+        let label = isMe ? t("Common:MeLabel") : null;
 
         if (!isMe) {
           const user = await getUser(roomsFilter.subjectId);
@@ -491,27 +491,27 @@ const SectionFilterContent = ({
           {
             key: RoomsType.CustomRoom,
             group: FilterGroups.roomFilterType,
-            label: "Custom room",
+            label: t("CustomRooms"),
           },
           {
             key: RoomsType.FillingFormsRoom,
             group: FilterGroups.roomFilterType,
-            label: "Filling form",
+            label: t("FillingFormRooms"),
           },
           {
             key: RoomsType.EditingRoom,
             group: FilterGroups.roomFilterType,
-            label: "Editing",
+            label: t("CollaborationRooms"),
           },
           {
             key: RoomsType.ReviewRoom,
             group: FilterGroups.roomFilterType,
-            label: "Review",
+            label: t("ReviewRooms"),
           },
           {
             key: RoomsType.ReadOnlyRoom,
             group: FilterGroups.roomFilterType,
-            label: "View-only",
+            label: t("ViewOnlyRooms"),
           },
         ]
       : [
@@ -547,23 +547,23 @@ const SectionFilterContent = ({
       {
         key: FilterGroups.roomFilterOwner,
         group: FilterGroups.roomFilterOwner,
-        label: t("ByAuthor"),
+        label: t("Common:Owner"),
         isHeader: true,
       },
       {
         key: FilterKeys.me,
         group: FilterGroups.roomFilterOwner,
-        label: "Me",
+        label: t("Common:MeLabel"),
       },
       {
         key: FilterKeys.other,
         group: FilterGroups.roomFilterOwner,
-        label: "Other",
+        label: t("Common:OtherLabel"),
       },
       {
         key: FilterKeys.user,
         group: FilterGroups.roomFilterOwner,
-        label: t("Translations:AddAuthor"),
+        label: t("Translations:AddOwner"),
         isSelector: true,
       },
     ];
@@ -626,7 +626,7 @@ const SectionFilterContent = ({
         filterOptions.push({
           key: FilterGroups.roomFilterTags,
           group: FilterGroups.roomFilterTags,
-          label: "Tags",
+          label: t("Tags"),
           isHeader: true,
           isLast: true,
         });
@@ -699,8 +699,8 @@ const SectionFilterContent = ({
       ? [
           { key: "AZ", label: "Name", default: true },
           { key: "roomType", label: t("Common:Type"), default: true },
-          { key: "Tags", label: "Tags", default: true },
-          { key: "Author", label: "Owner", default: true },
+          { key: "Tags", label: t("Tags"), default: true },
+          { key: "Author", label: t("Common:Owner"), default: true },
           { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
         ]
       : [
@@ -815,10 +815,9 @@ const SectionFilterContent = ({
       getViewSettingsData={getViewSettingsData}
       onSearch={onSearch}
       getSelectedInputValue={getSelectedInputValue}
-      filterHeader={t("Filter")}
+      filterHeader={t("AdvancedFilter")}
       placeholder={t("Common:Search")}
       view={t("Common:View")}
-      headerLabel={t("Translations:AddAuthor")}
       isFavoritesFolder={isFavoritesFolder}
       isRecentFolder={isRecentFolder}
       removeSelectedItem={removeSelectedItem}
