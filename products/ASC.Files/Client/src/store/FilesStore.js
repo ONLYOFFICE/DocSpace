@@ -1732,7 +1732,16 @@ class FilesStore {
     const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
 
-    const items = [...this.folders, ...this.files];
+    const newFolders = [...this.folders];
+
+    newFolders.sort((a, b) => {
+      const firstValue = a.roomType ? 1 : 0;
+      const secondValue = b.roomType ? 1 : 0;
+
+      return secondValue - firstValue;
+    });
+
+    const items = [...newFolders, ...this.files];
     const newItem = items.map((item) => {
       const {
         access,
