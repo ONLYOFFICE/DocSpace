@@ -70,6 +70,8 @@ class SectionHeaderContent extends React.Component {
 
   onCreateRoom = () => {
     console.log("create room");
+    const { setCreateRoomDialogVisible } = this.props;
+    setCreateRoomDialogVisible(true);
   };
 
   createDocument = () => this.onCreate("docx");
@@ -546,6 +548,7 @@ export default inject(
       setEmptyTrashDialogVisible,
       setSelectFileDialogVisible,
       setIsFolderActions,
+      setCreateRoomDialogVisible,
     } = dialogsStore;
 
     const {
@@ -613,6 +616,7 @@ export default inject(
       backToParentFolder,
       getCheckboxItemLabel,
       setSelectFileDialogVisible,
+      setCreateRoomDialogVisible,
 
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,

@@ -45,11 +45,12 @@ const linkStyles = {
   display: "flex",
 };
 
-const EmptyContainer = ({ theme }) => {
+const EmptyContainer = ({ theme, setCreateRoomDialogVisible }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
   const onCreateRoom = () => {
     console.log("Create room");
+    setCreateRoomDialogVisible(true);
   };
 
   const buttons = (
@@ -79,9 +80,11 @@ const EmptyContainer = ({ theme }) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, dialogsStore }) => {
   const { theme } = auth.settingsStore;
+  const { setCreateRoomDialogVisible } = dialogsStore;
   return {
     theme,
+    setCreateRoomDialogVisible,
   };
 })(withTranslation(["Home", "Common"])(observer(EmptyContainer)));

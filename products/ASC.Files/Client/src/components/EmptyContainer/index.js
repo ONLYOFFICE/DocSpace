@@ -15,7 +15,12 @@ const linkStyles = {
   display: "flex",
 };
 
-const EmptyContainer = ({ isFiltered, parentId, theme }) => {
+const EmptyContainer = ({
+  isFiltered,
+  parentId,
+  theme,
+  setCreateRoomDialogVisible,
+}) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
   const onCreate = (e) => {
@@ -33,13 +38,18 @@ const EmptyContainer = ({ isFiltered, parentId, theme }) => {
   };
 
   const onCreateRoom = (e) => {
+    setCreateRoomDialogVisible(true);
     console.log("create room");
   };
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
   ) : parentId === 0 ? (
-    <RootFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
+    <RootFolderContainer
+      onCreate={onCreate}
+      linkStyles={linkStyles}
+      onCreateRoom={onCreateRoom}
+    />
   ) : (
     <EmptyFolderContainer
       onCreate={onCreate}
@@ -50,7 +60,13 @@ const EmptyContainer = ({ isFiltered, parentId, theme }) => {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    dialogsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const {
       authorType,
       search,
@@ -59,6 +75,8 @@ export default inject(
     } = filesStore.filter;
     const { isPrivacyFolder } = treeFoldersStore;
 
+    const { setCreateRoomDialogVisible } = dialogsStore;
+
     const isFiltered =
       (authorType || search || !withSubfolders || filterType) &&
       !(isPrivacyFolder && isMobile);
@@ -66,6 +84,7 @@ export default inject(
     return {
       theme: auth.settingsStore.theme,
       isFiltered,
+      setCreateRoomDialogVisible,
 
       parentId: selectedFolderStore.parentId,
     };

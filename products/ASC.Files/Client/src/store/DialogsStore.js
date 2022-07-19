@@ -197,7 +197,7 @@ class DialogsStore {
     this.convertDialogVisible = visible;
   };
 
-  setConvertDialogVisible = (visible) => {
+  setCreateRoomDialogVisible = (visible) => {
     this.createRoomDialogVisible = visible;
   };
 
