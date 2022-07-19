@@ -32,19 +32,16 @@ public class SocketManager
     private readonly SignalrServiceClient _signalrServiceClient;
     private readonly FileDtoHelper _filesWrapperHelper;
     private readonly TenantManager _tenantManager;
-    private readonly IDaoFactory _daoFactory;
 
     public SocketManager(
         IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
         FileDtoHelper filesWrapperHelper,
-        TenantManager tenantManager,
-        IDaoFactory daoFactory
+        TenantManager tenantManager
         )
     {
         _signalrServiceClient = optionsSnapshot.Get("files");
         _filesWrapperHelper = filesWrapperHelper;
         _tenantManager = tenantManager;
-        _daoFactory = daoFactory;
     }
 
     public void StartEdit<T>(T fileId)
@@ -56,7 +53,6 @@ public class SocketManager
     public void StopEdit<T>(T fileId)
     {
         var room = GetFileRoom(fileId);
-
         _signalrServiceClient.StopEdit(fileId, room);
     }
 
