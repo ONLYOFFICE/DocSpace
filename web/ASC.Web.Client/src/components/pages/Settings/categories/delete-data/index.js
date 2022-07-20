@@ -33,7 +33,6 @@ const DeleteData = (props) => {
   useEffect(() => {
     const path = location.pathname;
     const currentTab = data.findIndex((item) => path.includes(item.id));
-    console.log(path, currentTab);
     if (currentTab !== -1) setCurrentTab(currentTab);
     setIsLoading(true);
   }, []);
