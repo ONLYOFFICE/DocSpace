@@ -598,10 +598,6 @@ public class SettingsController : BaseSettingsController
         {
             try
             {
-                if (validateKeyProvider is TwilioProvider twilioLoginProvider)
-                {
-                    twilioLoginProvider.ClearOldNumbers();
-                }
                 if (validateKeyProvider is BitlyLoginProvider bitly)
                 {
                     _urlShortener.Instance = null;

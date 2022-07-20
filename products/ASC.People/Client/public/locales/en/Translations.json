@@ -1,8 +1,8 @@
 {
   "AddMembers": "Add members",
   "Birthdate": "Date of birth",
-  "DeleteUserDataConfirmation": "User documents shared with others will be deleted. To avoid this, reassign data.",
   "DeleteSelfProfile": "Delete profile",
+  "DeleteUserDataConfirmation": "User documents shared with others will be deleted. To avoid this, reassign data.",
   "DisableUserButton": "Disable",
   "DisabledEmployeeStatus": "Disabled",
   "EmailChangeButton": "Change email",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Male",
   "MaxSizeLabel": "(JPG or PNG, max 1 MB)",
-  "NotBeUndone": "Note: this action can't be undone.",
   "PasswordChangeButton": "Change password",
   "PendingTitle": "Pending",
   "ReassignData": "Reassign data",
