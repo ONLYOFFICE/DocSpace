@@ -263,6 +263,8 @@ const StyledFileTileBottom = styled.div`
 
 const StyledContent = styled.div`
   display: flex;
+  align-items: center;
+
   flex-basis: 100%;
 
   a {
