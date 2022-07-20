@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Ďakujeme, že ste si vyskúšali {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Platnosť bezplatného skúšobného obdobia uplynula",
   "HeaderLicense": "Používate {{organizationName}} Enterprise Edition",
-  "PaymentsTitle": "Platby",
   "RenewalLicense": "Ak ste si už zakúpili obnovenie, odošlite licenčný súbor.",
   "SubscriptionRenewedLicense": "Obnovením predplatného získate:",
   "SuccessLoadingLicense": "Licencia bola úspešne aktivovaná"

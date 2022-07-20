@@ -168,5 +168,9 @@
   "View": "Преглед",
   "ViewWeb": "Отиди към уеб версия",
   "Warning": "Внимание",
-  "Hotkeys": "Бързи клавиши"
+  "Hotkeys": "Бързи клавиши",
+  "PaymentsTitle": "Плащания",
+  "AboutCompanyTitle": "За тази програма",
+  "LogoutButton": "Отписване",
+  "HelpCenter": "Помощен център"
 }

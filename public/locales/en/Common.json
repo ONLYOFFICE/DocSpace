@@ -168,5 +168,10 @@
   "View": "View",
   "ViewWeb": "View web version",
   "Warning": "Warning",
-  "Hotkeys": "Hotkeys"
+  "Hotkeys": "Hotkeys",
+  "PaymentsTitle": "Payments",
+  "AboutCompanyTitle": "About this program",
+  "LogoutButton": "Sign Out",
+  "CommunityForum": "Community forum",
+  "HelpCenter": "Help center"
 }
