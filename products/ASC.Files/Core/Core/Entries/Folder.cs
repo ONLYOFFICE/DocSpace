@@ -59,6 +59,7 @@ public interface IFolder
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
     public bool Pinned { get; set; }
+    public IEnumerable<Tag> Tags { get; set; }
 }
 
 [DebuggerDisplay("{Title} ({Id})")]
