@@ -255,7 +255,19 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty")]
     public async Task<FolderDto<string>> SaveThirdPartyAsync(ThirdPartyRequestDto inDto)
     {
-        return await SaveThirdPartyBackupAsync(inDto);
+        var thirdPartyParams = new ThirdPartyParams
+        {
+            AuthData = new AuthData(inDto.Url, inDto.Login, inDto.Password, inDto.Token),
+            Corporate = inDto.IsRoomsStorage ? false : inDto.IsCorporate,
+            RoomsStorage = inDto.IsCorporate ? false : inDto.IsRoomsStorage,
+            CustomerTitle = inDto.CustomerTitle,
+            ProviderId = inDto.ProviderId,
+            ProviderKey = inDto.ProviderKey,
+        };
+
+        var folder = await _fileStorageServiceThirdparty.SaveThirdPartyAsync(thirdPartyParams);
+
+        return await _folderDtoHelper.GetAsync(folder);
     }
 
     /// <summary>

@@ -1632,7 +1632,7 @@ public class FileStorageService<T> //: IFileStorageService
             return Task.FromResult<Folder<T>>(null);
         }
 
-        return InternalSaveThirdPartyBackupAsync(thirdPartyParams, providerDao);
+        return InternalSaveThirdPartyAsync(thirdPartyParams, providerDao);
     }
 
     private async Task<Folder<T>> InternalSaveThirdPartyAsync(ThirdPartyParams thirdPartyParams, IProviderDao providerDao)
