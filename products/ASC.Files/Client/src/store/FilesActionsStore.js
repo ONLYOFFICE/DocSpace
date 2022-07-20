@@ -756,7 +756,7 @@ class FilesActionStore {
   };
 
   setPinAction = (action, id) => {
-    const { pinRoom, unpinRoom, setSelected } = this.filesStore;
+    const { pinRoom, unpinRoom, updateRoomPin, setSelected } = this.filesStore;
 
     const items = Array.isArray(id) ? id : [id];
 
@@ -765,6 +765,7 @@ class FilesActionStore {
     switch (action) {
       case "pin":
         items.forEach((item) => {
+          updateRoomPin(item);
           actions.push(pinRoom(item));
         });
 
@@ -776,6 +777,7 @@ class FilesActionStore {
           .finally(() => toastr.success("Room pinned"));
       case "unpin":
         items.forEach((item) => {
+          updateRoomPin(item);
           actions.push(unpinRoom(item));
         });
         return Promise.all(actions)

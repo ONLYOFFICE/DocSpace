@@ -1560,6 +1560,12 @@ class FilesStore {
     }
   };
 
+  updateRoomPin = (item) => {
+    const idx = this.folders.findIndex((folder) => folder.id === item);
+
+    this.folders[idx].pinned = !this.folders[idx].pinned;
+  };
+
   updateFile = (fileId, title) => {
     return api.files
       .updateFile(fileId, title)
