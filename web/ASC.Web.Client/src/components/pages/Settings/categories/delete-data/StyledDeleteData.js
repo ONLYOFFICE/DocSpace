@@ -25,6 +25,7 @@ export const MainContainer = styled.div`
 
   .helper {
     margin-bottom: 24px;
+    color: #657077;
   }
 
   .button {
