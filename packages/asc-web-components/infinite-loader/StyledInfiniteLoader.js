@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Base from "../themes/base";
 
 const StyledTableLoader = styled.div`
   grid-column-start: 1;
@@ -14,8 +15,6 @@ const StyledRowLoader = styled.div`
 const StyledCard = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
-
-  //gap: 14px 16px;
 `;
 
 const StyledItem = styled.div`
@@ -24,4 +23,40 @@ const StyledItem = styled.div`
   gap: 14px 16px;
 `;
 
-export { StyledTableLoader, StyledRowLoader, StyledCard, StyledItem };
+const StyledScroll = styled.div`
+  overflow: scroll;
+
+  /* Chrome, Edge и Safari */
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.scrollbar.backgroundColorVertical};
+    border-radius: 3px;
+
+    :hover {
+      background-color: ${({ theme }) =>
+        theme.scrollbar.hoverBackgroundColorVertical};
+    }
+  }
+
+  /* Firefox */
+
+  scrollbar-width: thin;
+  scrollbar-color: ${({ theme }) => theme.scrollbar.backgroundColorVertical};
+`;
+
+StyledScroll.defaultProps = {
+  theme: Base,
+};
+
+export {
+  StyledTableLoader,
+  StyledRowLoader,
+  StyledCard,
+  StyledItem,
+  StyledScroll,
+};

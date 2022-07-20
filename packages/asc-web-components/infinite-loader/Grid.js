@@ -2,7 +2,7 @@ import React, { memo, useCallback } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { VariableSizeList as List, areEqual } from "react-window";
-import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
+import Scroll from "./Scroll";
 
 const GridComponent = ({
   hasMoreFiles,
@@ -60,7 +60,7 @@ const GridComponent = ({
             width={width}
             onItemsRendered={onItemsRendered}
             ref={ref}
-            //outerElementType={CustomScrollbarsVirtualList}
+            outerElementType={Scroll}
             overscanCount={5} //TODO: inf-scroll
           >
             {renderTile}

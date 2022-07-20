@@ -2,7 +2,7 @@ import React, { memo, useCallback } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { FixedSizeList as List, areEqual } from "react-window";
-import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
+import Scroll from "./Scroll";
 import Loaders from "@appserver/common/components/Loaders";
 import { StyledTableLoader, StyledRowLoader } from "./StyledInfiniteLoader";
 
@@ -88,7 +88,7 @@ const ListComponent = ({
           itemCount={children.length}
           onItemsRendered={onItemsRendered}
           ref={ref}
-          outerElementType={CustomScrollbarsVirtualList}
+          outerElementType={Scroll}
         >
           {viewAs === "table" ? renderTable : renderRow}
         </List>
