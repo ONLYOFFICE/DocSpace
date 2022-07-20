@@ -4,9 +4,14 @@ import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import { MainContainer } from "./StyledDeleteData";
+import api from "@appserver/common/api";
 
 const PortalDeactivation = (props) => {
   const { t } = props;
+
+  const onDeactivateClick = async () => {
+    await api.portal.sendSuspendPortalEmail();
+  };
 
   return (
     <MainContainer>
@@ -22,6 +27,7 @@ const PortalDeactivation = (props) => {
         label={t("Deactivate")}
         primary
         size="normal"
+        onClick={onDeactivateClick}
       />
     </MainContainer>
   );

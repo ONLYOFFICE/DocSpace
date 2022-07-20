@@ -4,9 +4,14 @@ import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import { MainContainer } from "./StyledDeleteData";
+import api from "@appserver/common/api";
 
-const PortalDeactivation = (props) => {
+const PortalDeletion = (props) => {
   const { t } = props;
+
+  const onDeleteClick = async () => {
+    await api.portal.sendDeletePortalEmail();
+  };
 
   return (
     <MainContainer>
@@ -22,11 +27,12 @@ const PortalDeactivation = (props) => {
         label={t("Common:Delete")}
         primary
         size="normal"
+        onClick={onDeleteClick}
       />
     </MainContainer>
   );
 };
 
 export default withTranslation(["Settings", "Common"])(
-  withRouter(PortalDeactivation)
+  withRouter(PortalDeletion)
 );
