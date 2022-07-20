@@ -1,4 +1,5 @@
 {
-  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong>は削除されます。",
+  "DeleteUser": "ユーザーを削除します",
+  "DeleteUserMessage": "{{userCaption}}<strong>{{user}}</strong>が削除されるようになります。別のユーザーに利用可能なユーザーの個人文書も削除されるようになります。これを避けるには、削除前にデータ再割当て過程を開始する必要です。",
   "SuccessfullyDeleteUserInfoMessage": "ユーザーの削除に成功しました。"
 }
