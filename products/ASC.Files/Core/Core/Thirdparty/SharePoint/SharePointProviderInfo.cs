@@ -46,6 +46,7 @@ public class SharePointProviderInfo : IProviderInfo
     public string RootFolderId => "spoint-" + ID;
     public string SpRootFolderId { get; set; } = "/Shared Documents";
     public string FolderId { get; set; }
+    public bool Private { get; set; }
 
     public SharePointProviderInfo(
         ILogger<SharePointProviderInfo> logger,
