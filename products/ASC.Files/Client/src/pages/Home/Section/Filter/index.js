@@ -13,6 +13,7 @@ import { FilterType, RoomsType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
+import { getDefaultRoomName } from "../../../../helpers/utils";
 
 import withLoader from "../../../../HOCs/withLoader";
 
@@ -49,19 +50,14 @@ const getSearchParams = (filterValues) => {
   return searchParams || "true";
 };
 
-const getTypes = (filterValues) => {
-  const filterTypes = filterValues.find(
+const getType = (filterValues) => {
+  const filterType = filterValues.find(
     (value) => value.group === FilterGroups.roomFilterType
   )?.key;
 
-  const types =
-    typeof filterTypes === "number"
-      ? [filterTypes]
-      : filterTypes?.length > 0
-      ? filterTypes.map((type) => +type)
-      : null;
+  const type = filterType;
 
-  return types;
+  return type;
 };
 
 const getOwner = (filterValues) => {
@@ -132,14 +128,18 @@ const SectionFilterContent = ({
   const onFilter = React.useCallback(
     (data) => {
       if (isRooms) {
-        const types = getTypes(data) || null;
+        const type = getType(data) || null;
 
         const owner = getOwner(data) || null;
 
         const subjectId =
-          owner === FilterKeys.me || owner === FilterKeys.other
+          owner === FilterKeys.other
+            ? null
+            : owner === FilterKeys.me
             ? userId
             : owner;
+
+        const withoutMe = owner === FilterKeys.other;
 
         const tags = getTags(data) || null;
 
@@ -153,9 +153,10 @@ const SectionFilterContent = ({
         const newFilter = roomsFilter.clone();
 
         newFilter.page = 0;
-        newFilter.types = types ? types : null;
+        newFilter.type = type ? type : null;
         newFilter.subjectId = subjectId ? subjectId : null;
         newFilter.tags = tags ? tags : null;
+        newFilter.withoutMe = withoutMe;
         // newFilter.withSubfolders = withSubfolders;
         // newFilter.searchInContent = withContent;
 
@@ -316,11 +317,8 @@ const SectionFilterContent = ({
       //   });
       // }
 
-      if (roomsFilter.types) {
-        const key =
-          typeof roomsFilter.types === "object"
-            ? roomsFilter.types[0]
-            : roomsFilter.types; //Remove it if filter types will be multi select
+      if (roomsFilter.type) {
+        const key = +roomsFilter.type;
 
         const label = getDefaultRoomName(key, t);
 
@@ -331,7 +329,6 @@ const SectionFilterContent = ({
         });
       }
 
-      // TODO: add logic to other key
       if (roomsFilter.subjectId) {
         const isMe = userId === roomsFilter.subjectId;
         let label = isMe ? t("Common:MeLabel") : null;
@@ -346,6 +343,14 @@ const SectionFilterContent = ({
           key: isMe ? FilterKeys.me : roomsFilter.subjectId,
           group: FilterGroups.roomFilterOwner,
           label: label,
+        });
+      }
+
+      if (roomsFilter.withoutMe) {
+        filterValues.push({
+          key: FilterKeys.other,
+          group: FilterGroups.roomFilterOwner,
+          label: t("Common:OtherLabel"),
         });
       }
 
@@ -417,10 +422,11 @@ const SectionFilterContent = ({
     filter.withSubfolders,
     filter.authorType,
     filter.filterType,
-    roomsFilter.types,
+    roomsFilter.type,
     roomsFilter.subjectId,
     roomsFilter.tags,
     roomsFilter.tags?.length,
+    roomsFilter.withoutMe,
     // roomsFilter.withSubfolders,
     // roomsFilter.searchInContent,
     userId,
@@ -733,17 +739,12 @@ const SectionFilterContent = ({
         const newFilter = roomsFilter.clone();
 
         if (group === FilterGroups.roomFilterType) {
-          const newTypes = newFilter.types;
-
-          const idx = newTypes.findIndex((type) => type === key);
-
-          newTypes.splice(idx, 1);
-
-          newFilter.types = newTypes.length > 0 ? newTypes : null;
+          newFilter.type = null;
         }
 
         if (group === FilterGroups.roomFilterOwner) {
           newFilter.subjectId = null;
+          newFilter.withoutMe = false;
         }
 
         if (group === FilterGroups.roomFilterTags) {
