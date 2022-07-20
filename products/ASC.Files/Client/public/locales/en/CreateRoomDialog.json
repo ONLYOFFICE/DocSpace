@@ -12,5 +12,11 @@
   "CollaborationRoomDescription": "Collaborate on one or multiple documents with your team",
   "ReviewRoomDescription": "Request a review or comments on the documents",
   "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing",
-  "CustomRoomDescription": "Apply your own settings to use this room for any custom purpose"
+  "CustomRoomDescription": "Apply your own settings to use this room for any custom purpose",
+
+  "MakeRoomPrivateTitle": "Make the Room Private",
+  "MakeRoomPrivateDescription": "All files in this room will be encrypted",
+
+  "StorageLocationTitle": "Storage location",
+  "StorageLocationDescription": "Use third-party services as data storage for this room"
 }
