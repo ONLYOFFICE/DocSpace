@@ -54,12 +54,6 @@ const StyledComponent = styled.div`
     padding-left: 16px;
     box-sizing: border-box;
   }
-
-  .drop-down-container {
-    position: absolute;
-    left: -16px;
-    bottom: 0;
-  }
 `;
 
 const Appearance = (props) => {
@@ -86,10 +80,26 @@ const Appearance = (props) => {
   );
 
   //TODO: Add default color
-  const [appliedColorAccent, setAppliedColorAccent] = useState("#FF9933");
-  const [appliedColorButtons, setAppliedColorButtons] = useState("#FF9999");
+  const [appliedColorAccent, setAppliedColorAccent] = useState("#F97A0B");
+  const [appliedColorButtons, setAppliedColorButtons] = useState("#FF9933");
+
+  const [changeCurrentColorAccent, setChangeCurrentColorAccent] = useState(
+    false
+  );
+  const [changeCurrentColorButtons, setChangeCurrentColorButtons] = useState(
+    false
+  );
 
   const [viewMobile, setViewMobile] = useState(false);
+
+  const [showSaveButtonDialog, setShowSaveButtonDialog] = useState(false);
+  const [
+    showRestoreToDefaultButtonDialog,
+    setShowRestoreToDefaultButtonDialog,
+  ] = useState(false);
+
+  const [isEditDialog, setIsEditDialog] = useState(false);
+  const [isAddThemeDialog, setIsAddThemeDialog] = useState(false);
 
   const checkImg = <img src="/static/images/check.white.svg" />;
 
@@ -120,6 +130,28 @@ const Appearance = (props) => {
     return () => window.removeEventListener("resize", onCheckView);
   }, []);
 
+  useEffect(() => {
+    if (
+      changeCurrentColorAccent &&
+      changeCurrentColorButtons &&
+      isAddThemeDialog
+    ) {
+      setShowSaveButtonDialog(true);
+    }
+
+    if (
+      (changeCurrentColorAccent || changeCurrentColorButtons) &&
+      isEditDialog
+    ) {
+      setShowSaveButtonDialog(true);
+    }
+  }, [
+    changeCurrentColorAccent,
+    changeCurrentColorButtons,
+    isAddThemeDialog,
+    isEditDialog,
+  ]);
+
   const onCheckView = () => {
     if (isMobileOnly || window.innerWidth <= 428) {
       setViewMobile(true);
@@ -148,22 +180,37 @@ const Appearance = (props) => {
   };
 
   const onClickEdit = () => {
+    setIsEditDialog(true);
     // TODO: give store Accent color and Buttons main to id
+
     setCurrentColorAccent("#F97A0B");
     setCurrentColorButtons("#FF9933");
 
     setHeaderColorSchemeDialog("Edit color scheme");
+
+    //TODO: if position <=7 then default theme and show button RestoreToDefault
+    setShowRestoreToDefaultButtonDialog(true);
 
     setShowColorSchemeDialog(true);
   };
 
   const onCloseColorSchemeDialog = () => {
     setShowColorSchemeDialog(false);
+
     setOpenHexColorPickerAccent(false);
     setOpenHexColorPickerButtons(false);
+
+    setChangeCurrentColorAccent(false);
+    setChangeCurrentColorButtons(false);
+
+    setIsEditDialog(false);
+    setIsAddThemeDialog(false);
+
+    setShowSaveButtonDialog(false);
   };
 
   const onAddTheme = () => {
+    setIsAddThemeDialog(true);
     setCurrentColorAccent(
       "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA"
     );
@@ -191,15 +238,25 @@ const Appearance = (props) => {
     setOpenHexColorPickerButtons(false);
   };
 
-  const onAppliedColorAccent = () => {
+  const onAppliedColorAccent = useCallback(() => {
     setCurrentColorAccent(appliedColorAccent);
-    onCloseHexColorPicker();
-  };
 
-  const onAppliedColorButtons = () => {
-    setCurrentColorButtons(appliedColorButtons);
     onCloseHexColorPicker();
-  };
+
+    if (appliedColorAccent === currentColorAccent) return;
+
+    setChangeCurrentColorAccent(true);
+  }, [appliedColorAccent, currentColorAccent]);
+
+  const onAppliedColorButtons = useCallback(() => {
+    setCurrentColorButtons(appliedColorButtons);
+
+    onCloseHexColorPicker();
+
+    if (appliedColorButtons === currentColorButtons) return;
+
+    setChangeCurrentColorButtons(true);
+  }, [appliedColorButtons]);
 
   const nodeHexColorPickerButtons = viewMobile ? (
     <HexColorPickerComponent
@@ -325,6 +382,8 @@ const Appearance = (props) => {
         viewMobile={viewMobile}
         openHexColorPickerButtons={openHexColorPickerButtons}
         openHexColorPickerAccent={openHexColorPickerAccent}
+        showRestoreToDefaultButtonDialog={showRestoreToDefaultButtonDialog}
+        showSaveButtonDialog={showSaveButtonDialog}
       />
       <div>Preview</div>
       <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />

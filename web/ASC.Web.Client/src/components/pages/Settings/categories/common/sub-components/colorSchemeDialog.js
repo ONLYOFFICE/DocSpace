@@ -46,19 +46,20 @@ const ColorSchemeDialog = (props) => {
 
     nodeButtonsColor,
     nodeAccentColor,
+
     nodeHexColorPickerAccent,
     nodeHexColorPickerButtons,
+
     viewMobile,
+
     openHexColorPickerButtons,
     openHexColorPickerAccent,
+
+    showRestoreToDefaultButtonDialog,
+
+    showSaveButtonDialog,
     t,
   } = props;
-
-  useEffect(() => {
-    return () => {
-      console.log("dd");
-    };
-  });
 
   return (
     <StyledComponent visible={visible} onClose={onClose} displayType="aside">
@@ -83,11 +84,10 @@ const ColorSchemeDialog = (props) => {
 
       <ModalDialog.Footer>
         {viewMobile && openHexColorPickerAccent && nodeHexColorPickerAccent}
-
         {viewMobile && openHexColorPickerButtons && nodeHexColorPickerButtons}
 
-        {!viewMobile && (
-          <>
+        <>
+          {showSaveButtonDialog && (
             <Button
               label="Save"
               size="normal"
@@ -95,14 +95,16 @@ const ColorSchemeDialog = (props) => {
               primary={true}
               scale={true}
             />
+          )}
+          {showRestoreToDefaultButtonDialog && (
             <Button
               label="Restore to default"
               className="button"
               size="normal"
               scale={true}
             />
-          </>
-        )}
+          )}
+        </>
       </ModalDialog.Footer>
     </StyledComponent>
   );
