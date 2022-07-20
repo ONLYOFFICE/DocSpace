@@ -164,6 +164,9 @@ const SectionFilterContent = ({
             newFilter.tags = tags;
             newFilter.withoutTags = false;
           }
+        } else {
+          newFilter.tags = null;
+          newFilter.withoutTags = false;
         }
 
         newFilter.withoutMe = withoutMe;

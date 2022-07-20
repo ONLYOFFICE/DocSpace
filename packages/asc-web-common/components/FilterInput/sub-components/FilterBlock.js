@@ -96,7 +96,7 @@ const FilterBlock = ({
     setFilterValues([]);
 
     selectedFilterValue.length > 0 && onFilter && onFilter([]);
-  }, [selectedFilterValue.length]);
+  }, [changeSelectedItems, selectedFilterValue.length]);
 
   const changeFilterValue = React.useCallback(
     (group, key, isSelected, label, isMultiSelect, withOptions) => {
