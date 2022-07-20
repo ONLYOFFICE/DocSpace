@@ -570,6 +570,10 @@ const Base = {
   },
 
   modalDialog: {
+    backgroundColor: white,
+    textColor: black,
+    headerBorderColor: globalColors.grayLightMid,
+    footerBorderColor: globalColors.grayLightMid,
     width: "auto",
     maxwidth: "560px",
     margin: " 0 auto",
@@ -598,14 +602,8 @@ const Base = {
     },
 
     closeButton: {
-      width: "14px",
-      height: "14px",
-      minWidth: "14px",
-      minHeight: "14px",
-
-      right: "16px",
-      top: "13px",
-      hoverColor: grayMain,
+      //backgroundColor: "#9a9ea3",
+      fillColor: white,
     },
   },
 
@@ -867,6 +865,10 @@ const Base = {
     text: { maxWidth: "100%" },
 
     span: { maxWidth: "300px" },
+
+    expander: {
+      iconColor: black,
+    },
 
     caret: {
       width: "5px",
@@ -2241,6 +2243,14 @@ const Base = {
       backgroundColor: "rgba(11, 11, 11, 0.7)",
       background: "rgba(200, 200, 200, 0.2)",
     },
+  },
+
+  connectCloud: {
+    connectBtnContent: black,
+    connectBtnTextBg: white,
+    connectBtnIconBg: white,
+    connectBtnTextBorder: grayMid,
+    connectBtnIconBorder: grayMid,
   },
 
   filesThirdPartyDialog: {

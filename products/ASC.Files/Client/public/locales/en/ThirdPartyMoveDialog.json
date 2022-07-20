@@ -1,4 +1,6 @@
 {
+  "CreateFileCopyOption": "Create file copy",
   "MoveConfirmation": "Move confirmation",
-  "MoveConfirmationMessage": "You are about to move elements from the {{provider}} directory. They will be deleted from your {{provider}} account and will no longer be accessible to other users."
+  "MoveConfirmationAlert": "You are about to move elements from the {{provider}} directory. In such a case, they will be deleted from your {{provider}} account and will no longer be accessible to other users, in case these elements have previously been shared.",
+  "MoveFileOption": "Move file"
 }

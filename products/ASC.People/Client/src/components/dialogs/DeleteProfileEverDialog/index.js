@@ -14,6 +14,7 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import Link from "@appserver/components/link";
 
 const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
@@ -72,42 +73,54 @@ class DeleteProfileEverDialogComponent extends React.Component {
         visible={visible}
         onClose={onClose}
       >
-        <ModalDialog.Header>{t("Common:Confirmation")}</ModalDialog.Header>
+        <ModalDialog.Header>{t("DeleteUser")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>
             <Trans
-              i18nKey="DeleteUserConfirmation"
+              i18nKey="DeleteUserMessage"
               ns="DeleteProfileEverDialog"
               t={t}
             >
-              {{ userCaption }} <strong>{{ user: user.displayName }}</strong>{" "}
-              will be deleted.
+              {{ userCaption }} <strong>{{ user: user.displayName }}</strong>
+              will be deleted. User personal documents which are available to
+              others will be deleted. To avoid this, you must start the data
+              reassign process before deleting.
             </Trans>
           </Text>
-          <Text>{t("Translations:NotBeUndone")}</Text>
           {/* <Text color="#c30" fontSize="18px" className="warning-text">
               {t("Common:Warning")}!
             </Text>
             <Text>{t("DeleteUserDataConfirmation")}</Text> */}
         </ModalDialog.Body>
         <ModalDialog.Footer>
-          <Button
-            key="OKBtn"
-            className="delete-profile_button-delete"
-            label={t("Common:OKButton")}
-            size="small"
-            primary={true}
-            onClick={this.onDeleteProfileEver}
-            isLoading={isRequestRunning}
-          />
-          {/* <Button
-              className="button-dialog"
-              key="ReassignBtn"
-              label={t("Translations:ReassignData")}
-              size="small"
-              onClick={this.onReassignDataClick}
-              isDisabled={isRequestRunning}
-            /> */}
+          <div className="delete-user-footer">
+            {/* <Link
+              className="reassign-data"
+              isHovered
+              fontWeight={600}
+              type={"action"}
+            >
+              {t("Translations:ReassignData")}
+            </Link> */}
+            <div className="delete-user-footer-buttons">
+              <Button
+                key="OKBtn"
+                label={t("Common:OKButton")}
+                size="normal"
+                primary={true}
+                scale
+                onClick={this.onDeleteProfileEver}
+                isLoading={isRequestRunning}
+              />
+              <Button
+                label={t("Common:CancelButton")}
+                size="normal"
+                scale
+                onClick={onClose}
+                isLoading={isRequestRunning}
+              />
+            </div>
+          </div>
         </ModalDialog.Footer>
       </ModalDialogContainer>
     );

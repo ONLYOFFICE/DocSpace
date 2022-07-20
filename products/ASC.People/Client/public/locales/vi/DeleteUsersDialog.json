@@ -1,5 +1,3 @@
 {
-  "DeleteGroupUsersMessage": "Những người dùng bị vô hiệu hóa mà bạn đã chọn sẽ bị xóa.",
-  "DeleteGroupUsersMessageHeader": "Xóa người dùng khỏi cổng thông tin",
   "DeleteGroupUsersSuccessMessage": "Người dùng đã được xóa thành công."
 }
