@@ -70,6 +70,10 @@ app.get("/products/files/doceditor", async (req, res) => {
   await i18next.changeLanguage(userLng);
   const initialI18nStoreASC = i18n.services.resourceStore.data;
 
+  if (initialEditorState?.error) {
+    winston.error(initialEditorState.error.errorMessage);
+  }
+
   const htmlString = template(
     initialEditorState,
     appComponent,
