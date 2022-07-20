@@ -885,19 +885,24 @@ class FilesActionStore {
 
     const newFilter = roomsFilter.clone();
 
-    const tags = newFilter.tags ? [...newFilter.tags] : [];
+    if (tag !== "no-tag") {
+      const tags = newFilter.tags ? [...newFilter.tags] : [];
 
-    if (tags.length > 0) {
-      const idx = tags.findIndex((item) => item === tag);
+      if (tags.length > 0) {
+        const idx = tags.findIndex((item) => item === tag);
 
-      if (idx > -1) {
-        //TODO: remove tag here if already selected
-        return;
+        if (idx > -1) {
+          //TODO: remove tag here if already selected
+          return;
+        }
       }
-    }
-    tags.push(tag);
+      tags.push(tag);
 
-    newFilter.tags = [...tags];
+      newFilter.tags = [...tags];
+      newFilter.withoutTags = false;
+    } else {
+      newFilter.withoutTags = true;
+    }
 
     setIsLoading(true);
 

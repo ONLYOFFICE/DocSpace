@@ -2,10 +2,20 @@ import React from "react";
 
 import Tags from "@appserver/common/components/Tags";
 
-const TagsCell = React.forwardRef(({ item, tagCount, onSelectTag }, ref) => {
+import Tag from "@appserver/components/tag";
+
+const TagsCell = React.forwardRef(({ t, item, tagCount, onSelectTag }, ref) => {
   return (
     <div style={{ width: "100%" }} ref={ref}>
-      <Tags tags={item.tags} columnCount={tagCount} onSelectTag={onSelectTag} />
+      {item.tags.length > 0 ? (
+        <Tags
+          tags={item.tags}
+          columnCount={tagCount}
+          onSelectTag={onSelectTag}
+        />
+      ) : (
+        <Tag label={t("NoTag")} onClick={onSelectTag} />
+      )}
     </div>
   );
 });

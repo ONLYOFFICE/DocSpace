@@ -12,6 +12,7 @@ import Link from "@appserver/components/link";
 import Loader from "@appserver/components/loader";
 import { Base } from "@appserver/components/themes";
 import Tags from "@appserver/common/components/Tags";
+import Tag from "@appserver/components/tag";
 
 const svgLoader = () => <div style={{ width: "96px" }} />;
 
@@ -587,11 +588,15 @@ class Tile extends React.PureComponent {
                 </StyledOptionButton>
               </div>
               <div className="room-tile_bottom-content">
-                <Tags
-                  columnCount={columnCount}
-                  onSelectTag={selectTag}
-                  tags={item.tags}
-                />
+                {item.tags.length > 0 ? (
+                  <Tags
+                    columnCount={columnCount}
+                    onSelectTag={selectTag}
+                    tags={item.tags}
+                  />
+                ) : (
+                  <Tag label={t("NoTag")} onClick={selectTag} />
+                )}
               </div>
             </>
           ) : (

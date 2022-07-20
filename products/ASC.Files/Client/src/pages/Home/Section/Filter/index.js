@@ -124,6 +124,7 @@ const SectionFilterContent = ({
   infoPanelVisible,
   isRooms,
   userId,
+  setCurrentRoomsFilter,
 }) => {
   const onFilter = React.useCallback(
     (data) => {
@@ -155,7 +156,16 @@ const SectionFilterContent = ({
         newFilter.page = 0;
         newFilter.type = type ? type : null;
         newFilter.subjectId = subjectId ? subjectId : null;
-        newFilter.tags = tags ? tags : null;
+        if (tags) {
+          if (tags.includes(t("NoTag"))) {
+            newFilter.tags = null;
+            newFilter.withoutTags = true;
+          } else {
+            newFilter.tags = tags;
+            newFilter.withoutTags = false;
+          }
+        }
+
         newFilter.withoutMe = withoutMe;
         // newFilter.withSubfolders = withSubfolders;
         // newFilter.searchInContent = withContent;
@@ -354,7 +364,15 @@ const SectionFilterContent = ({
         });
       }
 
-      if (roomsFilter.tags) {
+      if (roomsFilter.withoutTags) {
+        filterValues.push({
+          key: [t("NoTag")],
+          group: FilterGroups.roomFilterTags,
+          isMultiSelect: true,
+        });
+      }
+
+      if (roomsFilter?.tags?.length > 0) {
         filterValues.push({
           key: roomsFilter.tags,
           group: FilterGroups.roomFilterTags,
@@ -427,6 +445,7 @@ const SectionFilterContent = ({
     roomsFilter.tags,
     roomsFilter.tags?.length,
     roomsFilter.withoutMe,
+    roomsFilter.withoutTags,
     // roomsFilter.withSubfolders,
     // roomsFilter.searchInContent,
     userId,
@@ -629,6 +648,13 @@ const SectionFilterContent = ({
           isMultiSelect: true,
         }));
 
+        tagsOptions.push({
+          key: t("NoTag"),
+          group: FilterGroups.roomFilterTags,
+          label: t("NoTag"),
+          isMultiSelect: true,
+        });
+
         filterOptions.push({
           key: FilterGroups.roomFilterTags,
           group: FilterGroups.roomFilterTags,
@@ -750,11 +776,20 @@ const SectionFilterContent = ({
         if (group === FilterGroups.roomFilterTags) {
           const newTags = newFilter.tags;
 
-          const idx = newTags.findIndex((tag) => tag === key);
+          if (newTags?.length > 0) {
+            const idx = newTags.findIndex((tag) => tag === key);
 
-          newTags.splice(idx, 1);
+            if (idx > -1) {
+              newTags.splice(idx, 1);
+            }
 
-          newFilter.tags = newTags.length > 0 ? newTags : null;
+            newFilter.tags = newTags.length > 0 ? newTags : null;
+
+            newFilter.withoutTags = false;
+          } else {
+            newFilter.tags = null;
+            newFilter.withoutTags = false;
+          }
         }
 
         // if (group === FilterGroups.roomFilterContent) {
@@ -837,6 +872,7 @@ export default inject(
       setViewAs,
       viewAs,
       createThumbnails,
+      setCurrentRoomsFilter,
     } = filesStore;
 
     const { fetchTags } = tagsStore;
@@ -877,6 +913,7 @@ export default inject(
 
       personal,
       infoPanelVisible,
+      setCurrentRoomsFilter,
     };
   }
 )(

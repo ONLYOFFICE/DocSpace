@@ -101,8 +101,12 @@ const FilesRowContent = ({
 
   let tags = null;
 
-  if (isRoom && item.tags.length > 0) {
-    tags = item?.tags.join(" | ");
+  if (isRoom) {
+    if (item.tags.length > 0) {
+      tags = item?.tags.join(" | ");
+    } else {
+      tags = t("NoTag");
+    }
   }
 
   return (
@@ -151,7 +155,7 @@ const FilesRowContent = ({
           title=""
           truncate={true}
         >
-          {isRoom && tags
+          {isRooms
             ? tags
             : !fileExst && !contentLength && !providerKey && !isMobileOnly
             ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
