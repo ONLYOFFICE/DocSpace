@@ -198,7 +198,7 @@ const SectionFilterContent = ({
   const onSearch = React.useCallback(
     (data = "") => {
       if (isRooms) {
-        const newFilter = this.filter.clone();
+        const newFilter = roomsFilter.clone();
 
         newFilter.page = 0;
         newFilter.filterValue = data;
