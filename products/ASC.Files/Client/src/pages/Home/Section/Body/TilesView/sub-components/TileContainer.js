@@ -17,7 +17,7 @@ import IconButton from "@appserver/components/icon-button";
 import ComboBox from "@appserver/components/combobox";
 import { Base } from "@appserver/components/themes";
 import SortDesc from "../../../../../../../../../../public/images/sort.desc.react.svg";
-import InfiniteGrid from "./InfiniteGrid";
+import { InfiniteGrid } from "@appserver/components/infinite-loader";
 
 const paddingCss = css`
   @media ${desktop} {
@@ -305,17 +305,17 @@ class TileContainer extends React.PureComponent {
     const Folders = [];
     const Files = [];
 
-    React.Children.map(children, (item, index) => {
+    React.Children.map(children, (item) => {
       const { isFolder, fileExst, id } = item.props.item;
       if ((isFolder || id === -1) && !fileExst) {
         Folders.push(
-          <div className="tile-item-wrapper folder" key={index}>
+          <div className="tile-item-wrapper folder" key={id}>
             {item}
           </div>
         );
       } else {
         Files.push(
-          <div className="tile-item-wrapper file" key={index}>
+          <div className="tile-item-wrapper file" key={id}>
             {item}
           </div>
         );
@@ -366,6 +366,7 @@ class TileContainer extends React.PureComponent {
       <>
         {Folders.length > 0 && (
           <Heading
+            key="folders-header"
             size="xsmall"
             id={"folder-tile-heading"}
             className="tile-items-heading"
@@ -374,23 +375,31 @@ class TileContainer extends React.PureComponent {
             {renderSorting()}
           </Heading>
         )}
-        {Folders.length > 0 && useReactWindow ? (
-          Folders
-        ) : (
-          <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
-        )}
+        {Folders.length > 0 ? (
+          useReactWindow ? (
+            Folders
+          ) : (
+            <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
+          )
+        ) : null}
 
         {Files.length > 0 && (
-          <Heading size="xsmall" className="tile-items-heading">
+          <Heading
+            key="files-header"
+            size="xsmall"
+            className="tile-items-heading"
+          >
             {headingFiles}
             {Folders.length === 0 && renderSorting()}
           </Heading>
         )}
-        {Files.length > 0 && useReactWindow ? (
-          Files
-        ) : (
-          <StyledGridWrapper>{Files}</StyledGridWrapper>
-        )}
+        {Files.length > 0 ? (
+          useReactWindow ? (
+            Files
+          ) : (
+            <StyledGridWrapper>{Files}</StyledGridWrapper>
+          )
+        ) : null}
       </>
     );
 

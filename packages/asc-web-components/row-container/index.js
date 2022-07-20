@@ -5,7 +5,7 @@ import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import StyledRowContainer from "./styled-row-container";
-import InfiniteLoaderComponent from "../infinite-loader";
+import { InfiniteLoaderComponent } from "../infinite-loader";
 
 class RowContainer extends React.PureComponent {
   renderRow = memo(({ data, index, style }) => {

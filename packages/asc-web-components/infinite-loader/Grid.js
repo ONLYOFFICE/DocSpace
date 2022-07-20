@@ -3,8 +3,6 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { VariableSizeList as List, areEqual } from "react-window";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
-import Loaders from "@appserver/common/components/Loaders";
-import { StyledCard, StyledItem } from "./StyledInfiniteLoader";
 
 const GridComponent = ({
   hasMoreFiles,
@@ -23,84 +21,29 @@ const GridComponent = ({
     [filesLength, hasMoreFiles, countTilesInRow]
   );
 
-  const renderTile = memo(({ data, index, style }) => {
-    const { itemCount } = data;
-
-    // This is the range of cards visible on this row, given the current width:
-    const startIndex = index * countTilesInRow;
-    const stopIndex = Math.min(itemCount - 1, startIndex + countTilesInRow - 1);
-    let countLoaders = (stopIndex + 1) % countTilesInRow;
-
-    const cards = [];
-    // Header(Files)
-    for (let i = startIndex; i <= stopIndex; i++) {
-      if (children[i].props.className === "tile-items-heading") {
-        cards.push(
-          <div key={i} style={{ height: 20, gridColumn: "-1 / 1" }}>
-            {children[i]}
-          </div>
-        );
-
-        break;
-      }
-
-      //Cards
-      cards.push(
-        <StyledCard
-          key={i}
-          className="Card"
-          style={{ height: getItemSize(index) }}
-        >
-          {children[i]}
-        </StyledCard>
-      );
-    }
-
-    //Loaders
-    if (hasMoreFiles && cards.length) {
-      while (countLoaders !== 0) {
-        cards.push(
-          <Loaders.Tile
-            key={`tiles-loader_${countLoaders}`}
-            className="tiles-loader"
-            isFolder
-          />
-        );
-        countLoaders--;
-      }
-    }
-
-    return (
-      <StyledItem className="Item" style={style}>
-        {cards}
-      </StyledItem>
-    );
+  const renderTile = memo(({ index, style }) => {
+    // console.log("renderTile children[index]", children[index]);
+    // console.log("renderTile style", style);
+    return <div style={style}>{children[index]}</div>;
   }, areEqual);
 
   const getItemSize = (index) => {
-    const newIndex = index * countTilesInRow;
-
-    if (!children[newIndex]) return 0;
-
-    const itemProps = children[newIndex].props;
-    const isFile = itemProps?.className?.includes("file");
-    const isFolder = itemProps?.className?.includes("folder");
+    const itemClassNames = children[index]?.props?.className;
+    const isFile = itemClassNames?.includes("isFile");
+    const isFolder = itemClassNames?.includes("isFolder");
 
     const horizontalGap = 16;
     const verticalGap = 14;
+    const headerMargin = 15;
 
     const folderHeight = 64 + verticalGap;
     const fileHeight = 220 + horizontalGap;
-    const titleHeight = 20 + horizontalGap;
+    const titleHeight = 20 + headerMargin;
 
     return isFolder ? folderHeight : isFile ? fileHeight : titleHeight;
   };
 
   const renderGrid = ({ height, width }) => {
-    const itemsCount = children.length;
-
-    const rowCount = Math.ceil(itemsCount / countTilesInRow) + 1;
-
     return (
       <InfiniteLoader
         isItemLoaded={isItemLoaded}
@@ -112,14 +55,13 @@ const GridComponent = ({
             onScroll={onScroll}
             className={className}
             height={height}
-            itemCount={rowCount}
+            itemCount={children.length}
             itemSize={getItemSize}
             width={width}
-            itemData={{ itemCount: itemsCount }}
             onItemsRendered={onItemsRendered}
             ref={ref}
-            outerElementType={CustomScrollbarsVirtualList}
-            overscanCount={3} //TODO:
+            //outerElementType={CustomScrollbarsVirtualList}
+            overscanCount={5} //TODO: inf-scroll
           >
             {renderTile}
           </List>
@@ -127,6 +69,8 @@ const GridComponent = ({
       </InfiniteLoader>
     );
   };
+
+  //console.log("GridComponent render");
 
   return <AutoSizer>{renderGrid}</AutoSizer>;
 };
