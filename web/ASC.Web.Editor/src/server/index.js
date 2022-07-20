@@ -57,10 +57,10 @@ i18next.use(Backend).init({
 app.use(i18nextMiddleware.handle(i18next));
 app.use(compression());
 app.use(
-  "/products/files/doceditor/static/",
-  express.static(path.resolve(process.cwd(), "dist/client/static"))
+  "/products/files/doceditor/",
+  express.static(path.resolve(process.cwd(), "dist/client"))
 );
-app.use(express.static(path.resolve(process.cwd(), "dist/client")));
+//app.use(express.static(path.resolve(process.cwd(), "dist/client")));
 app.use(initMiddleware);
 app.use(logger("dev", { stream: winston.stream }));
 app.get("/products/files/doceditor", async (req, res) => {

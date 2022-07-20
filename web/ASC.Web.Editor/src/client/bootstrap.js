@@ -1,7 +1,7 @@
 import React from "react";
 import { hydrate } from "react-dom";
 import { registerSW } from "@appserver/common/sw/helper";
-import { App } from "./App.js";
+import App from "./Editor.js";
 import { useSSR } from "react-i18next";
 import useMfScripts from "../helpers/useMfScripts";
 import initDesktop from "../helpers/initDesktop";
@@ -69,16 +69,13 @@ const AppWrapper = () => {
   useSSR(initialI18nStoreASC, initialLanguage);
 
   React.useEffect(() => {
-    const tempElm = document.getElementById("loader");
-    if (tempElm) {
-      tempElm.outerHTML = "";
-    }
-
     if (isRetina() && getCookie("is_retina") == null) {
       setCookie("is_retina", true, { path: "/" });
     }
   }, []);
-  const onError = () =>
+
+  const onError = () => {
+    console.log("Error");
     window.open(
       combineUrl(
         AppServerConfig.proxyURL,
@@ -86,6 +83,7 @@ const AppWrapper = () => {
       ),
       "_self"
     );
+  };
 
   return (
     <ErrorBoundary onError={onError}>

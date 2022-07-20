@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
 import { canConvert, convertDocumentUrl } from "../helpers/utils";
 import { assign } from "@appserver/common/utils";
+import { homepage } from "../../package.json";
 
 const LoaderComponent = (
   <Loader
@@ -93,6 +94,7 @@ function Editor({
   initDesktop,
   view,
   preparationPortalDialog,
+  mfReady,
   ...rest
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -104,13 +106,15 @@ function Editor({
   const { t } = useTranslation(["Editor", "Common"]);
 
   useEffect(() => {
-    if (error) {
+    if (error && mfReady) {
       if (error?.unAuthorized && error?.redirectPath) {
         localStorage.setItem("redirectPath", window.location.href);
         window.location.href = error?.redirectPath;
       }
+      const errorText = typeof error === "string" ? error : error.errorMessage;
+      window.toastr.error(errorText);
     }
-  }, []);
+  }, [mfReady, error]);
 
   useEffect(() => {
     if (config) {
@@ -578,7 +582,7 @@ function Editor({
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
       <div id="editor"></div>
-      {/* {(!isLoaded || needLoader) && LoaderComponent} */}
+      {(!isLoaded || needLoader) && LoaderComponent}
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}

@@ -66,11 +66,7 @@ export const initDocEditor = async (req) => {
           personal ? "/sign-in" : "/login"
         ),
       };
-      return {
-        props: {
-          error,
-        },
-      };
+      return { error };
     }
 
     let [config, docApiUrl, fileInfo] = await Promise.all([
@@ -105,11 +101,7 @@ export const initDocEditor = async (req) => {
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };
-    return {
-      props: {
-        error,
-      },
-    };
+    return { error };
   }
 };
 
@@ -118,13 +110,13 @@ export const getFavicon = (documentType) => {
   let icon = null;
 
   switch (documentType) {
-    case "text":
+    case "word":
       icon = "text.ico";
       break;
-    case "presentation":
+    case "slide":
       icon = "presentation.ico";
       break;
-    case "spreadsheet":
+    case "cell":
       icon = "spreadsheet.ico";
       break;
     default:
