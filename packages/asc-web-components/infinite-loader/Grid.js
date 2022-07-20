@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useEffect, useRef } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { VariableSizeList as List, areEqual } from "react-window";
@@ -11,9 +11,18 @@ const GridComponent = ({
   loadMoreItems,
   onScroll,
   countTilesInRow,
+  selectedFolderId,
   children,
   className,
 }) => {
+  const gridRef = useRef(null);
+
+  useEffect(() => {
+    //console.log("resetAfterIndex");
+
+    gridRef?.current?.resetAfterIndex(0);
+  }, [selectedFolderId]);
+
   const isItemLoaded = useCallback(
     (index) => {
       return !hasMoreFiles || index * countTilesInRow < filesLength;
@@ -22,8 +31,6 @@ const GridComponent = ({
   );
 
   const renderTile = memo(({ index, style }) => {
-    // console.log("renderTile children[index]", children[index]);
-    // console.log("renderTile style", style);
     return <div style={style}>{children[index]}</div>;
   }, areEqual);
 
@@ -59,7 +66,10 @@ const GridComponent = ({
             itemSize={getItemSize}
             width={width}
             onItemsRendered={onItemsRendered}
-            ref={ref}
+            ref={(listRef) => {
+              ref(listRef);
+              gridRef.current = listRef;
+            }}
             outerElementType={Scroll}
             overscanCount={5} //TODO: inf-scroll
           >

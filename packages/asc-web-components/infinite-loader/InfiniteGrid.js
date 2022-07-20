@@ -13,6 +13,7 @@ const InfiniteGrid = (props) => {
     filesLength,
     className,
     getCountTilesInRow,
+    selectedFolderId,
     ...rest
   } = props;
 
@@ -38,9 +39,6 @@ const InfiniteGrid = (props) => {
 
   React.Children.map(children.props.children, (child, index) => {
     if (child) {
-      //debugger;
-      //console.log("child.key", child.key);
-
       if (child.props.className === "tile-items-heading") {
         //if after folder files title, push item to list
         if (temp.length) {
@@ -48,9 +46,6 @@ const InfiniteGrid = (props) => {
             .at(-1)
             .props.children.props.className.includes("folder");
           const otherClassName2 = isFolder ? "Item isFolder" : "Item isFile";
-
-          // console.log("temp", temp);
-          // console.log("temp", `item_${temp.at(-1).key}`);
 
           list.push(
             <StyledItem
@@ -156,6 +151,7 @@ const InfiniteGrid = (props) => {
       itemCount={filterTotal / countTilesInRow} //TODO: - count headers
       loadMoreItems={fetchMoreFiles}
       className={`TileList ${className}`}
+      selectedFolderId={selectedFolderId}
       {...rest}
     >
       {list}
@@ -163,7 +159,8 @@ const InfiniteGrid = (props) => {
   );
 };
 
-export default inject(({ filesStore }) => {
+//TODO: remove store
+export default inject(({ filesStore, selectedFolderStore }) => {
   const {
     filesList,
     hasMoreFiles,
@@ -181,5 +178,6 @@ export default inject(({ filesStore }) => {
     fetchMoreFiles,
     filesLength,
     getCountTilesInRow,
+    selectedFolderId: selectedFolderStore.id,
   };
 })(observer(InfiniteGrid));
