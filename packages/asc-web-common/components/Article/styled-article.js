@@ -93,14 +93,14 @@ const StyledArticle = styled.article`
 StyledArticle.defaultProps = { theme: Base };
 
 const StyledArticleHeader = styled.div`
-  padding: 11px 0 14px;
+  padding: 16px 0 17px;
   margin-left: -1px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
   @media ${tablet} {
-    padding: 16px 0 17px;
+    padding: 18px 0 19px;
     margin: 0;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
 
@@ -168,7 +168,7 @@ const StyledIconBox = styled.div`
   height: 20px;
 
   @media ${tablet} {
-    display: flex;
+    display: ${(props) => (props.showText ? "none" : "flex")};
   }
 
   @media ${mobile} {

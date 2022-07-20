@@ -5,6 +5,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@appserver/components/utils/device";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { ReactSVG } from "react-svg";
 import {
   StyledArticleHeader,
   StyledHeading,
@@ -39,6 +40,10 @@ const ArticleHeader = ({
 
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
 
+  const onHidePanel = () => {
+    if (showText && isTabletView) onClick();
+  };
+
   return (
     <StyledArticleHeader showText={showText} {...rest}>
       {isTabletView && (isBurgerLoading || showLoader) ? (
@@ -48,13 +53,19 @@ const ArticleHeader = ({
           style={{ height: "20px" }}
         />
       ) : (
-        <StyledIconBox name="article-burger">
-          <StyledMenuIcon onClick={onClick} />
+        <StyledIconBox name="article-burger" showText={showText}>
+          <ReactSVG
+            src="/static/images/logo.icon.react.svg"
+            onClick={onClick}
+          />
         </StyledIconBox>
       )}
 
       <StyledHeading showText={showText} size="large">
-        {children}
+        <ReactSVG
+          src="/static/images/logo.docspace.react.svg"
+          onClick={onHidePanel}
+        />
       </StyledHeading>
     </StyledArticleHeader>
   );
