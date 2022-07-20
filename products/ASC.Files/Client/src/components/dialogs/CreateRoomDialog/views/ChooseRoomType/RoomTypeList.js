@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { roomTypes } from "../../roomTypes";
 
-import RoomType from "./RoomType";
+import RoomType from "../../sub-components/RoomType";
 
 const StyledRoomTypeList = styled.div`
   width: 100%;
@@ -11,15 +12,16 @@ const StyledRoomTypeList = styled.div`
   gap: 16px;
 `;
 
-const RoomTypeList = ({ rooms, chooseRoomType }) => {
+const RoomTypeList = ({ t, setRoomType }) => {
   return (
     <StyledRoomTypeList>
-      {rooms.map((room, i) => (
+      {roomTypes.map((room) => (
         <RoomType
+          t={t}
           key={room.type}
           room={room}
           type={"listItem"}
-          onClick={() => chooseRoomType(room.type)}
+          onClick={() => setRoomType(room.type)}
         />
       ))}
     </StyledRoomTypeList>

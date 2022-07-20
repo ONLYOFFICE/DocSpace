@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import RoomType from "./RoomType";
+import { roomTypes } from "../../roomTypes";
+import RoomType from "../../sub-components/RoomType";
 
 const StyledRoomTypeDropdown = styled.div`
   display: flex;
@@ -11,12 +12,11 @@ const StyledRoomTypeDropdown = styled.div`
   .dropdown-content-wrapper {
     max-width: 100%;
     position: relative;
-    overflow: visible;
-    padding: 40px;
-    box-sizing: unset;
-    ${(props) => props.isOpen && "display: none"};
+    background: #ffffff;
+    ${(props) => !props.isOpen && "display: none"};
 
     .dropdown-content {
+      background: #ffffff;
       overflow: visible;
       z-index: 400;
       top: 0;
@@ -34,18 +34,21 @@ const StyledRoomTypeDropdown = styled.div`
   }
 `;
 
-const RoomTypeDropdown = ({ currentRoomType, rooms, chooseRoomType }) => {
+const RoomTypeDropdown = ({ t, currentRoomType, setRoomType }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleIsOpen = () => {
     setIsOpen(!isOpen);
   };
 
-  const [currentRoom] = rooms.filter((room) => room.type === currentRoomType);
+  const [currentRoom] = roomTypes.filter(
+    (room) => room.type === currentRoomType
+  );
 
   return (
     <StyledRoomTypeDropdown isOpen={isOpen}>
       <RoomType
+        t={t}
         room={currentRoom}
         type="dropdownButton"
         isOpen={isOpen}
@@ -53,12 +56,16 @@ const RoomTypeDropdown = ({ currentRoomType, rooms, chooseRoomType }) => {
       />
       <div className="dropdown-content-wrapper">
         <div className="dropdown-content">
-          {rooms.map((room) => (
+          {roomTypes.map((room) => (
             <RoomType
+              t={t}
               key={room.type}
               room={room}
               type="dropdownItem"
-              onClick={() => chooseRoomType(room.type)}
+              onClick={() => {
+                setRoomType(room.type);
+                toggleIsOpen();
+              }}
             />
           ))}
         </div>

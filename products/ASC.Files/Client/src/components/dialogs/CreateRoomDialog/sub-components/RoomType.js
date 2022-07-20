@@ -71,6 +71,9 @@ const StyledDropdownButton = styled(StyledRoomType)`
   background-color: #f8f8f8;
   border-radius: 6px;
 
+  border: 1px solid;
+  border-color: ${(props) => (props.isOpen ? "#2DA7DB" : "#f8f8f8")};
+
   .choose_room-forward_btn {
     &.dropdown-button {
       transform: ${(props) =>
@@ -84,15 +87,22 @@ const StyledDropdownItem = styled(StyledRoomType)`
   &:hover {
     background-color: #f3f4f4;
   }
+  div[data-tip="tooltip"] {
+    display: ${(props) => !props.isOpen && "none"};
+  }
 `;
 
-const RoomType = ({ room, onClick, type = "listItem", isOpen }) => {
+const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
   const arrowClassName =
     type === "dropdownButton"
       ? "choose_room-forward_btn dropdown-button"
       : type === "dropdownItem"
       ? "choose_room-forward_btn dropdown-item"
       : "choose_room-forward_btn";
+
+  const onSecondaryInfoClick = (e) => {
+    e.stopPropagation();
+  };
 
   const content = (
     <>
@@ -103,22 +113,23 @@ const RoomType = ({ room, onClick, type = "listItem", isOpen }) => {
       <div className="choose_room-info_wrapper">
         <div className="choose_room-title">
           <Text noSelect className="choose_room-title-text">
-            {room.title}
+            {t(room.title)}
           </Text>
           {room.withSecondaryInfo && (
-            <HelpButton
-              displayType="auto"
-              color="none"
-              className="choose_room-title-info_button"
-              iconName="/static/images/info.react.svg"
-              offsetRight={0}
-              tooltipContent={room.description}
-              size={12}
-            />
+            <div onClick={onSecondaryInfoClick}>
+              <HelpButton
+                displayType="auto"
+                className="choose_room-title-info_button"
+                iconName="/static/images/info.react.svg"
+                offsetRight={0}
+                tooltipContent={isOpen ? t(room.description) : null}
+                size={12}
+              />
+            </div>
           )}
         </div>
         <Text noSelect className="choose_room-description">
-          {room.description}
+          {t(room.description)}
         </Text>
       </div>
 
@@ -136,11 +147,13 @@ const RoomType = ({ room, onClick, type = "listItem", isOpen }) => {
   return type === "listItem" ? (
     <StyledListItem onClick={onClick}>{content}</StyledListItem>
   ) : type === "dropdownButton" ? (
-    <StyledDropdownButton isOpen={isOpen} onClick={onClick}>
+    <StyledDropdownButton onClick={onClick} isOpen={isOpen}>
       {content}
     </StyledDropdownButton>
   ) : type === "dropdownItem" ? (
-    <StyledDropdownItem onClick={onClick}>{content}</StyledDropdownItem>
+    <StyledDropdownItem onClick={onClick} isOpen={isOpen}>
+      {content}
+    </StyledDropdownItem>
   ) : (
     <StyledRoomType>{content}</StyledRoomType>
   );

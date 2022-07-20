@@ -8,6 +8,7 @@ const StyledTagList = styled.div`
   flex-direction: row;
   gap: 4px;
   width: 100px;
+
   .set_room_params-tag_input-tag {
     padding: 6px 8px;
     border-radius: 3px;
