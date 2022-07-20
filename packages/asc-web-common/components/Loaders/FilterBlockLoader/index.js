@@ -7,7 +7,7 @@ import { StyledBlock, StyledContainer } from "./StyledFilterBlockLoader";
 const FilterBlockLoader = ({ id, className, style, ...rest }) => {
   return (
     <StyledContainer id={id} className={className} style={style} {...rest}>
-      <StyledBlock>
+      {/* <StyledBlock>
         <RectangleLoader
           width={"50"}
           height={"16"}
@@ -34,7 +34,7 @@ const FilterBlockLoader = ({ id, className, style, ...rest }) => {
             className={"loader-item"}
           />
         </div>
-      </StyledBlock>
+      </StyledBlock> */}
 
       <StyledBlock>
         <RectangleLoader
