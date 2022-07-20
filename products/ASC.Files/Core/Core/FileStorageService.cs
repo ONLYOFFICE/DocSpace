@@ -237,16 +237,10 @@ public class FileStorageService<T> //: IFileStorageService
         }));
     }
 
-    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, FilterType filter, bool subjectGroup, string ssubject, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
-        SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
+    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, FilterType filterType, bool subjectGroup, string subject, string searchText, 
+        bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null, bool withoutMe = false)
     {
-        return await GetFolderItemsAsync(parentId, from, count, new[] { filter }, subjectGroup, ssubject, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
-    }
-
-    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, IEnumerable<FilterType> filterTypes, bool subjectGroup, string ssubject, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
-        SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
-    {
-        var subjectId = string.IsNullOrEmpty(ssubject) ? Guid.Empty : new Guid(ssubject);
+        var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
         var folderDao = GetFolderDao();
 
@@ -291,7 +285,8 @@ public class FileStorageService<T> //: IFileStorageService
         IEnumerable<FileEntry> entries;
         try
         {
-            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterTypes, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
+            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, 
+                withoutTags, tagNames, withoutMe);
         }
         catch (Exception e)
         {
