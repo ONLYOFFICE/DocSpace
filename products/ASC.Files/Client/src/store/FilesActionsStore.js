@@ -760,16 +760,25 @@ class FilesActionStore {
 
     const items = Array.isArray(id) ? id : [id];
 
+    const actions = [];
+
     switch (action) {
       case "pin":
-        return pinRoom(items)
+        items.forEach((item) => {
+          actions.push(pinRoom(item));
+        });
+
+        return Promise.all(actions)
           .then(() => {
             this.updateCurrentFolder(null, items);
           })
           .then(() => setSelected("close"))
           .finally(() => toastr.success("Room pinned"));
       case "unpin":
-        return unpinRoom(items)
+        items.forEach((item) => {
+          actions.push(unpinRoom(item));
+        });
+        return Promise.all(actions)
           .then(() => {
             this.updateCurrentFolder(null, items);
           })
@@ -814,9 +823,15 @@ class FilesActionStore {
 
     addActiveItems(null, items);
 
+    const actions = [];
+
     switch (action) {
       case "archive":
-        return moveRoomToArchive(items)
+        items.forEach((item) => {
+          actions.push(moveRoomToArchive(item));
+        });
+
+        return Promise.all(actions)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
             const data = res ? res : null;
@@ -836,7 +851,10 @@ class FilesActionStore {
           })
           .finally(() => clearActiveOperations(null, items));
       case "unarchive":
-        return removeRoomFromArchive(items)
+        items.forEach((item) => {
+          actions.push(removeRoomFromArchive(item));
+        });
+        return Promise.all(actions)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
             const data = res ? res : null;
@@ -1143,6 +1161,54 @@ class FilesActionStore {
     return result;
   };
 
+  pinRooms = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      if (!item.pinned) items.push(item.id);
+    });
+
+    this.setPinAction("pin", items);
+  };
+
+  unpinRooms = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      if (item.pinned) items.push(item.id);
+    });
+
+    this.setPinAction("unpin", items);
+  };
+
+  moveRoomsToArchive = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      items.push(item.id);
+    });
+
+    this.setArchiveAction("archive", items);
+  };
+
+  moveRoomsFromArchive = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      items.push(item.id);
+    });
+
+    this.setArchiveAction("unarchive", items);
+  };
+
   getOption = (option, t) => {
     const {
       setSharingPanelVisible,
@@ -1204,35 +1270,33 @@ class FilesActionStore {
       case "pin":
         return {
           key: "pin",
-          label: "Pin to top",
+          label: t("Pin"),
           iconUrl: "/static/images/pin.react.svg",
-          onClick: (e) => {
-            console.log(e.target);
-          },
+          onClick: this.pinRooms,
           disabled: false,
         };
       case "unpin":
         return {
           key: "unpin",
-          label: "Unpin",
+          label: t("Unpin"),
           iconUrl: "/static/images/unpin.react.svg",
-          onClick: () => console.log("unpin"),
+          onClick: this.unpinRooms,
           disabled: false,
         };
       case "archive":
         return {
           key: "archive",
-          label: "Move to archive",
+          label: t("ToArchive"),
           iconUrl: "/static/images/room.archive.svg",
-          onClick: () => console.log("to archive"),
+          onClick: this.moveRoomsToArchive,
           disabled: false,
         };
       case "unarchive":
         return {
           key: "unarchive",
-          label: "Move from archive",
+          label: t("FromArchive"),
           iconUrl: "/static/images/room.archive.svg",
-          onClick: () => console.log("from archive"),
+          onClick: this.moveRoomsFromArchive,
           disabled: false,
         };
 
