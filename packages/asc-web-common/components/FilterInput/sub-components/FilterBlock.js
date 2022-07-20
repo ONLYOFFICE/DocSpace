@@ -101,8 +101,7 @@ const FilterBlock = ({
   const changeFilterValue = React.useCallback(
     (group, key, isSelected, label, isMultiSelect, withOptions) => {
       let value = filterValues.map((value) => {
-        //TODO: remove typeof
-        if (typeof value.key === "object" || isMultiSelect) {
+        if (typeof value.key === "object") {
           const newKey = [...value.key];
           value.key = newKey;
         }
