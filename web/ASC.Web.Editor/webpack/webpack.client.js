@@ -21,7 +21,7 @@ for (let dep in sharedDeps) {
 
 const clientConfig = {
   target: "web",
-  mode: "development",
+  // mode: "development",
   entry: {
     client: ["./src/client/index.js"],
   },
@@ -115,6 +115,7 @@ module.exports = (env, argv) => {
       minimizer: [new TerserPlugin()],
     };
   } else {
+    clientConfig.mode = "development";
     clientConfig.devtool = "cheap-module-source-map";
   }
 
