@@ -4,21 +4,25 @@ import StyledDialogAsideLoader from "./StyledDialogAsideLoader";
 import Aside from "@appserver/components/aside";
 import Backdrop from "@appserver/components/backdrop";
 
-const DialogAsideLoader = ({ isPanel, withoutAside }) => {
+const DialogAsideLoader = ({
+  isPanel,
+  withoutAside,
+  withFooterBorder = false,
+}) => {
   const zIndex = 310;
 
   const renderClearDialogAsideLoader = () => {
     return (
-      <StyledDialogAsideLoader visible isPanel={isPanel}>
+      <StyledDialogAsideLoader withFooterBorder={withFooterBorder} visible>
         <div className="dialog-loader-header">
-          <Loaders.Rectangle />
+          <Loaders.Rectangle height="29px" />
         </div>
         <div className="dialog-loader-body">
           <Loaders.Rectangle height="200px" />
         </div>
 
         <div className="dialog-loader-footer">
-          <Loaders.Rectangle />
+          <Loaders.Rectangle height="40px" />
         </div>
       </StyledDialogAsideLoader>
     );

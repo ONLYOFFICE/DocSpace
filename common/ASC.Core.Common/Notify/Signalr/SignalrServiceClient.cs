@@ -321,17 +321,17 @@ public class SignalrServiceClient
         }
     }
 
-        public void UpdateFile<T>(T fileId, string room, string data)
+    public void UpdateFile<T>(T fileId, string room, string data)
+    {
+        try
         {
-            try
-            {
-                MakeRequest("update-file", new { room, fileId, data });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
+            MakeRequest("update-file", new { room, fileId, data });
         }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
 
     public void DeleteFile<T>(T fileId, string room)
     {

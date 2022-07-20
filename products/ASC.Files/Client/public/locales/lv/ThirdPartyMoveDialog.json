@@ -1,4 +1,4 @@
 {
-  "MoveConfirmation": "Pārvietošanas apstiprinājums",
-  "MoveConfirmationMessage": "Jūs gatavojaties pārvietot elementus no direktorija {{provider}}. Tie tiks izdzēsti no jūsu {{provider}} konta un vairs nebūs pieejami citiem lietotājiem."
+  "CreateFileCopyOption": "Izveidot faila kopiju",
+  "MoveConfirmation": "Pārvietošanas apstiprinājums"
 }
