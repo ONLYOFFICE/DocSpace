@@ -32,20 +32,22 @@ const EmptyContainer = ({ isFiltered, parentId, theme }) => {
     window.dispatchEvent(event);
   };
 
-  const onCreateRoom = (e) => {
-    console.log("create room");
-  };
+  const onCreateRoom = React.useCallback(() => {
+    const event = new Event(Events.ROOM_CREATE);
+
+    window.dispatchEvent(event);
+  }, []);
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
   ) : parentId === 0 ? (
-    <RootFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
-  ) : (
-    <EmptyFolderContainer
+    <RootFolderContainer
       onCreate={onCreate}
-      onCreateRoom={onCreateRoom}
       linkStyles={linkStyles}
+      onCreateRoom={onCreateRoom}
     />
+  ) : (
+    <EmptyFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
   );
 };
 
