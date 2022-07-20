@@ -311,7 +311,7 @@ public class TfaappController : BaseSettingsController
     }
 
     [HttpPut("tfaappnewapp")]
-    public object TfaAppNewApp(TfaRequestsDto inDto)
+    public async Task<object> TfaAppNewApp(TfaRequestsDto inDto)
     {
         var id = inDto?.Id ?? Guid.Empty;
         var isMe = id.Equals(Guid.Empty) || id.Equals(_authContext.CurrentAccount.ID);
@@ -338,6 +338,7 @@ public class TfaappController : BaseSettingsController
 
         if (isMe)
         {
+            await _cookiesManager.ResetTenantCookie();
             return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation);
         }
 
