@@ -38,6 +38,9 @@ const DEFAULT_SORT_ORDER = "descending";
 const WITHOUT_ME = "withoutMe";
 const DEFAULT_WITHOUT_ME = false;
 
+const WITHOUT_TAGS = "withoutTags";
+const DEFAULT_WITHOUT_TAGS = false;
+
 class RoomsFilter {
   static getDefault(total = DEFAULT_TOTAL) {
     return new RoomsFilter(DEFAULT_PAGE, DEFAULT_PAGE_COUNT, total);
@@ -94,6 +97,8 @@ class RoomsFilter {
 
     const withoutMe = urlFilter[WITHOUT_ME] || defaultFilter.withoutMe;
 
+    const withoutTags = urlFilter[WITHOUT_TAGS] || defaultFilter.withoutTags;
+
     const newFilter = new RoomsFilter(
       page,
       pageCount,
@@ -107,7 +112,8 @@ class RoomsFilter {
       tags,
       sortBy,
       sortOrder,
-      withoutMe
+      withoutMe,
+      withoutTags
     );
 
     return newFilter;
@@ -126,7 +132,8 @@ class RoomsFilter {
     tags = DEFAULT_TAGS,
     sortBy = DEFAULT_SORT_BY,
     sortOrder = DEFAULT_SORT_ORDER,
-    withoutMe = DEFAULT_WITHOUT_ME
+    withoutMe = DEFAULT_WITHOUT_ME,
+    withoutTags = DEFAULT_WITHOUT_TAGS
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -141,6 +148,7 @@ class RoomsFilter {
     this.sortBy = sortBy;
     this.sortOrder = sortOrder;
     this.withoutMe = withoutMe;
+    this.withoutTags = withoutTags;
   }
 
   getStartIndex = () => {
@@ -169,6 +177,7 @@ class RoomsFilter {
       sortBy,
       sortOrder,
       withoutMe,
+      withoutTags,
     } = this;
 
     const dtoFilter = {
@@ -185,6 +194,7 @@ class RoomsFilter {
       sortBy: sortBy,
       sortOrder: sortOrder,
       withoutMe: withoutMe,
+      withoutTags: withoutTags,
     };
 
     const str = toUrlParams(dtoFilter, true);
@@ -205,6 +215,7 @@ class RoomsFilter {
       sortBy,
       sortOrder,
       withoutMe,
+      withoutTags,
     } = this;
 
     const dtoFilter = {};
@@ -241,6 +252,10 @@ class RoomsFilter {
       dtoFilter[WITHOUT_ME] = withoutMe;
     }
 
+    if (withoutTags) {
+      dtoFilter[WITHOUT_TAGS] = withoutTags;
+    }
+
     dtoFilter[PAGE] = page + 1;
     dtoFilter[SORT_BY] = sortBy;
     dtoFilter[SORT_ORDER] = sortOrder;
@@ -268,7 +283,8 @@ class RoomsFilter {
       this.tags,
       this.sortBy,
       this.sortOrder,
-      this.withoutMe
+      this.withoutMe,
+      this.withoutTags
     );
   }
 
@@ -293,7 +309,8 @@ class RoomsFilter {
       tagsEqual &&
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
-      this.withoutMe === filter.withoutMe;
+      this.withoutMe === filter.withoutMe &&
+      this.withoutTags === filter.withoutTags;
 
     return equals;
   }
