@@ -3,14 +3,18 @@ import "winston-daily-rotate-file";
 import path from "path";
 import fs from "fs";
 
-const fileName = path.join(
-  __dirname,
-  "..",
-  "..",
-  "..",
-  "Logs",
-  "editor.%DATE%.log"
-);
+const fileName = IS_DEVELOPMENT
+  ? path.join(__dirname, "..", "..", "..", "Logs", "editor.%DATE%.log")
+  : path.join(
+      __dirname,
+      "..",
+      "..",
+      "..",
+      "..",
+      "..",
+      "Logs",
+      "editor.%DATE%.log"
+    );
 const dirName = path.dirname(fileName);
 
 if (!fs.existsSync(dirName)) {

@@ -1,5 +1,5 @@
-import { getFavicon } from "../helpers/utils";
-import pkg from "../../package.json";
+import { getFavicon } from "./helpers";
+import pkg from "../../../package.json";
 
 export default function template(
   initialEditorState = {},

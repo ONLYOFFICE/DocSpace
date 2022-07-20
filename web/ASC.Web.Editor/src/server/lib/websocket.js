@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const pkg = require("../../package.json");
+const pkg = require("../../../package.json");
 const { socketPath } = pkg;
 
 module.exports = (expressServer) => {

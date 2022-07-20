@@ -1,3 +1,5 @@
+import path from "path";
+import fs from "fs";
 import { initSSR } from "@appserver/common/api/client";
 import { getUser } from "@appserver/common/api/people";
 import { getSettings } from "@appserver/common/api/settings";
@@ -7,28 +9,35 @@ import {
   getDocServiceUrl,
   getFileInfo,
   openEdit,
-  convertFile,
   getSettingsFiles,
 } from "@appserver/common/api/files";
+import pkg from "../../../../package.json";
 
-import pkg from "../../package.json";
+export const getFavicon = (documentType) => {
+  const { homepage } = pkg;
+  let icon = null;
 
-let personal = IS_PERSONAL || null;
+  switch (documentType) {
+    case "word":
+      icon = "text.ico";
+      break;
+    case "slide":
+      icon = "presentation.ico";
+      break;
+    case "cell":
+      icon = "spreadsheet.ico";
+      break;
+    default:
+      break;
+  }
 
-export const canConvert = (extension, filesSettings) => {
-  const array = filesSettings?.extsMustConvert || [];
-  const result = array.findIndex((item) => item === extension);
-  return result === -1 ? false : true;
-};
-
-export const convertDocumentUrl = async () => {
-  const convert = await convertFile(fileId, null, true);
-  return convert && convert[0]?.result;
+  const favicon = icon ? `${homepage}/images/${icon}` : "/favicon.ico";
+  return favicon;
 };
 
 export const initDocEditor = async (req) => {
   if (!req) return false;
-
+  let personal = IS_PERSONAL || null;
   const { headers, url, query } = req;
   const { version, desktop: isDesktop } = query;
   let error = null;
@@ -107,24 +116,13 @@ export const initDocEditor = async (req) => {
   }
 };
 
-export const getFavicon = (documentType) => {
-  const { homepage } = pkg;
-  let icon = null;
+export const getAssets = () => {
+  const manifest = fs.readFileSync(
+    path.join(__dirname, "client/manifest.json"),
+    "utf-8"
+  );
 
-  switch (documentType) {
-    case "word":
-      icon = "text.ico";
-      break;
-    case "slide":
-      icon = "presentation.ico";
-      break;
-    case "cell":
-      icon = "spreadsheet.ico";
-      break;
-    default:
-      break;
-  }
+  const assets = JSON.parse(manifest);
 
-  const favicon = icon ? `${homepage}/images/${icon}` : "/favicon.ico";
-  return favicon;
+  return assets;
 };
