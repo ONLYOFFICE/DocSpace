@@ -89,6 +89,7 @@ const TfaActivationForm = withLoader((props) => {
   const onSubmit = async () => {
     try {
       const { user, hash } = (location && location.state) || {};
+      const { linkData } = props;
 
       setIsLoading(true);
 
@@ -96,7 +97,7 @@ const TfaActivationForm = withLoader((props) => {
         const url = await loginWithCode(user, hash, code);
         history.push(url || "/");
       } else {
-        const url = await loginWithCodeAndCookie(code);
+        const url = await loginWithCodeAndCookie(code, linkData.confirmHeader);
         history.push(url || "/");
       }
     } catch (e) {
