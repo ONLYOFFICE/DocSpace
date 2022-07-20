@@ -1,8 +1,8 @@
 {
   "AddMembers": "Aggiungi membri",
   "Birthdate": "Data di nascita",
-  "DeleteUserDataConfirmation": "I documenti utente condivisi con altri verranno eliminati. Per evitare ciò si consiglia di riassegnare i dati.",
   "DeleteSelfProfile": "Eliminare il profilo",
+  "DeleteUserDataConfirmation": "I documenti utente condivisi con altri verranno eliminati. Per evitare ciò si consiglia di riassegnare i dati.",
   "DisableUserButton": "Disattivare",
   "DisabledEmployeeStatus": "Disabilitato",
   "EmailChangeButton": "Cambiare email",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Maschile",
   "MaxSizeLabel": "(JPG o PNG, max 1 MB)",
-  "NotBeUndone": "Ti preghiamo di notare: questa azione non può essere annullata.",
   "PasswordChangeButton": "Cambiare password",
   "PendingTitle": "In attesa",
   "ReassignData": "Riassegnare i dati",

@@ -20,7 +20,6 @@
       "common\\ASC.Migration\\ASC.Migration.csproj",
       "common\\ASC.Notify.Textile\\ASC.Notify.Textile.csproj",
       "common\\ASC.Textile\\ASC.Textile.csproj",
-      "common\\ASC.VoipService\\ASC.VoipService.csproj",
       "common\\ASC.Webhooks.Core\\ASC.Webhooks.Core.csproj",
       "common\\services\\ASC.AuditTrail\\ASC.AuditTrail.csproj",
       "common\\services\\ASC.ClearEvents\\ASC.ClearEvents.csproj",

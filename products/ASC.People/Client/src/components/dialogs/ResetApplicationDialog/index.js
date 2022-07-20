@@ -4,6 +4,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
+import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import toastr from "studio/toastr";
 
@@ -13,11 +14,11 @@ class ResetApplicationDialogComponent extends React.Component {
   }
 
   resetApp = async () => {
-    const { resetTfaApp, history, id } = this.props;
-
+    const { resetTfaApp, id, onClose, history } = this.props;
+    onClose && onClose();
     try {
       const res = await resetTfaApp(id);
-      if (res) history.push(res);
+      if (res) history.push(res.replace(window.location.origin, ""));
     } catch (e) {
       toastr.error(e);
     }
@@ -35,23 +36,22 @@ class ResetApplicationDialogComponent extends React.Component {
       >
         <ModalDialog.Header>{t("ResetApplicationTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <Text className="text-dialog">
-            {t("ResetApplicationDescription")}
-          </Text>
+          <Text>{t("ResetApplicationDescription")}</Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
             label={t("Common:ResetApplication")}
-            size="small"
+            size="normal"
+            scale
             primary={true}
             onClick={this.resetApp}
           />
           <Button
             key="CloseBtn"
-            className="button-dialog"
             label={t("Common:CloseButton")}
-            size="small"
+            size="normal"
+            scale
             primary={false}
             onClick={onClose}
           />
@@ -61,10 +61,11 @@ class ResetApplicationDialogComponent extends React.Component {
   }
 }
 
-const ResetApplicationDialog = withTranslation([
-  "ResetApplicationDialog",
-  "Common",
-])(ResetApplicationDialogComponent);
+const ResetApplicationDialog = withRouter(
+  withTranslation(["ResetApplicationDialog", "Common"])(
+    ResetApplicationDialogComponent
+  )
+);
 
 ResetApplicationDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

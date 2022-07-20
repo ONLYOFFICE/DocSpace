@@ -1,8 +1,8 @@
 {
   "AddMembers": "Mitglieder hinzufügen",
   "Birthdate": "Geburtsdatum",
-  "DeleteUserDataConfirmation": "Freigegebene Dokumente dieses Benutzers werden gelöscht. Um dies zu vermeiden, weisen Sie Daten neu zu.",
   "DeleteSelfProfile": "Profil löschen",
+  "DeleteUserDataConfirmation": "Freigegebene Dokumente dieses Benutzers werden gelöscht. Um dies zu vermeiden, weisen Sie Daten neu zu.",
   "DisableUserButton": "Deaktivieren",
   "DisabledEmployeeStatus": "Deaktiviert",
   "EmailChangeButton": "E-Mail-Adresse ändern",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Männlich",
   "MaxSizeLabel": "(JPG oder PNG, max 1 MB)",
-  "NotBeUndone": "Dies kann nicht rückgängig gemacht werden.",
   "PasswordChangeButton": "Kennwort ändern",
   "PendingTitle": "Ausstehend",
   "ReassignData": "Daten erneut zuweisen",

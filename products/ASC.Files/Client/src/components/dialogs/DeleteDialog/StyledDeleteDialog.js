@@ -10,11 +10,6 @@ const StyledDeleteDialog = styled(ModalDialog)`
   .modal-dialog-content-body {
     padding: 0;
     border: none;
-
-    @media (min-width: 1025px) {
-      padding: 8px 16px;
-      border: 1px solid rgb(211, 211, 211);
-    }
   }
 
   .modal-dialog-aside-header {
@@ -62,7 +57,6 @@ const StyledDeleteDialog = styled(ModalDialog)`
     }
 
     display: inline-block;
-    margin-left: 8px;
   }
 `;
 

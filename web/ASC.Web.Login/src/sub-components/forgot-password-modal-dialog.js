@@ -123,20 +123,19 @@ const ForgotPasswordModalDialog = (props) => {
             isLoading ? t("Common:LoadingProcessing") : t("Common:SendButton")
           }
           size="normal"
-          scale={false}
+          scale
           primary={true}
           onClick={onSendPasswordInstructions}
           isLoading={isLoading}
           isDisabled={isLoading}
           tabIndex={2}
         />
-
         <Button
           className="modal-dialog-button"
           key="CancelBtn"
           label={t("Common:CancelButton")}
           size="normal"
-          scale={false}
+          scale
           primary={false}
           onClick={onDialogClose}
           isLoading={isLoading}

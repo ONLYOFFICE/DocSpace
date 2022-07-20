@@ -58,8 +58,6 @@ public class LoginEventsRepository
             from q in MessagesContext.LoginEvents
             from p in MessagesContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
             where q.TenantId == tenant
-            where q.Date >= fromDate
-            where q.Date <= to
             orderby q.Date descending
             select new LoginEventQuery
             {

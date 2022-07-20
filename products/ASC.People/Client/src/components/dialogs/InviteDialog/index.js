@@ -127,17 +127,17 @@ class InviteDialogComponent extends React.Component {
           visible={visible}
           onClose={this.onClose}
           zIndex={400}
+          autoMaxHeight
         >
           <ModalDialog.Header>
             {t("Translations:InviteLinkTitle")}
           </ModalDialog.Header>
           <ModalDialog.Body>
-            <Text as="p">{t("HelpAnswerLinkInviteSettings")}</Text>
+            {/* <Text as="p">{t("HelpAnswerLinkInviteSettings")}</Text> */}
             <Text className="text-dialog" as="p">
               {t("InviteLinkValidInterval", { count: 7 })}
             </Text>
-            <div className="invite-link-dialog-wrapper">
-              <Link
+            {/* <Link
                 className="link-dialog"
                 type="action"
                 isHovered={LinkCopySuccess ? false : true}
@@ -147,23 +147,16 @@ class InviteDialogComponent extends React.Component {
                 }
               >
                 {LinkCopySuccess ? t("LinkCopySuccess") : t("CopyToClipboard")}
+              </Link> */}
+            {hasShortenService && !this.state.isLinkShort && (
+              <Link
+                type="action"
+                isHovered={true}
+                onClick={this.onGetShortenedLink}
+              >
+                {t("GetShortenLink")}
               </Link>
-              {hasShortenService && !this.state.isLinkShort && (
-                <Link
-                  type="action"
-                  isHovered={true}
-                  onClick={this.onGetShortenedLink}
-                >
-                  {t("GetShortenLink")}
-                </Link>
-              )}
-              <Checkbox
-                label={t("InviteUsersAsCollaborators", { guestsCaption })}
-                isChecked={this.state.isGuest}
-                onChange={this.onCheckedGuest}
-                isDisabled={this.state.isLoading}
-              />
-            </div>
+            )}
             <Textarea
               className="textarea-dialog"
               isReadOnly={true}
@@ -175,6 +168,13 @@ class InviteDialogComponent extends React.Component {
                   : this.props.userInvitationLink
               }
             />
+            <Checkbox
+              className="checkbox-dialog"
+              label={t("InviteUsersAsCollaborators", { guestsCaption })}
+              isChecked={this.state.isGuest}
+              onChange={this.onCheckedGuest}
+              isDisabled={this.state.isLoading}
+            />
           </ModalDialog.Body>
           <ModalDialog.Footer>
             <Button
@@ -182,10 +182,19 @@ class InviteDialogComponent extends React.Component {
               label={
                 this.state.isLoading
                   ? t("Common:LoadingProcessing")
-                  : t("Common:CloseButton")
+                  : t("CopyToClipboard")
               }
-              size="small"
-              primary={true}
+              size="normal"
+              primary
+              scale
+              onClick={LinkCopySuccess ? undefined : this.onCopyLinkToClipboard}
+              isLoading={this.state.isLoading}
+            />
+            <Button
+              key="CloseBtn"
+              label={t("Common:CloseButton")}
+              size="normal"
+              scale
               onClick={this.onClickToCloseButton}
               isLoading={this.state.isLoading}
             />

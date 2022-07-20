@@ -15,7 +15,7 @@
   "PasswordRecoveryTitle": "Kennwort wiederherstellen",
   "Register": "Registrieren",
   "RegisterSendButton": "Anfrage senden",
-  "RegisterTextBodyAfterDomainsList": "Für Registrierung geben Sie Ihre E-Mail-Adresse ein und klicken Sie auf Anfrage senden. Der Aktivierungslink wird an dieser Adresse gesendet.",
+  "RegisterTextBodyAfterDomainsList": "Für Registrierung geben Sie Ihre E-Mail-Adresse ein und klicken Sie auf Anfrage senden. Der Link zur Aktivierung Ihres Kontos wird an dieser Adresse gesendet.",
   "RegisterTextBodyBeforeDomainsList": "Für Registrierung sollen Benutzer E-Mail-Konten hier haben:",
   "RegisterTitle": "Registrierungsanfrage",
   "RegistrationEmail": "Ihr Registrierungsemail",
