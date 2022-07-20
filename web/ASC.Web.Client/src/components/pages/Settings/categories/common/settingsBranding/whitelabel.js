@@ -302,9 +302,7 @@ const WhiteLabel = (props) => {
     };
   };
 
-  return !isLoadedData ? (
-    <Loader className="pageLoader" type="rombs" size="40px" />
-  ) : (
+  return (
     <StyledComponent>
       <div className="settings-block">
         <Text fontSize="16px">{t("LogoSettings")}</Text>

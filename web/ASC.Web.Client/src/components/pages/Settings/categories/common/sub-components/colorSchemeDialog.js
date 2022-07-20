@@ -58,6 +58,7 @@ const ColorSchemeDialog = (props) => {
     showRestoreToDefaultButtonDialog,
 
     showSaveButtonDialog,
+    onSaveColorSchemeDialog,
     t,
   } = props;
 
@@ -94,6 +95,7 @@ const ColorSchemeDialog = (props) => {
               className="save-button"
               primary={true}
               scale={true}
+              onClick={onSaveColorSchemeDialog}
             />
           )}
           {showRestoreToDefaultButtonDialog && (

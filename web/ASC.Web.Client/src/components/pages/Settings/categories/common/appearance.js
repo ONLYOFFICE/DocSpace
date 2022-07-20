@@ -26,7 +26,7 @@ const StyledComponent = styled.div`
     height: 46px;
     margin-right: 12px;
   }
-  #color-scheme_1 {
+  /* #color-scheme_1 {
     background: ${globalColors.colorSchemeDefault_1};
   }
   #color-scheme_2 {
@@ -46,7 +46,7 @@ const StyledComponent = styled.div`
   }
   #color-scheme_7 {
     background: ${globalColors.colorSchemeDefault_7};
-  }
+  } */
 
   .add-theme {
     background: #d0d5da;
@@ -100,6 +100,84 @@ const Appearance = (props) => {
 
   const [isEditDialog, setIsEditDialog] = useState(false);
   const [isAddThemeDialog, setIsAddThemeDialog] = useState(false);
+
+  const arrayTheme = [
+    {
+      id: 1,
+      theme: {
+        accentColor: "#4781D1",
+        buttonsMain: "#5299E0",
+        textColor: "#FFFFFF",
+      },
+      isSelected: true,
+    },
+    {
+      id: 2,
+      theme: {
+        accentColor: "#F97A0B",
+        buttonsMain: "#FF9933",
+        textColor: "#FFFFFF",
+      },
+      isSelected: false,
+    },
+    {
+      id: 3,
+      theme: {
+        accentColor: "#2DB482",
+        buttonsMain: "#22C386",
+        textColor: "#FFFFFF",
+      },
+      isSelected: false,
+    },
+    {
+      id: 4,
+      theme: {
+        accentColor: "#F2675A",
+        buttonsMain: "#F27564",
+        textColor: "#FFFFFF",
+      },
+      isSelected: false,
+    },
+    {
+      id: 5,
+      theme: {
+        accentColor: "#6D4EC2",
+        buttonsMain: "#8570BD",
+        textColor: "#FFFFFF",
+      },
+      isSelected: false,
+    },
+    {
+      id: 6,
+      theme: {
+        accentColor: "#11A4D4",
+        buttonsMain: "#13B7EC",
+        textColor: "#FFFFFF",
+      },
+      isSelected: false,
+    },
+    {
+      id: 7,
+      theme: {
+        accentColor: "#444444",
+        buttonsMain: "#6E6E6E",
+        textColor: "#FFFFFF",
+      },
+      isSelected: false,
+    },
+  ];
+
+  const [selectTheme, setSelectTheme] = useState({
+    id: 1,
+    theme: {
+      accentColor: "#4781D1",
+      buttonsMain: "#5299E0",
+      textColor: "#FFFFFF",
+    },
+    isSelected: true,
+  });
+
+  const [changeTheme, setChangeTheme] = useState([]);
 
   const checkImg = <img src="/static/images/check.white.svg" />;
 
@@ -163,8 +241,19 @@ const Appearance = (props) => {
   const onColorSelection = (e) => {
     if (!e.target.id) return;
 
-    const colorNumber = e.target.id[e.target.id.length - 1];
-    setSelectedColor(+colorNumber);
+    const colorNumber = +e.target.id;
+
+    console.log("e.target.id", e.target.id);
+    setSelectedColor(colorNumber);
+
+    //TODO: find id and give item
+
+    //TODO: if time array = 0, then arrayTheme, else time array
+    const theme = arrayTheme.find((item) => item.id === colorNumber);
+    theme.isSelected = true;
+    console.log("theme", theme);
+
+    setSelectTheme(theme);
   };
 
   const onShowCheck = (colorNumber) => {
@@ -180,11 +269,16 @@ const Appearance = (props) => {
   };
 
   const onClickEdit = () => {
-    setIsEditDialog(true);
-    // TODO: give store Accent color and Buttons main to id
+    arrayTheme.map((item) => {
+      if (item.id === selectedColor) {
+        // TODO: give store Accent color and Buttons main to id
 
-    setCurrentColorAccent("#F97A0B");
-    setCurrentColorButtons("#FF9933");
+        setCurrentColorAccent(item.theme.accentColor);
+        setCurrentColorButtons(item.theme.buttonsMain);
+      }
+    });
+
+    setIsEditDialog(true);
 
     setHeaderColorSchemeDialog("Edit color scheme");
 
@@ -257,6 +351,15 @@ const Appearance = (props) => {
 
     setChangeCurrentColorButtons(true);
   }, [appliedColorButtons]);
+
+  const onSaveColorSchemeDialog = () => {
+    selectTheme.theme.accentColor = currentColorAccent;
+    selectTheme.theme.buttonsMain = currentColorButtons;
+
+    setChangeTheme([...changeTheme, selectTheme]);
+
+    onCloseColorSchemeDialog();
+  };
 
   const nodeHexColorPickerButtons = viewMobile ? (
     <HexColorPickerComponent
@@ -339,12 +442,32 @@ const Appearance = (props) => {
     ></div>
   );
 
+  console.log(
+    "currentColorAccent,currentColorButtons,selectTheme,changeTheme ",
+    currentColorAccent,
+    currentColorButtons,
+    selectTheme,
+    changeTheme
+  );
+
   return (
     <StyledComponent>
       <div>Color</div>
 
       <div className="container">
-        <div id="color-scheme_1" className="box" onClick={onColorSelection}>
+        {arrayTheme.map((item) => {
+          return (
+            <div
+              id={item.id}
+              style={{ background: item.theme.accentColor }}
+              className="box"
+              onClick={onColorSelection}
+            >
+              {onShowCheck(item.id)}
+            </div>
+          );
+        })}
+        {/* <div id="color-scheme_1" className="box" onClick={onColorSelection}>
           {onShowCheck(1)}
         </div>
         <div id="color-scheme_2" className="box" onClick={onColorSelection}>
@@ -364,10 +487,10 @@ const Appearance = (props) => {
         </div>
         <div id="color-scheme_7" className="box" onClick={onColorSelection}>
           {onShowCheck(7)}
-        </div>
-        <div className="add-theme box" onClick={onAddTheme}>
+        </div> */}
+        {/* <div className="add-theme box" onClick={onAddTheme}>
           <img src="/static/images/plus.theme.svg" />
-        </div>
+        </div> */}
       </div>
 
       <div onClick={onClickEdit}>Edit color scheme</div>
@@ -384,6 +507,7 @@ const Appearance = (props) => {
         openHexColorPickerAccent={openHexColorPickerAccent}
         showRestoreToDefaultButtonDialog={showRestoreToDefaultButtonDialog}
         showSaveButtonDialog={showSaveButtonDialog}
+        onSaveColorSchemeDialog={onSaveColorSchemeDialog}
       />
       <div>Preview</div>
       <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />
