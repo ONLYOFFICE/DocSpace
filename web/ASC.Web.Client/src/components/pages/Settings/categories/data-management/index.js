@@ -8,7 +8,6 @@ import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../../../package.json";
 
 import Backup from "./backup";
-import PortalDeactivation from "./delete-data";
 import AppLoader from "@appserver/common/components/AppLoader";
 
 const DataManagementWrapper = (props) => {
@@ -21,11 +20,6 @@ const DataManagementWrapper = (props) => {
       id: "backup",
       name: t("Backup"),
       content: <Backup />,
-    },
-    {
-      id: "delete-data",
-      name: "Deactivation",
-      content: <PortalDeactivation />,
     },
   ];
 

@@ -19,7 +19,7 @@ const PortalDeactivation = (props) => {
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
       history.location.pathname.includes("deletion") &&
-      history.push("/settings/datamanagement/delete-data");
+      history.push("/settings/delete-data");
 
     window.innerWidth >= size.desktop
       ? setIsDesktop(true)

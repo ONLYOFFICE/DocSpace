@@ -122,6 +122,8 @@ class ArticleBodyContent extends React.Component {
         return t("Backup");
       case "ManagementCategoryDataManagement":
         return t("ManagementCategoryDataManagement");
+      case "PortalDeletion":
+        return t("PortalDeletion");
       default:
         throw new Error("Unexpected translation key");
     }
