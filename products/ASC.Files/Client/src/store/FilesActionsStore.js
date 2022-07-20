@@ -590,7 +590,7 @@ class FilesActionStore {
         icon: "trash",
         visible: true,
         percent: 0,
-        label: translations.deleteOperation,
+        label: translations?.deleteOperation,
         alert: false,
       });
 
@@ -613,7 +613,7 @@ class FilesActionStore {
 
     const pbData = {
       icon: "trash",
-      label: translations.deleteOperation,
+      label: translations?.deleteOperation,
     };
 
     if (isFile) {
@@ -628,15 +628,19 @@ class FilesActionStore {
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else if (isRoom) {
-      addActiveItems(null, [itemId]);
-      return deleteRoom(itemId)
+      const items = Array.isArray(itemId) ? itemId : [itemId];
+      addActiveItems(null, items);
+
+      const actions = items.map((item) => deleteRoom(item));
+
+      return Promise.all(actions)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
           this.updateCurrentFolder(null, [itemId]);
         })
-        .then(() => toastr.success(translations.successRemoveRoom));
+        .then(() => toastr.success(translations?.successRemoveRoom));
     } else {
       addActiveItems(null, [itemId]);
       return deleteFolder(itemId)
@@ -1216,6 +1220,18 @@ class FilesActionStore {
     this.setArchiveAction("unarchive", items);
   };
 
+  deleteRooms = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      items.push(item.id);
+    });
+
+    this.deleteItemAction(items, null, null, null, true);
+  };
+
   getOption = (option, t) => {
     const {
       setSharingPanelVisible,
@@ -1306,6 +1322,14 @@ class FilesActionStore {
           onClick: this.moveRoomsFromArchive,
           disabled: false,
         };
+      case "delete-room":
+        if (!this.isAvailableOption("delete")) return null;
+        else
+          return {
+            label: t("Common:Delete"),
+            onClick: this.deleteRooms,
+            iconUrl: "/static/images/delete.react.svg",
+          };
 
       case "delete":
         if (!this.isAvailableOption("delete")) return null;
@@ -1359,8 +1383,12 @@ class FilesActionStore {
 
     const pin = this.getOption(pinName, t);
     const archive = this.getOption("unarchive", t);
+    const deleteOption = this.getOption("delete-room", t);
 
-    itemsCollection.set(pinName, pin).set("unarchive", archive);
+    itemsCollection
+      .set(pinName, pin)
+      .set("unarchive", archive)
+      .set("delete", deleteOption);
     return this.convertToArray(itemsCollection);
   };
 

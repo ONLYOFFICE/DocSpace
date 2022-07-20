@@ -742,6 +742,7 @@ class ContextOptionsStore {
       unpinRooms,
       moveRoomsToArchive,
       moveRoomsFromArchive,
+      deleteRooms,
     } = this.filesActionsStore;
 
     if (isRoomsFolder || isArchiveFolder) {
@@ -786,6 +787,12 @@ class ContextOptionsStore {
           isSeparator: true,
         },
         archiveOptions,
+        {
+          key: "delete-rooms",
+          label: t("Common:Delete"),
+          icon: "images/trash.react.svg",
+          onClick: deleteRooms,
+        },
       ];
 
       return options;
