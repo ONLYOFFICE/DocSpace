@@ -1524,6 +1524,10 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
+  createRoom(title, type) {
+    return api.rooms.createRoom({ title, roomType: type });
+  }
+
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);
     if (fileIndex !== -1) this.files[fileIndex] = file;

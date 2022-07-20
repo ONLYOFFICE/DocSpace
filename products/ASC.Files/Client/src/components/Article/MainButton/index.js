@@ -65,7 +65,9 @@ const ArticleMainButtonContent = (props) => {
   );
 
   const onCreateRoom = React.useCallback(() => {
-    console.log("create room");
+    const event = new Event(Events.ROOM_CREATE);
+
+    window.dispatchEvent(event);
   }, []);
 
   const onShowSelectFileDialog = React.useCallback(() => {

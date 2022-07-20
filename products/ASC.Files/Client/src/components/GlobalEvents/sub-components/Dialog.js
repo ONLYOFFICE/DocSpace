@@ -5,6 +5,7 @@ import toastr from "@appserver/components/toast/toastr";
 import ModalDialog from "@appserver/components/modal-dialog";
 import TextInput from "@appserver/components/text-input";
 import Button from "@appserver/components/button";
+import ComboBox from "@appserver/components/combobox";
 
 const Dialog = ({
   t,
@@ -12,6 +13,9 @@ const Dialog = ({
   startValue,
   visible,
   folderFormValidation,
+  options,
+  selectedOption,
+  onSelect,
   onSave,
   onCancel,
   onClose,
@@ -71,6 +75,14 @@ const Dialog = ({
           onFocus={onFocus}
           isDisabled={isDisabled}
         />
+        {options && (
+          <ComboBox
+            style={{ marginTop: "16px" }}
+            options={options}
+            selectedOption={selectedOption}
+            onSelect={onSelect}
+          />
+        )}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
