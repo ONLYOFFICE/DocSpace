@@ -1,11 +1,7 @@
-﻿{
+{
   "MoveToTrashButton": "Pārvietot uz miskasti",
-  "MoveToTrashItemsNote": "Ja izdzēsīsiet koplietotos vienumus, citi lietotāji nevarēs tiem piekļūt.",
-  "MoveToTrashItemsTitle": "Vai pārvietot vienumus uz atkritni?",
-  "MoveToTrashOneFileNote": "Ja izdzēsīsiet koplietotu failu, citi lietotāji nevarēs tam piekļūt.",
-  "MoveToTrashOneFileTitle": "Vai pārvietot failu uz miskasti??",
-  "MoveToTrashOneFolderNote": "Ja izdzēsīsiet koplietoto mapi, citi lietotāji nevarēs tai piekļūt.",
-  "MoveToTrashOneFolderTitle": "Vai pārvietot mapi uz atkritni?",
+  "MoveToTrashFile": "Vai grasāties dzēst šo failu? Lūdzu, ņemiet vērā, ka, ja esat to kopīgojuši ar kādu, tas vairs nebūs pieejams. Vai vēlaties turpināt?",
+  "MoveToTrashFolder": "Vai grasāties dzēst šo mapi? Lūdzu, ņemiet vērā, ka ja esat to ar kādu kopīgojuši, tā vairs nebūs pieejama. Vai vēlaties turpināt?",
   "UnsubscribeButton": "Anulēt abonementu",
   "UnsubscribeNote": "Vai tiešām vēlaties atteikties no sarakstā atlasīto vienumu abonēšanas?",
   "UnsubscribeTitle": "Abonēšanas atcelšanas apstiprinājums"

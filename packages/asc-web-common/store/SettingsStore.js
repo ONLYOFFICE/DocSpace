@@ -16,9 +16,12 @@ const themes = {
   Base: Base,
 };
 
+const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
+
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
+  isBurgerLoading = false;
 
   checkedMaintenance = false;
   maintenanceExist = false;
@@ -26,9 +29,16 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = Base;
+  theme = isDesktopEditors
+    ? window.RendererProcessVariable?.theme?.type === "dark"
+      ? Dark
+      : Base
+    : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
+  ipRestrictionEnable = false;
+  ipRestrictions = [];
+  sessionLifetime = "1440";
   timezone = "UTC";
   timezones = [];
   tenantAlias = "";
@@ -65,7 +75,7 @@ class SettingsStore {
     guestCaption: "Guest",
     guestsCaption: "Guests",
   };
-  isDesktopClient = window["AscDesktopEditor"] !== undefined;
+  isDesktopClient = isDesktopEditors;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
@@ -114,6 +124,8 @@ class SettingsStore {
   folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', "gim");
 
   tenantStatus = null;
+  helpLink = null;
+  hotkeyPanelVisible = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -122,10 +134,9 @@ class SettingsStore {
   setTenantStatus = (tenantStatus) => {
     this.tenantStatus = tenantStatus;
   };
+
   get urlAuthKeys() {
-    const splitted = this.culture.split("-");
-    const lang = splitted.length > 0 ? splitted[0] : "en";
-    return `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`;
+    return `${this.helpLink}/installation/groups-authorization-keys.aspx`;
   }
 
   get wizardCompleted() {
@@ -133,16 +144,11 @@ class SettingsStore {
   }
 
   get helpUrlCommonSettings() {
-    const substring = this.culture.substring(0, this.culture.indexOf("-"));
-    const lang = substring.length > 0 ? substring : "en";
-
-    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
+    return `${this.helpLink}/administration/configuration.aspx#CustomizingPortal_block`;
   }
 
   get helpUrlCreatingBackup() {
-    const splitted = this.culture.split("-");
-    const lang = splitted.length > 0 ? splitted[0] : "en";
-    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CreatingBackup_block`;
+    return `${this.helpLink}/administration/configuration.aspx#CreatingBackup_block`;
   }
 
   setValue = (key, value) => {
@@ -332,8 +338,6 @@ class SettingsStore {
           : `${homepage}/`
         : "/";
 
-      console.log("SET base URL", baseUrl);
-
       baseElm[0].setAttribute("href", baseUrl);
     }
   };
@@ -471,6 +475,55 @@ class SettingsStore {
 
   setTenantAlias = (tenantAlias) => {
     this.tenantAlias = tenantAlias;
+  };
+
+  getIpRestrictions = async () => {
+    const res = await api.settings.getIpRestrictions();
+    this.ipRestrictions = res?.map((el) => el.ip);
+  };
+
+  setIpRestrictions = async (ips) => {
+    const data = {
+      ips: ips,
+    };
+    const res = await api.settings.setIpRestrictions(data);
+    this.ipRestrictions = res;
+  };
+
+  getIpRestrictionsEnable = async () => {
+    const res = await api.settings.getIpRestrictionsEnable();
+    this.ipRestrictionEnable = res.enable;
+  };
+
+  setIpRestrictionsEnable = async (enable) => {
+    const data = {
+      enable: enable,
+    };
+    const res = await api.settings.setIpRestrictionsEnable(data);
+    this.ipRestrictionEnable = res.enable;
+  };
+
+  setMessageSettings = async (turnOn) => {
+    await api.settings.setMessageSettings(turnOn);
+    this.enableAdmMess = turnOn;
+  };
+
+  getSessionLifetime = async () => {
+    const res = await api.settings.getCookieSettings();
+    this.sessionLifetime = res;
+  };
+
+  setSessionLifetimeSettings = async (lifeTime) => {
+    const res = await api.settings.setCookieSettings(lifeTime);
+    this.sessionLifetime = lifeTime;
+  };
+
+  setIsBurgerLoading = (isBurgerLoading) => {
+    this.isBurgerLoading = isBurgerLoading;
+  };
+
+  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
+    this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 }
 

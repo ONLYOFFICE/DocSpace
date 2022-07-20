@@ -1,0 +1,6 @@
+{
+  "GoodAfternoon": "{{displayName}}님, 안녕하세요!",
+  "GoodEvening": "{{displayName}}님, 안녕하세요!",
+  "GoodMorning": "{{displayName}}님, 안녕하세요!",
+  "NoOneModulesAvailable": "이용 가능한 모듈이 없습니다"
+}

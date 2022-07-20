@@ -2,10 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Scrollbar from "../scrollbar";
-import StyledAside from "./styled-aside";
+import {
+  StyledAside,
+  StyledControlContainer,
+  StyledCrossIcon,
+} from "./styled-aside";
 
 const Aside = React.memo((props) => {
-  //console.log("Aside render");
   const {
     visible,
     children,
@@ -14,6 +17,7 @@ const Aside = React.memo((props) => {
     className,
     contentPaddingBottom,
     withoutBodyScroll,
+    onClose,
   } = props;
 
   return (
@@ -24,10 +28,17 @@ const Aside = React.memo((props) => {
       contentPaddingBottom={contentPaddingBottom}
       className={`${className} not-selectable aside`}
     >
+      {/* <CloseButton  displayType="aside" zIndex={zIndex}/> */}
       {withoutBodyScroll ? (
         children
       ) : (
         <Scrollbar stype="mediumBlack">{children}</Scrollbar>
+      )}
+
+      {visible && (
+        <StyledControlContainer onClick={onClose}>
+          <StyledCrossIcon />
+        </StyledControlContainer>
       )}
     </StyledAside>
   );
@@ -46,6 +57,7 @@ Aside.propTypes = {
     PropTypes.node,
   ]),
   withoutBodyScroll: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 Aside.defaultProps = {
   scale: false,

@@ -1,5 +1,6 @@
-﻿{
+{
+  "CreateFileCopyOption": "Crea una copia del file",
   "MoveConfirmation": "Conferma di spostamento",
-  "MoveConfirmationAlert": "Sei sicuro/a di voler spostare gli elementi?",
-  "MoveConfirmationMessage": "Stai per spostare elementi dalla directory {{provider}}. Verranno eliminati dal tuo account {{provider}} e non saranno più accessibili ad altri utenti."
+  "MoveConfirmationAlert": "Stai per spostare elementi dalla directory {{provider}}. In tal caso, verranno eliminati dal tuo account {{provider}} e non saranno più accessibili ad altri utenti, nel caso in cui questi elementi siano stati condivisi in precedenza.",
+  "MoveFileOption": "Spostare il file"
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "O tomto programu",
   "LogoutButton": "Odhlásit se",
   "RecoverAccess": "Obnovit přístup",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "Popište svůj problém",
   "RecoverTextBody": "Pokud se nemůžete přihlásit pomocí stávajícího účtu nebo chcete být zaregistrováni jako nový uživatel, kontaktujte správce portálu. ",
   "RecoverTitle": "Obnovení přístupu",
-  "TurnOnDesktopVersion": "Zapnout verzi pro počítač"
+  "TurnOnDesktopVersion": "Zapnout verzi pro počítač",
+  "HelpCenter": "Centrum nápovědy"
 }

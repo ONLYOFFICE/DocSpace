@@ -1,4 +1,3 @@
-﻿{
-  "DeleteThirdPartyAlert": "Poistetaanko {{service}} ’Asiakirjat’ -moduulista? Tämä ei vaikuta {{account}} -tiliisi millään tavalla.",
+{
   "SuccessDeleteThirdParty": "Kolmannen osapuolen {{service}} poistetaan"
 }

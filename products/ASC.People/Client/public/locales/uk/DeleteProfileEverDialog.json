@@ -1,5 +1,4 @@
-﻿{
-  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> буде видалено.",
-  "DeleteUserDataConfirmation": "Документи користувача, до яких надано спільний доступ, будуть видалені. Щоб цього уникнути, перепризначте дані.",
+{
+  "DeleteUser": "Видалити користувача",
   "SuccessfullyDeleteUserInfoMessage": "Користувача успішно видалено"
 }

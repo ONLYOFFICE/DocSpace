@@ -29,6 +29,7 @@ const CatalogItem = (props) => {
     isEndOfBlock,
     isActive,
     isDragging,
+    isDragActive,
     showInitial,
     showBadge,
     labelBadge,
@@ -60,6 +61,7 @@ const CatalogItem = (props) => {
       <StyledCatalogItemSibling
         isActive={isActive}
         isDragging={isDragging}
+        isDragActive={isDragActive}
         onClick={onClickAction}
         onMouseUp={onMouseUpAction}
       ></StyledCatalogItemSibling>
@@ -95,7 +97,7 @@ const CatalogItem = (props) => {
           {!iconBadge ? (
             <Badge className="catalog-item__badge" label={labelBadge} />
           ) : (
-            <ReactSVG src={iconBadge} />
+            <ReactSVG className="catalog-icon__badge" src={iconBadge} />
           )}
         </StyledCatalogItemBadgeWrapper>
       )}
@@ -128,6 +130,8 @@ CatalogItem.propTypes = {
   isActive: PropTypes.bool,
   /** Tells when the catalog item available for drag`n`drop */
   isDragging: PropTypes.bool,
+  /** Tells when the catalog item active for drag`n`drop */
+  isDragActive: PropTypes.bool,
   /** Tells when the catalog item should display badge */
   showBadge: PropTypes.bool,
   /** Label in catalog item badge */
@@ -145,6 +149,7 @@ CatalogItem.defaultProps = {
   showInitial: false,
   isEndOfBlock: false,
   isDragging: false,
+  isDragActive: false,
 };
 
 export default React.memo(CatalogItem);

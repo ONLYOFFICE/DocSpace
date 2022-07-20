@@ -35,15 +35,16 @@ const SelectFolderDialogAsideView = ({
   primaryButtonName,
   isDisableTree,
   isDisableButton,
+  parentId,
+  selectionFiles,
 }) => {
   return (
     <StyledModalDialog
       theme={theme}
       visible={isPanelVisible}
-      contentHeight="100%"
-      contentPaddingBottom="0px"
       onClose={onClose}
       withoutBodyScroll
+      withFooterBorder
       displayType="aside"
     >
       <ModalDialog.Header theme={theme}>
@@ -66,13 +67,15 @@ const SelectFolderDialogAsideView = ({
             <div className="selection-panel_aside-header">
               <div>{header}</div>
               <Text fontWeight="700" fontSize="18px">
-                {t("Translations:Documents")}
+                {t("Common:Documents")}
               </Text>
             </div>
 
             <div className="selection-panel_aside-tree">
               {folderId && resultingFolderTree ? (
                 <FolderTreeBody
+                  selectionFiles={selectionFiles}
+                  parentId={parentId}
                   theme={theme}
                   folderTree={resultingFolderTree}
                   onSelect={onSelectFolder}
@@ -84,38 +87,35 @@ const SelectFolderDialogAsideView = ({
                   displayType="aside"
                 />
               ) : (
-                <Loaders.NewTreeFolders />
+                <div className="selection-panel_aside-loader">
+                  <Loaders.NewTreeFolders />
+                </div>
               )}
-            </div>
-
-            <div className="selection-panel_aside-footer">
-              <div>{footer}</div>
-              <div className="selection-panel_aside-buttons">
-                <Button
-                  theme={theme}
-                  className="select-folder-dialog-buttons-save"
-                  primary
-                  size="normalTouchscreen"
-                  label={primaryButtonName}
-                  onClick={onButtonClick}
-                  isDisabled={
-                    isDisableButton ||
-                    isDisableTree ||
-                    isLoadingData ||
-                    !isAvailable
-                  }
-                />
-                <Button
-                  size="normalTouchscreen"
-                  label={t("Common:CancelButton")}
-                  onClick={onClose}
-                  isDisabled={isLoadingData}
-                />
-              </div>
             </div>
           </div>
         </StyledAsideBody>
       </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          theme={theme}
+          className="select-folder-dialog-buttons-save"
+          primary
+          scale
+          size="normalTouchscreen"
+          label={primaryButtonName}
+          onClick={onButtonClick}
+          isDisabled={
+            isDisableButton || isDisableTree || isLoadingData || !isAvailable
+          }
+        />
+        <Button
+          size="normalTouchscreen"
+          scale
+          label={t("Common:CancelButton")}
+          onClick={onClose}
+          isDisabled={isLoadingData}
+        />
+      </ModalDialog.Footer>
     </StyledModalDialog>
   );
 };

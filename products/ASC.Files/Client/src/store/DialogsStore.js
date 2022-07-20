@@ -1,12 +1,14 @@
 import { getNewFiles } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import { makeAutoObservable } from "mobx";
+import { Events } from "../helpers/constants";
 
 class DialogsStore {
   authStore;
   treeFoldersStore;
   filesStore;
   selectedFolderStore;
+  versionHistoryStore;
 
   sharingPanelVisible = false;
   ownerPanelVisible = false;
@@ -25,7 +27,6 @@ class DialogsStore {
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   isFolderActions = false;
-  hotkeyPanelVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -39,13 +40,20 @@ class DialogsStore {
   convertItem = null;
   formCreationInfo = null;
 
-  constructor(authStore, treeFoldersStore, filesStore, selectedFolderStore) {
+  constructor(
+    authStore,
+    treeFoldersStore,
+    filesStore,
+    selectedFolderStore,
+    versionHistoryStore
+  ) {
     makeAutoObservable(this);
 
     this.treeFoldersStore = treeFoldersStore;
     this.filesStore = filesStore;
     this.selectedFolderStore = selectedFolderStore;
     this.authStore = authStore;
+    this.versionHistoryStore = versionHistoryStore;
   }
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -205,22 +213,21 @@ class DialogsStore {
   };
 
   createMasterForm = async (fileInfo) => {
-    const { setAction } = this.filesStore.fileActionStore;
-
     let newTitle = fileInfo.title;
     newTitle = newTitle.substring(0, newTitle.lastIndexOf("."));
 
-    setAction({
-      type: FileAction.Create,
+    const event = new Event(Events.CREATE);
+
+    const payload = {
       extension: "docxf",
       id: -1,
       title: `${newTitle}.docxf`,
       templateId: fileInfo.id,
-    });
-  };
+    };
 
-  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
-    this.hotkeyPanelVisible = hotkeyPanelVisible;
+    event.payload = payload;
+
+    window.dispatchEvent(event);
   };
 
   get someDialogIsOpen() {
@@ -240,7 +247,8 @@ class DialogsStore {
       this.conflictResolveDialogVisible ||
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
-      this.hotkeyPanelVisible
+      this.authStore.settingsStore.hotkeyPanelVisible ||
+      this.versionHistoryStore.isVisible
     );
   }
 

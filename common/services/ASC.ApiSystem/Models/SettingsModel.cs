@@ -23,24 +23,18 @@
  *
 */
 
+namespace ASC.ApiSystem.Models;
 
-using System.ComponentModel.DataAnnotations;
-
-using ASC.ApiSystem.Interfaces;
-
-namespace ASC.ApiSystem.Models
+public class SettingsModel : IModel
 {
-    public class SettingsModel : IModel
-    {
-        [StringLength(255)]
-        public string PortalName { get; set; }
+    [StringLength(255)]
+    public string PortalName { get; set; }
 
-        public int? TenantId { get; set; }
+    public int? TenantId { get; set; }
 
 
-        [StringLength(255)]
-        public string Key { get; set; }
+    [StringLength(255)]
+    public string Key { get; set; }
 
-        public string Value { get; set; }
-    }
+    public string Value { get; set; }
 }

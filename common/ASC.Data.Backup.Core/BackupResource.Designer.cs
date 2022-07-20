@@ -19,10 +19,10 @@ namespace ASC.Data.Backup.Core {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class BackupResource {
+    public class BackupResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace ASC.Data.Backup.Core {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Data.Backup.Core.BackupResource", typeof(BackupResource).Assembly);
@@ -51,7 +51,7 @@ namespace ASC.Data.Backup.Core {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ASC.Data.Backup.Core {
         /// <summary>
         ///   Looks up a localized string similar to The backup file is invalid. Please, use a file created in ONLYOFFICE v11.5 or later..
         /// </summary>
-        internal static string BackupNotFound {
+        public static string BackupNotFound {
             get {
                 return ResourceManager.GetString("BackupNotFound", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ASC.Data.Backup.Core {
         /// <summary>
         ///   Looks up a localized string similar to Set Password.
         /// </summary>
-        internal static string ButtonSetPassword {
+        public static string ButtonSetPassword {
             get {
                 return ResourceManager.GetString("ButtonSetPassword", resourceCulture);
             }

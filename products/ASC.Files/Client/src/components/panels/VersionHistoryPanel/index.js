@@ -6,7 +6,6 @@ import Aside from "@appserver/components/aside";
 import Loaders from "@appserver/common/components/Loaders";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { withTranslation } from "react-i18next";
-import history from "@appserver/common/history";
 import {
   StyledVersionHistoryPanel,
   StyledContent,
@@ -18,21 +17,20 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 
 class PureVersionHistoryPanel extends React.Component {
-  componentDidUpdate(preProps) {
-    const { isTabletView, fileId } = this.props;
-    if (isTabletView !== preProps.isTabletView && isTabletView) {
-      this.redirectToPage(fileId);
-    }
+  onClose = () => {
+    const { setIsVerHistoryPanel } = this.props;
+    setIsVerHistoryPanel(false);
+  };
+
+  componentDidMount() {
+    document.addEventListener("keyup", this.onKeyPress);
   }
 
-  redirectToPage = (fileId) => {
-    this.onClose();
-    history.replace(`${this.props.homepage}/${fileId}/history`);
-  };
+  componentWillUnmount() {
+    document.removeEventListener("keyup", this.onKeyPress);
+  }
 
-  onClose = () => {
-    this.props.setIsVerHistoryPanel(false);
-  };
+  onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && this.onClose();
 
   render() {
     //console.log("render versionHistoryPanel");
@@ -51,7 +49,12 @@ class PureVersionHistoryPanel extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="version-history-aside-panel" withoutBodyScroll>
+        <Aside
+          className="version-history-aside-panel"
+          visible={visible}
+          onClose={this.onClose}
+          withoutBodyScroll
+        >
           <StyledContent>
             <StyledHeaderContent className="version-history-panel-header">
               {versions && !isLoading ? (

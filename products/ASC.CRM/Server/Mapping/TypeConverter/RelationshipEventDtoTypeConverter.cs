@@ -28,12 +28,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Api.Core;
-using ASC.Api.Documents;
 using ASC.Common;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
+using ASC.Files.Core.ApiModels.ResponseDto;
 using ASC.Web.Api.Models;
 
 using AutoMapper;
@@ -43,26 +43,26 @@ namespace ASC.CRM.Mapping
     [Scope]
     public class RelationshipEventDtoTypeConverter : ITypeConverter<RelationshipEvent, RelationshipEventDto>
     {
-        private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly FileDtoHelper _fileDtoHelper;
         private readonly DaoFactory _daoFactory;
         private readonly CrmSecurity _crmSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
         private readonly EntityDtoHelper _entityDtoHelper;
 
         public RelationshipEventDtoTypeConverter(
                            ApiDateTimeHelper apiDateTimeHelper,
-                           EmployeeWraperHelper employeeWraperHelper,
-                           FileWrapperHelper fileWrapperHelper,
+                           EmployeeDtoHelper employeeDtoHelper,
+                           FileDtoHelper fileDtoHelper,
                            CrmSecurity crmSecurity,
                            DaoFactory daoFactory,
                            EntityDtoHelper entityDtoHelper)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _crmSecurity = crmSecurity;
             _daoFactory = daoFactory;
-            _fileWrapperHelper = fileWrapperHelper;
+            _fileDtoHelper = fileDtoHelper;
             _entityDtoHelper = entityDtoHelper;
         }
 
@@ -71,10 +71,10 @@ namespace ASC.CRM.Mapping
             var result = new RelationshipEventDto
             {
                 Id = source.ID,
-                CreateBy = _employeeWraperHelper.Get(source.CreateBy),
+                CreateBy = _employeeDtoHelper.Get(source.CreateBy),
                 Created = _apiDateTimeHelper.Get(source.CreateOn),
                 Content = source.Content,
-                Files = new List<FileWrapper<int>>(),
+                Files = new List<FileDto<int>>(),
                 CanEdit = _crmSecurity.CanEdit(source)
             };
 
@@ -91,7 +91,7 @@ namespace ASC.CRM.Mapping
                 result.Entity = _entityDtoHelper.Get(source.EntityType, source.EntityID);
             }
 
-            result.Files = _daoFactory.GetRelationshipEventDao().GetFilesAsync(source.ID).ToListAsync().Result.ConvertAll(file => _fileWrapperHelper.GetAsync(file).Result);
+            result.Files = _daoFactory.GetRelationshipEventDao().GetFilesAsync(source.ID).ToListAsync().Result.ConvertAll(file => _fileDtoHelper.GetAsync(file).Result);
 
             if (source.ContactID > 0)
             {

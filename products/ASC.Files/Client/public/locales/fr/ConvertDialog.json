@@ -1,10 +1,10 @@
 {
-  "ConversionFileMessage": "Le fichier sera converti en OOXML (docx, xlsx ou pptx) pour une visualisation et une édition plus rapides.",
   "ConversionMessage": "Tous les documents transférés seront convertis au format Office Open XML (docx, xlsx or pptx) pour garantir une édition rapide.",
-  "ConversionTitle": "Téléversement du document",
-  "ConvertAndOpenTitle": "Convertir et ouvrir le document",
-  "HideMessage": "Ne plus afficher ce message",
-  "SaveOriginalFormatMessage": "Enregistrer la copie du fichier dans le format original",
   "ConvertedFileDestination": "La copie du fichier sera créée dans le dossier <strong>{{folderTitle}}</strong>",
-  "InfoCreateFileIn": "Le nouveau fichier '{{fileTitle}}' est créé dans '{{folderTitle}}'"
+  "DocumentConversionTitle": "Conversion du document",
+  "FileUploadTitle": "Chargement du fichier",
+  "HideMessage": "Ne plus afficher ce message",
+  "InfoCreateFileIn": "Le nouveau fichier '{{fileTitle}}' est créé dans '{{folderTitle}}'",
+  "OpenFileMessage": "Le fichier du document que vous ouvrez sera converti au format Office Open XML pour l'affichage et l'édition rapide.",
+  "SaveOriginalFormatMessage": "Enregistrer la copie du fichier dans le format original"
 }

@@ -14,9 +14,17 @@ import FilesFilter from "@appserver/common/api/files/filter";
 import { combineUrl } from "@appserver/common/utils";
 
 const SectionHeaderContent = (props) => {
-  const { t, history, match, isInfoPanelVisible, toggleInfoPanel } = props;
+  const {
+    t,
+    history,
+    match,
+    isInfoPanelVisible,
+    toggleInfoPanel,
+    setGallerySelected,
+  } = props;
 
   const onBackToFiles = () => {
+    setGallerySelected(null);
     const filter = FilesFilter.getDefault();
     filter.folder = match.params.folderId;
     const urlFilter = filter.toUrlParams();
@@ -58,11 +66,12 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default inject(({ infoPanelStore }) => {
-  const { toggleIsVisible, isVisible } = infoPanelStore;
-
+export default inject(({ auth, filesStore }) => {
+  const { toggleIsVisible, isVisible } = auth.infoPanelStore;
+  const { setGallerySelected } = filesStore;
   return {
     toggleInfoPanel: toggleIsVisible,
     isInfoPanelVisible: isVisible,
+    setGallerySelected,
   };
 })(withTranslation("Common")(withRouter(observer(SectionHeaderContent))));

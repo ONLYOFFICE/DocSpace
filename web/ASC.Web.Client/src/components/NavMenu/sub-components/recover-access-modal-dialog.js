@@ -8,6 +8,7 @@ import Text from "@appserver/components/text";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Textarea from "@appserver/components/textarea";
 import FieldContainer from "@appserver/components/field-container";
+import { smallTablet } from "@appserver/components/utils/device";
 
 const ModalDialogContainer = styled(ModalDialog)`
   .modal-dialog-aside-footer {
@@ -17,13 +18,17 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 
   .recover-button-dialog {
-    @media (max-width: 1024px) {
+    @media ${smallTablet} {
       width: 100%;
     }
   }
 
   .text-body {
     margin-bottom: 16px;
+  }
+
+  .textarea {
+    margin-bottom: 0;
   }
 `;
 
@@ -44,14 +49,16 @@ const RecoverAccessModalDialog = ({
 
   React.useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
+
+    return () =>
+      window.removeEventListener("resize", () => setWidth(window.innerWidth));
   }, []);
 
   return (
     <ModalDialogContainer
       visible={visible}
-      modalBodyPadding="12px 0 0 0"
-      asideBodyPadding="16px 0 0 0"
       onClose={onRecoverModalClose}
+      isLarge
     >
       <ModalDialog.Header>
         <Text isBold={true} fontSize="21px">
@@ -90,6 +97,7 @@ const RecoverAccessModalDialog = ({
           />
         </FieldContainer>
         <FieldContainer
+          className="textarea"
           key="text-description"
           isVertical={true}
           hasError={descErr}
@@ -97,7 +105,7 @@ const RecoverAccessModalDialog = ({
           errorMessage={t("Common:RequiredField")}
         >
           <Textarea
-            heightScale={width > 1024 ? false : true}
+            heightScale={false}
             hasError={descErr}
             placeholder={t("RecoverDescribeYourProblemPlaceholder")}
             tabIndex={3}
@@ -115,6 +123,16 @@ const RecoverAccessModalDialog = ({
           size="normal"
           primary={true}
           onClick={onSendRecoverRequest}
+          isLoading={loading}
+          isDisabled={loading}
+          tabIndex={3}
+        />
+        <Button
+          className="recover-button-dialog"
+          key="SendBtn"
+          label={t("Common:CancelButton")}
+          size="normal"
+          onClick={onRecoverModalClose}
           isLoading={loading}
           isDisabled={loading}
           tabIndex={3}

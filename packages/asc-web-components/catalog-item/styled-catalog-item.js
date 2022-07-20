@@ -236,10 +236,13 @@ const StyledCatalogItemSibling = styled.div`
   background-color: ${(props) =>
     props.isActive && props.theme.catalogItem.sibling.active.background};
 
-  &:hover {
-    background-color: ${(props) =>
-      props.theme.catalogItem.sibling.hover.background};
-  }
+  ${!isMobile &&
+  css`
+    &:hover {
+      background-color: ${(props) =>
+        props.theme.catalogItem.sibling.hover.background};
+    }
+  `}
 
   @media ${tablet} {
     min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
@@ -250,13 +253,16 @@ const StyledCatalogItemSibling = styled.div`
   css`
     min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
     max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
-
-    &:hover {
-      background-color: transparent;
-    }
   `}
 
   ${(props) => props.isDragging && draggingSiblingCss}
+
+  ${(props) =>
+    props.isDragActive &&
+    css`
+      background: ${(props) =>
+        props.theme.dragAndDrop.acceptBackground} !important;
+    `}
 `;
 
 StyledCatalogItemSibling.defaultProps = { theme: Base };
@@ -302,7 +308,24 @@ const StyledCatalogItemContainer = styled.div`
       props.isEndOfBlock &&
       props.theme.catalogItem.container.tablet.marginBottom};
   `}
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  .catalog-icon__badge {
+    display: none;
+  }
+
+  .catalog-icon__badge:target {
+    display: flex;
+  }
+
+  :hover {
+    .catalog-icon__badge {
+      display: flex;
+    }
+  }
 `;
+
 StyledCatalogItemContainer.defaultProps = { theme: Base };
 
 export {

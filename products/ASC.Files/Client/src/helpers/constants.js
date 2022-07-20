@@ -10,3 +10,5 @@ export const thumbnailStatuses = {
 };
 
 export const ADS_TIMEOUT = 300000; // 5 min
+
+export const Events = Object.freeze({ CREATE: "create", RENAME: "rename" });

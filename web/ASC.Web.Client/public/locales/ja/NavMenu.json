@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "本プログラムについて",
   "LogoutButton": "サインアウト",
   "RecoverAccess": "アクセス回復",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "ご質問を説明ください",
   "RecoverTextBody": "既存のアカウントでログインできない場合や、新規ユーザーとして登録したい場合は、ポータル管理者にお問い合わせください。 ",
   "RecoverTitle": "アクセス回復機能",
-  "TurnOnDesktopVersion": "デスクトップ版を起動する"
+  "TurnOnDesktopVersion": "デスクトップ版を起動する",
+  "HelpCenter": "ヘルプセンター"
 }

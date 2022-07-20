@@ -1,345 +1,460 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Web.Files.Classes;
 
-using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Files.Core;
-using ASC.Web.Core.Files;
-using ASC.Web.Studio.Core;
-
-namespace ASC.Web.Files.Classes
+[Serializable]
+public class FilesSettings : ISettings<FilesSettings>
 {
-    [Serializable]
-    public class FilesSettings : ISettings
+    [JsonPropertyName("EnableThirdpartySettings")]
+    public bool EnableThirdpartySetting { get; set; }
+
+    [JsonPropertyName("FastDelete")]
+    public bool FastDeleteSetting { get; set; }
+
+    [JsonPropertyName("StoreOriginalFiles")]
+    public bool StoreOriginalFilesSetting { get; set; }
+
+    [JsonPropertyName("UpdateIfExist")]
+    public bool UpdateIfExistSetting { get; set; }
+
+    [JsonPropertyName("ConvertNotify")]
+    public bool ConvertNotifySetting { get; set; }
+
+    [JsonPropertyName("DefaultSortedBy")]
+    public SortedByType DefaultSortedBySetting { get; set; }
+
+    [JsonPropertyName("DefaultSortedAsc")]
+    public bool DefaultSortedAscSetting { get; set; }
+
+    [JsonPropertyName("HideConfirmConvertSave")]
+    public bool HideConfirmConvertSaveSetting { get; set; }
+
+    [JsonPropertyName("HideConfirmConvertOpen")]
+    public bool HideConfirmConvertOpenSetting { get; set; }
+
+    [JsonPropertyName("Forcesave")]
+    public bool ForcesaveSetting { get; set; }
+
+    [JsonPropertyName("StoreForcesave")]
+    public bool StoreForcesaveSetting { get; set; }
+
+    [JsonPropertyName("HideRecent")]
+    public bool HideRecentSetting { get; set; }
+
+    [JsonPropertyName("HideFavorites")]
+    public bool HideFavoritesSetting { get; set; }
+
+    [JsonPropertyName("HideTemplates")]
+    public bool HideTemplatesSetting { get; set; }
+
+    [JsonPropertyName("DownloadZip")]
+    public bool DownloadTarGzSetting { get; set; }
+
+    [JsonPropertyName("ShareLink")]
+    public bool DisableShareLinkSetting { get; set; }
+
+    [JsonPropertyName("ShareLinkSocialMedia")]
+    public bool DisableShareSocialMediaSetting { get; set; }
+
+    [JsonPropertyName("AutomaticallyCleanUp")]
+    public AutoCleanUpData AutomaticallyCleanUpSetting { get; set; }
+
+    [JsonPropertyName("DefaultSharingAccessRights")]
+    public List<FileShare> DefaultSharingAccessRightsSetting { get; set; }
+
+    public FilesSettings GetDefault()
     {
-        [JsonPropertyName("EnableThirdpartySettings")]
-        public bool EnableThirdpartySetting { get; set; }
-
-        [JsonPropertyName("FastDelete")]
-        public bool FastDeleteSetting { get; set; }
-
-        [JsonPropertyName("StoreOriginalFiles")]
-        public bool StoreOriginalFilesSetting { get; set; }
-
-        [JsonPropertyName("UpdateIfExist")]
-        public bool UpdateIfExistSetting { get; set; }
-
-        [JsonPropertyName("ConvertNotify")]
-        public bool ConvertNotifySetting { get; set; }
-
-        [JsonPropertyName("DefaultSortedBy")]
-        public SortedByType DefaultSortedBySetting { get; set; }
-
-        [JsonPropertyName("DefaultSortedAsc")]
-        public bool DefaultSortedAscSetting { get; set; }
-
-        [JsonPropertyName("HideConfirmConvertSave")]
-        public bool HideConfirmConvertSaveSetting { get; set; }
-
-        [JsonPropertyName("HideConfirmConvertOpen")]
-        public bool HideConfirmConvertOpenSetting { get; set; }
-
-        [JsonPropertyName("Forcesave")]
-        public bool ForcesaveSetting { get; set; }
-
-        [JsonPropertyName("StoreForcesave")]
-        public bool StoreForcesaveSetting { get; set; }
-
-        [JsonPropertyName("HideRecent")]
-        public bool HideRecentSetting { get; set; }
-
-        [JsonPropertyName("HideFavorites")]
-        public bool HideFavoritesSetting { get; set; }
-
-        [JsonPropertyName("HideTemplates")]
-        public bool HideTemplatesSetting { get; set; }
-
-        [JsonPropertyName("DownloadZip")]
-        public bool DownloadTarGzSetting { get; set; }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        return new FilesSettings
         {
-            return new FilesSettings
-            {
-                FastDeleteSetting = false,
-                EnableThirdpartySetting = true,
-                StoreOriginalFilesSetting = true,
-                UpdateIfExistSetting = false,
-                ConvertNotifySetting = true,
-                DefaultSortedBySetting = SortedByType.DateAndTime,
-                DefaultSortedAscSetting = false,
-                HideConfirmConvertSaveSetting = false,
-                HideConfirmConvertOpenSetting = false,
-                ForcesaveSetting = false,
-                StoreForcesaveSetting = false,
-                HideRecentSetting = false,
-                HideFavoritesSetting = false,
-                HideTemplatesSetting = false,
-                DownloadTarGzSetting = false
-            };
+            FastDeleteSetting = false,
+            EnableThirdpartySetting = true,
+            StoreOriginalFilesSetting = true,
+            UpdateIfExistSetting = false,
+            ConvertNotifySetting = true,
+            DefaultSortedBySetting = SortedByType.DateAndTime,
+            DefaultSortedAscSetting = false,
+            HideConfirmConvertSaveSetting = false,
+            HideConfirmConvertOpenSetting = false,
+            ForcesaveSetting = false,
+            StoreForcesaveSetting = false,
+            HideRecentSetting = false,
+            HideFavoritesSetting = false,
+            HideTemplatesSetting = false,
+            DownloadTarGzSetting = false,
+            AutomaticallyCleanUpSetting = null,
+            DefaultSharingAccessRightsSetting = null
+        };
+    }
+
+    [JsonIgnore]
+    public Guid ID => new Guid("{03B382BD-3C20-4f03-8AB9-5A33F016316E}");
+}
+
+[Scope]
+public class FilesSettingsHelper
+{
+    private readonly SettingsManager _settingsManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly SetupInfo _setupInfo;
+    private readonly FileUtility _fileUtility;
+    private readonly FilesLinkUtility _filesLinkUtility;
+
+    public FilesSettingsHelper(
+        SettingsManager settingsManager,
+        CoreBaseSettings coreBaseSettings,
+        SetupInfo setupInfo,
+        FileUtility fileUtility,
+        FilesLinkUtility filesLinkUtility)
+    {
+        _settingsManager = settingsManager;
+        _coreBaseSettings = coreBaseSettings;
+        _setupInfo = setupInfo;
+        _fileUtility = fileUtility;
+        _filesLinkUtility = filesLinkUtility;
+    }
+
+    public List<string> ExtsImagePreviewed => _fileUtility.ExtsImagePreviewed;
+    public List<string> ExtsMediaPreviewed => _fileUtility.ExtsMediaPreviewed;
+    public List<string> ExtsWebPreviewed => _fileUtility.ExtsWebPreviewed;
+    public List<string> ExtsWebEdited => _fileUtility.ExtsWebEdited;
+    public List<string> ExtsWebEncrypt => _fileUtility.ExtsWebEncrypt;
+    public List<string> ExtsWebReviewed => _fileUtility.ExtsWebReviewed;
+    public List<string> ExtsWebCustomFilterEditing => _fileUtility.ExtsWebCustomFilterEditing;
+    public List<string> ExtsWebRestrictedEditing => _fileUtility.ExtsWebRestrictedEditing;
+    public List<string> ExtsWebCommented => _fileUtility.ExtsWebCommented;
+    public List<string> ExtsWebTemplate => _fileUtility.ExtsWebTemplate;
+    public List<string> ExtsCoAuthoring => _fileUtility.ExtsCoAuthoring;
+    public List<string> ExtsMustConvert => _fileUtility.ExtsMustConvert;
+    public Dictionary<string, List<string>> ExtsConvertible => _fileUtility.ExtsConvertible;
+    public List<string> ExtsUploadable => _fileUtility.ExtsUploadable;
+    public List<string> ExtsArchive => FileUtility.ExtsArchive;
+    public List<string> ExtsVideo => FileUtility.ExtsVideo;
+    public List<string> ExtsAudio => FileUtility.ExtsAudio;
+    public List<string> ExtsImage => FileUtility.ExtsImage;
+    public List<string> ExtsSpreadsheet => FileUtility.ExtsSpreadsheet;
+    public List<string> ExtsPresentation => FileUtility.ExtsPresentation;
+    public List<string> ExtsDocument => FileUtility.ExtsDocument;
+    public Dictionary<FileType, string> InternalFormats => _fileUtility.InternalExtension;
+    public string MasterFormExtension => _fileUtility.MasterFormExtension;
+    public string ParamVersion => FilesLinkUtility.Version;
+    public string ParamOutType => FilesLinkUtility.OutType;
+    public string FileDownloadUrlString => _filesLinkUtility.FileDownloadUrlString;
+    public string FileWebViewerUrlString => _filesLinkUtility.FileWebViewerUrlString;
+    public string FileWebViewerExternalUrlString => _filesLinkUtility.FileWebViewerExternalUrlString;
+    public string FileWebEditorUrlString => _filesLinkUtility.FileWebEditorUrlString;
+    public string FileWebEditorExternalUrlString => _filesLinkUtility.FileWebEditorExternalUrlString;
+    public string FileRedirectPreviewUrlString => _filesLinkUtility.FileRedirectPreviewUrlString;
+    public string FileThumbnailUrlString => _filesLinkUtility.FileThumbnailUrlString;
+
+    public bool ConfirmDelete
+    {
+        set
+        {
+            var setting = LoadForCurrentUser();
+            setting.FastDeleteSetting = !value;
+            SaveForCurrentUser(setting);
         }
+        get => !LoadForCurrentUser().FastDeleteSetting;
+    }
 
-        public Guid ID
+    public bool EnableThirdParty
+    {
+        set
         {
-            get { return new Guid("{03B382BD-3C20-4f03-8AB9-5A33F016316E}"); }
+            var setting = _settingsManager.Load<FilesSettings>();
+            setting.EnableThirdpartySetting = value;
+            _settingsManager.Save(setting);
+        }
+        get => _settingsManager.Load<FilesSettings>().EnableThirdpartySetting;
+    }
+
+    public bool ExternalShare
+    {
+        set
+        {
+            var settings = Load();
+            settings.DisableShareLinkSetting = !value;
+            Save(settings);
+        }
+        get { return !Load().DisableShareLinkSetting; }
+    }
+
+    public bool ExternalShareSocialMedia
+    {
+        set
+        {
+            var settings = Load();
+            settings.DisableShareSocialMediaSetting = !value;
+            Save(settings);
+        }
+        get
+        {
+            var setting = Load();
+            return !setting.DisableShareLinkSetting && !setting.DisableShareSocialMediaSetting;
         }
     }
 
-    [Scope]
-    public class FilesSettingsHelper
+    public bool StoreOriginalFiles
     {
-        private SettingsManager SettingsManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private SetupInfo SetupInfo { get; }
-        private FileUtility FileUtility { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-
-        public FilesSettingsHelper(SettingsManager settingsManager, CoreBaseSettings coreBaseSettings, SetupInfo setupInfo, FileUtility fileUtility, FilesLinkUtility filesLinkUtility)
+        set
         {
-            SettingsManager = settingsManager;
-            CoreBaseSettings = coreBaseSettings;
-            SetupInfo = setupInfo;
-            FileUtility = fileUtility;
-            FilesLinkUtility = filesLinkUtility;
+            var setting = LoadForCurrentUser();
+            setting.StoreOriginalFilesSetting = value;
+            SaveForCurrentUser(setting);
         }
+        get => LoadForCurrentUser().StoreOriginalFilesSetting;
+    }
 
-        public List<string> ExtsImagePreviewed => FileUtility.ExtsImagePreviewed;
-        public List<string> ExtsMediaPreviewed => FileUtility.ExtsMediaPreviewed;
-        public List<string> ExtsWebPreviewed => FileUtility.ExtsWebPreviewed;
-        public List<string> ExtsWebEdited => FileUtility.ExtsWebEdited;
-        public List<string> ExtsWebEncrypt => FileUtility.ExtsWebEncrypt;
-        public List<string> ExtsWebReviewed => FileUtility.ExtsWebReviewed;
-        public List<string> ExtsWebCustomFilterEditing => FileUtility.ExtsWebCustomFilterEditing;
-        public List<string> ExtsWebRestrictedEditing => FileUtility.ExtsWebRestrictedEditing;
-        public List<string> ExtsWebCommented => FileUtility.ExtsWebCommented;
-        public List<string> ExtsWebTemplate => FileUtility.ExtsWebTemplate;
-        public List<string> ExtsCoAuthoring => FileUtility.ExtsCoAuthoring;
-        public List<string> ExtsMustConvert => FileUtility.ExtsMustConvert;
-        public Dictionary<string, List<string>> ExtsConvertible => FileUtility.ExtsConvertible;
-        public List<string> ExtsUploadable => FileUtility.ExtsUploadable;
-        public List<string> ExtsArchive => FileUtility.ExtsArchive;
-        public List<string> ExtsVideo => FileUtility.ExtsVideo;
-        public List<string> ExtsAudio => FileUtility.ExtsAudio;
-        public List<string> ExtsImage => FileUtility.ExtsImage;
-        public List<string> ExtsSpreadsheet => FileUtility.ExtsSpreadsheet;
-        public List<string> ExtsPresentation => FileUtility.ExtsPresentation;
-        public List<string> ExtsDocument => FileUtility.ExtsDocument;
-        public Dictionary<FileType, string> InternalFormats => FileUtility.InternalExtension;
-        public string MasterFormExtension => FileUtility.MasterFormExtension;
-        public string ParamVersion => FilesLinkUtility.Version;
-        public string ParamOutType => FilesLinkUtility.OutType;
-        public string FileDownloadUrlString => FilesLinkUtility.FileDownloadUrlString;
-        public string FileWebViewerUrlString => FilesLinkUtility.FileWebViewerUrlString;
-        public string FileWebViewerExternalUrlString => FilesLinkUtility.FileWebViewerExternalUrlString;
-        public string FileWebEditorUrlString => FilesLinkUtility.FileWebEditorUrlString;
-        public string FileWebEditorExternalUrlString => FilesLinkUtility.FileWebEditorExternalUrlString;
-        public string FileRedirectPreviewUrlString => FilesLinkUtility.FileRedirectPreviewUrlString;
-        public string FileThumbnailUrlString => FilesLinkUtility.FileThumbnailUrlString;
-
-        public bool ConfirmDelete
+    public bool UpdateIfExist
+    {
+        set
         {
-            set
+            var setting = LoadForCurrentUser();
+            setting.UpdateIfExistSetting = value;
+            SaveForCurrentUser(setting);
+        }
+        get => LoadForCurrentUser().UpdateIfExistSetting;
+    }
+
+    public bool ConvertNotify
+    {
+        set
+        {
+            var setting = LoadForCurrentUser();
+            setting.ConvertNotifySetting = value;
+            SaveForCurrentUser(setting);
+        }
+        get => LoadForCurrentUser().ConvertNotifySetting;
+    }
+
+    public bool HideConfirmConvertSave
+    {
+        set
+        {
+            var setting = LoadForCurrentUser();
+            setting.HideConfirmConvertSaveSetting = value;
+            SaveForCurrentUser(setting);
+        }
+        get => LoadForCurrentUser().HideConfirmConvertSaveSetting;
+    }
+
+    public bool HideConfirmConvertOpen
+    {
+        set
+        {
+            var setting = LoadForCurrentUser();
+            setting.HideConfirmConvertOpenSetting = value;
+            SaveForCurrentUser(setting);
+        }
+        get => LoadForCurrentUser().HideConfirmConvertOpenSetting;
+    }
+
+    public OrderBy DefaultOrder
+    {
+        set
+        {
+            var setting = LoadForCurrentUser();
+            if (setting.DefaultSortedBySetting != value.SortedBy || setting.DefaultSortedAscSetting != value.IsAsc)
             {
-                var setting = LoadForCurrentUser();
-                setting.FastDeleteSetting = !value;
+                setting.DefaultSortedBySetting = value.SortedBy;
+                setting.DefaultSortedAscSetting = value.IsAsc;
                 SaveForCurrentUser(setting);
             }
-            get { return !LoadForCurrentUser().FastDeleteSetting; }
         }
-
-        public bool EnableThirdParty
+        get
         {
-            set
+            var setting = LoadForCurrentUser();
+
+            return new OrderBy(setting.DefaultSortedBySetting, setting.DefaultSortedAscSetting);
+        }
+    }
+
+    public bool Forcesave
+    {
+        set
+        {
+            var setting = LoadForCurrentUser();
+            setting.ForcesaveSetting = value;
+            SaveForCurrentUser(setting);
+        }
+        get => LoadForCurrentUser().ForcesaveSetting;
+    }
+
+    public bool StoreForcesave
+    {
+        set
+        {
+            if (_coreBaseSettings.Personal)
             {
-                var setting = SettingsManager.Load<FilesSettings>();
-                setting.EnableThirdpartySetting = value;
-                SettingsManager.Save(setting);
+                throw new NotSupportedException();
             }
-            get { return SettingsManager.Load<FilesSettings>().EnableThirdpartySetting; }
-        }
 
-        public bool StoreOriginalFiles
-        {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.StoreOriginalFilesSetting = value;
-                SaveForCurrentUser(setting);
-            }
-            get { return LoadForCurrentUser().StoreOriginalFilesSetting; }
+            var setting = _settingsManager.Load<FilesSettings>();
+            setting.StoreForcesaveSetting = value;
+            _settingsManager.Save(setting);
         }
+        get => !_coreBaseSettings.Personal && _settingsManager.Load<FilesSettings>().StoreForcesaveSetting;
+    }
 
-        public bool UpdateIfExist
+    public bool RecentSection
+    {
+        set
         {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.UpdateIfExistSetting = value;
-                SaveForCurrentUser(setting);
-            }
-            get { return LoadForCurrentUser().UpdateIfExistSetting; }
+            var setting = LoadForCurrentUser();
+            setting.HideRecentSetting = !value;
+            SaveForCurrentUser(setting);
         }
+        get => !LoadForCurrentUser().HideRecentSetting;
+    }
 
-        public bool ConvertNotify
+    public bool FavoritesSection
+    {
+        set
         {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.ConvertNotifySetting = value;
-                SaveForCurrentUser(setting);
-            }
-            get { return LoadForCurrentUser().ConvertNotifySetting; }
+            var setting = LoadForCurrentUser();
+            setting.HideFavoritesSetting = !value;
+            SaveForCurrentUser(setting);
         }
+        get => !LoadForCurrentUser().HideFavoritesSetting;
+    }
 
-        public bool HideConfirmConvertSave
+    public bool TemplatesSection
+    {
+        set
         {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.HideConfirmConvertSaveSetting = value;
-                SaveForCurrentUser(setting);
-            }
-            get { return LoadForCurrentUser().HideConfirmConvertSaveSetting; }
+            var setting = LoadForCurrentUser();
+            setting.HideTemplatesSetting = !value;
+            SaveForCurrentUser(setting);
         }
+        get => !LoadForCurrentUser().HideTemplatesSetting;
+    }
 
-        public bool HideConfirmConvertOpen
+    public bool DownloadTarGz
+    {
+        set
         {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.HideConfirmConvertOpenSetting = value;
-                SaveForCurrentUser(setting);
-            }
-            get { return LoadForCurrentUser().HideConfirmConvertOpenSetting; }
+            var setting = LoadForCurrentUser();
+            setting.DownloadTarGzSetting = value;
+            SaveForCurrentUser(setting);
         }
-
-        public OrderBy DefaultOrder
+        get => LoadForCurrentUser().DownloadTarGzSetting;
+    }
+    public AutoCleanUpData AutomaticallyCleanUp
+    {
+        set
         {
-            set
+            var setting = LoadForCurrentUser();
+            setting.AutomaticallyCleanUpSetting = value;
+            SaveForCurrentUser(setting);
+        }
+        get
+        {
+            var setting = LoadForCurrentUser().AutomaticallyCleanUpSetting;
+            return setting ?? new AutoCleanUpData();
+        }
+    }
+
+    public List<FileShare> DefaultSharingAccessRights
+    {
+        set
+        {
+            List<FileShare> GetNormalizedList(List<FileShare> src)
             {
-                var setting = LoadForCurrentUser();
-                if (setting.DefaultSortedBySetting != value.SortedBy || setting.DefaultSortedAscSetting != value.IsAsc)
+                if (src == null || !src.Any())
                 {
-                    setting.DefaultSortedBySetting = value.SortedBy;
-                    setting.DefaultSortedAscSetting = value.IsAsc;
-                    SaveForCurrentUser(setting);
+                    return null;
                 }
+
+                var res = new List<FileShare>();
+
+                if (src.Contains(FileShare.FillForms))
+                {
+                    res.Add(FileShare.FillForms);
+                }
+
+                if (src.Contains(FileShare.CustomFilter))
+                {
+                    res.Add(FileShare.CustomFilter);
+                }
+
+                if (src.Contains(FileShare.Review))
+                {
+                    res.Add(FileShare.Review);
+                }
+
+                if (src.Contains(FileShare.ReadWrite))
+                {
+                    res.Add(FileShare.ReadWrite);
+                    return res;
+                }
+
+                if (src.Contains(FileShare.Comment))
+                {
+                    res.Add(FileShare.Comment);
+                    return res;
+                }
+
+                res.Add(FileShare.Read);
+                return res;
             }
-            get
-            {
-                var setting = LoadForCurrentUser();
-                return new OrderBy(setting.DefaultSortedBySetting, setting.DefaultSortedAscSetting);
-            }
-        }
 
-        public bool Forcesave
-        {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.ForcesaveSetting = value;
-                SaveForCurrentUser(setting);
-            }
-            get { return LoadForCurrentUser().ForcesaveSetting; }
+            var setting = LoadForCurrentUser();
+            setting.DefaultSharingAccessRightsSetting = GetNormalizedList(value);
+            SaveForCurrentUser(setting);
         }
+        get
+        {
+            var setting = LoadForCurrentUser().DefaultSharingAccessRightsSetting;
+            return setting ?? new List<FileShare>() { FileShare.Read };
+        }
+    }
 
-        public bool StoreForcesave
-        {
-            set
-            {
-                if (CoreBaseSettings.Personal) throw new NotSupportedException();
-                var setting = SettingsManager.Load<FilesSettings>();
-                setting.StoreForcesaveSetting = value;
-                SettingsManager.Save(setting);
-            }
-            get { return !CoreBaseSettings.Personal && SettingsManager.Load<FilesSettings>().StoreForcesaveSetting; }
-        }
+    public long ChunkUploadSize
+    {
+        get => _setupInfo.ChunkUploadSize;
+    }
 
-        public bool RecentSection
-        {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.HideRecentSetting = !value;
-                SaveForCurrentUser(setting);
-            }
-            get { return !LoadForCurrentUser().HideRecentSetting; }
-        }
+    private FilesSettings Load()
+    {
+        return _settingsManager.Load<FilesSettings>();
+    }
 
-        public bool FavoritesSection
-        {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.HideFavoritesSetting = !value;
-                SaveForCurrentUser(setting);
-            }
-            get { return !LoadForCurrentUser().HideFavoritesSetting; }
-        }
+    private void Save(FilesSettings settings)
+    {
+        _settingsManager.Save(settings);
+    }
 
-        public bool TemplatesSection
-        {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.HideTemplatesSetting = !value;
-                SaveForCurrentUser(setting);
-            }
-            get { return !LoadForCurrentUser().HideTemplatesSetting; }
-        }
+    private FilesSettings LoadForCurrentUser()
+    {
+        return _settingsManager.LoadForCurrentUser<FilesSettings>();
+    }
 
-        public bool DownloadTarGz
-        {
-            set
-            {
-                var setting = LoadForCurrentUser();
-                setting.DownloadTarGzSetting = value;
-                SaveForCurrentUser(setting);
-            }
-            get => LoadForCurrentUser().DownloadTarGzSetting;
-        }
-
-        public long ChunkUploadSize
-        {
-            get => SetupInfo.ChunkUploadSize;
-        }
-
-        private FilesSettings LoadForCurrentUser()
-        {
-            return SettingsManager.LoadForCurrentUser<FilesSettings>();
-        }
-
-        private void SaveForCurrentUser(FilesSettings settings)
-        {
-            SettingsManager.SaveForCurrentUser(settings);
-        }
+    private void SaveForCurrentUser(FilesSettings settings)
+    {
+        _settingsManager.SaveForCurrentUser(settings);
     }
 }

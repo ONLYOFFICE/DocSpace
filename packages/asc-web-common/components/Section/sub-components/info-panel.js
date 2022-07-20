@@ -3,6 +3,7 @@ import {
   isTablet,
   isMobile as isMobileUtils,
   tablet,
+  isDesktop,
 } from "@appserver/components/utils/device";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
@@ -18,8 +19,8 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   user-select: none;
   height: auto;
   width: auto;
-  background: rgba(6, 22, 38, 0.2);
-  backdrop-filter: blur(18px);
+  background: ${(props) => props.theme.infoPanel.blurColor};
+  backdrop-filter: blur(3px);
 
   @media ${tablet} {
     z-index: 309;
@@ -91,7 +92,6 @@ const StyledControlContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 450;
-  /* background: ${(props) => props.theme.catalog.control.background}; */
 
   @media ${tablet} {
     display: flex;
@@ -102,9 +102,9 @@ const StyledControlContainer = styled.div`
 
   ${isMobile &&
   css`
-    display: flex !important;
+    display: flex;
 
-    top: 18px;
+    top: 16px;
     left: -34px;
   `}
 
@@ -130,26 +130,41 @@ const StyledCrossIcon = styled(CrossIcon)`
 
 StyledCrossIcon.defaultProps = { theme: Base };
 
-const InfoPanel = ({ children, isVisible, setIsVisible }) => {
+const InfoPanel = ({ children, isVisible, setIsVisible, viewAs, isFiles }) => {
   if (!isVisible) return null;
 
   const closeInfoPanel = () => setIsVisible(false);
+
+  useEffect(() => {
+    if (!isFiles) closeInfoPanel();
+  }, [isFiles]);
 
   useEffect(() => {
     const onMouseDown = (e) => {
       if (e.target.id === "InfoPanelWrapper") closeInfoPanel();
     };
 
-    if (isTablet() || isMobile || isMobileUtils()) {
+    if (viewAs === "row" || isTablet() || isMobile || isMobileUtils())
       document.addEventListener("mousedown", onMouseDown);
-    }
+
+    window.onpopstate = () => {
+      if (!isDesktop() && isVisible) closeInfoPanel();
+    };
+
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, []);
 
   return (
-    <StyledInfoPanelWrapper className="info-panel" id="InfoPanelWrapper">
-      <StyledInfoPanel>
-        <StyledControlContainer onClick={closeInfoPanel}>
+    <StyledInfoPanelWrapper
+      isRowView={viewAs === "row"}
+      className="info-panel"
+      id="InfoPanelWrapper"
+    >
+      <StyledInfoPanel isRowView={viewAs === "row"}>
+        <StyledControlContainer
+          isRowView={viewAs === "row"}
+          onClick={closeInfoPanel}
+        >
           <StyledCrossIcon />
         </StyledControlContainer>
 
@@ -172,17 +187,13 @@ StyledInfoPanelWrapper.defaultProps = { theme: Base };
 StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
-export default inject(({ infoPanelStore }) => {
-  let isVisible = false;
-  let setIsVisible = () => {};
-
-  if (infoPanelStore) {
-    isVisible = infoPanelStore.isVisible;
-    setIsVisible = infoPanelStore.setIsVisible;
-  }
+export default inject(({ auth, filesStore }) => {
+  const { isVisible, setIsVisible } = auth.infoPanelStore;
+  const isFiles = true && filesStore;
 
   return {
     isVisible,
     setIsVisible,
+    isFiles,
   };
 })(InfoPanel);

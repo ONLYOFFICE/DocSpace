@@ -1,4 +1,3 @@
-﻿{
-  "DeleteThirdPartyAlert": "{{service}} 'Belgeler' modülünden kaldırılsın mı? Bu, {{account}} hesabınızı hiçbir şekilde etkilemeyecektir.",
+{
   "SuccessDeleteThirdParty": "Üçüncü taraf {{service}} silindi"
 }

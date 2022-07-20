@@ -127,7 +127,11 @@ class AddGroupsPanelComponent extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel">
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          onClose={this.onClosePanels}
+        >
           <StyledContent>
             <StyledBody ref={this.scrollRef}>
               <GroupSelector

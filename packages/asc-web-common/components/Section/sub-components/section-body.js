@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 //import equal from "fast-deep-equal/react";
 //import { LayoutContextConsumer } from "studio/Layout/context";
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly, isDesktop } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@appserver/components/scrollbar";
@@ -17,7 +17,11 @@ import {
 
 const paddingStyles = css`
   padding: ${(props) =>
-    props.settingsStudio ? "0 7px 16px 24px" : "19px 7px 16px 20px"};
+    props.settingsStudio
+      ? "0 7px 16px 24px"
+      : props.viewAs === "row"
+      ? "19px 3px 16px 16px"
+      : "19px 3px 16px 20px"};
 
   @media ${tablet} {
     padding: ${(props) =>
@@ -82,8 +86,18 @@ const commonStyles = css`
     .files-row-container {
       margin-top: -22px;
 
+      ${isDesktop &&
+      css`
+        margin-top: -17px;
+      `}
+
       @media ${desktop} {
-        ${(props) => props.viewAs === "row" && `margin-top: -9px;`}
+        ${(props) =>
+          props.viewAs === "row" &&
+          css`
+            margin-top: -15px;
+            margin-right: 4px;
+          `}
       }
     }
   }

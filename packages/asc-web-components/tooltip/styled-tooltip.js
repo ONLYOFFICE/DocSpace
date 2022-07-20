@@ -18,7 +18,8 @@ const StyledTooltip = styled.div`
       props.maxWidth ? props.maxWidth : props.theme.tooltip.maxWidth};
     color: ${(props) => props.theme.tooltip.textColor} !important;
 
-    p {
+    p,
+    span {
       color: ${(props) => props.theme.tooltip.textColor} !important;
     }
 

@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "Informazioni sul programma",
   "LogoutButton": "Disconnetti",
   "RecoverAccess": "Rimuovi accesso",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "Descrivi il tuo problema",
   "RecoverTextBody": "Se non riesci ad accedere con il tuo account esistente o desideri essere registrato come un nuovo utente, contatta l'amministratore del portale.",
   "RecoverTitle": "Ripristino dell'accesso",
-  "TurnOnDesktopVersion": "‎Attivare la versione desktop‎"
+  "TurnOnDesktopVersion": "‎Attivare la versione desktop‎",
+  "HelpCenter": "Centro assistenza"
 }

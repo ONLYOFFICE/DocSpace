@@ -2,20 +2,34 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 
 import { ShareAccessRights } from "@appserver/common/constants";
-import toastr from "@appserver/components/toast/toastr";
+import toastr from "studio/toastr";
 import QuickButtons from "../components/QuickButtons";
 
 export default function withQuickButtons(WrappedComponent) {
   class WithQuickButtons extends React.Component {
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        isLoading: false,
+        isCanWebEdit: props.canWebEdit(props.item.fileExst),
+      };
+    }
+
     onClickLock = () => {
-      const { item, lockFileAction, isAdmin, setIsLoading } = this.props;
+      const { item, lockFileAction, isAdmin, t } = this.props;
       const { locked, id, access } = item;
 
-      if (isAdmin || access === 0) {
-        setIsLoading(true);
+      if ((isAdmin || access === 0) && !this.state.isLoading) {
+        this.setState({ isLoading: true });
         return lockFileAction(id, !locked)
+          .then(() =>
+            locked
+              ? toastr.success(t("Translations:FileUnlocked"))
+              : toastr.success(t("Translations:FileLocked"))
+          )
           .catch((err) => toastr.error(err))
-          .finally(() => setIsLoading(false));
+          .finally(() => this.setState({ isLoading: false }));
       }
       return;
     };
@@ -44,6 +58,8 @@ export default function withQuickButtons(WrappedComponent) {
     };
 
     render() {
+      const { isLoading, isCanWebEdit } = this.state;
+
       const {
         t,
         theme,
@@ -51,20 +67,17 @@ export default function withQuickButtons(WrappedComponent) {
         isTrashFolder,
         isAdmin,
         showShare,
-        fileActionExt,
-        fileActionId,
         sectionWidth,
         viewAs,
       } = this.props;
+
       const { access, id, fileExst } = item;
 
       const accessToEdit =
         access === ShareAccessRights.FullAccess ||
         access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
-      const isEdit = id === fileActionId && fileExst === fileActionExt;
-
-      const quickButtonsComponent = !isEdit ? (
+      const quickButtonsComponent = (
         <QuickButtons
           t={t}
           theme={theme}
@@ -75,11 +88,13 @@ export default function withQuickButtons(WrappedComponent) {
           isTrashFolder={isTrashFolder}
           accessToEdit={accessToEdit}
           viewAs={viewAs}
+          isDisabled={isLoading}
+          isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
           onClickShare={this.onClickShare}
         />
-      ) : null;
+      );
 
       return (
         <WrappedComponent
@@ -97,6 +112,7 @@ export default function withQuickButtons(WrappedComponent) {
       filesActionsStore,
       filesStore,
       dialogsStore,
+      settingsStore,
     }) => {
       const { isRecycleBinFolder } = treeFoldersStore;
       const {
@@ -105,23 +121,17 @@ export default function withQuickButtons(WrappedComponent) {
         onSelectItem,
       } = filesActionsStore;
 
-      const { setIsLoading } = filesStore;
-      const {
-        extension: fileActionExt,
-        id: fileActionId,
-      } = filesStore.fileActionStore;
       const { setSharingPanelVisible } = dialogsStore;
+      const { canWebEdit } = settingsStore;
       return {
         theme: auth.settingsStore.theme,
         isAdmin: auth.isAdmin,
         isTrashFolder: isRecycleBinFolder,
         lockFileAction,
         setFavoriteAction,
-        setIsLoading,
-        fileActionExt,
-        fileActionId,
         onSelectItem,
         setSharingPanelVisible,
+        canWebEdit,
       };
     }
   )(observer(WithQuickButtons));

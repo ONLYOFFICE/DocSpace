@@ -1,4 +1,5 @@
-﻿{
-  "DeleteThirdPartyAlert": "Möchten Sie {{service}} wirklich aus dem Modul 'Dokumente' entfernen? Die Änderung hat keine Auswirkungen auf dem Konto {{account}}.",
+{
+  "DisconnectCloudMessage": "Möchten Sie wirklich {{service}} aus 'Dokumente' entfernen? Dies wird Ihr Konto {{account}} nicht beeinflussen.",
+  "DisconnectCloudTitle": "Cloud-Verbindung trennen",
   "SuccessDeleteThirdParty": "{{service}} wurde deaktiviert"
 }

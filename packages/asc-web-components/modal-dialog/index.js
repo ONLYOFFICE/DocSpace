@@ -1,294 +1,164 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import Backdrop from "../backdrop";
-import Aside from "../aside";
-import Heading from "../heading";
-import { getModalType } from "../utils/device";
 import throttle from "lodash/throttle";
-import Box from "../box";
-import {
-  CloseButton,
-  StyledHeader,
-  Content,
-  Dialog,
-  BodyBox,
-} from "./styled-modal-dialog";
-import Portal from "../portal";
-import Loaders from "@appserver/common/components/Loaders";
 
-function Header() {
-  return null;
-}
+import Portal from "../portal";
+import ModalAside from "./views/modal-aside";
+import { handleTouchMove, handleTouchStart } from "./handlers/swipeHandler";
+import { getCurrentDisplayType } from "./handlers/resizeHandler";
+import { parseChildren } from "./handlers/childrenParseHandler";
+
+const Header = () => null;
 Header.displayName = "DialogHeader";
 
-function Body() {
-  return null;
-}
+const Body = () => null;
 Body.displayName = "DialogBody";
 
-function Footer() {
-  return null;
-}
+const Footer = () => null;
 Footer.displayName = "DialogFooter";
 
-class ModalDialog extends React.Component {
-  static Header = Header;
-  static Body = Body;
-  constructor(props) {
-    super(props);
+const ModalDialog = ({
+  id,
+  style,
+  children,
+  visible,
+  onClose,
+  isLarge,
+  zIndex,
+  className,
+  displayType,
+  displayTypeDetailed,
+  isLoading,
+  autoMaxHeight,
+  autoMaxWidth,
+  withBodyScroll,
+  modalLoaderBodyHeight,
+  withFooterBorder,
+}) => {
+  const [currentDisplayType, setCurrentDisplayType] = useState(
+    getCurrentDisplayType(displayType, displayTypeDetailed)
+  );
+  const [modalSwipeOffset, setModalSwipeOffset] = useState(0);
 
-    this.state = { displayType: this.getTypeByWidth() };
-
-    this.getTypeByWidth = this.getTypeByWidth.bind(this);
-    this.resize = this.resize.bind(this);
-    this.popstate = this.popstate.bind(this);
-    this.throttledResize = throttle(this.resize, 300);
-  }
-
-  getTypeByWidth() {
-    if (this.props.displayType !== "auto") return this.props.displayType;
-
-    return getModalType();
-  }
-
-  resize() {
-    if (this.props.displayType !== "auto") return;
-
-    const type = this.getTypeByWidth();
-    if (type === this.state.displayType) return;
-
-    this.setState({ displayType: type });
-
-    this.props.onResize && this.props.onResize(type);
-  }
-
-  popstate() {
-    window.removeEventListener("popstate", this.popstate, false);
-    this.props.onClose();
-    window.history.go(1);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.displayType !== prevProps.displayType) {
-      this.setState({ displayType: this.getTypeByWidth() });
-    }
-    if (this.props.visible && this.state.displayType === "aside") {
-      window.addEventListener("popstate", this.popstate, false);
-    }
-  }
-
-  componentDidMount() {
-    window.addEventListener("resize", this.throttledResize);
-    window.addEventListener("keyup", this.onKeyPress);
-
-    window.onpopstate = () => {
-      this.props.onClose();
-    };
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.throttledResize);
-    window.removeEventListener("keyup", this.onKeyPress);
-  }
-
-  onKeyPress = (event) => {
-    if (event.key === "Esc" || event.key === "Escape") {
-      this.props.onClose();
-    }
-  };
-
-  render() {
-    const {
-      visible,
-      scale,
-      onClose,
-      zIndex,
-      asideBodyPadding,
-      modalBodyPadding,
-      contentHeight,
-      contentWidth,
-      className,
-      id,
-      style,
-      children,
-      isLoading,
-      contentPaddingBottom,
-      withoutBodyScroll,
-      modalLoaderBodyHeight,
-      withoutCloseButton,
-      theme,
-      width,
-    } = this.props;
-
-    let header = null;
-    let body = null;
-    let footer = null;
-
-    React.Children.forEach(children, (child) => {
-      const childType =
-        child && child.type && (child.type.displayName || child.type.name);
-
-      switch (childType) {
-        case Header.displayName:
-          header = child;
-          break;
-        case Body.displayName:
-          body = child;
-          break;
-        case Footer.displayName:
-          footer = child;
-          break;
-        default:
-          break;
-      }
-    });
-
-    const renderModal = () => {
-      return this.state.displayType === "modal" ? (
-        <Backdrop
-          visible={visible}
-          zIndex={zIndex}
-          withBackground={true}
-          isModalDialog
-        >
-          <Dialog
-            width={width}
-            className={`${className} not-selectable`}
-            id={id}
-            style={style}
-          >
-            <Content
-              contentHeight={contentHeight}
-              contentWidth={contentWidth}
-              displayType={this.state.displayType}
-            >
-              {isLoading ? (
-                <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
-              ) : (
-                <>
-                  {header && (
-                    <StyledHeader>
-                      <Heading
-                        className="heading"
-                        size="medium"
-                        truncate={true}
-                      >
-                        {header ? header.props.children : null}
-                      </Heading>
-                      {!withoutCloseButton && (
-                        <CloseButton
-                          className="modal-dialog-button_close"
-                          onClick={onClose}
-                        ></CloseButton>
-                      )}
-                    </StyledHeader>
-                  )}
-                  <BodyBox paddingProp={modalBodyPadding}>
-                    {body ? body.props.children : null}
-                  </BodyBox>
-                  <Box className="modal-dialog-modal-footer">
-                    {footer ? footer.props.children : null}
-                  </Box>
-                </>
-              )}
-            </Content>
-          </Dialog>
-        </Backdrop>
-      ) : (
-        <Box className={className} id={id} style={style}>
-          <Backdrop
-            visible={visible}
-            onClick={onClose}
-            zIndex={zIndex}
-            isAside={true}
-          />
-          <Aside
-            visible={visible}
-            scale={scale}
-            zIndex={zIndex}
-            contentPaddingBottom={contentPaddingBottom}
-            className="modal-dialog-aside not-selectable"
-            withoutBodyScroll={withoutBodyScroll}
-          >
-            <Content
-              contentHeight={contentHeight}
-              contentWidth={contentWidth}
-              withoutBodyScroll={withoutBodyScroll}
-              displayType={this.state.displayType}
-            >
-              {isLoading ? (
-                <Loaders.DialogAsideLoader withoutAside />
-              ) : (
-                <>
-                  <StyledHeader className="modal-dialog-aside-header">
-                    <Heading className="heading" size="medium" truncate={true}>
-                      {header ? header.props.children : null}
-                    </Heading>
-                    {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
-                  </StyledHeader>
-                  <BodyBox
-                    className="modal-dialog-aside-body"
-                    paddingProp={asideBodyPadding}
-                    withoutBodyScroll={withoutBodyScroll}
-                  >
-                    {body ? body.props.children : null}
-                  </BodyBox>
-                  <Box className="modal-dialog-aside-footer">
-                    {footer ? footer.props.children : null}
-                  </Box>
-                </>
-              )}
-            </Content>
-          </Aside>
-        </Box>
+  useEffect(() => {
+    const onResize = throttle(() => {
+      setCurrentDisplayType(
+        getCurrentDisplayType(displayType, displayTypeDetailed)
       );
+    }, 300);
+    const onSwipe = (e) => setModalSwipeOffset(handleTouchMove(e, onClose));
+    const onSwipeEnd = () => setModalSwipeOffset(0);
+    const onKeyPress = (e) => {
+      if ((e.key === "Esc" || e.key === "Escape") && visible) onClose();
     };
 
-    const modalDialog = renderModal();
+    window.addEventListener("resize", onResize);
+    window.addEventListener("keyup", onKeyPress);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", onSwipe);
+    window.addEventListener("touchend", onSwipeEnd);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("keyup", onKeyPress);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", onSwipe);
+      window.addEventListener("touchend", onSwipeEnd);
+    };
+  }, []);
 
-    return <Portal element={modalDialog} />;
-  }
-}
+  const [header, body, footer] = parseChildren(
+    children,
+    Header.displayName,
+    Body.displayName,
+    Footer.displayName
+  );
+
+  return (
+    <Portal
+      element={
+        <ModalAside
+          id={id}
+          style={style}
+          className={className}
+          currentDisplayType={currentDisplayType}
+          withBodyScroll={withBodyScroll}
+          isLarge={isLarge}
+          zIndex={zIndex}
+          autoMaxHeight={autoMaxHeight}
+          autoMaxWidth={autoMaxWidth}
+          withFooterBorder={withFooterBorder}
+          onClose={onClose}
+          isLoading={isLoading}
+          header={header}
+          body={body}
+          footer={footer}
+          visible={visible}
+          modalSwipeOffset={modalSwipeOffset}
+        />
+      }
+    />
+  );
+};
 
 ModalDialog.propTypes = {
+  id: PropTypes.string,
+  className: PropTypes.string,
+  zIndex: PropTypes.number,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   children: PropTypes.any,
+
   /** Display dialog or not */
   visible: PropTypes.bool,
-  /** Display type */
-  displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
-  /** Indicates the side panel has scale */
-  scale: PropTypes.bool,
   /** Will be triggered when a close button is clicked */
   onClose: PropTypes.func,
-  onResize: PropTypes.func,
-  /**Display close button or not */
-  withoutCloseButton: PropTypes.bool,
-  /** CSS z-index */
-  zIndex: PropTypes.number,
-  /** CSS padding props for body section */
-  asideBodyPadding: PropTypes.string,
-  modalBodyPadding: PropTypes.string,
-  contentHeight: PropTypes.string,
-  contentWidth: PropTypes.string,
+
+  /** Display type */
+  displayType: PropTypes.oneOf(["modal", "aside"]),
+  /** Detailed display type for each dimension */
+  displayTypeDetailed: PropTypes.object,
+
+  /** Show loader in body */
   isLoading: PropTypes.bool,
-  withoutBodyScroll: PropTypes.bool,
-  className: PropTypes.string,
-  id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  contentPaddingBottom: PropTypes.string,
-  modalLoaderBodyHeight: PropTypes.string,
-  width: PropTypes.string,
+
+  /** **`MODAL-ONLY`**  
+
+  Sets `width: 520px` and `max-hight: 400px`*/
+  isLarge: PropTypes.bool,
+
+  /** **`MODAL-ONLY`**  
+
+  Sets `max-width: auto`*/
+  autoMaxWidth: PropTypes.bool,
+
+  /** **`MODAL-ONLY`**  
+
+  Sets `max-height: auto`*/
+  autoMaxHeight: PropTypes.bool,
+
+  /** **`MODAL-ONLY`**  
+
+  Displays border betweeen body and footer`*/
+  withFooterBorder: PropTypes.bool,
+
+  /** **`ASIDE-ONLY`**  
+
+  Enables Body scroll */
+  withBodyScroll: PropTypes.bool,
+  /** **`ASIDE-ONLY`**  
+
+  Sets modal dialog size equal to window */
+  scale: PropTypes.bool,
 };
 
 ModalDialog.defaultProps = {
-  displayType: "auto",
+  displayType: "modal",
   zIndex: 310,
-  asideBodyPadding: "16px 0",
-  modalBodyPadding: "12px 0",
-  contentWidth: "100%",
+  isLarge: false,
+  isLoading: false,
   withoutCloseButton: false,
-  withoutBodyScroll: false,
+  withBodyScroll: false,
+  withFooterBorder: false,
 };
 
 ModalDialog.Header = Header;

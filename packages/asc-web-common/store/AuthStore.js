@@ -6,6 +6,7 @@ import ModuleStore from "./ModuleStore";
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
+import InfoPanelStore from "./InfoPanelStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
 import isEmpty from "lodash/isEmpty";
@@ -17,6 +18,7 @@ class AuthStore {
   moduleStore = null;
   settingsStore = null;
   tfaStore = null;
+  infoPanelStore = null;
 
   isLoading = false;
   version = null;
@@ -29,6 +31,7 @@ class AuthStore {
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
     this.tfaStore = new TfaStore();
+    this.infoPanelStore = new InfoPanelStore();
 
     makeAutoObservable(this);
   }
@@ -50,6 +53,8 @@ class AuthStore {
 
     if (this.isAuthenticated && !skipModules) {
       this.userStore.user && requests.push(this.moduleStore.init());
+      !this.settingsStore.passwordSettings &&
+        requests.push(this.settingsStore.getPortalPasswordSettings());
     }
 
     return Promise.all(requests);
@@ -327,7 +332,22 @@ class AuthStore {
   getOforms = () => {
     const culture =
       this.userStore.user.cultureName || this.settingsStore.culture;
-    return api.settings.getOforms(`${this.settingsStore.urlOforms}${culture}`);
+
+    const promise = new Promise(async (resolve, reject) => {
+      let oforms = await api.settings.getOforms(
+        `${this.settingsStore.urlOforms}${culture}`
+      );
+
+      if (!oforms?.data?.data.length) {
+        oforms = await api.settings.getOforms(
+          `${this.settingsStore.urlOforms}en`
+        );
+      }
+
+      resolve(oforms);
+    });
+
+    return promise;
   };
 }
 

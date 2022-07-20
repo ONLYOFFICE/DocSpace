@@ -1,4 +1,4 @@
-﻿{
+{
   "AboutCompanyTitle": "Sobre este programa",
   "LogoutButton": "Terminar Sessão",
   "RecoverAccess": "Recuperar o acesso",
@@ -6,5 +6,6 @@
   "RecoverDescribeYourProblemPlaceholder": "Descreva o seu problema",
   "RecoverTextBody": "Se não consegue iniciar sessão com a sua conta ou se quiser registar-se como um novo utilizador, contacte o administrador do portal.",
   "RecoverTitle": "Recuperação de acesso",
-  "TurnOnDesktopVersion": "Ativar a versão para computador"
+  "TurnOnDesktopVersion": "Ativar a versão para computador",
+  "HelpCenter": "Help Center"
 }

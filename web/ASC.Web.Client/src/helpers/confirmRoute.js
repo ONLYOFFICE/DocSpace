@@ -43,9 +43,7 @@ class ConfirmRoute extends React.Component {
       .then((validationResult) => {
         switch (validationResult) {
           case ValidationResult.Ok:
-            const confirmHeader = `type=${confirmLinkData.type}&${search.slice(
-              1
-            )}`;
+            const confirmHeader = `${confirmLinkData}&${search.slice(1)}`;
             const linkData = {
               ...confirmLinkData,
               confirmHeader,

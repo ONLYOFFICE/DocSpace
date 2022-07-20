@@ -10,22 +10,25 @@ import {
   StyledGalleryThumbnail,
   StyledTitle,
 } from "./styles/styles.js";
-import moment from "moment";
+import getCorrectDate from "@appserver/components/utils/getCorrectDate";
 
 const SingleItem = (props) => {
-  const { t, selectedItem, getIcon } = props;
+  const { t, selectedItem, getIcon, culture, personal } = props;
 
   const parseAndFormatDate = (date) => {
-    return moment(date)
-      .locale(localStorage.getItem(LANGUAGE))
-      .format("DD.MM.YY hh:mm A");
+    const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+
+    const correctDate = getCorrectDate(locale, date);
+
+    return correctDate;
   };
 
   const src = getIcon(32, ".docxf");
   const thumbnailBlank = getIcon(96, ".docxf");
 
   const thumbnailUrl =
-    selectedItem.attributes.template_image.data.attributes.formats.small.url;
+    selectedItem?.attributes?.template_image?.data.attributes?.formats?.small
+      ?.url;
 
   return (
     <>
@@ -54,7 +57,7 @@ const SingleItem = (props) => {
         <div className="property">
           <Text className="property-title">{t("Home:ByLastModifiedDate")}</Text>
           <Text className="property-content">
-            {parseAndFormatDate(selectedItem.updatedAt)}
+            {parseAndFormatDate(selectedItem.attributes.updatedAt)}
           </Text>
         </div>
         <div className="property">
@@ -69,29 +72,13 @@ const SingleItem = (props) => {
             {selectedItem.attributes.file_pages}
           </Text>
         </div>
-        <Text
-          as="div"
-          fontSize="12px"
-          fontWeight={400}
-          className="oforms-description"
-        >
-          <Trans t={t} i18nKey="OFORMsDescription" ns="InfoPanel">
-            Fill out the form online and get a simple Design Project Proposal
-            ready, or just download the fillable template in the desirable
-            format: DOCXF, OFORM, or PDF.
-            <p className="oforms-description-text">
-              Propose a project or a series of projects to an freelance designer
-              team. Outline project and task structure, payments, and terms.
-            </p>
-          </Trans>
-        </Text>
       </StyledProperties>
     </>
   );
 };
 
 export default inject(({ settingsStore }) => {
-  const { getIcon } = settingsStore;
+  const { getIcon, personal, culture } = settingsStore;
 
   return {
     getIcon,

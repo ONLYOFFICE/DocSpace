@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import Text from "../text";
 import Base from "../themes/base";
 import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
+import { transform } from "lodash";
 // eslint-disable-next-line no-unused-vars
 const SimpleLinkWithDropdown = ({
   isBold,
@@ -123,6 +124,27 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
   }
 `;
 StyledLinkWithDropdown.defaultProps = { theme: Base };
+
+const StyledTextWithExpander = styled.div`
+  display: flex;
+  gap: 4px;
+
+  .expander {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 6.35px;
+    svg {
+      transform: ${(props) => (props.isOpen ? "rotate(180deg)" : "rotate(0)")};
+      width: 6.35px;
+      height: auto;
+      path {
+        fill: ${(props) => props.theme.linkWithDropdown.expander.iconColor};
+      }
+    }
+  }
+`;
+
 // eslint-disable-next-line react/prop-types, no-unused-vars
 const SimpleText = ({ color, ...props }) => <Text as="span" {...props} />;
 const StyledText = styled(SimpleText)`
@@ -150,4 +172,10 @@ const StyledSpan = styled.span`
 `;
 StyledSpan.defaultProps = { theme: Base };
 
-export { StyledSpan, StyledText, StyledLinkWithDropdown, Caret };
+export {
+  StyledSpan,
+  StyledTextWithExpander,
+  StyledText,
+  StyledLinkWithDropdown,
+  Caret,
+};

@@ -9,45 +9,47 @@ import { inject, observer } from "mobx-react";
 import { ConflictResolveType } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import styled from "styled-components";
+import { convertFile } from "@appserver/common/api/files";
 
 const StyledModalDialog = styled(ModalDialog)`
-  .conflict-resolve-dialog-text {
-    padding-bottom: 12px;
+  .radio {
+    padding-bottom: 8px;
   }
-  .conflict-resolve-dialog-text-description {
-    padding-bottom: 16px;
+
+  .message {
+    margin-bottom: 16px;
+  }
+
+  .select-action {
+    margin-bottom: 12px;
   }
 
   .conflict-resolve-radio-button {
-    label{
+    label {
       display: flex;
       align-items: flex-start;
+      &:not(:last-child) {
+        margin-bottom: 12px;
+      }
     }
+
     svg {
       overflow: visible;
       margin-right: 8px;
-      margin-top: 3px
+      margin-top: 3px;
     }
-  }
 
-  .modal-dialog-aside-footer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 10px;
-    width: 100%;
-  }
+    .radio-option-title {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 16px;
+    }
 
-  .button-dialog-accept {
-    margin-right: 8px;
-  }
-  .modal-dialog-aside-footer, .modal-dialog-modal-footer {
-    border-top: ${(props) => props.theme.button.border.baseDisabled};
-    margin-left: -16px;
-    margin-right: -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-top: 16px;
-}
+    .radio-option-description {
+      font-size: 12px;
+      line-height: 16px;
+      color: #a3a9ae;
+    }
   }
 `;
 
@@ -150,10 +152,9 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text fontWeight={600} fontSize={"14px"}>
-            {t("OverwriteTitle")}
-          </Text>
-          <Text color={theme.text.disableColor} fontSize={"12px"}>
+          <Text className="radio-option-title">{t("OverwriteTitle")}</Text>
+          <Text className="radio-option-description">
+            {" "}
             {t("OverwriteDescription")}
           </Text>
         </div>
@@ -163,10 +164,8 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text fontWeight={600} fontSize={"14px"}>
-            {t("CreateTitle")}
-          </Text>
-          <Text color={theme.text.disableColor} fontSize={"12px"}>
+          <Text className="radio-option-title">{t("CreateTitle")}</Text>
+          <Text className="radio-option-description">
             {t("CreateDescription")}
           </Text>
         </div>
@@ -177,10 +176,8 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text fontWeight={600} fontSize={"14px"}>
-            {t("SkipTitle")}
-          </Text>
-          <Text color={theme.text.disableColor} fontSize={"12px"}>
+          <Text className="radio-option-title">{t("SkipTitle")}</Text>
+          <Text className="radio-option-description">
             {t("SkipDescription")}
           </Text>
         </div>
@@ -198,38 +195,33 @@ const ConflictResolveDialog = (props) => {
       isLoading={!tReady}
       visible={visible}
       onClose={onCloseDialog}
-      theme={theme}
-      style={{ maxWidth: "520px" }}
+      isLarge
+      zIndex={312}
     >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text className="conflict-resolve-dialog-text-description">
+        <Text className="message">
+          {console.log(filesCount, folderTitle)}
+
           {singleFile ? (
             <Trans
               t={t}
-              file={filesCount}
-              folder={folderTitle}
               i18nKey="ConflictResolveDescription"
               ns="ConflictResolveDialog"
             >
-              The file with the name <strong>{{ file }}</strong> already exists
-              in the folder
-              <strong>{{ folder: folderTitle }}</strong>.
+              {{ file, folder: folderTitle }}
             </Trans>
           ) : (
             <Trans
               t={t}
-              filesCount={filesCount}
-              folder={folderTitle}
               i18nKey="ConflictResolveDescriptionFiles"
               ns="ConflictResolveDialog"
             >
-              {{ filesCount }} documents with the same name already exist in the
-              folder <strong>{{ folder: folderTitle }}</strong>.
+              {{ filesCount, folder: folderTitle }}
             </Trans>
           )}
         </Text>
-        <Text className="conflict-resolve-dialog-text">
+        <Text className="select-action">
           {t("ConflictResolveSelectAction")}
         </Text>
         <RadioButtonGroup
@@ -245,21 +237,17 @@ const ConflictResolveDialog = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
-          className="button-dialog-accept"
           key="OkButton"
           label={t("Common:OKButton")}
-          size="normalTouchscreen"
+          size="normal"
           primary
           onClick={onAcceptType}
-          //isLoading={isLoading}
         />
         <Button
-          className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="normalTouchscreen"
+          size="normal"
           onClick={onCloseDialog}
-          //isLoading={isLoading}
         />
       </ModalDialog.Footer>
     </StyledModalDialog>

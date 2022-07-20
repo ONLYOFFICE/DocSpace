@@ -14,6 +14,15 @@ const PasswordStrengthPage = lazy(() =>
 const TrustedMailPage = lazy(() =>
   import("./categories/security/access-portal/trustedMail")
 );
+const IpSecurityPage = lazy(() =>
+  import("./categories/security/access-portal/ipSecurity")
+);
+const AdminMessagePage = lazy(() =>
+  import("./categories/security/access-portal/adminMessage")
+);
+const SessionLifetimePage = lazy(() =>
+  import("./categories/security/access-portal/sessionLifetime")
+);
 
 const CommonSettings = lazy(() => import("./categories/common/index.js"));
 
@@ -52,7 +61,11 @@ const DeleteData = lazy(() =>
 const DeactivateData = lazy(() =>
   import("./categories/data-management/delete-data/portalDeactivation")
 );
-const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
+const WhiteLabel = lazy(() =>
+  import("./categories/common/settingsBranding/whitelabel")
+);
+
+const Branding = lazy(() => import("./categories/common/branding"));
 
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
 
@@ -60,7 +73,8 @@ const COMMON_URLS = [
   PROXY_BASE_URL,
   combineUrl(PROXY_BASE_URL, "/common"),
   combineUrl(PROXY_BASE_URL, "/common/customization"),
-  combineUrl(PROXY_BASE_URL, "/common/whitelabel"),
+  combineUrl(PROXY_BASE_URL, "/common/branding"),
+  combineUrl(PROXY_BASE_URL, "/common/appearance"),
 ];
 
 const CUSTOMIZATION_URLS = [
@@ -97,6 +111,18 @@ const PASSWORD_PAGE_URL = combineUrl(
 const TRUSTED_MAIL_PAGE_URL = combineUrl(
   PROXY_BASE_URL,
   "/security/access-portal/trusted-mail"
+);
+const IP_SECURITY_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/ip"
+);
+const ADMIN_MESSAGE_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/admin-message"
+);
+const SESSION_LIFETIME_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/lifetime"
 );
 
 const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
@@ -160,6 +186,17 @@ const Settings = (props) => {
             exact
             path={TRUSTED_MAIL_PAGE_URL}
             component={TrustedMailPage}
+          />
+          <Route exact path={IP_SECURITY_PAGE_URL} component={IpSecurityPage} />
+          <Route
+            exact
+            path={ADMIN_MESSAGE_PAGE_URL}
+            component={AdminMessagePage}
+          />
+          <Route
+            exact
+            path={SESSION_LIFETIME_PAGE_URL}
+            component={SessionLifetimePage}
           />
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />

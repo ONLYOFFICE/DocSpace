@@ -236,7 +236,7 @@
     <value>Carrello</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Inserisci il nome del carrello di Google Cloud in cui desideri archiviare i tuoi backup.</value>
+    <value>Immettere il nome del carrello di Google Cloud per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Connetti Google Cloud Storage al backup e archivia i dati del tuo portale.</value>
@@ -296,13 +296,13 @@
     <value>Contenitore privato</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Immettere l'indirizzo URL del contenitore privato Rackspace in cui si desidera archiviare i backup.</value>
+    <value>Immettere l'indirizzo URL del contenitore privato Rackspace per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Contenitore pubblico</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Immettere l'indirizzo URL del contenitore pubblico Rackspace in cui si desidera archiviare i backup.</value>
+    <value>Immettere l'indirizzo URL del contenitore pubblico Rackspace per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Regione</value>
@@ -317,7 +317,7 @@
     <value>Carrello</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Immettere il nome univoco del carrello Amazon in cui si desidera archiviare i backup.</value>
+    <value>Immettere il nome univoco del carrello Amazon per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Connetti Amazon AWS S3 al backup e archivia i dati del tuo portale.</value>
@@ -353,13 +353,13 @@
     <value>Contenitore privato</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Immettere il nome del contenitore privato Selectel in cui si desidera archiviare i backup.</value>
+    <value>Immettere il nome del contenitore privato Selectel per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Contenitore pubblico</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Immettere il nome del contenitore pubblico Selectel in cui si desidera archiviare i backup.</value>
+    <value>Immettere il nome del contenitore pubblico Selectel per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -572,17 +572,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>La password deve contenere </value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>la Password deve contenere</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>cifre</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>senza spazi</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>simboli speciali</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>lettere maiuscole</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>solo alfabeto latino</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Il limite di richieste è stato superato</value>
@@ -600,7 +603,7 @@
     <value>E' impossibile trovare l'utente con l'indirizzo email "{0}"</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Regione UE (Irlanda)</value>
+    <value>Regione UE (Francoforte)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>E' stata superata la dimensione file massima</value>
@@ -656,9 +659,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Quota di spazio su disco superata</value>
   </data>
-  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
-    <value>Questa funzione è attiva solo per il piano tariffario gratuito</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Accesso al portale</value>
   </data>
@@ -700,9 +700,6 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Mappatura campi non valida</value>
-  </data>
-  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
-    <value>Il portale è stato rinominato con successo.</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Le impostazioni della pagina di saluto sono state salvate con successo</value>

@@ -29,6 +29,7 @@ import {
   ArticleMainButtonContent,
 } from "./components/Article";
 import FormGallery from "./pages/FormGallery";
+import GlobalEvents from "./components/GlobalEvents";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -87,7 +88,7 @@ const FilesSection = React.memo(() => {
   return (
     <Switch>
       <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
-      <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
+      {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
       <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
       <PrivateRoute exact path={HOME_URL} component={Home} />
       <PrivateRoute path={FILTER_URL} component={Home} />
@@ -169,6 +170,7 @@ class FilesContent extends React.Component {
 
     return (
       <>
+        <GlobalEvents />
         <Panels />
         <FilesArticle history={this.props.history} />
         <FilesSection />

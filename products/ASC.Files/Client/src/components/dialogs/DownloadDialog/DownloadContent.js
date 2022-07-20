@@ -1,44 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { isMobile } from "react-device-detect";
-import Row from "@appserver/components/row";
-import RowContent from "@appserver/components/row-content";
-import RowContainer from "@appserver/components/row-container";
+import React, { useState } from "react";
 import Text from "@appserver/components/text";
+import { inject, observer } from "mobx-react";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
-import styled from "styled-components";
-import { tablet } from "@appserver/components/utils/device";
-
-const StyledDownloadContent = styled.div`
-  .row_content,
-  .row-content_tablet-side-info {
-    overflow: unset;
-  }
-
-  @media (${tablet}) {
-    .row-content_tablet-side-info {
-      display: flex;
-      gap: 5px;
-    }
-  }
-`;
+import Checkbox from "@appserver/components/checkbox";
+import ArrowIcon from "../../../../public/images/arrow.react.svg";
+import { StyledDownloadContent } from "./StyledDownloadDialog";
+import DownloadRow from "./DownloadRow";
 
 const DownloadContent = (props) => {
   const {
     t,
-    checkedTitle,
-    indeterminateTitle,
     items,
     onSelectFormat,
     onRowSelect,
-    getItemIcon,
     titleFormat,
     type,
     extsConvertible,
     title,
+    isChecked,
+    isIndeterminate,
+    theme,
   } = props;
-
-  const [isScrolling, setIsScrolling] = useState(null);
-  const [isOpen, setIsOpen] = useState(null);
 
   const getTitleExtensions = () => {
     let arr = [];
@@ -71,30 +53,7 @@ const DownloadContent = (props) => {
       });
     }
 
-    formats.push({
-      key: "custom",
-      label: t("CustomFormat"),
-      onClick: onSelectFormat,
-      "data-format": t("CustomFormat"),
-      "data-type": type,
-    });
-
     return formats;
-  };
-
-  useEffect(() => {
-    if (isScrolling) {
-      setIsOpen(false);
-      const id = setTimeout(() => setIsScrolling(false), 500);
-      return () => {
-        clearTimeout(id);
-        setIsOpen(null);
-      };
-    }
-  }, [isScrolling]);
-
-  const onScroll = () => {
-    setIsScrolling(true);
   };
 
   const getFormats = (item) => {
@@ -121,122 +80,100 @@ const DownloadContent = (props) => {
     }
 
     switch (type) {
-      case "document":
+      case "documents":
         return formats;
-      case "spreadsheet":
+      case "spreadsheets":
         return formats;
-      case "presentation":
+      case "presentations":
         return formats;
       default:
         return [];
     }
   };
 
-  const length = items.length;
-  const minHeight = length > 2 ? 110 : length * 50;
-  const showTitle = length > 1;
+  const isOther = type === "other";
 
-  const titleData = getTitleExtensions();
+  const titleData = !isOther && getTitleExtensions();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onOpen = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const showHeader = items.length > 1;
 
   return (
-    <StyledDownloadContent>
-      {showTitle && (
-        <Row
-          key={"title"}
-          onSelect={onRowSelect.bind(this, "All", type)}
-          checked={checkedTitle}
-          indeterminate={indeterminateTitle}
-        >
-          <RowContent convertSideInfo={false}>
-            <Text truncate type="page" title={title} fontSize="14px">
-              {title}
-            </Text>
-            <></>
-            <Text fontSize="12px" containerMinWidth="fit-content">
-              {(checkedTitle || indeterminateTitle) && t("ConvertInto")}
-            </Text>
-            {checkedTitle || indeterminateTitle ? (
+    <StyledDownloadContent isOpen={showHeader ? isOpen : true} theme={theme}>
+      {showHeader && (
+        <div className="download-dialog_content-wrapper download-dialog-row">
+          <div className="download-dialog-main-content">
+            <Checkbox
+              data-item-id="All"
+              data-type={type}
+              isChecked={isChecked}
+              isIndeterminate={isIndeterminate}
+              onChange={onRowSelect}
+              className="download-dialog-checkbox"
+            />
+            <div
+              onClick={onOpen}
+              className="download-dialog-heading download-dialog-title"
+            >
+              <Text noSelect fontSize="16px" fontWeight={600}>
+                {title}
+              </Text>
+              <ArrowIcon className="download-dialog-icon" />
+            </div>
+          </div>
+          <div className="download-dialog-actions">
+            {(isChecked || isIndeterminate) && !isOther && (
               <LinkWithDropdown
+                className="download-dialog-link"
                 containerMinWidth="fit-content"
                 data={titleData}
                 directionX="left"
                 directionY="bottom"
-                dropdownType="appearDashedAfterHover"
-                fontSize="12px"
+                dropdownType="alwaysDashed"
+                fontSize="13px"
+                fontWeight={600}
+                withExpander
               >
                 {titleFormat}
               </LinkWithDropdown>
-            ) : (
-              <></>
             )}
-          </RowContent>
-        </Row>
+          </div>
+        </div>
       )}
-
-      <RowContainer
-        useReactWindow={length > 2}
-        style={{ minHeight: minHeight, padding: "8px 0" }}
-        itemHeight={50}
-        onScroll={onScroll}
-      >
+      <div className="download-dialog_hidden-items">
         {items.map((file) => {
-          const element = getItemIcon(file);
-          let dropdownItems = getFormats(file);
-          dropdownItems = dropdownItems.filter(
-            (x) => x.label !== file.fileExst
-          );
-          return (
-            <Row
-              key={file.id}
-              onSelect={onRowSelect.bind(this, file, type)}
-              checked={file.checked}
-              element={element}
-            >
-              <RowContent convertSideInfo={false}>
-                <Text
-                  truncate
-                  type="page"
-                  title={file.title}
-                  fontSize="14px"
-                  noSelect
-                >
-                  {file.title}
-                </Text>
-                <></>
-                {file.checked && (
-                  <Text
-                    fontSize="12px"
-                    containerMinWidth="fit-content"
-                    noSelect
-                  >
-                    {t("ConvertInto")}
-                  </Text>
-                )}
+          const dropdownItems =
+            !isOther &&
+            getFormats(file).filter((x) => x.label !== file.fileExst);
 
-                {file.checked ? (
-                  <LinkWithDropdown
-                    isOpen={isOpen}
-                    dropdownType={
-                      isMobile ? "alwaysDashed" : "appearDashedAfterHover"
-                    }
-                    containerMinWidth="fit-content"
-                    data={dropdownItems}
-                    directionX="left"
-                    directionY="bottom"
-                    fontSize="12px"
-                  >
-                    {file.format || t("OriginalFormat")}
-                  </LinkWithDropdown>
-                ) : (
-                  <></>
-                )}
-              </RowContent>
-            </Row>
+          return (
+            <DownloadRow
+              t={t}
+              key={file.id}
+              file={file}
+              isChecked={file.checked}
+              onRowSelect={onRowSelect}
+              type={type}
+              isOther={isOther}
+              dropdownItems={dropdownItems}
+            />
           );
         })}
-      </RowContainer>
+      </div>
     </StyledDownloadContent>
   );
 };
 
-export default DownloadContent;
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { theme } = settingsStore;
+
+  return {
+    theme,
+  };
+})(observer(DownloadContent));

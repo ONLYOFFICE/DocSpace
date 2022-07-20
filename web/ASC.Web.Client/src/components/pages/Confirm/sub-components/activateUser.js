@@ -224,6 +224,7 @@ const ActivateUserForm = (props) => {
               "Common:PasswordLimitSpecialSymbols"
             )}`}
             generatePasswordTitle={t("Wizard:GeneratePassword")}
+            // If need copy credentials use t("EmailAndPasswordCopiedToClipboard")
           />
         </FieldContainer>
 

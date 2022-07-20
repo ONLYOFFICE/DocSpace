@@ -24,22 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Utils;
+using File = System.IO.File;
 
 namespace ASC.Files.Core.Services.OFormService;
 
 [Singletone]
-public class OFormRequestManager
+public class OFormRequestManager : IDisposable
 {
     private readonly OFormSettings _configuration;
     private readonly IHttpClientFactory _httpClientFactory;
@@ -126,7 +116,12 @@ public class OFormRequestManager
         using var httpClient = _httpClientFactory.CreateClient();
         using var response = await httpClient.GetAsync(fileData.Attributes.Url);
         using var stream = await response.Content.ReadAsStreamAsync();
-        using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read);
+        using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.ReadWrite, System.IO.FileShare.Read);
         await stream.CopyToAsync(fileStream);
+    }
+
+    public void Dispose()
+    {
+        _semaphoreSlim?.Dispose();
     }
 }

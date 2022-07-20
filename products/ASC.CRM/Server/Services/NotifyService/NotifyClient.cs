@@ -33,7 +33,6 @@ using System.Threading;
 using System.Web;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
@@ -43,22 +42,59 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Notify;
+using ASC.Notify.Engine;
+using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.CRM.Services.NotifyService
 {
     [Scope]
     public class NotifyClient
     {
-        private IServiceProvider _serviceProvider;
+        private readonly INotifySource _notifySource;
+        private readonly Context _notifyContext;
+        private readonly NotifyEngineQueue _notifyEngineQueue;
+        private readonly PathProvider _pathProvider;
+        private readonly SecurityContext _securityContext;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly DaoFactory _daoFactory;
+        private readonly TenantManager _tenantManager;
+        private readonly PaymentManager _paymentManager;
+        private readonly UserManager _userManager;
+        private readonly ILogger _logger;
+        private readonly CoreSettings _coreSettings;
+        private readonly TenantUtil _tenantUtil;
 
-        public NotifyClient(IServiceProvider serviceProvider)
+        public NotifyClient(Context notifyContext, 
+            NotifyEngineQueue notifyEngineQueue,
+            INotifySource notifySource,
+            PathProvider pathProvider,
+            SecurityContext securityContext,
+            CoreBaseSettings coreBaseSettings,
+            DaoFactory daoFactory,
+            TenantManager tenantManager,
+            PaymentManager paymentManager,
+            UserManager userManager,
+            CoreSettings coreSettings,
+            ILogger logger,
+            TenantUtil tenantUtil)
         {
-            _serviceProvider = serviceProvider;
+            _notifyContext = notifyContext;
+            _notifyEngineQueue = notifyEngineQueue;
+            _notifySource = notifySource;
+            _pathProvider = pathProvider;
+            _securityContext = securityContext;
+            _coreBaseSettings = coreBaseSettings;
+            _daoFactory = daoFactory;
+            _tenantManager = tenantManager;
+            _paymentManager = paymentManager;
+            _userManager = userManager;
+            _logger = logger;
+            _coreSettings = coreSettings;
+            _tenantUtil = tenantUtil;
         }
 
         public void SendAboutCreateNewContact(List<Guid> recipientID,
@@ -67,14 +103,12 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if ((recipientID.Count == 0) || String.IsNullOrEmpty(contactTitle)) return;
 
-            using var scope = _serviceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
             client.SendNoticeToAsync(
                 NotifyConstants.Event_CreateNewContact,
                 null,
-                recipientID.ConvertAll(item => notifySource.GetRecipientsProvider().GetRecipient(item.ToString())).ToArray(),
+                recipientID.ConvertAll(item => _notifySource.GetRecipientsProvider().GetRecipient(item.ToString())).ToArray(),
                 true,
                 new TagValue(NotifyConstants.Tag_AdditionalData, fields),
                 new TagValue(NotifyConstants.Tag_EntityTitle, contactTitle),
@@ -86,16 +120,14 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if (userID.Length == 0) return;
 
-            using var scope = _serviceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
             var baseData = ExtractBaseDataFrom(entityType, entityID, daoFactory);
 
             client.SendNoticeToAsync(
                    NotifyConstants.Event_SetAccess,
                    null,
-                   userID.Select(item => notifySource.GetRecipientsProvider().GetRecipient(item.ToString())).ToArray(),
+                   userID.Select(item => _notifySource.GetRecipientsProvider().GetRecipient(item.ToString())).ToArray(),
                    true,
                    new TagValue(NotifyConstants.Tag_EntityID, baseData["id"]),
                    new TagValue(NotifyConstants.Tag_EntityTitle, baseData["title"]),
@@ -105,9 +137,6 @@ namespace ASC.Web.CRM.Services.NotifyService
 
         private NameValueCollection ExtractBaseDataFrom(EntityType entityType, int entityID, DaoFactory daoFactory)
         {
-            using var scope = _serviceProvider.CreateScope();
-            var pathProvider = scope.ServiceProvider.GetService<PathProvider>();
-
             var result = new NameValueCollection();
 
             String title;
@@ -145,7 +174,7 @@ namespace ASC.Web.CRM.Services.NotifyService
 
             result.Add("title", title);
             result.Add("id", entityID.ToString());
-            result.Add("entityRelativeURL", String.Concat(pathProvider.BaseAbsolutePath, relativeURL));
+            result.Add("entityRelativeURL", String.Concat(_pathProvider.BaseAbsolutePath, relativeURL));
 
             return result;
         }
@@ -154,12 +183,7 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if (userID.Length == 0) return;
 
-            using var scope = _serviceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var pathProvider = scope.ServiceProvider.GetService<PathProvider>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
             NameValueCollection baseEntityData;
 
@@ -179,13 +203,13 @@ namespace ASC.Web.CRM.Services.NotifyService
                 if (contact is Person)
                     baseEntityData["entityRelativeURL"] += "&type=people";
 
-                baseEntityData["entityRelativeURL"] = String.Concat(pathProvider.BaseAbsolutePath,
+                baseEntityData["entityRelativeURL"] = String.Concat(_pathProvider.BaseAbsolutePath,
                                                                     baseEntityData["entityRelativeURL"]);
             }
 
             client.BeginSingleRecipientEvent("send about add relationship event add");
 
-            var interceptor = new InitiatorInterceptor(new DirectRecipient(securityContext.CurrentAccount.ID.ToString(), ""));
+            var interceptor = new InitiatorInterceptor(new DirectRecipient(_securityContext.CurrentAccount.ID.ToString(), ""));
 
             client.AddInterceptor(interceptor);
 
@@ -195,7 +219,7 @@ namespace ASC.Web.CRM.Services.NotifyService
                 client.SendNoticeToAsync(
                       NotifyConstants.Event_AddRelationshipEvent,
                       null,
-                      userID.Select(item => notifySource.GetRecipientsProvider().GetRecipient(item.ToString())).ToArray(),
+                      userID.Select(item => _notifySource.GetRecipientsProvider().GetRecipient(item.ToString())).ToArray(),
                       true,
                       new TagValue(NotifyConstants.Tag_EntityTitle, baseEntityData["title"]),
                       new TagValue(NotifyConstants.Tag_EntityID, baseEntityData["id"]),
@@ -219,14 +243,11 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if (recipientID == Guid.Empty) return;
 
-            using var scope = _serviceProvider.CreateScope();
-            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
-            var recipient = notifySource.GetRecipientsProvider().GetRecipient(recipientID.ToString());
+            var recipient = _notifySource.GetRecipientsProvider().GetRecipient(recipientID.ToString());
 
-            client.SendNoticeToAsync(coreBaseSettings.CustomMode ? NotifyConstants.Event_ExportCompletedCustomMode : NotifyConstants.Event_ExportCompleted,
+            client.SendNoticeToAsync(_coreBaseSettings.CustomMode ? NotifyConstants.Event_ExportCompletedCustomMode : NotifyConstants.Event_ExportCompleted,
                null,
                new[] { recipient },
                true,
@@ -239,12 +260,9 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if (recipientID == Guid.Empty) return;
 
-            using var scope = _serviceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
-            var recipient = notifySource.GetRecipientsProvider().GetRecipient(recipientID.ToString());
+            var recipient = _notifySource.GetRecipientsProvider().GetRecipient(recipientID.ToString());
 
             string entitiyListTitle;
             string entitiyListRelativeURL;
@@ -272,7 +290,7 @@ namespace ASC.Web.CRM.Services.NotifyService
             }
 
             client.SendNoticeToAsync(
-                coreBaseSettings.CustomMode ? NotifyConstants.Event_ImportCompletedCustomMode : NotifyConstants.Event_ImportCompleted,
+                _coreBaseSettings.CustomMode ? NotifyConstants.Event_ImportCompletedCustomMode : NotifyConstants.Event_ImportCompleted,
                 null,
                 new[] { recipient },
                 true,
@@ -282,19 +300,9 @@ namespace ASC.Web.CRM.Services.NotifyService
 
         public void SendAutoReminderAboutTask(DateTime scheduleDate)
         {
-            using var scope = _serviceProvider.CreateScope();
-
-            var defaultDao = scope.ServiceProvider.GetService<DaoFactory>();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
-            var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.CRM");
-            var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
-
             var execAlert = new List<int>();
 
-            foreach (var row in defaultDao.GetTaskDao()
+            foreach (var row in _daoFactory.GetTaskDao()
                 .GetInfoForReminder(scheduleDate))
             {
 
@@ -312,29 +320,29 @@ namespace ASC.Web.CRM.Services.NotifyService
 
                 execAlert.Add(taskId);
 
-                var tenant = tenantManager.GetTenant(tenantId);
+                var tenant = _tenantManager.GetTenant(tenantId);
                 if (tenant == null ||
                     tenant.Status != TenantStatus.Active ||
-                    TariffState.NotPaid <= paymentManager.GetTariff(tenant.TenantId).State)
+                    TariffState.NotPaid <= _paymentManager.GetTariff(tenant.Id).State)
                 {
                     continue;
                 }
 
                 try
                 {
-                    tenantManager.SetCurrentTenant(tenant);
-                    securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+                    _tenantManager.SetCurrentTenant(tenant);
+                    _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
 
-                    var user = userManager.GetUsers(responsibleID);
+                    var user = _userManager.GetUsers(responsibleID);
 
                     if (!(!Constants.LostUser.Equals(user) && user.Status == EmployeeStatus.Active)) continue;
 
-                    securityContext.AuthenticateMeWithoutCookie(user.ID);
+                    _securityContext.AuthenticateMeWithoutCookie(user.Id);
 
                     Thread.CurrentThread.CurrentCulture = user.GetCulture();
                     Thread.CurrentThread.CurrentUICulture = user.GetCulture();
 
-                    var dao = defaultDao;
+                    var dao = _daoFactory;
                     var task = dao.GetTaskDao().GetByID(taskId);
 
                     if (task == null) continue;
@@ -369,21 +377,19 @@ namespace ASC.Web.CRM.Services.NotifyService
                 }
                 catch (Exception ex)
                 {
-                    logger.Error("SendAutoReminderAboutTask, tenant: " + tenant.GetTenantDomain(coreSettings), ex);
+                    _logger.LogError("SendAutoReminderAboutTask, tenant: " + tenant.GetTenantDomain(_coreSettings), ex);
                 }
             }
 
-            defaultDao.GetTaskDao().ExecAlert(execAlert);
+            _daoFactory.GetTaskDao().ExecAlert(execAlert);
 
         }
 
         public void SendTaskReminder(Task task, String taskCategoryTitle, Contact taskContact, ASC.CRM.Core.Entities.Cases taskCase, ASC.CRM.Core.Entities.Deal taskDeal)
         {
-            using var scope = _serviceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
-            var recipient = notifySource.GetRecipientsProvider().GetRecipient(task.ResponsibleID.ToString());
+            var recipient = _notifySource.GetRecipientsProvider().GetRecipient(task.ResponsibleID.ToString());
 
             if (recipient == null) return;
 
@@ -447,16 +453,13 @@ namespace ASC.Web.CRM.Services.NotifyService
 
         public void SendAboutResponsibleByTask(Task task, String taskCategoryTitle, Contact taskContact, Cases taskCase, ASC.CRM.Core.Entities.Deal taskDeal, Hashtable fileListInfoHashtable)
         {
-            using var scope = _serviceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
-            var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
+            var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
-            var recipient = notifySource.GetRecipientsProvider().GetRecipient(task.ResponsibleID.ToString());
+            var recipient = _notifySource.GetRecipientsProvider().GetRecipient(task.ResponsibleID.ToString());
 
             if (recipient == null) return;
 
-            task.DeadLine = tenantUtil.DateTimeFromUtc(task.DeadLine);
+            task.DeadLine = _tenantUtil.DateTimeFromUtc(task.DeadLine);
 
             var deadLineString = task.DeadLine.Hour == 0 && task.DeadLine.Minute == 0
                 ? task.DeadLine.ToShortDateString()
@@ -518,12 +521,9 @@ namespace ASC.Web.CRM.Services.NotifyService
 
         public void SendAboutResponsibleForOpportunity(Deal deal)
         {
-            using var scope = _serviceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
-            var recipient = notifySource.GetRecipientsProvider().GetRecipient(deal.ResponsibleID.ToString());
+            var recipient = _notifySource.GetRecipientsProvider().GetRecipient(deal.ResponsibleID.ToString());
 
             if (recipient == null) return;
 

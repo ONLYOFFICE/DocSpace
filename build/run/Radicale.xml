@@ -1,0 +1,10 @@
+<service>
+  <id>OnlyofficeRadicale</id>
+  <name>ONLYOFFICE Radicale</name>
+  <startmode>manual</startmode>
+  <executable>python</executable>
+  <arguments>-m radicale --config %BASE%/../../config/radicale.config</arguments>
+  <log mode="none"/>
+  <delayedAutoStart>true</delayedAutoStart>
+  <onfailure action="restart" delay="5 sec" />
+</service>

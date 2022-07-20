@@ -7,19 +7,30 @@ import { withTranslation } from "react-i18next";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
-import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import {
+  connectedCloudsTypeTitleTranslation,
+  connectedCloudsTitleTranslation,
+} from "../../../helpers/utils";
 import { Base } from "@appserver/components/themes";
 import Button from "@appserver/components/button";
 import SelectorAddButton from "@appserver/components/selector-add-button";
 import { isMobile } from "react-device-detect";
+import { mobile } from "@appserver/components/utils/device";
 
 const StyledModalDialog = styled(ModalDialog)`
   .modal-dialog-aside-body {
     margin-right: -16px;
   }
 
+  .connect-cloud-message {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
+    color: #657077;
+  }
+
   .service-block {
-    padding-top: 20px;
+    padding-top: 16px;
     display: grid;
     grid-gap: 16px;
 
@@ -59,12 +70,33 @@ const StyledModalDialog = styled(ModalDialog)`
       .service-btn {
         margin-left: auto;
 
-        svg {
+        &-text {
+          color: ${(props) => props.theme.connectCloud.connectBtnContent};
+          background: ${(props) => props.theme.connectCloud.connectBtnTextBg};
+          ${(props) =>
+            `border: 1px solid ${props.theme.connectCloud.connectBtnTextBorder}`};
+        }
+
+        &-icon {
+          width: 36px;
+          border-radius: 3px;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: ${(props) => props.theme.connectCloud.connectBtnIconBg};
+          ${(props) =>
+            `border: 1px solid ${props.theme.connectCloud.connectBtnIconBorder}`};
+
           path {
-            fill: #333;
+            fill: ${(props) => props.theme.connectCloud.connectBtnContent};
           }
         }
       }
+    }
+
+    .modal-dialog-aside {
+      padding-bottom: 0;
     }
   }
 `;
@@ -78,19 +110,22 @@ const ServiceItem = (props) => {
     className,
     getThirdPartyIcon,
     serviceName,
+    serviceKey,
     onClick,
   } = props;
 
-  const capabilityName = capability[0];
+  const capabilityKey = capability[0];
   const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
-    "data-title": capabilityName,
-    "data-key": capabilityName,
+    "data-title": capabilityKey,
+    "data-key": capabilityKey,
   };
 
-  const src = getThirdPartyIcon(capabilityName);
+  const src = getThirdPartyIcon(serviceKey || capabilityKey);
+
+  const capabilityName = connectedCloudsTypeTitleTranslation(capabilityKey, t);
 
   return (
     <div className="service-item-container">
@@ -108,14 +143,14 @@ const ServiceItem = (props) => {
         <SelectorAddButton
           onClick={onClick}
           iconName="/static/images/actions.plus.icon.react.svg"
-          className="service-btn"
+          className="service-btn service-btn-icon"
           title={t("Common:Connect")}
           {...dataProps}
         />
       ) : (
         <Button
           size="small"
-          className="service-btn"
+          className="service-btn service-text"
           label={t("Common:Connect")}
           onClick={onClick}
           {...dataProps}
@@ -167,8 +202,8 @@ const ThirdPartyDialog = (props) => {
 
   const onShowService = (e) => {
     setThirdPartyDialogVisible(false);
-    const item = e.currentTarget.dataset;
-    const showAccountSetting = !e.currentTarget.dataset.link;
+    const item = e.currentTarget.dataset || e.target.dataset;
+    const showAccountSetting = !item.link;
     if (!showAccountSetting) {
       let authModal = window.open(
         "",
@@ -203,20 +238,18 @@ const ThirdPartyDialog = (props) => {
       zIndex={310}
       onClose={onClose}
     >
-      <ModalDialog.Header>
-        {t("Translations:ConnectingAccount")}
-      </ModalDialog.Header>
+      <ModalDialog.Header>{t("ConnectCloud")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text as="div" noSelect>
-          {t("ConnectDescription")}
-          {isAdmin && (
+        <Text as="div" className="connect-cloud-message" noSelect>
+          {t("ConnectMessage")}
+          {/* {isAdmin && (
             <Trans t={t} i18nKey="ConnectAdminDescription" ns="Settings">
               For successful connection enter the necessary data at
               <Link isHovered href="/settings/integration/third-party-services">
                 this page
               </Link>
             </Trans>
-          )}
+          )} */}
         </Text>
         <div className="service-block">
           {googleConnectItem && (
@@ -277,7 +310,8 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               t={t}
               serviceName="Nextcloud"
-              capability={webDavConnectItem}
+              serviceKey="NextCloud"
+              capability={nextCloudConnectItem}
               onClick={onShowService}
               getThirdPartyIcon={getThirdPartyIcon}
             />
@@ -287,7 +321,8 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               t={t}
               serviceName="ownCloud"
-              capability={webDavConnectItem}
+              serviceKey="OwnCloud"
+              capability={ownCloudConnectItem}
               onClick={onShowService}
               getThirdPartyIcon={getThirdPartyIcon}
             />

@@ -11,6 +11,7 @@ import {
   NamedAvatar,
   StyledImage,
   StyledAvatar,
+  StyledIconWrapper,
 } from "./styled-avatar";
 import IconButton from "../icon-button";
 import commonIconsStyles from "../utils/common-icons-style";
@@ -55,12 +56,20 @@ Initials.propTypes = {
 const Avatar = (props) => {
   //console.log("Avatar render");
   const { size, source, userName, role, editing, editAction } = props;
-  let isDefault = false;
+  let isDefault = false,
+    isIcon = false;
 
   if (source?.includes("default_user_photo")) isDefault = true;
+  else if (source?.includes(".svg")) isIcon = true;
 
   const avatarContent = source ? (
-    <StyledImage src={source} isDefault={isDefault} />
+    isIcon ? (
+      <StyledIconWrapper>
+        <IconButton iconName={source} className="icon" isDisabled={true} />
+      </StyledIconWrapper>
+    ) : (
+      <StyledImage src={source} isDefault={isDefault} />
+    )
   ) : userName ? (
     <Initials userName={userName} size={size} />
   ) : (
@@ -94,8 +103,9 @@ Avatar.propTypes = {
   size: PropTypes.oneOf(["max", "big", "medium", "small", "min"]),
   /** Adds a user role table */
   role: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
-  /** The address of the image for an image avatar */
+  /** Provide either a url to display as `Picture` or path to **.svg** file to display as `Icon` */
   source: PropTypes.string,
+  /** Provide this and leave `source` empty to display as initials */
   userName: PropTypes.string,
   editing: PropTypes.bool,
   /** Function called when the avatar change button is pressed */

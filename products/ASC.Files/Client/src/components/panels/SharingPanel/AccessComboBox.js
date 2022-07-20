@@ -35,6 +35,7 @@ const AccessComboBox = (props) => {
     isExternalLink,
     isDefaultMode,
     isEmbedded,
+    isPersonal,
   } = props;
 
   const [isLoading, setIsLoading] = React.useState(true);
@@ -66,135 +67,125 @@ const AccessComboBox = (props) => {
     const accessRights = disableLink ? ReadOnly : access;
 
     const newAvailableOptions = [];
-    accessOptions.forEach((option) => {
-      switch (option) {
-        case "FullAccess":
-          const accessItem = {
-            key: FullAccess,
-            title: t("Common:FullAccess"),
-            label: t("Common:FullAccess"),
-            icon: "/static/images/access.edit.react.svg",
-            itemId: itemId,
-            dataAccess: FullAccess,
-          };
 
-          newAvailableOptions.push(accessItem);
+    if (accessOptions.includes("FullAccess")) {
+      const accessItem = {
+        key: FullAccess,
+        title: t("Common:FullAccess"),
+        label: t("Common:FullAccess"),
+        icon: "/static/images/access.edit.react.svg",
+        itemId: itemId,
+        dataAccess: FullAccess,
+      };
 
-          if (accessRights === FullAccess) {
-            setSelectedOption(accessItem);
-          }
+      newAvailableOptions.push(accessItem);
 
-          break;
-
-        case "FilterEditing":
-          const filterItem = {
-            key: CustomFilter,
-            title: t("CustomFilter"),
-            label: t("CustomFilter"),
-            icon: "/static/images/custom.filter.react.svg",
-            itemId: itemId,
-            dataAccess: CustomFilter,
-          };
-
-          newAvailableOptions.push(filterItem);
-
-          if (accessRights === CustomFilter) {
-            setSelectedOption(filterItem);
-          }
-
-          break;
-
-        case "Review":
-          const reviewItem = {
-            key: Review,
-            title: t("Common:Review"),
-            label: t("Common:Review"),
-            icon: "/static/images/access.review.react.svg",
-            itemId: itemId,
-            dataAccess: Review,
-          };
-
-          newAvailableOptions.push(reviewItem);
-
-          if (accessRights === Review) {
-            setSelectedOption(reviewItem);
-          }
-
-          break;
-
-        case "FormFilling":
-          const formItem = {
-            key: FormFilling,
-            title: t("FormFilling"),
-            label: t("FormFilling"),
-            icon: "/static/images/access.form.react.svg",
-            itemId: itemId,
-            dataAccess: FormFilling,
-          };
-
-          newAvailableOptions.push(formItem);
-
-          if (accessRights === FormFilling) {
-            setSelectedOption(formItem);
-          }
-
-          break;
-
-        case "Comment":
-          const commentItem = {
-            key: Comment,
-            title: t("Comment"),
-            label: t("Comment"),
-            icon: "/static/images/access.comment.react.svg",
-            itemId: itemId,
-            dataAccess: Comment,
-          };
-
-          newAvailableOptions.push(commentItem);
-
-          if (accessRights === Comment) {
-            setSelectedOption(commentItem);
-          }
-
-          break;
-
-        case "ReadOnly":
-          const readItem = {
-            key: ReadOnly,
-            title: t("ReadOnly"),
-            label: t("ReadOnly"),
-            icon: "/static/images/eye.react.svg",
-            itemId: itemId,
-            dataAccess: ReadOnly,
-          };
-
-          newAvailableOptions.push(readItem);
-
-          if (accessRights === ReadOnly) {
-            setSelectedOption(readItem);
-          }
-
-          break;
-
-        case "DenyAccess":
-          const denyItem = {
-            key: DenyAccess,
-            title: t("DenyAccess"),
-            label: t("DenyAccess"),
-            icon: "/static/images/access.none.react.svg",
-            itemId: itemId,
-            dataAccess: DenyAccess,
-          };
-
-          newAvailableOptions.push(denyItem);
-
-          if (accessRights === DenyAccess) {
-            setSelectedOption(denyItem);
-          }
-
-          break;
+      if (accessRights === FullAccess) {
+        setSelectedOption(accessItem);
       }
-    });
+    }
+
+    if (accessOptions.includes("FilterEditing")) {
+      const filterItem = {
+        key: CustomFilter,
+        title: t("CustomFilter"),
+        label: t("CustomFilter"),
+        icon: "/static/images/custom.filter.react.svg",
+        itemId: itemId,
+        dataAccess: CustomFilter,
+      };
+
+      newAvailableOptions.push(filterItem);
+
+      if (accessRights === CustomFilter) {
+        setSelectedOption(filterItem);
+      }
+    }
+
+    if (accessOptions.includes("Review")) {
+      const reviewItem = {
+        key: Review,
+        title: t("Common:Review"),
+        label: t("Common:Review"),
+        icon: "/static/images/access.review.react.svg",
+        itemId: itemId,
+        dataAccess: Review,
+      };
+
+      newAvailableOptions.push(reviewItem);
+
+      if (accessRights === Review) {
+        setSelectedOption(reviewItem);
+      }
+    }
+
+    if (accessOptions.includes("FormFilling")) {
+      const formItem = {
+        key: FormFilling,
+        title: t("FormFilling"),
+        label: t("FormFilling"),
+        icon: "/static/images/access.form.react.svg",
+        itemId: itemId,
+        dataAccess: FormFilling,
+      };
+
+      newAvailableOptions.push(formItem);
+
+      if (accessRights === FormFilling) {
+        setSelectedOption(formItem);
+      }
+    }
+
+    if (accessOptions.includes("Comment")) {
+      const commentItem = {
+        key: Comment,
+        title: t("Comment"),
+        label: t("Comment"),
+        icon: "/static/images/access.comment.react.svg",
+        itemId: itemId,
+        dataAccess: Comment,
+      };
+
+      newAvailableOptions.push(commentItem);
+
+      if (accessRights === Comment) {
+        setSelectedOption(commentItem);
+      }
+    }
+
+    if (accessOptions.includes("ReadOnly")) {
+      const readItem = {
+        key: ReadOnly,
+        title: t("ReadOnly"),
+        label: t("ReadOnly"),
+        icon: "/static/images/eye.react.svg",
+        itemId: itemId,
+        dataAccess: ReadOnly,
+      };
+
+      newAvailableOptions.push(readItem);
+
+      if (accessRights === ReadOnly) {
+        setSelectedOption(readItem);
+      }
+    }
+
+    if (accessOptions.includes("DenyAccess")) {
+      const denyItem = {
+        key: DenyAccess,
+        title: t("DenyAccess"),
+        label: t("DenyAccess"),
+        icon: "/static/images/access.none.react.svg",
+        itemId: itemId,
+        dataAccess: DenyAccess,
+      };
+
+      newAvailableOptions.push(denyItem);
+
+      if (accessRights === DenyAccess) {
+        setSelectedOption(denyItem);
+      }
+    }
 
     if (canDelete) {
       newAvailableOptions.push({ key: "separator", isSeparator: true });
@@ -242,13 +233,17 @@ const AccessComboBox = (props) => {
 
   const advancedOptions = renderAdvancedOption();
 
-  return isLoading ? (
-    <> </>
-  ) : isExternalLink ? (
+  if (isLoading) {
+    return <></>;
+  }
+
+  return isExternalLink ? (
     <AccessRightSelect
       options={[]}
       selectedOption={selectedOption}
       advancedOptions={advancedOptions}
+      isExternalLink={isExternalLink}
+      isPersonal={isPersonal}
     />
   ) : (
     <ComboBox

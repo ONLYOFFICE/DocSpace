@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
 import { FileAction } from "@appserver/common/constants";
+import { Events } from "../helpers/constants";
+import toastr from "studio/toastr";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
@@ -11,7 +13,6 @@ const withHotkeys = (Component) => {
       setSelected,
       viewAs,
       setViewAs,
-      setAction,
       setHotkeyPanelVisible,
       confirmDelete,
       setDeleteDialogVisible,
@@ -41,6 +42,12 @@ const withHotkeys = (Component) => {
       someDialogIsOpen,
       enabledHotkeys,
       mediaViewerIsVisible,
+
+      isFavoritesFolder,
+      isRecentFolder,
+      isTrashFolder,
+      selection,
+      setFavoriteAction,
     } = props;
 
     const hotkeysFilter = {
@@ -49,11 +56,28 @@ const withHotkeys = (Component) => {
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
       enabled: !someDialogIsOpen && enabledHotkeys && !mediaViewerIsVisible,
-      keyup: true,
-      keydown: false,
+      // keyup: true,
+      // keydown: false,
     };
 
     const onKeyDown = (e) => activateHotkeys(e);
+
+    const folderWithNoAction =
+      isFavoritesFolder || isRecentFolder || isTrashFolder;
+
+    const onCreate = (extension) => {
+      if (folderWithNoAction) return;
+      const event = new Event(Events.CREATE);
+
+      const payload = {
+        extension: extension,
+        id: -1,
+      };
+
+      event.payload = payload;
+
+      window.dispatchEvent(event);
+    };
 
     useEffect(() => {
       window.addEventListener("keydown", onKeyDown);
@@ -64,17 +88,50 @@ const withHotkeys = (Component) => {
     //Select/deselect item
     useHotkeys("x", selectFile);
 
-    //Select bottom element
-    useHotkeys("j, DOWN", selectBottom, hotkeysFilter);
+    useHotkeys(
+      "*",
+      (e) => {
+        if (e.shiftKey || e.ctrlKey) return;
 
-    //Select upper item
-    useHotkeys("k, UP", selectUpper, hotkeysFilter);
+        switch (e.key) {
+          case "ArrowDown":
+          case "j": {
+            return selectBottom();
+          }
 
-    //Select item on the left
-    useHotkeys("h, LEFT", selectLeft, hotkeysFilter);
+          case "ArrowUp":
+          case "k": {
+            return selectUpper();
+          }
 
-    //Select item on the right
-    useHotkeys("l, RIGHT", selectRight, hotkeysFilter);
+          case "ArrowRight":
+          case "l": {
+            return selectRight();
+          }
+
+          case "ArrowLeft":
+          case "h": {
+            return selectLeft();
+          }
+
+          default:
+            break;
+        }
+      },
+      hotkeysFilter
+    );
+
+    // //Select bottom element
+    // useHotkeys("j, DOWN", selectBottom, hotkeysFilter);
+
+    // //Select upper item
+    // useHotkeys("k, UP", selectUpper, hotkeysFilter);
+
+    // //Select item on the left
+    // useHotkeys("h, LEFT", selectLeft, hotkeysFilter);
+
+    // //Select item on the right
+    // useHotkeys("l, RIGHT", selectRight, hotkeysFilter);
 
     //Expand Selection DOWN
     useHotkeys("shift+DOWN", multiSelectBottom, hotkeysFilter);
@@ -120,54 +177,66 @@ const withHotkeys = (Component) => {
     );
 
     //Crete document
-    useHotkeys(
-      "Shift+d",
-      () => setAction({ type: FileAction.Create, extension: "docx", id: -1 }),
-      hotkeysFilter
-    );
+    useHotkeys("Shift+d", () => onCreate("docx"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete spreadsheet
-    useHotkeys(
-      "Shift+s",
-      () => setAction({ type: FileAction.Create, extension: "xlsx", id: -1 }),
-      hotkeysFilter
-    );
+    useHotkeys("Shift+s", () => onCreate("xlsx"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete presentation
-    useHotkeys(
-      "Shift+p",
-      () => setAction({ type: FileAction.Create, extension: "pptx", id: -1 }),
-      hotkeysFilter
-    );
+    useHotkeys("Shift+p", () => onCreate("pptx"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete form template
-    useHotkeys(
-      "Shift+o",
-      () => setAction({ type: FileAction.Create, extension: "docxf", id: -1 }),
-      hotkeysFilter
-    );
+    useHotkeys("Shift+o", () => onCreate("docxf"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete form template from file
     useHotkeys(
       "Alt+Shift+o",
-      () => setSelectFileDialogVisible(true),
+      () => {
+        if (folderWithNoAction) return;
+        setSelectFileDialogVisible(true);
+      },
+
       hotkeysFilter
     );
 
     //Crete folder
-    useHotkeys(
-      "Shift+f",
-      () => setAction({ type: FileAction.Create, id: -1 }),
-      hotkeysFilter
-    );
+    useHotkeys("Shift+f", () => onCreate(null), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Delete selection
     useHotkeys(
       "delete, shift+3, command+delete, command+Backspace",
       () => {
         if (isAvailableOption("delete")) {
-          if (confirmDelete) setDeleteDialogVisible(true);
-          else {
+          if (isRecentFolder) return;
+
+          if (isFavoritesFolder) {
+            const items = selection.map((item) => item.id);
+
+            setFavoriteAction("remove", items)
+              .then(() => toastr.success(t("RemovedFromFavorites")))
+              .catch((err) => toastr.error(err));
+
+            return;
+          }
+
+          if (confirmDelete) {
+            setDeleteDialogVisible(true);
+          } else {
             const translations = {
               deleteOperation: t("Translations:DeleteOperation"),
               deleteFromTrash: t("Translations:DeleteFromTrash"),
@@ -207,22 +276,40 @@ const withHotkeys = (Component) => {
     );
 
     //Upload file
-    useHotkeys("Shift+u", () => uploadFile(false, history, t), hotkeysFilter);
+    useHotkeys(
+      "Shift+u",
+      () => {
+        if (folderWithNoAction) return;
+        uploadFile(false, history, t);
+      },
+
+      hotkeysFilter
+    );
 
     //Upload folder
-    useHotkeys("Shift+i", () => uploadFile(true), hotkeysFilter);
+    useHotkeys(
+      "Shift+i",
+      () => {
+        if (folderWithNoAction) return;
+        uploadFile(true);
+      },
+
+      hotkeysFilter
+    );
 
     return <Component {...props} />;
   };
 
   return inject(
     ({
+      auth,
       filesStore,
       dialogsStore,
       settingsStore,
       filesActionsStore,
       hotkeyStore,
       mediaViewerDataStore,
+      treeFoldersStore,
     }) => {
       const {
         setSelected,
@@ -230,8 +317,8 @@ const withHotkeys = (Component) => {
         setViewAs,
         fileActionStore,
         enabledHotkeys,
+        selection,
       } = filesStore;
-      const { setAction } = fileActionStore;
 
       const {
         selectFile,
@@ -254,7 +341,6 @@ const withHotkeys = (Component) => {
       } = hotkeyStore;
 
       const {
-        setHotkeyPanelVisible,
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
         someDialogIsOpen,
@@ -263,15 +349,22 @@ const withHotkeys = (Component) => {
         isAvailableOption,
         deleteAction,
         backToParentFolder,
+        setFavoriteAction,
       } = filesActionsStore;
 
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
+      const { setHotkeyPanelVisible } = auth.settingsStore;
+
+      const {
+        isFavoritesFolder,
+        isRecentFolder,
+        isTrashFolder,
+      } = treeFoldersStore;
 
       return {
         setSelected,
         viewAs,
         setViewAs,
-        setAction,
 
         setHotkeyPanelVisible,
         setDeleteDialogVisible,
@@ -302,6 +395,12 @@ const withHotkeys = (Component) => {
         someDialogIsOpen,
         enabledHotkeys,
         mediaViewerIsVisible,
+
+        isFavoritesFolder,
+        isRecentFolder,
+        isTrashFolder,
+        selection,
+        setFavoriteAction,
       };
     }
   )(observer(WithHotkeys));

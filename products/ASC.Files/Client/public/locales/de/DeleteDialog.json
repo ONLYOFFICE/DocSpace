@@ -1,11 +1,9 @@
-﻿{
+{
   "MoveToTrashButton": "In den Papierkorb verschieben",
-  "MoveToTrashItemsNote": "Wenn Sie freigegebene Elemente löschen, können andere Benutzer nicht mehr auf sie zugreifen.",
-  "MoveToTrashItemsTitle": "Elemente in den Papierkorb verschieben?",
-  "MoveToTrashOneFileNote": "Wenn Sie eine freigegebene Datei löschen, können andere Benutzer nicht mehr auf sie zugreifen.",
-  "MoveToTrashOneFileTitle": "Datei in den Papierkorb verschieben?",
-  "MoveToTrashOneFolderNote": "Wenn Sie einen gemeinsamen Ordner löschen, können andere Benutzer nicht mehr darauf zugreifen.",
-  "MoveToTrashOneFolderTitle": "Ordner in den Papierkorb verschieben?",
+  "MoveToTrashFile": "Möchten Sie wirklich das Dokument löschen? Bitte beachten Sie, dass es nicht mehr verfügbar wird, wenn Sie es mit jemandem geteilt haben. Möchten Sie fortsetzen?",
+  "MoveToTrashFolder": "Möchten Sie wirklich den Ordner löschen? Bitte beachten Sie, dass es nicht mehr verfügbar wird, wenn Sie ihn mit jemandem geteilt haben. Möchten Sie fortsetzen?",
+  "MoveToTrashItems": "Möchten Sie wirklich diese Elemente löschen? Bitte beachten Sie, dass die Dateien nicht mehr verfügbar werden, wenn Sie diese vorher freigegeben haben. Möchten Sie fortsetzen?",
+  "MoveToTrashTitle": "In Papierkorb verschieben?",
   "UnsubscribeButton": "Abbestellen",
   "UnsubscribeNote": "Sind Sie sicher, dass Sie die ausgewählten Elemente aus der Liste abbestellen möchten?",
   "UnsubscribeTitle": "Abbestellungsbestätigung"

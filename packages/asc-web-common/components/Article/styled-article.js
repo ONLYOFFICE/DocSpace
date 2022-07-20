@@ -53,14 +53,15 @@ const StyledArticle = styled.article`
     width: 100%;
     position: fixed;
 
-    margin-top: 64px !important;
-    height: calc(100% - 64px) !important;
     margin: 0;
     padding: 0;
+    margin-top: ${(props) =>
+      props.isBannerVisible ? "-16px" : "64px"} !important;
+    height: calc(100% - 64px) !important;
   `}
 
   z-index: ${(props) =>
-    props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "100"};
+    props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
   .resizable-block {
     overflow: hidden;
@@ -120,6 +121,7 @@ const StyledArticle = styled.article`
 
   .article-body__scrollbar {
     .scroll-body {
+      padding-top: 16px;
       padding-right: 0px !important;
 
       @media ${mobile} {
@@ -143,24 +145,21 @@ const StyledArticleHeader = styled.div`
   justify-content: flex-start;
   align-items: center;
 
-  .loader {
-    padding-top: 2px;
-  }
-
   @media ${tablet} {
     padding: 16px 16px 17px;
     margin: 0;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
-    .loader {
-      padding-top: 5px;
-      padding-bottom: 7px;
-    }
+
+    height: 61px;
+    min-height: 61px;
+    max-height: 61px;
+    box-sizing: border-box;
   }
 
   @media ${mobile} {
     border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
     padding: 12px 16px 12px;
-    margin-bottom: 16px !important;
+    //margin-bottom: 16px !important;
   }
 
   ${isTablet &&
@@ -168,10 +167,6 @@ const StyledArticleHeader = styled.div`
     padding: 16px 16px 17px;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
     margin: 0;
-    .loader {
-      padding-top: 5px;
-      padding-bottom: 7px;
-    }
   `}
 
   ${isMobileOnly &&
@@ -179,8 +174,10 @@ const StyledArticleHeader = styled.div`
     border-bottom: ${(props) =>
       props.theme.catalog.header.borderBottom} !important;
     padding: 12px 16px 12px !important;
-    margin-bottom: 16px !important;
+    //margin-bottom: 16px !important;
   `}
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 StyledArticleHeader.defaultProps = { theme: Base };
@@ -214,7 +211,7 @@ const StyledHeading = styled(Heading)`
 const StyledIconBox = styled.div`
   display: none;
   align-items: center;
-  height: 28px;
+  height: 20px;
 
   @media ${tablet} {
     display: flex;
@@ -266,11 +263,10 @@ const StyledArticleMainButton = styled.div`
 `;
 
 const StyledControlContainer = styled.div`
-  background: ${(props) => props.theme.catalog.control.background};
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
   position: absolute;
-  top: 30px;
+  top: 37px;
   right: 10px;
   border-radius: 100px;
   cursor: pointer;
@@ -283,8 +279,8 @@ const StyledControlContainer = styled.div`
 StyledControlContainer.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 12px;
-  height: 12px;
+  width: 17px;
+  height: 17px;
   path {
     fill: ${(props) => props.theme.catalog.control.fill};
   }

@@ -1,202 +1,192 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Core.Tenants;
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-
-namespace ASC.Core.Tenants
+[Serializable]
+public class Tenant : IMapFrom<DbTenant>
 {
-    [Serializable]
-    public class Tenant
+    public const int DefaultTenant = -1;
+
+    public static readonly string HostName = Dns.GetHostName().ToLowerInvariant();
+
+    private List<string> _domains;
+
+    public Tenant()
     {
-        public const int DEFAULT_TENANT = -1;
+        Id = DefaultTenant;
+        TimeZone = TimeZoneInfo.Utc.Id;
+        Language = CultureInfo.CurrentCulture.Name;
+        TrustedDomains = new List<string>();
+        TrustedDomainsType = TenantTrustedDomainsType.None;
+        CreationDateTime = DateTime.UtcNow;
+        Status = TenantStatus.Active;
+        StatusChangeDate = DateTime.UtcNow;
+        VersionChanged = DateTime.UtcNow;
+        Industry = TenantIndustry.Other;
+    }
 
-        public static readonly string HostName = Dns.GetHostName().ToLowerInvariant();
+    public Tenant(string alias)
+        : this()
+    {
+        Alias = alias.ToLowerInvariant();
+    }
 
-        public Tenant()
+    public Tenant(int id, string alias)
+        : this(alias)
+    {
+        Id = id;
+    }
+
+    public string AffiliateId { get; set; }
+    public string Alias { get; set; }
+    public bool Calls { get; set; }
+    public string Campaign { get; set; }
+    public DateTime CreationDateTime { get; internal set; }
+    public string HostedRegion { get; set; }
+    public int Id { get; internal set; }
+    public TenantIndustry Industry { get; set; }
+    public string Language { get; set; }
+    public DateTime LastModified { get; set; }
+    public string MappedDomain { get; set; }
+    public string Name { get; set; }
+    public Guid OwnerId { get; set; }
+    public string PartnerId { get; set; }
+    public string PaymentId { get; set; }
+    public bool Spam { get; set; }
+    public TenantStatus Status { get; internal set; }
+    public DateTime StatusChangeDate { get; internal set; }
+    public string TimeZone { get; set; }
+    public List<string> TrustedDomains
+    {
+        get
         {
-            TenantId = DEFAULT_TENANT;
-            TimeZone = TimeZoneInfo.Utc.Id;
-            Language = CultureInfo.CurrentCulture.Name;
-            TrustedDomains = new List<string>();
-            TrustedDomainsType = TenantTrustedDomainsType.None;
-            CreatedDateTime = DateTime.UtcNow;
-            Status = TenantStatus.Active;
-            StatusChangeDate = DateTime.UtcNow;
-            VersionChanged = DateTime.UtcNow;
-            Industry = TenantIndustry.Other;
-        }
-
-        public Tenant(string alias)
-            : this()
-        {
-            TenantAlias = alias.ToLowerInvariant();
-        }
-
-        public Tenant(int id, string alias)
-            : this(alias)
-        {
-            TenantId = id;
-        }
-
-
-        public int TenantId { get; internal set; }
-
-        public string TenantAlias { get; set; }
-
-        public string MappedDomain { get; set; }
-
-        public int Version { get; set; }
-
-        public DateTime VersionChanged { get; set; }
-
-        public string HostedRegion { get; set; }
-
-        public string Name { get; set; }
-
-        public string Language { get; set; }
-
-        public string TimeZone { get; set; }
-
-        public List<string> TrustedDomains { get; set; }
-        public string TrustedDomainsRaw
-        {
-            set
+            if (_domains.Count == 0 && !string.IsNullOrEmpty(TrustedDomainsRaw))
             {
-                TrustedDomains = value != null ? value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
-            }
-        }
-
-        public TenantTrustedDomainsType TrustedDomainsType { get; set; }
-
-        public Guid OwnerId { get; set; }
-
-        public DateTime CreatedDateTime { get; internal set; }
-
-        public CultureInfo GetCulture() { return !string.IsNullOrEmpty(Language) ? CultureInfo.GetCultureInfo(Language.Trim()) : CultureInfo.CurrentCulture; }
-
-        public DateTime LastModified { get; set; }
-
-        public TenantStatus Status { get; internal set; }
-
-        public DateTime StatusChangeDate { get; internal set; }
-
-        public string PartnerId { get; set; }
-
-        public string AffiliateId { get; set; }
-
-        public string Campaign { get; set; }
-
-        public string PaymentId { get; set; }
-
-        public TenantIndustry Industry { get; set; }
-
-        public bool Spam { get; set; }
-
-        public bool Calls { get; set; }
-
-        public void SetStatus(TenantStatus status)
-        {
-            Status = status;
-            StatusChangeDate = DateTime.UtcNow;
-        }
-
-
-        public override bool Equals(object obj)
-        {
-            return obj is Tenant t && t.TenantId == TenantId;
-        }
-
-        public override int GetHashCode()
-        {
-            return TenantId;
-        }
-
-        public override string ToString()
-        {
-            return TenantAlias;
-        }
-
-
-        internal string GetTrustedDomains()
-        {
-            TrustedDomains.RemoveAll(d => string.IsNullOrEmpty(d));
-            if (TrustedDomains.Count == 0) return null;
-            return string.Join("|", TrustedDomains.ToArray());
-        }
-
-        internal void SetTrustedDomains(string trustedDomains)
-        {
-            if (string.IsNullOrEmpty(trustedDomains))
-            {
-                TrustedDomains.Clear();
-            }
-            else
-            {
-                TrustedDomains.AddRange(trustedDomains.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
-            }
-        }
-
-        public string GetTenantDomain(CoreSettings coreSettings, bool allowMappedDomain = true)
-        {
-            var baseHost = coreSettings.GetBaseDomain(HostedRegion);
-
-            if (string.IsNullOrEmpty(baseHost) && !string.IsNullOrEmpty(HostedRegion))
-            {
-                baseHost = HostedRegion;
+                _domains = TrustedDomainsRaw.Split(new[] { '|' },
+                    StringSplitOptions.RemoveEmptyEntries).ToList();
             }
 
-            string result;
-            if (baseHost == "localhost" || TenantAlias == "localhost")
-            {
-                //single tenant on local host
-                TenantAlias = "localhost";
-                result = HostName;
-            }
-            else
-            {
-                result = $"{TenantAlias}.{baseHost}".TrimEnd('.').ToLowerInvariant();
-            }
-            if (!string.IsNullOrEmpty(MappedDomain) && allowMappedDomain)
-            {
-                if (MappedDomain.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    MappedDomain = MappedDomain.Substring(7);
-                }
-                if (MappedDomain.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    MappedDomain = MappedDomain.Substring(8);
-                }
-                result = MappedDomain.ToLowerInvariant();
-            }
+            return _domains;
+        }
+        set => _domains = value;
+    }
 
-            return result;
+    public string TrustedDomainsRaw { get; set; }
+    public TenantTrustedDomainsType TrustedDomainsType { get; set; }
+    public int Version { get; set; }
+    public DateTime VersionChanged { get; set; }
+    public override bool Equals(object obj)
+    {
+        return obj is Tenant t && t.Id == Id;
+    }
+
+    public CultureInfo GetCulture() => !string.IsNullOrEmpty(Language) ? CultureInfo.GetCultureInfo(Language.Trim()) : CultureInfo.CurrentCulture;
+    public override int GetHashCode()
+    {
+        return Id;
+    }
+
+    public string GetTenantDomain(CoreSettings coreSettings, bool allowMappedDomain = true)
+    {
+        var baseHost = coreSettings.GetBaseDomain(HostedRegion);
+
+        if (string.IsNullOrEmpty(baseHost) && !string.IsNullOrEmpty(HostedRegion))
+        {
+            baseHost = HostedRegion;
+        }
+
+        string result;
+        if (baseHost == "localhost" || Alias == "localhost")
+        {
+            //single tenant on local host
+            Alias = "localhost";
+            result = HostName;
+        }
+        else
+        {
+            result = $"{Alias}.{baseHost}".TrimEnd('.').ToLowerInvariant();
+        }
+
+        if (!string.IsNullOrEmpty(MappedDomain) && allowMappedDomain)
+        {
+            if (MappedDomain.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase))
+            {
+                MappedDomain = MappedDomain.Substring(7);
+            }
+            if (MappedDomain.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+            {
+                MappedDomain = MappedDomain.Substring(8);
+            }
+            result = MappedDomain.ToLowerInvariant();
+        }
+
+        return result;
+    }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbTenant, Tenant>()
+            .ForMember(r => r.TrustedDomainsType, opt => opt.MapFrom(src => src.TrustedDomainsEnabled));
+
+        profile.CreateMap<TenantUserSecurity, Tenant>()
+            .IncludeMembers(src => src.DbTenant);
+    }
+
+    public void SetStatus(TenantStatus status)
+    {
+        Status = status;
+        StatusChangeDate = DateTime.UtcNow;
+    }
+
+    public override string ToString()
+    {
+        return Alias;
+    }
+
+    internal string GetTrustedDomains()
+    {
+        TrustedDomains.RemoveAll(d => string.IsNullOrEmpty(d));
+        if (TrustedDomains.Count == 0)
+        {
+            return null;
+        }
+
+        return string.Join("|", TrustedDomains.ToArray());
+    }
+
+    internal void SetTrustedDomains(string trustedDomains)
+    {
+        if (string.IsNullOrEmpty(trustedDomains))
+        {
+            TrustedDomains.Clear();
+        }
+        else
+        {
+            TrustedDomains.AddRange(trustedDomains.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
         }
     }
 }

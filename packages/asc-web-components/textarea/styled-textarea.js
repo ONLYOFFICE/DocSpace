@@ -40,15 +40,15 @@ StyledScrollbar.defaultProps = {
 };
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ClearTextareaAutosize = ({
-  isDisabled,
-  heightScale,
-  hasError,
-  color,
-  ...props
-}) => <TextareaAutosize {...props} />;
+const ClearTextareaAutosize = React.forwardRef(
+  ({ isDisabled, heightScale, hasError, color, ...props }, ref) => (
+    <TextareaAutosize {...props} ref={ref} />
+  )
+);
 
-const StyledTextarea = styled(ClearTextareaAutosize)`
+const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
+  autoFocus: props.autoFocus,
+}))`
   ${commonInputStyle};
 
   width: ${(props) => props.theme.textArea.width};

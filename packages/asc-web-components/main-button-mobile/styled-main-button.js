@@ -14,13 +14,14 @@ const StyledFloatingButton = styled(FloatingButton)`
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+  .circle__background {
+    background: ${(props) => props.theme.mainButtonMobile.buttonColor};
+  }
+
   .circle__mask + div {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background: ${(props) =>
-      props.theme.mainButtonMobile.buttonColor} !important;
 
     div {
       padding-top: 0;
@@ -64,6 +65,18 @@ const mobileDropDown = css`
 
   right: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.bottom};
+
+  .dialog-background-scroll {
+    background: ${(props) => props.theme.backgroundColor} !important;
+  }
+  .section-scroll {
+    background: ${(props) =>
+      props.theme.mainButtonMobile.buttonOptions.backgroundColor};
+  }
+`;
+
+const StyledRenderItem = styled.div`
+  background: ${(props) => props.theme.backgroundColor};
 `;
 
 const StyledDropDown = styled(DropDown)`
@@ -110,14 +123,20 @@ const StyledDropDown = styled(DropDown)`
     color: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
 
     svg {
-      path {
+      path[fill] {
         fill: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
+      }
+
+      path[stroke] {
+        stroke: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
       }
     }
 
     &:hover {
       background-color: ${(props) =>
-        props.theme.mainButtonMobile.dropDown.hoverButtonColor};
+        isMobileOnly
+          ? props.theme.mainButtonMobile.buttonOptions.backgroundColor
+          : props.theme.mainButtonMobile.dropDown.hoverButtonColor};
     }
   }
 
@@ -148,6 +167,10 @@ StyledButtonOptions.defaultProps = { theme: Base };
 
 const StyledContainerAction = styled.div`
   padding: 16px 0px;
+
+  .sublevel {
+    padding-left: 48px;
+  }
 `;
 
 const StyledButtonWrapper = styled.div`
@@ -176,6 +199,7 @@ StyledButtonWrapper.defaultProps = { theme: Base };
 
 const StyledProgressBarContainer = styled.div`
   display: ${(props) => (props.isUploading ? "flex" : "none")};
+
   align-items: center;
 
   flex-wrap: wrap;
@@ -187,27 +211,47 @@ const StyledProgressBarContainer = styled.div`
   height: 60px;
   padding-top: 26px;
 
-  .progress-header {
-    width: 50%;
-    line-height: 16px;
-    color: ${(props) => props.theme.mainButtonMobile.textColor};
-    &:hover {
-      cursor: pointer;
+  .progress-container {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    .progress-header {
+      width: 50%;
+
+      line-height: 16px;
+
+      color: ${(props) => props.theme.mainButtonMobile.textColor};
+      &:hover {
+        cursor: pointer;
+      }
     }
-  }
 
-  .progress_count {
-    line-height: 16px;
-    color: ${(props) => props.theme.mainButtonMobile.textColor};
-    width: 42%;
-    text-align: right;
-    margin-right: 6px;
-  }
+    .progress_info-container {
+      width: 50%;
 
-  .progress_icon {
-    svg {
-      path {
-        fill: ${(props) => props.theme.mainButtonMobile.bar.icon};
+      display: flex;
+      align-items: center;
+
+      .progress_count {
+        width: calc(100% - 26px);
+
+        line-height: 16px;
+        color: ${(props) => props.theme.mainButtonMobile.textColor};
+
+        text-align: right;
+        margin-right: 12px;
+      }
+
+      .progress_icon {
+        svg {
+          path {
+            fill: ${(props) => props.theme.mainButtonMobile.bar.icon};
+          }
+        }
       }
     }
   }
@@ -236,6 +280,15 @@ const StyledBar = styled.div`
       : props.theme.mainButtonMobile.bar.background};
 `;
 
+const StyledAlertIcon = styled.div`
+  position: absolute;
+  z-index: 1010;
+  width: 12px;
+  height: 12px;
+  left: 26px;
+  top: 6px;
+`;
+
 StyledBar.defaultProps = { theme: Base };
 
 export {
@@ -249,4 +302,6 @@ export {
   StyledBar,
   StyledButtonWrapper,
   StyledButtonOptions,
+  StyledAlertIcon,
+  StyledRenderItem,
 };

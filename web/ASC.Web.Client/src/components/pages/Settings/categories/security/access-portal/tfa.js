@@ -7,11 +7,12 @@ import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
-import { getLanguage } from "@appserver/common/utils";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import { isMobile } from "react-device-detect";
+import TfaLoader from "../sub-components/loaders/tfa-loader";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -22,7 +23,7 @@ const MainContainer = styled.div`
 `;
 
 const TwoFactorAuth = (props) => {
-  const { t, history, initSettings, isInit, setIsInit } = props;
+  const { t, history, initSettings, isInit, setIsInit, helpLink } = props;
   const [type, setType] = useState("none");
 
   const [smsDisabled, setSmsDisabled] = useState(false);
@@ -93,17 +94,16 @@ const TwoFactorAuth = (props) => {
     setIsSaving(true);
 
     try {
-      await setTfaSettings(type);
+      const res = await setTfaSettings(type);
 
       toastr.success(t("SuccessfullySaveSettingsMessage"));
       saveToSessionStorage("defaultTfaSettings", type);
       setIsSaving(false);
       setShowReminder(false);
 
-      if (type !== "none") {
+      if (res) {
         setIsInit(false);
-        const link = await getTfaConfirmLink();
-        history.push(link.replace(window.location.origin, ""));
+        history.push(res.replace(window.location.origin, ""));
       }
     } catch (error) {
       toastr.error(error);
@@ -116,7 +116,10 @@ const TwoFactorAuth = (props) => {
     setShowReminder(false);
   };
 
-  const lng = getLanguage(localStorage.getItem("language") || "en");
+  if (isMobile && !isInit && !isLoading) {
+    return <TfaLoader />;
+  }
+
   return (
     <MainContainer>
       <LearnMoreWrapper>
@@ -125,7 +128,7 @@ const TwoFactorAuth = (props) => {
           color="#316DAA"
           target="_blank"
           isHovered
-          href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
+          href={`${helpLink}/administration/two-factor-authentication.aspx`}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -184,6 +187,7 @@ export default inject(({ auth, setup }) => {
   } = auth.tfaStore;
 
   const { isInit, initSettings, setIsInit } = setup;
+  const { helpLink } = auth.settingsStore;
 
   return {
     setTfaSettings,
@@ -194,6 +198,7 @@ export default inject(({ auth, setup }) => {
     isInit,
     initSettings,
     setIsInit,
+    helpLink,
   };
 })(
   withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))

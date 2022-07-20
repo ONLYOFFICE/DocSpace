@@ -7,7 +7,7 @@ export const settingsTree = [
     key: "0",
     icon: "/static/images/settings.react.svg",
     link: "common",
-    tKey: "ManagementCategoryCommon",
+    tKey: "Common:Common",
     isHeader: true,
     children: [
       {
@@ -76,6 +76,24 @@ export const settingsTree = [
             icon: "",
             link: "trusted-mail",
             tKey: "TrustedMail",
+          },
+          {
+            key: "1-0-3",
+            icon: "",
+            link: "ip",
+            tKey: "IPSecurity",
+          },
+          {
+            key: "1-0-4",
+            icon: "",
+            link: "admin-message",
+            tKey: "AdminsMessage",
+          },
+          {
+            key: "1-0-5",
+            icon: "",
+            link: "lifetime",
+            tKey: "SessionLifetime",
           },
         ],
       },

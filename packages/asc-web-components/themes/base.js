@@ -42,6 +42,7 @@ const {
   hoverWarning,
   darkBlack,
   silver,
+  lightHover,
   strongBlue,
   lightGrayishStrongBlue,
   darkRed,
@@ -383,14 +384,14 @@ const Base = {
     background: grayLight,
     activeBackground: grayLightMid,
 
-    border: `1px solid ${globalColors.grayLightMid}`,
+    border: `none`,
     boxSizing: "border-box",
     borderRadius: "3px",
-    height: " 34px",
-    width: "34px",
+    height: " 32px",
+    width: "32px",
     padding: "9px",
-    color: "#979797",
-    hoverColor: black,
+    color: black,
+    hoverColor: darkBlack,
   },
 
   saveCancelButtons: {
@@ -569,10 +570,16 @@ const Base = {
   },
 
   modalDialog: {
+    backgroundColor: white,
+    textColor: black,
+    headerBorderColor: globalColors.grayLightMid,
+    footerBorderColor: globalColors.grayLightMid,
     width: "auto",
     maxwidth: "560px",
     margin: " 0 auto",
     minHeight: "100%",
+
+    colorDisabledFileIcons: "#f3f4f4",
 
     content: {
       backgroundColor: white,
@@ -595,14 +602,8 @@ const Base = {
     },
 
     closeButton: {
-      width: "14px",
-      height: "14px",
-      minWidth: "14px",
-      minHeight: "14px",
-
-      right: "16px",
-      top: "13px",
-      hoverColor: grayMain,
+      //backgroundColor: "#9a9ea3",
+      fillColor: white,
     },
   },
 
@@ -610,7 +611,6 @@ const Base = {
     button: {
       marginRight: "8px",
       maxWidth: "110px",
-      padding: "6px 8px 10px",
     },
 
     page: {
@@ -866,6 +866,10 @@ const Base = {
 
     span: { maxWidth: "300px" },
 
+    expander: {
+      iconColor: black,
+    },
+
     caret: {
       width: "5px",
       minWidth: "5px",
@@ -1072,6 +1076,11 @@ const Base = {
       borderRadius: "50%",
     },
 
+    icon: {
+      background: lightHover,
+      color: grayMain,
+    },
+
     width: {
       min: "32px",
       small: "36px",
@@ -1218,7 +1227,7 @@ const Base = {
   },
 
   backdrop: {
-    backgroundColor: "rgba(6, 22, 38, 0.1)",
+    backgroundColor: "rgba(6, 22, 38, 0.2)",
     unsetBackgroundColor: "unset",
   },
 
@@ -1228,6 +1237,8 @@ const Base = {
 
   treeNode: {
     background: "#f3f4f4",
+    disableColor: "#A3A9AE",
+
     dragging: {
       draggable: {
         background: lightCumulus,
@@ -1341,7 +1352,7 @@ const Base = {
     icon: {
       width: "16px",
       marginRight: "8px",
-      lineHeight: "14px",
+      lineHeight: "10px",
 
       color: black,
       disableColor: gray,
@@ -1600,8 +1611,8 @@ const Base = {
     disableFillColor: grayLightMid,
     disableFillColorOff: grayLightMid,
 
-    borderColor: blueMain,
-    borderColorOff: gray,
+    borderColor: "unset",
+    borderColorOff: "unset",
 
     disableBorderColor: grayLightMid,
     disableBorderColorOff: grayLightMid,
@@ -1878,7 +1889,7 @@ const Base = {
       marginLeft: "8px",
       marginRight: "-2px",
       tablet: {
-        width: "48px",
+        width: "44px",
         height: "44px",
         marginRight: "-16px",
       },
@@ -1917,7 +1928,7 @@ const Base = {
 
   header: {
     backgroundColor: "#0F4071",
-
+    recoveryColor: "#27537F",
     linkColor: "#7a95b0",
     productColor: white,
   },
@@ -1952,6 +1963,7 @@ const Base = {
     sectionHeaderToggleBgActive: grayLight,
 
     backgroundColor: white,
+    blurColor: "rgba(6, 22, 38, 0.2)",
     borderColor: grayLightMid,
     thumbnailBorderColor: grayLightMid,
     textColor: black,
@@ -2078,6 +2090,7 @@ const Base = {
       hoverIconColor: grayMain,
 
       borderImageSource: `linear-gradient(to right,${white} 21px,${grayLightMid} 21px,${grayLightMid} calc(100% - 20px),${white} calc(100% - 20px))`,
+      lengthenBorderImageSource: `linear-gradient(to right, ${grayLightMid}, ${grayLightMid})`,
       hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 
@@ -2222,8 +2235,22 @@ const Base = {
     },
   },
 
+  connectCloud: {
+    connectBtnContent: black,
+    connectBtnTextBg: white,
+    connectBtnIconBg: white,
+    connectBtnTextBorder: grayMid,
+    connectBtnIconBorder: grayMid,
+  },
+
   filesThirdPartyDialog: {
     border: "1px solid #d1d1d1",
+  },
+
+  connectedClouds: {
+    color: "#657077",
+    borderBottom: `1px solid #eceef1`,
+    borderRight: `1px solid #d0d5da`,
   },
 
   filesModalDialog: {
@@ -2455,6 +2482,10 @@ const Base = {
       itemActiveBorder: blueMain,
     },
 
+    row: {
+      itemBackground: white,
+    },
+
     fill: gray,
     hoverFill: grayMain,
   },
@@ -2547,6 +2578,10 @@ const Base = {
     changePassword: {
       linkColor: link,
     },
+  },
+
+  downloadDialog: {
+    background: "#f8f9f9",
   },
 
   studio: {
@@ -2647,6 +2682,11 @@ const Base = {
         separatorBorder: `1px solid ${grayLightMid}`,
         linkColor: link,
       },
+
+      backup: {
+        rectangleBackgroundColor: "#f8f9f9",
+        separatorBorder: "1px solid #eceef1",
+      },
     },
 
     wizard: {
@@ -2680,6 +2720,14 @@ const Base = {
   submenu: {
     lineColor: "#eceef1",
     backgroundColor: white,
+    textColor: "#316DAA",
+    bottomLineColor: "#316DAA",
+  },
+
+  hotkeys: {
+    key: {
+      color: grayMain,
+    },
   },
 };
 

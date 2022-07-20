@@ -1,200 +1,194 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.ElasticSearch.Core;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-
-using Autofac;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-using Newtonsoft.Json;
-
-namespace ASC.ElasticSearch.Core
+[Serializable]
+public class SearchSettings : ISettings<SearchSettings>
 {
-    [Serializable]
-    public class SearchSettings : ISettings
+    public string Data { get; set; }
+
+    [JsonIgnore]
+    public Guid ID => new Guid("{93784AB2-10B5-4C2F-9B36-F2662CCCF316}");
+    internal List<SearchSettingsItem> Items
     {
-        public string Data { get; set; }
-
-        public Guid ID
+        get
         {
-            get { return new Guid("{93784AB2-10B5-4C2F-9B36-F2662CCCF316}"); }
-        }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new SearchSettings();
-        }
-
-        private List<SearchSettingsItem> items;
-        internal List<SearchSettingsItem> Items
-        {
-            get
+            if (_items != null)
             {
-                if (items != null) return items;
-                var parsed = JsonConvert.DeserializeObject<List<SearchSettingsItem>>(Data ?? "");
-                return items = parsed ?? new List<SearchSettingsItem>();
+                return _items;
             }
-            set
-            {
-                items = value;
-            }
+
+            var parsed = JsonConvert.DeserializeObject<List<SearchSettingsItem>>(Data ?? "");
+
+            return _items = parsed ?? new List<SearchSettingsItem>();
         }
-
-        internal bool IsEnabled(string name)
+        set
         {
-            var wrapper = Items.FirstOrDefault(r => r.ID == name);
-
-            return wrapper != null && wrapper.Enabled;
+            _items = value;
         }
     }
 
-    [Scope]
-    public class SearchSettingsHelper
+    private List<SearchSettingsItem> _items;
+
+    public SearchSettings GetDefault()
     {
-        private TenantManager TenantManager { get; }
-        private SettingsManager SettingsManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private ICacheNotify<ReIndexAction> CacheNotify { get; }
-        private IServiceProvider ServiceProvider { get; }
-        public IConfiguration Configuration { get; }
-
-        public SearchSettingsHelper(
-            TenantManager tenantManager,
-            SettingsManager settingsManager,
-            CoreBaseSettings coreBaseSettings,
-            ICacheNotify<ReIndexAction> cacheNotify,
-            IServiceProvider serviceProvider,
-            IConfiguration configuration)
-        {
-            TenantManager = tenantManager;
-            SettingsManager = settingsManager;
-            CoreBaseSettings = coreBaseSettings;
-            CacheNotify = cacheNotify;
-            ServiceProvider = serviceProvider;
-            Configuration = configuration;
-        }
-
-        public List<SearchSettingsItem> GetAllItems()
-        {
-            if (!CoreBaseSettings.Standalone) return new List<SearchSettingsItem>();
-
-            var settings = SettingsManager.Load<SearchSettings>();
-
-            return AllItems.Select(r => new SearchSettingsItem
-            {
-                ID = r.IndexName,
-                Enabled = settings.IsEnabled(r.IndexName),
-                Title = r.SettingsTitle
-            }).ToList();
-        }
-
-        private IEnumerable<IFactoryIndexer> allItems;
-        internal IEnumerable<IFactoryIndexer> AllItems
-        {
-            get
-            {
-                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
-            }
-        }
-
-        public void Set(List<SearchSettingsItem> items)
-        {
-            if (!CoreBaseSettings.Standalone) return;
-
-            var settings = SettingsManager.Load<SearchSettings>();
-
-            var settingsItems = settings.Items;
-            var toReIndex = settingsItems.Count == 0 ? items.Where(r => r.Enabled).ToList() : items.Where(item => settingsItems.Any(r => r.ID == item.ID && r.Enabled != item.Enabled)).ToList();
-
-            settings.Items = items;
-            settings.Data = JsonConvert.SerializeObject(items);
-            SettingsManager.Save(settings);
-
-            var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().TenantId };
-            action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
-
-            CacheNotify.Publish(action, CacheNotifyAction.Any);
-        }
-
-        public bool CanIndexByContent<T>(int tenantId) where T : class, ISearchItem
-        {
-            return CanIndexByContent(typeof(T), tenantId);
-        }
-
-        public bool CanIndexByContent(Type t, int tenantId)
-        {
-            if (!typeof(ISearchItemDocument).IsAssignableFrom(t))
-            {
-                return false;
-            }
-
-            if (Convert.ToBoolean(Configuration["core:search-by-content"] ?? "false")) return true;
-
-            if (!CoreBaseSettings.Standalone) return true;
-
-            var settings = SettingsManager.LoadForTenant<SearchSettings>(tenantId);
-
-            return settings.IsEnabled(((ISearchItemDocument)ServiceProvider.GetService(t)).IndexName);
-        }
-
-        public bool CanSearchByContent<T>() where T : class, ISearchItem
-        {
-            return CanSearchByContent(typeof(T));
-        }
-
-        public bool CanSearchByContent(Type t)
-        {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
-            if (!CanIndexByContent(t, tenantId)) return false;
-
-            if (CoreBaseSettings.Standalone)
-            {
-                return true;
-            }
-
-            return TenantManager.GetTenantQuota(tenantId).ContentSearch;
-        }
+        return new SearchSettings();
     }
 
-    [Serializable]
-    public class SearchSettingsItem
+    internal bool IsEnabled(string name)
     {
-        public string ID { get; set; }
+        var wrapper = Items.FirstOrDefault(r => r.ID == name);
 
-        public bool Enabled { get; set; }
-
-        public string Title { get; set; }
+        return wrapper != null && wrapper.Enabled;
     }
+}
+
+[Scope]
+public class SearchSettingsHelper
+{
+    internal IEnumerable<IFactoryIndexer> AllItems =>
+        _allItems ??= _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>();
+
+    private readonly IConfiguration _configuration;
+    private readonly TenantManager _tenantManager;
+    private readonly SettingsManager _settingsManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly ICacheNotify<ReIndexAction> _cacheNotify;
+    private readonly IServiceProvider _serviceProvider;
+    private IEnumerable<IFactoryIndexer> _allItems;
+
+    public SearchSettingsHelper(
+        TenantManager tenantManager,
+        SettingsManager settingsManager,
+        CoreBaseSettings coreBaseSettings,
+        ICacheNotify<ReIndexAction> cacheNotify,
+        IServiceProvider serviceProvider,
+        IConfiguration configuration)
+    {
+        _tenantManager = tenantManager;
+        _settingsManager = settingsManager;
+        _coreBaseSettings = coreBaseSettings;
+        _cacheNotify = cacheNotify;
+        _serviceProvider = serviceProvider;
+        _configuration = configuration;
+    }
+
+    public List<SearchSettingsItem> GetAllItems()
+    {
+        if (!_coreBaseSettings.Standalone)
+        {
+            return new List<SearchSettingsItem>();
+        }
+
+        var settings = _settingsManager.Load<SearchSettings>();
+
+        return AllItems.Select(r => new SearchSettingsItem
+        {
+            ID = r.IndexName,
+            Enabled = settings.IsEnabled(r.IndexName),
+            Title = r.SettingsTitle
+        }).ToList();
+    }
+
+    public void Set(List<SearchSettingsItem> items)
+    {
+        if (!_coreBaseSettings.Standalone)
+        {
+            return;
+        }
+
+        var settings = _settingsManager.Load<SearchSettings>();
+
+        var settingsItems = settings.Items;
+        var toReIndex = settingsItems.Count == 0 ? items.Where(r => r.Enabled).ToList() : items.Where(item => settingsItems.Any(r => r.ID == item.ID && r.Enabled != item.Enabled)).ToList();
+
+        settings.Items = items;
+        settings.Data = JsonConvert.SerializeObject(items);
+        _settingsManager.Save(settings);
+
+        var action = new ReIndexAction() { Tenant = _tenantManager.GetCurrentTenant().Id };
+        action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
+
+        _cacheNotify.Publish(action, CacheNotifyAction.Any);
+    }
+
+    public bool CanIndexByContent<T>(int tenantId) where T : class, ISearchItem
+    {
+        return CanIndexByContent(typeof(T), tenantId);
+    }
+
+    public bool CanIndexByContent(Type t, int tenantId)
+    {
+        if (!typeof(ISearchItemDocument).IsAssignableFrom(t))
+        {
+            return false;
+        }
+
+        if (Convert.ToBoolean(_configuration["core:search-by-content"] ?? "false"))
+        {
+            return true;
+        }
+
+        if (!_coreBaseSettings.Standalone)
+        {
+            return true;
+        }
+
+        var settings = _settingsManager.LoadForTenant<SearchSettings>(tenantId);
+
+        return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
+    }
+
+    public bool CanSearchByContent<T>() where T : class, ISearchItem
+    {
+        return CanSearchByContent(typeof(T));
+    }
+
+    public bool CanSearchByContent(Type t)
+    {
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        if (!CanIndexByContent(t, tenantId))
+        {
+            return false;
+        }
+
+        if (_coreBaseSettings.Standalone)
+        {
+            return true;
+        }
+
+        return _tenantManager.GetTenantQuota(tenantId).ContentSearch;
+    }
+}
+
+[Serializable]
+public class SearchSettingsItem
+{
+    public string ID { get; set; }
+    public bool Enabled { get; set; }
+    public string Title { get; set; }
 }

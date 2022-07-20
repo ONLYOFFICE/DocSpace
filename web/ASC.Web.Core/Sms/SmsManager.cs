@@ -1,165 +1,188 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Constants = ASC.Core.Users.Constants;
 
-using System;
-using System.Threading.Tasks;
+namespace ASC.Web.Studio.Core.SMS;
 
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Security;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Sms;
-
-namespace ASC.Web.Studio.Core.SMS
+[Scope]
+public class SmsManager
 {
-    [Scope]
-    public class SmsManager
+    private readonly UserManager _userManager;
+    private readonly SecurityContext _securityContext;
+    private readonly TenantManager _tenantManager;
+    private readonly SmsKeyStorage _smsKeyStorage;
+    private readonly SmsSender _smsSender;
+    private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
+    private readonly CookiesManager _cookieManager;
+
+    public SmsManager(
+        UserManager userManager,
+        SecurityContext securityContext,
+        TenantManager tenantManager,
+        SmsKeyStorage smsKeyStorage,
+        SmsSender smsSender,
+        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
+        CookiesManager cookieManager)
     {
-        private UserManager UserManager { get; }
-        private SecurityContext SecurityContext { get; }
-        private TenantManager TenantManager { get; }
-        private SmsKeyStorage SmsKeyStorage { get; }
-        private SmsSender SmsSender { get; }
-        private StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
+        _userManager = userManager;
+        _securityContext = securityContext;
+        _tenantManager = tenantManager;
+        _smsKeyStorage = smsKeyStorage;
+        _smsSender = smsSender;
+        _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+        _cookieManager = cookieManager;
+    }
 
-        public SmsManager(
-            UserManager userManager,
-            SecurityContext securityContext,
-            TenantManager tenantManager,
-            SmsKeyStorage smsKeyStorage,
-            SmsSender smsSender,
-            StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper)
+    public Task<string> SaveMobilePhoneAsync(UserInfo user, string mobilePhone)
+    {
+        mobilePhone = SmsSender.GetPhoneValueDigits(mobilePhone);
+
+        if (user == null || Equals(user, Constants.LostUser))
         {
-            UserManager = userManager;
-            SecurityContext = securityContext;
-            TenantManager = tenantManager;
-            SmsKeyStorage = smsKeyStorage;
-            SmsSender = smsSender;
-            StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+            throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        public Task<string> SaveMobilePhoneAsync(UserInfo user, string mobilePhone)
+        if (string.IsNullOrEmpty(mobilePhone))
         {
-            mobilePhone = SmsSender.GetPhoneValueDigits(mobilePhone);
-
-            if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
-            if (string.IsNullOrEmpty(mobilePhone)) throw new Exception(Resource.ActivateMobilePhoneEmptyPhoneNumber);
-            if (!string.IsNullOrEmpty(user.MobilePhone) && user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.Activated) throw new Exception(Resource.MobilePhoneMustErase);
-
-            return InternalSaveMobilePhoneAsync(user, mobilePhone);
+            throw new Exception(Resource.ActivateMobilePhoneEmptyPhoneNumber);
         }
 
-        private async Task<string> InternalSaveMobilePhoneAsync(UserInfo user, string mobilePhone)
+        if (!string.IsNullOrEmpty(user.MobilePhone) && user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.Activated)
         {
-            user.MobilePhone = mobilePhone;
-            user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
-            if (SecurityContext.IsAuthenticated)
+            throw new Exception(Resource.MobilePhoneMustErase);
+        }
+
+        return InternalSaveMobilePhoneAsync(user, mobilePhone);
+    }
+
+    private async Task<string> InternalSaveMobilePhoneAsync(UserInfo user, string mobilePhone)
+    {
+        user.MobilePhone = mobilePhone;
+        user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
+        if (_securityContext.IsAuthenticated)
+        {
+            _userManager.SaveUserInfo(user, syncCardDav: true);
+        }
+        else
+        {
+            try
             {
-                UserManager.SaveUserInfo(user);
+                _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+                _userManager.SaveUserInfo(user, syncCardDav: true);
             }
-            else
+            finally
             {
-                try
-                {
-                    SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                    UserManager.SaveUserInfo(user);
-                }
-                finally
-                {
-                    SecurityContext.Logout();
-                }
-            }
-
-            if (StudioSmsNotificationSettingsHelper.Enable)
-            {
-                await PutAuthCodeAsync(user, false);
-            }
-
-            return mobilePhone;
-        }
-
-        public Task PutAuthCodeAsync(UserInfo user, bool again)
-        {
-            if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
-
-            if (!StudioSmsNotificationSettingsHelper.IsVisibleSettings() || !StudioSmsNotificationSettingsHelper.Enable) throw new MethodAccessException();
-
-            var mobilePhone = SmsSender.GetPhoneValueDigits(user.MobilePhone);
-
-            if (SmsKeyStorage.ExistsKey(mobilePhone) && !again) return Task.CompletedTask;
-
-            if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key)) throw new Exception(Resource.SmsTooMuchError);
-            return InternalPutAuthCodeAsync(mobilePhone, key);
-        }
-
-        private async Task InternalPutAuthCodeAsync(string mobilePhone, string key)
-        {
-            if (await SmsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
-            {
-                TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().TenantId, Path = "/sms", Counter = 1 }, true);
+                _securityContext.Logout();
             }
         }
 
-        public void ValidateSmsCode(UserInfo user, string code)
+        if (_studioSmsNotificationSettingsHelper.Enable)
         {
-            if (!StudioSmsNotificationSettingsHelper.IsVisibleSettings()
-                || !StudioSmsNotificationSettingsHelper.Enable)
-            {
-                return;
-            }
+            await PutAuthCodeAsync(user, false);
+        }
 
-            if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
+        return mobilePhone;
+    }
 
-            var valid = SmsKeyStorage.ValidateKey(user.MobilePhone, code);
-            switch (valid)
-            {
-                case SmsKeyStorage.Result.Empty:
-                    throw new Exception(Resource.ActivateMobilePhoneEmptyCode);
-                case SmsKeyStorage.Result.TooMuch:
-                    throw new BruteForceCredentialException(Resource.SmsTooMuchError);
-                case SmsKeyStorage.Result.Timeout:
-                    throw new TimeoutException(Resource.SmsAuthenticationTimeout);
-                case SmsKeyStorage.Result.Invalide:
-                    throw new ArgumentException(Resource.SmsAuthenticationMessageError);
-            }
-            if (valid != SmsKeyStorage.Result.Ok) throw new Exception("Error: " + valid);
+    public Task PutAuthCodeAsync(UserInfo user, bool again)
+    {
+        if (user == null || Equals(user, Constants.LostUser))
+        {
+            throw new Exception(Resource.ErrorUserNotFound);
+        }
 
-            if (!SecurityContext.IsAuthenticated)
-            {
-                SecurityContext.AuthenticateMe(user.ID);
-                //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
-            }
+        if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() || !_studioSmsNotificationSettingsHelper.Enable)
+        {
+            throw new MethodAccessException();
+        }
 
-            if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
-            {
-                user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.Activated;
-                UserManager.SaveUserInfo(user);
-            }
+        var mobilePhone = SmsSender.GetPhoneValueDigits(user.MobilePhone);
+
+        if (_smsKeyStorage.ExistsKey(mobilePhone) && !again)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (!_smsKeyStorage.GenerateKey(mobilePhone, out var key))
+        {
+            throw new Exception(Resource.SmsTooMuchError);
+        }
+
+        return InternalPutAuthCodeAsync(mobilePhone, key);
+    }
+
+    private async Task InternalPutAuthCodeAsync(string mobilePhone, string key)
+    {
+        if (await _smsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
+        {
+            _tenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = _tenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1 }, true);
+        }
+    }
+
+    public void ValidateSmsCode(UserInfo user, string code, bool isEntryPoint = false)
+    {
+        if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings()
+            || !_studioSmsNotificationSettingsHelper.Enable)
+        {
+            return;
+        }
+
+        if (user == null || Equals(user, Constants.LostUser))
+        {
+            throw new Exception(Resource.ErrorUserNotFound);
+        }
+
+        var valid = _smsKeyStorage.ValidateKey(user.MobilePhone, code);
+        switch (valid)
+        {
+            case SmsKeyStorage.Result.Empty:
+                throw new Exception(Resource.ActivateMobilePhoneEmptyCode);
+            case SmsKeyStorage.Result.TooMuch:
+                throw new BruteForceCredentialException(Resource.SmsTooMuchError);
+            case SmsKeyStorage.Result.Timeout:
+                throw new TimeoutException(Resource.SmsAuthenticationTimeout);
+            case SmsKeyStorage.Result.Invalide:
+                throw new ArgumentException(Resource.SmsAuthenticationMessageError);
+        }
+        if (valid != SmsKeyStorage.Result.Ok)
+        {
+            throw new Exception("Error: " + valid);
+        }
+
+        if (!_securityContext.IsAuthenticated)
+        {
+            var action = isEntryPoint ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaSms;
+            _cookieManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
+        }
+
+        if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
+        {
+            user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.Activated;
+            _userManager.SaveUserInfo(user);
         }
     }
 }
