@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
-import { RoomsType } from "@appserver/common/constants";
 import ModalDialog from "@appserver/components/modal-dialog";
 
-import SetRoomParams from "./sub-components/SetRoomParams";
-import RoomTypeList from "./sub-components/RoomTypeList";
+import SetRoomParams from "./views/CreateRoom/SetRoomParams";
+import RoomTypeList from "./views/ChooseRoomType/RoomTypeList";
 import Button from "@appserver/components/button";
+import { roomTypes } from "./roomTypes";
+import TagHandler from "./handlers/tagHandler";
 
 const CreateRoomDialog = ({
   t,
@@ -18,7 +19,7 @@ const CreateRoomDialog = ({
   const onClose = () => setCreateRoomDialogVisible(false);
 
   const [roomParams, setRoomParams] = useState({
-    title: "New room",
+    title: "",
     type: undefined,
     tags: [],
     isPrivate: false,
@@ -26,49 +27,24 @@ const CreateRoomDialog = ({
     icon: "",
   });
 
-  const chooseRoomType = (roomType) => {
-    setRoomParams({ ...roomParams, type: roomType });
+  const setRoomTags = (newTags) =>
+    setRoomParams({ ...roomParams, tags: newTags });
+
+  const tagHandler = new TagHandler(roomParams.tags, setRoomTags);
+
+  const setRoomType = (newRoomType) => {
+    const [roomByType] = roomTypes.filter((room) => room.type === newRoomType);
+    tagHandler.refreshDefaultTag(t(roomByType.title));
+    setRoomParams((prev) => ({
+      ...prev,
+      type: newRoomType,
+    }));
   };
 
   const onCreateRoom = () => {
-    createRoom({
-      title: "some text",
-      roomType: currentRoomtype,
-    });
+    //createRoom(roomParams);
+    createRoom({ roomType: 4, title: "someTitle" });
   };
-
-  const rooms = [
-    {
-      type: RoomsType.FillingFormsRoom,
-      title: t("FillingFormsRoomTitle"),
-      description: t("FillingFormsRoomDescription"),
-      withSecondaryInfo: true,
-    },
-    {
-      type: RoomsType.EditingRoom,
-      title: t("CollaborationRoomTitle"),
-      description: t("CollaborationRoomDescription"),
-      withSecondaryInfo: true,
-    },
-    {
-      type: RoomsType.ReviewRoom,
-      title: t("ReviewRoomTitle"),
-      description: t("ReviewRoomDescription"),
-      withSecondaryInfo: true,
-    },
-    {
-      type: RoomsType.ReadOnlyRoom,
-      title: t("ViewOnlyRoomTitle"),
-      description: t("ViewOnlyRoomDescription"),
-      withSecondaryInfo: true,
-    },
-    {
-      type: RoomsType.CustomRoom,
-      title: t("CustomRoomTitle"),
-      description: t("CustomRoomDescription"),
-      withSecondaryInfo: false,
-    },
-  ];
 
   const isChooseRoomType = roomParams.type === undefined;
   return (
@@ -84,12 +60,14 @@ const CreateRoomDialog = ({
 
       <ModalDialog.Body>
         {isChooseRoomType ? (
-          <RoomTypeList rooms={rooms} chooseRoomType={chooseRoomType} />
+          <RoomTypeList t={t} setRoomType={setRoomType} />
         ) : (
           <SetRoomParams
+            t={t}
+            tagHandler={tagHandler}
             roomParams={roomParams}
-            rooms={rooms}
-            chooseRoomType={chooseRoomType}
+            setRoomParams={setRoomParams}
+            setRoomType={setRoomType}
           />
         )}
       </ModalDialog.Body>
@@ -117,17 +95,18 @@ const CreateRoomDialog = ({
   );
 };
 
-export default inject(({ roomsStore, dialogsStore }) => {
-  const createRoom = { roomsStore };
-
+export default inject(({ dialogsStore, roomsStore }) => {
   const {
     createRoomDialogVisible: visible,
     setCreateRoomDialogVisible,
   } = dialogsStore;
 
+  console.log(roomsStore);
+  //const { createRoom } = roomsStore;
+
   return {
     visible,
     setCreateRoomDialogVisible,
-    createRoom,
+    createRoom: () => {},
   };
 })(withTranslation(["CreateRoomDialog", "Common"])(observer(CreateRoomDialog)));
