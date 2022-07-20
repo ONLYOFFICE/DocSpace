@@ -16,12 +16,12 @@ winston.stream = {
 };
 
 const loadPath = (lng, ns) => {
-  let resourcePath =
-    path.resolve(process.cwd(), "dist/client") + `/locales/${lng}/${ns}.json`;
+  let resourcePath = path.resolve(
+    path.join(__dirname, "client", `locales/${lng}/${ns}.json`)
+  );
   if (ns === "Common")
     resourcePath = path.resolve(
-      process.cwd(),
-      `../../public/locales/${lng}/${ns}.json`
+      path.join(__dirname, `../../../public/locales/${lng}/${ns}.json`)
     );
 
   return resourcePath;
@@ -58,9 +58,9 @@ app.use(i18nextMiddleware.handle(i18next));
 app.use(compression());
 app.use(
   "/products/files/doceditor/",
-  express.static(path.resolve(process.cwd(), "dist/client"))
+  express.static(path.resolve(path.join(__dirname, "client")))
 );
-//app.use(express.static(path.resolve(process.cwd(), "dist/client")));
+
 app.use(initMiddleware);
 app.use(logger("dev", { stream: winston.stream }));
 app.get("/products/files/doceditor", async (req, res) => {
@@ -89,7 +89,9 @@ const server = app.listen(port, () => {
 if (IS_DEVELOPMENT) {
   const wss = ws(server);
 
-  const manifestFile = path.resolve(process.cwd(), "dist/client/manifest.json");
+  const manifestFile = path.resolve(
+    path.join(__dirname, "client/manifest.json")
+  );
 
   let fsWait = false;
   fs.watch(manifestFile, (event, filename) => {

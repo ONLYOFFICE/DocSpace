@@ -12,7 +12,7 @@ const sheet = new ServerStyleSheet();
 
 export default async (req, res, next) => {
   const manifest = fs.readFileSync(
-    path.join(process.cwd(), "dist/client/manifest.json"),
+    path.join(__dirname, "client/manifest.json"),
     "utf-8"
   );
 

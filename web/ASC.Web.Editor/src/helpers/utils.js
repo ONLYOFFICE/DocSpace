@@ -13,6 +13,8 @@ import {
 
 import pkg from "../../package.json";
 
+let personal = IS_PERSONAL || null;
+
 export const canConvert = (extension, filesSettings) => {
   const array = filesSettings?.extsMustConvert || [];
   const result = array.findIndex((item) => item === extension);
@@ -56,7 +58,7 @@ export const initDocEditor = async (req) => {
     ]);
 
     const successAuth = !!user;
-    const personal = settings?.personal;
+    personal = settings?.personal;
 
     if (!successAuth && !doc) {
       error = {
