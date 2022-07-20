@@ -1328,18 +1328,32 @@ class FilesActionStore {
   };
 
   getRoomsFolderOptions = (itemsCollection, t) => {
-    const pin = this.getOption("pin", t);
+    let pinName = "unpin";
+    const { selection } = this.filesStore;
+
+    selection.forEach((item) => {
+      if (!item.pinned) pinName = "pin";
+    });
+
+    const pin = this.getOption(pinName, t);
     const archive = this.getOption("archive", t);
 
-    itemsCollection.set("pin", pin).set("archive", archive);
+    itemsCollection.set(pinName, pin).set("archive", archive);
     return this.convertToArray(itemsCollection);
   };
 
   getArchiveRoomsFolderOptions = (itemsCollection, t) => {
-    const pin = this.getOption("pin", t);
+    let pinName = "unpin";
+    const { selection } = this.filesStore;
+
+    selection.forEach((item) => {
+      if (!item.pinned) pinName = "pin";
+    });
+
+    const pin = this.getOption(pinName, t);
     const archive = this.getOption("unarchive", t);
 
-    itemsCollection.set("pin", pin).set("unarchive", archive);
+    itemsCollection.set(pinName, pin).set("unarchive", archive);
     return this.convertToArray(itemsCollection);
   };
 
