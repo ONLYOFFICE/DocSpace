@@ -5,6 +5,7 @@ import Submenu from "@appserver/components/submenu";
 
 import PortalDeactivationSection from "./portalDeactivation";
 import PortalDeletionSection from "./portalDeletion";
+import DeleteDataLoader from "./DeleteDataLoader";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
@@ -47,7 +48,7 @@ const DeleteData = (props) => {
     );
   };
 
-  if (!isLoading) return <></>;
+  if (!isLoading) return <DeleteDataLoader />;
   return (
     <Submenu
       data={data}
