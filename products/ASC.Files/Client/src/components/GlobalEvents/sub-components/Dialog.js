@@ -91,6 +91,7 @@ const Dialog = ({
           size="normal"
           scale
           primary
+          isDisabled={isDisabled}
           onClick={onSaveAction}
         />
         <Button
@@ -98,6 +99,7 @@ const Dialog = ({
           label={t("Common:CancelButton")}
           size="normal"
           scale
+          isDisabled={isDisabled}
           onClick={onCancelAction}
         />
       </ModalDialog.Footer>
