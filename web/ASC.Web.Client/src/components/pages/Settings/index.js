@@ -5,6 +5,7 @@ import Layout from "./Layout";
 import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 import { inject, observer } from "mobx-react";
+
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 const Admins = lazy(() => import("./categories/security/access-rights/admins"));
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
@@ -42,9 +43,7 @@ const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")
 );
-const DataManagementSettings = lazy(() =>
-  import("./categories/data-management/")
-);
+
 const Backup = lazy(() => import("./categories/data-management/backup"));
 const AutomaticBackup = lazy(() =>
   import("./categories/data-management/backup/auto-backup")
@@ -57,12 +56,7 @@ const RestoreBackup = lazy(() =>
 );
 
 const DeleteDataPage = lazy(() => import("./categories/delete-data/index.js"));
-const DeleteData = lazy(() =>
-  import("./categories/delete-data/portalDeletion")
-);
-const DeactivateData = lazy(() =>
-  import("./categories/delete-data/portalDeactivation")
-);
+
 const WhiteLabel = lazy(() =>
   import("./categories/common/settingsBranding/whitelabel")
 );
@@ -135,8 +129,8 @@ const THIRD_PARTY_URL = combineUrl(
 const BACKUP_URL = combineUrl(PROXY_BASE_URL, "/datamanagement/backup");
 
 const DELETE_DATA_URLS = [
-  combineUrl(PROXY_BASE_URL, "/delete-data"),
   combineUrl(PROXY_BASE_URL, "/delete-data/deletion"),
+  combineUrl(PROXY_BASE_URL, "/delete-data/deactivation"),
 ];
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
@@ -195,9 +189,10 @@ const Settings = (props) => {
           />
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
-          <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
 
           <Route exact path={BACKUP_URL} component={Backup} />
+
+          <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
 
           <Redirect
             to={{

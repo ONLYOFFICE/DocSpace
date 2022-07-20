@@ -1,33 +1,60 @@
 import React, { useState, useEffect } from "react";
+import { withTranslation } from "react-i18next";
+import { withRouter } from "react-router";
+import Submenu from "@appserver/components/submenu";
+
 import PortalDeactivationSection from "./portalDeactivation";
 import PortalDeletionSection from "./portalDeletion";
-import { DeleteDataLayout } from "./StyledDeleteData";
-import MobileView from "./mobileView";
-import { size } from "@appserver/components/utils/device";
 
-const DeleteData = () => {
-  const [isMobileView, setIsMobileView] = useState(false);
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
+import config from "../../../../../../package.json";
+
+const DeleteData = (props) => {
+  const { t, history } = props;
+
+  const [currentTab, setCurrentTab] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const data = [
+    {
+      id: "deletion",
+      name: t("PortalDeletion"),
+      content: <PortalDeletionSection />,
+    },
+    {
+      id: "deactivation",
+      name: t("PortalDeactivation"),
+      content: <PortalDeactivationSection />,
+    },
+  ];
 
   useEffect(() => {
-    checkWidth();
-    window.addEventListener("resize", checkWidth);
-    return () => window.removeEventListener("resize", checkWidth);
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    console.log(path, currentTab);
+    if (currentTab !== -1) setCurrentTab(currentTab);
+    setIsLoading(true);
   }, []);
 
-  const checkWidth = () => {
-    window.innerWidth <= size.smallTablet
-      ? setIsMobileView(true)
-      : setIsMobileView(false);
+  const onSelect = (e) => {
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/settings/delete-data/${e.id}`
+      )
+    );
   };
 
-  if (isMobileView) return <MobileView />;
+  if (!isLoading) return <></>;
   return (
-    <DeleteDataLayout>
-      <PortalDeactivationSection />
-      <hr />
-      <PortalDeletionSection />
-    </DeleteDataLayout>
+    <Submenu
+      data={data}
+      startSelect={currentTab}
+      onSelect={(e) => onSelect(e)}
+    />
   );
 };
 
-export default DeleteData;
+export default withTranslation("Settings")(withRouter(DeleteData));

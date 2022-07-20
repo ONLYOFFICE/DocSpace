@@ -1,30 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import { MainContainer } from "./StyledDeleteData";
-import { size } from "@appserver/components/utils/device";
 
 const PortalDeactivation = (props) => {
-  const { t, history } = props;
-  const [isDesktop, setIsDesktop] = useState(true);
-
-  useEffect(() => {
-    checkWidth();
-    window.addEventListener("resize", checkWidth);
-    return () => window.removeEventListener("resize", checkWidth);
-  }, []);
-
-  const checkWidth = () => {
-    window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("deletion") &&
-      history.push("/settings/delete-data");
-
-    window.innerWidth >= size.desktop
-      ? setIsDesktop(true)
-      : setIsDesktop(false);
-  };
+  const { t } = props;
 
   return (
     <MainContainer>
@@ -39,7 +21,7 @@ const PortalDeactivation = (props) => {
         className="button"
         label={t("Common:Delete")}
         primary
-        size={isDesktop ? "small" : "normal"}
+        size="normal"
       />
     </MainContainer>
   );
