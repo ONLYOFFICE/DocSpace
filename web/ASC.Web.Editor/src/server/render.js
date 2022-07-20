@@ -11,7 +11,6 @@ export default function template(
 ) {
   const { title } = pkg;
   const { docApiUrl, error } = initialEditorState;
-
   const faviconHref = getFavicon(initialEditorState?.config?.documentType);
   const docApi = error
     ? ""
@@ -26,8 +25,13 @@ export default function template(
       window.initialI18nStoreASC = ${JSON.stringify(initialI18nStoreASC)}
       window.initialLanguage = '${initialLanguage}'
     </script>
-
     <script defer="defer" src='${assets["client.js"]}'></script>
+    <script>
+      const tempElm = document.getElementById("loader");
+      tempElm.style.backgroundColor =
+        localStorage.theme === "Dark" ? "#333333" : "#f4f4f4";
+      console.log("It's Editor INIT");
+    </script>
     ${docApi}
     
 `;
@@ -51,14 +55,317 @@ export default function template(
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <link rel="apple-touch-icon" href="/appIcon.png" />
           ${styleTags}   
-          
+          <style type="text/css">
+      .loadmask {
+        left: 0;
+        top: 0;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        border: none;
+        background-color: #f4f4f4;
+        z-index: 1001;
+      }
+      .loader-page {
+        width: 100%;
+        height: 170px;
+        bottom: 42%;
+        position: absolute;
+        text-align: center;
+        line-height: 10px;
+        margin-bottom: 20px;
+      }
+      .loader-page-romb {
+        width: 40px;
+        display: inline-block;
+      }
+      .romb {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        background: red;
+        border-radius: 6px;
+        -webkit-transform: rotate(135deg) skew(20deg, 20deg);
+        -moz-transform: rotate(135deg) skew(20deg, 20deg);
+        -ms-transform: rotate(135deg) skew(20deg, 20deg);
+        -o-transform: rotate(135deg) skew(20deg, 20deg);
+        -webkit-animation: movedown 3s infinite ease;
+        -moz-animation: movedown 3s infinite ease;
+        -ms-animation: movedown 3s infinite ease;
+        -o-animation: movedown 3s infinite ease;
+        animation: movedown 3s infinite ease;
+      }
+      #blue {
+        z-index: 3;
+        background: #55bce6;
+        -webkit-animation-name: blue;
+        -moz-animation-name: blue;
+        -ms-animation-name: blue;
+        -o-animation-name: blue;
+        animation-name: blue;
+      }
+      #red {
+        z-index: 1;
+        background: #de7a59;
+        -webkit-animation-name: red;
+        -moz-animation-name: red;
+        -ms-animation-name: red;
+        -o-animation-name: red;
+        animation-name: red;
+      }
+      #green {
+        z-index: 2;
+        background: #a1cb5c;
+        -webkit-animation-name: green;
+        -moz-animation-name: green;
+        -ms-animation-name: green;
+        -o-animation-name: green;
+        animation-name: green;
+      }
+      @-webkit-keyframes red {
+        0% {
+          top: 120px;
+          background: #de7a59;
+        }
+        10% {
+          top: 120px;
+          background: #f2cbbf;
+        }
+        14% {
+          background: #f4f4f4;
+          top: 120px;
+        }
+        15% {
+          background: #f4f4f4;
+          top: 0;
+        }
+        20% {
+          background: #e6e4e4;
+        }
+        30% {
+          background: #d2d2d2;
+        }
+        40% {
+          top: 120px;
+        }
+        100% {
+          top: 120px;
+          background: #de7a59;
+        }
+      }
+      @keyframesred {
+        0% {
+          top: 120px;
+          background: #de7a59;
+        }
+        10% {
+          top: 120px;
+          background: #f2cbbf;
+        }
+        14% {
+          background: #f4f4f4;
+          top: 120px;
+        }
+        15% {
+          background: #f4f4f4;
+          top: 0;
+        }
+        20% {
+          background: #e6e4e4;
+        }
+        30% {
+          background: #d2d2d2;
+        }
+        40% {
+          top: 120px;
+        }
+        100% {
+          top: 120px;
+          background: #de7a59;
+        }
+      }
+      @-webkit-keyframes green {
+        0% {
+          top: 110px;
+          background: #a1cb5c;
+          opacity: 1;
+        }
+        10% {
+          top: 110px;
+          background: #cbe0ac;
+          opacity: 1;
+        }
+        14% {
+          background: #f4f4f4;
+          top: 110px;
+          opacity: 1;
+        }
+        15% {
+          background: #f4f4f4;
+          top: 0;
+          opacity: 1;
+        }
+        20% {
+          background: #f4f4f4;
+          top: 0;
+          opacity: 0;
+        }
+        25% {
+          background: #efefef;
+          top: 0;
+          opacity: 1;
+        }
+        30% {
+          background: #e6e4e4;
+        }
+        70% {
+          top: 110px;
+        }
+        100% {
+          top: 110px;
+          background: #a1cb5c;
+        }
+      }
+      @keyframes green {
+        0% {
+          top: 110px;
+          background: #a1cb5c;
+          opacity: 1;
+        }
+        10% {
+          top: 110px;
+          background: #cbe0ac;
+          opacity: 1;
+        }
+        14% {
+          background: #f4f4f4;
+          top: 110px;
+          opacity: 1;
+        }
+        15% {
+          background: #f4f4f4;
+          top: 0;
+          opacity: 1;
+        }
+        20% {
+          background: #f4f4f4;
+          top: 0;
+          opacity: 0;
+        }
+        25% {
+          background: #efefef;
+          top: 0;
+          opacity: 1;
+        }
+        30% {
+          background: #e6e4e4;
+        }
+        70% {
+          top: 110px;
+        }
+        100% {
+          top: 110px;
+          background: #a1cb5c;
+        }
+      }
+      @-webkit-keyframes blue {
+        0% {
+          top: 100px;
+          background: #55bce6;
+          opacity: 1;
+        }
+        10% {
+          top: 100px;
+          background: #bfe8f8;
+          opacity: 1;
+        }
+        14% {
+          background: #f4f4f4;
+          top: 100px;
+          opacity: 1;
+        }
+        15% {
+          background: #f4f4f4;
+          top: 0;
+          opacity: 1;
+        }
+        20% {
+          background: #f4f4f4;
+          top: 0;
+          opacity: 0;
+        }
+        25% {
+          background: #f4f4f4;
+          top: 0;
+          opacity: 0;
+        }
+        45% {
+          background: #efefef;
+          top: 0;
+          opacity: 0.2;
+        }
+        100% {
+          top: 100px;
+          background: #55bce6;
+        }
+      }
+      @keyframes blue {
+        0% {
+          top: 100px;
+          background: #55bce6;
+          opacity: 1;
+        }
+        10% {
+          top: 100px;
+          background: #bfe8f8;
+          opacity: 1;
+        }
+        14% {
+          background: #f4f4f4;
+          top: 100px;
+          opacity: 1;
+        }
+        15% {
+          background: #f4f4f4;
+          top: 0;
+          opacity: 1;
+        }
+        20% {
+          background: #f4f4f4;
+          top: 0;
+          opacity: 0;
+        }
+        25% {
+          background: #fff;
+          top: 0;
+          opacity: 0;
+        }
+        45% {
+          background: #efefef;
+          top: 0;
+          opacity: 0.2;
+        }
+        100% {
+          top: 100px;
+          background: #55bce6;
+        }
+      }
+    </style>
         </head>
         <body>
+          <div id="loader" class="loadmask">
+            <div class="loader-page">
+              <div class="loader-page-romb">
+                <div class="romb" id="blue"></div>
+                <div class="romb" id="green"></div>
+                <div class="romb" id="red"></div>
+              </div>
+            </div>
+          </div>
           <div id="root">${appComponent}</div>
           <noscript> You need to enable JavaScript to run this app. </noscript>
-          
-            ${scripts}
-
+          ${scripts}
           </body>
       </html>
   `;

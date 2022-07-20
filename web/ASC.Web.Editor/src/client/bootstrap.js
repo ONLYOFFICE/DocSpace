@@ -69,6 +69,11 @@ const AppWrapper = () => {
   useSSR(initialI18nStoreASC, initialLanguage);
 
   React.useEffect(() => {
+    const tempElm = document.getElementById("loader");
+    if (tempElm && !propsObj.error && !propsObj.needLoader) {
+      tempElm.outerHTML = "";
+    }
+
     if (isRetina() && getCookie("is_retina") == null) {
       setCookie("is_retina", true, { path: "/" });
     }

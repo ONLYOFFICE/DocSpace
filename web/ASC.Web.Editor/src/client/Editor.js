@@ -4,7 +4,6 @@ import FilesFilter from "@appserver/common/api/files/filter";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
 import throttle from "lodash/throttle";
-import Loader from "@appserver/components/loader";
 import Toast from "@appserver/components/toast";
 import { toast } from "react-toastify";
 import {
@@ -21,19 +20,6 @@ import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
 import { canConvert, convertDocumentUrl } from "../helpers/utils";
 import { assign } from "@appserver/common/utils";
-import { homepage } from "../../package.json";
-
-const LoaderComponent = (
-  <Loader
-    type="rombs"
-    style={{
-      position: "absolute",
-      bottom: "42%",
-      height: "170px",
-      left: "50%",
-    }}
-  />
-);
 
 toast.configure();
 
@@ -77,7 +63,6 @@ function Editor({
   doc,
   actionLink,
   error,
-  needLoader,
   sharingDialog,
   onSDKRequestSharingSettings,
   loadUsersRightsList,
@@ -97,7 +82,6 @@ function Editor({
   mfReady,
   ...rest
 }) {
-  const [isLoaded, setIsLoaded] = useState(false);
   const [fileInfo, setFileInfo] = useState(rest.fileInfo);
   const [url, setUrl] = useState(rest.url);
   const [fileId, setFileId] = useState(rest.fileId);
@@ -572,8 +556,6 @@ function Editor({
       );
 
       assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
-
-      setIsLoaded(true);
     } catch (error) {
       window.toastr.error(error.message, null, 0, true);
     }
@@ -582,7 +564,6 @@ function Editor({
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
       <div id="editor"></div>
-      {(!isLoaded || needLoader) && LoaderComponent}
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}
