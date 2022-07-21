@@ -209,6 +209,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     buildVersionInfo,
     isDebugDialogVisible,
     setIsDebugDialogVisible,
+    user,
   } = rest;
 
   useEffect(() => {
@@ -439,6 +440,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
+  const isLogin = pathname.indexOf("login") !== -1;
 
   if (!window.AppServer.studio) {
     window.AppServer.studio = {};
@@ -529,7 +531,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       <Router history={history}>
         <ReactSmartBanner t={t} ready={ready} />
-        {isEditor || !isMobileOnly ? <></> : <NavMenu />}
+        {isEditor || isLogin || !isMobileOnly ? <></> : <NavMenu />}
         <IndicatorLoader />
         <ScrollToTop />
         <AboutDialog
