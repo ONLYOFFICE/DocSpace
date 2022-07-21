@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 
 const ViewSelector = ({
   isDisabled,
+  isFilter,
   viewSettings,
   viewAs,
   onChangeView,
@@ -24,6 +25,60 @@ const ViewSelector = ({
     }
   };
 
+  const renderFewIconView = () => {
+    return viewSettings.map((el, indx) => {
+      const { value, icon } = el;
+
+      return (
+        <IconWrapper
+          isDisabled={isDisabled}
+          isChecked={viewAs === value}
+          firstItem={indx === 0}
+          lastItem={indx === lastIndx}
+          key={value}
+          name={`view-selector-name_${value}`}
+          className="view-selector-icon"
+          data-view={value}
+          title={
+            value === "row"
+              ? t("Common:SwitchViewToCompact")
+              : t("Common:SwitchToThumbnails")
+          }
+        >
+          <ReactSVG src={icon} />
+        </IconWrapper>
+      );
+    });
+  };
+
+  const renderOneIconView = () => {
+    const element = viewSettings.find((el) => el.value != viewAs);
+
+    if (element) {
+      const { value, icon } = element;
+
+      return (
+        <IconWrapper
+          isFilter={isFilter}
+          isDisabled={isDisabled}
+          key={value}
+          name={`view-selector-name_${value}`}
+          className="view-selector-icon"
+          data-view={value}
+          title={
+            value === "row"
+              ? t("Common:SwitchViewToCompact")
+              : t("Common:SwitchToThumbnails")
+          }
+        >
+          <ReactSVG src={icon} />
+        </IconWrapper>
+      );
+    }
+
+    return <></>;
+  };
+
   const lastIndx = viewSettings && viewSettings.length - 1;
 
   const { t } = useTranslation("Common");
@@ -34,31 +89,17 @@ const ViewSelector = ({
       isDisabled={isDisabled}
       onClick={onChangeViewHandler}
       countItems={viewSettings.length}
+      isFilter={isFilter}
     >
-      {viewSettings &&
-        viewSettings.map((el, indx) => {
-          const { value, icon } = el;
-
-          return (
-            <IconWrapper
-              isDisabled={isDisabled}
-              isChecked={viewAs === value}
-              firstItem={indx === 0}
-              lastItem={indx === lastIndx}
-              key={value}
-              name={`view-selector-name_${value}`}
-              className="view-selector-icon"
-              data-view={value}
-              title={
-                value === "row"
-                  ? t("Common:SwitchViewToCompact")
-                  : t("Common:SwitchToThumbnails")
-              }
-            >
-              <ReactSVG src={icon} />
-            </IconWrapper>
-          );
-        })}
+      {viewSettings ? (
+        isFilter ? (
+          renderOneIconView()
+        ) : (
+          renderFewIconView()
+        )
+      ) : (
+        <></>
+      )}
     </StyledViewSelector>
   );
 };

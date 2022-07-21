@@ -10,6 +10,11 @@ import { inject, observer } from "mobx-react";
 
 const StyledModal = styled(ModalDialogContainer)`
   max-width: 400px;
+
+  .cancel-btn {
+    display: inline-block;
+    margin-left: 8px;
+  }
 `;
 
 const EmptyTrashDialogComponent = (props) => {
@@ -60,18 +65,19 @@ const EmptyTrashDialogComponent = (props) => {
         <Button
           key="OkButton"
           label={t("DeleteForeverButton")}
-          size="small"
+          size="normal"
           primary
           onClick={onEmptyTrash}
           isLoading={isLoading}
+          scale
         />
         <Button
-          className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="small"
+          size="normal"
           onClick={onClose}
           isLoading={isLoading}
+          scale
         />
       </ModalDialog.Footer>
     </StyledModal>

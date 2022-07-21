@@ -1,4 +1,4 @@
 {
-  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> bude smazán.",
+  "DeleteUser": "Smazat uživatele",
   "SuccessfullyDeleteUserInfoMessage": "Uživatel byl úspěšně odstraněn"
 }

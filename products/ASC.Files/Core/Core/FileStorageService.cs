@@ -237,16 +237,10 @@ public class FileStorageService<T> //: IFileStorageService
         }));
     }
 
-    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, FilterType filter, bool subjectGroup, string ssubject, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
-        SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
+    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, FilterType filterType, bool subjectGroup, string subject, string searchText, 
+        bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null, bool withoutMe = false)
     {
-        return await GetFolderItemsAsync(parentId, from, count, new[] { filter }, subjectGroup, ssubject, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
-    }
-
-    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, IEnumerable<FilterType> filterTypes, bool subjectGroup, string ssubject, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
-        SearchArea searchArea = SearchArea.Active, IEnumerable<string> tagNames = null)
-    {
-        var subjectId = string.IsNullOrEmpty(ssubject) ? Guid.Empty : new Guid(ssubject);
+        var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
         var folderDao = GetFolderDao();
 
@@ -291,7 +285,8 @@ public class FileStorageService<T> //: IFileStorageService
         IEnumerable<FileEntry> entries;
         try
         {
-            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterTypes, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
+            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, 
+                withoutTags, tagNames, withoutMe);
         }
         catch (Exception e)
         {
@@ -530,7 +525,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
-            
+
             if (isRoom)
             {
                 _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomCreated, folder.Title);
@@ -720,7 +715,7 @@ public class FileStorageService<T> //: IFileStorageService
         if (!EqualityComparer<T>.Default.Equals(fileWrapper.ParentId, default(T)))
         {
             folder = await folderDao.GetFolderAsync(fileWrapper.ParentId);
-            var canCreate = await _fileSecurity.CanCreateAsync(folder) && folder.FolderType != FolderType.VirtualRooms 
+            var canCreate = await _fileSecurity.CanCreateAsync(folder) && folder.FolderType != FolderType.VirtualRooms
                 && folder.FolderType != FolderType.Archive;
 
             if (!canCreate)
@@ -1086,7 +1081,14 @@ public class FileStorageService<T> //: IFileStorageService
         var file = await fileDao.GetFileAsync(fileId);
         ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-        return await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
+        var result = await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
+
+        foreach (var r in result)
+        {
+            await _entryStatusManager.SetFileStatusAsync(r);
+        }
+
+        return result;
     }
 
     public async Task<KeyValuePair<File<T>, List<File<T>>>> UpdateToVersionAsync(T fileId, int version)
@@ -1607,7 +1609,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
 
-        var folderId = thirdPartyParams.Corporate && !_coreBaseSettings.Personal ? await _globalFolderHelper.FolderCommonAsync 
+        var folderId = thirdPartyParams.Corporate && !_coreBaseSettings.Personal ? await _globalFolderHelper.FolderCommonAsync
             : thirdPartyParams.RoomsStorage && !_coreBaseSettings.DisableDocSpace ? await _globalFolderHelper.FolderVirtualRoomsAsync : _globalFolderHelper.FolderMy;
 
         var parentFolder = await folderDaoInt.GetFolderAsync(folderId);

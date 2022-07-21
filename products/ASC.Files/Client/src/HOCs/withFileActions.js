@@ -25,7 +25,7 @@ export default function withFileActions(WrappedFileItem) {
       const { onSelectItem } = this.props;
       const { id, isFolder } = this.props.item;
 
-      id !== -1 && onSelectItem({ id, isFolder }, !withSelect);
+      id !== -1 && onSelectItem({ id, isFolder }, false, false, !withSelect);
     };
 
     onHideContextMenu = () => {
@@ -73,6 +73,7 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         isPrivacy,
         isTrashFolder,
+        isArchiveFolder,
         item,
         setBufferSelection,
         isActive,
@@ -87,6 +88,7 @@ export default function withFileActions(WrappedFileItem) {
       if (
         isPrivacy ||
         isTrashFolder ||
+        isArchiveFolder ||
         (!draggable && !isFileName && !isActive) ||
         window.innerWidth < 1025 ||
         notSelectable ||
@@ -125,7 +127,8 @@ export default function withFileActions(WrappedFileItem) {
         e.target.closest(".expandButton") ||
         e.target.querySelector(".expandButton") ||
         e.target.closest(".badges") ||
-        e.target.closest(".not-selectable")
+        e.target.closest(".not-selectable") ||
+        e.target.closest(".tag")
       )
         return;
 
@@ -137,12 +140,21 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onFilesClick = (e) => {
-      const { item, openFileAction, setParentId, isTrashFolder } = this.props;
+      const {
+        item,
+        openFileAction,
+        setParentId,
+        isTrashFolder,
+        isArchiveFolder,
+      } = this.props;
+
       if (
         (e && e.target.tagName === "INPUT") ||
         !!e.target.closest(".lock-file") ||
         !!e.target.closest(".additional-badges") ||
-        isTrashFolder
+        e.target.closest(".tag") ||
+        isTrashFolder ||
+        isArchiveFolder
       )
         return;
 
@@ -160,6 +172,10 @@ export default function withFileActions(WrappedFileItem) {
       openFileAction(item);
     };
 
+    onSelectTag = (tag) => {
+      this.props.selectTag(tag);
+    };
+
     getContextModel = () => {
       const { getModel, item, t } = this.props;
       return getModel(item, t);
@@ -172,9 +188,7 @@ export default function withFileActions(WrappedFileItem) {
         draggable,
         allowShareIn,
         isPrivacy,
-        actionType,
-        actionExtension,
-        actionId,
+
         sectionWidth,
         checked,
         dragging,
@@ -185,9 +199,6 @@ export default function withFileActions(WrappedFileItem) {
         canViewedDocs,
       } = this.props;
       const { fileExst, access, id } = item;
-
-      const isEdit =
-        actionType !== null && actionId === id && fileExst === actionExtension;
 
       const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
@@ -209,13 +220,12 @@ export default function withFileActions(WrappedFileItem) {
 
       const showShare =
         !isShareable ||
-        isEdit ||
         (isPrivacy && (!isDesktop || !fileExst)) ||
         (personal && !canWebEdit && !canViewedDocs)
           ? false
           : true;
 
-      const checkedProps = isEdit || id <= 0 ? false : checked;
+      const checkedProps = id <= 0 ? false : checked;
 
       return (
         <WrappedFileItem
@@ -226,6 +236,7 @@ export default function withFileActions(WrappedFileItem) {
           onFilesClick={this.onFilesClick}
           onMouseClick={this.onMouseClick}
           onHideContextMenu={this.onHideContextMenu}
+          onSelectTag={this.onSelectTag}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
@@ -235,7 +246,6 @@ export default function withFileActions(WrappedFileItem) {
           showShare={showShare}
           checkedProps={checkedProps}
           dragging={dragging}
-          isEdit={isEdit}
           getContextModel={this.getContextModel}
           {...this.props}
         />
@@ -260,6 +270,7 @@ export default function withFileActions(WrappedFileItem) {
     ) => {
       const {
         selectRowAction,
+        selectTag,
         onSelectItem,
         setNewBadgeCount,
         openFileAction,
@@ -269,6 +280,8 @@ export default function withFileActions(WrappedFileItem) {
       const {
         isPrivacyFolder,
         isRecycleBinFolder,
+        isRoomsFolder,
+        isArchiveFolder,
         //addExpandedKeys,
       } = treeFoldersStore;
       const {
@@ -277,7 +290,7 @@ export default function withFileActions(WrappedFileItem) {
         selection,
         setTooltipPosition,
         setStartDrag,
-        fileActionStore,
+
         getFolderInfo,
         viewAs,
         bufferSelection,
@@ -290,14 +303,12 @@ export default function withFileActions(WrappedFileItem) {
       } = filesStore;
 
       const { startUpload } = uploadDataStore;
-      const { type, extension, id } = fileActionStore;
 
       const selectedItem = selection.find(
         (x) => x.id === item.id && x.fileExst === item.fileExst
       );
 
-      const draggable =
-        !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
+      const draggable = !isRecycleBinFolder && selectedItem;
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
       const canWebEdit = settingsStore.canWebEdit(item.fileExst);
@@ -327,8 +338,11 @@ export default function withFileActions(WrappedFileItem) {
         item,
         selectRowAction,
         onSelectItem,
+        selectTag,
         setSharingPanelVisible,
         isPrivacy: isPrivacyFolder,
+        isRoomsFolder,
+        isArchiveFolder,
         dragging,
         setDragging,
         startUpload,
@@ -338,9 +352,7 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         isFolder,
         allowShareIn: filesStore.canShare,
-        actionType: type,
-        actionExtension: extension,
-        actionId: id,
+
         checked: !!selectedItem,
         //parentFolder: selectedFolderStore.parentId,
         setParentId: selectedFolderStore.setParentId,

@@ -50,7 +50,7 @@ const StyledFilterBlock = styled.div`
   }
 
   .filter-body {
-    height: calc(100% - 125px);
+    height: ${(props) => (props.showFooter ? "calc(100% - 125px)" : "100%")};
   }
 `;
 
@@ -220,6 +220,9 @@ const StyledFilterBlockItemToggleButton = styled(ToggleButton)`
 
   grid-gap: 0px;
 `;
+const StyledFilterBlockItemCheckboxContainer = styled.div`
+  margin: 7px 0 11px;
+`;
 
 const StyledFilterBlockItemSeparator = styled.div`
   height: 1px;
@@ -319,6 +322,7 @@ export {
   StyledFilterBlockItemToggle,
   StyledFilterBlockItemToggleText,
   StyledFilterBlockItemToggleButton,
+  StyledFilterBlockItemCheckboxContainer,
   StyledFilterBlockItemSeparator,
   StyledFilterBlockFooter,
   StyledControlContainer,

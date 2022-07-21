@@ -7,9 +7,13 @@ import DropDownItem from "../drop-down-item";
 import {
   StyledSpan,
   StyledText,
+  StyledTextWithExpander,
   StyledLinkWithDropdown,
   Caret,
 } from "./styled-link-with-dropdown";
+import { isMobileOnly } from "react-device-detect";
+import Scrollbar from "@appserver/components/scrollbar";
+import { ReactSVG } from "react-svg";
 
 class LinkWithDropdown extends React.Component {
   constructor(props) {
@@ -17,6 +21,7 @@ class LinkWithDropdown extends React.Component {
 
     this.state = {
       isOpen: props.isOpen,
+      orientation: window.orientation,
     };
 
     this.ref = React.createRef();
@@ -35,6 +40,16 @@ class LinkWithDropdown extends React.Component {
     this.setIsOpen(!this.state.isOpen);
   };
 
+  onSetOrientation = () => {
+    this.setState({
+      orientation: window.orientation,
+    });
+  };
+
+  componentDidMount() {
+    window.addEventListener("orientationchange", this.onSetOrientation);
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.dropdownType !== prevProps.dropdownType) {
       if (this.props.isOpen !== prevProps.isOpen) {
@@ -45,11 +60,24 @@ class LinkWithDropdown extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("orientationchange", this.onSetOrientation);
+  }
+
   onClickDropDownItem = (e) => {
     const { key } = e.target.dataset;
     const item = this.props.data.find((x) => x.key === key);
     this.setIsOpen(!this.state.isOpen);
     item && item.onClick && item.onClick(e);
+  };
+
+  onCheckManualWidth = () => {
+    const padding = 32;
+    const width = this.ref.current
+      ?.querySelector(".text")
+      .getBoundingClientRect().width;
+
+    return width + padding + "px";
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -74,8 +102,42 @@ class LinkWithDropdown extends React.Component {
       isDisabled,
       directionY,
       theme,
+      hasScroll,
+      withExpander,
       ...rest
     } = this.props;
+
+    const showScroll =
+      hasScroll && isMobileOnly && this.state.orientation === 90;
+
+    const dropDownItem = data.map((item) => (
+      <DropDownItem
+        className="drop-down-item"
+        key={item.key}
+        {...item}
+        onClick={this.onClickDropDownItem}
+        data-key={item.key}
+        textOverflow={isTextOverflow}
+      />
+    ));
+
+    const styledText = (
+      <StyledText
+        className="text"
+        isTextOverflow={isTextOverflow}
+        truncate={isTextOverflow}
+        fontSize={fontSize}
+        fontWeight={fontWeight}
+        color={color}
+        isBold={isBold}
+        title={title}
+        dropdownType={dropdownType}
+        isDisabled={isDisabled}
+        withTriangle
+      >
+        {this.props.children}
+      </StyledText>
+    );
 
     return (
       <StyledSpan className={className} id={id} style={style} ref={this.ref}>
@@ -86,46 +148,42 @@ class LinkWithDropdown extends React.Component {
             color={color}
             isDisabled={isDisabled}
           >
-            <StyledText
-              isTextOverflow={isTextOverflow}
-              truncate={isTextOverflow}
-              fontSize={fontSize}
-              fontWeight={fontWeight}
-              color={color}
-              isBold={isBold}
-              title={title}
-              dropdownType={dropdownType}
-              isDisabled={isDisabled}
-            >
-              {this.props.children}
-            </StyledText>
-            <Caret
-              color={color}
-              dropdownType={dropdownType}
-              isOpen={this.state.isOpen}
-              isDisabled={isDisabled}
-            />
+            {withExpander ? (
+              <StyledTextWithExpander isOpen={this.state.isOpen}>
+                {styledText}
+                <ReactSVG
+                  className="expander"
+                  src={"/static/images/expander-down.react.svg"}
+                />
+              </StyledTextWithExpander>
+            ) : (
+              styledText
+            )}
           </StyledLinkWithDropdown>
         </span>
         <DropDown
           className="fixed-max-width"
+          manualWidth={showScroll ? this.onCheckManualWidth() : null}
           open={this.state.isOpen}
           withArrow={false}
           forwardedRef={this.ref}
           directionY={directionY}
+          isDropdown={false}
           clickOutsideAction={this.onClose}
           {...rest}
         >
-          {data.map((item) => (
-            <DropDownItem
-              className="drop-down-item"
-              key={item.key}
-              {...item}
-              onClick={this.onClickDropDownItem}
-              data-key={item.key}
-              textOverflow={isTextOverflow}
-            />
-          ))}
+          {showScroll ? (
+            <Scrollbar
+              className="scroll-drop-down-item"
+              style={{
+                height: 108,
+              }}
+            >
+              {dropDownItem}
+            </Scrollbar>
+          ) : (
+            dropDownItem
+          )}
         </DropDown>
       </StyledSpan>
     );
@@ -140,6 +198,7 @@ LinkWithDropdown.propTypes = {
   /** Type of dropdown: alwaysDashed is always show dotted style and icon of arrow,
    * appearDashedAfterHover is show dotted style and icon arrow only after hover */
   dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]),
+  withExpander: PropTypes.bool,
   /** Font size of link */
   fontSize: PropTypes.string,
   /** Font weight of link */
@@ -166,6 +225,7 @@ LinkWithDropdown.propTypes = {
   isDisabled: PropTypes.bool,
   /** Sets the opening direction relative to the parent */
   directionY: PropTypes.oneOf(["bottom", "top", "both"]),
+  hasScroll: PropTypes.bool,
 };
 
 LinkWithDropdown.defaultProps = {
@@ -178,6 +238,8 @@ LinkWithDropdown.defaultProps = {
   isOpen: false,
   className: "",
   isDisabled: false,
+  hasScroll: false,
+  withExpander: false,
 };
 
 export default LinkWithDropdown;

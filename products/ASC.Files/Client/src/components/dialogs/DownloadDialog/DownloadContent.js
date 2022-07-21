@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Text from "@appserver/components/text";
+import { inject, observer } from "mobx-react";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import Checkbox from "@appserver/components/checkbox";
 import ArrowIcon from "../../../../public/images/arrow.react.svg";
@@ -18,6 +19,7 @@ const DownloadContent = (props) => {
     title,
     isChecked,
     isIndeterminate,
+    theme,
   } = props;
 
   const getTitleExtensions = () => {
@@ -102,40 +104,45 @@ const DownloadContent = (props) => {
   const showHeader = items.length > 1;
 
   return (
-    <StyledDownloadContent isOpen={showHeader ? isOpen : true}>
+    <StyledDownloadContent isOpen={showHeader ? isOpen : true} theme={theme}>
       {showHeader && (
-        <div className="download-dialog_content-wrapper">
-          <Checkbox
-            data-item-id="All"
-            data-type={type}
-            isChecked={isChecked}
-            isIndeterminate={isIndeterminate}
-            onChange={onRowSelect}
-            className="download-dialog-checkbox"
-          />
-          <div
-            onClick={onOpen}
-            className="download-dialog-heading download-dialog_row-text"
-          >
-            <Text noSelect fontSize="16px" fontWeight={600}>
-              {title}
-            </Text>
-            <ArrowIcon className="download-dialog-icon" />
-          </div>
-
-          {(isChecked || isIndeterminate) && !isOther && (
-            <LinkWithDropdown
-              containerMinWidth="fit-content"
-              data={titleData}
-              directionX="left"
-              directionY="bottom"
-              dropdownType="alwaysDashed"
-              fontSize="13px"
-              fontWeight={600}
+        <div className="download-dialog_content-wrapper download-dialog-row">
+          <div className="download-dialog-main-content">
+            <Checkbox
+              data-item-id="All"
+              data-type={type}
+              isChecked={isChecked}
+              isIndeterminate={isIndeterminate}
+              onChange={onRowSelect}
+              className="download-dialog-checkbox"
+            />
+            <div
+              onClick={onOpen}
+              className="download-dialog-heading download-dialog-title"
             >
-              {titleFormat}
-            </LinkWithDropdown>
-          )}
+              <Text noSelect fontSize="16px" fontWeight={600}>
+                {title}
+              </Text>
+              <ArrowIcon className="download-dialog-icon" />
+            </div>
+          </div>
+          <div className="download-dialog-actions">
+            {(isChecked || isIndeterminate) && !isOther && (
+              <LinkWithDropdown
+                className="download-dialog-link"
+                containerMinWidth="fit-content"
+                data={titleData}
+                directionX="left"
+                directionY="bottom"
+                dropdownType="alwaysDashed"
+                fontSize="13px"
+                fontWeight={600}
+                withExpander
+              >
+                {titleFormat}
+              </LinkWithDropdown>
+            )}
+          </div>
         </div>
       )}
       <div className="download-dialog_hidden-items">
@@ -162,4 +169,11 @@ const DownloadContent = (props) => {
   );
 };
 
-export default DownloadContent;
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { theme } = settingsStore;
+
+  return {
+    theme,
+  };
+})(observer(DownloadContent));

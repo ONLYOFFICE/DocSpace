@@ -14,6 +14,7 @@ import SizeCell from "./sub-components/SizeCell";
 import AuthorCell from "./sub-components/AuthorCell";
 import DateCell from "./sub-components/DateCell";
 import TypeCell from "./sub-components/TypeCell";
+import TagsCell from "./sub-components/TagsCell";
 import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
 
@@ -45,6 +46,18 @@ const contextMenuWrapperDraggingStyle = css`
 
 const StyledTableRow = styled(TableRow)`
   ${(props) =>
+    props.isRoom &&
+    css`
+      .table-container_cell {
+        height: 48px;
+        max-height: 48px;
+      }
+
+      .table-container_row-checkbox {
+        padding-left: 20px !important;
+      }
+    `}
+  ${(props) =>
     !props.isDragging &&
     css`
       :hover {
@@ -71,7 +84,6 @@ const StyledTableRow = styled(TableRow)`
         }
       }
     `}
-
   .table-container_cell {
     background: ${(props) =>
       (props.checked || props.isActive) &&
@@ -79,7 +91,7 @@ const StyledTableRow = styled(TableRow)`
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
-      "url(/static/images/cursor.palm.react.svg), auto"};
+      "url(/static/images/cursor.palm.react.svg), auto !important"};
 
     ${(props) =>
       props.inProgress &&
@@ -98,7 +110,16 @@ const StyledTableRow = styled(TableRow)`
 
   .table-container_element-wrapper,
   .table-container_row-loader {
-    min-width: 36px;
+    min-width: ${(props) => (props.isRoom ? "40px" : "36px")};
+  }
+
+  .table-container_element-container {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .table-container_row-loader {
@@ -108,7 +129,7 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox {
-    padding-left: 16px;
+    padding-left: 20px;
     width: 16px;
   }
 
@@ -273,11 +294,18 @@ const FilesTableRow = (props) => {
     showHotkeyBorder,
     tableColumns,
     id,
+    tagRef,
+    isRooms,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
   const element = (
-    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+    <ItemIcon
+      id={item.id}
+      icon={item.icon}
+      fileExst={item.fileExst}
+      isRoom={item.isRoom}
+    />
   );
 
   const selectionProp = {
@@ -384,6 +412,7 @@ const FilesTableRow = (props) => {
             ? t("Translations:TitleShowFolderActions")
             : t("Translations:TitleShowActions")
         }
+        isRoom={item.isRoom}
       >
         <TableCell
           {...dragStyles}
@@ -400,6 +429,49 @@ const FilesTableRow = (props) => {
           />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
+        {(item.isRoom || isRooms) && (
+          <TableCell
+            style={
+              !typeAvailableDrag
+                ? { background: "none !important" }
+                : dragStyles.style
+            }
+            {...selectionProp}
+          >
+            <TypeCell
+              sideColor={theme.filesSection.tableView.row.sideColor}
+              {...props}
+            />
+          </TableCell>
+        )}
+
+        {!item.isRoom && isRooms && (
+          <TableCell
+            style={
+              !typeAvailableDrag
+                ? { background: "none !important" }
+                : dragStyles.style
+            }
+            {...selectionProp}
+          ></TableCell>
+        )}
+
+        {item.isRoom && (
+          <TableCell
+            style={
+              !typeAvailableDrag
+                ? { background: "none !important" }
+                : dragStyles.style
+            }
+            {...selectionProp}
+          >
+            <TagsCell
+              sideColor={theme.filesSection.tableView.row.sideColor}
+              ref={tagRef}
+              {...props}
+            />
+          </TableCell>
+        )}
         {!personal && (
           <TableCell
             style={
@@ -413,20 +485,24 @@ const FilesTableRow = (props) => {
             />
           </TableCell>
         )}
-        <TableCell
-          style={
-            !createdAvailableDrag
-              ? { background: "none !important" }
-              : dragStyles.style
-          }
-          {...selectionProp}
-        >
-          <DateCell
-            create
-            sideColor={theme.filesSection.tableView.row.sideColor}
-            {...props}
-          />
-        </TableCell>
+
+        {!item.isRoom && !isRooms && (
+          <TableCell
+            style={
+              !createdAvailableDrag
+                ? { background: "none !important" }
+                : dragStyles.style
+            }
+            {...selectionProp}
+          >
+            <DateCell
+              create
+              sideColor={theme.filesSection.tableView.row.sideColor}
+              {...props}
+            />
+          </TableCell>
+        )}
+
         <TableCell
           style={
             !modifiedAvailableDrag ? { background: "none" } : dragStyles.style
@@ -438,41 +514,49 @@ const FilesTableRow = (props) => {
             {...props}
           />
         </TableCell>
-        <TableCell
-          style={!sizeAvailableDrag ? { background: "none" } : dragStyles.style}
-          {...selectionProp}
-        >
-          <SizeCell
-            sideColor={theme.filesSection.tableView.row.sideColor}
-            {...props}
-          />
-        </TableCell>
 
-        <TableCell
-          style={
-            !typeAvailableDrag
-              ? { background: "none !important" }
-              : dragStyles.style
-          }
-          {...selectionProp}
-        >
-          <TypeCell
-            sideColor={theme.filesSection.tableView.row.sideColor}
-            {...props}
-          />
-        </TableCell>
+        {!item.isRoom && !isRooms && (
+          <TableCell
+            style={
+              !sizeAvailableDrag ? { background: "none" } : dragStyles.style
+            }
+            {...selectionProp}
+          >
+            <SizeCell
+              sideColor={theme.filesSection.tableView.row.sideColor}
+              {...props}
+            />
+          </TableCell>
+        )}
 
-        <TableCell
-          style={
-            !buttonsAvailableDrag ? { background: "none" } : dragStyles.style
-          }
-          {...selectionProp}
-          className={`${selectionProp?.className} table-container_quick-buttons-wrapper`}
-        >
-          <StyledQuickButtonsContainer>
-            {quickButtonsComponent}
-          </StyledQuickButtonsContainer>
-        </TableCell>
+        {!item.isRoom && !isRooms && (
+          <TableCell
+            style={
+              !typeAvailableDrag
+                ? { background: "none !important" }
+                : dragStyles.style
+            }
+            {...selectionProp}
+          >
+            <TypeCell
+              sideColor={theme.filesSection.tableView.row.sideColor}
+              {...props}
+            />
+          </TableCell>
+        )}
+        {!item.isRoom && !isRooms && (
+          <TableCell
+            style={
+              !buttonsAvailableDrag ? { background: "none" } : dragStyles.style
+            }
+            {...selectionProp}
+            className={`${selectionProp?.className} table-container_quick-buttons-wrapper`}
+          >
+            <StyledQuickButtonsContainer>
+              {quickButtonsComponent}
+            </StyledQuickButtonsContainer>
+          </TableCell>
+        )}
       </StyledTableRow>
     </StyledDragAndDrop>
   );

@@ -10,3 +10,29 @@ export const thumbnailStatuses = {
 };
 
 export const ADS_TIMEOUT = 300000; // 5 min
+
+export const Events = Object.freeze({
+  CREATE: "create",
+  RENAME: "rename",
+  ROOM_CREATE: "create_room",
+});
+
+export const FilterGroups = Object.freeze({
+  filterType: "filter-filterType",
+  filterAuthor: "filter-author",
+  filterFolders: "filter-folders",
+  roomFilterType: "filter-type",
+  roomFilterOwner: "filter-owner",
+  roomFilterTags: "filter-tags",
+  roomFilterFolders: "filter-withSubfolders",
+  roomFilterContent: "filter-content",
+});
+
+export const FilterKeys = Object.freeze({
+  withSubfolders: "withSubfolders",
+  excludeSubfolders: "excludeSubfolders",
+  withContent: "withContent",
+  me: "me",
+  other: "other",
+  user: "user",
+});

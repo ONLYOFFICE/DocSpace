@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Folder = Microsoft.OneDrive.Sdk.Folder;
+
 namespace ASC.Files.Thirdparty;
 
 internal abstract class ThirdPartyProviderDao
@@ -239,12 +241,10 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     protected readonly ILogger _logger;
     protected readonly FileUtility _fileUtility;
     protected readonly TempPath _tempPath;
+    protected readonly AuthContext _authContext;
     protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
     protected T ProviderInfo { get; set; }
     protected string PathPrefix { get; private set; }
-    protected List<FilterType> _constraintFolderFilters =
-        new List<FilterType> { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly,
-            FilterType.PresentationsOnly, FilterType.SpreadsheetsOnly, FilterType.ArchiveOnly, FilterType.MediaOnly };
 
     protected abstract string Id { get; }
 
@@ -257,7 +257,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         SetupInfo setupInfo,
         ILogger logger,
         FileUtility fileUtility,
-        TempPath tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
     {
         _serviceProvider = serviceProvider;
         _userManager = userManager;
@@ -268,6 +269,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         _fileUtility = fileUtility;
         _tempPath = tempPath;
         TenantID = tenantManager.GetCurrentTenant().Id;
+        _authContext = authContext;
     }
 
     public void Init(BaseProviderInfo<T> providerInfo, RegexDaoSelectorBase<T> selectorBase)
@@ -402,8 +404,16 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, IEnumerable<string> tagNames)
+    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, bool withoutTags, IEnumerable<string> tagNames)
     {
+        if (withoutTags)
+        {
+            return folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+                .WhereAwait(async r => !await FilesDbContext.TagLink.Join(FilesDbContext.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
+                .Where(r => r.tag.Type == TagType.Custom).ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
+                .Select(r => r.folder);
+        }
+
         if (tagNames == null || !tagNames.Any())
         {
             return folders;
@@ -418,31 +428,45 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return filtered;
     }
 
-    protected IAsyncEnumerable<Folder<string>> SetFilterByTypes(IAsyncEnumerable<Folder<string>> folders, IEnumerable<FilterType> filterTypes)
+    protected IAsyncEnumerable<Folder<string>> FilterByRoomType(IAsyncEnumerable<Folder<string>> rooms, FilterType filterType)
     {
-        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None))
+        if (filterType == FilterType.None)
         {
-            var filter = filterTypes.Select(f => f switch
-            {
-                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
-                FilterType.EditingRooms => FolderType.EditingRoom,
-                FilterType.ReviewRooms => FolderType.ReviewRoom,
-                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
-                FilterType.CustomRooms => FolderType.CustomRoom,
-                _ => FolderType.CustomRoom
-            }).ToHashSet();
-
-            return folders.Where(f => filter.Contains(f.FolderType));
+            return rooms;
         }
 
-        return folders;
+        var filter = filterType switch
+        {
+            FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+            FilterType.EditingRooms => FolderType.EditingRoom,
+            FilterType.ReviewRooms => FolderType.ReviewRoom,
+            FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+            FilterType.CustomRooms => FolderType.CustomRoom,
+            _ => FolderType.CustomRoom,
+        };
+
+        return rooms.Where(f => f.FolderType == filter);
     }
 
-    protected bool CheckForInvalidFilters(IEnumerable<FilterType> filterTypes)
+    protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)
     {
-        var intersection = filterTypes.Intersect(_constraintFolderFilters);
+        if (ownerId != Guid.Empty && !withoutMe)
+        {
+            rooms = rooms.Where(f => f.CreateBy == ownerId);
+        }
 
-        return !intersection.Any();
+        if (ownerId == Guid.Empty && withoutMe)
+        {
+            rooms = rooms.Where((f => f.CreateBy != _authContext.CurrentAccount.ID));
+        }
+
+        return rooms;
+    }
+
+    protected bool CheckInvalidFilter(FilterType filterType)
+    {
+        return filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly
+            or FilterType.SpreadsheetsOnly or FilterType.ArchiveOnly or FilterType.MediaOnly;
     }
 
     protected abstract string MakeId(string path = null);
@@ -625,12 +649,16 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             q = q.Where(r => r.tag.Owner == subject);
         }
 
-        var qList = q
-            .Distinct()
-            .AsAsyncEnumerable();
+        var qList = await q
+        .Distinct()
+            .AsAsyncEnumerable()
+            .ToListAsync();
 
-        var tags = qList
-            .SelectAwait(async r => new Tag
+        var tags = new List<Tag>();
+
+        foreach (var r in qList)
+        {
+            tags.Add(new Tag
             {
                 Name = r.tag.Name,
                 Type = r.tag.Type,
@@ -640,22 +668,22 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
                 Count = r.tagLink.Count,
                 Id = r.tag.Id
             });
+        }
 
 
         if (deepSearch)
         {
-            await foreach (var e in tags.ConfigureAwait(false))
+            foreach (var e in tags)
             {
                 yield return e;
             }
-
             yield break;
         }
 
         var folderFileIds = new[] { parentFolder.Id }
             .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
-        await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())).ConfigureAwait(false))
+        foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
         {
             yield return e;
         }

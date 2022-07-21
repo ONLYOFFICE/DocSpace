@@ -26,6 +26,7 @@
 
 namespace ASC.Files.Thirdparty;
 
+[EnumExtensions]
 public enum ProviderTypes
 {
     Box,
@@ -287,7 +288,7 @@ internal class ProviderAccountDao : IProviderDao
                 throw;
             }
 
-            if (!Enum.TryParse(input.Provider, true, out ProviderTypes key))
+            if (!ProviderTypesExtensions.TryParse(input.Provider, true, out var key))
             {
                 throw new ArgumentException("Unrecognize ProviderType");
             }
@@ -419,7 +420,7 @@ internal class ProviderAccountDao : IProviderDao
 
     private IProviderInfo ToProviderInfo(DbFilesThirdpartyAccount input)
     {
-        if (!Enum.TryParse(input.Provider, true, out ProviderTypes key))
+        if (!ProviderTypesExtensions.TryParse(input.Provider, true, out var key))
         {
             return null;
         }

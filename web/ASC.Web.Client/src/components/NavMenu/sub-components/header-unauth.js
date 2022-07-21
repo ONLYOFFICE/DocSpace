@@ -13,10 +13,9 @@ const Header = styled.header`
   align-items: left;
   background-color: ${(props) => props.theme.header.backgroundColor};
   display: flex;
-  width: calc(100vw - 64px);
+  width: 100vw;
   height: 48px;
-  justify-content: left;
-  padding: 0 32px;
+  justify-content: center;
 
   .header-items-wrapper {
     width: 960px;
@@ -25,7 +24,7 @@ const Header = styled.header`
       width: 475px;
     }
     @media (max-width: 375px) {
-      width: 311px;
+      padding: 0 16px;
     }
   }
 
@@ -57,7 +56,7 @@ const HeaderUnAuth = ({
   isAuthenticated,
   isLoaded,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("NavMenu");
 
   return (
     <Header isLoaded={isLoaded} className="navMenuHeaderUnAuth">
@@ -110,7 +109,7 @@ export default inject(({ auth }) => {
   const { enableAdmMess, wizardToken } = settingsStore;
   return {
     enableAdmMess,
-    wizardToken: wizardToken || "/",
+    wizardToken,
     isAuthenticated,
     isLoaded,
   };

@@ -31,6 +31,7 @@ const getThumbSize = (width) => {
 const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
   const firstRef = useRef();
   const [thumbSize, setThumbSize] = useState("");
+  const [columnCount, setColumnCount] = useState(null);
 
   useEffect(() => {
     if (!firstRef?.current) return;
@@ -52,9 +53,16 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
   }, [firstRef, filesList]);
 
   const onResize = useCallback(() => {
+    if (!firstRef?.current) return;
     const { width } = firstRef.current.getBoundingClientRect();
 
     const size = getThumbSize(width);
+
+    const widthWithoutPadding = width - 32;
+
+    const columns = Math.floor(widthWithoutPadding / 80);
+
+    if (columns != columnCount) setColumnCount(columns);
 
     // console.log(
     //   `Body width: ${document.body.clientWidth} Tile width: ${width} ThumbSize: ${size}`
@@ -82,6 +90,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
             sectionWidth={sectionWidth}
             selectableRef={firstRef}
             thumbSize={thumbSize}
+            columnCount={columnCount}
           />
         ) : (
           <FileTile
@@ -90,6 +99,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
             item={item}
             sectionWidth={sectionWidth}
             thumbSize={thumbSize}
+            columnCount={columnCount}
           />
         );
       })}

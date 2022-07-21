@@ -70,11 +70,12 @@ const DeleteThirdPartyDialog = (props) => {
       zIndex={310}
       onClose={onClose}
     >
-      <ModalDialog.Header>
-        {t("Translations:DeleteThirdParty")}
-      </ModalDialog.Header>
+      <ModalDialog.Header>{t("DisconnectCloudTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
-        {t("DeleteThirdPartyAlert", { service: removeItem.title })}
+        {t("DisconnectCloudMessage", {
+          service: removeItem.title,
+          account: removeItem.providerKey,
+        })}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
@@ -82,7 +83,15 @@ const DeleteThirdPartyDialog = (props) => {
           label={t("Common:OKButton")}
           size="normal"
           primary
+          scale
           onClick={onDeleteThirdParty}
+        />
+        <Button
+          isLoading={isLoading}
+          label={t("Common:CancelButton")}
+          size="normal"
+          scale
+          onClick={onClose}
         />
       </ModalDialog.Footer>
     </ModalDialog>

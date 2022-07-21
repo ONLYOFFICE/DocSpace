@@ -219,6 +219,7 @@ public class SettingsController : BaseSettingsController
 
         if (inDto.Type == TenantTrustedDomainsType.Custom)
         {
+            Tenant.TrustedDomainsRaw = "";
             Tenant.TrustedDomains.Clear();
             foreach (var d in inDto.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
             {
@@ -258,7 +259,7 @@ public class SettingsController : BaseSettingsController
     [HttpGet("cultures")]
     public IEnumerable<object> GetSupportedCultures()
     {
-        return _setupInfo.EnabledCultures.Select(r => r.Name).ToArray();
+        return _setupInfo.EnabledCultures.Select(r => r.Name).OrderBy(s => s).ToArray();
     }
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
@@ -597,10 +598,6 @@ public class SettingsController : BaseSettingsController
         {
             try
             {
-                if (validateKeyProvider is TwilioProvider twilioLoginProvider)
-                {
-                    twilioLoginProvider.ClearOldNumbers();
-                }
                 if (validateKeyProvider is BitlyLoginProvider bitly)
                 {
                     _urlShortener.Instance = null;

@@ -3,7 +3,7 @@ import {
   setFavoritesSetting,
   setRecentSetting,
 } from "@appserver/common/api/files";
-import { FolderType } from "@appserver/common/constants";
+import { FolderType, RoomsType } from "@appserver/common/constants";
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
 import { presentInArray } from "../helpers/files-helpers";
@@ -267,7 +267,9 @@ class SettingsStore {
     size = 24,
     fileExst = null,
     providerKey = null,
-    contentLength = null
+    contentLength = null,
+    roomType = null,
+    isArchive = null
   ) => {
     if (fileExst || contentLength) {
       const isArchiveItem = this.isArchive(fileExst);
@@ -284,8 +286,29 @@ class SettingsStore {
         isHtmlItem
       );
       return icon;
+    } else if (roomType) {
+      return this.getRoomsIcon(roomType, isArchive, 32);
     } else {
       return this.getFolderIcon(providerKey, size);
+    }
+  };
+
+  getRoomsIcon = (roomType, isArchive, size = 32) => {
+    const reviewPath = `images/icons/${size}`;
+
+    if (isArchive) return `${reviewPath}/room/archive.svg`;
+
+    switch (roomType) {
+      case RoomsType.CustomRoom:
+        return `${reviewPath}/room/custom.svg`;
+      case RoomsType.FillingFormsRoom:
+        return `${reviewPath}/room/filling.form.svg`;
+      case RoomsType.EditingRoom:
+        return `${reviewPath}/room/editing.svg`;
+      case RoomsType.ReadOnlyRoom:
+        return `${reviewPath}/room/view.only.svg`;
+      case RoomsType.ReviewRoom:
+        return `${reviewPath}/room/review.svg`;
     }
   };
 

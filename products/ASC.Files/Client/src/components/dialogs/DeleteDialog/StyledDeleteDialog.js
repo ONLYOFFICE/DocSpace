@@ -7,6 +7,11 @@ const StyledDeleteDialog = styled(ModalDialog)`
     padding-right: 0 !important;
   } */
 
+  .modal-dialog-content-body {
+    padding: 0;
+    border: none;
+  }
+
   .modal-dialog-aside-header {
     margin: 0 -24px 0 -16px;
     padding: 0 0 0 16px;
@@ -52,7 +57,6 @@ const StyledDeleteDialog = styled(ModalDialog)`
     }
 
     display: inline-block;
-    margin-left: 8px;
   }
 `;
 

@@ -47,11 +47,11 @@ public class MemberRequestDto
     public int RoomAccess { get; set; }
     public string RoomId { get; set; }
     public string Key { get; set; }
+    public string CultureName { get; set; }
 }
 
 public class UpdateMemberRequestDto : MemberRequestDto
 {
     public string UserId { get; set; }
     public bool? Disable { get; set; }
-    public string CultureName { get; set; }
 }

@@ -1052,7 +1052,7 @@ Scenario("Trusted mail settings change test success", async ({ I }) => {
     I.click("Add trusted domain");
 
     I.seeElement("#domain-input-0");
-    I.fillField("#domain-input-0", "test.com");
+    I.fillField("#user-input-0", "test.com");
 
     I.click("Save");
 
@@ -1089,7 +1089,7 @@ Scenario("Trusted mail settings change test error", async ({ I }) => {
     I.click("Add trusted domain");
 
     I.seeElement("#domain-input-0");
-    I.fillField("#domain-input-0", "test");
+    I.fillField("#user-input-0", "test");
 
     I.click("Save");
 

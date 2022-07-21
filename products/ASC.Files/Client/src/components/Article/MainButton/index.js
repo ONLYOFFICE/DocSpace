@@ -5,7 +5,6 @@ import { inject, observer } from "mobx-react";
 import MainButton from "@appserver/components/main-button";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import { isTablet as isTabletUtils } from "@appserver/components/utils/device";
 import Loaders from "@appserver/common/components/Loaders";
 import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
@@ -15,6 +14,7 @@ import MobileView from "./MobileView";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../package.json";
 import withLoader from "../../../HOCs/withLoader";
+import { Events } from "../../../helpers/constants";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -37,6 +37,8 @@ const ArticleMainButtonContent = (props) => {
     isRecycleBinFolder,
     history,
     currentFolderId,
+    isRoomsFolder,
+    isArchiveFolder,
   } = props;
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -44,19 +46,29 @@ const ArticleMainButtonContent = (props) => {
   const [actions, setActions] = React.useState([]);
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
-  const [isTablet, setIsTablet] = React.useState(isTabletUtils());
 
   const onCreate = React.useCallback(
     (e) => {
       const format = e.action || null;
-      setAction({
-        type: FileAction.Create,
+
+      const event = new Event(Events.CREATE);
+
+      const payload = {
         extension: format,
         id: -1,
-      });
+      };
+      event.payload = payload;
+
+      window.dispatchEvent(event);
     },
     [setAction]
   );
+
+  const onCreateRoom = React.useCallback(() => {
+    const event = new Event(Events.ROOM_CREATE);
+
+    window.dispatchEvent(event);
+  }, []);
 
   const onShowSelectFileDialog = React.useCallback(() => {
     setSelectFileDialogVisible(true);
@@ -102,14 +114,7 @@ const ArticleMainButtonContent = (props) => {
     );
   };
 
-  const onResize = React.useCallback(() => {
-    const isTabletView = isTabletUtils();
-    setIsTablet(isTabletView);
-  }, []);
-
   React.useEffect(() => {
-    window.addEventListener("resize", onResize);
-
     const folderUpload = !isMobile
       ? [
           {
@@ -124,110 +129,91 @@ const ArticleMainButtonContent = (props) => {
         ]
       : [];
 
-    const formActions =
-      !isMobile && !isTablet
-        ? [
-            {
-              className: "main-button_drop-down",
-              icon: "images/form.react.svg",
-              label: t("Translations:NewForm"),
-              key: "new-form",
-              items: [
-                {
-                  className: "main-button_drop-down_sub",
-                  icon: "images/form.react.svg",
-                  label: t("Translations:SubNewForm"),
-                  onClick: onCreate,
-                  action: "docxf",
-                  key: "docxf",
-                },
-                {
-                  className: "main-button_drop-down_sub",
-                  icon: "images/form.file.react.svg",
-                  label: t("Translations:SubNewFormFile"),
-                  onClick: onShowSelectFileDialog,
-                  disabled: isPrivacy,
-                  key: "form-file",
-                },
-                {
-                  className: "main-button_drop-down_sub",
-                  icon: "images/form.react.svg",
-                  label: t("Common:OFORMsGallery"),
-                  onClick: onShowGallery,
-                  disabled: isPrivacy,
-                  key: "form-gallery",
-                },
-              ],
-            },
-          ]
-        : [
-            {
-              className: "main-button_drop-down_sub",
-              icon: "images/form.react.svg",
-              label: t("Translations:NewForm"),
-              onClick: onCreate,
-              action: "docxf",
-              key: "docxf",
-            },
-            {
-              className: "main-button_drop-down_sub",
-              icon: "images/form.file.react.svg",
-              label: t("Translations:NewFormFile"),
-              onClick: onShowSelectFileDialog,
-              disabled: isPrivacy,
-              key: "form-file",
-            },
-          ];
-
-    if (isMobile || isTablet) {
-      formActions.push({
-        className: "main-button_drop-down_sub",
+    const formActions = [
+      {
+        className: "main-button_drop-down",
         icon: "images/form.react.svg",
-        label: t("Common:OFORMsGallery"),
-        onClick: onShowGallery,
-        disabled: isPrivacy,
-        key: "form-gallery",
-      });
-    }
-
-    const actions = [
-      {
-        id: "main-button_new-document",
-        className: "main-button_drop-down",
-        icon: "images/actions.documents.react.svg",
-        label: t("NewDocument"),
-        onClick: onCreate,
-        action: "docx",
-        key: "docx",
-      },
-      {
-        id: "main-button_new-spreadsheet",
-        className: "main-button_drop-down",
-        icon: "images/spreadsheet.react.svg",
-        label: t("NewSpreadsheet"),
-        onClick: onCreate,
-        action: "xlsx",
-        key: "xlsx",
-      },
-      {
-        id: "main-button_new-presentation",
-        className: "main-button_drop-down",
-        icon: "images/actions.presentation.react.svg",
-        label: t("NewPresentation"),
-        onClick: onCreate,
-        action: "pptx",
-        key: "pptx",
-      },
-      ...formActions,
-      {
-        id: "main-button_new-folder",
-        className: "main-button_drop-down",
-        icon: "images/catalog.folder.react.svg",
-        label: t("NewFolder"),
-        onClick: onCreate,
-        key: "new-folder",
+        label: t("Translations:NewForm"),
+        key: "new-form",
+        items: [
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.blank.react.svg",
+            label: t("Translations:SubNewForm"),
+            onClick: onCreate,
+            action: "docxf",
+            key: "docxf",
+          },
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.file.react.svg",
+            label: t("Translations:SubNewFormFile"),
+            onClick: onShowSelectFileDialog,
+            disabled: isPrivacy,
+            key: "form-file",
+          },
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.gallery.react.svg",
+            label: t("Common:OFORMsGallery"),
+            onClick: onShowGallery,
+            disabled: isPrivacy,
+            key: "form-gallery",
+          },
+        ],
       },
     ];
+
+    const actions = isRoomsFolder
+      ? [
+          {
+            id: "main-button_new-room",
+            className: "main-button_drop-down",
+            icon: "images/folder.locked.react.svg",
+            label: t("Home:NewRoom"),
+            onClick: onCreateRoom,
+            action: "room",
+            key: "room",
+          },
+        ]
+      : [
+          {
+            id: "main-button_new-document",
+            className: "main-button_drop-down",
+            icon: "images/actions.documents.react.svg",
+            label: t("NewDocument"),
+            onClick: onCreate,
+            action: "docx",
+            key: "docx",
+          },
+          {
+            id: "main-button_new-spreadsheet",
+            className: "main-button_drop-down",
+            icon: "images/spreadsheet.react.svg",
+            label: t("NewSpreadsheet"),
+            onClick: onCreate,
+            action: "xlsx",
+            key: "xlsx",
+          },
+          {
+            id: "main-button_new-presentation",
+            className: "main-button_drop-down",
+            icon: "images/actions.presentation.react.svg",
+            label: t("NewPresentation"),
+            onClick: onCreate,
+            action: "pptx",
+            key: "pptx",
+          },
+          ...formActions,
+          {
+            id: "main-button_new-folder",
+            className: "main-button_drop-down",
+            icon: "images/catalog.folder.react.svg",
+            label: t("NewFolder"),
+            onClick: onCreate,
+            key: "new-folder",
+          },
+        ];
 
     const uploadActions = [
       {
@@ -241,32 +227,30 @@ const ArticleMainButtonContent = (props) => {
       ...folderUpload,
     ];
 
-    const menuModel = [
-      ...actions,
-      {
+    const menuModel = [...actions];
+
+    if (!isRoomsFolder) {
+      menuModel.push({
         isSeparator: true,
         key: "separator",
-      },
-      ...uploadActions,
-    ];
+      });
+
+      menuModel.push(...uploadActions);
+      setUploadActions(uploadActions);
+    }
 
     setModel(menuModel);
     setActions(actions);
-    setUploadActions(uploadActions);
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-    };
   }, [
     t,
     isPrivacy,
     currentFolderId,
-    isTablet,
+    isRoomsFolder,
     onCreate,
+    onCreateRoom,
     onShowSelectFileDialog,
     onUploadFileClick,
     onUploadFolderClick,
-    onResize,
   ]);
 
   return (
@@ -278,6 +262,7 @@ const ArticleMainButtonContent = (props) => {
             !isCommonFolder &&
             !isShareFolder &&
             !isRecycleBinFolder &&
+            !isArchiveFolder &&
             !isArticleLoading &&
             canCreate && (
               <MobileView
@@ -285,6 +270,7 @@ const ArticleMainButtonContent = (props) => {
                 titleProp={t("Upload")}
                 actionOptions={actions}
                 buttonOptions={uploadActions}
+                isRooms={isRoomsFolder}
               />
             )}
         </>
@@ -332,13 +318,7 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const {
-      isLoaded,
-      firstLoad,
-      isLoading,
-      fileActionStore,
-      canCreate,
-    } = filesStore;
+    const { isLoaded, firstLoad, isLoading, canCreate } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -346,6 +326,8 @@ export default inject(
       isCommonFolder,
       isRecycleBinFolder,
       isShareFolder,
+      isRoomsFolder,
+      isArchiveFolder,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
     const { setSelectFileDialogVisible } = dialogsStore;
@@ -365,9 +347,11 @@ export default inject(
       isCommonFolder,
       isRecycleBinFolder,
       isShareFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+
       canCreate,
 
-      setAction: fileActionStore.setAction,
       startUpload,
 
       setSelectFileDialogVisible,
@@ -379,7 +363,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Article", "UploadPanel", "Common"])(
+  withTranslation(["Article", "UploadPanel", "Common", "Home"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
       <Loaders.ArticleButton />
     )

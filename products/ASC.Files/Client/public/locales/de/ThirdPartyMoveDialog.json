@@ -1,5 +1,6 @@
 {
+  "CreateFileCopyOption": "Kopie Datei erstellen",
   "MoveConfirmation": "Verschiebung bestätigen",
-  "MoveConfirmationAlert": "Möchten Sie diese Elemente wirklich verschieben?",
-  "MoveConfirmationMessage": "Sie verschieben Elemente aus dem Ordner {{provider}}. Diese werden aus dem Konto {{provider}} entfernt und für andere Benutzer unverfügbar."
+  "MoveConfirmationAlert": "Sie verschieben Elemente aus dem Ordner {{provider}}. Dann werden diese aus dem Konto {{provider}} entfernt und für andere Benutzer unverfügbar, wenn diese Elemente früher freigegeben wurden.",
+  "MoveFileOption": "Datei verschieben"
 }

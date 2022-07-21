@@ -29,6 +29,7 @@ import {
   ArticleMainButtonContent,
 } from "./components/Article";
 import FormGallery from "./pages/FormGallery";
+import GlobalEvents from "./components/GlobalEvents";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -45,6 +46,7 @@ const FORM_GALLERY_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/form-gallery/:folderId"
 );
+const ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/rooms");
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -57,6 +59,7 @@ window.AppServer.files = {
   PRIVATE_ROOMS_URL,
   FILTER_URL,
   MEDIA_VIEW_URL,
+  ROOMS_URL,
 };
 
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -92,7 +95,9 @@ const FilesSection = React.memo(() => {
       <PrivateRoute exact path={HOME_URL} component={Home} />
       <PrivateRoute path={FILTER_URL} component={Home} />
       <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
+      <PrivateRoute path={ROOMS_URL} component={Home} />
       <PrivateRoute path={FORM_GALLERY_URL} component={FormGallery} />
+      {/* <PrivateRoute path={ROOMS_URL} component={VirtualRooms} /> */}
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
@@ -169,6 +174,7 @@ class FilesContent extends React.Component {
 
     return (
       <>
+        <GlobalEvents />
         <Panels />
         <FilesArticle history={this.props.history} />
         <FilesSection />

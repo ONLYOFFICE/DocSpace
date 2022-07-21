@@ -320,7 +320,7 @@ class SectionBodyContent extends React.PureComponent {
                   onClick={(e) => this.unlinkAccount(item.provider, e)}
                   isHovered={true}
                 >
-                  {t("Disconnect")}
+                  {t("Common:Disconnect")}
                 </Link>
               </div>
             ) : (
@@ -588,7 +588,7 @@ class SectionBodyContent extends React.PureComponent {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => {
-    const { isAdmin, userStore, settingsStore, tfaStore } = auth;
+    const { isAdmin, userStore, settingsStore, tfaStore, logout } = auth;
     const { user: viewer, changeTheme } = userStore;
 
     const {
@@ -649,6 +649,7 @@ export default withRouter(
       changeTheme,
       selectedTheme: viewer.theme,
       setIsLoading: loadingStore.setIsLoading,
+      logout,
     };
   })(
     observer(

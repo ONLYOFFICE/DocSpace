@@ -87,7 +87,6 @@ global using ASC.Notify.Patterns;
 global using ASC.Notify.Recipients;
 global using ASC.Notify.Textile;
 global using ASC.Security.Cryptography;
-global using ASC.VoipService.Dao;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Helpers;
 global using ASC.Web.Core.HttpHandlers;
@@ -128,6 +127,8 @@ global using Microsoft.Extensions.Logging;
 
 global using MimeKit.Utils;
 
+global using NetEscapades.EnumGenerators;
+
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
 
@@ -148,3 +149,4 @@ global using static ASC.Web.Core.Files.DocumentService;
 
 global using License = ASC.Core.Billing.License;
 global using SecurityContext = ASC.Core.SecurityContext;
+global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;

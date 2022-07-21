@@ -75,8 +75,27 @@ const StyledContextMenu = styled.div`
     .icon-wrapper {
       display: flex;
       align-items: center;
-      width: ${(props) => props.theme.menuItem.iconWrapper.header.width};
-      height: ${(props) => props.theme.menuItem.iconWrapper.header.height};
+      width: ${(props) =>
+        props.isRoom ? "32px" : props.theme.menuItem.iconWrapper.header.width};
+      min-width: ${(props) =>
+        props.isRoom ? "32px" : props.theme.menuItem.iconWrapper.header.width};
+      height: ${(props) =>
+        props.isRoom ? "32px" : props.theme.menuItem.iconWrapper.header.height};
+      min-height: ${(props) =>
+        props.isRoom ? "32px" : props.theme.menuItem.iconWrapper.header.height};
+
+      ${(props) =>
+        props.isRoom &&
+        css`
+          .drop-down-item_icon {
+            width: 100%;
+            height: 100%;
+
+            svg {
+              border-radius: 6px;
+            }
+          }
+        `}
 
       svg {
         &:not(:root) {

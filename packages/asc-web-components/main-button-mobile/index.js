@@ -25,6 +25,8 @@ import styled from "styled-components";
 import ButtonAlertIcon from "../../../public/images/main-button.alert.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
+import { isMobileOnly } from "react-device-detect";
+
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
@@ -106,6 +108,7 @@ const MainButtonMobile = (props) => {
     percent,
     title,
     withButton,
+    withoutButton,
     manualWidth,
     isOpenButton,
     onClose,
@@ -116,6 +119,7 @@ const MainButtonMobile = (props) => {
   const [isOpen, setIsOpen] = useState(opened);
   const [isUploading, setIsUploading] = useState(false);
   const [height, setHeight] = useState(window.innerHeight - 48 + "px");
+  const [isOpenSubMenu, setIsOpenSubMenu] = useState(false);
 
   const divRef = useRef();
   const ref = useRef();
@@ -184,7 +188,7 @@ const MainButtonMobile = (props) => {
 
   useEffect(() => {
     recalculateHeight();
-  }, [isOpen, isOpenButton, window.innerHeight, isUploading]);
+  }, [isOpen, isOpenButton, window.innerHeight, isUploading, isOpenSubMenu]);
 
   useEffect(() => {
     window.addEventListener("resize", recalculateHeight);
@@ -220,6 +224,8 @@ const MainButtonMobile = (props) => {
     }
   }, [progressOptions]);
 
+  const noHover = isMobileOnly ? true : false;
+
   const renderItems = () => {
     return (
       <StyledRenderItem ref={divRef}>
@@ -229,6 +235,50 @@ const MainButtonMobile = (props) => {
               toggle(false);
               option.onClick && option.onClick({ action: option.action });
             };
+
+            const onClickSub = () => {
+              setIsOpenSubMenu(!isOpenSubMenu);
+            };
+
+            if (option.items)
+              return (
+                <div key="mobile-submenu">
+                  <StyledDropDownItem
+                    key={option.key}
+                    label={option.label}
+                    className={`${option.className} ${
+                      option.isSeparator && "is-separator"
+                    }`}
+                    onClick={onClickSub}
+                    icon={option.icon ? option.icon : ""}
+                    action={option.action}
+                    isActive={isOpenSubMenu}
+                    isSubMenu={true}
+                    noHover={noHover}
+                  />
+                  {isOpenSubMenu &&
+                    option.items.map((item) => {
+                      const subMenuOnClickAction = () => {
+                        toggle(false);
+                        setIsOpenSubMenu(false);
+                        item.onClick && item.onClick({ action: item.action });
+                      };
+
+                      return (
+                        <StyledDropDownItem
+                          key={item.key}
+                          label={item.label}
+                          className={`${item.className} sublevel`}
+                          onClick={subMenuOnClickAction}
+                          icon={item.icon ? item.icon : ""}
+                          action={item.action}
+                          withoutIcon={item.withoutIcon}
+                          noHover={noHover}
+                        />
+                      );
+                    })}
+                </div>
+              );
 
             return (
               <StyledDropDownItem
@@ -240,6 +290,7 @@ const MainButtonMobile = (props) => {
                 onClick={optionOnClickAction}
                 icon={option.icon ? option.icon : ""}
                 action={option.action}
+                noHover={noHover}
               />
             );
           })}
@@ -265,7 +316,8 @@ const MainButtonMobile = (props) => {
               />
             ))}
         </StyledProgressContainer>
-        <StyledButtonOptions>
+
+        <StyledButtonOptions withoutButton={withoutButton}>
           {buttonOptions
             ? buttonOptions.map((option) =>
                 option.isSeparator ? (

@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 
 import { ReactSVG } from "react-svg";
 
-import Badge from "../badge/";
+import Text from "../text";
+
+import Badge from "../badge";
 
 import {
   StyledCatalogItemContainer,
@@ -12,6 +14,7 @@ import {
   StyledCatalogItemBadgeWrapper,
   StyledCatalogItemText,
   StyledCatalogItemInitialText,
+  StyledCatalogItemHeaderContainer,
 } from "./styled-catalog-item";
 
 const getInitial = (text) => text.substring(0, 1).toUpperCase();
@@ -35,6 +38,8 @@ const CatalogItem = (props) => {
     labelBadge,
     iconBadge,
     onClickBadge,
+    isHeader,
+    isFirstHeader,
   } = props;
 
   const onClickAction = () => {
@@ -50,59 +55,76 @@ const CatalogItem = (props) => {
     onDrop && isDragging && onDrop(id, text);
   };
 
-  return (
-    <StyledCatalogItemContainer
-      className={className}
-      id={id}
-      style={style}
-      showText={showText}
-      isEndOfBlock={isEndOfBlock}
-    >
-      <StyledCatalogItemSibling
-        isActive={isActive}
-        isDragging={isDragging}
-        isDragActive={isDragActive}
-        onClick={onClickAction}
-        onMouseUp={onMouseUpAction}
-      ></StyledCatalogItemSibling>
+  const renderHeaderItem = () => {
+    return (
+      <StyledCatalogItemHeaderContainer
+        showText={showText}
+        isFirstHeader={isFirstHeader}
+      >
+        <Text className="catalog-item__header-text" truncate noSelect>
+          {showText ? text : ""}
+        </Text>
+      </StyledCatalogItemHeaderContainer>
+    );
+  };
 
-      <StyledCatalogItemImg>
-        <ReactSVG className="icon" src={icon} />
-        {!showText && (
-          <>
-            {showInitial && (
-              <StyledCatalogItemInitialText>
-                {getInitial(text)}
-              </StyledCatalogItemInitialText>
-            )}
-            {showBadge && !iconBadge && (
-              <StyledCatalogItemBadgeWrapper
-                onClick={onClickBadgeAction}
-                showText={showText}
-              />
-            )}
-          </>
-        )}
-      </StyledCatalogItemImg>
+  const renderItem = () => {
+    return (
+      <StyledCatalogItemContainer
+        className={className}
+        id={id}
+        style={style}
+        showText={showText}
+        isEndOfBlock={isEndOfBlock}
+      >
+        <StyledCatalogItemSibling
+          isActive={isActive}
+          isDragging={isDragging}
+          isDragActive={isDragActive}
+          onClick={onClickAction}
+          onMouseUp={onMouseUpAction}
+        ></StyledCatalogItemSibling>
 
-      {showText && (
-        <StyledCatalogItemText noSelect={true}>{text}</StyledCatalogItemText>
-      )}
-
-      {showBadge && showText && (
-        <StyledCatalogItemBadgeWrapper
-          showText={showText}
-          onClick={onClickBadgeAction}
-        >
-          {!iconBadge ? (
-            <Badge className="catalog-item__badge" label={labelBadge} />
-          ) : (
-            <ReactSVG src={iconBadge} />
+        <StyledCatalogItemImg>
+          <ReactSVG className="icon" src={icon} />
+          {!showText && (
+            <>
+              {showInitial && (
+                <StyledCatalogItemInitialText>
+                  {getInitial(text)}
+                </StyledCatalogItemInitialText>
+              )}
+              {showBadge && !iconBadge && (
+                <StyledCatalogItemBadgeWrapper
+                  onClick={onClickBadgeAction}
+                  showText={showText}
+                />
+              )}
+            </>
           )}
-        </StyledCatalogItemBadgeWrapper>
-      )}
-    </StyledCatalogItemContainer>
-  );
+        </StyledCatalogItemImg>
+
+        {showText && (
+          <StyledCatalogItemText noSelect={true}>{text}</StyledCatalogItemText>
+        )}
+
+        {showBadge && showText && (
+          <StyledCatalogItemBadgeWrapper
+            showText={showText}
+            onClick={onClickBadgeAction}
+          >
+            {!iconBadge ? (
+              <Badge className="catalog-item__badge" label={labelBadge} />
+            ) : (
+              <ReactSVG src={iconBadge} />
+            )}
+          </StyledCatalogItemBadgeWrapper>
+        )}
+      </StyledCatalogItemContainer>
+    );
+  };
+
+  return isHeader ? renderHeaderItem() : renderItem();
 };
 
 CatalogItem.propTypes = {
@@ -140,6 +162,10 @@ CatalogItem.propTypes = {
   iconBadge: PropTypes.string,
   /** Call function when user clicked on catalog item badge */
   onClickBadge: PropTypes.func,
+  /** Call when catalog item show as header */
+  isHeader: PropTypes.bool,
+  /** Disable margin top for catalog item header */
+  isFirstHeader: PropTypes.bool,
 };
 
 CatalogItem.defaultProps = {
@@ -150,6 +176,8 @@ CatalogItem.defaultProps = {
   isEndOfBlock: false,
   isDragging: false,
   isDragActive: false,
+  isHeader: false,
+  isFirstHeader: false,
 };
 
 export default React.memo(CatalogItem);

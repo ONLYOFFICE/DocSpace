@@ -567,6 +567,10 @@ const Dark = {
   },
 
   modalDialog: {
+    backgroundColor: black,
+    textColor: white,
+    headerBorderColor: "#474747",
+    footerBorderColor: "#474747",
     width: "auto",
     maxwidth: "560px",
     margin: " 0 auto",
@@ -596,14 +600,8 @@ const Dark = {
     },
 
     closeButton: {
-      width: "14px",
-      height: "14px",
-      minWidth: "14px",
-      minHeight: "14px",
-
-      right: "16px",
-      top: "13px",
-      hoverColor: grayMaxLight,
+      //backgroundColor: "#9A9EA3",
+      fillColor: "#9A9EA3",
     },
   },
 
@@ -611,7 +609,6 @@ const Dark = {
     button: {
       marginRight: "8px",
       maxWidth: "110px",
-      padding: "6px 8px 10px",
     },
 
     page: {
@@ -865,6 +862,10 @@ const Dark = {
     text: { maxWidth: "100%" },
 
     span: { maxWidth: "300px" },
+
+    expander: {
+      iconColor: white,
+    },
 
     caret: {
       width: "5px",
@@ -1828,11 +1829,11 @@ const Dark = {
     container: {
       width: "100%",
       height: "36px",
-      padding: "0 20px",
+      padding: "0 12px",
       marginBottom: "16px",
       tablet: {
         height: "44px",
-        padding: "0 16px",
+        padding: "0 8px",
         marginBottom: "24px",
       },
     },
@@ -1927,7 +1928,7 @@ const Dark = {
 
   header: {
     backgroundColor: "#1f1f1f ",
-
+    recoveryColor: "#4C4C4C",
     linkColor: "#606060",
     productColor: "#eeeeee",
   },
@@ -2242,6 +2243,14 @@ const Dark = {
     },
   },
 
+  connectCloud: {
+    connectBtnContent: silver,
+    connectBtnTextBg: "none",
+    connectBtnIconBg: "#none",
+    connectBtnTextBorder: silver,
+    connectBtnIconBorder: "#474747",
+  },
+
   filesThirdPartyDialog: {
     border: "1px solid #474747",
   },
@@ -2521,8 +2530,8 @@ const Dark = {
 
     badge: {
       color: black,
-      stroke: "#858585",
-      fill: "#858585",
+      stroke: "#ADADAD",
+      fill: "#ADADAD",
       defaultFill: black,
       badgeFill: "#F58D31",
     },
@@ -2579,6 +2588,10 @@ const Dark = {
     changePassword: {
       linkColor: "#e06a1b",
     },
+  },
+
+  downloadDialog: {
+    background: "#282828",
   },
 
   studio: {

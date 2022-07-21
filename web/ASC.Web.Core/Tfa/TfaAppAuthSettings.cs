@@ -29,6 +29,7 @@ namespace ASC.Web.Studio.Core.TFA;
 [Serializable]
 public class TfaAppAuthSettings : ISettings<TfaAppAuthSettings>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{822CA059-AA8F-4588-BEE3-6CD2AA920CDB}"); }

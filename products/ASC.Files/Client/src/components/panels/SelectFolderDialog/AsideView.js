@@ -42,10 +42,9 @@ const SelectFolderDialogAsideView = ({
     <StyledModalDialog
       theme={theme}
       visible={isPanelVisible}
-      contentHeight="100%"
-      contentPaddingBottom="0px"
       onClose={onClose}
       withoutBodyScroll
+      withFooterBorder
       displayType="aside"
     >
       <ModalDialog.Header theme={theme}>
@@ -93,35 +92,30 @@ const SelectFolderDialogAsideView = ({
                 </div>
               )}
             </div>
-
-            <div className="selection-panel_aside-footer">
-              <div>{footer}</div>
-              <div className="selection-panel_aside-buttons">
-                <Button
-                  theme={theme}
-                  className="select-folder-dialog-buttons-save"
-                  primary
-                  size="normalTouchscreen"
-                  label={primaryButtonName}
-                  onClick={onButtonClick}
-                  isDisabled={
-                    isDisableButton ||
-                    isDisableTree ||
-                    isLoadingData ||
-                    !isAvailable
-                  }
-                />
-                <Button
-                  size="normalTouchscreen"
-                  label={t("Common:CancelButton")}
-                  onClick={onClose}
-                  isDisabled={isLoadingData}
-                />
-              </div>
-            </div>
           </div>
         </StyledAsideBody>
       </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          theme={theme}
+          className="select-folder-dialog-buttons-save"
+          primary
+          scale
+          size="normalTouchscreen"
+          label={primaryButtonName}
+          onClick={onButtonClick}
+          isDisabled={
+            isDisableButton || isDisableTree || isLoadingData || !isAvailable
+          }
+        />
+        <Button
+          size="normalTouchscreen"
+          scale
+          label={t("Common:CancelButton")}
+          onClick={onClose}
+          isDisabled={isLoadingData}
+        />
+      </ModalDialog.Footer>
     </StyledModalDialog>
   );
 };

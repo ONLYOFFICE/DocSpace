@@ -90,9 +90,10 @@ class ConnectClouds extends React.Component {
 
   onDeleteThirdParty = (e) => {
     const { dataset } = (e.originalEvent || e).currentTarget;
-    const { id, title } = dataset;
+    const { id, title, providerKey } = dataset;
+    console.log(dataset);
     this.props.setDeleteThirdPartyDialogVisible(true);
-    this.props.setRemoveItem({ id, title });
+    this.props.setRemoveItem({ id, title, providerKey });
   };
 
   onChangeThirdPartyInfo = (e) => {
@@ -129,9 +130,10 @@ class ConnectClouds extends React.Component {
       getSubfolders,
       setFirstLoad,
     } = this.props;
+    const { dataset } = (e.originalEvent || e).currentTarget;
 
-    const provider = e.currentTarget.dataset.providerKey;
-    const providerId = e.currentTarget.dataset.providerId;
+    const provider = dataset.providerKey;
+    const providerId = dataset.providerId;
 
     const isCorporate =
       !!providers.length &&
@@ -159,7 +161,17 @@ class ConnectClouds extends React.Component {
 
   getContextOptions = (item, index) => {
     const { t } = this.props;
+
     return [
+      {
+        key: `${index}_open`,
+        "data-provider-id": item.provider_id,
+        "data-provider-key": item.provider_key,
+        icon: "images/folder.react.svg",
+        label: t("Home:Open"),
+        onClick: this.openLocation,
+        disabled: !isMobile,
+      },
       {
         key: `${index}_change`,
         "data-provider-id": item.provider_id,
@@ -172,8 +184,9 @@ class ConnectClouds extends React.Component {
         key: `${index}_delete`,
         "data-id": item.provider_id,
         "data-title": item.customer_title,
+        "data-provider-key": item.provider_key,
         icon: "/static/images/catalog.trash.react.svg",
-        label: t("Translations:DeleteThirdParty"),
+        label: t("Common:Disconnect"),
         onClick: this.onDeleteThirdParty,
       },
     ];
@@ -334,7 +347,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Settings", "Translations", "Common"])(
+  withTranslation(["Settings", "Translations", "Home", "Common"])(
     observer(withRouter(ConnectClouds))
   )
 );

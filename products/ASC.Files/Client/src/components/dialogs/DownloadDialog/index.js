@@ -234,12 +234,13 @@ class DownloadDialogComponent extends React.Component {
       isIndeterminate: indeterminateOtherTitle,
     } = this.state.other;
 
-    const isSingleFile =
+    const isCheckedLength =
       documents.filter((f) => f.checked).length +
-        spreadsheets.filter((f) => f.checked).length +
-        presentations.filter((f) => f.checked).length +
-        other.filter((f) => f.checked).length <=
-      1;
+      spreadsheets.filter((f) => f.checked).length +
+      presentations.filter((f) => f.checked).length +
+      other.filter((f) => f.checked).length;
+
+    const isSingleFile = isCheckedLength <= 1;
 
     const downloadContentProps = {
       t,
@@ -249,12 +250,26 @@ class DownloadDialogComponent extends React.Component {
       getItemIcon: this.getItemIcon,
     };
 
+    const totalItemsNum =
+      this.state.documents.files.length +
+      this.state.spreadsheets.files.length +
+      this.state.presentations.files.length +
+      this.state.other.files.length +
+      (this.state.documents.files.length > 1 && 1) +
+      (this.state.spreadsheets.files.length > 1 && 1) +
+      (this.state.presentations.files.length > 1 && 1) +
+      (this.state.other.files.length > 1 && 1);
+
     return (
       <StyledDownloadDialog
         visible={visible}
         displayType="aside"
         onClose={this.onClose}
+        autoMaxHeight
+        autoMaxWidth
+        isLarge
         isLoading={!tReady}
+        withBodyScroll={totalItemsNum > 11}
       >
         <ModalDialog.Header>{t("Translations:DownloadAs")}</ModalDialog.Header>
 
@@ -309,6 +324,10 @@ class DownloadDialogComponent extends React.Component {
               title={t("Other")}
             />
           )}
+
+          <div className="download-dialog-convert-message">
+            <Text noSelect>{t("ConvertMessage")}</Text>
+          </div>
         </ModalDialog.Body>
 
         <ModalDialog.Footer>
@@ -318,6 +337,7 @@ class DownloadDialogComponent extends React.Component {
             size="normalTouchscreen"
             primary
             onClick={this.onDownload}
+            isDisabled={isCheckedLength === 0}
             scale
           />
           <Button

@@ -55,18 +55,32 @@ export function setDNSSettings(dnsName, enable) {
   });
 }
 
+export function getIpRestrictions() {
+  return request({
+    method: "get",
+    url: "/settings/iprestrictions",
+  });
+}
+
 export function setIpRestrictions(data) {
   return request({
     method: "put",
-    url: "/settings/iprestrictions.json",
+    url: "/settings/iprestrictions",
     data,
+  });
+}
+
+export function getIpRestrictionsEnable() {
+  return request({
+    method: "get",
+    url: "/settings/iprestrictions/settings",
   });
 }
 
 export function setIpRestrictionsEnable(data) {
   return request({
     method: "put",
-    url: "/settings/iprestrictions/settings.json",
+    url: "/settings/iprestrictions/settings",
     data,
   });
 }
@@ -84,6 +98,13 @@ export function setCookieSettings(lifeTime) {
     method: "put",
     url: "/settings/cookiesettings.json",
     data: { lifeTime },
+  });
+}
+
+export function getCookieSettings() {
+  return request({
+    method: "get",
+    url: "/settings/cookiesettings.json",
   });
 }
 
@@ -355,7 +376,7 @@ export function getTfaSettings() {
 export function setTfaSettings(type) {
   return request({
     method: "put",
-    url: "/settings/tfaapp",
+    url: "/settings/tfaappwithlink",
     data: { type: type },
   });
 }
@@ -403,17 +424,21 @@ export function getTfaSecretKeyAndQR(confirmKey = null) {
   return request(options);
 }
 
-export function validateTfaCode(code) {
+export function validateTfaCode(code, confirmKey = null) {
   const data = {
     code,
   };
 
-  return request({
+  const options = {
     method: "post",
     url: "/settings/tfaapp/validate",
     skipLogout: true,
     data,
-  });
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
 }
 
 export function getBackupStorage() {

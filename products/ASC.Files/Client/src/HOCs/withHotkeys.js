@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
 import { FileAction } from "@appserver/common/constants";
+import { Events } from "../helpers/constants";
 import toastr from "studio/toastr";
 
 const withHotkeys = (Component) => {
@@ -12,7 +13,6 @@ const withHotkeys = (Component) => {
       setSelected,
       viewAs,
       setViewAs,
-      setAction,
       setHotkeyPanelVisible,
       confirmDelete,
       setDeleteDialogVisible,
@@ -46,6 +46,9 @@ const withHotkeys = (Component) => {
       isFavoritesFolder,
       isRecentFolder,
       isTrashFolder,
+      isArchiveFolder,
+      isRoomsFolder,
+
       selection,
       setFavoriteAction,
     } = props;
@@ -63,7 +66,25 @@ const withHotkeys = (Component) => {
     const onKeyDown = (e) => activateHotkeys(e);
 
     const folderWithNoAction =
-      isFavoritesFolder || isRecentFolder || isTrashFolder;
+      isFavoritesFolder ||
+      isRecentFolder ||
+      isTrashFolder ||
+      isArchiveFolder ||
+      isRoomsFolder;
+
+    const onCreate = (extension) => {
+      if (folderWithNoAction) return;
+      const event = new Event(Events.CREATE);
+
+      const payload = {
+        extension: extension,
+        id: -1,
+      };
+
+      event.payload = payload;
+
+      window.dispatchEvent(event);
+    };
 
     useEffect(() => {
       window.addEventListener("keydown", onKeyDown);
@@ -163,48 +184,28 @@ const withHotkeys = (Component) => {
     );
 
     //Crete document
-    useHotkeys(
-      "Shift+d",
-      () => {
-        if (folderWithNoAction) return;
-        setAction({ type: FileAction.Create, extension: "docx", id: -1 });
-      },
-
-      { ...hotkeysFilter, ...{ keyup: true } }
-    );
+    useHotkeys("Shift+d", () => onCreate("docx"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete spreadsheet
-    useHotkeys(
-      "Shift+s",
-      () => {
-        if (folderWithNoAction) return;
-        setAction({ type: FileAction.Create, extension: "xlsx", id: -1 });
-      },
-
-      { ...hotkeysFilter, ...{ keyup: true } }
-    );
+    useHotkeys("Shift+s", () => onCreate("xlsx"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete presentation
-    useHotkeys(
-      "Shift+p",
-      () => {
-        if (folderWithNoAction) return;
-        setAction({ type: FileAction.Create, extension: "pptx", id: -1 });
-      },
-
-      { ...hotkeysFilter, ...{ keyup: true } }
-    );
+    useHotkeys("Shift+p", () => onCreate("pptx"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete form template
-    useHotkeys(
-      "Shift+o",
-      () => {
-        if (folderWithNoAction) return;
-        setAction({ type: FileAction.Create, extension: "docxf", id: -1 });
-      },
-
-      { ...hotkeysFilter, ...{ keyup: true } }
-    );
+    useHotkeys("Shift+o", () => onCreate("docxf"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete form template from file
     useHotkeys(
@@ -218,14 +219,10 @@ const withHotkeys = (Component) => {
     );
 
     //Crete folder
-    useHotkeys(
-      "Shift+f",
-      () => {
-        if (folderWithNoAction) return;
-        setAction({ type: FileAction.Create, id: -1 });
-      },
-      { ...hotkeysFilter, ...{ keyup: true } }
-    );
+    useHotkeys("Shift+f", () => onCreate(null), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Delete selection
     useHotkeys(
@@ -329,7 +326,6 @@ const withHotkeys = (Component) => {
         enabledHotkeys,
         selection,
       } = filesStore;
-      const { setAction } = fileActionStore;
 
       const {
         selectFile,
@@ -370,13 +366,14 @@ const withHotkeys = (Component) => {
         isFavoritesFolder,
         isRecentFolder,
         isTrashFolder,
+        isArchiveFolder,
+        isRoomsFolder,
       } = treeFoldersStore;
 
       return {
         setSelected,
         viewAs,
         setViewAs,
-        setAction,
 
         setHotkeyPanelVisible,
         setDeleteDialogVisible,
@@ -411,6 +408,9 @@ const withHotkeys = (Component) => {
         isFavoritesFolder,
         isRecentFolder,
         isTrashFolder,
+        isArchiveFolder,
+        isRoomsFolder,
+
         selection,
         setFavoriteAction,
       };

@@ -1,6 +1,7 @@
 {
   "AddAccount": "Add account",
   "AddAuthor": "Add author",
+  "AddOwner": "Add owner",
   "ArchivingData": "Archiving data",
   "ButtonShareAccess": "Sharing Settings",
   "ConnectingAccount": "Connecting account",
@@ -10,7 +11,6 @@
   "DeleteFromTrash": "Selected elements were successfully deleted from Trash",
   "DeleteOperation": "Deleting",
   "DeleteSelectedElem": "Selected elements were successfully deleted",
-  "DeleteThirdParty": "Delete third-party",
   "DownloadApps": "Download applications",
   "DownloadAs": "Download as",
   "EncryptedFileSaving": "Saving encrypted file",
@@ -36,7 +36,6 @@
   "MobileLinux": "Download ONLYOFFICE Desktop Editors for Linux",
   "MobileMac": "Download ONLYOFFICE Desktop Editors for Mac OS",
   "MobileWin": "Download ONLYOFFICE Desktop Editors for Windows",
-  "Move": "Move",
   "MoveHere": "Move here",
   "MoveToOperation": "Moving",
   "NewForm": "Form template",

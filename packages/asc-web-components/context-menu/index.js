@@ -119,7 +119,7 @@ class ContextMenu extends Component {
     if (event) {
       const rects = this.props.containerRef?.current.getBoundingClientRect();
 
-      let left = rects ? rects.left : event.pageX + 1;
+      let left = rects ? rects.left - this.props.leftOffset : event.pageX + 1;
       let top = rects ? rects.top : event.pageY + 1;
       let width = this.menuRef.current.offsetParent
         ? this.menuRef.current.offsetWidth
@@ -294,7 +294,7 @@ class ContextMenu extends Component {
 
     return (
       <>
-        <StyledContextMenu changeView={changeView}>
+        <StyledContextMenu changeView={changeView} isRoom={this.props.isRoom}>
           <CSSTransition
             nodeRef={this.menuRef}
             classNames="p-contextmenu"
@@ -392,7 +392,10 @@ ContextMenu.propTypes = {
   containerRef: PropTypes.any,
   /** Scale with by container component*/
   scaled: PropTypes.bool,
+
   getContextModel: PropTypes.func,
+
+  leftOffset: PropTypes.number,
 };
 
 ContextMenu.defaultProps = {
@@ -407,6 +410,7 @@ ContextMenu.defaultProps = {
   onHide: null,
   scaled: false,
   containerRef: null,
+  leftOffset: 0,
 };
 
 export default ContextMenu;

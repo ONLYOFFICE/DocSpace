@@ -134,7 +134,9 @@ const StyledDropDown = styled(DropDown)`
 
     &:hover {
       background-color: ${(props) =>
-        props.theme.mainButtonMobile.dropDown.hoverButtonColor};
+        isMobileOnly
+          ? props.theme.mainButtonMobile.buttonOptions.backgroundColor
+          : props.theme.mainButtonMobile.dropDown.hoverButtonColor};
     }
   }
 
@@ -157,7 +159,9 @@ const StyledDropDownItem = styled(DropDownItem)`
 const StyledButtonOptions = styled.div`
   padding: 16px 0;
   background-color: ${(props) =>
-    props.theme.mainButtonMobile.buttonOptions.backgroundColor};
+    props.withoutButton
+      ? props.theme.mainButtonMobile.buttonWrapper.background
+      : props.theme.mainButtonMobile.buttonOptions.backgroundColor};
   color: ${(props) => props.theme.mainButtonMobile.buttonOptions.color};
 `;
 
@@ -165,6 +169,10 @@ StyledButtonOptions.defaultProps = { theme: Base };
 
 const StyledContainerAction = styled.div`
   padding: 16px 0px;
+
+  .sublevel {
+    padding-left: 48px;
+  }
 `;
 
 const StyledButtonWrapper = styled.div`

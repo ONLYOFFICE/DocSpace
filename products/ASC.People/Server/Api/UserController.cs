@@ -202,7 +202,7 @@ public class UserController : PeopleControllerBase
 
     [HttpPost]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    public EmployeeDto AddMember(MemberRequestDto inDto)
+    public async Task<EmployeeDto> AddMember(MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
@@ -226,7 +226,7 @@ public class UserController : PeopleControllerBase
             if (success)
             {
                 var folderDao = _daoFactory.GetFolderDao<int>();
-                var folder = folderDao.GetFolderAsync(id).Result;
+                var folder = await folderDao.GetFolderAsync(id);
 
                 if (folder == null)
                 {
@@ -236,7 +236,7 @@ public class UserController : PeopleControllerBase
             else
             {
                 var folderDao = _daoFactory.GetFolderDao<string>();
-                var folder = folderDao.GetFolderAsync(inDto.RoomId).Result;
+                var folder = await folderDao.GetFolderAsync(inDto.RoomId);
 
                 if (folder == null)
                 {
@@ -267,6 +267,7 @@ public class UserController : PeopleControllerBase
         var address = new MailAddress(inDto.Email);
         user.Email = address.Address;
         //Set common fields
+        user.CultureName = inDto.CultureName;
         user.FirstName = inDto.Firstname;
         user.LastName = inDto.Lastname;
         user.Title = inDto.Title;
@@ -511,7 +512,7 @@ public class UserController : PeopleControllerBase
         }
 
         var isInvite = _httpContextAccessor.HttpContext.User.Claims
-               .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
+               .Any(role => role.Type == ClaimTypes.Role && ConfirmTypeExtensions.TryParse(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
 
         _apiContext.AuthByClaim();
 
@@ -890,7 +891,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [HttpPut("{userid}")]
+    [HttpPut("{userid}", Order = 1)]
     public async Task<EmployeeDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
