@@ -29,6 +29,7 @@ using Constants = ASC.Core.Users.Constants;
 namespace ASC.Web.Api.Controllers.Settings;
 public class SettingsController : BaseSettingsController
 {
+    private static readonly object locked = new object();
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
@@ -49,7 +50,6 @@ public class SettingsController : BaseSettingsController
     private readonly TenantUtil _tenantUtil;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ColorThemesSettingsHelper _colorThemesSettingsHelper;
     private readonly IConfiguration _configuration;
     private readonly SetupInfo _setupInfo;
     private readonly StatisticManager _statisticManager;
@@ -79,7 +79,6 @@ public class SettingsController : BaseSettingsController
         TenantUtil tenantUtil,
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
-        ColorThemesSettingsHelper colorThemesSettingsHelper,
         IConfiguration configuration,
         SetupInfo setupInfo,
         StatisticManager statisticManager,
@@ -118,7 +117,6 @@ public class SettingsController : BaseSettingsController
         _tenantUtil = tenantUtil;
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
-        _colorThemesSettingsHelper = colorThemesSettingsHelper;
         _configuration = configuration;
         _setupInfo = setupInfo;
         _statisticManager = statisticManager;
@@ -372,13 +370,81 @@ public class SettingsController : BaseSettingsController
         _settingsManager.SaveForCurrentUser(collaboratorPopupSettings);
     }
 
-    ///<visible>false</visible>
+    [HttpGet("colortheme")]
+    public CustomColorThemesSettings GetColorTheme()
+    {
+        var result = _settingsManager.Load<CustomColorThemesSettings>();
+        result.Themes = result.Themes.OrderBy(r => r.Id);
+        return result;
+    }
+
     [HttpPut("colortheme")]
-    public void SaveColorTheme(SettingsRequestsDto inDto)
+    public CustomColorThemesSettings SaveColorTheme(CustomColorThemesSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _colorThemesSettingsHelper.SaveColorTheme(inDto.Theme);
-        _messageService.Send(MessageAction.ColorThemeChanged);
+        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+
+        if (inDto.Themes != null)
+        {
+            lock (locked)
+            {
+                foreach (var item in inDto.Themes)
+                {
+                    var settingItem = settings.Themes.SingleOrDefault(r => r.Id == item.Id);
+                    if (settingItem != null)
+                    {
+                        settingItem.AccentColor = item.AccentColor;
+                        settingItem.ButtonsMain = item.ButtonsMain;
+                        settingItem.TextColor = item.TextColor;
+                    }
+                    else
+                    {
+                        if (item.Id == 0)
+                        {
+                            item.Id = settings.Themes.Max(r => r.Id) + 1;
+                        }
+
+                        settings.Themes = settings.Themes.Append(item);
+                    }
+                }
+
+                _settingsManager.Save(settings);
+            }
+        }
+
+        if (inDto.Selected.HasValue && inDto.Themes.Any(r => r.Id == inDto.Selected.Value))
+        {
+            settings.Selected = inDto.Selected.Value;
+            _settingsManager.Save(settings);
+            _messageService.Send(MessageAction.ColorThemeChanged);
+        }
+
+        return settings;
+    }
+
+    [HttpDelete("colortheme")]
+    public CustomColorThemesSettings DeleteColorTheme(int id)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+
+        if (CustomColorThemesSettingsItem.Default.Any(r => r.Id == id))
+        {
+            return settings;
+        }
+
+        settings.Themes = settings.Themes.Where(r => r.Id != id);
+
+        if (settings.Selected == id)
+        {
+            settings.Selected = settings.Themes.Min(r => r.Id);
+            _messageService.Send(MessageAction.ColorThemeChanged);
+        }
+
+        _settingsManager.Save(settings);
+
+        return settings;
     }
 
     [HttpPut("closeadminhelper")]
