@@ -54,8 +54,8 @@ class TfaStore {
     return api.user.loginWithTfaCode(userName, passwordHash, code);
   };
 
-  loginWithCodeAndCookie = async (code) => {
-    return api.settings.validateTfaCode(code);
+  loginWithCodeAndCookie = async (code, confirmKey = null) => {
+    return api.settings.validateTfaCode(code, confirmKey);
   };
 
   getBackupCodes = async () => {
