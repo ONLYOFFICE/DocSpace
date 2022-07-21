@@ -34,7 +34,7 @@
     }
   ],
   "settings": {
-    "window.zoomLevel": -1,
+    "window.zoomLevel": 0,
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "liveServer.settings.multiRootWorkspaceName": "✨ appserver",
