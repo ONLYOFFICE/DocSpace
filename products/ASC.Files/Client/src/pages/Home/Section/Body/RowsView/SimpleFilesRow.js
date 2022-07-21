@@ -283,6 +283,7 @@ const SimpleFilesRow = (props) => {
           withAccess={withAccess}
           getContextModel={getContextModel}
           showHotkeyBorder={showHotkeyBorder}
+          isRoom={item.isRoom}
         >
           <FilesRowContent
             item={item}

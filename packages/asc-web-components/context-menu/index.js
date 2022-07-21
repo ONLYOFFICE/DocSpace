@@ -292,9 +292,11 @@ class ContextMenu extends Component {
 
     const changeView = this.state.changeView;
 
+    console.log(this.props.isRoom);
+
     return (
       <>
-        <StyledContextMenu changeView={changeView}>
+        <StyledContextMenu changeView={changeView} isRoom={this.props.isRoom}>
           <CSSTransition
             nodeRef={this.menuRef}
             classNames="p-contextmenu"
