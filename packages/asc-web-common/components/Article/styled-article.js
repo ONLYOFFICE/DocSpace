@@ -293,6 +293,11 @@ const StyledArticleProfile = styled.div`
   border-top: ${(props) => props.theme.catalog.profile.borderTop};
   background-color: ${(props) => props.theme.catalog.profile.background};
 
+  .userName {
+    max-width: 109px;
+    white-space: normal;
+  }
+
   .option-button {
     margin-left: auto;
   }

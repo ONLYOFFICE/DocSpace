@@ -56,22 +56,21 @@ const ArticleProfile = (props) => {
       </div>
       {(!tablet || showText) && (
         <>
-          <Text fontSize="12px" fontWeight={600} noSelect>
+          <Text className="userName" fontWeight={600} noSelect>
             {user.displayName}
           </Text>
-          <div className="option-button">
-            <ContextMenuButton
-              zIndex={402}
-              directionX="left"
-              directionY="top"
-              iconName="/static/images/vertical-dots.react.svg"
-              size={15}
-              isFill
-              getData={() => getActions(t)}
-              isDisabled={false}
-              usePortal={true}
-            />
-          </div>
+          <ContextMenuButton
+            className="option-button"
+            zIndex={402}
+            directionX="left"
+            directionY="top"
+            iconName="/static/images/vertical-dots.react.svg"
+            size={15}
+            isFill
+            getData={() => getActions(t)}
+            isDisabled={false}
+            usePortal={true}
+          />
         </>
       )}
     </StyledArticleProfile>
