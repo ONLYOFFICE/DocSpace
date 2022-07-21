@@ -141,11 +141,11 @@ const StyledArticleHeader = styled.div`
 
 StyledArticleHeader.defaultProps = { theme: Base };
 
-const StyledHeading = styled(Heading)`
+const StyledHeading = styled.div`
   margin: 0;
   padding: 0;
-  font-weight: bold;
-  line-height: 28px;
+  cursor: pointer;
+
   @media ${tablet} {
     display: ${(props) => (props.showText ? "block" : "none")};
     margin-left: ${(props) => props.showText && "12px"};
