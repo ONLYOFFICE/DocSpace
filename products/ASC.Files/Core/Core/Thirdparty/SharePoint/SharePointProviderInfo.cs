@@ -306,6 +306,7 @@ public class SharePointProviderInfo : IProviderInfo
             result.RootFolderType = RootFolderType;
             result.Title = MakeTitle(GetTitleById(errorFile.ID));
             result.Error = errorFile.Error;
+            result.Encrypted = Private;
 
             return result;
         }
@@ -327,6 +328,7 @@ public class SharePointProviderInfo : IProviderInfo
         result.RootCreateBy = Owner;
         result.Shared = false;
         result.Version = 1;
+        result.Encrypted = Private;
 
         if (file.IsPropertyAvailable("Length"))
         {

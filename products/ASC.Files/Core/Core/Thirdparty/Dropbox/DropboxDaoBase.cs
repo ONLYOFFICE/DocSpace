@@ -197,6 +197,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         file.NativeAccessor = dropboxFile;
         file.Title = MakeFileTitle(dropboxFile);
         file.ThumbnailStatus = Thumbnail.Created;
+        file.Encrypted = ProviderInfo.Private;
 
         return file;
     }

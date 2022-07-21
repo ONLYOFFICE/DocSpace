@@ -193,6 +193,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         file.NativeAccessor = onedriveFile;
         file.Title = MakeItemTitle(onedriveFile);
         file.ThumbnailStatus = Thumbnail.Created;
+        file.Encrypted = ProviderInfo.Private;
 
         return file;
     }

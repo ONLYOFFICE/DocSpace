@@ -369,6 +369,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         file.NativeAccessor = fsEntry;
         file.Title = MakeTitle(fsEntry);
         file.RootId = RootFolderMakeId();
+        file.Encrypted = ProviderInfo.Private;
 
         return file;
     }

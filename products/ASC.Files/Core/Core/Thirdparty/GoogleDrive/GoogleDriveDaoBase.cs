@@ -217,6 +217,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         file.NativeAccessor = driveFile;
         file.Title = MakeFileTitle(driveFile);
         file.ThumbnailStatus = Thumbnail.Created;
+        file.Encrypted = ProviderInfo.Private;
 
         return file;
     }

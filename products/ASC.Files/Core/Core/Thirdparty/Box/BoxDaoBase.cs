@@ -193,6 +193,7 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
         file.NativeAccessor = boxFile;
         file.Title = MakeFileTitle(boxFile);
         file.ThumbnailStatus = Thumbnail.Created;
+        file.Encrypted = ProviderInfo.Private;
 
         return file;
     }

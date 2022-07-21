@@ -431,7 +431,7 @@ internal class ProviderAccountDao : IProviderDao
         var owner = input.UserId;
         var rootFolderType = input.FolderType;
         var folderType = input.RoomType;
-        var pivateRoom = input.Private;
+        var privateRoom = input.Private;
         var folderId = input.FolderId;
         var createOn = _tenantUtil.DateTimeFromUtc(input.CreateOn);
         var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password, id), token);
@@ -453,6 +453,7 @@ internal class ProviderAccountDao : IProviderDao
             box.Token = OAuth20Token.FromJson(token);
             box.FolderType = folderType;
             box.FolderId = folderId;
+            box.Private = privateRoom;
 
             return box;
         }
@@ -474,6 +475,7 @@ internal class ProviderAccountDao : IProviderDao
             drop.Token = OAuth20Token.FromJson(token);
             drop.FolderType = folderType;
             drop.FolderId = folderId;
+            drop.Private = privateRoom;
 
             return drop;
         }
@@ -495,6 +497,7 @@ internal class ProviderAccountDao : IProviderDao
             sh.InitClientContext(authData);
             sh.FolderType = folderType;
             sh.FolderId = folderId;
+            sh.Private = privateRoom;
 
             return sh;
         }
@@ -516,7 +519,7 @@ internal class ProviderAccountDao : IProviderDao
             gd.Token = OAuth20Token.FromJson(token);
             gd.FolderType = folderType;
             gd.FolderId = folderId;
-            gd.Private = pivateRoom;
+            gd.Private = privateRoom;
 
             return gd;
         }
@@ -538,6 +541,7 @@ internal class ProviderAccountDao : IProviderDao
             od.Token = OAuth20Token.FromJson(token);
             od.FolderType = folderType;
             od.FolderId = folderId;
+            od.Private = privateRoom;
 
             return od;
         }
@@ -567,6 +571,7 @@ internal class ProviderAccountDao : IProviderDao
         sharpBoxProviderInfo.AuthData = authData;
         sharpBoxProviderInfo.FolderType = folderType;
         sharpBoxProviderInfo.FolderId = folderId;
+        sharpBoxProviderInfo.Private = privateRoom;
 
         return sharpBoxProviderInfo;
     }
