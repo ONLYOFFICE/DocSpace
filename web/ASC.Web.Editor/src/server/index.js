@@ -121,15 +121,16 @@ if (IS_DEVELOPMENT) {
   );
 
   let fsWait = false;
+  let waitTimeout = null;
   fs.watch(manifestFile, (event, filename) => {
     if (filename && event === "change") {
       if (fsWait) return;
       fsWait = true;
-      fsWait = setTimeout(() => {
+      waitTimeout = setTimeout(() => {
         fsWait = false;
+        clearTimeout(waitTimeout);
+        wss.broadcast("reload");
       }, 100);
-
-      wss.broadcast("reload");
     }
   });
 } else {
