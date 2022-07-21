@@ -1,6 +1,6 @@
 import React from "react";
 import { StyledTableBody } from "./StyledTableContainer";
-import { InfiniteLoaderComponent } from "../infinite-loader";
+import InfiniteLoaderComponent from "../infinite-loader";
 
 const TableBody = (props) => {
   const {

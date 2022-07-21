@@ -18,6 +18,7 @@ const GridComponent = ({
   const gridRef = useRef(null);
 
   useEffect(() => {
+    //TODO:it is slow
     //console.log("resetAfterIndex");
 
     gridRef?.current?.resetAfterIndex(0);

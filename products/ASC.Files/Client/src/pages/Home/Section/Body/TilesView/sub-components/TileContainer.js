@@ -17,7 +17,7 @@ import IconButton from "@appserver/components/icon-button";
 import ComboBox from "@appserver/components/combobox";
 import { Base } from "@appserver/components/themes";
 import SortDesc from "../../../../../../../../../../public/images/sort.desc.react.svg";
-import { InfiniteGrid } from "@appserver/components/infinite-loader";
+import InfiniteGrid from "./InfiniteGrid";
 
 const paddingCss = css`
   @media ${desktop} {
@@ -366,7 +366,6 @@ class TileContainer extends React.PureComponent {
       <>
         {Folders.length > 0 && (
           <Heading
-            key="folders-header"
             size="xsmall"
             id={"folder-tile-heading"}
             className="tile-items-heading"
@@ -384,11 +383,7 @@ class TileContainer extends React.PureComponent {
         ) : null}
 
         {Files.length > 0 && (
-          <Heading
-            key="files-header"
-            size="xsmall"
-            className="tile-items-heading"
-          >
+          <Heading size="xsmall" className="tile-items-heading">
             {headingFiles}
             {Folders.length === 0 && renderSorting()}
           </Heading>

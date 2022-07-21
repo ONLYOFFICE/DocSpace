@@ -12,17 +12,6 @@ const StyledRowLoader = styled.div`
   padding-top: 16px;
 `;
 
-const StyledCard = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
-`;
-
-const StyledItem = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
-  gap: 14px 16px;
-`;
-
 const StyledScroll = styled.div`
   overflow: scroll;
 
@@ -53,10 +42,4 @@ StyledScroll.defaultProps = {
   theme: Base,
 };
 
-export {
-  StyledTableLoader,
-  StyledRowLoader,
-  StyledCard,
-  StyledItem,
-  StyledScroll,
-};
+export { StyledTableLoader, StyledRowLoader, StyledScroll };
