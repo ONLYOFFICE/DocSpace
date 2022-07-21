@@ -81,8 +81,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
     private readonly FileConflictResolveType _resolveType;
     private readonly IDictionary<string, StringValues> _headers;
     private readonly ThumbnailSettings _thumbnailSettings;
-    private readonly Dictionary<T, Folder<T>> _parentRooms = 
-        new Dictionary<T, Folder<T>>();
+    private readonly Dictionary<T, Folder<T>> _parentRooms = new Dictionary<T, Folder<T>>();
 
     public override FileOperationType OperationType => _copy ? FileOperationType.Copy : FileOperationType.Move;
 
@@ -180,11 +179,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
         var needToMark = new List<FileEntry<TTo>>();
 
-            var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy, parentFolders);
-            var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy, parentFolders);
+        var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy, parentFolders);
+        var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy, parentFolders);
 
-            needToMark.AddRange(moveOrCopyFoldersTask);
-            needToMark.AddRange(moveOrCopyFilesTask);
+        needToMark.AddRange(moveOrCopyFoldersTask);
+        needToMark.AddRange(moveOrCopyFilesTask);
 
         var ntm = needToMark.Distinct();
         foreach (var n in ntm)
@@ -242,7 +241,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 Error = FilesCommonResource.ErrorMessage_UnarchiveRoom;
             }
-            else if (!isRoom && !await CheckPrivateVirtualRoomRulesAsync(folder, toFolderParents))
+            else if (!isRoom && folder.Private && !await CompliesPrivateRoomRulesAsync(folder, toFolderParents))
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
@@ -482,7 +481,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException;
             }
-            else if (!await CheckPrivateVirtualRoomRulesAsync(file, toParentFolders))
+            else if (!await CompliesPrivateRoomRulesAsync(file, toParentFolders))
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
             }
@@ -728,7 +727,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         return (false, error);
     }
 
-    private async Task<bool> CheckPrivateVirtualRoomRulesAsync<TTo>(FileEntry<T> entry, IEnumerable<Folder<TTo>> toFolderParents)
+    private async Task<bool> CompliesPrivateRoomRulesAsync<TTo>(FileEntry<T> entry, IEnumerable<Folder<TTo>> toFolderParents)
     {
         Folder<T> entryParentRoom;
 
