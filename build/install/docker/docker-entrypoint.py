@@ -167,6 +167,5 @@ jsonData = openJsonFile(filePath)
 updateJsonData(jsonData,"$.Redis.Hosts.[0].Host", "onlyoffice-redis")
 writeJsonFile(filePath, jsonData)
 
-#os.system("node " + RUN_FILE + " --app.port=" + SERVICE_PORT + " --app.appsettings=" + PATH_TO_CONF + " --app.environment=" + ENV_EXTENSION)
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)
 run.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE)
