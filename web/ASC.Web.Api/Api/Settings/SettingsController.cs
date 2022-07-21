@@ -399,12 +399,15 @@ public class SettingsController : BaseSettingsController
                     }
                     else
                     {
-                        if (item.Id == 0)
+                        if (settings.Limit == 0 || settings.Themes.Count() < settings.Limit)
                         {
-                            item.Id = settings.Themes.Max(r => r.Id) + 1;
-                        }
+                            if (item.Id == 0)
+                            {
+                                item.Id = settings.Themes.Max(r => r.Id) + 1;
+                            }
 
-                        settings.Themes = settings.Themes.Append(item);
+                            settings.Themes = settings.Themes.Append(item);
+                        }
                     }
                 }
 
