@@ -126,3 +126,16 @@ export const getAssets = () => {
 
   return assets;
 };
+
+export const getScripts = (assets) => {
+  const regTest = /static\/js\/.*/;
+  const keys = [];
+
+  for (let key in assets) {
+    if (assets.hasOwnProperty(key) && regTest.test(key)) {
+      keys.push(key);
+    }
+  }
+
+  return keys;
+};

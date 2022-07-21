@@ -32,7 +32,7 @@ const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
 
   useEffect(() => {
     const tempElm = document.getElementById("loader");
-    if (tempElm && !rest.error && !rest.needLoader) {
+    if (tempElm && !rest.error && !rest.needLoader && rest.docApiUrl) {
       tempElm.outerHTML = "";
     }
 

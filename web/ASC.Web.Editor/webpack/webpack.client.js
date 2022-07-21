@@ -110,7 +110,7 @@ module.exports = (env, argv) => {
   if (argv.mode === "production") {
     clientConfig.mode = "production";
     clientConfig.optimization = {
-      //   splitChunks: { chunks: "all" },
+      splitChunks: { chunks: "all" },
       minimize: !env.minimize,
       minimizer: [new TerserPlugin()],
     };
