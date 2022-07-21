@@ -474,24 +474,24 @@ public class FileStorageService<T> //: IFileStorageService
             throw new InvalidOperationException("This provider already corresponds to the virtual room");
         }
 
-        var room = roomType switch
+        var result = roomType switch
         {
-            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, @private),
-            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, @private),
-            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, @private),
-            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId, @private),
-            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, @private),
-            _ => await CreateCustomRoomAsync(title, parentId, @private),
+            RoomType.CustomRoom => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
+            RoomType.FillingFormsRoom => (await CreateFillingFormsRoom(title, parentId, @private), FolderType.FillingFormsRoom),
+            RoomType.EditingRoom => (await CreateEditingRoom(title, parentId, @private), FolderType.EditingRoom),
+            RoomType.ReviewRoom => (await CreateReviewRoom(title, parentId, @private), FolderType.ReviewRoom),
+            RoomType.ReadOnlyRoom => (await CreateReadOnlyRoom(title, parentId, @private), FolderType.ReadOnlyRoom),
+            _ => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
         };
 
         if (@private)
         {
-            await SetAcesForPrivateRoomAsync(room, share, notify, sharingMessage);
+            await SetAcesForPrivateRoomAsync(result.Item1, share, notify, sharingMessage);
         }
 
-        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, room.Id.ToString(), room.FolderType, @private);
+        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, @private);
 
-        return room;
+        return result.Item1;
     }
 
     private async Task<Folder<T>> CreateCustomRoomAsync(string title, T parentId, bool privacy)
@@ -3037,18 +3037,21 @@ public class FileStorageService<T> //: IFileStorageService
 
     private async Task SetAcesForPrivateRoomAsync(Folder<T> room, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
-        var list = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject));
+        var dict = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject)).ToDictionary(k => k.SubjectId, v => v);
 
         var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
         var onlyFilesAdmins = _userManager.GetUsersByGroup(WebItemManager.DocumentsProductID);
 
         var userInfos = admins.Union(onlyFilesAdmins).ToList();
 
-        list.AddRange(admins.Select(admin => new AceWrapper
+        foreach (var userInfo in userInfos)
         {
-            Share = FileShare.ReadWrite,
-            SubjectId = admin.Id
-        }));
+            dict[userInfo.Id] = new AceWrapper
+            {
+                Share = FileShare.ReadWrite,
+                SubjectId = userInfo.Id
+            };
+        }
 
         var advancedSettings = new AceAdvancedSettingsWrapper
         {
@@ -3059,7 +3062,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             Folders = new[] { room.Id },
             Files = Array.Empty<T>(),
-            Aces = list,
+            Aces = dict.Values.ToList(),
             Message = sharingMessage,
             AdvancedSettings = advancedSettings
         };
