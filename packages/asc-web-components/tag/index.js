@@ -60,7 +60,7 @@ const Tag = ({
       {!!advancedOptions ? (
         <StyledTag
           id={id}
-          className={`tag${className ? ` ${className}` : ""}`}
+          className={`tag advanced-tag ${className ? ` ${className}` : ""}`}
           style={style}
           ref={tagRef}
           onClick={toggleDropdown}

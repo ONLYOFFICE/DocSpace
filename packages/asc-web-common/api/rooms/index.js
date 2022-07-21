@@ -1,5 +1,6 @@
 import { request } from "../client";
 import { decodeDisplayName } from "../../utils";
+import { FolderType } from "../../constants";
 
 export function getRooms(filter) {
   const options = {
@@ -10,11 +11,16 @@ export function getRooms(filter) {
   return request(options).then((res) => {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
+
+    if (res.current.rootFolderType === FolderType.Archive) {
+      res.folders.forEach((room) => (room.isArchive = true));
+    }
+
     return res;
   });
 }
 
-export function getRoom(id) {
+export function getRoomInfo(id) {
   const options = {
     method: "get",
     url: `/files/rooms/${id}`,
@@ -51,10 +57,13 @@ export function unpinRoom(id) {
   });
 }
 
-export function deleteRoom(id) {
+export function deleteRoom(id, deleteAfter = true) {
+  const data = { deleteAfter };
+
   const options = {
     method: "delete",
     url: `/files/rooms/${id}`,
+    data,
   };
 
   return request(options).then((res) => {
@@ -62,10 +71,13 @@ export function deleteRoom(id) {
   });
 }
 
-export function archiveRoom(id) {
+export function archiveRoom(id, deleteAfter = true) {
+  const data = { deleteAfter };
+
   const options = {
     method: "put",
     url: `/files/rooms/${id}/archive`,
+    data,
   };
 
   return request(options).then((res) => {
@@ -73,10 +85,12 @@ export function archiveRoom(id) {
   });
 }
 
-export function unarchiveRoom(id) {
+export function unarchiveRoom(id, deleteAfter = true) {
+  const data = { deleteAfter };
   const options = {
     method: "put",
     url: `/files/rooms/${id}/unarchive`,
+    data,
   };
 
   return request(options).then((res) => {

@@ -14,12 +14,15 @@ const RootFolderContainer = (props) => {
     theme,
     isPrivacyFolder,
     isRecycleBinFolder,
+    isRoomsFolder,
+    isArchiveFolder,
     isDesktop,
     isEncryptionSupport,
     organizationName,
     privacyInstructions,
     title,
     onCreate,
+    onCreateRoom,
     myFolderId,
     filter,
     fetchFiles,
@@ -37,6 +40,8 @@ const RootFolderContainer = (props) => {
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
+  const roomsDescription = "Please create the first room.";
+  const archiveRoomsDescription = "Archive rooms empty";
 
   const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src="images/privacy.svg" />;
@@ -100,6 +105,18 @@ const RootFolderContainer = (props) => {
             ? "images/empty_screen_trash_alt.png"
             : "images/empty_screen_trash_alt.png",
           buttons: trashButtons,
+        };
+      case FolderType.Rooms:
+        return {
+          headerText: "Welcome to DocSpace!",
+          descriptionText: roomsDescription,
+          imageSrc: "images/empty_screen_corporate.png",
+          buttons: roomsButtons,
+        };
+      case FolderType.Archive:
+        return {
+          descriptionText: archiveRoomsDescription,
+          imageSrc: "images/empty_screen_corporate.png",
         };
       default:
         break;
@@ -195,9 +212,25 @@ const RootFolderContainer = (props) => {
     </div>
   );
 
+  const roomsButtons = (
+    <div className="empty-folder_container-links">
+      <img
+        className="empty-folder_container_plus-image"
+        src="images/plus.svg"
+        onClick={onCreateRoom}
+        alt="plus_icon"
+      />
+      <Link onClick={onCreateRoom} {...linkStyles}>
+        Create room
+      </Link>
+    </div>
+  );
+
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
   const subheadingTextProp =
-    isPrivacyFolder || isRecycleBinFolder ? {} : { subheadingText };
+    isPrivacyFolder || isRecycleBinFolder || isRoomsFolder || isArchiveFolder
+      ? {}
+      : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
 
   React.useEffect(() => {
@@ -253,12 +286,16 @@ export default inject(
       isPrivacyFolder,
       myFolderId,
       isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
     } = treeFoldersStore;
 
     return {
       theme,
       isPrivacyFolder,
       isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
       isDesktop: isDesktopClient,
       isEncryptionSupport,
       organizationName,

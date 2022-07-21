@@ -29,43 +29,28 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
           newTags.push(tag);
         }
       } else {
-        if (tags.length === columnCount + 1 && columnCount !== 0) {
-          const currentTagMaxWidth =
-            (containerWidth - tags.length * 4) / tags.length;
+        const tagWithDropdown = {
+          key: "selector",
+          advancedOptions: tags.slice(columnCount, tags.length),
+        };
 
-          const maxWidthPercent = Math.ceil(
-            (currentTagMaxWidth / containerWidth) * 100
-          );
+        const currentTagMaxWidth =
+          (containerWidth - columnCount * 4 - 35) / columnCount;
 
-          for (let i = 0; i < tags.length; i++) {
+        const maxWidthPercent = Math.ceil(
+          (currentTagMaxWidth / containerWidth) * 100
+        );
+
+        if (columnCount !== 0) {
+          for (let i = 0; i < columnCount; i++) {
             const tag = { name: tags[i], maxWidth: `${maxWidthPercent}%` };
 
             newTags.push(tag);
           }
-        } else {
-          const tagWithDropdown = {
-            key: "selector",
-            advancedOptions: tags.slice(columnCount, tags.length),
-          };
-
-          const currentTagMaxWidth =
-            (containerWidth - columnCount * 4 - 35) / columnCount;
-
-          const maxWidthPercent = Math.ceil(
-            (currentTagMaxWidth / containerWidth) * 100
-          );
-
-          if (columnCount !== 0) {
-            for (let i = 0; i < columnCount; i++) {
-              const tag = { name: tags[i], maxWidth: `${maxWidthPercent}%` };
-
-              newTags.push(tag);
-            }
-          }
-
-          newTags.push(tagWithDropdown);
-          newTags[newTags.length - 1].maxWidth = `35px`;
         }
+
+        newTags.push(tagWithDropdown);
+        newTags[newTags.length - 1].maxWidth = `35px`;
       }
 
       setRenderedTags(newTags);

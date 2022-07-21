@@ -1,5 +1,7 @@
 import React from "react";
 
+import Loaders from "../../Loaders";
+
 import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
 import Heading from "@appserver/components/heading";
@@ -37,6 +39,7 @@ const FilterBlock = ({
   });
   const [filterData, setFilterData] = React.useState([]);
   const [filterValues, setFilterValues] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const changeShowSelector = React.useCallback((isAuthor, group) => {
     setShowSelector((val) => {
@@ -93,10 +96,10 @@ const FilterBlock = ({
     setFilterValues([]);
 
     selectedFilterValue.length > 0 && onFilter && onFilter([]);
-  }, [selectedFilterValue.length]);
+  }, [changeSelectedItems, selectedFilterValue.length]);
 
   const changeFilterValue = React.useCallback(
-    (group, key, isSelected, label, isMultiSelect) => {
+    (group, key, isSelected, label, isMultiSelect, withOptions) => {
       let value = filterValues.map((value) => {
         if (typeof value.key === "object") {
           const newKey = [...value.key];
@@ -179,6 +182,7 @@ const FilterBlock = ({
   );
 
   const getDefaultFilterData = React.useCallback(async () => {
+    setIsLoading(true);
     const data = await getFilterData();
 
     const items = data.filter((item) => item.isHeader === true);
@@ -211,6 +215,13 @@ const FilterBlock = ({
                   groupItem.key
                 );
               }
+
+              if (groupItem.withOptions) {
+                groupItem.options.forEach(
+                  (option) =>
+                    (option.isSelected = option.key === selectedValue.key)
+                );
+              }
             });
           }
         });
@@ -230,6 +241,10 @@ const FilterBlock = ({
 
     setFilterData(items);
     setFilterValues(newFilterValues);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
   }, []);
 
   React.useEffect(() => {
@@ -285,9 +300,11 @@ const FilterBlock = ({
         (item) => item.group === value.group
       );
 
-      let isMultiSelectEqual = true;
+      let isMultiSelectEqual = false;
+      let withOptionsEqual = false;
 
       if (typeof value.key === "object") {
+        isMultiSelectEqual = true;
         value.key.forEach(
           (item) =>
             (isMultiSelectEqual =
@@ -295,10 +312,18 @@ const FilterBlock = ({
         );
       }
 
+      if (value.options) {
+        withOptionsEqual = true;
+        value.options.forEach(
+          (option) =>
+            (withOptionsEqual =
+              isMultiSelectEqual && option.key === oldValue.key)
+        );
+      }
+
       isEqual =
         isEqual &&
-        (oldValue?.key === value.key ||
-          (isMultiSelectEqual && typeof value.key === "object"));
+        (oldValue?.key === value.key || isMultiSelectEqual || withOptionsEqual);
     });
 
     return !isEqual;
@@ -350,23 +375,28 @@ const FilterBlock = ({
             />
           </StyledFilterBlockHeader>
           <div className="filter-body">
-            <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
-              {filterData.map((item) => {
-                return (
-                  <FilterBlockItem
-                    key={item.key}
-                    label={item.label}
-                    keyProp={item.key}
-                    group={item.group}
-                    groupItem={item.groupItem}
-                    isLast={item.isLast}
-                    withoutHeader={item.withoutHeader}
-                    changeFilterValue={changeFilterValue}
-                    showSelector={changeShowSelector}
-                  />
-                );
-              })}
-            </Scrollbar>
+            {isLoading ? (
+              <Loaders.FilterBlock />
+            ) : (
+              <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
+                {filterData.map((item) => {
+                  return (
+                    <FilterBlockItem
+                      key={item.key}
+                      label={item.label}
+                      keyProp={item.key}
+                      group={item.group}
+                      groupItem={item.groupItem}
+                      isLast={item.isLast}
+                      withoutHeader={item.withoutHeader}
+                      withoutSeparator={item.withoutSeparator}
+                      changeFilterValue={changeFilterValue}
+                      showSelector={changeShowSelector}
+                    />
+                  );
+                })}
+              </Scrollbar>
+            )}
           </div>
           {showFooter && (
             <StyledFilterBlockFooter>

@@ -79,6 +79,8 @@ class SelectedFolderStore {
     } else {
       const selectedFolderItems = Object.keys(selectedFolder);
 
+      if (!selectedFolderItems.includes("roomType")) this.roomType = null;
+
       for (let key of selectedFolderItems) {
         if (key in this) {
           this[key] = selectedFolder[key];

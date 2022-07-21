@@ -1,6 +1,11 @@
 import styled, { css } from "styled-components";
 
-import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
+import {
+  isMobile,
+  isMobileOnly,
+  isTablet,
+  isDesktop,
+} from "react-device-detect";
 import {
   mobile,
   tablet,
@@ -75,7 +80,7 @@ const StyledArticle = styled.article`
 
   .article-body__scrollbar {
     .scroll-body {
-      padding-top: 16px;
+      ${!isDesktop && "padding-top:  16px"};
       padding-right: 0px !important;
 
       @media ${mobile} {
@@ -113,7 +118,7 @@ const StyledArticleHeader = styled.div`
   @media ${mobile} {
     border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
     padding: 12px 0 12px;
-    //margin-bottom: 16px !important;
+    // margin-bottom: 16px !important;
   }
 
   ${isTablet &&
@@ -128,7 +133,7 @@ const StyledArticleHeader = styled.div`
     border-bottom: ${(props) =>
       props.theme.catalog.header.borderBottom} !important;
     padding: 12px 0 12px !important;
-    //margin-bottom: 16px !important;
+    // margin-bottom: 16px !important;
   `}
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);

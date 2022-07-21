@@ -4,10 +4,11 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { setDocumentTitle } from "../../../helpers/utils";
 import config from "../../../../package.json";
-import { AppServerConfig, RoomSearchArea } from "@appserver/common/constants";
+import { AppServerConfig } from "@appserver/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@appserver/components/utils/device";
 import FilesFilter from "@appserver/common/api/files/filter";
+import RoomsFilter from "@appserver/common/api/rooms/filter";
 import SettingsItem from "./SettingsItem";
 import AccountsItem from "./AccountsItem";
 import { combineUrl } from "@appserver/common/utils";
@@ -19,8 +20,6 @@ import { showLoader, hideLoader } from "@appserver/common/utils";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import { withTranslation } from "react-i18next";
-import { FolderType } from "@appserver/common/constants";
-import RoomsFilter from "@appserver/common/api/rooms/filter";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
@@ -48,16 +47,19 @@ const ArticleBodyContent = (props) => {
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  const onClick = React.useCallback((data, type) => {
+  const onClick = React.useCallback((data) => {
     const {
       toggleArticleOpen,
       setIsLoading,
       fetchFiles,
 
       fetchRooms,
+      setAlreadyFetchingRooms,
 
       homepage,
       history,
+      roomsFolderId,
+      archiveFolderId,
     } = props;
 
     const filesSection = window.location.pathname.indexOf("/filter") > 0;
@@ -68,13 +70,9 @@ const ArticleBodyContent = (props) => {
       showLoader();
     }
 
-    if (type === FolderType.Rooms || type === FolderType.Archive) {
-      const searchArea =
-        type === FolderType.Rooms
-          ? RoomSearchArea.Active
-          : RoomSearchArea.Archive;
-
-      fetchRooms(searchArea, null)
+    if (data === roomsFolderId || data === archiveFolderId) {
+      setAlreadyFetchingRooms(true);
+      fetchRooms(data, null)
         .then(() => {
           if (filesSection) {
             const filter = RoomsFilter.getDefault();
@@ -165,7 +163,6 @@ export default inject(
   ({
     auth,
     filesStore,
-    roomsStore,
     treeFoldersStore,
     selectedFolderStore,
     dialogsStore,
@@ -173,6 +170,8 @@ export default inject(
   }) => {
     const {
       fetchFiles,
+      fetchRooms,
+      setAlreadyFetchingRooms,
       setIsLoading,
       setFirstLoad,
       firstLoad,
@@ -180,9 +179,12 @@ export default inject(
       isLoaded,
     } = filesStore;
 
-    const { fetchRooms } = roomsStore;
-
-    const { treeFolders, setTreeFolders } = treeFoldersStore;
+    const {
+      treeFolders,
+      setTreeFolders,
+      roomsFolderId,
+      archiveFolderId,
+    } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
@@ -216,6 +218,7 @@ export default inject(
       homepage: config.homepage,
 
       fetchRooms,
+      setAlreadyFetchingRooms,
 
       personal,
       docSpace,
@@ -231,6 +234,9 @@ export default inject(
       isDesktopClient,
       FirebaseHelper,
       theme,
+
+      roomsFolderId,
+      archiveFolderId,
     };
   }
 )(

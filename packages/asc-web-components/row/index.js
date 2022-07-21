@@ -38,6 +38,7 @@ class Row extends React.Component {
       rowContextClose,
       sectionWidth,
       getContextModel,
+      isRoom,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -173,6 +174,7 @@ class Row extends React.Component {
             header={contextMenuHeader}
             withBackdrop={true}
             onHide={rowContextClose}
+            isRoom={isRoom}
           ></ContextMenu>
         </StyledOptionButton>
       </StyledRow>

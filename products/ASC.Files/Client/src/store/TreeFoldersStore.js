@@ -101,6 +101,16 @@ class TreeFoldersStore {
     return this.treeFolders.find((x) => x.rootFolderType === FolderType.Recent);
   }
 
+  get roomsFolder() {
+    return this.treeFolders.find((x) => x.rootFolderType === FolderType.Rooms);
+  }
+
+  get archiveFolder() {
+    return this.treeFolders.find(
+      (x) => x.rootFolderType === FolderType.Archive
+    );
+  }
+
   get privacyFolder() {
     return this.treeFolders.find(
       (x) => x.rootFolderType === FolderType.Privacy
@@ -121,6 +131,14 @@ class TreeFoldersStore {
 
   get commonFolderId() {
     return this.commonFolder ? this.commonFolder.id : null;
+  }
+
+  get roomsFolderId() {
+    return this.roomsFolder ? this.roomsFolder.id : null;
+  }
+
+  get archiveFolderId() {
+    return this.archiveFolder ? this.archiveFolder.id : null;
   }
 
   get isMyFolder() {
@@ -174,6 +192,19 @@ class TreeFoldersStore {
     );
   }
 
+  get isRoomsFolder() {
+    return (
+      this.roomsFolder && this.selectedFolderStore.id === this.roomsFolder.id
+    );
+  }
+
+  get isArchiveFolder() {
+    return (
+      this.archiveFolder &&
+      this.selectedFolderStore.id === this.archiveFolder.id
+    );
+  }
+
   get operationsFolders() {
     if (this.isPrivacyFolder) {
       return this.treeFolders.filter(
@@ -185,7 +216,8 @@ class TreeFoldersStore {
           (folder.rootFolderType === FolderType.USER ||
             folder.rootFolderType === FolderType.COMMON ||
             folder.rootFolderType === FolderType.Projects ||
-            folder.rootFolderType === FolderType.SHARE) &&
+            folder.rootFolderType === FolderType.SHARE ||
+            folder.rootFolderType === FolderType.Rooms) &&
           folder
       );
     }

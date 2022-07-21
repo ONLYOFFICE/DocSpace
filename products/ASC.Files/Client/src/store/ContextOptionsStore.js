@@ -27,7 +27,6 @@ class ContextOptionsStore {
   versionHistoryStore;
   settingsStore;
   filesSettingsStore;
-  roomsStore;
 
   constructor(
     authStore,
@@ -38,8 +37,7 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore,
-    roomsStore
+    settingsStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -51,7 +49,6 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
-    this.roomsStore = roomsStore;
   }
 
   onOpenFolder = (item) => {
@@ -276,7 +273,7 @@ class ContextOptionsStore {
       setDeleteThirdPartyDialogVisible,
     } = this.dialogsStore;
 
-    const { id, title, providerKey, rootFolderId, isFolder } = item;
+    const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
 
     const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
@@ -291,13 +288,15 @@ class ContextOptionsStore {
       deleteOperation: t("Translations:DeleteOperation"),
       successRemoveFile: t("FileRemoved"),
       successRemoveFolder: t("FolderRemoved"),
+      successRemoveRoom: "Remove room",
     };
 
     this.filesActionsStore.deleteItemAction(
       id,
       translations,
       !isFolder,
-      providerKey
+      providerKey,
+      isRoom
     );
   };
 
@@ -346,112 +345,28 @@ class ContextOptionsStore {
     setIsVisible(true);
   };
 
-  onClickEditRoom = (room) => {
+  onClickEditRoom = () => {
     console.log("edit room");
   };
 
-  onClickInviteUsers = (room) => {
+  onClickInviteUsers = () => {
     console.log("invite users");
   };
 
-  onClickInfo = (room) => {
-    console.log("click info");
+  onClickPin = (e, id, t) => {
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
+    this.filesActionsStore.setPinAction(action, id);
   };
 
-  onClickPinRoom = () => {
-    this.roomsStore.pinRoom();
-  };
+  onClickArchive = (e, id, t) => {
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
 
-  onClickUnpinRoom = () => {
-    this.roomsStore.unpinRoom();
-  };
-
-  onClickMoveRoomToArchive = () => {
-    console.log("1", this.roomsStore);
-    this.roomsStore.moveToArchive();
-  };
-
-  onClickMoveRoomFromArchive = () => {
-    this.roomsStore.moveFromArchive();
-  };
-
-  onClickDeleteRoom = () => {
-    this.roomsStore.deleteRoom();
-  };
-
-  getRoomsContextOptions = (room, t) => {
-    const pin = !room.pinned
-      ? {
-          key: "pin",
-          label: "Pin to top",
-          icon: "/static/images/pin.react.svg",
-          onClick: this.onClickPinRoom,
-          disabled: false,
-        }
-      : {
-          key: "unpin",
-          label: "Unpin",
-          icon: "/static/images/unpin.react.svg",
-          onClick: this.onClickUnpinRoom,
-          disabled: false,
-        };
-
-    const archive =
-      FolderType.Archive === room.rootFolderType
-        ? {
-            key: "archive",
-            label: "Move from archive",
-            icon: "/static/images/room.archive.svg",
-            onClick: () => this.onClickMoveRoomToArchive(room),
-            disabled: false,
-          }
-        : {
-            key: "archive",
-            label: "Move to archive",
-            icon: "/static/images/room.archive.svg",
-            onClick: () => this.onClickMoveRoomToArchive(room),
-            disabled: false,
-          };
-
-    const contextOptions = [
-      {
-        key: "edit",
-        label: "Edit room",
-        icon: "images/settings.react.svg",
-        onClick: () => this.onClickEditRoom(room),
-        disabled: false,
-      },
-      {
-        key: "users",
-        label: "Invite users",
-        icon: "/static/images/person.react.svg",
-        onClick: () => this.onClickInviteUsers(room),
-        disabled: false,
-      },
-      {
-        key: "info",
-        label: "Info",
-        icon: "/static/images/info.react.svg",
-        onClick: () => this.onClickInfo(room),
-        disabled: false,
-      },
-      {
-        ...pin,
-      },
-      { key: "separator", isSeparator: true },
-      {
-        ...archive,
-      },
-      {
-        key: "delete",
-        label: "Delete",
-        icon: "images/trash.react.svg",
-        onClick: this.onClickDeleteRoom,
-        disabled: false,
-      },
-    ];
-
-    return contextOptions;
+    this.filesActionsStore
+      .setArchiveAction(action, id)
+      .catch((err) => toastr.error(err));
   };
 
   getFilesContextOptions = (item, t) => {
@@ -617,6 +532,45 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        key: "edit-room",
+        label: "Edit room",
+        icon: "images/settings.react.svg",
+        onClick: () => this.onClickEditRoom(),
+        disabled: false,
+      },
+      {
+        key: "invite-users-to-room",
+        label: "Invite users",
+        icon: "/static/images/person.react.svg",
+        onClick: () => this.onClickInviteUsers(),
+        disabled: false,
+      },
+      {
+        key: "room-info",
+        label: "Info",
+        icon: "/static/images/info.react.svg",
+        onClick: this.onShowInfoPanel,
+        disabled: false,
+      },
+      {
+        key: "pin-room",
+        label: t("Pin"),
+        icon: "/static/images/pin.react.svg",
+        onClick: (e) => this.onClickPin(e, item.id, t),
+        disabled: false,
+        "data-action": "pin",
+        action: "pin",
+      },
+      {
+        key: "unpin-room",
+        label: t("Unpin"),
+        icon: "/static/images/unpin.react.svg",
+        onClick: (e) => this.onClickPin(e, item.id, t),
+        disabled: false,
+        "data-action": "unpin",
+        action: "unpin",
+      },
+      {
         key: "separator0",
         isSeparator: true,
       },
@@ -740,6 +694,24 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        key: "archive-room",
+        label: t("ToArchive"),
+        icon: "/static/images/room.archive.svg",
+        onClick: (e) => this.onClickArchive(e, item.id, t),
+        disabled: false,
+        "data-action": "archive",
+        action: "archive",
+      },
+      {
+        key: "unarchive-room",
+        label: t("FromArchive"),
+        icon: "/static/images/room.archive.svg",
+        onClick: (e) => this.onClickArchive(e, item.id, t),
+        disabled: false,
+        "data-action": "unarchive",
+        action: "unarchive",
+      },
+      {
         key: "delete",
         label: isRootThirdPartyFolder
           ? t("Common:Disconnect")
@@ -759,7 +731,78 @@ class ContextOptionsStore {
     const { personal } = this.authStore.settingsStore;
     const { selection } = this.filesStore;
     const { setDeleteDialogVisible } = this.dialogsStore;
-    const { isRecycleBinFolder } = this.treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = this.treeFoldersStore;
+
+    const {
+      pinRooms,
+      unpinRooms,
+      moveRoomsToArchive,
+      moveRoomsFromArchive,
+      deleteRooms,
+    } = this.filesActionsStore;
+
+    if (isRoomsFolder || isArchiveFolder) {
+      const isPinOption = selection.filter((item) => !item.pinned).length > 0;
+
+      const pinOption = isPinOption
+        ? {
+            key: "pin-room",
+            label: t("Pin"),
+            icon: "/static/images/pin.react.svg",
+            onClick: pinRooms,
+            disabled: false,
+          }
+        : {
+            key: "unpin-room",
+            label: t("Unpin"),
+            icon: "/static/images/unpin.react.svg",
+            onClick: unpinRooms,
+            disabled: false,
+          };
+
+      const archiveOptions = !isArchiveFolder
+        ? {
+            key: "archive-room",
+            label: t("ToArchive"),
+            icon: "/static/images/room.archive.svg",
+            onClick: moveRoomsToArchive,
+            disabled: false,
+          }
+        : {
+            key: "unarchive-room",
+            label: t("FromArchive"),
+            icon: "/static/images/room.archive.svg",
+            onClick: moveRoomsFromArchive,
+            disabled: false,
+          };
+
+      const options = [];
+
+      if (!isArchiveFolder) {
+        options.push(pinOption);
+        options.push({
+          key: "separator0",
+          isSeparator: true,
+        });
+      }
+
+      options.push(archiveOptions);
+
+      if (isArchiveFolder) {
+        options.push({
+          key: "delete-rooms",
+          label: t("Common:Delete"),
+          icon: "images/trash.react.svg",
+          onClick: deleteRooms,
+        });
+      }
+
+      return options;
+    }
 
     const downloadAs =
       selection.findIndex((k) => k.contextOptions.includes("download-as")) !==

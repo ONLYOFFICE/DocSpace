@@ -2,6 +2,8 @@ import React from "react";
 
 import SelectorAddButton from "@appserver/components/selector-add-button";
 import Heading from "@appserver/components/heading";
+import ComboBox from "@appserver/components/combobox";
+import Checkbox from "@appserver/components/checkbox";
 
 import {
   StyledFilterBlockItem,
@@ -15,6 +17,7 @@ import {
   StyledFilterBlockItemToggle,
   StyledFilterBlockItemToggleText,
   StyledFilterBlockItemToggleButton,
+  StyledFilterBlockItemCheckboxContainer,
   StyledFilterBlockItemSeparator,
 } from "./StyledFilterBlock";
 
@@ -26,12 +29,25 @@ const FilterBlockItem = ({
   groupItem,
   isLast,
   withoutHeader,
+  withoutSeparator,
   changeFilterValue,
   showSelector,
 }) => {
-  const changeFilterValueAction = (key, isSelected, isMultiSelect) => {
+  const changeFilterValueAction = (
+    key,
+    isSelected,
+    isMultiSelect,
+    withOptions
+  ) => {
     changeFilterValue &&
-      changeFilterValue(group, key, isSelected, null, isMultiSelect);
+      changeFilterValue(
+        group,
+        key,
+        isSelected,
+        null,
+        isMultiSelect,
+        withOptions
+      );
   };
 
   const showSelectorAction = (event, isAuthor, group, ref) => {
@@ -109,6 +125,43 @@ const FilterBlockItem = ({
     );
   };
 
+  const getWithOptionsItem = (item) => {
+    const selectedOption = item.options.find((option) => option.isSelected);
+
+    return (
+      <ComboBox
+        key={item.key}
+        onSelect={(data) =>
+          changeFilterValueAction(
+            data.key,
+            data.key === selectedOption?.key,
+            false,
+            item.withOptions
+          )
+        }
+        options={item.options}
+        selectedOption={selectedOption ? selectedOption : item.options[0]}
+        displaySelectedOption={true}
+        scaled={true}
+        scaledOptions={true}
+      />
+    );
+  };
+
+  const getCheckboxItem = (item) => {
+    return (
+      <StyledFilterBlockItemCheckboxContainer key={item.key}>
+        <Checkbox
+          isChecked={item.isSelected}
+          label={item.label}
+          onChange={() =>
+            changeFilterValueAction(item.key, item.isSelected, false)
+          }
+        />
+      </StyledFilterBlockItemCheckboxContainer>
+    );
+  };
+
   const getTagItem = (item) => {
     return (
       <StyledFilterBlockItemTag
@@ -141,10 +194,12 @@ const FilterBlockItem = ({
         {groupItem.map((item) => {
           if (item.isSelector === true) return getSelectorItem(item);
           if (item.isToggle === true) return getToggleItem(item);
+          if (item.withOptions === true) return getWithOptionsItem(item);
+          if (item.isCheckbox === true) return getCheckboxItem(item);
           return getTagItem(item);
         })}
       </StyledFilterBlockItemContent>
-      {!isLast && <StyledFilterBlockItemSeparator />}
+      {!isLast && !withoutSeparator && <StyledFilterBlockItemSeparator />}
     </StyledFilterBlockItem>
   );
 };

@@ -1,11 +1,30 @@
 import authStore from "@appserver/common/store/AuthStore";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, RoomsType } from "@appserver/common/constants";
 import config from "../../package.json";
 import { combineUrl, toUrlParams } from "@appserver/common/utils";
 import { addFileToRecentlyViewed } from "@appserver/common/api/files";
 import i18n from "./i18n";
 
 import { request } from "@appserver/common/api/client";
+
+export const getDefaultRoomName = (room, t) => {
+  switch (room) {
+    case RoomsType.CustomRoom:
+      return t("CustomRooms");
+
+    case RoomsType.FillingFormsRoom:
+      return t("FillingFormRooms");
+
+    case RoomsType.EditingRoom:
+      return t("CollaborationRooms");
+
+    case RoomsType.ReviewRoom:
+      return t("ReviewRooms");
+
+    case RoomsType.ReadOnlyRoom:
+      return t("ViewOnlyRooms");
+  }
+};
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
