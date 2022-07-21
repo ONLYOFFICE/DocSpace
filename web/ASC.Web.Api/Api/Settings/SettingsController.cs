@@ -415,7 +415,7 @@ public class SettingsController : BaseSettingsController
             }
         }
 
-        if (inDto.Selected.HasValue && inDto.Themes.Any(r => r.Id == inDto.Selected.Value))
+        if (inDto.Selected.HasValue && settings.Themes.Any(r => r.Id == inDto.Selected.Value))
         {
             settings.Selected = inDto.Selected.Value;
             _settingsManager.Save(settings);
