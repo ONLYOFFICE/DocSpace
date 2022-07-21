@@ -1336,7 +1336,10 @@ class FilesStore {
           "archive-room",
         ]);
       } else {
-        roomOptions = this.removeOptions(roomOptions, ["unarchive-room"]);
+        roomOptions = this.removeOptions(roomOptions, [
+          "delete",
+          "unarchive-room",
+        ]);
       }
 
       return roomOptions;
