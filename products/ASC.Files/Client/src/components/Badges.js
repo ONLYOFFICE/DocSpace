@@ -21,10 +21,29 @@ const StyledEditIcon = styled(IconButton)`
   }
 `;
 
+const StyledPinIcon = styled(IconButton)`
+  ${commonIconsStyles}
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
+    }
+  }
+
+  :hover {
+    svg {
+      path {
+        fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
+      }
+    }
+  }
+`;
+
 const StyledWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
   background: ${(props) => props.theme.filesBadges.color};
   padding: 6px;
   border-radius: 4px;
@@ -77,8 +96,18 @@ const Badges = ({
   onBadgeClick,
   setConvertDialogVisible,
   viewAs,
+  onUnpinClick,
 }) => {
-  const { id, locked, version, versionGroup, fileExst, isEditing } = item;
+  const {
+    id,
+    locked,
+    version,
+    versionGroup,
+    fileExst,
+    isEditing,
+    isRoom,
+    pinned,
+  } = item;
 
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
@@ -110,6 +139,13 @@ const Badges = ({
     : iconForm;
 
   const iconRefresh = "/static/images/refresh.react.svg";
+
+  const iconPin = "images/unpin.react.svg";
+
+  const unpinIconProps = {
+    "data-id": id,
+    "data-action": "unpin",
+  };
 
   const commonBadgeProps = {
     borderRadius: "11px",
@@ -179,15 +215,26 @@ const Badges = ({
       )}
     </div>
   ) : (
-    showNew && (
-      <Badge
-        {...commonBadgeProps}
-        className="new-items tablet-badge"
-        backgroundColor={theme.filesBadges.badgeBackgroundColor}
-        label={contentNewItems}
-        onClick={onBadgeClick}
-      />
-    )
+    <>
+      {isRoom && pinned && (
+        <StyledPinIcon
+          onClick={onUnpinClick}
+          className="badge icons-group is-pinned tablet-badge tablet-pinned"
+          iconName={iconPin}
+          size={sizeBadge}
+          {...unpinIconProps}
+        />
+      )}
+      {showNew && (
+        <Badge
+          {...commonBadgeProps}
+          className="new-items tablet-badge"
+          backgroundColor={theme.filesBadges.badgeBackgroundColor}
+          label={contentNewItems}
+          onClick={onBadgeClick}
+        />
+      )}
+    </>
   );
 };
 

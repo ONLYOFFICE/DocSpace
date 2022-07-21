@@ -59,6 +59,7 @@ public interface IFolder
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
     public bool Pinned { get; set; }
+    public IEnumerable<Tag> Tags { get; set; }
 }
 
 [DebuggerDisplay("{Title} ({Id})")]
@@ -108,70 +109,7 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
             .IncludeMembers(r => r.Folder)
             .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.CreateOn))
             .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.ModifiedOn))
-            .AfterMap((q, result) =>
-            {
-                switch (result.FolderType)
-                {
-                    case FolderType.COMMON:
-                        result.Title = FilesUCResource.CorporateFiles;
-                        break;
-                    case FolderType.USER:
-                        result.Title = FilesUCResource.MyFiles;
-                        break;
-                    case FolderType.SHARE:
-                        result.Title = FilesUCResource.SharedForMe;
-                        break;
-                    case FolderType.Recent:
-                        result.Title = FilesUCResource.Recent;
-                        break;
-                    case FolderType.Favorites:
-                        result.Title = FilesUCResource.Favorites;
-                        break;
-                    case FolderType.TRASH:
-                        result.Title = FilesUCResource.Trash;
-                        break;
-                    case FolderType.Privacy:
-                        result.Title = FilesUCResource.PrivacyRoom;
-                        break;
-                    case FolderType.Projects:
-                        result.Title = FilesUCResource.ProjectFiles;
-                        break;
-                    case FolderType.VirtualRooms:
-                        result.Title = FilesUCResource.VirtualRooms;
-                        break;
-                    case FolderType.Archive:
-                        result.Title = FilesUCResource.Archive;
-                        break;
-                    case FolderType.BUNCH:
-                        try
-                        {
-                            result.Title = string.Empty;
-                        }
-                        catch (Exception)
-                        {
-                            //Global.Logger.Error(e);
-                        }
-                        break;
-                }
-
-                if (result.FolderType != FolderType.DEFAULT)
-                {
-                    if (0.Equals(result.ParentId))
-                    {
-                        result.RootFolderType = result.FolderType;
-                    }
-
-                    if (result.RootCreateBy == default)
-                    {
-                        result.RootCreateBy = result.CreateBy;
-                    }
-
-                    if (0.Equals(result.RootId))
-                    {
-                        result.RootId = result.Id;
-                    }
-                }
-            })
+            .AfterMap<FolderMappingAction>()
             .ConstructUsingServiceLocator();
     }
 }
