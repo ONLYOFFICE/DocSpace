@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import toastr from "studio/toastr";
 import Section from "@appserver/common/components/Section";
-import { tryRedirectTo } from "@appserver/common/utils";
+import tryRedirectTo from "@appserver/common/utils/tryRedirectTo";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 import { HomeIllustration, ModuleTile, HomeContainer } from "./sub-components";
