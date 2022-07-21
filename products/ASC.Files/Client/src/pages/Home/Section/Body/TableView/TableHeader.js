@@ -444,17 +444,20 @@ class FilesTableHeader extends React.Component {
     const sortOrder = isRooms ? roomsFilter.sortOrder : filter.sortOrder;
 
     // TODO: make some better
+    let needReset = false;
     let currentColumnStorageName = columnStorageName;
     let currentColumnInfoPanelStorageName = columnInfoPanelStorageName;
 
     if (columns.length === 5 && columnStorageName === filesColumnStorageName) {
       currentColumnStorageName = roomsColumnStorageName;
       currentColumnInfoPanelStorageName = roomsColumnInfoPanelStorageName;
+      needReset = true;
     }
 
     if (columns.length === 7 && columnStorageName === roomsColumnStorageName) {
       currentColumnStorageName = filesColumnStorageName;
       currentColumnInfoPanelStorageName = filesColumnInfoPanelStorageName;
+      needReset = true;
     }
 
     return (
@@ -468,7 +471,7 @@ class FilesTableHeader extends React.Component {
         columnStorageName={currentColumnStorageName}
         columnInfoPanelStorageName={currentColumnInfoPanelStorageName}
         sectionWidth={sectionWidth}
-        resetColumnsSize={resetColumnsSize || isRooms}
+        resetColumnsSize={resetColumnsSize || needReset}
         sortingVisible={sortingVisible}
         infoPanelVisible={infoPanelVisible}
       />

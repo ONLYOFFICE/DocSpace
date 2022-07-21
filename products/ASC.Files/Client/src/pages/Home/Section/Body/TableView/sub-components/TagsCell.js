@@ -6,7 +6,7 @@ import Tag from "@appserver/components/tag";
 
 const TagsCell = React.forwardRef(({ t, item, tagCount, onSelectTag }, ref) => {
   return (
-    <div style={{ width: "100%" }} ref={ref}>
+    <div style={{ width: "100%", overflow: "hidden" }} ref={ref}>
       {item.tags.length > 0 ? (
         <Tags
           tags={item.tags}
