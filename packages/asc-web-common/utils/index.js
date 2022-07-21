@@ -310,7 +310,7 @@ export function loadScript(url, id, onLoad, onError) {
   } catch (e) {
     console.error(e);
   }
-} // not need  ssr -
+}
 
 export function isRetina() {
   if (window.devicePixelRatio > 1) return true;
