@@ -26,27 +26,30 @@
 
 namespace ASC.Web.Core.Utility.Settings;
 
+[Singletone]
+public class CustomColorThemesSettingsHelper
+{
+    public int Limit { get; set; }
+
+    public CustomColorThemesSettingsHelper(IConfiguration configuration)
+    {
+        Limit = configuration.GetSection("core:themelimit").Get<int>();
+    }
+}
+
 public class CustomColorThemesSettings : ISettings<CustomColorThemesSettings>
 {
-    private readonly IConfiguration _configuration;
-
-    public IEnumerable<CustomColorThemesSettingsItem> Themes { get; set; }
+    public List<CustomColorThemesSettingsItem> Themes { get; set; }
     public int Selected { get; set; }
-    public int Limit { get => _configuration.GetSection("core:themelimit").Get<int>(); }
-
-    public CustomColorThemesSettings(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
 
     public CustomColorThemesSettings GetDefault()
     {
         Themes = CustomColorThemesSettingsItem.Default;
 
-        return new CustomColorThemesSettings(_configuration)
+        return new CustomColorThemesSettings()
         {
-            Themes = Themes.OrderBy(r => r.Id),
-            Selected = Themes.Min(r => r.Id),
+            Themes = Themes,
+            Selected = Themes.Min(r => r.Id)
         };
     }
 

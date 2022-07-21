@@ -61,6 +61,7 @@ public class SettingsController : BaseSettingsController
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly CustomColorThemesSettingsHelper _customColorThemesSettingsHelper;
 
     public SettingsController(
         ILoggerProvider option,
@@ -95,7 +96,8 @@ public class SettingsController : BaseSettingsController
         Constants constants,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper
+        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        CustomColorThemesSettingsHelper customColorThemesSettingsHelper
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -127,6 +129,7 @@ public class SettingsController : BaseSettingsController
         _constants = constants;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
     }
 
     [HttpGet("")]
@@ -371,15 +374,13 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpGet("colortheme")]
-    public CustomColorThemesSettings GetColorTheme()
+    public CustomColorThemesSettingsDto GetColorTheme()
     {
-        var result = _settingsManager.Load<CustomColorThemesSettings>();
-        result.Themes = result.Themes.OrderBy(r => r.Id);
-        return result;
+        return new CustomColorThemesSettingsDto(_settingsManager.Load<CustomColorThemesSettings>(), _customColorThemesSettingsHelper.Limit);
     }
 
     [HttpPut("colortheme")]
-    public CustomColorThemesSettings SaveColorTheme(CustomColorThemesSettingsRequestsDto inDto)
+    public CustomColorThemesSettingsDto SaveColorTheme(CustomColorThemesSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         var settings = _settingsManager.Load<CustomColorThemesSettings>();
@@ -399,14 +400,14 @@ public class SettingsController : BaseSettingsController
                     }
                     else
                     {
-                        if (settings.Limit == 0 || settings.Themes.Count() < settings.Limit)
+                        if (_customColorThemesSettingsHelper.Limit == 0 || settings.Themes.Count() < _customColorThemesSettingsHelper.Limit)
                         {
                             if (item.Id == 0)
                             {
                                 item.Id = settings.Themes.Max(r => r.Id) + 1;
                             }
 
-                            settings.Themes = settings.Themes.Append(item);
+                            settings.Themes = settings.Themes.Append(item).ToList();
                         }
                     }
                 }
@@ -422,11 +423,11 @@ public class SettingsController : BaseSettingsController
             _messageService.Send(MessageAction.ColorThemeChanged);
         }
 
-        return settings;
+        return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
     }
 
     [HttpDelete("colortheme")]
-    public CustomColorThemesSettings DeleteColorTheme(int id)
+    public CustomColorThemesSettingsDto DeleteColorTheme(int id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -434,10 +435,10 @@ public class SettingsController : BaseSettingsController
 
         if (CustomColorThemesSettingsItem.Default.Any(r => r.Id == id))
         {
-            return settings;
+            return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
         }
 
-        settings.Themes = settings.Themes.Where(r => r.Id != id);
+        settings.Themes = settings.Themes.Where(r => r.Id != id).ToList();
 
         if (settings.Selected == id)
         {
@@ -447,7 +448,7 @@ public class SettingsController : BaseSettingsController
 
         _settingsManager.Save(settings);
 
-        return settings;
+        return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
     }
 
     [HttpPut("closeadminhelper")]
