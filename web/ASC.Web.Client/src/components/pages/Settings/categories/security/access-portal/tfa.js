@@ -94,17 +94,16 @@ const TwoFactorAuth = (props) => {
     setIsSaving(true);
 
     try {
-      await setTfaSettings(type);
+      const res = await setTfaSettings(type);
 
       toastr.success(t("SuccessfullySaveSettingsMessage"));
       saveToSessionStorage("defaultTfaSettings", type);
       setIsSaving(false);
       setShowReminder(false);
 
-      if (type !== "none") {
+      if (res) {
         setIsInit(false);
-        const link = await getTfaConfirmLink();
-        history.push(link.replace(window.location.origin, ""));
+        history.push(res.replace(window.location.origin, ""));
       }
     } catch (error) {
       toastr.error(error);
@@ -116,7 +115,6 @@ const TwoFactorAuth = (props) => {
     setType(defaultSettings);
     setShowReminder(false);
   };
-
 
   if (isMobile && !isInit && !isLoading) {
     return <TfaLoader />;
