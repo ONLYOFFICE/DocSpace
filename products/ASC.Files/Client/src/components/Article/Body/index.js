@@ -8,7 +8,9 @@ import { AppServerConfig } from "@appserver/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@appserver/components/utils/device";
 import FilesFilter from "@appserver/common/api/files/filter";
-import SettingsItems from "./SettingsItems";
+import RoomsFilter from "@appserver/common/api/rooms/filter";
+import SettingsItem from "./SettingsItem";
+import AccountsItem from "./AccountsItem";
 import { combineUrl } from "@appserver/common/utils";
 import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
 import ThirdPartyList from "./ThirdPartyList";
@@ -30,6 +32,7 @@ const StyledBlock = styled.div`
 const ArticleBodyContent = (props) => {
   const {
     personal,
+    docSpace,
     firstLoad,
     showText,
     isDesktopClient,
@@ -51,8 +54,14 @@ const ArticleBodyContent = (props) => {
         toggleArticleOpen,
         setIsLoading,
         fetchFiles,
+
+        fetchRooms,
+        setAlreadyFetchingRooms,
+
         homepage,
         history,
+        roomsFolderId,
+        archiveFolderId,
       } = props;
 
       if (filesIsLoading) return;
@@ -65,32 +74,65 @@ const ArticleBodyContent = (props) => {
         showLoader();
       }
 
-      fetchFiles(data, null, true, false)
-        .then(() => {
-          if (!filesSection) {
-            const filter = FilesFilter.getDefault();
+      if (data === roomsFolderId || data === archiveFolderId) {
+        setAlreadyFetchingRooms(true);
+        fetchRooms(data, null)
+          .then(() => {
+            if (filesSection) {
+              const filter = RoomsFilter.getDefault();
 
-            filter.folder = data;
+              const urlFilter = filter.toUrlParams();
 
-            const urlFilter = filter.toUrlParams();
+              history.push(
+                combineUrl(
+                  AppServerConfig.proxyURL,
+                  homepage,
+                  `/rooms?${urlFilter}`
+                )
+              );
+            }
+          })
+          .finally(() => {
+            if (isMobileOnly || isMobile()) {
+              toggleArticleOpen();
+            }
+            if (filesSection) {
+              setIsLoading(false);
+            } else {
+              hideLoader();
+            }
+          });
+      } else {
+        fetchFiles(data, null, true, false)
+          .then(() => {
+            if (!filesSection) {
+              const filter = FilesFilter.getDefault();
 
-            history.push(
-              combineUrl(
-                AppServerConfig.proxyURL,
-                homepage,
-                `/filter?${urlFilter}`
-              )
-            );
-          }
-        })
-        .catch((err) => toastr.error(err))
-        .finally(() => {
-          if (isMobileOnly || isMobile()) {
-            toggleArticleOpen();
-          }
-          if (filesSection) setIsLoading(false);
-          else hideLoader();
-        });
+              filter.folder = data;
+
+              const urlFilter = filter.toUrlParams();
+
+              history.push(
+                combineUrl(
+                  AppServerConfig.proxyURL,
+                  homepage,
+                  `/filter?${urlFilter}`
+                )
+              );
+            }
+          })
+          .catch((err) => toastr.error(err))
+          .finally(() => {
+            if (isMobileOnly || isMobile()) {
+              toggleArticleOpen();
+            }
+            if (filesSection) {
+              setIsLoading(false);
+            } else {
+              hideLoader();
+            }
+          });
+      }
     },
     [filesIsLoading]
   );
@@ -107,8 +149,9 @@ const ArticleBodyContent = (props) => {
         showText={showText}
         onHide={toggleArticleOpen}
       />
-      {!personal && !firstLoad && <SettingsItems />}
-      {!isDesktopClient && showText && (
+      <AccountsItem />
+      {!personal && !firstLoad && <SettingsItem />}
+      {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
           {enableThirdParty && !isVisitor && <ThirdPartyList />}
           <DownloadAppList theme={theme} />
@@ -133,6 +176,8 @@ export default inject(
   }) => {
     const {
       fetchFiles,
+      fetchRooms,
+      setAlreadyFetchingRooms,
       setIsLoading,
       setFirstLoad,
       firstLoad,
@@ -140,7 +185,13 @@ export default inject(
       isLoaded,
       filesIsLoading,
     } = filesStore;
-    const { treeFolders, setTreeFolders } = treeFoldersStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      roomsFolderId,
+      archiveFolderId,
+    } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
@@ -149,7 +200,10 @@ export default inject(
       articleOpen,
 
       toggleArticleOpen,
+
       personal,
+      docSpace,
+
       isDesktopClient,
       FirebaseHelper,
       theme,
@@ -169,7 +223,12 @@ export default inject(
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
       homepage: config.homepage,
+
+      fetchRooms,
+      setAlreadyFetchingRooms,
+
       personal,
+      docSpace,
 
       isArticleLoading,
       setIsLoading,
@@ -182,6 +241,9 @@ export default inject(
       isDesktopClient,
       FirebaseHelper,
       theme,
+
+      roomsFolderId,
+      archiveFolderId,
       filesIsLoading,
     };
   }

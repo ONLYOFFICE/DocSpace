@@ -19,18 +19,20 @@ const Indicator = styled.div`
   top: 25px;
   left: 25px;
 
-  z-index: 3;
+  z-index: 10;
 `;
 
 Indicator.defaultProps = { theme: Base };
 
 const FilterButton = ({
   t,
-  selectedFilterData,
-  contextMenuHeader,
-  getFilterData,
   onFilter,
-  headerLabel,
+  getFilterData,
+
+  selectedFilterValue,
+
+  filterHeader,
+  selectorLabel,
 }) => {
   const [showFilterBlock, setShowFilterBlock] = React.useState(false);
 
@@ -38,25 +40,22 @@ const FilterButton = ({
     setShowFilterBlock((value) => !value);
   }, [setShowFilterBlock]);
 
-  // console.log(selectedFilterData.filterValues);
-
   return (
     <>
       <StyledButton onClick={changeShowFilterBlock}>
         <IconButton iconName="/static/images/filter.react.svg" size={16} />
-        {selectedFilterData.filterValues &&
-          selectedFilterData.filterValues.length > 0 && <Indicator />}
+        {selectedFilterValue && selectedFilterValue.length > 0 && <Indicator />}
       </StyledButton>
 
       {showFilterBlock && (
         <FilterBlock
           t={t}
-          contextMenuHeader={contextMenuHeader}
-          selectedFilterData={selectedFilterData}
+          filterHeader={filterHeader}
+          selectedFilterValue={selectedFilterValue}
           hideFilterBlock={changeShowFilterBlock}
           getFilterData={getFilterData}
           onFilter={onFilter}
-          headerLabel={headerLabel}
+          selectorLabel={selectorLabel}
         />
       )}
     </>

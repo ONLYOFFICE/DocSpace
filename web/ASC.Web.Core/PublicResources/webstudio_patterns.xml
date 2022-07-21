@@ -226,8 +226,8 @@ $activity.Key
 	
 	<!-- change_password v115 -->
 	<pattern id="change_password_v115">
-		<subject resource="|subject_change_password_v115|ASC.Web.Studio.Core.Notify.WebstudioNotifyPatternResource,ASC.Web.Core" />
-		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_change_password_v115|ASC.Web.Studio.Core.Notify.WebstudioNotifyPatternResource,ASC.Web.Core" />
+		<subject resource="|subject_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
 	</pattern>
 	
   <!-- change_phone -->
@@ -678,8 +678,8 @@ $activity.Key
 	
 	<!-- personal change password v115-->
 	<pattern id="personal_change_password_v115">
-		<subject resource="|subject_change_password_v115|ASC.Web.Studio.Core.Notify.WebstudioNotifyPatternResource,ASC.Web.Core" />
-		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_change_password_v115|ASC.Web.Studio.Core.Notify.WebstudioNotifyPatternResource,ASC.Web.Core" />
+		<subject resource="|subject_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
 	</pattern>
 	
   <!-- personal profile delete -->
@@ -708,8 +708,8 @@ $activity.Key
 	
 	<!-- personal custom mode change password v115-->
 	<pattern id="personal_custom_mode_change_password_v115">
-		<subject resource="|subject_change_password_v115|ASC.Web.Studio.Core.Notify.WebstudioNotifyPatternResource,ASC.Web.Core" />
-		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_change_password_v115|ASC.Web.Studio.PublicResources.CustomModeResource,ASC.Web.Core" />
+		<subject resource="|subject_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_change_password_v115|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
 	</pattern>
 	
   <!-- personal custom mode profile delete -->

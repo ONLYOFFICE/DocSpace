@@ -60,6 +60,26 @@ export const FileType = Object.freeze({
   Document: 7,
 });
 /**
+ * Enum for room type.
+ * @readonly
+ */
+export const RoomsType = Object.freeze({
+  FillingFormsRoom: 1,
+  EditingRoom: 2,
+  ReviewRoom: 3,
+  ReadOnlyRoom: 4,
+  CustomRoom: 5,
+});
+/**
+ * Enum for room search area.
+ * @readonly
+ */
+export const RoomSearchArea = Object.freeze({
+  Any: "Any",
+  Active: "Active",
+  Archive: "Archive",
+});
+/**
  * Enum for file action.
  * @readonly
  */
@@ -83,6 +103,8 @@ export const FolderType = Object.freeze({
   Recent: 11,
   Templates: 12,
   Privacy: 13,
+  Rooms: 14,
+  Archive: 20,
 });
 export const ShareAccessRights = Object.freeze({
   None: 0,

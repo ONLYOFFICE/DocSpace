@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import elementResizeDetectorMaker from "element-resize-detector";
 import TableContainer from "@appserver/components/table-container";
 import { inject, observer } from "mobx-react";
 import TableRow from "./TableRow";
@@ -102,6 +103,11 @@ const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
 const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
 const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TABLE_VERSION}`;
 
+const TABLE_ROOMS_VERSION = "1";
+const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TABLE_ROOMS_VERSION}`;
+const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TABLE_ROOMS_VERSION}`;
+const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TABLE_ROOMS_VERSION}`;
+
 const Table = ({
   filesList,
   sectionWidth,
@@ -115,8 +121,12 @@ const Table = ({
   fetchMoreFiles,
   hasMoreFiles,
   filterTotal,
+  isRooms,
 }) => {
+  const [tagCount, setTagCount] = React.useState(null);
+
   const ref = useRef(null);
+  const tagRef = useRef(null);
 
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
@@ -133,9 +143,44 @@ const Table = ({
     }
   }, [sectionWidth]);
 
-  const tableColumns = `${TABLE_COLUMNS}=${userId}`;
-  const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
-  const columnInfoPanelStorageName = `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
+  React.useEffect(() => {
+    if (!tagRef?.current) return;
+
+    onResize();
+
+    const elementResizeDetector = elementResizeDetectorMaker({
+      strategy: "scroll",
+      callOnAdd: false,
+    });
+
+    elementResizeDetector.listenTo(tagRef.current, onResize);
+
+    return () => {
+      if (!tagRef?.current) return;
+
+      elementResizeDetector.uninstall(tagRef.current);
+    };
+  }, [tagRef, filesList]);
+
+  const onResize = React.useCallback(() => {
+    if (tagRef?.current) {
+      const { width } = tagRef.current.getBoundingClientRect();
+
+      const columns = Math.floor(width / 100);
+
+      if (columns != tagCount) setTagCount(columns);
+    }
+  }, [tagRef, tagCount]);
+
+  const tableColumns = isRooms
+    ? `${TABLE_ROOMS_COLUMNS}=${userId}`
+    : `${TABLE_COLUMNS}=${userId}`;
+  const columnStorageName = isRooms
+    ? `${COLUMNS_ROOMS_SIZE}=${userId}`
+    : `${COLUMNS_SIZE}=${userId}`;
+  const columnInfoPanelStorageName = isRooms
+    ? `${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`
+    : `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
 
   return (
     <StyledTableContainer useReactWindow forwardedRef={ref}>
@@ -144,7 +189,12 @@ const Table = ({
         containerRef={ref}
         tableStorageName={tableColumns}
         columnStorageName={columnStorageName}
+        filesColumnStorageName={`${COLUMNS_SIZE}=${userId}`}
+        roomsColumnStorageName={`${COLUMNS_ROOMS_SIZE}=${userId}`}
         columnInfoPanelStorageName={columnInfoPanelStorageName}
+        filesColumnInfoPanelStorageName={`${COLUMNS_SIZE_INFO_PANEL}=${userId}`}
+        roomsColumnInfoPanelStorageName={`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`}
+        isRooms={isRooms}
       />
 
       <TableBody
@@ -155,27 +205,54 @@ const Table = ({
         itemCount={filterTotal}
         useReactWindow
       >
-        {filesList.map((item, index) => (
-          <TableRow
-            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-            key={`${item.id}_${index}`}
-            item={item}
-            index={index}
-            setFirsElemChecked={setFirsElemChecked}
-            setHeaderBorder={setHeaderBorder}
-            theme={theme}
-            tableColumns={tableColumns}
-            columnStorageName={columnStorageName}
-            columnInfoPanelStorageName={columnInfoPanelStorageName}
-          />
-        ))}
+        {filesList.map((item, index) => {
+          return index === 0 && item.isRoom ? (
+            <TableRow
+              id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+              key={`${item.id}_${index}`}
+              item={item}
+              index={index}
+              setFirsElemChecked={setFirsElemChecked}
+              setHeaderBorder={setHeaderBorder}
+              theme={theme}
+              tableColumns={tableColumns}
+              columnStorageName={columnStorageName}
+              columnInfoPanelStorageName={columnInfoPanelStorageName}
+              tagRef={tagRef}
+              tagCount={tagCount}
+              isRooms={isRooms}
+            />
+          ) : (
+            <TableRow
+              id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+              key={`${item.id}_${index}`}
+              item={item}
+              index={index}
+              setFirsElemChecked={setFirsElemChecked}
+              setHeaderBorder={setHeaderBorder}
+              theme={theme}
+              tableColumns={tableColumns}
+              columnStorageName={columnStorageName}
+              columnInfoPanelStorageName={columnInfoPanelStorageName}
+              tagCount={tagCount}
+              isRooms={isRooms}
+            />
+          );
+        })}
       </TableBody>
     </StyledTableContainer>
   );
 };
 
-export default inject(({ filesStore, auth }) => {
+export default inject(({ filesStore, treeFoldersStore, auth }) => {
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+
+  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+
+  const isRooms =
+    isRoomsFolder ||
+    isArchiveFolder ||
+    window.location.href.includes("/rooms?");
 
   const {
     filesList,
@@ -200,5 +277,6 @@ export default inject(({ filesStore, auth }) => {
     fetchMoreFiles,
     hasMoreFiles,
     filterTotal,
+    isRooms,
   };
 })(observer(Table));

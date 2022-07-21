@@ -116,30 +116,21 @@ const Article = ({
         isBannerVisible={isBannerVisible}
         {...rest}
       >
-        <Resizable
-          defaultSize={{
-            width: 256,
-          }}
-          enable={enable}
-          className="resizable-block"
-          handleWrapperClass="resizable-border not-selectable"
+        <SubArticleHeader
+          isLoadedPage={isLoadedPage}
+          showText={showText}
+          onClick={toggleShowText}
         >
-          <SubArticleHeader
-            isLoadedPage={isLoadedPage}
-            showText={showText}
-            onClick={toggleShowText}
-          >
-            {articleHeaderContent ? articleHeaderContent.props.children : null}
-          </SubArticleHeader>
-          {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
-            <SubArticleMainButton showText={showText}>
-              {articleMainButtonContent.props.children}
-            </SubArticleMainButton>
-          ) : null}
-          <SubArticleBody showText={showText}>
-            {articleBodyContent ? articleBodyContent.props.children : null}
-          </SubArticleBody>
-        </Resizable>
+          {articleHeaderContent ? articleHeaderContent.props.children : null}
+        </SubArticleHeader>
+        {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
+          <SubArticleMainButton showText={showText}>
+            {articleMainButtonContent.props.children}
+          </SubArticleMainButton>
+        ) : null}
+        <SubArticleBody showText={showText}>
+          {articleBodyContent ? articleBodyContent.props.children : null}
+        </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
         <>
