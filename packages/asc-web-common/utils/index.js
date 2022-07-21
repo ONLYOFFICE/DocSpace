@@ -2,6 +2,9 @@ import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import TopLoaderService from "@appserver/components/top-loading-indicator";
+
+import { Encoder } from "./encoder";
+
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
@@ -11,10 +14,32 @@ export const toUrlParams = (obj, skipNull) => {
       str += "&";
     }
 
-    str += key + "=" + encodeURIComponent(obj[key]);
+    if (typeof obj[key] === "object") {
+      str += key + "=" + encodeURIComponent(JSON.stringify(obj[key]));
+    } else {
+      str += key + "=" + encodeURIComponent(obj[key]);
+    }
   }
 
   return str;
+};
+
+export const decodeDisplayName = (items) => {
+  return items.map((item) => {
+    if (!item) return item;
+
+    if (item.updatedBy?.displayName) {
+      item.updatedBy.displayName = Encoder.htmlDecode(
+        item.updatedBy.displayName
+      );
+    }
+    if (item.createdBy?.displayName) {
+      item.createdBy.displayName = Encoder.htmlDecode(
+        item.createdBy.displayName
+      );
+    }
+    return item;
+  });
 };
 
 export function getObjectByLocation(location) {
@@ -22,10 +47,18 @@ export function getObjectByLocation(location) {
 
   const searchUrl = location.search.substring(1);
   const decodedString = decodeURIComponent(searchUrl)
+    .replace(/\["/g, '["')
+    .replace(/"\]/g, '"]')
     .replace(/"/g, '\\"')
     .replace(/&/g, '","')
     .replace(/=/g, '":"')
-    .replace(/\\/g, "\\\\");
+    .replace(/\\/g, "\\\\")
+    .replace(/\[\\\\"/g, '["')
+    .replace(/\\\\"\]/g, '"]')
+    .replace(/"\[/g, "[")
+    .replace(/\]"/g, "]")
+    .replace(/\\\\",\\\\"/g, '","');
+
   const object = JSON.parse(`{"${decodedString}"}`);
 
   return object;

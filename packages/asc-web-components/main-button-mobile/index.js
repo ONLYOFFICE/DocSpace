@@ -108,6 +108,7 @@ const MainButtonMobile = (props) => {
     percent,
     title,
     withButton,
+    withoutButton,
     manualWidth,
     isOpenButton,
     onClose,
@@ -315,7 +316,8 @@ const MainButtonMobile = (props) => {
               />
             ))}
         </StyledProgressContainer>
-        <StyledButtonOptions>
+
+        <StyledButtonOptions withoutButton={withoutButton}>
           {buttonOptions
             ? buttonOptions.map((option) =>
                 option.isSeparator ? (

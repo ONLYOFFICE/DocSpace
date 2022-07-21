@@ -70,8 +70,8 @@ const Navigation = ({
   );
 
   const onClickAvailable = React.useCallback(
-    (id) => {
-      onClickFolder && onClickFolder(id);
+    (id, isRootRoom) => {
+      onClickFolder && onClickFolder(id, isRootRoom);
       toggleDropBox();
     },
     [onClickFolder, toggleDropBox]

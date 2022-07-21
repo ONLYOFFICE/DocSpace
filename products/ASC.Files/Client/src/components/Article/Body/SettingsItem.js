@@ -9,8 +9,10 @@ import { AppServerConfig } from "@appserver/common/constants";
 import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "@appserver/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
-const iconUrl = "/static/images/settings.react.svg";
-const PureSettingsItems = ({
+
+const iconUrl = "/static/images/catalog.settings.react.svg";
+
+const PureSettingsItem = ({
   match,
   expandedSetting,
   setSelectedNode,
@@ -68,8 +70,8 @@ const PureSettingsItems = ({
   );
 };
 
-const SettingsItems = withTranslation(["Settings", "Common"])(
-  withRouter(withLoader(PureSettingsItems)(<></>))
+const SettingsItem = withTranslation(["Settings", "Common"])(
+  withRouter(withLoader(PureSettingsItem)(<></>))
 );
 
 export default inject(
@@ -94,4 +96,4 @@ export default inject(
       toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     };
   }
-)(observer(SettingsItems));
+)(observer(SettingsItem));

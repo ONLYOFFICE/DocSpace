@@ -95,6 +95,11 @@ map $SERVICE_STUDIO $service_studio {
     $SERVICE_STUDIO $SERVICE_STUDIO;
 }
 
+map $SERVICE_SSOAUTH $service_sso {
+    volatile;
+    $SERVICE_SSOAUTH $SERVICE_SSOAUTH;
+}
+
 map $DOCUMENT_SERVER $document_server {
     volatile;
     $DOCUMENT_SERVER $DOCUMENT_SERVER;
