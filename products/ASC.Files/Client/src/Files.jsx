@@ -29,7 +29,6 @@ import {
   ArticleMainButtonContent,
 } from "./components/Article";
 import FormGallery from "./pages/FormGallery";
-import VirtualRooms from "./pages/VirtualRooms";
 import GlobalEvents from "./components/GlobalEvents";
 
 const { proxyURL } = AppServerConfig;

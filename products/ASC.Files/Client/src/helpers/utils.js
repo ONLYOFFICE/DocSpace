@@ -10,19 +10,19 @@ import { request } from "@appserver/common/api/client";
 export const getDefaultRoomName = (room, t) => {
   switch (room) {
     case RoomsType.CustomRoom:
-      return "Custom room";
+      return t("CustomRooms");
 
     case RoomsType.FillingFormsRoom:
-      return "Filling form";
+      return t("FillingFormRooms");
 
     case RoomsType.EditingRoom:
-      return "Editing";
+      return t("CollaborationRooms");
 
     case RoomsType.ReviewRoom:
-      return "Review";
+      return t("ReviewRooms");
 
     case RoomsType.ReadOnlyRoom:
-      return "View-only";
+      return t("ViewOnlyRooms");
   }
 };
 

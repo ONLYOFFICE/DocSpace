@@ -113,6 +113,15 @@ const StyledTableRow = styled(TableRow)`
     min-width: ${(props) => (props.isRoom ? "40px" : "36px")};
   }
 
+  .table-container_element-container {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .table-container_row-loader {
     svg {
       margin-left: 4px;
@@ -120,7 +129,7 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox {
-    padding-left: ${(props) => (props.isRoom ? "20px" : "16px")};
+    padding-left: 20px;
     width: 16px;
   }
 
@@ -286,6 +295,7 @@ const FilesTableRow = (props) => {
     tableColumns,
     id,
     tagRef,
+    isRooms,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
@@ -419,7 +429,7 @@ const FilesTableRow = (props) => {
           />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
-        {item.isRoom && (
+        {(item.isRoom || isRooms) && (
           <TableCell
             style={
               !typeAvailableDrag
@@ -433,6 +443,17 @@ const FilesTableRow = (props) => {
               {...props}
             />
           </TableCell>
+        )}
+
+        {!item.isRoom && isRooms && (
+          <TableCell
+            style={
+              !typeAvailableDrag
+                ? { background: "none !important" }
+                : dragStyles.style
+            }
+            {...selectionProp}
+          ></TableCell>
         )}
 
         {item.isRoom && (
@@ -465,7 +486,7 @@ const FilesTableRow = (props) => {
           </TableCell>
         )}
 
-        {!item.isRoom && (
+        {!item.isRoom && !isRooms && (
           <TableCell
             style={
               !createdAvailableDrag
@@ -494,7 +515,7 @@ const FilesTableRow = (props) => {
           />
         </TableCell>
 
-        {!item.isRoom && (
+        {!item.isRoom && !isRooms && (
           <TableCell
             style={
               !sizeAvailableDrag ? { background: "none" } : dragStyles.style
@@ -508,7 +529,7 @@ const FilesTableRow = (props) => {
           </TableCell>
         )}
 
-        {!item.isRoom && (
+        {!item.isRoom && !isRooms && (
           <TableCell
             style={
               !typeAvailableDrag
@@ -523,7 +544,7 @@ const FilesTableRow = (props) => {
             />
           </TableCell>
         )}
-        {!item.isRoom && (
+        {!item.isRoom && !isRooms && (
           <TableCell
             style={
               !buttonsAvailableDrag ? { background: "none" } : dragStyles.style

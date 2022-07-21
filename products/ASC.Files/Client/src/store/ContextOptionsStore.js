@@ -554,7 +554,7 @@ class ContextOptionsStore {
       },
       {
         key: "pin-room",
-        label: "Pin to top",
+        label: t("Pin"),
         icon: "/static/images/pin.react.svg",
         onClick: (e) => this.onClickPin(e, item.id, t),
         disabled: false,
@@ -563,7 +563,7 @@ class ContextOptionsStore {
       },
       {
         key: "unpin-room",
-        label: "Unpin",
+        label: t("Unpin"),
         icon: "/static/images/unpin.react.svg",
         onClick: (e) => this.onClickPin(e, item.id, t),
         disabled: false,
@@ -695,7 +695,7 @@ class ContextOptionsStore {
       },
       {
         key: "archive-room",
-        label: "Move to archive",
+        label: t("ToArchive"),
         icon: "/static/images/room.archive.svg",
         onClick: (e) => this.onClickArchive(e, item.id, t),
         disabled: false,
@@ -704,7 +704,7 @@ class ContextOptionsStore {
       },
       {
         key: "unarchive-room",
-        label: "Move to archive",
+        label: t("FromArchive"),
         icon: "/static/images/room.archive.svg",
         onClick: (e) => this.onClickArchive(e, item.id, t),
         disabled: false,
@@ -731,7 +731,78 @@ class ContextOptionsStore {
     const { personal } = this.authStore.settingsStore;
     const { selection } = this.filesStore;
     const { setDeleteDialogVisible } = this.dialogsStore;
-    const { isRecycleBinFolder } = this.treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = this.treeFoldersStore;
+
+    const {
+      pinRooms,
+      unpinRooms,
+      moveRoomsToArchive,
+      moveRoomsFromArchive,
+      deleteRooms,
+    } = this.filesActionsStore;
+
+    if (isRoomsFolder || isArchiveFolder) {
+      const isPinOption = selection.filter((item) => !item.pinned).length > 0;
+
+      const pinOption = isPinOption
+        ? {
+            key: "pin-room",
+            label: t("Pin"),
+            icon: "/static/images/pin.react.svg",
+            onClick: pinRooms,
+            disabled: false,
+          }
+        : {
+            key: "unpin-room",
+            label: t("Unpin"),
+            icon: "/static/images/unpin.react.svg",
+            onClick: unpinRooms,
+            disabled: false,
+          };
+
+      const archiveOptions = !isArchiveFolder
+        ? {
+            key: "archive-room",
+            label: t("ToArchive"),
+            icon: "/static/images/room.archive.svg",
+            onClick: moveRoomsToArchive,
+            disabled: false,
+          }
+        : {
+            key: "unarchive-room",
+            label: t("FromArchive"),
+            icon: "/static/images/room.archive.svg",
+            onClick: moveRoomsFromArchive,
+            disabled: false,
+          };
+
+      const options = [];
+
+      if (!isArchiveFolder) {
+        options.push(pinOption);
+        options.push({
+          key: "separator0",
+          isSeparator: true,
+        });
+      }
+
+      options.push(archiveOptions);
+
+      if (isArchiveFolder) {
+        options.push({
+          key: "delete-rooms",
+          label: t("Common:Delete"),
+          icon: "images/trash.react.svg",
+          onClick: deleteRooms,
+        });
+      }
+
+      return options;
+    }
 
     const downloadAs =
       selection.findIndex((k) => k.contextOptions.includes("download-as")) !==

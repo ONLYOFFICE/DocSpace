@@ -33,19 +33,16 @@ public class LdapNotifyService : BackgroundService
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly WorkContext _workContext;
     private readonly LdapSaveSyncOperation _ldapSaveSyncOperation;
-    private readonly NotifyEngineQueue _notifyEngineQueue;
 
     public LdapNotifyService(
         IServiceScopeFactory serviceScopeFactory,
         WorkContext workContext,
-        LdapSaveSyncOperation ldapSaveSyncOperation,
-        NotifyEngineQueue notifyEngineQueue)
+        LdapSaveSyncOperation ldapSaveSyncOperation)
     {
         _clients = new ConcurrentDictionary<int, Tuple<INotifyClient, LdapNotifySource>>();
         _serviceScopeFactory = serviceScopeFactory;
         _workContext = workContext;
         _ldapSaveSyncOperation = ldapSaveSyncOperation;
-        _notifyEngineQueue = notifyEngineQueue;
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -82,10 +79,11 @@ public class LdapNotifyService : BackgroundService
     {
         if (!_clients.ContainsKey(tenant.Id))
         {
-            using var scope = _serviceScopeFactory.CreateScope();
+            var scope = _serviceScopeFactory.CreateScope();
             var source = scope.ServiceProvider.GetRequiredService<LdapNotifySource>();
+            var notifyEngineQueue = scope.ServiceProvider.GetRequiredService<NotifyEngineQueue>();
             source.Init(tenant);
-            var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, source);
+            var client = _workContext.NotifyContext.RegisterClient(notifyEngineQueue, source);
             _workContext.RegisterSendMethod(source.AutoSync, cron);
             _clients.TryAdd(tenant.Id, new Tuple<INotifyClient, LdapNotifySource>(client, source));
         }

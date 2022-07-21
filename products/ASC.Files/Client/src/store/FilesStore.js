@@ -1336,7 +1336,10 @@ class FilesStore {
           "archive-room",
         ]);
       } else {
-        roomOptions = this.removeOptions(roomOptions, ["unarchive-room"]);
+        roomOptions = this.removeOptions(roomOptions, [
+          "delete",
+          "unarchive-room",
+        ]);
       }
 
       return roomOptions;
@@ -1524,6 +1527,10 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
+  createRoom(title, type) {
+    return api.rooms.createRoom({ title, roomType: type });
+  }
+
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);
     if (fileIndex !== -1) this.files[fileIndex] = file;
@@ -1554,6 +1561,13 @@ class FilesStore {
     for (let folder of this.folders) {
       folder.new = 0;
     }
+  };
+
+  updateRoomPin = (item) => {
+    const idx = this.folders.findIndex((folder) => folder.id === item);
+
+    if (idx === -1) return;
+    this.folders[idx].pinned = !this.folders[idx].pinned;
   };
 
   updateFile = (fileId, title) => {
@@ -1732,7 +1746,16 @@ class FilesStore {
     const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
 
-    const items = [...this.folders, ...this.files];
+    const newFolders = [...this.folders];
+
+    newFolders.sort((a, b) => {
+      const firstValue = a.roomType ? 1 : 0;
+      const secondValue = b.roomType ? 1 : 0;
+
+      return secondValue - firstValue;
+    });
+
+    const items = [...newFolders, ...this.files];
     const newItem = items.map((item) => {
       const {
         access,
@@ -1974,15 +1997,15 @@ class FilesStore {
       case FilterType.FilesOnly:
         return t("AllFiles");
       case `room-${RoomsType.FillingFormsRoom}`:
-        return "Filling forms";
+        return t("FillingFormRooms");
       case `room-${RoomsType.CustomRoom}`:
-        return "Custom";
+        return t("CustomRooms");
       case `room-${RoomsType.EditingRoom}`:
-        return "Editing";
+        return t("CollaborationRooms");
       case `room-${RoomsType.ReviewRoom}`:
-        return "Review";
+        return t("ReviewRooms");
       case `room-${RoomsType.ReadOnlyRoom}`:
-        return "View-only";
+        return t("ViewOnlyRooms");
 
       default:
         return "";

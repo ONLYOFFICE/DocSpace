@@ -590,7 +590,7 @@ class FilesActionStore {
         icon: "trash",
         visible: true,
         percent: 0,
-        label: translations.deleteOperation,
+        label: translations?.deleteOperation,
         alert: false,
       });
 
@@ -613,7 +613,7 @@ class FilesActionStore {
 
     const pbData = {
       icon: "trash",
-      label: translations.deleteOperation,
+      label: translations?.deleteOperation,
     };
 
     if (isFile) {
@@ -628,15 +628,19 @@ class FilesActionStore {
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else if (isRoom) {
-      addActiveItems(null, [itemId]);
-      return deleteRoom(itemId)
+      const items = Array.isArray(itemId) ? itemId : [itemId];
+      addActiveItems(null, items);
+
+      const actions = items.map((item) => deleteRoom(item));
+
+      return Promise.all(actions)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
           this.updateCurrentFolder(null, [itemId]);
         })
-        .then(() => toastr.success(translations.successRemoveRoom));
+        .then(() => toastr.success(translations?.successRemoveRoom));
     } else {
       addActiveItems(null, [itemId]);
       return deleteFolder(itemId)
@@ -756,20 +760,31 @@ class FilesActionStore {
   };
 
   setPinAction = (action, id) => {
-    const { pinRoom, unpinRoom, setSelected } = this.filesStore;
+    const { pinRoom, unpinRoom, updateRoomPin, setSelected } = this.filesStore;
 
     const items = Array.isArray(id) ? id : [id];
 
+    const actions = [];
+
     switch (action) {
       case "pin":
-        return pinRoom(items)
+        items.forEach((item) => {
+          updateRoomPin(item);
+          actions.push(pinRoom(item));
+        });
+
+        return Promise.all(actions)
           .then(() => {
             this.updateCurrentFolder(null, items);
           })
           .then(() => setSelected("close"))
           .finally(() => toastr.success("Room pinned"));
       case "unpin":
-        return unpinRoom(items)
+        items.forEach((item) => {
+          updateRoomPin(item);
+          actions.push(unpinRoom(item));
+        });
+        return Promise.all(actions)
           .then(() => {
             this.updateCurrentFolder(null, items);
           })
@@ -814,9 +829,15 @@ class FilesActionStore {
 
     addActiveItems(null, items);
 
+    const actions = [];
+
     switch (action) {
       case "archive":
-        return moveRoomToArchive(items)
+        items.forEach((item) => {
+          actions.push(moveRoomToArchive(item));
+        });
+
+        return Promise.all(actions)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
             const data = res ? res : null;
@@ -836,7 +857,10 @@ class FilesActionStore {
           })
           .finally(() => clearActiveOperations(null, items));
       case "unarchive":
-        return removeRoomFromArchive(items)
+        items.forEach((item) => {
+          actions.push(removeRoomFromArchive(item));
+        });
+        return Promise.all(actions)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
             const data = res ? res : null;
@@ -867,19 +891,24 @@ class FilesActionStore {
 
     const newFilter = roomsFilter.clone();
 
-    const tags = newFilter.tags ? [...newFilter.tags] : [];
+    if (tag !== "no-tag") {
+      const tags = newFilter.tags ? [...newFilter.tags] : [];
 
-    if (tags.length > 0) {
-      const idx = tags.findIndex((item) => item === tag);
+      if (tags.length > 0) {
+        const idx = tags.findIndex((item) => item === tag);
 
-      if (idx > -1) {
-        //TODO: remove tag here if already selected
-        return;
+        if (idx > -1) {
+          //TODO: remove tag here if already selected
+          return;
+        }
       }
-    }
-    tags.push(tag);
+      tags.push(tag);
 
-    newFilter.tags = [...tags];
+      newFilter.tags = [...tags];
+      newFilter.withoutTags = false;
+    } else {
+      newFilter.withoutTags = true;
+    }
 
     setIsLoading(true);
 
@@ -1143,6 +1172,66 @@ class FilesActionStore {
     return result;
   };
 
+  pinRooms = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      if (!item.pinned) items.push(item.id);
+    });
+
+    this.setPinAction("pin", items);
+  };
+
+  unpinRooms = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      if (item.pinned) items.push(item.id);
+    });
+
+    this.setPinAction("unpin", items);
+  };
+
+  moveRoomsToArchive = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      items.push(item.id);
+    });
+
+    this.setArchiveAction("archive", items);
+  };
+
+  moveRoomsFromArchive = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      items.push(item.id);
+    });
+
+    this.setArchiveAction("unarchive", items);
+  };
+
+  deleteRooms = () => {
+    const { selection } = this.filesStore;
+
+    const items = [];
+
+    selection.forEach((item) => {
+      items.push(item.id);
+    });
+
+    this.deleteItemAction(items, null, null, null, true);
+  };
+
   getOption = (option, t) => {
     const {
       setSharingPanelVisible,
@@ -1204,37 +1293,43 @@ class FilesActionStore {
       case "pin":
         return {
           key: "pin",
-          label: "Pin to top",
+          label: t("Pin"),
           iconUrl: "/static/images/pin.react.svg",
-          onClick: (e) => {
-            console.log(e.target);
-          },
+          onClick: this.pinRooms,
           disabled: false,
         };
       case "unpin":
         return {
           key: "unpin",
-          label: "Unpin",
+          label: t("Unpin"),
           iconUrl: "/static/images/unpin.react.svg",
-          onClick: () => console.log("unpin"),
+          onClick: this.unpinRooms,
           disabled: false,
         };
       case "archive":
         return {
           key: "archive",
-          label: "Move to archive",
+          label: t("ToArchive"),
           iconUrl: "/static/images/room.archive.svg",
-          onClick: () => console.log("to archive"),
+          onClick: this.moveRoomsToArchive,
           disabled: false,
         };
       case "unarchive":
         return {
           key: "unarchive",
-          label: "Move from archive",
+          label: t("FromArchive"),
           iconUrl: "/static/images/room.archive.svg",
-          onClick: () => console.log("from archive"),
+          onClick: this.moveRoomsFromArchive,
           disabled: false,
         };
+      case "delete-room":
+        if (!this.isAvailableOption("delete")) return null;
+        else
+          return {
+            label: t("Common:Delete"),
+            onClick: this.deleteRooms,
+            iconUrl: "/static/images/delete.react.svg",
+          };
 
       case "delete":
         if (!this.isAvailableOption("delete")) return null;
@@ -1264,18 +1359,25 @@ class FilesActionStore {
   };
 
   getRoomsFolderOptions = (itemsCollection, t) => {
-    const pin = this.getOption("pin", t);
+    let pinName = "unpin";
+    const { selection } = this.filesStore;
+
+    selection.forEach((item) => {
+      if (!item.pinned) pinName = "pin";
+    });
+
+    const pin = this.getOption(pinName, t);
     const archive = this.getOption("archive", t);
 
-    itemsCollection.set("pin", pin).set("archive", archive);
+    itemsCollection.set(pinName, pin).set("archive", archive);
     return this.convertToArray(itemsCollection);
   };
 
   getArchiveRoomsFolderOptions = (itemsCollection, t) => {
-    const pin = this.getOption("pin", t);
     const archive = this.getOption("unarchive", t);
+    const deleteOption = this.getOption("delete-room", t);
 
-    itemsCollection.set("pin", pin).set("unarchive", archive);
+    itemsCollection.set("unarchive", archive).set("delete", deleteOption);
     return this.convertToArray(itemsCollection);
   };
 

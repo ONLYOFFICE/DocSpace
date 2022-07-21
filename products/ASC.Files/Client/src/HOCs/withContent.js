@@ -76,9 +76,10 @@ export default function withContent(WrappedContent) {
         access === ShareAccessRights.FullAccess || // only badges?
         access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
-      const linkStyles = isTrashFolder //|| window.innerWidth <= 1024
-        ? { noHover: true }
-        : { onClick: onFilesClick };
+      const linkStyles =
+        isTrashFolder || isArchiveFolder //|| window.innerWidth <= 1024
+          ? { noHover: true }
+          : { onClick: onFilesClick };
 
       if (!isDesktop && !isTrashFolder) {
         linkStyles.href = href;

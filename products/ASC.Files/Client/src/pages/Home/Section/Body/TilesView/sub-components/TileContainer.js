@@ -37,7 +37,7 @@ const StyledGridWrapper = styled.div`
       ? "repeat(auto-fill, minmax(274px, 1fr))"
       : "repeat(auto-fill, minmax(216px, 1fr))"};
   width: 100%;
-  margin-bottom: ${(props) => (props.isFolders ? "23px" : 0)};
+  margin-bottom: ${(props) => (props.isFolders || props.isRooms ? "23px" : 0)};
   box-sizing: border-box;
   ${paddingCss};
 

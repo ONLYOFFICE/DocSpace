@@ -109,7 +109,13 @@ const Modal = ({
                     {...body.props}
                   >
                     {currentDisplayType === "aside" && withBodyScroll ? (
-                      <Scrollbar stype="mediumBlack">{bodyComponent}</Scrollbar>
+                      <Scrollbar stype="mediumBlack">
+                        {
+                          <div className="body_content-with_scroll">
+                            {bodyComponent}
+                          </div>
+                        }
+                      </Scrollbar>
                     ) : (
                       bodyComponent
                     )}

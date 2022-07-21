@@ -13,6 +13,7 @@ import { FilterType, RoomsType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
+import { getDefaultRoomName } from "../../../../helpers/utils";
 
 import withLoader from "../../../../HOCs/withLoader";
 
@@ -49,19 +50,14 @@ const getSearchParams = (filterValues) => {
   return searchParams || "true";
 };
 
-const getTypes = (filterValues) => {
-  const filterTypes = filterValues.find(
+const getType = (filterValues) => {
+  const filterType = filterValues.find(
     (value) => value.group === FilterGroups.roomFilterType
   )?.key;
 
-  const types =
-    typeof filterTypes === "number"
-      ? [filterTypes]
-      : filterTypes?.length > 0
-      ? filterTypes.map((type) => +type)
-      : null;
+  const type = filterType;
 
-  return types;
+  return type;
 };
 
 const getOwner = (filterValues) => {
@@ -75,27 +71,29 @@ const getOwner = (filterValues) => {
   return filterOwner ? filterOwner : null;
 };
 
-const getFilterFolders = (filterValues) => {
-  const filterFolders = result(
-    find(filterValues, (value) => {
-      return value.group === FilterGroups.roomFilterFolders;
-    }),
-    "key"
-  );
+//TODO: restore all comments if search with subfolders and in content will be available for rooms filter
 
-  return filterFolders ? filterFolders : null;
-};
+// const getFilterFolders = (filterValues) => {
+//   const filterFolders = result(
+//     find(filterValues, (value) => {
+//       return value.group === FilterGroups.roomFilterFolders;
+//     }),
+//     "key"
+//   );
 
-const getFilterContent = (filterValues) => {
-  const filterContent = result(
-    find(filterValues, (value) => {
-      return value.group === FilterGroups.roomFilterContent;
-    }),
-    "key"
-  );
+//   return filterFolders ? filterFolders : null;
+// };
 
-  return filterContent ? filterContent : null;
-};
+// const getFilterContent = (filterValues) => {
+//   const filterContent = result(
+//     find(filterValues, (value) => {
+//       return value.group === FilterGroups.roomFilterContent;
+//     }),
+//     "key"
+//   );
+
+//   return filterContent ? filterContent : null;
+// };
 
 const getTags = (filterValues) => {
   const filterTags = filterValues.find(
@@ -126,36 +124,54 @@ const SectionFilterContent = ({
   infoPanelVisible,
   isRooms,
   userId,
+  setCurrentRoomsFilter,
 }) => {
   const onFilter = React.useCallback(
     (data) => {
       if (isRooms) {
-        const types = getTypes(data) || null;
+        const type = getType(data) || null;
 
         const owner = getOwner(data) || null;
 
         const subjectId =
-          owner === FilterKeys.me || owner === FilterKeys.other
+          owner === FilterKeys.other
+            ? null
+            : owner === FilterKeys.me
             ? userId
             : owner;
 
+        const withoutMe = owner === FilterKeys.other;
+
         const tags = getTags(data) || null;
 
-        const withSubfolders =
-          getFilterFolders(data) === FilterKeys.withSubfolders;
+        // const withSubfolders =
+        //   getFilterFolders(data) === FilterKeys.withSubfolders;
 
-        const withContent = getFilterContent(data) === FilterKeys.withContent;
+        // const withContent = getFilterContent(data) === FilterKeys.withContent;
 
         setIsLoading(true);
 
         const newFilter = roomsFilter.clone();
 
         newFilter.page = 0;
-        newFilter.types = types ? types : null;
+        newFilter.type = type ? type : null;
         newFilter.subjectId = subjectId ? subjectId : null;
-        newFilter.tags = tags ? tags : null;
-        newFilter.withSubfolders = withSubfolders;
-        newFilter.searchInContent = withContent;
+        if (tags) {
+          if (tags.includes(t("NoTag"))) {
+            newFilter.tags = null;
+            newFilter.withoutTags = true;
+          } else {
+            newFilter.tags = tags;
+            newFilter.withoutTags = false;
+          }
+        } else {
+          newFilter.tags = null;
+          newFilter.withoutTags = false;
+        }
+
+        newFilter.withoutMe = withoutMe;
+        // newFilter.withSubfolders = withSubfolders;
+        // newFilter.searchInContent = withContent;
 
         fetchRooms(selectedFolderId, newFilter).finally(() =>
           setIsLoading(false)
@@ -195,7 +211,7 @@ const SectionFilterContent = ({
   const onSearch = React.useCallback(
     (data = "") => {
       if (isRooms) {
-        const newFilter = this.filter.clone();
+        const newFilter = roomsFilter.clone();
 
         newFilter.page = 0;
         newFilter.filterValue = data;
@@ -298,27 +314,24 @@ const SectionFilterContent = ({
     const filterValues = [];
 
     if (isRooms) {
-      if (!roomsFilter.withSubfolders) {
-        filterValues.push({
-          key: FilterKeys.excludeSubfolders,
-          label: "Exclude subfolders",
-          group: FilterGroups.roomFilterFolders,
-        });
-      }
+      // if (!roomsFilter.withSubfolders) {
+      //   filterValues.push({
+      //     key: FilterKeys.excludeSubfolders,
+      //     label: "Exclude subfolders",
+      //     group: FilterGroups.roomFilterFolders,
+      //   });
+      // }
 
-      if (roomsFilter.searchInContent) {
-        filterValues.push({
-          key: FilterKeys.withContent,
-          label: "File contents",
-          group: FilterGroups.roomFilterContent,
-        });
-      }
+      // if (roomsFilter.searchInContent) {
+      //   filterValues.push({
+      //     key: FilterKeys.withContent,
+      //     label: "File contents",
+      //     group: FilterGroups.roomFilterContent,
+      //   });
+      // }
 
-      if (roomsFilter.types) {
-        const key =
-          typeof roomsFilter.types === "object"
-            ? roomsFilter.types[0]
-            : roomsFilter.types; //Remove it if filter types will be multi select
+      if (roomsFilter.type) {
+        const key = +roomsFilter.type;
 
         const label = getDefaultRoomName(key, t);
 
@@ -329,10 +342,9 @@ const SectionFilterContent = ({
         });
       }
 
-      // TODO: add logic to other key
       if (roomsFilter.subjectId) {
         const isMe = userId === roomsFilter.subjectId;
-        let label = null;
+        let label = isMe ? t("Common:MeLabel") : null;
 
         if (!isMe) {
           const user = await getUser(roomsFilter.subjectId);
@@ -347,7 +359,23 @@ const SectionFilterContent = ({
         });
       }
 
-      if (roomsFilter.tags) {
+      if (roomsFilter.withoutMe) {
+        filterValues.push({
+          key: FilterKeys.other,
+          group: FilterGroups.roomFilterOwner,
+          label: t("Common:OtherLabel"),
+        });
+      }
+
+      if (roomsFilter.withoutTags) {
+        filterValues.push({
+          key: [t("NoTag")],
+          group: FilterGroups.roomFilterTags,
+          isMultiSelect: true,
+        });
+      }
+
+      if (roomsFilter?.tags?.length > 0) {
         filterValues.push({
           key: roomsFilter.tags,
           group: FilterGroups.roomFilterTags,
@@ -415,12 +443,14 @@ const SectionFilterContent = ({
     filter.withSubfolders,
     filter.authorType,
     filter.filterType,
-    roomsFilter.types,
+    roomsFilter.type,
     roomsFilter.subjectId,
     roomsFilter.tags,
     roomsFilter.tags?.length,
-    roomsFilter.withSubfolders,
-    roomsFilter.searchInContent,
+    roomsFilter.withoutMe,
+    roomsFilter.withoutTags,
+    // roomsFilter.withSubfolders,
+    // roomsFilter.searchInContent,
     userId,
     isRooms,
   ]);
@@ -489,27 +519,27 @@ const SectionFilterContent = ({
           {
             key: RoomsType.CustomRoom,
             group: FilterGroups.roomFilterType,
-            label: "Custom room",
+            label: t("CustomRooms"),
           },
           {
             key: RoomsType.FillingFormsRoom,
             group: FilterGroups.roomFilterType,
-            label: "Filling form",
+            label: t("FillingFormRooms"),
           },
           {
             key: RoomsType.EditingRoom,
             group: FilterGroups.roomFilterType,
-            label: "Editing",
+            label: t("CollaborationRooms"),
           },
           {
             key: RoomsType.ReviewRoom,
             group: FilterGroups.roomFilterType,
-            label: "Review",
+            label: t("ReviewRooms"),
           },
           {
             key: RoomsType.ReadOnlyRoom,
             group: FilterGroups.roomFilterType,
-            label: "View-only",
+            label: t("ViewOnlyRooms"),
           },
         ]
       : [
@@ -545,67 +575,67 @@ const SectionFilterContent = ({
       {
         key: FilterGroups.roomFilterOwner,
         group: FilterGroups.roomFilterOwner,
-        label: t("ByAuthor"),
+        label: t("Common:Owner"),
         isHeader: true,
       },
       {
         key: FilterKeys.me,
         group: FilterGroups.roomFilterOwner,
-        label: "Me",
+        label: t("Common:MeLabel"),
       },
       {
         key: FilterKeys.other,
         group: FilterGroups.roomFilterOwner,
-        label: "Other",
+        label: t("Common:OtherLabel"),
       },
       {
         key: FilterKeys.user,
         group: FilterGroups.roomFilterOwner,
-        label: t("Translations:AddAuthor"),
+        label: t("Translations:AddOwner"),
         isSelector: true,
       },
     ];
 
-    const foldersOptions = [
-      {
-        key: FilterGroups.roomFilterFolders,
-        group: FilterGroups.roomFilterFolders,
-        label: "Search",
-        isHeader: true,
-        withoutSeparator: true,
-      },
-      {
-        key: "folders",
-        group: FilterGroups.roomFilterFolders,
-        label: "",
-        withOptions: true,
-        options: [
-          { key: FilterKeys.withSubfolders, label: "With subfolders" },
-          { key: FilterKeys.excludeSubfolders, label: "Exclude subfolders" },
-        ],
-      },
-    ];
+    // const foldersOptions = [
+    //   {
+    //     key: FilterGroups.roomFilterFolders,
+    //     group: FilterGroups.roomFilterFolders,
+    //     label: "Search",
+    //     isHeader: true,
+    //     withoutSeparator: true,
+    //   },
+    //   {
+    //     key: "folders",
+    //     group: FilterGroups.roomFilterFolders,
+    //     label: "",
+    //     withOptions: true,
+    //     options: [
+    //       { key: FilterKeys.withSubfolders, label: "With subfolders" },
+    //       { key: FilterKeys.excludeSubfolders, label: "Exclude subfolders" },
+    //     ],
+    //   },
+    // ];
 
-    const contentOptions = [
-      {
-        key: FilterGroups.roomFilterContent,
-        group: FilterGroups.roomFilterContent,
-        isHeader: true,
-        withoutHeader: true,
-      },
-      {
-        key: FilterKeys.withContent,
-        group: FilterGroups.roomFilterContent,
-        label: "Search by file contents",
-        isCheckbox: true,
-      },
-    ];
+    // const contentOptions = [
+    //   {
+    //     key: FilterGroups.roomFilterContent,
+    //     group: FilterGroups.roomFilterContent,
+    //     isHeader: true,
+    //     withoutHeader: true,
+    //   },
+    //   {
+    //     key: FilterKeys.withContent,
+    //     group: FilterGroups.roomFilterContent,
+    //     label: "Search by file contents",
+    //     isCheckbox: true,
+    //   },
+    // ];
 
     const filterOptions = [];
 
     if (isRooms) {
-      filterOptions.push(...foldersOptions);
-      filterOptions.push(...contentOptions);
+      // filterOptions.push(...foldersOptions);
+      // filterOptions.push(...contentOptions);
 
       filterOptions.push(...ownerOptions);
 
@@ -621,10 +651,17 @@ const SectionFilterContent = ({
           isMultiSelect: true,
         }));
 
+        tagsOptions.push({
+          key: t("NoTag"),
+          group: FilterGroups.roomFilterTags,
+          label: t("NoTag"),
+          isMultiSelect: true,
+        });
+
         filterOptions.push({
           key: FilterGroups.roomFilterTags,
           group: FilterGroups.roomFilterTags,
-          label: "Tags",
+          label: t("Tags"),
           isHeader: true,
           isLast: true,
         });
@@ -696,9 +733,9 @@ const SectionFilterContent = ({
     const commonOptions = isRooms
       ? [
           { key: "AZ", label: "Name", default: true },
-          { key: "Type", label: t("Common:Type"), default: true },
-          { key: "Tags", label: "Tags", default: true },
-          { key: "Author", label: "Owner", default: true },
+          { key: "roomType", label: t("Common:Type"), default: true },
+          { key: "Tags", label: t("Tags"), default: true },
+          { key: "Author", label: t("Common:Owner"), default: true },
           { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
         ]
       : [
@@ -731,36 +768,40 @@ const SectionFilterContent = ({
         const newFilter = roomsFilter.clone();
 
         if (group === FilterGroups.roomFilterType) {
-          const newTypes = newFilter.types;
-
-          const idx = newTypes.findIndex((type) => type === key);
-
-          newTypes.splice(idx, 1);
-
-          newFilter.types = newTypes.length > 0 ? newTypes : null;
+          newFilter.type = null;
         }
 
         if (group === FilterGroups.roomFilterOwner) {
           newFilter.subjectId = null;
+          newFilter.withoutMe = false;
         }
 
         if (group === FilterGroups.roomFilterTags) {
           const newTags = newFilter.tags;
 
-          const idx = newTags.findIndex((tag) => tag === key);
+          if (newTags?.length > 0) {
+            const idx = newTags.findIndex((tag) => tag === key);
 
-          newTags.splice(idx, 1);
+            if (idx > -1) {
+              newTags.splice(idx, 1);
+            }
 
-          newFilter.tags = newTags.length > 0 ? newTags : null;
+            newFilter.tags = newTags.length > 0 ? newTags : null;
+
+            newFilter.withoutTags = false;
+          } else {
+            newFilter.tags = null;
+            newFilter.withoutTags = false;
+          }
         }
 
-        if (group === FilterGroups.roomFilterContent) {
-          newFilter.searchInContent = false;
-        }
+        // if (group === FilterGroups.roomFilterContent) {
+        //   newFilter.searchInContent = false;
+        // }
 
-        if (group === FilterGroups.roomFilterFolders) {
-          newFilter.withSubfolders = true;
-        }
+        // if (group === FilterGroups.roomFilterFolders) {
+        //   newFilter.withSubfolders = true;
+        // }
 
         newFilter.page = 0;
 
@@ -813,10 +854,9 @@ const SectionFilterContent = ({
       getViewSettingsData={getViewSettingsData}
       onSearch={onSearch}
       getSelectedInputValue={getSelectedInputValue}
-      filterHeader={t("Filter")}
+      filterHeader={t("AdvancedFilter")}
       placeholder={t("Common:Search")}
       view={t("Common:View")}
-      headerLabel={t("Translations:AddAuthor")}
       isFavoritesFolder={isFavoritesFolder}
       isRecentFolder={isRecentFolder}
       removeSelectedItem={removeSelectedItem}
@@ -835,6 +875,7 @@ export default inject(
       setViewAs,
       viewAs,
       createThumbnails,
+      setCurrentRoomsFilter,
     } = filesStore;
 
     const { fetchTags } = tagsStore;
@@ -875,6 +916,7 @@ export default inject(
 
       personal,
       infoPanelVisible,
+      setCurrentRoomsFilter,
     };
   }
 )(

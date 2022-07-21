@@ -7,14 +7,154 @@ class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, personal, tableStorageName, isRooms } = props;
+    // const defaultColumns = [];
+    // if (isRooms) {
+    //   const columns = [
+    //     {
+    //       key: "Name",
+    //       title: t("Common:Name"),
+    //       resizable: true,
+    //       enable: true,
+    //       default: true,
+    //       sortBy: "AZ",
+    //       minWidth: 210,
+    //       onClick: this.onRoomsFilter,
+    //     },
+    //     {
+    //       key: "Type",
+    //       title: t("Common:Type"),
+    //       enable: false,
+    //       resizable: true,
+    //       sortBy: "roomType",
+    //       onChange: this.onColumnChange,
+    //       onClick: this.onRoomsFilter,
+    //     },
+    //     {
+    //       key: "Tags",
+    //       title: t("Tags"),
+    //       enable: true,
+    //       resizable: true,
+    //       sortBy: "Tags",
+    //       onChange: this.onColumnChange,
+    //       onClick: this.onRoomsFilter,
+    //     },
+    //     {
+    //       key: "Owner",
+    //       title: t("ByOwner"),
+    //       enable: false,
+    //       resizable: true,
+    //       sortBy: "Author",
+    //       onChange: this.onColumnChange,
+    //       onClick: this.onRoomsFilter,
+    //     },
+    //     {
+    //       key: "Activity",
+    //       title: t("ByLastModifiedDate"),
+    //       enable: true,
+    //       resizable: true,
+    //       sortBy: "DateAndTime",
+    //       onChange: this.onColumnChange,
+    //       onClick: this.onRoomsFilter,
+    //     },
+    //   ];
+
+    //   defaultColumns.push(...columns);
+    // } else {
+    //   const columns = [
+    //     {
+    //       key: "Name",
+    //       title: t("Common:Name"),
+    //       resizable: true,
+    //       enable: true,
+    //       default: true,
+    //       sortBy: "AZ",
+    //       minWidth: 210,
+    //       onClick: this.onFilter,
+    //     },
+    //     {
+    //       key: "Author",
+    //       title: t("ByAuthor"),
+    //       enable: false,
+    //       resizable: true,
+    //       sortBy: "Author",
+    //       onClick: this.onFilter,
+    //       onChange: this.onColumnChange,
+    //     },
+    //     {
+    //       key: "Created",
+    //       title: t("ByCreationDate"),
+    //       enable: true,
+    //       resizable: true,
+    //       sortBy: "DateAndTimeCreation",
+    //       onClick: this.onFilter,
+    //       onChange: this.onColumnChange,
+    //     },
+    //     {
+    //       key: "Modified",
+    //       title: t("ByLastModifiedDate"),
+    //       enable: true,
+    //       resizable: true,
+    //       sortBy: "DateAndTime",
+    //       onClick: this.onFilter,
+    //       onChange: this.onColumnChange,
+    //     },
+    //     {
+    //       key: "Size",
+    //       title: t("Common:Size"),
+    //       enable: true,
+    //       resizable: true,
+    //       sortBy: "Size",
+    //       onClick: this.onFilter,
+    //       onChange: this.onColumnChange,
+    //     },
+    //     {
+    //       key: "Type",
+    //       title: t("Common:Type"),
+    //       enable: true,
+    //       resizable: true,
+    //       sortBy: "Type",
+    //       onClick: this.onFilter,
+    //       onChange: this.onColumnChange,
+    //     },
+    //     {
+    //       key: "QuickButtons",
+    //       title: "",
+    //       enable: true,
+    //       defaultSize: 75,
+    //       resizable: false,
+    //     },
+    //   ];
+
+    //   personal && columns.splice(1, 1);
+
+    //   defaultColumns.push(...columns);
+    // }
+
+    // const storageColumns = localStorage.getItem(tableStorageName);
+    // const splitColumns = storageColumns && storageColumns.split(",");
+    // const columns = this.getColumns(defaultColumns, splitColumns);
+    // const resetColumnsSize =
+    //   (splitColumns && splitColumns.length !== columns.length) ||
+    //   !splitColumns ||
+    //   isRooms;
+
+    // const tableColumns = columns.map((c) => c.enable && c.key);
+    // this.setTableColumns(tableColumns);
+
+    this.getTableColumns();
+
+    this.isBeginScrolling = false;
+  }
+
+  getTableColumns = (fromUpdate = false) => {
+    const { t, personal, tableStorageName, isRooms } = this.props;
 
     const defaultColumns = [];
     if (isRooms) {
       const columns = [
         {
           key: "Name",
-          title: "Name",
+          title: t("Common:Name"),
           resizable: true,
           enable: true,
           default: true,
@@ -24,16 +164,16 @@ class FilesTableHeader extends React.Component {
         },
         {
           key: "Type",
-          title: "Type",
+          title: t("Common:Type"),
           enable: false,
           resizable: true,
-          sortBy: "Type",
+          sortBy: "roomType",
           onChange: this.onColumnChange,
           onClick: this.onRoomsFilter,
         },
         {
           key: "Tags",
-          title: "Tags",
+          title: t("Tags"),
           enable: true,
           resizable: true,
           sortBy: "Tags",
@@ -42,7 +182,7 @@ class FilesTableHeader extends React.Component {
         },
         {
           key: "Owner",
-          title: "Owner",
+          title: t("ByOwner"),
           enable: false,
           resizable: true,
           sortBy: "Author",
@@ -51,7 +191,7 @@ class FilesTableHeader extends React.Component {
         },
         {
           key: "Activity",
-          title: "Last activity",
+          title: t("ByLastModifiedDate"),
           enable: true,
           resizable: true,
           sortBy: "DateAndTime",
@@ -136,20 +276,24 @@ class FilesTableHeader extends React.Component {
     const splitColumns = storageColumns && storageColumns.split(",");
     const columns = this.getColumns(defaultColumns, splitColumns);
     const resetColumnsSize =
-      (splitColumns && splitColumns.length !== columns.length) ||
-      !splitColumns ||
-      isRooms;
+      (splitColumns && splitColumns.length !== columns.length) || !splitColumns;
 
     const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
-
-    this.state = {
-      columns,
-      resetColumnsSize,
-    };
-
-    this.isBeginScrolling = false;
-  }
+    if (fromUpdate) {
+      this.setState({
+        columns: columns,
+        resetColumnsSize: resetColumnsSize,
+        isRooms: isRooms,
+      });
+    } else {
+      this.state = {
+        columns: columns,
+        resetColumnsSize: resetColumnsSize,
+        isRooms: isRooms,
+      };
+    }
+  };
 
   setTableColumns = (tableColumns) => {
     localStorage.setItem(this.props.tableStorageName, tableColumns);
@@ -185,6 +329,10 @@ class FilesTableHeader extends React.Component {
     this.isBeginScrolling = true;
   };
   componentDidUpdate(prevProps) {
+    if (this.props.isRooms !== this.state.isRooms) {
+      return this.getTableColumns(true);
+    }
+
     const { columns } = this.state;
     if (this.props.withContent !== prevProps.withContent) {
       const columnIndex = columns.findIndex((c) => c.key === "Share");
@@ -282,7 +430,11 @@ class FilesTableHeader extends React.Component {
       sortingVisible,
       infoPanelVisible,
       columnStorageName,
+      filesColumnStorageName,
+      roomsColumnStorageName,
       columnInfoPanelStorageName,
+      filesColumnInfoPanelStorageName,
+      roomsColumnInfoPanelStorageName,
     } = this.props;
 
     // const { sortBy, sortOrder } = filter;
@@ -290,6 +442,23 @@ class FilesTableHeader extends React.Component {
 
     const sortBy = isRooms ? roomsFilter.sortBy : filter.sortBy;
     const sortOrder = isRooms ? roomsFilter.sortOrder : filter.sortOrder;
+
+    // TODO: make some better
+    let needReset = false;
+    let currentColumnStorageName = columnStorageName;
+    let currentColumnInfoPanelStorageName = columnInfoPanelStorageName;
+
+    if (columns.length === 5 && columnStorageName === filesColumnStorageName) {
+      currentColumnStorageName = roomsColumnStorageName;
+      currentColumnInfoPanelStorageName = roomsColumnInfoPanelStorageName;
+      needReset = true;
+    }
+
+    if (columns.length === 7 && columnStorageName === roomsColumnStorageName) {
+      currentColumnStorageName = filesColumnStorageName;
+      currentColumnInfoPanelStorageName = filesColumnInfoPanelStorageName;
+      needReset = true;
+    }
 
     return (
       <TableHeader
@@ -299,10 +468,10 @@ class FilesTableHeader extends React.Component {
         sortBy={sortBy}
         containerRef={containerRef}
         columns={columns}
-        columnStorageName={columnStorageName}
-        columnInfoPanelStorageName={columnInfoPanelStorageName}
+        columnStorageName={currentColumnStorageName}
+        columnInfoPanelStorageName={currentColumnInfoPanelStorageName}
         sectionWidth={sectionWidth}
-        resetColumnsSize={resetColumnsSize}
+        resetColumnsSize={resetColumnsSize || needReset}
         sortingVisible={sortingVisible}
         infoPanelVisible={infoPanelVisible}
       />

@@ -49,8 +49,9 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         CrossDao crossDao,
         SharpBoxDaoSelector sharpBoxDaoSelector,
         IFileDao<int> fileDao,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _tempStream = tempStream;
         _crossDao = crossDao;
