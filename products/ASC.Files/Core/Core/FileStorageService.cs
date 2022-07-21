@@ -424,11 +424,11 @@ public class FileStorageService<T> //: IFileStorageService
         return InternalCreateNewFolderAsync(parentId, title);
     }
 
-    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool privacy, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
-        if (privacy && (share == null || !share.Any()))
+        if (@private && (share == null || !share.Any()))
         {
             throw new ArgumentNullException(nameof(share));
         }
@@ -437,50 +437,23 @@ public class FileStorageService<T> //: IFileStorageService
 
         var room =  roomType switch
         {
-            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, privacy),
-            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, privacy),
-            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, privacy),
-            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId, privacy),
-            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, privacy),
-            _ => await CreateCustomRoomAsync(title, parentId, privacy),
+            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, @private),
+            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, @private),
+            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, @private),
+            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId, @private),
+            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, @private),
+            _ => await CreateCustomRoomAsync(title, parentId, @private),
         };
 
-        if (privacy)
+        if (@private)
         {
-            var list = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject));
-            
-            var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
-            var onlyFilesAdmins = _userManager.GetUsersByGroup(WebItemManager.DocumentsProductID);
-
-            var userInfos = admins.Union(onlyFilesAdmins).ToList();
-
-            list.AddRange(admins.Select(admin => new AceWrapper
-            {
-                Share = FileShare.ReadWrite, 
-                SubjectId = admin.Id
-            }));
-
-            var advancedSettings = new AceAdvancedSettingsWrapper
-            {
-                AllowSharingPrivateRoom = true
-            };
-            
-            var aceCollection = new AceCollection<T>
-            {
-                Folders = new[] { room.Id },
-                Files = Array.Empty<T>(),
-                Aces = list,
-                Message = sharingMessage,
-                AdvancedSettings = advancedSettings
-            };
-            
-            await SetAceObjectAsync(aceCollection, notify);
+            await SetAcesForPrivateRoomAsync(room, share, notify, sharingMessage);
         }
 
         return room;
     }
 
-    public async Task<Folder<T>> CreateThirdPartyRoomAsync(string title, RoomType roomType, T parentId, bool privacy)
+    public async Task<Folder<T>> CreateThirdPartyRoomAsync(string title, RoomType roomType, T parentId, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
         ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
@@ -503,25 +476,20 @@ public class FileStorageService<T> //: IFileStorageService
 
         var room = roomType switch
         {
-            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, privacy),
-            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, privacy),
-            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, privacy),
-            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId, privacy),
-            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, privacy),
-            _ => await CreateCustomRoomAsync(title, parentId, privacy),
+            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, @private),
+            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, @private),
+            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, @private),
+            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId, @private),
+            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, @private),
+            _ => await CreateCustomRoomAsync(title, parentId, @private),
         };
 
-        var folderType = roomType switch
+        if (@private)
         {
-            RoomType.CustomRoom => FolderType.CustomRoom,
-            RoomType.ReviewRoom => FolderType.ReviewRoom,
-            RoomType.EditingRoom => FolderType.EditingRoom,
-            RoomType.FillingFormsRoom => FolderType.FillingFormsRoom,
-            RoomType.ReadOnlyRoom => FolderType.ReadOnlyRoom,
-            _ => FolderType.CustomRoom
-        };
+            await SetAcesForPrivateRoomAsync(room, share, notify, sharingMessage);
+        }
 
-        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, room.Id.ToString(), folderType);
+        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, room.Id.ToString(), room.FolderType, @private);
 
         return room;
     }
@@ -3065,6 +3033,38 @@ public class FileStorageService<T> //: IFileStorageService
             default:
                 return string.Empty;
         }
+    }
+
+    private async Task SetAcesForPrivateRoomAsync(Folder<T> room, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    {
+        var list = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject));
+
+        var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
+        var onlyFilesAdmins = _userManager.GetUsersByGroup(WebItemManager.DocumentsProductID);
+
+        var userInfos = admins.Union(onlyFilesAdmins).ToList();
+
+        list.AddRange(admins.Select(admin => new AceWrapper
+        {
+            Share = FileShare.ReadWrite,
+            SubjectId = admin.Id
+        }));
+
+        var advancedSettings = new AceAdvancedSettingsWrapper
+        {
+            AllowSharingPrivateRoom = true
+        };
+
+        var aceCollection = new AceCollection<T>
+        {
+            Folders = new[] { room.Id },
+            Files = Array.Empty<T>(),
+            Aces = list,
+            Message = sharingMessage,
+            AdvancedSettings = advancedSettings
+        };
+
+        await SetAceObjectAsync(aceCollection, notify);
     }
 }
 

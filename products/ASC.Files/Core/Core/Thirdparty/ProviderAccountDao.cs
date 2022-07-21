@@ -224,7 +224,7 @@ internal class ProviderAccountDao : IProviderDao
         return true;
     }
 
-    public async Task<bool> UpdateProviderInfoAsync(int linkId, string folderId, FolderType folderType)
+    public async Task<bool> UpdateProviderInfoAsync(int linkId, string folderId, FolderType folderType, bool @private)
     {
         var forUpdate = await FilesDbContext.ThirdpartyAccount
             .Where(r => r.Id == linkId)
@@ -238,6 +238,7 @@ internal class ProviderAccountDao : IProviderDao
 
         forUpdate.RoomType = folderType;
         forUpdate.FolderId = folderId;
+        forUpdate.Private = @private;
 
         await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 

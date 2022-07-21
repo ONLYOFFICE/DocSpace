@@ -189,7 +189,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             {
                                 if (folder.ProviderEntry)
                                 {
-                                    await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT);
+                                    await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT, false);
                                 }
                                 
                                 filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
