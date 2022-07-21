@@ -898,15 +898,9 @@
   <COMPONENT cid="caphyon.advinst.msicomp.SqlReplaceComponent">
     <ROW ScriptName="docspace_upgrade1" Token="DELIMITER DLM00" Flags="0"/>
     <ROW ScriptName="docspace_upgrade1" Token="DELIMITER ;" Flags="0"/>
-    <ROW ScriptName="app" Token="DELIMITER ;" Flags="0"/>
-    <ROW ScriptName="app" Token="DELIMITER DLM00" Flags="0"/>
-    <ROW ScriptName="app.data" Token="DELIMITER ;" Flags="0"/>
-    <ROW ScriptName="app.data" Token="DELIMITER DLM00" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
-    <ROW ScriptName="app" ConnectionName="MySql.Connection" Condition="OLDPRODUCTS = &quot;&quot;" Separator=";" ScriptText="..\..\..\sql\app.sql" Flags="18" Order="0"/>
-    <ROW ScriptName="app.data" ConnectionName="MySql.Connection" Condition="OLDPRODUCTS = &quot;&quot;" Separator="DLM00" ScriptText="..\..\..\sql\app.data.sql" Flags="18" Order="1"/>
-    <ROW ScriptName="docspace_upgrade1" ConnectionName="MySql.Connection" Condition="OLDPRODUCTS &lt;&gt; &quot;&quot;" Separator="DLM00" ScriptText="..\..\..\sql\docspace_upgrade1.sql" Flags="18" Order="2"/>
+    <ROW ScriptName="docspace_upgrade1" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\sql\docspace_upgrade1.sql" Flags="18" Order="0"/>
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
