@@ -28,6 +28,7 @@ import { useThemeDetector } from "./helpers/utils";
 import { isMobileOnly } from "react-device-detect";
 import AboutDialog from "./components/pages/About/AboutDialog";
 import DebugInfoDialog from "./components/pages/DebugInfo";
+import IndicatorLoader from "./components/IndicatorLoader";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -529,6 +530,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       <Router history={history}>
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}
+        <IndicatorLoader />
         <ScrollToTop />
         <AboutDialog
           t={t}

@@ -52,19 +52,6 @@ const StyledContainer = styled.header`
 
           width: 100%;
         `}
-
-  #ipl-progress-indicator {
-    position: fixed;
-    z-index: 390;
-    top: ${(props) => (props.isDesktop ? "0" : "48px")};
-    left: -6px;
-    width: 0%;
-    height: 3px;
-    background-color: #eb835f;
-    -moz-border-radius: 1px;
-    -webkit-border-radius: 1px;
-    border-radius: 1px;
-  }
 `;
 
 StyledContainer.defaultProps = { theme: Base };
@@ -204,7 +191,6 @@ class NavMenu extends React.Component {
               </Aside>
             )}
             {preparationPortalDialogVisible && <PreparationPortalDialog />}
-            <div id="ipl-progress-indicator"></div>
           </StyledContainer>
         )}
       </LayoutContextConsumer>
