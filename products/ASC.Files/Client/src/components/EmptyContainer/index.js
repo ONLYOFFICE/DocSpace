@@ -15,13 +15,7 @@ const linkStyles = {
   display: "flex",
 };
 
-const EmptyContainer = ({
-  isFiltered,
-  isPrivacyFolder,
-  parentId,
-  isEncryptionSupport,
-  theme,
-}) => {
+const EmptyContainer = ({ isFiltered, parentId, theme }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
   const onCreate = (e) => {
@@ -38,10 +32,20 @@ const EmptyContainer = ({
     window.dispatchEvent(event);
   };
 
+  const onCreateRoom = React.useCallback(() => {
+    const event = new Event(Events.ROOM_CREATE);
+
+    window.dispatchEvent(event);
+  }, []);
+
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
   ) : parentId === 0 ? (
-    <RootFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
+    <RootFolderContainer
+      onCreate={onCreate}
+      linkStyles={linkStyles}
+      onCreateRoom={onCreateRoom}
+    />
   ) : (
     <EmptyFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
   );
@@ -55,16 +59,16 @@ export default inject(
       withSubfolders,
       filterType,
     } = filesStore.filter;
-    const isPrivacyFolder = treeFoldersStore.isPrivacyFolder;
+    const { isPrivacyFolder } = treeFoldersStore;
+
     const isFiltered =
       (authorType || search || !withSubfolders || filterType) &&
       !(isPrivacyFolder && isMobile);
 
     return {
-      isEncryptionSupport: auth.settingsStore.isEncryptionSupport,
       theme: auth.settingsStore.theme,
       isFiltered,
-      isPrivacyFolder,
+
       parentId: selectedFolderStore.parentId,
     };
   }

@@ -104,6 +104,7 @@ module.exports = {
   "react-device-detect": {
     singleton: true,
     requiredVersion: compDeps["react-device-detect"],
+    // eager: true,
   },
   "react-dropzone": {
     singleton: true,

@@ -19,6 +19,8 @@ class SelectedFolderStore {
   pathParts = null;
   navigationPath = null;
   providerItem = null;
+  roomType = null;
+  pinned = null;
 
   settingsStore = null;
 
@@ -50,6 +52,8 @@ class SelectedFolderStore {
     this.pathParts = null;
     this.navigationPath = null;
     this.providerItem = null;
+    this.roomType = null;
+    this.pinned = null;
   };
 
   setParentId = (parentId) => {
@@ -74,6 +78,8 @@ class SelectedFolderStore {
       this.toDefault();
     } else {
       const selectedFolderItems = Object.keys(selectedFolder);
+
+      if (!selectedFolderItems.includes("roomType")) this.roomType = null;
 
       for (let key of selectedFolderItems) {
         if (key in this) {
