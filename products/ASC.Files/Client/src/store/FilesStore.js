@@ -1563,6 +1563,7 @@ class FilesStore {
   updateRoomPin = (item) => {
     const idx = this.folders.findIndex((folder) => folder.id === item);
 
+    if (idx === -1) return;
     this.folders[idx].pinned = !this.folders[idx].pinned;
   };
 
