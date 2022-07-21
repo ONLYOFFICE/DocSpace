@@ -780,20 +780,23 @@ class ContextOptionsStore {
             disabled: false,
           };
 
-      const options = [
-        pinOption,
-        {
+      const options = [];
+
+      if (!isArchiveFolder) {
+        options.push(pinOption);
+        options.push({
           key: "separator0",
           isSeparator: true,
-        },
-        archiveOptions,
-        {
-          key: "delete-rooms",
-          label: t("Common:Delete"),
-          icon: "images/trash.react.svg",
-          onClick: deleteRooms,
-        },
-      ];
+        });
+      }
+
+      options.push(archiveOptions);
+      options.push({
+        key: "delete-rooms",
+        label: t("Common:Delete"),
+        icon: "images/trash.react.svg",
+        onClick: deleteRooms,
+      });
 
       return options;
     }

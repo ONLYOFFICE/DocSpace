@@ -1374,21 +1374,10 @@ class FilesActionStore {
   };
 
   getArchiveRoomsFolderOptions = (itemsCollection, t) => {
-    let pinName = "unpin";
-    const { selection } = this.filesStore;
-
-    selection.forEach((item) => {
-      if (!item.pinned) pinName = "pin";
-    });
-
-    const pin = this.getOption(pinName, t);
     const archive = this.getOption("unarchive", t);
     const deleteOption = this.getOption("delete-room", t);
 
-    itemsCollection
-      .set(pinName, pin)
-      .set("unarchive", archive)
-      .set("delete", deleteOption);
+    itemsCollection.set("unarchive", archive).set("delete", deleteOption);
     return this.convertToArray(itemsCollection);
   };
 
