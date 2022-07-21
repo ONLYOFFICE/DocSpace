@@ -45,8 +45,9 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         CrossDao crossDao,
         OneDriveDaoSelector oneDriveDaoSelector,
         IFileDao<int> fileDao,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _crossDao = crossDao;
         _oneDriveDaoSelector = oneDriveDaoSelector;

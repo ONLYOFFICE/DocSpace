@@ -38,8 +38,9 @@ internal class SharePointTagDao : SharePointDaoBase, ITagDao<string>
         SetupInfo setupInfo,
         ILogger<SharePointTagDao> monitor,
         FileUtility fileUtility,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
     }
 }
