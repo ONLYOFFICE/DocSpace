@@ -900,7 +900,7 @@
     <ROW ScriptName="docspace_upgrade1" Token="DELIMITER ;" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
-    <ROW ScriptName="docspace_upgrade1" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\sql\docspace_upgrade1.sql" Flags="18" Order="0"/>
+    <ROW ScriptName="docspace_upgrade1" ConnectionName="MySql.Connection" Condition="OLDPRODUCTS &lt;&gt; &quot;&quot;" Separator="DLM00" ScriptText="..\..\..\sql\docspace_upgrade1.sql" Flags="18" Order="0"/>
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
