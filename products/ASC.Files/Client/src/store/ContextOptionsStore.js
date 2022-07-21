@@ -791,12 +791,15 @@ class ContextOptionsStore {
       }
 
       options.push(archiveOptions);
-      options.push({
-        key: "delete-rooms",
-        label: t("Common:Delete"),
-        icon: "images/trash.react.svg",
-        onClick: deleteRooms,
-      });
+
+      if (isArchiveFolder) {
+        options.push({
+          key: "delete-rooms",
+          label: t("Common:Delete"),
+          icon: "images/trash.react.svg",
+          onClick: deleteRooms,
+        });
+      }
 
       return options;
     }
