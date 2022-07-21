@@ -300,6 +300,19 @@ const StyledArticleProfile = styled.div`
 
   .option-button {
     margin-left: auto;
+
+    .injected-svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .option-button-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+    }
   }
 `;
 

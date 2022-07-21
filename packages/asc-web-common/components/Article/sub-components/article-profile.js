@@ -61,6 +61,7 @@ const ArticleProfile = (props) => {
           </Text>
           <ContextMenuButton
             className="option-button"
+            iconClassName="option-button-icon"
             zIndex={402}
             directionX="left"
             directionY="top"
