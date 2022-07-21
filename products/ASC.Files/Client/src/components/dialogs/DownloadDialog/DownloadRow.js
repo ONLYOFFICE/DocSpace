@@ -4,6 +4,8 @@ import { ReactSVG } from "react-svg";
 import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
+import DropDownItem from "@appserver/components/drop-down-item";
+import GroupButton from "@appserver/components/group-button";
 
 const DownloadRow = (props) => {
   const {
@@ -42,55 +44,61 @@ const DownloadRow = (props) => {
   const element = getItemIcon(file);
 
   return (
-    <div className="download-dialog_row">
-      <Checkbox
-        className="download-dialog-checkbox"
-        data-item-id={file.id}
-        data-type={type}
-        onChange={onRowSelect}
-        isChecked={isChecked}
-      />
-      {element}
-      <Text
-        className="download-dialog_row-text"
-        truncate
-        type="page"
-        title={file.title}
-        fontSize="14px"
-        fontWeight={600}
-        noSelect
-      >
-        {file.title}
-      </Text>
-      {file.checked && !isOther && (
-        <LinkWithDropdown
-          className="download-dialog-link"
-          isOpen={dropDownIsOpen}
-          dropdownType="alwaysDashed"
-          containerMinWidth="fit-content"
-          data={dropdownItems}
-          directionX="left"
-          directionY="bottom"
-          fontSize="13px"
-          fontWeight={600}
-          hasScroll={true}
-        >
-          {file.format || t("OriginalFormat")}
-        </LinkWithDropdown>
-      )}
-      {isOther && file.fileExst && (
+    <div className="download-dialog-row">
+      <div className="download-dialog-main-content">
+        <Checkbox
+          className="download-dialog-checkbox"
+          data-item-id={file.id}
+          data-type={type}
+          onChange={onRowSelect}
+          isChecked={isChecked}
+        />
+        <div className="download-dialog-icon-contatiner">{element}</div>
         <Text
-          className="download-dialog-other-text"
+          className="download-dialog-title"
           truncate
           type="page"
           title={file.title}
-          fontSize="13px"
+          fontSize="14px"
           fontWeight={600}
           noSelect
         >
-          {t("OriginalFormat")}
+          {file.title}
         </Text>
-      )}
+      </div>
+
+      <div className="download-dialog-actions">
+        {file.checked && !isOther && (
+          <LinkWithDropdown
+            className="download-dialog-link"
+            isOpen={dropDownIsOpen}
+            dropdownType="alwaysDashed"
+            containerMinWidth="fit-content"
+            data={dropdownItems}
+            directionX="left"
+            directionY="bottom"
+            fontSize="13px"
+            fontWeight={600}
+            hasScroll={true}
+            withExpander
+          >
+            {file.format || t("OriginalFormat")}
+          </LinkWithDropdown>
+        )}
+        {isOther && file.fileExst && (
+          <Text
+            className="download-dialog-other-text"
+            truncate
+            type="page"
+            title={file.title}
+            fontSize="13px"
+            fontWeight={600}
+            noSelect
+          >
+            {t("OriginalFormat")}
+          </Text>
+        )}
+      </div>
     </div>
   );
 };

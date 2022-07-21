@@ -1,27 +1,31 @@
 import { Base } from "@appserver/components/themes";
 import styled from "styled-components";
+import { mobile } from "@appserver/components/utils/device";
 
 const StyledDialogLoader = styled.div`
+  height: auto;
+  width: ${(props) => (props.isLarge ? "520px" : "400px")};
+  @media ${mobile} {
+    width: 100%;
+  }
+
   .dialog-loader-header {
-    border-bottom: ${(props) => props.theme.dialogLoader.borderBottom};
-    display: flex;
-    padding: 12px 0;
+    border-bottom: ${(props) =>
+      `1px solid ${props.theme.modalDialog.headerBorderColor}`};
+    padding: 12px 16px;
   }
 
   .dialog-loader-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 12px;
+    padding: 12px 16px 8px;
   }
 
   .dialog-loader-footer {
+    ${(props) =>
+      props.withFooterBorder &&
+      `border-top: 1px solid ${props.theme.modalDialog.headerBorderColor}`};
     display: flex;
-    padding-top: 12px;
-  }
-
-  .dialog-loader-icon {
-    margin-left: auto;
+    gap: 10px;
+    padding: 16px;
   }
 `;
 

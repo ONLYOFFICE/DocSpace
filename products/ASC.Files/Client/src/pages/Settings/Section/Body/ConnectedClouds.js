@@ -90,9 +90,10 @@ class ConnectClouds extends React.Component {
 
   onDeleteThirdParty = (e) => {
     const { dataset } = (e.originalEvent || e).currentTarget;
-    const { id, title } = dataset;
+    const { id, title, providerKey } = dataset;
+    console.log(dataset);
     this.props.setDeleteThirdPartyDialogVisible(true);
-    this.props.setRemoveItem({ id, title });
+    this.props.setRemoveItem({ id, title, providerKey });
   };
 
   onChangeThirdPartyInfo = (e) => {
@@ -183,6 +184,7 @@ class ConnectClouds extends React.Component {
         key: `${index}_delete`,
         "data-id": item.provider_id,
         "data-title": item.customer_title,
+        "data-provider-key": item.provider_key,
         icon: "/static/images/catalog.trash.react.svg",
         label: t("Common:Disconnect"),
         onClick: this.onDeleteThirdParty,

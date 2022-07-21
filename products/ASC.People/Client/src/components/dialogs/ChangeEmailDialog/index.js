@@ -131,6 +131,7 @@ class ChangeEmailDialogComponent extends React.Component {
             <Text className="text-body">{t("EmailActivationDescription")}</Text>
             <FieldContainer
               isVertical
+              style={{ margin: "0" }}
               //labelText={t("EnterEmail")}
               errorMessage={errorMessage}
               hasError={hasError}
@@ -154,9 +155,18 @@ class ChangeEmailDialogComponent extends React.Component {
           <Button
             key="SendBtn"
             label={t("Common:SendButton")}
-            size="small"
+            size="normal"
+            scale
             primary={true}
             onClick={this.onValidateEmail}
+            isLoading={isRequestRunning}
+          />
+          <Button
+            key="CloseBtn"
+            label={t("Common:CancelButton")}
+            size="normal"
+            scale
+            onClick={onClose}
             isLoading={isRequestRunning}
           />
         </ModalDialog.Footer>
