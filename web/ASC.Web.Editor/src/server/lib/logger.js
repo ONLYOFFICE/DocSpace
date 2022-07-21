@@ -3,8 +3,18 @@ import "winston-daily-rotate-file";
 import path from "path";
 import fs from "fs";
 
-const fileName = IS_DEVELOPMENT
+let logpath = process.env.logpath || null;
+
+if (logpath != null) {
+  if (!path.isAbsolute(logpath)) {
+    logpath = path.join(__dirname, "..", logpath);
+  }
+}
+
+const fileName = !IS_DEVELOPMENT
   ? path.join(__dirname, "..", "..", "..", "Logs", "editor.%DATE%.log")
+  : logpath
+  ? path.join(logpath, "editor.%DATE%.log")
   : path.join(
       __dirname,
       "..",
