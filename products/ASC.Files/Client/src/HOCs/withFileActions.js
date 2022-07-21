@@ -73,6 +73,7 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         isPrivacy,
         isTrashFolder,
+        isArchiveFolder,
         item,
         setBufferSelection,
         isActive,
@@ -87,6 +88,7 @@ export default function withFileActions(WrappedFileItem) {
       if (
         isPrivacy ||
         isTrashFolder ||
+        isArchiveFolder ||
         (!draggable && !isFileName && !isActive) ||
         window.innerWidth < 1025 ||
         notSelectable ||
