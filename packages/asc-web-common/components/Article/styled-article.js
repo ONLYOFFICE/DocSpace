@@ -253,7 +253,6 @@ const StyledArticleProfile = styled.div`
   padding: 16px 0;
   display: flex;
   align-items: center;
-  flex-flow: row wrap;
   gap: 16px;
   width: ${(props) =>
     !props.tablet
@@ -294,7 +293,7 @@ const StyledArticleProfile = styled.div`
   background-color: ${(props) => props.theme.catalog.profile.background};
 
   .userName {
-    max-width: 109px;
+    max-width: 120px;
     white-space: normal;
   }
 
@@ -308,10 +307,10 @@ const StyledArticleProfile = styled.div`
 
     .option-button-icon {
       display: flex;
-      align-items: center;
+      align-items: center;1
       justify-content: center;
-      width: 30px;
-      height: 30px;
+      width: 24px;
+      height: 24px;
     }
   }
 `;
