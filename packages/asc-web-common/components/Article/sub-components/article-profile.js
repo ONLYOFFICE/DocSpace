@@ -56,7 +56,7 @@ const ArticleProfile = (props) => {
       </div>
       {(!tablet || showText) && (
         <>
-          <Text className="userName" fontWeight={600} noSelect>
+          <Text className="userName" fontWeight={600} noSelect truncate>
             {user.displayName}
           </Text>
           <ContextMenuButton
