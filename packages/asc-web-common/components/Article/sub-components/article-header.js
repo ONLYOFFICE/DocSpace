@@ -44,6 +44,7 @@ const ArticleHeader = ({
     if (showText && isTabletView) onClick();
   };
 
+  if (isMobileOnly) return <></>;
   return (
     <StyledArticleHeader showText={showText} {...rest}>
       {isTabletView && (isBurgerLoading || showLoader) ? (
