@@ -245,7 +245,7 @@ public class FileSharingAceHelper<T>
 
     private async Task<List<AceWrapper>> FilterForRoomsAsync(FileEntry<T> entry, List<AceWrapper> aceWrappers, bool invite)
     {
-        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || invite)
+        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || invite || entry is Folder<T> { Private : true })
         {
             return aceWrappers;
         }
