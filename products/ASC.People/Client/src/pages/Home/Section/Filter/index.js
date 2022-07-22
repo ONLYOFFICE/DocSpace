@@ -109,7 +109,7 @@ const SectionFilterContent = ({
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
-  const getData = () => {
+  const getData = async () => {
     const { guestCaption, userCaption, groupCaption } = customNames;
 
     const options = !isAdmin
@@ -197,32 +197,63 @@ const SectionFilterContent = ({
     ];
   };
 
-  const getSelectedFilterData = () => {
-    const selectedFilterData = {
-      filterValues: [],
+  const getSelectedInputValue = React.useCallback(() => {
+    return filter.search;
+  }, [filter.search]);
+
+  const getSelectedSortData = React.useCallback(() => {
+    return {
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
       sortId: filter.sortBy,
     };
+  }, [filter.sortOrder, filter.sortBy]);
 
-    selectedFilterData.inputValue = filter.search;
+  const getSelectedFilterData = async () => {
+    const { guestCaption, userCaption, groupCaption } = customNames;
+    const filterValues = [];
 
     if (filter.employeeStatus) {
-      selectedFilterData.filterValues.push({
+      filterValues.push({
         key: `${filter.employeeStatus}`,
+        label:
+          `${filter.employeeStatus}` === "1"
+            ? t("Common:Active")
+            : t("Translations:DisabledEmployeeStatus"),
         group: "filter-status",
       });
     }
 
     if (filter.activationStatus) {
-      selectedFilterData.filterValues.push({
+      filterValues.push({
         key: `${filter.activationStatus}`,
+        label:
+          `${filter.activationStatus}` === "1"
+            ? t("Common:Active")
+            : t("Translations:PendingTitle"),
         group: "filter-email",
       });
     }
 
     if (filter.role) {
-      selectedFilterData.filterValues.push({
+      let label = null;
+
+      switch (filter.role) {
+        case "admin":
+          label = t("Administrator");
+          break;
+        case "user":
+          label = userCaption;
+          break;
+        case "guest":
+          label = guestCaption;
+          break;
+        default:
+          label = "";
+      }
+
+      filterValues.push({
         key: filter.role,
+        label: label,
         group: "filter-type",
       });
     }
@@ -231,7 +262,7 @@ const SectionFilterContent = ({
       const group = groups.find((group) => group.id === filter.group);
 
       if (group) {
-        selectedFilterData.filterValues.push({
+        filterValues.push({
           key: filter.group,
           label: group.name,
           group: "filter-other",
@@ -239,23 +270,51 @@ const SectionFilterContent = ({
       }
     }
 
-    return selectedFilterData;
+    return filterValues;
+  };
+
+  const removeSelectedItem = ({ key, group }) => {
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+
+    if (group === "filter-status") {
+      newFilter.employeeStatus = null;
+    }
+
+    if (group === "filter-type") {
+      newFilter.role = null;
+    }
+
+    if (group === "filter-email") {
+      newFilter.activationStatus = null;
+    }
+
+    if (group === "filter-other") {
+      newFilter.group = null;
+    }
+
+    setIsLoading(true);
+    fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
   return isLoaded && tReady ? (
     <FilterInput
-      sectionWidth={sectionWidth}
-      getFilterData={getData}
-      getSortData={getSortData}
-      getSelectedFilterData={getSelectedFilterData}
+      t={t}
       onFilter={onFilter}
+      getFilterData={getData}
+      getSelectedFilterData={getSelectedFilterData}
       onSort={onSort}
+      getSortData={getSortData}
+      getSelectedSortData={getSelectedSortData}
       onSearch={onSearch}
+      getSelectedInputValue={getSelectedInputValue}
+      filterHeader={t("Common:Filter")}
       contextMenuHeader={t("Common:AddFilter")}
       placeholder={t("Common:Search")}
       isMobile={isMobileOnly}
       viewAs={viewAs}
       viewSelectorVisible={false}
+      removeSelectedItem={removeSelectedItem}
     />
   ) : (
     <Loaders.Filter />

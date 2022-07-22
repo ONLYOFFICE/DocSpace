@@ -159,7 +159,9 @@ const StyledDropDownItem = styled(DropDownItem)`
 const StyledButtonOptions = styled.div`
   padding: 16px 0;
   background-color: ${(props) =>
-    props.theme.mainButtonMobile.buttonOptions.backgroundColor};
+    props.withoutButton
+      ? props.theme.mainButtonMobile.buttonWrapper.background
+      : props.theme.mainButtonMobile.buttonOptions.backgroundColor};
   color: ${(props) => props.theme.mainButtonMobile.buttonOptions.color};
 `;
 

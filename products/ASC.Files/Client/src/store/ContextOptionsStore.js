@@ -4,7 +4,11 @@ import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "../../package.json";
 import toastr from "studio/toastr";
-import { FileAction, AppServerConfig } from "@appserver/common/constants";
+import {
+  FileAction,
+  AppServerConfig,
+  FolderType,
+} from "@appserver/common/constants";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,
@@ -269,7 +273,7 @@ class ContextOptionsStore {
       setDeleteThirdPartyDialogVisible,
     } = this.dialogsStore;
 
-    const { id, title, providerKey, rootFolderId, isFolder } = item;
+    const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
 
     const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
@@ -284,13 +288,15 @@ class ContextOptionsStore {
       deleteOperation: t("Translations:DeleteOperation"),
       successRemoveFile: t("FileRemoved"),
       successRemoveFolder: t("FolderRemoved"),
+      successRemoveRoom: "Remove room",
     };
 
     this.filesActionsStore.deleteItemAction(
       id,
       translations,
       !isFolder,
-      providerKey
+      providerKey,
+      isRoom
     );
   };
 
@@ -337,6 +343,30 @@ class ContextOptionsStore {
   onShowInfoPanel = () => {
     const { setIsVisible } = this.authStore.infoPanelStore;
     setIsVisible(true);
+  };
+
+  onClickEditRoom = () => {
+    console.log("edit room");
+  };
+
+  onClickInviteUsers = () => {
+    console.log("invite users");
+  };
+
+  onClickPin = (e, id, t) => {
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
+    this.filesActionsStore.setPinAction(action, id);
+  };
+
+  onClickArchive = (e, id, t) => {
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
+    this.filesActionsStore
+      .setArchiveAction(action, id)
+      .catch((err) => toastr.error(err));
   };
 
   getFilesContextOptions = (item, t) => {
@@ -502,6 +532,45 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        key: "edit-room",
+        label: "Edit room",
+        icon: "images/settings.react.svg",
+        onClick: () => this.onClickEditRoom(),
+        disabled: false,
+      },
+      {
+        key: "invite-users-to-room",
+        label: "Invite users",
+        icon: "/static/images/person.react.svg",
+        onClick: () => this.onClickInviteUsers(),
+        disabled: false,
+      },
+      {
+        key: "room-info",
+        label: "Info",
+        icon: "/static/images/info.react.svg",
+        onClick: this.onShowInfoPanel,
+        disabled: false,
+      },
+      {
+        key: "pin-room",
+        label: t("Pin"),
+        icon: "/static/images/pin.react.svg",
+        onClick: (e) => this.onClickPin(e, item.id, t),
+        disabled: false,
+        "data-action": "pin",
+        action: "pin",
+      },
+      {
+        key: "unpin-room",
+        label: t("Unpin"),
+        icon: "/static/images/unpin.react.svg",
+        onClick: (e) => this.onClickPin(e, item.id, t),
+        disabled: false,
+        "data-action": "unpin",
+        action: "unpin",
+      },
+      {
         key: "separator0",
         isSeparator: true,
       },
@@ -625,6 +694,24 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        key: "archive-room",
+        label: t("ToArchive"),
+        icon: "/static/images/room.archive.svg",
+        onClick: (e) => this.onClickArchive(e, item.id, t),
+        disabled: false,
+        "data-action": "archive",
+        action: "archive",
+      },
+      {
+        key: "unarchive-room",
+        label: t("FromArchive"),
+        icon: "/static/images/room.archive.svg",
+        onClick: (e) => this.onClickArchive(e, item.id, t),
+        disabled: false,
+        "data-action": "unarchive",
+        action: "unarchive",
+      },
+      {
         key: "delete",
         label: isRootThirdPartyFolder
           ? t("Common:Disconnect")
@@ -644,7 +731,78 @@ class ContextOptionsStore {
     const { personal } = this.authStore.settingsStore;
     const { selection } = this.filesStore;
     const { setDeleteDialogVisible } = this.dialogsStore;
-    const { isRecycleBinFolder } = this.treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = this.treeFoldersStore;
+
+    const {
+      pinRooms,
+      unpinRooms,
+      moveRoomsToArchive,
+      moveRoomsFromArchive,
+      deleteRooms,
+    } = this.filesActionsStore;
+
+    if (isRoomsFolder || isArchiveFolder) {
+      const isPinOption = selection.filter((item) => !item.pinned).length > 0;
+
+      const pinOption = isPinOption
+        ? {
+            key: "pin-room",
+            label: t("Pin"),
+            icon: "/static/images/pin.react.svg",
+            onClick: pinRooms,
+            disabled: false,
+          }
+        : {
+            key: "unpin-room",
+            label: t("Unpin"),
+            icon: "/static/images/unpin.react.svg",
+            onClick: unpinRooms,
+            disabled: false,
+          };
+
+      const archiveOptions = !isArchiveFolder
+        ? {
+            key: "archive-room",
+            label: t("ToArchive"),
+            icon: "/static/images/room.archive.svg",
+            onClick: moveRoomsToArchive,
+            disabled: false,
+          }
+        : {
+            key: "unarchive-room",
+            label: t("FromArchive"),
+            icon: "/static/images/room.archive.svg",
+            onClick: moveRoomsFromArchive,
+            disabled: false,
+          };
+
+      const options = [];
+
+      if (!isArchiveFolder) {
+        options.push(pinOption);
+        options.push({
+          key: "separator0",
+          isSeparator: true,
+        });
+      }
+
+      options.push(archiveOptions);
+
+      if (isArchiveFolder) {
+        options.push({
+          key: "delete-rooms",
+          label: t("Common:Delete"),
+          icon: "images/trash.react.svg",
+          onClick: deleteRooms,
+        });
+      }
+
+      return options;
+    }
 
     const downloadAs =
       selection.findIndex((k) => k.contextOptions.includes("download-as")) !==

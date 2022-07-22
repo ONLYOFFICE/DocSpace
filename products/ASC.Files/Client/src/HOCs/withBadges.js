@@ -36,6 +36,16 @@ export default function withBadges(WrappedComponent) {
       }
     };
 
+    onUnpinClick = (e) => {
+      const { setPinAction } = this.props;
+
+      const { action, id } = e.target.closest(".is-pinned").dataset;
+
+      if (!action && !id) return;
+
+      setPinAction(action, id);
+    };
+
     setConvertDialogVisible = () => {
       this.props.setConvertItem(this.props.item);
       this.props.setConvertDialogVisible(true);
@@ -83,6 +93,7 @@ export default function withBadges(WrappedComponent) {
           accessToEdit={accessToEdit}
           onShowVersionHistory={this.onShowVersionHistory}
           onBadgeClick={this.onBadgeClick}
+          onUnpinClick={this.onUnpinClick}
           setConvertDialogVisible={this.setConvertDialogVisible}
           onFilesClick={onFilesClick}
           viewAs={viewAs}
@@ -109,7 +120,7 @@ export default function withBadges(WrappedComponent) {
       { item }
     ) => {
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
-      const { markAsRead } = filesActionsStore;
+      const { markAsRead, setPinAction } = filesActionsStore;
       const { isTabletView, isDesktopClient, theme } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const {
@@ -139,6 +150,7 @@ export default function withBadges(WrappedComponent) {
         setConvertDialogVisible,
         setConvertItem,
         isDesktopClient,
+        setPinAction,
       };
     }
   )(observer(WithBadges));

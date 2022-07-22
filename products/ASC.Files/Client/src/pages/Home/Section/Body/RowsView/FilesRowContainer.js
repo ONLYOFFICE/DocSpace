@@ -64,6 +64,7 @@ const FilesRowContainer = ({
   viewAs,
   setViewAs,
   infoPanelVisible,
+  isRooms,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -92,19 +93,25 @@ const FilesRowContainer = ({
           key={`${item.id}_${index}`}
           item={item}
           sectionWidth={sectionWidth}
+          isRooms={isRooms}
         />
       ))}
     </StyledRowContainer>
   );
 };
 
-export default inject(({ filesStore, auth }) => {
+export default inject(({ filesStore, auth, treeFoldersStore }) => {
   const { filesList, viewAs, setViewAs } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+
+  const isRooms = isRoomsFolder || isArchiveFolder;
+
   return {
     filesList,
     viewAs,
     setViewAs,
     infoPanelVisible,
+    isRooms,
   };
 })(observer(FilesRowContainer));

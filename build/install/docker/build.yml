@@ -1,13 +1,27 @@
 version: "3.8"
 
 services: 
-  onlyoffice-api-system:
+  onlyoffice-backup-background-tasks:
     build:
       context: ./
       dockerfile: "${DOCKERFILE}"
-      target: api_system
-    image: "${REPO}/${STATUS}appserver-api-system:${DOCKER_TAG}"
-     
+      target: backup_background
+    image: "${REPO}/${STATUS}appserver-backup-background:${DOCKER_TAG}"
+
+  onlyoffice-clear-events:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: clear-events
+    image: "${REPO}/${STATUS}appserver-clear-events:${DOCKER_TAG}"
+
+  onlyoffice-webhooks-wervice:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: webhooks-wervice
+    image: "${REPO}/${STATUS}appserver-webhooks-wervice:${DOCKER_TAG}"
+
   onlyoffice-backup:
     build:
       context: ./
@@ -15,13 +29,6 @@ services:
       target: backup
     image: "${REPO}/${STATUS}appserver-backup:${DOCKER_TAG}"
   
-  onlyoffice-storage-encryption:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: data_storage_encryption
-    image: "${REPO}/${STATUS}appserver-storage-encryption:${DOCKER_TAG}" 
-
   onlyoffice-files:
     build:
       context: ./
@@ -35,13 +42,6 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: files_services
     image: "${REPO}/${STATUS}appserver-files-services:${DOCKER_TAG}"
-
-  onlyoffice-storage-migration:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: data_storage_migration
-    image: "${REPO}/${STATUS}appserver-storage-migration:${DOCKER_TAG}"
 
   onlyoffice-notify:
     build:
@@ -78,13 +78,6 @@ services:
       target: telegram_service
     image: "${REPO}/${STATUS}appserver-telegram-service:${DOCKER_TAG}"
 
-  onlyoffice-thumbnails:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: thumbnails
-    image: "${REPO}/${STATUS}appserver-thumbnails:${DOCKER_TAG}"
-    
   onlyoffice-urlshortener:
     build:
       context: ./

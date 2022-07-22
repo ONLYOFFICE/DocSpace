@@ -171,28 +171,48 @@ const StyledSortButton = styled.div`
 StyledSortButton.defaultProps = { theme: Base };
 
 const SortButton = ({
-  t,
-  selectedFilterData,
   getSortData,
+  getSelectedSortData,
+
   onChangeViewAs,
+  view,
   viewAs,
   viewSettings,
+
   onSort,
+
   viewSelectorVisible,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const [
-    currentSelectedFilterData,
-    setCurrentSelectedFilterData,
-  ] = React.useState({});
+  const [sortData, setSortData] = React.useState([]);
+  const [selectedSortData, setSelectedSortData] = React.useState({
+    sortDirection: null,
+    sortId: null,
+  });
 
   React.useEffect(() => {
-    setCurrentSelectedFilterData({
-      sortDirection: selectedFilterData.sortDirection,
-      sortId: selectedFilterData.sortId,
+    const value = getSortData && getSortData();
+    const selectedValue = getSelectedSortData && getSelectedSortData();
+
+    const data = value.map((item) => {
+      item.className = "option-item";
+      item.isSelected = false;
+      if (selectedValue.sortId === item.key) {
+        item.className = item.className + " selected-option-item";
+        item.isSelected = true;
+      }
+
+      return item;
     });
-  }, [selectedFilterData]);
+
+    setSortData(data);
+
+    setSelectedSortData({
+      sortDirection: selectedValue.sortDirection,
+      sortId: selectedValue.sortId,
+    });
+  }, []);
 
   const toggleCombobox = React.useCallback(() => {
     setIsOpen((val) => !val);
@@ -202,80 +222,73 @@ const SortButton = ({
     (e) => {
       const key = e.target.closest(".option-item").dataset.value;
 
-      let sortDirection = currentSelectedFilterData.sortDirection;
+      let sortDirection = selectedSortData.sortDirection;
 
-      if (key === currentSelectedFilterData.sortId) {
+      if (key === selectedSortData.sortId) {
         sortDirection = sortDirection === "desc" ? "asc" : "desc";
       }
 
-      setCurrentSelectedFilterData({
+      let data = sortData.map((item) => ({ ...item }));
+
+      data = data.map((item) => {
+        item.className = "option-item";
+        item.isSelected = false;
+        if (key === item.key) {
+          item.className = item.className + " selected-option-item";
+          item.isSelected = true;
+        }
+
+        return item;
+      });
+
+      setSortData(data);
+
+      setSelectedSortData({
         sortId: key,
         sortDirection: sortDirection,
       });
 
       toggleCombobox();
+
       onSort && onSort(key, sortDirection);
     },
-    [onSort, toggleCombobox, currentSelectedFilterData]
+    [onSort, toggleCombobox, sortData, selectedSortData]
   );
 
-  const getAdvancedOptions = React.useCallback(() => {
-    const data = getSortData();
-
-    data.forEach((item) => {
-      item.className = "option-item";
-      item.isSelected = false;
-      if (currentSelectedFilterData.sortId === item.key) {
-        item.className = item.className + " selected-option-item";
-        item.isSelected = true;
-      }
-    });
-
-    return (
-      <>
-        {viewSelectorVisible && (
-          <>
-            <DropDownItem noHover className="view-selector-item">
-              <Text fontWeight={600}>{t("View")}</Text>
-              <ViewSelector
-                className="view-selector"
-                onChangeView={onChangeViewAs}
-                viewAs={viewAs}
-                viewSettings={viewSettings}
-              />
-            </DropDownItem>
-
-            <DropDownItem isSeparator={true}></DropDownItem>
-          </>
-        )}
-
+  const advancedOptions = (
+    <>
+      {viewSelectorVisible && (
         <>
-          {data.map((item, index) => (
-            <DropDownItem
-              onClick={onOptionClick}
-              className={item.className}
-              key={item.key}
-              data-value={item.key}
-            >
-              <Text fontWeight={600}>{item.label}</Text>
-              <SortDesc
-                className={`option-item__icon  ${
-                  item.isSelected ? "selected-option-item__icon" : ""
-                }`}
-              />
-            </DropDownItem>
-          ))}
+          <DropDownItem noHover className="view-selector-item">
+            <Text fontWeight={600}>{view}</Text>
+            <ViewSelector
+              className="view-selector"
+              onChangeView={onChangeViewAs}
+              viewAs={viewAs}
+              viewSettings={viewSettings}
+            />
+          </DropDownItem>
+
+          <DropDownItem isSeparator={true}></DropDownItem>
         </>
-      </>
-    );
-  }, [
-    currentSelectedFilterData,
-    onOptionClick,
-    onChangeViewAs,
-    viewAs,
-    viewSettings,
-    getSortData,
-  ]);
+      )}
+      {sortData?.map((item) => (
+        <DropDownItem
+          onClick={onOptionClick}
+          className={item.className}
+          key={item.key}
+          data-value={item.key}
+        >
+          <Text fontWeight={600}>{item.label}</Text>
+          <SortDesc
+            className={`option-item__icon${
+              item.isSelected ? " selected-option-item__icon" : ""
+            }`}
+          />
+        </DropDownItem>
+      ))}
+    </>
+  );
 
   return (
     <>
@@ -287,7 +300,7 @@ const SortButton = ({
       />
       <StyledSortButton
         viewAs={viewAs}
-        isDesc={currentSelectedFilterData.sortDirection === "desc"}
+        isDesc={selectedSortData.sortDirection === "desc"}
         onClick={toggleCombobox}
       >
         <ComboBox
@@ -300,7 +313,7 @@ const SortButton = ({
           directionY={"both"}
           scaled={true}
           size={"content"}
-          advancedOptions={getAdvancedOptions()}
+          advancedOptions={advancedOptions}
           disableIconClick={false}
           disableItemClick={true}
           isDefaultMode={false}
@@ -313,4 +326,4 @@ const SortButton = ({
   );
 };
 
-export default React.memo(withTranslation("Common")(SortButton));
+export default React.memo(SortButton);
