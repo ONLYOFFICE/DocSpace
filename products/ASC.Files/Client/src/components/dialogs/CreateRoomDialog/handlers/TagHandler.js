@@ -2,21 +2,21 @@ class TagHandler {
   constructor(tags, setTags) {
     this.tags = tags;
     this.setTags = setTags;
+    this.fetchedTags = [
+      "Figma",
+      "Portal",
+      "Design",
+      "Images",
+      "Fi",
+      "Fa",
+      "Fo",
+      "Fam",
+      "Fim",
+    ];
   }
 
   createRandomTagId() {
     return "_" + Math.random().toString(36).substr(2, 9);
-  }
-
-  addDefaultTag(name) {
-    this.setTags([
-      {
-        id: this.createRandomTagId(),
-        name,
-        isDefault: true,
-      },
-      ...this.tags,
-    ]);
   }
 
   refreshDefaultTag(name) {
@@ -31,9 +31,13 @@ class TagHandler {
   }
 
   addTag(name) {
-    this.setTags(
-      this.tags.push({ id: this.createRandomTagId(), name, isDefault: false })
-    );
+    let newTags = [...this.tags];
+    newTags.push({
+      id: this.createRandomTagId(),
+      name,
+    });
+
+    this.setTags(newTags);
   }
 
   deleteTag(id) {
