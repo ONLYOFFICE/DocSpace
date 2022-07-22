@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { withTranslation } from "react-i18next";
-
+import { withRouter } from "react-router";
+import toastr from "@appserver/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import withLoading from "../../../../../HOCs/withLoading";
@@ -38,9 +39,15 @@ const StyledComponent = styled.div`
 `;
 
 const Appearance = (props) => {
-  const { appearanceTheme, selectedThemeId, sendAppearanceTheme } = props;
+  const {
+    appearanceTheme,
+    selectedThemeId,
+    sendAppearanceTheme,
+    getAppearanceTheme,
+    t,
+  } = props;
 
-  const [selectedColor, setSelectedColor] = useState(1);
+  // const [selectedColor, setSelectedColor] = useState(selectedThemeId);
 
   const [previewTheme, setPreviewTheme] = useState("Light theme");
 
@@ -94,18 +101,18 @@ const Appearance = (props) => {
         key: "0",
         title: "Light theme",
         content: (
-          <Preview previewTheme={previewTheme} selectedColor={selectedColor} />
+          <Preview previewTheme={previewTheme} selectedColor={selectThemeId} />
         ),
       },
       {
         key: "1",
         title: "Dark theme",
         content: (
-          <Preview previewTheme={previewTheme} selectedColor={selectedColor} />
+          <Preview previewTheme={previewTheme} selectedColor={selectThemeId} />
         ),
       },
     ],
-    [selectedColor, previewTheme]
+    [selectThemeId, previewTheme]
   );
 
   useEffect(() => {
@@ -149,7 +156,7 @@ const Appearance = (props) => {
     if (!e.target.id) return;
 
     const colorNumber = +e.target.id;
-
+    // setSelectedColor(colorNumber);
     setSelectThemeId(colorNumber);
 
     //TODO: find id and give item
@@ -180,12 +187,19 @@ const Appearance = (props) => {
   };
 
   const onSaveSelectedColor = () => {
-    sendAppearanceTheme({ selected: selectThemeId });
+    sendAppearanceTheme({ selected: selectThemeId })
+      .then(() => {
+        toastr.success(t("SuccessfullySaveSettingsMessage"));
+        getAppearanceTheme();
+      })
+      .catch((error) => {
+        toastr.error(error);
+      });
   };
 
   const onClickEdit = () => {
     appearanceTheme.map((item) => {
-      if (item.id === selectedColor) {
+      if (item.id === selectThemeId) {
         // TODO: give store Accent color and Buttons main to id
 
         setCurrentColorAccent(item.accentColor);
@@ -364,6 +378,8 @@ const Appearance = (props) => {
     ></div>
   );
 
+  console.log("selectThemeId", selectThemeId);
+
   if (!(selectThemeId && selectedThemeId && appearanceTheme)) {
     return <Loaders.Rectangle />;
   }
@@ -421,11 +437,13 @@ export default inject(({ auth }) => {
     appearanceTheme,
     selectedThemeId,
     sendAppearanceTheme,
+    getAppearanceTheme,
   } = settingsStore;
 
   return {
     appearanceTheme,
     selectedThemeId,
     sendAppearanceTheme,
+    getAppearanceTheme,
   };
-})(observer(Appearance));
+})(withTranslation(["Settings", "Common"])(withRouter(observer(Appearance))));
