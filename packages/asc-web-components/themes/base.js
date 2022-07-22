@@ -993,6 +993,7 @@ const Base = {
       fontSize: {
         min: "12px",
         small: "12px",
+        base: "16px",
         medium: "20px",
         big: "34px",
         max: "72px",
@@ -1003,6 +1004,7 @@ const Base = {
       left: {
         min: "-2px",
         small: "-2px",
+        base: "-2px",
         medium: "-4px",
         big: "0px",
         max: "0px",
@@ -1011,6 +1013,7 @@ const Base = {
       bottom: {
         min: "3px",
         small: "3px",
+        base: "4px",
         medium: "6px",
         big: "5px",
         max: "0px",
@@ -1084,6 +1087,7 @@ const Base = {
     width: {
       min: "32px",
       small: "36px",
+      base: "40px",
       medium: "48px",
       big: "82px",
       max: "160px",
@@ -1092,6 +1096,7 @@ const Base = {
     height: {
       min: "32px",
       small: "36px",
+      base: "40px",
       medium: "48px",
       big: "82px",
       max: "160px",
@@ -1823,6 +1828,11 @@ const Base = {
     },
 
     headerBurgerColor: "#657077",
+
+    profile: {
+      borderTop: "1px solid #eceef1",
+      background: "#f3f4f4",
+    },
   },
 
   catalogItem: {
@@ -1927,15 +1937,15 @@ const Base = {
   },
 
   header: {
-    backgroundColor: "#0F4071",
-    recoveryColor: "#27537F",
-    linkColor: "#7a95b0",
+    backgroundColor: "#F8F9F9",
+    recoveryColor: "#657077",
+    linkColor: "#657077",
     productColor: white,
   },
 
   menuContainer: {
-    background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
-    color: white,
+    background: "#F3F4F4",
+    color: black,
   },
 
   article: {

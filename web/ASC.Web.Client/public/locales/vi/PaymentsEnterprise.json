@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Cảm ơn bạn đã thanh toán {{organizationName}}! ",
   "HeaderExpiredTrialLicense": "Đã hết thời gian dùng thử miễn phí",
   "HeaderLicense": "Bạn đang sử dụng {{organizationName}} Phiên bản doanh nghiệp",
-  "PaymentsTitle": "Thanh toán",
   "RenewalLicense": "Nếu bạn đã thanh toán gia hạn, hãy tải tệp giấy phép lên.",
   "SubscriptionRenewedLicense": "Hãy gia hạn gói dịch vụ để nhận:",
   "SuccessLoadingLicense": "Giấy phép được kích hoạt thành công"

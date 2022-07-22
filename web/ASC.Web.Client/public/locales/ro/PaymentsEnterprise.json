@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Vă mulțumim pentru verificarea {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Perioada de probă a expirat",
   "HeaderLicense": "Dumneavoastră utilizați {{organizationName}} Enterprise Edition",
-  "PaymentsTitle": "Plăți",
   "RenewalLicense": "Dacă ați reînnoit deja licența dvs, încărcați fișierul de licență.",
   "SubscriptionRenewedLicense": "Reînnoiți abonament și obțineți:",
   "SuccessLoadingLicense": "Licența activată cu succes"

@@ -1,3 +1,4 @@
+import { hugeMobile } from "@appserver/components/utils/device";
 import styled, { css } from "styled-components";
 
 export const ButtonsWrapper = styled.div`
@@ -36,7 +37,7 @@ export const LoginContainer = styled.div`
   }
 
   @media (max-width: 414px) {
-    margin: 72px auto 0 auto;
+    margin: 0 auto 0 auto;
     max-width: 311px;
   }
 
@@ -174,6 +175,20 @@ export const LoginContainer = styled.div`
       margin: 0 8px;
     }
   }
+
+  .logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 46px;
+    padding-bottom: 64px;
+
+    @media (${hugeMobile}) {
+      padding-bottom: 40px;
+      height: 39px;
+    }
+  }
 `;
 
 export const LoginFormWrapper = styled.div`
@@ -185,5 +200,5 @@ export const LoginFormWrapper = styled.div`
         : css`1fr 66px`
       : css`1fr`};
   width: 100%;
-  height: calc(100vh-48px);
+  height: 100vh;
 `;

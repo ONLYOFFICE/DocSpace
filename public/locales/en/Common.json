@@ -170,5 +170,12 @@
   "ViewWeb": "View web version",
   "Warning": "Warning",
   "Hotkeys": "Hotkeys",
+  "PaymentsTitle": "Payments",
+  "AboutCompanyTitle": "About this program",
+  "LogoutButton": "Sign Out",
+  "HelpCenter": "Help center",
+  "FeedbackAndSupport": "Feedback & Support",
+  "VideoGuides": "Video Guides"
+  "Hotkeys": "Hotkeys",
   "SelectFile": "Select file"
 }

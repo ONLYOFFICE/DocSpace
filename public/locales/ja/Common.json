@@ -168,5 +168,10 @@
   "ViewWeb": "ウェブ版を表示する",
   "Warning": "警告",
   "Hotkeys": "ホットキー",
+  "PaymentsTitle": "お支払い",
+  "AboutCompanyTitle": "本プログラムについて",
+  "LogoutButton": "サインアウト",
+  "HelpCenter": "ヘルプセンター"
+  "Hotkeys": "ホットキー",
   "SelectFile": "ファイルを選択"
 }

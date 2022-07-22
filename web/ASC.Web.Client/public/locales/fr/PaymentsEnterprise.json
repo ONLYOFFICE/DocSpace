@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Merci d'avoir vérifié {{organizationName}}!",
   "HeaderExpiredTrialLicense": "La période d'essai a expiré",
   "HeaderLicense": "Vous utilisez l’édition entreprise de {{organizationName}}",
-  "PaymentsTitle": "Paiements",
   "RenewalLicense": "Si vous avez déjà renouvelé votre licence, sélectionnez le fichier de licence.",
   "SubscriptionRenewedLicense": "Renouvelez votre abonnement pour obtenir :",
   "SuccessLoadingLicense": "Licence activée avec succès"

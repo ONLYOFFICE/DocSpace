@@ -6,6 +6,7 @@ import ConfirmStore from "./ConfirmStore";
 import BackupStore from "./BackupStore";
 import CommonStore from "./CommonStore";
 import BannerStore from "./BannerStore";
+import ProfileActionsStore from "./ProfileActionsStore";
 import SsoFormStore from "./SsoFormStore";
 
 const paymentStore = new PaymentStore();
@@ -15,6 +16,7 @@ const confirmStore = new ConfirmStore();
 const backupStore = new BackupStore();
 const commonStore = new CommonStore();
 const bannerStore = new BannerStore();
+const profileActionsStore = new ProfileActionsStore();
 const ssoStore = new SsoFormStore();
 
 const store = {
@@ -26,7 +28,11 @@ const store = {
   backup: backupStore,
   common: commonStore,
   bannerStore: bannerStore,
+<<<<<<< .mine
   ssoStore: ssoStore,
+=======
+  profileActionsStore: profileActionsStore,
+>>>>>>> .theirs
 };
 
 export default store;
