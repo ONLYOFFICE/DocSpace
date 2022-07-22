@@ -22,6 +22,7 @@ const Modal = ({
   className,
   currentDisplayType,
   withBodyScroll,
+  isScrollLocked,
   isLarge,
   zIndex,
   autoMaxHeight,
@@ -104,12 +105,17 @@ const Modal = ({
                 {body && (
                   <StyledBody
                     withBodyScroll={withBodyScroll}
+                    isScrollLocked={isScrollLocked}
                     hasFooter={1 && footer}
                     currentDisplayType={currentDisplayType}
                     {...body.props}
                   >
                     {currentDisplayType === "aside" && withBodyScroll ? (
-                      <Scrollbar stype="mediumBlack">
+                      <Scrollbar
+                        stype="mediumBlack"
+                        id="modal-scroll"
+                        className="modal-scroll"
+                      >
                         {
                           <div className="body_content-with_scroll">
                             {bodyComponent}

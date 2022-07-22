@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 
 import throttle from "lodash/throttle";
@@ -8,6 +8,7 @@ import ModalAside from "./views/modal-aside";
 import { handleTouchMove, handleTouchStart } from "./handlers/swipeHandler";
 import { getCurrentDisplayType } from "./handlers/resizeHandler";
 import { parseChildren } from "./handlers/childrenParseHandler";
+import { isMobile } from "react-device-detect";
 
 const Header = () => null;
 Header.displayName = "DialogHeader";
@@ -35,6 +36,7 @@ const ModalDialog = ({
   withBodyScroll,
   modalLoaderBodyHeight,
   withFooterBorder,
+  isScrollLocked,
 }) => {
   const [currentDisplayType, setCurrentDisplayType] = useState(
     getCurrentDisplayType(displayType, displayTypeDetailed)
@@ -83,6 +85,7 @@ const ModalDialog = ({
           className={className}
           currentDisplayType={currentDisplayType}
           withBodyScroll={withBodyScroll}
+          isScrollLocked={isScrollLocked}
           isLarge={isLarge}
           zIndex={zIndex}
           autoMaxHeight={autoMaxHeight}
@@ -145,6 +148,12 @@ ModalDialog.propTypes = {
 
   Enables Body scroll */
   withBodyScroll: PropTypes.bool,
+
+  /** **`ASIDE-ONLY`**  
+
+  Gets bool to lock or unlock body scroll */
+  isScrollLocked: PropTypes.bool,
+
   /** **`ASIDE-ONLY`**  
 
   Sets modal dialog size equal to window */

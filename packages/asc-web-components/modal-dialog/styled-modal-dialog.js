@@ -104,6 +104,29 @@ const StyledBody = styled(Box)`
   padding-bottom: ${(props) =>
     props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
 
+  #modal-scroll {
+    .scroll-body {
+      margin-right: ${isMobile ? 0 : "-15px"} !important;
+      padding-right: 16px !important;
+      ${(props) =>
+        props.isScrollLocked &&
+        css`
+          margin-right: 0 !important;
+          overflow: hidden !important;
+        `}
+    }
+    /* ${(props) =>
+      props.isScrollLocked &&
+      css`
+        div:nth-last-child(1),
+        div:nth-last-child(2) {
+          div {
+            display: none !important;
+          }
+        }
+      `} */
+  }
+
   ${(props) =>
     props.currentDisplayType === "aside" &&
     css`
