@@ -445,7 +445,7 @@ class FilesTableHeader extends React.Component {
     const sortOrder = isRooms ? roomsFilter.sortOrder : filter.sortOrder;
 
     // TODO: make some better
-    let needReset = false;
+    let needReset = this.props.isRooms !== this.state.isRooms;
     let currentColumnStorageName = columnStorageName;
     let currentColumnInfoPanelStorageName = columnInfoPanelStorageName;
 
