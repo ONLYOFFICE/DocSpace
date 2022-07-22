@@ -6,7 +6,8 @@ import Avatar from "@appserver/components/avatar";
 import Text from "@appserver/components/text";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import ContextMenu from "@appserver/components/context-menu";
-import { isTablet } from "@appserver/components/utils/device";
+import { isTablet as isTabletUtils } from "@appserver/components/utils/device";
+import { isTablet, isMobileOnly } from "react-device-detect";
 import { StyledArticleProfile, StyledUserName } from "../styled-article";
 
 const ArticleProfile = (props) => {
@@ -16,8 +17,8 @@ const ArticleProfile = (props) => {
   const ref = useRef(null);
   const menuRef = useRef(null);
 
-  const tablet = isTablet();
-  const avatarSize = tablet ? "min" : "base";
+  const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
+  const avatarSize = isTabletView ? "min" : "base";
   const userRole = getUserRole(user);
 
   const toggle = (e, isOpen) => {
@@ -26,7 +27,7 @@ const ArticleProfile = (props) => {
   };
 
   const onAvatarClick = (e) => {
-    if (tablet && !showText) toggle(e, !isOpen);
+    if (isTabletView && !showText) toggle(e, !isOpen);
   };
 
   const onHide = () => {
@@ -37,7 +38,7 @@ const ArticleProfile = (props) => {
   const username = user.displayName.split(" ");
 
   return (
-    <StyledArticleProfile showText={showText} tablet={tablet}>
+    <StyledArticleProfile showText={showText} tablet={isTabletView}>
       <div ref={ref}>
         <Avatar
           size={avatarSize}
@@ -55,7 +56,7 @@ const ArticleProfile = (props) => {
           leftOffset={-50}
         />
       </div>
-      {(!tablet || showText) && (
+      {(!isTabletView || showText) && (
         <>
           <StyledUserName length={user.displayName.length}>
             <Text fontWeight={600} noSelect truncate>

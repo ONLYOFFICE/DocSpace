@@ -80,6 +80,7 @@ const StyledArticle = styled.article`
 
   .article-body__scrollbar {
     .scroll-body {
+      overflow-x: hidden !important;
       height: calc(100% - 200px);
       ${!isDesktop && "padding-top:  16px"};
       padding-right: 0px !important;
@@ -181,14 +182,14 @@ const StyledIconBox = styled.div`
     display: ${(props) => (props.showText ? "none" : "flex")};
   }
 
+  ${isTablet &&
+  css`
+    display: ${(props) => (props.showText ? "none" : "flex")};
+  `}
+
   @media ${mobile} {
     display: none;
   }
-
-  ${isMobile &&
-  css`
-    display: flex !important;
-  `}
 
   ${isMobileOnly &&
   css`
@@ -295,6 +296,24 @@ const StyledArticleProfile = styled.div`
       `}
   }
 
+  ${(props) =>
+    props.tablet &&
+    css`
+      padding-left: 8px;
+      margin-left: -8px;
+      padding-right: 8px;
+      margin-right: -8px;
+
+      ${(props) =>
+        props.showText &&
+        css`
+          padding-left: 24px;
+          margin-left: -24px;
+          padding-right: 24px;
+          margin-right: -24px;
+        `}
+    `}
+
   border-top: ${(props) => props.theme.catalog.profile.borderTop};
   background-color: ${(props) => props.theme.catalog.profile.background};
 
@@ -310,8 +329,6 @@ const StyledArticleProfile = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 24px;
-      height: 24px;
     }
   }
 `;
