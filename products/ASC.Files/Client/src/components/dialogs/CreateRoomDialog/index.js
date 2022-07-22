@@ -23,7 +23,7 @@ const CreateRoomDialog = ({
     type: undefined,
     tags: [],
     isPrivate: false,
-    storageLocation: {},
+    storageLocation: undefined,
     icon: "",
   });
 

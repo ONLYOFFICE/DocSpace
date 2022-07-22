@@ -189,6 +189,7 @@ class AvatarEditor extends React.Component {
     ) : (
       <>
         <AvatarEditorBody
+          className="use_modal-avatar_editor_body"
           ref={this.avatarEditorBodyRef}
           visible={this.state.visible}
           onImageChange={this.onImageChange}
@@ -209,7 +210,7 @@ class AvatarEditor extends React.Component {
           maxSizeLabel={maxSizeLabel}
           isLoading={saveButtonLoading}
         />
-        <StyledButtonsWrapper>
+        <StyledButtonsWrapper className="use_modal-buttons_wrapper">
           <Button
             key="SaveBtn"
             label={saveButtonLabel}

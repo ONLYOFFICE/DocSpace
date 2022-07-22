@@ -42,12 +42,6 @@ const EmptyContainer = ({
     console.log("create room");
   };
 
-  // const onCreateRoom = React.useCallback(() => {
-  //   const event = new Event(Events.ROOM_CREATE);
-
-  //   window.dispatchEvent(event);
-  // }, []);
-
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
   ) : parentId === 0 ? (
