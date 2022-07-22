@@ -123,6 +123,18 @@ const StyledArticleHeader = styled.div`
     box-sizing: border-box;
   }
 
+  ${isTablet &&
+  css`
+    padding: 18px 8px 19px;
+    margin: 0;
+    justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
+
+    height: 61px;
+    min-height: 61px;
+    max-height: 61px;
+    box-sizing: border-box;
+  `}
+
   @media ${mobile} {
     border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
     padding: 12px 0 12px;
@@ -162,7 +174,7 @@ const StyledHeading = styled.div`
   ${isTablet &&
   css`
     display: ${(props) => (props.showText ? "block" : "none")};
-    margin-left: 1px !important;
+    margin-left: 9px !important;
   `}
 
   @media ${mobile} {
