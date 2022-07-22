@@ -28,11 +28,11 @@ namespace AutoMigrationCreator.Core;
 
 public static class Solution
 {
-    private const string SOLUTION_NAME = "ASC.Tools.sln";
+    private const string SOLUTION_NAME = "AutoMigrationCreator.sln";
 
     public static IEnumerable<ProjectInfo> GetProjects()
     {
-        var solutionPath = Path.GetFullPath(Path.Combine("..", "..", "..", "..", "..", "..", SOLUTION_NAME));
+        var solutionPath = Path.GetFullPath(Path.Combine(SOLUTION_NAME));
         var source = SolutionFile.Parse(solutionPath);
         var currentAssembly = Assembly.GetExecutingAssembly().GetName().Name;
 

@@ -30,10 +30,6 @@ class Program
 {
     static void Main(string[] args)
     {
-        //args = new string[1];
-        //args[0] = "-ctrue";
-        //args[0] = @"-pC:\GitHub\Developer\common\Tools\AutoMigrationCreator\bin\Debug\net6.0";
-
         Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
         {
             if (!(bool)o.Create && o.Path == "")
