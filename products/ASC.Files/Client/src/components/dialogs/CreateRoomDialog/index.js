@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -7,9 +8,16 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import SetRoomParams from "./views/CreateRoom/SetRoomParams";
 import RoomTypeList from "./views/ChooseRoomType/RoomTypeList";
 import Button from "@appserver/components/button";
-import { roomTypes } from "./roomTypes";
+import { roomTypes } from "./data";
 import TagHandler from "./handlers/tagHandler";
+import { isMobile } from "@appserver/components/utils/device";
 
+const StyledModalDialog = styled(ModalDialog)`
+  .modal-scroll {
+    .scroll-body {
+    }
+  }
+`;
 const CreateRoomDialog = ({
   t,
   visible,
@@ -17,6 +25,7 @@ const CreateRoomDialog = ({
   createRoom,
 }) => {
   const onClose = () => setCreateRoomDialogVisible(false);
+  const [isScrollEnabled, setIsScrollEnabled] = useState(false);
 
   const [roomParams, setRoomParams] = useState({
     title: "",
@@ -42,17 +51,17 @@ const CreateRoomDialog = ({
   };
 
   const onCreateRoom = () => {
-    //createRoom(roomParams);
     console.log(roomParams);
   };
 
   const isChooseRoomType = roomParams.type === undefined;
   return (
-    <ModalDialog
+    <StyledModalDialog
       displayType="aside"
       withBodyScroll
       visible={visible}
       onClose={onClose}
+      isScrollLocked={roomParams.isPrivate}
     >
       <ModalDialog.Header>
         {isChooseRoomType ? t("ChooseRoomType") : t("CreateRoom")}
@@ -87,11 +96,11 @@ const CreateRoomDialog = ({
             label={t("Common:CancelButton")}
             size="normal"
             scale
-            onClick={onClose}
+            onClick={() => unlockScroll()}
           />
         </ModalDialog.Footer>
       )}
-    </ModalDialog>
+    </StyledModalDialog>
   );
 };
 
@@ -101,7 +110,6 @@ export default inject(({ dialogsStore, roomsStore }) => {
     setCreateRoomDialogVisible,
   } = dialogsStore;
 
-  console.log(roomsStore);
   //const { createRoom } = roomsStore;
 
   return {
