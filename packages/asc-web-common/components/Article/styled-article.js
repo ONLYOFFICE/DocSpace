@@ -339,6 +339,7 @@ const StyledUserName = styled.div`
   display: flex;
   flex-direction: ${(props) => (props.length > 18 ? "column" : "row")};
   max-width: 131px;
+  min-width: 131px;
 `;
 
 export {
