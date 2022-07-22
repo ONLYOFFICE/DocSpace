@@ -83,8 +83,7 @@ const StyledSsoPage = styled.div`
   }
 
   .download-button {
-    max-width: 404px;
-    width: 100%;
+    width: fit-content;
   }
 
   .xml-upload-file {

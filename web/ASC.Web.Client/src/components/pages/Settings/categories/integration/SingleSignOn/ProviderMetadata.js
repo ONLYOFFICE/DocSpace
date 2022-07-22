@@ -36,7 +36,6 @@ const ProviderMetadata = (props) => {
 
       <Box>
         <Button
-          className="download-button"
           label={t("DownloadMetadataXML")}
           primary
           size="small"
