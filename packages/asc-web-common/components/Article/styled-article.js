@@ -87,7 +87,7 @@ const StyledArticle = styled.article`
       padding: 0 20px;
 
       @media ${tablet} {
-        height: calc(100% - 120px);
+        height: calc(100% - 150px);
         padding: 0 8px;
       }
 
@@ -156,13 +156,13 @@ const StyledHeading = styled.div`
 
   @media ${tablet} {
     display: ${(props) => (props.showText ? "block" : "none")};
-    margin-left: ${(props) => props.showText && "12px"};
+    margin-left: 9px;
   }
 
   ${isTablet &&
   css`
     display: ${(props) => (props.showText ? "block" : "none")};
-    margin-left: ${(props) => props.showText && "12px"};
+    margin-left: 1px !important;
   `}
 
   @media ${mobile} {
@@ -256,67 +256,18 @@ const StyledCrossIcon = styled(CrossIcon)`
 StyledCrossIcon.defaultProps = { theme: Base };
 
 const StyledArticleProfile = styled.div`
-  position: fixed;
-  z-index: 301;
-  bottom: 0;
-  padding: 16px 0;
+  padding: 16px 20px;
+  height: 40px !important;
   display: flex;
   align-items: center;
-  width: ${(props) =>
-    !props.tablet
-      ? "211px"
-      : props.tablet && props.showText
-      ? "211px"
-      : "44px"};
-
-  ${(props) =>
-    props.tablet &&
-    css`
-      padding: 14px 6px;
-      justify-content: ${(props) => !props.showText && "center"};
-    `}
-
-  padding-left: 20px;
-  margin-left: -20px;
-  padding-right: 20px;
-  margin-right: -20px;
-
-  @media ${tablet} {
-    padding-left: 8px;
-    margin-left: -8px;
-    padding-right: 8px;
-    margin-right: -8px;
-
-    ${(props) =>
-      props.showText &&
-      css`
-        padding-left: 24px;
-        margin-left: -24px;
-        padding-right: 24px;
-        margin-right: -24px;
-      `}
-  }
-
-  ${(props) =>
-    props.tablet &&
-    css`
-      padding-left: 8px;
-      margin-left: -8px;
-      padding-right: 8px;
-      margin-right: -8px;
-
-      ${(props) =>
-        props.showText &&
-        css`
-          padding-left: 24px;
-          margin-left: -24px;
-          padding-right: 24px;
-          margin-right: -24px;
-        `}
-    `}
+  justify-content: center;
 
   border-top: ${(props) => props.theme.catalog.profile.borderTop};
   background-color: ${(props) => props.theme.catalog.profile.background};
+
+  @media ${tablet} {
+    padding: 16px 14px;
+  }
 
   .option-button {
     margin-left: auto;
@@ -344,7 +295,15 @@ const StyledUserName = styled.div`
   max-width: 131px;
   min-width: 131px;
   padding-left: 12px;
-  padding-right: 4px;
+`;
+
+const StyledProfileWrapper = styled.div`
+  z-index: 301;
+  min-width: ${(props) => (props.showText ? "243px" : "60px")};
+  max-width: ${(props) => (props.showText ? "243px" : "60px")};
+  position: fixed;
+  bottom: 0;
+  left: 0;
 `;
 
 export {
@@ -358,4 +317,5 @@ export {
   StyledCrossIcon,
   StyledArticleProfile,
   StyledUserName,
+  StyledProfileWrapper,
 };
