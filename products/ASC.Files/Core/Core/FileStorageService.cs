@@ -1564,18 +1564,18 @@ public class FileStorageService<T> //: IFileStorageService
         return new List<ThirdPartyParams>(resultList.ToList());
     }
 
-    public Task<ThirdPartyParams> GetBackupThirdPartyAsync()
+    public Task<List<ThirdPartyParams>> GetBackupThirdPartyAsync()
     {
         var providerDao = GetProviderDao();
         if (providerDao == null)
         {
-            return null;
+            return Task.FromResult(new List<ThirdPartyParams>());
         }
 
         return InternalBackupGetThirdPartyAsync(providerDao);
     }
 
-    private async Task<ThirdPartyParams> InternalBackupGetThirdPartyAsync(IProviderDao providerDao)
+    private async Task<List<ThirdPartyParams>> InternalBackupGetThirdPartyAsync(IProviderDao providerDao)
     {
         var providersInfo = await providerDao.GetProvidersInfoAsync(FolderType.ThirdpartyBackup).ToListAsync();
 
@@ -1589,7 +1589,7 @@ public class FileStorageService<T> //: IFileStorageService
                         ProviderKey = r.ProviderKey
                     });
 
-        return resultList.SingleOrDefault();
+        return new List<ThirdPartyParams>(resultList.ToList());
     }
 
     public Task<List<FileEntry>> GetThirdPartyFolderAsync(int folderType = 0)

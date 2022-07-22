@@ -203,7 +203,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <short>Get third party list</short>
     /// <returns>Connected providers</returns>
     [HttpGet("thirdparty/backup")]
-    public async Task<ThirdPartyParams> GetBackupThirdPartyAccountAsync()
+    public async Task<IEnumerable<ThirdPartyParams>> GetBackupThirdPartyAccountAsync()
     {
         return await _fileStorageServiceThirdparty.GetBackupThirdPartyAsync();
     }
