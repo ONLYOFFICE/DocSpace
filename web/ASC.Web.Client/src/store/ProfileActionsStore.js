@@ -194,6 +194,7 @@ class ProfileActionsStore {
     if (debugInfo) {
       actions.splice(3, 0, {
         key: "DebugBtn",
+        icon: "/static/images/info.react.svg",
         label: "Debug Info",
         onClick: this.onDebugClick,
       });
