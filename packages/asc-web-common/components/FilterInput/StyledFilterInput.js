@@ -27,7 +27,7 @@ const StyledFilterInput = styled.div`
 
   .filter-input_selected-row {
     width: 100%;
-    height: 32px;
+    min-height: 32px;
 
     display: flex;
     flex-direction: row;
