@@ -75,7 +75,7 @@ const ArticleProfile = (props) => {
             directionX="left"
             directionY="top"
             iconName="/static/images/vertical-dots.react.svg"
-            size={15}
+            size={32}
             isFill
             getData={() => getActions(t)}
             isDisabled={false}
