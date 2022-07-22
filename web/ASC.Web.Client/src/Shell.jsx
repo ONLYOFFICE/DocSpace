@@ -26,9 +26,8 @@ import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
 import { useThemeDetector } from "./helpers/utils";
 import { isMobileOnly } from "react-device-detect";
-import AboutDialog from "./components/pages/About/AboutDialog";
-import DebugInfoDialog from "./components/pages/DebugInfo";
 import IndicatorLoader from "./components/IndicatorLoader";
+import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -204,11 +203,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     roomsMode,
     setSnackbarExist,
     userTheme,
-    isAboutDialogVisible,
-    setIsAboutDialogVisible,
-    buildVersionInfo,
-    isDebugDialogVisible,
-    setIsDebugDialogVisible,
     user,
   } = rest;
 
@@ -534,17 +528,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         {isEditor || isLogin || !isMobileOnly ? <></> : <NavMenu />}
         <IndicatorLoader />
         <ScrollToTop />
-        <AboutDialog
-          t={t}
-          visible={isAboutDialogVisible}
-          onClose={() => setIsAboutDialogVisible(false)}
-          personal={personal}
-          buildVersionInfo={buildVersionInfo}
-        />
-        <DebugInfoDialog
-          visible={isDebugDialogVisible}
-          onClose={() => setIsDebugDialogVisible(false)}
-        />
+        <DialogsWrapper t={t} />
         <Main isDesktop={isDesktop}>
           <Switch>
             <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
@@ -587,7 +571,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 };
 
-const ShellWrapper = inject(({ auth, backup, profileActionsStore }) => {
+const ShellWrapper = inject(({ auth, backup }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
 
   const {
@@ -601,16 +585,9 @@ const ShellWrapper = inject(({ auth, backup, profileActionsStore }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
-    buildVersionInfo,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
-  const {
-    isAboutDialogVisible,
-    setIsAboutDialogVisible,
-    isDebugDialogVisible,
-    setIsDebugDialogVisible,
-  } = profileActionsStore;
 
   return {
     loadBaseInfo: async () => {
@@ -642,11 +619,6 @@ const ShellWrapper = inject(({ auth, backup, profileActionsStore }) => {
         ? "Dark"
         : "Base"
       : auth?.userStore?.user?.theme,
-    isAboutDialogVisible,
-    setIsAboutDialogVisible,
-    buildVersionInfo,
-    isDebugDialogVisible,
-    setIsDebugDialogVisible,
   };
 })(observer(Shell));
 
