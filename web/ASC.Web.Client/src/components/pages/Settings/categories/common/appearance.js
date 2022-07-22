@@ -16,6 +16,8 @@ import DropDownContainer from "@appserver/components/drop-down";
 
 import HexColorPickerComponent from "./sub-components/hexColorPicker";
 import { isMobileOnly } from "react-device-detect";
+
+import Loaders from "@appserver/common/components/Loaders";
 const StyledComponent = styled.div`
   .container {
     display: flex;
@@ -26,27 +28,6 @@ const StyledComponent = styled.div`
     height: 46px;
     margin-right: 12px;
   }
-  /* #color-scheme_1 {
-    background: ${globalColors.colorSchemeDefault_1};
-  }
-  #color-scheme_2 {
-    background: ${globalColors.colorSchemeDefault_2};
-  }
-  #color-scheme_3 {
-    background: ${globalColors.colorSchemeDefault_3};
-  }
-  #color-scheme_4 {
-    background: ${globalColors.colorSchemeDefault_4};
-  }
-  #color-scheme_5 {
-    background: ${globalColors.colorSchemeDefault_5};
-  }
-  #color-scheme_6 {
-    background: ${globalColors.colorSchemeDefault_6};
-  }
-  #color-scheme_7 {
-    background: ${globalColors.colorSchemeDefault_7};
-  } */
 
   .add-theme {
     background: #d0d5da;
@@ -57,7 +38,7 @@ const StyledComponent = styled.div`
 `;
 
 const Appearance = (props) => {
-  const { setColorScheme, colorScheme } = props;
+  const { appearanceTheme, selectedThemeId, sendAppearanceTheme } = props;
 
   const [selectedColor, setSelectedColor] = useState(1);
 
@@ -101,81 +82,7 @@ const Appearance = (props) => {
   const [isEditDialog, setIsEditDialog] = useState(false);
   const [isAddThemeDialog, setIsAddThemeDialog] = useState(false);
 
-  const arrayTheme = [
-    {
-      id: 1,
-      theme: {
-        accentColor: "#4781D1",
-        buttonsMain: "#5299E0",
-        textColor: "#FFFFFF",
-      },
-      isSelected: true,
-    },
-    {
-      id: 2,
-      theme: {
-        accentColor: "#F97A0B",
-        buttonsMain: "#FF9933",
-        textColor: "#FFFFFF",
-      },
-      isSelected: false,
-    },
-    {
-      id: 3,
-      theme: {
-        accentColor: "#2DB482",
-        buttonsMain: "#22C386",
-        textColor: "#FFFFFF",
-      },
-      isSelected: false,
-    },
-    {
-      id: 4,
-      theme: {
-        accentColor: "#F2675A",
-        buttonsMain: "#F27564",
-        textColor: "#FFFFFF",
-      },
-      isSelected: false,
-    },
-    {
-      id: 5,
-      theme: {
-        accentColor: "#6D4EC2",
-        buttonsMain: "#8570BD",
-        textColor: "#FFFFFF",
-      },
-      isSelected: false,
-    },
-    {
-      id: 6,
-      theme: {
-        accentColor: "#11A4D4",
-        buttonsMain: "#13B7EC",
-        textColor: "#FFFFFF",
-      },
-      isSelected: false,
-    },
-    {
-      id: 7,
-      theme: {
-        accentColor: "#444444",
-        buttonsMain: "#6E6E6E",
-        textColor: "#FFFFFF",
-      },
-      isSelected: false,
-    },
-  ];
-
-  const [selectTheme, setSelectTheme] = useState({
-    id: 1,
-    theme: {
-      accentColor: "#4781D1",
-      buttonsMain: "#5299E0",
-      textColor: "#FFFFFF",
-    },
-    isSelected: true,
-  });
+  const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
 
   const [changeTheme, setChangeTheme] = useState([]);
 
@@ -243,21 +150,29 @@ const Appearance = (props) => {
 
     const colorNumber = +e.target.id;
 
-    console.log("e.target.id", e.target.id);
-    setSelectedColor(colorNumber);
+    setSelectThemeId(colorNumber);
 
     //TODO: find id and give item
+    //TODO: if changeTheme array = 0, then appearanceTheme, else changeTheme array
+    // const theme = changeTheme?.find((item) => item.id === colorNumber);
 
-    //TODO: if time array = 0, then arrayTheme, else time array
-    const theme = arrayTheme.find((item) => item.id === colorNumber);
-    theme.isSelected = true;
-    console.log("theme", theme);
+    // If theme has already been edited before
+    // if (theme) {
+    //   theme.isSelected = true;
 
-    setSelectTheme(theme);
+    //   setSelectThemeId(theme);
+    // } else {
+    //    If theme not has already been edited before
+    //   const theme = appearanceTheme.find((item) => item.id === colorNumber);
+
+    //   theme.isSelected = true;
+
+    //   setSelectThemeId(theme);
+    // }
   };
 
   const onShowCheck = (colorNumber) => {
-    return selectedColor && selectedColor === colorNumber && checkImg;
+    return selectThemeId && selectThemeId === colorNumber && checkImg;
   };
 
   const onChangePreviewTheme = (e) => {
@@ -265,16 +180,16 @@ const Appearance = (props) => {
   };
 
   const onSaveSelectedColor = () => {
-    setColorScheme(selectedColor);
+    sendAppearanceTheme({ selected: selectThemeId });
   };
 
   const onClickEdit = () => {
-    arrayTheme.map((item) => {
+    appearanceTheme.map((item) => {
       if (item.id === selectedColor) {
         // TODO: give store Accent color and Buttons main to id
 
-        setCurrentColorAccent(item.theme.accentColor);
-        setCurrentColorButtons(item.theme.buttonsMain);
+        setCurrentColorAccent(item.accentColor);
+        setCurrentColorButtons(item.buttonsMain);
       }
     });
 
@@ -353,12 +268,19 @@ const Appearance = (props) => {
   }, [appliedColorButtons]);
 
   const onSaveColorSchemeDialog = () => {
-    selectTheme.theme.accentColor = currentColorAccent;
-    selectTheme.theme.buttonsMain = currentColorButtons;
+    // selectTheme.theme.accentColor = currentColorAccent;
+    // selectTheme.theme.buttonsMain = currentColorButtons;
 
-    setChangeTheme([...changeTheme, selectTheme]);
+    const theme = {
+      id: selectTheme.id,
+      accentColor: currentColorAccent,
+      buttonsMain: currentColorButtons,
+      textColor: "#FFFFFF",
+    };
 
-    onCloseColorSchemeDialog();
+    //setChangeTheme([...changeTheme, theme]);
+
+    // onCloseColorSchemeDialog();
   };
 
   const nodeHexColorPickerButtons = viewMobile ? (
@@ -442,24 +364,21 @@ const Appearance = (props) => {
     ></div>
   );
 
-  console.log(
-    "currentColorAccent,currentColorButtons,selectTheme,changeTheme ",
-    currentColorAccent,
-    currentColorButtons,
-    selectTheme,
-    changeTheme
-  );
+  if (!(selectThemeId && selectedThemeId && appearanceTheme)) {
+    return <Loaders.Rectangle />;
+  }
 
   return (
     <StyledComponent>
       <div>Color</div>
 
       <div className="container">
-        {arrayTheme.map((item) => {
+        {appearanceTheme.map((item, index) => {
           return (
             <div
+              key={index}
               id={item.id}
-              style={{ background: item.theme.accentColor }}
+              style={{ background: item.accentColor }}
               className="box"
               onClick={onColorSelection}
             >
@@ -467,27 +386,7 @@ const Appearance = (props) => {
             </div>
           );
         })}
-        {/* <div id="color-scheme_1" className="box" onClick={onColorSelection}>
-          {onShowCheck(1)}
-        </div>
-        <div id="color-scheme_2" className="box" onClick={onColorSelection}>
-          {onShowCheck(2)}
-        </div>
-        <div id="color-scheme_3" className="box" onClick={onColorSelection}>
-          {onShowCheck(3)}
-        </div>
-        <div id="color-scheme_4" className="box" onClick={onColorSelection}>
-          {onShowCheck(4)}
-        </div>
-        <div id="color-scheme_5" className="box" onClick={onColorSelection}>
-          {onShowCheck(5)}
-        </div>
-        <div id="color-scheme_6" className="box" onClick={onColorSelection}>
-          {onShowCheck(6)}
-        </div>
-        <div id="color-scheme_7" className="box" onClick={onColorSelection}>
-          {onShowCheck(7)}
-        </div> */}
+
         {/* <div className="add-theme box" onClick={onAddTheme}>
           <img src="/static/images/plus.theme.svg" />
         </div> */}
@@ -518,10 +417,15 @@ const Appearance = (props) => {
 
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
-  const { colorScheme, setColorScheme } = settingsStore;
+  const {
+    appearanceTheme,
+    selectedThemeId,
+    sendAppearanceTheme,
+  } = settingsStore;
 
   return {
-    colorScheme,
-    setColorScheme,
+    appearanceTheme,
+    selectedThemeId,
+    sendAppearanceTheme,
   };
 })(observer(Appearance));
