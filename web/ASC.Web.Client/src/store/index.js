@@ -28,11 +28,8 @@ const store = {
   backup: backupStore,
   common: commonStore,
   bannerStore: bannerStore,
-<<<<<<< .mine
   ssoStore: ssoStore,
-=======
   profileActionsStore: profileActionsStore,
->>>>>>> .theirs
 };
 
 export default store;
