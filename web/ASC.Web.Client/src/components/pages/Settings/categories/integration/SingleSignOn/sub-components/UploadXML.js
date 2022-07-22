@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { ReactSVG } from "react-svg";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -8,17 +7,13 @@ import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import FieldContainer from "@appserver/components/field-container";
 import Text from "@appserver/components/text";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 import SimpleTextInput from "./SimpleTextInput";
 import FileInput from "@appserver/components/file-input";
 import UploadIcon from "../../../../../../../../public/images/actions.upload.react.svg";
 import { Base } from "@appserver/components/themes";
 
-const uploadIcon = <ReactSVG src="/images/actions.upload.react.svg" />;
-
 const StyledUploadIcon = styled(UploadIcon)`
-  ${commonIconsStyles}
   path {
     stroke: ${(props) =>
       props.isDisabled

@@ -33,7 +33,7 @@ const CertificatesTable = (props) => {
       {
         key: "delete",
         label: t("Common:Delete"),
-        icon: "static/images/button.trash.react.svg",
+        icon: "static/images/catalog.trash.react.svg",
         onClick: onDelete,
       },
     ];
