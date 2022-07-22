@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { roomTypes } from "../../roomTypes";
+import { roomTypes } from "../../data";
 
 import RoomType from "../../sub-components/RoomType";
 

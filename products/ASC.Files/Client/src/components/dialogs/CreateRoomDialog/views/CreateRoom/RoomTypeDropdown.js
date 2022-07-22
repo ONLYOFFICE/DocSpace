@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { roomTypes } from "../../roomTypes";
+import { roomTypes } from "../../data";
 import RoomType from "../../sub-components/RoomType";
 
 const StyledRoomTypeDropdown = styled.div`
@@ -36,10 +36,7 @@ const StyledRoomTypeDropdown = styled.div`
 
 const RoomTypeDropdown = ({ t, currentRoomType, setRoomType }) => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const toggleIsOpen = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleIsOpen = () => setIsOpen(!isOpen);
 
   const [currentRoom] = roomTypes.filter(
     (room) => room.type === currentRoomType
