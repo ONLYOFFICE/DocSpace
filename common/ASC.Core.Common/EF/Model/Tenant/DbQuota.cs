@@ -108,9 +108,7 @@ public static class DbQuotaExtension
 
             entity.Property(e => e.Features)
                 .HasColumnName("features")
-                .HasColumnType("text")
-                .HasCharSet("utf8")
-                .UseCollation("utf8_general_ci");
+                .HasColumnType("text");
 
             entity.Property(e => e.MaxFileSize)
                 .HasColumnName("max_file_size")

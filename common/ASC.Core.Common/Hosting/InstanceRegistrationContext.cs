@@ -26,8 +26,8 @@
 
 namespace ASC.Core.Common.Hosting;
 
-public class MySqlIntegrationEventLogContext : InstanceRegistrationContext { }
-public class PostgreSqlIntegrationEventLogContext : InstanceRegistrationContext { }
+public class MySqlInstanceRegistrationContext : InstanceRegistrationContext { }
+public class PostgreSqlInstanceRegistrationContext : InstanceRegistrationContext { }
 
 public class InstanceRegistrationContext : BaseDbContext
 {
@@ -46,8 +46,8 @@ public class InstanceRegistrationContext : BaseDbContext
         {
             return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
-                    { Provider.MySql, () => new MySqlIntegrationEventLogContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlIntegrationEventLogContext() } ,
+                    { Provider.MySql, () => new MySqlInstanceRegistrationContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlInstanceRegistrationContext() } ,
                 };
         }
     }

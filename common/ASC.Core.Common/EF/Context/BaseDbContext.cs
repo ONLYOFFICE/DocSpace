@@ -70,11 +70,11 @@ public class BaseDbContext : DbContext
     {
         optionsBuilder.UseLoggerFactory(LoggerFactory);
         optionsBuilder.EnableSensitiveDataLogging();
-        optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomMySqlMigrationsSqlGenerator>();
         _provider = GetProviderByConnectionString();
         switch (_provider)
         {
             case Provider.MySql:
+                optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomMySqlMigrationsSqlGenerator>();
                 optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, providerOptions =>
                 {
                     if (!string.IsNullOrEmpty(MigrateAssembly))

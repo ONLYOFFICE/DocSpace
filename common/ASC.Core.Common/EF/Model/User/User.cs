@@ -53,7 +53,6 @@ public class User : BaseEntity, IMapFrom<UserInfo>
     public bool Removed { get; set; }
     public DateTime CreateDate { get; set; }
     public DateTime LastModified { get; set; }
-    public List<UserGroup> Groups { get; set; }
 
     public override object[] GetKeys()
     {
@@ -89,11 +88,13 @@ public static class DbUserExtension
 
     private static void MySqlAddUser(this ModelBuilder modelBuilder)
     {
-        modelBuilder.MySqlAddUserGroup();
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("core_user")
                 .HasCharSet("utf8");
+
+            entity.HasKey(e => e.Id)
+                .HasName("PRIMARY");
 
             entity.HasIndex(e => e.Email)
                 .HasDatabaseName("email");
