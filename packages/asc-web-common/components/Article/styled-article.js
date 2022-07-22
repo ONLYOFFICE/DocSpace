@@ -259,7 +259,7 @@ const StyledArticleProfile = styled.div`
   padding: 16px 0;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   width: ${(props) =>
     !props.tablet
       ? "211px"
@@ -298,11 +298,6 @@ const StyledArticleProfile = styled.div`
   border-top: ${(props) => props.theme.catalog.profile.borderTop};
   background-color: ${(props) => props.theme.catalog.profile.background};
 
-  .userName {
-    max-width: 120px;
-    white-space: normal;
-  }
-
   .option-button {
     margin-left: auto;
 
@@ -323,6 +318,12 @@ const StyledArticleProfile = styled.div`
 
 StyledArticleProfile.defaultProps = { theme: Base };
 
+const StyledUserName = styled.div`
+  display: flex;
+  flex-direction: ${(props) => (props.length > 18 ? "column" : "row")};
+  max-width: 131px;
+`;
+
 export {
   StyledArticle,
   StyledArticleHeader,
@@ -333,4 +334,5 @@ export {
   StyledControlContainer,
   StyledCrossIcon,
   StyledArticleProfile,
+  StyledUserName,
 };

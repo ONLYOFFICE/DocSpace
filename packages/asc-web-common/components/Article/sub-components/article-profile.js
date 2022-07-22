@@ -7,7 +7,7 @@ import Text from "@appserver/components/text";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import ContextMenu from "@appserver/components/context-menu";
 import { isTablet } from "@appserver/components/utils/device";
-import { StyledArticleProfile } from "../styled-article";
+import { StyledArticleProfile, StyledUserName } from "../styled-article";
 
 const ArticleProfile = (props) => {
   const { user, showText, getUserRole, getActions } = props;
@@ -34,6 +34,7 @@ const ArticleProfile = (props) => {
   };
 
   const model = getActions(t);
+  const username = user.displayName.split(" ");
 
   return (
     <StyledArticleProfile showText={showText} tablet={tablet}>
@@ -56,9 +57,16 @@ const ArticleProfile = (props) => {
       </div>
       {(!tablet || showText) && (
         <>
-          <Text className="userName" fontWeight={600} noSelect truncate>
-            {user.displayName}
-          </Text>
+          <StyledUserName length={user.displayName.length}>
+            <Text fontWeight={600} noSelect truncate>
+              {username[0]}
+              &nbsp;
+            </Text>
+            <Text fontWeight={600} noSelect truncate>
+              {username[1]}
+            </Text>
+          </StyledUserName>
+
           <ContextMenuButton
             className="option-button"
             iconClassName="option-button-icon"
