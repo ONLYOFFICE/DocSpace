@@ -35,13 +35,15 @@ const FileNameCell = ({
           hasAccess={true}
           checked={checked}
         >
-          <div className="table-container_element">{element}</div>
-          <Checkbox
-            className="table-container_row-checkbox"
-            onChange={onChange}
-            isChecked={checked}
-            title={t("Common:TitleSelectFile")}
-          />
+          <div className="table-container_element-container">
+            <div className="table-container_element">{element}</div>
+            <Checkbox
+              className="table-container_row-checkbox"
+              onChange={onChange}
+              isChecked={checked}
+              title={t("Common:TitleSelectFile")}
+            />
+          </div>
         </TableCell>
       )}
 

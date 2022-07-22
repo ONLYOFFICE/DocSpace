@@ -2,7 +2,7 @@ import { isMobile } from "react-device-detect";
 import styled from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
 const StyledContainer = styled.div`
-  max-width: 216px;
+  max-width: 211px;
   margin-left: 1px;
 
   @media ${tablet} {
