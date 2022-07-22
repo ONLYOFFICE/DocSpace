@@ -26,9 +26,15 @@
 
 namespace AutoMigrationCreator;
 
-public static class MigrationCreator
+public class MigrationCreator
 {
-    public static void RunCreateMigrations()
+    private readonly DbContextActivator _dbContextActivator;
+
+    public MigrationCreator(string dbConnectionString)
+    {
+        _dbContextActivator = new DbContextActivator(dbConnectionString);
+    }
+    public void RunCreateMigrations(ProviderInfo[] providersInfo)
     {
         var counter = 0;
 
@@ -38,7 +44,8 @@ public static class MigrationCreator
 
             foreach (var contextType in ctxTypesFinder.GetDependetContextsTypes())
             {
-                var context = DbContextActivator.CreateInstance(contextType);
+                var providerInfo = providersInfo.Where(e => contextType.Name.Contains(e.Provider.ToString())).FirstOrDefault();
+                var context = _dbContextActivator.CreateInstance(contextType, providerInfo.ProviderFullName);
 
                 var modelDiffChecker = new ModelDifferenceChecker(context);
 
@@ -47,9 +54,9 @@ public static class MigrationCreator
                     continue;
                 }
 
-                context = DbContextActivator.CreateInstance(contextType); //Hack: refresh context
+                context = _dbContextActivator.CreateInstance(contextType, providerInfo.ProviderFullName); //Hack: refresh context
 
-                var migrationGenerator = new MigrationGenerator(context, projectInfo);
+                var migrationGenerator = new MigrationGenerator(context, projectInfo, providerInfo.Provider);
                 migrationGenerator.Generate();
 
                 counter++;
@@ -59,7 +66,7 @@ public static class MigrationCreator
         Console.WriteLine($"Created {counter} migrations");
     }
 
-    public static void RunApplyMigrations(string path)
+    public void RunApplyMigrations(string path, string dbProvider)
     {
         var counter = 0;
 
@@ -69,7 +76,7 @@ public static class MigrationCreator
 
             foreach (var contextType in ctxTypesFinder.GetIndependentContextsTypes())
             {
-                var context = DbContextActivator.CreateInstance(contextType);
+                var context = _dbContextActivator.CreateInstance(contextType, dbProvider);
 
                 context.Migrate();
 

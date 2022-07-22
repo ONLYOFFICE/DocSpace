@@ -30,42 +30,43 @@ public class MigrationGenerator
 {
     private readonly BaseDbContext _dbContext;
     private readonly ProjectInfo _projectInfo;
-    private readonly string _providerName;
     private readonly string _typeName;
-    private string _contextFolderName;
     private readonly Regex _pattern = new Regex(@"\d+$", RegexOptions.Compiled);
+    private readonly string _providerName;
+    private string _contextFolderName;
+
     private string ContextFolderName
     {
         get
         {
             if (_contextFolderName == null)
             {
-                _contextFolderName = _typeName[(_providerName.Length)..] + _providerName;
+                _contextFolderName = _typeName[_providerName.Length..] + _providerName;
             }
 
             return _contextFolderName;
         }
     }
 
-    public MigrationGenerator(BaseDbContext context, ProjectInfo projectInfo)
+    public MigrationGenerator(BaseDbContext context, ProjectInfo projectInfo, Provider provider)
     {
         _dbContext = context;
         _projectInfo = projectInfo;
         _typeName = _dbContext.GetType().Name;
-        _providerName = GetProviderName();
+        _providerName = provider.ToString();
     }
 
     public void Generate()
     {
-        var scaffolder = EFCoreDesignTimeServices.GetServiceProvider(_dbContext)
-            .GetService<IMigrationsScaffolder>();
+            var scaffolder = EFCoreDesignTimeServices.GetServiceProvider(_dbContext)
+                .GetService<IMigrationsScaffolder>();
 
-        var name = GenerateMigrationName();
+            var name = GenerateMigrationName();
 
-        var migration = scaffolder.ScaffoldMigration(name,
-            $"{_projectInfo.AssemblyName}", $"Migrations.{_providerName}.{ContextFolderName}");
+            var migration = scaffolder.ScaffoldMigration(name,
+                $"{_projectInfo.AssemblyName}", $"Migrations.{_providerName}.{ContextFolderName}");
 
-        SaveMigration(migration);
+            SaveMigration(migration);
     }
 
     private void SaveMigration(ScaffoldedMigration migration)
@@ -110,19 +111,5 @@ public class MigrationGenerator
         }
 
         return ContextFolderName + "_Upgrade" + (int.Parse(migrationNumber) + 1);
-    }
-
-    private string GetProviderName()
-    {
-        var providers = Enum.GetNames(typeof(Provider));
-        var lowerTypeName = _typeName.ToLower();
-        var provider = providers.SingleOrDefault(p => lowerTypeName.Contains(p.ToLower()));
-
-        if (provider == null)
-        {
-            throw new Exception("Provider not support");
-        }
-
-        return provider;
     }
 }

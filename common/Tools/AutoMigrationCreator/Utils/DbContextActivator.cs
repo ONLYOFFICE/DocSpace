@@ -28,13 +28,18 @@ namespace AutoMigrationCreator;
 
 public class DbContextActivator
 {
-    public static string DbConnectionString { get; set; }
-    public static BaseDbContext CreateInstance(Type contextType)
+    private readonly string _dbConnectionString;
+    public DbContextActivator(string dbConnectionString)
+    {
+        _dbConnectionString = dbConnectionString;
+    }
+    public BaseDbContext CreateInstance(Type contextType, string providerName)
     {
         var context = (BaseDbContext)Activator.CreateInstance(contextType);
         context.ConnectionStringSettings = new ConnectionStringSettings
         {
-            ConnectionString = DbConnectionString
+            ConnectionString = _dbConnectionString,
+            ProviderName = providerName
         };
 
         return context;

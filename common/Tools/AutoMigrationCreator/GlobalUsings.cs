@@ -45,3 +45,4 @@ global using Microsoft.EntityFrameworkCore.Migrations.Design;
 global using Microsoft.EntityFrameworkCore.Migrations.Operations;
 global using Microsoft.EntityFrameworkCore.Storage;
 global using Microsoft.Extensions.DependencyInjection;
+global using AutoMigrationCreator.Models;

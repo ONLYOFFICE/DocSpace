@@ -36,4 +36,7 @@ public class Options
 
     [Option(shortName: 'd', longName: "db-connection-string", Default = "", HelpText = "Сonnection string for your database", MetaValue = "string")]
     public string DbConnectionString { get; set; }
+
+    [Option(shortName: 'b', longName: "db-provider", Default = "", HelpText = "Your database provider", MetaValue = "string")]
+    public string DbProvider { get; set; }
 }

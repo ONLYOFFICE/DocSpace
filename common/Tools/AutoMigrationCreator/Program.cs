@@ -30,6 +30,10 @@ class Program
 {
     static void Main(string[] args)
     {
+        //args = new string[1];
+        //args[0] = "-ctrue";
+        //args[0] = @"-pC:\GitHub\Developer\common\Tools\AutoMigrationCreator\bin\Debug\net6.0";
+
         Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
         {
             if (!(bool)o.Create && o.Path == "")
@@ -38,6 +42,7 @@ class Program
                     "First parametr: -p string, --path=string\r\n" +
                     "Second parametr: -c boolean, --create=boolean\r\n" +
                     "Third parametr: -d string, --db-connetion-string=string\r\n" +
+                    "Fourth parametr: -b string --db-provider=string\r\n" +
                     "First and second parameters are mutually exclusive");
             }
 
@@ -46,27 +51,27 @@ class Program
                 throw new Exception("Incorrect combination of parameters. First and second parameters are mutually exclusive");
             }
 
-            if (o.DbConnectionString == "")
-            {
-                var builder = new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder()
                  .AddJsonFile($"appsettings.json", true);
-                var config = builder.Build();
+            var config = builder.Build();
 
-                DbContextActivator.DbConnectionString = config["ConnectionString"];
-            }
-            else
-            {
-                DbContextActivator.DbConnectionString = o.DbConnectionString;
-            }
+            var dbConnectionString = o.DbConnectionString == "" ? config["DefaultConnectionString"] : o.DbConnectionString;
 
-            if (o.Create == true)
+            var migrationCreator = new MigrationCreator(dbConnectionString);
+
+            if (o.Create.HasValue && o.Create.Value)
             {
-                MigrationCreator.RunCreateMigrations();
+                var section = config.GetSection("Providers");
+                var providersInfo = section.Get<ProviderInfo[]>();
+
+                migrationCreator.RunCreateMigrations(providersInfo);
             }
 
             if (o.Path != "")
             {
-                MigrationCreator.RunApplyMigrations(o.Path);
+                var dbProvider = o.DbProvider == "" ? config["DefaultDbProvider"] : o.DbProvider;
+
+                migrationCreator.RunApplyMigrations(o.Path, dbProvider);
             }
 
         });
