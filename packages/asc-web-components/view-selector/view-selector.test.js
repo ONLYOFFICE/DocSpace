@@ -5,6 +5,7 @@ import ViewSelector from ".";
 
 const baseProps = {
   isDisabled: false,
+  isFilter: false,
   onChangeView: jest.fn(),
   viewAs: "row",
   viewSettings: [
@@ -55,6 +56,12 @@ describe("<ViewSelector />", () => {
     const wrapper = mount(<ViewSelector {...baseProps} isDisabled />);
 
     expect(wrapper.prop("isDisabled")).toEqual(true);
+  });
+
+  it("accepts isFilter", () => {
+    const wrapper = mount(<ViewSelector {...baseProps} isFilter />);
+
+    expect(wrapper.prop("isFilter")).toEqual(true);
   });
 
   it("accepts viewAs", () => {

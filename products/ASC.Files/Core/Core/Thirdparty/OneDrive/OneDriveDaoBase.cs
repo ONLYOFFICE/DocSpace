@@ -39,8 +39,9 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         SetupInfo setupInfo,
         ILogger monitor,
         FileUtility fileUtility,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
     }
 

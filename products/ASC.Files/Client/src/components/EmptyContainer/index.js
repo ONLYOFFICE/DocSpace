@@ -5,6 +5,7 @@ import EmptyFilterContainer from "./EmptyFilterContainer";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import { FileAction } from "@appserver/common/constants";
 import { isMobile } from "react-device-detect";
+import { Events } from "../../helpers/constants";
 
 const linkStyles = {
   isHovered: true,
@@ -14,29 +15,37 @@ const linkStyles = {
   display: "flex",
 };
 
-const EmptyContainer = ({
-  isFiltered,
-  setAction,
-  isPrivacyFolder,
-  parentId,
-  isEncryptionSupport,
-  theme,
-}) => {
+const EmptyContainer = ({ isFiltered, parentId, theme }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
   const onCreate = (e) => {
     const format = e.currentTarget.dataset.format || null;
-    setAction({
-      type: FileAction.Create,
+
+    const event = new Event(Events.CREATE);
+
+    const payload = {
       extension: format,
       id: -1,
-    });
+    };
+    event.payload = payload;
+
+    window.dispatchEvent(event);
   };
+
+  const onCreateRoom = React.useCallback(() => {
+    const event = new Event(Events.ROOM_CREATE);
+
+    window.dispatchEvent(event);
+  }, []);
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
   ) : parentId === 0 ? (
-    <RootFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
+    <RootFolderContainer
+      onCreate={onCreate}
+      linkStyles={linkStyles}
+      onCreateRoom={onCreateRoom}
+    />
   ) : (
     <EmptyFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
   );
@@ -50,17 +59,16 @@ export default inject(
       withSubfolders,
       filterType,
     } = filesStore.filter;
-    const isPrivacyFolder = treeFoldersStore.isPrivacyFolder;
+    const { isPrivacyFolder } = treeFoldersStore;
+
     const isFiltered =
       (authorType || search || !withSubfolders || filterType) &&
       !(isPrivacyFolder && isMobile);
 
     return {
-      isEncryptionSupport: auth.settingsStore.isEncryptionSupport,
       theme: auth.settingsStore.theme,
       isFiltered,
-      setAction: filesStore.fileActionStore.setAction,
-      isPrivacyFolder,
+
       parentId: selectedFolderStore.parentId,
     };
   }

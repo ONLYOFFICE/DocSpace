@@ -25,7 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using JWT;
-using JWT.Algorithms;
 
 namespace ASC.Web.Files.Services.DocumentService;
 

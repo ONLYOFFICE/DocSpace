@@ -1,4 +1,30 @@
-﻿/*
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -49,7 +75,6 @@ using ASC.Calendar.iCalParser;
 using ASC.Calendar.Models;
 using ASC.Calendar.Notification;
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Security;
 using ASC.Common.Utils;
 using ASC.Common.Web;
@@ -66,9 +91,10 @@ using ASC.Web.Studio.Utility;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 using SecurityContext = ASC.Core.SecurityContext;
@@ -81,7 +107,7 @@ namespace ASC.Calendar.Controllers
     public class CalendarController : ControllerBase
     {
         private const int _monthCount = 3;
-        private static List<String> updatedEvents = new List<string>();
+        private static readonly List<String> updatedEvents = new List<string>();
         private ProductEntryPoint ProductEntryPoint { get; }
 
         private Tenant Tenant { get { return ApiContext.Tenant; } }
@@ -89,7 +115,7 @@ namespace ASC.Calendar.Controllers
         private AuthContext AuthContext { get; }
         private UserManager UserManager { get; }
         private DataProvider DataProvider { get; }
-        private ILog Log { get; }
+        private ILogger<CalendarController> Log { get; }
         private TenantManager TenantManager { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
         private CalendarWrapperHelper CalendarWrapperHelper { get; }
@@ -124,7 +150,7 @@ namespace ASC.Calendar.Controllers
             TenantManager tenantManager,
             TimeZoneConverter timeZoneConverter,
             DisplayUserSettingsHelper displayUserSettingsHelper,
-            IOptionsMonitor<ILog> option,
+            ILogger<CalendarController> option,
             DDayICalParser dDayICalParser,
             DataProvider dataProvider,
             IHttpContextAccessor httpContextAccessor,
@@ -152,7 +178,7 @@ namespace ASC.Calendar.Controllers
             Authentication = authentication;
             AuthorizationManager = authorizationManager;
             TenantManager = tenantManager;
-            Log = option.Get("ASC.Api");
+            Log = option;
             TimeZoneConverter = timeZoneConverter;
             ApiContext = apiContext;
             UserManager = userManager;
@@ -212,7 +238,7 @@ namespace ASC.Calendar.Controllers
             AllSeries = 2
         }
 
-        [Read("info")]
+        [HttpGet("info")]
         public Module GetModule()
         {
             ProductEntryPoint.Init();
@@ -227,7 +253,7 @@ namespace ASC.Calendar.Controllers
         /// Subscription list
         /// </short>
         /// <returns>List of subscriptions</returns>
-        [Read("subscriptions")]
+        [HttpGet("subscriptions")]
         public List<SubscriptionWrapper> LoadSubscriptions()
         {
             var result = new List<SubscriptionWrapper>();
@@ -274,7 +300,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="states">Updated subscription states</param>
         /// <visible>false</visible>
-        [Update("subscriptions/manage")]
+        [HttpPut("subscriptions/manage")]
         public void ManageSubscriptions(SubscriptionModel subscriptionModel)
         {
             var states = subscriptionModel.States;
@@ -309,7 +335,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="endDate">Period end date</param>
         /// <returns>Date list</returns>
         /// <visible>false</visible>
-        [Read("eventdays/{startDate}/{endDate}")]
+        [HttpGet("eventdays/{startDate}/{endDate}")]
         public List<ApiDateTime> GetEventDays(ApiDateTime startDate, ApiDateTime endDate)
         {
             var result = new List<CalendarWrapper>();
@@ -386,7 +412,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="startDate">Period start date</param>
         /// <param name="endDate">Period end date</param>
         /// <returns>List of calendars and subscriptions with events</returns>
-        [Read("calendars/{startDate}/{endDate}")]
+        [HttpGet("calendars/{startDate}/{endDate}")]
         public List<CalendarWrapper> LoadCalendars(ApiDateTime startDate, ApiDateTime endDate)
         {
             var result = LoadInternalCalendars();
@@ -443,7 +469,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="calendarId">Calendar ID</param>
         /// <returns>Calendar</returns>
-        [Read("{calendarId}")]
+        [HttpGet("{calendarId}")]
         public CalendarWrapper GetCalendarById(string calendarId)
         {
             int calId;
@@ -471,7 +497,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="calendarId">Calendar ID</param>
         /// <returns>iCal link</returns>
-        [Read("{calendarId}/icalurl")]
+        [HttpGet("{calendarId}/icalurl")]
         public object GetCalendariCalUrl(string calendarId)
         {
             var sig = Signature.Create(AuthContext.CurrentAccount.ID, calendarId);
@@ -493,7 +519,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="calendarId">Calendar ID</param>
         /// <returns>CalDav link</returns>
-        [Read("{calendarId}/caldavurl")]
+        [HttpGet("{calendarId}/caldavurl")]
         public string GetCalendarCalDavUrl(string calendarId)
         {
             var myUri = HttpContext.Request.GetUrlRewriter();
@@ -569,7 +595,7 @@ namespace ASC.Calendar.Controllers
                         }
                         catch (Exception exception)
                         {
-                            Log.Error("ERROR: " + exception.Message);
+                            Log.LogError("ERROR: " + exception.Message);
                             return "";
                         }
                     }
@@ -640,7 +666,7 @@ namespace ASC.Calendar.Controllers
                             var calendarIcs = GetCalendariCalString(calendarId, true);
 
                             var tenant = TenantManager.GetCurrentTenant();
-                            var caldavTask = new Task(() => CreateCaldavSharedEvents(calendarId, calendarIcs, myUri, userName, sharedCalendar.UserCalendar, SecurityContext.CurrentAccount, tenant.TenantId));
+                            var caldavTask = new Task(() => CreateCaldavSharedEvents(calendarId, calendarIcs, myUri, userName, sharedCalendar.UserCalendar, SecurityContext.CurrentAccount, tenant.Id));
                             caldavTask.Start();
 
                             return sharedCalUrl;
@@ -665,7 +691,7 @@ namespace ASC.Calendar.Controllers
 
             var calUrl = new Uri(new Uri(calDavServerUrl), "/caldav/" + curCaldavUserName + "/" + calDavGuid + (isShared ? "-shared" : "")).ToString();
 
-            Log.Info("RADICALE REWRITE URL: " + myUri);
+            Log.LogInformation("RADICALE REWRITE URL: " + myUri);
 
             var caldavCalendar = GetUserCaldavCalendar(calUrl, userName);
 
@@ -689,7 +715,8 @@ namespace ASC.Calendar.Controllers
         /// <param name="change">changes of event</param>
         /// <param name="key"></param>
         /// <visible>false</visible>
-        [Read("change_to_storage", false)] //NOTE: this method doesn't requires auth!!!
+        [AllowAnonymous]
+        [HttpGet("change_to_storage")] //NOTE: this method doesn't requires auth!!!
         public void ChangeOfCalendarStorage(string change, string key)
         {
             var authInterval = TimeSpan.FromHours(1);
@@ -717,7 +744,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="calendarId">Calendar ID</param>
         /// <param name="team">Project team</param>
-        [Delete("caldavprojcal")]
+        [HttpDelete("caldavprojcal")]
         public void DeleteCaldavCalendar(CaldavCalendarModel caldavCalendarModel)
         {
             var calendarId = caldavCalendarModel.CalendarId;
@@ -728,7 +755,7 @@ namespace ASC.Calendar.Controllers
                 var myUri = HttpContext.Request.GetUrlRewriter();
                 var caldavHost = myUri.Host;
 
-                var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                var currentTenantId = TenantManager.GetCurrentTenant().Id;
                 var deleteCaldavCalendar = new Thread(() =>
                 {
                     TenantManager.SetCurrentTenant(currentTenantId);
@@ -748,7 +775,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"Delete project caldav calendar: {ex.Message}");
+                Log.LogError($"Delete project caldav calendar: {ex.Message}");
             }
 
         }
@@ -762,7 +789,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="calendarId">ID of the calendar where the event belongs</param>
         /// <param name="uid">Event uid</param>
         /// <param name="responsibles">Task responsibles</param>
-        [Delete("caldavevent")]
+        [HttpDelete("caldavevent")]
         public void DeleteCaldavEvent(CaldavEventModel caldavEventModel)
         {
             var calendarId = caldavEventModel.CalendarId;
@@ -780,7 +807,7 @@ namespace ASC.Calendar.Controllers
                 }
                 else if (responsibles.Count > 0)
                 {
-                    var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                    var currentTenantId = TenantManager.GetCurrentTenant().Id;
                     var deleteCaldavEvent = new Thread(() =>
                     {
                         TenantManager.SetCurrentTenant(currentTenantId);
@@ -805,7 +832,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"Delete CRM caldav event: {ex.Message}");
+                Log.LogError($"Delete CRM caldav event: {ex.Message}");
             }
 
         }
@@ -820,7 +847,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="uid">Event uid</param>
         /// <param name="alert">Event notification type</param>
         /// <param name="responsibles">Task responsibles</param>
-        [Update("caldavevent")]
+        [HttpPut("caldavevent")]
         public void UpdateCaldavEvent(CaldavEventModel caldavEventModel)
         {
             var calendarId = caldavEventModel.CalendarId;
@@ -833,7 +860,7 @@ namespace ASC.Calendar.Controllers
                 if (responsibles.Count > 0)
                 {
                     var myUri = HttpContext.Request.GetUrlRewriter();
-                    var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                    var currentTenantId = TenantManager.GetCurrentTenant().Id;
                     var sharedCalendar = GetCalendarById(calendarId);
 
                     var currentUserId = Guid.Empty;
@@ -898,7 +925,7 @@ namespace ASC.Calendar.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"Error: {ex.Message}");
+                        Log.LogError($"Error: {ex.Message}");
                     }
                     finally
                     {
@@ -912,7 +939,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"Create/update CRM caldav event: {ex.Message}");
+                Log.LogError($"Create/update CRM caldav event: {ex.Message}");
             }
 
         }
@@ -951,7 +978,8 @@ namespace ASC.Calendar.Controllers
         /// <param name="eventInfo">event info</param>
         /// <param name="key"></param>
         /// <visible>false</visible>
-        [Read("caldav_delete_event", false)] //NOTE: this method doesn't requires auth!!!
+        [AllowAnonymous]
+        [HttpGet("caldav_delete_event")] //NOTE: this method doesn't requires auth!!!
         public void CaldavDeleteEvent(string eventInfo, string key)
         {
             var authInterval = TimeSpan.FromHours(1);
@@ -1017,8 +1045,8 @@ namespace ASC.Calendar.Controllers
 
             var tenant = TenantManager.GetCurrentTenant();
             var caldavTask = isShared
-                ? new Task(() => CreateCaldavSharedEvents(calDavGuid.ToString(), calendarIcs, myUri, email, icalendar, SecurityContext.CurrentAccount, tenant.TenantId))
-                : new Task(() => CreateCaldavEvents(calDavGuid.ToString(), myUri, email, icalendar, calendarIcs, tenant.TenantId));
+                ? new Task(() => CreateCaldavSharedEvents(calDavGuid.ToString(), calendarIcs, myUri, email, icalendar, SecurityContext.CurrentAccount, tenant.Id))
+                : new Task(() => CreateCaldavEvents(calDavGuid.ToString(), myUri, email, icalendar, calendarIcs, tenant.Id));
             caldavTask.Start();
 
             return calendarUrl;
@@ -1061,7 +1089,7 @@ namespace ASC.Calendar.Controllers
                 {
                     return "NotFound";
                 }
-                Log.Info("ERROR. Get calendar CalDav url: " + exception.Message);
+                Log.LogInformation("ERROR. Get calendar CalDav url: " + exception.Message);
                 return "";
             }
         }
@@ -1076,7 +1104,7 @@ namespace ASC.Calendar.Controllers
 
             var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
 
-            Log.Info("RADICALE REWRITE URL: " + myUri);
+            Log.LogInformation("RADICALE REWRITE URL: " + myUri);
 
             string[] numbers = Regex.Split(backgroundColor, @"\D+");
             var color = numbers.Length > 4 ? HexFromRGB(int.Parse(numbers[1]), int.Parse(numbers[2]), int.Parse(numbers[3])) : "#000000";
@@ -1114,7 +1142,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "CreateCalDav");
                 return "";
             }
         }
@@ -1128,7 +1156,8 @@ namespace ASC.Calendar.Controllers
         /// <param name="signature">Signature</param>
         /// <remarks>To get the feed you need to use the method returning the iCal feed link (it will generate the necessary signature)</remarks>
         /// <returns>Calendar iCal feed</returns>
-        [Read("{calendarId}/ical/{signature}", false)] //NOTE: this method doesn't requires auth!!!
+        [AllowAnonymous]
+        [HttpGet("{calendarId}/ical/{signature}")] //NOTE: this method doesn't requires auth!!!
         public IActionResult GetCalendariCalStream(string calendarId, string signature)
         {
             try
@@ -1160,13 +1189,13 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "GetCalendar");
             }
 
 
             FileStreamResult resp = null;
             var userId = Signature.Read<Guid>(signature, calendarId);
-            if (UserManager.GetUsers(userId).ID != Constants.LostUser.ID)
+            if (UserManager.GetUsers(userId).Id != Constants.LostUser.Id)
             {
                 var currentUserId = Guid.Empty;
                 if (AuthContext.IsAuthenticated)
@@ -1213,7 +1242,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="iCalUrl">iCal url</param>
         /// <param name="isTodo">Calendar for todo list</param>
         /// <returns>Created calendar</returns>
-        [Create]
+        [HttpPost]
         public CalendarWrapper CreateCalendar(CalendarModel calendar)
         {
             var sharingOptionsList = calendar.SharingOptions ?? new List<SharingParam>();
@@ -1293,7 +1322,7 @@ namespace ASC.Calendar.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Log.Info($"Error import events to new calendar by ical url: {ex.Message}");
+                    Log.LogInformation($"Error import events to new calendar by ical url: {ex.Message}");
                 }
 
             }
@@ -1318,7 +1347,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="sharingOptions">Calendar sharing options with other users</param>
         /// <param name="iCalUrl">iCal url</param>
         /// <returns>Updated calendar</returns>
-        [Update("{calendarId}")]
+        [HttpPut("{calendarId}")]
         public CalendarWrapper UpdateCalendar(string calendarId, CalendarModel calendar)
         {
             var name = calendar.Name;
@@ -1358,7 +1387,7 @@ namespace ASC.Calendar.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Log.Info($"Error import events to calendar by ical url: {ex.Message}");
+                    Log.LogInformation($"Error import events to calendar by ical url: {ex.Message}");
                 }
 
             }
@@ -1442,7 +1471,7 @@ namespace ASC.Calendar.Controllers
                     if (pic.Items.Count > 1)
                     {
                         oldSharingList.AddRange(from publicItem in pic.Items
-                                                where publicItem.ItemId != owner.ID.ToString()
+                                                where publicItem.ItemId != owner.Id.ToString()
                                                 select new SharingParam
                                                 {
                                                     Id = Guid.Parse(publicItem.ItemId),
@@ -1457,7 +1486,7 @@ namespace ASC.Calendar.Controllers
                         var calendarObjViewSettings = cal != null && cal.ViewSettings != null ? cal.ViewSettings.FirstOrDefault() : null;
                         var targetCalendar = DDayICalParser.ConvertCalendar(cal != null ? cal.GetUserCalendar(calendarObjViewSettings) : null);
 
-                        var caldavTask = new Task(() => UpdateSharedCalDavCalendar(name, description, backgroundColor, oldCal.calDavGuid, myUri, sharingOptionsList, events, calendarId, cal.calDavGuid, tenant.TenantId, DateTime.Now, targetCalendar.TimeZones[0], cal.TimeZone));
+                        var caldavTask = new Task(() => UpdateSharedCalDavCalendar(name, description, backgroundColor, oldCal.calDavGuid, myUri, sharingOptionsList, events, calendarId, cal.calDavGuid, tenant.Id, DateTime.Now, targetCalendar.TimeZones[0], cal.TimeZone));
                         caldavTask.Start();
                     }
 
@@ -1465,7 +1494,7 @@ namespace ASC.Calendar.Controllers
 
                     if (oldSharingList.Count > 0)
                     {
-                        var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                        var currentTenantId = TenantManager.GetCurrentTenant().Id;
                         var caldavHost = myUri.Host;
 
                         var replaceSharingEventThread = new Thread(() =>
@@ -1482,7 +1511,7 @@ namespace ASC.Calendar.Controllers
                                     {
                                         var currentUserName = user.Email.ToLower() + "@" + caldavHost;
                                         var userEmail = user.Email;
-                                        DataProvider.RemoveCaldavCalendar(currentUserName, userEmail, cal.calDavGuid, myUri, user.ID != cal.OwnerId);
+                                        DataProvider.RemoveCaldavCalendar(currentUserName, userEmail, cal.calDavGuid, myUri, user.Id != cal.OwnerId);
                                     }
                                 }
                                 else
@@ -1492,7 +1521,7 @@ namespace ASC.Calendar.Controllers
                                     {
                                         var userEmail = user.Email;
                                         var currentUserName = userEmail.ToLower() + "@" + caldavHost;
-                                        DataProvider.RemoveCaldavCalendar(currentUserName, userEmail, cal.calDavGuid, myUri, user.ID != cal.OwnerId);
+                                        DataProvider.RemoveCaldavCalendar(currentUserName, userEmail, cal.calDavGuid, myUri, user.Id != cal.OwnerId);
                                     }
                                 }
                             }
@@ -1544,7 +1573,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="alertType">Event alert type, in case alert type is set by default</param>
         /// <param name="hideEvents">Display type: show or hide events in calendar</param>
         /// <returns>Updated calendar</returns>
-        [Update("{calendarId}/view")]
+        [HttpPut("{calendarId}/view")]
         public CalendarWrapper UpdateCalendarView(string calendarId, CalendarModel calendar)
         {
 
@@ -1584,7 +1613,7 @@ namespace ASC.Calendar.Controllers
         /// Delete calendar
         /// </short>
         /// <param name="calendarId">Calendar ID</param>
-        [Delete("{calendarId}")]
+        [HttpDelete("{calendarId}")]
         public void RemoveCalendar(int calendarId)
         {
             var cal = DataProvider.GetCalendarById(calendarId);
@@ -1599,11 +1628,11 @@ namespace ASC.Calendar.Controllers
             var caldavGuid = DataProvider.RemoveCalendar(calendarId);
 
             var myUri = HttpContext.Request.GetUrlRewriter();
-            var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+            var currentTenantId = TenantManager.GetCurrentTenant().Id;
             var caldavHost = myUri.Host;
             if (caldavGuid != Guid.Empty)
             {
-                Log.Info("RADICALE REWRITE URL: " + myUri);
+                Log.LogInformation("RADICALE REWRITE URL: " + myUri);
 
                 var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
                 var currentUserEmail = DataProvider.CheckUserEmail(currentUser) ? UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email : null;
@@ -1644,7 +1673,7 @@ namespace ASC.Calendar.Controllers
                         var user = UserManager.GetUsers(sharingOption.itemId);
                         if (DataProvider.CheckUserEmail(user))
                         {
-                            DataProvider.RemoveCaldavCalendar(user.Email + "@" + caldavHost, user.Email, cal.calDavGuid, myUri, user.ID != cal.OwnerId);
+                            DataProvider.RemoveCaldavCalendar(user.Email + "@" + caldavHost, user.Email, cal.calDavGuid, myUri, user.Id != cal.OwnerId);
                         }
                     }
                     else
@@ -1654,7 +1683,7 @@ namespace ASC.Calendar.Controllers
                         {
                             if (DataProvider.CheckUserEmail(user))
                             {
-                                DataProvider.RemoveCaldavCalendar(user.Email + "@" + caldavHost, user.Email, cal.calDavGuid, myUri, user.ID != cal.OwnerId);
+                                DataProvider.RemoveCaldavCalendar(user.Email + "@" + caldavHost, user.Email, cal.calDavGuid, myUri, user.Id != cal.OwnerId);
                             }
                         }
                     }
@@ -1683,7 +1712,7 @@ namespace ASC.Calendar.Controllers
                                 var user = UserManager.GetUsers(sharingOption.itemId);
                                 if (DataProvider.CheckUserEmail(user))
                                 {
-                                    deleteEvent(fullAccess ? split[0] + "_write" : split[0], SharedEventsCalendar.CalendarId, user.Email, myUri, user.ID != evt.OwnerId);
+                                    deleteEvent(fullAccess ? split[0] + "_write" : split[0], SharedEventsCalendar.CalendarId, user.Email, myUri, user.Id != evt.OwnerId);
                                 }
                             }
                             else
@@ -1693,7 +1722,7 @@ namespace ASC.Calendar.Controllers
                                 {
                                     if (DataProvider.CheckUserEmail(user))
                                     {
-                                        var eventUid = user.ID == evt.OwnerId
+                                        var eventUid = user.Id == evt.OwnerId
                                                        ? split[0]
                                                        : fullAccess ? split[0] + "_write" : split[0];
 
@@ -1717,7 +1746,7 @@ namespace ASC.Calendar.Controllers
         /// Unsubscribe from event
         /// </short>
         /// <param name="eventId">Event ID</param>
-        [Delete("events/{eventId}/unsubscribe")]
+        [HttpDelete("events/{eventId}/unsubscribe")]
         public void UnsubscribeEvent(int eventId)
         {
             var evt = DataProvider.GetEventById(eventId);
@@ -1757,7 +1786,7 @@ namespace ASC.Calendar.Controllers
                 {
                     var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
 
-                    Log.Info("RADICALE REWRITE URL: " + myUri);
+                    Log.LogInformation("RADICALE REWRITE URL: " + myUri);
 
                     var currentUserName = email + "@" + myUri.Host;
 
@@ -1778,19 +1807,19 @@ namespace ASC.Calendar.Controllers
                     catch (HttpRequestException ex)
                     {
                         if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
-                            Log.Debug("ERROR: " + ex.Message);
+                            Log.LogDebug("ERROR: " + ex.Message);
                         else
-                            Log.Error("ERROR: " + ex.Message);
+                            Log.LogError(ex, "ERROR");
                     }
                     catch (Exception ex)
                     {
-                        Log.Error("ERROR: " + ex.Message);
+                        Log.LogError(ex, "ERROR: ");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Log.Error("ERROR: " + ex.Message);
+                Log.LogError(ex, "ERROR: ");
             }
 
         }
@@ -1803,7 +1832,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="eventUid">Event UID</param>
         /// <returns>Event History</returns>
-        [Read("events/{eventUid}/historybyuid")]
+        [HttpGet("events/{eventUid}/historybyuid")]
         public EventHistoryWrapper GetEventHistoryByUid(string eventUid)
         {
             if (string.IsNullOrEmpty(eventUid))
@@ -1824,7 +1853,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="eventId">Event ID</param>
         /// <returns>Event History</returns>
-        [Read("events/{eventId}/historybyid")]
+        [HttpGet("events/{eventId}/historybyid")]
         public EventHistoryWrapper GetEventHistoryById(int eventId)
         {
             if (eventId <= 0)
@@ -1852,7 +1881,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="isAllDayLong">Event duration type: all day long or not</param>
         /// <param name="sharingOptions">Event sharing access parameters</param>
         /// <returns>Event list</returns>
-        [Create("event")]
+        [HttpPost("event")]
         public List<EventWrapper> CreateEvent(EventModel eventModel)
         {
             var calendar = LoadInternalCalendars().First(x => (!x.IsSubscription && x.IsTodo != 1));
@@ -1882,7 +1911,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="isAllDayLong">Event duration type: all day long or not</param>
         /// <param name="sharingOptions">Event sharing access parameters</param>
         /// <returns>Event list</returns>
-        [Create("{calendarId}/event")]
+        [HttpPost("{calendarId}/event")]
         public List<EventWrapper> AddEvent(int calendarId, EventModel eventModel)
         {
             eventModel.CalendarId = calendarId.ToString();
@@ -1907,7 +1936,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="sharingOptions">Event sharing access parameters</param>
         /// <param name="status">Event status</param>
         /// <returns>Updated event list</returns>
-        [Update("{calendarId}/{eventId}")]
+        [HttpPut("{calendarId}/{eventId}")]
         public List<EventWrapper> Update(string calendarId, int eventId, EventModel eventModel)
         {
             eventModel.CalendarId = calendarId;
@@ -1928,7 +1957,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="sharingOptions">Event sharing access parameters</param>
         /// <param name="eventUid">Event uid</param>
         /// <returns>Event</returns>
-        [Create("icsevent")]
+        [HttpPost("icsevent")]
         public List<EventWrapper> AddEvent(EventModel eventData)
         {
             var calendarId = eventData.CalendarId;
@@ -2030,7 +2059,7 @@ namespace ASC.Calendar.Controllers
                                              actionId = publicItem.SharingOption.Id
                                          });
                 }
-                var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                var currentTenantId = TenantManager.GetCurrentTenant().Id;
 
                 if (!calendarObj.OwnerId.Equals(SecurityContext.CurrentAccount.ID) && CheckPermissions(calendarObj, CalendarAccessRights.FullAccessAction, true))
                 {
@@ -2054,13 +2083,13 @@ namespace ASC.Calendar.Controllers
                             var user = UserManager.GetUsers(sharingOption.itemId);
                             if (DataProvider.CheckUserEmail(user))
                             {
-                                var sharedEventUid = user.ID == calendarObj.OwnerId
+                                var sharedEventUid = user.Id == calendarObj.OwnerId
                                                      ? split[0]
                                                      : fullAccess ? split[0] + "_write" : split[0];
 
                                 updateCaldavEvent(old_ics, sharedEventUid, true, calDavGuid, myUri,
                                                   user.Email, DateTime.Now, targetCalendar.TimeZones[0],
-                                                  calendarObj.TimeZone, false, user.ID != calendarObj.OwnerId);
+                                                  calendarObj.TimeZone, false, user.Id != calendarObj.OwnerId);
                             }
 
                         }
@@ -2072,12 +2101,12 @@ namespace ASC.Calendar.Controllers
                             {
                                 if (DataProvider.CheckUserEmail(user))
                                 {
-                                    var sharedEventUid = user.ID == calendarObj.OwnerId
+                                    var sharedEventUid = user.Id == calendarObj.OwnerId
                                                      ? split[0]
                                                      : fullAccess ? split[0] + "_write" : split[0];
                                     updateCaldavEvent(old_ics, sharedEventUid, true, calDavGuid, myUri,
                                                   user.Email, DateTime.Now, targetCalendar.TimeZones[0],
-                                                  calendarObj.TimeZone, false, user.ID != calendarObj.OwnerId);
+                                                  calendarObj.TimeZone, false, user.Id != calendarObj.OwnerId);
                                 }
                             }
                         }
@@ -2094,13 +2123,13 @@ namespace ASC.Calendar.Controllers
                                 var user = UserManager.GetUsers(sharingOption.itemId);
                                 if (DataProvider.CheckUserEmail(user))
                                 {
-                                    var sharedEventUid = user.ID == calendarObj.OwnerId
+                                    var sharedEventUid = user.Id == calendarObj.OwnerId
                                                          ? split[0]
                                                          : fullAccess ? split[0] + "_write" : split[0];
 
                                     updateCaldavEvent(old_ics, sharedEventUid, true, SharedEventsCalendar.CalendarId, myUri,
                                                       user.Email, DateTime.Now, targetCalendar.TimeZones[0],
-                                                      calendarObj.TimeZone, false, user.ID != calendarObj.OwnerId);
+                                                      calendarObj.TimeZone, false, user.Id != calendarObj.OwnerId);
                                 }
                             }
                             else
@@ -2111,13 +2140,13 @@ namespace ASC.Calendar.Controllers
                                 {
                                     if (DataProvider.CheckUserEmail(user))
                                     {
-                                        var sharedEventUid = user.ID == calendarObj.OwnerId
+                                        var sharedEventUid = user.Id == calendarObj.OwnerId
                                                          ? split[0]
                                                          : fullAccess ? split[0] + "_write" : split[0];
 
                                         updateCaldavEvent(old_ics, sharedEventUid, true, SharedEventsCalendar.CalendarId, myUri,
                                                       user.Email, DateTime.Now, targetCalendar.TimeZones[0],
-                                                      calendarObj.TimeZone, false, user.ID != calendarObj.OwnerId);
+                                                      calendarObj.TimeZone, false, user.Id != calendarObj.OwnerId);
                                     }
                                 }
                             }
@@ -2129,7 +2158,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(e.Message);
+                Log.LogError(e, "addevent");
             }
 
 
@@ -2152,7 +2181,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="fromCalDavServer">bool flag says that request from caldav server</param>
         /// <param name="ownerId">Event owner id</param>
         /// <returns>Updated event</returns>
-        [Update("icsevent.json")]
+        [HttpPut("icsevent.json")]
         public List<EventWrapper> UpdateEvent(EventModel eventData)
         {
 
@@ -2285,7 +2314,7 @@ namespace ASC.Calendar.Controllers
 
                     var eventUid = isShared && isFullAccess ? uidData[0] + "_write" : uidData[0];
 
-                    var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                    var currentTenantId = TenantManager.GetCurrentTenant().Id;
                     var pic = PublicItemCollectionHelper.GetForCalendar(cal);
                     var calendarCharingList = new List<SharingParam>();
                     if (pic.Items.Count > 1)
@@ -2364,7 +2393,7 @@ namespace ASC.Calendar.Controllers
                 }
                 catch (Exception e)
                 {
-                    Log.Error(e.Message);
+                    Log.LogError(e, "update");
                 }
             }
 
@@ -2389,7 +2418,7 @@ namespace ASC.Calendar.Controllers
         /// Delete event series
         /// </short>
         /// <param name="eventId">Event ID</param>
-        [Delete("events/{eventId}")]
+        [HttpDelete("events/{eventId}")]
         public void RemoveEvent(int eventId)
         {
             RemoveEvent(eventId, new EventDeleteModel { EventId = eventId, Date = null, Type = EventRemoveType.AllSeries });
@@ -2407,7 +2436,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="fromCaldavServer">Bool flag says that request from caldav server</param>
         /// <param name="uri">Current uri</param>
         /// <returns>Updated event series collection</returns>
-        [Delete("events/{eventId}/custom")]
+        [HttpDelete("events/{eventId}/custom")]
         public List<EventWrapper> RemoveEvent(int eventId, EventDeleteModel eventDeleteModel)
         {
             var events = new List<EventWrapper>();
@@ -2444,7 +2473,7 @@ namespace ASC.Calendar.Controllers
                     isGroup = x.IsGroup
                 }).ToList();
 
-            var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+            var currentTenantId = TenantManager.GetCurrentTenant().Id;
             var calendarId = evt.CalendarId;
             var myUri = HttpContext.Request != null ? HttpContext.Request.GetUrlRewriter() : eventDeleteModel.Uri ?? new Uri("http://localhost");
             var currentUserId = AuthContext.CurrentAccount.ID;
@@ -2462,7 +2491,7 @@ namespace ASC.Calendar.Controllers
                          var user = UserManager.GetUsers(sharingOption.itemId);
                          if (DataProvider.CheckUserEmail(user))
                          {
-                             deleteEvent(fullAccess ? split[0] + "_write" : split[0], calendarId, user.Email, myUri, user.ID != cal.OwnerId);
+                             deleteEvent(fullAccess ? split[0] + "_write" : split[0], calendarId, user.Email, myUri, user.Id != cal.OwnerId);
                          }
                      }
                      else
@@ -2472,7 +2501,7 @@ namespace ASC.Calendar.Controllers
                          {
                              if (DataProvider.CheckUserEmail(user))
                              {
-                                 var eventUid = user.ID == evt.OwnerId
+                                 var eventUid = user.Id == evt.OwnerId
                                                 ? split[0]
                                                 : fullAccess ? split[0] + "_write" : split[0];
                                  deleteEvent(eventUid, calendarId, user.Email, myUri, true);
@@ -2489,14 +2518,14 @@ namespace ASC.Calendar.Controllers
                      {
                          var user = UserManager.GetUsers(sharingOption.itemId);
 
-                         deleteEvent(fullAccess ? split[0] + "_write" : split[0], SharedEventsCalendar.CalendarId, user.Email, myUri, user.ID != evt.OwnerId);
+                         deleteEvent(fullAccess ? split[0] + "_write" : split[0], SharedEventsCalendar.CalendarId, user.Email, myUri, user.Id != evt.OwnerId);
                      }
                      else
                      {
                          var users = UserManager.GetUsersByGroup(sharingOption.itemId);
                          foreach (var user in users)
                          {
-                             var eventUid = user.ID == evt.OwnerId
+                             var eventUid = user.Id == evt.OwnerId
                                                 ? split[0]
                                                 : fullAccess ? split[0] + "_write" : split[0];
 
@@ -2612,7 +2641,7 @@ namespace ASC.Calendar.Controllers
                     }
                     catch (Exception e)
                     {
-                        Log.Error(e.Message);
+                        Log.LogError(e.Message);
                     }
                 }
 
@@ -2678,7 +2707,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="ics">Task in iCal format</param>
         /// <param name="todoUid">Task uid</param>
         /// <returns>Todo</returns>
-        [Create("icstodo")]
+        [HttpPost("icstodo")]
         public List<TodoWrapper> AddTodo(CreateTodoModel createTodoModel)
         {
             var ics = createTodoModel.ics;
@@ -2772,7 +2801,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(e.Message);
+                Log.LogError(e.Message);
             }
             return result;
         }
@@ -2788,7 +2817,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="ics">Task in iCal format</param>
         /// <param name="fromCalDavServer">bool flag says that request from caldav server</param>
         /// <returns>Updated task</returns>
-        [Update("icstodo")]
+        [HttpPut("icstodo")]
         public List<TodoWrapper> UpdateTodo(CreateTodoModel createTodoModel)
         {
             var ics = createTodoModel.ics;
@@ -2854,7 +2883,7 @@ namespace ASC.Calendar.Controllers
                 }
                 catch (Exception e)
                 {
-                    Log.Error(e.Message);
+                    Log.LogError(e.Message);
                 }
 
             }
@@ -2882,7 +2911,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="todoId">Task ID</param>
         /// <param name="fromCaldavServer">Bool flag says that request from caldav server</param>
-        [Delete("todos/{todoId}")]
+        [HttpDelete("todos/{todoId}")]
         public void RemoveTodo(int todoId, CreateTodoModel createTodoModel)
         {
             var fromCaldavServer = createTodoModel.fromCalDavServer;
@@ -2962,7 +2991,7 @@ namespace ASC.Calendar.Controllers
         }
 
 
-        [Create("outsideevent")]
+        [HttpPost("outsideevent")]
         public void AddEventOutside(OutsideEventModel outsidEventModel)
         {
             var calendarGuid = outsidEventModel.CalendarGuid;
@@ -3029,7 +3058,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="calendarId">Calendar ID</param>
         /// <returns>Sharing access parameters</returns>
-        [Read("{calendarId}/sharing")]
+        [HttpGet("{calendarId}/sharing")]
         public PublicItemCollection GetCalendarSharingOptions(int calendarId)
         {
             var cal = DataProvider.GetCalendarById(calendarId);
@@ -3046,7 +3075,7 @@ namespace ASC.Calendar.Controllers
         /// Get default access
         /// </short>
         /// <returns>Default sharing access parameters</returns>
-        [Read("sharing")]
+        [HttpGet("sharing")]
         public PublicItemCollection GetDefaultSharingOptions()
         {
             return PublicItemCollectionHelper.GetDefault();
@@ -3064,7 +3093,7 @@ namespace ASC.Calendar.Controllers
         /// </short>
         /// <param name="files">iCal formatted files with the events to be imported</param>
         /// <returns>Returns the number of imported events</returns>
-        [Create("import")]
+        [HttpPost("import")]
         public int ImportEvents(UploadModel uploadModel)
         {
             var calendar = LoadInternalCalendars().First(x => (!x.IsSubscription && x.IsTodo != 1));
@@ -3085,7 +3114,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="calendarId">ID for the calendar which serves as the future storage base for the imported events</param>
         /// <param name="files">iCal formatted files with the events to be imported</param>
         /// <returns>Returns the number of imported events</returns>
-        [Create("{calendarId}/import")]
+        [HttpPost("{calendarId}/import")]
         public int ImportEvents(int calendarId, UploadModel uploadModel)
         {
             var counter = 0;
@@ -3122,7 +3151,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="calendarId">Calendar ID</param>
         /// <param name="iCalString">iCal formatted string</param>
         /// <returns>Returns the number of imported events</returns>
-        [Create("importIcs")]
+        [HttpPost("importIcs")]
         public int ImportEvents(ImportModel importModel)
         {
             var calendarId = importModel.CalendarId;
@@ -3157,7 +3186,7 @@ namespace ASC.Calendar.Controllers
         /// <param name="textColor">Event text name</param>
         /// <param name="backgroundColor">Event background name</param>
         /// <returns>Created calendar</returns>
-        [Create("calendarUrl")]
+        [HttpPost("calendarUrl")]
         public CalendarWrapper CreateCalendarStream(СalendarUrlModel сalendarUrl)
         {
             var iCalUrl = сalendarUrl.ICalUrl;
@@ -3418,7 +3447,7 @@ namespace ASC.Calendar.Controllers
                         }
                         catch (Exception e)
                         {
-                            Log.Error(e.Message);
+                            Log.LogError(e.Message);
                         }
 
                         var result = CreateEvent(calendarId,
@@ -3499,7 +3528,7 @@ namespace ASC.Calendar.Controllers
                         }
                         catch (Exception e)
                         {
-                            Log.Error(e.Message);
+                            Log.LogError(e.Message);
                         }
 
                         //updateEvent(ics, split[0], calendarId.ToString(), true, DateTime.Now, tmpCalendar.TimeZones[0], existCalendar.TimeZone);
@@ -3596,7 +3625,7 @@ namespace ASC.Calendar.Controllers
                             }
                             catch (Exception ex)
                             {
-                                Log.Error(String.Format("Error: {0}, Date string: {1}", ex, date));
+                                Log.LogError(String.Format("Error: {0}, Date string: {1}", ex, date));
                                 rrule += date;
                             }
                         }
@@ -3736,7 +3765,7 @@ namespace ASC.Calendar.Controllers
         }
         private string GetCalendariCalString(string calendarId, bool ignoreCache = false)
         {
-            Log.Debug("GetCalendariCalString calendarId = " + calendarId);
+            Log.LogDebug("GetCalendariCalString calendarId = " + calendarId);
 
             try
             {
@@ -3893,13 +3922,13 @@ namespace ASC.Calendar.Controllers
                                                 timeSpan.Seconds,
                                                 timeSpan.Milliseconds / 10);
 
-                Log.Debug(elapsedTime);
+                Log.LogDebug(elapsedTime);
 
                 return result;
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "GetCalendarUri");
                 return null;
             }
         }
@@ -3979,7 +4008,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception exception)
             {
-                Log.Error("ERROR. Create shared caldav events: " + exception.Message);
+                Log.LogError("ERROR. Create shared caldav events: " + exception.Message);
             }
         }
         private void updateCaldavEvent(
@@ -4006,7 +4035,7 @@ namespace ASC.Calendar.Controllers
                         var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
                         var caldavHost = myUri.Host;
 
-                        Log.Info("RADICALE REWRITE URL: " + myUri);
+                        Log.LogInformation("RADICALE REWRITE URL: " + myUri);
 
                         var currentUserName = userEmail.ToLower() + "@" + caldavHost;
 
@@ -4081,19 +4110,19 @@ namespace ASC.Calendar.Controllers
                         catch (HttpRequestException ex)
                         {
                             if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
-                                Log.Debug("ERROR: " + ex.Message);
+                                Log.LogDebug("ERROR: " + ex.Message);
                             else
-                                Log.Error("ERROR: " + ex.Message);
+                                Log.LogError("ERROR: " + ex.Message);
                         }
                         catch (Exception ex)
                         {
-                            Log.Error("ERROR: " + ex.Message);
+                            Log.LogError("ERROR: " + ex.Message);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("ERROR: " + ex.Message);
+                    Log.LogError("ERROR: " + ex.Message);
                 }
             }
         }
@@ -4144,8 +4173,8 @@ namespace ASC.Calendar.Controllers
                             TenantManager.SetCurrentTenant(tenant);
                             var user = UserManager.GetUserByEmail(email);
 
-                            var extCalendar = CalendarManager.GetCalendarForUser(user.ID, caldavGuid, UserManager);
-                            var events = extCalendar.LoadEvents(user.ID, DateTime.MinValue, DateTime.MaxValue);
+                            var extCalendar = CalendarManager.GetCalendarForUser(user.Id, caldavGuid, UserManager);
+                            var events = extCalendar.LoadEvents(user.Id, DateTime.MinValue, DateTime.MaxValue);
 
                             string currentEventId =
                                 (from e in events where e.Uid.Split('@')[0] == eventGuid select e.Id).FirstOrDefault();
@@ -4159,14 +4188,14 @@ namespace ASC.Calendar.Controllers
                             }
                             else
                             {
-                                Log.Error("ERROR: error update calDav event. get current event id");
+                                Log.LogError("ERROR: error update calDav event. get current event id");
                                 return;
                             }
                         }
                     }
                     catch (Exception exception)
                     {
-                        Log.Error(exception);
+                        Log.LogError(exception, "UpdateCalDavEvent");
                         return;
                     }
                 }
@@ -4200,7 +4229,7 @@ namespace ASC.Calendar.Controllers
                         CharSet = Encoding.UTF8.WebName
                     };
 
-                    Log.Info($"UpdateCalDavEvent eventURl: {eventURl}");
+                    Log.LogInformation($"UpdateCalDavEvent eventURl: {eventURl}");
 
                     string ics = "";
 
@@ -4211,7 +4240,7 @@ namespace ASC.Calendar.Controllers
                     {
                         ics = reader.ReadToEnd();
                     }
-                    Log.Info($"UpdateCalDavEvent: {ics}");
+                    Log.LogInformation($"UpdateCalDavEvent: {ics}");
                     var existEvent = DataProvider.GetEventIdByUid(eventGuid + "%", calendarId);
                     var existCalendar = DataProvider.GetCalendarById(calendarId);
 
@@ -4385,13 +4414,13 @@ namespace ASC.Calendar.Controllers
             catch (HttpRequestException ex)
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
-                    Log.Debug("ERROR: " + ex.Message);
+                    Log.LogDebug("ERROR: " + ex.Message);
                 else
-                    Log.Error("ERROR: " + ex.Message);
+                    Log.LogError("ERROR: " + ex.Message);
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "UpdateCalDavEvent");
             }
         }
         private void DeleteCalDavEvent(string eventInfo, Uri myUri)
@@ -4515,7 +4544,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception exception)
             {
-                Log.Error("ERROR. Create caldav events: " + exception.Message);
+                Log.LogError("ERROR. Create caldav events: " + exception.Message);
             }
 
         }
@@ -4535,7 +4564,7 @@ namespace ASC.Calendar.Controllers
             description = (description ?? "").Trim();
             backgroundColor = (backgroundColor ?? "").Trim();
 
-            Log.Info("RADICALE REWRITE URL: " + myUri);
+            Log.LogInformation("RADICALE REWRITE URL: " + myUri);
 
             string[] numbers = Regex.Split(backgroundColor, @"\D+");
             var color = numbers.Length > 4 ? HexFromRGB(int.Parse(numbers[1]), int.Parse(numbers[2]), int.Parse(numbers[3])) : "#000000";
@@ -4570,7 +4599,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "UpdateCalDavCalendar");
                 return "";
             }
         }
@@ -4642,7 +4671,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("ERROR: " + ex.Message);
+                Log.LogError("ERROR: " + ex.Message);
             }
 
         }
@@ -4676,7 +4705,7 @@ namespace ASC.Calendar.Controllers
                 var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
                 var caldavHost = myUri.Host;
 
-                Log.Info("RADICALE REWRITE URL: " + myUri);
+                Log.LogInformation("RADICALE REWRITE URL: " + myUri);
 
                 var encoded =
                     Convert.ToBase64String(
@@ -4702,13 +4731,13 @@ namespace ASC.Calendar.Controllers
                 catch (HttpRequestException ex)
                 {
                     if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
-                        Log.Debug("ERROR: " + ex.Message);
+                        Log.LogDebug("ERROR: " + ex.Message);
                     else
-                        Log.Error("ERROR: " + ex.Message);
+                        Log.LogError("ERROR: " + ex.Message);
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("ERROR: " + ex.Message);
+                    Log.LogError("ERROR: " + ex.Message);
                 }
                 finally
                 {
@@ -4744,7 +4773,7 @@ namespace ASC.Calendar.Controllers
             var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
             var caldavHost = myUri.Host;
 
-            Log.Info("RADICALE REWRITE URL: " + myUri);
+            Log.LogInformation("RADICALE REWRITE URL: " + myUri);
 
             var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes("admin@ascsystem" + ":" + ASC.Core.Configuration.Constants.CoreSystem.ID));
 
@@ -4767,13 +4796,13 @@ namespace ASC.Calendar.Controllers
             catch (HttpRequestException ex)
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
-                    Log.Debug("ERROR: " + ex.Message);
+                    Log.LogDebug("ERROR: " + ex.Message);
                 else
-                    Log.Error("ERROR: " + ex.Message);
+                    Log.LogError("ERROR: " + ex.Message);
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "UpdateSharedEvent");
             }
             finally
             {

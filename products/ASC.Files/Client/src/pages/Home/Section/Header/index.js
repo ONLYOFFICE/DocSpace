@@ -4,7 +4,12 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import { AppServerConfig, FileAction } from "@appserver/common/constants";
+import {
+  AppServerConfig,
+  FileAction,
+  FolderType,
+  RoomSearchArea,
+} from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet } from "react-device-detect";
 import DropDownItem from "@appserver/components/drop-down-item";
@@ -13,8 +18,10 @@ import { Consumer } from "@appserver/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import Navigation from "@appserver/common/components/Navigation";
+import { Events } from "../../../../helpers/constants";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
+import RoomsFilter from "@appserver/common/api/rooms/filter";
 
 const StyledContainer = styled.div`
   .table-container_group-menu {
@@ -49,11 +56,22 @@ class SectionHeaderContent extends React.Component {
   }
 
   onCreate = (format) => {
-    this.props.setAction({
-      type: FileAction.Create,
+    const event = new Event(Events.CREATE);
+
+    const payload = {
       extension: format,
       id: -1,
-    });
+    };
+
+    event.payload = payload;
+
+    window.dispatchEvent(event);
+  };
+
+  onCreateRoom = () => {
+    const event = new Event(Events.ROOM_CREATE);
+
+    window.dispatchEvent(event);
   };
 
   createDocument = () => this.onCreate("docx");
@@ -85,61 +103,70 @@ class SectionHeaderContent extends React.Component {
   uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
-    const { t, isPrivacyFolder } = this.props;
+    const { t, isPrivacyFolder, isRoomsFolder } = this.props;
 
-    return [
-      {
-        key: "new-document",
-        label: t("NewDocument"),
-        onClick: this.createDocument,
-        icon: "images/actions.documents.react.svg",
-      },
-      {
-        key: "new-spreadsheet",
-        label: t("NewSpreadsheet"),
-        onClick: this.createSpreadsheet,
-        icon: "images/spreadsheet.react.svg",
-      },
-      {
-        key: "new-presentation",
-        label: t("NewPresentation"),
-        onClick: this.createPresentation,
-        icon: "images/actions.presentation.react.svg",
-      },
-      {
-        icon: "images/form.react.svg",
-        label: t("Translations:NewForm"),
-        key: "new-form-base",
-        items: [
+    const options = isRoomsFolder
+      ? [
           {
-            key: "new-form",
-            label: t("Translations:SubNewForm"),
-            icon: "images/form.blank.react.svg",
-            onClick: this.createForm,
+            key: "new-room",
+            label: t("NewRoom"),
+            onClick: this.onCreateRoom,
+            icon: "images/folder.locked.react.svg",
+          },
+        ]
+      : [
+          {
+            key: "new-document",
+            label: t("NewDocument"),
+            onClick: this.createDocument,
+            icon: "images/actions.documents.react.svg",
           },
           {
-            key: "new-form-file",
-            label: t("Translations:SubNewFormFile"),
-            icon: "images/form.file.react.svg",
-            onClick: this.createFormFromFile,
-            disabled: isPrivacyFolder,
+            key: "new-spreadsheet",
+            label: t("NewSpreadsheet"),
+            onClick: this.createSpreadsheet,
+            icon: "images/spreadsheet.react.svg",
           },
           {
-            key: "oforms-gallery",
-            label: t("Common:OFORMsGallery"),
-            icon: "images/form.gallery.react.svg",
-            onClick: this.onShowGallery,
-            disabled: isPrivacyFolder || (isMobile && isTablet),
+            key: "new-presentation",
+            label: t("NewPresentation"),
+            onClick: this.createPresentation,
+            icon: "images/actions.presentation.react.svg",
           },
-        ],
-      },
-      {
-        key: "new-folder",
-        label: t("NewFolder"),
-        onClick: this.createFolder,
-        icon: "images/catalog.folder.react.svg",
-      },
-      /*{ key: "separator", isSeparator: true },
+          {
+            icon: "images/form.react.svg",
+            label: t("Translations:NewForm"),
+            key: "new-form-base",
+            items: [
+              {
+                key: "new-form",
+                label: t("Translations:SubNewForm"),
+                icon: "images/form.blank.react.svg",
+                onClick: this.createForm,
+              },
+              {
+                key: "new-form-file",
+                label: t("Translations:SubNewFormFile"),
+                icon: "images/form.file.react.svg",
+                onClick: this.createFormFromFile,
+                disabled: isPrivacyFolder,
+              },
+              {
+                key: "oforms-gallery",
+                label: t("Common:OFORMsGallery"),
+                icon: "images/form.gallery.react.svg",
+                onClick: this.onShowGallery,
+                disabled: isPrivacyFolder || (isMobile && isTablet),
+              },
+            ],
+          },
+          {
+            key: "new-folder",
+            label: t("NewFolder"),
+            onClick: this.createFolder,
+            icon: "images/catalog.folder.react.svg",
+          },
+          /*{ key: "separator", isSeparator: true },
       {
         key: "upload-to-folder",
         label: t("UploadToFolder"),
@@ -147,7 +174,9 @@ class SectionHeaderContent extends React.Component {
         disabled: true,
         icon: "images/actions.upload.react.svg",
       },*/
-    ];
+        ];
+
+    return options;
   };
 
   createLinkForPortalUsers = () => {
@@ -293,7 +322,13 @@ class SectionHeaderContent extends React.Component {
     ];
   };
 
-  onBackToParentFolder = () => this.props.backToParentFolder();
+  onBackToParentFolder = () => {
+    if (this.props.isRoom) {
+      return this.moveToRoomsPage();
+    }
+
+    this.props.backToParentFolder();
+  };
 
   onSelect = (e) => {
     const key = e.currentTarget.dataset.key;
@@ -330,13 +365,51 @@ class SectionHeaderContent extends React.Component {
     this.props.setSelected(checked ? "all" : "none");
   };
 
-  onClickFolder = (data) => {
+  onClickFolder = (id, isRootRoom) => {
     const { setSelectedNode, setIsLoading, fetchFiles } = this.props;
-    setSelectedNode(data);
+
+    if (isRootRoom) {
+      return this.moveToRoomsPage();
+    }
+
+    setSelectedNode(id);
     setIsLoading(true);
-    fetchFiles(data, null, true, false)
+    fetchFiles(id, null, true, false)
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
+  };
+
+  moveToRoomsPage = () => {
+    const {
+      setIsLoading,
+
+      fetchRooms,
+      history,
+
+      setAlreadyFetchingRooms,
+    } = this.props;
+
+    setIsLoading(true);
+
+    setAlreadyFetchingRooms(true);
+
+    fetchRooms(null, null)
+      .then(() => {
+        const filter = RoomsFilter.getDefault();
+
+        const urlFilter = filter.toUrlParams();
+
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/rooms?${urlFilter}`
+          )
+        );
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   render() {
@@ -436,6 +509,7 @@ export default inject(
   ({
     auth,
     filesStore,
+
     dialogsStore,
     selectedFolderStore,
     treeFoldersStore,
@@ -445,7 +519,7 @@ export default inject(
     const {
       setSelected,
       setSelection,
-      fileActionStore,
+
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -459,10 +533,13 @@ export default inject(
       viewAs,
       setIsLoading,
       fetchFiles,
+      fetchRooms,
       activeFiles,
       activeFolders,
+
+      setAlreadyFetchingRooms,
     } = filesStore;
-    const { setAction } = fileActionStore;
+
     const {
       setSharingPanelVisible,
       setMoveToPanelVisible,
@@ -473,7 +550,12 @@ export default inject(
       setIsFolderActions,
     } = dialogsStore;
 
-    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = treeFoldersStore;
     const {
       deleteAction,
       downloadAction,
@@ -483,13 +565,24 @@ export default inject(
 
     const { toggleIsVisible, isVisible } = auth.infoPanelStore;
 
-    const { title, id, pathParts, navigationPath } = selectedFolderStore;
+    const {
+      title,
+      id,
+      roomType,
+      rootFolderType,
+      pathParts,
+      navigationPath,
+    } = selectedFolderStore;
+
+    const isRoom = !!roomType;
 
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: pathParts?.length === 1,
       title,
+      isRoom,
+      rootFolderType,
       currentFolderId: id,
       pathParts: pathParts,
       navigationPath: navigationPath,
@@ -509,7 +602,7 @@ export default inject(
 
       setSelected,
       setSelection,
-      setAction,
+
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
@@ -531,9 +624,15 @@ export default inject(
 
       setIsLoading,
       fetchFiles,
+      fetchRooms,
 
       activeFiles,
       activeFolders,
+
+      isRoomsFolder,
+      isArchiveFolder,
+
+      setAlreadyFetchingRooms,
     };
   }
 )(

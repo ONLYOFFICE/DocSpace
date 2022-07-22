@@ -38,8 +38,9 @@ internal class SharpBoxTagDao : SharpBoxDaoBase, ITagDao<string>
         SetupInfo setupInfo,
         ILogger<SharpBoxTagDao> monitor,
         FileUtility fileUtility,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
     }
 }

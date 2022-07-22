@@ -6,19 +6,36 @@ import SearchInput from "@appserver/components/search-input";
 
 const StyledFilterInput = styled.div`
   width: 100%;
-  height: 32px;
 
   display: flex;
-  align-items: center;
-  justify-content: start;
+
+  flex-direction: column;
 
   margin: 0;
   padding: 0;
 
-  ${isDesktop &&
-  css`
-    margin-bottom: 6px;
-  `}
+  .filter-input_filter-row {
+    width: 100%;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    margin-bottom: 8px;
+  }
+
+  .filter-input_selected-row {
+    width: 100%;
+    height: 32px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+
+    margin-bottom: 8px;
+  }
 `;
 
 const StyledSearchInput = styled(SearchInput)`

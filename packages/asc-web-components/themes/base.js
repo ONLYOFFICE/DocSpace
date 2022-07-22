@@ -570,6 +570,10 @@ const Base = {
   },
 
   modalDialog: {
+    backgroundColor: white,
+    textColor: black,
+    headerBorderColor: globalColors.grayLightMid,
+    footerBorderColor: globalColors.grayLightMid,
     width: "auto",
     maxwidth: "560px",
     margin: " 0 auto",
@@ -598,14 +602,8 @@ const Base = {
     },
 
     closeButton: {
-      width: "14px",
-      height: "14px",
-      minWidth: "14px",
-      minHeight: "14px",
-
-      right: "16px",
-      top: "13px",
-      hoverColor: grayMain,
+      //backgroundColor: "#9a9ea3",
+      fillColor: white,
     },
   },
 
@@ -867,6 +865,10 @@ const Base = {
     text: { maxWidth: "100%" },
 
     span: { maxWidth: "300px" },
+
+    expander: {
+      iconColor: black,
+    },
 
     caret: {
       width: "5px",
@@ -1827,11 +1829,11 @@ const Base = {
     container: {
       width: "100%",
       height: "36px",
-      padding: "0 20px",
+      padding: "0 12px",
       marginBottom: "16px",
       tablet: {
         height: "44px",
-        padding: "0 16px",
+        padding: "0 8px",
         marginBottom: "24px",
       },
     },
@@ -1926,7 +1928,7 @@ const Base = {
 
   header: {
     backgroundColor: "#0F4071",
-
+    recoveryColor: "#27537F",
     linkColor: "#7a95b0",
     productColor: white,
   },
@@ -2231,6 +2233,14 @@ const Base = {
       backgroundColor: "rgba(11, 11, 11, 0.7)",
       background: "rgba(200, 200, 200, 0.2)",
     },
+  },
+
+  connectCloud: {
+    connectBtnContent: black,
+    connectBtnTextBg: white,
+    connectBtnIconBg: white,
+    connectBtnTextBorder: grayMid,
+    connectBtnIconBorder: grayMid,
   },
 
   filesThirdPartyDialog: {

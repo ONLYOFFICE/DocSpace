@@ -1,3 +1,29 @@
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -35,7 +61,7 @@ public class CalDavController : ControllerBase
     private CoreSettings CoreSettings { get; }
     private CommonConstants CommonConstants { get; }
     public InstanceCrypto InstanceCrypto { get; }
-    private ILog Log { get; }
+    private ILogger<CalDavController> Log { get; }
     private IHttpClientFactory ClientFactory { get; }
 
     public CalDavController(
@@ -44,14 +70,14 @@ public class CalDavController : ControllerBase
         CoreSettings coreSettings,
         CommonConstants commonConstants,
         InstanceCrypto instanceCrypto,
-        IOptionsMonitor<ILog> option)
+        ILogger<CalDavController> logger)
     {
         CommonMethods = commonMethods;
         EmailValidationKeyProvider = emailValidationKeyProvider;
         CoreSettings = coreSettings;
         CommonConstants = commonConstants;
         InstanceCrypto = instanceCrypto;
-        Log = option.Get("ASC.ApiSystem");
+        Log = logger;
     }
 
     #region For TEST api
@@ -85,7 +111,7 @@ public class CalDavController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error("Error change_to_storage", ex);
+            Log.LogError(ex, "Error change_to_storage");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new
             {
@@ -114,7 +140,7 @@ public class CalDavController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error("Error caldav_delete_event", ex);
+            Log.LogError(ex, "Error caldav_delete_event");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new
             {
@@ -132,7 +158,7 @@ public class CalDavController : ControllerBase
     {
         if (userPassword == null || string.IsNullOrEmpty(userPassword.User) || string.IsNullOrEmpty(userPassword.Password))
         {
-            Log.Error("CalDav authenticated data is null");
+            Log.LogError("CalDav authenticated data is null");
 
             return BadRequest(new
             {
@@ -149,7 +175,7 @@ public class CalDavController : ControllerBase
 
         try
         {
-            Log.Info(string.Format("Caldav auth user: {0}, tenant: {1}", email, tenant.Id));
+            Log.LogInformation(string.Format("Caldav auth user: {0}, tenant: {1}", email, tenant.Id));
 
             if (InstanceCrypto.Encrypt(email) == userPassword.Password)
             {
@@ -172,7 +198,7 @@ public class CalDavController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error("Caldav authenticated", ex);
+            Log.LogError(ex, "Caldav authenticated");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new
             {
@@ -192,7 +218,7 @@ public class CalDavController : ControllerBase
 
         if (string.IsNullOrEmpty(calendarParam))
         {
-            Log.Error("calendarParam is empty");
+            Log.LogError("calendarParam is empty");
 
             error = new
             {
@@ -204,7 +230,7 @@ public class CalDavController : ControllerBase
             return false;
         }
 
-        Log.Info($"CalDav calendarParam: {calendarParam}");
+        Log.LogInformation($"CalDav calendarParam: {calendarParam}");
 
         var userParam = calendarParam.Split('/')[0];
         return GetUserData(userParam, out _, out tenant, out error);
@@ -218,7 +244,7 @@ public class CalDavController : ControllerBase
 
         if (string.IsNullOrEmpty(userParam))
         {
-            Log.Error("userParam is empty");
+            Log.LogError("userParam is empty");
 
             error = new
             {
@@ -234,7 +260,7 @@ public class CalDavController : ControllerBase
 
         if (userData.Length < 3)
         {
-            Log.Error($"Error Caldav username: {userParam}");
+            Log.LogError($"Error Caldav username: {userParam}");
 
             error = new
             {
@@ -257,13 +283,13 @@ public class CalDavController : ControllerBase
             tenantName = tenantName.Replace("." + baseUrl, "");
         }
 
-        Log.Info($"CalDav: user:{userParam} tenantName:{tenantName}");
+        Log.LogInformation($"CalDav: user:{userParam} tenantName:{tenantName}");
 
         var tenantModel = new TenantModel { PortalName = tenantName };
 
         if (!CommonMethods.GetTenant(tenantModel, out tenant))
         {
-            Log.Error("Model without tenant");
+            Log.LogError("Model without tenant");
 
             error = new
             {
@@ -277,7 +303,7 @@ public class CalDavController : ControllerBase
 
         if (tenant == null)
         {
-            Log.Error("Tenant not found " + tenantName);
+            Log.LogError("Tenant not found " + tenantName);
 
             error = new
             {
@@ -305,7 +331,7 @@ public class CalDavController : ControllerBase
 
         var url = $"{requestUriScheme}{Uri.SchemeDelimiter}{tenant.GetTenantDomain(CoreSettings)}{CommonConstants.WebApiBaseUrl}{path}{(string.IsNullOrEmpty(query) ? "" : "?" + query)}";
 
-        Log.Info($"CalDav: SendToApi: {url}");
+        Log.LogInformation($"CalDav: SendToApi: {url}");
 
         var request = new HttpRequestMessage();
         request.RequestUri = new Uri(url);

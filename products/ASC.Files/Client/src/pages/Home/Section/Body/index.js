@@ -20,7 +20,6 @@ const SectionBodyContent = (props) => {
   const {
     t,
     tReady,
-    fileActionId,
     isEmptyFilesList,
     folderId,
     dragging,
@@ -243,7 +242,7 @@ const SectionBodyContent = (props) => {
   return (
     <Consumer>
       {(context) =>
-        (!fileActionId && isEmptyFilesList) || null ? (
+        isEmptyFilesList || null ? (
           <>
             <EmptyContainer />
           </>
@@ -277,7 +276,6 @@ export default inject(
     uploadDataStore,
   }) => {
     const {
-      fileActionStore,
       isEmptyFilesList,
       dragging,
       setDragging,
@@ -299,7 +297,7 @@ export default inject(
       dragging,
       startDrag,
       setStartDrag,
-      fileActionId: fileActionStore.id,
+
       isEmptyFilesList,
       setDragging,
       folderId: selectedFolderStore.id,

@@ -192,23 +192,23 @@ const Selector = (props) => {
           return;
         }
 
-        if (newGroupList.length > 0) {
+        if (newGroupList.length) {
           newGroupList[0].selectedCount = isChecked
             ? newGroupList[0].selectedCount - 1
             : newGroupList[0].selectedCount + 1;
+
+          option.groups.forEach((group) => {
+            const groupIndex = newGroupList.findIndex(
+              (item) => item.key === group
+            );
+
+            if (groupIndex > 0) {
+              newGroupList[groupIndex].selectedCount = isChecked
+                ? newGroupList[groupIndex].selectedCount - 1
+                : newGroupList[groupIndex].selectedCount + 1;
+            }
+          });
         }
-
-        option.groups.forEach((group) => {
-          const groupIndex = newGroupList.findIndex(
-            (item) => item.key === group
-          );
-
-          if (groupIndex > 0) {
-            newGroupList[groupIndex].selectedCount = isChecked
-              ? newGroupList[groupIndex].selectedCount - 1
-              : newGroupList[groupIndex].selectedCount + 1;
-          }
-        });
       });
 
       setSelectedOptionList(newSelected);

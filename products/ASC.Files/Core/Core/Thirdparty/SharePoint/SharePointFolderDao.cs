@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core;
+
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope]
@@ -47,8 +49,9 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         SharePointDaoSelector sharePointDaoSelector,
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _crossDao = crossDao;
         _sharePointDaoSelector = sharePointDaoSelector;
@@ -79,6 +82,50 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return Task.FromResult(ProviderInfo.ToFolder(ProviderInfo.RootFolder));
     }
 
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    {
+        if (CheckInvalidFilter(filterType))
+        {
+            return AsyncEnumerable.Empty<Folder<string>>();
+        }
+        
+        var rooms = GetFoldersAsync(parentId);
+
+        rooms = FilterByRoomType(rooms, filterType);
+        rooms = FilterByOwner(rooms, ownerId, withoutMe);
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            rooms = rooms.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
+
+        rooms = FilterByTags(rooms, withoutTags, tags);
+
+        return rooms;
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+{
+        if (CheckInvalidFilter(filterType))
+        {
+            return AsyncEnumerable.Empty<Folder<string>>();
+        }
+
+        var folders = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
+
+        folders = FilterByRoomType(folders, filterType);
+        folders = FilterByOwner(folders, ownerId, withoutMe);
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
+
+        folders = FilterByTags(folders, withoutTags, tags);
+
+        return folders;
+    }
+
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
         var folderFolders = await ProviderInfo.GetFolderFoldersAsync(parentId).ConfigureAwait(false);
@@ -89,23 +136,15 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
-        IEnumerable<string> tagNames = null)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
     {
-        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagNames);
-    }
-
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
-        IEnumerable<string> tagNames = null)
-    {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly or FilterType.SpreadsheetsOnly
+            or FilterType.ArchiveOnly or FilterType.MediaOnly)
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = GetFoldersAsync(parentId);
-
-        folders = SetFilterByTypes(folders, filterTypes);
 
         //Filter
         if (subjectID != Guid.Empty)
@@ -120,12 +159,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        folders = FilterByTags(folders, tagNames);
-
-        if (orderBy == null)
-        {
-            orderBy = new OrderBy(SortedByType.DateAndTime, false);
-        }
+        orderBy ??= new OrderBy(SortedByType.DateAndTime, false);
 
         folders = orderBy.SortedBy switch
         {
@@ -139,23 +173,15 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        IEnumerable<string> tagNames = null)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
     {
-        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
-    }
-
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        IEnumerable<string> tagNames = null)
-    {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly or FilterType.SpreadsheetsOnly
+            or FilterType.ArchiveOnly or FilterType.MediaOnly)
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
-
-        folders = SetFilterByTypes(folders, filterTypes);
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
@@ -168,8 +194,6 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
-
-        folders = FilterByTags(folders, tagNames);
 
         return folders;
     }

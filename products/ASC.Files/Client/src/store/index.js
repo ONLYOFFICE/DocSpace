@@ -1,5 +1,4 @@
 import FilesStore from "./FilesStore";
-import fileActionStore from "./FileActionStore";
 import SelectedFolderStore from "./SelectedFolderStore";
 import TreeFoldersStore from "./TreeFoldersStore";
 import thirdPartyStore from "./ThirdPartyStore";
@@ -17,6 +16,9 @@ import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
 import selectFileDialogStore from "./SelectFileDialogStore";
+import TagsStore from "./TagsStore";
+
+const tagsStore = new TagsStore();
 
 const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
 
@@ -26,13 +28,13 @@ const filesStore = new FilesStore(
   store.auth,
   store.auth.settingsStore,
   store.auth.userStore,
-  fileActionStore,
   selectedFolderStore,
   treeFoldersStore,
   settingsStore,
   selectFolderDialogStore,
   selectFileDialogStore
 );
+
 const mediaViewerDataStore = new MediaViewerDataStore(
   filesStore,
   settingsStore
@@ -91,6 +93,7 @@ const hotkeyStore = new HotkeyStore(
 
 const stores = {
   filesStore,
+
   settingsStore,
   mediaViewerDataStore,
   versionHistoryStore,
@@ -103,6 +106,8 @@ const stores = {
   contextOptionsStore,
   hotkeyStore,
   selectFileDialogStore,
+
+  tagsStore,
 };
 
 export default stores;

@@ -25,8 +25,12 @@ const StyledButton = styled(Button)`
   }
 
   svg {
-    path {
+    path[fill] {
       fill: ${(props) => props.theme.button.color.base};
+    }
+
+    path[stroke] {
+      stroke: ${(props) => props.theme.button.color.base};
     }
   }
 
@@ -38,16 +42,24 @@ const StyledButton = styled(Button)`
 
   :hover {
     svg {
-      path {
+      path[fill] {
         fill: ${(props) => props.theme.button.color.baseHover};
+      }
+
+      path[stroke] {
+        stroke: ${(props) => props.theme.button.color.baseHover};
       }
     }
   }
 
   :active {
     svg {
-      path {
+      path[fill] {
         fill: ${(props) => props.theme.button.color.baseActive};
+      }
+
+      path[stroke] {
+        stroke: ${(props) => props.theme.button.color.baseActive};
       }
     }
   }

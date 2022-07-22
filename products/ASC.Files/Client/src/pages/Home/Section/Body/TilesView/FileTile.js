@@ -42,6 +42,8 @@ const FileTile = (props) => {
     thumbSize,
     setSelection,
     id,
+    onSelectTag,
+    columnCount,
   } = props;
 
   const temporaryExtension =
@@ -55,8 +57,14 @@ const FileTile = (props) => {
   );
 
   const { thumbnailUrl } = item;
+
   const element = (
-    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+    <ItemIcon
+      id={item.id}
+      icon={item.icon}
+      fileExst={item.fileExst}
+      isRoom={item.isRoom}
+    />
   );
 
   return (
@@ -101,6 +109,8 @@ const FileTile = (props) => {
           t={t}
           showHotkeyBorder={showHotkeyBorder}
           setSelection={setSelection}
+          selectTag={onSelectTag}
+          columnCount={columnCount}
         >
           <FilesTileContent
             item={item}
