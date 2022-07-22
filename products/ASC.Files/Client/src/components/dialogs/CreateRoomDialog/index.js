@@ -43,7 +43,7 @@ const CreateRoomDialog = ({
 
   const onCreateRoom = () => {
     //createRoom(roomParams);
-    createRoom({ roomType: 4, title: "someTitle" });
+    console.log(roomParams);
   };
 
   const isChooseRoomType = roomParams.type === undefined;
