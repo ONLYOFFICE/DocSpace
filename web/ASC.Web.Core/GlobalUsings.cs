@@ -87,7 +87,6 @@ global using ASC.Notify.Patterns;
 global using ASC.Notify.Recipients;
 global using ASC.Notify.Textile;
 global using ASC.Security.Cryptography;
-global using ASC.VoipService.Dao;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Helpers;
 global using ASC.Web.Core.HttpHandlers;

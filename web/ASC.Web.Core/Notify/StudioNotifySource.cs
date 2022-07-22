@@ -68,9 +68,6 @@ public class StudioNotifySource : NotifySource
 
                 Actions.UserMessageToAdmin,
 
-                Actions.VoipWarning,
-                Actions.VoipBlocked,
-
                 Actions.SaasAdminActivationV115,
                 Actions.EnterpriseAdminActivationV10,
                 Actions.EnterpriseWhitelabelAdminActivationV10,
@@ -249,9 +246,7 @@ public class StudioNotifySource : NotifySource
         {
             if (Actions.SelfProfileUpdated.ID == action.ID ||
                 Actions.UserHasJoin.ID == action.ID ||
-                Actions.UserMessageToAdmin.ID == action.ID ||
-                Actions.VoipWarning.ID == action.ID ||
-                Actions.VoipBlocked.ID == action.ID
+                Actions.UserMessageToAdmin.ID == action.ID
                 )
             {
                 return Actions.AdminNotify;

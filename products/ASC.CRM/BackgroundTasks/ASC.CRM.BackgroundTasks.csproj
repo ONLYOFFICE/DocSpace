@@ -4,8 +4,8 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
-    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="7.2.1" />
+    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="8.0.4" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="8.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Server\ASC.CRM.csproj" />
