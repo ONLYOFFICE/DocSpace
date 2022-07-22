@@ -10,21 +10,14 @@ const StyledThirpartyComboBox = styled.div`
   flex-direction: row;
   gap: 8px;
   .set_room_params-thirdparty-combo_box {
-    ${(props) =>
-      props.isGrayLabel &&
-      css`
-        .combo-button-label {
-          font-weight: 400;
-          font-size: 13px;
-          line-height: 20px;
-          color: #a3a9ae;
-        }
-      `}
-
+    .combo-button-label {
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 20px;
+      color: ${(props) => (props.isGrayLabel ? "#a3a9ae" : "#333333")};
+    }
     svg {
       height: 4.8px;
-    }
-    .set_room_params-thirdparty-connect {
     }
   }
 `;
