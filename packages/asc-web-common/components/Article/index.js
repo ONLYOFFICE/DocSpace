@@ -14,6 +14,7 @@ import SubArticleBackdrop from "./sub-components/article-backdrop";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
+import ArticleProfile from "./sub-components/article-profile";
 
 import { StyledArticle } from "./styled-article";
 
@@ -35,6 +36,7 @@ const Article = ({
   children,
 
   isBannerVisible,
+  hideProfileBlock,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -130,6 +132,9 @@ const Article = ({
         ) : null}
         <SubArticleBody showText={showText}>
           {articleBodyContent ? articleBodyContent.props.children : null}
+          {!hideProfileBlock && !isMobileOnly && (
+            <ArticleProfile showText={showText} />
+          )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -153,6 +158,7 @@ Article.propTypes = {
   toggleArticleOpen: PropTypes.func,
   setIsMobileArticle: PropTypes.func,
   children: PropTypes.any,
+  hideProfileBlock: PropTypes.bool,
 };
 
 Article.Header = () => {

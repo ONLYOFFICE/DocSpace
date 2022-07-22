@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "{{organizationName}}をご検討してくださった方、ありがとうございました!",
   "HeaderExpiredTrialLicense": "無料体験期間が終了しました。",
   "HeaderLicense": "{{organizationName}} エンタープライズ版を使用しています。",
-  "PaymentsTitle": "お支払い",
   "RenewalLicense": "すでに更新を購入されている場合は、ライセンスファイルをアップロードしてください。",
   "SubscriptionRenewedLicense": "サブスクリプションを更新すると",
   "SuccessLoadingLicense": "ライセンス認証が完了しました"

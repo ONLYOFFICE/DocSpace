@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "{{organizationName}} nəzərdən keçirdiyiniz üçün təşəkkür edirik!",
   "HeaderExpiredTrialLicense": "Ödənişsiz sınaq müddəti bitmişdir",
   "HeaderLicense": "Siz {{organizationName}} məxsus Müəssisə buraxılışından istifadə edirsiniz",
-  "PaymentsTitle": "Ödənişlər",
   "RenewalLicense": "Əgər lisenziyanızı yeniləmisinizsə, o zaman lisenziya faylınızı yükləyin.",
   "SubscriptionRenewedLicense": "Əldə etmək üçün abunəliyinizi yeniləyin:",
   "SuccessLoadingLicense": "Lisenziya uğurla aktivləşdirilmişdir"
