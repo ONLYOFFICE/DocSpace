@@ -10,7 +10,8 @@ import { inject, observer } from "mobx-react";
 import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
 import withLoader from "../withLoader";
 import { getPasswordErrorMessage } from "../../../../helpers/utils";
-import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
+import { createPasswordHash } from "@appserver/common/utils";
+import tryRedirectTo from "@appserver/common/utils/tryRedirectTo";
 import toastr from "@appserver/components/toast/toastr";
 
 const ChangePasswordForm = (props) => {
