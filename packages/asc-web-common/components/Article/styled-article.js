@@ -80,8 +80,13 @@ const StyledArticle = styled.article`
 
   .article-body__scrollbar {
     .scroll-body {
+      height: calc(100% - 200px);
       ${!isDesktop && "padding-top:  16px"};
       padding-right: 0px !important;
+
+      @media ${tablet} {
+        height: calc(100% - 120px);
+      }
 
       @media ${mobile} {
         padding-bottom: 20px;
@@ -249,6 +254,7 @@ StyledCrossIcon.defaultProps = { theme: Base };
 
 const StyledArticleProfile = styled.div`
   position: fixed;
+  z-index: 301;
   bottom: 0;
   padding: 16px 0;
   display: flex;
@@ -307,7 +313,7 @@ const StyledArticleProfile = styled.div`
 
     .option-button-icon {
       display: flex;
-      align-items: center;1
+      align-items: center;
       justify-content: center;
       width: 24px;
       height: 24px;
