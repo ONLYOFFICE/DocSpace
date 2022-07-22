@@ -7,11 +7,13 @@ const StyledTagList = styled.div`
   display: flex;
   flex-direction: row;
   gap: 4px;
-  width: 100px;
+  flex-wrap: wrap;
+  width: 100%;
 
   .set_room_params-tag_input-tag {
     padding: 6px 8px;
     border-radius: 3px;
+    margin: 0;
 
     .tag-icon {
       margin-left: 10px;

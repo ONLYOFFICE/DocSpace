@@ -5,11 +5,11 @@ import ThirdpartyComboBox from "../../sub-components/ThidpartyComboBox";
 
 import TextInput from "@appserver/components/text-input";
 import Label from "@appserver/components/label";
-import TagList from "./TagList";
 import ToggleButton from "@appserver/components/toggle-button";
 import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 import AvatarEditor from "@appserver/components/avatar-editor";
+import TagInput from "../../sub-components/TagInput";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
@@ -99,7 +99,6 @@ const SetRoomParams = ({
   setRoomType,
   tagHandler,
 }) => {
-  const [tagInput, setTagInput] = useState("");
   const onChangeIsPrivate = () =>
     setRoomParams({ ...roomParams, isPrivate: !roomParams.isPrivate });
 
@@ -130,24 +129,7 @@ const SetRoomParams = ({
         />
       </div>
 
-      <div className="set_room_params-input">
-        <Label
-          display="display"
-          htmlFor="tags-input"
-          text={`${t("Tags")}:`}
-          title="Fill the first name field"
-        />
-        <TextInput
-          id="tag-input"
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          scale
-          placeholder={t("Add a tag")}
-          tabIndex={1}
-        />
-
-        <TagList t={t} tagHandler={tagHandler} />
-      </div>
+      <TagInput t={t} tagHandler={tagHandler} />
 
       <StyledParam isPrivate>
         <div className="set_room_params-info">
