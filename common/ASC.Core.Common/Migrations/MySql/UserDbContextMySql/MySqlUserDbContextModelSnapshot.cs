@@ -503,7 +503,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|ea942538e68e49079394035336ee0ba8",
-                            AceType = 0
+                            AceType = 1
                         },
                         new
                         {
@@ -543,7 +543,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|28b10049dd204f54b986873bc14ccfc7",
-                            AceType = 0
+                            AceType = 1
                         },
                         new
                         {
@@ -551,7 +551,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|3cfd481b46f24a4ab55cb8c0c9def02c",
-                            AceType = 0
+                            AceType = 1
                         },
                         new
                         {
@@ -559,7 +559,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6a598c7491ae437da5f4ad339bd11bb2",
-                            AceType = 0
+                            AceType = 1
                         },
                         new
                         {
@@ -583,6 +583,14 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                             Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Action = "77777777-32ae-425f-99b5-83176061d1ae",
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|46cfa73af32046cf8d5bcd82e1d67f26",
+                            AceType = 0
+                        },
+                        new
+                        {
+                            Tenant = -1,
+                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
+                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|37620ae5c40b45ce855a39dd7d76a1fa",
                             AceType = 0
                         });
                 });
@@ -1313,7 +1321,8 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                         .HasColumnType("datetime")
                         .HasColumnName("workfromdate");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
 
                     b.HasIndex("Email")
                         .HasDatabaseName("email");
@@ -1371,13 +1380,13 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                         .HasColumnType("int")
                         .HasColumnName("tenant");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("Userid")
                         .HasColumnType("varchar(38)")
                         .HasColumnName("userid")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<string>("GroupId")
+                    b.Property<string>("UserGroupId")
                         .HasColumnType("varchar(38)")
                         .HasColumnName("groupid")
                         .UseCollation("utf8_general_ci")
@@ -1397,13 +1406,11 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                         .HasColumnName("removed")
                         .HasDefaultValueSql("'0'");
 
-                    b.HasKey("Tenant", "UserId", "GroupId", "RefType")
+                    b.HasKey("Tenant", "Userid", "UserGroupId", "RefType")
                         .HasName("PRIMARY");
 
                     b.HasIndex("LastModified")
                         .HasDatabaseName("last_modified");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("core_usergroup", (string)null);
 
@@ -1413,8 +1420,8 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                         new
                         {
                             Tenant = 1,
-                            UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            GroupId = "cd84e66b-b803-40fc-99f9-b2969a54a1de",
+                            Userid = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
+                            UserGroupId = "cd84e66b-b803-40fc-99f9-b2969a54a1de",
                             RefType = 0,
                             LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Removed = false
@@ -1494,20 +1501,6 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                             PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
                             Tenant = 1
                         });
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.User", null)
-                        .WithMany("Groups")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.User", b =>
-                {
-                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }

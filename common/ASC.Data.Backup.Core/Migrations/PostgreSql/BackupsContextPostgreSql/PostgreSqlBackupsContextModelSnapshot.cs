@@ -4,6 +4,7 @@ using ASC.Data.Backup.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,119 +17,122 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "6.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Alias")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("alias")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("alias");
 
                     b.Property<bool>("Calls")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("calls")
-                        .HasDefaultValueSql("'1'");
+                        .HasDefaultValueSql("true");
 
                     b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("creationdatetime");
 
                     b.Property<int>("Industry")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("industry")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("integer")
+                        .HasColumnName("industry");
 
                     b.Property<string>("Language")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(10)")
+                        .HasMaxLength(10)
+                        .HasColumnType("character(10)")
                         .HasColumnName("language")
                         .HasDefaultValueSql("'en-US'")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .IsFixedLength();
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("last_modified");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("MappedDomain")
-                        .HasColumnType("varchar(100)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("mappeddomain")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("name")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
 
-                    b.Property<string>("OwnerId")
-                        .HasColumnType("varchar(38)")
+                    b.Property<Guid?>("OwnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
                         .HasColumnName("owner_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("PaymentId")
-                        .HasColumnType("varchar(38)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(38)
+                        .HasColumnType("character varying(38)")
                         .HasColumnName("payment_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<bool>("Spam")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("spam")
-                        .HasDefaultValueSql("'1'");
+                        .HasDefaultValueSql("true");
 
                     b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("status")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
 
                     b.Property<DateTime?>("StatusChanged")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("statuschanged");
 
                     b.Property<string>("TimeZone")
-                        .HasColumnType("varchar(50)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("timezone")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("TrustedDomainsEnabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("trusteddomainsenabled")
-                        .HasDefaultValueSql("'1'");
+                        .HasDefaultValueSql("1");
 
                     b.Property<string>("TrustedDomainsRaw")
-                        .HasColumnType("varchar(1024)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
                         .HasColumnName("trusteddomains")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("version")
-                        .HasDefaultValueSql("'2'");
+                        .HasDefaultValueSql("2");
 
                     b.Property<DateTime?>("Version_Changed")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("version_changed");
 
                     b.HasKey("Id");
@@ -138,7 +142,7 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                         .HasDatabaseName("alias");
 
                     b.HasIndex("LastModified")
-                        .HasDatabaseName("last_modified");
+                        .HasDatabaseName("last_modified_tenants_tenants");
 
                     b.HasIndex("MappedDomain")
                         .HasDatabaseName("mappeddomain");
@@ -146,9 +150,7 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                     b.HasIndex("Version")
                         .HasDatabaseName("version");
 
-                    b.ToTable("tenants_tenants", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("tenants_tenants", "onlyoffice");
 
                     b.HasData(
                         new
@@ -160,7 +162,7 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                             Industry = 0,
                             LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Web Office",
-                            OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
+                            OwnerId = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                             Spam = false,
                             Status = 0,
                             TrustedDomainsEnabled = 0,
@@ -170,9 +172,10 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
 
             modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupRecord", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(38)")
+                        .HasMaxLength(38)
+                        .HasColumnType("char")
                         .HasColumnName("id")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
@@ -189,25 +192,29 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
 
                     b.Property<string>("Hash")
                         .IsRequired()
-                        .HasColumnType("varchar(64)")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("hash")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<bool>("IsScheduled")
-                        .HasColumnType("tinyint(1)")
+                    b.Property<int>("IsScheduled")
+                        .HasMaxLength(10)
+                        .HasColumnType("int")
                         .HasColumnName("is_scheduled");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("name")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("StorageBasePath")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("storage_base_path")
                         .HasDefaultValueSql("NULL")
                         .UseCollation("utf8_general_ci")
@@ -223,17 +230,20 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
 
                     b.Property<string>("StoragePath")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("storage_path")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("StorageType")
-                        .HasColumnType("int(10)")
+                        .HasMaxLength(10)
+                        .HasColumnType("int")
                         .HasColumnName("storage_type");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("int(10)")
+                        .HasMaxLength(10)
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.HasKey("Id")
@@ -249,29 +259,33 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                         .HasDatabaseName("tenant_id");
 
                     b.ToTable("backup_backup", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupSchedule", b =>
                 {
                     b.Property<int>("TenantId")
-                        .HasColumnType("int(10)")
-                        .HasColumnName("tenant_id");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("integer")
+                        .HasColumnName("tenant_id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<bool>("BackupMail")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasMaxLength(10)
+                        .HasColumnType("boolean")
                         .HasColumnName("backup_mail")
                         .HasDefaultValueSql("'0'");
 
                     b.Property<int>("BackupsStored")
-                        .HasColumnType("int(10)")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer")
                         .HasColumnName("backups_stored");
 
                     b.Property<string>("Cron")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("cron")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
@@ -282,7 +296,8 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
 
                     b.Property<string>("StorageBasePath")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("storage_base_path")
                         .HasDefaultValueSql("NULL")
                         .UseCollation("utf8_general_ci")
@@ -297,15 +312,14 @@ namespace ASC.Data.Backup.Core.Migrations.PostgreSql.BackupsContextPostgreSql
                         .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("StorageType")
-                        .HasColumnType("int(10)")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer")
                         .HasColumnName("storage_type");
 
                     b.HasKey("TenantId")
                         .HasName("PRIMARY");
 
                     b.ToTable("backup_schedule", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

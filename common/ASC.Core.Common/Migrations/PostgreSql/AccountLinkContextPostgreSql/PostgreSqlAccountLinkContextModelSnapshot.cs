@@ -4,6 +4,7 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,49 +17,46 @@ namespace ASC.Core.Common.Migrations.PostgreSql.AccountLinkContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "6.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.AccountLinks", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("id");
 
                     b.Property<string>("UId")
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("uid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("uid");
 
                     b.Property<DateTime>("Linked")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("linked");
 
                     b.Property<string>("Profile")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("profile")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnName("profile");
 
                     b.Property<string>("Provider")
-                        .HasColumnType("char(60)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(60)
+                        .HasColumnType("character(60)")
                         .HasColumnName("provider")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL")
+                        .IsFixedLength();
 
                     b.HasKey("Id", "UId")
-                        .HasName("PRIMARY");
+                        .HasName("account_links_pkey");
 
                     b.HasIndex("UId")
                         .HasDatabaseName("uid");
 
-                    b.ToTable("account_links", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("account_links", "onlyoffice");
                 });
 #pragma warning restore 612, 618
         }

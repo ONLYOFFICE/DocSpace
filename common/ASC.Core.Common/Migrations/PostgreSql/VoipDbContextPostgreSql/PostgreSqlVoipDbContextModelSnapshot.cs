@@ -4,6 +4,7 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,120 +17,125 @@ namespace ASC.Core.Common.Migrations.PostgreSql.VoipDbContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "6.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.CrmContact", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("CompanyId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("company_id");
 
                     b.Property<string>("CompanyName")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("company_name")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL::character varying");
 
                     b.Property<int>("ContactTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("contact_type_id")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("integer")
+                        .HasColumnName("contact_type_id");
 
-                    b.Property<string>("CreateBy")
-                        .IsRequired()
-                        .HasColumnType("char(38)")
+                    b.Property<Guid>("CreateBy")
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
                         .HasColumnName("create_by")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .IsFixedLength();
 
                     b.Property<DateTime>("CreateOn")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("create_on");
 
                     b.Property<string>("Currency")
-                        .HasColumnType("varchar(3)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
                         .HasColumnName("currency")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("display_name")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("first_name")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Industry")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("industry")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<bool>("IsCompany")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("is_company");
 
                     b.Property<bool?>("IsShared")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("is_shared");
 
-                    b.Property<string>("LastModifedBy")
-                        .HasColumnType("char(38)")
+                    b.Property<Guid?>("LastModifedBy")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
                         .HasColumnName("last_modifed_by")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<DateTime?>("LastModifedOn")
-                        .HasColumnType("datetime")
-                        .HasColumnName("last_modifed_on");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modifed_on")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("last_name")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Notes")
                         .HasColumnType("text")
-                        .HasColumnName("notes")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnName("notes");
 
                     b.Property<int>("StatusId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("status_id")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("integer")
+                        .HasColumnName("status_id");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Title")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("title")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CreateOn")
-                        .HasDatabaseName("create_on");
+                        .HasDatabaseName("create_on_crm_contact");
 
                     b.HasIndex("LastModifedOn", "TenantId")
-                        .HasDatabaseName("last_modifed_on");
+                        .HasDatabaseName("last_modifed_on_crm_contact");
 
                     b.HasIndex("TenantId", "CompanyId")
                         .HasDatabaseName("company_id");
@@ -137,150 +143,136 @@ namespace ASC.Core.Common.Migrations.PostgreSql.VoipDbContextPostgreSql
                     b.HasIndex("TenantId", "DisplayName")
                         .HasDatabaseName("display_name");
 
-                    b.ToTable("crm_contact", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("crm_contact", "onlyoffice");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbVoipCall", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("id");
 
-                    b.Property<string>("AnsweredBy")
-                        .IsRequired()
+                    b.Property<Guid>("AnsweredBy")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .HasColumnType("uuid")
                         .HasColumnName("answered_by")
-                        .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'");
 
                     b.Property<int?>("ContactId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("contact_id");
 
                     b.Property<int?>("CrmContactId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("DialDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("dial_date");
 
                     b.Property<int?>("DialDuration")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("dial_duration");
 
                     b.Property<int?>("Duration")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("record_duration");
 
                     b.Property<string>("NumberFrom")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("number_from")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("number_from");
 
                     b.Property<string>("NumberTo")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("number_to")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("number_to");
 
                     b.Property<string>("ParentCallId")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("parent_call_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("parent_call_id");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(10,4)")
-                        .HasColumnName("price");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("numeric(10,4)")
+                        .HasColumnName("price")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<decimal>("RecordPrice")
-                        .HasColumnType("decimal(10,4)")
+                        .HasColumnType("numeric(10,4)")
                         .HasColumnName("record_price");
 
                     b.Property<string>("Sid")
-                        .HasColumnType("varchar(50)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("record_sid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int?>("Status")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Uri")
                         .HasColumnType("text")
-                        .HasColumnName("record_url")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnName("record_url");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CrmContactId");
 
                     b.HasIndex("TenantId")
-                        .HasDatabaseName("tenant_id");
+                        .HasDatabaseName("tenant_id_crm_voip_calls");
 
                     b.HasIndex("ParentCallId", "TenantId")
                         .HasDatabaseName("parent_call_id");
 
-                    b.ToTable("crm_voip_calls", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("crm_voip_calls", "onlyoffice");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.VoipNumber", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("id");
 
                     b.Property<string>("Alias")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("alias")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("number")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("number");
 
                     b.Property<string>("Settings")
                         .HasColumnType("text")
-                        .HasColumnName("settings")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnName("settings");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant_id");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TenantId")
-                        .HasDatabaseName("tenant_id");
+                        .HasDatabaseName("tenant_id_crm_voip_number");
 
-                    b.ToTable("crm_voip_number", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("crm_voip_number", "onlyoffice");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbVoipCall", b =>

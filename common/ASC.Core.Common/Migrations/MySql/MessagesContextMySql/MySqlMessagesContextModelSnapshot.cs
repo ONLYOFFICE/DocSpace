@@ -354,7 +354,8 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                         .HasColumnType("datetime")
                         .HasColumnName("workfromdate");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
 
                     b.HasIndex("Email")
                         .HasDatabaseName("email");
@@ -386,51 +387,6 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                             UserName = "administrator",
                             WorkFromDate = new DateTime(2021, 3, 9, 9, 52, 55, 764, DateTimeKind.Utc).AddTicks(9157)
                         });
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
-                {
-                    b.Property<int>("Tenant")
-                        .HasColumnType("int")
-                        .HasColumnName("tenant");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("userid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("GroupId")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("groupid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<int>("RefType")
-                        .HasColumnType("int")
-                        .HasColumnName("ref_type");
-
-                    b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("last_modified");
-
-                    b.Property<bool>("Removed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("removed")
-                        .HasDefaultValueSql("'0'");
-
-                    b.HasKey("Tenant", "UserId", "GroupId", "RefType")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex("LastModified")
-                        .HasDatabaseName("last_modified");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("core_usergroup", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.MessagingSystem.EF.Model.AuditEvent", b =>
@@ -587,20 +543,6 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                     b.ToTable("login_events", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.User", null)
-                        .WithMany("Groups")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.User", b =>
-                {
-                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }

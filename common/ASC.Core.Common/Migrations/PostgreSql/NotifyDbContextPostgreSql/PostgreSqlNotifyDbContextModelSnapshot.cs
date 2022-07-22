@@ -4,6 +4,7 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,123 +17,118 @@ namespace ASC.Core.Common.Migrations.PostgreSql.NotifyDbContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "6.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyInfo", b =>
                 {
                     b.Property<int>("NotifyId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("notify_id");
 
                     b.Property<int>("Attempts")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("attempts")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("integer")
+                        .HasColumnName("attempts");
 
                     b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("modify_date");
 
                     b.Property<int>("Priority")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("priority")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("integer")
+                        .HasColumnName("priority");
 
                     b.Property<int>("State")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("state")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("integer")
+                        .HasColumnName("state");
 
                     b.HasKey("NotifyId")
-                        .HasName("PRIMARY");
+                        .HasName("notify_info_pkey");
 
                     b.HasIndex("State")
                         .HasDatabaseName("state");
 
-                    b.ToTable("notify_info", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("notify_info", "onlyoffice");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyQueue", b =>
                 {
                     b.Property<int>("NotifyId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("notify_id");
+                        .HasColumnType("integer")
+                        .HasColumnName("notify_id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Attachments")
                         .HasColumnType("text")
-                        .HasColumnName("attachments")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnName("attachments");
 
                     b.Property<string>("AutoSubmitted")
-                        .HasColumnType("varchar(64)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("auto_submitted")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Content")
                         .HasColumnType("text")
-                        .HasColumnName("content")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnName("content");
 
                     b.Property<string>("ContentType")
-                        .HasColumnType("varchar(64)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("content_type")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("creation_date");
 
                     b.Property<string>("Reciever")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("reciever")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("ReplyTo")
-                        .HasColumnType("varchar(1024)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
                         .HasColumnName("reply_to")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Sender")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("sender")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("SenderType")
-                        .HasColumnType("varchar(64)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("sender_type")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Subject")
-                        .HasColumnType("varchar(1024)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
                         .HasColumnName("subject")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant_id");
 
                     b.HasKey("NotifyId")
-                        .HasName("PRIMARY");
+                        .HasName("notify_queue_pkey");
 
-                    b.ToTable("notify_queue", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("notify_queue", "onlyoffice");
                 });
 #pragma warning restore 612, 618
         }

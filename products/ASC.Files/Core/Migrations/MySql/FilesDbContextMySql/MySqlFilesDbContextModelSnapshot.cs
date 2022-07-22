@@ -45,9 +45,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
 
                     b.Property<string>("Features")
                         .HasColumnType("text")
-                        .HasColumnName("features")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnName("features");
 
                     b.Property<long>("MaxFileSize")
                         .ValueGeneratedOnAdd()

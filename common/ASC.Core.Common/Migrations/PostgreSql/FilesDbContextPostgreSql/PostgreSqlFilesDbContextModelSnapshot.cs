@@ -3,6 +3,7 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -15,29 +16,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "6.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FilesConverts", b =>
                 {
                     b.Property<string>("Input")
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("input")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("input");
 
                     b.Property<string>("Output")
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("output")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("output");
 
                     b.HasKey("Input", "Output")
-                        .HasName("PRIMARY");
+                        .HasName("files_converts_pkey");
 
-                    b.ToTable("files_converts", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("files_converts", "onlyoffice");
 
                     b.HasData(
                         new
@@ -53,12 +51,67 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         new
                         {
                             Input = ".csv",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".csv",
                             Output = ".xlsx"
+                        },
+                        new
+                        {
+                            Input = ".csv",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".csv",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".csv",
+                            Output = ".xltx"
                         },
                         new
                         {
                             Input = ".doc",
                             Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".doc",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".doc",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".doc",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".doc",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".doc",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".doc",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".doc",
+                            Output = ".ott"
                         },
                         new
                         {
@@ -84,6 +137,36 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".docm",
                             Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".docm",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".docm",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".docm",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".docm",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".docm",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".docm",
+                            Output = ".ott"
                         },
                         new
                         {
@@ -133,6 +216,41 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         new
                         {
                             Input = ".docx",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".docx",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".docx",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".docx",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".docx",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".docx",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".docx",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".docx",
                             Output = ".docxf"
                         },
                         new
@@ -167,6 +285,31 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".docxf",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".docxf",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".docxf",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".docxf",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".docxf",
+                            Output = ".ott"
+                        },
+                        new
+                        {
                             Input = ".dot",
                             Output = ".docx"
                         },
@@ -189,6 +332,41 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".dot",
                             Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".dot",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".dot",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".dot",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".dot",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".dot",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".dot",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".dot",
+                            Output = ".ott"
                         },
                         new
                         {
@@ -217,6 +395,36 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".dotm",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".dotm",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".dotm",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".dotm",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".dotm",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".dotm",
+                            Output = ".ott"
+                        },
+                        new
+                        {
                             Input = ".dotx",
                             Output = ".docx"
                         },
@@ -242,6 +450,36 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".dotx",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".dotx",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".dotx",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".dotx",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".dotx",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".dotx",
+                            Output = ".ott"
+                        },
+                        new
+                        {
                             Input = ".epub",
                             Output = ".docx"
                         },
@@ -267,6 +505,36 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".epub",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".epub",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".epub",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".epub",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".epub",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".epub",
+                            Output = ".ott"
+                        },
+                        new
+                        {
                             Input = ".fb2",
                             Output = ".docx"
                         },
@@ -289,6 +557,36 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".fb2",
                             Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".ott"
                         },
                         new
                         {
@@ -304,6 +602,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".fodp",
                             Output = ".pptx"
+                        },
+                        new
+                        {
+                            Input = ".fodp",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".fodp",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".fodp",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".fodp",
+                            Output = ".pptm"
                         },
                         new
                         {
@@ -327,6 +645,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".fods",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".fods",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".fods",
+                            Output = ".xltx"
+                        },
+                        new
+                        {
+                            Input = ".fods",
+                            Output = ".ots"
+                        },
+                        new
+                        {
                             Input = ".fodt",
                             Output = ".docx"
                         },
@@ -334,6 +672,11 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".fodt",
                             Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".fodt",
+                            Output = ".docm"
                         },
                         new
                         {
@@ -352,6 +695,36 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".fodt",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".fodt",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".fodt",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".fodt",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".fodt",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".fodt",
+                            Output = ".ott"
+                        },
+                        new
+                        {
                             Input = ".html",
                             Output = ".docx"
                         },
@@ -377,6 +750,36 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".html",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".html",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".html",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".html",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".html",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".html",
+                            Output = ".ott"
+                        },
+                        new
+                        {
                             Input = ".mht",
                             Output = ".docx"
                         },
@@ -399,6 +802,36 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".mht",
                             Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".mht",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".mht",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".mht",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".mht",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".mht",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".mht",
+                            Output = ".ott"
                         },
                         new
                         {
@@ -412,6 +845,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".odp",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".odp",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".odp",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".odp",
+                            Output = ".pptm"
+                        },
+                        new
+                        {
                             Input = ".otp",
                             Output = ".odp"
                         },
@@ -419,6 +872,21 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".otp",
                             Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".otp",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".otp",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".otp",
+                            Output = ".pptm"
                         },
                         new
                         {
@@ -439,6 +907,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".ods",
                             Output = ".xlsx"
+                        },
+                        new
+                        {
+                            Input = ".ods",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".ods",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".ods",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".ods",
+                            Output = ".xltx"
                         },
                         new
                         {
@@ -458,7 +946,27 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         new
                         {
                             Input = ".ots",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".ots",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".ots",
+                            Output = ".xltx"
+                        },
+                        new
+                        {
+                            Input = ".ots",
                             Output = ".xlsx"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".pdf"
                         },
                         new
                         {
@@ -479,6 +987,41 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".odt",
                             Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".ott"
                         },
                         new
                         {
@@ -507,6 +1050,36 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".ott",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".html"
+                        },
+                        new
+                        {
                             Input = ".pot",
                             Output = ".odp"
                         },
@@ -519,6 +1092,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".pot",
                             Output = ".pptx"
+                        },
+                        new
+                        {
+                            Input = ".pot",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".pot",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".pot",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".pot",
+                            Output = ".pptm"
                         },
                         new
                         {
@@ -537,6 +1130,21 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".potm",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".potm",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".potm",
+                            Output = ".pptm"
+                        },
+                        new
+                        {
                             Input = ".potx",
                             Output = ".odp"
                         },
@@ -549,6 +1157,21 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".potx",
                             Output = ".pptx"
+                        },
+                        new
+                        {
+                            Input = ".potx",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".potx",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".potx",
+                            Output = ".pptm"
                         },
                         new
                         {
@@ -567,6 +1190,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".pps",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".pps",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".pps",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".pps",
+                            Output = ".pptm"
+                        },
+                        new
+                        {
                             Input = ".ppsm",
                             Output = ".odp"
                         },
@@ -579,6 +1222,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".ppsm",
                             Output = ".pptx"
+                        },
+                        new
+                        {
+                            Input = ".ppsm",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".ppsm",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".ppsm",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".ppsm",
+                            Output = ".pptm"
                         },
                         new
                         {
@@ -597,6 +1260,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".ppsx",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".ppsx",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".ppsx",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".ppsx",
+                            Output = ".pptm"
+                        },
+                        new
+                        {
                             Input = ".ppt",
                             Output = ".odp"
                         },
@@ -612,6 +1295,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".ppt",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".ppt",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".ppt",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".ppt",
+                            Output = ".pptm"
+                        },
+                        new
+                        {
                             Input = ".pptm",
                             Output = ".odp"
                         },
@@ -624,6 +1327,21 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".pptm",
                             Output = ".pptx"
+                        },
+                        new
+                        {
+                            Input = ".pptm",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".pptm",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".pptm",
+                            Output = ".potx"
                         },
                         new
                         {
@@ -642,6 +1360,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".pptx",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".pptx",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".pptx",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".pptx",
+                            Output = ".pptm"
+                        },
+                        new
+                        {
                             Input = ".rtf",
                             Output = ".odt"
                         },
@@ -659,6 +1397,41 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".rtf",
                             Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".rtf",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".rtf",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".rtf",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".rtf",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".rtf",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".rtf",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".rtf",
+                            Output = ".ott"
                         },
                         new
                         {
@@ -682,6 +1455,41 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".txt",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".txt",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".txt",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".txt",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".txt",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".txt",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".txt",
+                            Output = ".ott"
+                        },
+                        new
+                        {
                             Input = ".xls",
                             Output = ".csv"
                         },
@@ -702,8 +1510,43 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
+                            Input = ".xls",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".xls",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".xls",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".xls",
+                            Output = ".xltx"
+                        },
+                        new
+                        {
                             Input = ".xlsm",
                             Output = ".csv"
+                        },
+                        new
+                        {
+                            Input = ".xlsm",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".xlsm",
+                            Output = ".xltx"
+                        },
+                        new
+                        {
+                            Input = ".xlsm",
+                            Output = ".ots"
                         },
                         new
                         {
@@ -722,8 +1565,38 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
-                            Input = ".xlst",
+                            Input = ".xlsx",
+                            Output = ".csv"
+                        },
+                        new
+                        {
+                            Input = ".xlsx",
+                            Output = ".ods"
+                        },
+                        new
+                        {
+                            Input = ".xlsx",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".xlsx",
                             Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".xlsx",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".xlsx",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".xlsx",
+                            Output = ".xltx"
                         },
                         new
                         {
@@ -732,16 +1605,6 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         },
                         new
                         {
-                            Input = ".xlst",
-                            Output = ".csv"
-                        },
-                        new
-                        {
-                            Input = ".xlst",
-                            Output = ".ods"
-                        },
-                        new
-                        {
                             Input = ".xlt",
                             Output = ".csv"
                         },
@@ -759,6 +1622,26 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".xlt",
                             Output = ".xlsx"
+                        },
+                        new
+                        {
+                            Input = ".xlt",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".xlt",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".xlt",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".xlt",
+                            Output = ".xltx"
                         },
                         new
                         {
@@ -774,6 +1657,21 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".xltm",
                             Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".xltm",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".xltm",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".xltm",
+                            Output = ".xltx"
                         },
                         new
                         {
@@ -794,6 +1692,21 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".xltx",
                             Output = ".ods"
+                        },
+                        new
+                        {
+                            Input = ".xltx",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".xltx",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".xltx",
+                            Output = ".xltm"
                         },
                         new
                         {
@@ -804,6 +1717,66 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
                         {
                             Input = ".xps",
                             Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".xml",
+                            Output = ".txt"
                         });
                 });
 #pragma warning restore 612, 618

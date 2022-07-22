@@ -4,6 +4,7 @@ using ASC.EventBus.Extensions.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,12 +17,13 @@ namespace ASC.EventBus.Extensions.Logger.Migrations.PostgreSql.IntegrationEventL
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "6.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.EventBus.Extensions.Logger.IntegrationEventLogEntry", b =>
                 {
-                    b.Property<string>("EventId")
+                    b.Property<Guid>("EventId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(38)")
                         .HasColumnName("event_id")
@@ -35,8 +37,7 @@ namespace ASC.EventBus.Extensions.Logger.Migrations.PostgreSql.IntegrationEventL
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<string>("CreateBy")
-                        .IsRequired()
+                    b.Property<Guid>("CreateBy")
                         .HasColumnType("char(38)")
                         .HasColumnName("create_by")
                         .UseCollation("utf8_general_ci")
@@ -66,7 +67,7 @@ namespace ASC.EventBus.Extensions.Logger.Migrations.PostgreSql.IntegrationEventL
                         .HasColumnName("times_sent");
 
                     b.Property<string>("TransactionId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("EventId")
                         .HasName("PRIMARY");

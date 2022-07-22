@@ -4,6 +4,7 @@ using ASC.Webhooks.Core.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,31 +17,33 @@ namespace ASC.Webhooks.Core.Migrations.PostgreSql.WebhooksDbContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "6.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
                     b.Property<int>("ConfigId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("config_id");
+                        .HasColumnName("config_id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("secret_key")
                         .HasDefaultValueSql("''");
 
-                    b.Property<uint>("TenantId")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int unsigned")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Uri")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("uri")
                         .HasDefaultValueSql("''");
 
@@ -48,8 +51,6 @@ namespace ASC.Webhooks.Core.Migrations.PostgreSql.WebhooksDbContextPostgreSql
                         .HasName("PRIMARY");
 
                     b.ToTable("webhooks_config", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksLog", b =>
@@ -57,7 +58,8 @@ namespace ASC.Webhooks.Core.Migrations.PostgreSql.WebhooksDbContextPostgreSql
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("ConfigId")
                         .HasColumnType("int")
@@ -69,7 +71,7 @@ namespace ASC.Webhooks.Core.Migrations.PostgreSql.WebhooksDbContextPostgreSql
 
                     b.Property<string>("Event")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("varchar")
                         .HasColumnName("event");
 
                     b.Property<string>("RequestHeaders")
@@ -92,24 +94,22 @@ namespace ASC.Webhooks.Core.Migrations.PostgreSql.WebhooksDbContextPostgreSql
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar")
                         .HasColumnName("status");
 
-                    b.Property<uint>("TenantId")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int unsigned")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Uid")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar")
                         .HasColumnName("uid");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
                     b.ToTable("webhooks_logs", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }
