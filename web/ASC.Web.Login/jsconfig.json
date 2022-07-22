@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "components": ["@appserver/components"]
-    }
-  },
-  "exclude": ["node_modules"]
-}
