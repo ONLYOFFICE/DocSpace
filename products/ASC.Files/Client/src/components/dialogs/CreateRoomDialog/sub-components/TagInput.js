@@ -16,10 +16,6 @@ const StyledTagInput = styled.div`
     }
   }
 
-  .set_room_params-tag_input-dropdown {
-    position: absolute;
-  }
-
   .dropdown-content-wrapper {
     max-width: 100%;
     position: relative;
@@ -35,6 +31,8 @@ const StyledTagDropdown = styled.div`
   box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
   border-radius: 3px;
   z-index: 400;
+  position: absolute;
+
   width: 100%;
 
   .dropdown-tag {
