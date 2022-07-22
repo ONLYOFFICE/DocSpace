@@ -237,6 +237,12 @@ public abstract class EditorController<T> : ApiControllerBase
     {
         return _fileStorageService.GetPresignedUriAsync(fileId);
     }
+
+    [HttpGet("file/{fileId}/sharedusers")]
+    public Task<List<MentionWrapper>> SharedUsers(T fileId)
+    {
+        return _fileStorageService.SharedUsersAsync(fileId);
+    }
 }
 
 public class EditorController : ApiControllerBase
