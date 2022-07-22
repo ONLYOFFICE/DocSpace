@@ -269,6 +269,11 @@ const StyledArticleProfile = styled.div`
     padding: 16px 14px;
   }
 
+  ${isTablet &&
+  css`
+    padding: 16px 14px;
+  `}
+
   .option-button {
     margin-left: auto;
     height: 32px;
@@ -299,11 +304,22 @@ const StyledUserName = styled.div`
 
 const StyledProfileWrapper = styled.div`
   z-index: 301;
-  min-width: ${(props) => (props.showText ? "243px" : "60px")};
-  max-width: ${(props) => (props.showText ? "243px" : "60px")};
   position: fixed;
   bottom: 0;
   left: 0;
+  min-width: 251px;
+  max-width: 251px;
+
+  @media ${tablet} {
+    min-width: ${(props) => (props.showText ? "243px" : "60px")};
+    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+  }
+
+  ${isTablet &&
+  css`
+    min-width: ${(props) => (props.showText ? "243px" : "60px")};
+    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+  `}
 `;
 
 export {
