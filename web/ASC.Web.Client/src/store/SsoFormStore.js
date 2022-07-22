@@ -583,7 +583,7 @@ class SsoFormStore {
   };
 
   downloadMetadata = async () => {
-    window.open("/api/2.0/sso/metadata", "_blank");
+    window.open("/sso/metadata", "_blank");
   };
 
   get hasErrors() {
