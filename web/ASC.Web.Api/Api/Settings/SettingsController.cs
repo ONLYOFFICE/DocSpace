@@ -373,6 +373,7 @@ public class SettingsController : BaseSettingsController
         _settingsManager.SaveForCurrentUser(collaboratorPopupSettings);
     }
 
+    [AllowAnonymous]
     [HttpGet("colortheme")]
     public CustomColorThemesSettingsDto GetColorTheme()
     {
