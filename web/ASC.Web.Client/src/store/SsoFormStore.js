@@ -288,8 +288,8 @@ class SsoFormStore {
     try {
       this.isGeneratedCertificate = true;
 
-      const response = await generateCerts();
-      this.setGeneratedCertificate(response);
+      const res = await generateCerts();
+      this.setGeneratedCertificate(res.data);
 
       this.isGeneratedCertificate = false;
     } catch (err) {
@@ -542,7 +542,8 @@ class SsoFormStore {
     ];
 
     try {
-      const newCertificates = await this.validateCertificate(data);
+      const res = await this.validateCertificate(data);
+      const newCertificates = res.data;
       newCertificates.map((cert) => {
         this[`${prefix}_certificates`] = [
           ...this[`${prefix}_certificates`],
