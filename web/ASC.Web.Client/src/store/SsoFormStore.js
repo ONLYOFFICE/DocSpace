@@ -10,6 +10,7 @@ import {
 } from "@appserver/common/api/settings";
 import toastr from "../helpers/toastr";
 import { BINDING_POST, BINDING_REDIRECT } from "../helpers/constants";
+import isEqual from "lodash/isEqual";
 
 class SsoFormStore {
   isSsoEnabled = false;
@@ -136,15 +137,18 @@ class SsoFormStore {
   isSubmitLoading = false;
   isGeneratedCertificate = false;
 
+  defaultSettings = null;
+
   constructor() {
     makeAutoObservable(this);
   }
 
   onPageLoad = async () => {
     try {
-      const response = await getCurrentSsoSettings();
-      this.isSsoEnabled = response.enableSso;
-      this.setFieldsFromObject(response);
+      const res = await getCurrentSsoSettings();
+      this.isSsoEnabled = res.enableSso;
+      this.defaultSettings = res;
+      this.setFieldsFromObject(res);
     } catch (err) {
       console.log(err);
     }
@@ -360,6 +364,8 @@ class SsoFormStore {
       await submitSsoForm(data);
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
       this.isSubmitLoading = false;
+      this.SPMetadata = true;
+      this.defaultSettings = settings;
     } catch (err) {
       toastr.error(err);
       console.error(err);
@@ -592,6 +598,11 @@ class SsoFormStore {
       if (key.includes("ErrorMessage") && this[key] !== null) return true;
     }
     return false;
+  }
+
+  get hasChanges() {
+    const currentSettings = this.getSettings();
+    return !isEqual(currentSettings, this.defaultSettings);
   }
 }
 
