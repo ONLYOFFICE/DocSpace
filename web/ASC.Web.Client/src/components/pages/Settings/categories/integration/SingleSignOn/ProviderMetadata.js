@@ -11,26 +11,28 @@ const ProviderMetadata = (props) => {
   const { t } = useTranslation("SingleSignOn");
   const { downloadMetadata } = props;
 
+  const url = window.location.origin;
+
   return (
     <>
       <MetadataUrlField
         labelText={t("SPEntityId")}
         name="sp_entityId"
-        placeholder="https://www.test.com"
+        placeholder={`${url}/sso/metadata`}
         tooltipContent={t("SPEntityIdTooltip")}
       />
 
       <MetadataUrlField
         labelText={t("SPAssertionConsumerURL")}
         name="sp_assertionConsumerUrl"
-        placeholder="https://www.test.com"
+        placeholder={`${url}/sso/acs`}
         tooltipContent={t("SPAssertionConsumerURLTooltip")}
       />
 
       <MetadataUrlField
         labelText={t("SPSingleLogoutURL")}
         name="sp_singleLogoutUrl"
-        placeholder="https://www.test.com"
+        placeholder={`${url}/sso/slo/callback`}
         tooltipContent={t("SPSingleLogoutURLTooltip")}
       />
 
