@@ -9,6 +9,7 @@ import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@appserver/common/history";
+import Toast from "@appserver/components/toast";
 import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
@@ -530,6 +531,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   return (
     <Layout>
       <Router history={history}>
+        <Toast />
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || isLogin || !isMobileOnly ? <></> : <NavMenu />}
         <IndicatorLoader />
