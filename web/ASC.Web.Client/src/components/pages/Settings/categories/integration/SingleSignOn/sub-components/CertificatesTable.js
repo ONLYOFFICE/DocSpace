@@ -50,10 +50,12 @@ const CertificatesTable = (props) => {
         <div className="column">
           <div className="column-row">
             <Text fontWeight={600} fontSize="14px" noSelect>
-              {certificate.domainName},{" "}
+              {certificate.domainName}
             </Text>
-            <Text color="#a3a9ae" noSelect>
-              {getFullDate(certificate.startDate)} -{" "}
+            <Text color="#a3a9ae" fontWeight={600} fontSize="14px" noSelect>
+              {", "}
+              {getFullDate(certificate.startDate)}
+              {" - "}
               {getFullDate(certificate.expiredDate)}
             </Text>
           </div>
