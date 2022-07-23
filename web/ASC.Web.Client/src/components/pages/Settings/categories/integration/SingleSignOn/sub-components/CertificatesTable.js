@@ -65,7 +65,11 @@ const CertificatesTable = (props) => {
             </Text>
           </div>
         </div>
-        <ContextMenuButton className="context-btn" getData={getOptions} />
+        <ContextMenuButton
+          className="context-btn"
+          getData={getOptions}
+          usePortal={false}
+        />
       </div>
     );
   };
