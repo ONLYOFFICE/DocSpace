@@ -8,7 +8,7 @@ import {
   uploadXmlMetadata,
   validateCerts,
 } from "@appserver/common/api/settings";
-import toastr from "../helpers/toastr";
+import toastr from "@appserver/components/toast/toastr";
 import { BINDING_POST, BINDING_REDIRECT } from "../helpers/constants";
 import isEqual from "lodash/isEqual";
 
