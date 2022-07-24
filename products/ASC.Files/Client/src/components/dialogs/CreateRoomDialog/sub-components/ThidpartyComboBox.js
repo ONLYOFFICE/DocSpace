@@ -2,14 +2,11 @@ import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 
-import ComboBox from "@appserver/components/combobox";
 import Button from "@appserver/components/button";
-import { isSmallTablet, smallTablet } from "@appserver/components/utils/device";
-import DomHelpers from "@appserver/components/utils/domHelpers";
 import { thirparties } from "../data";
-import DropDown from "@appserver/components/drop-down";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Text from "@appserver/components/text";
+import { StyledDropDown, StyledDropdownWrapper } from "./StyledDropdown";
 
 const StyledThirpartyComboBox = styled.div`
   display: flex;
@@ -61,63 +58,26 @@ const StyledThirpartyComboBox = styled.div`
   }
 `;
 
-const StyledDropdownWrapper = styled.div`
-  width: 100%;
-  position: relative;
-`;
-
-const StyledDropDown = styled(DropDown)`
-  margin-top: 5px;
-  padding: 6px 0;
-  background: #ffffff;
-  border: 1px solid #d0d5da;
-  box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
-  border-radius: 3px;
-  overflow-y: hidden;
-
-  width: 446px;
-  max-width: 446px;
-  div {
-    max-width: 446px;
-  }
-  @media ${smallTablet} {
-    width: calc(100vw - 34px);
-    max-width: calc(100vw - 34px);
-    div {
-      max-width: calc(100vw - 34px);
-    }
-  }
-
-  div[stype="mediumBlack"] {
-    margin-bottom: -6px;
-  }
-
-  .dropdown-item {
-    max-height: 32px;
-    cursor: pointer;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 6px 8px;
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 20px;
-    color: #333333;
-    &:hover {
-      background: #f3f4f4;
-    }
-  }
-`;
-
-const ThirdpartyComboBox = ({ t, roomParams, setRoomParams }) => {
+const ThirdpartyComboBox = ({
+  t,
+  roomParams,
+  setRoomParams,
+  setIsScrollLocked,
+}) => {
   const [isGrayLabel, setIsGrayLabel] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
-  const toggleIsOpen = () => setIsOpen(!isOpen);
+  const toggleIsOpen = () => {
+    if (isOpen) setIsScrollLocked(false);
+    else setIsScrollLocked(true);
+    setIsOpen(!isOpen);
+  };
 
   const setStorageLocaiton = (thirparty) => {
     setIsGrayLabel(false);
     setRoomParams({ ...roomParams, storageLocation: thirparty });
     toggleIsOpen();
+    setIsScrollLocked(false);
   };
 
   const dropdownRef = useRef(null);
@@ -152,12 +112,10 @@ const ThirdpartyComboBox = ({ t, roomParams, setRoomParams }) => {
           <StyledDropDown
             className="dropdown-content"
             open={isOpen}
-            withBackdrop={false}
             maxHeight={181}
             forwardedRef={dropdownRef}
             directionX={"left"}
-            //directionY={"bottom"}
-            //clickOutsideAction={toggleIsOpen}
+            clickOutsideAction={toggleIsOpen}
           >
             {thirparties.map((thirparty) => (
               <DropDownItem
