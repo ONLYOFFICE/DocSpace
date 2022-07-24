@@ -8,6 +8,7 @@ import {
   GroupMainButton,
 } from "./styled-main-button";
 import ContextMenu from "../context-menu";
+import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
 
 const MainButton = (props) => {
   const {
@@ -61,9 +62,14 @@ const MainButton = (props) => {
 
   return (
     <GroupMainButton {...props} ref={ref}>
-      <StyledMainButton {...props} onClick={onMainButtonClick}>
+      <ColorTheme
+        {...props}
+        onClick={onMainButtonClick}
+        type={ThemeType.MainButton}
+      >
         <Text className="main-button_text">{text}</Text>
-      </StyledMainButton>
+      </ColorTheme>
+
       {isDropdown ? (
         <ContextMenu
           model={model}

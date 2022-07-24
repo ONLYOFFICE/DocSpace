@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 
 import { StyledBadge, StyledInner, StyledText } from "./styled-badge";
 
+import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+
 const Badge = (props) => {
   //console.log("Badge render");
 
@@ -27,8 +29,14 @@ const Badge = (props) => {
   } = props;
 
   return (
-    <StyledBadge isHovered={isHovered} onClick={onClick} {...props}>
+    <ColorTheme
+      {...props}
+      isHovered={isHovered}
+      onClick={onClick}
+      type={ThemeType.Badge}
+    >
       <StyledInner
+        className="color-theme-background"
         backgroundColor={backgroundColor}
         borderRadius={borderRadius}
         padding={padding}
@@ -44,7 +52,7 @@ const Badge = (props) => {
           {label}
         </StyledText>
       </StyledInner>
-    </StyledBadge>
+    </ColorTheme>
   );
 };
 
