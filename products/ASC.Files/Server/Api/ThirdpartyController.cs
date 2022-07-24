@@ -203,9 +203,17 @@ public class ThirdpartyController : ApiControllerBase
     /// <short>Get third party list</short>
     /// <returns>Connected providers</returns>
     [HttpGet("thirdparty/backup")]
-    public async Task<IEnumerable<ThirdPartyParams>> GetBackupThirdPartyAccountAsync()
+    public async Task<FolderDto<string>> GetBackupThirdPartyAccountAsync()
     {
-        return await _fileStorageServiceThirdparty.GetBackupThirdPartyAsync();
+        var folder = await _fileStorageServiceThirdparty.GetBackupThirdPartyAsync();
+        if (folder != null) {
+
+            return await _folderDtoHelper.GetAsync(folder);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /// <visible>false</visible>
@@ -286,7 +294,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
     /// <exception cref="ArgumentException"></exception>
     [HttpPost("thirdparty/backup")]
-    public async Task<FolderDto<string>> SaveThirdPartyBackupAsync(ThirdPartyRequestDto inDto)
+    public async Task<FolderDto<string>> SaveThirdPartyBackupAsync(ThirdPartyBackupRequestDto inDto)
     {
         if (!_fileSecurityCommon.IsAdministrator(_securityContext.CurrentAccount.ID))
         {
@@ -297,7 +305,6 @@ public class ThirdpartyController : ApiControllerBase
         {
             AuthData = new AuthData(inDto.Url, inDto.Login, inDto.Password, inDto.Token),
             CustomerTitle = inDto.CustomerTitle,
-            ProviderId = inDto.ProviderId,
             ProviderKey = inDto.ProviderKey,
         };
 
