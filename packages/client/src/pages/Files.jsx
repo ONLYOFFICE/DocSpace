@@ -47,6 +47,7 @@ const FORM_GALLERY_URL = combineUrl(
   "/form-gallery/:folderId"
 );
 const ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/rooms");
+const ACCOUNTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts");
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -63,6 +64,8 @@ window.AppServer.files = {
 };
 
 const Error404 = React.lazy(() => import("studio/Error404"));
+
+const Accounts = () => <div>Accounts</div>;
 
 const FilesArticle = React.memo(({ history }) => {
   const isFormGallery = history.location.pathname
@@ -90,6 +93,7 @@ const FilesSection = React.memo(() => {
   return (
     <Switch>
       <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
+      <PrivateRoute exact path={ACCOUNTS_URL} component={Accounts} />
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
       <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
       <PrivateRoute exact path={HOME_URL} component={Home} />

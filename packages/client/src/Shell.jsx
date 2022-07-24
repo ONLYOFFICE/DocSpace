@@ -560,6 +560,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               ]}
               component={HomeRoute}
             />
+            {!IS_PERSONAL && <Route path="/accounts" component={HomeRoute} />}
             <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
             <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
             {loginRoutes}

@@ -143,7 +143,7 @@ const ArticleBodyContent = (props) => {
         showText={showText}
         onHide={toggleArticleOpen}
       />
-      <AccountsItem />
+      {!personal && <AccountsItem />}
       {!personal && !firstLoad && <SettingsItem />}
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
