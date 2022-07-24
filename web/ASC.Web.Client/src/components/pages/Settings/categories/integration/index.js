@@ -11,6 +11,7 @@ import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
 
 import AppLoader from "@appserver/common/components/AppLoader";
+import SSOLoader from "./sub-components/ssoLoader";
 
 const IntegrationWrapper = (props) => {
   const { t, history, loadBaseInfo } = props;
@@ -52,7 +53,8 @@ const IntegrationWrapper = (props) => {
     );
   };
 
-  if (!isLoading) return <AppLoader />;
+  if (!isLoading) return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
+
   return (
     <Submenu
       data={data}
