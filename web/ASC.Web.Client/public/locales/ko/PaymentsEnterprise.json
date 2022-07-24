@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "{{organizationName}}을 찾아주셔서 감사합니다!",
   "HeaderExpiredTrialLicense": "무료 체험 기간이 종료되었습니다",
   "HeaderLicense": "{{organizationName}} Enterprise Edition을 이용하고 계십니다",
-  "PaymentsTitle": "결제",
   "RenewalLicense": "이미 갱신하신 경우, 라이센스 파일을 업로드해주세요.",
   "SubscriptionRenewedLicense": "구독 갱신 혜택:",
   "SuccessLoadingLicense": "라이센스가 성공적으로 활성화되었습니다"

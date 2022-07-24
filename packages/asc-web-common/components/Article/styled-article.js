@@ -28,13 +28,13 @@ const StyledArticle = styled.article`
 
   box-sizing: border-box;
 
-  padding: 0 20px;
+  //padding: 0 20px;
 
   @media ${tablet} {
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
 
-    padding: 0 8px;
+    //padding: 0 8px;
   }
 
   ${isMobile &&
@@ -80,8 +80,16 @@ const StyledArticle = styled.article`
 
   .article-body__scrollbar {
     .scroll-body {
+      overflow-x: hidden !important;
+      height: calc(100% - 200px);
       ${!isDesktop && "padding-top:  16px"};
-      padding-right: 0px !important;
+      //padding-right: 0px !important;
+      padding: 0 20px;
+
+      @media ${tablet} {
+        height: calc(100% - 120px);
+        padding: 0 8px;
+      }
 
       @media ${mobile} {
         padding-bottom: 20px;
@@ -98,14 +106,14 @@ const StyledArticle = styled.article`
 StyledArticle.defaultProps = { theme: Base };
 
 const StyledArticleHeader = styled.div`
-  padding: 11px 0 14px;
+  padding: 16px 20px 17px;
   margin-left: -1px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
   @media ${tablet} {
-    padding: 16px 0 17px;
+    padding: 18px 8px 19px;
     margin: 0;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
 
@@ -141,11 +149,11 @@ const StyledArticleHeader = styled.div`
 
 StyledArticleHeader.defaultProps = { theme: Base };
 
-const StyledHeading = styled(Heading)`
+const StyledHeading = styled.div`
   margin: 0;
   padding: 0;
-  font-weight: bold;
-  line-height: 28px;
+  cursor: pointer;
+
   @media ${tablet} {
     display: ${(props) => (props.showText ? "block" : "none")};
     margin-left: ${(props) => props.showText && "12px"};
@@ -173,17 +181,17 @@ const StyledIconBox = styled.div`
   height: 20px;
 
   @media ${tablet} {
-    display: flex;
+    display: ${(props) => (props.showText ? "none" : "flex")};
   }
+
+  ${isTablet &&
+  css`
+    display: ${(props) => (props.showText ? "none" : "flex")};
+  `}
 
   @media ${mobile} {
     display: none;
   }
-
-  ${isMobile &&
-  css`
-    display: flex !important;
-  `}
 
   ${isMobileOnly &&
   css`
@@ -206,7 +214,7 @@ const StyledMenuIcon = styled(MenuIcon)`
 StyledMenuIcon.defaultProps = { theme: Base };
 
 const StyledArticleMainButton = styled.div`
-  padding: 0px 0px 16px;
+  padding: 0px 20px 16px;
   max-width: 100%;
 
   @media ${tablet} {
@@ -247,6 +255,98 @@ const StyledCrossIcon = styled(CrossIcon)`
 
 StyledCrossIcon.defaultProps = { theme: Base };
 
+const StyledArticleProfile = styled.div`
+  position: fixed;
+  z-index: 301;
+  bottom: 0;
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  width: ${(props) =>
+    !props.tablet
+      ? "211px"
+      : props.tablet && props.showText
+      ? "211px"
+      : "44px"};
+
+  ${(props) =>
+    props.tablet &&
+    css`
+      padding: 14px 6px;
+      justify-content: ${(props) => !props.showText && "center"};
+    `}
+
+  padding-left: 20px;
+  margin-left: -20px;
+  padding-right: 20px;
+  margin-right: -20px;
+
+  @media ${tablet} {
+    padding-left: 8px;
+    margin-left: -8px;
+    padding-right: 8px;
+    margin-right: -8px;
+
+    ${(props) =>
+      props.showText &&
+      css`
+        padding-left: 24px;
+        margin-left: -24px;
+        padding-right: 24px;
+        margin-right: -24px;
+      `}
+  }
+
+  ${(props) =>
+    props.tablet &&
+    css`
+      padding-left: 8px;
+      margin-left: -8px;
+      padding-right: 8px;
+      margin-right: -8px;
+
+      ${(props) =>
+        props.showText &&
+        css`
+          padding-left: 24px;
+          margin-left: -24px;
+          padding-right: 24px;
+          margin-right: -24px;
+        `}
+    `}
+
+  border-top: ${(props) => props.theme.catalog.profile.borderTop};
+  background-color: ${(props) => props.theme.catalog.profile.background};
+
+  .option-button {
+    margin-left: auto;
+    height: 32px;
+    width: 32px;
+
+    .injected-svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .option-button-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+`;
+
+StyledArticleProfile.defaultProps = { theme: Base };
+
+const StyledUserName = styled.div`
+  display: flex;
+  flex-direction: ${(props) => (props.length > 18 ? "column" : "row")};
+  max-width: 131px;
+  min-width: 131px;
+  padding-left: 12px;
+  padding-right: 4px;
+`;
+
 export {
   StyledArticle,
   StyledArticleHeader,
@@ -256,4 +356,6 @@ export {
   StyledArticleMainButton,
   StyledControlContainer,
   StyledCrossIcon,
+  StyledArticleProfile,
+  StyledUserName,
 };

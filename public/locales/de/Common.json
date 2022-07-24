@@ -168,5 +168,9 @@
   "View": "Anzeigen",
   "ViewWeb": "Web-Version öffnen",
   "Warning": "Warnung",
-  "Hotkeys": "Tastenkombinationen"
+  "Hotkeys": "Tastenkombinationen",
+  "PaymentsTitle": "Zahlungen",
+  "AboutCompanyTitle": "Über diese Software",
+  "LogoutButton": "Ausloggen",
+  "HelpCenter": "Hilfe-Center"
 }

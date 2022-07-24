@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Благодарим Вас за то, что опробовали {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Бесплатный пробный период истек",
   "HeaderLicense": "Вы используете {{organizationName}} Enterprise Edition",
-  "PaymentsTitle": "Платежи",
   "RenewalLicense": " Если вы уже купили обновление, загрузите файл лицензии.",
   "SubscriptionRenewedLicense": "Обновите подписку, чтобы получить:",
   "SuccessLoadingLicense": "Лицензия успешно активирована"

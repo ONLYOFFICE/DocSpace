@@ -66,7 +66,7 @@ class ContextMenuButton extends React.Component {
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
   onClose = () => {
     this.setState({ isOpen: !this.state.isOpen });
-    this.props?.onClose();
+    this.props.onClose && this.props.onClose();
   };
 
   componentDidUpdate(prevProps) {
@@ -170,6 +170,7 @@ class ContextMenuButton extends React.Component {
       zIndex,
       usePortal,
       dropDownClassName,
+      iconClassName,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
@@ -183,6 +184,7 @@ class ContextMenuButton extends React.Component {
         onClick={this.callNewMenu}
       >
         <IconButton
+          className={iconClassName}
           color={color}
           hoverColor={hoverColor}
           clickColor={clickColor}
@@ -326,6 +328,7 @@ ContextMenuButton.propTypes = {
   onClose: PropTypes.func,
   usePortal: PropTypes.bool,
   dropDownClassName: PropTypes.string,
+  iconClassName: PropTypes.string,
 };
 
 ContextMenuButton.defaultProps = {
