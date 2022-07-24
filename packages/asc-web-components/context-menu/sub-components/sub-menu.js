@@ -195,7 +195,7 @@ const SubMenu = (props) => {
     let index = idx;
     let style = {};
 
-    if (Array.isArray(data.data)) {
+    if (Array.isArray(data?.data)) {
       item = data.data[data.index] ? data.data[data.index] : null;
       index = data.index;
       style = data.style;
@@ -261,7 +261,7 @@ const SubMenu = (props) => {
       }
 
       return model.map((item, index) => {
-        if (item.disabled) return null;
+        if (item?.disabled) return null;
         return renderItem(item, index);
       });
     }
