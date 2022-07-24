@@ -25,28 +25,9 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Core.Common.EF.Context;
-public class MySqlUrlShortenerFakeDbContext : UrlShortenerFakeDbContext { }
-public class PostgreSqlUrlShortenerFakeDbContext : UrlShortenerFakeDbContext { }
+
 public class UrlShortenerFakeDbContext : BaseDbContext
 {
-    public UrlShortenerFakeDbContext() { }
-    public UrlShortenerFakeDbContext(DbContextOptions<TelegramDbContext> options)
-        : base(options)
-    {
-    }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlUrlShortenerFakeDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlUrlShortenerFakeDbContext() } ,
-            };
-        }
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper

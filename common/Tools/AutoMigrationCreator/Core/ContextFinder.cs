@@ -28,14 +28,15 @@ namespace AutoMigrationCreator.Core;
 public abstract class ContextFinder
 {
     private readonly Type _baseType = typeof(BaseDbContext);
+
     public IEnumerable<Type> GetDependetContextsTypes()
     {
         var assemblyTypes = GetAssemblyTypes();
 
         var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
-        var dependetProviderTypes = GetProviderDependetContextTypes(assemblyTypes, independetProviderTypes);
+        //var dependetProviderTypes = GetProviderDependetContextTypes(assemblyTypes, independetProviderTypes);
 
-        foreach (var contextType in dependetProviderTypes)
+        foreach (var contextType in independetProviderTypes)
         {
             yield return contextType;
         }

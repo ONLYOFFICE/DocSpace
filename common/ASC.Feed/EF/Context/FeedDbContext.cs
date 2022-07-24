@@ -26,26 +26,12 @@
 
 namespace ASC.Feed.Context;
 
-public class MySqlFeedDbContext : FeedDbContext { }
-public class PostgreSqlFeedDbContext : FeedDbContext { }
 public class FeedDbContext : BaseDbContext
 {
     public DbSet<FeedLast> FeedLast { get; set; }
     public DbSet<FeedAggregate> FeedAggregates { get; set; }
     public DbSet<FeedUsers> FeedUsers { get; set; }
     public DbSet<FeedReaded> FeedReaded { get; set; }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlFeedDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlFeedDbContext() } ,
-            };
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

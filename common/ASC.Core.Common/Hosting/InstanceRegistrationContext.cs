@@ -26,9 +26,6 @@
 
 namespace ASC.Core.Common.Hosting;
 
-public class MySqlInstanceRegistrationContext : InstanceRegistrationContext { }
-public class PostgreSqlInstanceRegistrationContext : InstanceRegistrationContext { }
-
 public class InstanceRegistrationContext : BaseDbContext
 {
     public DbSet<InstanceRegistration> InstanceRegistrations { get; set; }
@@ -38,17 +35,5 @@ public class InstanceRegistrationContext : BaseDbContext
         ModelBuilderWrapper.From(modelBuilder, _provider)
                            .AddInstanceRegistration();
 
-    }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlInstanceRegistrationContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlInstanceRegistrationContext() } ,
-                };
-        }
     }
 }

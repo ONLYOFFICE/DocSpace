@@ -30,46 +30,30 @@ class Program
 {
     static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
+        var options = Parser.Default.ParseArguments<Options>(args).Value;
+
+        var builder = new ConfigurationBuilder()
+                .AddJsonFile($"appsettings.json", true);
+        var config = builder.Build();
+
+        var dbConnectionString = options.DbConnectionString == "" ? config["DefaultConnectionString"] : options.DbConnectionString;
+
+        var migrationCreator = new MigrationCreator(dbConnectionString);
+
+        var section = config.GetSection("Providers");
+        var providersInfo = section.Get<ProviderInfo[]>();
+
+        if (true)
         {
-            if (!(bool)o.Create && o.Path == "")
-            {
-                throw new Exception("Incorrect combination of parameters.\r\n" +
-                    "First parametr: -p string, --path=string\r\n" +
-                    "Second parametr: -c boolean, --create=boolean\r\n" +
-                    "Third parametr: -d string, --db-connetion-string=string\r\n" +
-                    "Fourth parametr: -b string --db-provider=string\r\n" +
-                    "First and second parameters are mutually exclusive");
-            }
+            migrationCreator.RunCreateMigrations(providersInfo);
+        }
 
-            if ((bool)o.Create && o.Path != "")
-            {
-                throw new Exception("Incorrect combination of parameters. First and second parameters are mutually exclusive");
-            }
+        //var path = @"C:\Git\portals_core\products\ASC.Files\Server\bin\Debug";
+        ////if (options.Path != "")
+        ////{
+        //var dbProvider = options.DbProvider == "" ? config["DefaultDbProvider"] : options.DbProvider;
 
-            var builder = new ConfigurationBuilder()
-                 .AddJsonFile($"appsettings.json", true);
-            var config = builder.Build();
-
-            var dbConnectionString = o.DbConnectionString == "" ? config["DefaultConnectionString"] : o.DbConnectionString;
-
-            var migrationCreator = new MigrationCreator(dbConnectionString);
-
-            if (o.Create.HasValue && o.Create.Value)
-            {
-                var section = config.GetSection("Providers");
-                var providersInfo = section.Get<ProviderInfo[]>();
-
-                migrationCreator.RunCreateMigrations(providersInfo);
-            }
-
-            if (o.Path != "")
-            {
-                var dbProvider = o.DbProvider == "" ? config["DefaultDbProvider"] : o.DbProvider;
-
-                migrationCreator.RunApplyMigrations(o.Path, dbProvider);
-            }
-
-        });
+        //migrationCreator.RunApplyMigrations(path, providersInfo.FirstOrDefault(r => r.ProviderFullName == dbProvider));
+        ////}
     }
 }

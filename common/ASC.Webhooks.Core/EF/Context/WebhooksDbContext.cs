@@ -25,32 +25,11 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Webhooks.Core.EF.Context;
-public class MySqlWebhooksDbContext : WebhooksDbContext { }
-public class PostgreSqlWebhooksDbContext : WebhooksDbContext { }
 
 public class WebhooksDbContext : BaseDbContext
 {
-    public WebhooksDbContext() { }
-
-    public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options)
-        : base(options)
-    {
-
-    }
-
     public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
     public virtual DbSet<WebhooksLog> WebhooksLogs { get; set; }
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlWebhooksDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlWebhooksDbContext() } ,
-            };
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

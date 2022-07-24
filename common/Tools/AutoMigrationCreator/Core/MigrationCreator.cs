@@ -34,6 +34,7 @@ public class MigrationCreator
     {
         _dbContextActivator = new DbContextActivator(dbConnectionString);
     }
+
     public void RunCreateMigrations(ProviderInfo[] providersInfo)
     {
         var counter = 0;
@@ -44,29 +45,32 @@ public class MigrationCreator
 
             foreach (var contextType in ctxTypesFinder.GetDependetContextsTypes())
             {
-                var providerInfo = providersInfo.Where(e => contextType.Name.Contains(e.Provider.ToString())).FirstOrDefault();
-                var context = _dbContextActivator.CreateInstance(contextType, providerInfo.ProviderFullName);
-
-                var modelDiffChecker = new ModelDifferenceChecker(context);
-
-                if (!modelDiffChecker.IsDifferent())
+                foreach (var providerInfo in providersInfo)
                 {
-                    continue;
+                    var providerInfoProjectPath = Solution.GetProviderProjectPath(providerInfo);
+                    var context = _dbContextActivator.CreateInstance(contextType, providerInfo);
+
+                    var modelDiffChecker = new ModelDifferenceChecker(context);
+
+                    if (!modelDiffChecker.IsDifferent())
+                    {
+                        continue;
+                    }
+
+                    context = _dbContextActivator.CreateInstance(contextType, providerInfo); //Hack: refresh context
+
+                    var migrationGenerator = new MigrationGenerator(context, projectInfo, providerInfo.Provider, providerInfoProjectPath);
+                    migrationGenerator.Generate();
+
+                    counter++;
                 }
-
-                context = _dbContextActivator.CreateInstance(contextType, providerInfo.ProviderFullName); //Hack: refresh context
-
-                var migrationGenerator = new MigrationGenerator(context, projectInfo, providerInfo.Provider);
-                migrationGenerator.Generate();
-
-                counter++;
             }
         }
 
         Console.WriteLine($"Created {counter} migrations");
     }
 
-    public void RunApplyMigrations(string path, string dbProvider)
+    public void RunApplyMigrations(string path, ProviderInfo dbProvider)
     {
         var counter = 0;
 
@@ -78,7 +82,7 @@ public class MigrationCreator
             {
                 var context = _dbContextActivator.CreateInstance(contextType, dbProvider);
 
-                context.Migrate();
+                context.Database.Migrate();
 
                 counter++;
             }

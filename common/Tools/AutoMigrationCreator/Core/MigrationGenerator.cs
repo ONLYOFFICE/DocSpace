@@ -30,48 +30,43 @@ public class MigrationGenerator
 {
     private readonly BaseDbContext _dbContext;
     private readonly ProjectInfo _projectInfo;
+    private readonly string _providerInfoProjectPath;
     private readonly string _typeName;
     private readonly Regex _pattern = new Regex(@"\d+$", RegexOptions.Compiled);
     private readonly string _providerName;
-    private string _contextFolderName;
 
     private string ContextFolderName
     {
         get
         {
-            if (_contextFolderName == null)
-            {
-                _contextFolderName = _typeName[_providerName.Length..] + _providerName;
-            }
-
-            return _contextFolderName;
+            return _typeName;
         }
     }
 
-    public MigrationGenerator(BaseDbContext context, ProjectInfo projectInfo, Provider provider)
+    public MigrationGenerator(BaseDbContext context, ProjectInfo projectInfo, Provider provider, string providerInfoProjectPath)
     {
         _dbContext = context;
         _projectInfo = projectInfo;
+        _providerInfoProjectPath = providerInfoProjectPath;
         _typeName = _dbContext.GetType().Name;
         _providerName = provider.ToString();
     }
 
     public void Generate()
     {
-            var scaffolder = EFCoreDesignTimeServices.GetServiceProvider(_dbContext)
-                .GetService<IMigrationsScaffolder>();
+        var scaffolder = EFCoreDesignTimeServices.GetServiceProvider(_dbContext)
+            .GetService<IMigrationsScaffolder>();
 
-            var name = GenerateMigrationName();
+        var name = GenerateMigrationName();
 
-            var migration = scaffolder.ScaffoldMigration(name,
-                $"{_projectInfo.AssemblyName}", $"Migrations.{_providerName}.{ContextFolderName}");
+        var migration = scaffolder.ScaffoldMigration(name, $"ASC.Migrations.{_providerName}");
 
-            SaveMigration(migration);
+        SaveMigration(migration);
     }
 
     private void SaveMigration(ScaffoldedMigration migration)
     {
-        var path = Path.Combine(_projectInfo.Path, "Migrations", _providerName, ContextFolderName);
+        var path = Path.Combine(_providerInfoProjectPath, ContextFolderName);
 
         Directory.CreateDirectory(path);
 
@@ -100,7 +95,7 @@ public class MigrationGenerator
 
         if (string.IsNullOrEmpty(last))
         {
-            return ContextFolderName;
+            return ContextFolderName + "Migrate";
         }
 
         var migrationNumber = _pattern.Match(last).Value;

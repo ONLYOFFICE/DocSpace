@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.Api.Tests;
@@ -109,7 +110,7 @@ public class MySetUpClass
         }
 
         using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-        db.Value.Migrate();
+        db.Value.Database.Migrate();
     }
 }
 

@@ -25,9 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.EF;
-
-public class MySqlFilesDbContext : FilesDbContext { }
-public class PostgreSqlFilesDbContext : FilesDbContext { }
 public class FilesDbContext : BaseDbContext
 {
     public DbSet<DbFile> Files { get; set; }
@@ -45,18 +42,6 @@ public class FilesDbContext : BaseDbContext
     public DbSet<DbTariff> Tariffs { get; set; }
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlFilesDbContext() },
-                { Provider.PostgreSql, () => new PostgreSqlFilesDbContext() },
-            };
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

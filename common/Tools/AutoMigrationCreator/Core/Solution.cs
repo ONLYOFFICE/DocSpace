@@ -28,21 +28,27 @@ namespace AutoMigrationCreator.Core;
 
 public static class Solution
 {
-    private const string SOLUTION_NAME = "AutoMigrationCreator.sln";
+    private const string SOLUTION_NAME = "ASC.Migrations.sln";
 
     public static IEnumerable<ProjectInfo> GetProjects()
     {
-        var solutionPath = Path.GetFullPath(Path.Combine(SOLUTION_NAME));
+        var solutionPath = Path.GetFullPath(Path.Combine("..", "..", "..", SOLUTION_NAME));
         var source = SolutionFile.Parse(solutionPath);
         var currentAssembly = Assembly.GetExecutingAssembly().GetName().Name;
 
         return source.ProjectsInOrder
-                .Where(p => p.ProjectType == SolutionProjectType.KnownToBeMSBuildFormat
+                .Where(p =>
+                    p.ProjectType == SolutionProjectType.KnownToBeMSBuildFormat
                     && p.ProjectName != currentAssembly)
                 .Select(p => new ProjectInfo
                 {
                     AssemblyName = p.ProjectName,
                     Path = p.AbsolutePath.Replace($"{p.ProjectName}.csproj", string.Empty)
                 });
+    }
+
+    public static string GetProviderProjectPath(ProviderInfo providerInfo)
+    {
+        return GetProjects().FirstOrDefault(r => r.AssemblyName == $"ASC.Migrations.{providerInfo.Provider}")?.Path;
     }
 }

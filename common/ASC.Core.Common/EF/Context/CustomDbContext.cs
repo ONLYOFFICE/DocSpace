@@ -26,29 +26,22 @@
 
 namespace ASC.Core.Common.EF.Context;
 
-public class MySqlCustomDbContext : CustomDbContext { }
-public class PostgreSqlCustomDbContext : CustomDbContext { }
 public class CustomDbContext : BaseDbContext
 {
+    public CustomDbContext()
+    {
+
+    }
+
+    public CustomDbContext(DbContextOptions<CustomDbContext> options) : base(options)
+    {
+
+    }
+
     public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
     public DbSet<DbipLocation> DbipLocation { get; set; }
     public DbSet<Regions> Regions { get; set; }
 
-    public CustomDbContext() { }
-
-    public CustomDbContext(DbContextOptions options) : base(options) { }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlCustomDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlCustomDbContext() } ,
-            };
-        }
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper

@@ -33,14 +33,17 @@ public class DbContextActivator
     {
         _dbConnectionString = dbConnectionString;
     }
-    public BaseDbContext CreateInstance(Type contextType, string providerName)
+
+    public BaseDbContext CreateInstance(Type contextType, ProviderInfo provider)
     {
         var context = (BaseDbContext)Activator.CreateInstance(contextType);
         context.ConnectionStringSettings = new ConnectionStringSettings
         {
             ConnectionString = _dbConnectionString,
-            ProviderName = providerName
+            ProviderName = provider.ProviderFullName
         };
+
+        context.MigrateAssembly = $"ASC.Migrations.{provider.Provider}";
 
         return context;
     }

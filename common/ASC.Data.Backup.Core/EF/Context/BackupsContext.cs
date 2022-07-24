@@ -26,31 +26,11 @@
 
 namespace ASC.Data.Backup.EF.Context;
 
-public class MySqlBackupsContext : BackupsContext { }
-public class PostgreSqlBackupsContext : BackupsContext { }
-
 public class BackupsContext : BaseDbContext
 {
     public DbSet<BackupRecord> Backups { get; set; }
     public DbSet<BackupSchedule> Schedules { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
-
-    public BackupsContext() { }
-
-    public BackupsContext(DbContextOptions<BackupsContext> options)
-        : base(options) { }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlBackupsContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlBackupsContext() } ,
-            };
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
