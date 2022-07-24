@@ -213,6 +213,7 @@ class SectionHeaderContent extends React.Component {
   render() {
     const {
       t,
+      tReady,
       addUsers,
       isHeaderIndeterminate,
       isHeaderChecked,
@@ -248,7 +249,7 @@ class SectionHeaderContent extends React.Component {
       location.pathname.includes("common/customization") ||
       location.pathname === "/settings";
 
-    const showLoader = commonSettings ? !isLoadedPage : false;
+    const showLoader = commonSettings ? !isLoadedPage : !tReady;
 
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
