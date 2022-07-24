@@ -210,10 +210,10 @@ module.exports = (env, argv) => {
       AppServerConfig.proxyURL,
       "/products/people/remoteEntry.js"
     )}`,
-    files: `files@${combineUrl(
-      AppServerConfig.proxyURL,
-      "/products/files/remoteEntry.js"
-    )}`,
+    // files: `files@${combineUrl(
+    //   AppServerConfig.proxyURL,
+    //   "/products/files/remoteEntry.js"
+    // )}`,
   };
 
   if (!env.personal) {
@@ -241,6 +241,16 @@ module.exports = (env, argv) => {
         "./toastr": "./src/helpers/toastr",
         "./PreparationPortalDialog":
           "./src/components/dialogs/PreparationPortalDialog/PreparationPortalDialogWrapper.js",
+        "./SharingDialog": "./src/components/panels/SharingDialog",
+        "./utils": "./src/helpers/filesUtils.js",
+        "./SelectFileDialog":
+          "./src/components/panels/SelectFileDialog/SelectFileDialogWrapper",
+        "./SelectFileInput":
+          "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
+        "./SelectFolderDialog":
+          "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
+        "./SelectFolderInput":
+          "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
       },
       shared: {
         ...deps,

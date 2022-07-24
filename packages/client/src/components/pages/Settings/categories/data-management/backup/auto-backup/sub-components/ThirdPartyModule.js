@@ -2,7 +2,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { BackupStorageType } from "@docspace/common/constants";
-import SelectFolderInput from "files/SelectFolderInput";
+import SelectFolderInput from "studio/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
 
 class ThirdPartyModule extends React.PureComponent {

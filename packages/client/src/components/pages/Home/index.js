@@ -62,7 +62,7 @@ const Body = ({
   snackbarExist,
   theme,
 }) => {
-  const { t, ready } = useTranslation("Home");
+  const { t, ready } = useTranslation("FilesHome");
   const { error } = match.params;
   setDocumentTitle();
 

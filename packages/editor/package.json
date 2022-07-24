@@ -2,7 +2,7 @@
   "name": "@docspace/editor",
   "version": "1.2.0",
   "private": true,
-  "homepage": "/products/files/doceditor",
+  "homepage": "/doceditor",
   "scripts": {
     "build": "yarn clean && yarn build:client && yarn build:server",
     "build:personal": "yarn clean && yarn build:client-personal && yarn build:server-personal",
@@ -69,7 +69,7 @@
   },
   "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
   "title": "ONLYOFFICE",
-  "socketPath": "/products/files/doceditor/ws",
+  "socketPath": "/doceditor/ws",
   "dependencies": {
     "compression": "^1.7.4",
     "express": "^4.18.1",

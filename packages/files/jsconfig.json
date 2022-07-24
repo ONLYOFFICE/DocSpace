@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "allowJs": true,
-    "paths": {
-      "PUBLIC_DIR/*": ["../../public/*"]
-    }
-  },
-  "exclude": ["dist", "node_modules"]
-}

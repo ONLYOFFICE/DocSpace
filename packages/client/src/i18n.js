@@ -7,11 +7,13 @@ import { loadLanguagePath } from "@docspace/common/utils";
 
 const newInstance = i18n.createInstance();
 
+const lng = localStorage.getItem(LANGUAGE) || "en";
+
 newInstance
   .use(Backend)
   .use(initReactI18next)
   .init({
-    lng: localStorage.getItem(LANGUAGE) || "en",
+    lng,
     fallbackLng: "en",
     load: "currentOnly",
     //debug: true,
@@ -23,6 +25,17 @@ newInstance
         return value;
       },
     },
+
+    ns: [
+      "DownloadDialog",
+      "DeleteDialog",
+      "EmptyTrashDialog",
+      "ConvertDialog",
+      "ConnectDialog",
+      "ConflictResolveDialog",
+      "DeleteThirdPartyDialog",
+      "ThirdPartyMoveDialog",
+    ],
 
     backend: {
       loadPath: loadLanguagePath(config.homepage),

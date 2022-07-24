@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DynamicComponent from "../components/DynamicComponent";
 import { getPresignedUri } from "@docspace/common/api/files";
-import {
-  FILES_REMOTE_ENTRY_URL,
-  FILES_SCOPE,
-  STUDIO_SCOPE,
-  STUDIO_REMOTE_ENTRY_URL,
-} from "./constants";
+import { STUDIO_SCOPE, STUDIO_REMOTE_ENTRY_URL } from "./constants";
 import Text from "@docspace/components/text";
 import TextInput from "@docspace/components/text-input";
 import Checkbox from "@docspace/components/checkbox";
@@ -238,8 +233,8 @@ const withDialogs = (WrappedComponent) => {
       <DynamicComponent
         className="dynamic-sharing-dialog"
         system={{
-          scope: FILES_SCOPE,
-          url: FILES_REMOTE_ENTRY_URL,
+          scope: STUDIO_SCOPE,
+          url: STUDIO_REMOTE_ENTRY_URL,
           module: "./SharingDialog",
           name: "SharingDialog",
         }}
@@ -254,8 +249,8 @@ const withDialogs = (WrappedComponent) => {
     const selectFileDialog = mfReady && props.successAuth && (
       <DynamicComponent
         system={{
-          scope: FILES_SCOPE,
-          url: FILES_REMOTE_ENTRY_URL,
+          scope: STUDIO_SCOPE,
+          url: STUDIO_REMOTE_ENTRY_URL,
           module: "./SelectFileDialog",
         }}
         resetTreeFolders
@@ -272,8 +267,8 @@ const withDialogs = (WrappedComponent) => {
     const selectFolderDialog = mfReady && props.successAuth && (
       <DynamicComponent
         system={{
-          scope: FILES_SCOPE,
-          url: FILES_REMOTE_ENTRY_URL,
+          scope: STUDIO_SCOPE,
+          url: STUDIO_REMOTE_ENTRY_URL,
           module: "./SelectFolderDialog",
         }}
         needProxy

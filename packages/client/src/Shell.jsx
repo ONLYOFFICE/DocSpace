@@ -48,7 +48,7 @@ const LOGIN_URLS = [
 const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
 const COMING_SOON_URLS = [combineUrl(PROXY_HOMEPAGE_URL, "/coming-soon")];
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
-const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/preferences");
 const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ENTER_CODE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/code");
@@ -61,7 +61,7 @@ const PREPARATION_PORTAL = combineUrl(
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
 const Error401 = React.lazy(() => import("studio/Error401"));
-const Home = React.lazy(() => import("./components/pages/Home"));
+const Home = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
 
 const About = React.lazy(() => import("./components/pages/About"));
 const Wizard = React.lazy(() => import("./components/pages/Wizard"));
@@ -547,7 +547,19 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         />
         <Main isDesktop={isDesktop}>
           <Switch>
-            <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
+            <PrivateRoute
+              exact
+              path={[
+                "/",
+                "/filter",
+                "/rooms",
+                "/settings",
+                "/settings/common",
+                "/settings/admin",
+                "/settings/connected-clouds",
+              ]}
+              component={HomeRoute}
+            />
             <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
             <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
             {loginRoutes}

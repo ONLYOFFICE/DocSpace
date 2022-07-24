@@ -76,7 +76,7 @@ i18next.use(Backend).init({
 app.use(i18nextMiddleware.handle(i18next));
 app.use(compression());
 app.use(
-  "/products/files/doceditor/",
+  "/doceditor/",
   express.static(path.resolve(path.join(__dirname, "client")))
 );
 app.use(logger("dev", { stream: winston.stream }));
@@ -84,7 +84,7 @@ app.use(logger("dev", { stream: winston.stream }));
 if (IS_DEVELOPMENT) {
   app.use(devMiddleware);
 
-  app.get("/products/files/doceditor", async (req, res) => {
+  app.get("/doceditor", async (req, res) => {
     const { i18n, initialEditorState, assets } = req;
     const userLng = initialEditorState?.user?.cultureName || "en";
 
@@ -142,7 +142,7 @@ if (IS_DEVELOPMENT) {
     winston.error(e.message);
   }
 
-  app.get("/products/files/doceditor", async (req, res) => {
+  app.get("/doceditor", async (req, res) => {
     const { i18n } = req;
     let initialEditorState;
 

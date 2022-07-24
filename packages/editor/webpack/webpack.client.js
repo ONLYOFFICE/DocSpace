@@ -30,7 +30,7 @@ const clientConfig = {
   output: {
     path: path.resolve(process.cwd(), "dist/client"),
     filename: "static/js/[name].[contenthash].bundle.js",
-    publicPath: "/products/files/doceditor/",
+    publicPath: "/doceditor/",
     chunkFilename: "static/js/[id].[contenthash].js",
   },
 
@@ -78,10 +78,10 @@ const clientConfig = {
       filename: "remoteEntry.js",
       remotes: {
         studio: `studio@${combineUrl(proxyURL, "/remoteEntry.js")}`,
-        files: `files@${combineUrl(
-          proxyURL,
-          "/products/files/remoteEntry.js"
-        )}`,
+        // files: `files@${combineUrl(
+        //   proxyURL,
+        //   "/products/files/remoteEntry.js"
+        // )}`,
       },
       exposes: {
         "./app": "./src/client/index.js",

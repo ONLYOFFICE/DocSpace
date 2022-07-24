@@ -1,7 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import SelectFolderInput from "files/SelectFolderInput";
+import SelectFolderInput from "studio/SelectFolderInput";
 import Button from "@docspace/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
 import { BackupStorageType } from "@docspace/common/constants";

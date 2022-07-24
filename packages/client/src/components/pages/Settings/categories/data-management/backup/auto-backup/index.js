@@ -19,7 +19,7 @@ import {
 } from "@docspace/common/constants";
 import ToggleButton from "@docspace/components/toggle-button";
 import { getBackupStorage } from "@docspace/common/api/settings";
-import SelectFolderDialog from "files/SelectFolderDialog";
+import SelectFolderDialog from "studio/SelectFolderDialog";
 import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
