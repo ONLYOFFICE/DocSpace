@@ -7,8 +7,9 @@ import { thirparties } from "../data";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Text from "@appserver/components/text";
 import { StyledDropDown, StyledDropdownWrapper } from "./StyledDropdown";
+import Checkbox from "@appserver/components/checkbox";
 
-const StyledThirpartyComboBox = styled.div`
+const StyledStorageLocation = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -55,10 +56,22 @@ const StyledThirpartyComboBox = styled.div`
         }
       }
     }
+
+    &-checkbox {
+      margin-top: 8px;
+      .checkbox {
+        margin-right: 8px;
+      }
+      .checkbox-text {
+        font-weight: 400;
+        font-size: 13px;
+        line-height: 20px;
+      }
+    }
   }
 `;
 
-const ThirdpartyComboBox = ({
+const StorageLocation = ({
   t,
   roomParams,
   setRoomParams,
@@ -80,10 +93,35 @@ const ThirdpartyComboBox = ({
     setIsScrollLocked(false);
   };
 
+  const setRememberStorageLocation = () =>
+    setRoomParams({
+      ...roomParams,
+      rememberStorageLocation: !roomParams.rememberStorageLocation,
+    });
+
   const dropdownRef = useRef(null);
   return (
-    <>
-      <StyledThirpartyComboBox isGrayLabel={isGrayLabel} isOpen={isOpen}>
+    <StyledParam storageLocation>
+      <div className="set_room_params-info">
+        <div className="set_room_params-info-title">
+          <Text className="set_room_params-info-title-text">
+            {t("StorageLocationTitle")}
+          </Text>
+          <HelpButton
+            displayType="auto"
+            className="set_room_params-info-title-help"
+            iconName="/static/images/info.react.svg"
+            offsetRight={0}
+            tooltipContent={t("StorageLocationDescription")}
+            size={12}
+          />
+        </div>
+        <div className="set_room_params-info-description">
+          {t("StorageLocationDescription")}
+        </div>
+      </div>
+
+      <StyledStorageLocation isGrayLabel={isGrayLabel} isOpen={isOpen}>
         <div className="set_room_params-thirdparty">
           <div
             className="set_room_params-thirdparty-combobox"
@@ -112,24 +150,30 @@ const ThirdpartyComboBox = ({
           <StyledDropDown
             className="dropdown-content"
             open={isOpen}
-            maxHeight={181}
             forwardedRef={dropdownRef}
-            directionX={"left"}
             clickOutsideAction={toggleIsOpen}
+            maxHeight={158}
           >
-            {thirparties.map((thirparty) => (
+            {thirparties.map((thirdparty) => (
               <DropDownItem
                 className="dropdown-item"
-                label={thirparty.title}
-                key={thirparty.id}
-                onClick={() => setStorageLocaiton(thirparty)}
+                label={thirdparty.title}
+                key={thirdparty.id}
+                onClick={() => setStorageLocaiton(thirdparty)}
               />
             ))}
           </StyledDropDown>
         </StyledDropdownWrapper>
-      </StyledThirpartyComboBox>
-    </>
+
+        <Checkbox
+          className="set_room_params-thirdparty-checkbox"
+          label={t("Remember this choice for new rooms")}
+          isChecked={roomParams.rememberStorageLocation}
+          onChange={setRememberStorageLocation}
+        />
+      </StyledStorageLocation>
+    </StyledParam>
   );
 };
 
-export default ThirdpartyComboBox;
+export default StorageLocation;
