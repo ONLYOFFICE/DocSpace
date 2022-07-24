@@ -24,49 +24,17 @@ const StyledTagInput = styled.div`
   }
 `;
 
-// const StyledTagDropdown = styled.div`
-//   display: ${(props) => (props.isOpen ? "flex" : "none")};
-//   flex-direction: column;
-//   padding: 4px 0;
-//   background: #ffffff;
-//   border: 1px solid #d0d5da;
-//   box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
-//   border-radius: 3px;
-//   z-index: 400;
-//   position: absolute;
-
-//   width: 100%;
-
-//   .dropdown-tag {
-//     cursor: pointer;
-//     box-sizing: border-box;
-//     width: 100%;
-//     padding: 6px 8px;
-//     font-weight: 400;
-//     font-size: 13px;
-//     line-height: 20px;
-//     outline: none;
-//     color: #333333;
-//     &:hover {
-//       background: #f3f4f4;
-//     }
-
-//     &-separator {
-//       height: 1px;
-//       width: calc(100% - 24px);
-//       box-sizing: border-box;
-//       background: #eceef1;
-//       margin: 3px 12px;
-//     }
-//   }
-// `;
-
 const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
   const [tagInput, setTagInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const fetchedTags = tagHandler.fetchedTags.filter((tag) =>
+  const chosenTags = tagHandler.tags.map((tag) => tag.name);
+  const fetchedTags = tagHandler.fetchedTags;
+  const filteredFetchedTags = fetchedTags.filter((tag) =>
     tag.toLowerCase().includes(tagInput.toLowerCase())
+  );
+  const tagsForDropdown = filteredFetchedTags.filter(
+    (tag) => !chosenTags.includes(tag)
   );
 
   const onTagInputChange = (e) => setTagInput(e.target.value);
@@ -82,6 +50,10 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
   };
 
   const tagsInputElement = document.getElementById("tags-input");
+
+  const onClickOutside = () => {
+    tagsInputElement.blur();
+  };
   const addNewTag = () => {
     tagHandler.addTag(tagInput);
     tagsInputElement.blur();
@@ -93,9 +65,47 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
 
   const dropdownRef = useRef(null);
 
-  const showCreateNewTag =
-    tagInput && !fetchedTags.find((tag) => tagInput === tag);
-  const showCreateNewTagSeparator = showCreateNewTag && fetchedTags.length > 0;
+  let dropdownItems = tagsForDropdown.map((tag, i) => (
+    <DropDownItem
+      className="dropdown-item"
+      height={32}
+      heightTablet={32}
+      key={i}
+      label={tag}
+      onClick={() => {
+        addFetchedTag(tag);
+        console.log(tag);
+      }}
+    />
+  ));
+
+  if (
+    tagInput &&
+    ![...tagsForDropdown, ...chosenTags].find((tag) => tagInput === tag)
+  ) {
+    const dropdownItemNewTag = (
+      <DropDownItem
+        key={-2}
+        className="dropdown-item"
+        onMouseDown={preventDefault}
+        onClick={addNewTag}
+        label={`Create tag “${tagInput}”`}
+        height={32}
+        heightTablet={32}
+      />
+    );
+
+    if (tagsForDropdown.length > 0) {
+      dropdownItems = [
+        dropdownItemNewTag,
+        <DropDownItem height={7} heightTablet={7} key={-1} isSeparator />,
+        ...dropdownItems,
+      ];
+    } else {
+      dropdownItems = [dropdownItemNewTag, ...dropdownItems];
+    }
+  }
+
   return (
     <StyledTagInput className="set_room_params-input set_room_params-tag_input">
       <div className="set_room_params-tag_input-label_wrapper">
@@ -126,71 +136,15 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
         <StyledDropDown
           className="dropdown-content"
           open={isOpen}
-          //maxHeight={181}
           forwardedRef={dropdownRef}
-          directionX={"left"}
-          clickOutsideAction={closeDropdown}
+          clickOutsideAction={onClickOutside}
+          maxHeight={158}
           showDisabledItems={false}
-          onMouseDown={preventDefault}
+          // onMouseDown={preventDefault}
         >
-          {showCreateNewTag && (
-            <DropDownItem
-              key={-2}
-              className="dropdown-item"
-              onMouseDown={preventDefault}
-              onClick={addNewTag}
-              label={`Create tag “${tagInput}”`}
-            />
-          )}
-
-          {showCreateNewTagSeparator && <DropDownItem key={-1} isSeparator />}
-
-          {fetchedTags.map((fetchedTag, i) => (
-            <DropDownItem
-              className="dropdown-item"
-              key={i}
-              label={fetchedTag}
-              onClick={() => {
-                addFetchedTag(fetchedTag);
-                console.log(fetchedTag);
-              }}
-            />
-          ))}
+          {dropdownItems}
         </StyledDropDown>
       </StyledDropdownWrapper>
-
-      {/* <div className="dropdown-content-wrapper">
-        <StyledTagDropdown
-          isOpen={isOpen}
-          className="set_room_params-tag_input-dropdown"
-        >
-          {tagInput && !fetchedTags.find((tag) => tagInput === tag) && (
-            <>
-              <div
-                className="dropdown-tag"
-                onMouseDown={preventDefault}
-                onClick={addNewTag}
-              >
-                Create tag “{tagInput}”
-              </div>
-              {fetchedTags.length > 0 && (
-                <div className="dropdown-tag-separator"></div>
-              )}
-            </>
-          )}
-          {fetchedTags.map((fetchedTag, i) => (
-            <div
-              className="dropdown-tag"
-              key={i}
-              onMouseDown={preventDefault}
-              onClick={() => addFetchedTag(fetchedTag)}
-            >
-              {fetchedTag}
-            </div>
-          ))}
-        </StyledTagDropdown>
-      </div> */}
-
       <TagList t={t} tagHandler={tagHandler} />
     </StyledTagInput>
   );
