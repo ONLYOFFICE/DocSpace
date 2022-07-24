@@ -205,9 +205,16 @@ class DropDown extends React.PureComponent {
   getItemHeight = (item) => {
     const isTablet = window.innerWidth < 1024; //TODO: Make some better
 
-    if (item && item.props.isSeparator) return isTablet ? 16 : 12;
+    if (item && item.props.disabled) return 0;
 
-    return isTablet ? item.props.heightTablet : item.props.height;
+    let height = item?.props.height;
+    let heightTablet = item?.props.heightTablet;
+
+    if (item && item.props.isSeparator) {
+      return isTablet ? 16 : 12;
+    }
+
+    return isTablet ? heightTablet : height;
   };
   hideDisabledItems = () => {
     if (React.Children.count(this.props.children) > 0) {
@@ -233,7 +240,6 @@ class DropDown extends React.PureComponent {
   renderDropDown() {
     const { maxHeight, children, showDisabledItems, theme } = this.props;
     const { directionX, directionY, width, manualY } = this.state;
-    let cleanChildren;
 
     const rowHeights = React.Children.map(children, (child) =>
       this.getItemHeight(child)
@@ -246,6 +252,7 @@ class DropDown extends React.PureComponent {
       ? { height: calculatedHeight + "px" }
       : {};
 
+    let cleanChildren = children;
     if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
 
     return (
@@ -265,7 +272,7 @@ class DropDown extends React.PureComponent {
             width={width}
             itemSize={getItemSize}
             itemCount={children.length}
-            itemData={{ children: children, theme: theme }}
+            itemData={{ children: cleanChildren, theme: theme }}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {Row}
