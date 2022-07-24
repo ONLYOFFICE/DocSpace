@@ -37,7 +37,7 @@ const homepage = config.homepage;
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 
 const HOME_URL = combineUrl(PROXY_HOMEPAGE_URL, "/");
-const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/files-settings/:setting");
 const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
 const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");

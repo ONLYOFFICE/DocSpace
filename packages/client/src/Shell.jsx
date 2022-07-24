@@ -48,7 +48,7 @@ const LOGIN_URLS = [
 const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
 const COMING_SOON_URLS = [combineUrl(PROXY_HOMEPAGE_URL, "/coming-soon")];
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
-const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/preferences");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
 const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ENTER_CODE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/code");
@@ -553,10 +553,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 "/",
                 "/filter",
                 "/rooms",
-                "/settings",
-                "/settings/common",
-                "/settings/admin",
-                "/settings/connected-clouds",
+                "/files-settings",
+                "/files-settings/common",
+                "/files-settings/admin",
+                "/files-settings/connected-clouds",
               ]}
               component={HomeRoute}
             />

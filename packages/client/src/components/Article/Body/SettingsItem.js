@@ -43,7 +43,11 @@ const PureSettingsItem = ({
     setExpandSettingsTree(["common"]);
     if (isMobile() || isMobileOnly) toggleArticleOpen();
     history.push(
-      combineUrl(AppServerConfig.proxyURL, config.homepage, "/settings/common")
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        "/files-settings/common"
+      )
     );
   }, [
     setSelectedFolder,
@@ -54,7 +58,7 @@ const PureSettingsItem = ({
   ]);
 
   const isActive = () => {
-    return window.location.pathname.indexOf("/settings") > 0;
+    return window.location.pathname.indexOf("/files-settings") > 0;
   };
 
   return (

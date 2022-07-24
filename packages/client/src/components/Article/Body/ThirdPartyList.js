@@ -116,7 +116,7 @@ const PureThirdPartyListContainer = ({
   toggleArticleOpen,
 }) => {
   const redirectAction = useCallback(() => {
-    const thirdPartyUrl = "/settings/connected-clouds";
+    const thirdPartyUrl = "/files-settings/connected-clouds";
     if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
       setSelectedNode(["connected-clouds"]);
       setSelectedFolder(null);

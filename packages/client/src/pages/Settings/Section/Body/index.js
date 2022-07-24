@@ -67,7 +67,7 @@ const SectionBodyContent = ({
         combineUrl(
           AppServerConfig.proxyURL,
           config.homepage,
-          `/settings/${key}`
+          `/files-settings/${key}`
         )
       );
     },
