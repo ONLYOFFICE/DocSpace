@@ -16,7 +16,7 @@ import StyledDropdown from "./styled-drop-down";
 const Row = memo(({ data, index, style }) => {
   const option = data.children[index];
 
-  const separator = option.props.isSeparator
+  const separator = option?.props?.isSeparator
     ? { width: `calc(100% - 32px)`, height: `1px` }
     : {};
   const newStyle = { ...style, ...separator };
@@ -25,7 +25,7 @@ const Row = memo(({ data, index, style }) => {
     <DropDownItem
       theme={data.theme}
       // eslint-disable-next-line react/prop-types
-      {...option.props}
+      {...option?.props}
       style={newStyle}
     />
   );
