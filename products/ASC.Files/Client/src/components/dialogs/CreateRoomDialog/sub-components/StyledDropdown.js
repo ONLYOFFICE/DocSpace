@@ -16,11 +16,17 @@ const StyledDropDown = styled(DropDown)`
   border-radius: 3px;
   overflow-y: hidden;
 
+  .scroll-body {
+    /* height: 158px !important; */
+    margin-bottom: -21px !important;
+  }
+
   width: 446px;
   max-width: 446px;
   div {
     max-width: 446px;
   }
+
   @media ${smallTablet} {
     width: calc(100vw - 34px);
     max-width: calc(100vw - 34px);
@@ -29,12 +35,9 @@ const StyledDropDown = styled(DropDown)`
     }
   }
 
-  div[stype="mediumBlack"] {
-    margin-bottom: -6px;
-  }
-
   .dropdown-item {
-    max-height: 32px;
+    height: 32px !important;
+    max-height: 32px !important;
     cursor: pointer;
     box-sizing: border-box;
     width: 100%;
@@ -45,6 +48,11 @@ const StyledDropDown = styled(DropDown)`
     color: #333333;
     &:hover {
       background: #f3f4f4;
+    }
+
+    &-separator {
+      height: 7px !important;
+      max-height: 7px !important;
     }
   }
 `;
