@@ -98,6 +98,7 @@ const SetRoomParams = ({
   setRoomParams,
   setRoomType,
   tagHandler,
+  setIsScrollLocked,
 }) => {
   const onChangeIsPrivate = () =>
     setRoomParams({ ...roomParams, isPrivate: !roomParams.isPrivate });
@@ -129,7 +130,11 @@ const SetRoomParams = ({
         />
       </div>
 
-      <TagInput t={t} tagHandler={tagHandler} />
+      <TagInput
+        t={t}
+        tagHandler={tagHandler}
+        setIsScrollLocked={setIsScrollLocked}
+      />
 
       <StyledParam isPrivate>
         <div className="set_room_params-info">
@@ -181,6 +186,7 @@ const SetRoomParams = ({
           t={t}
           roomParams={roomParams}
           setRoomParams={setRoomParams}
+          setIsScrollLocked={setIsScrollLocked}
         />
       </StyledParam>
 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -10,7 +10,6 @@ import RoomTypeList from "./views/ChooseRoomType/RoomTypeList";
 import Button from "@appserver/components/button";
 import { roomTypes } from "./data";
 import TagHandler from "./handlers/tagHandler";
-import { isMobile } from "@appserver/components/utils/device";
 
 const StyledModalDialog = styled(ModalDialog)`
   .modal-scroll {
@@ -25,7 +24,7 @@ const CreateRoomDialog = ({
   createRoom,
 }) => {
   const onClose = () => setCreateRoomDialogVisible(false);
-  const [isScrollEnabled, setIsScrollEnabled] = useState(false);
+  const [isScrollLocked, setIsScrollLocked] = useState(false);
 
   const [roomParams, setRoomParams] = useState({
     title: "",
@@ -61,7 +60,7 @@ const CreateRoomDialog = ({
       withBodyScroll
       visible={visible}
       onClose={onClose}
-      isScrollLocked={roomParams.isPrivate}
+      isScrollLocked={isScrollLocked}
     >
       <ModalDialog.Header>
         {isChooseRoomType ? t("ChooseRoomType") : t("CreateRoom")}
@@ -77,6 +76,7 @@ const CreateRoomDialog = ({
             roomParams={roomParams}
             setRoomParams={setRoomParams}
             setRoomType={setRoomType}
+            setIsScrollLocked={setIsScrollLocked}
           />
         )}
       </ModalDialog.Body>
@@ -96,7 +96,7 @@ const CreateRoomDialog = ({
             label={t("Common:CancelButton")}
             size="normal"
             scale
-            onClick={() => unlockScroll()}
+            onClick={onClose}
           />
         </ModalDialog.Footer>
       )}
