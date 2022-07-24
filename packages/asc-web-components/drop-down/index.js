@@ -207,7 +207,7 @@ class DropDown extends React.PureComponent {
 
     if (item && item.props.isSeparator) return isTablet ? 16 : 12;
 
-    return isTablet ? 36 : 32;
+    return isTablet ? item.props.heightTablet : item.props.height;
   };
   hideDisabledItems = () => {
     if (React.Children.count(this.props.children) > 0) {
