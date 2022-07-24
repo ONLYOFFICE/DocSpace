@@ -20,6 +20,7 @@ const DropDownItem = (props) => {
     isActive,
     withoutIcon,
     noHover,
+    height,
   } = props;
 
   const onClickAction = (e) => {
@@ -86,6 +87,8 @@ DropDownItem.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Accepts css text-overflow */
+  customHeight: PropTypes.number,
+  customHeightTablet: PropTypes.number,
   textOverflow: PropTypes.bool,
   fillIcon: PropTypes.bool,
   isSubMenu: PropTypes.bool,
@@ -105,6 +108,8 @@ DropDownItem.defaultProps = {
   isSubMenu: false,
   isActive: false,
   withoutIcon: false,
+  height: 32,
+  heightTablet: 36,
 };
 
 export default DropDownItem;
