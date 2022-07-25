@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
-import { withTranslation } from "react-i18next";
 
 import ModalDialog from "@appserver/components/modal-dialog";
 
@@ -20,10 +19,12 @@ const StyledModalDialog = styled(ModalDialog)`
 const CreateRoomDialog = ({
   t,
   visible,
-  setCreateRoomDialogVisible,
-  createRoom,
+  onClose,
+  onCreate,
+
+  fetchedTags,
+  folderFormValidation,
 }) => {
-  const onClose = () => setCreateRoomDialogVisible(false);
   const [isScrollLocked, setIsScrollLocked] = useState(false);
 
   const [roomParams, setRoomParams] = useState({
@@ -40,7 +41,7 @@ const CreateRoomDialog = ({
   const setRoomTags = (newTags) =>
     setRoomParams({ ...roomParams, tags: newTags });
 
-  const tagHandler = new TagHandler(roomParams.tags, setRoomTags);
+  const tagHandler = new TagHandler(roomParams.tags, setRoomTags, fetchedTags);
 
   const setRoomType = (newRoomType) => {
     const [roomByType] = roomTypes.filter((room) => room.type === newRoomType);
@@ -52,7 +53,7 @@ const CreateRoomDialog = ({
   };
 
   const onCreateRoom = () => {
-    console.log(roomParams);
+    onCreate(roomParams);
   };
 
   const isChooseRoomType = roomParams.type === undefined;
@@ -106,17 +107,4 @@ const CreateRoomDialog = ({
   );
 };
 
-export default inject(({ dialogsStore, roomsStore }) => {
-  const {
-    createRoomDialogVisible: visible,
-    setCreateRoomDialogVisible,
-  } = dialogsStore;
-
-  //const { createRoom } = roomsStore;
-
-  return {
-    visible,
-    setCreateRoomDialogVisible,
-    createRoom: () => {},
-  };
-})(withTranslation(["CreateRoomDialog", "Common"])(observer(CreateRoomDialog)));
+export default CreateRoomDialog;

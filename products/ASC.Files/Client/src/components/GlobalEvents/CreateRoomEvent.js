@@ -6,14 +6,17 @@ import { CreateRoomDialog } from "../dialogs";
 import { addTagsToRoom } from "@appserver/common/api/rooms";
 
 const CreateRoomEvent = ({
+  onClose,
+
   createRoom,
   createTag,
   addTagsToRoom,
   fetchTags,
-  onClose,
 
   currrentFolderId,
   updateCurrentFolder,
+
+  folderFormValidation,
 }) => {
   const { t } = useTranslation(["CreateRoomDialog", "Translations", "Common"]);
   const [fetchedTags, setFetchedTags] = useState([]);
@@ -56,12 +59,14 @@ const CreateRoomEvent = ({
 };
 
 export default inject(
-  ({ filesStore, tagsStore, filesActionsStore, selectedFolderStore }) => {
+  ({ auth, filesStore, tagsStore, filesActionsStore, selectedFolderStore }) => {
     const { createRoom, addTagsToRoom } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
     const { id } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
+
+    const { folderFormValidation } = auth.settingsStore;
 
     return {
       createRoom,
@@ -70,6 +75,7 @@ export default inject(
       addTagsToRoom,
       currrentFolderId: id,
       updateCurrentFolder,
+      folderFormValidation,
     };
   }
 )(observer(CreateRoomEvent));
