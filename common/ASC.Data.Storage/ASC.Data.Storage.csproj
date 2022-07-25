@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Amazon.Extensions.S3.Encryption" Version="2.0.3" />
     <PackageReference Include="AWSSDK.CloudFront" Version="3.7.5" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.8.23" />
     <PackageReference Include="Google.Api.Gax" Version="3.7.0" />

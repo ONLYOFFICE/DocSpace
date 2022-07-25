@@ -617,6 +617,7 @@
 			"forcepathstyle": "",
 			"usehttp": "",
 			"sse": "",
+			"ssekey": "",
 			"cdn": "S3Cdn"
 		  }
 	  }
