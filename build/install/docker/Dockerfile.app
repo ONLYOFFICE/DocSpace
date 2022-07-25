@@ -169,7 +169,7 @@ FROM builder AS backup_background
 WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/service/  .
 
 CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
 
@@ -178,7 +178,7 @@ FROM builder AS clear-events
 WORKDIR ${BUILD_PATH}/services/ASC.ClearEvents/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearEvents/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearEvents/service/  .
 
 CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
 
@@ -187,7 +187,7 @@ FROM builder AS migration
 WORKDIR ${BUILD_PATH}/services/ASC.Migration/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Migration/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Migration/service/  .
 
 CMD ["ASC.Migration.dll", "ASC.Migration"]
 
@@ -295,7 +295,7 @@ FROM builder AS webhooks-service
 WORKDIR ${BUILD_PATH}/services/ASC.Webhooks.Service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhooks.Service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhooks.Service/service/  .
 
 CMD ["ASC.Webhooks.Service.dll", "ASC.Webhooks.Service"]
 
