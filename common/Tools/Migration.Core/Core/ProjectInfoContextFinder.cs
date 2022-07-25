@@ -36,7 +36,14 @@ public class ProjectInfoContextFinder : ContextFinder
 
     protected override Type[] GetAssemblyTypes()
     {
-        var coreContextAssembly = Assembly.Load(_projectInfo.AssemblyName);
-        return coreContextAssembly.GetTypes();
+        try
+        {
+            var coreContextAssembly = Assembly.Load(_projectInfo.AssemblyName);
+            return coreContextAssembly.GetTypes();
+        }
+        catch (Exception)
+        {
+            return Array.Empty<Type>();
+        }
     }
 }
