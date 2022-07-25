@@ -44,7 +44,7 @@ export function createRoom(data) {
 export function createRoomInThirdpary(id, data) {
   const options = {
     method: "post",
-    url: `/files/rooms/thirdparty/:${id}`,
+    url: `/files/rooms/thirdparty/${id}`,
     data,
   };
 
@@ -102,6 +102,32 @@ export function unarchiveRoom(id, deleteAfter = true) {
   const options = {
     method: "put",
     url: `/files/rooms/${id}/unarchive`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function createTag(name) {
+  const data = { name };
+  const options = {
+    method: "post",
+    url: "/files/tags",
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function addTagsToRoom(id, tagArray) {
+  const data = { names: tagArray };
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/tags`,
     data,
   };
 
