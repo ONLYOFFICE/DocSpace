@@ -90,11 +90,13 @@ const StyledArticle = styled.article`
       }
 
       @media ${mobile} {
+        height: calc(100% - 20px) !important;
         padding-bottom: 20px;
       }
 
       ${isMobileOnly &&
       css`
+        height: calc(100% - 20px) !important;
         padding-bottom: 20px;
       `}
     }
