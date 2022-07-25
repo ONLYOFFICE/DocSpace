@@ -11,6 +11,7 @@ import {
   SubmenuItemLabelTheme,
   ToggleButtonTheme,
   TabContainerTheme,
+  IconButtonTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -43,6 +44,9 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.TabContainer: {
       return <TabContainerTheme ref={ref} {...props} />;
+    }
+    case ThemeType.IconButton: {
+      return <IconButtonTheme ref={ref} {...props} />;
     }
   }
 });
