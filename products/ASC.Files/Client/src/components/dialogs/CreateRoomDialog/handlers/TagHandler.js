@@ -1,18 +1,8 @@
 class TagHandler {
-  constructor(tags, setTags) {
+  constructor(tags, setTags, fetchedTags) {
     this.tags = tags;
     this.setTags = setTags;
-    this.fetchedTags = [
-      "Figma",
-      "Portal",
-      "Design",
-      "Images",
-      "Fi",
-      "Fa",
-      "Fo",
-      "Fam",
-      "Fim",
-    ];
+    this.fetchedTags = fetchedTags;
   }
 
   createRandomTagId() {
@@ -36,12 +26,23 @@ class TagHandler {
       id: this.createRandomTagId(),
       name,
     });
+    this.setTags(newTags);
+  }
 
+  addNewTag(name) {
+    let newTags = [...this.tags];
+    newTags.push({
+      id: this.createRandomTagId(),
+      isNew: true,
+      name,
+    });
     this.setTags(newTags);
   }
 
   deleteTag(id) {
-    this.setTags(this.tags.filter((tag) => tag.id !== id));
+    let newTags = [...this.tags];
+    newTags = newTags.filter((tag) => tag.id !== id);
+    this.setTags(newTags);
   }
 }
 
