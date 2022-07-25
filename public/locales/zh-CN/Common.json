@@ -168,5 +168,9 @@
   "View": "查看",
   "ViewWeb": "查看网页版",
   "Warning": "警告",
-  "Hotkeys": "快捷键"
+  "Hotkeys": "快捷键",
+  "PaymentsTitle": "付款",
+  "AboutCompanyTitle": "关于本计划",
+  "LogoutButton": "登出",
+  "HelpCenter": "帮助中心"
 }
