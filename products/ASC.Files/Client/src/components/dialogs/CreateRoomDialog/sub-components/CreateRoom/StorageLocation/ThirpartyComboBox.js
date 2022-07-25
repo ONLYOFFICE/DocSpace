@@ -11,6 +11,7 @@ import {
   StyledDropDown,
   StyledDropDownWrapper,
 } from "../../common/StyledDropdown";
+import Checkbox from "@appserver/components/checkbox";
 
 const StyledStorageLocation = styled.div`
   display: flex;
@@ -96,6 +97,12 @@ const ThirpartyComboBox = ({
     setIsScrollLocked(false);
   };
 
+  const setRememberStorageLocation = () =>
+    setRoomParams({
+      ...roomParams,
+      rememberStorageLocation: !roomParams.rememberStorageLocation,
+    });
+
   const dropdownRef = useRef(null);
   return (
     <StyledStorageLocation isGrayLabel={isGrayLabel} isOpen={isOpen}>
@@ -143,6 +150,13 @@ const ThirpartyComboBox = ({
           ))}
         </StyledDropDown>
       </StyledDropDownWrapper>
+
+      <Checkbox
+        className="set_room_params-thirdparty-checkbox"
+        label={t("Remember this choice for new rooms")}
+        isChecked={roomParams.rememberStorageLocation}
+        onChange={setRememberStorageLocation}
+      />
     </StyledStorageLocation>
   );
 };

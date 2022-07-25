@@ -13,12 +13,6 @@ const StorageLocation = ({
   setRoomParams,
   setIsScrollLocked,
 }) => {
-  const setRememberStorageLocation = () =>
-    setRoomParams({
-      ...roomParams,
-      rememberStorageLocation: !roomParams.rememberStorageLocation,
-    });
-
   return (
     <StyledParam storageLocation>
       <div className="set_room_params-info">
@@ -45,13 +39,6 @@ const StorageLocation = ({
         roomParams={roomParams}
         setRoomParams={setRoomParams}
         setIsScrollLocked={setIsScrollLocked}
-      />
-
-      <Checkbox
-        className="set_room_params-thirdparty-checkbox"
-        label={t("Remember this choice for new rooms")}
-        isChecked={roomParams.rememberStorageLocation}
-        onChange={setRememberStorageLocation}
       />
     </StyledParam>
   );
