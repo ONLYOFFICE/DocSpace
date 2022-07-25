@@ -33,6 +33,7 @@ const CreateRoomDialog = ({
     isPrivate: false,
     storageLocation: undefined,
     rememberStorageLocation: false,
+    thirdpartyFolderName: "",
     icon: "",
   });
 
