@@ -22,6 +22,7 @@ const StyledTagInput = styled.div`
   }
 
   .dropdown-content-wrapper {
+    margin-bottom: -4px;
     max-width: 100%;
     position: relative;
   }
@@ -59,6 +60,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
   };
   const addNewTag = () => {
     tagHandler.addTag(tagInput);
+    setTagInput("");
     tagsInputElement.blur();
   };
   const addFetchedTag = (name) => {
@@ -98,15 +100,18 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
       />
     );
 
-    if (tagsForDropdown.length > 0) {
-      dropdownItems = [
-        dropdownItemNewTag,
-        <DropDownItem height={7} heightTablet={7} key={-1} isSeparator />,
-        ...dropdownItems,
-      ];
-    } else {
-      dropdownItems = [dropdownItemNewTag, ...dropdownItems];
-    }
+    dropdownItems = [dropdownItemNewTag, ...dropdownItems];
+
+    // if (tagsForDropdown.length > 0) {
+    //   dropdownItems = [
+    //     dropdownItemNewTag,
+    //     <DropDownItem height={32} heightTablet={32} key={-1} />,
+    //     ...dropdownItems,
+    //   ];
+    //   dropdownItems = [dropdownItemNewTag, ...dropdownItems];
+    // } else {
+    //   dropdownItems = [dropdownItemNewTag, ...dropdownItems];
+    // }
   }
 
   return (
@@ -136,17 +141,19 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
         ref={dropdownRef}
         onMouseDown={preventDefault}
       >
-        <StyledDropDown
-          className="dropdown-content"
-          open={isOpen}
-          forwardedRef={dropdownRef}
-          clickOutsideAction={onClickOutside}
-          maxHeight={158}
-          showDisabledItems={false}
-          // onMouseDown={preventDefault}
-        >
-          {dropdownItems}
-        </StyledDropDown>
+        {dropdownItems.length > 0 && (
+          <StyledDropDown
+            className="dropdown-content"
+            open={isOpen}
+            forwardedRef={dropdownRef}
+            clickOutsideAction={onClickOutside}
+            maxHeight={158}
+            showDisabledItems={false}
+            // onMouseDown={preventDefault}
+          >
+            {dropdownItems}
+          </StyledDropDown>
+        )}
       </StyledDropDownWrapper>
       <TagList t={t} tagHandler={tagHandler} />
     </StyledTagInput>
