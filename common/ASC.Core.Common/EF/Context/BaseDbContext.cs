@@ -66,7 +66,13 @@ public class BaseDbContext : DbContext
                 });
                 break;
             case Provider.PostgreSql:
-                optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+                optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString, providerOptions =>
+                {
+                    if (!string.IsNullOrEmpty(MigrateAssembly))
+                    {
+                        providerOptions.MigrationsAssembly(MigrateAssembly);
+                    }
+                });
                 break;
         }
     }
