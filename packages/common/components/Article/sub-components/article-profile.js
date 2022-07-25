@@ -8,7 +8,11 @@ import ContextMenuButton from "@docspace/components/context-menu-button";
 import ContextMenu from "@docspace/components/context-menu";
 import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { isTablet, isMobileOnly } from "react-device-detect";
-import { StyledArticleProfile, StyledUserName } from "../styled-article";
+import {
+  StyledArticleProfile,
+  StyledUserName,
+  StyledProfileWrapper,
+} from "../styled-article";
 
 const ArticleProfile = (props) => {
   const { user, showText, getUserRole, getActions } = props;
@@ -38,52 +42,53 @@ const ArticleProfile = (props) => {
   const username = user.displayName.split(" ");
 
   return (
-    <StyledArticleProfile showText={showText} tablet={isTabletView}>
-      <div ref={ref}>
-        <Avatar
-          size={avatarSize}
-          role={userRole}
-          source={user.avatar}
-          userName={user.displayName}
-          onClick={onAvatarClick}
-        />
-        <ContextMenu
-          model={model}
-          containerRef={ref}
-          ref={menuRef}
-          onHide={onHide}
-          scaled={false}
-          leftOffset={-50}
-        />
-      </div>
-      {(!isTabletView || showText) && (
-        <>
-          <StyledUserName length={user.displayName.length}>
-            <Text fontWeight={600} noSelect truncate>
-              {username[0]}
-              &nbsp;
-            </Text>
-            <Text fontWeight={600} noSelect truncate>
-              {username[1]}
-            </Text>
-          </StyledUserName>
-
-          <ContextMenuButton
-            className="option-button"
-            iconClassName="option-button-icon"
-            zIndex={402}
-            directionX="left"
-            directionY="top"
-            iconName="/static/images/vertical-dots.react.svg"
-            size={32}
-            isFill
-            getData={() => getActions(t)}
-            isDisabled={false}
-            usePortal={true}
+    <StyledProfileWrapper showText={showText}>
+      <StyledArticleProfile showText={showText} tablet={isTabletView}>
+        <div ref={ref}>
+          <Avatar
+            size={avatarSize}
+            role={userRole}
+            source={user.avatar}
+            userName={user.displayName}
+            onClick={onAvatarClick}
           />
-        </>
-      )}
-    </StyledArticleProfile>
+          <ContextMenu
+            model={model}
+            containerRef={ref}
+            ref={menuRef}
+            onHide={onHide}
+            scaled={false}
+            leftOffset={-50}
+          />
+        </div>
+        {(!isTabletView || showText) && (
+          <>
+            <StyledUserName length={user.displayName.length}>
+              <Text fontWeight={600} noSelect truncate>
+                {username[0]}
+                &nbsp;
+              </Text>
+              <Text fontWeight={600} noSelect truncate>
+                {username[1]}
+              </Text>
+            </StyledUserName>
+            <ContextMenuButton
+              className="option-button"
+              iconClassName="option-button-icon"
+              zIndex={402}
+              directionX="left"
+              directionY="top"
+              iconName="/static/images/vertical-dots.react.svg"
+              size={32}
+              isFill
+              getData={() => getActions(t)}
+              isDisabled={false}
+              usePortal={true}
+            />
+          </>
+        )}
+      </StyledArticleProfile>
+    </StyledProfileWrapper>
   );
 };
 

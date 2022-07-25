@@ -3,7 +3,7 @@ import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import authStore from "@docspace/common/store/AuthStore";
-import { isDesktop, isMobile } from "react-device-detect";
+import { isDesktop, isTablet, isMobile } from "react-device-detect";
 
 const { proxyURL } = AppServerConfig;
 
@@ -77,7 +77,7 @@ class ProfileActionsStore {
   };
 
   onAboutClick = () => {
-    if (isDesktop) {
+    if (isDesktop || isTablet) {
       this.setIsAboutDialogVisible(true);
     } else {
       history.push(ABOUT_URL);
@@ -176,7 +176,6 @@ class ProfileActionsStore {
         icon: "/static/images/info.react.svg",
         label: t("Common:AboutCompanyTitle"),
         onClick: this.onAboutClick,
-        url: ABOUT_URL,
       },
       {
         isSeparator: true,

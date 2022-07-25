@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import Backdrop from "@docspace/components/backdrop";
-import Toast from "@docspace/components/toast";
 import Aside from "@docspace/components/aside";
 
 import Header from "./sub-components/header";
@@ -157,8 +156,6 @@ class NavMenu extends React.Component {
             isVisible={value.isVisible}
             isDesktop={hideHeader}
           >
-            <Toast />
-
             <Backdrop
               visible={isBackdropVisible}
               onClick={this.backdropClick}
