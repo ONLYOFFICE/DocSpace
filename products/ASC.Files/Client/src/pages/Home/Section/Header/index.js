@@ -69,9 +69,8 @@ class SectionHeaderContent extends React.Component {
   };
 
   onCreateRoom = () => {
-    console.log("create room");
-    const { setCreateRoomDialogVisible } = this.props;
-    setCreateRoomDialogVisible(true);
+    const event = new Event(Events.ROOM_CREATE);
+    window.dispatchEvent(event);
   };
 
   createDocument = () => this.onCreate("docx");

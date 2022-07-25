@@ -11,6 +11,7 @@ import Link from "@appserver/components/link";
 import IconButton from "@appserver/components/icon-button";
 
 import { tablet } from "@appserver/components/utils/device";
+import { Events } from "../../../../helpers/constants";
 
 const StyledWrapper = styled.div`
   .empty-folder_container {
@@ -49,8 +50,8 @@ const EmptyContainer = ({ theme, setCreateRoomDialogVisible }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
   const onCreateRoom = () => {
-    console.log("Create room");
-    setCreateRoomDialogVisible(true);
+    const event = new Event(Events.ROOM_CREATE);
+    window.dispatchEvent(event);
   };
 
   const buttons = (

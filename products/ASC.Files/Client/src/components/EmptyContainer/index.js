@@ -38,8 +38,8 @@ const EmptyContainer = ({
   };
 
   const onCreateRoom = (e) => {
-    setCreateRoomDialogVisible(true);
-    console.log("create room");
+    const event = new Event(Events.ROOM_CREATE);
+    window.dispatchEvent(event);
   };
 
   return isFiltered ? (
