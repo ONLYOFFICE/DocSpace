@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
+import { EDITOR_INITIAL_STATE } from "../constants";
 
 class UserStore {
   user = null;
@@ -12,7 +13,11 @@ class UserStore {
   }
 
   loadCurrentUser = async () => {
-    const user = await api.people.getUser();
+    let user = null;
+    if (window[`${EDITOR_INITIAL_STATE}`]?.user)
+      user = window[`${EDITOR_INITIAL_STATE}`].user;
+    else user = await api.people.getUser();
+
     this.setUser(user);
   };
 
