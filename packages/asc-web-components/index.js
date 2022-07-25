@@ -64,3 +64,4 @@ export * as Themes from "./themes";
 export { default as Portal } from "./portal";
 export { default as TableContainer } from "./TableContainer";
 export { default as Slider } from "./slider";
+export { default as FormWrapper } from "./form-wrapper";
