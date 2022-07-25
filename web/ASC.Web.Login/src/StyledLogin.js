@@ -1,4 +1,4 @@
-import { hugeMobile } from "@appserver/components/utils/device";
+import { tablet, hugeMobile } from "@appserver/components/utils/device";
 import styled, { css } from "styled-components";
 
 export const ButtonsWrapper = styled.div`
@@ -189,6 +189,30 @@ export const LoginContainer = styled.div`
       height: 39px;
     }
   }
+
+  .form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    background: #ffffff;
+    box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.07);
+    border-radius: 12px;
+
+    max-width: 384px;
+
+    @media ${tablet} {
+      max-width: 480px;
+    }
+
+    @media ${hugeMobile} {
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      max-width: 311px;
+      background: #ffffff;
+    }
+  }
 `;
 
 export const LoginFormWrapper = styled.div`
@@ -201,4 +225,17 @@ export const LoginFormWrapper = styled.div`
       : css`1fr`};
   width: 100%;
   height: 100vh;
+
+  background-image: url("/static/images/background.pattern.react.svg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+
+  @media ${tablet} {
+    background-size: cover;
+  }
+
+  @media ${hugeMobile} {
+    background-image: none;
+  }
 `;
