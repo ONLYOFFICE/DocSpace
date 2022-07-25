@@ -5,8 +5,8 @@ import { withTranslation } from "react-i18next";
 
 import ModalDialog from "@appserver/components/modal-dialog";
 
-import SetRoomParams from "./views/CreateRoom/SetRoomParams";
-import RoomTypeList from "./views/ChooseRoomType/RoomTypeList";
+import SetRoomParams from "./sub-components/CreateRoom";
+import RoomTypeList from "./sub-components/ChooseRoomType";
 import Button from "@appserver/components/button";
 import { roomTypes } from "./data";
 import TagHandler from "./handlers/tagHandler";

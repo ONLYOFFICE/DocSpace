@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import RoomTypeDropdown from "./RoomTypeDropdown";
-import StorageLocation from "../../sub-components/StorageLocation";
+import StorageLocation from "./StorageLocation";
 
 import TextInput from "@appserver/components/text-input";
 import Label from "@appserver/components/label";
@@ -9,8 +9,8 @@ import ToggleButton from "@appserver/components/toggle-button";
 import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 import AvatarEditor from "@appserver/components/avatar-editor";
-import TagInput from "../../sub-components/TagInput";
-import { StyledParam } from "../../sub-components/StyledParam";
+import TagInput from "./TagInput";
+import { StyledParam } from "../common/StyledParam";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
@@ -105,33 +105,12 @@ const SetRoomParams = ({
         />
       </StyledParam>
 
-      <StyledParam storageLocation>
-        <div className="set_room_params-info">
-          <div className="set_room_params-info-title">
-            <Text className="set_room_params-info-title-text">
-              {t("StorageLocationTitle")}
-            </Text>
-            <HelpButton
-              displayType="auto"
-              className="set_room_params-info-title-help"
-              iconName="/static/images/info.react.svg"
-              offsetRight={0}
-              tooltipContent={t("StorageLocationDescription")}
-              size={12}
-            />
-          </div>
-          <div className="set_room_params-info-description">
-            {t("StorageLocationDescription")}
-          </div>
-        </div>
-
-        <StorageLocation
-          t={t}
-          roomParams={roomParams}
-          setRoomParams={setRoomParams}
-          setIsScrollLocked={setIsScrollLocked}
-        />
-      </StyledParam>
+      <StorageLocation
+        t={t}
+        roomParams={roomParams}
+        setRoomParams={setRoomParams}
+        setIsScrollLocked={setIsScrollLocked}
+      />
 
       {/* <StyledIconEditorWrapper>
         <AvatarEditor useModalDialog={false}></AvatarEditor>

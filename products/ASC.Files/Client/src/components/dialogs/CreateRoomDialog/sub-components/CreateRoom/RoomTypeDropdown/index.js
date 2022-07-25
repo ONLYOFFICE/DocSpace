@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { roomTypes } from "../../data";
-import RoomType from "../../sub-components/RoomType";
+import { roomTypes } from "../../../data";
+import RoomType from "../../common/RoomType";
 
 const StyledRoomTypeDropdown = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
   width: 100%;
 
   .dropdown-content-wrapper {
@@ -16,6 +15,7 @@ const StyledRoomTypeDropdown = styled.div`
     ${(props) => !props.isOpen && "display: none"};
 
     .dropdown-content {
+      margin-top: 4px;
       background: #ffffff;
       overflow: visible;
       z-index: 400;

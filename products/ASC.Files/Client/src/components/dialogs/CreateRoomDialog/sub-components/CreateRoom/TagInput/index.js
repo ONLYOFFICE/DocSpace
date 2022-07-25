@@ -3,9 +3,12 @@ import styled from "styled-components";
 
 import Label from "@appserver/components/label";
 import TextInput from "@appserver/components/text-input";
-import TagList from "../views/CreateRoom/TagList";
+import TagList from "./TagList";
 import DropDownItem from "@appserver/components/drop-down-item";
-import { StyledDropDown, StyledDropdownWrapper } from "./StyledDropdown";
+import {
+  StyledDropDown,
+  StyledDropDownWrapper,
+} from "../../common/StyledDropdown";
 
 const StyledTagInput = styled.div`
   .set_room_params-tag_input {
@@ -128,7 +131,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
         tabIndex={2}
       />
 
-      <StyledDropdownWrapper
+      <StyledDropDownWrapper
         className="dropdown-content-wrapper"
         ref={dropdownRef}
         onMouseDown={preventDefault}
@@ -144,7 +147,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
         >
           {dropdownItems}
         </StyledDropDown>
-      </StyledDropdownWrapper>
+      </StyledDropDownWrapper>
       <TagList t={t} tagHandler={tagHandler} />
     </StyledTagInput>
   );

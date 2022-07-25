@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { roomTypes } from "../../data";
 
-import RoomType from "../../sub-components/RoomType";
+import RoomType from "../common/RoomType";
 
 const StyledRoomTypeList = styled.div`
   width: 100%;
@@ -12,7 +12,7 @@ const StyledRoomTypeList = styled.div`
   gap: 16px;
 `;
 
-const RoomTypeList = ({ t, setRoomType }) => {
+const ChooseRoomType = ({ t, setRoomType }) => {
   return (
     <StyledRoomTypeList>
       {roomTypes.map((room) => (
@@ -28,4 +28,4 @@ const RoomTypeList = ({ t, setRoomType }) => {
   );
 };
 
-export default RoomTypeList;
+export default ChooseRoomType;

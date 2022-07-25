@@ -1,8 +1,10 @@
 import styled from "styled-components";
+
 import { smallTablet } from "@appserver/components/utils/device";
+
 import DropDown from "@appserver/components/drop-down";
 
-const StyledDropdownWrapper = styled.div`
+const StyledDropDownWrapper = styled.div`
   width: 100%;
   position: relative;
 `;
@@ -18,7 +20,7 @@ const StyledDropDown = styled(DropDown)`
 
   .scroll-body {
     /* height: 158px !important; */
-    margin-bottom: -21px !important;
+    //margin-bottom: -21px !important;
   }
 
   width: 446px;
@@ -57,4 +59,4 @@ const StyledDropDown = styled(DropDown)`
   }
 `;
 
-export { StyledDropdownWrapper, StyledDropDown };
+export { StyledDropDownWrapper, StyledDropDown };
