@@ -58,13 +58,16 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
   const onClickOutside = () => {
     tagsInputElement.blur();
   };
+
   const addNewTag = () => {
-    tagHandler.addTag(tagInput);
+    tagHandler.addNewTag(tagInput);
     setTagInput("");
     tagsInputElement.blur();
   };
+
   const addFetchedTag = (name) => {
     tagHandler.addTag(name);
+    setTagInput("");
     tagsInputElement.blur();
   };
 
