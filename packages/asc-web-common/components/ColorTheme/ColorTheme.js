@@ -6,6 +6,10 @@ import {
   MainButtonTheme,
   CatalogItemTheme,
   BadgeTheme,
+  PinIconTheme,
+  SubmenuTextTheme,
+  SubmenuItemLabelTheme,
+  ToggleButtonTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -23,6 +27,18 @@ const ColorTheme = (props) => {
     }
     case ThemeType.Badge: {
       return <BadgeTheme {...props} />;
+    }
+    case ThemeType.PinIcon: {
+      return <PinIconTheme {...props} />;
+    }
+    case ThemeType.SubmenuText: {
+      return <SubmenuTextTheme {...props} />;
+    }
+    case ThemeType.SubmenuItemLabel: {
+      return <SubmenuItemLabelTheme {...props} />;
+    }
+    case ThemeType.ToggleButton: {
+      return <ToggleButtonTheme {...props} />;
     }
   }
 };
