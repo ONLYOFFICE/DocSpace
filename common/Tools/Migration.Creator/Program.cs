@@ -24,27 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator;
+namespace Migration.Creator;
 
-public class DbContextActivator
+class Program
 {
-    private readonly string _dbConnectionString;
-    public DbContextActivator(string dbConnectionString)
+    static void Main(string[] args)
     {
-        _dbConnectionString = dbConnectionString;
-    }
+        var builder = new ConfigurationBuilder()
+        .AddJsonFile($"appsettings.json", true)
+        .AddCommandLine(args);
 
-    public BaseDbContext CreateInstance(Type contextType, ProviderInfo provider)
-    {
-        var context = (BaseDbContext)Activator.CreateInstance(contextType);
-        context.ConnectionStringSettings = new ConnectionStringSettings
+        var config = builder.Build();
+
+        var options = config.GetSection("options").Get<Options>();
+        if (!Path.IsPathRooted(options.Path))
         {
-            ConnectionString = _dbConnectionString,
-            ProviderName = provider.ProviderFullName
-        };
+            options.Path = Path.GetFullPath(options.Path);
+        }
 
-        context.MigrateAssembly = $"ASC.Migrations.{provider.Provider}";
-
-        return context;
+        var migrationCreator = new MigrationCreator();
+        migrationCreator.RunCreateMigrations(options);
     }
 }

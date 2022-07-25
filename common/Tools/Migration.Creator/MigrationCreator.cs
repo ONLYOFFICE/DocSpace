@@ -24,31 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator;
+namespace Migration.Creator;
 
 public class MigrationCreator
 {
-    private readonly DbContextActivator _dbContextActivator;
-
-    public MigrationCreator(string dbConnectionString)
-    {
-        _dbContextActivator = new DbContextActivator(dbConnectionString);
-    }
-
-    public void RunCreateMigrations(ProviderInfo[] providersInfo)
+    public void RunCreateMigrations(Options options)
     {
         var counter = 0;
 
-        foreach (var projectInfo in Solution.GetProjects())
+        foreach (var projectInfo in Solution.GetProjects(options.Path))
         {
             var ctxTypesFinder = new ProjectInfoContextFinder(projectInfo);
 
             foreach (var contextType in ctxTypesFinder.GetDependetContextsTypes())
             {
-                foreach (var providerInfo in providersInfo)
+                foreach (var providerInfo in options.Providers)
                 {
-                    var providerInfoProjectPath = Solution.GetProviderProjectPath(providerInfo);
-                    var context = _dbContextActivator.CreateInstance(contextType, providerInfo);
+                    var providerInfoProjectPath = Solution.GetProviderProjectPath(options.Path, providerInfo);
+                    var dbContextActivator = new DbContextActivator(providerInfo.ConnectionString);
+                    var context = dbContextActivator.CreateInstance(contextType, providerInfo);
 
                     var modelDiffChecker = new ModelDifferenceChecker(context);
 
@@ -57,9 +51,9 @@ public class MigrationCreator
                         continue;
                     }
 
-                    context = _dbContextActivator.CreateInstance(contextType, providerInfo); //Hack: refresh context
+                    context = dbContextActivator.CreateInstance(contextType, providerInfo); //Hack: refresh context
 
-                    var migrationGenerator = new MigrationGenerator(context, projectInfo, providerInfo.Provider, providerInfoProjectPath);
+                    var migrationGenerator = new MigrationGenerator(context, providerInfo.Provider, providerInfoProjectPath);
                     migrationGenerator.Generate();
 
                     counter++;
@@ -68,36 +62,5 @@ public class MigrationCreator
         }
 
         Console.WriteLine($"Created {counter} migrations");
-    }
-
-    public void RunApplyMigrations(string path, ProviderInfo dbProvider)
-    {
-        var counter = 0;
-
-        foreach (var assembly in GetAssemblies(path))
-        {
-            var ctxTypesFinder = new AssemblyContextFinder(assembly);
-
-            foreach (var contextType in ctxTypesFinder.GetIndependentContextsTypes())
-            {
-                var context = _dbContextActivator.CreateInstance(contextType, dbProvider);
-
-                context.Database.Migrate();
-
-                counter++;
-            }
-        }
-
-        Console.WriteLine($"Applied {counter} migrations");
-    }
-
-    private static IEnumerable<Assembly> GetAssemblies(string path)
-    {
-        var assemblyPaths = Directory.GetFiles(path, "ASC.*.dll");
-
-        foreach (var assembly in assemblyPaths)
-        {
-            yield return Assembly.LoadFrom(assembly);
-        }
     }
 }

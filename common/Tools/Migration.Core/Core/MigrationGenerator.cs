@@ -24,12 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator;
+namespace Migration;
 
 public class MigrationGenerator
 {
     private readonly BaseDbContext _dbContext;
-    private readonly ProjectInfo _projectInfo;
     private readonly string _providerInfoProjectPath;
     private readonly string _typeName;
     private readonly Regex _pattern = new Regex(@"\d+$", RegexOptions.Compiled);
@@ -43,10 +42,9 @@ public class MigrationGenerator
         }
     }
 
-    public MigrationGenerator(BaseDbContext context, ProjectInfo projectInfo, Provider provider, string providerInfoProjectPath)
+    public MigrationGenerator(BaseDbContext context, Provider provider, string providerInfoProjectPath)
     {
         _dbContext = context;
-        _projectInfo = projectInfo;
         _providerInfoProjectPath = providerInfoProjectPath;
         _typeName = _dbContext.GetType().Name;
         _providerName = provider.ToString();

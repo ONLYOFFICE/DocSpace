@@ -24,25 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Configuration;
 global using System.Reflection;
-global using System.Text.RegularExpressions;
 
-global using ASC.Core.Common.EF;
-
-global using Autofac;
-
-global using AutoMigrationCreator.Core;
-global using AutoMigrationCreator.Utils;
-
-global using CommandLine;
-
-global using Microsoft.Build.Construction;
 global using Microsoft.EntityFrameworkCore;
-global using Microsoft.EntityFrameworkCore.Design;
-global using Microsoft.EntityFrameworkCore.Infrastructure;
-global using Microsoft.EntityFrameworkCore.Migrations.Design;
-global using Microsoft.EntityFrameworkCore.Migrations.Operations;
-global using Microsoft.EntityFrameworkCore.Storage;
-global using Microsoft.Extensions.DependencyInjection;
-global using AutoMigrationCreator.Models;
+
+global using Migration;
+global using Migration.Core.Models;
+global using Migration.Core.Utils;
+
+global using DbContextActivator = Migration.Core.Utils.DbContextActivator;

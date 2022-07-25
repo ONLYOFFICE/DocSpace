@@ -24,19 +24,39 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator.Utils;
-
-public class Options
+namespace Migration;
+public abstract class ContextFinder
 {
-    [Option(shortName: 'p', longName: "path", Default = "", HelpText = "Path to dll files for migrations", MetaValue = "string")]
-    public string Path { get; set; }
+    private readonly Type _baseType = typeof(BaseDbContext);
 
-    [Option(shortName: 'c', longName: "create", Default = false, HelpText = "Do you want to apply migrations?", MetaValue = "boolean")]
-    public bool? Create { get; set; }
+    public IEnumerable<Type> GetDependetContextsTypes()
+    {
+        var assemblyTypes = GetAssemblyTypes();
 
-    [Option(shortName: 'd', longName: "db-connection-string", Default = "", HelpText = "Сonnection string for your database", MetaValue = "string")]
-    public string DbConnectionString { get; set; }
+        var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
 
-    [Option(shortName: 'b', longName: "db-provider", Default = "", HelpText = "Your database provider", MetaValue = "string")]
-    public string DbProvider { get; set; }
+        foreach (var contextType in independetProviderTypes)
+        {
+            yield return contextType;
+        }
+    }
+
+    public IEnumerable<Type> GetIndependentContextsTypes()
+    {
+        var assemblyTypes = GetAssemblyTypes();
+
+        var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
+
+        foreach (var contextType in independetProviderTypes)
+        {
+            yield return contextType;
+        }
+    }
+
+    protected abstract Type[] GetAssemblyTypes();
+
+    private IEnumerable<Type> GetProviderIndependentContextTypes(IEnumerable<Type> assemblyTypes)
+    {
+        return assemblyTypes.Where(b => b.BaseType == _baseType);
+    }
 }

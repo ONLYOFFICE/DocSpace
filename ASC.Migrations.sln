@@ -5,8 +5,6 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Migrations.MySql", "migrations\mysql\ASC.Migrations.MySql.csproj", "{78FD997A-8A30-4B8B-B81E-46E6EE05390D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMigrationCreator", "common\Tools\AutoMigrationCreator\AutoMigrationCreator.csproj", "{FA061071-DD6D-4855-897C-55A296A44A08}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Backup.Core", "common\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj", "{93D91A49-A397-40FC-90DE-85D8ED774803}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage", "common\ASC.Data.Storage\ASC.Data.Storage.csproj", "{582AF3E8-ACA4-49B8-809D-36A586C4307E}"
@@ -23,6 +21,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Migrations.PostgreSql",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Core.Common", "common\ASC.Core.Common\ASC.Core.Common.csproj", "{A51D0454-4AFA-46DE-89D4-B03D37E1816C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migration.Creator", "common\Tools\Migration.Creator\Migration.Creator.csproj", "{4BECDA03-E5E7-4273-B2D5-65AD3B1D0AF6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migration.Core", "common\Tools\Migration.Core\Migration.Core.csproj", "{4E971C04-8D1F-4C07-8D6F-C062C114CF7F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migration.Runner", "common\Tools\Migration.Runner\Migration.Runner.csproj", "{249DC522-AC3B-475C-B77E-52CE0322E686}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,10 +37,6 @@ Global
 		{78FD997A-8A30-4B8B-B81E-46E6EE05390D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78FD997A-8A30-4B8B-B81E-46E6EE05390D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78FD997A-8A30-4B8B-B81E-46E6EE05390D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA061071-DD6D-4855-897C-55A296A44A08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA061071-DD6D-4855-897C-55A296A44A08}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA061071-DD6D-4855-897C-55A296A44A08}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA061071-DD6D-4855-897C-55A296A44A08}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93D91A49-A397-40FC-90DE-85D8ED774803}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93D91A49-A397-40FC-90DE-85D8ED774803}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93D91A49-A397-40FC-90DE-85D8ED774803}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +69,18 @@ Global
 		{A51D0454-4AFA-46DE-89D4-B03D37E1816C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A51D0454-4AFA-46DE-89D4-B03D37E1816C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A51D0454-4AFA-46DE-89D4-B03D37E1816C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BECDA03-E5E7-4273-B2D5-65AD3B1D0AF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BECDA03-E5E7-4273-B2D5-65AD3B1D0AF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BECDA03-E5E7-4273-B2D5-65AD3B1D0AF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BECDA03-E5E7-4273-B2D5-65AD3B1D0AF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E971C04-8D1F-4C07-8D6F-C062C114CF7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E971C04-8D1F-4C07-8D6F-C062C114CF7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E971C04-8D1F-4C07-8D6F-C062C114CF7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E971C04-8D1F-4C07-8D6F-C062C114CF7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{249DC522-AC3B-475C-B77E-52CE0322E686}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{249DC522-AC3B-475C-B77E-52CE0322E686}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{249DC522-AC3B-475C-B77E-52CE0322E686}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{249DC522-AC3B-475C-B77E-52CE0322E686}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

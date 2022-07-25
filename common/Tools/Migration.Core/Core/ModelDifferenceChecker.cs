@@ -24,36 +24,49 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator;
+namespace Migration;
 
-class Program
+public class ModelDifferenceChecker
 {
-    static void Main(string[] args)
+    private readonly BaseDbContext _dbContext;
+    public ModelDifferenceChecker(BaseDbContext context)
     {
-        var options = Parser.Default.ParseArguments<Options>(args).Value;
+        _dbContext = context;
+    }
 
-        var builder = new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.json", true);
-        var config = builder.Build();
+    public bool IsDifferent()
+    {
+        var scaffolderDependecies = EFCoreDesignTimeServices.GetServiceProvider(_dbContext)
+            .GetService<MigrationsScaffolderDependencies>();
 
-        var dbConnectionString = options.DbConnectionString == "" ? config["DefaultConnectionString"] : options.DbConnectionString;
+        var modelSnapshot = scaffolderDependecies.MigrationsAssembly.ModelSnapshot;
 
-        var migrationCreator = new MigrationCreator(dbConnectionString);
-
-        var section = config.GetSection("Providers");
-        var providersInfo = section.Get<ProviderInfo[]>();
-
-        if (true)
+        if (modelSnapshot == null)
         {
-            migrationCreator.RunCreateMigrations(providersInfo);
+            return true;
         }
 
-        //var path = @"C:\Git\portals_core\products\ASC.Files\Server\bin\Debug";
-        ////if (options.Path != "")
-        ////{
-        //var dbProvider = options.DbProvider == "" ? config["DefaultDbProvider"] : options.DbProvider;
+        var lastModel = scaffolderDependecies.SnapshotModelProcessor.Process(modelSnapshot.Model)
+            .GetRelationalModel();
 
-        //migrationCreator.RunApplyMigrations(path, providersInfo.FirstOrDefault(r => r.ProviderFullName == dbProvider));
-        ////}
+        if (lastModel == null)
+        {
+            return true;
+        }
+
+        var upMethodOperations = scaffolderDependecies.MigrationsModelDiffer.GetDifferences(
+            lastModel, scaffolderDependecies.Model.GetRelationalModel());
+
+        var downMethodOperations = upMethodOperations.Count != 0 ?
+            scaffolderDependecies.MigrationsModelDiffer.GetDifferences(
+                scaffolderDependecies.Model.GetRelationalModel(), lastModel)
+            : new List<MigrationOperation>();
+
+        if (upMethodOperations.Count > 0 || downMethodOperations.Count > 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

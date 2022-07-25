@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "AutoMigrationCreator": {
+    "Migration.Runner": {
       "commandName": "Project",
       "launchBrowser": false
     }

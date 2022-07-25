@@ -24,49 +24,28 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator;
+namespace Migration;
 
-public class ModelDifferenceChecker
+public static class Solution
 {
-    private readonly BaseDbContext _dbContext;
-    public ModelDifferenceChecker(BaseDbContext context)
+    public static IEnumerable<ProjectInfo> GetProjects(string solutionPath)
     {
-        _dbContext = context;
+        var source = SolutionFile.Parse(solutionPath);
+        var currentAssembly = Assembly.GetExecutingAssembly().GetName().Name;
+
+        return source.ProjectsInOrder
+                .Where(p =>
+                    p.ProjectType == SolutionProjectType.KnownToBeMSBuildFormat
+                    && p.ProjectName != currentAssembly)
+                .Select(p => new ProjectInfo
+                {
+                    AssemblyName = p.ProjectName,
+                    Path = p.AbsolutePath.Replace($"{p.ProjectName}.csproj", string.Empty)
+                });
     }
 
-    public bool IsDifferent()
+    public static string GetProviderProjectPath(string solutionPath, ProviderInfo providerInfo)
     {
-        var scaffolderDependecies = EFCoreDesignTimeServices.GetServiceProvider(_dbContext)
-            .GetService<MigrationsScaffolderDependencies>();
-
-        var modelSnapshot = scaffolderDependecies.MigrationsAssembly.ModelSnapshot;
-
-        if (modelSnapshot == null)
-        {
-            return true;
-        }
-
-        var lastModel = scaffolderDependecies.SnapshotModelProcessor.Process(modelSnapshot.Model)
-            .GetRelationalModel();
-
-        if (lastModel == null)
-        {
-            return true;
-        }
-
-        var upMethodOperations = scaffolderDependecies.MigrationsModelDiffer.GetDifferences(
-            lastModel, scaffolderDependecies.Model.GetRelationalModel());
-
-        var downMethodOperations = upMethodOperations.Count != 0 ?
-            scaffolderDependecies.MigrationsModelDiffer.GetDifferences(
-                scaffolderDependecies.Model.GetRelationalModel(), lastModel)
-            : new List<MigrationOperation>();
-
-        if (upMethodOperations.Count > 0 || downMethodOperations.Count > 0)
-        {
-            return true;
-        }
-
-        return false;
+        return GetProjects(solutionPath).FirstOrDefault(r => r.AssemblyName == $"ASC.Migrations.{providerInfo.Provider}")?.Path;
     }
 }

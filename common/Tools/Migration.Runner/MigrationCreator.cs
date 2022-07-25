@@ -24,55 +24,46 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator.Core;
-public abstract class ContextFinder
+namespace Migration.Runner;
+
+public class MigrationRunner
 {
-    private readonly Type _baseType = typeof(BaseDbContext);
+    private readonly DbContextActivator _dbContextActivator;
 
-    public IEnumerable<Type> GetDependetContextsTypes()
+    public MigrationRunner(string dbConnectionString)
     {
-        var assemblyTypes = GetAssemblyTypes();
-
-        var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
-        //var dependetProviderTypes = GetProviderDependetContextTypes(assemblyTypes, independetProviderTypes);
-
-        foreach (var contextType in independetProviderTypes)
-        {
-            yield return contextType;
-        }
+        _dbContextActivator = new DbContextActivator(dbConnectionString);
     }
 
-    public IEnumerable<Type> GetIndependentContextsTypes()
+    public void RunApplyMigrations(string path, ProviderInfo dbProvider)
     {
-        var assemblyTypes = GetAssemblyTypes();
+        var counter = 0;
 
-        var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
-
-        foreach (var contextType in independetProviderTypes)
+        foreach (var assembly in GetAssemblies(path))
         {
-            yield return contextType;
-        }
-    }
+            var ctxTypesFinder = new AssemblyContextFinder(assembly);
 
-    protected abstract Type[] GetAssemblyTypes();
-
-    private IEnumerable<Type> GetProviderIndependentContextTypes(IEnumerable<Type> assemblyTypes)
-    {
-        return assemblyTypes.Where(b => b.BaseType == _baseType);
-    }
-
-    private IEnumerable<Type> GetProviderDependetContextTypes(IEnumerable<Type> assemblyTypes,
-        IEnumerable<Type> indepentedTypes)
-    {
-        foreach (var assemblyType in assemblyTypes)
-        {
-            foreach (var independtType in indepentedTypes)
+            foreach (var contextType in ctxTypesFinder.GetIndependentContextsTypes())
             {
-                if (assemblyType.BaseType == independtType)
-                {
-                    yield return assemblyType;
-                }
+                var context = _dbContextActivator.CreateInstance(contextType, dbProvider);
+
+                context.Database.EnsureCreated();
+                context.Database.Migrate();
+
+                counter++;
             }
+        }
+
+        Console.WriteLine($"Applied {counter} migrations");
+    }
+
+    private static IEnumerable<Assembly> GetAssemblies(string path)
+    {
+        var assemblyPaths = Directory.GetFiles(path, "ASC.*.dll");
+
+        foreach (var assembly in assemblyPaths)
+        {
+            yield return Assembly.LoadFrom(assembly);
         }
     }
 }

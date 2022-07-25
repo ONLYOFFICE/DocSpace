@@ -24,31 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator.Core;
+namespace Migration.Core.Utils;
 
-public static class Solution
+public static class EFCoreDesignTimeServices
 {
-    private const string SOLUTION_NAME = "ASC.Migrations.sln";
-
-    public static IEnumerable<ProjectInfo> GetProjects()
+    public static ServiceProvider GetServiceProvider(BaseDbContext context)
     {
-        var solutionPath = Path.GetFullPath(Path.Combine("..", "..", "..", SOLUTION_NAME));
-        var source = SolutionFile.Parse(solutionPath);
-        var currentAssembly = Assembly.GetExecutingAssembly().GetName().Name;
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddEntityFrameworkDesignTimeServices();
+        serviceCollection.AddDbContextDesignTimeServices(context);
+        serviceCollection.AddSingleton<MigrationsCodeGeneratorDependencies>();
+        serviceCollection.AddSingleton<AnnotationCodeGeneratorDependencies>();
+        serviceCollection.AddSingleton<IAnnotationCodeGenerator, AnnotationCodeGenerator>();
+        serviceCollection.AddSingleton(context.GetService<ITypeMappingSource>());
 
-        return source.ProjectsInOrder
-                .Where(p =>
-                    p.ProjectType == SolutionProjectType.KnownToBeMSBuildFormat
-                    && p.ProjectName != currentAssembly)
-                .Select(p => new ProjectInfo
-                {
-                    AssemblyName = p.ProjectName,
-                    Path = p.AbsolutePath.Replace($"{p.ProjectName}.csproj", string.Empty)
-                });
-    }
+        var designTimeServices = serviceCollection.BuildServiceProvider();
 
-    public static string GetProviderProjectPath(ProviderInfo providerInfo)
-    {
-        return GetProjects().FirstOrDefault(r => r.AssemblyName == $"ASC.Migrations.{providerInfo.Provider}")?.Path;
+        return designTimeServices;
     }
 }

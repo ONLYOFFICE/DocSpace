@@ -24,10 +24,29 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator.Models;
+namespace Migration.Runner;
 
-public class ProviderInfo
+class Program
 {
-    public Provider Provider { get; set; }
-    public string ProviderFullName { get; set; }
+    static void Main(string[] args)
+    {
+        var builder = new ConfigurationBuilder()
+                .AddJsonFile($"appsettings.json", true)
+                .AddCommandLine(args);
+
+        var config = builder.Build();
+
+        var providersInfo = config.GetSection("options").Get<Options>();
+        var path = providersInfo.Path;
+        if (!Path.IsPathRooted(path))
+        {
+            path = Path.GetFullPath(path);
+        }
+
+        foreach (var providerInfo in providersInfo.Providers)
+        {
+            var migrationCreator = new MigrationRunner(providerInfo.ConnectionString);
+            migrationCreator.RunApplyMigrations(path, providerInfo);
+        }
+    }
 }

@@ -24,18 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace AutoMigrationCreator;
+namespace Migration;
 
-public class AssemblyContextFinder : ContextFinder
+public class ProjectInfoContextFinder : ContextFinder
 {
-    private readonly Assembly _assembly;
-    public AssemblyContextFinder(Assembly assembly)
+    private readonly ProjectInfo _projectInfo;
+    public ProjectInfoContextFinder(ProjectInfo projectInfo)
     {
-        _assembly = assembly;
+        _projectInfo = projectInfo;
     }
 
     protected override Type[] GetAssemblyTypes()
     {
-        return _assembly.GetTypes();
+        var coreContextAssembly = Assembly.Load(_projectInfo.AssemblyName);
+        return coreContextAssembly.GetTypes();
     }
 }
