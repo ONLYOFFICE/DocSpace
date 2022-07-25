@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled, { css } from "styled-components";
 import {
   isIOS,
@@ -41,7 +41,16 @@ const Main = React.memo((props) => {
   // }, []);
 
   //console.log("Main render");
-  return <StyledMain className="main" {...props} />;
+
+  useEffect(() => {
+    if (window.location.pathname.includes("confirm")) {
+      document
+        .getElementById("main-layout")
+        .classList.add("with-background-pattern");
+    }
+  }, []);
+
+  return <StyledMain id="main-layout" className="main" {...props} />;
 });
 
 /*Main.defaultProps = {
