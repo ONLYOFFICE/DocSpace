@@ -2,7 +2,11 @@ import path from "path";
 import fs from "fs";
 import { initSSR } from "@appserver/common/api/client";
 import { getUser } from "@appserver/common/api/people";
-import { getSettings } from "@appserver/common/api/settings";
+import {
+  getSettings,
+  getBuildVersion,
+  getCurrentCustomSchema,
+} from "@appserver/common/api/settings";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
 import {
@@ -59,10 +63,18 @@ export const initDocEditor = async (req) => {
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
-    const [user, settings, filesSettings] = await Promise.all([
+    const [
+      user,
+      settings,
+      filesSettings,
+      versionInfo,
+      customNames,
+    ] = await Promise.all([
       getUser(),
       getSettings(),
       getSettingsFiles(),
+      getBuildVersion(),
+      getCurrentCustomSchema("Common"),
     ]);
 
     const successAuth = !!user;
@@ -82,6 +94,7 @@ export const initDocEditor = async (req) => {
     const config = await openEdit(fileId, fileVersion, doc, view);
 
     const sharingSettings = await getShareFiles([+fileId], []);
+
     const isSharingAccess = config?.file && config?.file?.canShare;
 
     if (view) {
@@ -105,6 +118,8 @@ export const initDocEditor = async (req) => {
       filesSettings,
       sharingSettings,
       portalSettings: settings,
+      versionInfo,
+      customNames,
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };

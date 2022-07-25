@@ -217,7 +217,12 @@ class SettingsStore {
   };
 
   getCurrentCustomSchema = async (id) => {
-    this.customNames = await api.settings.getCurrentCustomSchema(id);
+    let customNames = null;
+    if (window[`${EDITOR_STATE_NAME}`]?.customNames) {
+      customNames = window[`${EDITOR_STATE_NAME}`].customNames;
+      window[`${EDITOR_STATE_NAME}`].customNames = null;
+    } else customNames = await api.settings.getCurrentCustomSchema(id);
+    this.customNames = customNames;
   };
 
   getCustomSchemaList = async () => {
@@ -432,7 +437,10 @@ class SettingsStore {
   }
 
   getBuildVersionInfo = async () => {
-    const versionInfo = await api.settings.getBuildVersion();
+    let versionInfo = null;
+    if (window[`${EDITOR_STATE_NAME}`]?.versionInfo)
+      versionInfo = window[`${EDITOR_STATE_NAME}`].versionInfo;
+    else versionInfo = await api.settings.getBuildVersion();
     this.setBuildVersionInfo(versionInfo);
   };
 

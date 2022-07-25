@@ -12,7 +12,7 @@ export default function template(
 ) {
   const { title } = pkg;
   const { error } = initialEditorState;
-  const { editorUrl } = initialEditorState?.config;
+  const editorUrl = initialEditorState?.config?.editorUrl;
   const faviconHref = getFavicon(initialEditorState?.config?.documentType);
 
   let clientScripts =
