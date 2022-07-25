@@ -1,9 +1,13 @@
 import styled, { css } from "styled-components";
 
-import { StyledCatalogItemContainer } from "@appserver/components/catalog-item/styled-catalog-item";
+import {
+  StyledCatalogItemContainer,
+  StyledCatalogItemImg,
+  StyledCatalogItemText,
+} from "@appserver/components/catalog-item/styled-catalog-item";
 
 const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
-  .color-theme-text {
+  ${StyledCatalogItemText} {
     color: ${isActive && currentColorScheme.accentColor};
 
     &:hover {
@@ -11,7 +15,7 @@ const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
     }
   }
 
-  .color-theme-img {
+  ${StyledCatalogItemImg} {
     svg {
       path {
         fill: ${isActive && currentColorScheme.accentColor} !important;

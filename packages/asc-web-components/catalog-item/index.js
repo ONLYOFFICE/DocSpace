@@ -16,7 +16,7 @@ import {
   StyledCatalogItemInitialText,
   StyledCatalogItemHeaderContainer,
 } from "./styled-catalog-item";
-
+import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
 const getInitial = (text) => text.substring(0, 1).toUpperCase();
 
 const CatalogItem = (props) => {
@@ -47,6 +47,7 @@ const CatalogItem = (props) => {
   };
 
   const onClickBadgeAction = (e) => {
+    console.log("PRO", onClickBadge);
     e.stopPropagation();
     onClickBadge && onClickBadge(id);
   };
@@ -70,12 +71,14 @@ const CatalogItem = (props) => {
 
   const renderItem = () => {
     return (
-      <StyledCatalogItemContainer
+      <ColorTheme
         className={className}
         id={id}
         style={style}
         showText={showText}
         isEndOfBlock={isEndOfBlock}
+        isActive={isActive}
+        type={ThemeType.CatalogItem}
       >
         <StyledCatalogItemSibling
           isActive={isActive}
@@ -120,7 +123,7 @@ const CatalogItem = (props) => {
             )}
           </StyledCatalogItemBadgeWrapper>
         )}
-      </StyledCatalogItemContainer>
+      </ColorTheme>
     );
   };
 

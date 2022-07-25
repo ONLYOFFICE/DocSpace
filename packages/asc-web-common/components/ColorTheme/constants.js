@@ -1,7 +1,6 @@
 export const ThemeType = {
   Button: "button",
   MainButton: "mainButton",
-  CatalogItemText: "catalogItemText",
-  CatalogItemImg: "catalogItemImg",
+  CatalogItem: "catalogItem",
   Badge: "badge",
 };
