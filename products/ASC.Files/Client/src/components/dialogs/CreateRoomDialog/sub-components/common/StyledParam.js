@@ -16,6 +16,11 @@ const StyledParam = styled.div`
           flex-direction: column;
           gap: 12px;
         `
+      : props.folderName
+      ? css`
+          flex-direction: column;
+          gap: 4px;
+        `
       : ""}
 
   .set_room_params-info {

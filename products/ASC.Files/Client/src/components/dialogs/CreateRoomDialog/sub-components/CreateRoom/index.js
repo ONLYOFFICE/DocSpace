@@ -43,8 +43,14 @@ const SetRoomParams = ({
   tagHandler,
   setIsScrollLocked,
 }) => {
+  const onChangeName = (e) =>
+    setRoomParams({ ...roomParams, title: e.target.value });
+
   const onChangeIsPrivate = () =>
     setRoomParams({ ...roomParams, isPrivate: !roomParams.isPrivate });
+
+  const onChangeThidpartyFolderName = (e) =>
+    setRoomParams({ ...roomParams, thirdpartyFolderName: e.target.value });
 
   return (
     <StyledSetRoomParams>
@@ -64,9 +70,7 @@ const SetRoomParams = ({
         <TextInput
           id="room-name"
           value={roomParams.title}
-          onChange={(e) =>
-            setRoomParams({ ...roomParams, title: e.target.value })
-          }
+          onChange={onChangeName}
           scale
           placeholder="New room"
           tabIndex={1}
@@ -112,9 +116,39 @@ const SetRoomParams = ({
         setIsScrollLocked={setIsScrollLocked}
       />
 
-      {/* <StyledIconEditorWrapper>
+      <StyledParam folderName>
+        <div className="set_room_params-info">
+          <div className="set_room_params-info-title">
+            <Text className="set_room_params-info-title-text">
+              {`${t("Folder Name")}:`}
+            </Text>
+          </div>
+          <div className="set_room_params-info-description">
+            {t(
+              "A new folder for storing this room’s data will be created in the connected storage"
+            )}
+          </div>
+        </div>
+
+        <div className="set_room_params-input">
+          <TextInput
+            id="room-folder-title"
+            scale
+            value={roomParams.thirdpartyFolderName}
+            onChange={onChangeThidpartyFolderName}
+            placeholder={`${
+              roomParams.storageLocation
+                ? roomParams.storageLocation.title + " - "
+                : ""
+            }New Room`}
+            tabIndex={1}
+          />
+        </div>
+      </StyledParam>
+
+      <StyledIconEditorWrapper>
         <AvatarEditor useModalDialog={false}></AvatarEditor>
-      </StyledIconEditorWrapper> */}
+      </StyledIconEditorWrapper>
     </StyledSetRoomParams>
   );
 };
