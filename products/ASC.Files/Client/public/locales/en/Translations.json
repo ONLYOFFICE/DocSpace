@@ -1,6 +1,7 @@
 {
   "AddAccount": "Add account",
   "AddAuthor": "Add author",
+  "AddOwner": "Add owner",
   "ArchivingData": "Archiving data",
   "ButtonShareAccess": "Sharing Settings",
   "ConnectingAccount": "Connecting account",
@@ -35,7 +36,6 @@
   "MobileLinux": "Download ONLYOFFICE Desktop Editors for Linux",
   "MobileMac": "Download ONLYOFFICE Desktop Editors for Mac OS",
   "MobileWin": "Download ONLYOFFICE Desktop Editors for Windows",
-  "Move": "Move",
   "MoveHere": "Move here",
   "MoveToOperation": "Moving",
   "NewForm": "Form template",

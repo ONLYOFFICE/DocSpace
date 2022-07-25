@@ -113,44 +113,26 @@ class DeleteGroupUsersDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
+        autoMaxHeight
       >
-        <ModalDialog.Header>
-          {t("DeleteGroupUsersMessageHeader")}
-        </ModalDialog.Header>
+        <ModalDialog.Header>{t("DeleteUsers")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <Text>{t("DeleteGroupUsersMessage")}</Text>
-          <Text>{t("Translations:NotBeUndone")}</Text>
-          <br />
-          <Text
-            color={theme.peopleDialogs.deleteUser.textColor}
-            fontSize="18px"
-          >
-            {t("Common:Warning")}!
-          </Text>
-          <br />
-          <Text>{t("DeleteUserDataConfirmation")}</Text>
-          <ToggleContent
-            className="toggle-content-dialog"
-            label={t("Common:ShowUsersList")}
-          >
-            <div style={containerStyles} className="modal-dialog-content">
-              <AutoSizer>{renderList}</AutoSizer>
-            </div>
-          </ToggleContent>
+          <Text>{t("DeleteUsersMessage")}</Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             label={t("Common:OKButton")}
-            size="small"
+            size="normal"
+            scale
             primary
             onClick={this.onDeleteGroupUsers}
             isLoading={isRequestRunning}
             isDisabled={!userIds.length}
           />
           <Button
-            className="button-dialog"
             label={t("Common:CancelButton")}
-            size="small"
+            size="normal"
+            scale
             onClick={onClose}
             isDisabled={isRequestRunning}
           />

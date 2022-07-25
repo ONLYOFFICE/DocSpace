@@ -567,6 +567,10 @@ const Dark = {
   },
 
   modalDialog: {
+    backgroundColor: black,
+    textColor: white,
+    headerBorderColor: "#474747",
+    footerBorderColor: "#474747",
     width: "auto",
     maxwidth: "560px",
     margin: " 0 auto",
@@ -596,14 +600,8 @@ const Dark = {
     },
 
     closeButton: {
-      width: "14px",
-      height: "14px",
-      minWidth: "14px",
-      minHeight: "14px",
-
-      right: "16px",
-      top: "13px",
-      hoverColor: grayMaxLight,
+      //backgroundColor: "#9A9EA3",
+      fillColor: "#9A9EA3",
     },
   },
 
@@ -865,6 +863,10 @@ const Dark = {
 
     span: { maxWidth: "300px" },
 
+    expander: {
+      iconColor: white,
+    },
+
     caret: {
       width: "5px",
       minWidth: "5px",
@@ -988,6 +990,7 @@ const Dark = {
       fontSize: {
         min: "12px",
         small: "12px",
+        base: "16px",
         medium: "20px",
         big: "34px",
         max: "72px",
@@ -998,6 +1001,7 @@ const Dark = {
       left: {
         min: "-2px",
         small: "-2px",
+        base: "-2px",
         medium: "-4px",
         big: "0px",
         max: "0px",
@@ -1006,6 +1010,7 @@ const Dark = {
       bottom: {
         min: "3px",
         small: "3px",
+        base: "4px",
         medium: "6px",
         big: "5px",
         max: "0px",
@@ -1079,6 +1084,7 @@ const Dark = {
     width: {
       min: "32px",
       small: "36px",
+      base: "40px",
       medium: "48px",
       big: "82px",
       max: "160px",
@@ -1087,6 +1093,7 @@ const Dark = {
     height: {
       min: "32px",
       small: "36px",
+      base: "40px",
       medium: "48px",
       big: "82px",
       max: "160px",
@@ -1821,17 +1828,22 @@ const Dark = {
     },
 
     headerBurgerColor: "#606060",
+
+    profile: {
+      borderTop: "1px solid #474747",
+      background: "#3D3D3D",
+    },
   },
 
   catalogItem: {
     container: {
       width: "100%",
       height: "36px",
-      padding: "0 20px",
+      padding: "0 12px",
       marginBottom: "16px",
       tablet: {
         height: "44px",
-        padding: "0 16px",
+        padding: "0 8px",
         marginBottom: "24px",
       },
     },
@@ -1932,7 +1944,7 @@ const Dark = {
   },
 
   menuContainer: {
-    background: "linear-gradient(226.22deg, #606060 0.24%, #1F1F1F 79.81%)",
+    background: "#3D3D3D",
     color: "rgba(255, 255, 255, 0.92)",
   },
 
@@ -2239,6 +2251,14 @@ const Dark = {
       backgroundColor: "rgba(11, 11, 11, 0.7)",
       background: "rgba(200, 200, 200, 0.2)",
     },
+  },
+
+  connectCloud: {
+    connectBtnContent: silver,
+    connectBtnTextBg: "none",
+    connectBtnIconBg: "#none",
+    connectBtnTextBorder: silver,
+    connectBtnIconBorder: "#474747",
   },
 
   filesThirdPartyDialog: {

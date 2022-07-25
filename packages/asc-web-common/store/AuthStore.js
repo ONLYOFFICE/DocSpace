@@ -53,6 +53,8 @@ class AuthStore {
 
     if (this.isAuthenticated && !skipModules) {
       this.userStore.user && requests.push(this.moduleStore.init());
+      !this.settingsStore.passwordSettings &&
+        requests.push(this.settingsStore.getPortalPasswordSettings());
     }
 
     return Promise.all(requests);

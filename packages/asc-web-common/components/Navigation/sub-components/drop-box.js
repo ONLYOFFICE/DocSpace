@@ -63,6 +63,7 @@ const Row = React.memo(({ data, index, style }) => {
       key={data[0][index].id}
       id={data[0][index].id}
       title={data[0][index].title}
+      isRootRoom={data[0][index].isRootRoom}
       isRoot={isRoot}
       onClick={data[1]}
       style={{ ...style }}

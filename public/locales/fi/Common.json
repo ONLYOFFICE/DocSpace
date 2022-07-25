@@ -168,5 +168,9 @@
   "View": "Näkymä",
   "ViewWeb": "Näytä verkkoversio",
   "Warning": "Varoitus",
-  "Hotkeys": "Pikanäppäimet"
+  "Hotkeys": "Pikanäppäimet",
+  "PaymentsTitle": "Maksut",
+  "AboutCompanyTitle": "Tietoja tästä ohjelmasta",
+  "LogoutButton": "Kirjaudu ulos",
+  "HelpCenter": "Ohjekeskus (englanniksi)"
 }

@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Thank you for having checked out {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Free trial period has expired",
   "HeaderLicense": "You are using {{organizationName}} Enterprise Edition",
-  "PaymentsTitle": "Payments",
   "RenewalLicense": "If you have already purchased the renewal, upload the license file.",
   "SubscriptionRenewedLicense": "Renew subscription to get:",
   "SuccessLoadingLicense": "License activated successfully"

@@ -6,13 +6,26 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Box from "@appserver/components/box";
 import Scrollbar from "@appserver/components/scrollbar";
-import { getModalType } from "@appserver/components/utils/device";
 import axios from "axios";
+import styled from "styled-components";
+
+const StyledModalDialog = styled(ModalDialog)`
+  #modal-dialog {
+    min-height: 560px;
+    max-height: 560px;
+    max-width: 733px;
+    height: auto;
+    width: auto;
+  }
+
+  .markdown-wrapper {
+    width: 100%;
+  }
+`;
 
 const DebugInfoDialog = (props) => {
   const { visible, onClose, user } = props;
   const [md, setMd] = useState();
-  const [modalType, setModalType] = useState(getModalType());
 
   useEffect(() => {
     if (md || !visible) return;
@@ -30,42 +43,35 @@ const DebugInfoDialog = (props) => {
     loadMD();
   }, [md, visible]);
 
-  const onResize = (type) => {
-    setModalType(type);
-  };
-
   return (
-    <>
-      {visible && (
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          contentHeight="500px"
-          onResize={onResize}
-          withoutBodyScroll={true}
+    <StyledModalDialog
+      withFooterBorder
+      visible={visible}
+      onClose={onClose}
+      displayType="modal"
+    >
+      <ModalDialog.Header>Debug Info</ModalDialog.Header>
+      <ModalDialog.Body className="debug-info-body">
+        {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
+        <Text>{`# Version: ${VERSION}`}</Text>
+        <Text>{`# Build date: ${BUILD_AT}`}</Text>
+        {user && (
+          <Text>{`# Current User: ${user?.displayName} (id:${user?.id})`}</Text>
+        )}
+        <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Box
+          className="markdown-wrapper"
+          overflowProp="auto"
+          heightProp={"362px"}
         >
-          <ModalDialog.Header>Debug Info</ModalDialog.Header>
-          <ModalDialog.Body>
-            {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
-            <Text>{`# Version: ${VERSION}`}</Text>
-            <Text>{`# Build date: ${BUILD_AT}`}</Text>
-            {user && (
-              <Text>{`# Current User: ${user?.displayName} (id:${user?.id})`}</Text>
-            )}
-            <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
-            <hr />
-            <Box
-              overflowProp="auto"
-              heightProp={modalType === "modal" ? "300px" : "70vh"}
-            >
-              <Scrollbar stype="mediumBlack">
-                {md && <ReactMarkdown children={md} />}
-              </Scrollbar>
-            </Box>
-          </ModalDialog.Body>
-        </ModalDialog>
-      )}
-    </>
+          <Scrollbar stype="mediumBlack">
+            {md && <ReactMarkdown children={md} />}
+          </Scrollbar>
+        </Box>
+      </ModalDialog.Footer>
+    </StyledModalDialog>
   );
 };
 

@@ -41,7 +41,7 @@ public class MappingProfile : Profile
             return;
         }
 
-        var types = assembly.GetExportedTypes().Where(t => t.IsClosedTypeOf(typeof(IMapFrom<>)));
+        var types = assembly.GetExportedTypes().Where(t => t.IsClosedTypeOf(typeof(IMapFrom<>)) || (t.IsGenericType && t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>))));
 
         foreach (var type in types)
         {

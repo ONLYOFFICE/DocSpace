@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Paldies, ka apskatījāt: {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Bezmaksas izmēģinājuma periods ir beidzies",
   "HeaderLicense": "Jūs izmantojat {{organizationName}} Enterprise Edition",
-  "PaymentsTitle": "Maksājumi",
   "RenewalLicense": "Ja esat jau iegādājies atjaunošanu, augšupielādējiet licences failu.",
   "SubscriptionRenewedLicense": "Atjaunojiet abonementu,lai atjauninātu:",
   "SuccessLoadingLicense": "Licence ir veiksmīgi aktivizēta"

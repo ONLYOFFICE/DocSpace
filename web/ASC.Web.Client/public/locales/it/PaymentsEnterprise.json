@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Grazie per aver controllato {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Il periodo di prova gratuito è scaduto",
   "HeaderLicense": "Stai utilizzando come: {{organizationName}} la versione Enterprise",
-  "PaymentsTitle": "Pagamenti",
   "RenewalLicense": "Se hai già acquistato il rinnovo, carica il file di licenza.",
   "SubscriptionRenewedLicense": "Rinnova l'abbonamento per ottenere:",
   "SuccessLoadingLicense": "La licenza è stata attivata correttamente"

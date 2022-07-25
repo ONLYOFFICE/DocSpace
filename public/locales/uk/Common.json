@@ -168,5 +168,9 @@
   "View": "Переглянути",
   "ViewWeb": "Переглянути веб-версію",
   "Warning": "Попередження",
-  "Hotkeys": "Сполучення клавіш"
+  "Hotkeys": "Сполучення клавіш",
+  "PaymentsTitle": "Платежі",
+  "AboutCompanyTitle": "Про цю програму",
+  "LogoutButton": "Вихід",
+  "HelpCenter": "Центр довідки"
 }

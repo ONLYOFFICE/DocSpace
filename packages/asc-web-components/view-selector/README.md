@@ -31,6 +31,7 @@ const viewSettings = [
   onChangeView={(view) => console.log("current view:", view)}
   viewSettings={viewSettings}
   viewAs="row"
+  isFilter={false}
 />
 ```
 
@@ -39,6 +40,7 @@ const viewSettings = [
 | Props          |   Type   | Required | Values | Default | Description                                    |
 | -------------- | :------: | :------: | :----: | :-----: | ---------------------------------------------- |
 | `isDisabled`   |  `bool`  |    -     |   -    |    -    | Disables the button default functionality      |
+| `isFilter`     |  `bool`  |    -     |   -    |    -    | Show only available option icon in selector    |
 | `onChangeView` |  `func`  |    -     |   -    |    -    | The event triggered when the button is clicked |
 | `viewSettings` |  `arr`   |    -     |   -    |    -    | Array containing view settings.                |
 | `viewAs`       | `string` |    -     |   -    |    -    | Current application view                       |
