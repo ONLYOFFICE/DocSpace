@@ -77,6 +77,11 @@ const StyledArticle = styled.article`
     props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
   .article-body__scrollbar {
+    ${isMobileOnly &&
+    css`
+      margin-top: 32px !important;
+    `}
+
     .scroll-body {
       overflow-x: hidden !important;
       height: calc(100% - 200px);
