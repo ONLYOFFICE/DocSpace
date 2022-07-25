@@ -47,6 +47,10 @@ const Main = React.memo((props) => {
       document
         .getElementById("main-layout")
         .classList.add("with-background-pattern");
+    } else {
+      document
+        .getElementById("main-layout")
+        .classList.remove("with-background-pattern");
     }
   }, []);
 
