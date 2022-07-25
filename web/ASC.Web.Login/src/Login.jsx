@@ -42,6 +42,7 @@ import {
 import AppLoader from "@appserver/common/components/AppLoader";
 import EmailInput from "@appserver/components/email-input";
 import { ReactSVG } from "react-svg";
+import FormWrapper from "@appserver/components/form-wrapper";
 
 const settings = {
   minLength: 6,
@@ -384,7 +385,7 @@ const Form = (props) => {
             {greetingTitle}
           </Text>
 
-          <div className="form-wrapper">
+          <FormWrapper>
             {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
 
             {oauthDataExists() && (
@@ -531,7 +532,7 @@ const Form = (props) => {
                 </Text>
               )}
             </form>
-          </div>
+          </FormWrapper>
           <Toast />
 
           <MoreLoginModal

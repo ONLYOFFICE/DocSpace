@@ -1,4 +1,4 @@
-import { tablet, hugeMobile } from "@appserver/components/utils/device";
+import { hugeMobile } from "@appserver/components/utils/device";
 import styled, { css } from "styled-components";
 
 export const ButtonsWrapper = styled.div`
@@ -187,30 +187,6 @@ export const LoginContainer = styled.div`
     @media (${hugeMobile}) {
       padding-bottom: 40px;
       height: 39px;
-    }
-  }
-
-  .form-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 32px;
-    background: #ffffff;
-    box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.07);
-    border-radius: 12px;
-
-    max-width: 384px;
-
-    @media ${tablet} {
-      max-width: 480px;
-    }
-
-    @media ${hugeMobile} {
-      padding: 0;
-      border-radius: 0;
-      box-shadow: none;
-      max-width: 311px;
-      background: #ffffff;
     }
   }
 `;
