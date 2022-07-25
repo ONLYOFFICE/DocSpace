@@ -12,6 +12,7 @@ import {
   ButtonsWrapper,
 } from "./StyledConfirm";
 import withLoader from "../withLoader";
+import FormWrapper from "@appserver/components/form-wrapper";
 
 const ChangeOwnerForm = (props) => {
   const { t, greetingTitle } = props;
@@ -29,25 +30,27 @@ const ChangeOwnerForm = (props) => {
           </Text>
         </StyledHeader>
 
-        <ButtonsWrapper>
-          <Button
-            className="button"
-            primary
-            size="normal"
-            label={t("Common:SaveButton")}
-            tabIndex={2}
-            isDisabled={false}
-            //onClick={this.onAcceptClick} // call toast with t("ConfirmOwnerPortalSuccessMessage")
-          />
-          <Button
-            className="button"
-            size="normal"
-            label={t("Common:CancelButton")}
-            tabIndex={2}
-            isDisabled={false}
-            //onClick={this.onCancelClick}
-          />
-        </ButtonsWrapper>
+        <FormWrapper>
+          <ButtonsWrapper>
+            <Button
+              className="button"
+              primary
+              size="normal"
+              label={t("Common:SaveButton")}
+              tabIndex={2}
+              isDisabled={false}
+              //onClick={this.onAcceptClick} // call toast with t("ConfirmOwnerPortalSuccessMessage")
+            />
+            <Button
+              className="button"
+              size="normal"
+              label={t("Common:CancelButton")}
+              tabIndex={2}
+              isDisabled={false}
+              //onClick={this.onCancelClick}
+            />
+          </ButtonsWrapper>
+        </FormWrapper>
       </StyledBody>
     </StyledPage>
   );

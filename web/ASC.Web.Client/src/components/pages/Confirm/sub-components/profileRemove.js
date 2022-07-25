@@ -9,6 +9,7 @@ import { deleteSelf } from "@appserver/common/api/people";
 import toastr from "@appserver/components/toast/toastr";
 import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
 import withLoader from "../withLoader";
+import FormWrapper from "@appserver/components/form-wrapper";
 
 const ProfileRemoveForm = (props) => {
   const { t, greetingTitle, linkData, logout } = props;
@@ -62,15 +63,17 @@ const ProfileRemoveForm = (props) => {
           </Text>
         </StyledHeader>
 
-        <Button
-          className="confirm-button"
-          primary
-          size="normal"
-          label={t("DeleteProfileBtn")}
-          tabIndex={1}
-          isDisabled={isLoading}
-          onClick={onDeleteProfile}
-        />
+        <FormWrapper>
+          <Button
+            className="confirm-button"
+            primary
+            size="normal"
+            label={t("DeleteProfileBtn")}
+            tabIndex={1}
+            isDisabled={isLoading}
+            onClick={onDeleteProfile}
+          />
+        </FormWrapper>
       </StyledBody>
     </StyledPage>
   );

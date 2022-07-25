@@ -13,6 +13,7 @@ import { getPasswordErrorMessage } from "../../../../helpers/utils";
 import { createPasswordHash } from "@appserver/common/utils";
 import tryRedirectTo from "@appserver/common/utils/tryRedirectTo";
 import toastr from "@appserver/components/toast/toastr";
+import FormWrapper from "@appserver/components/form-wrapper";
 
 const ChangePasswordForm = (props) => {
   const {
@@ -86,58 +87,60 @@ const ChangePasswordForm = (props) => {
           </Text>
         </StyledHeader>
 
-        <div className="password-change-form">
-          <Text className="confirm-subtitle">{t("PassworResetTitle")}</Text>
-          <FieldContainer
-            className="form-field"
-            isVertical={true}
-            labelVisible={false}
-            hasError={isPasswordErrorShow && !passwordValid}
-            errorMessage={`${t(
-              "Common:PasswordLimitMessage"
-            )}: ${getPasswordErrorMessage(t, settings)}`}
-          >
-            <PasswordInput
-              className="confirm-input"
-              simpleView={false}
-              passwordSettings={settings}
-              id="password"
-              inputName="password"
-              placeholder={t("Common:Password")}
-              type="password"
-              inputValue={password}
+        <FormWrapper>
+          <div className="password-change-form">
+            <Text className="confirm-subtitle">{t("PassworResetTitle")}</Text>
+            <FieldContainer
+              className="form-field"
+              isVertical={true}
+              labelVisible={false}
               hasError={isPasswordErrorShow && !passwordValid}
-              size="large"
-              scale={true}
-              tabIndex={1}
-              autoComplete="current-password"
-              onChange={onChangePassword}
-              onValidateInput={onValidatePassword}
-              onBlur={onBlurPassword}
-              onKeyDown={onKeyPress}
-              tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
-              tooltipPasswordLength={`${t("Common:PasswordMinimumLength")}: ${
-                settings ? settings.minLength : 8
-              }`}
-              tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
-              tooltipPasswordCapital={`${t("Common:PasswordLimitUpperCase")}`}
-              tooltipPasswordSpecial={`${t(
-                "Common:PasswordLimitSpecialSymbols"
-              )}`}
-              generatePasswordTitle={t("Wizard:GeneratePassword")}
-            />
-          </FieldContainer>
-        </div>
+              errorMessage={`${t(
+                "Common:PasswordLimitMessage"
+              )}: ${getPasswordErrorMessage(t, settings)}`}
+            >
+              <PasswordInput
+                className="confirm-input"
+                simpleView={false}
+                passwordSettings={settings}
+                id="password"
+                inputName="password"
+                placeholder={t("Common:Password")}
+                type="password"
+                inputValue={password}
+                hasError={isPasswordErrorShow && !passwordValid}
+                size="large"
+                scale={true}
+                tabIndex={1}
+                autoComplete="current-password"
+                onChange={onChangePassword}
+                onValidateInput={onValidatePassword}
+                onBlur={onBlurPassword}
+                onKeyDown={onKeyPress}
+                tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
+                tooltipPasswordLength={`${t("Common:PasswordMinimumLength")}: ${
+                  settings ? settings.minLength : 8
+                }`}
+                tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
+                tooltipPasswordCapital={`${t("Common:PasswordLimitUpperCase")}`}
+                tooltipPasswordSpecial={`${t(
+                  "Common:PasswordLimitSpecialSymbols"
+                )}`}
+                generatePasswordTitle={t("Wizard:GeneratePassword")}
+              />
+            </FieldContainer>
+          </div>
 
-        <Button
-          className="confirm-button"
-          primary
-          size="normal"
-          label={t("Common:Create")}
-          tabIndex={5}
-          onClick={onSubmit}
-          isDisabled={isLoading}
-        />
+          <Button
+            className="confirm-button"
+            primary
+            size="normal"
+            label={t("Common:Create")}
+            tabIndex={5}
+            onClick={onSubmit}
+            isDisabled={isLoading}
+          />
+        </FormWrapper>
       </StyledBody>
     </StyledPage>
   );

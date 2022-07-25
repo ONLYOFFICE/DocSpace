@@ -14,6 +14,7 @@ import toastr from "studio/toastr";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import { hugeMobile, tablet } from "@appserver/components/utils/device";
 import Link from "@appserver/components/link";
+import FormWrapper from "@appserver/components/form-wrapper";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
@@ -149,56 +150,58 @@ const TfaActivationForm = withLoader((props) => {
           </Trans>
         </Text>
       </Box>
-      <Box
-        displayProp="flex"
-        flexDirection="column"
-        className="app-code-wrapper"
-      >
-        <div className="qrcode-wrapper">
-          <img src={qrCode} height="180px" width="180px" alt="QR-code"></img>
-        </div>
-        <Box className="app-code-input">
-          <FieldContainer
-            labelVisible={false}
-            hasError={error ? true : false}
-            errorMessage={error}
-          >
-            <TextInput
-              id="code"
-              name="code"
-              type="text"
-              size="large"
-              scale
-              isAutoFocussed
-              tabIndex={1}
-              placeholder={t("EnterCodePlaceholder")}
-              isDisabled={isLoading}
-              maxLength={6}
-              onChange={(e) => {
-                setCode(e.target.value);
-                setError("");
-              }}
-              value={code}
+      <FormWrapper>
+        <Box
+          displayProp="flex"
+          flexDirection="column"
+          className="app-code-wrapper"
+        >
+          <div className="qrcode-wrapper">
+            <img src={qrCode} height="180px" width="180px" alt="QR-code"></img>
+          </div>
+          <Box className="app-code-input">
+            <FieldContainer
+              labelVisible={false}
               hasError={error ? true : false}
-              onKeyDown={onKeyPress}
+              errorMessage={error}
+            >
+              <TextInput
+                id="code"
+                name="code"
+                type="text"
+                size="large"
+                scale
+                isAutoFocussed
+                tabIndex={1}
+                placeholder={t("EnterCodePlaceholder")}
+                isDisabled={isLoading}
+                maxLength={6}
+                onChange={(e) => {
+                  setCode(e.target.value);
+                  setError("");
+                }}
+                value={code}
+                hasError={error ? true : false}
+                onKeyDown={onKeyPress}
+              />
+            </FieldContainer>
+          </Box>
+          <Box className="app-code-continue-btn">
+            <Button
+              scale
+              primary
+              size="medium"
+              tabIndex={3}
+              label={
+                isLoading ? t("Common:LoadingProcessing") : t("SetAppButton")
+              }
+              isDisabled={!code.length || isLoading}
+              isLoading={isLoading}
+              onClick={onSubmit}
             />
-          </FieldContainer>
+          </Box>
         </Box>
-        <Box className="app-code-continue-btn">
-          <Button
-            scale
-            primary
-            size="medium"
-            tabIndex={3}
-            label={
-              isLoading ? t("Common:LoadingProcessing") : t("SetAppButton")
-            }
-            isDisabled={!code.length || isLoading}
-            isLoading={isLoading}
-            onClick={onSubmit}
-          />
-        </Box>
-      </Box>
+      </FormWrapper>
     </StyledForm>
   );
 });

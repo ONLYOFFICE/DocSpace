@@ -8,6 +8,7 @@ import Section from "@appserver/common/components/Section";
 import { inject, observer } from "mobx-react";
 import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
 import withLoader from "../withLoader";
+import FormWrapper from "@appserver/components/form-wrapper";
 
 const ChangePhoneForm = (props) => {
   const { t, greetingTitle } = props;
@@ -29,27 +30,29 @@ const ChangePhoneForm = (props) => {
           <Text>{t("PhoneSubtitle")}</Text>
         </StyledHeader>
 
-        <TextInput
-          className="phone-input"
-          id="phone"
-          name="phone"
-          type="phone"
-          size="large"
-          scale={true}
-          isAutoFocussed={true}
-          tabIndex={1}
-          hasError={false}
-          guide={false}
-        />
+        <FormWrapper>
+          <TextInput
+            className="phone-input"
+            id="phone"
+            name="phone"
+            type="phone"
+            size="large"
+            scale={true}
+            isAutoFocussed={true}
+            tabIndex={1}
+            hasError={false}
+            guide={false}
+          />
 
-        <Button
-          className="confirm-button"
-          primary
-          size="normal"
-          label={t("GetCode")}
-          tabIndex={2}
-          isDisabled={false}
-        />
+          <Button
+            className="confirm-button"
+            primary
+            size="normal"
+            label={t("GetCode")}
+            tabIndex={2}
+            isDisabled={false}
+          />
+        </FormWrapper>
       </StyledBody>
     </StyledPage>
   );

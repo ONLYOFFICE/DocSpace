@@ -16,6 +16,7 @@ import {
   smallTablet,
   tablet,
 } from "@appserver/components/utils/device";
+import FormWrapper from "@appserver/components/form-wrapper";
 
 const StyledForm = styled(Box)`
   margin: 63px auto;
@@ -86,61 +87,63 @@ const TfaAuthForm = withLoader((props) => {
 
   return (
     <StyledForm className="app-code-container">
-      <Box className="app-code-description" marginProp="0 0 32px 0">
-        <Text isBold fontSize="14px" className="app-code-text">
-          {t("EnterAppCodeTitle")}
-        </Text>
-        <Text>{t("EnterAppCodeDescription")}</Text>
-      </Box>
-      <Box
-        displayProp="flex"
-        flexDirection="column"
-        className="app-code-wrapper"
-      >
-        <Box className="app-code-input">
-          <FieldContainer
-            labelVisible={false}
-            hasError={error ? true : false}
-            errorMessage={error}
-          >
-            <TextInput
-              id="code"
-              name="code"
-              type="text"
-              size="huge"
-              scale
-              isAutoFocussed
-              tabIndex={1}
-              placeholder={t("EnterCodePlaceholder")}
-              isDisabled={isLoading}
-              maxLength={6}
-              onChange={(e) => {
-                setCode(e.target.value);
-                setError("");
-              }}
-              value={code}
+      <FormWrapper>
+        <Box className="app-code-description" marginProp="0 0 32px 0">
+          <Text isBold fontSize="14px" className="app-code-text">
+            {t("EnterAppCodeTitle")}
+          </Text>
+          <Text>{t("EnterAppCodeDescription")}</Text>
+        </Box>
+        <Box
+          displayProp="flex"
+          flexDirection="column"
+          className="app-code-wrapper"
+        >
+          <Box className="app-code-input">
+            <FieldContainer
+              labelVisible={false}
               hasError={error ? true : false}
-              onKeyDown={onKeyPress}
+              errorMessage={error}
+            >
+              <TextInput
+                id="code"
+                name="code"
+                type="text"
+                size="huge"
+                scale
+                isAutoFocussed
+                tabIndex={1}
+                placeholder={t("EnterCodePlaceholder")}
+                isDisabled={isLoading}
+                maxLength={6}
+                onChange={(e) => {
+                  setCode(e.target.value);
+                  setError("");
+                }}
+                value={code}
+                hasError={error ? true : false}
+                onKeyDown={onKeyPress}
+              />
+            </FieldContainer>
+          </Box>
+          <Box className="app-code-continue-btn">
+            <Button
+              scale
+              primary
+              size="medium"
+              tabIndex={3}
+              label={
+                isLoading
+                  ? t("Common:LoadingProcessing")
+                  : t("Common:ContinueButton")
+              }
+              isDisabled={!code.length || isLoading}
+              isLoading={isLoading}
+              onClick={onSubmit}
             />
-          </FieldContainer>
+          </Box>
         </Box>
-        <Box className="app-code-continue-btn">
-          <Button
-            scale
-            primary
-            size="medium"
-            tabIndex={3}
-            label={
-              isLoading
-                ? t("Common:LoadingProcessing")
-                : t("Common:ContinueButton")
-            }
-            isDisabled={!code.length || isLoading}
-            isLoading={isLoading}
-            onClick={onSubmit}
-          />
-        </Box>
-      </Box>
+      </FormWrapper>
     </StyledForm>
   );
 });
