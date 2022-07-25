@@ -435,7 +435,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
-  const isLogin = pathname.indexOf("login") !== -1;
 
   if (!window.AppServer.studio) {
     window.AppServer.studio = {};
@@ -527,7 +526,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       <Router history={history}>
         <Toast />
         <ReactSmartBanner t={t} ready={ready} />
-        {isEditor || isLogin || !isMobileOnly ? <></> : <NavMenu />}
+        {isEditor || !isMobileOnly ? <></> : <NavMenu />}
         <IndicatorLoader />
         <ScrollToTop />
         <DialogsWrapper t={t} />
