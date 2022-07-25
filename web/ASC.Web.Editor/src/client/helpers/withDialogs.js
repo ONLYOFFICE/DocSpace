@@ -29,7 +29,8 @@ const withDialogs = (WrappedComponent) => {
 
     const { t } = useTranslation(["Editor", "Common"]);
 
-    const { fileInfo, fileId, mfReady } = props;
+    const { config, fileId, mfReady } = props;
+    const { file: fileInfo } = config;
 
     useEffect(() => {
       if (window.authStore) {

@@ -82,7 +82,7 @@ function Editor({
   mfReady,
   ...rest
 }) {
-  const [fileInfo, setFileInfo] = useState(rest.fileInfo);
+  const [fileInfo, setFileInfo] = useState(config.file);
   const [url, setUrl] = useState(rest.url);
   const [fileId, setFileId] = useState(rest.fileId);
   const [version, setVersion] = useState(rest.version);

@@ -5,12 +5,7 @@ import { getUser } from "@appserver/common/api/people";
 import { getSettings } from "@appserver/common/api/settings";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
-import {
-  getDocServiceUrl,
-  getFileInfo,
-  openEdit,
-  getSettingsFiles,
-} from "@appserver/common/api/files";
+import { openEdit, getSettingsFiles } from "@appserver/common/api/files";
 import pkg from "../../../../package.json";
 
 export const getFavicon = (documentType) => {
@@ -80,13 +75,9 @@ export const initDocEditor = async (req) => {
       return { error };
     }
 
-    let [config, docApiUrl, fileInfo] = await Promise.all([
-      openEdit(fileId, fileVersion, doc, view),
-      getDocServiceUrl(),
-      getFileInfo(fileId),
-    ]);
+    const config = await openEdit(fileId, fileVersion, doc, view);
 
-    const isSharingAccess = fileInfo && fileInfo.canShare;
+    const isSharingAccess = config?.file && config?.file?.canShare;
 
     if (view) {
       config.editorConfig.mode = "view";
@@ -95,8 +86,6 @@ export const initDocEditor = async (req) => {
     const actionLink = config?.editorConfig?.actionLink || null;
 
     return {
-      fileInfo,
-      docApiUrl,
       config,
       personal,
       successAuth,
