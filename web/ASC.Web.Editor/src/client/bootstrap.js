@@ -4,9 +4,9 @@ import { registerSW } from "@appserver/common/sw/helper";
 import App from "./App.js";
 import pkg from "../../package.json";
 import { initI18n } from "./helpers/utils.js";
-import { EDITOR_INITIAL_STATE } from "@appserver/common/constants";
+import { EDITOR_STATE_NAME } from "@appserver/common/constants";
 
-const propsObj = window[`${EDITOR_INITIAL_STATE}`];
+const propsObj = window[`${EDITOR_STATE_NAME}`];
 const initialI18nStoreASC = window.initialI18nStoreASC;
 const initialLanguage = window.initialLanguage;
 

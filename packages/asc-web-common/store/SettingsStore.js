@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-import { LANGUAGE, TenantStatus } from "../constants";
+import { LANGUAGE, TenantStatus, EDITOR_STATE_NAME } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig, ThemeKeys } from "../constants";
@@ -173,7 +173,11 @@ class SettingsStore {
   };
 
   getSettings = async () => {
-    const newSettings = await api.settings.getSettings();
+    let newSettings = null;
+
+    if (window[`${EDITOR_STATE_NAME}`]?.portalSettings)
+      newSettings = window[`${EDITOR_STATE_NAME}`].portalSettings;
+    else newSettings = await api.settings.getSettings();
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(proxyURL, "/products/files/");

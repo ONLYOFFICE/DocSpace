@@ -104,6 +104,7 @@ export const initDocEditor = async (req) => {
       view,
       filesSettings,
       sharingSettings,
+      portalSettings: settings,
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };
