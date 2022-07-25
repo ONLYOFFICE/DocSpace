@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { inject, observer } from "mobx-react";
 
 import {
@@ -10,38 +10,42 @@ import {
   SubmenuTextTheme,
   SubmenuItemLabelTheme,
   ToggleButtonTheme,
+  TabContainerTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
 // TODO: default
-const ColorTheme = (props) => {
+const ColorTheme = forwardRef((props, ref) => {
   switch (props.type) {
     case ThemeType.Button: {
-      return <ButtonTheme {...props} />;
+      return <ButtonTheme ref={ref} {...props} />;
     }
     case ThemeType.MainButton: {
-      return <MainButtonTheme {...props} />;
+      return <MainButtonTheme ref={ref} {...props} />;
     }
     case ThemeType.CatalogItem: {
-      return <CatalogItemTheme {...props} />;
+      return <CatalogItemTheme ref={ref} {...props} />;
     }
     case ThemeType.Badge: {
-      return <BadgeTheme {...props} />;
+      return <BadgeTheme ref={ref} {...props} />;
     }
     case ThemeType.PinIcon: {
-      return <PinIconTheme {...props} />;
+      return <PinIconTheme ref={ref} {...props} />;
     }
     case ThemeType.SubmenuText: {
-      return <SubmenuTextTheme {...props} />;
+      return <SubmenuTextTheme ref={ref} {...props} />;
     }
     case ThemeType.SubmenuItemLabel: {
-      return <SubmenuItemLabelTheme {...props} />;
+      return <SubmenuItemLabelTheme ref={ref} {...props} />;
     }
     case ThemeType.ToggleButton: {
-      return <ToggleButtonTheme {...props} />;
+      return <ToggleButtonTheme ref={ref} {...props} />;
+    }
+    case ThemeType.TabContainer: {
+      return <TabContainerTheme ref={ref} {...props} />;
     }
   }
-};
+});
 
 export default inject(({ auth }) => {
   const { settingsStore } = auth;

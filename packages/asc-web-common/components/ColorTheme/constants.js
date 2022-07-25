@@ -7,4 +7,5 @@ export const ThemeType = {
   SubmenuText: "submenuText",
   SubmenuItemLabel: "submenuItemLabel",
   ToggleButton: "toggleButton",
+  TabContainer: "tabContainer",
 };
