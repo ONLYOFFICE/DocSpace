@@ -1527,8 +1527,14 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  createRoom(title, type) {
-    return api.rooms.createRoom({ title, roomType: type });
+  createRoom(roomParams) {
+    if (roomParams.storageLocation)
+      return api.rooms.createRoomInThirdpary(roomParams);
+    return api.rooms.createRoom(roomParams);
+  }
+
+  addTagsToRoom(id, tagArray) {
+    return api.rooms.addTagsToRoom(id, tagArray);
   }
 
   setFile = (file) => {
