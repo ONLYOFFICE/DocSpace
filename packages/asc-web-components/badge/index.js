@@ -36,7 +36,6 @@ const Badge = (props) => {
       type={ThemeType.Badge}
     >
       <StyledInner
-        className="color-theme-background"
         backgroundColor={backgroundColor}
         borderRadius={borderRadius}
         padding={padding}
