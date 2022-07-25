@@ -1,12 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
-import {
-  isIOS,
-  isFirefox,
-  isSafari,
-  isMobile,
-  isMobileOnly,
-} from "react-device-detect";
+import { isIOS, isFirefox, isMobileOnly } from "react-device-detect";
 
 const StyledMain = styled.main`
   height: ${isIOS && !isFirefox ? "calc(var(--vh, 1vh) * 100)" : "100vh"};
@@ -42,19 +36,7 @@ const Main = React.memo((props) => {
 
   //console.log("Main render");
 
-  useEffect(() => {
-    if (window.location.pathname.includes("confirm")) {
-      document
-        .getElementById("main-layout")
-        .classList.add("with-background-pattern");
-    } else {
-      document
-        .getElementById("main-layout")
-        .classList.remove("with-background-pattern");
-    }
-  }, []);
-
-  return <StyledMain id="main-layout" className="main" {...props} />;
+  return <StyledMain className="main" {...props} />;
 });
 
 /*Main.defaultProps = {
