@@ -570,7 +570,11 @@ const LoginForm = (props) => {
   const { enabledJoin, isDesktop } = props;
 
   return (
-    <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
+    <LoginFormWrapper
+      className="with-background-pattern"
+      enabledJoin={enabledJoin}
+      isDesktop={isDesktop}
+    >
       <Section>
         <Section.SectionBody>
           <Form {...props} />

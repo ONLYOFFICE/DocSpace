@@ -225,17 +225,4 @@ export const LoginFormWrapper = styled.div`
       : css`1fr`};
   width: 100%;
   height: 100vh;
-
-  background-image: url("/static/images/background.pattern.react.svg");
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 100% 100%;
-
-  @media ${tablet} {
-    background-size: cover;
-  }
-
-  @media ${hugeMobile} {
-    background-image: none;
-  }
 `;
