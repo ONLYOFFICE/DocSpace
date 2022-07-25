@@ -9,7 +9,7 @@ import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@docspace/common/history";
-import Toast from "@appserver/components/toast";
+import Toast from "@docspace/components/toast";
 import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
@@ -69,7 +69,7 @@ const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 const Confirm =
   !IS_PERSONAL && React.lazy(() => import("./components/pages/Confirm"));
-const MyProfile = React.lazy(() => import("people/MyProfile"));
+const MyProfile = React.lazy(() => import("./pages/My"));
 const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
 const InvalidError = React.lazy(() =>
   import("./components/pages/Errors/Invalid")

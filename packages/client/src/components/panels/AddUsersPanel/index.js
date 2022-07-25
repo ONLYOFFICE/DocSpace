@@ -6,7 +6,7 @@ import Heading from "@docspace/components/heading";
 import Aside from "@docspace/components/aside";
 import IconButton from "@docspace/components/icon-button";
 import { ShareAccessRights } from "@docspace/common/constants";
-import PeopleSelector from "people/PeopleSelector";
+import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddUsersPanelPanel,

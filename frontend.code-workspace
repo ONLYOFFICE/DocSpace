@@ -9,14 +9,6 @@
       "path": "packages\\components"
     },
     {
-      "name": "🚀 @docspace/files",
-      "path": "packages\\files"
-    },
-    {
-      "name": "🚀 @docspace/people",
-      "path": "packages\\people"
-    },
-    {
       "name": "☁️ @docspace/client",
       "path": "packages\\client"
     },

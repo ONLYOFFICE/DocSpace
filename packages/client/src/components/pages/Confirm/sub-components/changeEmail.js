@@ -19,7 +19,7 @@ class ChangeEmail extends React.PureComponent {
           tryRedirectTo(
             combineUrl(
               AppServerConfig.proxyURL,
-              `/products/people/view/@self?email_change=success`
+              `/accounts/view/@self?email_change=success`
             )
           );
         })
@@ -40,7 +40,7 @@ class ChangeEmail extends React.PureComponent {
           tryRedirectTo(
             combineUrl(
               AppServerConfig.proxyURL,
-              `/products/people/view/@self?email_change=success`
+              `/accounts/view/@self?email_change=success`
             )
           );
         })

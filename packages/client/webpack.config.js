@@ -206,10 +206,10 @@ module.exports = (env, argv) => {
 
   const remotes = {
     studio: `studio@${combineUrl(AppServerConfig.proxyURL, "/remoteEntry.js")}`,
-    people: `people@${combineUrl(
-      AppServerConfig.proxyURL,
-      "/products/people/remoteEntry.js"
-    )}`,
+    // people: `people@${combineUrl(
+    //   AppServerConfig.proxyURL,
+    //   "/products/people/remoteEntry.js"
+    // )}`,
     // files: `files@${combineUrl(
     //   AppServerConfig.proxyURL,
     //   "/products/files/remoteEntry.js"
@@ -251,6 +251,11 @@ module.exports = (env, argv) => {
           "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
         "./SelectFolderInput":
           "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
+        "./GroupSelector": "./src/components/GroupSelector",
+        "./PeopleSelector": "./src/components/PeopleSelector",
+        "./PeopleSelector/UserTooltip":
+          "./src/components/PeopleSelector/sub-components/UserTooltip.js",
+        "./MyProfile": "./src/pages/My",
       },
       shared: {
         ...deps,

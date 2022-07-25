@@ -9,7 +9,7 @@ import Avatar from "@docspace/components/avatar";
 import Link from "@docspace/components/link";
 import toastr from "@docspace/components/toast/toastr";
 import HelpButton from "@docspace/components/help-button";
-import PeopleSelector from "@docspace/people/src/components/PeopleSelector";
+import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
 import { inject } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -98,7 +98,7 @@ const getFormattedDepartments = (departments) => {
 const getGroupLink = (department) => {
   return combineUrl(
     AppServerConfig.proxyURL,
-    "/products/people/filter?group=",
+    "/accounts/filter?group=",
     department.id
   );
 };

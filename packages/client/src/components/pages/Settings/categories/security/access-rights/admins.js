@@ -20,11 +20,11 @@ import SearchInput from "@docspace/components/search-input";
 import RequestLoader from "@docspace/components/request-loader";
 import Loaders from "@docspace/common/components/Loaders";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
-import PeopleSelector from "people/PeopleSelector";
+import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 
 import { inject, observer } from "mobx-react";
 
-import { getUserRole } from "@docspace/people/src/helpers/people-helpers";
+import { getUserRole } from "@docspace/client/src/helpers/people-helpers";
 import { getNewModulesList } from "../../../utils";
 
 import isEmpty from "lodash/isEmpty";

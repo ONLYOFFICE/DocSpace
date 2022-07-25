@@ -9,8 +9,8 @@ import IconButton from "@docspace/components/icon-button";
 
 import FilterBlockItem from "./FilterBlockItem";
 
-import PeopleSelector from "people/PeopleSelector";
-import GroupSelector from "people/GroupSelector";
+import PeopleSelector from "studio/PeopleSelector";
+import GroupSelector from "studio/GroupSelector";
 
 import {
   StyledFilterBlock,

@@ -1,5 +1,5 @@
 import React from "react";
-import PeopleSelector from "people/PeopleSelector";
+import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import Aside from "@docspace/components/aside";
 import Backdrop from "@docspace/components/backdrop";
 import Heading from "@docspace/components/heading";

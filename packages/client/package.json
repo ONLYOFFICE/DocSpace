@@ -44,7 +44,10 @@
     "firebase": "^8.10.0",
     "react-markdown": "^7.0.1",
     "react-smartbanner": "^5.1.4",
-    "react-string-format": "^0.1.4"
+    "react-string-format": "^0.1.4",
+    "copy-to-clipboard": "^3.3.1",
+    "file-saver": "^2.0.5",
+    "react-hotkeys-hook": "^3.4.4"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",

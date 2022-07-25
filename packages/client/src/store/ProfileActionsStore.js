@@ -8,10 +8,7 @@ import { isDesktop, isTablet, isMobile } from "react-device-detect";
 const { proxyURL } = AppServerConfig;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
-const PROFILE_SELF_URL = combineUrl(
-  PROXY_HOMEPAGE_URL,
-  "/products/people/view/@self"
-);
+const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
