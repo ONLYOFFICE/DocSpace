@@ -44,6 +44,10 @@ export const LoginContainer = styled.div`
   .greeting-title {
     width: 100%;
     padding-bottom: 32px;
+
+    @media ${hugeMobile} {
+      padding-top: 32px;
+    }
   }
 
   .more-label {
@@ -184,9 +188,8 @@ export const LoginContainer = styled.div`
     height: 46px;
     padding-bottom: 64px;
 
-    @media (${hugeMobile}) {
-      padding-bottom: 40px;
-      height: 39px;
+    @media ${hugeMobile} {
+      display: none;
     }
   }
 `;
