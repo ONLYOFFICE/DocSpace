@@ -40,7 +40,6 @@ global using System.Security.Authentication;
 global using System.Security.Cryptography;
 global using System.Security.Principal;
 global using System.Text;
-global using System.Text.Encodings.Web;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Web;
@@ -127,8 +126,6 @@ global using Microsoft.Extensions.Logging;
 
 global using MimeKit.Utils;
 
-global using NetEscapades.EnumGenerators;
-
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
 
@@ -145,8 +142,5 @@ global using Twilio.Clients;
 global using Twilio.Rest.Api.V2010.Account;
 global using Twilio.Types;
 
-global using static ASC.Web.Core.Files.DocumentService;
-
-global using License = ASC.Core.Billing.License;
 global using SecurityContext = ASC.Core.SecurityContext;
 global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
