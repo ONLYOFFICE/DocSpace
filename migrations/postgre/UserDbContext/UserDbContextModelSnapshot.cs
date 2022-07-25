@@ -1346,7 +1346,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<Guid>("UserId")
                         .HasMaxLength(38)
                         .HasColumnType("uuid")
-                        .HasColumnName("userid");
+                        .HasColumnName("user_id");
 
                     b.HasKey("TenantId", "UserId")
                         .HasName("core_userdav_pkey");

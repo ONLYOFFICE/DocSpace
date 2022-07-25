@@ -177,17 +177,17 @@ public class FileUtilityConfiguration
 [Scope]
 public class FileUtility
 {
-    private readonly Lazy<CommonFilesDbContext> _lazyFilesDbContext;
-    private CommonFilesDbContext FilesDbContext { get => _lazyFilesDbContext.Value; }
+    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+    private FilesDbContext FilesDbContext { get => _lazyFilesDbContext.Value; }
 
     public FileUtility(
         FileUtilityConfiguration fileUtilityConfiguration,
         FilesLinkUtility filesLinkUtility,
-        DbContextManager<CommonFilesDbContext> dbContextManager)
+        DbContextManager<FilesDbContext> dbContextManager)
     {
         _fileUtilityConfiguration = fileUtilityConfiguration;
         _filesLinkUtility = filesLinkUtility;
-        _lazyFilesDbContext = new Lazy<CommonFilesDbContext>(() => dbContextManager.Get("files"));
+        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get("files"));
         CanForcesave = GetCanForcesave();
     }
 

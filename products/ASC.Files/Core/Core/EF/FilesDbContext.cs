@@ -42,7 +42,7 @@ public class FilesDbContext : BaseDbContext
     public DbSet<DbTariff> Tariffs { get; set; }
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
-
+    public DbSet<FilesConverts> FilesConverts { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
@@ -61,7 +61,8 @@ public class FilesDbContext : BaseDbContext
             .AddDbFilesProperties()
             .AddDbTariff()
             .AddDbQuota()
-            .AddDbTenant();
+            .AddDbTenant()
+            .AddFilesConverts();
     }
 }
 
