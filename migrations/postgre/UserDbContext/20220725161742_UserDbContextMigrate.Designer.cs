@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASC.Migrations.PostgreSql.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20220724114547_UserDbContextMigrate")]
+    [Migration("20220725161742_UserDbContextMigrate")]
     partial class UserDbContextMigrate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1348,7 +1348,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<Guid>("UserId")
                         .HasMaxLength(38)
                         .HasColumnType("uuid")
-                        .HasColumnName("userid");
+                        .HasColumnName("user_id");
 
                     b.HasKey("TenantId", "UserId")
                         .HasName("core_userdav_pkey");

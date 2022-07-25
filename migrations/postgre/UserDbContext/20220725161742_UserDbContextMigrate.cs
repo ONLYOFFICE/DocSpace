@@ -121,11 +121,11 @@ namespace ASC.Migrations.PostgreSql.Migrations
                 columns: table => new
                 {
                     tenant_id = table.Column<int>(type: "integer", nullable: false),
-                    userid = table.Column<Guid>(type: "uuid", maxLength: 38, nullable: false)
+                    user_id = table.Column<Guid>(type: "uuid", maxLength: 38, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("core_userdav_pkey", x => new { x.tenant_id, x.userid });
+                    table.PrimaryKey("core_userdav_pkey", x => new { x.tenant_id, x.user_id });
                 });
 
             migrationBuilder.CreateTable(

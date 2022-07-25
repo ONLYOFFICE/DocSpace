@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Migrations.MySql.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20220724114547_UserDbContextMigrate")]
+    [Migration("20220725161614_UserDbContextMigrate")]
     partial class UserDbContextMigrate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1366,7 +1366,7 @@ namespace ASC.Migrations.MySql.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(38)")
-                        .HasColumnName("userid")
+                        .HasColumnName("user_id")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
