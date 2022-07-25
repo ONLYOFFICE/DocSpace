@@ -78,7 +78,6 @@ function Editor({
   isDesktopEditor,
   initDesktop,
   view,
-  preparationPortalDialog,
   mfReady,
   ...rest
 }) {
@@ -567,7 +566,6 @@ function Editor({
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}
-      {preparationPortalDialog}
       <Toast />
     </EditorWrapper>
   );

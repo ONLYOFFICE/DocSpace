@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import DynamicComponent from "../components/DynamicComponent";
 import { getPresignedUri } from "@appserver/common/api/files";
-import { STUDIO_SCOPE, STUDIO_REMOTE_ENTRY_URL } from "./constants";
 import { useTranslation } from "react-i18next";
 import SharingDialog from "../components/SharingDialog";
 import SelectFileDialog from "../components/SelectFileDialog";
@@ -22,10 +20,6 @@ const withDialogs = (WrappedComponent) => {
     const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
     const [extension, setExtension] = useState();
     const [openNewTab, setNewOpenTab] = useState(false);
-    const [
-      preparationPortalDialogVisible,
-      setPreparationPortalDialogVisible,
-    ] = useState(false);
 
     const { t } = useTranslation(["Editor", "Common"]);
 
@@ -47,7 +41,8 @@ const withDialogs = (WrappedComponent) => {
         data: "backup-restore",
       });
       socketHelper.on("restore-backup", () => {
-        setPreparationPortalDialogVisible(true);
+        const message = t("Common:PreparationPortalTitle");
+        window.docEditor.showMessage(message);
       });
     };
 
@@ -197,7 +192,7 @@ const withDialogs = (WrappedComponent) => {
 
       if (savingInfo) {
         const convertedInfo = savingInfo.split(": ").pop();
-        docEditor.showMessage(convertedInfo);
+        window.docEditor.showMessage(convertedInfo);
       }
     };
 
@@ -268,17 +263,6 @@ const withDialogs = (WrappedComponent) => {
       />
     );
 
-    const preparationPortalDialog = mfReady && preparationPortalDialogVisible && (
-      <DynamicComponent
-        system={{
-          scope: STUDIO_SCOPE,
-          url: STUDIO_REMOTE_ENTRY_URL,
-          module: "./PreparationPortalDialog",
-        }}
-        visible={preparationPortalDialogVisible}
-      />
-    );
-
     return (
       <WrappedComponent
         {...props}
@@ -294,7 +278,6 @@ const withDialogs = (WrappedComponent) => {
         selectFolderDialog={selectFolderDialog}
         onSDKRequestSaveAs={onSDKRequestSaveAs}
         isFolderDialogVisible={isFolderDialogVisible}
-        preparationPortalDialog={preparationPortalDialog}
       />
     );
   };
