@@ -29,7 +29,7 @@ const withDialogs = (WrappedComponent) => {
 
     const { t } = useTranslation(["Editor", "Common"]);
 
-    const { config, fileId, mfReady } = props;
+    const { config, fileId, mfReady, sharingSettings } = props;
     const { file: fileInfo } = config;
 
     useEffect(() => {
@@ -60,7 +60,7 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const loadUsersRightsList = () => {
-      window.SharingDialog.getSharingSettings(fileId).then(
+      window.SharingDialog.getSharingSettings(fileId, sharingSettings).then(
         (sharingSettings) => {
           window.docEditor.setSharingSettings({
             sharingSettings,
