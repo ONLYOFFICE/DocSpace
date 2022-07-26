@@ -1,6 +1,10 @@
 @echo "MIGRATIONS"
 @echo off
 
-PUSHD %~dp0..\common\Tools\Migration.Runner
-dotnet run --project Migration.Runner.csproj
-dotnet run --project Migration.Runner.csproj --options:Path=..\..\..\common\ASC.Data.Backup.Core\bin\Debug\net6.0
+cd /D "%~dp0"
+call start\stop.bat nopause
+dotnet build ..\asc.web.slnf 
+dotnet build ..\ASC.Migrations.sln
+PUSHD %~dp0..\common\Tools\ASC.Migration.Runner\bin\Debug\net6.0
+dotnet ASC.Migration.Runner.dll
+pause

@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Migration.Creator": {
+    "ASC.Migration.Creator": {
       "commandName": "Project",
       "launchBrowser": false
     }
