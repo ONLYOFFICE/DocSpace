@@ -7,6 +7,8 @@ import { isTablet } from "react-device-detect";
 import { FileStatus } from "@appserver/common/constants";
 import { Base } from "@appserver/components/themes";
 
+import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
 `;
@@ -172,23 +174,24 @@ const Badges = ({
   return fileExst ? (
     <div className="badges additional-badges">
       {isEditing && (
-        <StyledEditIcon
+        <ColorTheme
+          type={ThemeType.IconButton}
+          isEditing={isEditing}
           iconName={iconEdit}
           className="badge icons-group is-editing tablet-badge tablet-edit"
           size={sizeBadge}
           onClick={onFilesClick}
-          hoverColor={theme.filesBadges.hoverIconColor}
           title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
-        />
+        ></ColorTheme>
       )}
       {canConvert && !isTrashFolder && (
-        <StyledIcon
+        <ColorTheme
+          type={ThemeType.IconButton}
           onClick={setConvertDialogVisible}
           iconName={iconRefresh}
           className="badge tablet-badge icons-group can-convert"
           size={sizeBadge}
-          hoverColor={theme.filesBadges.hoverIconColor}
-        />
+        ></ColorTheme>
       )}
       {version > 1 && (
         <BadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
@@ -217,13 +220,15 @@ const Badges = ({
   ) : (
     <>
       {isRoom && pinned && (
-        <StyledPinIcon
+        <ColorTheme
+          type={ThemeType.IconButton}
+          isPin={isRoom && pinned}
           onClick={onUnpinClick}
           className="badge icons-group is-pinned tablet-badge tablet-pinned"
           iconName={iconPin}
           size={sizeBadge}
           {...unpinIconProps}
-        />
+        ></ColorTheme>
       )}
       {showNew && (
         <Badge
