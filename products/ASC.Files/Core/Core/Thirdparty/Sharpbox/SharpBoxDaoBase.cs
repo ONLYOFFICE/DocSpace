@@ -180,6 +180,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
                 foreach (var s in securityForUpdate)
                 {
                     s.EntryId = newHashID;
+                    s.TimeStamp = DateTime.Now;
                 }
 
                 await FilesDbContext.SaveChangesAsync();
