@@ -14,9 +14,18 @@
   "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing",
   "CustomRoomDescription": "Apply your own settings to use this room for any custom purpose",
 
+  "NamePlaceholder": "Enter name",
+
+  "TagsPlaceholder": "Add a tag",
+  "CreateTagOption": "Create tag",
+
   "MakeRoomPrivateTitle": "Make the Room Private",
   "MakeRoomPrivateDescription": "All files in this room will be encrypted",
 
   "StorageLocationTitle": "Storage location",
-  "StorageLocationDescription": "Use third-party services as data storage for this room"
+  "StorageLocationDescription": "Use third-party services as data storage for this room",
+  "StorageLocationRememberChoice": "Remember this choice for new rooms",
+
+  "FolderNameTitle": "Folder Name",
+  "FolderNameDescription": "A new folder for storing this room’s data will be created in the connected storage"
 }
