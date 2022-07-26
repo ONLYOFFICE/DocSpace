@@ -62,7 +62,7 @@ class SettingsStore {
   urlSupport = "https://helpdesk.onlyoffice.com/";
   urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms?populate=*&locale=";
 
-  logoUrl = combineUrl(proxyURL, "/static/images/nav.logo.opened.react.svg");
+  logoUrl = combineUrl(proxyURL, "/static/images/logo.docspace.react.svg");
   customNames = {
     id: "Common",
     userCaption: "User",

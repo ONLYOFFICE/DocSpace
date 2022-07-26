@@ -26,8 +26,6 @@
 
 namespace ASC.Core.Common.EF.Context;
 
-public class MySqlTenantDbContext : TenantDbContext { }
-public class PostgreSqlTenantDbContext : TenantDbContext { }
 public class TenantDbContext : BaseDbContext
 {
     public DbSet<DbTenant> Tenants { get; set; }
@@ -36,24 +34,6 @@ public class TenantDbContext : BaseDbContext
     public DbSet<DbTenantForbiden> TenantForbiden { get; set; }
     public DbSet<TenantIpRestrictions> TenantIpRestrictions { get; set; }
     public DbSet<DbCoreSettings> CoreSettings { get; set; }
-
-    public TenantDbContext() { }
-    public TenantDbContext(DbContextOptions<TenantDbContext> options)
-        : base(options)
-    {
-    }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlTenantDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlTenantDbContext() } ,
-            };
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

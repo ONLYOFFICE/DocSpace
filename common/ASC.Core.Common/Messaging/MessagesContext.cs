@@ -24,10 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.MessagingSystem.Data;
 
-public class MySqlMessagesContext : MessagesContext { }
-public class PostgreSqlMessagesContext : MessagesContext { }
+namespace ASC.MessagingSystem.EF.Context;
 
 public class MessagesContext : BaseDbContext
 {
@@ -36,18 +34,6 @@ public class MessagesContext : BaseDbContext
     public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<User> Users { get; set; }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlMessagesContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlMessagesContext() } ,
-            };
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

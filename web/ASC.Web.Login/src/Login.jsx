@@ -41,6 +41,7 @@ import {
 } from "./StyledLogin";
 import AppLoader from "@appserver/common/components/AppLoader";
 import EmailInput from "@appserver/components/email-input";
+import { ReactSVG } from "react-svg";
 
 const settings = {
   minLength: 6,
@@ -370,6 +371,10 @@ const Form = (props) => {
         <AppLoader />
       ) : (
         <>
+          <ReactSVG
+            src="/static/images/docspace.big.react.svg"
+            className="logo-wrapper"
+          />
           <Text
             fontSize="23px"
             fontWeight={700}

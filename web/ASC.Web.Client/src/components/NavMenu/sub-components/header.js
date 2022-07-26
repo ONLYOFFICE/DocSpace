@@ -46,29 +46,21 @@ const Header = styled.header`
 
   .header-logo-wrapper {
     height: 24px;
-    height: 26px;
 
     display: flex;
     align-items: center;
-
+    justify-items: center;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     ${NoUserSelect}
   }
 
   .header-logo-icon {
+    position: absolute;
+    right: 50%;
+    transform: translateX(50%);
     height: 24px;
-    position: relative;
-    padding-right: 20px;
-    padding-left: ${(props) =>
-      !props.needNavMenu || props.isPersonal || props.isDesktopView || isMobile
-        ? "20px"
-        : "4px"};
     cursor: pointer;
-
-    @media ${tablet} {
-      padding-left: 16px;
-    }
   }
   .mobile-short-logo {
     width: 146px;

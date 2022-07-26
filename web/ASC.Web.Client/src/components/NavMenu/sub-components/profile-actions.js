@@ -155,7 +155,7 @@ class ProfileActions extends React.PureComponent {
                 (action?.isButton ? (
                   <StyledButtonWrapper key={action.key}>
                     <Button
-                      size={"small"}
+                      size="normal"
                       scale={true}
                       label={action.label}
                       onClick={action.onClick}
