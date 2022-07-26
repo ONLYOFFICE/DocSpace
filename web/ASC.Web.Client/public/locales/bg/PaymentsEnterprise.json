@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Благодарим Ви, че проверихте {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Безплатният пробен период е изтекъл",
   "HeaderLicense": "Използвате {{organizationName}} Enterprise Edition",
-  "PaymentsTitle": "Плащания",
   "RenewalLicense": "Ако вече сте закупили подновяване, качете лицензионния файл.",
   "SubscriptionRenewedLicense": "Подновете абонамент, за да получите:",
   "SuccessLoadingLicense": "Лицензът е активиран успешно"

@@ -26,9 +26,6 @@
 
 namespace ASC.EventBus.Extensions.Logger;
 
-public class MySqlIntegrationEventLogContext : IntegrationEventLogContext { }
-public class PostgreSqlIntegrationEventLogContext : IntegrationEventLogContext { }
-
 public class IntegrationEventLogContext : BaseDbContext
 {
     public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; }
@@ -38,18 +35,6 @@ public class IntegrationEventLogContext : BaseDbContext
         ModelBuilderWrapper.From(modelBuilder, _provider)
                            .AddIntegrationEventLog();
 
-    }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlIntegrationEventLogContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlIntegrationEventLogContext() } ,
-                };
-        }
     }
 }
 

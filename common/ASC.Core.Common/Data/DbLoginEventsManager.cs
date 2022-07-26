@@ -68,7 +68,7 @@ public class DbLoginEventsManager
     {
         var date = DateTime.UtcNow.AddYears(-1);
         var resultList = await LoginEventContext.LoginEvents
-            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action) && r.Date >= date && r.Active)
+            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action ?? 0) && r.Date >= date && r.Active)
             .Select(r => r.Id)
             .ToListAsync();
 
@@ -79,7 +79,7 @@ public class DbLoginEventsManager
     {
         var date = DateTime.UtcNow.AddYears(-1);
         var loginInfo = await LoginEventContext.LoginEvents
-            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action) && r.Date >= date && r.Active)
+            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action ?? 0) && r.Date >= date && r.Active)
             .OrderByDescending(r => r.Id)
             .ToListAsync();
 

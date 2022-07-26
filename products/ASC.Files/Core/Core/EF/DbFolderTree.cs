@@ -57,7 +57,8 @@ public static class DbFolderTreeExtension
             entity.HasKey(e => new { e.ParentId, e.FolderId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("files_folder_tree");
+            entity.ToTable("files_folder_tree")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.FolderId)
                 .HasDatabaseName("folder_id");
