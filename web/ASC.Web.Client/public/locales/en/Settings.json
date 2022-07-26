@@ -31,6 +31,8 @@
   "BackupList": "Backup List",
   "BackupListWarningText": "If you delete any items from the list, their corresponding files will also be deleted. This action cannot be undone. To delete all the files use the link:",
   "BrowserNoCanvasSupport": "Your browser does not support the HTML5 canvas tag.",
+  "BreakpointWarningText": "This section is only available in desktop version",
+  "BreakpointWarningTextPrompt": "Please use the desktop site to access",
   "ByApp": "By authenticator app",
   "BySms": "By sms",
   "ChangeLogoButton": "Change Logo",
