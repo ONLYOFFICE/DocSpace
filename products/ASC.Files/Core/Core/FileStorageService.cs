@@ -1768,8 +1768,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
         else
         {
-            curProviderId = Convert.ToInt32(thirdparty.ProviderId);
-            curProviderId = await providerDao.UpdateProviderInfoAsync(curProviderId, thirdPartyParams.CustomerTitle, thirdPartyParams.AuthData, folderType);
+            curProviderId = await providerDao.UpdateBackupProviderInfoAsync(thirdPartyParams.ProviderKey, thirdPartyParams.CustomerTitle, thirdPartyParams.AuthData);
             messageAction = MessageAction.ThirdPartyUpdated;
         }
 

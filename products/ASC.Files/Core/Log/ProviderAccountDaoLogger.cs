@@ -36,6 +36,9 @@ internal static partial class ProviderAccountDaoLogger
     [LoggerMessage(Level = LogLevel.Error, Message = "UpdateProviderInfo: linkId = {linkId} , user = {userId}")]
     public static partial void ErrorUpdateProviderInfo(this ILogger logger, int linkId, Guid userId, Exception exception);
 
+    [LoggerMessage(Level = LogLevel.Error, Message = "UpdateProviderInfo: user = {userId}")]
+    public static partial void ErrorUpdateBackupProviderInfo(this ILogger logger, Guid userId, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "DecryptPassword error: linkId = {linkId} , user = {userId}")]
     public static partial void ErrorDecryptPassword(this ILogger logger, int linkId, Guid userId, Exception exception);
 }
