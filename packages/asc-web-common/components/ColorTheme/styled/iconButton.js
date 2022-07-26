@@ -7,11 +7,13 @@ const getDefaultStyles = ({
   shared,
   locked,
   isFavorite,
+  isEditing,
+  isPin,
 }) => css`
   ${commonIconsStyles}
   svg {
     path {
-      fill: ${(shared || locked || isFavorite) &&
+      fill: ${(shared || locked || isFavorite || isEditing || isPin) &&
       currentColorScheme.accentColor};
     }
   }
@@ -25,4 +27,4 @@ const getDefaultStyles = ({
   }
 `;
 
-export default styled(IconButton)([getDefaultStyles]);
+export default styled(IconButton)(getDefaultStyles);
