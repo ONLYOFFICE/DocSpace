@@ -146,9 +146,9 @@ const SetRoomParams = ({
         </div>
       </StyledParam>
 
-      <StyledIconEditorWrapper>
+      {/* <StyledIconEditorWrapper>
         <AvatarEditor useModalDialog={false}></AvatarEditor>
-      </StyledIconEditorWrapper>
+      </StyledIconEditorWrapper> */}
     </StyledSetRoomParams>
   );
 };
