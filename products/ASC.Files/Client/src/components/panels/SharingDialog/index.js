@@ -55,14 +55,13 @@ const SharingDialogWrapper = inject(({ dialogsStore, filesStore }) => {
 })(observer(SharingDialog));
 
 class SharingModal extends React.Component {
-  static getSharingSettings = (fileId, sharingSettings = null) => {
-    if (sharingSettings)
-      return Promise.resolve(SharingPanel.convertSharingUsers(sharingSettings));
-
-    return getShareFiles([+fileId], []).then((users) =>
-      SharingPanel.convertSharingUsers(users)
+  static getSharingSettings = (fileId) =>
+    getShareFiles([+fileId], []).then((users) =>
+      this.convertSharingUsers(users)
     );
-  };
+
+  static convertSharingUsers = (users) =>
+    Promise.resolve(SharingPanel.convertSharingUsers(users));
 
   componentDidMount() {
     authStore.init(true);

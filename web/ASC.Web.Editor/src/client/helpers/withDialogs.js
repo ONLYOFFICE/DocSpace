@@ -55,7 +55,7 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const loadUsersRightsList = () => {
-      window.SharingDialog.getSharingSettings(fileId, sharingSettings).then(
+      window.SharingDialog.convertSharingUsers(sharingSettings).then(
         (sharingSettings) => {
           window.docEditor.setSharingSettings({
             sharingSettings,
