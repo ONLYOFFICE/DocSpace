@@ -17,6 +17,7 @@ import {
   tablet,
 } from "@appserver/components/utils/device";
 import FormWrapper from "@appserver/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
 
 const StyledForm = styled(Box)`
   margin: 63px auto;
@@ -40,10 +41,19 @@ const StyledForm = styled(Box)`
     width: 100%;
   }
 
-  .app-code-wrapper {
+  .docspace-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 32px;
+
     @media ${tablet} {
-      flex-direction: column;
+      padding-bottom: 64px;
     }
+  }
+
+  .app-code-wrapper {
+    width: 100%;
   }
 
   .app-code-text {
@@ -83,10 +93,9 @@ const TfaAuthForm = withLoader((props) => {
     if (target.code === "Enter" || target.code === "NumpadEnter") onSubmit();
   };
 
-  const width = window.innerWidth;
-
   return (
     <StyledForm className="app-code-container">
+      <DocspaceLogo className="docspace-logo" />
       <FormWrapper>
         <Box className="app-code-description" marginProp="0 0 32px 0">
           <Text isBold fontSize="14px" className="app-code-text">

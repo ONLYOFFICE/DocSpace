@@ -15,6 +15,7 @@ import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import { hugeMobile, tablet } from "@appserver/components/utils/device";
 import Link from "@appserver/components/link";
 import FormWrapper from "@appserver/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
@@ -40,8 +41,21 @@ const StyledForm = styled(Box)`
   }
 
   .app-code-wrapper {
+    width: 100%;
+
     @media ${tablet} {
       flex-direction: column;
+    }
+  }
+
+  .docspace-logo {
+    padding-bottom: 32px;
+
+    @media ${tablet} {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 64px;
     }
   }
 
@@ -115,6 +129,7 @@ const TfaActivationForm = withLoader((props) => {
   return (
     <StyledForm className="set-app-container">
       <Box className="set-app-description" marginProp="0 0 32px 0">
+        <DocspaceLogo className="docspace-logo" />
         <Text isBold fontSize="14px" className="set-app-title">
           {t("SetAppTitle")}
         </Text>
