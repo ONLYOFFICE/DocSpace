@@ -10,7 +10,7 @@ const StyledDropDownWrapper = styled.div`
 `;
 
 const StyledDropDown = styled(DropDown)`
-  margin-top: 5px;
+  margin-top: ${(props) => (props.marginTop ? props.marginTop : "4px")};
   padding: 6px 0;
   background: #ffffff;
   border: 1px solid #d0d5da;

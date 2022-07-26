@@ -12,6 +12,8 @@ import {
   StyledDropDownWrapper,
 } from "../../common/StyledDropdown";
 import Checkbox from "@appserver/components/checkbox";
+import DomHelpers from "@appserver/components/utils/domHelpers";
+import { isMobile } from "@appserver/components/utils/device";
 
 const StyledStorageLocation = styled.div`
   display: flex;
@@ -81,14 +83,20 @@ const ThirpartyComboBox = ({
   setRoomParams,
   setIsScrollLocked,
 }) => {
+  const dropdownRef = useRef(null);
+
   const [isOpen, setIsOpen] = useState(false);
   const toggleIsOpen = () => {
     if (isOpen) setIsScrollLocked(false);
-    else setIsScrollLocked(true);
+    else {
+      setIsScrollLocked(true);
+      calculateDropdownDirection();
+    }
     setIsOpen(!isOpen);
   };
 
   const [isGrayLabel, setIsGrayLabel] = useState(true);
+  const [dropdownDirection, setDropdownDirection] = useState("bottom");
 
   const setStorageLocaiton = (thirparty) => {
     setIsGrayLabel(false);
@@ -103,7 +111,14 @@ const ThirpartyComboBox = ({
       rememberStorageLocation: !roomParams.rememberStorageLocation,
     });
 
-  const dropdownRef = useRef(null);
+  const calculateDropdownDirection = () => {
+    const { top: offsetTop } = DomHelpers.getOffset(dropdownRef.current);
+    const offsetBottom = window.innerHeight - offsetTop;
+    const neededheight = isMobile() ? 404 : 180;
+
+    setDropdownDirection(neededheight > offsetBottom ? "top" : "bottom");
+  };
+
   return (
     <StyledStorageLocation isGrayLabel={isGrayLabel} isOpen={isOpen}>
       <div className="set_room_params-thirdparty">
@@ -136,7 +151,9 @@ const ThirpartyComboBox = ({
           open={isOpen}
           forwardedRef={dropdownRef}
           clickOutsideAction={toggleIsOpen}
-          maxHeight={158}
+          maxHeight={isMobile() ? 158 : 382}
+          directionY={dropdownDirection}
+          marginTop={dropdownDirection === "bottom" ? "4px" : "-36px"}
         >
           {thirparties.map((thirdparty) => (
             <DropDownItem
