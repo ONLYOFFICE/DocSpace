@@ -132,6 +132,7 @@ public class StorageSettingsHelper
     private readonly SettingsManager _settingsManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ConsumerFactory _consumerFactory;
+    private readonly IServiceProvider _serviceProvider;
     private IDataStore _dataStore;
 
     public StorageSettingsHelper(
@@ -142,7 +143,8 @@ public class StorageSettingsHelper
         ILogger<StorageSettingsHelper> options,
         TenantManager tenantManager,
         SettingsManager settingsManager,
-            ConsumerFactory consumerFactory)
+        ConsumerFactory consumerFactory,
+        IServiceProvider serviceProvider)
     {
         baseStorageSettingsListener.Subscribe();
         _storageFactoryConfig = storageFactoryConfig;
@@ -152,6 +154,7 @@ public class StorageSettingsHelper
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _consumerFactory = consumerFactory;
+        _serviceProvider = serviceProvider;
     }
 
     public StorageSettingsHelper(
@@ -163,8 +166,9 @@ public class StorageSettingsHelper
         TenantManager tenantManager,
         SettingsManager settingsManager,
         IHttpContextAccessor httpContextAccessor,
-            ConsumerFactory consumerFactory)
-            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
+        ConsumerFactory consumerFactory,
+        IServiceProvider serviceProvider)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory, serviceProvider)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -219,8 +223,7 @@ public class StorageSettingsHelper
             return null;
         }
 
-        return _dataStore = ((IDataStore)
-            Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, _tenantManager, _pathUtils, _httpContextAccessor, _options))
+        return _dataStore = ((IDataStore)_serviceProvider.GetService(DataStoreConsumer(baseStorageSettings).HandlerType))
             .Configure(_tenantManager.GetCurrentTenant().Id.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
     }
 

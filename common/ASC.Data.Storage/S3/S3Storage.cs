@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Amazon.S3.Internal;
+using Amazon.Extensions.S3.Encryption;
+using Amazon.Extensions.S3.Encryption.Primitives;
+
 namespace ASC.Data.Storage.S3;
 
 [Scope]
@@ -39,7 +43,7 @@ public class S3Storage : BaseStorage
     private string _recycleDir = string.Empty;
     private Uri _bucketRoot;
     private Uri _bucketSSlRoot;
-    private string _region = string.Empty;
+    private string _region = "";
     private string _serviceurl;
     private bool _forcepathstyle;
     private string _secretAccessKeyId = string.Empty;
@@ -47,8 +51,11 @@ public class S3Storage : BaseStorage
     private bool _useHttp = true;
     private bool _lowerCasing = true;
     private bool _revalidateCloudFront;
-    private string _distributionId = string.Empty;
-    private string _subDir = string.Empty;
+    private string _distributionId = "";
+    private string _subDir = "";
+
+    private EncryptionMethod _encryptionMethod = EncryptionMethod.None;
+    private string _encryptionKey = null;
 
     public S3Storage(
         TempStream tempStream,
@@ -213,6 +220,13 @@ public class S3Storage : BaseStorage
                 }
         };
 
+        if (!(client is IAmazonS3Encryption))
+        {
+            string kmsKeyId;
+            request.ServerSideEncryptionMethod = GetServerSideEncryptionMethod(out kmsKeyId);
+            request.ServerSideEncryptionKeyManagementServiceKeyId = kmsKeyId;
+        }
+
         if (!WorkContext.IsMono) //  System.Net.Sockets.SocketException: Connection reset by peer
         {
             switch (acl)
@@ -273,11 +287,16 @@ public class S3Storage : BaseStorage
         var request = new InitiateMultipartUploadRequest
         {
             BucketName = _bucket,
-            Key = MakePath(domain, path),
-            ServerSideEncryptionMethod = _sse
+            Key = MakePath(domain, path)
         };
 
         using var s3 = GetClient();
+        if (!(s3 is IAmazonS3Encryption))
+        {
+            string kmsKeyId;
+            request.ServerSideEncryptionMethod = GetServerSideEncryptionMethod(out kmsKeyId);
+            request.ServerSideEncryptionKeyManagementServiceKeyId = kmsKeyId;
+        }
         var response = await s3.InitiateMultipartUploadAsync(request);
 
         return response.UploadId;
@@ -908,13 +927,19 @@ public class S3Storage : BaseStorage
 
         if (props.TryGetValue("sse", out var sse) && !string.IsNullOrEmpty(sse))
         {
-            _sse = sse.ToLower() switch
+            _encryptionMethod = sse.ToLower() switch
             {
-                "none" => ServerSideEncryptionMethod.None,
-                "aes256" => ServerSideEncryptionMethod.AES256,
-                "awskms" => ServerSideEncryptionMethod.AWSKMS,
-                _ => ServerSideEncryptionMethod.None,
+                "none" => EncryptionMethod.None,
+                "aes256" => EncryptionMethod.ServerS3,
+                "awskms" => EncryptionMethod.ServerKms,
+                "clientawskms" => EncryptionMethod.ClientKms,
+                _ => EncryptionMethod.None,
             };
+        }
+
+        if (props.ContainsKey("ssekey") && !string.IsNullOrEmpty(props["ssekey"]))
+        {
+            _encryptionKey = props["ssekey"];
         }
 
         _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
@@ -1170,9 +1195,15 @@ public class S3Storage : BaseStorage
                 {
                     BucketName = _bucket,
                     Key = destinationKey,
-                    CannedACL = GetDomainACL(newdomain),
-                    ServerSideEncryptionMethod = _sse
+                    CannedACL = GetDomainACL(newdomain)
                 };
+
+            if (!(client is IAmazonS3Encryption))
+            {
+                string kmsKeyId;
+                initiateRequest.ServerSideEncryptionMethod = GetServerSideEncryptionMethod(out kmsKeyId);
+                initiateRequest.ServerSideEncryptionKeyManagementServiceKeyId = kmsKeyId;
+            }
 
             if (storageClass != null)
             {
@@ -1225,9 +1256,15 @@ public class S3Storage : BaseStorage
                 DestinationBucket = _bucket,
                 DestinationKey = destinationKey,
                 CannedACL = GetDomainACL(newdomain),
-                ServerSideEncryptionMethod = _sse,
                 MetadataDirective = metadataDirective,
             };
+
+            if (!(client is IAmazonS3Encryption))
+            {
+                string kmsKeyId;
+                request.ServerSideEncryptionMethod = GetServerSideEncryptionMethod(out kmsKeyId);
+                request.ServerSideEncryptionKeyManagementServiceKeyId = kmsKeyId;
+            }
 
             if (storageClass != null)
             {
@@ -1247,6 +1284,13 @@ public class S3Storage : BaseStorage
 
     private IAmazonS3 GetClient()
     {
+        var encryptionClient = GetEncryptionClient();
+
+        if (encryptionClient != null)
+        {
+            return encryptionClient;
+        }
+
         var cfg = new AmazonS3Config { MaxErrorRetry = 3 };
 
         if (!string.IsNullOrEmpty(_serviceurl))
@@ -1317,5 +1361,90 @@ public class S3Storage : BaseStorage
                 _response.Dispose();
             }
         }
+    }
+
+    private IAmazonS3 GetEncryptionClient()
+    {
+        if (!string.IsNullOrEmpty(_encryptionKey))
+        {
+            return null;
+        }
+
+        EncryptionMaterialsV2 encryptionMaterials = null;
+
+        switch (_encryptionMethod)
+        {
+            case EncryptionMethod.ClientKms:
+                var encryptionContext = new Dictionary<string, string>();
+                encryptionMaterials = new EncryptionMaterialsV2(_encryptionKey, KmsType.KmsContext, encryptionContext);
+                break;
+                //case EncryptionMethod.ClientAes:
+                //    var symmetricAlgorithm = Aes.Create();
+                //    symmetricAlgorithm.Key = Encoding.UTF8.GetBytes(_encryptionKey);
+                //    encryptionMaterials = new EncryptionMaterialsV2(symmetricAlgorithm, SymmetricAlgorithmType.AesGcm);
+                //    break;
+                //case EncryptionMethod.ClientRsa:
+                //    var asymmetricAlgorithm = RSA.Create();
+                //    asymmetricAlgorithm.FromXmlString(_encryptionKey);
+                //    encryptionMaterials = new EncryptionMaterialsV2(asymmetricAlgorithm, AsymmetricAlgorithmType.RsaOaepSha1);
+                //    break;
+        }
+
+        if (encryptionMaterials == null)
+        {
+            return null;
+        }
+
+        var cfg = new AmazonS3CryptoConfigurationV2(SecurityProfile.V2AndLegacy)
+        {
+            StorageMode = CryptoStorageMode.ObjectMetadata,
+            MaxErrorRetry = 3
+        };
+
+        if (!string.IsNullOrEmpty(_serviceurl))
+        {
+            cfg.ServiceURL = _serviceurl;
+            cfg.ForcePathStyle = _forcepathstyle;
+        }
+        else
+        {
+            cfg.RegionEndpoint = RegionEndpoint.GetBySystemName(_region);
+        }
+
+        cfg.UseHttp = _useHttp;
+
+        return new AmazonS3EncryptionClientV2(_accessKeyId, _secretAccessKeyId, cfg, encryptionMaterials);
+    }
+    private ServerSideEncryptionMethod GetServerSideEncryptionMethod(out string kmsKeyId)
+    {
+        kmsKeyId = null;
+
+        var method = ServerSideEncryptionMethod.None;
+
+        switch (_encryptionMethod)
+        {
+            case EncryptionMethod.ServerS3:
+                method = ServerSideEncryptionMethod.AES256;
+                break;
+            case EncryptionMethod.ServerKms:
+                method = ServerSideEncryptionMethod.AWSKMS;
+                if (!string.IsNullOrEmpty(_encryptionKey))
+                {
+                    kmsKeyId = _encryptionKey;
+                }
+                break;
+        }
+
+        return method;
+    }
+
+    private enum EncryptionMethod
+    {
+        None,
+        ServerS3,
+        ServerKms,
+        ClientKms,
+        //ClientAes,
+        //ClientRsa
     }
 }

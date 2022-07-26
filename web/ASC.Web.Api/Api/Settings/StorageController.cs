@@ -477,4 +477,16 @@ public class StorageController : BaseSettingsController
         Tenant.SetStatus(TenantStatus.Migrating);
         _tenantManager.SaveTenant(Tenant);
     }
+
+    /// <summary>
+    /// Returns a list of all Amazon regions.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get all Amazon regions</short>
+    /// <returns>List of the Amazon regions</returns>
+    [HttpGet("storage/s3/regions")]
+    public object GetAmazonS3Regions()
+    {
+        return Amazon.RegionEndpoint.EnumerableAllRegions;
+    }
 }
