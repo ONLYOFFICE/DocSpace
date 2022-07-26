@@ -9,6 +9,7 @@ import {
   StyledDropDown,
   StyledDropDownWrapper,
 } from "../../common/StyledDropdown";
+import { isMobile } from "@appserver/components/utils/device";
 
 const StyledTagInput = styled.div`
   .set_room_params-tag_input {
@@ -102,19 +103,17 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
         heightTablet={32}
       />
     );
+    //dropdownItems = [dropdownItemNewTag, ...dropdownItems];
 
-    dropdownItems = [dropdownItemNewTag, ...dropdownItems];
-
-    // if (tagsForDropdown.length > 0) {
-    //   dropdownItems = [
-    //     dropdownItemNewTag,
-    //     <DropDownItem height={32} heightTablet={32} key={-1} />,
-    //     ...dropdownItems,
-    //   ];
-    //   dropdownItems = [dropdownItemNewTag, ...dropdownItems];
-    // } else {
-    //   dropdownItems = [dropdownItemNewTag, ...dropdownItems];
-    // }
+    if (tagsForDropdown.length > 0) {
+      dropdownItems = [
+        dropdownItemNewTag,
+        <DropDownItem height={7} heightTablet={7} key={-1} isSeparator />,
+        ...dropdownItems,
+      ];
+    } else {
+      dropdownItems = [dropdownItemNewTag, ...dropdownItems];
+    }
   }
 
   return (
@@ -150,9 +149,8 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
             open={isOpen}
             forwardedRef={dropdownRef}
             clickOutsideAction={onClickOutside}
-            maxHeight={158}
+            maxHeight={isMobile() ? 158 : 382}
             showDisabledItems={false}
-            // onMouseDown={preventDefault}
           >
             {dropdownItems}
           </StyledDropDown>
