@@ -72,7 +72,7 @@ const SetRoomParams = ({
           value={roomParams.title}
           onChange={onChangeName}
           scale
-          placeholder="New room"
+          placeholder={t("NamePlaceholder")}
           tabIndex={1}
         />
       </div>
@@ -120,13 +120,11 @@ const SetRoomParams = ({
         <div className="set_room_params-info">
           <div className="set_room_params-info-title">
             <Text className="set_room_params-info-title-text">
-              {`${t("Folder Name")}:`}
+              {`${t("FolderNameTitle")}:`}
             </Text>
           </div>
           <div className="set_room_params-info-description">
-            {t(
-              "A new folder for storing this room’s data will be created in the connected storage"
-            )}
+            {t("FolderNameDescription")}
           </div>
         </div>
 
@@ -140,7 +138,7 @@ const SetRoomParams = ({
               roomParams.storageLocation
                 ? roomParams.storageLocation.title + " - "
                 : ""
-            }New Room`}
+            }${t("Home:NewRoom")}`}
             tabIndex={1}
           />
         </div>

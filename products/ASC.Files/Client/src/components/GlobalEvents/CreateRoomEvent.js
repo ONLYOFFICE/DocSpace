@@ -18,7 +18,12 @@ const CreateRoomEvent = ({
 
   folderFormValidation,
 }) => {
-  const { t } = useTranslation(["CreateRoomDialog", "Translations", "Common"]);
+  const { t } = useTranslation([
+    "CreateRoomDialog",
+    "Common",
+    "Settings",
+    "Home",
+  ]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 

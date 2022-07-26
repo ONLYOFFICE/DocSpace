@@ -98,7 +98,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
         className="dropdown-item"
         onMouseDown={preventDefault}
         onClick={addNewTag}
-        label={`Create tag “${tagInput}”`}
+        label={`${t("CreateTagOption")} “${tagInput}”`}
         height={32}
         heightTablet={32}
       />
@@ -123,7 +123,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
           className="set_room_params-tag_input-label_wrapper-label"
           display="display"
           htmlFor="tags-input"
-          text={`${t("Tags")}:`}
+          text={`${t("Common:Tags")}:`}
           title="Fill the first name field"
         />
       </div>
@@ -134,7 +134,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
         onFocus={openDropdown}
         onBlur={closeDropdown}
         scale
-        placeholder={t("Add a tag")}
+        placeholder={t("TagsPlaceholder")}
         tabIndex={2}
       />
 

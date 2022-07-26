@@ -43,7 +43,7 @@ const TagList = ({ t, tagHandler }) => {
         <Tag
           className="set_room_params-tag_input-tag"
           tag="script"
-          label={t("No tags")}
+          label={t("Common:NoTags")}
           isDisabled
         />
       )}

@@ -170,7 +170,7 @@ const ThirpartyComboBox = ({
 
       <Checkbox
         className="set_room_params-thirdparty-checkbox"
-        label={t("Remember this choice for new rooms")}
+        label={t("StorageLocationRememberChoice")}
         isChecked={roomParams.rememberStorageLocation}
         onChange={setRememberStorageLocation}
       />
