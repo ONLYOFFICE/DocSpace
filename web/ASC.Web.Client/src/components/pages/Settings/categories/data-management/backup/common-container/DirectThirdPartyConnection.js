@@ -266,6 +266,7 @@ const DirectThirdPartyConnection = (props) => {
 
       {isVisibleConnectionForm && (
         <FormConnection
+          t={t}
           saveSettings={saveSettings}
           item={selectedAccount}
           visible={isVisibleConnectionForm}

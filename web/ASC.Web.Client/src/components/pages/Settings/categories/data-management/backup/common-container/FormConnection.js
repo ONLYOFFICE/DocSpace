@@ -67,7 +67,7 @@ const FormConnection = (props) => {
 
   return (
     <ModalDialog
-      isLoading={!tReady}
+      //isLoading={!tReady}
       visible={visible}
       zIndex={310}
       displayType="modal"
