@@ -181,7 +181,7 @@ public class EFUserService : IUserService
             q = q.Where(r => r.Tenant == tenant);
         }
 
-        return q.Where(r => r.GroupId == groupId && r.RefType == refType && !r.Removed)
+        return q.Where(r => r.UserGroupId == groupId && r.RefType == refType && !r.Removed)
             .ProjectTo<UserGroupRef>(_mapper.ConfigurationProvider).SingleOrDefault();
     }
 
@@ -287,7 +287,7 @@ public class EFUserService : IUserService
             UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
             UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
 
-            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.GroupId));
+            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.UserGroupId));
             var groups = UserDbContext.Groups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Id));
 
             if (immediate)
@@ -332,7 +332,7 @@ public class EFUserService : IUserService
             UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
             UserDbContext.Photos.RemoveRange(UserDbContext.Photos.Where(r => r.Tenant == tenant && r.UserId == id));
 
-            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.UserId == id);
+            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.Userid == id);
             var users = UserDbContext.Users.Where(r => r.Tenant == tenant && r.Id == id);
             var userSecurity = UserDbContext.UserSecurity.Where(r => r.Tenant == tenant && r.UserId == id);
 
@@ -378,7 +378,7 @@ public class EFUserService : IUserService
         {
             using var tr = UserDbContext.Database.BeginTransaction();
 
-            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.UserId == userId && r.GroupId == groupId && r.RefType == refType);
+            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.Userid == userId && r.UserGroupId == groupId && r.RefType == refType);
             if (immediate)
             {
                 UserDbContext.UserGroups.RemoveRange(userGroups);
@@ -605,7 +605,7 @@ public class EFUserService : IUserService
         {
             foreach (var ig in includeGroups)
             {
-                q = q.Where(r => r.Groups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.UserId == r.Id && ig.Any(r => r == a.GroupId)));
+                q = q.Where(r => UserDbContext.UserGroups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.Userid == r.Id && ig.Any(r => r == a.UserGroupId)));
             }
         }
 
@@ -613,7 +613,7 @@ public class EFUserService : IUserService
         {
             foreach (var eg in excludeGroups)
             {
-                q = q.Where(r => !r.Groups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.UserId == r.Id && a.GroupId == eg));
+                q = q.Where(r => !UserDbContext.UserGroups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.Userid == r.Id && a.UserGroupId == eg));
             }
         }
 

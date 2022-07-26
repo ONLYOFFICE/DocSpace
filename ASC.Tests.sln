@@ -76,6 +76,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Migrations.MySql", "migrations\mysql\ASC.Migrations.MySql.csproj", "{E81DC433-3555-4151-BDBC-16368A0FE14E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -217,6 +219,10 @@ Global
 		{B53587B7-58F6-48A9-B122-69BEA3E2572A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B53587B7-58F6-48A9-B122-69BEA3E2572A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B53587B7-58F6-48A9-B122-69BEA3E2572A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E81DC433-3555-4151-BDBC-16368A0FE14E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E81DC433-3555-4151-BDBC-16368A0FE14E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E81DC433-3555-4151-BDBC-16368A0FE14E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E81DC433-3555-4151-BDBC-16368A0FE14E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

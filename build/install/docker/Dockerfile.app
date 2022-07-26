@@ -161,34 +161,35 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/localhost:9834/$service_sso/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5034/$service_migration/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
-
-## ASC.Webhooks.Service ##
-FROM builder AS webhooks-wervice
-WORKDIR ${BUILD_PATH}/services/ASC.Webhooks.Service/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhooks.Service/ .
-
-CMD ["ASC.Webhooks.Service.dll", "ASC.Webhooks.Service"]
-
-## ASC.ClearEvents ##
-FROM builder AS clear-events
-WORKDIR ${BUILD_PATH}/services/ASC.ClearEvents/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearEvents/ .
-
-CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
 
 ## ASC.Data.Backup.BackgroundTasks ##
 FROM builder AS backup_background
 WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/service/  .
 
 CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
+
+## ASC.ClearEvents ##
+FROM builder AS clear-events
+WORKDIR ${BUILD_PATH}/services/ASC.ClearEvents/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearEvents/service/  .
+
+CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
+
+## ASC.Migration ##
+FROM builder AS migration
+WORKDIR ${BUILD_PATH}/services/ASC.Migration/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Migration/service/  .
+
+CMD ["ASC.Migration.dll", "ASC.Migration"]
 
 ## ASC.Data.Backup ##
 FROM builder AS backup
@@ -244,6 +245,15 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket
 
 CMD  ["server.js", "ASC.Socket.IO"]
 
+## ASC.SsoAuth ##
+FROM nodeBuild AS ssoauth
+WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
+
+CMD ["app.js", "ASC.SsoAuth"]
+
 ## ASC.Studio.Notify ##
 FROM builder AS studio_notify
 WORKDIR ${BUILD_PATH}/services/ASC.Studio.Notify/service/
@@ -280,6 +290,15 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Ap
 
 CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
 
+## ASC.Webhooks.Service ##
+FROM builder AS webhooks-service
+WORKDIR ${BUILD_PATH}/services/ASC.Webhooks.Service/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhooks.Service/service/  .
+
+CMD ["ASC.Webhooks.Service.dll", "ASC.Webhooks.Service"]
+
 ## ASC.Web.Studio ##
 FROM builder AS studio
 WORKDIR ${BUILD_PATH}/studio/ASC.Web.Studio/
@@ -288,15 +307,6 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
-
-## ASC.SsoAuth ##
-FROM nodeBuild AS ssoauth
-WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
-
-CMD ["app.js", "ASC.SsoAuth"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share
