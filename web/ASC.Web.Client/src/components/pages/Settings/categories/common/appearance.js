@@ -19,24 +19,10 @@ import HexColorPickerComponent from "./sub-components/hexColorPicker";
 import { isMobileOnly } from "react-device-detect";
 
 import Loaders from "@appserver/common/components/Loaders";
-const StyledComponent = styled.div`
-  .container {
-    display: flex;
-  }
 
-  .box {
-    width: 46px;
-    height: 46px;
-    margin-right: 12px;
-  }
+import { StyledComponent } from "./settingsAppearance/StyledApperance.js";
 
-  .add-theme {
-    background: #d0d5da;
-    padding-top: 16px;
-    padding-left: 16px;
-    box-sizing: border-box;
-  }
-`;
+import BreakpointWarning from "../../../../BreakpointWarning/index";
 
 const Appearance = (props) => {
   const {
@@ -93,7 +79,9 @@ const Appearance = (props) => {
 
   const [changeTheme, setChangeTheme] = useState([]);
 
-  const checkImg = <img src="/static/images/check.white.svg" />;
+  const checkImg = (
+    <img className="check-img" src="/static/images/check.white.svg" />
+  );
 
   const array_items = useMemo(
     () => [
@@ -145,7 +133,7 @@ const Appearance = (props) => {
   ]);
 
   const onCheckView = () => {
-    if (isMobileOnly || window.innerWidth <= 428) {
+    if (isMobileOnly || window.innerWidth < 600) {
       setViewMobile(true);
     } else {
       setViewMobile(false);
@@ -378,37 +366,37 @@ const Appearance = (props) => {
     ></div>
   );
 
-  console.log("selectThemeId", selectThemeId);
-
-  if (!(selectThemeId && selectedThemeId && appearanceTheme)) {
-    return <Loaders.Rectangle />;
-  }
-
-  return (
+  return viewMobile ? (
+    <BreakpointWarning content={"the Appearance settings"} />
+  ) : (
     <StyledComponent>
-      <div>Color</div>
+      <div className="header">Color</div>
 
-      <div className="container">
-        {appearanceTheme.map((item, index) => {
-          return (
-            <div
-              key={index}
-              id={item.id}
-              style={{ background: item.accentColor }}
-              className="box"
-              onClick={onColorSelection}
-            >
-              {onShowCheck(item.id)}
-            </div>
-          );
-        })}
+      <div className="theme-standard">
+        <div className="theme-name">Standard</div>
 
-        {/* <div className="add-theme box" onClick={onAddTheme}>
+        <div className="theme-container">
+          {appearanceTheme.map((item, index) => {
+            return (
+              <div
+                key={index}
+                id={item.id}
+                style={{ background: item.accentColor }}
+                className="box"
+                onClick={onColorSelection}
+              >
+                {onShowCheck(item.id)}
+              </div>
+            );
+          })}
+
+          {/* <div className="add-theme box" onClick={onAddTheme}>
           <img src="/static/images/plus.theme.svg" />
         </div> */}
+        </div>
       </div>
 
-      <div onClick={onClickEdit}>Edit color scheme</div>
+      {/* <div onClick={onClickEdit}>Edit color scheme</div> */}
       <ColorSchemeDialog
         nodeButtonsColor={nodeButtonsColor}
         nodeAccentColor={nodeAccentColor}
@@ -424,9 +412,17 @@ const Appearance = (props) => {
         showSaveButtonDialog={showSaveButtonDialog}
         onSaveColorSchemeDialog={onSaveColorSchemeDialog}
       />
-      <div>Preview</div>
+      <div className="header preview-header">Preview</div>
       <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />
-      <Button label="Save" onClick={onSaveSelectedColor} primary size="small" />
+
+      <div className="buttons-container">
+        <Button
+          label="Save"
+          onClick={onSaveSelectedColor}
+          primary
+          size="small"
+        />
+      </div>
     </StyledComponent>
   );
 };
