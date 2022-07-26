@@ -23,6 +23,7 @@ const CreateRoomDialog = ({
   onCreate,
 
   fetchedTags,
+  isLoading,
   folderFormValidation,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
@@ -93,6 +94,7 @@ const CreateRoomDialog = ({
             primary
             scale
             onClick={onCreateRoom}
+            isLoading={isLoading}
           />
           <Button
             tabIndex={5}
