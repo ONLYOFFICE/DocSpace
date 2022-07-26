@@ -98,52 +98,6 @@ autorefresh=1
 type=rpm-md
 END
 
-#install kafka
-PRODUCT_DIR="/var/www/${product}"
-if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
-	mkdir -p ${PRODUCT_DIR}/services/
-	getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
-	cd ${PRODUCT_DIR}/services/kafka
-	KAFKA_VERSION=$(curl https://downloads.apache.org/kafka/ | grep -Eo '3.1.[0-9]' | tail -1)
-	KAFKA_ARCHIVE=$(curl https://downloads.apache.org/kafka/$KAFKA_VERSION/ | grep -Eo "kafka_2.[0-9][0-9]-$KAFKA_VERSION.tgz" | tail -1)
-	curl https://downloads.apache.org/kafka/$KAFKA_VERSION/$KAFKA_ARCHIVE -O
-	tar xzf $KAFKA_ARCHIVE --strip 1 && rm -rf $KAFKA_ARCHIVE
-	chown -R kafka ${PRODUCT_DIR}/services/kafka
-	cd -
-fi
-
-if [ ! -e /lib/systemd/system/zookeeper.service ]; then
-cat > /lib/systemd/system/zookeeper.service <<END
-[Unit]
-Requires=network.target remote-fs.target
-After=network.target remote-fs.target
-[Service]
-Type=simple
-User=kafka
-ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-start.sh ${PRODUCT_DIR}/services/kafka/config/zookeeper.properties > ${PRODUCT_DIR}/services/kafka/zookeeper.log 2>&1'
-ExecStop=${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-stop.sh
-Restart=on-abnormal
-[Install]
-WantedBy=multi-user.target
-END
-fi
-
-if [ ! -e /lib/systemd/system/kafka.service ]; then
-cat > /lib/systemd/system/kafka.service <<END
-[Unit]
-Requires=zookeeper.service
-After=zookeeper.service
-[Service]
-Type=simple
-User=kafka
-ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/kafka-server-start.sh ${PRODUCT_DIR}/services/kafka/config/server.properties > ${PRODUCT_DIR}/services/kafka/kafka.log 2>&1'
-ExecStop=${PRODUCT_DIR}/services/kafka/bin/kafka-server-stop.sh
-Restart=on-abnormal
-[Install]
-WantedBy=multi-user.target
-END
-fi
-
 # add nginx repo
 cat > /etc/yum.repos.d/nginx.repo <<END
 [nginx-stable]
@@ -177,6 +131,7 @@ ${package_manager} -y install python3-dnf-plugin-versionlock || ${package_manage
 ${package_manager} versionlock clear
 
 ${package_manager} -y install epel-release \
+			python3 \
 			expect \
 			nano \
 			nodejs \
@@ -194,6 +149,10 @@ ${package_manager} -y install epel-release \
 			redis --enablerepo=remi \
 			java
 	
+curl -O https://bootstrap.pypa.io/get-pip.py
+python3 get-pip.py || true
+rm get-pip.py
+
 if [[ $PSQLExitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
 	yum -y install postgresql-upgrade
 	postgresql-setup --upgrade || true

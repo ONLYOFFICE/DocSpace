@@ -43,9 +43,7 @@ CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=ser
 
 SERVICE_NAME=(
 	api
-	api-system
 	urlshortener
-	thumbnails
 	socket
 	studio-notify
 	notify 
@@ -54,38 +52,30 @@ SERVICE_NAME=(
 	files-services
 	studio
 	backup
-	storage-encryption
-	storage-migration
 	telegram-service
 	ssoauth
+	webhooks-service
+	clear-events
+	backup-background
+	migration
 	)
 
 reassign_values (){
   case $1 in
 	api )
 		SERVICE_PORT="5000"
-		WORK_DIR="${BASE_DIR}/studio/api/"
+		WORK_DIR="${BASE_DIR}/studio/ASC.Web.Api/"
 		EXEC_FILE="ASC.Web.Api.dll"
 	;;
-	api-system )
-		SERVICE_PORT="5010"
-		WORK_DIR="${BASE_DIR}/services/ASC.ApiSystem/"
-		EXEC_FILE="ASC.ApiSystem.dll"
-	;;
 	urlshortener )
-		SERVICE_PORT="9998"
-		WORK_DIR="${BASE_DIR}/services/ASC.UrlShortener.Svc/"
-		EXEC_FILE="ASC.UrlShortener.Svc.dll"
-	;;
-	thumbnails )
-		SERVICE_PORT="9799"
-		WORK_DIR="${BASE_DIR}/services/ASC.Thumbnails.Svc/"
-		EXEC_FILE="ASC.Thumbnails.Svc.dll"
+		SERVICE_PORT="5029"
+		WORK_DIR="${BASE_DIR}/services/ASC.UrlShortener/"
+		EXEC_FILE="index.js"
 	;;
 	socket )
-		SERVICE_PORT="9898"
-		WORK_DIR="${BASE_DIR}/services/ASC.Socket.IO.Svc/"
-		EXEC_FILE="ASC.Socket.IO.Svc.dll"
+		SERVICE_PORT="5028"
+		WORK_DIR="${BASE_DIR}/services/ASC.Socket.IO/"
+		EXEC_FILE="server.js"
 	;;
 	studio-notify )
 		SERVICE_PORT="5006"
@@ -114,7 +104,7 @@ reassign_values (){
 	;;
 	studio )
 		SERVICE_PORT="5003"
-		WORK_DIR="${BASE_DIR}/studio/server/"
+		WORK_DIR="${BASE_DIR}/studio/ASC.Web.Studio/"
 		EXEC_FILE="ASC.Web.Studio.dll"
 	;;
 	backup )
@@ -122,30 +112,44 @@ reassign_values (){
 		WORK_DIR="${BASE_DIR}/services/ASC.Data.Backup/"
 		EXEC_FILE="ASC.Data.Backup.dll"
 	;;
-	storage-migration )
-		SERVICE_PORT="5018"
-		WORK_DIR="${BASE_DIR}/services/ASC.Data.Storage.Migration/"
-		EXEC_FILE="ASC.Data.Storage.Migration.dll"
-	;;
-	storage-encryption )
-		SERVICE_PORT="5019"
-		WORK_DIR="${BASE_DIR}/services/ASC.Data.Storage.Encryption/"
-		EXEC_FILE="ASC.Data.Storage.Encryption.dll"
-	;;
 	telegram-service )
 		SERVICE_PORT="51702"
 		WORK_DIR="${BASE_DIR}/services/ASC.TelegramService/"
 		EXEC_FILE="ASC.TelegramService.dll"
 	;;
 	ssoauth )
-		SERVICE_PORT="9833"
-		WORK_DIR="${BASE_DIR}/services/ASC.SsoAuth.Svc/"
-		EXEC_FILE="ASC.SsoAuth.Svc.dll"
+		SERVICE_PORT="9834"
+		WORK_DIR="${BASE_DIR}/services/ASC.SsoAuth/"
+		EXEC_FILE="app.js"
+	;;
+	webhooks-service )
+		SERVICE_PORT="5031"
+		WORK_DIR="${BASE_DIR}/services/ASC.Webhooks.Service/"
+		EXEC_FILE="ASC.Webhooks.Service.dll"
+	;;
+	clear-events )
+		SERVICE_PORT="5027"
+		WORK_DIR="${BASE_DIR}/services/ASC.ClearEvents/"
+		EXEC_FILE="ASC.ClearEvents.dll"
+	;;
+	backup-background )
+		SERVICE_PORT="5032"
+		WORK_DIR="${BASE_DIR}/services/ASC.Data.Backup.BackgroundTasks/"
+		EXEC_FILE="ASC.Data.Backup.BackgroundTasks.dll"
+	;;
+	migration )
+		SERVICE_PORT="5018"
+		WORK_DIR="${BASE_DIR}/services/ASC.Migration/"
+		EXEC_FILE="ASC.Migration.dll"
 	;;
   esac
   SERVICE_NAME="$1"
-  EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
-  --'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
+  if [[ "${EXEC_FILE}" == *".js" ]]; then
+	EXEC_START="${WORK_DIR}${EXEC_FILE}"
+  else
+	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
+	--'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
+  fi
 }
 
 write_to_file () {

@@ -24,11 +24,6 @@ APP_PORT="80"
 DOCUMENT_SERVER_HOST="localhost";
 DOCUMENT_SERVER_PORT="8083";
 
-KAFKA_HOST="localhost"
-KAFKA_PORT="9092"
-ZOOKEEPER_HOST="localhost"
-ZOOKEEPER_PORT="2181"
-
 ELK_SHEME="http"
 ELK_HOST="localhost"
 ELK_PORT="9200"
@@ -65,34 +60,6 @@ while [ "$1" != "" ]; do
 		-dsp | --docsport )
 			if [ "$2" != "" ]; then
 				DOCUMENT_SERVER_PORT=$2
-				shift
-			fi
-		;;
-
-		-kh | --kafkahost )
-			if [ "$2" != "" ]; then
-				KAFKA_HOST=$2
-				shift
-			fi
-		;;
-
-		-kp | --kafkaport )
-			if [ "$2" != "" ]; then
-				KAFKA_PORT=$2
-				shift
-			fi
-		;;
-
-		-zkh | --zookeeperhost )
-			if [ "$2" != "" ]; then
-				ZOOKEEPER_HOST=$2
-				shift
-			fi
-		;;
-
-		-zkp | --zookeeperport )
-			if [ "$2" != "" ]; then
-				ZOOKEEPER_PORT=$2
 				shift
 			fi
 		;;
@@ -161,10 +128,6 @@ while [ "$1" != "" ]; do
 			echo "      -asp, --appsport                    ${PRODUCT} port (default 80)"
 			echo "      -dsh, --docshost                    document server ip"
 			echo "      -dsp, --docsport                    document server port (default 8083)"
-			echo "      -kh, --kafkahost                    kafka ip"
-			echo "      -kp, --kafkaport                    kafka port (default 9092)"
-			echo "      -zkh, --zookeeperhost               zookeeper ip"
-			echo "      -zkp, --zookeeperport               zookeeper port (default 2181)"
 			echo "      -esh, --elastichost                 elasticsearch ip"
 			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
 			echo "      -mysqlh, --mysqlhost                mysql server host"
@@ -221,10 +184,11 @@ restart_services() {
 	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
-	for SVC in nginx ${MYSQL_PACKAGE} ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
+	for SVC in nginx ${MYSQL_PACKAGE} elasticsearch ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
 	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
 	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
-	${PRODUCT}-storage-migration ${PRODUCT}-telegram-service elasticsearch $KAFKA_SERVICE $ZOOKEEPER_SERVICE
+	${PRODUCT}-storage-migration ${PRODUCT}-telegram-service ${PRODUCT}-webhooks-service ${PRODUCT}-clear-events \
+	${PRODUCT}-backup-background ${PRODUCT}-migration
 	do
 		systemctl enable $SVC >/dev/null 2>&1
 		systemctl restart $SVC
@@ -541,37 +505,6 @@ setup_elasticsearch() {
 	echo "OK"
 }
 
-setup_kafka() {
-
-	KAFKA_SERVICE=$(systemctl list-unit-files --no-legend "*kafka*" | grep -oE '[^ ]+.service')
-	ZOOKEEPER_SERVICE=$(systemctl list-unit-files --no-legend "*zookeeper*" | grep -oE '[^ ]+.service')
-
-	if [ -n ${KAFKA_SERVICE} ]; then
-
-		echo -n "Configuring kafka... "
-		
-		local KAFKA_DIR="$(grep -oP '(?<=ExecStop=).*(?=/bin)' $SYSTEMD_DIR/$KAFKA_SERVICE)"
-		local KAFKA_CONF="${KAFKA_DIR}/config"
-
-		#Change kafka config
-		sed -i "s/clientPort=.*/clientPort=${ZOOKEEPER_PORT}/g" $KAFKA_CONF/zookeeper.properties
-		sed -i "s/zookeeper.connect=.*/zookeeper.connect=${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT}/g" $KAFKA_CONF/server.properties
-		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/consumer.properties
-		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/connect-standalone.properties
-		sed -i "s/logger.kafka.controller=.*,/logger.kafka.controller=INFO,/g" $KAFKA_CONF/log4j.properties
-		sed -i "s/logger.state.change.logger=.*,/logger.state.change.logger=INFO,/g" $KAFKA_CONF/log4j.properties
-		if ! grep -q "DefaultEventHandler" $KAFKA_CONF/log4j.properties; then
-			echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
-		fi
-		
-		#Save kafka parameters in .json
-		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
-		
-		echo "OK"
-	fi
-
-}
-
 if command -v yum >/dev/null 2>&1; then
 	DIST="RedHat"
 	PACKAGE_MANAGER="rpm -q"
@@ -600,7 +533,5 @@ fi
 if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
     setup_elasticsearch
 fi
-
-setup_kafka
 
 restart_services
