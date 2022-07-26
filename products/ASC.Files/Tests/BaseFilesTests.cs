@@ -26,6 +26,11 @@
 
 
 
+using ASC.MessagingSystem.EF.Context;
+using ASC.Webhooks.Core.EF.Context;
+
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Files.Tests;
 
 class FilesApplication : WebApplicationFactory<Program>
@@ -83,7 +88,7 @@ public class MySetUpClass
                    {
                    });
 
-        Migrate(host.Services);
+        Migrate(host.Services, "ASC.Migrations.MySql");
         Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
 
         Scope = host.Services.CreateScope();
@@ -110,17 +115,29 @@ public class MySetUpClass
     {
         using var scope = serviceProvider.CreateScope();
 
-        if (!string.IsNullOrEmpty(testAssembly))
-        {
-            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-            configuration["testAssembly"] = testAssembly;
-        }
-
         using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-        db.Value.Migrate();
+        db.Value.MigrateAssembly = testAssembly;
+        db.Value.Database.Migrate();
 
         using var filesDb = scope.ServiceProvider.GetService<DbContextManager<Core.EF.FilesDbContext>>();
-        filesDb.Value.Migrate();
+        filesDb.Value.MigrateAssembly = testAssembly;
+        filesDb.Value.Database.Migrate();
+
+        using var messagesDb = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>();
+        messagesDb.Value.MigrateAssembly = testAssembly;
+        messagesDb.Value.Database.Migrate();
+
+        using var webHookDb = scope.ServiceProvider.GetService<DbContextManager<WebhooksDbContext>>();
+        webHookDb.Value.MigrateAssembly = testAssembly;
+        webHookDb.Value.Database.Migrate();
+
+        using var tenantDb = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+        tenantDb.Value.MigrateAssembly = testAssembly;
+        tenantDb.Value.Database.Migrate();
+
+        using var coreDb = scope.ServiceProvider.GetService<DbContextManager<CoreDbContext>>();
+        coreDb.Value.MigrateAssembly = testAssembly;
+        coreDb.Value.Database.Migrate();
     }
 }
 

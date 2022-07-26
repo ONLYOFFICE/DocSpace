@@ -55,7 +55,8 @@ public static class DbButtonExtension
             entity.HasKey(e => new { e.TariffId, e.PartnerId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("tenants_buttons");
+            entity.ToTable("tenants_buttons")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.TariffId).HasColumnName("tariff_id");
 

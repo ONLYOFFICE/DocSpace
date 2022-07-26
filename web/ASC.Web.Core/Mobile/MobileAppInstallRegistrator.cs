@@ -24,19 +24,17 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using DbContext = ASC.Core.Common.EF.Context.DbContext;
-
 namespace ASC.Web.Core.Mobile;
 
 [Scope]
 public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
 {
-    private readonly Lazy<DbContext> _lazyDbContext;
-    private DbContext DbContext { get => _lazyDbContext.Value; }
+    private readonly Lazy<CustomDbContext> _lazyDbContext;
+    private CustomDbContext DbContext { get => _lazyDbContext.Value; }
 
-    public MobileAppInstallRegistrator(DbContextManager<DbContext> dbContext)
+    public MobileAppInstallRegistrator(DbContextManager<CustomDbContext> dbContext)
     {
-        _lazyDbContext = new Lazy<DbContext>(() => dbContext.Value);
+        _lazyDbContext = new Lazy<CustomDbContext>(() => dbContext.Value);
     }
 
     public void RegisterInstall(string userEmail, MobileAppType appType)
