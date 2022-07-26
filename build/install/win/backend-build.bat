@@ -6,12 +6,7 @@ echo #####################
 
 pushd %~1
 
-  call dotnet build ASC.Web.sln
-
-  echo "== Build ASC.Thumbnails =="
-  pushd common\ASC.Thumbnails
-    call yarn install --frozen-lockfile
-  popd
+  call dotnet build ASC.Web.slnf
 
   echo "== Build ASC.UrlShortener =="
   pushd common\ASC.UrlShortener

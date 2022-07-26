@@ -28,10 +28,6 @@
     <ROW Property="ELASTICSEARCH_SCHEME" Value="http" ValueLocId="-"/>
     <ROW Property="ENVIRONMENT" Value="test"/>
     <ROW Property="INSTALL_ROOT_FOLDER_NAME" Value="[|Manufacturer]"/>
-    <ROW Property="KAFKA_HOST" Value="localhost"/>
-    <ROW Property="KAFKA_MSG" Value="Unable to connect to remote Kafka server at "/>
-    <ROW Property="KAFKA_PORT" Value="9092"/>
-    <ROW Property="KAFKA_SCHEME" Value="http"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3"/>
     <ROW Property="MYSQLODBCDRIVER" Value="MySQL ODBC 8.0 Unicode Driver"/>
     <ROW Property="Manufacturer" Value="Ascensio System SIA"/>
@@ -86,28 +82,27 @@
     <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
-    <ROW Property="ZOOKEEPER_HOST" Value="localhost"/>
-    <ROW Property="ZOOKEEPER_MSG" Value="Unable to connect to remote ZooKeeper server at "/>
-    <ROW Property="ZOOKEEPER_PORT" Value="2181"/>
-    <ROW Property="ZOOKEEPER_SCHEME" Value="http"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="ASC.ClearEvents_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.CLE|ASC.ClearEvents"/>
+    <ROW Directory="ASC.Data.Backup.BackgroundTasks_Dir" Directory_Parent="services_Dir" DefaultDir="ASCDAT~2.BAC|ASC.Data.Backup.BackgroundTasks"/>
     <ROW Directory="ASC.Data.Backup_Dir" Directory_Parent="services_Dir" DefaultDir="ASCDAT~1.BAC|ASC.Data.Backup"/>
     <ROW Directory="ASC.Files.Service_Dir" Directory_Parent="services_Dir" DefaultDir="ASCFIL~1.SER|ASC.Files.Service"/>
-    <ROW Directory="ASC.Files.Tests_Dir" Directory_Parent="services_Dir" DefaultDir="ASCFIL~1.TES|ASC.Files.Tests"/>
     <ROW Directory="ASC.Files_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.FIL|ASC.Files"/>
+    <ROW Directory="ASC.Migration_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.MIG|ASC.Migration"/>
     <ROW Directory="ASC.Notify_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.NOT|ASC.Notify"/>
     <ROW Directory="ASC.People_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.PEO|ASC.People"/>
     <ROW Directory="ASC.Socket.IO_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSOC~1.IO|ASC.Socket.IO"/>
     <ROW Directory="ASC.SsoAuth_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.SSO|ASC.SsoAuth"/>
     <ROW Directory="ASC.Studio.Notify_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSTU~1.NOT|ASC.Studio.Notify"/>
     <ROW Directory="ASC.TelegramService_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.TEL|ASC.TelegramService"/>
-    <ROW Directory="ASC.Thumbnails.Svc_Dir" Directory_Parent="services_Dir" DefaultDir="ASCTHU~1.SVC|ASC.Thumbnails.Svc"/>
     <ROW Directory="ASC.UrlShortener_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.URL|ASC.UrlShortener"/>
     <ROW Directory="ASC.Web.Api_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.API|ASC.Web.Api"/>
     <ROW Directory="ASC.Web.Studio_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.STU|ASC.Web.Studio"/>
+    <ROW Directory="ASC.Webhooks.Service_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.SER|ASC.Webhooks.Service"/>
     <ROW Directory="NewFolder_1_Dir" Directory_Parent="service_1_Dir" DefaultDir="config"/>
+    <ROW Directory="NewFolder_3_Dir" Directory_Parent="ASC.Webhooks.Service_Dir" DefaultDir="service"/>
     <ROW Directory="NewFolder_Dir" Directory_Parent="ASC.UrlShortener_Dir" DefaultDir="service"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="config_1_Dir" Directory_Parent="NewFolder_Dir" DefaultDir="config"/>
@@ -118,15 +113,16 @@
     <ROW Directory="server_5_Dir" Directory_Parent="ASC.People_Dir" DefaultDir="server"/>
     <ROW Directory="service_11_Dir" Directory_Parent="ASC.Studio.Notify_Dir" DefaultDir="service"/>
     <ROW Directory="service_12_Dir" Directory_Parent="ASC.TelegramService_Dir" DefaultDir="service"/>
-    <ROW Directory="service_13_Dir" Directory_Parent="ASC.Thumbnails.Svc_Dir" DefaultDir="service"/>
     <ROW Directory="service_15_Dir" Directory_Parent="ASC.Web.Api_Dir" DefaultDir="service"/>
     <ROW Directory="service_16_Dir" Directory_Parent="ASC.Web.Studio_Dir" DefaultDir="service"/>
     <ROW Directory="service_1_Dir" Directory_Parent="ASC.Socket.IO_Dir" DefaultDir="service"/>
     <ROW Directory="service_2_Dir" Directory_Parent="ASC.Data.Backup_Dir" DefaultDir="service"/>
+    <ROW Directory="service_3_Dir" Directory_Parent="ASC.Data.Backup.BackgroundTasks_Dir" DefaultDir="service"/>
+    <ROW Directory="service_4_Dir" Directory_Parent="ASC.Migration_Dir" DefaultDir="service"/>
     <ROW Directory="service_5_Dir" Directory_Parent="ASC.SsoAuth_Dir" DefaultDir="service"/>
     <ROW Directory="service_7_Dir" Directory_Parent="ASC.Files.Service_Dir" DefaultDir="service"/>
-    <ROW Directory="service_8_Dir" Directory_Parent="ASC.Files.Tests_Dir" DefaultDir="service"/>
     <ROW Directory="service_9_Dir" Directory_Parent="ASC.Notify_Dir" DefaultDir="service"/>
+    <ROW Directory="service_Dir" Directory_Parent="ASC.ClearEvents_Dir" DefaultDir="service"/>
     <ROW Directory="services_Dir" Directory_Parent="APPDIR" DefaultDir="services"/>
     <ROW Directory="tools_Dir" Directory_Parent="APPDIR" DefaultDir="tools"/>
   </COMPONENT>
@@ -138,15 +134,14 @@
     <ROW Component="ASC.Data.Backup.exe" ComponentId="{240665F1-DDCF-4FFB-ABEE-2F784ACD87E6}" Directory_="service_2_Dir" Attributes="256" KeyPath="ASC.Data.Backup.exe"/>
     <ROW Component="ASC.Files.Service.exe" ComponentId="{14D153CC-E7A6-4818-A310-9CE1F332DCDA}" Directory_="service_7_Dir" Attributes="256" KeyPath="ASC.Files.Service.exe"/>
     <ROW Component="ASC.Files.exe" ComponentId="{4D48DD81-BABF-4E1C-A216-C72C1EA8428B}" Directory_="server_2_Dir" Attributes="256" KeyPath="ASC.Files.exe"/>
-    <ROW Component="ASC.Files.exe_1" ComponentId="{1FCFC78C-9BF5-412A-AA03-732736177E66}" Directory_="service_8_Dir" Attributes="256" KeyPath="ASC.Files.exe_1"/>
     <ROW Component="ASC.Notify.exe" ComponentId="{7457E31A-B6FC-4A71-A5C0-174C9E965051}" Directory_="service_9_Dir" Attributes="256" KeyPath="ASC.Notify.exe"/>
     <ROW Component="ASC.People.exe" ComponentId="{044D57BC-8BAC-4D64-AB36-141BAA1F2E15}" Directory_="server_5_Dir" Attributes="256" KeyPath="ASC.People.exe"/>
     <ROW Component="ASC.Studio.Notify.exe" ComponentId="{AFB3D13A-4F5B-46E1-8819-3517A228C22B}" Directory_="service_11_Dir" Attributes="256" KeyPath="ASC.Studio.Notify.exe"/>
     <ROW Component="ASC.TelegramService.exe" ComponentId="{475A1DBC-3864-434E-86E2-497D70D39BDE}" Directory_="service_12_Dir" Attributes="256" KeyPath="ASC.TelegramService.exe"/>
-    <ROW Component="ASC.Thumbnails.Svc.exe" ComponentId="{4ACF16C8-A598-4036-BA3B-6B60D4D8BD2B}" Directory_="service_13_Dir" Attributes="256" KeyPath="ASC.Thumbnails.Svc.exe"/>
     <ROW Component="ASC.Web.Api.exe" ComponentId="{E726DF21-2E7E-4C62-8F6E-C63C65B041EC}" Directory_="service_15_Dir" Attributes="256" KeyPath="ASC.Web.Api.exe"/>
     <ROW Component="ASC.Web.Studio.exe" ComponentId="{00F95035-98D9-44AD-9DB4-B34306EE2170}" Directory_="service_16_Dir" Attributes="256" KeyPath="ASC.Web.Studio.exe"/>
     <ROW Component="NewFolder" ComponentId="{4F28A197-AD56-48D0-9E97-9F88A73BE24E}" Directory_="NewFolder_1_Dir" Attributes="0"/>
+    <ROW Component="NewFolder_2" ComponentId="{62016060-CE5E-439A-9240-96CA50E2B58D}" Directory_="NewFolder_3_Dir" Attributes="0"/>
     <ROW Component="ProductInformation" ComponentId="{5FB28D19-6A7D-4078-901F-58C2DF0DE176}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
     <ROW Component="Socket.IO.exe" ComponentId="{D08CDE1C-FB16-49AB-98A2-92FD887774F1}" Directory_="tools_Dir" Attributes="0" KeyPath="Socket.IO.exe"/>
     <ROW Component="SsoAuth.exe" ComponentId="{B4A48C44-5FC0-43D8-9CFB-EB4A4AAB4169}" Directory_="tools_Dir" Attributes="0" KeyPath="SsoAuth.exe"/>
@@ -156,6 +151,9 @@
     <ROW Component="config_2" ComponentId="{D51A4591-143D-4C91-8665-BED153555AC0}" Directory_="config_2_Dir" Attributes="0"/>
     <ROW Component="proxy.exe" ComponentId="{913596AD-5C75-4418-8C3A-FAB2A70530DB}" Directory_="tools_Dir" Attributes="0" KeyPath="proxy.exe"/>
     <ROW Component="proxy.xml" ComponentId="{92B2BA6A-009B-4731-A0E2-A6C729DC8A68}" Directory_="tools_Dir" Attributes="0" KeyPath="proxy.xml" Type="0"/>
+    <ROW Component="service" ComponentId="{A20D3AF2-C5E4-46B1-A3F9-967AA7D3B63C}" Directory_="service_Dir" Attributes="0"/>
+    <ROW Component="service_1" ComponentId="{2F224196-1BF9-4407-BD5C-3E868EE04446}" Directory_="service_3_Dir" Attributes="0"/>
+    <ROW Component="service_2" ComponentId="{33FDD967-D119-4937-A701-1E2D663982F2}" Directory_="service_4_Dir" Attributes="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
@@ -166,11 +164,9 @@
     <ROW File="ASC.People.exe" Component_="ASC.People.exe" FileName="ASCPEO~1.EXE|ASC.People.exe" Attributes="0" SourcePath="Files\products\ASC.People\server\ASC.People.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Data.Backup.exe" Component_="ASC.Data.Backup.exe" FileName="ASCDAT~1.EXE|ASC.Data.Backup.exe" Attributes="0" SourcePath="Files\services\ASC.Data.Backup\service\ASC.Data.Backup.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Files.Service.exe" Component_="ASC.Files.Service.exe" FileName="ASCFIL~1.EXE|ASC.Files.Service.exe" Attributes="0" SourcePath="Files\services\ASC.Files.Service\service\ASC.Files.Service.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="ASC.Files.exe_1" Component_="ASC.Files.exe_1" FileName="ASCFIL~1.EXE|ASC.Files.exe" Attributes="0" SourcePath="Files\services\ASC.Files.Tests\service\ASC.Files.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Notify.exe" Component_="ASC.Notify.exe" FileName="ASCNOT~1.EXE|ASC.Notify.exe" Attributes="0" SourcePath="Files\services\ASC.Notify\service\ASC.Notify.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Studio.Notify.exe" Component_="ASC.Studio.Notify.exe" FileName="ASCSTU~1.EXE|ASC.Studio.Notify.exe" Attributes="0" SourcePath="Files\services\ASC.Studio.Notify\service\ASC.Studio.Notify.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.TelegramService.exe" Component_="ASC.TelegramService.exe" FileName="ASCTEL~1.EXE|ASC.TelegramService.exe" Attributes="0" SourcePath="Files\services\ASC.TelegramService\service\ASC.TelegramService.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="ASC.Thumbnails.Svc.exe" Component_="ASC.Thumbnails.Svc.exe" FileName="ASCTHU~1.EXE|ASC.Thumbnails.Svc.exe" Attributes="0" SourcePath="Files\services\ASC.Thumbnails.Svc\service\ASC.Thumbnails.Svc.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Web.Studio.exe" Component_="ASC.Web.Studio.exe" FileName="ASCWEB~1.EXE|ASC.Web.Studio.exe" Attributes="0" SourcePath="Files\services\ASC.Web.Studio\service\ASC.Web.Studio.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Web.Api.exe" Component_="ASC.Web.Api.exe" FileName="ASCWEB~1.EXE|ASC.Web.Api.exe" Attributes="0" SourcePath="Files\services\ASC.Web.Api\service\ASC.Web.Api.exe" SelfReg="false" DigSign="true"/>
     <ROW File="proxy.exe" Component_="proxy.exe" FileName="ONLYO~13.EXE|proxy.exe" Attributes="0" SourcePath="Files\tools\proxy.exe" SelfReg="false" DigSign="true"/>
@@ -294,20 +290,6 @@
     <ROW Dialog_="FolderDlg" Control="Text" Type="Text" X="25" Y="70" Width="320" Height="40" Attributes="3" Text="To install in this folder, click &quot;[Text_Next]&quot;. To install to a different folder, enter it below or click &quot;Browse&quot;." Order="1000" TextLocId="Control.Text.FolderDlg#Text" MsiKey="FolderDlg#Text"/>
     <ROW Dialog_="FolderDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="This is the folder where [ProductName] will be installed." Order="1100" TextLocId="Control.Text.FolderDlg#Description" MsiKey="FolderDlg#Description"/>
     <ROW Dialog_="FolderDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="1200" MsiKey="FolderDlg#BannerLine"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Order="100" Options="1"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Order="200" Options="1"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" Options="1"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="[BannerBitmap]" Order="400"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Настройка подключения Kafka..." Order="700"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Kafka настройки подключения" TextStyle="[DlgTitleFont]" Order="800"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="900"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1000"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1100"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="ProtocolEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="KAFKA_SCHEME" Text="{5}" Order="1200"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="3" Property="KAFKA_HOST" Text="[ComputerName]" Order="1300"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="19" Property="KAFKA_PORT" Text="{7}" Order="1400"/>
     <ROW Dialog_="MaintenanceTypeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="700" TextLocId="-" MsiKey="MaintenanceTypeDlg#Back" Options="1"/>
     <ROW Dialog_="MaintenanceWelcomeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="MaintenanceWelcomeDlg#Back" Options="1"/>
     <ROW Dialog_="PatchWelcomeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="PatchWelcomeDlg#Back" Options="1"/>
@@ -381,20 +363,6 @@
     <ROW Dialog_="VerifyRepairDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="600" TextLocId="-" MsiKey="VerifyRepairDlg#Back" Options="1"/>
     <ROW Dialog_="WelcomeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="WelcomeDlg#Back" Options="1"/>
     <ROW Dialog_="WelcomePrereqDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="300" TextLocId="-" MsiKey="WelcomePrereqDlg#Back" Options="1"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Order="100" Options="1"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Order="200" Options="1"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" Options="1"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="[BannerBitmap]" Order="400"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Настройка подключения ZooKeeper..." Order="700"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="ZooKeeper настройки подключения" TextStyle="[DlgTitleFont]" Order="800"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="900"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1000"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1100"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="ProtocolEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="ZOOKEEPER_SCHEME" Text="{5}" Order="1200"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="3" Property="ZOOKEEPER_HOST" Text="[ComputerName]" Order="1300"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="19" Property="ZOOKEEPER_PORT" Text="{7}" Order="1400"/>
     <ATTRIBUTE name="DeletedRows" value="FolderDlg#Logo@ProgressDlg#Logo@SQLConnectionDlg#Logo@SQLConnectionDlg#OdbcResourceEdit@SQLConnectionDlg#OdbcResourceLabel@SQLConnectionDlg.aip@VerifyReadyDlg#Logo"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
@@ -402,7 +370,7 @@
     <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="212"/>
     <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="197"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( KAFKA_CONNECTION = &quot;False&quot; )" Ordering="203"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( KAFKA_CONNECTION = &quot;False&quot; )" Ordering="203"/>
     <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="99"/>
     <ROW Dialog_="CustomizeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_MAINT" Ordering="101"/>
     <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
@@ -434,9 +402,9 @@
     <ROW Dialog_="SQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="2"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="1"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="17"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="23"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="23"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="201"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="218"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; )" Ordering="218"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="1"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND (OLDPRODUCTS = &quot;&quot; )" Ordering="201"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="202"/>
@@ -456,41 +424,11 @@
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL AND SqlConnectionError = &quot;&quot;" Ordering="203"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL AND SqlConnectionError = &quot;&quot;" Ordering="202"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; )" Ordering="213"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="7"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Back" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( RedisServerConnectionError = &quot;&quot; )" Ordering="3"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Back" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( ZK_CONNECTION = &quot;False&quot; )" Ordering="3"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="1"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="1"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="2"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="2"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnection" Condition="AI_INSTALL" Ordering="13"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_4" Condition="AI_INSTALL" Ordering="12"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnection" Condition="AI_INSTALL" Ordering="15"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_15" Condition="AI_INSTALL" Ordering="14"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="21"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="22"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="216"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="217"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="209"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_4" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="208"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="211"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_15" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="210"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnection" Condition="AI_INSTALL" Ordering="3"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_4" Condition="AI_INSTALL" Ordering="2"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnectionMsgBox" Condition="AI_INSTALL AND ( ZK_CONNECTION = &quot;False&quot; )" Ordering="5"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_14" Condition="AI_INSTALL AND ( ZK_CONNECTION = &quot;False&quot; )" Ordering="4"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnection" Condition="AI_INSTALL" Ordering="4"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_15" Condition="AI_INSTALL" Ordering="3"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnectionMsgBox" Condition="AI_INSTALL AND ( KAFKA_CONNECTION = &quot;False&quot; )" Ordering="6"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_16" Condition="AI_INSTALL AND ( KAFKA_CONNECTION = &quot;False&quot; )" Ordering="5"/>
     <ROW Dialog_="RabbitMQConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
-    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="6"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="11"/>
     <ROW Dialog_="RabbitMQConnectionDlg" Control_="Back" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( ELK_CONNECTION = &quot;False&quot; )" Ordering="3"/>
     <ROW Dialog_="RedisServerConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
-    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="5"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; )" Ordering="5"/>
     <ROW Dialog_="RedisServerConnectionDlg" Control_="Back" Event="NewDialog" Argument="RabbitMQConnectionDlg" Condition="AI_INSTALL AND ( RabbitMQServerConnectionError = &quot;&quot; )" Ordering="3"/>
     <ROW Dialog_="RabbitMQConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="2"/>
     <ROW Dialog_="RedisServerConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="2"/>
@@ -506,26 +444,16 @@
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestRedisServerConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="207"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="RabbitMQConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="5"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="6"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="7"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="9"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="10"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; )" Ordering="10"/>
     <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="6"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="7"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="9"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="10"/>
-    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnectionMsgBox" Condition="AI_INSTALL" Ordering="2"/>
-    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_16" Condition="AI_INSTALL" Ordering="1"/>
-    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRabbitMQConnectionMsgBox" Condition="AI_INSTALL AND ( RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="4"/>
-    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_18" Condition="AI_INSTALL AND ( RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="3"/>
-    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="7"/>
-    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="9"/>
-    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="10"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; )" Ordering="10"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRabbitMQConnectionMsgBox" Condition="AI_INSTALL AND ( RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="10"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_18" Condition="AI_INSTALL AND ( RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="9"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; )" Ordering="12"/>
     <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRedisServerConnection" Condition="AI_INSTALL" Ordering="2"/>
     <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRedisServerConnectionMsgBox" Condition="AI_INSTALL AND ( RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="4"/>
     <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_17" Condition="AI_INSTALL AND ( RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="3"/>
-    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="7"/>
-    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRabbitMQServerConnection" Condition="AI_INSTALL" Ordering="8"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
     <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="true"/>
@@ -533,6 +461,10 @@
     <ROW Directory_="config_1_Dir" Component_="config_1" ManualDelete="false"/>
     <ROW Directory_="config_2_Dir" Component_="config_2" ManualDelete="false"/>
     <ROW Directory_="NewFolder_1_Dir" Component_="NewFolder" ManualDelete="false"/>
+    <ROW Directory_="NewFolder_3_Dir" Component_="NewFolder_2" ManualDelete="false"/>
+    <ROW Directory_="service_Dir" Component_="service" ManualDelete="false"/>
+    <ROW Directory_="service_3_Dir" Component_="service_1" ManualDelete="false"/>
+    <ROW Directory_="service_4_Dir" Component_="service_2" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
@@ -544,16 +476,12 @@
     <ROW Action="AI_DATA_SETTER_11" Type="51" Source="CustomActionData" Target="MySQL80"/>
     <ROW Action="AI_DATA_SETTER_12" Type="51" Source="CustomActionData" Target="Elasticsearch"/>
     <ROW Action="AI_DATA_SETTER_13" Type="51" Source="StartElasticSearchService" Target="Elasticsearch"/>
-    <ROW Action="AI_DATA_SETTER_14" Type="51" Source="CustomActionData" Target="[ZOOKEEPER_MSG]&#13;\n[ZOOKEEPER_SCHEME]://[ZOOKEEPER_HOST]:[ZOOKEEPER_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
-    <ROW Action="AI_DATA_SETTER_15" Type="51" Source="CustomActionData" Target="HOST=[KAFKA_HOST];PORT=[KAFKA_PORT];OUTPUT=KAFKA_CONNECTION"/>
-    <ROW Action="AI_DATA_SETTER_16" Type="51" Source="CustomActionData" Target="[RabbitMQServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_17" Type="51" Source="CustomActionData" Target="[RedisServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_18" Type="51" Source="CustomActionData" Target="[RabbitMQServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_19" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_2" Type="51" Source="CustomActionData" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DATA_SETTER_20" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_3" Type="51" Source="CustomActionData" Target="[~]"/>
-    <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="HOST=[ZOOKEEPER_HOST];PORT=[ZOOKEEPER_PORT];OUTPUT=ZK_CONNECTION"/>
     <ROW Action="AI_DATA_SETTER_5" Type="51" Source="CustomActionData" Target="[RedisServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_6" Type="51" Source="CustomActionData" Target="[APPDIR_FORWARD_SLASH]"/>
     <ROW Action="AI_DATA_SETTER_7" Type="51" Source="CustomActionData" Target="[~]"/>
@@ -597,7 +525,6 @@
     <ROW Action="AI_TxtUpdaterConfig" Type="11265" Source="TxtUpdater.dll" Target="OnTxtUpdaterConfig" WithoutSeq="true"/>
     <ROW Action="AI_TxtUpdaterInstall" Type="1" Source="TxtUpdater.dll" Target="OnTxtUpdaterInstall"/>
     <ROW Action="AI_TxtUpdaterRollback" Type="11521" Source="TxtUpdater.dll" Target="OnTxtUpdaterRollback" WithoutSeq="true"/>
-    <ROW Action="ChangeSlashesScript" Type="38" Target="Script Text" TargetUnformatted="Session.Property(&quot;APPDIR_FORWARD_SLASH&quot;) = Replace(Session.Property(&quot;APPDIR_FORWARD_SLASH&quot;), &quot;\&quot;, &quot;/&quot;)&#13;&#10;" AdditionalSeq="AI_DATA_SETTER_6"/>
     <ROW Action="DetectMySQLService" Type="1" Source="aicustact.dll" Target="DetectProcess" Options="3" AdditionalSeq="AI_DATA_SETTER_9"/>
     <ROW Action="ElasticSearchInstallPlugin" Type="1030" Source="utils.vbs" Target="ElasticSearchInstallPlugin"/>
     <ROW Action="ElasticSearchSetup" Type="6" Source="utils.vbs" Target="ElasticSearchSetup"/>
@@ -606,34 +533,24 @@
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][INSTALL_ROOT_FOLDER_NAME]\AppServer"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]" MultiBuildTarget="DefaultBuild:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\AppServer"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
-    <ROW Action="SetPropertyAppDirConf" Type="51" Source="APPDIR_FORWARD_SLASH" Target="[APPDIR]"/>
+    <ROW Action="Set_APPDIR_FORWARD_SLASH" Type="38" Target="Script Text" TargetUnformatted="Session.Property(&quot;APPDIR_FORWARD_SLASH&quot;) = Replace(Session.Property(&quot;APPDIR&quot;), &quot;\&quot;, &quot;/&quot;)&#13;&#10;" AdditionalSeq="AI_DATA_SETTER_6"/>
     <ROW Action="StartElasticSearchService" Type="3073" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_13"/>
     <ROW Action="StartMySQLService" Type="1" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_11"/>
     <ROW Action="StopElasticSearchService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_12"/>
     <ROW Action="StopMySQLService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_10"/>
     <ROW Action="TestElasticsearchConnection" Type="1" Source="Utils.CA.dll" Target="CheckTCPAvailability" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_1"/>
     <ROW Action="TestElasticsearchConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER"/>
-    <ROW Action="TestKafkaConnection" Type="1" Source="Utils.CA.dll" Target="CheckTCPAvailability" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_15"/>
-    <ROW Action="TestKafkaConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_16"/>
     <ROW Action="TestRabbitMQConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_18"/>
     <ROW Action="TestRabbitMQServerConnection" Type="1" Source="Utils.CA.dll" Target="TestRabbitMQConnection" WithoutSeq="true"/>
     <ROW Action="TestRedisServerConnection" Type="1" Source="Utils.CA.dll" Target="TestRedisServerConnection" WithoutSeq="true"/>
     <ROW Action="TestRedisServerConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_17"/>
     <ROW Action="TestSQLConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_5"/>
     <ROW Action="TestSqlConnection" Type="6" Source="utils.vbs" Target="TestSqlConnection" WithoutSeq="true"/>
-    <ROW Action="TestZookeeperConnection" Type="1" Source="Utils.CA.dll" Target="CheckTCPAvailability" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_4"/>
-    <ROW Action="TestZookeeperConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_14"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDialogComponent">
     <ROW Dialog="ELKConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
-    <ROW Dialog="KAFKAConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
     <ROW Dialog="RabbitMQConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
     <ROW Dialog="RedisServerConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
-    <ROW Dialog="ZKConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiEnvComponent">
-    <ROW Environment="JAVA_HOME" Name="=-*JAVA_HOME" Value="[WindowsVolume]Progra~1\Elastic\Elasticsearch\7.13.1\jdk" Component_="AI_ExePath"/>
-    <ROW Environment="Path" Name="=*Path" Value="[~];%JAVA_HOME%\bin" Component_="AI_ExePath"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiEventMappingComponent">
     <ROW Dialog_="RabbitMQConnectionDlg" Control_="PasswordLabel" Event="ActionData" Attribute="Visible"/>
@@ -645,11 +562,9 @@
     <ROW Feature_="MainFeature" Component_="ASC.People.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Data.Backup.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Files.Service.exe"/>
-    <ROW Feature_="MainFeature" Component_="ASC.Files.exe_1"/>
     <ROW Feature_="MainFeature" Component_="ASC.Notify.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Studio.Notify.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.TelegramService.exe"/>
-    <ROW Feature_="MainFeature" Component_="ASC.Thumbnails.Svc.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Web.Studio.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Files.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Web.Api.exe"/>
@@ -664,6 +579,10 @@
     <ROW Feature_="MainFeature" Component_="config_1"/>
     <ROW Feature_="MainFeature" Component_="config_2"/>
     <ROW Feature_="MainFeature" Component_="NewFolder"/>
+    <ROW Feature_="MainFeature" Component_="service"/>
+    <ROW Feature_="MainFeature" Component_="service_2"/>
+    <ROW Feature_="MainFeature" Component_="NewFolder_2"/>
+    <ROW Feature_="MainFeature" Component_="service_1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="icon.exe" SourcePath="Resources\icon.ico" Index="0"/>
@@ -691,7 +610,6 @@
     <ROW Action="AI_ProcessFailActions" Sequence="5848"/>
     <ROW Action="AI_DATA_SETTER_3" Sequence="5847"/>
     <ROW Action="AI_TxtUpdaterInstall" Sequence="5103"/>
-    <ROW Action="SetPropertyAppDirConf" Condition="( NOT Installed )" Sequence="1614"/>
     <ROW Action="AI_JsonInstall" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5102"/>
     <ROW Action="AI_DATA_SETTER_7" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5101"/>
     <ROW Action="AI_JsonUninstall" Condition="(REMOVE)" Sequence="3102"/>
@@ -700,8 +618,8 @@
     <ROW Action="AI_DATA_SETTER_10" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1604"/>
     <ROW Action="StartMySQLService" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1607"/>
     <ROW Action="AI_DATA_SETTER_11" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1606"/>
-    <ROW Action="ChangeSlashesScript" Condition="( NOT Installed )" Sequence="1616"/>
-    <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="1615"/>
+    <ROW Action="Set_APPDIR_FORWARD_SLASH" Condition="( NOT Installed )" Sequence="1615"/>
+    <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="1614"/>
     <ROW Action="MySQLConfigure" Condition="( NOT Installed )" Sequence="1601"/>
     <ROW Action="DetectMySQLService" Condition="( ( NOT Installed AND NOT OLDPRODUCTS ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="1603"/>
     <ROW Action="AI_DATA_SETTER_9" Condition="( ( NOT Installed AND NOT OLDPRODUCTS ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="1602"/>
@@ -777,7 +695,7 @@
     <ROW MsiServiceConfig="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ConfigType="3" Argument="1" Component_="SsoAuth.exe"/>
     <ROW MsiServiceConfig="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Studio.Notify.exe"/>
     <ROW MsiServiceConfig="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.TelegramService.exe"/>
-    <ROW MsiServiceConfig="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Thumbnails.Svc.exe"/>
+    <ROW MsiServiceConfig="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="1" ConfigType="3" Argument="1" Component_="Socket.IO.exe"/>
     <ROW MsiServiceConfig="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ConfigType="3" Argument="1" Component_="UrlShortener.exe"/>
     <ROW MsiServiceConfig="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Api.exe"/>
     <ROW MsiServiceConfig="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Studio.exe"/>
@@ -793,7 +711,7 @@
     <ROW MsiServiceConfigFailureActions="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="SsoAuth.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Studio.Notify.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.TelegramService.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Thumbnails.Svc.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Socket.IO.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="UrlShortener.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Api.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Studio.exe"/>
@@ -809,7 +727,7 @@
     <ROW ServiceControl="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="161" Wait="0" Component_="SsoAuth.exe"/>
     <ROW ServiceControl="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="161" Wait="0" Component_="ASC.Studio.Notify.exe"/>
     <ROW ServiceControl="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="161" Wait="0" Component_="ASC.TelegramService.exe"/>
-    <ROW ServiceControl="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="161" Wait="0" Component_="ASC.Thumbnails.Svc.exe"/>
+    <ROW ServiceControl="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="161" Wait="0" Component_="Socket.IO.exe"/>
     <ROW ServiceControl="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="161" Wait="0" Component_="UrlShortener.exe"/>
     <ROW ServiceControl="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="161" Wait="0" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceControl="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="161" Wait="0" Component_="ASC.Web.Studio.exe"/>
@@ -825,7 +743,6 @@
     <ROW ServiceInstall="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" DisplayName="[ServiceName_SsoAuth]" ServiceType="16" StartType="2" ErrorControl="1" Component_="SsoAuth.exe"/>
     <ROW ServiceInstall="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" DisplayName="[ServiceName_StudioNotifyService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5006 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_StudioNotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Studio.Notify.exe"/>
     <ROW ServiceInstall="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" DisplayName="[ServiceName_TelegramService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:51702 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_TelegramService]" Component_="ASC.TelegramService.exe"/>
-    <ROW ServiceInstall="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" DisplayName="[ServiceName_Thumbnails]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:9799 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_Thumbnails]" Component_="ASC.Thumbnails.Svc.exe"/>
     <ROW ServiceInstall="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" DisplayName="[ServiceName_UrlShortenerService]" ServiceType="16" StartType="2" ErrorControl="1" Component_="UrlShortener.exe"/>
     <ROW ServiceInstall="ServiceName_WebApi" Name="[ServiceName_WebApi]" DisplayName="[ServiceName_WebApi]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5000 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebApi]" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceInstall="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" DisplayName="[ServiceName_WebStudio]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5003 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebStudio]" Component_="ASC.Web.Studio.exe"/>
@@ -840,8 +757,6 @@
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
     <ROW PrereqKey="A918597FE054CCCB65ABDBA0AD8F63C" DisplayName="Visual C++ Redistributable for Visual Studio 2015-2019 x86" VersionMin="14.26" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/d60aa805-26e9-47df-b4e3-cd6fcc392333/A06AAC66734A618AB33C1522920654DDFC44FC13CAFAA0F0AB85B199C3D51DC0/VC_redist.x86.exe" Location="1" ExactSize="14413048" WinNTVersions="Windows Vista RTM x86, Windows Vista SP1 x86, Windows Server 2008 RTM x86, Windows 7 RTM x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64, Windows Server 2008 RTM x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64" Operator="0" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" MD5="fe6eae1c34528d1ea224569dcdc35618" TargetName="Visual C++ Redistributable for Visual Studio 2015-2019"/>
     <ROW PrereqKey="A9D0C6C76E024A7A84C9B69789BFB916" DisplayName="ASP.NET Core Runtime 6.0.0 x86" VersionMin="6.0" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/7f757d80-b065-430e-ba65-7e95c3ec95e1/4d0335985f09db0650bbf9efe773f46c/aspnetcore-runtime-6.0.0-win-x86.exe" Location="1" ExactSize="8122576" WinNTVersions="Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 8 x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" MD5="5fe23a4a4752deb2218b95cc84557429" TargetName="ASP.NET Core 6.0"/>
-    <ROW PrereqKey="ApacheKafka" DisplayName="Apache Kafka" VersionMin="1.0.0" SetupFileUrl="Apache Kafka.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/qn /norestart" BasicUiComLine="/qn /norestart" NoUiComLine="/qn /norestart" Options="y" TargetName="Apache Kafka\Apache Kafka.msi"/>
-    <ROW PrereqKey="ApacheZooKepper" DisplayName="Apache ZooKepper" VersionMin="1.0.0" SetupFileUrl="Apache ZooKeeper.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/qn /norestart" BasicUiComLine="/qn /norestart" NoUiComLine="/qn /norestart" Options="y" TargetName="Apache ZooKepper\Apache ZooKeeper.msi"/>
     <ROW PrereqKey="B365F790B0C4E08A90D54675D858A21" DisplayName=".NET Core Runtime 3.1.10 x64" VersionMin="3.1" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/9845b4b0-fb52-48b6-83cf-4c431558c29b/41025de7a76639eeff102410e7015214/dotnet-runtime-3.1.10-win-x64.exe" Location="1" ExactSize="26230496" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" MD5="a6e46b0e884ba62316560e3bd17384a5" TargetName=".NET Core 3.1"/>
     <ROW PrereqKey="B450414DF7494F99141402B8725A7C" DisplayName=".NET Core Runtime 3.1.10 x86" VersionMin="3.1" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/abb3fb5d-4e82-4ca8-bc03-ac13e988e608/b34036773a72b30c5dc5520ee6a2768f/dotnet-runtime-3.1.10-win-x86.exe" Location="1" ExactSize="23451472" WinNTVersions="Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 8 x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" MD5="03832c85bc74de4fcb7fffa862b9f4a5" TargetName=".NET Core 3.1"/>
     <ROW PrereqKey="B96F93FA27E74B02866727AAE83982D0" DisplayName=".NET Framework 4.8" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/014120d7-d689-4305-befd-3cb711108212/0fd66638cde16859462a6243a4629a50/ndp48-x86-x64-allos-enu.exe" Location="1" ExactSize="117380440" WinNTVersions="Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 8 x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86, Windows 10 version 1903 x86, Windows 10 version 1909 x86, Windows 10 version 2004 x86, Windows 10 version 20H2 x86, Windows 10 version 21H1 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 8 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64, Windows 10 version 1903 x64, Windows 10 version 1909 x64, Windows 10 version 2004 x64, Windows 10 version 20H2 x64, Windows 10 version 21H1 x64" Operator="1" ComLine="/q" BasicUiComLine="/q" NoUiComLine="/q" Options="xym" MD5="aebcb9fcafa2becf8bb30458a7e1f0a2" TargetName=".NET Framework 4.8"/>
@@ -852,7 +767,6 @@
     <ROW PrereqKey="E25D6A62194038942640BDE651049C" DisplayName="ASP.NET Core Runtime 6.0.0 x64" VersionMin="6.0" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/3223fa10-441d-406b-af2e-94874ce38199/09347f9b4aea0ab34d6944b6b78fa29d/aspnetcore-runtime-6.0.0-win-x64.exe" Location="1" ExactSize="8897224" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="xym" MD5="27ec1b4780b035ac230399c120280a5e" TargetName="ASP.NET Core 6.0"/>
     <ROW PrereqKey="E92D3665B5E468A8661F6547C8C142C" DisplayName=".NET Runtime 6.0.0 x86" VersionMin="6.0" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/34df41d5-c813-4e30-8aa3-3603ce6600c0/976e801af82c7108abbcb736a8bc5c14/dotnet-runtime-6.0.0-win-x86.exe" Location="1" ExactSize="25750728" WinNTVersions="Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 8 x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" MD5="d8033ef93d3a003691f3046ea013447c" TargetName=".NET 6.0"/>
     <ROW PrereqKey="Erlangv20.3x64" DisplayName="Erlang v20.3 x64" VersionMin="20.3" SetupFileUrl="http://download.onlyoffice.com/install/windows/enterprise/otp_win64_20.3.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="ym" TargetName="Erlang v20.3 x64"/>
-    <ROW PrereqKey="F6D8148C0594E7491C36E27FD5E9E89" DisplayName="Oracle Java SE Runtime Environment 8u281 x64" VersionMin="1.8" SetupFileUrl="https://javadl.oracle.com/webapps/download/AutoDL?BundleId=244068_89d678f2be164786b292527658ca1605" Location="1" ExactSize="83548808" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64" Operator="0" ComLine="/s" BasicUiComLine="/s" NoUiComLine="/s" Options="xym" MD5="c6136758f1fec04a2f7f01249280c315" TargetName="Oracle Java SE Runtime Environment?jre-8u281-windows-x64.exe"/>
     <ROW PrereqKey="MySQLInstallerRunn" DisplayName="MySQL Installer Runner 8.0.21 x86" SetupFileUrl="MySQL Installer Runner.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/VERYSILENT /PASSWORD_PROP=&quot;root&quot; /MYSQL_VERSION=&quot;8.0.21&quot;" BasicUiComLine="/VERYSILENT /PASSWORD_PROP=&quot;root&quot; /MYSQL_VERSION=&quot;8.0.21&quot;" NoUiComLine="/VERYSILENT /PASSWORD_PROP=&quot;root&quot; /MYSQL_VERSION=&quot;8.0.21&quot;" Options="y" TargetName="MySQL Installer Runner                                      \MySQL Installer Runner.exe" ParentPrereq="RequiredApplication_2"/>
     <ROW PrereqKey="RequiredApplication" DisplayName="MySQL Connector/ODBC 8.0.21 x86" SetupFileUrl="https://dev.mysql.com/get/Downloads/Connector-ODBC/8.0/mysql-connector-odbc-8.0.21-win32.msi" Location="1" ExactSize="0" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="MySQL Connector ODBC 8.0.21 x86"/>
     <ROW PrereqKey="RequiredApplication_1" DisplayName="Node.js 14.17.4" VersionMin="14.17.4" SetupFileUrl="https://nodejs.org/dist/v14.17.4/node-v14.17.4-x64.msi" Location="1" ExactSize="0" Operator="0" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="my" TargetName="Node.js v14.17.4 x64"/>
@@ -860,7 +774,7 @@
     <ROW PrereqKey="RequiredApplication_4" DisplayName="Elasticsearch v7.13.1 x64" VersionMin="7.13.1" VersionMax="7.13.1" SetupFileUrl="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.13.1.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="Elasticsearch v7.13.1 x64"/>
     <ROW PrereqKey="RequiredApplication_5" DisplayName="RabbitMQ v3.7.4 x64" VersionMin="3.7.4" SetupFileUrl="https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.7.4/rabbitmq-server-3.7.4.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yxm" TargetName="RabbitMQ v3.7.4 x64"/>
     <ROW PrereqKey="RequiredApplication_6" DisplayName="Redis 5.0.10 x64" VersionMin="5.0" SetupFileUrl="http://download.onlyoffice.com/install/windows/redist/Redis-x64-5.0.10.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" BasicUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" NoUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" Options="ym" TargetName="Redis 5.0.10 x64"/>
-    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 C6F7BF650B714DC58735D62C12F214E4 E92D3665B5E468A8661F6547C8C142C E25D6A62194038942640BDE651049C A9D0C6C76E024A7A84C9B69789BFB916 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 B365F790B0C4E08A90D54675D858A21 B450414DF7494F99141402B8725A7C RequiredApplication_2 MySQLInstallerRunn RequiredApplication RequiredApplication_1 F6D8148C0594E7491C36E27FD5E9E89 RequiredApplication_4 Erlangv20.3x64 RequiredApplication_5 RequiredApplication_6 ApacheZooKepper ApacheKafka"/>
+    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 C6F7BF650B714DC58735D62C12F214E4 E92D3665B5E468A8661F6547C8C142C E25D6A62194038942640BDE651049C A9D0C6C76E024A7A84C9B69789BFB916 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 B365F790B0C4E08A90D54675D858A21 B450414DF7494F99141402B8725A7C RequiredApplication_2 MySQLInstallerRunn RequiredApplication RequiredApplication_1 RequiredApplication_4 Erlangv20.3x64 RequiredApplication_5 RequiredApplication_6"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="A918597FE054CCCB65ABDBA0AD8F63CSyst" Prereq="A918597FE054CCCB65ABDBA0AD8F63C" SearchType="0" SearchString="[SystemFolder]vcruntime140.dll" VerMin="14.26.28720" Order="2" Property="PreReqSearch_1_A918597FE054CCCB65AB"/>
@@ -877,15 +791,11 @@
     <ROW SearchKey="D564007E3BBE4F85950A09B470A7CA65Ver" Prereq="D564007E3BBE4F85950A09B470A7CA65" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.40649" Order="1" Property="PreReqSearch_D564007E3BBE4F85950A09"/>
     <ROW SearchKey="E25D6A62194038942640BDE651049CASP.N" Prereq="E25D6A62194038942640BDE651049C" SearchType="1" SearchString="HKLM\SOFTWARE\Microsoft\ASP.NET Core\Shared Framework\v6.0" VerMin="6.0.0" Order="1" Property="PreReqSearch_E25D6A62194038942640BD"/>
     <ROW SearchKey="E92D3665B5E468A8661F6547C8C142CMicr" Prereq="E92D3665B5E468A8661F6547C8C142C" SearchType="12" SearchString="HKLM\SOFTWARE\dotnet\Setup\InstalledVersions\x86\sharedfx\Microsoft.NETCore.App" VerMin="6.0.0" Order="1" Property="PreReqSearch_E92D3665B5E468A8661F65"/>
-    <ROW SearchKey="F6D8148C0594E7491C36E27FD5E9E89Curr" Prereq="F6D8148C0594E7491C36E27FD5E9E89" SearchType="2" SearchString="HKLM\SOFTWARE\JavaSoft\Java Runtime Environment\CurrentVersion" VerMin="1.8" Order="1" Property="PreReqSearch_F6D8148C0594E7491C36E2"/>
-    <ROW SearchKey="F6D8148C0594E7491C36E27FD5E9E89Java" Prereq="F6D8148C0594E7491C36E27FD5E9E89" SearchType="1" SearchString="HKLM\SOFTWARE\JavaSoft\Java Runtime Environment" VerMin="1.8.0_281" Order="2" Property="PreReqSearch_1_F6D8148C0594E7491C36"/>
     <ROW SearchKey="RabbitMQ_1" Prereq="RequiredApplication_5" SearchType="5" SearchString="HKLM\SOFTWARE\Ericsson\Erlang\ErlSrv\1.1\RabbitMQ" Order="2" Property="PreReqSearch_9"/>
     <ROW SearchKey="SystemFolderfile.dll" Prereq="RequiredApplication" SearchType="4" SearchString="{FF073FBB-32E2-4052-B6B2-830C5ED4A809}" VerMin="5.3.10" Order="1" Property="PreReqSearch"/>
     <ROW SearchKey="SystemFolderfile.dll_1" Prereq="RequiredApplication_1" SearchType="4" SearchString="{47C07A3A-42EF-4213-A85D-8F5A59077C28}" VerMin="12.18.0" Order="1" Property="PreReqSearch_1"/>
     <ROW SearchKey="SystemFolderfile.dll_2" Prereq="RequiredApplication_2" SearchType="4" SearchString="{18B94B70-06F1-4AC0-B308-37280DB868C2}" Order="1" Property="PreReqSearch_2"/>
-    <ROW SearchKey="UpgradeCode" Prereq="ApacheZooKepper" SearchType="4" SearchString="{5CB34BEC-536C-45BA-8C86-77E055EF4325}" VerMin="1.0.0" Order="1" Property="PreReqSearch_3"/>
     <ROW SearchKey="UpgradeCode_1" Prereq="RequiredApplication_4" SearchType="4" SearchString="{DAAA2CBA-A1ED-4F29-AFBF-5478617B00F6}" Order="2" Property="PreReqSearch_7"/>
-    <ROW SearchKey="UpgradeCode_2" Prereq="ApacheKafka" SearchType="4" SearchString="{9202447D-B999-4041-B479-B3789A872456}" VerMin="1.0.0" Order="1" Property="PreReqSearch_8"/>
     <ROW SearchKey="UpgradeCode_3" Prereq="RequiredApplication_6" SearchType="4" SearchString="{05410198-7212-4FC4-B7C8-AFEFC3DA0FBC}" VerMin="5.0.10" Order="2" Property="PreReqSearch_12"/>
     <ROW SearchKey="Version" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.7\Version" Order="1" Property="PreReqSearch_4"/>
     <ROW SearchKey="Version_1" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 8.0\Version" Order="2" Property="PreReqSearch_5"/>
