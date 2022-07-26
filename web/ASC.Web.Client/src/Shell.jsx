@@ -9,6 +9,7 @@ import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@appserver/common/history";
+import Toast from "@appserver/components/toast";
 import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
@@ -26,9 +27,8 @@ import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
 import { useThemeDetector } from "./helpers/utils";
 import { isMobileOnly } from "react-device-detect";
-import AboutDialog from "./components/pages/About/AboutDialog";
-import DebugInfoDialog from "./components/pages/DebugInfo";
 import IndicatorLoader from "./components/IndicatorLoader";
+import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -204,11 +204,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     roomsMode,
     setSnackbarExist,
     userTheme,
-    isAboutDialogVisible,
-    setIsAboutDialogVisible,
-    buildVersionInfo,
-    isDebugDialogVisible,
-    setIsDebugDialogVisible,
     user,
   } = rest;
 
@@ -530,21 +525,12 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   return (
     <Layout>
       <Router history={history}>
+        <Toast />
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || isLogin || !isMobileOnly ? <></> : <NavMenu />}
         <IndicatorLoader />
         <ScrollToTop />
-        <AboutDialog
-          t={t}
-          visible={isAboutDialogVisible}
-          onClose={() => setIsAboutDialogVisible(false)}
-          personal={personal}
-          buildVersionInfo={buildVersionInfo}
-        />
-        <DebugInfoDialog
-          visible={isDebugDialogVisible}
-          onClose={() => setIsDebugDialogVisible(false)}
-        />
+        <DialogsWrapper t={t} />
         <Main isDesktop={isDesktop}>
           <Switch>
             <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
@@ -587,7 +573,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 };
 
-const ShellWrapper = inject(({ auth, backup, profileActionsStore }) => {
+const ShellWrapper = inject(({ auth, backup }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
 
   const {
@@ -601,16 +587,9 @@ const ShellWrapper = inject(({ auth, backup, profileActionsStore }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
-    buildVersionInfo,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
-  const {
-    isAboutDialogVisible,
-    setIsAboutDialogVisible,
-    isDebugDialogVisible,
-    setIsDebugDialogVisible,
-  } = profileActionsStore;
 
   return {
     loadBaseInfo: async () => {
@@ -642,11 +621,6 @@ const ShellWrapper = inject(({ auth, backup, profileActionsStore }) => {
         ? "Dark"
         : "Base"
       : auth?.userStore?.user?.theme,
-    isAboutDialogVisible,
-    setIsAboutDialogVisible,
-    buildVersionInfo,
-    isDebugDialogVisible,
-    setIsDebugDialogVisible,
   };
 })(observer(Shell));
 
