@@ -1,15 +1,9 @@
-import { convertFile } from "@appserver/common/api/files";
 import pkg from "../../../package.json";
 
 export const canConvert = (extension, filesSettings) => {
   const array = filesSettings?.extsMustConvert || [];
   const result = array.findIndex((item) => item === extension);
   return result === -1 ? false : true;
-};
-
-export const convertDocumentUrl = async () => {
-  const convert = await convertFile(fileId, null, true);
-  return convert && convert[0]?.result;
 };
 
 export const initI18n = (initialI18nStoreASC) => {
