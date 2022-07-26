@@ -308,6 +308,18 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.St
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
 
+## ASC.Migration.Runner ##
+FROM $REPO_RUN:$REPO_RUN_TAG AS onlyoffice-migration-runner
+ARG BUILD_PATH
+ARG SRC_PATH 
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
+COPY --chown=onlyoffice:onlyoffice ./docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/common/Tools/ASC.Migration.Runner/bin/Debug/net6.0 .
+
+ENTRYPOINT ["./docker-migration-entrypoint.sh"]
+
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share
 RUN mkdir -p /app/appserver/ASC.Files/server && \
