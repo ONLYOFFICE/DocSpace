@@ -29,12 +29,11 @@ function DownloadComponents {
   }
 }
 
-$zookeeper_version = '3.7.1'
-$kafka_version = '2.8.0'
-$scala_version = '2.12'
 $nginx_version = '1.21.1'
 
 $path_prereq = "${pwd}\build\install\win\"
+
+$path_sql = "${pwd}\sql\"
 
 $prerequisites = @(
   @{  
@@ -45,20 +44,25 @@ $prerequisites = @(
 
   @{  
     download_allways = $false; 
-    name = "apache-zookeeper-${zookeeper_version}-bin.tar.gz"; 
-    link = "https://dlcdn.apache.org/zookeeper/zookeeper-${zookeeper_version}/apache-zookeeper-${zookeeper_version}-bin.tar.gz";
-  }
-  @{  
-    download_allways = $false; 
-    name = "kafka_${scala_version}-${kafka_version}.tgz"; 
-    link = "https://archive.apache.org/dist/kafka/${kafka_version}/kafka_${scala_version}-${kafka_version}.tgz";
-  }
-
-  @{  
-    download_allways = $false; 
     name = "WinSW.NET4new.exe"; 
     link = "https://github.com/winsw/winsw/releases/download/v2.11.0/WinSW.NET4.exe";
   }
 )
 
+$sql = @(
+  @{  
+    download_allways = $true; 
+    name = "onlyoffice.sql"; 
+    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.sql";
+  }
+
+  @{  
+    download_allways = $true; 
+    name = "onlyoffice.data.sql"; 
+    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.data.sql";
+  }
+)
+
 DownloadComponents $prerequisites $path_prereq
+
+DownloadComponents $sql $path_sql
