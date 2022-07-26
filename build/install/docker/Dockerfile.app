@@ -315,8 +315,8 @@ ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
 ENV SRC_PATH=${SRC_PATH}
 WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
-COPY --chown=onlyoffice:onlyoffice ./docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/common/Tools/ASC.Migration.Runner/bin/Debug/net6.0 .
+COPY  ./docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh
+COPY --from=base ${SRC_PATH}/common/Tools/ASC.Migration.Runner/bin/Debug/net6.0/ .
 
 ENTRYPOINT ["./docker-migration-entrypoint.sh"]
 
