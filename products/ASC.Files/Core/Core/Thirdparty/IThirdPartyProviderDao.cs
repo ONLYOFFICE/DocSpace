@@ -422,17 +422,29 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     {
         if (filterTypes.Any() && !filterTypes.Contains(FilterType.None))
         {
-            var filter = filterTypes.Select(f => f switch
+            var filter = new HashSet<FolderType>();
+            foreach(var f in filterTypes)
             {
-                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
-                FilterType.EditingRooms => FolderType.EditingRoom,
-                FilterType.ReviewRooms => FolderType.ReviewRoom,
-                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
-                FilterType.CustomRooms => FolderType.CustomRoom,
-                _ => FolderType.CustomRoom
-            }).ToHashSet();
-
-            return folders.Where(f => filter.Contains(f.FolderType));
+                switch (f)
+                {
+                    case FilterType.FillingFormsRooms:
+                        filter.Add(FolderType.FillingFormsRoom); 
+                        break;
+                    case FilterType.EditingRooms:
+                        filter.Add(FolderType.EditingRoom);
+                        break;
+                    case FilterType.ReviewRooms:
+                        filter.Add(FolderType.ReviewRoom);
+                        break;
+                    case FilterType.ReadOnlyRooms:
+                        filter.Add(FolderType.ReadOnlyRoom);
+                        break;
+                    case FilterType.CustomRooms:
+                        filter.Add(FolderType.CustomRoom);
+                        break;
+                }
+            }
+            return filter.Count == 0 ? folders : folders.Where(f => filter.Contains(f.FolderType));
         }
 
         return folders;
