@@ -348,6 +348,64 @@ internal class ProviderAccountDao : IProviderDao
         return toUpdate.Count == 1 ? linkId : default;
     }
 
+    public virtual async Task<int> UpdateBackupProviderInfoAsync(string providerKey, string customerTitle, AuthData newAuthData)
+    {
+        var querySelect =
+                FilesDbContext.ThirdpartyAccount
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => r.FolderType == FolderType.ThirdpartyBackup);
+
+        DbFilesThirdpartyAccount thirdparty;
+        try
+        {
+            thirdparty = await querySelect.SingleAsync().ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorUpdateBackupProviderInfo(_securityContext.CurrentAccount.ID, e);
+            throw;
+        }
+
+        if (!ProviderTypesExtensions.TryParse(providerKey, true, out var key))
+        {
+            throw new ArgumentException("Unrecognize ProviderType");
+        }
+
+        if (newAuthData != null && !newAuthData.IsEmpty())
+        {
+            if (!string.IsNullOrEmpty(newAuthData.Token))
+            {
+                newAuthData = GetEncodedAccesToken(newAuthData, key);
+            }
+
+            if (!await CheckProviderInfoAsync(ToProviderInfo(0, key, customerTitle, newAuthData, _securityContext.CurrentAccount.ID, FolderType.ThirdpartyBackup, _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()))).ConfigureAwait(false))
+            {
+                throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, key));
+            }
+        }
+
+        if (!string.IsNullOrEmpty(customerTitle))
+        {
+            thirdparty.Title = customerTitle;
+        }
+
+        thirdparty.UserId = _securityContext.CurrentAccount.ID;
+        thirdparty.Provider = providerKey;
+
+        if (!newAuthData.IsEmpty())
+        {
+            thirdparty.UserName = newAuthData.Login ?? "";
+            thirdparty.Password = EncryptPassword(newAuthData.Password);
+            thirdparty.Token = EncryptPassword(newAuthData.Token ?? "");
+            thirdparty.Url = newAuthData.Url ?? "";
+        }
+
+        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+        return thirdparty.Id;
+    }
+
     public virtual async Task RemoveProviderInfoAsync(int linkId)
     {
         var strategy = FilesDbContext.Database.CreateExecutionStrategy();
