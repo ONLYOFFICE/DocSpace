@@ -10,8 +10,8 @@ export default function template(
   assets
 ) {
   const { title } = pkg;
-  const { docApiUrl, error } = initialEditorState;
-
+  const { error } = initialEditorState;
+  const editorUrl = initialEditorState?.config?.editorUrl;
   const faviconHref = getFavicon(initialEditorState?.config?.documentType);
 
   let clientScripts =
@@ -20,9 +20,9 @@ export default function template(
       : "";
 
   const editorApiScript =
-    error || !docApiUrl
+    error || !editorUrl
       ? ""
-      : `<script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>`;
+      : `<script type='text/javascript' id='scripDocServiceAddress' src="${editorUrl}" async></script>`;
 
   if (!IS_DEVELOPMENT) {
     const productionBundleKeys = getScripts(assets);

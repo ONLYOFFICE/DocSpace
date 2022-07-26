@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from "react";
-import DynamicComponent from "../components/DynamicComponent";
 import { getPresignedUri } from "@appserver/common/api/files";
-import {
-  FILES_REMOTE_ENTRY_URL,
-  FILES_SCOPE,
-  STUDIO_SCOPE,
-  STUDIO_REMOTE_ENTRY_URL,
-} from "./constants";
-import Text from "@appserver/components/text";
-import TextInput from "@appserver/components/text-input";
-import Checkbox from "@appserver/components/checkbox";
-import { StyledSelectFolder } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
+import SharingDialog from "../components/SharingDialog";
+import SelectFileDialog from "../components/SelectFileDialog";
+import SelectFolderDialog from "../components/SelectFolderDialog";
 
 const insertImageAction = "imageFileType";
 const mailMergeAction = "mailMergeFileType";
@@ -28,14 +20,11 @@ const withDialogs = (WrappedComponent) => {
     const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
     const [extension, setExtension] = useState();
     const [openNewTab, setNewOpenTab] = useState(false);
-    const [
-      preparationPortalDialogVisible,
-      setPreparationPortalDialogVisible,
-    ] = useState(false);
 
     const { t } = useTranslation(["Editor", "Common"]);
 
-    const { fileInfo, fileId, mfReady } = props;
+    const { config, fileId, mfReady, sharingSettings } = props;
+    const fileInfo = config?.file;
 
     useEffect(() => {
       if (window.authStore) {
@@ -52,7 +41,8 @@ const withDialogs = (WrappedComponent) => {
         data: "backup-restore",
       });
       socketHelper.on("restore-backup", () => {
-        setPreparationPortalDialogVisible(true);
+        const message = t("Common:PreparationPortalTitle");
+        window.docEditor.showMessage(message);
       });
     };
 
@@ -65,7 +55,7 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const loadUsersRightsList = () => {
-      window.SharingDialog.getSharingSettings(fileId).then(
+      window.SharingDialog.convertSharingUsers(sharingSettings).then(
         (sharingSettings) => {
           window.docEditor.setSharingSettings({
             sharingSettings,
@@ -202,7 +192,7 @@ const withDialogs = (WrappedComponent) => {
 
       if (savingInfo) {
         const convertedInfo = savingInfo.split(": ").pop();
-        docEditor.showMessage(convertedInfo);
+        window.docEditor.showMessage(convertedInfo);
       }
     };
 
@@ -234,89 +224,42 @@ const withDialogs = (WrappedComponent) => {
       setTitleSelectorFolder(e.target.value);
     };
 
-    const sharingDialog = mfReady && (
-      <DynamicComponent
-        className="dynamic-sharing-dialog"
-        system={{
-          scope: FILES_SCOPE,
-          url: FILES_REMOTE_ENTRY_URL,
-          module: "./SharingDialog",
-          name: "SharingDialog",
-        }}
+    const sharingDialog = (
+      <SharingDialog
+        mfReady={mfReady}
         isVisible={isVisible}
-        sharingObject={fileInfo}
+        fileInfo={fileInfo}
         onCancel={onCancel}
-        onSuccess={loadUsersRightsList}
-        settings={props.filesSettings}
+        loadUsersRightsList={loadUsersRightsList}
+        filesSettings={props.filesSettings}
       />
     );
 
-    const selectFileDialog = mfReady && props.successAuth && (
-      <DynamicComponent
-        system={{
-          scope: FILES_SCOPE,
-          url: FILES_REMOTE_ENTRY_URL,
-          module: "./SelectFileDialog",
-        }}
-        resetTreeFolders
-        foldersType="exceptPrivacyTrashFolders"
-        isPanelVisible={isFileDialogVisible}
+    const selectFileDialog = (
+      <SelectFileDialog
+        isVisible={isFileDialogVisible}
         onSelectFile={onSelectFile}
-        onClose={onCloseFileDialog}
+        onCloseFileDialog={onCloseFileDialog}
         {...fileTypeDetection()}
         filesListTitle={selectFilesListTitle()}
         settings={props.filesSettings}
+        mfReady={mfReady}
+        successAuth={props.successAuth}
       />
     );
 
-    const selectFolderDialog = mfReady && props.successAuth && (
-      <DynamicComponent
-        system={{
-          scope: FILES_SCOPE,
-          url: FILES_REMOTE_ENTRY_URL,
-          module: "./SelectFolderDialog",
-        }}
-        needProxy
+    const selectFolderDialog = (
+      <SelectFolderDialog
+        successAuth={props.successAuth}
         folderId={fileInfo?.folderId}
-        isPanelVisible={isFolderDialogVisible}
-        onClose={onCloseFolderDialog}
-        foldersType="exceptSortedByTags"
-        onSave={onClickSaveSelectFolder}
-        isDisableButton={!titleSelectorFolder.trim()}
-        header={
-          <StyledSelectFolder>
-            <Text className="editor-select-folder_text">{t("FileName")}</Text>
-            <TextInput
-              className="editor-select-folder_text-input"
-              scale
-              onChange={onChangeInput}
-              value={titleSelectorFolder}
-            />
-          </StyledSelectFolder>
-        }
-        {...(extension !== "fb2" && {
-          footer: (
-            <StyledSelectFolder>
-              <Checkbox
-                className="editor-select-folder_checkbox"
-                label={t("OpenSavedDocument")}
-                onChange={onClickCheckbox}
-                isChecked={openNewTab}
-              />
-            </StyledSelectFolder>
-          ),
-        })}
-      />
-    );
-
-    const preparationPortalDialog = mfReady && (
-      <DynamicComponent
-        system={{
-          scope: STUDIO_SCOPE,
-          url: STUDIO_REMOTE_ENTRY_URL,
-          module: "./PreparationPortalDialog",
-        }}
-        visible={preparationPortalDialogVisible}
+        isVisible={isFolderDialogVisible}
+        onCloseFolderDialog={onCloseFolderDialog}
+        onClickSaveSelectFolder={onClickSaveSelectFolder}
+        titleSelectorFolder={titleSelectorFolder}
+        onChangeInput={onChangeInput}
+        onClickCheckbox={onClickCheckbox}
+        openNewTab={openNewTab}
+        mfReady={mfReady}
       />
     );
 
@@ -335,7 +278,6 @@ const withDialogs = (WrappedComponent) => {
         selectFolderDialog={selectFolderDialog}
         onSDKRequestSaveAs={onSDKRequestSaveAs}
         isFolderDialogVisible={isFolderDialogVisible}
-        preparationPortalDialog={preparationPortalDialog}
       />
     );
   };
