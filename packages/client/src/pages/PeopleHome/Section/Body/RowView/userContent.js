@@ -1,12 +1,12 @@
 import React from "react";
 import { withRouter } from "react-router";
-import styled from "styled-components";
+//import styled from "styled-components";
 
 import RowContent from "@docspace/components/row-content";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
-import Badges from "../../../../../components/Badges";
+import Badges from "../../../../../components/PeopleBadges";
 
 const UserContent = ({
   item,

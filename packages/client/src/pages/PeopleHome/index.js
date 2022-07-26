@@ -39,7 +39,7 @@ const PureHome = ({
   //console.log("People Home render");
 
   useEffect(() => {
-    if (pathname.indexOf("/people/filter") > -1) {
+    if (pathname.indexOf("/accounts/filter") > -1) {
       setIsLoading(true);
       setIsRefresh(true);
       const newFilter = Filter.getFilter(location);
@@ -101,7 +101,7 @@ PureHome.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-const Home = withTranslation("Home")(PureHome);
+const Home = withTranslation("People")(PureHome);
 
 export default inject(({ auth, peopleStore }) => {
   const { settingsStore } = auth;

@@ -152,7 +152,9 @@ const PureSectionPagingContent = ({
   );
 };
 
-const SectionPagingContent = withTranslation("Home")(PureSectionPagingContent);
+const SectionPagingContent = withTranslation("People")(
+  PureSectionPagingContent
+);
 
 export default inject(({ auth, peopleStore }) => {
   const { isLoaded } = auth;

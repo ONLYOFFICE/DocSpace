@@ -145,7 +145,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
 const DeleteUsersDialog = withTranslation([
   "DeleteUsersDialog",
   "Common",
-  "Translations",
+  "PeopleTranslations",
 ])(DeleteGroupUsersDialogComponent);
 
 DeleteUsersDialog.propTypes = {

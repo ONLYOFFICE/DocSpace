@@ -25,7 +25,7 @@ class FilterStore {
       combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/filter?${urlFilter}`
+        `/accounts/filter?${urlFilter}`
       )
     );
   };

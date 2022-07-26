@@ -37,7 +37,7 @@ export default inject(({ peopleStore }) => {
 
   return { viewAs };
 })(
-  withTranslation(["Home", "Common", "Translations"])(
+  withTranslation(["People", "Common", "PeopleTranslations"])(
     withLoader(observer(SectionBodyContent))(
       <Loaders.Rows isRectangle={false} />
     )

@@ -157,7 +157,7 @@ export default inject(({ auth, peopleStore }) => {
     userId: auth.userStore.user.id,
   };
 })(
-  withTranslation(["Home", "Common", "Translations"])(
+  withTranslation(["People", "Common", "PeopleTranslations"])(
     observer(PeopleTableHeader)
   )
 );

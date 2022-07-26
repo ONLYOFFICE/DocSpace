@@ -240,7 +240,7 @@ class SectionHeaderContent extends React.PureComponent {
       : combineUrl(
           AppServerConfig.proxyURL,
           config.homepage,
-          `/edit/${this.state.profile.userName}`
+          `/accounts/edit/${this.state.profile.userName}`
         );
 
     history.push(editUrl);
@@ -252,7 +252,9 @@ class SectionHeaderContent extends React.PureComponent {
     updateUserStatus(status, new Array(userId))
       .then(() => this.props.updateProfile(this.props.profile))
       .then(() => fetchProfile(userId))
-      .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
+      .then(() =>
+        toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
+      )
       .catch((error) => toastr.error(error));
   };
 
@@ -332,13 +334,13 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "change-password",
             className: "header-context-menu_change-password",
-            label: t("Translations:PasswordChangeButton"),
+            label: t("PeopleTranslations:PasswordChangeButton"),
             onClick: this.toggleChangePasswordDialog,
           },
           {
             key: "change-email",
             className: "header-context-menu_change-email",
-            label: t("Translations:EmailChangeButton"),
+            label: t("PeopleTranslations:EmailChangeButton"),
             onClick: this.toggleChangeEmailDialog,
           },
           isMe
@@ -347,13 +349,13 @@ class SectionHeaderContent extends React.PureComponent {
               : {
                   key: "delete-profile",
                   className: "header-context-menu_delete-profile",
-                  label: t("Translations:DeleteSelfProfile"),
+                  label: t("PeopleTranslations:DeleteSelfProfile"),
                   onClick: this.toggleDeleteSelfProfileDialog,
                 }
             : {
                 key: "disable",
                 className: "header-context-menu_disable",
-                label: t("Translations:DisableUserButton"),
+                label: t("PeopleTranslations:DisableUserButton"),
                 onClick: this.onDisableClick,
               },
         ];
@@ -362,25 +364,25 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "enable",
             className: "header-context-menu_enable",
-            label: t("Translations:EnableUserButton"),
+            label: t("PeopleTranslations:EnableUserButton"),
             onClick: this.onEnableClick,
           },
           {
             key: "reassign-data",
             className: "header-context-menu_reassign-data",
-            label: t("Translations:ReassignData"),
+            label: t("PeopleTranslations:ReassignData"),
             onClick: this.onReassignDataClick.bind(this, user),
           },
           {
             key: "delete-personal-data",
             className: "header-context-menu_delete-personal-data",
-            label: t("Translations:RemoveData"),
+            label: t("PeopleTranslations:RemoveData"),
             onClick: this.onDeletePersonalDataClick,
           },
           {
             key: "delete-profile",
             className: "header-context-menu_delete-profile",
-            label: t("Translations:DeleteSelfProfile"),
+            label: t("PeopleTranslations:DeleteSelfProfile"),
             onClick: this.toggleDeleteProfileEverDialog,
           },
         ];
@@ -403,19 +405,19 @@ class SectionHeaderContent extends React.PureComponent {
               ? {
                   key: "disable",
                   className: "header-context-menu_disable",
-                  label: t("Translations:DisableUserButton"),
+                  label: t("PeopleTranslations:DisableUserButton"),
                   onClick: this.onDisableClick,
                 }
               : {
                   key: "enable",
                   className: "header-context-menu_enable",
-                  label: t("Translations:EnableUserButton"),
+                  label: t("PeopleTranslations:EnableUserButton"),
                   onClick: this.onEnableClick,
                 }),
           isMe && {
             key: "delete-profile",
             className: "header-context-menu_delete-profile",
-            label: t("Translations:DeleteSelfProfile"),
+            label: t("PeopleTranslations:DeleteSelfProfile"),
             onClick: this.toggleDeleteSelfProfileDialog,
           },
         ];
@@ -464,7 +466,7 @@ class SectionHeaderContent extends React.PureComponent {
 
         <Headline className="header-headline" type="content" truncate={true}>
           {profile.displayName}
-          {profile.isLDAP && ` (${t("Translations:LDAPLbl")})`}
+          {profile.isLDAP && ` (${t("PeopleTranslations:LDAPLbl")})`}
         </Headline>
         {((isAdmin && !profile.isOwner) || isMe) && (
           <ContextMenuButton
@@ -486,13 +488,13 @@ class SectionHeaderContent extends React.PureComponent {
             onSave={this.onSaveAvatar}
             onLoadFile={this.onLoadFileAvatar}
             headerLabel={t("Common:EditAvatar")}
-            selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-            orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
-            unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
-            maxSizeFileError={t("Translations:maxSizeFileError")}
+            selectNewPhotoLabel={t("PeopleTranslations:selectNewPhotoLabel")}
+            orDropFileHereLabel={t("PeopleTranslations:orDropFileHereLabel")}
+            unknownTypeError={t("PeopleTranslations:ErrorUnknownFileImageType")}
+            maxSizeFileError={t("PeopleTranslations:maxSizeFileError")}
             unknownError={t("Common:Error")}
             saveButtonLabel={t("Common:SaveButton")}
-            maxSizeLabel={t("Translations:MaxSizeLabel")}
+            maxSizeLabel={t("PeopleTranslations:MaxSizeLabel")}
           />
         )}
 
@@ -553,7 +555,7 @@ export default withRouter(
     };
   })(
     observer(
-      withTranslation(["Profile", "Common", "Translations"])(
+      withTranslation(["Profile", "Common", "PeopleTranslations"])(
         withCultureNames(
           withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
         )

@@ -45,7 +45,9 @@ class SendInviteDialogComponent extends React.Component {
 
     this.setState({ isRequestRunning: true }, () => {
       resendUserInvites(userIds)
-        .then(() => toastr.success(t("Translations:SuccessSentInvitation")))
+        .then(() =>
+          toastr.success(t("PeopleTranslations:SuccessSentInvitation"))
+        )
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
@@ -119,7 +121,7 @@ class SendInviteDialogComponent extends React.Component {
         autoMaxHeight
       >
         <ModalDialog.Header>
-          {t("Translations:SendInviteAgain")}
+          {t("PeopleTranslations:SendInviteAgain")}
         </ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("SendInviteAgainDialog")}</Text>
@@ -151,7 +153,7 @@ class SendInviteDialogComponent extends React.Component {
 const SendInviteDialog = withTranslation([
   "SendInviteDialog",
   "Common",
-  "Translations",
+  "PeopleTranslations",
 ])(SendInviteDialogComponent);
 
 SendInviteDialog.propTypes = {

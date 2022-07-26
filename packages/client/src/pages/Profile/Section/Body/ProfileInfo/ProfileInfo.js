@@ -159,7 +159,7 @@ class ProfileInfo extends React.PureComponent {
   onSentInviteAgain = (id) => {
     const { t } = this.props;
     resendUserInvites(new Array(id))
-      .then(() => toastr.success(t("Translations:SuccessSentInvitation")))
+      .then(() => toastr.success(t("PeopleTranslations:SuccessSentInvitation")))
       .catch((error) =>
         toastr.error(error && error.message ? error.message : error)
       );
@@ -251,8 +251,8 @@ class ProfileInfo extends React.PureComponent {
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
 
     const formatedSex =
-      (sex === "male" && t("Translations:MaleSexStatus")) ||
-      t("Translations:FemaleSexStatus");
+      (sex === "male" && t("PeopleTranslations:MaleSexStatus")) ||
+      t("PeopleTranslations:FemaleSexStatus");
 
     const formatedDepartments =
       department && this.getFormattedDepartments(groups);
@@ -300,7 +300,7 @@ class ProfileInfo extends React.PureComponent {
                 {activationStatus === 2 && (isAdmin || isSelf) && (
                   <IconButtonWrapper
                     isBefore={true}
-                    title={t("Translations:PendingTitle")}
+                    title={t("PeopleTranslations:PendingTitle")}
                   >
                     <IconButton
                       color={theme.profileInfo.iconColor}
@@ -337,7 +337,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {!personal && sex && (
           <InfoItem>
-            <InfoItemLabel>{t("Translations:Sex")}:</InfoItemLabel>
+            <InfoItemLabel>{t("PeopleTranslations:Sex")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_sex">
               {formatedSex}
             </InfoItemValue>
@@ -345,7 +345,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {!personal && birthday && (
           <InfoItem>
-            <InfoItemLabel>{t("Translations:Birthdate")}:</InfoItemLabel>
+            <InfoItemLabel>{t("PeopleTranslations:Birthdate")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_birthdate">
               {birthDayDate}
             </InfoItemValue>
@@ -467,7 +467,7 @@ export default withRouter(
     };
   })(
     observer(
-      withTranslation(["Profile", "Common", "Translations"])(
+      withTranslation(["Profile", "Common", "PeopleTranslations"])(
         withCultureNames(ProfileInfo)
       )
     )

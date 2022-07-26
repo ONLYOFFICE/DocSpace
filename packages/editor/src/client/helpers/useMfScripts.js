@@ -34,8 +34,6 @@ function useMfScripts() {
     const filesUtils = await loadComponent(STUDIO_SCOPE, "./utils")();
     const authStore = await loadComponent(STUDIO_SCOPE, "./store")();
 
-    debugger;
-
     window.toastr = toastr.default;
     window.filesUtils = filesUtils;
     window.SharingDialog = SharingDialog.default;

@@ -15,6 +15,7 @@ const PureAccountsItem = ({
   setSelectedFolder,
   setSelectedNode,
   history,
+  t,
 }) => {
   const onClick = React.useCallback(() => {
     setSelectedFolder(null);
@@ -30,7 +31,7 @@ const PureAccountsItem = ({
     <CatalogItem
       id="accounts"
       key="accounts"
-      text={"Accounts"}
+      text={t("Accounts")}
       icon={iconUrl}
       showText={showText}
       onClick={onClick}

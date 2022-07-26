@@ -89,7 +89,11 @@ const SectionHeaderContent = (props) => {
       setFilterAndReset(filter);
       const urlFilter = filter.toUrlParams();
       return history.push(
-        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+        combineUrl(
+          AppServerConfig.proxyURL,
+          homepage,
+          `/accounts/filter?${urlFilter}`
+        )
       );
     }
 
@@ -97,7 +101,7 @@ const SectionHeaderContent = (props) => {
       combineUrl(
         AppServerConfig.proxyURL,
         homepage,
-        `/view/${profile.userName}`
+        `/accounts/view/${profile.userName}`
       )
     );
 

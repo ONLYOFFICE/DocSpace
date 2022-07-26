@@ -17,7 +17,7 @@ import {
 } from "@docspace/components/utils/device";
 
 const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
-  const { t } = useTranslation(["Home", "Common"]);
+  const { t } = useTranslation(["People", "Common"]);
 
   const title = isEmptyGroup ? t("EmptyGroupTitle") : t("NotFoundTitle");
   const description = isEmptyGroup

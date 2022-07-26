@@ -46,7 +46,9 @@ class ChangeUserStatusDialogComponent extends React.Component {
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
       updateUserStatus(userStatus, userIds, true)
-        .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
+        .then(() =>
+          toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
+        )
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
@@ -116,7 +118,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
         : t("ChangeUsersDisableStatus");
     const userStatusTranslation =
       userStatus === EmployeeStatus.Active
-        ? t("Translations:DisabledEmployeeStatus")
+        ? t("PeopleTranslations:DisabledEmployeeStatus")
         : t("Common:Active");
 
     return (
@@ -164,7 +166,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
 const ChangeUserStatusDialog = withTranslation([
   "ChangeUserStatusDialog",
   "Common",
-  "Translations",
+  "PeopleTranslations",
 ])(ChangeUserStatusDialogComponent);
 
 ChangeUserStatusDialog.propTypes = {

@@ -8,7 +8,7 @@ import { tablet, desktop, mobile } from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
 
 import Headline from "@docspace/common/components/Headline";
-import toastr from "studio/toastr";
+// import toastr from "studio/toastr";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
 import { AppServerConfig } from "@docspace/common/constants";
@@ -104,11 +104,11 @@ const SectionHeaderContent = (props) => {
     history,
     customNames,
     homepage,
-    deleteGroup,
+    // deleteGroup,
     isLoaded,
     isTabletView,
     setSelected,
-    resetFilter,
+    // resetFilter,
     getHeaderMenu,
     setInvitationDialogVisible,
     showText,
@@ -117,7 +117,7 @@ const SectionHeaderContent = (props) => {
   const {
     userCaption,
     guestCaption,
-    groupCaption,
+    // groupCaption,
     groupsCaption,
   } = customNames;
 
@@ -152,7 +152,7 @@ const SectionHeaderContent = (props) => {
         />
         <DropDownItem
           key="disabled"
-          label={t("Translations:DisabledEmployeeStatus")}
+          label={t("PeopleTranslations:DisabledEmployeeStatus")}
           data-key={"disabled"}
           onClick={onSelect}
         />
@@ -169,56 +169,56 @@ const SectionHeaderContent = (props) => {
 
   const headerMenu = getHeaderMenu(t);
 
-  const onEditGroup = useCallback(
-    () =>
-      history.push(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          homepage,
-          `/group/edit/${group.id}`
-        )
-      ),
-    [history, homepage, group]
-  );
+  // const onEditGroup = useCallback(
+  //   () =>
+  //     history.push(
+  //       combineUrl(
+  //         AppServerConfig.proxyURL,
+  //         homepage,
+  //         `/group/edit/${group.id}`
+  //       )
+  //     ),
+  //   [history, homepage, group]
+  // );
 
-  const onDeleteGroup = useCallback(() => {
-    deleteGroup(group.id)
-      .then(() => toastr.success(t("SuccessfullyRemovedGroup")))
-      .then(() => resetFilter());
-  }, [deleteGroup, group, t]);
+  // const onDeleteGroup = useCallback(() => {
+  //   deleteGroup(group.id)
+  //     .then(() => toastr.success(t("SuccessfullyRemovedGroup")))
+  //     .then(() => resetFilter());
+  // }, [deleteGroup, group, t]);
 
-  const getContextOptionsGroup = useCallback(() => {
-    return [
-      {
-        key: "edit-group",
-        label: t("Common:EditButton"),
-        onClick: onEditGroup,
-      },
-      {
-        key: "delete-group",
-        label: t("Common:Delete"),
-        onClick: onDeleteGroup,
-      },
-    ];
-  }, [t, onEditGroup, onDeleteGroup]);
+  // const getContextOptionsGroup = useCallback(() => {
+  //   return [
+  //     {
+  //       key: "edit-group",
+  //       label: t("Common:EditButton"),
+  //       onClick: onEditGroup,
+  //     },
+  //     {
+  //       key: "delete-group",
+  //       label: t("Common:Delete"),
+  //       onClick: onDeleteGroup,
+  //     },
+  //   ];
+  // }, [t, onEditGroup, onDeleteGroup]);
 
   const goToEmployeeCreate = useCallback(() => {
     history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/create/user")
+      combineUrl(AppServerConfig.proxyURL, homepage, "/accounts/create/user")
     );
   }, [history, homepage]);
 
-  const goToGuestCreate = useCallback(() => {
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
-    );
-  }, [history, homepage]);
+  // const goToGuestCreate = useCallback(() => {
+  //   history.push(
+  //     combineUrl(AppServerConfig.proxyURL, homepage, "/accounts/create/guest")
+  //   );
+  // }, [history, homepage]);
 
-  const goToGroupCreate = useCallback(() => {
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
-    );
-  }, [history, homepage]);
+  // const goToGroupCreate = useCallback(() => {
+  //   history.push(
+  //     combineUrl(AppServerConfig.proxyURL, homepage, "/accounts/group/create")
+  //   );
+  // }, [history, homepage]);
 
   const onInvitationDialogClick = () => setInvitationDialogVisible(true);
 
@@ -229,16 +229,16 @@ const SectionHeaderContent = (props) => {
         label: userCaption,
         onClick: goToEmployeeCreate,
       },
-      {
-        key: "new-guest",
-        label: guestCaption,
-        onClick: goToGuestCreate,
-      },
-      {
-        key: "new-group",
-        label: groupCaption,
-        onClick: goToGroupCreate,
-      },
+      // {
+      //   key: "new-guest",
+      //   label: guestCaption,
+      //   onClick: goToGuestCreate,
+      // },
+      // {
+      //   key: "new-group",
+      //   label: groupCaption,
+      //   onClick: goToGroupCreate,
+      // },
       { key: "separator", isSeparator: true },
       {
         key: "make-invitation-link",
@@ -247,18 +247,18 @@ const SectionHeaderContent = (props) => {
       } /* ,
       {
         key: "send-invitation",
-        label: t("Translations:SendInviteAgain"),
+        label: t("PeopleTranslations:SendInviteAgain"),
         onClick: onSentInviteAgain
       } */,
     ];
   }, [
     userCaption,
     guestCaption,
-    groupCaption,
+    // groupCaption,
     t,
     goToEmployeeCreate,
-    goToGuestCreate,
-    goToGroupCreate,
+    // goToGuestCreate,
+    // goToGroupCreate,
     /* , onSentInviteAgain */
     ,
   ]);
@@ -292,9 +292,9 @@ const SectionHeaderContent = (props) => {
                     type="content"
                     truncate={true}
                   >
-                    {group.name}
+                    {t("Accounts")}
                   </Headline>
-                  {isAdmin && (
+                  {/* {isAdmin && (
                     <ContextMenuButton
                       className="action-button"
                       directionX="right"
@@ -304,7 +304,7 @@ const SectionHeaderContent = (props) => {
                       getData={getContextOptionsGroup}
                       isDisabled={false}
                     />
-                  )}
+                  )} */}
                 </>
               ) : (
                 <>
@@ -394,7 +394,7 @@ export default withRouter(
       showText,
     };
   })(
-    withTranslation(["Home", "Common", "Translations"])(
+    withTranslation(["People", "Common", "PeopleTranslations"])(
       withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
     )
   )

@@ -191,6 +191,7 @@ class Filter {
     dtoFilter[SORT_ORDER] = sortOrder;
 
     const str = toUrlParams(dtoFilter, true);
+
     return str;
   };
 

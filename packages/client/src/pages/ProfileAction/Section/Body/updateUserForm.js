@@ -351,7 +351,7 @@ class UpdateUserForm extends React.Component {
         combineUrl(
           AppServerConfig.proxyURL,
           config.homepage,
-          `/view/${profile.userName}`
+          `/accounts/view/${profile.userName}`
         )
       );
     } else {
@@ -740,16 +740,18 @@ class UpdateUserForm extends React.Component {
               onSave={this.onSaveClick}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("EditPhoto")}
-              selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-              orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
-              unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
-              maxSizeFileError={t("Translations:maxSizeFileError")}
+              selectNewPhotoLabel={t("PeopleTranslations:selectNewPhotoLabel")}
+              orDropFileHereLabel={t("PeopleTranslations:orDropFileHereLabel")}
+              unknownTypeError={t(
+                "PeopleTranslations:ErrorUnknownFileImageType"
+              )}
+              maxSizeFileError={t("PeopleTranslations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={
                 isLoading ? t("UpdatingProcess") : t("Common:SaveButton")
               }
               saveButtonLoading={isLoading}
-              maxSizeLabel={t("Translations:MaxSizeLabel")}
+              maxSizeLabel={t("PeopleTranslations:MaxSizeLabel")}
             />
           </AvatarContainer>
           <MainFieldsContainer
@@ -848,7 +850,7 @@ class UpdateUserForm extends React.Component {
               <>
                 <DateField
                   calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-                  labelText={`${t("Translations:Birthdate")}:`}
+                  labelText={`${t("PeopleTranslations:Birthdate")}:`}
                   inputName="birthday"
                   inputClassName="date-picker_input-birthday"
                   inputValue={birthdayDateValue}
@@ -859,14 +861,17 @@ class UpdateUserForm extends React.Component {
                   maxLabelWidth={maxLabelWidth}
                 />
                 <RadioField
-                  labelText={`${t("Translations:Sex")}:`}
+                  labelText={`${t("PeopleTranslations:Sex")}:`}
                   radioName="sex"
                   radioValue={profile.sex}
                   radioOptions={[
-                    { value: "male", label: t("Translations:MaleSexStatus") },
+                    {
+                      value: "male",
+                      label: t("PeopleTranslations:MaleSexStatus"),
+                    },
                     {
                       value: "female",
-                      label: t("Translations:FemaleSexStatus"),
+                      label: t("PeopleTranslations:FemaleSexStatus"),
                     },
                   ]}
                   radioIsDisabled={isLoading}
@@ -978,7 +983,7 @@ class UpdateUserForm extends React.Component {
               />
             </InfoFieldContainer>
             <InfoFieldContainer
-              headerText={t("Translations:SocialProfiles")}
+              headerText={t("PeopleTranslations:SocialProfiles")}
               {...(isTabletView && { marginBottom: "36px" })}
             >
               <ContactsField
@@ -1074,7 +1079,7 @@ export default withRouter(
     helpLink: auth.settingsStore.helpLink,
   }))(
     observer(
-      withTranslation(["ProfileAction", "Common", "Translations"])(
+      withTranslation(["ProfileAction", "Common", "PeopleTranslations"])(
         UpdateUserForm
       )
     )

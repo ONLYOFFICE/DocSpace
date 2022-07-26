@@ -219,7 +219,7 @@ class SectionBodyContent extends React.PureComponent {
       : combineUrl(
           AppServerConfig.proxyURL,
           config.homepage,
-          `/edit/${profile.userName}`
+          `/accounts/edit/${profile.userName}`
         );
 
     history.push(editUrl);
@@ -556,7 +556,7 @@ class SectionBodyContent extends React.PureComponent {
         {!personal && socialContacts && (
           <ToggleWrapper isContacts={true}>
             <ToggleContent
-              label={t("Translations:SocialProfiles")}
+              label={t("PeopleTranslations:SocialProfiles")}
               isOpen={true}
             >
               <Text as="span">{socialContacts}</Text>
@@ -653,7 +653,7 @@ export default withRouter(
     };
   })(
     observer(
-      withTranslation(["Profile", "Common", "Translations"])(
+      withTranslation(["Profile", "Common", "PeopleTranslations"])(
         withLoader(SectionBodyContent)(<Loaders.ProfileView />)
       )
     )

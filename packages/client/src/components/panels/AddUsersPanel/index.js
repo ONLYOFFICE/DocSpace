@@ -185,7 +185,7 @@ class AddUsersPanelComponent extends React.Component {
                 headerLabel={
                   isMultiSelect
                     ? t("Common:AddUsers")
-                    : t("Translations:OwnerChange")
+                    : t("PeopleTranslations:OwnerChange")
                 }
                 //onCancel={onClose}
               />
@@ -207,7 +207,7 @@ export default inject(({ auth }) => {
   return { theme: auth.settingsStore.theme };
 })(
   observer(
-    withTranslation(["SharingPanel", "Translations", "Common"])(
+    withTranslation(["SharingPanel", "PeopleTranslations", "Common"])(
       withLoader(AddUsersPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
     )
   )

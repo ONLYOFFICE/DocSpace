@@ -7,7 +7,7 @@ import withContent from "../../../../../HOCs/withPeopleContent";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import styled from "styled-components";
-import Badges from "../../../../../components/Badges";
+import Badges from "../../../../../components/PeopleBadges";
 import Checkbox from "@docspace/components/checkbox";
 
 const StyledPeopleRow = styled(TableRow)`

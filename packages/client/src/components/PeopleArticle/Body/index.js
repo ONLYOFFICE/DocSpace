@@ -57,7 +57,7 @@ const ArticleBodyContent = ({
 
       changeTitleDocument(groupId);
 
-      if (window.location.pathname.indexOf("/people/filter") > 0) {
+      if (window.location.pathname.indexOf("/accounts/filter") > 0) {
         selectGroup(groupId);
         if (isMobileOnly || isMobile()) toggleArticleOpen();
       } else {
@@ -69,7 +69,7 @@ const ArticleBodyContent = ({
         const url = combineUrl(
           AppServerConfig.proxyURL,
           config.homepage,
-          `/filter?${urlFilter}`
+          `/accounts/filter?${urlFilter}`
         );
         history.push(url);
         if (isMobileOnly || isMobile()) toggleArticleOpen();

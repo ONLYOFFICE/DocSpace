@@ -30,7 +30,7 @@ import {
 } from "../components/Article";
 import FormGallery from "./FormGallery";
 import GlobalEvents from "../components/GlobalEvents";
-import Accounts from "./People";
+import Accounts from "./Accounts";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -94,7 +94,13 @@ const FilesSection = React.memo(() => {
       <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
       <PrivateRoute
         exact
-        path={["/accounts", "/accounts/filter"]}
+        path={[
+          "/accounts",
+          "/accounts/filter",
+          "/accounts/edit/:userId",
+          "/accounts/view/:userId",
+          "/accounts/create/:type",
+        ]}
         component={Accounts}
       />
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}

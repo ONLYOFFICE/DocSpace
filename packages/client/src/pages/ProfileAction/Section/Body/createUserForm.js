@@ -68,7 +68,7 @@ class CreateUserForm extends React.Component {
           combineUrl(
             AppServerConfig.proxyURL,
             this.props.homepage,
-            `/view/${userName}`
+            `/accounts/view/${userName}`
           )
         );
       })
@@ -331,7 +331,7 @@ class CreateUserForm extends React.Component {
             combineUrl(
               AppServerConfig.proxyURL,
               homepage,
-              `/view/${profile.userName}`
+              `/accounts/view/${profile.userName}`
             )
           );
         }
@@ -488,14 +488,16 @@ class CreateUserForm extends React.Component {
               onSave={this.onSaveClick}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("AddPhoto")}
-              selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-              orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
-              unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
-              maxSizeFileError={t("Translations:maxSizeFileError")}
+              selectNewPhotoLabel={t("PeopleTranslations:selectNewPhotoLabel")}
+              orDropFileHereLabel={t("PeopleTranslations:orDropFileHereLabel")}
+              unknownTypeError={t(
+                "PeopleTranslations:ErrorUnknownFileImageType"
+              )}
+              maxSizeFileError={t("PeopleTranslations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={t("Common:SaveButton")}
               saveButtonLoading={this.state.isLoading}
-              maxSizeLabel={t("Translations:MaxSizeLabel")}
+              maxSizeLabel={t("PeopleTranslations:MaxSizeLabel")}
             />
           </AvatarContainer>
           <MainFieldsContainer
@@ -581,7 +583,7 @@ class CreateUserForm extends React.Component {
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-              labelText={`${t("Translations:Birthdate")}:`}
+              labelText={`${t("PeopleTranslations:Birthdate")}:`}
               inputName="birthday"
               inputClassName="date-picker_input-birthday"
               inputValue={
@@ -593,12 +595,15 @@ class CreateUserForm extends React.Component {
               locale={language}
             />
             <RadioField
-              labelText={`${t("Translations:Sex")}:`}
+              labelText={`${t("PeopleTranslations:Sex")}:`}
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: "male", label: t("Translations:MaleSexStatus") },
-                { value: "female", label: t("Translations:FemaleSexStatus") },
+                { value: "male", label: t("PeopleTranslations:MaleSexStatus") },
+                {
+                  value: "female",
+                  label: t("PeopleTranslations:FemaleSexStatus"),
+                },
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
@@ -680,7 +685,7 @@ class CreateUserForm extends React.Component {
           />
         </InfoFieldContainer>
         <InfoFieldContainer
-          headerText={t("Translations:SocialProfiles")}
+          headerText={t("PeopleTranslations:SocialProfiles")}
           {...(isTabletView && { marginBottom: "36px" })}
         >
           <ContactsField
@@ -745,7 +750,7 @@ export default withRouter(
     isTabletView: auth.settingsStore.isTabletView,
   }))(
     observer(
-      withTranslation(["ProfileAction", "Common", "Translations"])(
+      withTranslation(["ProfileAction", "Common", "PeopleTranslations"])(
         CreateUserForm
       )
     )

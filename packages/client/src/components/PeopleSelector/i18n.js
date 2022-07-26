@@ -29,7 +29,7 @@ newInstance
       loadPath: loadLanguagePath(config.homepage),
     },
 
-    ns: ["PeopleSelector", "Common", "Translations"],
+    ns: ["PeopleSelector", "Common", "PeopleTranslations"],
     defaultNS: "PeopleSelector",
 
     react: {

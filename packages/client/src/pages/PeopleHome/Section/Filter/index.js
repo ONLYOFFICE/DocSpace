@@ -129,7 +129,7 @@ const SectionFilterContent = ({
           {
             key: "2",
             group: "filter-status",
-            label: t("Translations:DisabledEmployeeStatus"),
+            label: t("PeopleTranslations:DisabledEmployeeStatus"),
           },
         ];
 
@@ -166,7 +166,7 @@ const SectionFilterContent = ({
       {
         key: "2",
         group: "filter-email",
-        label: t("Translations:PendingTitle"),
+        label: t("PeopleTranslations:PendingTitle"),
       },
 
       {
@@ -218,7 +218,7 @@ const SectionFilterContent = ({
         label:
           `${filter.employeeStatus}` === "1"
             ? t("Common:Active")
-            : t("Translations:DisabledEmployeeStatus"),
+            : t("PeopleTranslations:DisabledEmployeeStatus"),
         group: "filter-status",
       });
     }
@@ -229,7 +229,7 @@ const SectionFilterContent = ({
         label:
           `${filter.activationStatus}` === "1"
             ? t("Common:Active")
-            : t("Translations:PendingTitle"),
+            : t("PeopleTranslations:PendingTitle"),
         group: "filter-email",
       });
     }
@@ -352,9 +352,12 @@ export default withRouter(
   })(
     observer(
       withLayoutSize(
-        withTranslation(["Home", "Common", "Translations", "GroupSelector"])(
-          withLoader(SectionFilterContent)(<Loaders.Filter />)
-        )
+        withTranslation([
+          "People",
+          "Common",
+          "PeopleTranslations",
+          "GroupSelector",
+        ])(withLoader(SectionFilterContent)(<Loaders.Filter />))
       )
     )
   )

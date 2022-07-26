@@ -94,7 +94,7 @@ export default function withContent(WrappedContent) {
         combineUrl(
           AppServerConfig.proxyURL,
           config.homepage,
-          `/view/${userName}`
+          `/accounts/view/${userName}`
         )
       );
     };
@@ -109,7 +109,7 @@ export default function withContent(WrappedContent) {
             combineUrl(
               AppServerConfig.proxyURL,
               config.homepage,
-              `/view/${userName}`
+              `/accounts/view/${userName}`
             ) !== window.location.pathname
           )
             redirectToProfile();

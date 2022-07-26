@@ -34,7 +34,7 @@ export default function withContextOptions(WrappedComponent) {
 
     const isRefetchPeople = true; //TODO: why always true?
 
-    const { t } = useTranslation(["Home", "Common", "Translations"]);
+    const { t } = useTranslation(["People", "Common", "PeopleTranslations"]);
 
     const onEmailSentClick = () => {
       window.open("mailto:" + email);
@@ -49,7 +49,7 @@ export default function withContextOptions(WrappedComponent) {
         combineUrl(
           AppServerConfig.proxyURL,
           config.homepage,
-          `/edit/${userName}`
+          `/accounts/edit/${userName}`
         )
       );
     };
@@ -62,7 +62,7 @@ export default function withContextOptions(WrappedComponent) {
           combineUrl(
             AppServerConfig.proxyURL,
             config.homepage,
-            `/edit/${userName}`
+            `/accounts/edit/${userName}`
           ) !== window.location.pathname
         )
           redirectToEdit();
@@ -111,7 +111,9 @@ export default function withContextOptions(WrappedComponent) {
     const onDisableClick = (e) => {
       //onLoading(true);
       updateUserStatus(EmployeeStatus.Disabled, [id], isRefetchPeople)
-        .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
+        .then(() =>
+          toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
+        )
         .catch((error) => toastr.error(error));
       //.finally(() => onLoading(false));
     };
@@ -119,7 +121,9 @@ export default function withContextOptions(WrappedComponent) {
     const onEnableClick = () => {
       //onLoading(true);
       updateUserStatus(EmployeeStatus.Active, [id], isRefetchPeople)
-        .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
+        .then(() =>
+          toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
+        )
         .catch((error) => toastr.error(error));
       //.finally(() => onLoading(false));
     };
@@ -135,7 +139,7 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     const onDeletePersonalDataClick = () => {
-      toastr.success(t("Translations:SuccessDeletePersonalData"));
+      toastr.success(t("PeopleTranslations:SuccessDeletePersonalData"));
     };
 
     const onInviteAgainClick = () => {
@@ -145,7 +149,7 @@ export default function withContextOptions(WrappedComponent) {
           toastr.success(
             <Trans
               i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-              ns="Home"
+              ns="People"
               t={t}
             >
               The email activation instructions have been sent to the
@@ -186,56 +190,56 @@ export default function withContextOptions(WrappedComponent) {
           case "change-password":
             return {
               key: option,
-              label: t("Translations:PasswordChangeButton"),
+              label: t("PeopleTranslations:PasswordChangeButton"),
               "data-id": id,
               onClick: toggleChangePasswordDialog,
             };
           case "change-email":
             return {
               key: option,
-              label: t("Translations:EmailChangeButton"),
+              label: t("PeopleTranslations:EmailChangeButton"),
               "data-id": id,
               onClick: toggleChangeEmailDialog,
             };
           case "delete-self-profile":
             return {
               key: option,
-              label: t("Translations:DeleteSelfProfile"),
+              label: t("PeopleTranslations:DeleteSelfProfile"),
               "data-id": id,
               onClick: toggleDeleteSelfProfileDialog,
             };
           case "disable":
             return {
               key: option,
-              label: t("Translations:DisableUserButton"),
+              label: t("PeopleTranslations:DisableUserButton"),
               "data-id": id,
               onClick: onDisableClick,
             };
           case "enable":
             return {
               key: option,
-              label: t("Translations:EnableUserButton"),
+              label: t("PeopleTranslations:EnableUserButton"),
               "data-id": id,
               onClick: onEnableClick,
             };
           case "reassign-data":
             return {
               key: option,
-              label: t("Translations:ReassignData"),
+              label: t("PeopleTranslations:ReassignData"),
               "data-id": id,
               onClick: onReassignDataClick,
             };
           case "delete-personal-data":
             return {
               key: option,
-              label: t("Translations:RemoveData"),
+              label: t("PeopleTranslations:RemoveData"),
               "data-id": id,
               onClick: onDeletePersonalDataClick,
             };
           case "delete-profile":
             return {
               key: option,
-              label: t("Translations:DeleteSelfProfile"),
+              label: t("PeopleTranslations:DeleteSelfProfile"),
               "data-id": id,
               onClick: toggleDeleteProfileEverDialog,
             };

@@ -106,7 +106,9 @@ const HomeRedirectToFilter = (props) => {
   const filter = Filter.getDefault();
   const urlFilter = filter.toUrlParams();
   return (
-    <Redirect to={combineUrl(PROXY_HOMEPAGE_URL, `/filter?${urlFilter}`)} />
+    <Redirect
+      to={combineUrl(PROXY_HOMEPAGE_URL, `/accounts/filter?${urlFilter}`)}
+    />
   );
 };
 

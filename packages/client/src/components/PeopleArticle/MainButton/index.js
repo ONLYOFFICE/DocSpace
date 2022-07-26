@@ -43,21 +43,21 @@ class ArticleMainButtonContent extends React.Component {
     if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
-  goToGuestCreate = () => {
-    const { history, homepage } = this.props;
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
-    );
-    if (isMobile || isMobileUtils()) this.props.toggleShowText();
-  };
+  // goToGuestCreate = () => {
+  //   const { history, homepage } = this.props;
+  //   history.push(
+  //     combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
+  //   );
+  //   if (isMobile || isMobileUtils()) this.props.toggleShowText();
+  // };
 
-  goToGroupCreate = () => {
-    const { history, homepage } = this.props;
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
-    );
-    if (isMobile || isMobileUtils()) this.props.toggleShowText();
-  };
+  // goToGroupCreate = () => {
+  //   const { history, homepage } = this.props;
+  //   history.push(
+  //     combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
+  //   );
+  //   if (isMobile || isMobileUtils()) this.props.toggleShowText();
+  // };
 
   onNotImplementedClick = (text) => {
     toastr.success(text);
@@ -73,8 +73,8 @@ class ArticleMainButtonContent extends React.Component {
       isAdmin,
       homepage,
       userCaption,
-      guestCaption,
-      groupCaption,
+      // guestCaption,
+      // groupCaption,
       sectionWidth,
 
       isMobileArticle,
@@ -98,26 +98,26 @@ class ArticleMainButtonContent extends React.Component {
         label: userCaption,
         onClick: this.goToEmployeeCreate,
       },
-      {
-        key: "create-guest",
-        icon: combineUrl(
-          AppServerConfig.proxyURL,
-          homepage,
-          "/images/add.guest.react.svg"
-        ),
-        label: guestCaption,
-        onClick: this.goToGuestCreate,
-      },
-      {
-        key: "create-group",
-        icon: combineUrl(
-          AppServerConfig.proxyURL,
-          homepage,
-          "/images/add.department.react.svg"
-        ),
-        label: groupCaption,
-        onClick: this.goToGroupCreate,
-      },
+      // {
+      //   key: "create-guest",
+      //   icon: combineUrl(
+      //     AppServerConfig.proxyURL,
+      //     homepage,
+      //     "/images/add.guest.react.svg"
+      //   ),
+      //   label: guestCaption,
+      //   onClick: this.goToGuestCreate,
+      // },
+      // {
+      //   key: "create-group",
+      //   icon: combineUrl(
+      //     AppServerConfig.proxyURL,
+      //     homepage,
+      //     "/images/add.department.react.svg"
+      //   ),
+      //   label: groupCaption,
+      //   onClick: this.goToGroupCreate,
+      // },
     ];
 
     const links = [
@@ -127,7 +127,7 @@ class ArticleMainButtonContent extends React.Component {
           AppServerConfig.proxyURL,
           "/static/images/invitation.link.react.svg"
         ),
-        label: t("Translations:InviteLinkTitle"),
+        label: t("PeopleTranslations:InviteLinkTitle"),
         onClick: this.onInvitationDialogClick,
       },
       /* {
@@ -201,7 +201,7 @@ export default withRouter(
       showText: auth.settingsStore.showText,
     };
   })(
-    withTranslation(["Article", "Common", "Translations"])(
+    withTranslation(["Article", "Common", "PeopleTranslations"])(
       withLoader(observer(ArticleMainButtonContent))(<Loaders.ArticleButton />)
     )
   )

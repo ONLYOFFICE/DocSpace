@@ -60,7 +60,7 @@ class PeopleStore {
     if (this.isInit) return;
     this.isInit = true;
 
-    authStore.settingsStore.setModuleInfo(config.homepage, config.id);
+    //authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
     await this.groupsStore.getGroupList();
     await authStore.settingsStore.getPortalPasswordSettings();

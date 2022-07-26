@@ -130,7 +130,7 @@ class InviteDialogComponent extends React.Component {
           autoMaxHeight
         >
           <ModalDialog.Header>
-            {t("Translations:InviteLinkTitle")}
+            {t("PeopleTranslations:InviteLinkTitle")}
           </ModalDialog.Header>
           <ModalDialog.Body>
             {/* <Text as="p">{t("HelpAnswerLinkInviteSettings")}</Text> */}
@@ -208,7 +208,7 @@ class InviteDialogComponent extends React.Component {
 const InviteDialog = withTranslation([
   "InviteDialog",
   "Common",
-  "Translations",
+  "PeopleTranslations",
 ])(InviteDialogComponent);
 
 InviteDialog.propTypes = {

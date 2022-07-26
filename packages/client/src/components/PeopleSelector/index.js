@@ -272,7 +272,7 @@ class PeopleSelector extends React.Component {
           searchPlaceHolderLabel || t("SearchUsersPlaceholder")
         }
         isDefaultDisplayDropDown={false}
-        selectButtonLabel={t("Translations:AddMembers")}
+        selectButtonLabel={t("PeopleTranslations:AddMembers")}
         emptySearchOptionsLabel={t("EmptySearchUsersResult")}
         emptyOptionsLabel={t("EmptyUsers")}
         onSelect={onSelect}
@@ -329,7 +329,7 @@ const ExtendedPeopleSelector = inject(({ auth }) => {
   return { theme: auth.settingsStore.theme };
 })(
   observer(
-    withTranslation(["PeopleSelector", "Translations", "Common"])(
+    withTranslation(["PeopleSelector", "PeopleTranslations", "Common"])(
       PeopleSelector
     )
   )

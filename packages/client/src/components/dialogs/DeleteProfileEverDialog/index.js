@@ -14,7 +14,7 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
-import Link from "@docspace/components/link";
+// import Link from "@docspace/components/link";
 
 const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
@@ -100,7 +100,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
               fontWeight={600}
               type={"action"}
             >
-              {t("Translations:ReassignData")}
+              {t("PeopleTranslations:ReassignData")}
             </Link> */}
             <div className="delete-user-footer-buttons">
               <Button
@@ -130,7 +130,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
 const DeleteProfileEverDialog = withTranslation([
   "DeleteProfileEverDialog",
   "Common",
-  "Translations",
+  "PeopleTranslations",
 ])(DeleteProfileEverDialogComponent);
 
 DeleteProfileEverDialog.propTypes = {

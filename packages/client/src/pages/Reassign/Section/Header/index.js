@@ -28,7 +28,7 @@ const textStyle = {
 
 const SectionHeaderContent = (props) => {
   const { history } = props;
-  const { t } = useTranslation("Home");
+  const { t } = useTranslation("People");
 
   const onClickBack = useCallback(() => {
     history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
