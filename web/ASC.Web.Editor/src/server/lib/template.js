@@ -1,6 +1,5 @@
 import { getFavicon, getScripts } from "./helpers";
 import pkg from "../../../package.json";
-import { EDITOR_STATE_NAME } from "@appserver/common/constants";
 
 export default function template(
   initialEditorState = {},
@@ -34,8 +33,10 @@ export default function template(
   }
 
   const scripts = `   
-    <script id="${EDITOR_STATE_NAME}">
-      window.${EDITOR_STATE_NAME} = ${JSON.stringify(initialEditorState)}
+    <script id="__ASC_INITIAL_EDITOR_STATE__">
+      window.__ASC_INITIAL_EDITOR_STATE__ = ${JSON.stringify(
+        initialEditorState
+      )}
     </script>
     <script id="__ASC_INITIAL_EDITOR_I18N__">
       window.initialI18nStoreASC = ${JSON.stringify(initialI18nStoreASC)}

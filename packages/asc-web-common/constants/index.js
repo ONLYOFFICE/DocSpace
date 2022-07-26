@@ -1,6 +1,6 @@
 export const LANGUAGE = "language";
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
-export const EDITOR_STATE_NAME = "__ASC_INITIAL_EDITOR_STATE__";
+
 /**
  * Enum for employee activation status.
  * @readonly

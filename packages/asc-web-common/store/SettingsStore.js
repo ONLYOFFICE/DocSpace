@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-import { LANGUAGE, TenantStatus, EDITOR_STATE_NAME } from "../constants";
+import { LANGUAGE, TenantStatus } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig, ThemeKeys } from "../constants";
@@ -175,8 +175,8 @@ class SettingsStore {
   getSettings = async () => {
     let newSettings = null;
 
-    if (window[`${EDITOR_STATE_NAME}`]?.portalSettings)
-      newSettings = window[`${EDITOR_STATE_NAME}`].portalSettings;
+    if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
+      newSettings = window.__ASC_INITIAL_EDITOR_STATE__.portalSettings;
     else newSettings = await api.settings.getSettings();
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
@@ -218,9 +218,9 @@ class SettingsStore {
 
   getCurrentCustomSchema = async (id) => {
     let customNames = null;
-    if (window[`${EDITOR_STATE_NAME}`]?.customNames) {
-      customNames = window[`${EDITOR_STATE_NAME}`].customNames;
-      window[`${EDITOR_STATE_NAME}`].customNames = null;
+    if (window?.__ASC_INITIAL_EDITOR_STATE__?.customNames) {
+      customNames = window.__ASC_INITIAL_EDITOR_STATE__.customNames;
+      window.__ASC_INITIAL_EDITOR_STATE__.customNames = null;
     } else customNames = await api.settings.getCurrentCustomSchema(id);
     this.customNames = customNames;
   };
@@ -438,8 +438,8 @@ class SettingsStore {
 
   getBuildVersionInfo = async () => {
     let versionInfo = null;
-    if (window[`${EDITOR_STATE_NAME}`]?.versionInfo)
-      versionInfo = window[`${EDITOR_STATE_NAME}`].versionInfo;
+    if (window?.__ASC_INITIAL_EDITOR_STATE__?.versionInfo)
+      versionInfo = window.__ASC_INITIAL_EDITOR_STATE__.versionInfo;
     else versionInfo = await api.settings.getBuildVersion();
     this.setBuildVersionInfo(versionInfo);
   };
