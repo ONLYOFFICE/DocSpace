@@ -6,12 +6,8 @@ import { isMobileOnly } from "react-device-detect";
 
 const StyledWrapper = styled.div`
   .logo-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
     height: 46px;
-    padding-bottom: 64px;
 
     @media ${hugeMobile} {
       display: none;
@@ -19,14 +15,15 @@ const StyledWrapper = styled.div`
   }
 `;
 
-const DocspaceLogo = () => {
+const DocspaceLogo = (props) => {
+  const { className } = props;
   if (isMobileOnly) return <></>;
 
   return (
     <StyledWrapper>
       <ReactSVG
         src="/static/images/docspace.big.react.svg"
-        className="logo-wrapper"
+        className={`logo-wrapper ${className}`}
       />
     </StyledWrapper>
   );
