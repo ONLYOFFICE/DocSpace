@@ -1,5 +1,5 @@
-import { hugeMobile } from "@appserver/components/utils/device";
 import styled, { css } from "styled-components";
+import { tablet, hugeMobile } from "@appserver/components/utils/device";
 
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -7,7 +7,7 @@ export const ButtonsWrapper = styled.div`
   margin: 0 213px 0 213px;
   width: 320px;
 
-  @media (max-width: 768px) {
+  @media ${tablet} {
     width: 100%;
   }
 `;
@@ -31,12 +31,11 @@ export const LoginContainer = styled.div`
     width: 100%;
   }
 
-  @media (max-width: 768px) {
-    padding: 0 16px;
+  @media ${tablet} {
     max-width: 480px;
   }
 
-  @media (max-width: 414px) {
+  @media ${hugeMobile} {
     margin: 0 auto 0 auto;
     max-width: 311px;
   }
@@ -65,11 +64,11 @@ export const LoginContainer = styled.div`
     color: #eceef1;
     padding-top: 35px;
 
-    @media (max-width: 768px) {
+    @media ${tablet} {
       width: 480px;
     }
 
-    @media (max-width: 414px) {
+    @media ${hugeMobile} {
       width: 311px;
     }
   }
@@ -123,11 +122,11 @@ export const LoginContainer = styled.div`
     margin: 32px 213px 0 213px;
     width: 320px;
 
-    @media (max-width: 768px) {
+    @media ${tablet} {
       margin: 32px 0 0 0;
       width: 100%;
     }
-    @media (max-width: 375px) {
+    @media ${hugeMobile} {
       margin: 32px 0 0 0;
       width: 100%;
     }
