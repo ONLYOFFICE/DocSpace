@@ -25,11 +25,9 @@ class SelectFolderInput extends React.PureComponent {
     };
     this._isMount = false;
   }
-  async componentDidMount() {
-    this._isMount = true;
 
+  setBaseInfo = async () => {
     const {
-      setFirstLoad,
       treeFolders,
       foldersType,
       id,
@@ -37,8 +35,6 @@ class SelectFolderInput extends React.PureComponent {
       foldersList,
       withoutBasicSelection,
     } = this.props;
-
-    setFirstLoad(false);
 
     let resultingFolderTree, resultingId;
 
@@ -68,11 +64,19 @@ class SelectFolderInput extends React.PureComponent {
       resultingFolderTree,
       baseId: resultingId,
     });
+  };
+  componentDidMount() {
+    this._isMount = true;
+
+    const { setFirstLoad } = this.props;
+
+    setFirstLoad(false);
+    this.setBaseInfo();
   }
 
   componentDidUpdate(prevProps) {
     const { isSuccessSave, isReset, id } = this.props;
-    const { newFolderPath, baseFolderPath } = this.state;
+    const { newFolderPath, baseFolderPath, foldersList } = this.state;
 
     if (!isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
       newFolderPath &&
@@ -89,6 +93,10 @@ class SelectFolderInput extends React.PureComponent {
         baseId: id,
         newId: null,
       });
+    }
+
+    if (foldersList !== prevProps.foldersList) {
+      this.setBaseInfo();
     }
   }
 

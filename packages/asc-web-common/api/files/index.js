@@ -699,6 +699,32 @@ export function saveThirdParty(
   return request({ method: "post", url: "files/thirdparty", data });
 }
 
+export function saveSettingsThirdParty(
+  url,
+  login,
+  password,
+  token,
+  isCorporate,
+  customerTitle,
+  providerKey,
+  providerId
+) {
+  const data = {
+    url,
+    login,
+    password,
+    token,
+    isCorporate,
+    customerTitle,
+    providerKey,
+    providerId,
+  };
+  return request({ method: "post", url: "files/thirdparty/backup", data });
+}
+export function getSettingsThirdParty() {
+  return request({ method: "get", url: "files/thirdparty/backup" });
+}
+
 export function deleteThirdParty(providerId) {
   return request({ method: "delete", url: `files/thirdparty/${providerId}` });
 }

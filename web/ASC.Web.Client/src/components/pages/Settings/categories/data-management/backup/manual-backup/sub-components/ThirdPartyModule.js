@@ -5,46 +5,22 @@ import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
 import { BackupStorageType } from "@appserver/common/constants";
-import DirectConnectionContainer from "../../common-container/DirectConnectionContainer";
+import DirectThirdPartyConnection from "../../common-container/DirectThirdPartyConnection";
 
 let folder = "";
 class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
 
-    const { isDocSpace } = props;
-
     folder = getFromSessionStorage("LocalCopyFolder");
 
-    if (isDocSpace) {
-      this.accounts = [
-        {
-          key: "0",
-          label: "Google Drive",
-        },
-        {
-          key: "1",
-          label: "OneDrive ",
-        },
-        {
-          key: "2",
-          label: "Dropbox ",
-        },
-        {
-          key: "3",
-          label: "Box.com",
-        },
-      ];
-    }
-
     this.state = {
+      isLoading: false,
       isStartCopy: false,
       isLoadingData: false,
       selectedFolder: folder || "",
       isPanelVisible: false,
       isError: false,
-      ...(isDocSpace && { selectedAccount: this.accounts[0] }),
-      isConnected: false,
     };
   }
 
@@ -116,18 +92,12 @@ class ThirdPartyModule extends React.Component {
   };
   onSelectAccount = (options) => {
     const key = options.key;
-    const label = options.label;
 
     this.setState({
-      selectedAccount: { key, label },
+      selectedAccount: { ...this.accounts[+key] },
     });
   };
 
-  onConnect = () => {
-    const { isConnected } = this.state;
-
-    this.setState({ isConnected: !isConnected });
-  };
   render() {
     const {
       isMaxProgress,
@@ -141,8 +111,6 @@ class ThirdPartyModule extends React.Component {
       isLoadingData,
       isError,
       isStartCopy,
-      selectedAccount,
-      isConnected,
       selectedFolder,
     } = this.state;
 
@@ -185,26 +153,16 @@ class ThirdPartyModule extends React.Component {
       </>
     ) : (
       <div className="manual-backup_third-party-module">
-        <DirectConnectionContainer
-          accounts={this.accounts}
-          selectedAccount={selectedAccount}
-          onSelectAccount={this.onSelectAccount}
-          onConnect={this.onConnect}
+        <DirectThirdPartyConnection
           t={t}
-        />
-
-        <SelectFolderInput
           onSelectFolder={this.onSelectFolder}
-          name={"thirdParty"}
           onClose={this.onClose}
           onClickInput={this.onClickInput}
           onSetLoadingData={this.onSetLoadingData}
-          isDisabled={isModuleDisabled || !isConnected}
+          isDisabled={isModuleDisabled}
           isPanelVisible={isPanelVisible}
+          withoutBasicSelection={true}
           isError={isError}
-          foldersType="third-party"
-          foldersList={commonThirdPartyList}
-          withoutBasicSelection
         />
 
         <Button
@@ -218,11 +176,14 @@ class ThirdPartyModule extends React.Component {
     );
   }
 }
-export default inject(({ backup }) => {
-  const { commonThirdPartyList } = backup;
-  const isDocSpace = false;
+export default inject(({ backup, settingsStore }) => {
+  const { commonThirdPartyList, openConnectWindow, getOAuthToken } = backup;
+  //  const { openConnectWindow } = settingsStore.thirdPartyStore;
+  const isDocSpace = true;
   return {
     commonThirdPartyList,
     isDocSpace,
+    openConnectWindow,
+    getOAuthToken,
   };
 })(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));

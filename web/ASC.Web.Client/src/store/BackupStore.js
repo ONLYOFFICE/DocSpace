@@ -6,6 +6,7 @@ import {
 } from "../components/pages/Settings/utils";
 import toastr from "../helpers/toastr";
 import { AutoBackupPeriod } from "@appserver/common/constants";
+import api from "@appserver/common/api";
 
 const { EveryDayType, EveryWeekType } = AutoBackupPeriod;
 
@@ -547,6 +548,74 @@ class BackupStore {
 
   setResetProcess = (process) => {
     if (process !== this.isResetProcess) this.isResetProcess = process;
+  };
+
+  convertServiceName = (serviceName) => {
+    //Docusign, OneDrive, Wordpress
+    switch (serviceName) {
+      case "GoogleDrive":
+        return "google";
+      case "Box":
+        return "box";
+      case "DropboxV2":
+        return "dropbox";
+      case "OneDrive":
+        return "onedrive";
+      default:
+        return "";
+    }
+  };
+
+  oAuthPopup = (url, modal) => {
+    let newWindow = modal;
+
+    if (modal) {
+      newWindow.location = url;
+    }
+
+    try {
+      let params =
+        "height=600,width=1020,resizable=0,status=0,toolbar=0,menubar=0,location=1";
+      newWindow = modal ? newWindow : window.open(url, "Authorization", params);
+    } catch (err) {
+      newWindow = modal ? newWindow : window.open(url, "Authorization");
+    }
+
+    return newWindow;
+  };
+  openConnectWindow = (serviceName, modal) => {
+    const service = this.convertServiceName(serviceName);
+    console.log("service", service);
+    return api.files.openConnectWindow(service).then((link) => {
+      console.log("link", link);
+      return this.oAuthPopup(link, modal);
+    });
+  };
+
+  getOAuthToken = (tokenGetterWin) => {
+    return new Promise((resolve, reject) => {
+      localStorage.removeItem("code");
+      let interval = null;
+      interval = setInterval(() => {
+        try {
+          const code = localStorage.getItem("code");
+          console.log("code", code);
+          if (code) {
+            localStorage.removeItem("code");
+            clearInterval(interval);
+            resolve(code);
+            console.log("code", code);
+          } else if (tokenGetterWin && tokenGetterWin.closed) {
+            clearInterval(interval);
+            reject();
+          }
+        } catch (e) {
+          clearInterval(interval);
+          reject(e);
+          console.log("code catch", code);
+        }
+      }, 500);
+    });
   };
 }
 export default BackupStore;

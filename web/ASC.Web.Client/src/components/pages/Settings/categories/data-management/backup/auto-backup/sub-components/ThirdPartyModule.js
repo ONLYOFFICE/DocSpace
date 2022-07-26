@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { BackupStorageType } from "@appserver/common/constants";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
-import DirectConnectionContainer from "../../common-container/DirectConnectionContainer";
+import DirectThirdPartyConnection from "../../common-container/DirectThirdPartyConnection";
 
 class ThirdPartyModule extends React.PureComponent {
   constructor(props) {
@@ -91,7 +91,7 @@ class ThirdPartyModule extends React.PureComponent {
       t,
       ...rest
     } = this.props;
-    console.log("passedId", passedId);
+
     return (
       <>
         {!isDocSpace ? (
@@ -113,27 +113,18 @@ class ThirdPartyModule extends React.PureComponent {
           </div>
         ) : (
           <div className="auto-backup_third-party-module">
-            <DirectConnectionContainer
-              accounts={this.accounts}
-              selectedAccount={selectedAccount}
-              onSelectAccount={this.onSelectAccount}
-              onConnect={this.onConnect}
+            <DirectThirdPartyConnection
               t={t}
-            />
-
-            <SelectFolderInput
               onSelectFolder={this.onSelectFolder}
               onClose={this.onClose}
               onClickInput={this.onClickInput}
+              isDisabled={isLoadingData}
               isPanelVisible={isPanelVisible}
+              withoutBasicSelection={isResourcesDefault ? false : true}
               isError={isError}
-              foldersType="third-party"
-              isDisabled={isLoadingData || !isConnected}
-              id={passedId}
               isReset={isResetProcess}
               isSuccessSave={isSavingProcess}
-              foldersList={commonThirdPartyList}
-              withoutBasicSelection={isResourcesDefault ? false : true}
+              id={passedId}
             />
           </div>
         )}
@@ -158,7 +149,7 @@ export default inject(({ backup }) => {
     defaultStorageType === `${BackupStorageType.ResourcesModuleType}`;
 
   const passedId = isResourcesDefault ? defaultFolderId : "";
-  const isDocSpace = false;
+  const isDocSpace = true;
   return {
     isResetProcess,
     isSavingProcess,
