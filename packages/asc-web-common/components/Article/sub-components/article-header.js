@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { useLocation } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import Loaders from "@appserver/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@appserver/components/utils/device";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { ReactSVG } from "react-svg";
 import {
   StyledArticleHeader,
   StyledHeading,
@@ -24,6 +25,7 @@ const ArticleHeader = ({
   ...rest
 }) => {
   const location = useLocation();
+  const history = useHistory();
 
   const isLoadedSetting = isLoaded;
 
@@ -39,6 +41,12 @@ const ArticleHeader = ({
 
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
 
+  const onLogoClick = () => {
+    if (showText && isTabletView) onClick();
+    else history.push("/");
+  };
+
+  if (isMobileOnly) return <></>;
   return (
     <StyledArticleHeader showText={showText} {...rest}>
       {isTabletView && (isBurgerLoading || showLoader) ? (
@@ -48,13 +56,19 @@ const ArticleHeader = ({
           style={{ height: "20px" }}
         />
       ) : (
-        <StyledIconBox name="article-burger">
-          <StyledMenuIcon onClick={onClick} />
+        <StyledIconBox name="article-burger" showText={showText}>
+          <ReactSVG
+            src="/static/images/logo.icon.react.svg"
+            onClick={onClick}
+          />
         </StyledIconBox>
       )}
 
       <StyledHeading showText={showText} size="large">
-        {children}
+        <ReactSVG
+          src="/static/images/logo.docspace.react.svg"
+          onClick={onLogoClick}
+        />
       </StyledHeading>
     </StyledArticleHeader>
   );

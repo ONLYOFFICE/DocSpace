@@ -9,6 +9,7 @@ const SectionPagingContent = ({
   files,
   folders,
   fetchFiles,
+  fetchRooms,
   setIsLoading,
   selectedCount,
   selectedFolderId,
@@ -16,6 +17,7 @@ const SectionPagingContent = ({
   totalPages,
   setPageItemsLength,
   isHidePagination,
+  isRooms,
 }) => {
   const { t } = useTranslation("Home");
   const onNextClick = useCallback(
@@ -30,11 +32,17 @@ const SectionPagingContent = ({
       newFilter.page++;
 
       setIsLoading(true);
-      fetchFiles(selectedFolderId, newFilter).finally(() =>
-        setIsLoading(false)
-      );
+      if (isRooms) {
+        fetchRooms(selectedFolderId, newFilter).finally(() =>
+          setIsLoading(false)
+        );
+      } else {
+        fetchFiles(selectedFolderId, newFilter).finally(() =>
+          setIsLoading(false)
+        );
+      }
     },
-    [filter, selectedFolderId, setIsLoading, fetchFiles]
+    [filter, selectedFolderId, setIsLoading, fetchFiles, isRooms]
   );
 
   const onPrevClick = useCallback(
@@ -50,9 +58,15 @@ const SectionPagingContent = ({
       newFilter.page--;
 
       setIsLoading(true);
-      fetchFiles(selectedFolderId, newFilter).finally(() =>
-        setIsLoading(false)
-      );
+      if (isRooms) {
+        fetchRooms(selectedFolderId, newFilter).finally(() =>
+          setIsLoading(false)
+        );
+      } else {
+        fetchFiles(selectedFolderId, newFilter).finally(() =>
+          setIsLoading(false)
+        );
+      }
     },
     [filter, selectedFolderId, setIsLoading, fetchFiles]
   );
@@ -66,9 +80,15 @@ const SectionPagingContent = ({
       newFilter.pageCount = pageItem.key;
 
       setIsLoading(true);
-      fetchFiles(selectedFolderId, newFilter).finally(() =>
-        setIsLoading(false)
-      );
+      if (isRooms) {
+        fetchRooms(selectedFolderId, newFilter).finally(() =>
+          setIsLoading(false)
+        );
+      } else {
+        fetchFiles(selectedFolderId, newFilter).finally(() =>
+          setIsLoading(false)
+        );
+      }
     },
     [filter, selectedFolderId, setIsLoading, fetchFiles]
   );
@@ -81,9 +101,15 @@ const SectionPagingContent = ({
       newFilter.page = pageItem.key;
 
       setIsLoading(true);
-      fetchFiles(selectedFolderId, newFilter).finally(() =>
-        setIsLoading(false)
-      );
+      if (isRooms) {
+        fetchRooms(selectedFolderId, newFilter).finally(() =>
+          setIsLoading(false)
+        );
+      } else {
+        fetchFiles(selectedFolderId, newFilter).finally(() =>
+          setIsLoading(false)
+        );
+      }
     },
     [filter, selectedFolderId, setIsLoading, fetchFiles]
   );
@@ -173,30 +199,43 @@ const SectionPagingContent = ({
   );
 };
 
-export default inject(({ filesStore, selectedFolderStore }) => {
-  const {
-    files,
-    folders,
-    fetchFiles,
-    filter,
-    setIsLoading,
-    setPageItemsLength,
-    isHidePagination,
-  } = filesStore;
+export default inject(
+  ({ filesStore, selectedFolderStore, treeFoldersStore }) => {
+    const {
+      files,
+      folders,
+      fetchFiles,
+      fetchRooms,
+      filter,
+      roomsFilter,
+      setIsLoading,
+      setPageItemsLength,
+      isHidePagination,
+    } = filesStore;
 
-  const totalPages = Math.ceil(filter.total / filter.pageCount);
+    const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-  return {
-    files,
-    folders,
-    selectedFolderId: selectedFolderStore.id,
-    filter,
-    totalPages,
+    const isRooms = isRoomsFolder || isArchiveFolder;
 
-    setIsLoading,
-    fetchFiles,
+    const currentFilter = isRooms ? roomsFilter.clone() : filter.clone();
 
-    setPageItemsLength,
-    isHidePagination,
-  };
-})(observer(SectionPagingContent));
+    const totalPages = Math.ceil(currentFilter.total / currentFilter.pageCount);
+
+    return {
+      files,
+      folders,
+      selectedFolderId: selectedFolderStore.id,
+      filter: currentFilter,
+
+      totalPages,
+
+      setIsLoading,
+      fetchFiles,
+      fetchRooms,
+
+      setPageItemsLength,
+      isHidePagination,
+      isRooms,
+    };
+  }
+)(observer(SectionPagingContent));

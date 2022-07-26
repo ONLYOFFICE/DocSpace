@@ -57,9 +57,9 @@ const StyledText = styled(Text)`
   bottom: ${(props) => (props.isRoot ? "2px" : "-1px")};
 `;
 
-const Item = ({ id, title, isRoot, onClick, ...rest }) => {
+const Item = ({ id, title, isRoot, isRootRoom, onClick, ...rest }) => {
   const onClickAvailable = () => {
-    onClick && onClick(id);
+    onClick && onClick(id, isRootRoom);
   };
 
   return (

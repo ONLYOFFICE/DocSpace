@@ -37,34 +37,13 @@ public enum Provider
 public class BaseDbContext : DbContext
 {
     public ConnectionStringSettings ConnectionStringSettings { get; set; }
-    internal string MigrateAssembly { get; set; }
+    public string MigrateAssembly { get; set; }
     internal ILoggerFactory LoggerFactory { get; set; }
     public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
-
-    protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
     protected Provider _provider;
 
     public BaseDbContext() { }
     public BaseDbContext(DbContextOptions options) : base(options) { }
-
-    public void Migrate()
-    {
-        if (ProviderContext != null)
-        {
-            var provider = GetProviderByConnectionString();
-
-            using var sqlProvider = ProviderContext[provider]();
-            sqlProvider.ConnectionStringSettings = ConnectionStringSettings;
-            sqlProvider.LoggerFactory = LoggerFactory;
-            sqlProvider.MigrateAssembly = MigrateAssembly;
-
-            sqlProvider.Database.Migrate();
-        }
-        else
-        {
-            Database.Migrate();
-        }
-    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -74,6 +53,7 @@ public class BaseDbContext : DbContext
         switch (_provider)
         {
             case Provider.MySql:
+                optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomMySqlMigrationsSqlGenerator>();
                 optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, providerOptions =>
                 {
                     if (!string.IsNullOrEmpty(MigrateAssembly))
@@ -86,7 +66,13 @@ public class BaseDbContext : DbContext
                 });
                 break;
             case Provider.PostgreSql:
-                optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+                optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString, providerOptions =>
+                {
+                    if (!string.IsNullOrEmpty(MigrateAssembly))
+                    {
+                        providerOptions.MigrationsAssembly(MigrateAssembly);
+                    }
+                });
                 break;
         }
     }

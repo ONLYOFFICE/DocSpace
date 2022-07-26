@@ -14,6 +14,7 @@ import SubArticleBackdrop from "./sub-components/article-backdrop";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
+import ArticleProfile from "./sub-components/article-profile";
 
 import { StyledArticle } from "./styled-article";
 
@@ -35,6 +36,7 @@ const Article = ({
   children,
 
   isBannerVisible,
+  hideProfileBlock,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -116,30 +118,24 @@ const Article = ({
         isBannerVisible={isBannerVisible}
         {...rest}
       >
-        <Resizable
-          defaultSize={{
-            width: 256,
-          }}
-          enable={enable}
-          className="resizable-block"
-          handleWrapperClass="resizable-border not-selectable"
+        <SubArticleHeader
+          isLoadedPage={isLoadedPage}
+          showText={showText}
+          onClick={toggleShowText}
         >
-          <SubArticleHeader
-            isLoadedPage={isLoadedPage}
-            showText={showText}
-            onClick={toggleShowText}
-          >
-            {articleHeaderContent ? articleHeaderContent.props.children : null}
-          </SubArticleHeader>
-          {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
-            <SubArticleMainButton showText={showText}>
-              {articleMainButtonContent.props.children}
-            </SubArticleMainButton>
-          ) : null}
-          <SubArticleBody showText={showText}>
-            {articleBodyContent ? articleBodyContent.props.children : null}
-          </SubArticleBody>
-        </Resizable>
+          {articleHeaderContent ? articleHeaderContent.props.children : null}
+        </SubArticleHeader>
+        {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
+          <SubArticleMainButton showText={showText}>
+            {articleMainButtonContent.props.children}
+          </SubArticleMainButton>
+        ) : null}
+        <SubArticleBody showText={showText}>
+          {articleBodyContent ? articleBodyContent.props.children : null}
+          {!hideProfileBlock && !isMobileOnly && (
+            <ArticleProfile showText={showText} />
+          )}
+        </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
         <>
@@ -162,6 +158,7 @@ Article.propTypes = {
   toggleArticleOpen: PropTypes.func,
   setIsMobileArticle: PropTypes.func,
   children: PropTypes.any,
+  hideProfileBlock: PropTypes.bool,
 };
 
 Article.Header = () => {

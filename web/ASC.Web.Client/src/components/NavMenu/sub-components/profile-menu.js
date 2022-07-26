@@ -165,7 +165,6 @@ class ProfileMenu extends React.Component {
       children,
       className,
       displayName,
-      email,
       clickOutsideAction,
       open,
       forwardedRef,
@@ -195,7 +194,6 @@ class ProfileMenu extends React.Component {
             />
             <div>
               <MainLabelContainer>{displayName}</MainLabelContainer>
-              <LabelContainer>{email}</LabelContainer>
               <StyledControlContainer onClick={clickOutsideAction}>
                 <StyledCrossIcon />
               </StyledControlContainer>
@@ -232,7 +230,6 @@ ProfileMenu.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   displayName: PropTypes.string,
-  email: PropTypes.string,
   id: PropTypes.string,
   open: PropTypes.bool,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),

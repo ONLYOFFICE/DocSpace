@@ -61,7 +61,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Archive.
+        ///   Looks up a localized string similar to Archived.
         /// </summary>
         public static string Archive {
             get {
@@ -115,6 +115,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Personal.
+        /// </summary>
+        public static string Personal {
+            get {
+                return ResourceManager.GetString("Personal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Private Room.
         /// </summary>
         public static string PrivacyRoom {
@@ -160,7 +169,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VirtualRooms.
+        ///   Looks up a localized string similar to Shared.
         /// </summary>
         public static string VirtualRooms {
             get {

@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import Backdrop from "@appserver/components/backdrop";
-import Toast from "@appserver/components/toast";
 import Aside from "@appserver/components/aside";
 
 import Header from "./sub-components/header";
@@ -52,19 +51,6 @@ const StyledContainer = styled.header`
 
           width: 100%;
         `}
-
-  #ipl-progress-indicator {
-    position: fixed;
-    z-index: 390;
-    top: ${(props) => (props.isDesktop ? "0" : "48px")};
-    left: -6px;
-    width: 0%;
-    height: 3px;
-    background-color: #eb835f;
-    -moz-border-radius: 1px;
-    -webkit-border-radius: 1px;
-    border-radius: 1px;
-  }
 `;
 
 StyledContainer.defaultProps = { theme: Base };
@@ -177,8 +163,6 @@ class NavMenu extends React.Component {
             isVisible={value.isVisible}
             isDesktop={hideHeader}
           >
-            <Toast />
-
             <Backdrop
               visible={isBackdropVisible}
               onClick={this.backdropClick}
@@ -211,7 +195,6 @@ class NavMenu extends React.Component {
               </Aside>
             )}
             {preparationPortalDialogVisible && <PreparationPortalDialog />}
-            <div id="ipl-progress-indicator"></div>
           </StyledContainer>
         )}
       </LayoutContextConsumer>

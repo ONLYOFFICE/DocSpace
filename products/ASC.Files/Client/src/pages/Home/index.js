@@ -24,8 +24,6 @@ import {
 } from "./Section";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
-import { ArticleMainButtonContent } from "../../components/Article";
-
 import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
@@ -33,11 +31,15 @@ import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 import { Consumer } from "@appserver/components/utils/context";
 import { Events } from "../../helpers/constants";
+import RoomsFilter from "@appserver/common/api/rooms/filter";
 
 class PureHome extends React.Component {
   componentDidMount() {
     const {
       fetchFiles,
+      fetchRooms,
+      alreadyFetchingRooms,
+      setAlreadyFetchingRooms,
       homepage,
       setIsLoading,
       setFirstLoad,
@@ -59,8 +61,13 @@ class PureHome extends React.Component {
     this.isFrame = this.frameConfig && window.name === this.frameConfig.name;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
+    const roomsReg = new RegExp(`${homepage}((/?)$|/rooms)`, "gmi");
+
     const match = window.location.pathname.match(reg);
+    const roomsMatch = window.location.pathname.match(roomsReg);
+
     let filterObj = null;
+    let isRooms = false;
 
     if (
       window.location.href.indexOf("/files/#preview") > 1 &&
@@ -100,7 +107,26 @@ class PureHome extends React.Component {
       }
     }
 
+    if (roomsMatch && roomsMatch.length > 0) {
+      if (window.location.href.includes("#preview")) {
+        return;
+      }
+
+      isRooms = true;
+
+      filterObj = RoomsFilter.getFilter(window.location);
+
+      if (!filterObj) {
+        setIsLoading(true);
+        this.fetchDefaultRooms();
+
+        return;
+      }
+    }
+
     if (!filterObj) return;
+
+    if (isRooms && alreadyFetchingRooms) return setAlreadyFetchingRooms(false);
 
     let dataObj = { filter: filterObj };
 
@@ -122,10 +148,30 @@ class PureHome extends React.Component {
       }
     }
 
+    if (filterObj && filterObj.subjectId) {
+      const type = "user";
+      const itemId = filterObj.subjectId;
+
+      if (itemId) {
+        dataObj = {
+          type,
+          itemId,
+          filter: filterObj,
+        };
+      } else {
+        filterObj.subjectId = null;
+        dataObj = { filter: filterObj };
+      }
+    }
+
     if (!dataObj) return;
 
     const { filter, itemId, type } = dataObj;
-    const newFilter = filter ? filter.clone() : FilesFilter.getDefault();
+    const newFilter = filter
+      ? filter.clone()
+      : isRooms
+      ? RoomsFilter.getDefault()
+      : FilesFilter.getDefault();
     const requests = [Promise.resolve(newFilter)];
 
     if (type === "group") {
@@ -139,7 +185,12 @@ class PureHome extends React.Component {
     axios
       .all(requests)
       .catch((err) => {
-        Promise.resolve(FilesFilter.getDefault());
+        if (isRooms) {
+          Promise.resolve(RoomsFilter.getDefault());
+        } else {
+          Promise.resolve(FilesFilter.getDefault());
+        }
+
         //console.warn("Filter restored by default", err);
       })
       .then((data) => {
@@ -152,18 +203,33 @@ class PureHome extends React.Component {
             label: type === "user" ? result.displayName : result.name,
             type,
           };
-          filter.selectedItem = selectedItem;
+          if (!isRooms) {
+            filter.selectedItem = selectedItem;
+          }
         }
 
         if (filter) {
-          const folderId = filter.folder;
-          //console.log("filter", filter);
+          if (isRooms) {
+            return fetchRooms(null, filter).then((data) => {
+              const pathParts = data.selectedFolder.pathParts;
+              const newExpandedKeys = createTreeFolders(
+                pathParts,
+                expandedKeys
+              );
+              setExpandedKeys(newExpandedKeys);
+            });
+          } else {
+            const folderId = filter.folder;
 
-          return fetchFiles(folderId, filter).then((data) => {
-            const pathParts = data.selectedFolder.pathParts;
-            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
-            setExpandedKeys(newExpandedKeys);
-          });
+            return fetchFiles(folderId, filter).then((data) => {
+              const pathParts = data.selectedFolder.pathParts;
+              const newExpandedKeys = createTreeFolders(
+                pathParts,
+                expandedKeys
+              );
+              setExpandedKeys(newExpandedKeys);
+            });
+          }
         }
 
         return Promise.resolve();
@@ -189,6 +255,7 @@ class PureHome extends React.Component {
       .finally(() => {
         setIsLoading(false);
         setFirstLoad(false);
+        setAlreadyFetchingRooms(false);
       });
   }
 
@@ -198,6 +265,15 @@ class PureHome extends React.Component {
     const folderId = isVisitor ? "@common" : filterObj.folder;
 
     fetchFiles(folderId).finally(() => {
+      setIsLoading(false);
+      setFirstLoad(false);
+    });
+  };
+
+  fetchDefaultRooms = () => {
+    const { fetchRooms, setIsLoading, setFirstLoad } = this.props;
+
+    fetchRooms().finally(() => {
       setIsLoading(false);
       setFirstLoad(false);
     });
@@ -431,6 +507,9 @@ export default inject(
       firstLoad,
       setFirstLoad,
       fetchFiles,
+      fetchRooms,
+      alreadyFetchingRooms,
+      setAlreadyFetchingRooms,
       selection,
       setSelections,
       dragging,
@@ -532,6 +611,9 @@ export default inject(
       setDragging,
       setIsLoading,
       fetchFiles,
+      fetchRooms,
+      alreadyFetchingRooms,
+      setAlreadyFetchingRooms,
       setUploadPanelVisible,
       setSelections,
       startUpload,

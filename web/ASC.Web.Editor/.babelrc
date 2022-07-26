@@ -1,7 +1,19 @@
 {
-  "presets": ["@babel/preset-react", "@babel/preset-env"],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "bugfixes": true
+      }
+    ],
+    "@babel/preset-react"
+  ],
   "plugins": [
-    "@babel/plugin-transform-runtime",
-    "@babel/plugin-proposal-class-properties"
-  ]
+    "@loadable/babel-plugin",
+    "babel-plugin-styled-components",
+    ["@babel/plugin-proposal-class-properties", { "loose": false }],
+    "@babel/plugin-proposal-export-default-from"
+  ],
+  "ignore": ["node_modules", "build"],
+  "sourceType": "unambiguous"
 }
