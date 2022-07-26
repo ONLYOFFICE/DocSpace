@@ -9,6 +9,7 @@ import { inject, observer } from "mobx-react";
 import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
 import withLoader from "../withLoader";
 import FormWrapper from "@appserver/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
 
 const ChangePhoneForm = (props) => {
   const { t, greetingTitle } = props;
@@ -18,6 +19,7 @@ const ChangePhoneForm = (props) => {
     <StyledPage>
       <StyledBody>
         <StyledHeader>
+          <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>

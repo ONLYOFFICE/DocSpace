@@ -14,7 +14,6 @@ import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import toastr from "@appserver/components/toast/toastr";
 import SocialButton from "@appserver/components/social-button";
-import FacebookButton from "@appserver/components/facebook-button";
 import {
   getAuthProviders,
   getCapabilities,
@@ -30,9 +29,10 @@ import withLoader from "../withLoader";
 import MoreLoginModal from "login/moreLogin";
 import AppLoader from "@appserver/common/components/AppLoader";
 import EmailInput from "@appserver/components/email-input";
-import { smallTablet } from "@appserver/components/utils/device";
+import { tablet } from "@appserver/components/utils/device";
 import { getPasswordErrorMessage } from "../../../../helpers/utils";
 import FormWrapper from "@appserver/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
 
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -108,6 +108,21 @@ const GreetingContainer = styled.div`
     position: absolute;
     padding: 16px;
     width: 100%;
+  }
+
+  .docspace-logo {
+    padding-bottom: 32px;
+
+    .injected-svg {
+      height: 44px;
+    }
+
+    @media ${tablet} {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 64px;
+    }
   }
 `;
 
@@ -529,6 +544,7 @@ const Confirm = (props) => {
   return (
     <ConfirmContainer>
       <GreetingContainer isGreetingMode={isGreetingMode}>
+        <DocspaceLogo className="docspace-logo" />
         <Text
           fontSize="23px"
           fontWeight={700}

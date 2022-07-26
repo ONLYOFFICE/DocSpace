@@ -27,6 +27,13 @@ export const StyledHeader = styled.div`
   .subtitle {
     margin-bottom: 32px;
   }
+
+  .docspace-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 64px;
+  }
 `;
 
 export const StyledBody = styled.div`

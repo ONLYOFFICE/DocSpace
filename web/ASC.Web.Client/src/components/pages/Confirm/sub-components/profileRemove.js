@@ -10,6 +10,7 @@ import toastr from "@appserver/components/toast/toastr";
 import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
 import withLoader from "../withLoader";
 import FormWrapper from "@appserver/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
 
 const ProfileRemoveForm = (props) => {
   const { t, greetingTitle, linkData, logout } = props;
@@ -36,6 +37,7 @@ const ProfileRemoveForm = (props) => {
       <StyledPage>
         <StyledBody>
           <StyledHeader>
+            <DocspaceLogo className="docspace-logo" />
             <Text fontSize="23px" fontWeight="700" className="title">
               {t("DeleteProfileSuccessMessage")}
             </Text>

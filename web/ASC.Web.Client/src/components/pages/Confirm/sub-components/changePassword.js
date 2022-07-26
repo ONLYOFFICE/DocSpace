@@ -14,6 +14,7 @@ import { createPasswordHash } from "@appserver/common/utils";
 import tryRedirectTo from "@appserver/common/utils/tryRedirectTo";
 import toastr from "@appserver/components/toast/toastr";
 import FormWrapper from "@appserver/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
 
 const ChangePasswordForm = (props) => {
   const {
@@ -82,6 +83,7 @@ const ChangePasswordForm = (props) => {
     <StyledPage>
       <StyledBody>
         <StyledHeader>
+          <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700">
             {greetingTitle}
           </Text>
