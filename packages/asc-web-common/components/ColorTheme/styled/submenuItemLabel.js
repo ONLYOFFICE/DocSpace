@@ -10,4 +10,4 @@ const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
   }
 `;
 
-export default styled(StyledSubmenuItemLabel)([getDefaultStyles]);
+export default styled(StyledSubmenuItemLabel)(getDefaultStyles);

@@ -9,4 +9,4 @@ const getDefaultStyles = ({ currentColorScheme }) => css`
   }
 `;
 
-export default styled(StyledMainButton)([getDefaultStyles]);
+export default styled(StyledMainButton)(getDefaultStyles);

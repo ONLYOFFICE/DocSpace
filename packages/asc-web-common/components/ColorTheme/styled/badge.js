@@ -18,4 +18,4 @@ const getDefaultStyles = ({ currentColorScheme }) => css`
   }
 `;
 
-export default styled(StyledBadge)([getDefaultStyles]);
+export default styled(StyledBadge)(getDefaultStyles);

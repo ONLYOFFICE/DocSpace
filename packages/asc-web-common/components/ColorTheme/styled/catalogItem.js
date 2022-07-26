@@ -32,4 +32,4 @@ const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
   }
 `;
 
-export default styled(StyledCatalogItemContainer)([getDefaultStyles]);
+export default styled(StyledCatalogItemContainer)(getDefaultStyles);

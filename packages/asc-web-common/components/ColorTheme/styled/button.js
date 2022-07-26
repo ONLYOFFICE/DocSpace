@@ -13,4 +13,4 @@ const getDefaultStyles = ({ primary, currentColorScheme, isDisabled }) => css`
   }
 `;
 
-export default styled(StyledButton)([getDefaultStyles]);
+export default styled(StyledButton)(getDefaultStyles);

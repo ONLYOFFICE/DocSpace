@@ -20,4 +20,4 @@ const getDefaultStyles = ({ currentColorScheme, isDisabled, isChecked }) => css`
   }
 `;
 
-export default styled(Container)([getDefaultStyles]);
+export default styled(Container)(getDefaultStyles);

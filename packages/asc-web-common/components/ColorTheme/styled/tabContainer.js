@@ -5,4 +5,4 @@ const getDefaultStyles = ({ currentColorScheme, selected }) => css`
   background-color: ${selected && currentColorScheme.accentColor};
 `;
 
-export default styled(Label)([getDefaultStyles]);
+export default styled(Label)(getDefaultStyles);

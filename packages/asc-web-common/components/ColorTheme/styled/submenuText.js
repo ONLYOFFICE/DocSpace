@@ -10,4 +10,4 @@ const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
   }
 `;
 
-export default styled(StyledText)([getDefaultStyles]);
+export default styled(StyledText)(getDefaultStyles);
