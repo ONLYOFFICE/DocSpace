@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-  
   onlyoffice-migration-runner:
     image: "${REPO}/${STATUS}appserver-migration-runner:${DOCKER_TAG}"
     container_name: ${MIGRATION_RUNNER_HOST}
@@ -11,8 +10,6 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    networks:
-      - ${NETWORK_NAME} 
 
 networks:
   default:
