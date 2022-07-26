@@ -108,7 +108,8 @@ public static class DbFileExtension
             entity.HasKey(e => new { e.TenantId, e.Id, e.Version })
                 .HasName("PRIMARY");
 
-            entity.ToTable("files_file");
+            entity.ToTable("files_file")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.ParentId)
                 .HasDatabaseName("folder_id");
@@ -125,7 +126,9 @@ public static class DbFileExtension
 
             entity.Property(e => e.Version).HasColumnName("version");
 
-            entity.Property(e => e.Category).HasColumnName("category");
+            entity.Property(e => e.Category)
+                .HasColumnName("category")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Changes)
                 .HasColumnName("changes")
@@ -139,7 +142,9 @@ public static class DbFileExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.ContentLength).HasColumnName("content_length");
+            entity.Property(e => e.ContentLength)
+                .HasColumnName("content_length")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.ConvertedType)
                 .HasColumnName("converted_type")
@@ -158,17 +163,31 @@ public static class DbFileExtension
                 .HasColumnName("create_on")
                 .HasColumnType("datetime");
 
-            entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
+            entity.Property(e => e.CurrentVersion)
+                .HasColumnName("current_version")
+                .HasColumnType("tinyint(1)")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.ThumbnailStatus).HasColumnName("thumb");
+            entity.Property(e => e.ThumbnailStatus)
+                .HasColumnName("thumb")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.Encrypted).HasColumnName("encrypted");
+            entity.Property(e => e.Encrypted)
+                .HasColumnType("tinyint(1)")
+                .HasColumnName("encrypted")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.FileStatus).HasColumnName("file_status");
+            entity.Property(e => e.FileStatus)
+                .HasColumnName("file_status")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.ParentId).HasColumnName("folder_id");
+            entity.Property(e => e.ParentId)
+                .HasColumnName("folder_id")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.Forcesave).HasColumnName("forcesave");
+            entity.Property(e => e.Forcesave)
+                .HasColumnName("forcesave")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.ModifiedBy)
                 .IsRequired()

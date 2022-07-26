@@ -35,7 +35,7 @@ global using ASC.Core.Users;
 global using ASC.Data.Reassigns.Log;
 global using ASC.Data.Storage;
 global using ASC.MessagingSystem.Core;
-global using ASC.MessagingSystem.Models;
+global using ASC.MessagingSystem.EF.Model;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Studio.Core.Notify;

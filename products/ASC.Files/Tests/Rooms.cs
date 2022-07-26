@@ -169,15 +169,15 @@ public partial class BaseFilesTests
         Assert.IsTrue(invites.First().Success);
     }
 
-    [TestCase(DataTests.RoomId, DataTests.RoomLinkKey)]
-    [Category("Room")]
-    [Order(14)]
-    [Description("put - rooms/{id}/share - share a room by link")]
-    public async Task ShareRoomByLink(int id, string key)
-    {
-        var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", new { Access = Core.Security.FileShare.Read, Key = key });
-        Assert.IsNotNull(share);
-    }
+    //[TestCase(DataTests.RoomId, DataTests.RoomLinkKey)]
+    //[Category("Room")]
+    //[Order(14)]
+    //[Description("put - rooms/{id}/share - share a room by link")]
+    //public async Task ShareRoomByLink(int id, string key)
+    //{
+    //    var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", new { Access = Core.Security.FileShare.Read, Key = key });
+    //    Assert.IsNotNull(share);
+    //}
 
     [TestCase(DataTests.RoomId)]
     [Category("Room")]
