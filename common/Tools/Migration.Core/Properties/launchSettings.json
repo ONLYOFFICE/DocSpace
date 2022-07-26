@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Migration.Creator": {
+      "commandName": "Project",
+      "launchBrowser": false
+    }
+  }
+}

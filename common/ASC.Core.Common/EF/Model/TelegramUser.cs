@@ -55,7 +55,8 @@ public static class TelegramUsersExtension
             entity.HasKey(e => new { e.TenantId, e.PortalUserId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("telegram_users");
+            entity.ToTable("telegram_users")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.TelegramUserId)
                 .HasDatabaseName("tgId");
@@ -68,7 +69,9 @@ public static class TelegramUsersExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.TelegramUserId).HasColumnName("telegram_user_id");
+            entity.Property(e => e.TelegramUserId)
+                .HasColumnName("telegram_user_id")
+                .HasColumnType("int");
         });
     }
     public static void PgSqlAddTelegramUsers(this ModelBuilder modelBuilder)
