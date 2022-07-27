@@ -1843,7 +1843,7 @@ const Dark = {
       marginBottom: "16px",
       tablet: {
         height: "44px",
-        padding: "0 8px",
+        padding: "0 12px",
         marginBottom: "24px",
       },
     },

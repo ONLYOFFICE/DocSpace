@@ -221,13 +221,13 @@ class ArticleBodyContent extends React.Component {
 
   render() {
     const items = this.catalogItems();
-    const { isLoadedPage, location } = this.props;
+    const { isLoadedPage, location, tReady } = this.props;
 
     const commonSettings =
       location.pathname.includes("common/customization") ||
       location.pathname === "/settings";
 
-    const showLoader = commonSettings ? !isLoadedPage : false;
+    const showLoader = commonSettings ? !isLoadedPage : !tReady;
 
     return showLoader ? <LoaderArticleBody /> : <>{items}</>;
   }

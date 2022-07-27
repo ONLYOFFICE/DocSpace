@@ -14,7 +14,7 @@ import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import { addArguments } from "../../../../utils";
 
 const AddSpCertificateModal = (props) => {
-  const { t } = useTranslation(["SingleSignOn", "Common"]);
+  const { t, ready } = useTranslation(["SingleSignOn", "Common"]);
   const {
     onCloseModal,
     addCertificateToForm,
@@ -36,8 +36,9 @@ const AddSpCertificateModal = (props) => {
 
   return (
     <StyledModalDialog
-      contentHeight="100%"
-      displayType="modal"
+      zIndex={310}
+      isLoading={!ready}
+      autoMaxHeight
       onClose={onClose}
       visible={sp_isModalVisible}
     >
