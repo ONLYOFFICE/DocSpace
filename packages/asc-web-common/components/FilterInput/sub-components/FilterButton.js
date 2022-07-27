@@ -1,29 +1,12 @@
 import React from "react";
-import styled from "styled-components";
 
 import IconButton from "@appserver/components/icon-button";
-import { Base } from "@appserver/components/themes";
 
 import FilterBlock from "./FilterBlock";
 
 import StyledButton from "./StyledButton";
 
-const Indicator = styled.div`
-  border-radius: 50%;
-  width: 8px;
-  height: 8px;
-
-  background: ${(props) => props.theme.filterInput.filter.indicatorColor};
-
-  position: absolute;
-  top: 25px;
-  left: 25px;
-
-  z-index: 10;
-`;
-
-Indicator.defaultProps = { theme: Base };
-
+import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
 const FilterButton = ({
   t,
   onFilter,
@@ -44,7 +27,9 @@ const FilterButton = ({
     <>
       <StyledButton onClick={changeShowFilterBlock}>
         <IconButton iconName="/static/images/filter.react.svg" size={16} />
-        {selectedFilterValue && selectedFilterValue.length > 0 && <Indicator />}
+        {selectedFilterValue && selectedFilterValue.length > 0 && (
+          <ColorTheme type={ThemeType.IndicatorFilterButton} />
+        )}
       </StyledButton>
 
       {showFilterBlock && (
