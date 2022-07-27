@@ -46,64 +46,74 @@ const DirectThirdPartyConnection = (props) => {
         connectedAccount
       );
     } catch (e) {
+      onSetThirdPartySettings();
       setIsLoading(false);
       if (!e) return;
       toastr.error(e);
     }
   };
-  const onSetThirdPartySettings = async (providerKey, providerId, account) => {
+
+  const onSetThirdPartySettings = async (
+    connectedProviderKey,
+    connectedProviderId,
+    account
+  ) => {
     try {
       !isLoading && setIsLoading(true);
 
       const capabilities = await getThirdPartyCapabilities();
       accounts = [];
-      let connectedAccount = {};
 
-      for (let i = 0; i < capabilities.length; i++) {
-        const isConnected = capabilities[i][0] === providerKey;
+      let index = 0,
+        connectedAccount = {};
 
-        if (capabilities[i][0] !== "WebDav") {
-          accounts.push({
-            key: i.toString(),
-            label: capabilities[i][0],
-            provider_key: capabilities[i][0],
-            ...(capabilities[i][1] && { provider_link: capabilities[i][1] }),
-            connected: isConnected,
-            ...(isConnected && {
-              provider_id: providerId,
-            }),
-          });
+      const getCapability = (providerId) => {
+        return (
+          capabilities && capabilities.findIndex((x) => x[0] === providerId)
+        );
+      };
+      const setAccount = (providerKey, serviceTitle) => {
+        const accountIndex = getCapability(providerKey);
+        if (accountIndex === -1) return;
 
-          if (isConnected) {
-            connectedAccount = { ...accounts[i] };
-          }
-        } else {
-          const WebDavVariability = [
-            "Nextcloud",
-            "ownCloud",
-            "ConnextOtherAccount",
-          ];
-          let index = 0;
+        const isConnected =
+          connectedProviderKey === "WebDav"
+            ? serviceTitle === account.title
+            : capabilities[accountIndex][0] === connectedProviderKey;
 
-          for (let j = i; j < i + 3; j++) {
-            accounts.push({
-              key: j.toString(),
-              label: WebDavVariability[index],
-              provider_key: "WebDav",
-              connected: isConnected,
-              ...(isConnected && {
-                provider_id: providerId,
-              }),
-            });
+        accounts.push({
+          key: index.toString(),
+          label: serviceTitle,
+          provider_key: capabilities[accountIndex][0],
+          ...(capabilities[accountIndex][1] && {
+            provider_link: capabilities[accountIndex][1],
+          }),
+          connected: isConnected,
+          ...(isConnected && {
+            provider_id: connectedProviderId,
+          }),
+        });
 
-            // if (isConnected) { //TODO: changed for WebDav
-            //   connectedAccount = { ...accounts[j] };
-            // }
-
-            index++;
-          }
+        if (isConnected) {
+          connectedAccount = { ...accounts[index] };
         }
-      }
+
+        console.log("connectedAccount", connectedAccount);
+        index++;
+      };
+
+      //TODO: need to use connectedCloudsTypeTitleTranslation for title
+      setAccount("GoogleDrive", "Google Drive");
+      setAccount("Box", "Box");
+      setAccount("DropboxV2", "DropboxV2");
+      setAccount("SharePoint", "SharePoint");
+      setAccount("OneDrive", "OneDrive");
+      setAccount("WebDav", "Nextcloud");
+      setAccount("WebDav", "ownCloud");
+      setAccount("kDrive", "kDrive");
+      setAccount("Yandex", "Yandex.Disk");
+      setAccount("WebDav", "WebDAV");
+
       setSelectedAccount(
         Object.keys(connectedAccount).length !== 0
           ? connectedAccount
@@ -123,10 +133,10 @@ const DirectThirdPartyConnection = (props) => {
   const [isVisibleConnectionForm, setIsVisibleConnectionForm] = useState(false);
   const [folderList, setFolderList] = useState([]);
   const onConnect = () => {
-    const { label, provider_link } = selectedAccount;
+    const { label, provider_link, provider_key } = selectedAccount;
 
     const directConnection = provider_link;
-
+    console.log("selectedAccount", selectedAccount);
     if (directConnection) {
       let authModal = window.open(
         "",
@@ -134,7 +144,7 @@ const DirectThirdPartyConnection = (props) => {
         "height=600, width=1020"
       );
 
-      openConnectWindow(label, authModal)
+      openConnectWindow(provider_key, authModal)
         .then(getOAuthToken)
         .then((token) => {
           saveSettings(token);
@@ -164,6 +174,8 @@ const DirectThirdPartyConnection = (props) => {
 
     try {
       setIsLoading(true);
+      onSelectFolder("");
+      isVisibleConnectionForm && setIsVisibleConnectionForm(false);
 
       await saveSettingsThirdParty(
         urlValue,
@@ -176,7 +188,6 @@ const DirectThirdPartyConnection = (props) => {
         provider_id
       );
       updateAccountsInfo();
-      isVisibleConnectionForm && setIsVisibleConnectionForm(false);
     } catch (e) {
       setIsLoading(false);
       if (!e) return;
@@ -195,15 +206,27 @@ const DirectThirdPartyConnection = (props) => {
   };
 
   const onReconnect = () => {
-    let authModal = window.open("", "Authorization", "height=600, width=1020");
-    openConnectWindow(selectedAccount.provider_key, authModal).then((modal) =>
-      getOAuthToken(modal).then((token) => {
-        authModal.close();
-        saveSettings(token);
-      })
-    );
-  };
+    const { label, provider_link } = selectedAccount;
 
+    const directConnection = provider_link;
+    console.log("selectedAccount", selectedAccount);
+    if (directConnection) {
+      let authModal = window.open(
+        "",
+        "Authorization",
+        "height=600, width=1020"
+      );
+      openConnectWindow(selectedAccount.provider_key, authModal).then((modal) =>
+        getOAuthToken(modal).then((token) => {
+          authModal.close();
+          saveSettings(token);
+        })
+      );
+    } else {
+      setIsVisibleConnectionForm(true);
+    }
+  };
+  console.log("accounts", accounts);
   return (
     <StyledBackup>
       <div className="backup_connection">

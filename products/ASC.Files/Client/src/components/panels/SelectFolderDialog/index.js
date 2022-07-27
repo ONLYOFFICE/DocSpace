@@ -40,6 +40,7 @@ class SelectFolderDialog extends React.Component {
       withInput,
       id,
       storeFolderId,
+      withoutBasicSelection = false,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -78,7 +79,7 @@ class SelectFolderDialog extends React.Component {
     }
     const resId = isNeedArrowIcon || withInput ? id : resultingId;
 
-    onSelectFolder && onSelectFolder(resId);
+    !withoutBasicSelection && onSelectFolder && onSelectFolder(resId);
     // isNeedArrowIcon && onSetBaseFolderPath(resId);
 
     setFolderId(resId);
