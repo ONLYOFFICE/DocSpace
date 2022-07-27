@@ -1,11 +1,9 @@
 ARG SRC_PATH="/app/onlyoffice/src"
 ARG BUILD_PATH="/var/www"
-ARG REPO_SDK="mcr.microsoft.com/dotnet/sdk"
-ARG REPO_SDK_TAG="6.0"
-ARG REPO_RUN="mcr.microsoft.com/dotnet/aspnet"
-ARG REPO_RUN_TAG="6.0"
+ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:6.0"
+ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:6.0"
 
-FROM ${REPO_SDK}:${REPO_SDK_TAG} AS base
+FROM $DOTNET_SDK AS base
 ARG RELEASE_DATE="2016-06-22"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PRODUCT_VERSION=0.0.0
@@ -67,7 +65,7 @@ COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 
 RUN rm -rf /var/lib/apt/lists/*
 
-FROM ${REPO_RUN}:${REPO_RUN_TAG} as builder
+FROM $DOTNET_RUN as builder
 ARG BUILD_PATH
 ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
