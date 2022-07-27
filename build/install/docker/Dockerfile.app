@@ -1,21 +1,21 @@
-ARG SRC_PATH=/app/onlyoffice/src
-ARG BUILD_PATH=/var/www
-ARG REPO_SDK=mcr.microsoft.com/dotnet/sdk
-ARG REPO_SDK_TAG=6.0
-ARG REPO_RUN=mcr.microsoft.com/dotnet/aspnet
-ARG REPO_RUN_TAG=6.0
+ARG SRC_PATH="/app/onlyoffice/src"
+ARG BUILD_PATH="/var/www"
+ARG REPO_SDK="mcr.microsoft.com/dotnet/sdk"
+ARG REPO_SDK_TAG="6.0"
+ARG REPO_RUN="mcr.microsoft.com/dotnet/aspnet"
+ARG REPO_RUN_TAG="6.0"
 
 FROM ${REPO_SDK}:${REPO_SDK_TAG} AS base
 ARG RELEASE_DATE="2016-06-22"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PRODUCT_VERSION=0.0.0
 ARG BUILD_NUMBER=0
-ARG GIT_BRANCH=master
+ARG GIT_BRANCH="master"
 ARG SRC_PATH
 ARG BUILD_PATH
-ARG BUILD_ARGS=build
-ARG DEPLOY_ARGS=deploy
-ARG DEBUG_INFO=true
+ARG BUILD_ARGS="build"
+ARG DEPLOY_ARGS="deploy"
+ARG DEBUG_INFO="true"
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
@@ -67,9 +67,9 @@ COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 
 RUN rm -rf /var/lib/apt/lists/*
 
-FROM $REPO_RUN:$REPO_RUN_TAG as builder
+FROM ${REPO_RUN}:${REPO_RUN_TAG} as builder
 ARG BUILD_PATH
-ARG SRC_PATH 
+ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
 ENV SRC_PATH=${SRC_PATH}
 
