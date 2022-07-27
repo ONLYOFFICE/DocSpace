@@ -13,6 +13,7 @@ import {
   IconButtonTheme,
   MainButtonMobileTheme,
   IndicatorFilterButtonTheme,
+  FilterBlockItemTagTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -51,6 +52,9 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.IndicatorFilterButton: {
       return <IndicatorFilterButtonTheme ref={ref} {...props} />;
+    }
+    case ThemeType.FilterBlockItemTag: {
+      return <FilterBlockItemTagTheme ref={ref} {...props} />;
     }
   }
 });
