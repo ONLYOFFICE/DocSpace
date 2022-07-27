@@ -263,7 +263,7 @@ class SsoFormStore {
     if (!file.type.includes("text/xml")) return console.log("invalid format");
 
     const data = new FormData();
-    data.append("file", file);
+    data.append("metadata", file);
 
     try {
       this.onLoadXML = true;
