@@ -307,7 +307,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.St
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
 
 ## ASC.Migration.Runner ##
-FROM $REPO_RUN:$REPO_RUN_TAG AS onlyoffice-migration-runner
+FROM $DOTNET_RUN AS onlyoffice-migration-runner
 ARG BUILD_PATH
 ARG SRC_PATH 
 ENV BUILD_PATH=${BUILD_PATH}
