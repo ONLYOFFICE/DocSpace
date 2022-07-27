@@ -6,12 +6,13 @@ import {
   MainButtonTheme,
   CatalogItemTheme,
   BadgeTheme,
-  PinIconTheme,
   SubmenuTextTheme,
   SubmenuItemLabelTheme,
   ToggleButtonTheme,
   TabContainerTheme,
   IconButtonTheme,
+  MainButtonMobileTheme,
+  IndicatorFilterButtonTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -30,9 +31,6 @@ const ColorTheme = forwardRef((props, ref) => {
     case ThemeType.Badge: {
       return <BadgeTheme ref={ref} {...props} />;
     }
-    case ThemeType.PinIcon: {
-      return <PinIconTheme ref={ref} {...props} />;
-    }
     case ThemeType.SubmenuText: {
       return <SubmenuTextTheme ref={ref} {...props} />;
     }
@@ -47,6 +45,12 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.IconButton: {
       return <IconButtonTheme ref={ref} {...props} />;
+    }
+    case ThemeType.MainButtonMobile: {
+      return <MainButtonMobileTheme ref={ref} {...props} />;
+    }
+    case ThemeType.IndicatorFilterButton: {
+      return <IndicatorFilterButtonTheme ref={ref} {...props} />;
     }
   }
 });
