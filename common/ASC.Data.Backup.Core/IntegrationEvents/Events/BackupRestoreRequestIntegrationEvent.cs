@@ -29,6 +29,10 @@ namespace ASC.Data.Backup.Core.IntegrationEvents.Events;
 [ProtoContract]
 public record BackupRestoreRequestIntegrationEvent : IntegrationEvent
 {
+    private BackupRestoreRequestIntegrationEvent() : base()
+    {
+        StorageParams = new Dictionary<string, string>();
+    }
     public BackupRestoreRequestIntegrationEvent(BackupStorageType storageType,
                                   int tenantId,
                                   Guid createBy,
