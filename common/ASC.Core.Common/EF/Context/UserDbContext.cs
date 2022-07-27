@@ -26,9 +26,6 @@
 
 namespace ASC.Core.Common.EF;
 
-public class MySqlUserDbContext : UserDbContext { }
-public class PostgreSqlUserDbContext : UserDbContext { }
-
 public class UserDbContext : BaseDbContext
 {
     public DbSet<User> Users { get; set; }
@@ -40,18 +37,6 @@ public class UserDbContext : BaseDbContext
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
     public DbSet<UserDav> UsersDav { get; set; }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlUserDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlUserDbContext() } ,
-                };
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

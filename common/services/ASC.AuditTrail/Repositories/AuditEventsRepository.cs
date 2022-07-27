@@ -172,7 +172,7 @@ public class AuditEventsRepository
             else
             {
                 var keys = actions.Select(x => (int)x.Key).ToList();
-                query = query.Where(r => keys.Contains(r.Event.Action));
+                query = query.Where(r => keys.Contains(r.Event.Action ?? 0));
             }
         }
 

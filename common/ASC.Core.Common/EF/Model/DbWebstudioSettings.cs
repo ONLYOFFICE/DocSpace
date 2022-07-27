@@ -64,7 +64,8 @@ public static class WebstudioSettingsExtension
             entity.HasKey(e => new { e.TenantId, e.Id, e.UserId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("webstudio_settings");
+            entity.ToTable("webstudio_settings")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.Id)
                 .HasDatabaseName("ID");

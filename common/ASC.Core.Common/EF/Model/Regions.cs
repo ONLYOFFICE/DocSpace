@@ -48,6 +48,7 @@ public static class RegionsExtension
     {
         modelBuilder.Entity<Regions>(entity =>
         {
+            entity.HasCharSet("utf8");
             entity.HasKey(e => e.Region);
         });
     }

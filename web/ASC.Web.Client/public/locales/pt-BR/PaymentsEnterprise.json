@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Obrigado por ter verificado {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Período de teste gratuito expirou",
   "HeaderLicense": "Você está usando {{organizationName}} Edição Empresarial",
-  "PaymentsTitle": "Pagamentos",
   "RenewalLicense": "Se você já comprou a renovação, faça o upload do arquivo de licença.",
   "SubscriptionRenewedLicense": "Renovar assinatura para obter:",
   "SuccessLoadingLicense": "Licença ativada com sucesso"

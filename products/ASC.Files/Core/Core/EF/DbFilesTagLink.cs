@@ -60,7 +60,8 @@ public static class DbFilesTagLinkExtension
             entity.HasKey(e => new { e.TenantId, e.TagId, e.EntryId, e.EntryType })
                 .HasName("PRIMARY");
 
-            entity.ToTable("files_tag_link");
+            entity.ToTable("files_tag_link")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.CreateOn)
                 .HasDatabaseName("create_on");
@@ -90,7 +91,9 @@ public static class DbFilesTagLinkExtension
                 .HasColumnName("create_on")
                 .HasColumnType("datetime");
 
-            entity.Property(e => e.Count).HasColumnName("tag_count");
+            entity.Property(e => e.Count)
+                .HasColumnName("tag_count")
+                .HasDefaultValueSql("'0'");
         });
     }
     public static void PgSqlAddDbFilesTagLink(this ModelBuilder modelBuilder)
