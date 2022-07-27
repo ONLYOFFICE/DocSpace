@@ -1,21 +1,19 @@
-ARG SRC_PATH=/app/onlyoffice/src
-ARG BUILD_PATH=/var/www
-ARG REPO_SDK=mcr.microsoft.com/dotnet/sdk
-ARG REPO_SDK_TAG=6.0
-ARG REPO_RUN=mcr.microsoft.com/dotnet/aspnet
-ARG REPO_RUN_TAG=6.0
+ARG SRC_PATH="/app/onlyoffice/src"
+ARG BUILD_PATH="/var/www"
+ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:6.0"
+ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:6.0"
 
-FROM $REPO_SDK:$REPO_SDK_TAG AS base
+FROM $DOTNET_SDK AS base
 ARG RELEASE_DATE="2016-06-22"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PRODUCT_VERSION=0.0.0
 ARG BUILD_NUMBER=0
-ARG GIT_BRANCH=master
+ARG GIT_BRANCH="master"
 ARG SRC_PATH
 ARG BUILD_PATH
-ARG BUILD_ARGS=build
-ARG DEPLOY_ARGS=deploy
-ARG DEBUG_INFO=true
+ARG BUILD_ARGS="build"
+ARG DEPLOY_ARGS="deploy"
+ARG DEBUG_INFO="true"
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
@@ -67,9 +65,9 @@ COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 
 RUN rm -rf /var/lib/apt/lists/*
 
-FROM $REPO_RUN:$REPO_RUN_TAG as builder
+FROM $DOTNET_RUN as builder
 ARG BUILD_PATH
-ARG SRC_PATH 
+ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
 ENV SRC_PATH=${SRC_PATH}
 
@@ -307,6 +305,18 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
+
+## ASC.Migration.Runner ##
+FROM $DOTNET_RUN AS onlyoffice-migration-runner
+ARG BUILD_PATH
+ARG SRC_PATH 
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
+COPY  ./docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh
+COPY --from=base ${SRC_PATH}/ASC.Migration.Runner/service/ .
+
+ENTRYPOINT ["./docker-migration-entrypoint.sh"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share
