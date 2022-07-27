@@ -281,6 +281,8 @@ public class FileStorageService<T> //: IFileStorageService
             orderBy.SortedBy = SortedByType.New;
         }
 
+        searchArea = parent.FolderType == FolderType.Archive ? SearchArea.Archive : searchArea;
+
         int total;
         IEnumerable<FileEntry> entries;
         try
