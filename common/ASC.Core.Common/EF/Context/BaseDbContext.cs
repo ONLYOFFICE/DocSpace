@@ -95,7 +95,58 @@ public class BaseDbContext : DbContext
 
 public static class BaseDbContextExtension
 {
-    public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+    public static void AddBaseDbContext<T>(this IServiceCollection services) where T : DbContext
+    {
+        services.AddPooledDbContextFactory<T>((sp, optionsBuilder) =>
+        {
+            var configuration = sp.GetRequiredService<ConfigurationExtension>();
+            var migrateAssembly = configuration["testAssembly"];
+            var connectionString = configuration.GetConnectionStrings("default");
+            var loggerFactory = sp.GetRequiredService<EFLoggerFactory>();
+
+            optionsBuilder.UseLoggerFactory(loggerFactory);
+            optionsBuilder.EnableSensitiveDataLogging();
+
+            var _provider = Provider.MySql;
+            switch (connectionString.ProviderName)
+            {
+                case "MySql.Data.MySqlClient":
+                    _provider = Provider.MySql;
+                    break;
+                case "Npgsql":
+                    _provider = Provider.PostgreSql;
+                    break;
+            }
+
+            switch (_provider)
+            {
+                case Provider.MySql:
+                    optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomMySqlMigrationsSqlGenerator>();
+                    optionsBuilder.UseMySql(connectionString.ConnectionString, ServerVersion.Parse("8.0.25"), providerOptions =>
+                    {
+                        if (!string.IsNullOrEmpty(migrateAssembly))
+                        {
+                            providerOptions.MigrationsAssembly(migrateAssembly);
+                        }
+
+                        //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
+                        providerOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                    });
+                    break;
+                case Provider.PostgreSql:
+                    optionsBuilder.UseNpgsql(connectionString.ConnectionString, providerOptions =>
+                    {
+                        if (!string.IsNullOrEmpty(migrateAssembly))
+                        {
+                            providerOptions.MigrationsAssembly(migrateAssembly);
+                        }
+                    });
+                    break;
+            }
+        });
+    }
+
+    public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : DbContext
     {
         var dbSet = expressionDbSet.Compile().Invoke(b);
         var existingBlog = dbSet.Find(entity.GetKeys());

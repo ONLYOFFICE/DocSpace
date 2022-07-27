@@ -37,6 +37,22 @@ public class ModelBuilderWrapper
         Provider = provider;
     }
 
+    public static ModelBuilderWrapper From(ModelBuilder modelBuilder, DatabaseFacade database)
+    {
+        var provider = Provider.MySql;
+
+        if (database.IsMySql())
+        {
+            provider = Provider.MySql;
+        }
+        else if (database.IsNpgsql())
+        {
+            provider = Provider.PostgreSql;
+        }
+
+        return new ModelBuilderWrapper(modelBuilder, provider);
+    }
+
     public static ModelBuilderWrapper From(ModelBuilder modelBuilder, Provider provider)
     {
         return new ModelBuilderWrapper(modelBuilder, provider);
