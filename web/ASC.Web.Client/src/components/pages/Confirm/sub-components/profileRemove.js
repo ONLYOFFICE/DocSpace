@@ -54,18 +54,20 @@ const ProfileRemoveForm = (props) => {
     <StyledPage>
       <StyledBody>
         <StyledHeader>
+          <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
+        </StyledHeader>
+
+        <FormWrapper>
           <Text fontSize="16px" fontWeight="600" className="confirm-subtitle">
             {t("DeleteProfileConfirmation")}
           </Text>
           <Text className="info-delete">
             {t("DeleteProfileConfirmationInfo")}
           </Text>
-        </StyledHeader>
 
-        <FormWrapper>
           <Button
             className="confirm-button"
             primary
