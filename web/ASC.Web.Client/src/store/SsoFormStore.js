@@ -268,7 +268,7 @@ class SsoFormStore {
     try {
       this.onLoadXML = true;
       const response = await uploadXmlMetadata(data);
-      this.setFieldsFromObject(response);
+      this.setFieldsFromMetaData(response.data.meta);
       this.onLoadXML = false;
     } catch (err) {
       this.onLoadXML = false;
