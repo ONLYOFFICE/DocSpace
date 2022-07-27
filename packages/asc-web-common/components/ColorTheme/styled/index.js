@@ -21,3 +21,7 @@ export { default as MainButtonMobileTheme } from "./mainButtonMobile";
 export { default as IndicatorFilterButtonTheme } from "./indicatorFilterButton";
 
 export { default as FilterBlockItemTagTheme } from "./filterBlockItemTag";
+
+export { default as IconWrapperTheme } from "./iconWrapper";
+
+export { default as CalendarTheme } from "./calendar";

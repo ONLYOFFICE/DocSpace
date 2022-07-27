@@ -11,4 +11,6 @@ export const ThemeType = {
   MainButtonMobile: "mainButtonMobile",
   IndicatorFilterButton: "indicatorFilterButtonTheme",
   FilterBlockItemTag: "filterBlockItemTagTheme",
+  IconWrapper: "iconWrapperTheme",
+  Calendar: "calendarTheme",
 };

@@ -14,6 +14,8 @@ import {
   MainButtonMobileTheme,
   IndicatorFilterButtonTheme,
   FilterBlockItemTagTheme,
+  IconWrapperTheme,
+  CalendarTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -55,6 +57,12 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.FilterBlockItemTag: {
       return <FilterBlockItemTagTheme ref={ref} {...props} />;
+    }
+    case ThemeType.IconWrapper: {
+      return <IconWrapperTheme ref={ref} {...props} />;
+    }
+    case ThemeType.Calendar: {
+      return <CalendarTheme ref={ref} {...props} />;
     }
   }
 });
