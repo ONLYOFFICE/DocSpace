@@ -27,6 +27,8 @@ import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";
 
+import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
@@ -353,12 +355,14 @@ const MainButtonMobile = (props) => {
         className={className}
         style={{ zIndex: `${isOpen ? "211" : "201"}`, ...style }}
       >
-        <StyledFloatingButton
+        <ColorTheme
           icon={isOpen ? "minus" : "plus"}
           isOpen={isOpen}
           onClick={onMainButtonClick}
           percent={percent}
+          type={ThemeType.MainButtonMobile}
         />
+
         <StyledDropDown
           open={isOpen}
           withBackdrop={false}

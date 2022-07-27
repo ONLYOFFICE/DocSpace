@@ -10,13 +10,7 @@ import { mobile } from "../utils/device";
 const StyledFloatingButton = styled(FloatingButton)`
   position: relative;
   z-index: 1010;
-  background: ${(props) => props.theme.mainButtonMobile.buttonColor} !important;
-
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  .circle__background {
-    background: ${(props) => props.theme.mainButtonMobile.buttonColor};
-  }
 
   .circle__mask + div {
     display: flex;
