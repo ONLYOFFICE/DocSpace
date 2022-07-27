@@ -51,19 +51,27 @@
     <ROW Property="SERVER_PROP" Value="localhost"/>
     <ROW Property="SUBFOLDER_SERVER" Value="--core:products:subfolder=server"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
+    <ROW Property="ServiceName_ApiSystemService" Value="ASC.ApiSystemService"/>
     <ROW Property="ServiceName_BackgroundTasks" Value="ASC.Data.Backup.BackgroundTasks"/>
     <ROW Property="ServiceName_BackupService" Value="ASC.BackupService"/>
+    <ROW Property="ServiceName_CalendarServer" Value="ASC.CalendarServer"/>
     <ROW Property="ServiceName_ClearEvents" Value="ASC.ClearEvents"/>
+    <ROW Property="ServiceName_CrmServer" Value="ASC.CrmServer"/>
+    <ROW Property="ServiceName_EncryptionService" Value="ASC.EncryptionService"/>
     <ROW Property="ServiceName_FileServer" Value="ASC.FileServer"/>
     <ROW Property="ServiceName_FileService" Value="ASC.FileService"/>
+    <ROW Property="ServiceName_MailServer" Value="ASC.MailServer"/>
     <ROW Property="ServiceName_Migration" Value="ASC.Migration"/>
+    <ROW Property="ServiceName_MigrationService" Value="ASC.MigrationService"/>
     <ROW Property="ServiceName_NotifyService" Value="ASC.NotifyService"/>
     <ROW Property="ServiceName_PeopleServer" Value="ASC.PeopleServer"/>
+    <ROW Property="ServiceName_ProjectsServer" Value="ASC.ProjectsServer"/>
     <ROW Property="ServiceName_Proxy" Value="ASC.Proxy"/>
     <ROW Property="ServiceName_Socket.IO" Value="ASC.Socket.IO"/>
     <ROW Property="ServiceName_SsoAuth" Value="ASC.SsoAuth.Svc"/>
     <ROW Property="ServiceName_StudioNotifyService" Value="ASC.StudioNotifyService"/>
     <ROW Property="ServiceName_TelegramService" Value="ASC.TelegramService"/>
+    <ROW Property="ServiceName_Thumbnails" Value="ASC.Thumbnails"/>
     <ROW Property="ServiceName_UrlShortenerService" Value="ASC.UrlShortenerService"/>
     <ROW Property="ServiceName_WebApi" Value="ASC.WebApi"/>
     <ROW Property="ServiceName_WebStudio" Value="ASC.WebStudio"/>
@@ -694,6 +702,7 @@
     <ROW MsiServiceConfig="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ConfigType="3" Argument="1" Component_="SsoAuth.exe"/>
     <ROW MsiServiceConfig="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Studio.Notify.exe"/>
     <ROW MsiServiceConfig="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.TelegramService.exe"/>
+    <ROW MsiServiceConfig="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="1" ConfigType="3" Argument="1" Component_="Socket.IO.exe"/>
     <ROW MsiServiceConfig="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ConfigType="3" Argument="1" Component_="UrlShortener.exe"/>
     <ROW MsiServiceConfig="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Api.exe"/>
     <ROW MsiServiceConfig="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Studio.exe"/>
@@ -713,6 +722,7 @@
     <ROW MsiServiceConfigFailureActions="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="SsoAuth.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Studio.Notify.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.TelegramService.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Socket.IO.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="UrlShortener.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Api.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Studio.exe"/>
@@ -733,6 +743,7 @@
     <ROW ServiceControl="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="161" Wait="0" Component_="SsoAuth.exe"/>
     <ROW ServiceControl="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="161" Wait="0" Component_="ASC.Studio.Notify.exe"/>
     <ROW ServiceControl="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="161" Wait="0" Component_="ASC.TelegramService.exe"/>
+    <ROW ServiceControl="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="161" Wait="0" Component_="Socket.IO.exe"/>
     <ROW ServiceControl="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="161" Wait="0" Component_="UrlShortener.exe"/>
     <ROW ServiceControl="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="161" Wait="0" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceControl="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="161" Wait="0" Component_="ASC.Web.Studio.exe"/>
