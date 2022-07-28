@@ -16,17 +16,16 @@ if defined SecondArg (
 	set PathToAppFolder=%FirstArg%\publish
 )
 
-rem publish in directory 'products'
+rem backend services (dotnet) in directory 'products'
 dotnet publish "%PathToRepository%\products\ASC.Files\server\ASC.Files.csproj" -c Release --self-contained false -o "%PathToAppFolder%\products\ASC.Files\server"
 dotnet publish "%PathToRepository%\products\ASC.People\server\ASC.People.csproj" -c Release --self-contained false -o "%PathToAppFolder%\products\ASC.People\server"
 
-rem publish in directory 'services'
+rem backend services (dotnet) in directory 'services'
 dotnet publish "%PathToRepository%\common\services\ASC.Data.Backup\ASC.Data.Backup.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Data.Backup\service"
 dotnet publish "%PathToRepository%\products\ASC.Files\service\ASC.Files.Service.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Files.Service\service"
 dotnet publish "%PathToRepository%\common\services\ASC.Notify\ASC.Notify.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Notify\service"
 dotnet publish "%PathToRepository%\common\services\ASC.Studio.Notify\ASC.Studio.Notify.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Studio.Notify\service"
 dotnet publish "%PathToRepository%\common\services\ASC.TelegramService\ASC.TelegramService.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.TelegramService\service"
-rem dotnet publish "%PathToRepository%\common\services\ASC.UrlShortener.Svc\ASC.UrlShortener.Svc.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.UrlShortener.Svc\service"
 dotnet publish "%PathToRepository%\common\services\ASC.Data.Backup.BackgroundTasks\ASC.Data.Backup.BackgroundTasks.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Data.Backup.BackgroundTasks\service"
 dotnet publish "%PathToRepository%\common\services\ASC.ClearEvents\ASC.ClearEvents.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.ClearEvents\service"
 dotnet publish "%PathToRepository%\common\ASC.Migration\ASC.Migration.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Migration\service"
@@ -34,7 +33,7 @@ dotnet publish "%PathToRepository%\common\services\ASC.Webhooks.Service\ASC.Webh
 dotnet publish "%PathToRepository%\web\ASC.Web.Api\ASC.Web.Api.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Web.Api\service"
 dotnet publish "%PathToRepository%\web\ASC.Web.Studio\ASC.Web.Studio.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Web.Studio\service"
 
-rem Publish backend services (Nodejs)
+rem backend services (Nodejs)
 mkdir "%PathToAppFolder%\services\ASC.UrlShortener\service"
 xcopy "%PathToRepository%\common\ASC.UrlShortener" "%PathToAppFolder%\services\ASC.UrlShortener\service" /s /y /b /i
 
