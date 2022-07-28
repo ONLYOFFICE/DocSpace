@@ -135,7 +135,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
 # copy static services files and config values 
 COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=base /etc/nginx/includes /etc/nginx/includes
-COPY --from=base ${SRC_PATH}/build/deploy/products ${BUILD_PATH}/products
+COPY --from=base ${SRC_PATH}/build/deploy/products/ASC.Files/client ${BUILD_PATH}/products/ASC.Files/client
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY --from=base ${SRC_PATH}/build/deploy/studio ${BUILD_PATH}/studio
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
@@ -160,7 +160,16 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/localhost:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5034/$service_migration/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
+
+## Doceditor ##
+FROM nodeBuild as doceditor
+WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/products/ASC.Files/editor/ .
+EXPOSE 5013
+ENTRYPOINT ["node", "server.js"]
 
 ## ASC.Data.Backup.BackgroundTasks ##
 FROM builder AS backup_background
