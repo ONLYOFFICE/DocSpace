@@ -143,7 +143,7 @@ class SsoFormStore {
     makeAutoObservable(this);
   }
 
-  onPageLoad = async () => {
+  load = async () => {
     try {
       const res = await getCurrentSsoSettings();
       this.isSsoEnabled = res.enableSso;
@@ -154,7 +154,7 @@ class SsoFormStore {
     }
   };
 
-  onSsoToggle = () => {
+  ssoToggle = () => {
     if (!this.enableSso) {
       this.enableSso = true;
       this.serviceProviderSettings = true;
@@ -167,59 +167,40 @@ class SsoFormStore {
     }
   };
 
-  onTextInputChange = (e) => {
+  setInput = (e) => {
     this[e.target.name] = e.target.value;
   };
 
-  onBindingChange = (e) => {
-    this[e.target.name] = e.target.value;
-  };
-
-  onComboBoxChange = (option, field) => {
+  setComboBox = (option, field) => {
     this[field] = option.key;
   };
 
-  onHideClick = (label) => {
+  setHideLabel = (label) => {
     this[label] = !this[label];
   };
 
-  onCheckboxChange = (e) => {
+  setCheckbox = (e) => {
     this[e.target.name] = e.target.checked;
   };
 
-  onOpenIdpModal = () => {
+  openIdpModal = () => {
     this.idpIsModalVisible = true;
   };
 
-  onOpenSpModal = () => {
+  openSpModal = () => {
     this.spIsModalVisible = true;
   };
 
-  onCloseIdpModal = () => {
+  closeIdpModal = () => {
     this.idpIsModalVisible = false;
   };
 
-  onCloseSpModal = () => {
+  closeSpModal = () => {
     this.spIsModalVisible = false;
   };
 
-  onModalComboBoxChange = (option) => {
+  setComboBoxOption = (option) => {
     this.spCertificateUsedFor = option.key;
-  };
-
-  onBlur = (e) => {
-    const field = e.target.name;
-    const value = e.target.value;
-
-    this.setErrors(field, value);
-  };
-
-  onFocus = (e) => {
-    const field = e.target.name;
-    const fieldError = `${field}HasError`;
-    const fieldErrorMessage = `${field}ErrorMessage`;
-    this[fieldError] = false;
-    this[fieldErrorMessage] = null;
   };
 
   disableSso = () => {
@@ -230,7 +211,7 @@ class SsoFormStore {
     this.confirmationDisableModal = true;
   };
 
-  onCloseConfirmationDisableModal = () => {
+  closeConfirmationDisableModal = () => {
     this.confirmationDisableModal = false;
   };
 
@@ -238,17 +219,17 @@ class SsoFormStore {
     this.confirmationResetModal = true;
   };
 
-  onCloseResetModal = () => {
+  closeResetModal = () => {
     this.confirmationResetModal = false;
   };
 
-  onConfirmDisable = () => {
+  confirmDisable = () => {
     this.disableSso();
-    this.onSsoToggle();
+    this.ssoToggle();
     this.confirmationDisableModal = false;
   };
 
-  onConfirmReset = () => {
+  confirmReset = () => {
     this.resetForm();
     this.disableSso();
     this.serviceProviderSettings = false;
@@ -256,7 +237,7 @@ class SsoFormStore {
     this.confirmationResetModal = false;
   };
 
-  onLoadXmlMetadata = async () => {
+  uploadByUrl = async () => {
     const data = { url: this.uploadXmlUrl };
 
     try {
@@ -271,7 +252,7 @@ class SsoFormStore {
     }
   };
 
-  onUploadXmlMetadata = async (file) => {
+  uploadXml = async (file) => {
     if (!file.type.includes("text/xml")) return console.log("invalid format");
 
     const data = new FormData();
@@ -366,7 +347,7 @@ class SsoFormStore {
       hideAuthPage: this.hideAuthPage,
     };
   };
-  onSubmit = async (t) => {
+  saveSsoSettings = async (t) => {
     const settings = this.getSettings();
     const data = { serializeSettings: JSON.stringify(settings) };
 
@@ -574,7 +555,7 @@ class SsoFormStore {
       newCertificates.map((cert) => {
         this.spCertificates = [...this.spCertificates, cert];
       });
-      this.onCloseSpModal();
+      this.closeSpModal();
     } catch (err) {
       toastr.error(err);
       console.error(err);
@@ -596,7 +577,7 @@ class SsoFormStore {
       newCertificates.map((cert) => {
         this.idpCertificates = [...this.idpCertificates, cert];
       });
-      this.onCloseIdpModal();
+      this.closeIdpModal();
     } catch (err) {
       toastr.error(err);
       console.error(err);
@@ -608,7 +589,7 @@ class SsoFormStore {
     this.spPrivateKey = certificateObject.key;
   };
 
-  setErrors = (field, value) => {
+  setError = (field, value) => {
     if (typeof value === "boolean") return;
 
     const fieldError = `${field}HasError`;
@@ -622,6 +603,13 @@ class SsoFormStore {
       this[fieldError] = true;
       this[fieldErrorMessage] = err.message;
     }
+  };
+
+  hideError = (field) => {
+    const fieldError = `${field}HasError`;
+    const fieldErrorMessage = `${field}ErrorMessage`;
+    this[fieldError] = false;
+    this[fieldErrorMessage] = null;
   };
 
   validate = (string) => {

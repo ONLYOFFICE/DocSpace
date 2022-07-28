@@ -15,12 +15,12 @@ import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
 const SingleSignOn = (props) => {
-  const { onPageLoad, serviceProviderSettings, spMetadata } = props;
+  const { load, serviceProviderSettings, spMetadata } = props;
 
   if (!isDesktop) return <ForbiddenPage />;
 
   useEffect(() => {
-    onPageLoad();
+    load();
   }, []);
 
   return (
@@ -59,7 +59,7 @@ const SingleSignOn = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { onPageLoad, serviceProviderSettings, spMetadata } = ssoStore;
+  const { load, serviceProviderSettings, spMetadata } = ssoStore;
 
-  return { onPageLoad, serviceProviderSettings, spMetadata };
+  return { load, serviceProviderSettings, spMetadata };
 })(observer(SingleSignOn));

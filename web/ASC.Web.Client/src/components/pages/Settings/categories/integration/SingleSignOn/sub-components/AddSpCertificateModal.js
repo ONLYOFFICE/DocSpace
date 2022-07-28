@@ -15,11 +15,11 @@ import StyledModalDialog from "../styled-containers/StyledModalDialog";
 const AddSpCertificateModal = (props) => {
   const { t, ready } = useTranslation(["SingleSignOn", "Common"]);
   const {
-    onCloseSpModal,
+    closeSpModal,
     addSpCertificate,
     spIsModalVisible,
     generateCertificate,
-    onTextInputChange,
+    setInput,
     spCertificate,
     spPrivateKey,
     isGeneratedCertificate,
@@ -35,7 +35,7 @@ const AddSpCertificateModal = (props) => {
       zIndex={310}
       isLoading={!ready}
       autoMaxHeight
-      onClose={onCloseSpModal}
+      onClose={closeSpModal}
       visible={spIsModalVisible}
     >
       <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
@@ -59,7 +59,7 @@ const AddSpCertificateModal = (props) => {
         <TextArea
           className="text-area"
           name="spCertificate"
-          onChange={onTextInputChange}
+          onChange={setInput}
           value={spCertificate}
           isDisabled={isGeneratedCertificate}
         />
@@ -71,7 +71,7 @@ const AddSpCertificateModal = (props) => {
         <TextArea
           className="text-area"
           name="spPrivateKey"
-          onChange={onTextInputChange}
+          onChange={setInput}
           value={spPrivateKey}
           isDisabled={isGeneratedCertificate}
         />
@@ -91,7 +91,7 @@ const AddSpCertificateModal = (props) => {
           />
           <Button
             label={t("Common:CancelButton")}
-            onClick={onCloseSpModal}
+            onClick={closeSpModal}
             size="small"
             isDisabled={isGeneratedCertificate}
           />
@@ -103,22 +103,22 @@ const AddSpCertificateModal = (props) => {
 
 export default inject(({ ssoStore }) => {
   const {
-    onCloseSpModal,
+    closeSpModal,
     addSpCertificate,
     spIsModalVisible,
     generateCertificate,
-    onTextInputChange,
+    setInput,
     spCertificate,
     spPrivateKey,
     isGeneratedCertificate,
   } = ssoStore;
 
   return {
-    onCloseSpModal,
+    closeSpModal,
     addSpCertificate,
     spIsModalVisible,
     generateCertificate,
-    onTextInputChange,
+    setInput,
     spCertificate,
     spPrivateKey,
     isGeneratedCertificate,

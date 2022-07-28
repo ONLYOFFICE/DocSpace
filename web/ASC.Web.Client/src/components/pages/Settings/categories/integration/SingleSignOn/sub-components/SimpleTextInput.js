@@ -15,11 +15,22 @@ const SimpleTextInput = (props) => {
     tabIndex,
     value,
     enableSso,
-    onBlur,
-    onFocus,
-    onTextInputChange,
+    setInput,
     onLoadXML,
+    setError,
+    hideError,
   } = props;
+
+  const onFocus = (e) => {
+    hideError(e.target.name);
+  };
+
+  const onBlur = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+
+    setError(field, value);
+  };
 
   return (
     <StyledInputWrapper maxWidth={maxWidth}>
@@ -30,7 +41,7 @@ const SimpleTextInput = (props) => {
         name={name}
         onBlur={onBlur}
         onFocus={onFocus}
-        onChange={onTextInputChange}
+        onChange={setInput}
         placeholder={placeholder}
         scale
         tabIndex={tabIndex}
@@ -41,13 +52,13 @@ const SimpleTextInput = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { enableSso, onBlur, onFocus, onTextInputChange, onLoadXML } = ssoStore;
+  const { enableSso, setInput, onLoadXML, setError, hideError } = ssoStore;
 
   return {
     enableSso,
-    onBlur,
-    onFocus,
-    onTextInputChange,
+    setInput,
     onLoadXML,
+    setError,
+    hideError,
   };
 })(observer(SimpleTextInput));

@@ -11,13 +11,13 @@ import StyledModalDialog from "../styled-containers/StyledModalDialog";
 
 const ResetConfirmationModal = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
-  const { onCloseResetModal, confirmationResetModal, onConfirmReset } = props;
+  const { closeResetModal, confirmationResetModal, confirmReset } = props;
 
   return (
     <StyledModalDialog
       contentHeight="100%"
       displayType="modal"
-      onClose={onCloseResetModal}
+      onClose={closeResetModal}
       visible={confirmationResetModal}
     >
       <ModalDialog.Header>{t("Common:Confirmation")}</ModalDialog.Header>
@@ -31,7 +31,7 @@ const ResetConfirmationModal = (props) => {
           <Button
             className="ok-button"
             label={t("Common:OKButton")}
-            onClick={onConfirmReset}
+            onClick={confirmReset}
             primary
             size="small"
           />
@@ -47,11 +47,7 @@ const ResetConfirmationModal = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const {
-    onCloseResetModal,
-    confirmationResetModal,
-    onConfirmReset,
-  } = ssoStore;
+  const { closeResetModal, confirmationResetModal, confirmReset } = ssoStore;
 
-  return { onCloseResetModal, confirmationResetModal, onConfirmReset };
+  return { closeResetModal, confirmationResetModal, confirmReset };
 })(observer(ResetConfirmationModal));

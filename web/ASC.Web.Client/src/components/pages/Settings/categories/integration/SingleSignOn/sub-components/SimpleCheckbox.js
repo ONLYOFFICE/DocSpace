@@ -10,7 +10,7 @@ const SimpleCheckbox = (props) => {
     tabIndex,
     isChecked,
     enableSso,
-    onCheckboxChange,
+    setCheckbox,
     onLoadXML,
   } = props;
 
@@ -21,18 +21,18 @@ const SimpleCheckbox = (props) => {
       isChecked={isChecked}
       label={label}
       name={name}
-      onChange={onCheckboxChange}
+      onChange={setCheckbox}
       tabIndex={tabIndex}
     />
   );
 };
 
 export default inject(({ ssoStore }) => {
-  const { enableSso, onCheckboxChange, onLoadXML } = ssoStore;
+  const { enableSso, setCheckbox, onLoadXML } = ssoStore;
 
   return {
     enableSso,
-    onCheckboxChange,
+    setCheckbox,
     onLoadXML,
   };
 })(observer(SimpleCheckbox));

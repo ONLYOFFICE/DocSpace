@@ -18,7 +18,7 @@ const ToggleSSO = (props) => {
     enableSso,
     isSsoEnabled,
     openConfirmationDisableModal,
-    onSsoToggle,
+    ssoToggle,
     confirmationDisableModal,
   } = props;
 
@@ -41,9 +41,7 @@ const ToggleSSO = (props) => {
           className="toggle"
           isChecked={enableSso}
           onChange={
-            isSsoEnabled && enableSso
-              ? openConfirmationDisableModal
-              : onSsoToggle
+            isSsoEnabled && enableSso ? openConfirmationDisableModal : ssoToggle
           }
         />
 
@@ -68,7 +66,7 @@ export default inject(({ auth, ssoStore }) => {
     enableSso,
     isSsoEnabled,
     openConfirmationDisableModal,
-    onSsoToggle,
+    ssoToggle,
     confirmationDisableModal,
   } = ssoStore;
 
@@ -77,7 +75,7 @@ export default inject(({ auth, ssoStore }) => {
     enableSso,
     isSsoEnabled,
     openConfirmationDisableModal,
-    onSsoToggle,
+    ssoToggle,
     confirmationDisableModal,
   };
 })(observer(ToggleSSO));

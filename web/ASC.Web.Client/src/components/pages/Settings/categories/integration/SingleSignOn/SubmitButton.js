@@ -10,7 +10,7 @@ import ResetConfirmationModal from "./sub-components/ResetConfirmationModal";
 const SubmitResetButtons = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Settings", "Common"]);
   const {
-    onSubmit,
+    saveSsoSettings,
     isSsoEnabled,
     openResetModal,
     resetForm,
@@ -25,7 +25,7 @@ const SubmitResetButtons = (props) => {
       <Button
         className="save-button"
         label={t("Common:SaveButton")}
-        onClick={() => onSubmit(t)}
+        onClick={() => saveSsoSettings(t)}
         primary
         size="small"
         tabIndex={23}
@@ -46,7 +46,7 @@ const SubmitResetButtons = (props) => {
 
 export default inject(({ ssoStore }) => {
   const {
-    onSubmit,
+    saveSsoSettings,
     isSsoEnabled,
     openResetModal,
     resetForm,
@@ -57,7 +57,7 @@ export default inject(({ ssoStore }) => {
   } = ssoStore;
 
   return {
-    onSubmit,
+    saveSsoSettings,
     isSsoEnabled,
     openResetModal,
     resetForm,

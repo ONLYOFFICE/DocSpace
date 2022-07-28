@@ -8,7 +8,7 @@ import Text from "@appserver/components/text";
 
 const HideButton = (props) => {
   const { t } = useTranslation("SingleSignOn");
-  const { label, isAdditionalParameters, value, onHideClick } = props;
+  const { label, isAdditionalParameters, value, setHideLabel } = props;
 
   const hide = isAdditionalParameters ? "HideAdditionalParameters" : "Hide";
   const show = isAdditionalParameters ? "ShowAdditionalParameters" : "Show";
@@ -18,7 +18,7 @@ const HideButton = (props) => {
     : "hide-button";
 
   const onClick = () => {
-    onHideClick(label);
+    setHideLabel(label);
   };
 
   return (
@@ -42,9 +42,9 @@ const HideButton = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { onHideClick } = ssoStore;
+  const { setHideLabel } = ssoStore;
 
   return {
-    onHideClick,
+    setHideLabel,
   };
 })(observer(HideButton));

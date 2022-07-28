@@ -24,8 +24,8 @@ const Certificates = (props) => {
   const {
     provider,
     enableSso,
-    onOpenIdpModal,
-    onOpenSpModal,
+    openIdpModal,
+    openSpModal,
     idpCertificates,
     spCertificates,
     idpShowAdditionalParameters,
@@ -79,7 +79,7 @@ const Certificates = (props) => {
             <Button
               isDisabled={!enableSso || onLoadXML}
               label={t("AddCertificate")}
-              onClick={onOpenIdpModal}
+              onClick={openIdpModal}
               size="small"
               tabIndex={9}
             />
@@ -92,7 +92,7 @@ const Certificates = (props) => {
             <Button
               isDisabled={!enableSso || onLoadXML}
               label={t("AddCertificate")}
-              onClick={onOpenSpModal}
+              onClick={openSpModal}
               size="small"
               tabIndex={9}
             />
@@ -155,8 +155,8 @@ Certificates.propTypes = {
 export default inject(({ ssoStore }) => {
   const {
     enableSso,
-    onOpenIdpModal,
-    onOpenSpModal,
+    openIdpModal,
+    openSpModal,
     idpCertificates,
     spCertificates,
     idpShowAdditionalParameters,
@@ -169,8 +169,8 @@ export default inject(({ ssoStore }) => {
 
   return {
     enableSso,
-    onOpenIdpModal,
-    onOpenSpModal,
+    openIdpModal,
+    openSpModal,
     idpCertificates,
     spCertificates,
     idpShowAdditionalParameters,

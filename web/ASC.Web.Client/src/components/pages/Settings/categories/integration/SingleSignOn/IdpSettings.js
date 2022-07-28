@@ -16,7 +16,7 @@ const IdpSettings = (props) => {
   const {
     ssoBinding,
     enableSso,
-    onBindingChange,
+    setInput,
     sloBinding,
     nameIdFormat,
     spLoginLabel,
@@ -77,7 +77,7 @@ const IdpSettings = (props) => {
             className="radio-button-group"
             isDisabled={!enableSso}
             name="ssoBinding"
-            onClick={onBindingChange}
+            onClick={setInput}
             options={bindingOptions}
             selected={ssoBinding}
             spacing="21px"
@@ -106,7 +106,7 @@ const IdpSettings = (props) => {
             className="radio-button-group"
             isDisabled={!enableSso}
             name="sloBinding"
-            onClick={onBindingChange}
+            onClick={setInput}
             options={bindingOptions}
             selected={sloBinding}
             spacing="21px"
@@ -130,7 +130,7 @@ export default inject(({ ssoStore }) => {
   const {
     ssoBinding,
     enableSso,
-    onBindingChange,
+    setInput,
     sloBinding,
     nameIdFormat,
     spLoginLabel,
@@ -150,7 +150,7 @@ export default inject(({ ssoStore }) => {
   return {
     ssoBinding,
     enableSso,
-    onBindingChange,
+    setInput,
     sloBinding,
     nameIdFormat,
     spLoginLabel,

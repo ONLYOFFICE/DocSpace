@@ -13,7 +13,7 @@ const SimpleComboBox = (props) => {
     options,
     tabIndex,
     value,
-    onComboBoxChange,
+    setComboBox,
     enableSso,
     onLoadXML,
   } = props;
@@ -22,7 +22,7 @@ const SimpleComboBox = (props) => {
     options.find((option) => option.key === value) || options[0];
 
   const onSelect = () => {
-    onComboBoxChange(currentOption, name);
+    setComboBox(currentOption, name);
   };
 
   return (
@@ -44,10 +44,10 @@ const SimpleComboBox = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { onComboBoxChange, enableSso, onLoadXML } = ssoStore;
+  const { setComboBox, enableSso, onLoadXML } = ssoStore;
 
   return {
-    onComboBoxChange,
+    setComboBox,
     enableSso,
     onLoadXML,
   };

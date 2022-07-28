@@ -12,16 +12,16 @@ import StyledModalDialog from "../styled-containers/StyledModalDialog";
 const DisableSsoConfirmationModal = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
   const {
-    onCloseConfirmationDisableModal,
+    closeConfirmationDisableModal,
     confirmationDisableModal,
-    onConfirmDisable,
+    confirmDisable,
   } = props;
 
   return (
     <StyledModalDialog
       contentHeight="100%"
       displayType="modal"
-      onClose={onCloseConfirmationDisableModal}
+      onClose={closeConfirmationDisableModal}
       visible={confirmationDisableModal}
     >
       <ModalDialog.Header>{t("Common:Confirmation")}</ModalDialog.Header>
@@ -35,7 +35,7 @@ const DisableSsoConfirmationModal = (props) => {
           <Button
             className="ok-button"
             label={t("Common:OKButton")}
-            onClick={onConfirmDisable}
+            onClick={confirmDisable}
             primary
             size="small"
           />
@@ -52,14 +52,14 @@ const DisableSsoConfirmationModal = (props) => {
 
 export default inject(({ ssoStore }) => {
   const {
-    onCloseConfirmationDisableModal,
+    closeConfirmationDisableModal,
     confirmationDisableModal,
-    onConfirmDisable,
+    confirmDisable,
   } = ssoStore;
 
   return {
-    onCloseConfirmationDisableModal,
+    closeConfirmationDisableModal,
     confirmationDisableModal,
-    onConfirmDisable,
+    confirmDisable,
   };
 })(observer(DisableSsoConfirmationModal));
