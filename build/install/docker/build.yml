@@ -133,3 +133,10 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: web
     image: "${REPO}/${STATUS}appserver-proxy:${DOCKER_TAG}"
+
+  onlyoffice-migration-runner:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: onlyoffice-migration-runner
+    image: "${REPO}/${STATUS}appserver-migration-runner:${DOCKER_TAG}"
