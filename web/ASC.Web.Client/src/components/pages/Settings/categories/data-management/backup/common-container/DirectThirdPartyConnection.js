@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import Button from "@appserver/components/button";
 import SelectFolderInput from "files/SelectFolderInput";
 import {
@@ -36,9 +36,20 @@ const DirectThirdPartyConnection = (props) => {
     updateAccountsInfo();
   }, []);
 
+  const [isVisibleConnectionForm, setIsVisibleConnectionForm] = useState(false);
+  const initialState = {
+    selectedAccount: {},
+    folderList: [],
+    isLoading: true,
+  };
+
+  const [state, setState] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialState
+  );
+
   const updateAccountsInfo = async () => {
     try {
-      setIsLoading(true);
       const connectedAccount = await getConnectedAccounts();
       onSetThirdPartySettings(
         connectedAccount?.providerKey,
@@ -47,7 +58,7 @@ const DirectThirdPartyConnection = (props) => {
       );
     } catch (e) {
       onSetThirdPartySettings();
-      setIsLoading(false);
+
       if (!e) return;
       toastr.error(e);
     }
@@ -59,7 +70,7 @@ const DirectThirdPartyConnection = (props) => {
     account
   ) => {
     try {
-      !isLoading && setIsLoading(true);
+      !state.isLoading && setState({ isLoading: true });
 
       const capabilities = await getThirdPartyCapabilities();
       accounts = [];
@@ -98,7 +109,6 @@ const DirectThirdPartyConnection = (props) => {
           connectedAccount = { ...accounts[index] };
         }
 
-        console.log("connectedAccount", connectedAccount);
         index++;
       };
 
@@ -114,29 +124,26 @@ const DirectThirdPartyConnection = (props) => {
       setAccount("Yandex", "Yandex.Disk");
       setAccount("WebDav", "WebDAV");
 
-      setSelectedAccount(
-        Object.keys(connectedAccount).length !== 0
-          ? connectedAccount
-          : { ...accounts[0] }
-      );
-      setFolderList(account ? account : []);
+      setState({
+        isLoading: false,
+        selectedAccount:
+          Object.keys(connectedAccount).length !== 0
+            ? connectedAccount
+            : { ...accounts[0] },
+        folderList: account ? account : [],
+      });
     } catch (e) {
+      setState({ isLoading: false });
       if (!e) return;
       toastr.error(e);
     }
-
-    setIsLoading(false);
   };
 
-  const [selectedAccount, setSelectedAccount] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [isVisibleConnectionForm, setIsVisibleConnectionForm] = useState(false);
-  const [folderList, setFolderList] = useState([]);
   const onConnect = () => {
-    const { label, provider_link, provider_key } = selectedAccount;
+    const { provider_link, provider_key } = state.selectedAccount;
 
     const directConnection = provider_link;
-    console.log("selectedAccount", selectedAccount);
+
     if (directConnection) {
       let authModal = window.open(
         "",
@@ -170,13 +177,12 @@ const DirectThirdPartyConnection = (props) => {
     loginValue = "",
     passwordValue = ""
   ) => {
-    const { label, provider_key, provider_id } = selectedAccount;
+    const { label, provider_key, provider_id } = state.selectedAccount;
+    setState({ isLoading: true });
+    isVisibleConnectionForm && setIsVisibleConnectionForm(false);
+    onSelectFolder("");
 
     try {
-      setIsLoading(true);
-      onSelectFolder("");
-      isVisibleConnectionForm && setIsVisibleConnectionForm(false);
-
       await saveSettingsThirdParty(
         urlValue,
         loginValue,
@@ -187,10 +193,10 @@ const DirectThirdPartyConnection = (props) => {
         provider_key,
         provider_id
       );
+
       updateAccountsInfo();
     } catch (e) {
-      setIsLoading(false);
-      if (!e) return;
+      setState({ isLoading: false });
       toastr.error(e);
     }
   };
@@ -202,11 +208,11 @@ const DirectThirdPartyConnection = (props) => {
   const onSelectAccount = (options) => {
     const key = options.key;
 
-    setSelectedAccount({ ...accounts[+key] });
+    setState({ selectedAccount: { ...accounts[+key] } });
   };
 
   const onReconnect = () => {
-    const { label, provider_link } = selectedAccount;
+    const { provider_link } = state.selectedAccount;
 
     const directConnection = provider_link;
     console.log("selectedAccount", selectedAccount);
@@ -226,7 +232,8 @@ const DirectThirdPartyConnection = (props) => {
       setIsVisibleConnectionForm(true);
     }
   };
-  console.log("accounts", accounts);
+
+  const { selectedAccount, isLoading, folderList } = state;
   return (
     <StyledBackup>
       <div className="backup_connection">
