@@ -30,7 +30,7 @@ public static partial class CommonLogger
     [LoggerMessage(Level = LogLevel.Error)]
     public static partial void ErrorWithException(this ILogger logger, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "{message}")]
+    [LoggerMessage(Level = LogLevel.Error)]
     public static partial void ErrorWithException(this ILogger logger, string message, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "{message}")]
@@ -48,6 +48,6 @@ public static partial class CommonLogger
     [LoggerMessage(Level = LogLevel.Warning)]
     public static partial void WarningWithException(this ILogger logger, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "{message}")]
+    [LoggerMessage(Level = LogLevel.Warning)]
     public static partial void WarningWithException(this ILogger logger, string message, Exception exception);
 }

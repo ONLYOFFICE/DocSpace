@@ -42,10 +42,10 @@ public class CrmContact
     public int ContactTypeId { get; set; }
     public Guid CreateBy { get; set; }
     public DateTime CreateOn { get; set; }
-    public Guid LastModifedBy { get; set; }
-    public DateTime LastModifedOn { get; set; }
+    public Guid? LastModifedBy { get; set; }
+    public DateTime? LastModifedOn { get; set; }
     public string DisplayName { get; set; }
-    public bool IsShared { get; set; }
+    public bool? IsShared { get; set; }
     public string Currency { get; set; }
 }
 public static class CrmContactExtension
@@ -62,7 +62,8 @@ public static class CrmContactExtension
     {
         modelBuilder.Entity<CrmContact>(entity =>
         {
-            entity.ToTable("crm_contact");
+            entity.ToTable("crm_contact")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.CreateOn)
                 .HasDatabaseName("create_on");
@@ -78,7 +79,8 @@ public static class CrmContactExtension
 
             entity.Property(e => e.Id).HasColumnName("id");
 
-            entity.Property(e => e.CompanyId).HasColumnName("company_id");
+            entity.Property(e => e.CompanyId)
+                .HasColumnName("company_id");
 
             entity.Property(e => e.CompanyName)
                 .HasColumnName("company_name")
@@ -86,7 +88,9 @@ public static class CrmContactExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.ContactTypeId).HasColumnName("contact_type_id");
+            entity.Property(e => e.ContactTypeId)
+                .HasColumnName("contact_type_id")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.CreateBy)
                 .IsRequired()
@@ -123,19 +127,26 @@ public static class CrmContactExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.IsCompany).HasColumnName("is_company");
+            entity.Property(e => e.IsCompany)
+                .HasColumnType("tinyint(1)")
+                .HasColumnName("is_company");
 
-            entity.Property(e => e.IsShared).HasColumnName("is_shared");
+            entity.Property(e => e.IsShared)
+                .HasColumnName("is_shared")
+                .HasColumnType("tinyint(1)")
+                .IsRequired(false);
 
             entity.Property(e => e.LastModifedBy)
                 .HasColumnName("last_modifed_by")
                 .HasColumnType("char(38)")
                 .HasCharSet("utf8")
+                .IsRequired(false)
                 .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.LastModifedOn)
                 .HasColumnName("last_modifed_on")
-                .HasColumnType("datetime");
+                .HasColumnType("datetime")
+                .IsRequired(false);
 
             entity.Property(e => e.LastName)
                 .HasColumnName("last_name")
@@ -149,9 +160,12 @@ public static class CrmContactExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.StatusId).HasColumnName("status_id");
+            entity.Property(e => e.StatusId)
+                .HasColumnName("status_id")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+            entity.Property(e => e.TenantId)
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.Title)
                 .HasColumnName("title")
@@ -224,6 +238,7 @@ public static class CrmContactExtension
             entity.Property(e => e.LastModifedBy)
                 .HasColumnName("last_modifed_by")
                 .HasMaxLength(38)
+                .IsRequired(false)
                 .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.LastModifedOn)

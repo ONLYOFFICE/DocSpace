@@ -19,6 +19,7 @@ const StyledSelectedItem = styled.div`
   padding: 6px 8px;
 
   margin-right: 4px;
+  margin-bottom: 4px;
 
   background: #eceef1;
 

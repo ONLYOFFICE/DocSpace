@@ -85,9 +85,10 @@ global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.Helpers;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
+global using ASC.Files.Core.Helpers;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem.Core;
-global using ASC.MessagingSystem.Models;
+global using ASC.MessagingSystem.EF.Model;
 global using ASC.Notify.Cron;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api;
@@ -100,7 +101,6 @@ global using ASC.Web.Api.Log;
 global using ASC.Web.Api.Models;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core;
-global using ASC.Web.Core.Files;
 global using ASC.Web.Core.Helpers;
 global using ASC.Web.Core.Mobile;
 global using ASC.Web.Core.PublicResources;
@@ -123,7 +123,7 @@ global using ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
-global using ASC.Webhooks.Core.Dao.Models;
+global using ASC.Webhooks.Core.EF.Model;
 
 global using Autofac;
 

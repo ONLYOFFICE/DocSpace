@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "感谢您购买{{organizationName}}！",
   "HeaderExpiredTrialLicense": "免费试用已结束",
   "HeaderLicense": "您正在使用{{organizationName}}企业版",
-  "PaymentsTitle": "付款",
   "RenewalLicense": "如果您已续订，请上传许可文件。",
   "SubscriptionRenewedLicense": "更新订阅以获取：",
   "SuccessLoadingLicense": "许可激活成功"

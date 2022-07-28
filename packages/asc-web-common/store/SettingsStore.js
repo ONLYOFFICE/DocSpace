@@ -62,7 +62,7 @@ class SettingsStore {
   urlSupport = "https://helpdesk.onlyoffice.com/";
   urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms?populate=*&locale=";
 
-  logoUrl = combineUrl(proxyURL, "/static/images/nav.logo.opened.react.svg");
+  logoUrl = combineUrl(proxyURL, "/static/images/logo.docspace.react.svg");
   customNames = {
     id: "Common",
     userCaption: "User",
@@ -173,7 +173,11 @@ class SettingsStore {
   };
 
   getSettings = async () => {
-    const newSettings = await api.settings.getSettings();
+    let newSettings = null;
+
+    if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
+      newSettings = window.__ASC_INITIAL_EDITOR_STATE__.portalSettings;
+    else newSettings = await api.settings.getSettings();
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(proxyURL, "/products/files/");
@@ -213,7 +217,12 @@ class SettingsStore {
   };
 
   getCurrentCustomSchema = async (id) => {
-    this.customNames = await api.settings.getCurrentCustomSchema(id);
+    let customNames = null;
+    if (window?.__ASC_INITIAL_EDITOR_STATE__?.customNames) {
+      customNames = window.__ASC_INITIAL_EDITOR_STATE__.customNames;
+      window.__ASC_INITIAL_EDITOR_STATE__.customNames = null;
+    } else customNames = await api.settings.getCurrentCustomSchema(id);
+    this.customNames = customNames;
   };
 
   getCustomSchemaList = async () => {
@@ -428,7 +437,10 @@ class SettingsStore {
   }
 
   getBuildVersionInfo = async () => {
-    const versionInfo = await api.settings.getBuildVersion();
+    let versionInfo = null;
+    if (window?.__ASC_INITIAL_EDITOR_STATE__?.versionInfo)
+      versionInfo = window.__ASC_INITIAL_EDITOR_STATE__.versionInfo;
+    else versionInfo = await api.settings.getBuildVersion();
     this.setBuildVersionInfo(versionInfo);
   };
 

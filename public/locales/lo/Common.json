@@ -120,6 +120,7 @@
   "PasswordMinimumLength": "ຄວາມຍາວຕໍ່າສຸດ",
   "People": "ຄົນ",
   "Phone": "ໂທລະສັບ",
+  "PreparationPortalTitle": "ກໍາລັງດໍາເນີນການກູ້ຄືນພອດທັອນ",
   "Previous": "ທີ່ຜ່ານມາ",
   "Profile": "ຂໍ້ມູນສ່ວນໂຕ",
   "ProjectsProduct": "ໂຄງການ",
@@ -166,5 +167,8 @@
   "View": "ມຸມມອງ",
   "ViewWeb": "ເປີດຜ່ານຫນ້າເວັບ",
   "Warning": "ແຈ້ງເຕືອນ",
-  "Hotkeys": "ປຸ່ມໃຊ້ປະຈຳ"
+  "Hotkeys": "ປຸ່ມໃຊ້ປະຈຳ",
+  "PaymentsTitle": "ການຊຳລະເງິນ",
+  "AboutCompanyTitle": "ກ່ຽວກັບໂປແກລມນີ້",
+  "LogoutButton": "ອອກຈາກລະບົບ"
 }

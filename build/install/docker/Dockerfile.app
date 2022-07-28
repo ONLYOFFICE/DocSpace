@@ -1,21 +1,19 @@
-ARG SRC_PATH=/app/onlyoffice/src
-ARG BUILD_PATH=/var/www
-ARG REPO_SDK=mcr.microsoft.com/dotnet/sdk
-ARG REPO_SDK_TAG=6.0
-ARG REPO_RUN=mcr.microsoft.com/dotnet/aspnet
-ARG REPO_RUN_TAG=6.0
+ARG SRC_PATH="/app/onlyoffice/src"
+ARG BUILD_PATH="/var/www"
+ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:6.0"
+ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:6.0"
 
-FROM $REPO_SDK:$REPO_SDK_TAG AS base
+FROM $DOTNET_SDK AS base
 ARG RELEASE_DATE="2016-06-22"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PRODUCT_VERSION=0.0.0
 ARG BUILD_NUMBER=0
-ARG GIT_BRANCH=master
+ARG GIT_BRANCH="master"
 ARG SRC_PATH
 ARG BUILD_PATH
-ARG BUILD_ARGS=build
-ARG DEPLOY_ARGS=deploy
-ARG DEBUG_INFO=true
+ARG BUILD_ARGS="build"
+ARG DEPLOY_ARGS="deploy"
+ARG DEBUG_INFO="true"
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
@@ -67,9 +65,9 @@ COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 
 RUN rm -rf /var/lib/apt/lists/*
 
-FROM $REPO_RUN:$REPO_RUN_TAG as builder
+FROM $DOTNET_RUN as builder
 ARG BUILD_PATH
-ARG SRC_PATH 
+ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
 ENV SRC_PATH=${SRC_PATH}
 
@@ -137,7 +135,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
 # copy static services files and config values 
 COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=base /etc/nginx/includes /etc/nginx/includes
-COPY --from=base ${SRC_PATH}/build/deploy/products ${BUILD_PATH}/products
+COPY --from=base ${SRC_PATH}/build/deploy/products/ASC.Files/client ${BUILD_PATH}/products/ASC.Files/client
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY --from=base ${SRC_PATH}/build/deploy/studio ${BUILD_PATH}/studio
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
@@ -161,34 +159,44 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/localhost:9834/$service_sso/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5034/$service_migration/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
 
-## ASC.Webhooks.Service ##
-FROM builder AS webhooks-wervice
-WORKDIR ${BUILD_PATH}/services/ASC.Webhooks.Service/
+## Doceditor ##
+FROM nodeBuild as doceditor
+WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhooks.Service/ .
-
-CMD ["ASC.Webhooks.Service.dll", "ASC.Webhooks.Service"]
-
-## ASC.ClearEvents ##
-FROM builder AS clear-events
-WORKDIR ${BUILD_PATH}/services/ASC.ClearEvents/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearEvents/ .
-
-CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/products/ASC.Files/editor/ .
+EXPOSE 5013
+ENTRYPOINT ["node", "server.js"]
 
 ## ASC.Data.Backup.BackgroundTasks ##
 FROM builder AS backup_background
 WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/service/  .
 
 CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
+
+## ASC.ClearEvents ##
+FROM builder AS clear-events
+WORKDIR ${BUILD_PATH}/services/ASC.ClearEvents/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearEvents/service/  .
+
+CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
+
+## ASC.Migration ##
+FROM builder AS migration
+WORKDIR ${BUILD_PATH}/services/ASC.Migration/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Migration/service/  .
+
+CMD ["ASC.Migration.dll", "ASC.Migration"]
 
 ## ASC.Data.Backup ##
 FROM builder AS backup
@@ -244,6 +252,15 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket
 
 CMD  ["server.js", "ASC.Socket.IO"]
 
+## ASC.SsoAuth ##
+FROM nodeBuild AS ssoauth
+WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
+
+CMD ["app.js", "ASC.SsoAuth"]
+
 ## ASC.Studio.Notify ##
 FROM builder AS studio_notify
 WORKDIR ${BUILD_PATH}/services/ASC.Studio.Notify/service/
@@ -280,6 +297,15 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Ap
 
 CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
 
+## ASC.Webhooks.Service ##
+FROM builder AS webhooks-service
+WORKDIR ${BUILD_PATH}/services/ASC.Webhooks.Service/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhooks.Service/service/  .
+
+CMD ["ASC.Webhooks.Service.dll", "ASC.Webhooks.Service"]
+
 ## ASC.Web.Studio ##
 FROM builder AS studio
 WORKDIR ${BUILD_PATH}/studio/ASC.Web.Studio/
@@ -289,14 +315,17 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.St
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
 
-## ASC.SsoAuth ##
-FROM nodeBuild AS ssoauth
-WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/
+## ASC.Migration.Runner ##
+FROM $DOTNET_RUN AS onlyoffice-migration-runner
+ARG BUILD_PATH
+ARG SRC_PATH 
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
+COPY  ./docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh
+COPY --from=base ${SRC_PATH}/ASC.Migration.Runner/service/ .
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
-
-CMD ["app.js", "ASC.SsoAuth"]
+ENTRYPOINT ["./docker-migration-entrypoint.sh"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share

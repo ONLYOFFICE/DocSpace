@@ -33,8 +33,8 @@ public class DbWebstudioUserVisit
     public Guid ProductId { get; set; }
     public Guid UserId { get; set; }
     public int VisitCount { get; set; }
-    public DateTime FirstVisitTime { get; set; }
-    public DateTime LastVisitTime { get; set; }
+    public DateTime? FirstVisitTime { get; set; }
+    public DateTime? LastVisitTime { get; set; }
 }
 
 public static class WebstudioUserVisitExtension
@@ -87,7 +87,8 @@ public static class WebstudioUserVisitExtension
             entity.HasKey(e => new { e.TenantId, e.VisitDate, e.ProductId, e.UserId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("webstudio_uservisit");
+            entity.ToTable("webstudio_uservisit")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.VisitDate)
                 .HasDatabaseName("visitdate");
@@ -112,13 +113,19 @@ public static class WebstudioUserVisitExtension
 
             entity.Property(e => e.FirstVisitTime)
                 .HasColumnName("firstvisittime")
-                .HasColumnType("datetime");
+                .HasColumnType("datetime")
+                .IsRequired(false)
+                .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.LastVisitTime)
                 .HasColumnName("lastvisittime")
-                .HasColumnType("datetime");
+                .HasColumnType("datetime")
+                .IsRequired(false)
+                .HasDefaultValueSql("NULL");
 
-            entity.Property(e => e.VisitCount).HasColumnName("visitcount");
+            entity.Property(e => e.VisitCount)
+                .HasColumnName("visitcount")
+                .HasDefaultValueSql("'0'");
         });
     }
     public static void PgSqlAddWebstudioUserVisit(this ModelBuilder modelBuilder)

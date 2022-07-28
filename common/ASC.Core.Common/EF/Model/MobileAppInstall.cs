@@ -31,7 +31,7 @@ public class MobileAppInstall
     public string UserEmail { get; set; }
     public int AppType { get; set; }
     public DateTime RegisteredOn { get; set; }
-    public DateTime LastSign { get; set; }
+    public DateTime? LastSign { get; set; }
 }
 
 public static class MobileAppInstallExtension
@@ -52,7 +52,8 @@ public static class MobileAppInstallExtension
             entity.HasKey(e => new { e.UserEmail, e.AppType })
                 .HasName("PRIMARY");
 
-            entity.ToTable("mobile_app_install");
+            entity.ToTable("mobile_app_install")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.UserEmail)
                 .HasColumnName("user_email")
@@ -60,11 +61,14 @@ public static class MobileAppInstallExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.AppType).HasColumnName("app_type");
+            entity.Property(e => e.AppType)
+                .HasColumnName("app_type");
 
             entity.Property(e => e.LastSign)
                 .HasColumnName("last_sign")
-                .HasColumnType("datetime");
+                .IsRequired(false)
+                .HasColumnType("datetime")
+                .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.RegisteredOn)
                 .HasColumnName("registered_on")
