@@ -12,8 +12,11 @@ import ComboBox from "@appserver/components/combobox";
 import toastr from "@appserver/components/toast/toastr";
 import FormConnection from "./FormConnection";
 import { inject, observer } from "mobx-react";
+import { StyledTableSettings } from "@appserver/components/table-container/StyledTableContainer";
 
-let accounts = [];
+let accounts = [],
+  connectedAccount,
+  capabilities;
 const DirectThirdPartyConnection = (props) => {
   const {
     openConnectWindow,
@@ -25,7 +28,6 @@ const DirectThirdPartyConnection = (props) => {
     onSetLoadingData,
     isDisabled,
     isPanelVisible,
-    withoutBasicSelection,
     isError,
     id,
     isReset,
@@ -40,7 +42,8 @@ const DirectThirdPartyConnection = (props) => {
   const initialState = {
     selectedAccount: {},
     folderList: [],
-    isLoading: true,
+    isLoading: false,
+    isInitialLoading: true,
   };
 
   const [state, setState] = useReducer(
@@ -50,11 +53,16 @@ const DirectThirdPartyConnection = (props) => {
 
   const updateAccountsInfo = async () => {
     try {
-      const connectedAccount = await getConnectedAccounts();
+      [connectedAccount, capabilities] = await Promise.all([
+        getConnectedAccounts(),
+        getThirdPartyCapabilities(),
+      ]);
+
       onSetThirdPartySettings(
         connectedAccount?.providerKey,
         connectedAccount?.providerId,
-        connectedAccount
+        connectedAccount,
+        capabilities
       );
     } catch (e) {
       onSetThirdPartySettings();
@@ -67,16 +75,18 @@ const DirectThirdPartyConnection = (props) => {
   const onSetThirdPartySettings = async (
     connectedProviderKey,
     connectedProviderId,
-    account
+    account,
+    capabilities
   ) => {
     try {
-      !state.isLoading && setState({ isLoading: true });
+      !state.isLoading &&
+        !state.isInitialLoading &&
+        setState({ isLoading: true });
 
-      const capabilities = await getThirdPartyCapabilities();
       accounts = [];
 
       let index = 0,
-        connectedAccount = {};
+        selectedAccount = {};
 
       const getCapability = (providerId) => {
         return (
@@ -106,7 +116,7 @@ const DirectThirdPartyConnection = (props) => {
         });
 
         if (isConnected) {
-          connectedAccount = { ...accounts[index] };
+          selectedAccount = { ...accounts[index] };
         }
 
         index++;
@@ -126,14 +136,15 @@ const DirectThirdPartyConnection = (props) => {
 
       setState({
         isLoading: false,
+        isInitialLoading: false,
         selectedAccount:
-          Object.keys(connectedAccount).length !== 0
-            ? connectedAccount
+          Object.keys(selectedAccount).length !== 0
+            ? selectedAccount
             : { ...accounts[0] },
         folderList: account ? account : [],
       });
     } catch (e) {
-      setState({ isLoading: false });
+      setState({ isLoading: false, isInitialLoading: false });
       if (!e) return;
       toastr.error(e);
     }
@@ -233,7 +244,8 @@ const DirectThirdPartyConnection = (props) => {
     }
   };
 
-  const { selectedAccount, isLoading, folderList } = state;
+  const { selectedAccount, isLoading, folderList, isInitialLoading } = state;
+
   return (
     <StyledBackup>
       <div className="backup_connection">
@@ -249,7 +261,9 @@ const DirectThirdPartyConnection = (props) => {
           scaledOptions
           dropDownMaxHeight={300}
           tabIndex={1}
-          isDisabled={isDisabled || isLoading || accounts.length === 0}
+          isDisabled={
+            isDisabled || isInitialLoading || isLoading || accounts.length === 0
+          }
         />
 
         {selectedAccount.connected ? (
@@ -257,11 +271,21 @@ const DirectThirdPartyConnection = (props) => {
             label={t("Reconnect")}
             onClick={onReconnect}
             size={"small"}
-            isDisabled={isDisabled || isLoading || accounts.length === 0}
+            isDisabled={
+              isDisabled ||
+              isInitialLoading ||
+              isLoading ||
+              accounts.length === 0
+            }
           />
         ) : (
           <Button
-            isDisabled={isDisabled || isLoading || accounts.length === 0}
+            isDisabled={
+              isDisabled ||
+              isInitialLoading ||
+              isLoading ||
+              accounts.length === 0
+            }
             label={t("Common:Connect")}
             onClick={onConnect}
             size={"small"}
@@ -287,7 +311,7 @@ const DirectThirdPartyConnection = (props) => {
         }
         isPanelVisible={isPanelVisible}
         isError={isError}
-        foldersType="third-party"
+        foldersType={isInitialLoading ? "" : "third-party"}
         foldersList={[folderList]}
         withoutBasicSelection={withoutBasicSelection}
         isReset={isReset}

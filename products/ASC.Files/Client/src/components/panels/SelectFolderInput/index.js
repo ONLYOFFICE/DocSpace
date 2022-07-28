@@ -63,20 +63,21 @@ class SelectFolderInput extends React.PureComponent {
     this.setState({
       resultingFolderTree,
       baseId: resultingId,
+      ...(withoutBasicSelection && { isLoading: false }),
     });
   };
   componentDidMount() {
     this._isMount = true;
 
-    const { setFirstLoad } = this.props;
+    const { setFirstLoad, foldersType } = this.props;
 
     setFirstLoad(false);
-    this.setBaseInfo();
+    foldersType && this.setBaseInfo();
   }
 
   componentDidUpdate(prevProps) {
-    const { isSuccessSave, isReset, id } = this.props;
-    const { newFolderPath, baseFolderPath, foldersList } = this.state;
+    const { isSuccessSave, isReset, id, foldersType } = this.props;
+    const { newFolderPath, baseFolderPath } = this.state;
 
     if (!isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
       newFolderPath &&
@@ -95,7 +96,7 @@ class SelectFolderInput extends React.PureComponent {
       });
     }
 
-    if (foldersList !== prevProps.foldersList) {
+    if (foldersType !== prevProps.foldersType) {
       this.setBaseInfo();
     }
   }
@@ -246,16 +247,24 @@ class SelectFolderInput extends React.PureComponent {
 }
 
 SelectFolderInput.propTypes = {
-  onClickInput: PropTypes.func.isRequired,
+  onClickInput: PropTypes.func,
   hasError: PropTypes.bool,
   isDisabled: PropTypes.bool,
   placeholder: PropTypes.string,
+  foldersType: PropTypes.oneOf([
+    "common",
+    "third-party",
+    "exceptSortedByTags",
+    "exceptPrivacyTrashFolders",
+    "",
+  ]),
 };
 
 SelectFolderInput.defaultProps = {
   hasError: false,
   isDisabled: false,
   placeholder: "",
+  foldersType: "",
 };
 
 export default inject(

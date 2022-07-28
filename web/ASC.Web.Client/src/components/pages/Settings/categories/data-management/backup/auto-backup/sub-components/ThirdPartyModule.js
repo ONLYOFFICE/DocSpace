@@ -34,8 +34,6 @@ class ThirdPartyModule extends React.PureComponent {
 
     this.state = {
       isPanelVisible: false,
-      ...(isDocSpace && { selectedAccount: this.accounts[0] }),
-      isConnected: false,
     };
     !isResourcesDefault && setSelectedFolder("");
   }
