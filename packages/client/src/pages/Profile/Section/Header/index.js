@@ -439,7 +439,7 @@ class SectionHeaderContent extends React.PureComponent {
     const backUrl = combineUrl(
       AppServerConfig.proxyURL,
       config.homepage,
-      `filter?/${url}`
+      `/accounts/filter?/${url}`
     );
 
     history.push(backUrl, url);
@@ -454,7 +454,7 @@ class SectionHeaderContent extends React.PureComponent {
 
     return (
       <StyledContainer
-        showContextButton={(isAdmin && !profile.isOwner) || isMe}
+        showContextButton={(isAdmin && !profile?.isOwner) || isMe}
       >
         <IconButton
           iconName="/static/images/arrow.path.react.svg"

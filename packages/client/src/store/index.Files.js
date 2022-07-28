@@ -17,6 +17,9 @@ import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
 import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
+import PeopleStore from "./PeopleStore";
+
+const peopleStore = new PeopleStore();
 
 const tagsStore = new TagsStore();
 
@@ -108,6 +111,8 @@ const stores = {
   selectFileDialogStore,
 
   tagsStore,
+
+  peopleStore,
 };
 
 export default stores;

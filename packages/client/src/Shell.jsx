@@ -16,6 +16,8 @@ import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 
 import store from "studio/store";
+import filesStores from "./store/index.Files";
+
 import config from "../package.json";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -46,7 +48,7 @@ const LOGIN_URLS = [
   combineUrl(PROXY_HOMEPAGE_URL, "/login/confirmed-email=:confirmedEmail"),
 ];
 const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
-const COMING_SOON_URLS = [combineUrl(PROXY_HOMEPAGE_URL, "/coming-soon")];
+
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
 const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
 const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
@@ -66,7 +68,7 @@ const Home = React.lazy(() => import("./pages/Files")); //import("./components/p
 const About = React.lazy(() => import("./components/pages/About"));
 const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
-const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
+
 const Confirm =
   !IS_PERSONAL && React.lazy(() => import("./components/pages/Confirm"));
 const MyProfile = React.lazy(() => import("./pages/My"));
@@ -150,13 +152,7 @@ const WizardRoute = (props) => (
   </React.Suspense>
 );
 
-const ComingSoonRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <ComingSoon {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+
 
 const MyProfileRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -190,7 +186,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
     isLoaded,
     loadBaseInfo,
-    modules,
+
     isDesktop,
     language,
     FirebaseHelper,
@@ -220,7 +216,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         ABOUT_URL,
         LOGIN_URLS,
         CONFIRM_URL,
-        COMING_SOON_URLS,
+
         PAYMENTS_URL,
         SETTINGS_URL,
         ERROR_401_URL,
@@ -441,45 +437,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     window.AppServer.studio = {};
   }
 
-  window.AppServer.studio.modules = {};
-
-  const dynamicRoutes = modules.map((m) => {
-    const appURL = m.link;
-    const remoteEntryURL = combineUrl(
-      window.location.origin,
-      appURL,
-      `remoteEntry.js`
-    );
-
-    const system = {
-      url: remoteEntryURL,
-      scope: m.appName,
-      module: "./app",
-    };
-
-    window.AppServer.studio.modules[m.appName] = {
-      appURL,
-      remoteEntryURL,
-    };
-
-    return (
-      <PrivateRoute
-        key={m.id}
-        path={
-          m.appName === "files"
-            ? [
-                "/Products/Files",
-                "/Products/Files/",
-                "/Products/Files/?desktop=true",
-                appURL,
-              ]
-            : appURL
-        }
-        component={System}
-        system={system}
-      />
-    );
-  });
 
   const loginRoutes = [];
 
@@ -546,18 +503,19 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               ]}
               component={HomeRoute}
             />
-            {!IS_PERSONAL && (
-              <Route
-                path={[
-                  "/accounts",
-                  "/accounts/filter",
-                  "/accounts/edit/:userId",
-                  "/accounts/view/:userId",
-                  "/accounts/create/:type",
-                ]}
-                component={HomeRoute}
-              />
-            )}
+
+            <Route
+              path={[
+                "/accounts",
+                "/accounts/filter",
+                "/accounts/create/:type",
+                "/accounts/edit/:userId",
+                "/accounts/view/:userId",
+                "/accounts/view/@self",
+              ]}
+              component={HomeRoute}
+            />
+
             <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
             <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
             {loginRoutes}
@@ -566,7 +524,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <Route path={CONFIRM_URL} component={ConfirmRoute} />
             )}
             <Route path={INVALID_URL} component={InvalidRoute} />
-            <PrivateRoute path={COMING_SOON_URLS} component={ComingSoonRoute} />
+
             <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
             {!personal && (
               <PrivateRoute
@@ -585,7 +543,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               path={PREPARATION_PORTAL}
               component={PreparationPortalRoute}
             />
-            {dynamicRoutes}
+
             <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
             <PrivateRoute
               component={!personal ? Error404Route : RedirectToHome}
@@ -628,7 +586,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     },
     language,
     isLoaded,
-    modules: auth.moduleStore.modules,
+
     isDesktop: isDesktopClient,
     FirebaseHelper: firebaseHelper,
     personal,
@@ -655,7 +613,7 @@ const ThemeProviderWrapper = inject(({ auth }) => {
 })(observer(ThemeProvider));
 
 export default () => (
-  <MobxProvider {...store}>
+  <MobxProvider {...store} {...filesStores}>
     <I18nextProvider i18n={i18n}>
       <ThemeProviderWrapper>
         <ShellWrapper />

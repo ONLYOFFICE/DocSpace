@@ -76,7 +76,8 @@ class ProfileActions extends React.PureComponent {
   }
 
   getUserRole = (user) => {
-    let isModuleAdmin = user.listAdminModules && user.listAdminModules.length;
+    let isModuleAdmin =
+      user?.listAdminModules && user?.listAdminModules?.length;
 
     if (user.isOwner) return "owner";
     if (user.isAdmin || isModuleAdmin) return "admin";

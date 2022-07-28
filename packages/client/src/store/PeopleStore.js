@@ -50,10 +50,7 @@ class PeopleStore {
   }
 
   get isPeoplesAdmin() {
-    return (
-      authStore.userStore.user &&
-      authStore.userStore.user.listAdminModules.includes("people")
-    );
+    return authStore.isAdmin;
   }
 
   init = async () => {
@@ -62,7 +59,7 @@ class PeopleStore {
 
     //authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
-    await this.groupsStore.getGroupList();
+
     await authStore.settingsStore.getPortalPasswordSettings();
 
     this.loadingStore.setIsLoaded(true);

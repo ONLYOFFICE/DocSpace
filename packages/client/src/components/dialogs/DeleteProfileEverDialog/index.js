@@ -36,7 +36,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
     const url = combineUrl(
       AppServerConfig.proxyURL,
       homepage,
-      `filter?/${params}`
+      `/accounts/filter?${params}`
     );
 
     this.setState({ isRequestRunning: true }, () => {

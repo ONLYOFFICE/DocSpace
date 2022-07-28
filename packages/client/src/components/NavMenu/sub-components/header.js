@@ -319,10 +319,9 @@ HeaderComponent.displayName = "Header";
 HeaderComponent.propTypes = {
   totalNotifications: PropTypes.number,
   onClick: PropTypes.func,
-  currentProductName: PropTypes.string,
+
   defaultPage: PropTypes.string,
-  mainModules: PropTypes.array,
-  currentProductId: PropTypes.string,
+
   isNavOpened: PropTypes.bool,
   onNavMouseEnter: PropTypes.func,
   onNavMouseLeave: PropTypes.func,
@@ -338,12 +337,11 @@ HeaderComponent.propTypes = {
 export default inject(({ auth }) => {
   const {
     settingsStore,
-    moduleStore,
+
     isLoaded,
     isAuthenticated,
     isAdmin,
-    product,
-    availableModules,
+
     version,
   } = auth;
   const {
@@ -354,7 +352,7 @@ export default inject(({ auth }) => {
     theme,
     toggleArticleOpen,
   } = settingsStore;
-  const { totalNotifications } = moduleStore;
+
 
   //TODO: restore when chat will complete -> const mainModules = availableModules.filter((m) => !m.isolateMode);
 
@@ -364,13 +362,13 @@ export default inject(({ auth }) => {
     isAdmin,
     defaultPage,
     logoUrl,
-    mainModules: availableModules,
+
     totalNotifications,
     isLoaded,
     version,
     isAuthenticated,
     currentProductId,
     toggleArticleOpen,
-    currentProductName: (product && product.title) || "",
+    //currentProductName: (product && product.title) || "",
   };
 })(observer(HeaderComponent));

@@ -25,7 +25,6 @@ import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import { inject, observer } from "mobx-react";
 
 import { getUserRole } from "@docspace/client/src/helpers/people-helpers";
-import { getNewModulesList } from "../../../utils";
 
 import isEmpty from "lodash/isEmpty";
 
@@ -1032,7 +1031,7 @@ PortalAdmins.propTypes = {
 export default inject(({ auth, setup }) => {
   const { admins, owner, filter, selectorIsOpen } = setup.security.accessRight;
   const { user: me } = auth.userStore;
-  const { modules } = auth.moduleStore;
+
   const {
     setAddUsers,
     setRemoveAdmins,

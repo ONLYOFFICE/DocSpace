@@ -35,7 +35,8 @@ class ProfileActionsStore {
   };
 
   getUserRole = (user) => {
-    let isModuleAdmin = user.listAdminModules && user.listAdminModules.length;
+    let isModuleAdmin =
+      user?.listAdminModules && user?.listAdminModules?.length;
 
     if (user.isOwner) return "owner";
     if (user.isAdmin || isModuleAdmin) return "admin";
@@ -44,9 +45,7 @@ class ProfileActionsStore {
   };
 
   onProfileClick = () => {
-    this.authStore.availableModules.some((m) => m.appName === "people")
-      ? history.push(PROFILE_SELF_URL)
-      : history.push(PROFILE_MY_URL);
+    history.push(PROFILE_SELF_URL);
   };
 
   onSettingsClick = (settingsUrl) => {
@@ -90,53 +89,52 @@ class ProfileActionsStore {
   };
 
   getActions = (t) => {
-    const modules = this.authStore.availableModules;
-    const settingsModule = modules.find((module) => module.id === "settings");
-    const peopleAvailable = modules.some((m) => m.appName === "people");
-    const settingsUrl =
-      settingsModule && combineUrl(PROXY_HOMEPAGE_URL, settingsModule.link);
+    const isAdmin = this.authStore.isAdmin;
+    // const settingsModule = modules.find((module) => module.id === "settings");
+    // const peopleAvailable = modules.some((m) => m.appName === "people");
+    // const settingsUrl =
+    //   settingsModule && combineUrl(PROXY_HOMEPAGE_URL, settingsModule.link);
 
     const {
-      isPersonal,
-      currentProductId,
+      //isPersonal,
+      //currentProductId,
       debugInfo,
     } = this.authStore.settingsStore;
 
-    const settings =
-      settingsModule && !isPersonal
-        ? {
-            key: "SettingsBtn",
-            icon: "/static/images/catalog.settings.react.svg",
-            label: t("Common:Settings"),
-            onClick: () => this.onSettingsClick(settingsUrl),
-            url: settingsUrl,
-          }
-        : null;
+    const settings = isAdmin
+      ? {
+          key: "SettingsBtn",
+          icon: "/static/images/catalog.settings.react.svg",
+          label: t("Common:Settings"),
+          onClick: () => this.onSettingsClick(settingsUrl),
+          url: "/settings",
+        }
+      : null;
 
     let hotkeys = null;
-    if (modules) {
-      const moduleIndex = modules.findIndex((m) => m.appName === "files");
+    // if (modules) {
+    //   const moduleIndex = modules.findIndex((m) => m.appName === "files");
 
-      if (
-        moduleIndex !== -1 &&
-        modules[moduleIndex].id === currentProductId &&
-        !isMobile
-      ) {
-        hotkeys = {
-          key: "HotkeysBtn",
-          icon: "/static/images/hotkeys.react.svg",
-          label: t("Common:Hotkeys"),
-          onClick: this.onHotkeysClick,
-        };
-      }
+    if (
+      // moduleIndex !== -1 &&
+      // modules[moduleIndex].id === currentProductId &&
+      !isMobile
+    ) {
+      hotkeys = {
+        key: "HotkeysBtn",
+        icon: "/static/images/hotkeys.react.svg",
+        label: t("Common:Hotkeys"),
+        onClick: this.onHotkeysClick,
+      };
     }
+    // }
     const actions = [
       {
         key: "ProfileBtn",
         icon: "/static/images/profile.react.svg",
         label: t("Common:Profile"),
         onClick: this.onProfileClick,
-        url: peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL,
+        url: PROFILE_SELF_URL,
       },
       settings,
       {

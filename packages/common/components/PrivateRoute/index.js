@@ -139,31 +139,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     );
   };
 
-  useEffect(() => {
-    if (!isLoaded) return;
-
-    let currentModule;
-
-    if (path === "" || path === "/") {
-      currentModule = {
-        id: "home",
-        origLink: "/",
-      };
-    } else if (path.startsWith("/my")) {
-      currentModule = {
-        id: "f4d98afd-d336-4332-8778-3c6945c81ea0",
-        origLink: "/products/people",
-      };
-    } else {
-      currentModule = modules.find((m) => m.link.startsWith(path));
-    }
-
-    if (!currentModule) return;
-
-    const { id, origLink, link } = currentModule;
-
-    setModuleInfo(origLink || link, id);
-  }, [path, modules, isLoaded]);
 
   //console.log("PrivateRoute render", rest);
   return <Route {...rest} render={renderComponent} />;
@@ -176,10 +151,10 @@ export default inject(({ auth }) => {
     isLoaded,
     isAdmin,
     settingsStore,
-    moduleStore,
+
   } = auth;
   const { user } = userStore;
-  const { modules } = moduleStore;
+
   const {
     setModuleInfo,
     wizardCompleted,
@@ -188,7 +163,7 @@ export default inject(({ auth }) => {
   } = settingsStore;
 
   return {
-    modules,
+
     user,
     isAuthenticated,
     isAdmin,

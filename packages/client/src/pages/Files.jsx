@@ -11,7 +11,7 @@ import {
   updateTempContent,
   loadScript,
 } from "@docspace/common/utils";
-import stores from "../store/index.Files";
+
 //import i18n from "./i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { regDesktop } from "@docspace/common/desktop";
@@ -97,9 +97,10 @@ const FilesSection = React.memo(() => {
         path={[
           "/accounts",
           "/accounts/filter",
+          "/accounts/create/:type",
           "/accounts/edit/:userId",
           "/accounts/view/:userId",
-          "/accounts/create/:type",
+          "/accounts/view/@self",
         ]}
         component={Accounts}
       />
@@ -208,15 +209,10 @@ const Files = inject(({ auth, filesStore }) => {
 
     setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
     loadFilesInfo: async () => {
-      //await auth.init();
       await filesStore.initFiles();
-      auth.setProductVersion(config.version);
+      //auth.setProductVersion(config.version);
     },
   };
 })(withTranslation("Common")(observer(withRouter(FilesContent))));
 
-export default () => (
-  <FilesProvider {...stores}>
-    <Files />
-  </FilesProvider>
-);
+export default () => <Files />;

@@ -151,25 +151,12 @@ export function isMe(user, userName) {
 }
 
 export function isAdmin(currentUser, currentProductId) {
-  let productName = null;
 
-  switch (currentProductId) {
-    case "f4d98afd-d336-4332-8778-3c6945c81ea0":
-      productName = "people";
-      break;
-    case "e67be73d-f9ae-4ce1-8fec-1880cb518cb4":
-      productName = "files";
-      break;
-    default:
-      break;
-  }
-
-  const isProductAdmin =
-    currentUser.listAdminModules && productName
-      ? currentUser.listAdminModules.includes(productName)
-      : false;
-
-  return currentUser.isAdmin || currentUser.isOwner || isProductAdmin;
+  return (
+    currentUser.isAdmin ||
+    currentUser.isOwner ||
+    currentUser?.listAdminModules?.length > 0
+  );
 }
 
 import combineUrlFunc from "./combineUrl";

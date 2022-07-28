@@ -2,33 +2,32 @@ import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { setWithCredentialsStatus } from "../api/client";
 import history from "../history";
-import ModuleStore from "./ModuleStore";
+
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
-import isEmpty from "lodash/isEmpty";
 import { AppServerConfig, LANGUAGE, TenantStatus } from "../constants";
 const { proxyURL } = AppServerConfig;
 
 class AuthStore {
   userStore = null;
-  moduleStore = null;
+
   settingsStore = null;
   tfaStore = null;
   infoPanelStore = null;
 
   isLoading = false;
   version = null;
-  skipModules = false;
+
   providers = [];
   isInit = false;
 
   constructor() {
     this.userStore = new UserStore();
-    this.moduleStore = new ModuleStore();
+
     this.settingsStore = new SettingsStore();
     this.tfaStore = new TfaStore();
     this.infoPanelStore = new InfoPanelStore();
@@ -36,11 +35,9 @@ class AuthStore {
     makeAutoObservable(this);
   }
 
-  init = async (skipModules = false) => {
+  init = async () => {
     if (this.isInit) return;
     this.isInit = true;
-
-    this.skipModules = skipModules;
 
     try {
       await this.userStore.init();
@@ -51,8 +48,7 @@ class AuthStore {
     const requests = [];
     requests.push(this.settingsStore.init());
 
-    if (this.isAuthenticated && !skipModules) {
-      this.userStore.user && requests.push(this.moduleStore.init());
+    if (this.isAuthenticated) {
       !this.settingsStore.passwordSettings &&
         requests.push(this.settingsStore.getPortalPasswordSettings());
     }
@@ -73,9 +69,6 @@ class AuthStore {
       success =
         (this.userStore.isLoaded && this.settingsStore.isLoaded) ||
         this.settingsStore.tenantStatus === TenantStatus.PortalRestore;
-
-      if (!this.skipModules && this.userStore.user)
-        success = success && this.moduleStore.isLoaded;
 
       success && this.setLanguage();
     } else {
@@ -101,64 +94,6 @@ class AuthStore {
 
     return isAdmin(user, currentProductId);
   }
-
-  get product() {
-    return (
-      this.moduleStore.modules.find(
-        (item) => item.id === this.settingsStore.currentProductId
-      ) || ""
-    );
-  }
-
-  get availableModules() {
-    const { modules } = this.moduleStore;
-    if (isEmpty(modules) || isEmpty(this.userStore.user)) {
-      return [];
-    }
-
-    const customProducts = this.getCustomModules();
-    const readyProducts = [];
-    const inProgressProducts = [];
-    modules.forEach((p) => {
-      if (p.appName === "people" || p.appName === "files") {
-        readyProducts.push(p);
-      } else {
-        inProgressProducts.push(p);
-      }
-    });
-
-    return [
-      {
-        separator: true,
-        id: "nav-products-separator",
-      },
-      ...readyProducts,
-      ...customProducts,
-      {
-        separator: true,
-        dashed: true,
-        id: "nav-dummy-products-separator",
-      },
-      ...inProgressProducts,
-    ];
-  }
-
-  getCustomModules = () => {
-    if (!this.userStore.user.isAdmin) {
-      return [];
-    }
-    const settingsModuleWrapper = this.moduleStore.toModuleWrapper({
-      id: "settings",
-      title: "Settings",
-      link: "/settings",
-      iconUrl: "/static/images/settings.react.svg",
-    });
-
-    settingsModuleWrapper.onClick = this.onClick;
-    settingsModuleWrapper.onBadgeClick = this.onBadgeClick;
-
-    return [settingsModuleWrapper];
-  };
 
   login = async (user, hash, session = true) => {
     try {
@@ -219,7 +154,7 @@ class AuthStore {
     if (!skipUser) {
       this.userStore = new UserStore();
     }
-    this.moduleStore = new ModuleStore();
+
     this.settingsStore = new SettingsStore();
   };
 
