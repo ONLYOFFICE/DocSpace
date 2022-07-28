@@ -1,0 +1,84 @@
+import { getScripts } from "./helpers";
+import pkg from "../../../package.json";
+
+declare var IS_DEVELOPMENT: boolean;
+
+export default function template(
+  initialEditorState = {},
+  appComponent = "",
+  styleTags: any,
+  initialI18nStoreASC: any,
+  initialLanguage: any,
+  assets: any
+) {
+  const { title } = pkg;
+  const { docApiUrl, error } = initialEditorState;
+
+  let clientScripts =
+    assets && assets.hasOwnProperty("client.js")
+      ? `<script defer="defer" src='${assets["client.js"]}'></script>`
+      : "";
+
+  const editorApiScript =
+    error || !docApiUrl
+      ? ""
+      : `<script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>`;
+
+  if (!IS_DEVELOPMENT) {
+    const productionBundleKeys = getScripts(assets);
+    productionBundleKeys.map((key) => {
+      clientScripts =
+        clientScripts + `<script defer="defer" src='${assets[key]}'></script>`;
+    });
+  }
+
+  console.log(clientScripts);
+  const scripts = `   
+    <script id="__ASC_INITIAL_EDITOR_STATE__">
+      window.__ASC_INITIAL_EDITOR_STATE__ = ${JSON.stringify(
+        initialEditorState
+      )}
+    </script>
+    <script id="__ASC_INITIAL_EDITOR_I18N__">
+      window.initialI18nStoreASC = ${JSON.stringify(initialI18nStoreASC)}
+      window.initialLanguage = '${initialLanguage}'
+    </script>
+    ${clientScripts}
+    <script>
+      console.log("It's Login INIT");
+    </script>
+    ${editorApiScript} 
+
+`;
+
+  const page = `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title> ${title} </title>
+        <meta charset="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+        />
+        <meta name="theme-color" content="#000000" />
+        <link id="favicon" rel="shortcut icon" href="/favicon.ico" />
+        <link rel="manifest" href="/manifest.json" />
+        <!-- Tell the browser it's a PWA -->
+        <!-- <meta name="mobile-web-app-capable" content="yes" /> -->
+        <!-- Tell iOS it's a PWA -->
+        <!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
+        <link rel="apple-touch-icon" href="/appIcon-180.png" />
+        ${styleTags}   
+      </head>
+      <body>
+        <noscript> You need to enable JavaScript to run this app. </noscript>
+        <div id="root">${appComponent}</div>
+        ${scripts}
+      </body>
+    </html>
+  `;
+
+  return page;
+}
