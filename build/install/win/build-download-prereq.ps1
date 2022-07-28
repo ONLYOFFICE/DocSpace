@@ -33,8 +33,6 @@ $nginx_version = '1.21.1'
 
 $path_prereq = "${pwd}\build\install\win\"
 
-$path_sql = "${pwd}\sql\"
-
 $prerequisites = @(
   @{  
     download_allways = $false; 
@@ -49,20 +47,4 @@ $prerequisites = @(
   }
 )
 
-$sql = @(
-  @{  
-    download_allways = $true; 
-    name = "onlyoffice.sql"; 
-    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.sql";
-  }
-
-  @{  
-    download_allways = $true; 
-    name = "onlyoffice.data.sql"; 
-    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.data.sql";
-  }
-)
-
 DownloadComponents $prerequisites $path_prereq
-
-DownloadComponents $sql $path_sql
