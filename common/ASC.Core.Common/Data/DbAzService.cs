@@ -29,27 +29,28 @@ namespace ASC.Core.Data;
 [Scope]
 class DbAzService : IAzService
 {
-    private UserDbContext UserDbContext => _lazyUserDbContext.Value;
-    private readonly Lazy<UserDbContext> _lazyUserDbContext;
+    private readonly IDbContextFactory<UserDbContext> _dbContextFactory;
     private readonly IMapper _mapper;
 
-    public DbAzService(DbContextManager<UserDbContext> dbContextManager, IMapper mapper)
+    public DbAzService(IDbContextFactory<UserDbContext> dbContextFactory, IMapper mapper)
     {
-        _lazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
+        _dbContextFactory = dbContextFactory;
         _mapper = mapper;
     }
 
     public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
     {
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+
         // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
         var commonAces =
-            UserDbContext.Acl
+            userDbContext.Acl
             .Where(r => r.Tenant == Tenant.DefaultTenant)
             .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
             .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object));
 
         var tenantAces =
-            UserDbContext.Acl
+            userDbContext.Acl
             .Where(r => r.Tenant == tenant)
             .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
             .ToList();
@@ -75,11 +76,13 @@ class DbAzService : IAzService
     {
         r.Tenant = tenant;
 
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = UserDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = userDbContext.Database.BeginTransaction();
 
             if (!ExistEscapeRecord(r))
             {
@@ -101,11 +104,13 @@ class DbAzService : IAzService
     {
         r.Tenant = tenant;
 
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = UserDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = userDbContext.Database.BeginTransaction();
 
             if (ExistEscapeRecord(r))
             {
@@ -125,7 +130,8 @@ class DbAzService : IAzService
 
     private bool ExistEscapeRecord(AzRecord r)
     {
-        return UserDbContext.Acl
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return userDbContext.Acl
             .Where(a => a.Tenant == Tenant.DefaultTenant)
             .Where(a => a.Subject == r.Subject)
             .Where(a => a.Action == r.Action)
@@ -136,7 +142,8 @@ class DbAzService : IAzService
 
     private void DeleteRecord(AzRecord r)
     {
-        var record = UserDbContext.Acl
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var record = userDbContext.Acl
             .Where(a => a.Tenant == r.Tenant)
             .Where(a => a.Subject == r.Subject)
             .Where(a => a.Action == r.Action)
@@ -146,14 +153,15 @@ class DbAzService : IAzService
 
         if (record != null)
         {
-            UserDbContext.Acl.Remove(record);
-            UserDbContext.SaveChanges();
+            userDbContext.Acl.Remove(record);
+            userDbContext.SaveChanges();
         }
     }
 
     private void InsertRecord(AzRecord r)
     {
-        UserDbContext.AddOrUpdate(r => r.Acl, _mapper.Map<AzRecord, Acl>(r));
-        UserDbContext.SaveChanges();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        userDbContext.AddOrUpdate(r => r.Acl, _mapper.Map<AzRecord, Acl>(r));
+        userDbContext.SaveChanges();
     }
 }

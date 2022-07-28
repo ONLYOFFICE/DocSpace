@@ -34,7 +34,7 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
     public BaseIndexerFile(
         Client client,
         ILogger<BaseIndexerFile> log,
-        DbContextManager<WebstudioDbContext> dbContextManager,
+        IDbContextFactory<WebstudioDbContext> dbContextManager,
         TenantManager tenantManager,
         BaseIndexerHelper baseIndexerHelper,
         Settings settings,

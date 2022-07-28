@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.EF.Context;
+
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core;
@@ -58,6 +60,13 @@ public abstract class BaseStartup
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
         services.AddHttpClient();
+        services.AddBaseDbContext<AccountLinkContext>();
+        services.AddBaseDbContext<CoreDbContext>();
+        services.AddBaseDbContext<TenantDbContext>();
+        services.AddBaseDbContext<UserDbContext>();
+        services.AddBaseDbContext<TelegramDbContext>();
+        services.AddBaseDbContext<CustomDbContext>();
+        services.AddBaseDbContext<WebstudioDbContext>();
 
         if (AddAndUseSession)
         {

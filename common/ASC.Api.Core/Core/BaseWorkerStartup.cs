@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.EF.Context;
+
 namespace ASC.Api.Core;
 
 public class BaseWorkerStartup
@@ -39,6 +41,13 @@ public class BaseWorkerStartup
     {
         services.AddHttpContextAccessor();
         services.AddCustomHealthCheck(_configuration);
+        services.AddBaseDbContext<AccountLinkContext>();
+        services.AddBaseDbContext<CoreDbContext>();
+        services.AddBaseDbContext<TenantDbContext>();
+        services.AddBaseDbContext<UserDbContext>();
+        services.AddBaseDbContext<TelegramDbContext>();
+        services.AddBaseDbContext<CustomDbContext>();
+        services.AddBaseDbContext<WebstudioDbContext>();
     }
 
     public virtual void Configure(IApplicationBuilder app)

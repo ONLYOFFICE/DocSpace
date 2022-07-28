@@ -26,6 +26,8 @@
 
 using ASC.Core.Common.EF.Context;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Files.AutoCleanUp;
 
 [Singletone]
@@ -53,7 +55,7 @@ public class Worker
 
         using (var scope = _serviceScopeFactory.CreateScope())
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<DbContextManager<WebstudioDbContext>>().Value;
+            using var dbContext = scope.ServiceProvider.GetRequiredService<IDbContextFactory<WebstudioDbContext>>().CreateDbContext();
             activeTenantsUsers = GetTenantsUsers(dbContext);
         }
 
