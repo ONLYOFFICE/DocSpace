@@ -179,7 +179,7 @@ class SsoFormStore {
     this[field] = option.key;
   };
 
-  onHideClick = (e, label) => {
+  onHideClick = (label) => {
     this[label] = !this[label];
   };
 
@@ -559,16 +559,12 @@ class SsoFormStore {
     );
   };
 
-  addCertificateToForm = async (e, prefix) => {
-    const action = this[`${prefix}Action`];
-    const crt = this[`${prefix}Certificate`];
-    const key = this[`${prefix}PrivateKey`];
-
+  addSpCertificate = async () => {
     const data = [
       {
-        crt: crt,
-        key: key,
-        action: action,
+        crt: this.spCertificate,
+        key: this.spPrivateKey,
+        action: this.spAction,
       },
     ];
 
@@ -576,13 +572,31 @@ class SsoFormStore {
       const res = await this.validateCertificate(data);
       const newCertificates = res.data;
       newCertificates.map((cert) => {
-        this[`${prefix}Certificates`] = [
-          ...this[`${prefix}Certificates`],
-          cert,
-        ];
+        this.spCertificates = [...this.spCertificates, cert];
       });
-      if (prefix === "sp") this.onCloseSpModal();
-      else this.onCloseIdpModal();
+      this.onCloseSpModal();
+    } catch (err) {
+      toastr.error(err);
+      console.error(err);
+    }
+  };
+
+  addIdpCertificate = async () => {
+    const data = [
+      {
+        crt: this.idpCertificate,
+        key: this.idpPrivateKey,
+        action: this.idpAction,
+      },
+    ];
+
+    try {
+      const res = await this.validateCertificate(data);
+      const newCertificates = res.data;
+      newCertificates.map((cert) => {
+        this.idpCertificates = [...this.idpCertificates, cert];
+      });
+      this.onCloseIdpModal();
     } catch (err) {
       toastr.error(err);
       console.error(err);

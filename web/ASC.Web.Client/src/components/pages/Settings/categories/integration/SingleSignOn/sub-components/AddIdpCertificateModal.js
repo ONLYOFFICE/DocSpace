@@ -9,19 +9,15 @@ import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import Text from "@appserver/components/text";
 import TextArea from "@appserver/components/textarea";
 
-import { addArguments } from "../../../../utils";
-
 const AddIdpCertificateModal = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
   const {
     onCloseIdpModal,
-    addCertificateToForm,
+    addIdpCertificate,
     idpIsModalVisible,
     onTextInputChange,
     idpCertificate,
   } = props;
-
-  const onSubmit = addArguments(addCertificateToForm, "idp");
 
   return (
     <StyledModalDialog
@@ -50,7 +46,7 @@ const AddIdpCertificateModal = (props) => {
           <Button
             className="ok-button"
             label={t("Common:OKButton")}
-            onClick={onSubmit}
+            onClick={addIdpCertificate}
             primary
             size="small"
           />
@@ -68,7 +64,7 @@ const AddIdpCertificateModal = (props) => {
 export default inject(({ ssoStore }) => {
   const {
     onCloseIdpModal,
-    addCertificateToForm,
+    addIdpCertificate,
     idpIsModalVisible,
     onTextInputChange,
     idpCertificate,
@@ -76,7 +72,7 @@ export default inject(({ ssoStore }) => {
 
   return {
     onCloseIdpModal,
-    addCertificateToForm,
+    addIdpCertificate,
     idpIsModalVisible,
     onTextInputChange,
     idpCertificate,

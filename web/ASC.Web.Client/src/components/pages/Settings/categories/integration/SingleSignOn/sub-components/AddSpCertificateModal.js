@@ -11,13 +11,12 @@ import TextArea from "@appserver/components/textarea";
 
 import ModalComboBox from "./ModalComboBox";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
-import { addArguments } from "../../../../utils";
 
 const AddSpCertificateModal = (props) => {
   const { t, ready } = useTranslation(["SingleSignOn", "Common"]);
   const {
     onCloseSpModal,
-    addCertificateToForm,
+    addSpCertificate,
     spIsModalVisible,
     generateCertificate,
     onTextInputChange,
@@ -25,8 +24,6 @@ const AddSpCertificateModal = (props) => {
     spPrivateKey,
     isGeneratedCertificate,
   } = props;
-
-  const onSubmit = addArguments(addCertificateToForm, "sp");
 
   const onGenerate = () => {
     if (isGeneratedCertificate) return;
@@ -87,7 +84,7 @@ const AddSpCertificateModal = (props) => {
           <Button
             className="ok-button"
             label={t("Common:OKButton")}
-            onClick={onSubmit}
+            onClick={addSpCertificate}
             primary
             size="small"
             isDisabled={isGeneratedCertificate}
@@ -107,7 +104,7 @@ const AddSpCertificateModal = (props) => {
 export default inject(({ ssoStore }) => {
   const {
     onCloseSpModal,
-    addCertificateToForm,
+    addSpCertificate,
     spIsModalVisible,
     generateCertificate,
     onTextInputChange,
@@ -118,7 +115,7 @@ export default inject(({ ssoStore }) => {
 
   return {
     onCloseSpModal,
-    addCertificateToForm,
+    addSpCertificate,
     spIsModalVisible,
     generateCertificate,
     onTextInputChange,

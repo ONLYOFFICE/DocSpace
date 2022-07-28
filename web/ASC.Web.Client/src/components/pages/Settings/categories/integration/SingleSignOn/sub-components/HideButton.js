@@ -6,8 +6,6 @@ import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
-import { addArguments } from "../../../../utils/addArguments";
-
 const HideButton = (props) => {
   const { t } = useTranslation("SingleSignOn");
   const { label, isAdditionalParameters, value, onHideClick } = props;
@@ -19,7 +17,9 @@ const HideButton = (props) => {
     ? "hide-additional-button"
     : "hide-button";
 
-  const onClick = addArguments(onHideClick, label);
+  const onClick = () => {
+    onHideClick(label);
+  };
 
   return (
     <Box

@@ -5,7 +5,6 @@ import ComboBox from "@appserver/components/combobox";
 import FieldContainer from "@appserver/components/field-container";
 
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
-import { addArguments } from "../../../../utils/addArguments";
 
 const SimpleComboBox = (props) => {
   const {
@@ -22,7 +21,9 @@ const SimpleComboBox = (props) => {
   const currentOption =
     options.find((option) => option.key === value) || options[0];
 
-  const onSelect = addArguments(onComboBoxChange, name);
+  const onSelect = () => {
+    onComboBoxChange(currentOption, name);
+  };
 
   return (
     <FieldContainer isVertical labelText={labelText}>
