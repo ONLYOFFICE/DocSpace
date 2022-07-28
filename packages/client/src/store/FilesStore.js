@@ -645,9 +645,9 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
-    const filterStorageItem = localStorage.getItem(
-      `UserFilter=${this.userStore.user.id}`
-    );
+    const filterStorageItem =
+      this.userStore.user?.id &&
+      localStorage.getItem(`UserFilter=${this.userStore.user.id}`);
 
     if (filterStorageItem && !filter) {
       const splitFilter = filterStorageItem.split(",");
