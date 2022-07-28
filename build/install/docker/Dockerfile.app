@@ -116,7 +116,6 @@ COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onl
 EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
-
 ## Nginx image ##
 FROM nginx AS web
 ARG SRC_PATH
