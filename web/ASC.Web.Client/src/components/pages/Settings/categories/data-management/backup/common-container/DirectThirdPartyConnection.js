@@ -32,6 +32,7 @@ const DirectThirdPartyConnection = (props) => {
     id,
     isReset,
     isSuccessSave,
+    withoutBasicSelection,
   } = props;
 
   useEffect(() => {
