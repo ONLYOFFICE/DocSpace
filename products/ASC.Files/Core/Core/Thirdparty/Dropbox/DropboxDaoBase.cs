@@ -35,7 +35,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger monitor,
         FileUtility fileUtility,

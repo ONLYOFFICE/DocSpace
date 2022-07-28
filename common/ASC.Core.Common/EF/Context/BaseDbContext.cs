@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using DbContext = Microsoft.EntityFrameworkCore.DbContext;
-
 namespace ASC.Core.Common.EF;
 
 public enum Provider
@@ -99,7 +97,7 @@ public static class BaseDbContextExtension
     {
         services.AddPooledDbContextFactory<T>((sp, optionsBuilder) =>
         {
-            var configuration = sp.GetRequiredService<ConfigurationExtension>();
+            var configuration = new ConfigurationExtension(sp.GetRequiredService<IConfiguration>());
             var migrateAssembly = configuration["testAssembly"];
             var connectionString = configuration.GetConnectionStrings("default");
             var loggerFactory = sp.GetRequiredService<EFLoggerFactory>();
@@ -162,7 +160,7 @@ public static class BaseDbContextExtension
         }
     }
 
-    public static async Task<T> AddOrUpdateAsync<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+    public static async Task<T> AddOrUpdateAsync<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : DbContext
     {
         var dbSet = expressionDbSet.Compile().Invoke(b);
         var existingBlog = await dbSet.FindAsync(entity.GetKeys());

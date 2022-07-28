@@ -37,6 +37,9 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     config.AddJsonFile("notify.json")
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
           .AddJsonFile("backup.json");
+}, (ctx, ser, di) =>
+{
+    ser.AddBaseDbContext<BackupsContext>();
 });
 
 builder.WebHost.ConfigureDefaultKestrel();

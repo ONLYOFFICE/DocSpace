@@ -34,7 +34,7 @@ internal class OneDriveTagDao : OneDriveDaoBase, ITagDao<string>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<OneDriveTagDao> monitor,
         FileUtility fileUtility,

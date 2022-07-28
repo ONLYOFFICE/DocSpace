@@ -65,6 +65,7 @@ global using ASC.Common.Utils;
 global using ASC.Core;
 global using ASC.Core.Billing;
 global using ASC.Core.Common.Configuration;
+global using ASC.Core.Common.EF;
 global using ASC.Core.Common.Notify;
 global using ASC.Core.Common.Notify.Push;
 global using ASC.Core.Common.Security;

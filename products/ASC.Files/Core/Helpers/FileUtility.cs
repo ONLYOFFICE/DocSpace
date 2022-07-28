@@ -177,17 +177,15 @@ public class FileUtilityConfiguration
 [Scope]
 public class FileUtility
 {
-    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
-    private FilesDbContext FilesDbContext { get => _lazyFilesDbContext.Value; }
 
     public FileUtility(
         FileUtilityConfiguration fileUtilityConfiguration,
         FilesLinkUtility filesLinkUtility,
-        DbContextManager<FilesDbContext> dbContextManager)
+        IDbContextFactory<FilesDbContext> dbContextFactory)
     {
         _fileUtilityConfiguration = fileUtilityConfiguration;
         _filesLinkUtility = filesLinkUtility;
-        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get("files"));
+        _dbContextFactory = dbContextFactory;
         CanForcesave = GetCanForcesave();
     }
 
@@ -366,8 +364,8 @@ public class FileUtility
                     return _extsConvertible;
                 }
 
-                var dbManager = FilesDbContext;
-                var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
+                using var filesDbContext = _dbContextFactory.CreateDbContext();
+                var list = filesDbContext.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
 
                 foreach (var item in list)
                 {
@@ -521,7 +519,7 @@ public class FileUtility
 
     private readonly FileUtilityConfiguration _fileUtilityConfiguration;
     private readonly FilesLinkUtility _filesLinkUtility;
-
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     public static readonly List<string> ExtsArchive = new List<string>
             {
                 ".zip", ".rar", ".ace", ".arc", ".arj",

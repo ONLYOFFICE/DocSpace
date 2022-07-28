@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core;
-
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope]
@@ -41,7 +39,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<SharePointFolderDao> monitor,
         FileUtility fileUtility,
@@ -88,7 +86,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
-        
+
         var rooms = GetFoldersAsync(parentId);
 
         rooms = FilterByRoomType(rooms, filterType);
@@ -105,7 +103,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
-{
+    {
         if (CheckInvalidFilter(filterType))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
@@ -250,44 +248,46 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     {
         var folder = await ProviderInfo.GetFolderByIdAsync(folderId).ConfigureAwait(false);
 
-        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using (var tx = await filesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
             {
-                var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+                var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
                    .Where(r => r.Id.StartsWith(folder.ServerRelativeUrl))
                    .Select(r => r.HashId)
                    .ToListAsync()
                    .ConfigureAwait(false);
 
-                var link = await Query(FilesDbContext.TagLink)
+                var link = await Query(filesDbContext.TagLink)
                     .Where(r => hashIDs.Any(h => h == r.EntryId))
                     .ToListAsync()
                     .ConfigureAwait(false);
 
-                FilesDbContext.TagLink.RemoveRange(link);
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                filesDbContext.TagLink.RemoveRange(link);
+                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                var tagsToRemove = from ft in FilesDbContext.Tag
-                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                var tagsToRemove = from ft in filesDbContext.Tag
+                                   join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
                                    where ftl == null
                                    select ft;
 
-                FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
-                var securityToDelete = Query(FilesDbContext.Security)
+                var securityToDelete = Query(filesDbContext.Security)
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
-                FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
+                var mappingToDelete = Query(filesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
-                FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 await tx.CommitAsync().ConfigureAwait(false);
             }

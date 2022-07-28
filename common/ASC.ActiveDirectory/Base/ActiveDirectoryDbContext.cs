@@ -25,26 +25,24 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.ActiveDirectory.Base;
-public class ActiveDirectoryDbContext : BaseDbContext
+
+public class ActiveDirectoryDbContext : DbContext
 {
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
 
+    public ActiveDirectoryDbContext(DbContextOptions options) : base(options)
+    {
+
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddDbTenant()
             .AddWebstudioSettings()
             .AddDbFunction();
     }
 
-}
-
-public static class ActiveDirectoryDbContextExtention
-{
-    public static DIHelper AddCRMDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<ActiveDirectoryDbContext>();
-    }
 }

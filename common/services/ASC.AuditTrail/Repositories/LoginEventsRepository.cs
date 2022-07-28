@@ -29,19 +29,17 @@ namespace ASC.AuditTrail.Repositories;
 [Scope(Additional = typeof(LoginEventsRepositoryExtensions))]
 public class LoginEventsRepository
 {
-    private MessagesContext MessagesContext => _lazyMessagesContext.Value;
-
-    private readonly Lazy<MessagesContext> _lazyMessagesContext;
     private readonly TenantManager _tenantManager;
+    private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
     private readonly IMapper _mapper;
 
     public LoginEventsRepository(
         TenantManager tenantManager,
-        DbContextManager<MessagesContext> dbMessagesContext,
+        IDbContextFactory<MessagesContext> dbContextFactory,
         IMapper mapper)
     {
-        _lazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
         _tenantManager = tenantManager;
+        _dbContextFactory = dbContextFactory;
         _mapper = mapper;
     }
 
@@ -54,9 +52,11 @@ public class LoginEventsRepository
         int limit = 0)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
+        using var messagesContext = _dbContextFactory.CreateDbContext();
+
         var query =
-            from q in MessagesContext.LoginEvents
-            from p in MessagesContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+            from q in messagesContext.LoginEvents
+            from p in messagesContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
             where q.TenantId == tenant
             orderby q.Date descending
             select new LoginEventQuery
@@ -113,7 +113,8 @@ public class LoginEventsRepository
 
     public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
     {
-        var query = MessagesContext.LoginEvents
+        using var messagesContext = _dbContextFactory.CreateDbContext();
+        var query = messagesContext.LoginEvents
             .Where(l => l.TenantId == tenant);
 
         if (from.HasValue && to.HasValue)

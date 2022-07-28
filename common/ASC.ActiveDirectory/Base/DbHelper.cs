@@ -25,19 +25,19 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.ActiveDirectory.Base;
+
 [Scope]
 public class DbHelper
 {
-    private readonly Lazy<ActiveDirectoryDbContext> _lazyActiveDirectoryDbContext;
+    private readonly IDbContextFactory<ActiveDirectoryDbContext> _activeDirectoryDbContextFactory;
     private readonly LdapSettings _ldapSettings;
-    private ActiveDirectoryDbContext ActiveDirectoryDbContext { get => _lazyActiveDirectoryDbContext.Value; }
 
     public DbHelper(
-        DbContextManager<ActiveDirectoryDbContext> activeDirectoryDbContext,
+        IDbContextFactory<ActiveDirectoryDbContext> activeDirectoryDbContextFactory,
         LdapSettings ldapSettings)
     {
+        _activeDirectoryDbContextFactory = activeDirectoryDbContextFactory;
         _ldapSettings = ldapSettings;
-        _lazyActiveDirectoryDbContext = new Lazy<ActiveDirectoryDbContext>(() => activeDirectoryDbContext.Value);
     }
 
     public List<int> GetTenants()
@@ -45,9 +45,10 @@ public class DbHelper
         var id = _ldapSettings.ID;
         var enableLdapAuthentication = _ldapSettings.EnableLdapAuthentication;
 
-        var data = ActiveDirectoryDbContext.WebstudioSettings
+        using var activeDirectoryDbContext = _activeDirectoryDbContextFactory.CreateDbContext();
+        var data = activeDirectoryDbContext.WebstudioSettings
             .Where(r => r.Id == id)
-            .Join(ActiveDirectoryDbContext.Tenants, r => r.TenantId, r => r.Id, (settings, tenant) => new { settings, tenant })
+            .Join(activeDirectoryDbContext.Tenants, r => r.TenantId, r => r.Id, (settings, tenant) => new { settings, tenant })
             .Select(r => JsonExtensions.JsonValue(nameof(r.settings.Data).ToLower(), enableLdapAuthentication.ToString()))
             .Distinct()
             .Select(r => r != null ? Convert.ToInt32(r) : 0)

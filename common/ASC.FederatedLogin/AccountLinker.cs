@@ -65,6 +65,14 @@ public class AccountLinker
     private readonly AccountLinkerStorage _accountLinkerStorage;
     private readonly IDbContextFactory<AccountLinkContext> _accountLinkContextManager;
 
+    public AccountLinker(Signature signature, InstanceCrypto instanceCrypto, AccountLinkerStorage accountLinkerStorage, IDbContextFactory<AccountLinkContext> accountLinkContextManager)
+    {
+        _signature = signature;
+        _instanceCrypto = instanceCrypto;
+        _accountLinkerStorage = accountLinkerStorage;
+        _accountLinkContextManager = accountLinkContextManager;
+    }
+
     public IEnumerable<string> GetLinkedObjects(string id, string provider)
     {
         return GetLinkedObjects(new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
