@@ -131,7 +131,7 @@ services:
     build:
       context:  ./
       dockerfile: "${DOCKERFILE}"
-      target: web
+      target: doceditor
     image: "${REPO}/${STATUS}appserver-doceditor:${DOCKER_TAG}"
 
   onlyoffice-proxy:
