@@ -1,13 +1,11 @@
 const { merge } = require("webpack-merge");
 const baseConfig = require("./webpack.base.js");
-const webpackNodeExternals = require("webpack-node-externals");
 const path = require("path");
 const DefinePlugin = require("webpack").DefinePlugin;
 const TerserPlugin = require("terser-webpack-plugin");
 
 const serverConfig = {
   target: "node",
-  //mode: "development",
   name: "server",
   entry: {
     server: "./src/server/index.js",
@@ -19,7 +17,6 @@ const serverConfig = {
     libraryTarget: "commonjs2",
     chunkFilename: "chunks/[name].js",
   },
-  externals: [webpackNodeExternals(), { express: "express" }],
 };
 
 module.exports = (env, argv) => {

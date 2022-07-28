@@ -64,18 +64,19 @@
     "webpack-hot-middleware": "^2.25.0",
     "webpack-manifest-plugin": "^5.0.0",
     "webpack-merge": "^5.7.3",
-    "webpack-node-externals": "^3.0.0",
     "ws": "^8.8.0"
   },
   "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
   "title": "ONLYOFFICE",
   "socketPath": "/products/files/doceditor/ws",
   "dependencies": {
+    "bufferutil": "^4.0.6",
     "compression": "^1.7.4",
     "express": "^4.18.1",
     "i18next-express-middleware": "^2.0.0",
     "i18next-fs-backend": "^1.1.4",
     "morgan": "^1.10.0",
+    "utf-8-validate": "^5.0.9",
     "winston": "^3.8.1",
     "winston-daily-rotate-file": "^4.7.1"
   }
