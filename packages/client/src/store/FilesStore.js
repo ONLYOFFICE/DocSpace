@@ -15,7 +15,7 @@ import { updateTempContent } from "@docspace/common/utils";
 import { isMobile } from "react-device-detect";
 import toastr from "studio/toastr";
 
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";

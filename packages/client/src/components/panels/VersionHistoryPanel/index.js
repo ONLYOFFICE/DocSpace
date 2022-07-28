@@ -14,7 +14,7 @@ import {
 } from "../StyledPanels";
 import { SectionBodyContent } from "../../../pages/VersionHistory/Section/";
 import { inject, observer } from "mobx-react";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 
 class PureVersionHistoryPanel extends React.Component {
   onClose = () => {

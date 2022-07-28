@@ -24,11 +24,7 @@ import i18n from "../i18n";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
-import {
-  getLink,
-  checkIfModuleOld,
-  onItemClick,
-} from "@docspace/client/src/helpers/utils";
+import { getLink, checkIfModuleOld, onItemClick } from "SRC_DIR/helpers/utils";
 import StyledExternalLinkIcon from "@docspace/client/src/components/StyledExternalLinkIcon";
 import HeaderCatalogBurger from "./header-catalog-burger";
 import { Base } from "@docspace/components/themes";
@@ -352,7 +348,6 @@ export default inject(({ auth }) => {
     theme,
     toggleArticleOpen,
   } = settingsStore;
-
 
   //TODO: restore when chat will complete -> const mainModules = availableModules.filter((m) => !m.isolateMode);
 

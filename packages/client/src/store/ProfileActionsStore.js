@@ -92,7 +92,7 @@ class ProfileActionsStore {
     const isAdmin = this.authStore.isAdmin;
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
-    // const settingsUrl =
+    const settingsUrl = "/portal-settings";
     //   settingsModule && combineUrl(PROXY_HOMEPAGE_URL, settingsModule.link);
 
     const {
@@ -107,7 +107,7 @@ class ProfileActionsStore {
           icon: "/static/images/catalog.settings.react.svg",
           label: t("Common:Settings"),
           onClick: () => this.onSettingsClick(settingsUrl),
-          url: "/settings",
+          url: settingsUrl,
         }
       : null;
 

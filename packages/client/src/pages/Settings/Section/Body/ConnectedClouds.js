@@ -12,7 +12,7 @@ import EmptyFolderContainer from "../../../../components/EmptyContainer/EmptyCon
 import { inject, observer } from "mobx-react";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import { withRouter } from "react-router";
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import Loaders from "@docspace/common/components/Loaders";

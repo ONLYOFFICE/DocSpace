@@ -12,7 +12,7 @@ import { withRouter } from "react-router";
 
 import MobileView from "./MobileView";
 import { combineUrl } from "@docspace/common/utils";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 

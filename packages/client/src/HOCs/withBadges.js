@@ -8,7 +8,7 @@ import {
 import { combineUrl } from "@docspace/common/utils";
 
 import Badges from "../components/Badges";
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {

@@ -7,7 +7,7 @@ import toastr from "studio/toastr";
 import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 
-import config from "../../../package.json";
+import config from "PACKAGE_FILE";
 
 import { getTitleWithoutExst } from "../../helpers/files-helpers";
 import { getDefaultFileName } from "@docspace/client/src/helpers/filesUtils";

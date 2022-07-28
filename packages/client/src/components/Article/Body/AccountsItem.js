@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import withLoader from "../../../HOCs/withLoader";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 
 const iconUrl = "/static/images/catalog.accounts.react.svg";
 

@@ -5,7 +5,7 @@ import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import TabsContainer from "@docspace/components/tabs-container";
 import CommonSettings from "./CommonSettings";
 import AdminSettings from "./AdminSettings";
@@ -67,7 +67,7 @@ const SectionBodyContent = ({
         combineUrl(
           AppServerConfig.proxyURL,
           config.homepage,
-          `/files-settings/${key}`
+          `/settings/${key}`
         )
       );
     },

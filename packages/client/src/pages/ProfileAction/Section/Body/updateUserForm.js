@@ -47,7 +47,7 @@ import {
   mapGroupsToGroupSelectorOptions,
   toEmployeeWrapper,
 } from "../../../../helpers/people-helpers";
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import { Base } from "@docspace/components/themes";

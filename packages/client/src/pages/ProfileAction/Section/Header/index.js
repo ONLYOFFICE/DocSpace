@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { isMobileOnly } from "react-device-detect";
 
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 

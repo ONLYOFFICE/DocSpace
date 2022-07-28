@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig, EmployeeStatus } from "@docspace/common/constants";
 import { resendUserInvites } from "@docspace/common/api/people"; //TODO: Move to store action
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 import { Trans, useTranslation } from "react-i18next";
 import toastr from "studio/toastr";
 

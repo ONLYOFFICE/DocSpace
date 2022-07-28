@@ -2,7 +2,7 @@ import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import { combineUrl } from "@docspace/common/utils";
 import { isDesktop } from "@docspace/components/utils/device";
 import { makeAutoObservable } from "mobx";
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 import { encryptionUploadDialog } from "../helpers/desktop";
 
 class HotkeyStore {

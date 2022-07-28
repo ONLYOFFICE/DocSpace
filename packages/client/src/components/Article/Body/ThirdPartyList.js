@@ -8,7 +8,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
 import { useCallback } from "react";
 import IconButton from "@docspace/components/icon-button";
@@ -116,7 +116,7 @@ const PureThirdPartyListContainer = ({
   toggleArticleOpen,
 }) => {
   const redirectAction = useCallback(() => {
-    const thirdPartyUrl = "/files-settings/connected-clouds";
+    const thirdPartyUrl = "/settings/connected-clouds";
     if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
       setSelectedNode(["connected-clouds"]);
       setSelectedFolder(null);

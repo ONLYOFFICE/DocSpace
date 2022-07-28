@@ -7,7 +7,7 @@ import { getSelectedGroup } from "../../../helpers/people-helpers";
 import { withRouter } from "react-router";
 import { isMobile } from "@docspace/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import CatalogItem from "@docspace/components/catalog-item";

@@ -4,7 +4,7 @@ import CatalogItem from "@docspace/components/catalog-item";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { combineUrl } from "@docspace/common/utils";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 import { AppServerConfig } from "@docspace/common/constants";
 import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "@docspace/components/utils/device";
@@ -43,11 +43,7 @@ const PureSettingsItem = ({
     setExpandSettingsTree(["common"]);
     if (isMobile() || isMobileOnly) toggleArticleOpen();
     history.push(
-      combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        "/files-settings/common"
-      )
+      combineUrl(AppServerConfig.proxyURL, config.homepage, "/settings/common")
     );
   }, [
     setSelectedFolder,
@@ -58,13 +54,13 @@ const PureSettingsItem = ({
   ]);
 
   const isActive = () => {
-    return window.location.pathname.indexOf("/files-settings") > 0;
+    return window.location.pathname.indexOf("/settings") > 0;
   };
 
   return (
     <CatalogItem
-      id="files-settings"
-      key="files-settings"
+      id="settings"
+      key="settings"
       text={t("Common:Settings")}
       icon={iconUrl}
       showText={showText}

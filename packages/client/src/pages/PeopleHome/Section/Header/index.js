@@ -15,7 +15,7 @@ import { AppServerConfig } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
 

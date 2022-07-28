@@ -6,16 +6,11 @@ import SocialButton from "@docspace/components/social-button";
 import FacebookButton from "@docspace/components/facebook-button";
 import ToggleContent from "@docspace/components/toggle-content";
 import ToggleButton from "@docspace/components/toggle-button";
-import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import toastr from "studio/toastr";
 import React from "react";
-import {
-  combineUrl,
-  isMe,
-  getProviderTranslation,
-} from "@docspace/common/utils";
+import { combineUrl, getProviderTranslation } from "@docspace/common/utils";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";
@@ -25,7 +20,7 @@ import {
   getUserContacts,
   getUserRole,
 } from "../../../../helpers/people-helpers";
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import {
   AppServerConfig,
   providersData,
@@ -33,7 +28,6 @@ import {
 } from "@docspace/common/constants";
 import { unlinkOAuth, linkOAuth } from "@docspace/common/api/people";
 import { getAuthProviders } from "@docspace/common/api/settings";
-import { Trans, useTranslation } from "react-i18next";
 import {
   ResetApplicationDialog,
   BackupCodesDialog,

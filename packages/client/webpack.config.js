@@ -74,6 +74,8 @@ const config = {
     },
     alias: {
       PUBLIC_DIR: path.resolve(__dirname, "../../public"),
+      SRC_DIR: path.resolve(__dirname, "./src"),
+      PACKAGE_FILE: path.resolve(__dirname, "package.json"),
     },
   },
 
@@ -231,10 +233,10 @@ module.exports = (env, argv) => {
       exposes: {
         "./shell": "./src/Shell",
         "./store": "./src/store",
-        "./Error404": "./src/components/pages/Errors/404/",
-        "./Error401": "./src/components/pages/Errors/401",
-        "./Error403": "./src/components/pages/Errors/403",
-        "./Error520": "./src/components/pages/Errors/520",
+        "./Error404": "./src/pages/Errors/404/",
+        "./Error401": "./src/pages/Errors/401",
+        "./Error403": "./src/pages/Errors/403",
+        "./Error520": "./src/pages/Errors/520",
         "./Layout": "./src/components/Layout",
         "./Layout/context": "./src/components/Layout/context.js",
         "./Main": "./src/components/Main",

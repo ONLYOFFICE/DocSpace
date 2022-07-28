@@ -18,7 +18,7 @@ import ThemeProvider from "@docspace/components/theme-provider";
 import store from "studio/store";
 import filesStores from "./store/index.Files";
 
-import config from "../package.json";
+import config from "PACKAGE_FILE";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import AppLoader from "@docspace/common/components/AppLoader";
@@ -27,7 +27,7 @@ import { AppServerConfig } from "@docspace/common/constants";
 import Snackbar from "@docspace/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
-import { useThemeDetector } from "./helpers/utils";
+import { useThemeDetector } from "SRC_DIR/helpers/utils";
 import { isMobileOnly } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
@@ -50,7 +50,7 @@ const LOGIN_URLS = [
 const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
 
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
-const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/portal-settings");
 const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ENTER_CODE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/code");
@@ -60,30 +60,25 @@ const PREPARATION_PORTAL = combineUrl(
   "/preparation-portal"
 );
 
-const Payments = React.lazy(() => import("./components/pages/Payments"));
+const Payments = React.lazy(() => import("./pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
 const Error401 = React.lazy(() => import("studio/Error401"));
 const Home = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
 
-const About = React.lazy(() => import("./components/pages/About"));
-const Wizard = React.lazy(() => import("./components/pages/Wizard"));
-const Settings = React.lazy(() => import("./components/pages/Settings"));
+const About = React.lazy(() => import("./pages/About"));
+const Wizard = React.lazy(() => import("./pages/Wizard"));
+const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
 
-const Confirm =
-  !IS_PERSONAL && React.lazy(() => import("./components/pages/Confirm"));
+const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
 const MyProfile = React.lazy(() => import("./pages/My"));
 const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
-const InvalidError = React.lazy(() =>
-  import("./components/pages/Errors/Invalid")
-);
-const PreparationPortal = React.lazy(() =>
-  import("./components/pages/PreparationPortal")
-);
+const InvalidError = React.lazy(() => import("./pages/Errors/Invalid"));
+const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
 
-const SettingsRoute = (props) => (
+const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
-      <Settings {...props} />
+      <PortalSettings {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -151,8 +146,6 @@ const WizardRoute = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
-
-
 
 const MyProfileRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -437,7 +430,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     window.AppServer.studio = {};
   }
 
-
   const loginRoutes = [];
 
   if (isLoaded && !IS_PERSONAL) {
@@ -496,14 +488,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 "/",
                 "/filter",
                 "/rooms",
-                "/files-settings",
-                "/files-settings/common",
-                "/files-settings/admin",
-                "/files-settings/connected-clouds",
+                "/settings",
+                "/settings/common",
+                "/settings/admin",
+                "/settings/connected-clouds",
               ]}
               component={HomeRoute}
             />
-
             <Route
               path={[
                 "/accounts",
@@ -515,7 +506,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               ]}
               component={HomeRoute}
             />
-
             <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
             <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
             {loginRoutes}
@@ -524,15 +514,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <Route path={CONFIRM_URL} component={ConfirmRoute} />
             )}
             <Route path={INVALID_URL} component={InvalidRoute} />
-
             <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
-            {!personal && (
-              <PrivateRoute
-                restricted
-                path={SETTINGS_URL}
-                component={SettingsRoute}
-              />
-            )}
+            <PrivateRoute
+              restricted
+              path={"/portal-settings"}
+              component={PortalSettingsRoute}
+            />
+            )
             <PrivateRoute
               exact
               allowForMe
@@ -543,7 +531,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               path={PREPARATION_PORTAL}
               component={PreparationPortalRoute}
             />
-
             <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
             <PrivateRoute
               component={!personal ? Error404Route : RedirectToHome}

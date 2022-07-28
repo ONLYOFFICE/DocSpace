@@ -1,7 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
-import config from "../../package.json";
 import TargetUserStore from "./TargetUserStore";
 import SelectedGroupStore from "./SelectedGroupStore";
 import EditingFormStore from "./EditingFormStore";
@@ -58,7 +57,6 @@ class PeopleStore {
     this.isInit = true;
 
     //authStore.settingsStore.setModuleInfo(config.homepage, config.id);
-
 
     await authStore.settingsStore.getPortalPasswordSettings();
 

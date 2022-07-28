@@ -2,11 +2,11 @@ import api from "@docspace/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
 import SelectionStore from "./SelectionStore";
-import CommonStore from "./CommonStore";
+//import CommonStore from "./CommonStore";
 import authStore from "@docspace/common/store/AuthStore";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 
 class SettingsSetupStore {
   selectionStore = null;
@@ -126,7 +126,7 @@ class SettingsSetupStore {
       "",
       combineUrl(
         AppServerConfig.proxyURL,
-        `${config.homepage}/settings/security/access-rights/admins`,
+        `${config.homepage}/portal-settings/security/access-rights/admins`,
         `/filter?page=${filter.page}`
       )
     );

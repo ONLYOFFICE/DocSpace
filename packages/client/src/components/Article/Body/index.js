@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 import { AppServerConfig } from "@docspace/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@docspace/components/utils/device";

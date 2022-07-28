@@ -10,7 +10,7 @@ import {
 import { combineUrl } from "@docspace/common/utils";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 import { LANGUAGE } from "@docspace/common/constants";
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
 import { getDefaultFileName } from "@docspace/client/src/helpers/filesUtils";

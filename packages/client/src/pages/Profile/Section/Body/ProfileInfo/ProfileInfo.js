@@ -15,7 +15,7 @@ import { withRouter } from "react-router";
 import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl, convertLanguage } from "@docspace/common/utils";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
-import config from "../../../../../../package.json";
+import config from "PACKAGE_FILE";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { Base } from "@docspace/components/themes";
 import { isMobileOnly } from "react-device-detect";

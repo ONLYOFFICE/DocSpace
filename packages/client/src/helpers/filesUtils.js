@@ -1,6 +1,6 @@
 import authStore from "@docspace/common/store/AuthStore";
 import { AppServerConfig, RoomsType } from "@docspace/common/constants";
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl, toUrlParams } from "@docspace/common/utils";
 import { addFileToRecentlyViewed } from "@docspace/common/api/files";
 import i18n from "./i18n";

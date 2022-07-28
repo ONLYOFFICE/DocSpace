@@ -4,8 +4,7 @@ import Headline from "@docspace/common/components/Headline";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { inject, observer } from "mobx-react";
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 

@@ -2,13 +2,9 @@ import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 import toastr from "studio/toastr";
-import {
-  FileAction,
-  AppServerConfig,
-  FolderType,
-} from "@docspace/common/constants";
+import { AppServerConfig } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,

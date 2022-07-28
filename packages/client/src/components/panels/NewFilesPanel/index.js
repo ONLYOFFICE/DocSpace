@@ -23,7 +23,7 @@ import {
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 

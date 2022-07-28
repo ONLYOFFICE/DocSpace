@@ -1,7 +1,7 @@
 import { runInAction } from "mobx";
 import { EDITOR_PROTOCOL } from "./filesConstants";
 import { combineUrl } from "@docspace/common/utils";
-import { homepage } from "../../package.json";
+import { homepage } from "PACKAGE_FILE";
 
 export const presentInArray = (array, search, caseInsensitive = false) => {
   let pattern = caseInsensitive ? search.toLowerCase() : search;

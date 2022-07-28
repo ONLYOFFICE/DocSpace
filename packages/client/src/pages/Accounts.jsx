@@ -6,7 +6,6 @@ import toastr from "studio/toastr";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
 import { /*combineUrl,*/ updateTempContent } from "@docspace/common/utils";
-//import config from "@docspace/client/package.json";
 import Home from "./PeopleHome";
 import Profile from "./Profile";
 import ProfileAction from "./ProfileAction";

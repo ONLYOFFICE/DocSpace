@@ -4,7 +4,7 @@ import Link from "@docspace/components/link";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 import Avatar from "@docspace/components/avatar";
 
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 

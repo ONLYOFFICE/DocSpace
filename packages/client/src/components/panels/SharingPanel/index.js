@@ -10,7 +10,7 @@ import { ShareAccessRights } from "@docspace/common/constants";
 import { StyledAsidePanel } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import { inject, observer } from "mobx-react";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";

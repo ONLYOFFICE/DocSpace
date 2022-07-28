@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 import {
   saveToSessionStorage,
   getFromSessionStorage,
-} from "../components/pages/Settings/utils";
+} from "../pages/PortalSettings/utils";
 import toastr from "../helpers/toastr";
 import { AutoBackupPeriod } from "@docspace/common/constants";
 

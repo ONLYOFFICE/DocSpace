@@ -3,7 +3,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import { inject, observer } from "mobx-react";
-import PreparationPortal from "../../pages/PreparationPortal";
+import PreparationPortal from "SRC_DIR/pages/PreparationPortal";
 import StyledPreparationPortalDialog from "./StyledPreparationPortalDialog";
 const PreparationPortalDialog = (props) => {
   const { t, tReady, preparationPortalVisible, setVisible } = props;

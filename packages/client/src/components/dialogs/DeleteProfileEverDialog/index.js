@@ -11,7 +11,7 @@ import api from "@docspace/common/api";
 import toastr from "studio/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 // import Link from "@docspace/components/link";

@@ -2,7 +2,7 @@ import React from "react";
 import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
 import { Switch, withRouter } from "react-router-dom";
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
 import toastr from "studio/toastr";
@@ -38,7 +38,7 @@ const homepage = config.homepage;
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 
 const HOME_URL = combineUrl(PROXY_HOMEPAGE_URL, "/");
-const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/files-settings/:setting");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
 const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
 const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
@@ -48,21 +48,6 @@ const FORM_GALLERY_URL = combineUrl(
   "/form-gallery/:folderId"
 );
 const ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/rooms");
-const ACCOUNTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts");
-
-if (!window.AppServer) {
-  window.AppServer = {};
-}
-
-window.AppServer.files = {
-  HOME_URL,
-  SETTINGS_URL,
-  HISTORY_URL,
-  PRIVATE_ROOMS_URL,
-  FILTER_URL,
-  MEDIA_VIEW_URL,
-  ROOMS_URL,
-};
 
 const Error404 = React.lazy(() => import("studio/Error404"));
 
@@ -91,7 +76,11 @@ const FilesArticle = React.memo(({ history }) => {
 const FilesSection = React.memo(() => {
   return (
     <Switch>
-      <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
+      <PrivateRoute
+        exact
+        path={["/setiings", "/settings/:setting"]}
+        component={Settings}
+      />
       <PrivateRoute
         exact
         path={[

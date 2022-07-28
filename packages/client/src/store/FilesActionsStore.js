@@ -25,7 +25,7 @@ import { Events, TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
-import config from "../../package.json";
+import config from "PACKAGE_FILE";
 
 class FilesActionStore {
   authStore;

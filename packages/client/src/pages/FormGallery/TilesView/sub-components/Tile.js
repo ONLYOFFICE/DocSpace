@@ -9,7 +9,7 @@ import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
 import { withRouter } from "react-router-dom";
 

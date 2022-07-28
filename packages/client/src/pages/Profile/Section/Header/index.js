@@ -26,7 +26,7 @@ import {
   getUserStatus,
   toEmployeeWrapper,
 } from "../../../../helpers/people-helpers";
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 
 import Loaders from "@docspace/common/components/Loaders";

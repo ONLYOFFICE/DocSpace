@@ -28,7 +28,7 @@ import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
-import config from "../../../package.json";
+import config from "PACKAGE_FILE";
 import { Consumer } from "@docspace/components/utils/context";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";

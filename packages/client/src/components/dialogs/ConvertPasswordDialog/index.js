@@ -7,7 +7,7 @@ import { inject, observer } from "mobx-react";
 import SimulatePassword from "../../SimulatePassword";
 import StyledComponent from "./StyledConvertPasswordDialog";
 import { AppServerConfig } from "@docspace/common/constants";
-import config from "../../../../package.json";
+import config from "PACKAGE_FILE";
 import { openDocEditor } from "@docspace/client/src/helpers/filesUtils";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import toastr from "@docspace/components/toast/toastr";

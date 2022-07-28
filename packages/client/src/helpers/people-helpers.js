@@ -4,7 +4,7 @@ import {
   EmployeeStatus,
 } from "@docspace/common/constants";
 import { isAdmin } from "@docspace/common/utils";
-import { id } from "../../package.json";
+import { id } from "PACKAGE_FILE";
 //const { isAdmin } = utils;
 
 export const getUserStatus = (user) => {

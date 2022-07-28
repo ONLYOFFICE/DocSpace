@@ -19,7 +19,7 @@ import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
 import Navigation from "@docspace/common/components/Navigation";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
-import config from "../../../../../package.json";
+import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 

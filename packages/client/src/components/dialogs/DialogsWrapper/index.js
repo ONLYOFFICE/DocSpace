@@ -1,7 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import AboutDialog from "../../../components/pages/About/AboutDialog";
-import DebugInfoDialog from "../../../components/pages/DebugInfo";
+import AboutDialog from "../../../pages/About/AboutDialog";
+import DebugInfoDialog from "../../../pages/DebugInfo";
 
 const DialogsWrapper = (props) => {
   const {
