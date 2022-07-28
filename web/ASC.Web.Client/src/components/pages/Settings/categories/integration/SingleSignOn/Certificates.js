@@ -26,13 +26,13 @@ const Certificates = (props) => {
     enableSso,
     onOpenIdpModal,
     onOpenSpModal,
-    idp_certificates,
-    sp_certificates,
-    idp_showAdditionalParameters,
-    sp_showAdditionalParameters,
-    idp_verifyAlgorithm,
-    sp_encryptAlgorithm,
-    sp_decryptAlgorithm,
+    idpCertificates,
+    spCertificates,
+    idpShowAdditionalParameters,
+    spShowAdditionalParameters,
+    idpVerifyAlgorithm,
+    spEncryptAlgorithm,
+    spDecryptAlgorithm,
     onLoadXML,
   } = props;
 
@@ -43,13 +43,13 @@ const Certificates = (props) => {
   switch (provider) {
     case "IdentityProvider":
       prefix = "idp";
-      additionalParameters = idp_showAdditionalParameters;
-      certificates = idp_certificates;
+      additionalParameters = idpShowAdditionalParameters;
+      certificates = idpCertificates;
       break;
     case "ServiceProvider":
       prefix = "sp";
-      additionalParameters = sp_showAdditionalParameters;
-      certificates = sp_certificates;
+      additionalParameters = spShowAdditionalParameters;
+      certificates = spCertificates;
       break;
   }
 
@@ -102,7 +102,7 @@ const Certificates = (props) => {
 
         <HideButton
           value={additionalParameters}
-          label={`${prefix}_showAdditionalParameters`}
+          label={`${prefix}ShowAdditionalParameters`}
           isAdditionalParameters
         />
       </Box>
@@ -115,10 +115,10 @@ const Certificates = (props) => {
             <>
               <SimpleComboBox
                 labelText={t(`${prefix}SigningAlgorithm`)}
-                name={"idp_verifyAlgorithm"}
+                name={"idpVerifyAlgorithm"}
                 options={verifyAlgorithmsOptions}
                 tabIndex={14}
-                value={idp_verifyAlgorithm}
+                value={idpVerifyAlgorithm}
               />
             </>
           )}
@@ -127,18 +127,18 @@ const Certificates = (props) => {
             <>
               <SimpleComboBox
                 labelText={t(`${prefix}SigningAlgorithm`)}
-                name={"sp_signingAlgorithm"}
+                name={"spSigningAlgorithm"}
                 options={verifyAlgorithmsOptions}
                 tabIndex={14}
-                value={sp_encryptAlgorithm}
+                value={spEncryptAlgorithm}
               />
 
               <SimpleComboBox
                 labelText={t("StandardDecryptionAlgorithm")}
-                name={"sp_encryptAlgorithm"}
+                name={"spEncryptAlgorithm"}
                 options={decryptAlgorithmsOptions}
                 tabIndex={15}
-                value={sp_decryptAlgorithm}
+                value={spDecryptAlgorithm}
               />
             </>
           )}
@@ -157,13 +157,13 @@ export default inject(({ ssoStore }) => {
     enableSso,
     onOpenIdpModal,
     onOpenSpModal,
-    idp_certificates,
-    sp_certificates,
-    idp_showAdditionalParameters,
-    sp_showAdditionalParameters,
-    idp_verifyAlgorithm,
-    sp_encryptAlgorithm,
-    sp_decryptAlgorithm,
+    idpCertificates,
+    spCertificates,
+    idpShowAdditionalParameters,
+    spShowAdditionalParameters,
+    idpVerifyAlgorithm,
+    spEncryptAlgorithm,
+    spDecryptAlgorithm,
     onLoadXML,
   } = ssoStore;
 
@@ -171,13 +171,13 @@ export default inject(({ ssoStore }) => {
     enableSso,
     onOpenIdpModal,
     onOpenSpModal,
-    idp_certificates,
-    sp_certificates,
-    idp_showAdditionalParameters,
-    sp_showAdditionalParameters,
-    idp_verifyAlgorithm,
-    sp_encryptAlgorithm,
-    sp_decryptAlgorithm,
+    idpCertificates,
+    spCertificates,
+    idpShowAdditionalParameters,
+    spShowAdditionalParameters,
+    idpVerifyAlgorithm,
+    spEncryptAlgorithm,
+    spDecryptAlgorithm,
     onLoadXML,
   };
 })(observer(Certificates));

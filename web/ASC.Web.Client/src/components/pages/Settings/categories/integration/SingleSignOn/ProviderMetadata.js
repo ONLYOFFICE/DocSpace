@@ -17,21 +17,21 @@ const ProviderMetadata = (props) => {
     <>
       <MetadataUrlField
         labelText={t("SPEntityId")}
-        name="sp_entityId"
+        name="spEntityId"
         placeholder={`${url}/sso/metadata`}
         tooltipContent={t("SPEntityIdTooltip")}
       />
 
       <MetadataUrlField
         labelText={t("SPAssertionConsumerURL")}
-        name="sp_assertionConsumerUrl"
+        name="spAssertionConsumerUrl"
         placeholder={`${url}/sso/acs`}
         tooltipContent={t("SPAssertionConsumerURLTooltip")}
       />
 
       <MetadataUrlField
         labelText={t("SPSingleLogoutURL")}
-        name="sp_singleLogoutUrl"
+        name="spSingleLogoutUrl"
         placeholder={`${url}/sso/slo/callback`}
         tooltipContent={t("SPSingleLogoutURLTooltip")}
       />

@@ -6,22 +6,32 @@ import Text from "@appserver/components/text";
 import { ContextMenuButton } from "@appserver/components";
 
 import StyledCertificatesTable from "../styled-containers/StyledCertificatesTable";
-import { addArguments } from "../../../../utils/addArguments";
 import { ReactSVG } from "react-svg";
 
 const CertificatesTable = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
   const {
     prefix,
-    onEditClick,
-    onDeleteClick,
-    idp_certificates,
-    sp_certificates,
+    setSpCertificate,
+    setIdpCertificate,
+    delSpCertificate,
+    delIdpCertificate,
+    idpCertificates,
+    spCertificates,
   } = props;
 
   const renderRow = (certificate, index) => {
-    const onEdit = addArguments(onEditClick, certificate, prefix);
-    const onDelete = addArguments(onDeleteClick, certificate.crt, prefix);
+    const onEdit = () => {
+      prefix === "sp"
+        ? setSpCertificate(certificate)
+        : setIdpCertificate(certificate);
+    };
+
+    const onDelete = () => {
+      prefix === "sp"
+        ? delSpCertificate(certificate.crt)
+        : delIdpCertificate(certificate.crt);
+    };
 
     const contextOptions = [
       {
@@ -78,10 +88,10 @@ const CertificatesTable = (props) => {
     <StyledCertificatesTable>
       <div className="body">
         {prefix === "idp" &&
-          idp_certificates.map((cert, index) => renderRow(cert, index))}
+          idpCertificates.map((cert, index) => renderRow(cert, index))}
 
         {prefix === "sp" &&
-          sp_certificates.map((cert, index) => renderRow(cert, index))}
+          spCertificates.map((cert, index) => renderRow(cert, index))}
       </div>
     </StyledCertificatesTable>
   );
@@ -89,11 +99,20 @@ const CertificatesTable = (props) => {
 
 export default inject(({ ssoStore }) => {
   const {
-    onEditClick,
-    onDeleteClick,
-    idp_certificates,
-    sp_certificates,
+    setSpCertificate,
+    setIdpCertificate,
+    delSpCertificate,
+    delIdpCertificate,
+    idpCertificates,
+    spCertificates,
   } = ssoStore;
 
-  return { onEditClick, onDeleteClick, idp_certificates, sp_certificates };
+  return {
+    setSpCertificate,
+    setIdpCertificate,
+    delSpCertificate,
+    delIdpCertificate,
+    idpCertificates,
+    spCertificates,
+  };
 })(observer(CertificatesTable));

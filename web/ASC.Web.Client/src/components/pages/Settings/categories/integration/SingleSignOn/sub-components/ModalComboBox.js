@@ -9,7 +9,7 @@ import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 
 const ModalComboBox = (props) => {
   const { t } = useTranslation("SingleSignOn");
-  const { isDisabled, sp_action, onModalComboBoxChange } = props;
+  const { isDisabled, spAction, onModalComboBoxChange } = props;
 
   const certificateOptions = [
     { key: "signing", label: t("Signing") },
@@ -18,7 +18,7 @@ const ModalComboBox = (props) => {
   ];
 
   const currentOption = certificateOptions.find(
-    (option) => option.key === sp_action
+    (option) => option.key === spAction
   );
 
   return (
@@ -39,7 +39,7 @@ const ModalComboBox = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { sp_action, onModalComboBoxChange } = ssoStore;
+  const { spAction, onModalComboBoxChange } = ssoStore;
 
-  return { sp_action, onModalComboBoxChange };
+  return { spAction, onModalComboBoxChange };
 })(observer(ModalComboBox));

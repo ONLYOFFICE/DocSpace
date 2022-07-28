@@ -14,22 +14,21 @@ import { addArguments } from "../../../../utils";
 const AddIdpCertificateModal = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
   const {
-    onCloseModal,
+    onCloseIdpModal,
     addCertificateToForm,
-    idp_isModalVisible,
+    idpIsModalVisible,
     onTextInputChange,
-    idp_certificate,
+    idpCertificate,
   } = props;
 
-  const onClose = addArguments(onCloseModal, "idp_isModalVisible");
   const onSubmit = addArguments(addCertificateToForm, "idp");
 
   return (
     <StyledModalDialog
       contentHeight="100%"
       displayType="modal"
-      onClose={onClose}
-      visible={idp_isModalVisible}
+      onClose={onCloseIdpModal}
+      visible={idpIsModalVisible}
     >
       <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
 
@@ -40,9 +39,9 @@ const AddIdpCertificateModal = (props) => {
 
         <TextArea
           className="text-area"
-          name="idp_certificate"
+          name="idpCertificate"
           onChange={onTextInputChange}
-          value={idp_certificate}
+          value={idpCertificate}
         />
       </ModalDialog.Body>
 
@@ -57,7 +56,7 @@ const AddIdpCertificateModal = (props) => {
           />
           <Button
             label={t("Common:CancelButton")}
-            onClick={onClose}
+            onClick={onCloseIdpModal}
             size="small"
           />
         </Box>
@@ -68,18 +67,18 @@ const AddIdpCertificateModal = (props) => {
 
 export default inject(({ ssoStore }) => {
   const {
-    onCloseModal,
+    onCloseIdpModal,
     addCertificateToForm,
-    idp_isModalVisible,
+    idpIsModalVisible,
     onTextInputChange,
-    idp_certificate,
+    idpCertificate,
   } = ssoStore;
 
   return {
-    onCloseModal,
+    onCloseIdpModal,
     addCertificateToForm,
-    idp_isModalVisible,
+    idpIsModalVisible,
     onTextInputChange,
-    idp_certificate,
+    idpCertificate,
   };
 })(observer(AddIdpCertificateModal));

@@ -8,19 +8,16 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
-import { addArguments } from "../../../../utils";
 
 const ResetConfirmationModal = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
-  const { onCloseModal, confirmationResetModal, onConfirmReset } = props;
-
-  const onClose = addArguments(onCloseModal, "confirmationResetModal");
+  const { onCloseResetModal, confirmationResetModal, onConfirmReset } = props;
 
   return (
     <StyledModalDialog
       contentHeight="100%"
       displayType="modal"
-      onClose={onClose}
+      onClose={onCloseResetModal}
       visible={confirmationResetModal}
     >
       <ModalDialog.Header>{t("Common:Confirmation")}</ModalDialog.Header>
@@ -50,7 +47,11 @@ const ResetConfirmationModal = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { onCloseModal, confirmationResetModal, onConfirmReset } = ssoStore;
+  const {
+    onCloseResetModal,
+    confirmationResetModal,
+    onConfirmReset,
+  } = ssoStore;
 
-  return { onCloseModal, confirmationResetModal, onConfirmReset };
+  return { onCloseResetModal, confirmationResetModal, onConfirmReset };
 })(observer(ResetConfirmationModal));

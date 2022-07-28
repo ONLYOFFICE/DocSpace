@@ -7,15 +7,15 @@ import SimpleCheckbox from "./SimpleCheckbox";
 
 const checkboxesNames = {
   idp: [
-    "idp_verifyAuthResponsesSign",
-    "idp_verifyLogoutRequestsSign",
-    "idp_verifyLogoutResponsesSign",
+    "idpVerifyAuthResponsesSign",
+    "idpVerifyLogoutRequestsSign",
+    "idpVerifyLogoutResponsesSign",
   ],
   sp: [
-    "sp_signAuthRequests",
-    "sp_signLogoutRequests",
-    "sp_signLogoutResponses",
-    "sp_encryptAssertions",
+    "spSignAuthRequests",
+    "spSignLogoutRequests",
+    "spSignLogoutResponses",
+    "spEncryptAssertions",
   ],
 };
 
@@ -23,13 +23,13 @@ const CheckboxSet = (props) => {
   const { t } = useTranslation("SingleSignOn");
   const {
     prefix,
-    idp_verifyAuthResponsesSign,
-    idp_verifyLogoutRequestsSign,
-    idp_verifyLogoutResponsesSign,
-    sp_signAuthRequests,
-    sp_signLogoutRequests,
-    sp_signLogoutResponses,
-    sp_encryptAssertions,
+    idpVerifyAuthResponsesSign,
+    idpVerifyLogoutRequestsSign,
+    idpVerifyLogoutResponsesSign,
+    spSignAuthRequests,
+    spSignLogoutRequests,
+    spSignLogoutResponses,
+    spEncryptAssertions,
   } = props;
 
   return (
@@ -39,7 +39,7 @@ const CheckboxSet = (props) => {
         name={checkboxesNames[prefix][0]}
         tabIndex={10}
         isChecked={
-          prefix === "idp" ? idp_verifyAuthResponsesSign : sp_signAuthRequests
+          prefix === "idp" ? idpVerifyAuthResponsesSign : spSignAuthRequests
         }
       />
       <SimpleCheckbox
@@ -47,9 +47,7 @@ const CheckboxSet = (props) => {
         name={checkboxesNames[prefix][1]}
         tabIndex={11}
         isChecked={
-          prefix === "idp"
-            ? idp_verifyLogoutRequestsSign
-            : sp_signLogoutRequests
+          prefix === "idp" ? idpVerifyLogoutRequestsSign : spSignLogoutRequests
         }
       />
       <SimpleCheckbox
@@ -58,8 +56,8 @@ const CheckboxSet = (props) => {
         tabIndex={12}
         isChecked={
           prefix === "idp"
-            ? idp_verifyLogoutResponsesSign
-            : sp_signLogoutResponses
+            ? idpVerifyLogoutResponsesSign
+            : spSignLogoutResponses
         }
       />
 
@@ -68,7 +66,7 @@ const CheckboxSet = (props) => {
           label={t(`${prefix}DecryptStatements`)}
           name={checkboxesNames[prefix][3]}
           tabIndex={13}
-          isChecked={sp_encryptAssertions}
+          isChecked={spEncryptAssertions}
         />
       )}
     </Box>
@@ -77,22 +75,22 @@ const CheckboxSet = (props) => {
 
 export default inject(({ ssoStore }) => {
   const {
-    idp_verifyAuthResponsesSign,
-    idp_verifyLogoutRequestsSign,
-    idp_verifyLogoutResponsesSign,
-    sp_signAuthRequests,
-    sp_signLogoutRequests,
-    sp_signLogoutResponses,
-    sp_encryptAssertions,
+    idpVerifyAuthResponsesSign,
+    idpVerifyLogoutRequestsSign,
+    idpVerifyLogoutResponsesSign,
+    spSignAuthRequests,
+    spSignLogoutRequests,
+    spSignLogoutResponses,
+    spEncryptAssertions,
   } = ssoStore;
 
   return {
-    idp_verifyAuthResponsesSign,
-    idp_verifyLogoutRequestsSign,
-    idp_verifyLogoutResponsesSign,
-    sp_signAuthRequests,
-    sp_signLogoutRequests,
-    sp_signLogoutResponses,
-    sp_encryptAssertions,
+    idpVerifyAuthResponsesSign,
+    idpVerifyLogoutRequestsSign,
+    idpVerifyLogoutResponsesSign,
+    spSignAuthRequests,
+    spSignLogoutRequests,
+    spSignLogoutResponses,
+    spEncryptAssertions,
   };
 })(observer(CheckboxSet));

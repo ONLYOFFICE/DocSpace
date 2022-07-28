@@ -37,35 +37,35 @@ class SsoFormStore {
   sloBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
   nameIdFormat = "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
 
-  idp_certificate = "";
-  idp_privateKey = null;
-  idp_action = "signing";
-  idp_certificates = [];
+  idpCertificate = "";
+  idpPrivateKey = null;
+  idpAction = "signing";
+  idpCertificates = [];
 
   // idpCertificateAdvanced
-  idp_decryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
+  idpDecryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
   // no checkbox for that
-  ipd_decryptAssertions = false;
-  idp_verifyAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
-  idp_verifyAuthResponsesSign = false;
-  idp_verifyLogoutRequestsSign = false;
-  idp_verifyLogoutResponsesSign = false;
+  ipdDecryptAssertions = false;
+  idpVerifyAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+  idpVerifyAuthResponsesSign = false;
+  idpVerifyLogoutRequestsSign = false;
+  idpVerifyLogoutResponsesSign = false;
 
-  sp_certificate = "";
-  sp_privateKey = "";
-  sp_action = "signing";
-  sp_certificates = [];
+  spCertificate = "";
+  spPrivateKey = "";
+  spAction = "signing";
+  spCertificates = [];
 
   // spCertificateAdvanced
   // null for some reason and no checkbox
-  sp_decryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
-  sp_encryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
-  sp_encryptAssertions = false;
-  sp_signAuthRequests = false;
-  sp_signLogoutRequests = false;
-  sp_signLogoutResponses = false;
-  sp_signingAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
-  // sp_verifyAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+  spDecryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
+  spEncryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
+  spEncryptAssertions = false;
+  spSignAuthRequests = false;
+  spSignLogoutRequests = false;
+  spSignLogoutResponses = false;
+  spSigningAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+  // spVerifyAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
 
   // Field mapping
   firstName = "";
@@ -78,17 +78,17 @@ class SsoFormStore {
   hideAuthPage = false;
 
   // sp metadata
-  sp_entityId = "";
-  sp_assertionConsumerUrl = "";
-  sp_singleLogoutUrl = "";
+  spEntityId = "";
+  spAssertionConsumerUrl = "";
+  spSingleLogoutUrl = "";
 
   // hide parts of form
-  ServiceProviderSettings = false;
-  idp_showAdditionalParameters = true;
-  sp_showAdditionalParameters = true;
-  SPMetadata = false;
-  idp_isModalVisible = false;
-  sp_isModalVisible = false;
+  serviceProviderSettings = false;
+  idpShowAdditionalParameters = true;
+  spShowAdditionalParameters = true;
+  spMetadata = false;
+  idpIsModalVisible = false;
+  spIsModalVisible = false;
   confirmationDisableModal = false;
   confirmationResetModal = false;
 
@@ -109,9 +109,9 @@ class SsoFormStore {
   titleHasError = false;
   phoneHasError = false;
 
-  sp_entityIdHasError = false;
-  sp_assertionConsumerUrlHasError = false;
-  sp_singleLogoutUrlHasError = false;
+  spEntityIdHasError = false;
+  spAssertionConsumerUrlHasError = false;
+  spSingleLogoutUrlHasError = false;
 
   // error messages
   //uploadXmlUrlErrorMessage = null;
@@ -130,9 +130,9 @@ class SsoFormStore {
   titleErrorMessage = null;
   phoneErrorMessage = null;
 
-  sp_entityIdErrorMessage = null;
-  sp_assertionConsumerUrlErrorMessage = null;
-  sp_singleLogoutUrlErrorMessage = null;
+  spEntityIdErrorMessage = null;
+  spAssertionConsumerUrlErrorMessage = null;
+  spSingleLogoutUrlErrorMessage = null;
 
   isSubmitLoading = false;
   isGeneratedCertificate = false;
@@ -157,7 +157,7 @@ class SsoFormStore {
   onSsoToggle = () => {
     if (!this.enableSso) {
       this.enableSso = true;
-      this.ServiceProviderSettings = true;
+      this.serviceProviderSettings = true;
     } else {
       this.enableSso = false;
     }
@@ -188,15 +188,19 @@ class SsoFormStore {
   };
 
   onOpenIdpModal = () => {
-    this.idp_isModalVisible = true;
+    this.idpIsModalVisible = true;
   };
 
   onOpenSpModal = () => {
-    this.sp_isModalVisible = true;
+    this.spIsModalVisible = true;
   };
 
-  onCloseModal = (e, modalVisible) => {
-    this[modalVisible] = false;
+  onCloseIdpModal = () => {
+    this.idpIsModalVisible = false;
+  };
+
+  onCloseSpModal = () => {
+    this.spIsModalVisible = false;
   };
 
   onModalComboBoxChange = (option) => {
@@ -226,8 +230,16 @@ class SsoFormStore {
     this.confirmationDisableModal = true;
   };
 
+  onCloseConfirmationDisableModal = () => {
+    this.confirmationDisableModal = false;
+  };
+
   openResetModal = () => {
     this.confirmationResetModal = true;
+  };
+
+  onCloseResetModal = () => {
+    this.confirmationResetModal = false;
   };
 
   onConfirmDisable = () => {
@@ -239,8 +251,8 @@ class SsoFormStore {
   onConfirmReset = () => {
     this.resetForm();
     this.disableSso();
-    this.ServiceProviderSettings = false;
-    this.SPMetadata = false;
+    this.serviceProviderSettings = false;
+    this.spMetadata = false;
     this.confirmationResetModal = false;
   };
 
@@ -324,24 +336,24 @@ class SsoFormStore {
         sloBinding: this.sloBinding,
         nameIdFormat: this.nameIdFormat,
       },
-      idpCertificates: this.idp_certificates,
+      idpCertificates: this.idpCertificates,
       idpCertificateAdvanced: {
-        verifyAlgorithm: this.idp_verifyAlgorithm,
-        verifyAuthResponsesSign: this.idp_verifyAuthResponsesSign,
-        verifyLogoutRequestsSign: this.idp_verifyLogoutRequestsSign,
-        verifyLogoutResponsesSign: this.idp_verifyLogoutResponsesSign,
-        decryptAlgorithm: this.idp_decryptAlgorithm,
+        verifyAlgorithm: this.idpVerifyAlgorithm,
+        verifyAuthResponsesSign: this.idpVerifyAuthResponsesSign,
+        verifyLogoutRequestsSign: this.idpVerifyLogoutRequestsSign,
+        verifyLogoutResponsesSign: this.idpVerifyLogoutResponsesSign,
+        decryptAlgorithm: this.idpDecryptAlgorithm,
         decryptAssertions: false,
       },
-      spCertificates: this.sp_certificates,
+      spCertificates: this.spCertificates,
       spCertificateAdvanced: {
-        decryptAlgorithm: this.sp_decryptAlgorithm,
-        signingAlgorithm: this.sp_signingAlgorithm,
-        signAuthRequests: this.sp_signAuthRequests,
-        signLogoutRequests: this.sp_signLogoutRequests,
-        signLogoutResponses: this.sp_signLogoutResponses,
-        encryptAlgorithm: this.sp_encryptAlgorithm,
-        encryptAssertions: this.sp_encryptAssertions,
+        decryptAlgorithm: this.spDecryptAlgorithm,
+        signingAlgorithm: this.spSigningAlgorithm,
+        signAuthRequests: this.spSignAuthRequests,
+        signLogoutRequests: this.spSignLogoutRequests,
+        signLogoutResponses: this.spSignLogoutResponses,
+        encryptAlgorithm: this.spEncryptAlgorithm,
+        encryptAssertions: this.spEncryptAssertions,
       },
       fieldMapping: {
         firstName: this.firstName,
@@ -364,7 +376,7 @@ class SsoFormStore {
       await submitSsoForm(data);
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
       this.isSubmitLoading = false;
-      this.SPMetadata = true;
+      this.spMetadata = true;
       this.defaultSettings = settings;
     } catch (err) {
       toastr.error(err);
@@ -397,7 +409,7 @@ class SsoFormStore {
         }
 
         if (key !== "fieldMapping" && key !== "idpSettings") {
-          prefix = key.includes("idp") ? "idp_" : "sp_";
+          prefix = key.includes("idp") ? "idp" : "sp";
         }
 
         if (Array.isArray(object[key])) {
@@ -496,22 +508,22 @@ class SsoFormStore {
 
       newCertificates.data.map((cert) => {
         if (newCertificates.data.length > 1) {
-          this.idp_certificates = [...this.idp_certificates, cert];
+          this.idpCertificates = [...this.idpCertificates, cert];
         } else {
-          this.idp_certificates = [cert];
+          this.idpCertificates = [cert];
         }
 
         if (cert.action === "verification") {
-          this.idp_verifyAuthResponsesSign = true;
-          this.idp_verifyLogoutRequestsSign = true;
+          this.idpVerifyAuthResponsesSign = true;
+          this.idpVerifyLogoutRequestsSign = true;
         }
         if (cert.action === "decrypt") {
-          this.idp_verifyLogoutResponsesSign = true;
+          this.idpVerifyLogoutResponsesSign = true;
         }
         if (cert.action === "verification and decrypt") {
-          this.idp_verifyAuthResponsesSign = true;
-          this.idp_verifyLogoutRequestsSign = true;
-          this.idp_verifyLogoutResponsesSign = true;
+          this.idpVerifyAuthResponsesSign = true;
+          this.idpVerifyLogoutRequestsSign = true;
+          this.idpVerifyLogoutResponsesSign = true;
         }
       });
     }
@@ -521,23 +533,36 @@ class SsoFormStore {
     return array.filter((item, index, array) => array.indexOf(item) == index);
   };
 
-  onEditClick = (e, certificate, prefix) => {
-    this[`${prefix}_certificate`] = certificate.crt;
-    this[`${prefix}_privateKey`] = certificate.key;
-    this[`${prefix}_action`] = certificate.action;
-    this[`${prefix}_isModalVisible`] = true;
+  setSpCertificate = (certificate) => {
+    this.spCertificate = certificate.crt;
+    this.spPrivateKey = certificate.key;
+    this.spAction = certificate.action;
+    this.spIsModalVisible = true;
   };
 
-  onDeleteClick = (e, crtToDelete, prefix) => {
-    this[`${prefix}_certificates`] = this[`${prefix}_certificates`].filter(
-      (certificate) => certificate.crt !== crtToDelete
+  setIdpCertificate = (certificate) => {
+    this.idpCertificate = certificate.crt;
+    this.idpPrivateKey = certificate.key;
+    this.idpAction = certificate.action;
+    this.idpIsModalVisible = true;
+  };
+
+  delSpCertificate = (cert) => {
+    this.spCertificates = this.spCertificates.filter(
+      (certificate) => certificate.crt !== cert
+    );
+  };
+
+  delIdpCertificate = (cert) => {
+    this.idpCertificates = this.idpCertificates.filter(
+      (certificate) => certificate.crt !== cert
     );
   };
 
   addCertificateToForm = async (e, prefix) => {
-    const action = this[`${prefix}_action`];
-    const crt = this[`${prefix}_certificate`];
-    const key = this[`${prefix}_privateKey`];
+    const action = this[`${prefix}Action`];
+    const crt = this[`${prefix}Certificate`];
+    const key = this[`${prefix}PrivateKey`];
 
     const data = [
       {
@@ -551,12 +576,13 @@ class SsoFormStore {
       const res = await this.validateCertificate(data);
       const newCertificates = res.data;
       newCertificates.map((cert) => {
-        this[`${prefix}_certificates`] = [
-          ...this[`${prefix}_certificates`],
+        this[`${prefix}Certificates`] = [
+          ...this[`${prefix}Certificates`],
           cert,
         ];
       });
-      this.onCloseModal(e, `${prefix}_isModalVisible`);
+      if (prefix === "sp") this.onCloseSpModal();
+      else this.onCloseIdpModal();
     } catch (err) {
       toastr.error(err);
       console.error(err);
@@ -564,8 +590,8 @@ class SsoFormStore {
   };
 
   setGeneratedCertificate = (certificateObject) => {
-    this.sp_certificate = certificateObject.crt;
-    this.sp_privateKey = certificateObject.key;
+    this.spCertificate = certificateObject.crt;
+    this.spPrivateKey = certificateObject.key;
   };
 
   setErrors = (field, value) => {

@@ -16,17 +16,16 @@ import { addArguments } from "../../../../utils";
 const AddSpCertificateModal = (props) => {
   const { t, ready } = useTranslation(["SingleSignOn", "Common"]);
   const {
-    onCloseModal,
+    onCloseSpModal,
     addCertificateToForm,
-    sp_isModalVisible,
+    spIsModalVisible,
     generateCertificate,
     onTextInputChange,
-    sp_certificate,
-    sp_privateKey,
+    spCertificate,
+    spPrivateKey,
     isGeneratedCertificate,
   } = props;
 
-  const onClose = addArguments(onCloseModal, "sp_isModalVisible");
   const onSubmit = addArguments(addCertificateToForm, "sp");
 
   const onGenerate = () => {
@@ -39,8 +38,8 @@ const AddSpCertificateModal = (props) => {
       zIndex={310}
       isLoading={!ready}
       autoMaxHeight
-      onClose={onClose}
-      visible={sp_isModalVisible}
+      onClose={onCloseSpModal}
+      visible={spIsModalVisible}
     >
       <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
 
@@ -62,9 +61,9 @@ const AddSpCertificateModal = (props) => {
 
         <TextArea
           className="text-area"
-          name="sp_certificate"
+          name="spCertificate"
           onChange={onTextInputChange}
-          value={sp_certificate}
+          value={spCertificate}
           isDisabled={isGeneratedCertificate}
         />
 
@@ -74,9 +73,9 @@ const AddSpCertificateModal = (props) => {
 
         <TextArea
           className="text-area"
-          name="sp_privateKey"
+          name="spPrivateKey"
           onChange={onTextInputChange}
-          value={sp_privateKey}
+          value={spPrivateKey}
           isDisabled={isGeneratedCertificate}
         />
 
@@ -95,7 +94,7 @@ const AddSpCertificateModal = (props) => {
           />
           <Button
             label={t("Common:CancelButton")}
-            onClick={onClose}
+            onClick={onCloseSpModal}
             size="small"
             isDisabled={isGeneratedCertificate}
           />
@@ -107,24 +106,24 @@ const AddSpCertificateModal = (props) => {
 
 export default inject(({ ssoStore }) => {
   const {
-    onCloseModal,
+    onCloseSpModal,
     addCertificateToForm,
-    sp_isModalVisible,
+    spIsModalVisible,
     generateCertificate,
     onTextInputChange,
-    sp_certificate,
-    sp_privateKey,
+    spCertificate,
+    spPrivateKey,
     isGeneratedCertificate,
   } = ssoStore;
 
   return {
-    onCloseModal,
+    onCloseSpModal,
     addCertificateToForm,
-    sp_isModalVisible,
+    spIsModalVisible,
     generateCertificate,
     onTextInputChange,
-    sp_certificate,
-    sp_privateKey,
+    spCertificate,
+    spPrivateKey,
     isGeneratedCertificate,
   };
 })(observer(AddSpCertificateModal));

@@ -15,7 +15,7 @@ import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
 const SingleSignOn = (props) => {
-  const { onPageLoad, ServiceProviderSettings, SPMetadata } = props;
+  const { onPageLoad, serviceProviderSettings, spMetadata } = props;
 
   if (!isDesktop) return <ForbiddenPage />;
 
@@ -25,14 +25,14 @@ const SingleSignOn = (props) => {
 
   return (
     <StyledSsoPage
-      hideSettings={ServiceProviderSettings}
-      hideMetadata={SPMetadata}
+      hideSettings={serviceProviderSettings}
+      hideMetadata={spMetadata}
     >
       <ToggleSSO />
 
       <HideButton
-        label="ServiceProviderSettings"
-        value={ServiceProviderSettings}
+        label="serviceProviderSettings"
+        value={serviceProviderSettings}
       />
 
       <Box className="service-provider-settings">
@@ -49,7 +49,7 @@ const SingleSignOn = (props) => {
 
       <hr className="separator" />
 
-      <HideButton label="SPMetadata" value={SPMetadata} />
+      <HideButton label="spMetadata" value={spMetadata} />
 
       <Box className="sp-metadata">
         <ProviderMetadata />
@@ -59,7 +59,7 @@ const SingleSignOn = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { onPageLoad, ServiceProviderSettings, SPMetadata } = ssoStore;
+  const { onPageLoad, serviceProviderSettings, spMetadata } = ssoStore;
 
-  return { onPageLoad, ServiceProviderSettings, SPMetadata };
+  return { onPageLoad, serviceProviderSettings, spMetadata };
 })(observer(SingleSignOn));
