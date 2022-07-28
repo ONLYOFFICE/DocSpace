@@ -132,14 +132,12 @@ services:
     image: "${REPO}/${STATUS}appserver-webhooks-service:${DOCKER_TAG}"
     container_name: ${WEBHOOKS_SERVICE_HOST}  
 
-
   onlyoffice-doceditor:
     image: "${REPO}/${STATUS}appserver-doceditor:${DOCKER_TAG}"
     container_name: ${DOCEDITOR_HOST}
     restart: always
     expose:
       - "5013"
-
 
   onlyoffice-proxy:
     image: "${REPO}/${STATUS}appserver-proxy:${DOCKER_TAG}"
