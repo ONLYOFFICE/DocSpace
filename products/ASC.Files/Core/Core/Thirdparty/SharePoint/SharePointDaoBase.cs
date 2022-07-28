@@ -160,6 +160,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
                 foreach (var s in securityForUpdate)
                 {
                     s.EntryId = newHashID;
+                    s.TimeStamp = DateTime.Now;
                 }
 
                 await FilesDbContext.SaveChangesAsync();

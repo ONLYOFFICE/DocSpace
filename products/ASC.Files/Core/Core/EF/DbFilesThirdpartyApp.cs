@@ -58,7 +58,8 @@ public static class DbFilesThirdpartyAppExtension
             entity.HasKey(e => new { e.UserId, e.App })
                 .HasName("PRIMARY");
 
-            entity.ToTable("files_thirdparty_app");
+            entity.ToTable("files_thirdparty_app")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id")
@@ -74,9 +75,7 @@ public static class DbFilesThirdpartyAppExtension
 
             entity.Property(e => e.ModifiedOn)
                 .HasColumnName("modified_on")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .ValueGeneratedOnAddOrUpdate();
+                .HasColumnType("timestamp");
 
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 

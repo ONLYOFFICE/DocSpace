@@ -32,7 +32,8 @@ const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
 
   useEffect(() => {
     const tempElm = document.getElementById("loader");
-    if (tempElm && !rest.error && !rest.needLoader && rest.docApiUrl) {
+
+    if (tempElm && !rest.error && !rest.needLoader && rest?.config?.editorUrl) {
       tempElm.outerHTML = "";
     }
 
@@ -42,7 +43,6 @@ const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
   }, []);
 
   const onError = () => {
-    console.log("Error");
     window.open(
       combineUrl(
         AppServerConfig.proxyURL,

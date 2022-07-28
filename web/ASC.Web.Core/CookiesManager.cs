@@ -25,7 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using ASC.Core.Data;
-using ASC.MessagingSystem.Models;
 
 using Constants = ASC.Core.Users.Constants;
 

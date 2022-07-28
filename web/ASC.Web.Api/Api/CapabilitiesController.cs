@@ -127,11 +127,7 @@ public class CapabilitiesController : ControllerBase
 
                 if (settings.EnableSso)
                 {
-                    var uri = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
-
-                    var configUrl = _configuration["web:sso:saml:login:url"] ?? "";
-
-                    result.SsoUrl = $"{uri.Scheme}://{uri.Host}{((uri.Port == 80 || uri.Port == 443) ? "" : ":" + uri.Port)}{configUrl}";
+                    result.SsoUrl = settings.IdpSettings.SsoUrl;
                     result.SsoLabel = settings.SpLoginLabel;
                 }
             }

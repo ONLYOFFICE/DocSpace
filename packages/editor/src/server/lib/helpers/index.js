@@ -2,14 +2,17 @@ import path from "path";
 import fs from "fs";
 import { initSSR } from "@docspace/common/api/client";
 import { getUser } from "@docspace/common/api/people";
-import { getSettings } from "@docspace/common/api/settings";
+import {
+  getSettings,
+  getBuildVersion,
+  getCurrentCustomSchema,
+} from "@docspace/common/api/settings";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import { AppServerConfig } from "@docspace/common/constants";
 import {
-  getDocServiceUrl,
-  getFileInfo,
   openEdit,
   getSettingsFiles,
+  getShareFiles,
 } from "@docspace/common/api/files";
 import pkg from "../../../../package.json";
 
@@ -60,10 +63,18 @@ export const initDocEditor = async (req) => {
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
-    const [user, settings, filesSettings] = await Promise.all([
+    const [
+      user,
+      settings,
+      filesSettings,
+      versionInfo,
+      customNames,
+    ] = await Promise.all([
       getUser(),
       getSettings(),
       getSettingsFiles(),
+      getBuildVersion(),
+      getCurrentCustomSchema("Common"),
     ]);
 
     const successAuth = !!user;
@@ -80,13 +91,11 @@ export const initDocEditor = async (req) => {
       return { error };
     }
 
-    let [config, docApiUrl, fileInfo] = await Promise.all([
-      openEdit(fileId, fileVersion, doc, view),
-      getDocServiceUrl(),
-      getFileInfo(fileId),
-    ]);
+    const config = await openEdit(fileId, fileVersion, doc, view);
 
-    const isSharingAccess = fileInfo && fileInfo.canShare;
+    const sharingSettings = await getShareFiles([+fileId], []);
+
+    const isSharingAccess = config?.file && config?.file?.canShare;
 
     if (view) {
       config.editorConfig.mode = "view";
@@ -95,8 +104,6 @@ export const initDocEditor = async (req) => {
     const actionLink = config?.editorConfig?.actionLink || null;
 
     return {
-      fileInfo,
-      docApiUrl,
       config,
       personal,
       successAuth,
@@ -109,6 +116,10 @@ export const initDocEditor = async (req) => {
       fileId,
       view,
       filesSettings,
+      sharingSettings,
+      portalSettings: settings,
+      versionInfo,
+      customNames,
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };
