@@ -23,7 +23,7 @@
     "start-personal:client": "webpack --env personal=true --config webpack/webpack.client.js --watch --no-cache",
     "start-personal:server": "webpack --env personal=true --config webpack/webpack.server.js --watch --no-cache",
     "start-personal:common": "yarn build:dev-client-personal && yarn build:dev-server-personal && nodemon --watch dist/server.js dist/server.js",
-    "deploy": "shx --silent mkdir -p ../../build/deploy/products/ASC.Files/editor && shx cp -r dist/* ../../build/deploy/products/ASC.Files/editor"
+    "deploy": "shx --silent mkdir -p ../../build/deploy/editor && shx cp -r dist/* ../../build/deploy/editor"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",

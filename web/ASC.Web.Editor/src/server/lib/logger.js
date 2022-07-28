@@ -11,20 +11,11 @@ if (logpath != null) {
   }
 }
 
-const fileName = !IS_DEVELOPMENT
+const fileName = IS_DEVELOPMENT
   ? path.join(__dirname, "..", "..", "..", "Logs", "editor.%DATE%.log")
   : logpath
   ? path.join(logpath, "editor.%DATE%.log")
-  : path.join(
-      __dirname,
-      "..",
-      "..",
-      "..",
-      "..",
-      "..",
-      "Logs",
-      "editor.%DATE%.log"
-    );
+  : path.join(__dirname, "..", "..", "..", "Logs", "editor.%DATE%.log");
 const dirName = path.dirname(fileName);
 
 if (!fs.existsSync(dirName)) {
