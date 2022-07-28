@@ -20,6 +20,7 @@ import { showLoader, hideLoader } from "@docspace/common/utils";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import { withTranslation } from "react-i18next";
+import toastr from "studio/toastr";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
