@@ -624,6 +624,7 @@
     <ROW Action="AI_TxtUpdaterConfig" Type="11265" Source="TxtUpdater.dll" Target="OnTxtUpdaterConfig" WithoutSeq="true"/>
     <ROW Action="AI_TxtUpdaterInstall" Type="1" Source="TxtUpdater.dll" Target="OnTxtUpdaterInstall"/>
     <ROW Action="AI_TxtUpdaterRollback" Type="11521" Source="TxtUpdater.dll" Target="OnTxtUpdaterRollback" WithoutSeq="true"/>
+    <ROW Action="ASC.Migration.Runner.exe" Type="3154" Source="ASC.Migration.Runner.exe"/>
     <ROW Action="DetectMySQLService" Type="1" Source="aicustact.dll" Target="DetectProcess" Options="3" AdditionalSeq="AI_DATA_SETTER_9"/>
     <ROW Action="ElasticSearchInstallPlugin" Type="1030" Source="utils.vbs" Target="ElasticSearchInstallPlugin"/>
     <ROW Action="ElasticSearchSetup" Type="6" Source="utils.vbs" Target="ElasticSearchSetup"/>
@@ -731,6 +732,7 @@
     <ROW Action="StartElasticSearchService" Condition="( NOT Installed )" Sequence="1613"/>
     <ROW Action="AI_DATA_SETTER_13" Condition="( NOT Installed )" Sequence="1612"/>
     <ROW Action="AI_GetArpIconPath" Sequence="1401"/>
+    <ROW Action="ASC.Migration.Runner.exe" Condition="( NOT Installed )" Sequence="6402"/>
     <ROW Action="StartMigrationRunner" Condition="( NOT Installed )" Sequence="6401"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
