@@ -140,9 +140,8 @@ class NavMenu extends React.Component {
       history,
       isDesktop,
       preparationPortalDialogVisible,
+      frameConfig,
     } = this.props;
-
-    const frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
 
     const isFrame = frameConfig && window.name === frameConfig.name;
     const showFrameHeader = frameConfig && !JSON.parse(frameConfig.showHeader);
@@ -228,7 +227,7 @@ NavMenu.defaultProps = {
 
 const NavMenuWrapper = inject(({ auth, backup }) => {
   const { settingsStore, isAuthenticated, isLoaded, language } = auth;
-  const { isDesktopClient: isDesktop } = settingsStore;
+  const { isDesktopClient: isDesktop, frameConfig } = settingsStore;
   const { preparationPortalDialogVisible } = backup;
   return {
     isAuthenticated,
@@ -236,6 +235,7 @@ const NavMenuWrapper = inject(({ auth, backup }) => {
     isDesktop,
     language,
     preparationPortalDialogVisible,
+    frameConfig,
   };
 })(observer(withTranslation(["NavMenu", "Common"])(withRouter(NavMenu))));
 
