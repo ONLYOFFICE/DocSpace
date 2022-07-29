@@ -32,65 +32,6 @@ public enum Provider
     MySql
 }
 
-public class BaseDbContext : DbContext
-{
-    public ConnectionStringSettings ConnectionStringSettings { get; set; }
-    public string MigrateAssembly { get; set; }
-    internal ILoggerFactory LoggerFactory { get; set; }
-    public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
-    protected Provider _provider;
-
-    public BaseDbContext() { }
-    public BaseDbContext(DbContextOptions options) : base(options) { }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseLoggerFactory(LoggerFactory);
-        optionsBuilder.EnableSensitiveDataLogging();
-        _provider = GetProviderByConnectionString();
-        switch (_provider)
-        {
-            case Provider.MySql:
-                optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomMySqlMigrationsSqlGenerator>();
-                optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, providerOptions =>
-                {
-                    if (!string.IsNullOrEmpty(MigrateAssembly))
-                    {
-                        providerOptions.MigrationsAssembly(MigrateAssembly);
-                    }
-
-                    //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
-                    providerOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                });
-                break;
-            case Provider.PostgreSql:
-                optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString, providerOptions =>
-                {
-                    if (!string.IsNullOrEmpty(MigrateAssembly))
-                    {
-                        providerOptions.MigrationsAssembly(MigrateAssembly);
-                    }
-                });
-                break;
-        }
-    }
-
-    public Provider GetProviderByConnectionString()
-    {
-        switch (ConnectionStringSettings.ProviderName)
-        {
-            case "MySql.Data.MySqlClient":
-                return Provider.MySql;
-            case "Npgsql":
-                return Provider.PostgreSql;
-            default:
-                break;
-        }
-
-        return Provider.MySql;
-    }
-}
-
 public static class BaseDbContextExtension
 {
     public static void AddBaseDbContext<T>(this IServiceCollection services) where T : DbContext
@@ -182,43 +123,4 @@ public static class BaseDbContextExtension
 public abstract class BaseEntity
 {
     public abstract object[] GetKeys();
-}
-
-public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T : BaseDbContext, new()
-{
-    public MultiRegionalDbContext() { }
-
-    internal List<T> Context { get; set; }
-
-    public void Dispose()
-    {
-        if (Context == null)
-        {
-            return;
-        }
-
-        foreach (var c in Context)
-        {
-            if (c != null)
-            {
-                c.Dispose();
-            }
-        }
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return Context == null ? ValueTask.CompletedTask : InternalDisposeAsync();
-    }
-
-    private async ValueTask InternalDisposeAsync()
-    {
-        foreach (var c in Context)
-        {
-            if (c != null)
-            {
-                await c.DisposeAsync();
-            }
-        }
-    }
 }

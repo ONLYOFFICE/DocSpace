@@ -36,7 +36,6 @@ builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, d
 {
     services.AddHostedService<LdapNotifyService>();
     diHelper.TryAdd<LdapNotifyService>();
-    services.AddBaseDbContext<ActiveDirectoryDbContext>();
 });
 
 builder.WebHost.ConfigureDefaultKestrel();

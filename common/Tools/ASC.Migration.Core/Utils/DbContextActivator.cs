@@ -24,27 +24,29 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.Extensions.Configuration;
+
 namespace Migration.Core.Utils;
 
 public class DbContextActivator
 {
-    private readonly string _dbConnectionString;
-    public DbContextActivator(string dbConnectionString)
+    private readonly IServiceProvider _serviceProvider;
+
+    public DbContextActivator(IServiceProvider serviceProvider)
     {
-        _dbConnectionString = dbConnectionString;
+        _serviceProvider = serviceProvider;
     }
 
-    public BaseDbContext CreateInstance(Type contextType, ProviderInfo provider)
+    public DbContext CreateInstance(Type contextType, ProviderInfo provider)
     {
-        var context = (BaseDbContext)Activator.CreateInstance(contextType);
-        context.ConnectionStringSettings = new ConnectionStringSettings
-        {
-            ConnectionString = _dbConnectionString,
-            ProviderName = provider.ProviderFullName
-        };
-
-        context.MigrateAssembly = $"ASC.Migrations.{provider.Provider}";
-
+        var configuration = _serviceProvider.GetRequiredService<IConfiguration>();
+        configuration["testAssembly"] = $"ASC.Migrations.{provider.Provider}";
+        configuration["ConnectionStrings:default:name"] = "default";
+        configuration["ConnectionStrings:default:connectionString"] = provider.ConnectionString;
+        configuration["ConnectionStrings:default:providerName"] = provider.ProviderFullName;
+        var dbContextFactory = typeof(IDbContextFactory<>).MakeGenericType(contextType);
+        dynamic contextFactory = _serviceProvider.GetRequiredService(dbContextFactory);
+        DbContext context = contextFactory.CreateDbContext();
         return context;
     }
 }

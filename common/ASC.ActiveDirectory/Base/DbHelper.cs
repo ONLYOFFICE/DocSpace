@@ -24,16 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.EF.Context;
+
 namespace ASC.ActiveDirectory.Base;
 
 [Scope]
 public class DbHelper
 {
-    private readonly IDbContextFactory<ActiveDirectoryDbContext> _activeDirectoryDbContextFactory;
+    private readonly IDbContextFactory<WebstudioDbContext> _activeDirectoryDbContextFactory;
     private readonly LdapSettings _ldapSettings;
 
     public DbHelper(
-        IDbContextFactory<ActiveDirectoryDbContext> activeDirectoryDbContextFactory,
+        IDbContextFactory<WebstudioDbContext> activeDirectoryDbContextFactory,
         LdapSettings ldapSettings)
     {
         _activeDirectoryDbContextFactory = activeDirectoryDbContextFactory;
