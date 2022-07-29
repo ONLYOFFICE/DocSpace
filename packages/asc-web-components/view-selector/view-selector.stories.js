@@ -24,6 +24,7 @@ const Template = ({
   viewAs,
   viewSettings,
   isDisabled,
+  isFilter,
 
   ...rest
 }) => {
@@ -36,6 +37,7 @@ const Template = ({
         isDisabled={isDisabled}
         viewSettings={viewSettings}
         viewAs={view}
+        isFilter={isFilter}
         onChangeView={(view) => {
           onChangeView(view);
           setView(view);
@@ -65,4 +67,5 @@ Default.args = {
   ],
   viewAs: "row",
   isDisabled: false,
+  isFilter: false,
 };

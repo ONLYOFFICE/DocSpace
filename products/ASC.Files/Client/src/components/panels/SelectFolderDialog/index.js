@@ -200,6 +200,7 @@ class SelectFolderDialog extends React.Component {
       isRecycleBin,
       currentFolderId,
       selectionFiles,
+      selectionButtonPrimary,
     } = this.props;
     const {
       displayType,

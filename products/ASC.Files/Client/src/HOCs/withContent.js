@@ -52,6 +52,7 @@ export default function withContent(WrappedContent) {
         element,
         isDesktop,
         isTrashFolder,
+        isArchiveFolder,
         item,
         onFilesClick,
         t,
@@ -75,9 +76,10 @@ export default function withContent(WrappedContent) {
         access === ShareAccessRights.FullAccess || // only badges?
         access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
-      const linkStyles = isTrashFolder //|| window.innerWidth <= 1024
-        ? { noHover: true }
-        : { onClick: onFilesClick };
+      const linkStyles =
+        isTrashFolder || isArchiveFolder //|| window.innerWidth <= 1024
+          ? { noHover: true }
+          : { onClick: onFilesClick };
 
       if (!isDesktop && !isTrashFolder) {
         linkStyles.href = href;
@@ -99,6 +101,7 @@ export default function withContent(WrappedContent) {
           showNew={showNew}
           isTrashFolder={isTrashFolder}
           onFilesClick={onFilesClick}
+          isArchiveFolder={isArchiveFolder}
           {...this.props}
         />
       );
@@ -134,7 +137,11 @@ export default function withContent(WrappedContent) {
         setCreatedItem,
       } = filesStore;
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
-      const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+      const {
+        isRecycleBinFolder,
+        isPrivacyFolder,
+        isArchiveFolder,
+      } = treeFoldersStore;
 
       const { replaceFileStream, setEncryptionAccess } = auth;
 
@@ -164,6 +171,7 @@ export default function withContent(WrappedContent) {
         isDesktop: isDesktopClient,
         isPrivacy: isPrivacyFolder,
         isTrashFolder: isRecycleBinFolder,
+        isArchiveFolder,
         openDocEditor,
         renameFolder,
         replaceFileStream,

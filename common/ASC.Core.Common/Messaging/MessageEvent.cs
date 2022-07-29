@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.MessagingSystem.Models;
+namespace ASC.MessagingSystem.EF.Model;
 
 public class MessageEvent : IMapFrom<EventMessage>
 {
@@ -34,8 +34,8 @@ public class MessageEvent : IMapFrom<EventMessage>
     public string Platform { get; set; }
     public DateTime Date { get; set; }
     public int TenantId { get; set; }
-    public Guid UserId { get; set; }
+    public Guid? UserId { get; set; }
     public string Page { get; set; }
-    public int Action { get; set; }
+    public int? Action { get; set; }
     public string DescriptionRaw { get; set; }
 }

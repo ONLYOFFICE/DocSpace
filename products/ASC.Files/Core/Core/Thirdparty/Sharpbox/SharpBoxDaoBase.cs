@@ -39,8 +39,9 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         SetupInfo setupInfo,
         ILogger monitor,
         FileUtility fileUtility,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
     }
 
@@ -179,6 +180,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
                 foreach (var s in securityForUpdate)
                 {
                     s.EntryId = newHashID;
+                    s.TimeStamp = DateTime.Now;
                 }
 
                 await FilesDbContext.SaveChangesAsync();

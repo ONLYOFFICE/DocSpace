@@ -40,8 +40,8 @@ public partial class TestMigration : Migration
 
         migrationBuilder.InsertData(
             table: "core_user",
-            columns: new[] { "id", "activation_status", "bithdate", "contacts", "culture", "email", "firstname", "last_modified", "lastname", "location", "notes", "phone", "phone_activation", "removed", "sex", "sid", "sso_name_id", "sso_session_id", "status", "tenant", "terminateddate", "title", "username", "workfromdate" },
-            values: new object[] { "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5", 0, null, null, null, "test@gmail.com", "Test", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(2928), "User", null, null, null, 0, false, null, null, null, null, 1, 1, null, null, "TestUser", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(2940) });
+            columns: new[] { "id", "activation_status", "bithdate", "contacts", "culture", "email", "firstname", "last_modified", "lastname", "location", "notes", "phone", "phone_activation", "removed", "sex", "sid", "sso_name_id", "sso_session_id", "status", "tenant", "terminateddate", "title", "username", "workfromdate", "create_on" },
+            values: new object[] { "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5", 0, null, null, null, "test@gmail.com", "Test", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(2928), "User", null, null, null, 0, false, null, null, null, null, 1, 1, null, null, "TestUser", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(2940), DateTime.UtcNow });
 
         migrationBuilder.InsertData(
             table: "core_usersecurity",

@@ -48,8 +48,9 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         CrossDao crossDao,
         GoogleDriveDaoSelector googleDriveDaoSelector,
         IFileDao<int> fileDao,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _crossDao = crossDao;
         _googleDriveDaoSelector = googleDriveDaoSelector;

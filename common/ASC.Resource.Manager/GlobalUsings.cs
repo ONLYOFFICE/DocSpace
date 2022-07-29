@@ -46,8 +46,8 @@ global using System.Xml.Linq;
 global using ASC.Common;
 global using ASC.Common.Utils;
 global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Core.Common.EF.Model.Resource;
+global using ASC.Resource.Manager.EF.Context;
+global using ASC.Resource.Manager.EF.Model;
 
 global using Autofac;
 

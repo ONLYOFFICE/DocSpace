@@ -53,12 +53,14 @@ const SelectionPanelBody = ({
       theme={theme}
       visible={isPanelVisible}
       onClose={onClose}
-      style={{ maxWidth: "773px" }}
       displayType="modal"
-      modalBodyPadding="0px"
       isLoading={isLoading}
+      withFooterBorder
+      autoMaxWidth
     >
-      <ModalDialog.Header theme={theme}>{dialogName}</ModalDialog.Header>
+      <ModalDialog.Header theme={theme} className={"select-panel-modal-header"}>
+        {dialogName}
+      </ModalDialog.Header>
       <ModalDialog.Body theme={theme} className="select-file_body-modal-dialog">
         <StyledBody header={!!header} footer={!!footer}>
           <div className="selection-panel_body">
@@ -117,40 +119,35 @@ const SelectionPanelBody = ({
                 />
               </>
             </div>
-
-            <div className="selection-panel_footer">
-              <div>{footer}</div>
-
-              <div className="selection-panel_buttons">
-                <Button
-                  theme={theme}
-                  className="select-file-modal-dialog-buttons-save"
-                  primary
-                  size="normalTouchscreen"
-                  label={primaryButtonName}
-                  onClick={onButtonClick}
-                  isDisabled={
-                    isDisableButton ||
-                    isDisableTree ||
-                    isLoadingData ||
-                    (!fileId && !folderSelection) ||
-                    !canCreate
-                  }
-                  isLoading={isDisableTree}
-                />
-                <Button
-                  theme={theme}
-                  className="modal-dialog-button"
-                  size="normalTouchscreen"
-                  label={t("Common:CancelButton")}
-                  onClick={onClose}
-                  isDisabled={isLoadingData}
-                />
-              </div>
-            </div>
           </div>
         </StyledBody>
       </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          theme={theme}
+          className="select-file-modal-dialog-buttons-save"
+          primary
+          size="normalTouchscreen"
+          label={primaryButtonName}
+          onClick={onButtonClick}
+          isDisabled={
+            isDisableButton ||
+            isDisableTree ||
+            isLoadingData ||
+            (!fileId && !folderSelection) ||
+            !canCreate
+          }
+          isLoading={isDisableTree}
+        />
+        <Button
+          theme={theme}
+          className="modal-dialog-button"
+          size="normalTouchscreen"
+          label={t("Common:CancelButton")}
+          onClick={onClose}
+          isDisabled={isLoadingData}
+        />
+      </ModalDialog.Footer>
     </StyledModalDialog>
   );
 };

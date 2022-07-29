@@ -1,12 +1,15 @@
 import styled, { css } from "styled-components";
 
-import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
+import {
+  isMobile,
+  isMobileOnly,
+  isTablet,
+  isDesktop,
+} from "react-device-detect";
 import {
   mobile,
   tablet,
   isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-  isDesktop as isDesktopUtils,
 } from "@appserver/components/utils/device";
 
 import Heading from "@appserver/components/heading";
@@ -20,39 +23,49 @@ const StyledArticle = styled.article`
   overflow: hidden;
   background: ${(props) => props.theme.catalog.background};
 
-  min-width: 256px;
-  max-width: 256px;
+  min-width: 251px;
+  max-width: 251px;
+
+  box-sizing: border-box;
+
+  //padding: 0 20px;
 
   @media ${tablet} {
-    min-width: ${(props) => (props.showText ? "240px" : "52px")};
-    max-width: ${(props) => (props.showText ? "240px" : "52px")};
+    min-width: ${(props) => (props.showText ? "243px" : "60px")};
+    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+
+    //padding: 0 8px;
   }
 
   ${isMobile &&
   css`
-    min-width: ${(props) => (props.showText ? "240px" : "52px")};
-    max-width: ${(props) => (props.showText ? "240px" : "52px")};
+    min-width: ${(props) => (props.showText ? "243px" : "60px")};
+    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+    //padding: 0 8px;
   `}
 
   @media ${mobile} {
     display: ${(props) => (props.articleOpen ? "flex" : "none")};
+    flex-direction: column;
     min-width: 100%;
     width: 100%;
     position: fixed;
+    margin: 0;
 
     height: calc(100% - 64px) !important;
-    margin: 0;
+
     margin-top: 16px;
-    padding: 0;
+    //padding: 0 8px;
   }
 
   ${isMobileOnly &&
   css`
     display: ${(props) => (props.articleOpen ? "flex" : "none")} !important;
+    flex-direction: column;
+
     min-width: 100% !important;
     width: 100%;
     position: fixed;
-
     margin: 0;
     padding: 0;
     margin-top: ${(props) =>
@@ -63,72 +76,36 @@ const StyledArticle = styled.article`
   z-index: ${(props) =>
     props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
-  .resizable-block {
-    overflow: hidden;
-
-    display: flex;
-    flex-direction: column;
-
-    min-width: ${(props) => (props.showText ? "256px" : "52px")};
-    width: ${(props) => (props.showText ? "256px" : "52px")};
-
-    height: 100% !important;
-
-    background: ${(props) => props.theme.catalog.background};
-
-    padding-bottom: 0px;
-
-    .resizable-border {
-      div {
-        cursor: ew-resize !important;
-      }
-    }
-    @media ${tablet} {
-      min-width: ${(props) => (props.showText ? "240px" : "52px")};
-      max-width: ${(props) => (props.showText ? "240px" : "52px")};
-      .resizable-border {
-        display: none;
-      }
-    }
-
-    @media ${mobile} {
-      display: ${(props) => (props.articleOpen ? "flex" : "none")};
-      min-width: 100%;
-      width: 100%;
-
-      margin: 0;
-      padding: 0;
-    }
-
-    ${isMobile &&
-    css`
-      min-width: ${(props) => (props.showText ? "240px" : "52px")};
-      max-width: ${(props) => (props.showText ? "240px" : "52px")};
-      .resizable-border {
-        display: none;
-      }
-    `}
-
+  .article-body__scrollbar {
     ${isMobileOnly &&
     css`
-      display: ${(props) => (props.articleOpen ? "flex" : "none")};
-      min-width: 100% !important;
-      width: 100%;
-      margin: 0;
-      padding: 0;
+      margin-top: 32px !important;
     `}
-  }
 
-  .article-body__scrollbar {
     .scroll-body {
-      padding-right: 0px !important;
+      overflow-x: hidden !important;
+      height: calc(100% - 200px);
+      ${!isDesktop && "padding-top:  16px"};
+      padding: 0 20px;
+
+      @media ${tablet} {
+        height: calc(100% - 150px);
+        padding: 0 8px !important;
+      }
+
+      ${isTablet &&
+      css`
+        padding: 0 8px !important;
+      `}
 
       @media ${mobile} {
+        height: calc(100% - 20px) !important;
         padding-bottom: 20px;
       }
 
       ${isMobileOnly &&
       css`
+        height: calc(100% - 20px) !important;
         padding-bottom: 20px;
       `}
     }
@@ -138,14 +115,14 @@ const StyledArticle = styled.article`
 StyledArticle.defaultProps = { theme: Base };
 
 const StyledArticleHeader = styled.div`
-  padding: 11px 20px 14px;
+  padding: 16px 20px 17px;
   margin-left: -1px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
   @media ${tablet} {
-    padding: 16px 16px 17px;
+    padding: 18px 8px 19px;
     margin: 0;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
 
@@ -155,25 +132,30 @@ const StyledArticleHeader = styled.div`
     box-sizing: border-box;
   }
 
-  @media ${mobile} {
-    border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
-    padding: 12px 16px 12px;
-    margin-bottom: 16px !important;
-  }
-
   ${isTablet &&
   css`
-    padding: 16px 16px 17px;
-    justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
+    padding: 18px 8px 19px;
     margin: 0;
+    justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
+
+    height: 61px;
+    min-height: 61px;
+    max-height: 61px;
+    box-sizing: border-box;
   `}
+
+  @media ${mobile} {
+    border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
+    padding: 12px 0 12px;
+    // margin-bottom: 16px !important;
+  }
 
   ${isMobileOnly &&
   css`
     border-bottom: ${(props) =>
       props.theme.catalog.header.borderBottom} !important;
-    padding: 12px 16px 12px !important;
-    margin-bottom: 16px !important;
+    padding: 12px 0 12px !important;
+    // margin-bottom: 16px !important;
   `}
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -181,20 +163,20 @@ const StyledArticleHeader = styled.div`
 
 StyledArticleHeader.defaultProps = { theme: Base };
 
-const StyledHeading = styled(Heading)`
+const StyledHeading = styled.div`
   margin: 0;
   padding: 0;
-  font-weight: bold;
-  line-height: 28px;
+  cursor: pointer;
+
   @media ${tablet} {
     display: ${(props) => (props.showText ? "block" : "none")};
-    margin-left: ${(props) => props.showText && "12px"};
+    margin-left: 9px;
   }
 
   ${isTablet &&
   css`
     display: ${(props) => (props.showText ? "block" : "none")};
-    margin-left: ${(props) => props.showText && "12px"};
+    margin-left: 9px !important;
   `}
 
   @media ${mobile} {
@@ -213,17 +195,17 @@ const StyledIconBox = styled.div`
   height: 20px;
 
   @media ${tablet} {
-    display: flex;
+    display: ${(props) => (props.showText ? "none" : "flex")};
   }
+
+  ${isTablet &&
+  css`
+    display: ${(props) => (props.showText ? "none" : "flex")};
+  `}
 
   @media ${mobile} {
     display: none;
   }
-
-  ${isMobile &&
-  css`
-    display: flex !important;
-  `}
 
   ${isMobileOnly &&
   css`
@@ -247,7 +229,7 @@ StyledMenuIcon.defaultProps = { theme: Base };
 
 const StyledArticleMainButton = styled.div`
   padding: 0px 20px 16px;
-  max-width: 216px;
+  max-width: 100%;
 
   @media ${tablet} {
     padding: 0;
@@ -262,11 +244,10 @@ const StyledArticleMainButton = styled.div`
 `;
 
 const StyledControlContainer = styled.div`
-  background: ${(props) => props.theme.catalog.control.background};
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
   position: absolute;
-  top: 30px;
+  top: 37px;
   right: 10px;
   border-radius: 100px;
   cursor: pointer;
@@ -279,14 +260,81 @@ const StyledControlContainer = styled.div`
 StyledControlContainer.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 12px;
-  height: 12px;
+  width: 17px;
+  height: 17px;
   path {
     fill: ${(props) => props.theme.catalog.control.fill};
   }
 `;
 
 StyledCrossIcon.defaultProps = { theme: Base };
+
+const StyledArticleProfile = styled.div`
+  padding: 16px 20px;
+  height: 40px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-top: ${(props) => props.theme.catalog.profile.borderTop};
+  background-color: ${(props) => props.theme.catalog.profile.background};
+
+  @media ${tablet} {
+    padding: 16px 14px;
+  }
+
+  ${isTablet &&
+  css`
+    padding: 16px 14px;
+  `}
+
+  .option-button {
+    margin-left: auto;
+    height: 32px;
+    width: 32px;
+
+    .injected-svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .option-button-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+`;
+
+StyledArticleProfile.defaultProps = { theme: Base };
+
+const StyledUserName = styled.div`
+  display: flex;
+  flex-direction: ${(props) => (props.length > 18 ? "column" : "row")};
+  max-width: 131px;
+  min-width: 131px;
+  padding-left: 12px;
+`;
+
+const StyledProfileWrapper = styled.div`
+  z-index: 301;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  min-width: 251px;
+  max-width: 251px;
+
+  @media ${tablet} {
+    min-width: ${(props) => (props.showText ? "243px" : "60px")};
+    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+  }
+
+  ${isTablet &&
+  css`
+    min-width: ${(props) => (props.showText ? "243px" : "60px")};
+    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+  `}
+`;
 
 export {
   StyledArticle,
@@ -297,4 +345,7 @@ export {
   StyledArticleMainButton,
   StyledControlContainer,
   StyledCrossIcon,
+  StyledArticleProfile,
+  StyledUserName,
+  StyledProfileWrapper,
 };

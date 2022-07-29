@@ -50,6 +50,11 @@ public class AzRecord : IMapFrom<Acl>
         Object = fullId;
     }
 
+    public AzRecord(Guid subjectId, Guid actionId, AceType reaction, ISecurityObjectId objectId)
+    : this(subjectId, actionId, reaction, AzObjectIdHelper.GetFullObjectId(objectId))
+    {
+    }
+
     public static implicit operator AzRecord(AzRecordCache cache)
     {
         var result = new AzRecord()

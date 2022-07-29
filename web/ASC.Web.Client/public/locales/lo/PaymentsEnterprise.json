@@ -13,7 +13,6 @@
   "ExpiryTrialLicense": "ຂໍຂອບໃຈສຳລັບການກວດສອບ {{organizationName}}!",
   "HeaderExpiredTrialLicense": "ມີໄລຍະເວລາທົດລອງໃຊ້ຟຣີ",
   "HeaderLicense": "ທ່ານກຳລັງໃຊ້ {{organizationName}} Enterprise Edition",
-  "PaymentsTitle": "ການຊຳລະເງິນ",
   "RenewalLicense": "ຖ້າທ່ານໄດ້ຕໍ່ອາຍຸການນຳໃຊ້ແລ້ວ, ໃຫ້ທ່ານໂຫລດຟາຍເອກະສານໃບອະນຸຍາດລົງ",
   "SubscriptionRenewedLicense": "ການຕໍ່ອາຍຸການສະໝັກເພື່ອຮັບ:",
   "SuccessLoadingLicense": "ໃບອະນຸຍາດເປີດໃຊ້ງານແລ້ວ"

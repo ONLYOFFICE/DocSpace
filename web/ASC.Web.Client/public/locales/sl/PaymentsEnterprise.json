@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Hvala, ker ste preverili {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Brezplačno preizkusno obdobje se je izteklo",
   "HeaderLicense": "Uporabljate {{organizationName}} Enterprise verzijo",
-  "PaymentsTitle": "Plačila",
   "RenewalLicense": "Če ste podaljšanje že kupili, naložite licenčno datoteko.",
   "SubscriptionRenewedLicense": "Podaljšajte naročnino, če želite:",
   "SuccessLoadingLicense": "Licenca je uspešno aktivirana"

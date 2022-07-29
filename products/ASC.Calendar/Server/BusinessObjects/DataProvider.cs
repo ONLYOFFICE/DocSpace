@@ -1,3 +1,29 @@
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -38,7 +64,6 @@ using ASC.Calendar.Core.Dao.Models;
 using ASC.Calendar.ExternalCalendars;
 using ASC.Calendar.iCalParser;
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -47,7 +72,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Core.Calendars;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Calendar.BusinessObjects
 {
@@ -60,7 +85,7 @@ namespace ASC.Calendar.BusinessObjects
         {
             get
             {
-                return ApiContext.Tenant.TenantId;
+                return ApiContext.Tenant.Id;
             }
         }
 
@@ -80,7 +105,7 @@ namespace ASC.Calendar.BusinessObjects
         private TenantManager TenantManager { get; }
         protected UserManager UserManager { get; }
         protected DDayICalParser DDayICalParser { get; }
-        public ILog Log { get; }
+        public ILogger<DataProvider> Log { get; }
         public InstanceCrypto InstanceCrypto { get; }
         public IHttpClientFactory ClientFactory { get; }
 
@@ -94,7 +119,7 @@ namespace ASC.Calendar.BusinessObjects
             EventHistoryHelper eventHistoryHelper,
             UserManager userManager,
             DDayICalParser dDayICalParser,
-            IOptionsMonitor<ILog> option,
+            ILogger<DataProvider> option,
             InstanceCrypto instanceCrypto,
             IHttpClientFactory clientFactory)
         {
@@ -108,7 +133,7 @@ namespace ASC.Calendar.BusinessObjects
             EventHistoryHelper = eventHistoryHelper;
             UserManager = userManager;
             DDayICalParser = dDayICalParser;
-            Log = option.Get("ASC.CalendarDataProvider");
+            Log = option;
             InstanceCrypto = instanceCrypto;
             ClientFactory = clientFactory;
         }
@@ -149,9 +174,9 @@ namespace ASC.Calendar.BusinessObjects
             var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
             groups.AddRange(
                 UserManager.GetUserGroups(userId, Constants.SysGroupCategoryId).Select(g => g.ID));
-            var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+            var currentId = TenantManager.GetCurrentTenant().Id;
 
-            var calIds = CalendarDb.CalendarCalendars.Where(p => p.OwnerId == userId.ToString() && p.IsTodo == 1 && p.Tenant == currentTenantId).Select(s => s.Id).ToArray();
+            var calIds = CalendarDb.CalendarCalendars.Where(p => p.OwnerId == userId.ToString() && p.IsTodo == 1 && p.Tenant == currentId).Select(s => s.Id).ToArray();
 
             var cals = GetCalendarsByIds(calIds);
 
@@ -160,7 +185,7 @@ namespace ASC.Calendar.BusinessObjects
 
         public void RemoveTodo(int todoId)
         {
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var tenant = TenantManager.GetCurrentTenant().Id;
             using var tx = CalendarDb.Database.BeginTransaction();
             var calendarTodo = CalendarDb.CalendarTodos.Where(r => r.Id == todoId && r.Tenant == tenant).SingleOrDefault();
 
@@ -176,19 +201,19 @@ namespace ASC.Calendar.BusinessObjects
             var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
             groups.AddRange(UserManager.GetUserGroups(userId, Constants.SysGroupCategoryId).Select(g => g.ID));
 
-            var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+            var currentId = TenantManager.GetCurrentTenant().Id;
 
             var calItemId = from calItem in CalendarDb.CalendarCalendarItem
                             join cal in CalendarDb.CalendarCalendars on calItem.CalendarId equals cal.Id
                             where
-                                cal.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                                cal.Tenant == TenantManager.GetCurrentTenant().Id &&
                                 (calItem.ItemId == userId ||
                                 (groups.Contains(calItem.ItemId) && calItem.IsGroup == 1))
                             select calItem.CalendarId;
             var calId = from cal in CalendarDb.CalendarCalendars
                         where
                             cal.OwnerId == userId.ToString() &&
-                            cal.Tenant == TenantManager.GetCurrentTenant().TenantId
+                            cal.Tenant == TenantManager.GetCurrentTenant().Id
                         select cal.Id;
 
             var calIds = calId.Union(calItemId);
@@ -209,7 +234,7 @@ namespace ASC.Calendar.BusinessObjects
         public List<Calendar> LoadiCalStreamsForUser(Guid userId)
         {
             var calIds = CalendarDb.CalendarCalendars.Where(p =>
-                    p.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                    p.Tenant == TenantManager.GetCurrentTenant().Id &&
                     p.OwnerId == userId.ToString() &&
                     p.IcalUrl != null)
                 .Select(s => s.Id).ToArray();
@@ -225,7 +250,7 @@ namespace ASC.Calendar.BusinessObjects
             var calIds = from calItem in CalendarDb.CalendarCalendarItem
                          join calendar in CalendarDb.CalendarCalendars on calItem.CalendarId equals calendar.Id
                          where
-                              calendar.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                              calendar.Tenant == TenantManager.GetCurrentTenant().Id &&
                               (calItem.ItemId == userId || (groups.Contains(calItem.ItemId) && calItem.IsGroup == 1))
                          select calItem.CalendarId;
 
@@ -412,7 +437,7 @@ namespace ASC.Calendar.BusinessObjects
                 OwnerId = ownerId.ToString(),
                 Name = name,
                 Description = description,
-                Tenant = TenantManager.GetCurrentTenant().TenantId,
+                Tenant = TenantManager.GetCurrentTenant().Id,
                 TextColor = textColor,
                 BackgroundColor = backgroundColor,
                 AlertType = (int)eventAlertType,
@@ -583,7 +608,7 @@ namespace ASC.Calendar.BusinessObjects
 
             //update notifications
             var eventsData = CalendarDb.CalendarEvents
-              .Where(p => p.CalendarId == calendarId && p.Tenant == TenantManager.GetCurrentTenant().TenantId)
+              .Where(p => p.CalendarId == calendarId && p.Tenant == TenantManager.GetCurrentTenant().Id)
               .Select(s => new
               {
                   eId = s.Id,
@@ -656,7 +681,7 @@ namespace ASC.Calendar.BusinessObjects
 
                 //update notifications
                 var eventsData = CalendarDb.CalendarEvents
-                      .Where(p => p.CalendarId == calendarId && p.Tenant == TenantManager.GetCurrentTenant().TenantId)
+                      .Where(p => p.CalendarId == calendarId && p.Tenant == TenantManager.GetCurrentTenant().Id)
                       .Select(s => new
                       {
                           eId = s.Id,
@@ -718,7 +743,7 @@ namespace ASC.Calendar.BusinessObjects
                     var eventsData = from events in CalendarDb.CalendarEvents
                                      join eventItem in CalendarDb.CalendarEventItem on events.Id equals eventItem.EventId
                                      where
-                                          events.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                                          events.Tenant == TenantManager.GetCurrentTenant().Id &&
                                           ((eventItem.IsGroup == 0 && eventItem.ItemId == viewSettings.UserId) ||
                                            (eventItem.IsGroup == 1 && groups.Contains(eventItem.ItemId)))
                                      select new
@@ -753,12 +778,12 @@ namespace ASC.Calendar.BusinessObjects
             {
                 var dataCaldavGuid = CalendarDb.CalendarCalendars.Where(p => p.Id == calendarId).Select(s => s.CaldavGuid).ToArray();
 
-                if (dataCaldavGuid[0] != null) 
-                    caldavGuid = Guid.Parse(dataCaldavGuid[0]);             
+                if (dataCaldavGuid[0] != null)
+                    caldavGuid = Guid.Parse(dataCaldavGuid[0]);
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "RemoveCalendar");
             }
 
             var cc = CalendarDb.CalendarCalendars.Where(r => r.Id == calendarId).SingleOrDefault();
@@ -770,7 +795,7 @@ namespace ASC.Calendar.BusinessObjects
             var cci = CalendarDb.CalendarCalendarItem.Where(r => r.CalendarId == calendarId).SingleOrDefault();
             if (cci != null) CalendarDb.CalendarCalendarItem.Remove(cci);
 
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var tenant = TenantManager.GetCurrentTenant().Id;
 
             var data = CalendarDb.CalendarEvents.Where(p => p.CalendarId == calendarId && p.Tenant == tenant).Select(s => s.Id).ToArray();
 
@@ -819,7 +844,7 @@ namespace ASC.Calendar.BusinessObjects
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "RemoveCaldavCalendar");
             }
         }
         public void RemoveExternalCalendarData(string calendarId)
@@ -842,7 +867,7 @@ namespace ASC.Calendar.BusinessObjects
             var data = from todos in CalendarDb.CalendarTodos
                        join calendar in CalendarDb.CalendarCalendars on todos.CalendarId equals calendar.Id
                        where
-                          todos.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                          todos.Tenant == TenantManager.GetCurrentTenant().Id &&
                           todos.Uid.Contains(todoUid) &&
                           todos.OwnerId == AuthContext.CurrentAccount.ID &&
                           calendar.OwnerId == AuthContext.CurrentAccount.ID.ToString() &&
@@ -869,7 +894,7 @@ namespace ASC.Calendar.BusinessObjects
             {
                 Id = Convert.ToInt32(id),
                 Name = name,
-                Tenant = TenantManager.GetCurrentTenant().TenantId,
+                Tenant = TenantManager.GetCurrentTenant().Id,
                 Description = description,
                 CalendarId = calendarId,
                 OwnerId = ownerId,
@@ -900,7 +925,7 @@ namespace ASC.Calendar.BusinessObjects
 
             var newTodo = new CalendarTodos
             {
-                Tenant = TenantManager.GetCurrentTenant().TenantId,
+                Tenant = TenantManager.GetCurrentTenant().Id,
                 Name = name,
                 Description = description,
                 CalendarId = calendarId,
@@ -926,23 +951,23 @@ namespace ASC.Calendar.BusinessObjects
             return null;
         }
 
-        public List<Todo> GetTodosByIds(int[] todoIds, Guid userId, int tenantId = -1)
+        public List<Todo> GetTodosByIds(int[] todoIds, Guid userId, int Id = -1)
         {
 
             var todoList = new List<Todo>();
             if (todoIds.Length > 0)
             {
 
-                if (tenantId != -1)
+                if (Id != -1)
                 {
                     var data = CalendarDb.CalendarTodos
-                                 .Where(p => todoIds.Contains(p.Id) && p.Tenant == tenantId)
+                                 .Where(p => todoIds.Contains(p.Id) && p.Tenant == Id)
                                  .Select(s => new
                                  {
                                      Id = s.Id.ToString(),
                                      Name = s.Name,
                                      Description = s.Description,
-                                     TenantId = s.Tenant,
+                                     Tenant = s.Tenant,
                                      CalendarId = s.CalendarId.ToString(),
                                      UtcStartDate = s.StartDate,
                                      Completed = s.Completed,
@@ -956,7 +981,7 @@ namespace ASC.Calendar.BusinessObjects
                         Id = r.Id,
                         Name = r.Name,
                         Description = r.Description,
-                        TenantId = r.TenantId,
+                        TenantId = r.Tenant,
                         CalendarId = r.CalendarId,
                         UtcStartDate = r.UtcStartDate ?? DateTime.MinValue,
                         Completed = r.Completed ?? DateTime.MinValue,
@@ -974,7 +999,7 @@ namespace ASC.Calendar.BusinessObjects
                                      Id = s.Id.ToString(),
                                      Name = s.Name,
                                      Description = s.Description,
-                                     TenantId = s.Tenant,
+                                     Tenant = s.Tenant,
                                      CalendarId = s.CalendarId.ToString(),
                                      UtcStartDate = s.StartDate,
                                      Completed = s.Completed,
@@ -988,7 +1013,7 @@ namespace ASC.Calendar.BusinessObjects
                         Id = r.Id,
                         Name = r.Name,
                         Description = r.Description,
-                        TenantId = r.TenantId,
+                        TenantId = r.Tenant,
                         CalendarId = r.CalendarId,
                         UtcStartDate = r.UtcStartDate ?? DateTime.MinValue,
                         Completed = r.Completed ?? DateTime.MinValue,
@@ -1015,14 +1040,14 @@ namespace ASC.Calendar.BusinessObjects
             return todos;
         }
 
-        public List<Todo> LoadTodos(int calendarId, Guid userId, int tenantId, DateTime utcStartDate, DateTime utcEndDate)
+        public List<Todo> LoadTodos(int calendarId, Guid userId, int Id, DateTime utcStartDate, DateTime utcEndDate)
         {
-            var tdIds = CalendarDb.CalendarTodos.Where(p => p.CalendarId == calendarId && p.Tenant == tenantId).Select(s => s.Id).ToArray();
+            var tdIds = CalendarDb.CalendarTodos.Where(p => p.CalendarId == calendarId && p.Tenant == Id).Select(s => s.Id).ToArray();
 
-            return GetTodosByIds(tdIds, userId, tenantId);
+            return GetTodosByIds(tdIds, userId, Id);
         }
 
-        internal List<Event> LoadSharedEvents(Guid userId, int tenantId, DateTime utcStartDate, DateTime utcEndDate)
+        internal List<Event> LoadSharedEvents(Guid userId, int Id, DateTime utcStartDate, DateTime utcEndDate)
         {
             var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
             groups.AddRange(UserManager.GetUserGroups(userId, Constants.SysGroupCategoryId).Select(g => g.ID));
@@ -1030,10 +1055,10 @@ namespace ASC.Calendar.BusinessObjects
             var evIds = from events in CalendarDb.CalendarEvents
                         join eventItem in CalendarDb.CalendarEventItem on events.Id equals eventItem.EventId
                         where
-                             events.Tenant == tenantId &&
+                             events.Tenant == Id &&
                              (
                                  eventItem.ItemId == userId || (groups.Contains(eventItem.ItemId) && eventItem.IsGroup == 1) &&
-                                 events.Tenant == tenantId &&
+                                 events.Tenant == Id &&
                                  ((events.StartDate >= utcStartDate && events.StartDate <= utcEndDate && events.Rrule == "") || events.Rrule != "") &&
                                  events.OwnerId != userId &&
                                  !(from calEventUser in CalendarDb.CalendarEventUser
@@ -1041,16 +1066,16 @@ namespace ASC.Calendar.BusinessObjects
                                    select calEventUser.EventId).Any()
                              )
                         select events.Id;
-            return GetEventsByIds(evIds.ToArray(), userId, tenantId);
+            return GetEventsByIds(evIds.ToArray(), userId, Id);
         }
 
-        public List<Event> LoadEvents(int calendarId, Guid userId, int tenantId, DateTime utcStartDate, DateTime utcEndDate)
+        public List<Event> LoadEvents(int calendarId, Guid userId, int Id, DateTime utcStartDate, DateTime utcEndDate)
         {
 
             var evIds = CalendarDb.CalendarEvents
                 .Where(p =>
                     p.CalendarId == calendarId &&
-                    p.Tenant == tenantId &&
+                    p.Tenant == Id &&
                     (
                         p.Rrule != "" ||
                         (
@@ -1066,7 +1091,7 @@ namespace ASC.Calendar.BusinessObjects
                 )
                 .Select(s => s.Id).ToList();
 
-            return GetEventsByIds(evIds.ToArray(), userId, tenantId);
+            return GetEventsByIds(evIds.ToArray(), userId, Id);
         }
 
         public Event GetEventByUid(string eventUid)
@@ -1092,7 +1117,7 @@ namespace ASC.Calendar.BusinessObjects
             return null;
         }
         //TODO duplicate code
-        public List<Event> GetEventsByIds(int[] evtIds, Guid userId, int tenantId = -1)
+        public List<Event> GetEventsByIds(int[] evtIds, Guid userId, int Id = -1)
         {
             var sharingData = CalendarDb.CalendarEventItem.Where(p => evtIds.Contains(p.EventId)).ToList();
 
@@ -1100,7 +1125,7 @@ namespace ASC.Calendar.BusinessObjects
 
             if (evtIds.Length > 0)
             {
-                if (tenantId != -1)
+                if (Id != -1)
                 {
                     var data = from calEvt in CalendarDb.CalendarEvents
                                join evtUsr in CalendarDb.CalendarEventUser
@@ -1109,13 +1134,13 @@ namespace ASC.Calendar.BusinessObjects
                                from ue in UserEvent.DefaultIfEmpty()
                                where
                                     evtIds.Contains(calEvt.Id) &&
-                                    calEvt.Tenant == tenantId
+                                    calEvt.Tenant == Id
                                select new
                                {
                                    Id = calEvt.Id.ToString(),
                                    Name = calEvt.Name,
                                    Description = calEvt.Description,
-                                   TenantId = (int?)calEvt.Tenant,
+                                   Tenant = (int?)calEvt.Tenant,
                                    CalendarId = calEvt.CalendarId.ToString(),
                                    UtcStartDate = calEvt.StartDate,
                                    UtcEndDate = calEvt.EndDate,
@@ -1140,7 +1165,7 @@ namespace ASC.Calendar.BusinessObjects
                                 Id = r.Id,
                                 Name = r.Name,
                                 Description = r.Description,
-                                TenantId = r.TenantId.GetValueOrDefault(),
+                                TenantId = r.Tenant.GetValueOrDefault(),
                                 CalendarId = r.CalendarId,
                                 UtcStartDate = r.UtcStartDate,
                                 UtcEndDate = r.UtcEndDate,
@@ -1181,7 +1206,7 @@ namespace ASC.Calendar.BusinessObjects
                                    Id = calEvt.Id.ToString(),
                                    Name = calEvt.Name,
                                    Description = calEvt.Description,
-                                   TenantId = (int?)calEvt.Tenant,
+                                   Tenant = (int?)calEvt.Tenant,
                                    CalendarId = calEvt.CalendarId.ToString(),
                                    UtcStartDate = calEvt.StartDate,
                                    UtcEndDate = calEvt.EndDate,
@@ -1206,7 +1231,7 @@ namespace ASC.Calendar.BusinessObjects
                                 Id = r.Id,
                                 Name = r.Name,
                                 Description = r.Description,
-                                TenantId = r.TenantId.GetValueOrDefault(),
+                                TenantId = r.Tenant.GetValueOrDefault(),
                                 CalendarId = r.CalendarId,
                                 UtcStartDate = r.UtcStartDate,
                                 UtcEndDate = r.UtcEndDate,
@@ -1239,7 +1264,7 @@ namespace ASC.Calendar.BusinessObjects
         }
         public Event GetEventOnlyByUid(string eventUid)
         {
-            var eventId = CalendarDb.CalendarEvents.Where(p => p.Tenant == TenantManager.GetCurrentTenant().TenantId && p.Uid == eventUid).Select(s => s.Id).FirstOrDefault();
+            var eventId = CalendarDb.CalendarEvents.Where(p => p.Tenant == TenantManager.GetCurrentTenant().Id && p.Uid == eventUid).Select(s => s.Id).FirstOrDefault();
 
             return eventId == 0 ? null : GetEventById(eventId);
         }
@@ -1294,7 +1319,7 @@ namespace ASC.Calendar.BusinessObjects
         public void RemoveEvent(int eventId)
         {
             using var tx = CalendarDb.Database.BeginTransaction();
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var tenant = TenantManager.GetCurrentTenant().Id;
 
             var ce = CalendarDb.CalendarEvents.Where(r => r.Id == eventId && r.Tenant == tenant).SingleOrDefault();
             if (ce != null) CalendarDb.CalendarEvents.Remove(ce);
@@ -1336,7 +1361,7 @@ namespace ASC.Calendar.BusinessObjects
             var newEvent = new CalendarEvents
             {
                 Id = 0,
-                Tenant = TenantManager.GetCurrentTenant().TenantId,
+                Tenant = TenantManager.GetCurrentTenant().Id,
                 Name = name,
                 Description = description,
                 CalendarId = calendarId,
@@ -1397,7 +1422,7 @@ namespace ASC.Calendar.BusinessObjects
             {
                 Id = eventId,
                 Uid = eventUid,
-                Tenant = TenantManager.GetCurrentTenant().TenantId,
+                Tenant = TenantManager.GetCurrentTenant().Id,
                 Name = name,
                 Description = description,
                 CalendarId = calendarId,
@@ -1495,7 +1520,7 @@ namespace ASC.Calendar.BusinessObjects
         {
             var data = from eventHistory in CalendarDb.CalendarEventHistory
                        where
-                        eventHistory.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                        eventHistory.Tenant == TenantManager.GetCurrentTenant().Id &&
                         eventIds.Contains(eventHistory.EventId)
                        select new
                        {
@@ -1539,7 +1564,7 @@ namespace ASC.Calendar.BusinessObjects
 
                 var newHistory = new CalendarEventHistory
                 {
-                    Tenant = TenantManager.GetCurrentTenant().TenantId,
+                    Tenant = TenantManager.GetCurrentTenant().Id,
                     CalendarId = calendarId,
                     EventUid = eventUid,
                     EventId = eventId,
@@ -1560,7 +1585,7 @@ namespace ASC.Calendar.BusinessObjects
                 history.Ics = history.Ics + Environment.NewLine + ics;
                 var newHistory = new CalendarEventHistory
                 {
-                    Tenant = TenantManager.GetCurrentTenant().TenantId,
+                    Tenant = TenantManager.GetCurrentTenant().Id,
                     CalendarId = calendarId,
                     EventUid = eventUid,
                     EventId = eventId,
@@ -1580,7 +1605,7 @@ namespace ASC.Calendar.BusinessObjects
             using var tx = CalendarDb.Database.BeginTransaction();
             var eh = CalendarDb.CalendarEventHistory
                 .Where(r =>
-                        r.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                        r.Tenant == TenantManager.GetCurrentTenant().Id &&
                         r.CalendarId == calendarId &&
                         r.EventUid == eventUid
                       )
@@ -1600,7 +1625,7 @@ namespace ASC.Calendar.BusinessObjects
             using var tx = CalendarDb.Database.BeginTransaction();
             var eh = CalendarDb.CalendarEventHistory
                 .Where(r =>
-                        r.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                        r.Tenant == TenantManager.GetCurrentTenant().Id &&
                         r.EventId == eventId
                       )
                 .SingleOrDefault();
@@ -1733,7 +1758,7 @@ namespace ASC.Calendar.BusinessObjects
             foreach (var item in eventPublicItems)
             {
                 if (item.IsGroup)
-                    eventUsers.AddRange(UserManager.GetUsersByGroup(item.Id).Select(u => new UserAlertType(u.ID, baseEventAlertType, calendarTimeZone)));
+                    eventUsers.AddRange(UserManager.GetUsersByGroup(item.Id).Select(u => new UserAlertType(u.Id, baseEventAlertType, calendarTimeZone)));
                 else
                     eventUsers.Add(new UserAlertType(item.Id, baseEventAlertType, calendarTimeZone));
             }
@@ -1823,7 +1848,7 @@ namespace ASC.Calendar.BusinessObjects
             foreach (var item in eventPublicItems)
             {
                 if (item.IsGroup)
-                    calendarUsers.AddRange(UserManager.GetUsersByGroup(item.Id).Select(u => new UserAlertType(u.ID, baseEventAlertType, calendarTimeZone)));
+                    calendarUsers.AddRange(UserManager.GetUsersByGroup(item.Id).Select(u => new UserAlertType(u.Id, baseEventAlertType, calendarTimeZone)));
                 else
                     calendarUsers.Add(new UserAlertType(item.Id, baseEventAlertType, calendarTimeZone));
             }
@@ -1911,7 +1936,7 @@ namespace ASC.Calendar.BusinessObjects
                         UserId = u.UserId,
                         EventId = eventId,
                         NotifyDate = alertDate,
-                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Tenant = TenantManager.GetCurrentTenant().Id,
                         AlertType = (int)u.AlertType,
                         TimeZone = u.TimeZone.Id,
                         Rrule = rrule.ToString()
@@ -1944,7 +1969,7 @@ namespace ASC.Calendar.BusinessObjects
             //CoreContext.UserManager.IsSystemUser(user.ID)
             if (string.IsNullOrEmpty(user.Email))
             {
-                Log.Info("CalendarApi: user {0} has no email. {1}" + user.ID + Environment.StackTrace);
+                Log.LogInformation("CalendarApi: user {0} has no email. {1}" + user.Id + Environment.StackTrace);
                 return false;
             }
 

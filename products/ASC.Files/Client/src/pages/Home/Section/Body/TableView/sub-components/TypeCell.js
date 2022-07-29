@@ -1,9 +1,9 @@
 import React from "react";
 import { StyledText } from "./CellStyles";
-import { FileType } from "@appserver/common/constants";
+import { FileType, RoomsType } from "@appserver/common/constants";
 
 const TypeCell = ({ t, item, sideColor }) => {
-  const { fileExst, fileType } = item;
+  const { fileExst, fileType, roomType } = item;
   const getItemType = () => {
     switch (fileType) {
       case FileType.Unknown:
@@ -28,7 +28,24 @@ const TypeCell = ({ t, item, sideColor }) => {
     }
   };
 
-  const type = getItemType();
+  const getRoomType = () => {
+    switch (roomType) {
+      case RoomsType.CustomRoom:
+        return `Custom`;
+      case RoomsType.FillingFormsRoom:
+        return `Filling form`;
+      case RoomsType.EditingRoom:
+        return `Collaboration`;
+      case RoomsType.ReadOnlyRoom:
+        return `View-only`;
+      case RoomsType.ReviewRoom:
+        return `Review`;
+      default:
+        return ``;
+    }
+  };
+
+  const type = item.isRoom ? getRoomType() : getItemType();
   const Exst = fileExst ? fileExst.slice(1).toUpperCase() : "";
 
   return (

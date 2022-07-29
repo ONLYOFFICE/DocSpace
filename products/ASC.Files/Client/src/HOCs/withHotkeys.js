@@ -46,6 +46,9 @@ const withHotkeys = (Component) => {
       isFavoritesFolder,
       isRecentFolder,
       isTrashFolder,
+      isArchiveFolder,
+      isRoomsFolder,
+
       selection,
       setFavoriteAction,
     } = props;
@@ -63,7 +66,11 @@ const withHotkeys = (Component) => {
     const onKeyDown = (e) => activateHotkeys(e);
 
     const folderWithNoAction =
-      isFavoritesFolder || isRecentFolder || isTrashFolder;
+      isFavoritesFolder ||
+      isRecentFolder ||
+      isTrashFolder ||
+      isArchiveFolder ||
+      isRoomsFolder;
 
     const onCreate = (extension) => {
       if (folderWithNoAction) return;
@@ -359,6 +366,8 @@ const withHotkeys = (Component) => {
         isFavoritesFolder,
         isRecentFolder,
         isTrashFolder,
+        isArchiveFolder,
+        isRoomsFolder,
       } = treeFoldersStore;
 
       return {
@@ -399,6 +408,9 @@ const withHotkeys = (Component) => {
         isFavoritesFolder,
         isRecentFolder,
         isTrashFolder,
+        isArchiveFolder,
+        isRoomsFolder,
+
         selection,
         setFavoriteAction,
       };

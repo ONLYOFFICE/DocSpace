@@ -142,6 +142,8 @@ const Items = ({
 
   moveDragItems,
 
+  docSpace,
+
   setEmptyTrashDialogVisible,
   trashIsEmpty,
 
@@ -166,18 +168,23 @@ const Items = ({
         return `${item.id}` === selectedTreeNode[0];
       }
     },
-    [selectedTreeNode, pathParts]
+    [selectedTreeNode, pathParts, docSpace]
   );
-  const getEndOfBlock = React.useCallback((item) => {
-    switch (item.key) {
-      case "0-3":
-      case "0-5":
-      case "0-6":
-        return true;
-      default:
-        return false;
-    }
-  }, []);
+  const getEndOfBlock = React.useCallback(
+    (item) => {
+      if (docSpace) return false;
+
+      switch (item.key) {
+        case "0-3":
+        case "0-5":
+        case "0-6":
+          return true;
+        default:
+          return false;
+      }
+    },
+    [docSpace]
+  );
 
   const getFolderIcon = React.useCallback((item) => {
     let iconUrl = "images/catalog.folder.react.svg";
@@ -185,6 +192,12 @@ const Items = ({
     switch (item.rootFolderType) {
       case FolderType.USER:
         iconUrl = "/static/images/catalog.user.react.svg";
+        break;
+      case FolderType.Rooms:
+        iconUrl = "/static/images/catalog.folder.react.svg";
+        break;
+      case FolderType.Archive:
+        iconUrl = "/static/images/catalog.archive.react.svg";
         break;
       case FolderType.SHARE:
         iconUrl = "/static/images/catalog.shared.react.svg";
@@ -203,41 +216,6 @@ const Items = ({
         break;
       case FolderType.TRASH:
         iconUrl = "/static/images/catalog.trash.react.svg";
-        break;
-      default:
-        break;
-    }
-
-    switch (item.providerKey) {
-      case "GoogleDrive":
-        iconUrl = "/static/images/cloud.services.google.drive.react.svg";
-        break;
-      case "Box":
-        iconUrl = "/static/images/cloud.services.box.react.svg";
-        break;
-      case "DropboxV2":
-        iconUrl = "/static/images/cloud.services.dropbox.react.svg";
-        break;
-      case "OneDrive":
-        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
-        break;
-      case "SharePoint":
-        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
-        break;
-      case "kDrive":
-        iconUrl = "/static/images/catalog.folder.react.svg";
-        break;
-      case "Yandex":
-        iconUrl = "/static/images/catalog.folder.react.svg";
-        break;
-      case "NextCloud":
-        iconUrl = "/static/images/cloud.services.nextcloud.react.svg";
-        break;
-      case "OwnCloud":
-        iconUrl = "/static/images/catalog.folder.react.svg";
-        break;
-      case "WebDav":
-        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       default:
         break;
@@ -300,7 +278,7 @@ const Items = ({
     setEmptyTrashDialogVisible(true);
   };
 
-  const getItem = React.useCallback(
+  const getItems = React.useCallback(
     (data) => {
       const items = data.map((item, index) => {
         const isTrash = item.rootFolderType === FolderType.TRASH;
@@ -333,6 +311,41 @@ const Items = ({
           />
         );
       });
+
+      const roomsHeader = (
+        <CatalogItem
+          key={"rooms-header"}
+          isHeader={true}
+          isFirstHeader={true}
+          showText={showText}
+          text={"Rooms"}
+        />
+      );
+
+      const filesHeader = (
+        <CatalogItem
+          key={"files-header"}
+          isHeader={true}
+          isFirstHeader={false}
+          showText={showText}
+          text={"Files"}
+        />
+      );
+
+      const otherHeader = (
+        <CatalogItem
+          key={"other-header"}
+          isHeader={true}
+          isFirstHeader={false}
+          showText={showText}
+          text={"Other"}
+        />
+      );
+
+      items.splice(3, 0, filesHeader);
+      items.unshift(roomsHeader);
+      items.push(otherHeader);
+
       return items;
     },
     [
@@ -353,7 +366,7 @@ const Items = ({
     ]
   );
 
-  return <>{getItem(data)}</>;
+  return <>{getItems(data)}</>;
 };
 
 Items.propTypes = {
@@ -404,6 +417,7 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       currentId: id,
       showText: auth.settingsStore.showText,
+      docSpace: auth.settingsStore.docSpace,
       pathParts: selectedFolderStore.pathParts,
       data: treeFolders,
       selectedTreeNode,

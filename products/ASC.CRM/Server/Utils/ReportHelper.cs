@@ -1,3 +1,29 @@
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -48,18 +74,18 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class ReportHelper
     {
-        private CurrencyProvider _currencyProvider;
-        private IHttpContextAccessor _httpContext;
-        private SecurityContext _securityContext;
-        private DocbuilderReportsUtilityHelper _docbuilderReportsUtilityHelper;
-        private DaoFactory _daoFactory;
-        private IServiceProvider _serviceProvider;
-        private IServiceScopeFactory _serviceScopeFactory;
-        private Global _global;
-        private SettingsManager _settingsManager;
-        private TenantUtil _tenantUtil;
-        private TenantManager _tenantManager;
-        private IHttpClientFactory _clientFactory;
+        private readonly CurrencyProvider _currencyProvider;
+        private readonly IHttpContextAccessor _httpContext;
+        private readonly SecurityContext _securityContext;
+        private readonly DocbuilderReportsUtilityHelper _docbuilderReportsUtilityHelper;
+        private readonly DaoFactory _daoFactory;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly Global _global;
+        private readonly SettingsManager _settingsManager;
+        private readonly TenantUtil _tenantUtil;
+        private readonly TenantManager _tenantManager;
+        private readonly IHttpClientFactory _clientFactory;
 
         public ReportHelper(TenantManager tenantManager,
                             TenantUtil tenantUtil,
@@ -116,9 +142,6 @@ namespace ASC.Web.CRM.Classes
                 case ReportType.WorkloadByInvoices:
                     reportName = CRMReportResource.WorkloadByInvoicesReport;
                     break;
-                case ReportType.WorkloadByVoip:
-                    reportName = CRMReportResource.WorkloadByVoipReport;
-                    break;
                 case ReportType.SummaryForThePeriod:
                     reportName = CRMReportResource.SummaryForThePeriodReport;
                     break;
@@ -155,8 +178,6 @@ namespace ASC.Web.CRM.Classes
             //        return reportDao.CheckWorkloadByDealsReportData(timePeriod, managers);
             //    case ReportType.WorkloadByInvoices:
             //        return reportDao.CheckWorkloadByInvoicesReportData(timePeriod, managers);
-            //    case ReportType.WorkloadByVoip:
-            //        return reportDao.CheckWorkloadByViopReportData(timePeriod, managers);
             //    case ReportType.SummaryForThePeriod:
             //        return reportDao.CheckSummaryForThePeriodReportData(timePeriod, managers);
             //    case ReportType.SummaryAtThisMoment:
@@ -171,7 +192,7 @@ namespace ASC.Web.CRM.Classes
             var reportDao = _daoFactory.GetReportDao();
 
             if (reportType == ReportType.WorkloadByTasks || reportType == ReportType.WorkloadByInvoices ||
-                reportType == ReportType.WorkloadByContacts || reportType == ReportType.WorkloadByVoip) return null;
+                reportType == ReportType.WorkloadByContacts) return null;
 
             var crmSettings = _settingsManager.Load<CrmSettings>();
             var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency);
@@ -202,8 +223,6 @@ namespace ASC.Web.CRM.Classes
                     return reportDao.GetWorkloadByDealsReportData(timePeriod, managers, defaultCurrency);
                 case ReportType.WorkloadByInvoices:
                     return reportDao.GetWorkloadByInvoicesReportData(timePeriod, managers);
-                case ReportType.WorkloadByVoip:
-                    return reportDao.GetWorkloadByViopReportData(timePeriod, managers);
                 case ReportType.SummaryForThePeriod:
                     return reportDao.GetSummaryForThePeriodReportData(timePeriod, managers, defaultCurrency);
                 case ReportType.SummaryAtThisMoment:

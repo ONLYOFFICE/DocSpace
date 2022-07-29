@@ -1,4 +1,5 @@
 {
-  "DeleteThirdPartyAlert": "Вы действительно хотите удалить {{service}} из модуля 'Документы'? Это никак не повлияет на Ваш {{account}} аккаунт.",
+  "DisconnectCloudMessage": "Вы действительно хотите удалить {{service}} из 'Документов'? Это никак не повлияет на Ваш аккаунт {{account}}.",
+  "DisconnectCloudTitle": "Отключить облако",
   "SuccessDeleteThirdParty": "Сторонний ресурс {{service}} отключен"
 }

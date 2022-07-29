@@ -121,6 +121,7 @@
   "PasswordMinimumLength": "최소 길이",
   "People": "사람들",
   "Phone": "휴대전화",
+  "PreparationPortalTitle": "포털 복원이 진행 중입니다",
   "Previous": "이전",
   "Profile": "프로필",
   "ProjectsProduct": "프로젝트",
@@ -167,5 +168,9 @@
   "View": "보기",
   "ViewWeb": "웹 버전 보기",
   "Warning": "경고",
-  "Hotkeys": "단축키"
+  "Hotkeys": "단축키",
+  "PaymentsTitle": "결제",
+  "AboutCompanyTitle": "프로그램 소개",
+  "LogoutButton": "로그아웃",
+  "HelpCenter": "도움말 센터"
 }

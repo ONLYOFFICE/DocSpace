@@ -9,12 +9,7 @@ import {
 } from "react-device-detect";
 
 const StyledMain = styled.main`
-  height: ${(props) =>
-    isIOS && !isFirefox
-      ? "calc(var(--vh, 1vh) * 100)"
-      : props.isDesktop
-      ? "100vh"
-      : "calc(100vh - 48px)"};
+  height: ${isIOS && !isFirefox ? "calc(var(--vh, 1vh) * 100)" : "100vh"};
   width: 100vw;
   z-index: 0;
   display: flex;

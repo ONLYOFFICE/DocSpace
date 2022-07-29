@@ -7,11 +7,13 @@ import DropDownItem from "../drop-down-item";
 import {
   StyledSpan,
   StyledText,
+  StyledTextWithExpander,
   StyledLinkWithDropdown,
   Caret,
 } from "./styled-link-with-dropdown";
 import { isMobileOnly } from "react-device-detect";
 import Scrollbar from "@appserver/components/scrollbar";
+import { ReactSVG } from "react-svg";
 
 class LinkWithDropdown extends React.Component {
   constructor(props) {
@@ -101,6 +103,7 @@ class LinkWithDropdown extends React.Component {
       directionY,
       theme,
       hasScroll,
+      withExpander,
       ...rest
     } = this.props;
 
@@ -118,6 +121,24 @@ class LinkWithDropdown extends React.Component {
       />
     ));
 
+    const styledText = (
+      <StyledText
+        className="text"
+        isTextOverflow={isTextOverflow}
+        truncate={isTextOverflow}
+        fontSize={fontSize}
+        fontWeight={fontWeight}
+        color={color}
+        isBold={isBold}
+        title={title}
+        dropdownType={dropdownType}
+        isDisabled={isDisabled}
+        withTriangle
+      >
+        {this.props.children}
+      </StyledText>
+    );
+
     return (
       <StyledSpan className={className} id={id} style={style} ref={this.ref}>
         <span onClick={this.onOpen}>
@@ -127,26 +148,17 @@ class LinkWithDropdown extends React.Component {
             color={color}
             isDisabled={isDisabled}
           >
-            <StyledText
-              className="text"
-              isTextOverflow={isTextOverflow}
-              truncate={isTextOverflow}
-              fontSize={fontSize}
-              fontWeight={fontWeight}
-              color={color}
-              isBold={isBold}
-              title={title}
-              dropdownType={dropdownType}
-              isDisabled={isDisabled}
-            >
-              {this.props.children}
-            </StyledText>
-            <Caret
-              color={color}
-              dropdownType={dropdownType}
-              isOpen={this.state.isOpen}
-              isDisabled={isDisabled}
-            />
+            {withExpander ? (
+              <StyledTextWithExpander isOpen={this.state.isOpen}>
+                {styledText}
+                <ReactSVG
+                  className="expander"
+                  src={"/static/images/expander-down.react.svg"}
+                />
+              </StyledTextWithExpander>
+            ) : (
+              styledText
+            )}
           </StyledLinkWithDropdown>
         </span>
         <DropDown
@@ -156,6 +168,7 @@ class LinkWithDropdown extends React.Component {
           withArrow={false}
           forwardedRef={this.ref}
           directionY={directionY}
+          isDropdown={false}
           clickOutsideAction={this.onClose}
           {...rest}
         >
@@ -185,6 +198,7 @@ LinkWithDropdown.propTypes = {
   /** Type of dropdown: alwaysDashed is always show dotted style and icon of arrow,
    * appearDashedAfterHover is show dotted style and icon arrow only after hover */
   dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]),
+  withExpander: PropTypes.bool,
   /** Font size of link */
   fontSize: PropTypes.string,
   /** Font weight of link */
@@ -225,6 +239,7 @@ LinkWithDropdown.defaultProps = {
   className: "",
   isDisabled: false,
   hasScroll: false,
+  withExpander: false,
 };
 
 export default LinkWithDropdown;

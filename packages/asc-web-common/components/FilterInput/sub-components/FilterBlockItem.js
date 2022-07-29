@@ -2,6 +2,8 @@ import React from "react";
 
 import SelectorAddButton from "@appserver/components/selector-add-button";
 import Heading from "@appserver/components/heading";
+import ComboBox from "@appserver/components/combobox";
+import Checkbox from "@appserver/components/checkbox";
 
 import {
   StyledFilterBlockItem,
@@ -15,6 +17,7 @@ import {
   StyledFilterBlockItemToggle,
   StyledFilterBlockItemToggleText,
   StyledFilterBlockItemToggleButton,
+  StyledFilterBlockItemCheckboxContainer,
   StyledFilterBlockItemSeparator,
 } from "./StyledFilterBlock";
 
@@ -26,11 +29,25 @@ const FilterBlockItem = ({
   groupItem,
   isLast,
   withoutHeader,
+  withoutSeparator,
   changeFilterValue,
   showSelector,
 }) => {
-  const changeFilterValueAction = (key, isSelected) => {
-    changeFilterValue && changeFilterValue(group, key, isSelected);
+  const changeFilterValueAction = (
+    key,
+    isSelected,
+    isMultiSelect,
+    withOptions
+  ) => {
+    changeFilterValue &&
+      changeFilterValue(
+        group,
+        key,
+        isSelected,
+        null,
+        isMultiSelect,
+        withOptions
+      );
   };
 
   const showSelectorAction = (event, isAuthor, group, ref) => {
@@ -53,7 +70,9 @@ const FilterBlockItem = ({
 
     const isAuthor = item.key === "user";
 
-    return !item.isSelected ? (
+    return !item.isSelected ||
+      item.selectedKey === "me" ||
+      item.selectedKey === "other" ? (
       <StyledFilterBlockItemSelector key={item.key}>
         <SelectorAddButton
           onClick={(event) =>
@@ -81,7 +100,7 @@ const FilterBlockItem = ({
           noSelect={true}
           isSelected={item.isSelected}
         >
-          {item.selectedLabel.toLowerCase()}
+          {item?.selectedLabel?.toLowerCase()}
         </StyledFilterBlockItemTagText>
         {item.isSelected && (
           <StyledFilterBlockItemTagIcon ref={clearSelectorRef}>
@@ -106,19 +125,58 @@ const FilterBlockItem = ({
     );
   };
 
+  const getWithOptionsItem = (item) => {
+    const selectedOption = item.options.find((option) => option.isSelected);
+
+    return (
+      <ComboBox
+        key={item.key}
+        onSelect={(data) =>
+          changeFilterValueAction(
+            data.key,
+            data.key === selectedOption?.key,
+            false,
+            item.withOptions
+          )
+        }
+        options={item.options}
+        selectedOption={selectedOption ? selectedOption : item.options[0]}
+        displaySelectedOption={true}
+        scaled={true}
+        scaledOptions={true}
+      />
+    );
+  };
+
+  const getCheckboxItem = (item) => {
+    return (
+      <StyledFilterBlockItemCheckboxContainer key={item.key}>
+        <Checkbox
+          isChecked={item.isSelected}
+          label={item.label}
+          onChange={() =>
+            changeFilterValueAction(item.key, item.isSelected, false)
+          }
+        />
+      </StyledFilterBlockItemCheckboxContainer>
+    );
+  };
+
   const getTagItem = (item) => {
     return (
       <StyledFilterBlockItemTag
         key={item.key}
         isSelected={item.isSelected}
-        name={`${item.label.toLowerCase()}-${item.key}`}
-        onClick={() => changeFilterValueAction(item.key, item.isSelected)}
+        name={`${item.label}-${item.key}`}
+        onClick={() =>
+          changeFilterValueAction(item.key, item.isSelected, item.isMultiSelect)
+        }
       >
         <StyledFilterBlockItemTagText
           noSelect={true}
           isSelected={item.isSelected}
         >
-          {item.label.toLowerCase()}
+          {item.label}
         </StyledFilterBlockItemTagText>
       </StyledFilterBlockItemTag>
     );
@@ -136,10 +194,12 @@ const FilterBlockItem = ({
         {groupItem.map((item) => {
           if (item.isSelector === true) return getSelectorItem(item);
           if (item.isToggle === true) return getToggleItem(item);
+          if (item.withOptions === true) return getWithOptionsItem(item);
+          if (item.isCheckbox === true) return getCheckboxItem(item);
           return getTagItem(item);
         })}
       </StyledFilterBlockItemContent>
-      {!isLast && <StyledFilterBlockItemSeparator />}
+      {!isLast && !withoutSeparator && <StyledFilterBlockItemSeparator />}
     </StyledFilterBlockItem>
   );
 };

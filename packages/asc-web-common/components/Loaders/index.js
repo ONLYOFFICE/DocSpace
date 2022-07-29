@@ -13,6 +13,7 @@ import Row from "./RowLoader";
 import Rows from "./RowsLoader";
 import Text from "./TextLoader";
 import Filter from "./FilterLoader";
+import FilterBlock from "./FilterBlockLoader";
 import ProfileView from "./ProfileViewLoader";
 import SettingsFiles from "./SettingsFilesLoader";
 import Group from "./GroupLoader";
@@ -43,6 +44,7 @@ export default {
   Rows,
   Text,
   Filter,
+  FilterBlock,
   ProfileView,
   SettingsFiles,
   Group,

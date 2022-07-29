@@ -9,6 +9,7 @@ import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@appserver/common/history";
+import Toast from "@appserver/components/toast";
 import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
@@ -25,6 +26,9 @@ import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
 import { useThemeDetector } from "./helpers/utils";
+import { isMobileOnly } from "react-device-detect";
+import IndicatorLoader from "./components/IndicatorLoader";
+import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -200,6 +204,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     roomsMode,
     setSnackbarExist,
     userTheme,
+    user,
   } = rest;
 
   useEffect(() => {
@@ -430,6 +435,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
+  const isLogin = pathname.indexOf("login") !== -1;
 
   if (!window.AppServer.studio) {
     window.AppServer.studio = {};
@@ -519,9 +525,12 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   return (
     <Layout>
       <Router history={history}>
+        <Toast />
         <ReactSmartBanner t={t} ready={ready} />
-        {isEditor ? <></> : <NavMenu />}
+        {isEditor || isLogin || !isMobileOnly ? <></> : <NavMenu />}
+        <IndicatorLoader />
         <ScrollToTop />
+        <DialogsWrapper t={t} />
         <Main isDesktop={isDesktop}>
           <Switch>
             <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />

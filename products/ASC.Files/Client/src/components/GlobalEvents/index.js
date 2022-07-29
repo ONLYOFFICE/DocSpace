@@ -6,6 +6,7 @@ import { Events } from "../../helpers/constants";
 
 import CreateEvent from "./CreateEvent";
 import RenameEvent from "./RenameEvent";
+import CreateRoomEvent from "./CreateRoomEvent";
 
 const GlobalEvents = () => {
   const [createDialogProps, setCreateDialogProps] = React.useState({
@@ -16,6 +17,11 @@ const GlobalEvents = () => {
     title: "",
     templateId: null,
     fromTemplate: null,
+    onClose: null,
+  });
+
+  const [createRoomDialogProps, setCreateRoomDialogProps] = React.useState({
+    visible: false,
     onClose: null,
   });
 
@@ -53,6 +59,14 @@ const GlobalEvents = () => {
     });
   }, []);
 
+  const onCreateRoom = React.useCallback((e) => {
+    setCreateRoomDialogProps({
+      visible: true,
+      onClose: () =>
+        setCreateRoomDialogProps({ visible: false, onClose: null }),
+    });
+  }, []);
+
   const onRename = React.useCallback((e) => {
     const visible = e.item ? true : false;
 
@@ -72,10 +86,12 @@ const GlobalEvents = () => {
 
   React.useEffect(() => {
     window.addEventListener(Events.CREATE, onCreate);
+    window.addEventListener(Events.ROOM_CREATE, onCreateRoom);
     window.addEventListener(Events.RENAME, onRename);
 
     return () => {
       window.removeEventListener(Events.CREATE, onCreate);
+      window.removeEventListener(Events.ROOM_CREATE, onCreateRoom);
       window.removeEventListener(Events.RENAME, onRename);
     };
   }, [onRename, onCreate]);
@@ -83,6 +99,9 @@ const GlobalEvents = () => {
   return [
     createDialogProps.visible && (
       <CreateEvent key={Events.CREATE} {...createDialogProps} />
+    ),
+    createRoomDialogProps.visible && (
+      <CreateRoomEvent key={Events.ROOM_CREATE} {...createRoomDialogProps} />
     ),
     renameDialogProps.visible && (
       <RenameEvent key={Events.RENAME} {...renameDialogProps} />

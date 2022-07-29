@@ -570,6 +570,10 @@ const Base = {
   },
 
   modalDialog: {
+    backgroundColor: white,
+    textColor: black,
+    headerBorderColor: globalColors.grayLightMid,
+    footerBorderColor: globalColors.grayLightMid,
     width: "auto",
     maxwidth: "560px",
     margin: " 0 auto",
@@ -598,14 +602,8 @@ const Base = {
     },
 
     closeButton: {
-      width: "14px",
-      height: "14px",
-      minWidth: "14px",
-      minHeight: "14px",
-
-      right: "16px",
-      top: "13px",
-      hoverColor: grayMain,
+      //backgroundColor: "#9a9ea3",
+      fillColor: white,
     },
   },
 
@@ -868,6 +866,10 @@ const Base = {
 
     span: { maxWidth: "300px" },
 
+    expander: {
+      iconColor: black,
+    },
+
     caret: {
       width: "5px",
       minWidth: "5px",
@@ -991,6 +993,7 @@ const Base = {
       fontSize: {
         min: "12px",
         small: "12px",
+        base: "16px",
         medium: "20px",
         big: "34px",
         max: "72px",
@@ -1001,6 +1004,7 @@ const Base = {
       left: {
         min: "-2px",
         small: "-2px",
+        base: "-2px",
         medium: "-4px",
         big: "0px",
         max: "0px",
@@ -1009,6 +1013,7 @@ const Base = {
       bottom: {
         min: "3px",
         small: "3px",
+        base: "4px",
         medium: "6px",
         big: "5px",
         max: "0px",
@@ -1082,6 +1087,7 @@ const Base = {
     width: {
       min: "32px",
       small: "36px",
+      base: "40px",
       medium: "48px",
       big: "82px",
       max: "160px",
@@ -1090,6 +1096,7 @@ const Base = {
     height: {
       min: "32px",
       small: "36px",
+      base: "40px",
       medium: "48px",
       big: "82px",
       max: "160px",
@@ -1821,17 +1828,22 @@ const Base = {
     },
 
     headerBurgerColor: "#657077",
+
+    profile: {
+      borderTop: "1px solid #eceef1",
+      background: "#f3f4f4",
+    },
   },
 
   catalogItem: {
     container: {
       width: "100%",
       height: "36px",
-      padding: "0 20px",
+      padding: "0 12px",
       marginBottom: "16px",
       tablet: {
         height: "44px",
-        padding: "0 16px",
+        padding: "0 12px",
         marginBottom: "24px",
       },
     },
@@ -1925,15 +1937,15 @@ const Base = {
   },
 
   header: {
-    backgroundColor: "#0F4071",
-    recoveryColor: "#27537F",
-    linkColor: "#7a95b0",
+    backgroundColor: "#F8F9F9",
+    recoveryColor: "#657077",
+    linkColor: "#657077",
     productColor: white,
   },
 
   menuContainer: {
-    background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
-    color: white,
+    background: "#F3F4F4",
+    color: black,
   },
 
   article: {
@@ -2231,6 +2243,14 @@ const Base = {
       backgroundColor: "rgba(11, 11, 11, 0.7)",
       background: "rgba(200, 200, 200, 0.2)",
     },
+  },
+
+  connectCloud: {
+    connectBtnContent: black,
+    connectBtnTextBg: white,
+    connectBtnIconBg: white,
+    connectBtnTextBorder: grayMid,
+    connectBtnIconBorder: grayMid,
   },
 
   filesThirdPartyDialog: {

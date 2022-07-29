@@ -24,17 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using DbContext = ASC.Core.Common.EF.Context.DbContext;
-
 namespace ASC.Geolocation;
 
 public class GeolocationHelper
 {
     public string Dbid { get; set; }
     private readonly ILogger<GeolocationHelper> _logger;
-    private readonly DbContext _dbContext;
+    private readonly CustomDbContext _dbContext;
 
-    public GeolocationHelper(DbContextManager<DbContext> dbContext, ILogger<GeolocationHelper> logger)
+    public GeolocationHelper(DbContextManager<CustomDbContext> dbContext, ILogger<GeolocationHelper> logger)
     {
         _logger = logger;
         _dbContext = dbContext.Get(Dbid);
@@ -55,7 +53,7 @@ public class GeolocationHelper
                     IPEnd = r.IPEnd,
                     IPStart = r.IPStart,
                     Key = r.Country,
-                    TimezoneOffset = r.TimezoneOffset,
+                    TimezoneOffset = r.TimezoneOffset ?? 0,
                     TimezoneName = r.TimezoneName
                 })
                 .FirstOrDefault();

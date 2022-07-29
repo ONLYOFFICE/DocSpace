@@ -1,8 +1,8 @@
 {
   "AddMembers": "メンバーの追加",
   "Birthdate": "誕生日",
-  "DeleteUserDataConfirmation": "他の人と共有しているユーザードキュメントは削除されます。これを避けるためには、データの再割り当てを行ってください。",
   "DeleteSelfProfile": "プロファイルの削除",
+  "DeleteUserDataConfirmation": "他の人と共有しているユーザードキュメントは削除されます。これを避けるためには、データの再割り当てを行ってください。",
   "DisableUserButton": "無効にする",
   "DisabledEmployeeStatus": "無効化",
   "EmailChangeButton": "メールの変更",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "男性",
   "MaxSizeLabel": "(JPGまたはPNG、最大 1 MB)",
-  "NotBeUndone": "注意：このアクションは元に戻すことができません。",
   "PasswordChangeButton": "パスワードの変更",
   "PendingTitle": "保留中",
   "ReassignData": "データの再配置",

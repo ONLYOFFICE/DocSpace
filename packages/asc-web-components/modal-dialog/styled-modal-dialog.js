@@ -1,99 +1,135 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
-import CrossSidebarIcon from "../../../public/images/cross.sidebar.react.svg";
+import { smallTablet, tablet } from "../utils/device";
+
+const StyledModal = styled.div`
+  pointer-events: none;
+  &.modal-active {
+    pointer-events: all;
+  }
+  .loader-wrapper {
+    padding: 0 16px 16px;
+  }
+`;
 
 const Dialog = styled.div`
-  position: relative;
   display: flex;
-  cursor: default;
   align-items: center;
-
-  width: ${(props) => props.width || props.theme.modalDialog.width};
-  max-width: ${(props) => props.theme.modalDialog.maxwidth};
-  margin: ${(props) => props.theme.modalDialog.margin};
-  min-height: ${(props) => props.theme.modalDialog.minHeight};
+  justify-content: center;
+  width: auto;
+  margin: 0 auto;
+  min-height: 100%;
 `;
-Dialog.defaultProps = { theme: Base };
 
-const Content = styled.div`
-  position: relative;
+const Content = styled.div.attrs((props) => ({
+  style: {
+    marginBottom:
+      props.modalSwipeOffset < 0 ? `${props.modalSwipeOffset * 1.1}px` : "0px",
+  },
+}))`
   box-sizing: border-box;
-
-  height: ${(props) => props.contentHeight};
-  width: ${(props) => props.contentWidth};
-  background-color: ${(props) =>
-    props.theme.modalDialog.content.backgroundColor};
+  position: relative;
+  background-color: ${(props) => props.theme.modalDialog.backgroundColor};
+  color: ${(props) => props.theme.modalDialog.textColor};
   padding: ${(props) =>
-    props.displayType === "modal"
-      ? props.theme.modalDialog.content.modalPadding
-      : props.theme.modalDialog.content.asidePadding};
-  border-radius: ${(props) =>
-    props.theme.modalDialog.content.modalBorderRadius};
-
-  .modal-dialog-aside-header {
-    margin: 0 -16px;
-    padding: 0 16px;
-  }
-
-  .heading {
-    max-width: ${(props) => props.theme.modalDialog.content.heading.maxWidth};
-    margin: ${(props) => props.theme.modalDialog.content.heading.margin};
-    line-height: ${(props) =>
-      props.displayType === "modal"
-        ? props.theme.modalDialog.content.heading.modalLineHeight
-        : props.theme.modalDialog.content.heading.asideLineHeight};
-    font-weight: ${(props) =>
-      props.theme.modalDialog.content.heading.fontWeight};
-    font-size: ${(props) =>
-      props.displayType === "modal"
-        ? props.theme.modalDialog.content.heading.modalFontSize
-        : props.theme.modalDialog.content.heading.asideFontSize};
-  }
+    props.currentDisplayType === "modal" ? "0" : "0 0 -16px"};
 
   ${(props) =>
-    props.withoutBodyScroll &&
-    css`
-      overflow: hidden;
-    `}
+    props.currentDisplayType === "modal"
+      ? css`
+          height: auto;
+          max-height: ${(props) =>
+            props.autoMaxHeight ? "auto" : props.isLarge ? "400px" : "280px"};
+          width: ${(props) =>
+            props.autoMaxWidth ? "auto" : props.isLarge ? "520px" : "400px"};
+
+          border-radius: 6px;
+          @media ${smallTablet} {
+            transform: translateY(${(props) => (props.visible ? "0" : "100%")});
+            transition: transform 0.3s ease-in-out;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: auto;
+            border-radius: 6px 6px 0 0;
+          }
+        `
+      : css`
+          width: 480px;
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          transform: translateX(${(props) => (props.visible ? "0" : "100%")});
+          transition: transform 0.3s ease-in-out;
+          @media ${smallTablet} {
+            transform: translateY(${(props) => (props.visible ? "0" : "100%")});
+            height: calc(100% - 64px);
+            width: 100%;
+            left: 0;
+            top: auto;
+            bottom: 0;
+          }
+        `}
 `;
-Content.defaultProps = { theme: Base };
 
 const StyledHeader = styled.div`
   display: flex;
   align-items: center;
-  border-bottom: ${(props) => props.theme.modalDialog.header.borderBottom};
-`;
-StyledHeader.defaultProps = { theme: Base };
+  border-bottom: ${(props) =>
+    `1px solid ${props.theme.modalDialog.headerBorderColor}`};
+  margin-bottom: 16px;
+  height: 52px;
 
-const CloseButton = styled(CrossSidebarIcon)`
-  cursor: pointer;
-  position: absolute;
+  display: flex;
+  align-items: center;
+  padding: 0 16px 0;
 
-  width: ${(props) => props.theme.modalDialog.closeButton.width};
-  height: ${(props) => props.theme.modalDialog.closeButton.height};
-  min-width: ${(props) => props.theme.modalDialog.closeButton.minWidth};
-  min-height: ${(props) => props.theme.modalDialog.closeButton.minHeight};
-
-  right: ${(props) => props.theme.modalDialog.closeButton.right};
-  top: ${(props) => props.theme.modalDialog.closeButton.top};
-
-  &:hover {
-    path {
-      stroke: ${(props) => props.theme.modalDialog.closeButton.hoverColor};
-    }
+  .heading {
+    font-family: "Open Sans";
+    color: ${(props) => props.theme.modalDialog.textColor};
+    font-weight: 700;
+    font-size: ${(props) =>
+      props.currentDisplayType === "modal" ? "18px" : "21px"};
   }
 `;
-CloseButton.defaultProps = { theme: Base };
 
-const BodyBox = styled(Box)`
+const StyledBody = styled(Box)`
   position: relative;
+  padding: 0 16px;
+  padding-bottom: ${(props) =>
+    props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
+
+  margin-right: ${(props) => (props.withBodyScroll ? "-16px" : "0")};
 
   ${(props) =>
-    props.withoutBodyScroll &&
+    props.currentDisplayType === "aside" &&
     css`
+      padding-bottom: 8px;
       height: 100%;
+      min-height: auto;
     `}
 `;
 
-export { CloseButton, StyledHeader, Content, Dialog, BodyBox };
+const StyledFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  ${(props) =>
+    props.withFooterBorder &&
+    `border-top: 1px solid ${props.theme.modalDialog.headerBorderColor}`};
+  padding: 16px;
+
+  gap: 8px;
+  @media ${tablet} {
+    gap: 10px;
+  }
+`;
+
+Dialog.defaultProps = { theme: Base };
+StyledHeader.defaultProps = { theme: Base };
+Content.defaultProps = { theme: Base };
+
+export { StyledModal, StyledHeader, Content, Dialog, StyledBody, StyledFooter };
