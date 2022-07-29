@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.MessagingSystem.Models;
 
 using Constants = ASC.Core.Users.Constants;
 
@@ -148,20 +147,6 @@ public class StudioNotifyService
                              new TagValue(Tags.CompanySize, csize),
                              new TagValue(Tags.Body, message));
     }
-
-    #region Voip
-
-    public void SendToAdminVoipWarning(double balance)
-    {
-        _client.SendNoticeAsync(Actions.VoipWarning, null, new TagValue(Tags.Body, balance));
-    }
-
-    public void SendToAdminVoipBlocked()
-    {
-        _client.SendNoticeAsync(Actions.VoipBlocked, null);
-    }
-
-    #endregion
 
     #region User Password
 

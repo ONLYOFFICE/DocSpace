@@ -301,13 +301,14 @@ class TableHeader extends React.Component {
 
         tableInfoPanelContainer.forEach((item, index) => {
           const column = document.getElementById("column_" + index);
+
           const enable =
             index == tableContainer.length - 1 ||
             (column ? column.dataset.enable === "true" : item !== "0px");
 
           if (
             enable &&
-            item !== `${defaultSize}px` &&
+            (item !== `${defaultSize}px` || `${defaultSize}px` === `0px`) &&
             item !== `${settingsSize}px`
           ) {
             if (column?.dataset?.minWidth) {

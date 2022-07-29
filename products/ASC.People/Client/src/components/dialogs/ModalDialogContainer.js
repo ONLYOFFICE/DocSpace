@@ -26,16 +26,17 @@ const ModalDialogContainer = styled(ModalDialog)`
     margin-top: 16px;
   }
 
-  .button-dialog {
-    margin-left: 8px;
-  }
-
   .warning-text {
     margin: 20px 0;
   }
 
   .textarea-dialog {
     margin-top: 12px;
+    margin-bottom: 24px;
+  }
+
+  .checkbox-dialog {
+    margin-bottom: 8px;
   }
 
   .link-dialog {
@@ -68,8 +69,48 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
   }
 
+  .backup-codes-description-one {
+    margin-bottom: 8px;
+  }
+
+  .backup-codes-description-two {
+    margin-bottom: 16px;
+  }
+
+  .backup-codes-counter {
+    opacity: 0.5;
+    margin-bottom: 4px;
+  }
+
+  .backup-codes-print-link-wrapper {
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-underline-offset: 2px;
+    margin-left: 8px;
+  }
   .heading {
     max-width: calc(100% - 32px);
+  }
+
+  .delete-user-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 16px;
+
+    .reassign-data {
+      text-underline-offset: 0.5px;
+    }
+    .delete-user-footer-buttons {
+      width: 100%;
+      flex-direction: row;
+      display: flex;
+      gap: 8px;
+    }
   }
 `;
 

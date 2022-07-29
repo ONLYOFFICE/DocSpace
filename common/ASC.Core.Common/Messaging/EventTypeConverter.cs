@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.MessagingSystem.Mapping;
 
 [Scope]
@@ -35,6 +36,7 @@ public class EventTypeConverter : ITypeConverter<EventMessage, LoginEvent>, ITyp
         var loginEvent = context.Mapper.Map<MessageEvent, LoginEvent>(messageEvent);
 
         loginEvent.Login = source.Initiator;
+        loginEvent.Active = source.Active;
 
         if (source.Description != null && source.Description.Count > 0)
         {

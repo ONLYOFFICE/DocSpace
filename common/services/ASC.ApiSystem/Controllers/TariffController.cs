@@ -58,16 +58,16 @@ public class TariffController : ControllerBase
 {
     private CommonMethods CommonMethods { get; }
     private HostedSolution HostedSolution { get; }
-    private ILog Log { get; }
+    private ILogger<TariffController> Log { get; }
     public TariffController(
         CommonMethods commonMethods,
         IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
-        IOptionsMonitor<ILog> option
+        ILogger<TariffController> option
         )
     {
         CommonMethods = commonMethods;
         HostedSolution = hostedSolutionOptions.Value;
-        Log = option.Get("ASC.ApiSystem");
+        Log = option;
     }
 
     #region For TEST api
@@ -92,7 +92,7 @@ public class TariffController : ControllerBase
     {
         if (!CommonMethods.GetTenant(model, out var tenant))
         {
-            Log.Error("Model without tenant");
+            Log.LogError("Model without tenant");
 
             return BadRequest(new
             {
@@ -103,7 +103,7 @@ public class TariffController : ControllerBase
 
         if (tenant == null)
         {
-            Log.Error("Tenant not found");
+            Log.LogError("Tenant not found");
 
             return BadRequest(new
             {
@@ -156,7 +156,7 @@ public class TariffController : ControllerBase
     {
         if (!CommonMethods.GetTenant(model, out var tenant))
         {
-            Log.Error("Model without tenant");
+            Log.LogError("Model without tenant");
 
             return BadRequest(new
             {
@@ -167,7 +167,7 @@ public class TariffController : ControllerBase
 
         if (tenant == null)
         {
-            Log.Error("Tenant not found");
+            Log.LogError("Tenant not found");
 
             return BadRequest(new
             {

@@ -41,8 +41,9 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
         SetupInfo setupInfo,
         ILogger<SharePointDaoBase> monitor,
         FileUtility fileUtility,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
     }
 
@@ -159,6 +160,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
                 foreach (var s in securityForUpdate)
                 {
                     s.EntryId = newHashID;
+                    s.TimeStamp = DateTime.Now;
                 }
 
                 await FilesDbContext.SaveChangesAsync();

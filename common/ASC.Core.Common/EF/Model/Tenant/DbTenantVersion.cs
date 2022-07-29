@@ -50,11 +50,16 @@ public static class DbTenantVersionExtension
     {
         modelBuilder.Entity<DbTenantVersion>(entity =>
         {
-            entity.ToTable("tenants_version");
+            entity.ToTable("tenants_version")
+                .HasCharSet("utf8");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedNever();
 
-            entity.Property(e => e.DefaultVersion).HasColumnName("default_version");
+            entity.Property(e => e.DefaultVersion)
+                .HasColumnName("default_version")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Url)
                 .IsRequired()
@@ -70,7 +75,10 @@ public static class DbTenantVersionExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Visible).HasColumnName("visible");
+            entity.Property(e => e.Visible)
+                .HasColumnName("visible")
+                .HasColumnType("tinyint(1)")
+                .HasDefaultValueSql("'0'");
         });
 
     }

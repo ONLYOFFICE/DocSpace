@@ -40,18 +40,23 @@ const StyledDialogAsideLoader = styled.div`
         `
       : css`
           .dialog-loader-header {
-            border-bottom: 1px solid rgb(222, 226, 230);
-            padding: 12px 0;
+            border-bottom: ${(props) =>
+              `1px solid ${props.theme.modalDialog.headerBorderColor}`};
+            padding: 12px 16px;
           }
 
           .dialog-loader-body {
-            padding: 16px 0;
+            padding: 16px;
           }
 
           .dialog-loader-footer {
+            ${(props) =>
+              props.withFooterBorder &&
+              `border-top: 1px solid ${props.theme.modalDialog.headerBorderColor}`};
+            padding: 16px;
             position: fixed;
-            bottom: 16px;
-            width: 293px;
+            bottom: 0;
+            width: calc(100% - 32px);
           }
         `}
 `;

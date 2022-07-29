@@ -26,26 +26,12 @@
 
 namespace ASC.Core.Common.EF.Context;
 
-public class MySqlWebstudioDbContext : WebstudioDbContext { }
-public class PostgreSqlWebstudioDbContext : WebstudioDbContext { }
 public class WebstudioDbContext : BaseDbContext
 {
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     public DbSet<DbWebstudioUserVisit> WebstudioUserVisit { get; set; }
     public DbSet<DbWebstudioIndex> WebstudioIndex { get; set; }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlWebstudioDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlWebstudioDbContext() } ,
-            };
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -19,7 +19,7 @@ namespace ASC.Web.Core.PublicResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class CustomModeResource {
@@ -133,6 +133,21 @@ namespace ASC.Web.Core.PublicResources {
         public static string pattern_personal_custom_mode_change_email_v115 {
             get {
                 return ResourceManager.GetString("pattern_personal_custom_mode_change_email_v115", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Want to change the password on your cloud office account? Click the button below to confirm.
+        ///
+        ///$GreenButton
+        ///
+        ///The link is valid for 7 days.
+        ///
+        ///Don’t want to change your password? Just ignore this message..
+        /// </summary>
+        public static string pattern_personal_custom_mode_change_password_v115 {
+            get {
+                return ResourceManager.GetString("pattern_personal_custom_mode_change_password_v115", resourceCulture);
             }
         }
         

@@ -3,13 +3,16 @@ import Base from "../themes/base";
 
 const StyledViewSelector = styled.div`
   height: 32px;
-  width: ${(props) => `calc(${props.countItems} * 32px)`};
+  width: ${(props) =>
+    props.isFilter ? `32px` : `calc(${props.countItems} * 32px)`};
   position: relative;
   box-sizing: border-box;
   display: flex;
 
   ${(props) =>
-    props.countItems > 2
+    props.isFilter
+      ? css``
+      : props.countItems > 2
       ? css`
           .view-selector-icon:hover {
             z-index: 2;
@@ -53,6 +56,11 @@ const IconWrapper = styled.div`
       ? props.theme.viewSelector.checkedFillColor
       : props.theme.viewSelector.borderColor};
 
+  ${(props) =>
+    props.isFilter &&
+    css`
+      border-radius: 3px;
+    `}
   ${(props) => props.firstItem && firstItemStyle}
   ${(props) => props.lastItem && lastItemStyle}
 

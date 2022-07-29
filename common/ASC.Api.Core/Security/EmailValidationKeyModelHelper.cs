@@ -26,6 +26,8 @@
 
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
+using Constants = ASC.Core.Users.Constants;
+
 namespace ASC.Api.Core.Security;
 
 [Transient]
@@ -58,7 +60,7 @@ public class EmailValidationKeyModelHelper
     {
         var request = QueryHelpers.ParseQuery(_httpContextAccessor.HttpContext.Request.Headers["confirm"]);
 
-        request.TryGetValue("type", out var type);
+        var type = request.ContainsKey("type") ? request["type"].FirstOrDefault() : null;
 
         ConfirmType? cType = null;
         if (ConfirmTypeExtensions.TryParse(type, out var confirmType))
@@ -141,7 +143,7 @@ public class EmailValidationKeyModelHelper
             case ConfirmType.ProfileRemove:
                 // validate UiD
                 var user = _userManager.GetUsers(uiD.GetValueOrDefault());
-                if (user == null || user.Status == EmployeeStatus.Terminated || _authContext.IsAuthenticated && _authContext.CurrentAccount.ID != uiD)
+                if (user == null || user == Constants.LostUser || user.Status == EmployeeStatus.Terminated || _authContext.IsAuthenticated && _authContext.CurrentAccount.ID != uiD)
                 {
                     return ValidationResult.Invalid;
                 }

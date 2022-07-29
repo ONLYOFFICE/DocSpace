@@ -80,8 +80,4 @@
     <Protobuf Include="protos\az_record_cache.proto" />
     <Protobuf Include="protos\quota_cache_item.proto" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Migrations\MySql\DbContextMySql\" />
-    <Folder Include="Migrations\MySql\NotifyDbContextMySql\" />
-  </ItemGroup>
 </Project>

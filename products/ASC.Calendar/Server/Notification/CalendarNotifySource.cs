@@ -1,3 +1,29 @@
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -31,13 +57,12 @@ using ASC.Core;
 using ASC.Core.Notify;
 using ASC.Core.Users;
 using ASC.Notify;
+using ASC.Notify.Engine;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
 
 using NotifyContext = ASC.Notify.Context;
 
@@ -49,7 +74,7 @@ namespace ASC.Calendar.Notification
     {
         private static INotifyClient _notifyClient;
 
-        private static string _syncName = "calendarNotifySyncName";
+        private static readonly string _syncName = "calendarNotifySyncName";
 
         public AuthContext AuthContext { get; }
         public IServiceProvider ServiceProvider { get; }
@@ -65,7 +90,9 @@ namespace ASC.Calendar.Notification
             UserManager userManager,
             CalendarNotifySource calendarNotifySource,
             CommonLinkUtility commonLinkUtility,
-            DisplayUserSettingsHelper displayUserSettingsHelper)
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            WorkContext workContext,
+            NotifyEngineQueue notifyEngineQueue)
         {
             AuthContext = authContext;
             ServiceProvider = serviceProvider;
@@ -74,8 +101,7 @@ namespace ASC.Calendar.Notification
             CommonLinkUtility = commonLinkUtility;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
 
-            NotifyContext = new NotifyContext(serviceProvider);
-            _notifyClient = NotifyContext.NotifyService.RegisterClient(CalendarNotifySource, ServiceProvider.CreateScope());
+            _notifyClient = workContext.NotifyContext.RegisterClient(notifyEngineQueue, CalendarNotifySource);
         }
 
         public void NotifyAboutSharingCalendar(ASC.Calendar.BusinessObjects.Calendar calendar)
@@ -88,7 +114,7 @@ namespace ASC.Calendar.Notification
             try
             {
                 var usr = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
-                var userLink = PerformUrl(CommonLinkUtility.GetUserProfile(usr.ID.ToString(), false));
+                var userLink = PerformUrl(CommonLinkUtility.GetUserProfile(usr.Id.ToString(), false));
 
                 foreach (var item in calendar.SharingOptions.PublicItems)
                 {
@@ -122,7 +148,7 @@ namespace ASC.Calendar.Notification
             try
             {
                 var usr = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
-                var userLink = PerformUrl(CommonLinkUtility.GetUserProfile(usr.ID.ToString(), false));
+                var userLink = PerformUrl(CommonLinkUtility.GetUserProfile(usr.Id.ToString(), false));
 
                 foreach (var item in calendarEvent.SharingOptions.PublicItems)
                 {

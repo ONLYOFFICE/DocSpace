@@ -25,8 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
-
-namespace ASC.MessagingSystem.Models;
+namespace ASC.MessagingSystem.EF.Model;
 
 public class LoginEvent : MessageEvent, IMapFrom<EventMessage>
 {
@@ -35,6 +34,7 @@ public class LoginEvent : MessageEvent, IMapFrom<EventMessage>
 
     public void Mapping(Profile profile)
     {
+        profile.CreateMap<MessageEvent, LoginEvent>();
         profile.CreateMap<EventMessage, LoginEvent>()
             .ConvertUsing<EventTypeConverter>();
     }
@@ -55,7 +55,8 @@ public static class LoginEventsExtension
     {
         modelBuilder.Entity<LoginEvent>(entity =>
         {
-            entity.ToTable("login_events");
+            entity.ToTable("login_events")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.Date)
                 .HasDatabaseName("date");
@@ -65,7 +66,9 @@ public static class LoginEventsExtension
 
             entity.Property(e => e.Id).HasColumnName("id");
 
-            entity.Property(e => e.Action).HasColumnName("action");
+            entity.Property(e => e.Action)
+                .HasColumnName("action")
+                .IsRequired(false);
 
             entity.Property(e => e.Browser)
                 .HasColumnName("browser")

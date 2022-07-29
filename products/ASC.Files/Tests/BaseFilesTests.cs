@@ -26,6 +26,11 @@
 
 
 
+using ASC.MessagingSystem.EF.Context;
+using ASC.Webhooks.Core.EF.Context;
+
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Files.Tests;
 
 class FilesApplication : WebApplicationFactory<Program>
@@ -67,7 +72,6 @@ class FilesApplication : WebApplicationFactory<Program>
 public class MySetUpClass
 {
     protected IServiceScope Scope { get; set; }
-    private readonly string _pathToProducts = Path.Combine("..", "..", "..", "Data.Test");
 
     [OneTimeSetUp]
     public void CreateDb()
@@ -84,7 +88,7 @@ public class MySetUpClass
                    {
                    });
 
-        Migrate(host.Services);
+        Migrate(host.Services, "ASC.Migrations.MySql");
         Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
 
         Scope = host.Services.CreateScope();
@@ -102,7 +106,7 @@ public class MySetUpClass
 
         try
         {
-            Directory.Delete(Path.Combine("..", "..", "..", _pathToProducts), true);
+            Directory.Delete(Path.Combine(Path.Combine("..", "..", "..", "..", "..", "..", "Data.Test")), true);
         }
         catch { }
     }
@@ -111,25 +115,37 @@ public class MySetUpClass
     {
         using var scope = serviceProvider.CreateScope();
 
-        if (!string.IsNullOrEmpty(testAssembly))
-        {
-            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-            configuration["testAssembly"] = testAssembly;
-        }
-
         using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-        db.Value.Migrate();
+        db.Value.MigrateAssembly = testAssembly;
+        db.Value.Database.Migrate();
 
         using var filesDb = scope.ServiceProvider.GetService<DbContextManager<Core.EF.FilesDbContext>>();
-        filesDb.Value.Migrate();
+        filesDb.Value.MigrateAssembly = testAssembly;
+        filesDb.Value.Database.Migrate();
+
+        using var messagesDb = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>();
+        messagesDb.Value.MigrateAssembly = testAssembly;
+        messagesDb.Value.Database.Migrate();
+
+        using var webHookDb = scope.ServiceProvider.GetService<DbContextManager<WebhooksDbContext>>();
+        webHookDb.Value.MigrateAssembly = testAssembly;
+        webHookDb.Value.Database.Migrate();
+
+        using var tenantDb = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+        tenantDb.Value.MigrateAssembly = testAssembly;
+        tenantDb.Value.Database.Migrate();
+
+        using var coreDb = scope.ServiceProvider.GetService<DbContextManager<CoreDbContext>>();
+        coreDb.Value.MigrateAssembly = testAssembly;
+        coreDb.Value.Database.Migrate();
     }
 }
 
 public partial class BaseFilesTests
 {
-    protected readonly JsonSerializerOptions _options;
+    private readonly JsonSerializerOptions _options;
     protected UserManager _userManager;
-    private protected HttpClient _client;
+    private HttpClient _client;
     private readonly string _baseAddress;
     private string _cookie;
 
@@ -208,89 +224,29 @@ public partial class BaseFilesTests
         return batchModel;
     }
 
-    protected async Task<T> GetAsync<T>(string url, JsonSerializerOptions options)
+    protected Task<T> GetAsync<T>(string url)
     {
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
-        var request = await _client.GetAsync(url);
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync<T>(HttpMethod.Get, url);
     }
 
-    protected async Task<T> GetAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    protected Task<T> PostAsync<T>(string url, object data = null)
     {
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
-        var request = new HttpRequestMessage
-        {
-            RequestUri = new Uri(_baseAddress + url),
-            Method = HttpMethod.Delete,
-            Content = content
-        };
-
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync<T>(HttpMethod.Post, url, data);
     }
 
-    protected async Task<T> PostAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    protected Task<T> PutAsync<T>(string url, object data = null)
     {
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
-        var response = await _client.PostAsync(url, content);
-        var result = await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync<T>(HttpMethod.Put, url, data);
     }
 
-    protected async Task<T> PutAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    protected Task<T> DeleteAsync<T>(string url, object data = null)
     {
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
-
-        var response = await _client.PutAsync(url, content);
-        var result = await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync<T>(HttpMethod.Delete, url, data);
     }
 
-    private protected async Task<HttpResponseMessage> DeleteAsync(string url, JsonContent content)
+    private protected Task<SuccessApiResponse> DeleteAsync(string url, object data = null)
     {
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
-        var request = new HttpRequestMessage
-        {
-            RequestUri = new Uri(_baseAddress + url),
-            Method = HttpMethod.Delete,
-            Content = content
-        };
-
-        return await _client.SendAsync(request);
-    }
-
-    protected async Task<T> DeleteAsync<T>(string url, JsonContent content, JsonSerializerOptions options)
-    {
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
-        var response = await DeleteAsync(url, content);
-        var result = await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync(HttpMethod.Delete, url, data);
     }
 
     protected async Task<List<FileOperationResult>> WaitLongOperation()
@@ -299,7 +255,7 @@ public partial class BaseFilesTests
 
         while (true)
         {
-            statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
+            statuses = await GetAsync<List<FileOperationResult>>("fileops");
 
             if (statuses.TrueForAll(r => r.Finished))
             {
@@ -309,5 +265,42 @@ public partial class BaseFilesTests
         }
 
         return statuses;
+    }
+
+    protected void CheckStatuses(List<FileOperationResult> statuses)
+    {
+        Assert.IsTrue(statuses.Count > 0);
+        Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+    }
+
+    protected async Task<T> SendAsync<T>(HttpMethod method, string url, object data = null)
+    {
+        var result = await SendAsync(method, url, data);
+
+        if (result.Response is JsonElement jsonElement)
+        {
+            return jsonElement.Deserialize<T>(_options);
+        }
+        throw new Exception("can't parsing result");
+    }
+
+    protected async Task<SuccessApiResponse> SendAsync(HttpMethod method, string url, object data = null)
+    {
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
+
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(_baseAddress + url),
+            Method = method,
+        };
+
+        if (data != null)
+        {
+            request.Content = JsonContent.Create(data);
+        }
+
+        var response = await _client.SendAsync(request);
+
+        return await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
     }
 }

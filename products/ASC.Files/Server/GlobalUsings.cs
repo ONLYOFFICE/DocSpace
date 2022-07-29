@@ -51,6 +51,7 @@ global using ASC.Files.Core.ApiModels;
 global using ASC.Files.Core.ApiModels.RequestDto;
 global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.Resources;
+global using ASC.Files.Core.Helpers;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Core.Services.OFormService;
 global using ASC.Files.Core.VirtualRooms;
@@ -59,7 +60,6 @@ global using ASC.Files.Log;
 global using ASC.MessagingSystem.Core;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Routing;
-global using ASC.Web.Core.Files;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Files;
@@ -72,12 +72,15 @@ global using ASC.Web.Files.HttpHandlers;
 global using ASC.Web.Files.Services.DocumentService;
 global using ASC.Web.Files.Services.WCFService;
 global using ASC.Web.Files.Services.WCFService.FileOperations;
+global using ASC.Web.Files.ThirdPartyApp;
 global using ASC.Web.Files.Utils;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.Utility;
 
 global using Autofac;
+
+global using AutoMapper;
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;

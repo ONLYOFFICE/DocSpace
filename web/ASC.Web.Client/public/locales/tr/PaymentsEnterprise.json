@@ -14,7 +14,6 @@
   "ExpiryTrialLicense": "Ödeme yaptığınız için teşekkürler {{organizationName}}!",
   "HeaderExpiredTrialLicense": "Ücretsiz deneme süresi sona erdi",
   "HeaderLicense": "{{organizationName}} Enterprise Edition kullanıyorsunuz",
-  "PaymentsTitle": "Ödemeler",
   "RenewalLicense": "Eğer halihazırda yenileme satın aldıysanız, lisans dosyasını yükleyin.",
   "SubscriptionRenewedLicense": "Şunu almak için aboneliği yenileyin:",
   "SuccessLoadingLicense": "Lisans başarıyla etkinleştirildi"

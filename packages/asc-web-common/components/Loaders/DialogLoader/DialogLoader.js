@@ -2,28 +2,18 @@ import React from "react";
 import Loaders from "../../Loaders";
 import StyledDialogLoader from "./StyledDialogLoader";
 
-const DialogLoader = ({ bodyHeight = "150px" }) => {
+const DialogLoader = ({ isLarge, withFooterBorder }) => {
   return (
-    <StyledDialogLoader>
+    <StyledDialogLoader withFooterBorder={withFooterBorder} isLarge={isLarge}>
       <div className="dialog-loader-header">
-        <Loaders.Rectangle height="28px" width="470px" />
-        <Loaders.Rectangle
-          className="dialog-loader-icon"
-          height="28px"
-          width="28px"
-        />
+        <Loaders.Rectangle height="29px" />
       </div>
       <div className="dialog-loader-body">
-        <Loaders.Rectangle height={bodyHeight} />
+        <Loaders.Rectangle height={isLarge ? "175px" : "73px"} />
       </div>
-
       <div className="dialog-loader-footer">
-        <Loaders.Rectangle height="30px" width="120px" />
-        <Loaders.Rectangle
-          className="dialog-loader-icon"
-          height="30px"
-          width="100px"
-        />
+        <Loaders.Rectangle height="40px" />
+        <Loaders.Rectangle height="40px" />
       </div>
     </StyledDialogLoader>
   );

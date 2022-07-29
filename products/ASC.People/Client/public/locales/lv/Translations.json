@@ -1,8 +1,8 @@
 {
   "AddMembers": "Pievienot dalībniekus",
   "Birthdate": "Dzimšanas datums",
-  "DeleteUserDataConfirmation": "Lietotāja dokumenti, kas kopīgoti ar citiem, tiks dzēsti. Lai no tā izvairītos, atkārtoti piešķiriet datus.",
   "DeleteSelfProfile": "Dzēst profilu",
+  "DeleteUserDataConfirmation": "Lietotāja dokumenti, kas kopīgoti ar citiem, tiks dzēsti. Lai no tā izvairītos, atkārtoti piešķiriet datus.",
   "DisableUserButton": "Atspējot",
   "DisabledEmployeeStatus": "Atspējots",
   "EmailChangeButton": "Mainīt e-pastu",
@@ -13,7 +13,6 @@
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Vīrietis",
   "MaxSizeLabel": "(JPG vai PNG, maks. 1 MB)",
-  "NotBeUndone": "Piezīme: šo darbību nevar atsaukt.",
   "PasswordChangeButton": "Mainīt paroli",
   "PendingTitle": "Gaida apstiprinājumu",
   "ReassignData": "Piešķiriet datus atkārtoti",

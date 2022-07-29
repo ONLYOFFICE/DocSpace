@@ -47,7 +47,8 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         CrossDao crossDao,
         BoxDaoSelector boxDaoSelector,
         IFileDao<int> fileDao,
-        TempPath tempPath) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _crossDao = crossDao;
         _boxDaoSelector = boxDaoSelector;
