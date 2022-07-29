@@ -131,11 +131,15 @@ class FilesContent extends React.Component {
 
         updateTempContent();
       });
+
+    window.addEventListener("message", this.integrationMessage, false);
   }
 
   componentWillUnmount() {
     const script = document.getElementById("img-tiff-script");
     document.body.removeChild(script);
+
+    window.removeEventListener("message", this.integrationMessage);
   }
 
   componentDidUpdate(prevProps) {
@@ -169,10 +173,99 @@ class FilesContent extends React.Component {
     }
   }
 
-  render() {
-    //const { /*, isDesktop*/ } = this.props;
+  integrationMessage = async (e) => {
+    const {
+      setFrameConfig,
+      folderInfo,
+      folders,
+      files,
+      selection,
+      user,
+      filesList,
+    } = this.props;
 
-    const frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
+    const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+
+    if (eventData.data) {
+      const { data, methodName } = eventData.data;
+
+      if (methodName === "setConfig") {
+        const config = await setFrameConfig(data);
+
+        window.parent.postMessage(
+          JSON.stringify({
+            type: "onMethodReturn",
+            methodReturnData: config,
+          }),
+          "*"
+        );
+      }
+
+      if (methodName === "getFolderInfo") {
+        window.parent.postMessage(
+          JSON.stringify({
+            type: "onMethodReturn",
+            methodReturnData: folderInfo,
+          }),
+          "*"
+        );
+      }
+
+      if (methodName === "getFolders") {
+        window.parent.postMessage(
+          JSON.stringify({
+            type: "onMethodReturn",
+            methodReturnData: folders,
+          }),
+          "*"
+        );
+      }
+
+      if (methodName === "getFiles") {
+        window.parent.postMessage(
+          JSON.stringify({
+            type: "onMethodReturn",
+            methodReturnData: files,
+          }),
+          "*"
+        );
+      }
+
+      if (methodName === "getItems") {
+        window.parent.postMessage(
+          JSON.stringify({
+            type: "onMethodReturn",
+            methodReturnData: filesList,
+          }),
+          "*"
+        );
+      }
+
+      if (methodName === "getSelection") {
+        window.parent.postMessage(
+          JSON.stringify({
+            type: "onMethodReturn",
+            methodReturnData: selection,
+          }),
+          "*"
+        );
+      }
+
+      if (methodName === "getUserInfo") {
+        window.parent.postMessage(
+          JSON.stringify({
+            type: "onMethodReturn",
+            methodReturnData: user,
+          }),
+          "*"
+        );
+      }
+    }
+  };
+
+  render() {
+    const { frameConfig } = this.props;
+
     const isFrame = frameConfig && window.name === frameConfig.name;
     const showArticle = frameConfig && JSON.parse(frameConfig.showArticle);
 
@@ -198,8 +291,15 @@ const Files = inject(({ auth, filesStore }) => {
     isAuthenticated: auth.isAuthenticated,
     encryptionKeys: auth.settingsStore.encryptionKeys,
     isEncryption: auth.settingsStore.isEncryptionSupport,
+    frameConfig: auth.settingsStore.frameConfig,
+    setFrameConfig: auth.settingsStore.setFrameConfig,
     isLoaded: auth.isLoaded && filesStore.isLoaded,
     setIsLoaded: filesStore.setIsLoaded,
+    folderInfo: filesStore.selectedFolderStore,
+    files: filesStore.files,
+    folders: filesStore.folders,
+    selection: filesStore.selection,
+    filesList: filesStore.filesList,
 
     setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
     loadFilesInfo: async () => {
