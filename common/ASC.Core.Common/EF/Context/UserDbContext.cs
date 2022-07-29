@@ -38,7 +38,7 @@ public class UserDbContext : DbContext
     public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
     public DbSet<UserDav> UsersDav { get; set; }
 
-    public UserDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+    public UserDbContext(DbContextOptions<UserDbContext> dbContextOptions) : base(dbContextOptions)
     {
 
     }

@@ -31,7 +31,7 @@ public class WebhooksDbContext : DbContext
     public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
     public virtual DbSet<WebhooksLog> WebhooksLogs { get; set; }
 
-    public WebhooksDbContext(DbContextOptions options) : base(options) { }
+    public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -39,14 +39,12 @@ public class DbContextActivator
 
     public DbContext CreateInstance(Type contextType, ProviderInfo provider)
     {
-        var configuration = _serviceProvider.GetRequiredService<IConfiguration>();
+        var scope = _serviceProvider.CreateScope();
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         configuration["testAssembly"] = $"ASC.Migrations.{provider.Provider}";
         configuration["ConnectionStrings:default:name"] = "default";
         configuration["ConnectionStrings:default:connectionString"] = provider.ConnectionString;
         configuration["ConnectionStrings:default:providerName"] = provider.ProviderFullName;
-        var dbContextFactory = typeof(IDbContextFactory<>).MakeGenericType(contextType);
-        dynamic contextFactory = _serviceProvider.GetRequiredService(dbContextFactory);
-        DbContext context = contextFactory.CreateDbContext();
-        return context;
+        return (DbContext)scope.ServiceProvider.GetRequiredService(contextType);
     }
 }

@@ -30,7 +30,7 @@ public class InstanceRegistrationContext : DbContext
 {
     public DbSet<InstanceRegistration> InstanceRegistrations { get; set; }
 
-    public InstanceRegistrationContext(DbContextOptions options) : base(options)
+    public InstanceRegistrationContext(DbContextOptions<InstanceRegistrationContext> options) : base(options)
     {
 
     }

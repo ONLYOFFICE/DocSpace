@@ -45,7 +45,7 @@ public class FilesDbContext : DbContext
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<FilesConverts> FilesConverts { get; set; }
 
-    public FilesDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
+    public FilesDbContext(DbContextOptions<FilesDbContext> dbContextOptions) : base(dbContextOptions) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

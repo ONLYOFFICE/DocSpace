@@ -30,7 +30,7 @@ public class IntegrationEventLogContext : DbContext
 {
     public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; }
 
-    public IntegrationEventLogContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+    public IntegrationEventLogContext(DbContextOptions<IntegrationEventLogContext> dbContextOptions) : base(dbContextOptions)
     {
 
     }

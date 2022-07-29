@@ -31,7 +31,7 @@ public class NotifyDbContext : DbContext
     public DbSet<NotifyInfo> NotifyInfo { get; set; }
     public DbSet<NotifyQueue> NotifyQueue { get; set; }
 
-    public NotifyDbContext(DbContextOptions options) : base(options)
+    public NotifyDbContext(DbContextOptions<NotifyDbContext> options) : base(options)
     {
 
     }

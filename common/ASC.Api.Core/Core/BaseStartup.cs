@@ -60,18 +60,18 @@ public abstract class BaseStartup
         services.AddHttpClient();
 
         services.AddScoped<EFLoggerFactory>();
-        services.AddBaseDbContext<AccountLinkContext>();
-        services.AddBaseDbContext<CoreDbContext>();
-        services.AddBaseDbContext<TenantDbContext>();
-        services.AddBaseDbContext<UserDbContext>();
-        services.AddBaseDbContext<TelegramDbContext>();
-        services.AddBaseDbContext<CustomDbContext>();
-        services.AddBaseDbContext<WebstudioDbContext>();
-        services.AddBaseDbContext<InstanceRegistrationContext>();
-        services.AddBaseDbContext<IntegrationEventLogContext>();
-        services.AddBaseDbContext<FeedDbContext>();
-        services.AddBaseDbContext<MessagesContext>();
-        services.AddBaseDbContext<WebhooksDbContext>();
+        services.AddBaseDbContextPool<AccountLinkContext>();
+        services.AddBaseDbContextPool<CoreDbContext>();
+        services.AddBaseDbContextPool<TenantDbContext>();
+        services.AddBaseDbContextPool<UserDbContext>();
+        services.AddBaseDbContextPool<TelegramDbContext>();
+        services.AddBaseDbContextPool<CustomDbContext>();
+        services.AddBaseDbContextPool<WebstudioDbContext>();
+        services.AddBaseDbContextPool<InstanceRegistrationContext>();
+        services.AddBaseDbContextPool<IntegrationEventLogContext>();
+        services.AddBaseDbContextPool<FeedDbContext>();
+        services.AddBaseDbContextPool<MessagesContext>();
+        services.AddBaseDbContextPool<WebhooksDbContext>();
 
         if (AddAndUseSession)
         {

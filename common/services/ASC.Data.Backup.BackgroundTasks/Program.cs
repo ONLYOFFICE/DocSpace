@@ -39,7 +39,7 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
           .AddJsonFile("backup.json");
 }, (ctx, ser, di) =>
 {
-    ser.AddBaseDbContext<BackupsContext>();
+    ser.AddBaseDbContextPool<BackupsContext>();
 });
 
 builder.WebHost.ConfigureDefaultKestrel();

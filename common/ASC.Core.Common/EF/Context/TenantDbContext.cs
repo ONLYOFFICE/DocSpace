@@ -34,7 +34,8 @@ public class TenantDbContext : DbContext
     public DbSet<DbTenantForbiden> TenantForbiden { get; set; }
     public DbSet<TenantIpRestrictions> TenantIpRestrictions { get; set; }
     public DbSet<DbCoreSettings> CoreSettings { get; set; }
-    public TenantDbContext(DbContextOptions options) : base(options) { }
+
+    public TenantDbContext(DbContextOptions<TenantDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

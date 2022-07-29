@@ -32,7 +32,7 @@ public class BackupsContext : DbContext
     public DbSet<BackupSchedule> Schedules { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
 
-    public BackupsContext(DbContextOptions options) : base(options)
+    public BackupsContext(DbContextOptions<BackupsContext> options) : base(options)
     {
     }
 

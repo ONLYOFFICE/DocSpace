@@ -35,7 +35,7 @@ public class MessagesContext : DbContext
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<User> Users { get; set; }
 
-    public MessagesContext(DbContextOptions options) : base(options)
+    public MessagesContext(DbContextOptions<MessagesContext> options) : base(options)
     {
 
     }

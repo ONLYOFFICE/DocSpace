@@ -36,7 +36,7 @@ builder.Host.ConfigureDefault(args, null, (hostContext, services, diHelper) =>
 {
     services.AddHostedService<ClearEventsService>();
     diHelper.TryAdd<ClearEventsService>();
-    services.AddBaseDbContext<MessagesContext>();
+    services.AddBaseDbContextPool<MessagesContext>();
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>

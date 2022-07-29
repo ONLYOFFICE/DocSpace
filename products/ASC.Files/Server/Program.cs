@@ -39,7 +39,7 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
           .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
 }, (context, services, di) =>
 {
-    services.AddBaseDbContext<FilesDbContext>();
+    services.AddBaseDbContextPool<FilesDbContext>();
 });
 
 builder.WebHost.ConfigureDefaultKestrel((hostingContext, serverOptions) =>

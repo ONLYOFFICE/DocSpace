@@ -30,7 +30,7 @@ public class TelegramDbContext : DbContext
 {
     public DbSet<TelegramUser> Users { get; set; }
 
-    public TelegramDbContext(DbContextOptions options) : base(options)
+    public TelegramDbContext(DbContextOptions<TelegramDbContext> options) : base(options)
     {
 
     }

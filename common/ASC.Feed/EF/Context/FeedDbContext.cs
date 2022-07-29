@@ -33,7 +33,7 @@ public class FeedDbContext : DbContext
     public DbSet<FeedUsers> FeedUsers { get; set; }
     public DbSet<FeedReaded> FeedReaded { get; set; }
 
-    public FeedDbContext(DbContextOptions options) : base(options) { }
+    public FeedDbContext(DbContextOptions<FeedDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

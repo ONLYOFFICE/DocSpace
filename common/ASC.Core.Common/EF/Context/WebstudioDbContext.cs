@@ -33,7 +33,7 @@ public class WebstudioDbContext : DbContext
     public DbSet<DbWebstudioUserVisit> WebstudioUserVisit { get; set; }
     public DbSet<DbWebstudioIndex> WebstudioIndex { get; set; }
 
-    public WebstudioDbContext(DbContextOptions options) : base(options)
+    public WebstudioDbContext(DbContextOptions<WebstudioDbContext> options) : base(options)
     {
 
     }

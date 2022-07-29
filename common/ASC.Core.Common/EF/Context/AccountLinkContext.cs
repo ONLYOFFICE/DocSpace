@@ -30,7 +30,7 @@ public class AccountLinkContext : DbContext
 {
     public DbSet<AccountLinks> AccountLinks { get; set; }
 
-    public AccountLinkContext(DbContextOptions options) : base(options) { }
+    public AccountLinkContext(DbContextOptions<AccountLinkContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

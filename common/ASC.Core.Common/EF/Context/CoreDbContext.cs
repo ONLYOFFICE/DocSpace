@@ -32,7 +32,8 @@ public class CoreDbContext : DbContext
     public DbSet<DbButton> Buttons { get; set; }
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbQuotaRow> QuotaRows { get; set; }
-    public CoreDbContext(DbContextOptions options) : base(options) { }
+
+    public CoreDbContext(DbContextOptions<CoreDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
