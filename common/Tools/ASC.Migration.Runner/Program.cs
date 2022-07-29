@@ -37,16 +37,11 @@ class Program
         var config = builder.Build();
 
         var providersInfo = config.GetSection("options").Get<Options>();
-        var path = providersInfo.Path;
-        if (!Path.IsPathRooted(path))
-        {
-            path = Path.GetFullPath(path);
-        }
 
         foreach (var providerInfo in providersInfo.Providers)
         {
             var migrationCreator = new MigrationRunner(providerInfo.ConnectionString);
-            migrationCreator.RunApplyMigrations(path, providerInfo);
+            migrationCreator.RunApplyMigrations(AppContext.BaseDirectory, providerInfo);
         }
     }
 }
