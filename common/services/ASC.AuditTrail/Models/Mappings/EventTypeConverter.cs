@@ -89,19 +89,21 @@ internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDt
 
     public AuditEventDto Convert(AuditEventQuery source, AuditEventDto destination, ResolutionContext context)
     {
+        var target = source.Event.Target;
+        source.Event.Target = null;
         var result = context.Mapper.Map<AuditEventDto>(source.Event);
+
+        result.Target = _messageTarget.Parse(target);
 
         if (source.Event.DescriptionRaw != null)
         {
             result.Description = JsonConvert.DeserializeObject<IList<string>>(
-               JsonConvert.ToString(source.Event.DescriptionRaw),
+               source.Event.DescriptionRaw,
                new JsonSerializerSettings
                {
                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
                });
         }
-
-        result.Target = _messageTarget.Parse(source.Event.Target);
 
         if (result.UserId == Core.Configuration.Constants.CoreSystem.ID)
         {
