@@ -39,7 +39,7 @@ export const initDocEditor = async (req) => {
   if (!req) return false;
   let personal = IS_PERSONAL || null;
   const { headers, url, query } = req;
-  const { version, desktop: isDesktop } = query;
+  const { version, desktop: isDesktop, type } = query;
   let error = null;
   initSSR(headers);
 
@@ -90,6 +90,10 @@ export const initDocEditor = async (req) => {
 
     if (view) {
       config.editorConfig.mode = "view";
+    }
+
+    if (type) {
+      config.type = type;
     }
 
     const actionLink = config?.editorConfig?.actionLink || null;
