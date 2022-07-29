@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.8.1" Modules="enterprise" RootPath="." Language="en" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.9.1" Modules="enterprise" RootPath="." Language="en" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_CURRENT_YEAR" Value="2022" ValueLocId="-"/>
@@ -10,7 +10,7 @@
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="APPDIR_FORWARD_SLASH" Value=" "/>
     <ROW Property="APP_URLS" Value="http://0.0.0.0"/>
-    <ROW Property="ARPCOMMENTS" Value="ONLYOFFICE App Server is a platform based on .NET Core and React engines which comprises document management features and makes it possible to implement advanced folder management." ValueLocId="*"/>
+    <ROW Property="ARPCOMMENTS" Value="[|PRODUCT_NAME] is a platform based on .NET Core and React engines which comprises document management features and makes it possible to implement advanced folder management." ValueLocId="*"/>
     <ROW Property="ARPCONTACT" Value="20A-6, Ernesta Birznieka-Upisha str., Riga, LV-1050"/>
     <ROW Property="ARPHELPLINK" Value="http://dev.onlyoffice.org/"/>
     <ROW Property="ARPHELPTELEPHONE" Value="+371 66016425"/>
@@ -37,9 +37,10 @@
     <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_AppServer_Win-install.v[|ProductVersion]"/>
     <ROW Property="PASSWORD_PROP" Value="root"/>
     <ROW Property="PORT_PROP" Value="3306"/>
+    <ROW Property="PRODUCT_NAME" Value="ONLYOFFICE AppServer"/>
     <ROW Property="ProductCode" Value="1033:{3FABEB4A-D27F-4BA6-A40E-16BE47540727} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
-    <ROW Property="ProductName" Value="ONLYOFFICE AppServer [|ProductVersion]"/>
+    <ROW Property="ProductName" Value="[|PRODUCT_NAME] [|ProductVersion]"/>
     <ROW Property="ProductVersion" Value="1.0.0" Type="32"/>
     <ROW Property="RABBITMQ_HOSTNAME_PROP" Value="localhost" ValueLocId="-"/>
     <ROW Property="RABBITMQ_PASSWORD_PROP" Value="guest" ValueLocId="-"/>
