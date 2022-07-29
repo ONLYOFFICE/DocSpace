@@ -15,7 +15,7 @@ const SimpleComboBox = (props) => {
     value,
     setComboBox,
     enableSso,
-    onLoadXML,
+    isLoadingXml,
   } = props;
 
   const currentOption =
@@ -29,7 +29,7 @@ const SimpleComboBox = (props) => {
     <FieldContainer isVertical labelText={labelText}>
       <StyledInputWrapper>
         <ComboBox
-          isDisabled={!enableSso || onLoadXML}
+          isDisabled={!enableSso || isLoadingXml}
           onSelect={onSelect}
           options={options}
           scaled
@@ -44,11 +44,11 @@ const SimpleComboBox = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const { setComboBox, enableSso, onLoadXML } = ssoStore;
+  const { setComboBox, enableSso, isLoadingXml } = ssoStore;
 
   return {
     setComboBox,
     enableSso,
-    onLoadXML,
+    isLoadingXml,
   };
 })(observer(SimpleComboBox));

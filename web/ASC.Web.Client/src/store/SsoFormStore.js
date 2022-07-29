@@ -25,7 +25,7 @@ class SsoFormStore {
 
   spLoginLabel = "";
 
-  onLoadXML = false;
+  isLoadingXml = false;
 
   // idpSettings
   entityId = "";
@@ -241,12 +241,12 @@ class SsoFormStore {
     const data = { url: this.uploadXmlUrl };
 
     try {
-      this.onLoadXML = true;
+      this.isLoadingXml = true;
       const response = await loadXmlMetadata(data);
       this.setFieldsFromMetaData(response.data.meta);
-      this.onLoadXML = false;
+      this.isLoadingXml = false;
     } catch (err) {
-      this.onLoadXML = false;
+      this.isLoadingXml = false;
       toastr.error(err);
       console.error(err);
     }
@@ -259,12 +259,12 @@ class SsoFormStore {
     data.append("metadata", file);
 
     try {
-      this.onLoadXML = true;
+      this.isLoadingXml = true;
       const response = await uploadXmlMetadata(data);
       this.setFieldsFromMetaData(response.data.meta);
-      this.onLoadXML = false;
+      this.isLoadingXml = false;
     } catch (err) {
-      this.onLoadXML = false;
+      this.isLoadingXml = false;
       toastr.error(err);
       console.error(err);
     }

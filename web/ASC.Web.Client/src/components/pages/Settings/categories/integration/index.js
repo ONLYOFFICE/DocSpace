@@ -55,13 +55,7 @@ const IntegrationWrapper = (props) => {
 
   if (!isLoading) return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
 
-  return (
-    <Submenu
-      data={data}
-      startSelect={currentTab}
-      onSelect={(e) => onSelect(e)}
-    />
-  );
+  return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
 export default inject(({ setup }) => {

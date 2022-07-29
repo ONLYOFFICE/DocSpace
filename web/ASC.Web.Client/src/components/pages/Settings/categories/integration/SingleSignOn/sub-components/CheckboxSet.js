@@ -35,7 +35,7 @@ const CheckboxSet = (props) => {
   return (
     <Box marginProp="12px 0">
       <SimpleCheckbox
-        label={t(`${prefix}AuthRequest`)}
+        label={prefix === "idp" ? t("idpAuthRequest") : t("spAuthRequest")}
         name={checkboxesNames[prefix][0]}
         tabIndex={10}
         isChecked={
@@ -43,7 +43,9 @@ const CheckboxSet = (props) => {
         }
       />
       <SimpleCheckbox
-        label={t(`${prefix}SignExitRequest`)}
+        label={
+          prefix === "idp" ? t("idpSignExitRequest") : t("spSignExitRequest")
+        }
         name={checkboxesNames[prefix][1]}
         tabIndex={11}
         isChecked={
@@ -51,7 +53,11 @@ const CheckboxSet = (props) => {
         }
       />
       <SimpleCheckbox
-        label={t(`${prefix}SignResponseRequest`)}
+        label={
+          prefix === "idp"
+            ? t("idpSignResponseRequest")
+            : t("spSignResponseRequest")
+        }
         name={checkboxesNames[prefix][2]}
         tabIndex={12}
         isChecked={
@@ -63,7 +69,7 @@ const CheckboxSet = (props) => {
 
       {prefix === "sp" && (
         <SimpleCheckbox
-          label={t(`${prefix}DecryptStatements`)}
+          label={t("spDecryptStatements")}
           name={checkboxesNames[prefix][3]}
           tabIndex={13}
           isChecked={spEncryptAssertions}

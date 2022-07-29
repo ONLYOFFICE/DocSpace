@@ -26,7 +26,13 @@ StyledUploadIcon.defaultProps = { theme: Base };
 
 const UploadXML = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
-  const { enableSso, uploadXmlUrl, onLoadXML, uploadByUrl, uploadXml } = props;
+  const {
+    enableSso,
+    uploadXmlUrl,
+    isLoadingXml,
+    uploadByUrl,
+    uploadXml,
+  } = props;
 
   return (
     <FieldContainer
@@ -49,12 +55,12 @@ const UploadXML = (props) => {
           icon={
             <StyledUploadIcon
               isDisabled={
-                !enableSso || uploadXmlUrl.trim().length === 0 || onLoadXML
+                !enableSso || uploadXmlUrl.trim().length === 0 || isLoadingXml
               }
             />
           }
           isDisabled={
-            !enableSso || uploadXmlUrl.trim().length === 0 || onLoadXML
+            !enableSso || uploadXmlUrl.trim().length === 0 || isLoadingXml
           }
           onClick={uploadByUrl}
           size="small"
@@ -69,7 +75,7 @@ const UploadXML = (props) => {
           accept=".xml"
           buttonLabel={t("Common:SelectFile")}
           className="xml-upload-file"
-          isDisabled={!enableSso || onLoadXML}
+          isDisabled={!enableSso || isLoadingXml}
           onInput={uploadXml}
           size="middle"
           tabIndex={3}
@@ -83,7 +89,7 @@ export default inject(({ ssoStore }) => {
   const {
     enableSso,
     uploadXmlUrl,
-    onLoadXML,
+    isLoadingXml,
     uploadByUrl,
     uploadXml,
   } = ssoStore;
@@ -91,7 +97,7 @@ export default inject(({ ssoStore }) => {
   return {
     enableSso,
     uploadXmlUrl,
-    onLoadXML,
+    isLoadingXml,
     uploadByUrl,
     uploadXml,
   };

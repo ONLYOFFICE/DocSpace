@@ -33,7 +33,7 @@ const Certificates = (props) => {
     idpVerifyAlgorithm,
     spEncryptAlgorithm,
     spDecryptAlgorithm,
-    onLoadXML,
+    isLoadingXml,
   } = props;
 
   let prefix = "";
@@ -62,12 +62,16 @@ const Certificates = (props) => {
         marginProp="24px 0"
       >
         <Text as="h2" fontSize="14px" fontWeight={600} noSelect>
-          {t(`${prefix}Certificates`)}
+          {prefix === "idp" ? t("idpCertificates") : t("spCertificates")}
         </Text>
 
         <HelpButton
           offsetRight={0}
-          tooltipContent={t(`${prefix}CertificatesTooltip`)}
+          tooltipContent={
+            prefix === "idp"
+              ? t("idpCertificatesTooltip")
+              : t("spCertificatesTooltip")
+          }
         />
       </Box>
 
@@ -77,7 +81,7 @@ const Certificates = (props) => {
         {prefix === "idp" && (
           <>
             <Button
-              isDisabled={!enableSso || onLoadXML}
+              isDisabled={!enableSso || isLoadingXml}
               label={t("AddCertificate")}
               onClick={openIdpModal}
               size="small"
@@ -90,7 +94,7 @@ const Certificates = (props) => {
         {prefix === "sp" && (
           <>
             <Button
-              isDisabled={!enableSso || onLoadXML}
+              isDisabled={!enableSso || isLoadingXml}
               label={t("AddCertificate")}
               onClick={openSpModal}
               size="small"
@@ -102,20 +106,24 @@ const Certificates = (props) => {
 
         <HideButton
           value={additionalParameters}
-          label={`${prefix}ShowAdditionalParameters`}
+          label={
+            prefix === "idp"
+              ? t("idpShowAdditionalParameters")
+              : t("spShowAdditionalParameters")
+          }
           isAdditionalParameters
         />
       </Box>
 
       {additionalParameters && (
         <>
-          <CheckboxSet id={prefix} prefix={prefix} />
+          <CheckboxSet prefix={prefix} />
 
           {provider === "IdentityProvider" && (
             <>
               <SimpleComboBox
-                labelText={t(`${prefix}SigningAlgorithm`)}
-                name={"idpVerifyAlgorithm"}
+                labelText={t("idpSigningAlgorithm")}
+                name="idpVerifyAlgorithm"
                 options={verifyAlgorithmsOptions}
                 tabIndex={14}
                 value={idpVerifyAlgorithm}
@@ -126,8 +134,8 @@ const Certificates = (props) => {
           {provider === "ServiceProvider" && (
             <>
               <SimpleComboBox
-                labelText={t(`${prefix}SigningAlgorithm`)}
-                name={"spSigningAlgorithm"}
+                labelText={t("spSigningAlgorithm")}
+                name="spSigningAlgorithm"
                 options={verifyAlgorithmsOptions}
                 tabIndex={14}
                 value={spEncryptAlgorithm}
@@ -164,7 +172,7 @@ export default inject(({ ssoStore }) => {
     idpVerifyAlgorithm,
     spEncryptAlgorithm,
     spDecryptAlgorithm,
-    onLoadXML,
+    isLoadingXml,
   } = ssoStore;
 
   return {
@@ -178,6 +186,6 @@ export default inject(({ ssoStore }) => {
     idpVerifyAlgorithm,
     spEncryptAlgorithm,
     spDecryptAlgorithm,
-    onLoadXML,
+    isLoadingXml,
   };
 })(observer(Certificates));

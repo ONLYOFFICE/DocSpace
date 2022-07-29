@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { isDesktop } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 
@@ -16,6 +17,7 @@ import ToggleSSO from "./sub-components/ToggleSSO";
 
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata } = props;
+  const { t } = useTranslation("SingleSignOn");
 
   if (!isDesktop) return <ForbiddenPage />;
 
@@ -31,6 +33,7 @@ const SingleSignOn = (props) => {
       <ToggleSSO />
 
       <HideButton
+        text={t("ServiceProviderSettings")}
         label="serviceProviderSettings"
         value={serviceProviderSettings}
       />
@@ -49,7 +52,11 @@ const SingleSignOn = (props) => {
 
       <hr className="separator" />
 
-      <HideButton label="spMetadata" value={spMetadata} />
+      <HideButton
+        text={t("SpMetadata")}
+        label="spMetadata"
+        value={spMetadata}
+      />
 
       <Box className="sp-metadata">
         <ProviderMetadata />

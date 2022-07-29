@@ -8,10 +8,7 @@ import Text from "@appserver/components/text";
 
 const HideButton = (props) => {
   const { t } = useTranslation("SingleSignOn");
-  const { label, isAdditionalParameters, value, setHideLabel } = props;
-
-  const hide = isAdditionalParameters ? "HideAdditionalParameters" : "Hide";
-  const show = isAdditionalParameters ? "ShowAdditionalParameters" : "Show";
+  const { text, label, isAdditionalParameters, value, setHideLabel } = props;
   const marginProp = isAdditionalParameters ? null : "24px 0";
   const className = isAdditionalParameters
     ? "hide-additional-button"
@@ -30,12 +27,18 @@ const HideButton = (props) => {
     >
       {!isAdditionalParameters && (
         <Text as="h2" fontSize="16px" fontWeight={600} noSelect>
-          {t(label)}
+          {text}
         </Text>
       )}
 
       <Link className={className} isHovered onClick={onClick} type="action">
-        {value ? t(hide) : t(show)}
+        {value
+          ? isAdditionalParameters
+            ? t("HideAdditionalParameters")
+            : t("Hide")
+          : isAdditionalParameters
+          ? t("ShowAdditionalParameters")
+          : t("Show")}
       </Link>
     </Box>
   );
