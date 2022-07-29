@@ -8,22 +8,19 @@ import Text from "@appserver/components/text";
 import styled from "styled-components";
 import HelpButton from "@appserver/components/help-button";
 import { Trans } from "react-i18next";
-import {
-  onChangeCheckbox,
-  onChangeTextInput,
-  onSelectEncryptionMode,
-  onSetAdditionInfo,
-} from "./InputsMethods";
+import { onSetAdditionInfo } from "./InputsMethods";
 
-const bucketInput = "bucket";
-const regionInput = "region";
-const urlInput = "serviceurl";
-const forcePathStyleInput = "forcepathstyle";
-const httpInput = "usehttp";
-const sseInput = "sse";
-const sse_kms = "ssekms";
-const customKey = "customKey";
-const clientKey = "clientKey";
+const bucket = "bucket";
+const region = "region";
+const serviceurl = "serviceurl";
+const forcepathstyle = "forcepathstyle";
+const usehttp = "usehttp";
+const sse = "sse";
+const sse_kms = "awskms";
+const sse_key = "ssekey";
+const sse_s3 = "aes256";
+const sse_client_side = "clientawskms";
+
 const filePath = "filePath";
 
 const StyledBody = styled.div`
@@ -38,23 +35,14 @@ const StyledBody = styled.div`
   }
 `;
 class AmazonSettings extends React.Component {
-  static formNames = () => {
+  static formNames = (systemName) => {
     return {
       bucket: "",
-      region: "0",
+      region: systemName ? systemName : "",
       serviceurl: "",
-      customKey: "",
-      clientKey: "",
-      forcepathstyle: false,
-      usehttp: false,
-      sse: "0",
-      kms: true,
-      s3: false,
+      forcepathstyle: "false",
+      usehttp: "false",
     };
-  };
-
-  static requiredFormsName = () => {
-    return [urlInput, bucketInput, customKey, clientKey];
   };
 
   constructor(props) {
@@ -65,13 +53,13 @@ class AmazonSettings extends React.Component {
       setRequiredFormSettings,
       setIsThirdStorageChanged,
       isNeedFilePath,
+      storageRegions,
     } = this.props;
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
-    console.log("selectedStorage", selectedStorage);
 
     const filePathField = isNeedFilePath ? [filePath] : [];
-    setRequiredFormSettings([urlInput, bucketInput, ...filePathField]); //TODO: add the flexible urlInput or region. customKey, clientKey
+    setRequiredFormSettings([bucket, ...filePathField]);
     setIsThirdStorageChanged(false);
 
     this.bucketPlaceholder =
@@ -89,121 +77,142 @@ class AmazonSettings extends React.Component {
     this.sse_kms = "SSE-KMS";
     this.sse_s3 = "SSE-S3";
 
+    this.serverSideEncryption = "Server-Side Encryption";
+    this.clientSideEncryption = "Client-Side Encryption";
+    this.defaultManaged = "Default AWS managed CMK";
+    this.customerManager = "Customer manager CMK";
+    this.noneValue = "None";
+
     this.availableEncryptions = [
       {
         key: "0",
-        label: "None",
+        label: this.noneValue,
       },
       {
         key: "1",
-        label: "Server-Side Encryption",
+        label: this.serverSideEncryption,
       },
       {
         key: "2",
-        label: "Client-Side Encryption",
+        label: this.clientSideEncryption,
       },
     ];
 
-    this.region = [
-      {
-        key: "0",
-        label: "None",
-      },
-      {
-        key: "1",
-        label: "Example-1",
-      },
-    ];
+    this.regions = [];
+    for (let index = 0; index < storageRegions.length; ++index) {
+      const item = storageRegions[index];
+      this.regions.push({
+        key: index.toString(),
+        label: `${item.displayName} (${item.systemName})`,
+        systemName: item.systemName,
+      });
+    }
 
     this.managedKeys = [
       {
         key: "0",
-        label: "Default AWS managed CMK",
+        label: this.defaultManaged,
       },
       {
         key: "1",
-        label: "Сustomer managed CMK ",
+        label: this.customerManager,
       },
     ];
     this.state = {
       selectedEncryption: this.availableEncryptions[0],
-      region: this.region[0],
+      region: this.regions[0],
       managedKeys: this.managedKeys[0],
     };
   }
 
   onSelectEncryptionMethod = (options) => {
+    const { addValueInFormSettings, deleteValueFormSetting } = this.props;
     const key = options.key;
     const label = options.label;
 
-    onSetAdditionInfo("sse", key);
+    if (label === this.noneValue) {
+      deleteValueFormSetting(sse_key);
+      deleteValueFormSetting(sse);
+    } else {
+      const isServerSSE = label === this.serverSideEncryption;
+      const value = isServerSSE ? sse_s3 : sse_client_side;
+      addValueInFormSettings(sse, value);
+
+      if (!isServerSSE) {
+        addValueInFormSettings(sse_key, "");
+      } else {
+        deleteValueFormSetting(sse_key);
+      }
+    }
+
     this.setState({
       selectedEncryption: { key, label },
     });
   };
 
+  onSelectEncryptionMode = (e) => {
+    const {
+      setIsThirdStorageChanged,
+      addValueInFormSettings,
+      deleteValueFormSetting,
+    } = this.props;
+
+    const value = e.target.name;
+
+    if (value === sse_s3) {
+      deleteValueFormSetting(sse_key);
+    }
+    addValueInFormSettings(sse, value);
+    setIsThirdStorageChanged(true);
+  };
+  onSelectManagedKeys = (options) => {
+    const { addValueInFormSettings, deleteValueFormSetting } = this.props;
+    const key = options.key;
+    const label = options.label;
+
+    if (label === this.customerManager) {
+      addValueInFormSettings(sse_key, "");
+    } else {
+      deleteValueFormSetting(sse_key);
+    }
+
+    this.setState({
+      managedKeys: { key, label },
+    });
+  };
   onSelectRegion = (options) => {
-    const { replaceRequiredFormSettings } = this.props;
+    //const { replaceRequiredFormSettings } = this.props;
 
     const key = options.key;
     const label = options.label;
 
     onSetAdditionInfo("region", key);
 
-    key === "0"
-      ? replaceRequiredFormSettings(regionInput, urlInput)
-      : replaceRequiredFormSettings(urlInput, regionInput);
+    // key === "0"
+    //   ? replaceRequiredFormSettings(region, serviceurl)
+    //   : replaceRequiredFormSettings(serviceurl, region);
 
     this.setState({
       region: { key, label },
     });
   };
 
-  onSelectManagedKeys = (options) => {
-    const { setFormSettings } = this.props;
-    const key = options.key;
-    const label = options.label;
+  onChangeText = (event) => {
+    const { addValueInFormSettings } = this.props;
+    const { target } = event;
+    const value = target.value;
+    const name = target.name;
 
-    const newState = onSetAdditionInfo("managedkeys", key);
-    setFormSettings(newState);
-
-    this.setState({
-      managedKeys: { key, label },
-    });
+    addValueInFormSettings(name, value);
   };
 
-  onSelectEncryptionMode = (e) => {
-    const { setFormSettings, setIsThirdStorageChanged } = this.props;
-    const name = e.target.name;
-    const nonCheck = name === "s3" ? "kms" : "s3"; //TODO: names from api
-    const newState = onSelectEncryptionMode(name, nonCheck);
+  onChangeCheckbox = (event) => {
+    const { addValueInFormSettings } = this.props;
+    const { target } = event;
+    const value = target.checked;
+    const name = target.name;
 
-    setIsThirdStorageChanged(true);
-    setFormSettings(newState);
-  };
-
-  onUpdateValue = (e, type) => {
-    const {
-      formSettings,
-      setFormSettings,
-      setIsThirdStorageChanged,
-    } = this.props;
-    setIsThirdStorageChanged(true);
-
-    const newState =
-      type === "checkbox"
-        ? onChangeCheckbox
-        : onChangeTextInput(formSettings, e);
-
-    setFormSettings(newState);
-  };
-
-  onChangeText = (e) => {
-    this.onUpdateValue(e);
-  };
-
-  onChangeCheckbox = (e) => {
-    this.onUpdateValue(e, "checkbox");
+    addValueInFormSettings(name, value.toString());
   };
 
   render() {
@@ -214,9 +223,15 @@ class AmazonSettings extends React.Component {
       formSettings,
       t,
       isNeedFilePath,
+      requiredFormSettings,
     } = this.props;
     const { selectedEncryption, region, managedKeys } = this.state;
-    console.log("amazon settings render", isError);
+    console.log(
+      "amazon settings render",
+      formSettings,
+      "requiredFormSettings",
+      requiredFormSettings
+    );
     const renderTooltip = (helpInfo) => {
       return (
         <>
@@ -241,11 +256,11 @@ class AmazonSettings extends React.Component {
             {renderTooltip(t("AmazonServiceTip"))}
           </div>
           <TextInput
-            name={bucketInput}
+            name={bucket}
             className="backup_text-input"
             scale
-            value={formSettings.bucket}
-            hasError={isError?.bucket}
+            value={formSettings[bucket]}
+            hasError={isError[bucket]}
             onChange={this.onChangeText}
             isDisabled={isLoadingData || isLoading || this.isDisabled}
             tabIndex={1}
@@ -258,7 +273,7 @@ class AmazonSettings extends React.Component {
           </div>
           <ComboBox
             className="backup_text-input"
-            options={this.region}
+            options={this.regions}
             selectedOption={{
               key: 0,
               label: region.label,
@@ -268,7 +283,7 @@ class AmazonSettings extends React.Component {
             scaled={true}
             scaledOptions={true}
             dropDownMaxHeight={300}
-            isDisabled={!!formSettings.serviceurl?.trim()}
+            isDisabled={!!formSettings[serviceurl]?.trim() || this.isDisabled}
             tabIndex={2}
           />
         </StyledBody>
@@ -279,11 +294,11 @@ class AmazonSettings extends React.Component {
             {renderTooltip(t("AmazonRegionTip"))}
           </div>
           <TextInput
-            name={urlInput}
+            name={serviceurl}
             className="backup_text-input"
             scale
-            value={formSettings.serviceurl}
-            hasError={isError?.serviceurl}
+            value={formSettings[serviceurl]}
+            hasError={isError[serviceurl]}
             onChange={this.onChangeText}
             isDisabled={
               isLoadingData ||
@@ -296,22 +311,22 @@ class AmazonSettings extends React.Component {
         </StyledBody>
 
         <Checkbox
-          name={forcePathStyleInput}
+          name={forcepathstyle}
           label={this.forcePathStylePlaceholder}
-          isChecked={formSettings.forcepathstyle}
+          isChecked={formSettings[forcepathstyle] === "false" ? false : true}
           isIndeterminate={false}
-          isDisabled={false}
+          isDisabled={this.isDisabled}
           onChange={this.onChangeCheckbox}
           tabIndex={4}
         />
 
         <Checkbox
           className="backup_checkbox"
-          name={httpInput}
+          name={usehttp}
           label={this.useHttpPlaceholder}
-          isChecked={formSettings.usehttp}
+          isChecked={formSettings[usehttp] === "false" ? false : true}
           isIndeterminate={false}
-          isDisabled={false}
+          isDisabled={this.isDisabled}
           onChange={this.onChangeCheckbox}
           tabIndex={5}
         />
@@ -329,76 +344,82 @@ class AmazonSettings extends React.Component {
             noBorder={false}
             scaled={true}
             scaledOptions={true}
-            dropDownMaxHeight={50}
+            dropDownMaxHeight={300}
+            isDisabled={this.isDisabled}
             tabIndex={7}
           />
         </StyledBody>
-        {selectedEncryption.key === "1" && (
+
+        {selectedEncryption.label === this.serverSideEncryption && (
           <>
             <RadioButton
+              className="backup_radio-button-settings"
               value=""
-              label={this.sse_kms}
-              isChecked={formSettings.kms}
+              label={this.sse_s3}
+              isChecked={formSettings[sse] === sse_s3 ? true : false}
               onClick={this.onSelectEncryptionMode}
-              name={"kms"}
+              name={sse_s3}
+              isDisabled={this.isDisabled}
             />
 
             <RadioButton
               className="backup_radio-button-settings"
               value=""
-              label={this.sse_s3}
-              isChecked={formSettings.s3}
+              label={this.sse_kms}
+              isChecked={formSettings[sse] === sse_kms ? true : false}
               onClick={this.onSelectEncryptionMode}
-              name={"s3"}
+              name={sse_kms}
+              isDisabled={this.isDisabled}
             />
+
+            {formSettings[sse] === sse_kms && (
+              <>
+                <Text isBold>{"Managed CMK"}</Text>
+                <ComboBox
+                  className="backup_text-input"
+                  options={this.managedKeys}
+                  selectedOption={{
+                    key: 0,
+                    label: managedKeys.label,
+                  }}
+                  onSelect={this.onSelectManagedKeys}
+                  noBorder={false}
+                  scaled
+                  scaledOptions
+                  dropDownMaxHeight={300}
+                  isDisabled={this.isDisabled}
+                  tabIndex={8}
+                />
+
+                {managedKeys.label === this.customerManager && (
+                  <>
+                    <Text isBold>{"Key"}</Text>
+                    <TextInput
+                      name={sse_key}
+                      className="backup_text-input"
+                      scale
+                      value={formSettings[sse_key]}
+                      hasError={isError[sse_key]}
+                      onChange={this.onChangeText}
+                      isDisabled={isLoadingData || isLoading || this.isDisabled}
+                      tabIndex={9}
+                    />
+                  </>
+                )}
+              </>
+            )}
           </>
         )}
 
-        {formSettings.kms && selectedEncryption.key === "1" && (
+        {selectedEncryption.label === this.clientSideEncryption && (
           <>
-            <Text isBold>{"Managed CMK"}</Text>
-            <ComboBox
-              className="backup_text-input"
-              options={this.managedKeys}
-              selectedOption={{
-                key: 0,
-                label: managedKeys.label,
-              }}
-              onSelect={this.onSelectManagedKeys}
-              noBorder={false}
-              scaled={true}
-              scaledOptions={true}
-              dropDownMaxHeight={50}
-              tabIndex={8}
-            />
-          </>
-        )}
-
-        {managedKeys.key !== "0" && (
-          <>
-            <Text isBold>{"Key"}</Text>
+            <Text isBold>{"KMS Key Id"}</Text>
             <TextInput
-              name={customKey}
+              name={sse_key}
               className="backup_text-input"
               scale
-              value={formSettings.customKey}
-              hasError={isError?.customKey}
-              onChange={this.onChangeText}
-              isDisabled={isLoadingData || isLoading || this.isDisabled}
-              tabIndex={9}
-            />
-          </>
-        )}
-
-        {selectedEncryption.key === "2" && (
-          <>
-            <Text isBold>{"Key"}</Text>
-            <TextInput
-              name={clientKey}
-              className="backup_text-input"
-              scale
-              value={formSettings.clientKey}
-              hasError={isError?.clientKey}
+              value={formSettings[sse_key]}
+              hasError={isError[sse_key]}
               onChange={this.onChangeText}
               isDisabled={isLoadingData || isLoading || this.isDisabled}
               tabIndex={8}
@@ -411,11 +432,11 @@ class AmazonSettings extends React.Component {
             name="filePath"
             className="backup_text-input"
             scale
-            value={formSettings.filePath}
+            value={formSettings[filePath]}
             onChange={this.onChangeText}
             isDisabled={isLoadingData || isLoading || this.isDisabled}
             placeholder={t("Path")}
-            hasError={isError?.filePath}
+            hasError={isError[filePath]}
           />
         )}
       </>
@@ -425,20 +446,26 @@ class AmazonSettings extends React.Component {
 
 export default inject(({ backup }) => {
   const {
-    setFormSettings,
     setRequiredFormSettings,
     formSettings,
     errorsFieldsBeforeSafe,
-    replaceRequiredFormSettings,
+
     setIsThirdStorageChanged,
+    addValueInFormSettings,
+    deleteValueFormSetting,
+    storageRegions,
+    requiredFormSettings,
   } = backup;
 
   return {
-    setFormSettings,
     setRequiredFormSettings,
     formSettings,
     errorsFieldsBeforeSafe,
-    replaceRequiredFormSettings,
+    storageRegions,
     setIsThirdStorageChanged,
+    addValueInFormSettings,
+    deleteValueFormSetting,
+
+    requiredFormSettings,
   };
 })(observer(AmazonSettings));

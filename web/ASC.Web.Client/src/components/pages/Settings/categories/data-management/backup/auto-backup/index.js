@@ -16,7 +16,10 @@ import {
   AutoBackupPeriod,
 } from "@appserver/common/constants";
 import ToggleButton from "@appserver/components/toggle-button";
-import { getBackupStorage } from "@appserver/common/api/settings";
+import {
+  getBackupStorage,
+  getStorageRegions,
+} from "@appserver/common/api/settings";
 import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
@@ -80,6 +83,7 @@ class AutomaticBackup extends React.PureComponent {
       setBackupSchedule,
       setCommonThirdPartyList,
       getProgress,
+      setStorageRegions,
     } = this.props;
 
     try {
@@ -90,15 +94,18 @@ class AutomaticBackup extends React.PureComponent {
         backupSchedule,
         backupStorage,
         enableAuto,
+        storageRegions,
       ] = await Promise.all([
         getThirdPartyCommonFolderTree(),
         getBackupSchedule(),
         getBackupStorage(),
         enableAutoBackup(),
+        getStorageRegions(),
       ]);
 
       setThirdPartyStorage(backupStorage);
       setBackupSchedule(backupSchedule);
+      setStorageRegions(storageRegions);
       thirdPartyList && setCommonThirdPartyList(thirdPartyList);
 
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
@@ -299,8 +306,8 @@ class AutomaticBackup extends React.PureComponent {
         selectedStorageId
       );
 
-      //console.log("storageParams", storageParams);
-      //return;
+      console.log("storageParams", storageParams);
+      return;
       this.createSchedule(
         storageType.toString(),
         storageParams,
@@ -572,6 +579,7 @@ export default inject(({ auth, backup }) => {
     updatePathSettings,
     setSavingProcess,
     setResetProcess,
+    setStorageRegions,
   } = backup;
 
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
@@ -621,5 +629,6 @@ export default inject(({ auth, backup }) => {
     updatePathSettings,
     setSavingProcess,
     setResetProcess,
+    setStorageRegions,
   };
 })(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

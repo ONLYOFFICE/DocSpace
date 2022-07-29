@@ -63,6 +63,8 @@ class BackupStore {
   isSavingProcess = false;
   isResetProcess = false;
 
+  storageRegions = [];
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -429,6 +431,13 @@ class BackupStore {
     console.log(" this.formSettings", this.formSettings);
   };
 
+  addValueInFormSettings = (name, value) => {
+    this.setFormSettings({ ...this.formSettings, [name]: value });
+  };
+
+  deleteValueFormSetting = (key) => {
+    delete this.formSettings[key];
+  };
   getStorageParams = (
     isCheckedThirdPartyStorage,
     selectedFolderId,
@@ -463,16 +472,9 @@ class BackupStore {
     this.requiredFormSettings = array;
   };
 
-  replaceRequiredFormSettings = (beingDeletedValue, addedValue) => {
-    const index = this.requiredFormSettings.indexOf(beingDeletedValue);
-
-    if (~index) {
-      this.requiredFormSettings[index] = addedValue;
-    } else {
-      this.requiredFormSettings.push(addedValue);
-    }
+  setStorageRegions = (regions) => {
+    this.storageRegions = regions;
   };
-
   setDefaultFormSettings = (obj) => {
     this.defaultFormSettings = obj;
   };
@@ -491,9 +493,6 @@ class BackupStore {
 
     for (let key of this.requiredFormSettings) {
       const elem = this.formSettings[key];
-
-      if (typeof elem == "boolean") continue;
-
       errors[key] = !elem.trim();
       // console.log("elem.trim()", elem.trim(), "firstError", firstError);
       if (!elem.trim() && !firstError) {
@@ -527,6 +526,7 @@ class BackupStore {
         defaultFormSettings[key] = value;
       }
     }
+    console.log("defaultFormSettings", defaultFormSettings);
     this.setFormSettings(defaultFormSettings);
     this.setDefaultFormSettings(defaultFormSettings);
     this.setErrorsFormFields({});
