@@ -20,6 +20,7 @@
     <ROW Property="ARPSYSTEMCOMPONENT" Value="1"/>
     <ROW Property="ARPURLINFOABOUT" Value="http://www.onlyoffice.com"/>
     <ROW Property="ARPURLUPDATEINFO" Value="http://www.onlyoffice.com/download.aspx"/>
+    <ROW Property="COMMON_SHORTCUT_NAME" Value="ONLYOFFICE"/>
     <ROW Property="DATABASE_MIGRATION" Value="true"/>
     <ROW Property="DATABASE_PROP" Value="onlyoffice"/>
     <ROW Property="ELASTICSEARCH_HOST" Value="localhost" ValueLocId="-"/>
@@ -99,14 +100,17 @@
     <ROW Directory="ASC.Web.Api_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.API|ASC.Web.Api"/>
     <ROW Directory="ASC.Web.Studio_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.STU|ASC.Web.Studio"/>
     <ROW Directory="ASC.Webhooks.Service_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.SER|ASC.Webhooks.Service"/>
+    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
     <ROW Directory="NewFolder_1_Dir" Directory_Parent="service_1_Dir" DefaultDir="config"/>
     <ROW Directory="NewFolder_3_Dir" Directory_Parent="ASC.Webhooks.Service_Dir" DefaultDir="service"/>
     <ROW Directory="NewFolder_Dir" Directory_Parent="ASC.UrlShortener_Dir" DefaultDir="service"/>
+    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="config_1_Dir" Directory_Parent="NewFolder_Dir" DefaultDir="config"/>
     <ROW Directory="config_2_Dir" Directory_Parent="service_5_Dir" DefaultDir="config"/>
     <ROW Directory="config_Dir" Directory_Parent="APPDIR" DefaultDir="config"/>
     <ROW Directory="products_Dir" Directory_Parent="APPDIR" DefaultDir="products"/>
+    <ROW Directory="public_Dir" Directory_Parent="APPDIR" DefaultDir="public"/>
     <ROW Directory="server_2_Dir" Directory_Parent="ASC.Files_Dir" DefaultDir="server"/>
     <ROW Directory="server_5_Dir" Directory_Parent="ASC.People_Dir" DefaultDir="server"/>
     <ROW Directory="service_11_Dir" Directory_Parent="ASC.Studio.Notify_Dir" DefaultDir="service"/>
@@ -145,6 +149,7 @@
     <ROW Component="ASC.Web.Studio.exe" ComponentId="{00F95035-98D9-44AD-9DB4-B34306EE2170}" Directory_="service_16_Dir" Attributes="256" KeyPath="ASC.Web.Studio.exe"/>
     <ROW Component="ASC.Webhooks.Service.exe" ComponentId="{9D6002C5-A610-4B28-982C-2DB794571878}" Directory_="NewFolder_3_Dir" Attributes="0" KeyPath="ASC.Webhooks.Service.exe"/>
     <ROW Component="ProductInformation" ComponentId="{5FB28D19-6A7D-4078-901F-58C2DF0DE176}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
+    <ROW Component="SHORTCUTDIR" ComponentId="{BEDC103D-5E75-4B6F-BD3C-7A94A2470A6D}" Directory_="SHORTCUTDIR" Attributes="0"/>
     <ROW Component="Socket.IO.exe" ComponentId="{D08CDE1C-FB16-49AB-98A2-92FD887774F1}" Directory_="tools_Dir" Attributes="0" KeyPath="Socket.IO.exe"/>
     <ROW Component="SsoAuth.exe" ComponentId="{B4A48C44-5FC0-43D8-9CFB-EB4A4AAB4169}" Directory_="tools_Dir" Attributes="0" KeyPath="SsoAuth.exe"/>
     <ROW Component="UrlShortener.exe" ComponentId="{1F1D4189-385A-4AE1-8011-A82ED137DA22}" Directory_="tools_Dir" Attributes="0" KeyPath="UrlShortener.exe"/>
@@ -152,6 +157,7 @@
     <ROW Component="config_socketio" ComponentId="{4F28A197-AD56-48D0-9E97-9F88A73BE24E}" Directory_="NewFolder_1_Dir" Attributes="0"/>
     <ROW Component="config_ssoauth" ComponentId="{D51A4591-143D-4C91-8665-BED153555AC0}" Directory_="config_2_Dir" Attributes="0"/>
     <ROW Component="config_urlshortener" ComponentId="{3A8A13E2-9BAA-485B-9E09-A6AD3EF70127}" Directory_="config_1_Dir" Attributes="0"/>
+    <ROW Component="favicon.ico" ComponentId="{31B18A50-6FF2-4C5E-8A1F-018247C8C55C}" Directory_="public_Dir" Attributes="0" KeyPath="favicon.ico" Type="0"/>
     <ROW Component="proxy.exe" ComponentId="{913596AD-5C75-4418-8C3A-FAB2A70530DB}" Directory_="tools_Dir" Attributes="0" KeyPath="proxy.exe"/>
     <ROW Component="proxy.xml" ComponentId="{92B2BA6A-009B-4731-A0E2-A6C729DC8A68}" Directory_="tools_Dir" Attributes="0" KeyPath="proxy.xml" Type="0"/>
   </COMPONENT>
@@ -182,6 +188,7 @@
     <ROW File="ASC.Migration.exe" Component_="ASC.Migration.exe" FileName="ASCMIG~1.EXE|ASC.Migration.exe" Attributes="0" SourcePath="Files\services\ASC.Migration\service\ASC.Migration.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Webhooks.Service.exe" Component_="ASC.Webhooks.Service.exe" FileName="ASCWEB~1.EXE|ASC.Webhooks.Service.exe" Attributes="0" SourcePath="Files\services\ASC.Webhooks.Service\service\ASC.Webhooks.Service.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Migration.Runner.exe" Component_="ASC.Migration.Runner.exe" FileName="ASCMIG~2.EXE|ASC.Migration.Runner.exe" Attributes="0" SourcePath="Files\services\ASC.Migration.Runner\service\ASC.Migration.Runner.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="favicon.ico" Component_="favicon.ico" FileName="favicon.ico" Attributes="0" SourcePath="Files\public\favicon.ico" SelfReg="false" DigSign="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -572,6 +579,7 @@
     <ROW Directory_="config_1_Dir" Component_="config_urlshortener" ManualDelete="false"/>
     <ROW Directory_="config_2_Dir" Component_="config_ssoauth" ManualDelete="false"/>
     <ROW Directory_="NewFolder_1_Dir" Component_="config_socketio" ManualDelete="false"/>
+    <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
@@ -685,9 +693,17 @@
     <ROW Feature_="MainFeature" Component_="ASC.Migration.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Webhooks.Service.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Migration.Runner.exe"/>
+    <ROW Feature_="MainFeature" Component_="favicon.ico"/>
+    <ROW Feature_="MainFeature" Component_="SHORTCUTDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="icon.exe" SourcePath="Resources\icon.ico" Index="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
+    <ROW IniFile="URL" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="URL" Value="http://localhost:8092" Action="0" Component_="SHORTCUTDIR"/>
+    <ROW IniFile="URL_1" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://localhost:8092" Action="0" Component_="SHORTCUTDIR"/>
+    <ROW IniFile="WorkingDirectory" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="WorkingDirectory" Value="[DesktopFolder]" Action="0" Component_="SHORTCUTDIR"/>
+    <ROW IniFile="WorkingDirectory_1" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="WorkingDirectory" Value="[SHORTCUTDIR]" Action="0" Component_="SHORTCUTDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
