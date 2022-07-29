@@ -57,9 +57,6 @@ class PureHome extends React.Component {
       localStorage.removeItem("isFirstUrl");
     }
 
-    this.frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
-    this.isFrame = this.frameConfig && window.name === this.frameConfig.name;
-
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const roomsReg = new RegExp(`${homepage}((/?)$|/rooms)`, "gmi");
 
@@ -397,12 +394,12 @@ class PureHome extends React.Component {
       checkedMaintenance,
       setMaintenanceExist,
       snackbarExist,
+      frameConfig,
     } = this.props;
 
-    const showTitle =
-      this.frameConfig && JSON.parse(this.frameConfig.showTitle);
-    const showFilter =
-      this.frameConfig && JSON.parse(this.frameConfig.showFilter);
+    const isFrame = frameConfig && window.name === frameConfig.name;
+    const showTitle = frameConfig && JSON.parse(frameConfig.showTitle);
+    const showFilter = frameConfig && JSON.parse(frameConfig.showFilter);
 
     return (
       <>
@@ -434,7 +431,7 @@ class PureHome extends React.Component {
           firstLoad={firstLoad}
         >
           <Section.SectionHeader>
-            {this.isFrame ? (
+            {isFrame ? (
               showTitle && <SectionHeaderContent />
             ) : (
               <SectionHeaderContent />
@@ -452,7 +449,7 @@ class PureHome extends React.Component {
           </Section.SectionBar>
 
           <Section.SectionFilter>
-            {this.isFrame ? (
+            {isFrame ? (
               showFilter && <SectionFilterContent />
             ) : (
               <SectionFilterContent />
@@ -584,6 +581,7 @@ export default inject(
       checkedMaintenance: auth.settingsStore.checkedMaintenance,
       setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
       snackbarExist: auth.settingsStore.snackbarExist,
+      frameConfig: auth.settingsStore.frameConfig,
       expandedKeys,
 
       primaryProgressDataVisible,
