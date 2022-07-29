@@ -158,4 +158,8 @@ module.exports = {
     singleton: true,
     requiredVersion: deps["sjcl"],
   },
+  "query-string": {
+    singleton: true,
+    requiredVersion: deps["query-string"],
+  },
 };

@@ -1,5 +1,4 @@
 import { getObjectByLocation, toUrlParams } from "../../utils";
-import queryString from "query-string";
 import { RoomSearchArea } from "../../constants";
 
 const PAGE = "page";

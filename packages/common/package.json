@@ -20,6 +20,7 @@
     "mobx-react": "^7.2.0",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
+    "query-string": "7.1.1",
     "re-resizable": "^6.9.0",
     "react": "^17.0.2",
     "react-autosize-textarea": "^7.1.0",
