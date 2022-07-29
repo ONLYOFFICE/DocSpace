@@ -1,12 +1,14 @@
 (function (DocSpace) {
   const defaultConfig = {
-    src: "http://192.168.1.60:8092/",
-    rootPath: "products/files/",
+    src: `${window.location.protocol}//${window.location.hostname}:8092`,
+    rootPath: "/products/files/",
     width: "100%",
     height: "100%",
     name: "frameDocSpace",
     type: "desktop",
     frameId: "ds-frame",
+    fileId: null,
+    editorType: "embedded",
     showHeader: false,
     showArticle: false,
     showTitle: true,
@@ -57,7 +59,11 @@
       ? `filter?${new URLSearchParams(config.filter).toString()}`
       : ``;
 
-    iframe.src = config.src + config.rootPath + filter;
+    const editor = `doceditor/?fileId=${config.fileId}&type=${config.editorType}`;
+
+    const pathname = config.fileId ? editor : filter;
+
+    iframe.src = config.src + config.rootPath + pathname;
     iframe.width = config.width;
     iframe.height = config.height;
     iframe.name = config.name;
@@ -82,6 +88,82 @@
   DocSpace = () => {
     let config = getConfigFromParams();
     let iframe;
+    let isConnected = false;
+
+    let callbacks = [];
+    let tasks = [];
+
+    const sendMessage = (message) => {
+      let mes = {
+        frameId: config.frameId,
+        type: "",
+        data: message,
+      };
+
+      if (iframe)
+        iframe.contentWindow.postMessage(JSON.stringify(mes), config.src);
+    };
+
+    const onMessage = (e) => {
+      if (typeof e.data == "string") {
+        let frameData = {};
+
+        try {
+          frameData = JSON.parse(e.data);
+        } catch (err) {
+          frameData = {};
+        }
+
+        switch (frameData.type) {
+          case "onMethodReturn": {
+            if (callbacks.length > 0) {
+              const callback = callbacks.shift();
+              callback && callback(frameData.methodReturnData);
+            }
+
+            if (tasks.length > 0) {
+              sendMessage(tasks.shift());
+            }
+            break;
+          }
+          case "onCommandCallback": {
+            if (callbacks.length > 0) {
+              const callback = callbacks.shift();
+              callback && callback();
+            }
+
+            if (tasks.length > 0) {
+              sendMessage(tasks.shift());
+            }
+            break;
+          }
+          default:
+            break;
+        }
+      }
+    };
+
+    const executeMethod = (name, params, callback) => {
+      if (!isConnected) {
+        console.log("Message bus is not connected with frame");
+        return;
+      }
+
+      callbacks.push(callback);
+
+      const message = {
+        type: "method",
+        methodName: name,
+        data: params,
+      };
+
+      if (callbacks.length !== 1) {
+        tasks.push(message);
+        return;
+      }
+
+      sendMessage(message);
+    };
 
     const initFrame = (frameConfig) => {
       config = { ...config, ...frameConfig };
@@ -93,7 +175,8 @@
 
         target.parentNode && target.parentNode.replaceChild(iframe, target);
 
-        localStorage.setItem("dsFrameConfig", JSON.stringify(config));
+        window.addEventListener("message", onMessage, false);
+        isConnected = true;
       }
     };
 
@@ -104,28 +187,91 @@
       target.innerHTML = config.destroyText;
 
       if (iframe) {
+        window.removeEventListener("message", onMessage, false);
+        isConnected = false;
+
         iframe.parentNode && iframe.parentNode.replaceChild(target, iframe);
       }
     };
 
     const getFolderInfo = () => {
-      return "test";
+      return new Promise((resolve) =>
+        executeMethod("getFolderInfo", null, (data) => resolve(data))
+      );
+    };
+
+    const getSelection = () => {
+      return new Promise((resolve) =>
+        executeMethod("getSelection", null, (data) => resolve(data))
+      );
+    };
+
+    const getFiles = () => {
+      return new Promise((resolve) =>
+        executeMethod("getFiles", null, (data) => resolve(data))
+      );
+    };
+
+    const getFolders = () => {
+      return new Promise((resolve) =>
+        executeMethod("getFolders", null, (data) => resolve(data))
+      );
+    };
+
+    const getItems = () => {
+      return new Promise((resolve) =>
+        executeMethod("getItems", null, (data) => resolve(data))
+      );
     };
 
     const getUserInfo = () => {
-      return "test";
+      return new Promise((resolve) =>
+        executeMethod("getUserInfo", null, (data) => resolve(data))
+      );
     };
 
     const getConfig = () => config;
+
+    const setConfig = (newConfig) => {
+      if (newConfig?.fileId) return initFrame(newConfig);
+
+      config = { ...config, ...newConfig };
+
+      return new Promise((resolve) =>
+        executeMethod("setConfig", config, (data) => resolve(data))
+      );
+    };
+
+    const createItem = (format) => {
+      return new Promise((resolve) =>
+        executeMethod("createItem", null, (data) => resolve(data))
+      );
+    };
+
+    const createRoom = () => {
+      return new Promise((resolve) =>
+        executeMethod("createRoom", null, (data) => resolve(data))
+      );
+    };
 
     initFrame(config);
 
     return {
       initFrame,
       destroyFrame,
+
       getConfig,
       getFolderInfo,
       getUserInfo,
+      getSelection,
+      getFiles,
+      getFolders,
+      getItems,
+
+      setConfig,
+
+      createItem,
+      createRoom,
     };
   };
 
