@@ -115,7 +115,8 @@ const StyledArticle = styled.article`
 StyledArticle.defaultProps = { theme: Base };
 
 const StyledArticleHeader = styled.div`
-  padding: 16px 20px 17px;
+  height: 30px;
+  padding: 16px 20px 9px;
   margin-left: -1px;
   display: flex;
   justify-content: flex-start;

@@ -57,15 +57,12 @@ const ArticleHeader = ({
         />
       ) : (
         <StyledIconBox name="article-burger" showText={showText}>
-          <ReactSVG
-            src="/static/images/logo.icon.react.svg"
-            onClick={onClick}
-          />
+          <img src="/static/images/logo.icon.react.svg" onClick={onClick} />
         </StyledIconBox>
       )}
 
       <StyledHeading showText={showText} size="large">
-        <ReactSVG
+        <img
           src="/static/images/logo.docspace.react.svg"
           onClick={onLogoClick}
         />
