@@ -5,7 +5,7 @@ import TextInput from "@appserver/components/text-input";
 
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 
-const SimpleTextInput = (props) => {
+const SsoTextInput = (props) => {
   const {
     hasError,
     isDisabled,
@@ -61,4 +61,4 @@ export default inject(({ ssoStore }) => {
     setError,
     hideError,
   };
-})(observer(SimpleTextInput));
+})(observer(SsoTextInput));

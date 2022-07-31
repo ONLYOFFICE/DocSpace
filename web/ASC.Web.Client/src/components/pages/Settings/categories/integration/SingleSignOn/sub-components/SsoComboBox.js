@@ -6,7 +6,7 @@ import FieldContainer from "@appserver/components/field-container";
 
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 
-const SimpleComboBox = (props) => {
+const SsoComboBox = (props) => {
   const {
     labelText,
     name,
@@ -51,4 +51,4 @@ export default inject(({ ssoStore }) => {
     enableSso,
     isLoadingXml,
   };
-})(observer(SimpleComboBox));
+})(observer(SsoComboBox));

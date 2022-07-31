@@ -13,7 +13,7 @@ import CertificatesTable from "./sub-components/CertificatesTable";
 import CheckboxSet from "./sub-components/CheckboxSet";
 import HideButton from "./sub-components/HideButton";
 import PropTypes from "prop-types";
-import SimpleComboBox from "./sub-components/SimpleComboBox";
+import SsoComboBox from "./sub-components/SsoComboBox";
 import {
   decryptAlgorithmsOptions,
   verifyAlgorithmsOptions,
@@ -121,7 +121,7 @@ const Certificates = (props) => {
 
           {provider === "IdentityProvider" && (
             <>
-              <SimpleComboBox
+              <SsoComboBox
                 labelText={t("idpSigningAlgorithm")}
                 name="idpVerifyAlgorithm"
                 options={verifyAlgorithmsOptions}
@@ -133,7 +133,7 @@ const Certificates = (props) => {
 
           {provider === "ServiceProvider" && (
             <>
-              <SimpleComboBox
+              <SsoComboBox
                 labelText={t("spSigningAlgorithm")}
                 name="spSigningAlgorithm"
                 options={verifyAlgorithmsOptions}
@@ -141,7 +141,7 @@ const Certificates = (props) => {
                 value={spEncryptAlgorithm}
               />
 
-              <SimpleComboBox
+              <SsoComboBox
                 labelText={t("StandardDecryptionAlgorithm")}
                 name={"spEncryptAlgorithm"}
                 options={decryptAlgorithmsOptions}

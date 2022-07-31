@@ -6,8 +6,8 @@ import Box from "@appserver/components/box";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Text from "@appserver/components/text";
 
-import SimpleComboBox from "./sub-components/SimpleComboBox";
-import SimpleFormField from "./sub-components/SimpleFormField";
+import SsoComboBox from "./sub-components/SsoComboBox";
+import SsoFormField from "./sub-components/SsoFormField";
 import UploadXML from "./sub-components/UploadXML";
 import { bindingOptions, nameIdOptions } from "./sub-components/constants";
 
@@ -37,7 +37,7 @@ const IdpSettings = (props) => {
     <Box>
       <UploadXML />
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("CustomEntryButton")}
         name="spLoginLabel"
         placeholder="Single Sign-on"
@@ -47,7 +47,7 @@ const IdpSettings = (props) => {
         errorMessage={spLoginLabelErrorMessage}
       />
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("ProviderURL")}
         name="entityId"
         placeholder="https://www.test.com"
@@ -57,7 +57,7 @@ const IdpSettings = (props) => {
         errorMessage={entityIdErrorMessage}
       />
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("SignOnEndpointUrl")}
         name={ssoBinding.includes("POST") ? "ssoUrlPost" : "ssoUrlRedirect"}
         placeholder="https://www.test.com/saml/login"
@@ -84,9 +84,9 @@ const IdpSettings = (props) => {
             tabIndex={6}
           />
         </Box>
-      </SimpleFormField>
+      </SsoFormField>
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("LogoutEndpointUrl")}
         name={sloBinding.includes("POST") ? "sloUrlPost" : "sloUrlRedirect"}
         placeholder="https://www.test.com/saml/logout"
@@ -113,9 +113,9 @@ const IdpSettings = (props) => {
             tabIndex={8}
           />
         </Box>
-      </SimpleFormField>
+      </SsoFormField>
 
-      <SimpleComboBox
+      <SsoComboBox
         labelText={t("NameIDFormat")}
         value={nameIdFormat}
         name="nameIdFormat"

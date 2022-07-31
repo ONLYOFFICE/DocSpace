@@ -7,8 +7,8 @@ import FieldContainer from "@appserver/components/field-container";
 import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 
-import SimpleCheckbox from "./sub-components/SimpleCheckbox";
-import SimpleFormField from "./sub-components/SimpleFormField";
+import Checkbox from "@appserver/components/checkbox";
+import SsoFormField from "./sub-components/SsoFormField";
 
 const FieldMapping = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
@@ -26,6 +26,9 @@ const FieldMapping = (props) => {
     locationErrorMessage,
     titleErrorMessage,
     phoneErrorMessage,
+    enableSso,
+    setCheckbox,
+    isLoadingXml,
   } = props;
 
   return (
@@ -47,7 +50,7 @@ const FieldMapping = (props) => {
         />
       </Box>
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("FirstName")}
         name="firstName"
         placeholder="givenName"
@@ -56,7 +59,7 @@ const FieldMapping = (props) => {
         errorMessage={firstNameErrorMessage}
       />
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("LastName")}
         name="lastName"
         placeholder="sn"
@@ -65,7 +68,7 @@ const FieldMapping = (props) => {
         errorMessage={lastNameErrorMessage}
       />
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("Common:Email")}
         name="email"
         placeholder="sn"
@@ -74,7 +77,7 @@ const FieldMapping = (props) => {
         errorMessage={emailErrorMessage}
       />
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("Location")}
         name="location"
         placeholder="sn"
@@ -83,7 +86,7 @@ const FieldMapping = (props) => {
         errorMessage={locationErrorMessage}
       />
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("Title")}
         name="title"
         placeholder="sn"
@@ -92,7 +95,7 @@ const FieldMapping = (props) => {
         errorMessage={titleErrorMessage}
       />
 
-      <SimpleFormField
+      <SsoFormField
         labelText={t("Common:Phone")}
         name="phone"
         placeholder="sn"
@@ -108,11 +111,14 @@ const FieldMapping = (props) => {
         place="top"
         tooltipContent={t("AdvancedSettingsTooltip")}
       >
-        <SimpleCheckbox
+        <Checkbox
+          className="checkbox-input"
           label={t("HideAuthPage")}
           name="hideAuthPage"
           tabIndex={22}
           isChecked={hideAuthPage}
+          isDisabled={!enableSso || isLoadingXml}
+          onChange={setCheckbox}
         />
       </FieldContainer>
     </Box>
@@ -134,6 +140,9 @@ export default inject(({ ssoStore }) => {
     locationErrorMessage,
     titleErrorMessage,
     phoneErrorMessage,
+    enableSso,
+    setCheckbox,
+    isLoadingXml,
   } = ssoStore;
 
   return {
@@ -150,5 +159,8 @@ export default inject(({ ssoStore }) => {
     locationErrorMessage,
     titleErrorMessage,
     phoneErrorMessage,
+    enableSso,
+    setCheckbox,
+    isLoadingXml,
   };
 })(observer(FieldMapping));

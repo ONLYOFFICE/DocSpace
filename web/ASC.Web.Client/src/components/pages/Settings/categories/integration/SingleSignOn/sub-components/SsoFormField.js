@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 
 import FieldContainer from "@appserver/components/field-container";
 
-import SimpleTextInput from "./SimpleTextInput";
+import SsoTextInput from "./SsoTextInput";
 
-const SimpleFormField = ({
+const SsoFormField = ({
   children,
   labelText,
   name,
@@ -29,7 +29,7 @@ const SimpleFormField = ({
       tooltipContent={tooltipContent}
     >
       {children}
-      <SimpleTextInput
+      <SsoTextInput
         hasError={errorMessage !== null}
         name={name}
         placeholder={placeholder}
@@ -40,4 +40,4 @@ const SimpleFormField = ({
   );
 };
 
-export default observer(SimpleFormField);
+export default observer(SsoFormField);

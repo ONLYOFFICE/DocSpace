@@ -8,7 +8,7 @@ import Button from "@appserver/components/button";
 import FieldContainer from "@appserver/components/field-container";
 import Text from "@appserver/components/text";
 
-import SimpleTextInput from "./SimpleTextInput";
+import SsoTextInput from "./SsoTextInput";
 import FileInput from "@appserver/components/file-input";
 import UploadIcon from "../../../../../../../../public/images/actions.upload.react.svg";
 import { Base } from "@appserver/components/themes";
@@ -42,7 +42,7 @@ const UploadXML = (props) => {
       labelText={t("UploadXML")}
     >
       <Box alignItems="center" displayProp="flex" flexDirection="row">
-        <SimpleTextInput
+        <SsoTextInput
           maxWidth="300px"
           name="uploadXmlUrl"
           placeholder={t("UploadXMLPlaceholder")}

@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 
 import FieldContainer from "@appserver/components/field-container";
 
-import SimpleTextInput from "./SimpleTextInput";
+import SsoTextInput from "./SsoTextInput";
 
 const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
   return (
@@ -14,7 +14,7 @@ const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
       place="top"
       tooltipContent={tooltipContent}
     >
-      <SimpleTextInput isDisabled name={name} placeholder={placeholder} />
+      <SsoTextInput isDisabled name={name} placeholder={placeholder} />
     </FieldContainer>
   );
 };

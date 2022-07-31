@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
-import SimpleCheckbox from "./SimpleCheckbox";
+import Checkbox from "@appserver/components/checkbox";
 
 const checkboxesNames = {
   idp: [
@@ -30,11 +30,17 @@ const CheckboxSet = (props) => {
     spSignLogoutRequests,
     spSignLogoutResponses,
     spEncryptAssertions,
+    enableSso,
+    setCheckbox,
+    isLoadingXml,
   } = props;
 
   return (
     <Box marginProp="12px 0">
-      <SimpleCheckbox
+      <Checkbox
+        className="checkbox-input"
+        isDisabled={!enableSso || isLoadingXml}
+        onChange={setCheckbox}
         label={prefix === "idp" ? t("idpAuthRequest") : t("spAuthRequest")}
         name={checkboxesNames[prefix][0]}
         tabIndex={10}
@@ -42,7 +48,10 @@ const CheckboxSet = (props) => {
           prefix === "idp" ? idpVerifyAuthResponsesSign : spSignAuthRequests
         }
       />
-      <SimpleCheckbox
+      <Checkbox
+        className="checkbox-input"
+        isDisabled={!enableSso || isLoadingXml}
+        onChange={setCheckbox}
         label={
           prefix === "idp" ? t("idpSignExitRequest") : t("spSignExitRequest")
         }
@@ -52,7 +61,10 @@ const CheckboxSet = (props) => {
           prefix === "idp" ? idpVerifyLogoutRequestsSign : spSignLogoutRequests
         }
       />
-      <SimpleCheckbox
+      <Checkbox
+        className="checkbox-input"
+        isDisabled={!enableSso || isLoadingXml}
+        onChange={setCheckbox}
         label={
           prefix === "idp"
             ? t("idpSignResponseRequest")
@@ -68,7 +80,10 @@ const CheckboxSet = (props) => {
       />
 
       {prefix === "sp" && (
-        <SimpleCheckbox
+        <Checkbox
+          className="checkbox-input"
+          isDisabled={!enableSso || isLoadingXml}
+          onChange={setCheckbox}
           label={t("spDecryptStatements")}
           name={checkboxesNames[prefix][3]}
           tabIndex={13}
@@ -88,6 +103,9 @@ export default inject(({ ssoStore }) => {
     spSignLogoutRequests,
     spSignLogoutResponses,
     spEncryptAssertions,
+    enableSso,
+    setCheckbox,
+    isLoadingXml,
   } = ssoStore;
 
   return {
@@ -98,5 +116,8 @@ export default inject(({ ssoStore }) => {
     spSignLogoutRequests,
     spSignLogoutResponses,
     spEncryptAssertions,
+    enableSso,
+    setCheckbox,
+    isLoadingXml,
   };
 })(observer(CheckboxSet));
