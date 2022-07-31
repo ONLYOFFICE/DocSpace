@@ -28,8 +28,8 @@ newInstance
       loadPath: loadLanguagePath(config.homepage),
     },
 
-    ns: ["Home"],
-    defaultNS: "Home",
+    ns: ["Files"],
+    defaultNS: "Files",
 
     react: {
       useSuspense: false,
