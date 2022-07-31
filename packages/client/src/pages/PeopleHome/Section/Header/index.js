@@ -10,7 +10,7 @@ import { Consumer } from "@docspace/components/utils/context";
 import Headline from "@docspace/common/components/Headline";
 // import toastr from "studio/toastr";
 import Loaders from "@docspace/common/components/Loaders";
-import withLoader from "../../../../HOCs/withLoader";
+import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 import { AppServerConfig } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
@@ -395,7 +395,9 @@ export default withRouter(
     };
   })(
     withTranslation(["People", "Common", "PeopleTranslations"])(
-      withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
+      withPeopleLoader(observer(SectionHeaderContent))(
+        <Loaders.SectionHeader />
+      )
     )
   )
 );

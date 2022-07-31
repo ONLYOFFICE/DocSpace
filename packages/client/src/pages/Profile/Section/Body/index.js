@@ -34,7 +34,7 @@ import {
 } from "../../../../components/dialogs";
 
 import Loaders from "@docspace/common/components/Loaders";
-import withLoader from "../../../../HOCs/withLoader";
+import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
 
 const ProfileWrapper = styled.div`
@@ -648,7 +648,7 @@ export default withRouter(
   })(
     observer(
       withTranslation(["Profile", "Common", "PeopleTranslations"])(
-        withLoader(SectionBodyContent)(<Loaders.ProfileView />)
+        withPeopleLoader(SectionBodyContent)(<Loaders.ProfileView />)
       )
     )
   )

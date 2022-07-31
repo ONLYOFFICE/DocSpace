@@ -8,7 +8,7 @@ import Loaders from "@docspace/common/components/Loaders";
 import { withLayoutSize } from "@docspace/common/utils";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-import withLoader from "../../../../HOCs/withLoader";
+import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 
 const getEmployeeStatus = (filterValues) => {
   const employeeStatus = result(
@@ -357,7 +357,7 @@ export default withRouter(
           "Common",
           "PeopleTranslations",
           "GroupSelector",
-        ])(withLoader(SectionFilterContent)(<Loaders.Filter />))
+        ])(withPeopleLoader(SectionFilterContent)(<Loaders.Filter />))
       )
     )
   )

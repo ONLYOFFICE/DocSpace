@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import Loaders from "@docspace/common/components/Loaders";
 import { withTranslation } from "react-i18next";
-import withLoader from "../../../../HOCs/withLoader";
+import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 import PeopleRowContainer from "./RowView/PeopleRowContainer";
 import TableView from "./TableView/TableContainer";
 import { Consumer } from "@docspace/components/utils/context";
@@ -38,7 +38,7 @@ export default inject(({ peopleStore }) => {
   return { viewAs };
 })(
   withTranslation(["People", "Common", "PeopleTranslations"])(
-    withLoader(observer(SectionBodyContent))(
+    withPeopleLoader(observer(SectionBodyContent))(
       <Loaders.Rows isRectangle={false} />
     )
   )

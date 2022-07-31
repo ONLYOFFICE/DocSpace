@@ -30,7 +30,7 @@ import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 
 import Loaders from "@docspace/common/components/Loaders";
-import withLoader from "../../../../HOCs/withLoader";
+import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 
 const StyledContainer = styled.div`
   position: relative;
@@ -557,7 +557,7 @@ export default withRouter(
     observer(
       withTranslation(["Profile", "Common", "PeopleTranslations"])(
         withCultureNames(
-          withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
+          withPeopleLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
         )
       )
     )

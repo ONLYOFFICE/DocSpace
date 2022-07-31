@@ -12,7 +12,7 @@ import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 
 import Loaders from "@docspace/common/components/Loaders";
-import withLoader from "../../../../HOCs/withLoader";
+import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 
 const homepage = config.homepage;
 
@@ -140,5 +140,7 @@ export default withRouter(
     profile: peopleStore.targetUserStore.targetUser,
     avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
     isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
-  }))(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
+  }))(
+    withPeopleLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
+  )
 );
