@@ -10,10 +10,7 @@ class AmazonStorage extends React.Component {
     super(props);
     const { selectedStorage, setCompletedFormFields } = this.props;
 
-    setCompletedFormFields(
-      AmazonSettings.formNames(),
-      selectedStorage.properties
-    );
+    setCompletedFormFields(AmazonSettings.formNames(), "s3");
 
     this.isDisabled = !selectedStorage?.isSet;
   }

@@ -159,6 +159,11 @@ class BackupStore {
     this.selectedFolderId = this.defaultFolderId;
     this.selectedEnableSchedule = this.defaultEnableSchedule;
 
+    if (this.defaultFormSettings) {
+      console.log("this.defaultFormSettings", this.defaultFormSettings);
+      this.setFormSettings({ ...this.defaultFormSettings });
+    }
+
     this.setIsThirdStorageChanged(false);
   };
 
@@ -173,6 +178,17 @@ class BackupStore {
 
       const { folderId } = storageParams;
       const { period, day, hour } = cronParams;
+
+      let defaultFormSettings = {};
+      for (let variable in storageParams) {
+        console.log("variable", variable, "storageParams", storageParams);
+        if (variable === "module") continue;
+        defaultFormSettings[variable] = storageParams[variable];
+      }
+      if (defaultFormSettings) {
+        this.setFormSettings({ ...defaultFormSettings });
+        this.setDefaultFormSettings({ ...defaultFormSettings });
+      }
 
       this.defaultEnableSchedule = true;
       this.selectedEnableSchedule = true;
@@ -437,6 +453,7 @@ class BackupStore {
 
   deleteValueFormSetting = (key) => {
     delete this.formSettings[key];
+    console.log(" this.formSettings", this.defaultFormSettings);
   };
   getStorageParams = (
     isCheckedThirdPartyStorage,
@@ -493,6 +510,7 @@ class BackupStore {
 
     for (let key of this.requiredFormSettings) {
       const elem = this.formSettings[key];
+      console.log("elem", elem, this.formSettings, key);
       errors[key] = !elem.trim();
       // console.log("elem.trim()", elem.trim(), "firstError", firstError);
       if (!elem.trim() && !firstError) {
@@ -507,28 +525,20 @@ class BackupStore {
   setErrorsFormFields = (errors) => {
     this.errorsFieldsBeforeSafe = errors;
   };
-  setCompletedFormFields = (values, receivedValues = null) => {
-    let defaultFormSettings = {};
-    const keys = Object.keys(values);
+  setCompletedFormFields = (values, module) => {
+    let formSettingsTemp = {};
 
-    const isCorrectFields =
-      receivedValues !== null ? keys.length === receivedValues.length : false;
-
-    if (isCorrectFields) {
-      for (let i = 0; i < receivedValues.length; i++) {
-        const elem = receivedValues[i].name;
-        const value = receivedValues[i].value;
-
-        defaultFormSettings[elem] = value;
-      }
-    } else {
-      for (const [key, value] of Object.entries(values)) {
-        defaultFormSettings[key] = value;
-      }
+    if (module && module === this.defaultStorageId) {
+      this.setFormSettings({ ...this.defaultFormSettings });
+      return;
     }
-    console.log("defaultFormSettings", defaultFormSettings);
-    this.setFormSettings(defaultFormSettings);
-    this.setDefaultFormSettings(defaultFormSettings);
+
+    for (const [key, value] of Object.entries(values)) {
+      formSettingsTemp[key] = value;
+    }
+
+    console.log("setCompletedFormFields", formSettingsTemp);
+    this.setFormSettings({ ...formSettingsTemp });
     this.setErrorsFormFields({});
   };
 

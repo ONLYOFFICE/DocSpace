@@ -9,10 +9,7 @@ class GoogleCloudStorage extends React.Component {
     super(props);
     const { selectedStorage, setCompletedFormFields } = this.props;
 
-    setCompletedFormFields(
-      GoogleCloudSettings.formNames(),
-      selectedStorage.properties
-    );
+    setCompletedFormFields(GoogleCloudSettings.formNames(), "googlecloud");
 
     this.isDisabled = !selectedStorage?.isSet;
   }

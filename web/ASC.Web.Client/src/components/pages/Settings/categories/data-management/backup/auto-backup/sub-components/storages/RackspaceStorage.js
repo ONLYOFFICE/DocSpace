@@ -9,12 +9,7 @@ class RackspaceStorage extends React.Component {
     super(props);
     const { selectedStorage, setCompletedFormFields } = this.props;
 
-    console.log("RackspaceSettings.formNames()", RackspaceSettings.formNames());
-
-    setCompletedFormFields(
-      RackspaceSettings.formNames(),
-      selectedStorage.properties
-    );
+    setCompletedFormFields(RackspaceSettings.formNames(), "rackspace");
     this.isDisabled = !selectedStorage?.isSet;
   }
 

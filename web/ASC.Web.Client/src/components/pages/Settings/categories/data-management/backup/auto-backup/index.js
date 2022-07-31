@@ -307,7 +307,7 @@ class AutomaticBackup extends React.PureComponent {
       );
 
       console.log("storageParams", storageParams);
-      return;
+      // return;
       this.createSchedule(
         storageType.toString(),
         storageParams,

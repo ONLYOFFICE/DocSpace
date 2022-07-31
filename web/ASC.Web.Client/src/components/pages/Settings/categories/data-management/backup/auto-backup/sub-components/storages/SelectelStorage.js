@@ -9,10 +9,7 @@ class SelectelStorage extends React.Component {
     super(props);
     const { selectedStorage, setCompletedFormFields } = this.props;
 
-    setCompletedFormFields(
-      SelectelSettings.formNames(),
-      selectedStorage.properties
-    );
+    setCompletedFormFields(SelectelSettings.formNames(), "selectel");
     this.isDisabled = !selectedStorage.isSet;
   }
 
