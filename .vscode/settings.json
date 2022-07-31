@@ -17,6 +17,7 @@
     "**/.gitignore": true,
     "**/.gitmodules": true,
     "**/.editorconfig": true,
-    "**/LICENSE": true
+    "**/LICENSE": true,
+    "**/build/install": true
   }
 }
