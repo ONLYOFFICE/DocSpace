@@ -222,7 +222,6 @@ class AutomaticBackup extends React.PureComponent {
 
     toDefault();
 
-    isCheckedThirdPartyStorage && resetStorageSettings();
     (isCheckedThirdParty || isCheckedDocuments) && setResetProcess(true);
     this.setState({
       ...(isError && { isError: false }),
