@@ -2,6 +2,8 @@ import authStore from "@docspace/common/store/AuthStore";
 import { toCommunityHostname } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 import { useEffect, useState } from "react";
+import { CategoryType } from "./constants";
+import { FolderType } from "@docspace/common/constants";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
@@ -109,4 +111,85 @@ export const useThemeDetector = () => {
   }, []);
 
   return systemTheme;
+};
+
+export const getCategoryType = (location) => {
+  let categoryType = CategoryType.Personal;
+  const { pathname } = location;
+
+  if (pathname.startsWith("/rooms")) {
+    if (pathname.indexOf("personal") > -1) {
+      categoryType = CategoryType.Personal;
+    } else if (pathname.indexOf("shared") > -1) {
+      categoryType =
+        pathname.indexOf("shared/filter") > -1
+          ? CategoryType.Shared
+          : CategoryType.SharedRoom;
+    } else if (pathname.indexOf("archive") > -1) {
+      categoryType = CategoryType.Archive;
+    }
+  } else if (pathname.startsWith("/favorite") > -1) {
+    categoryType = CategoryType.Favorite;
+  } else if (pathname.startsWith("/recent") > -1) {
+    categoryType = CategoryType.Recent;
+  } else if (pathname.startsWith("/trash") > -1) {
+    categoryType = CategoryType.Trash;
+  }
+
+  return categoryType;
+};
+
+export const getCategoryTypeByFolderType = (folderType, parentId) => {
+  switch (folderType) {
+    case FolderType.Rooms:
+      return parentId > 0 ? CategoryType.SharedRoom : CategoryType.Shared;
+
+    case FolderType.Archive:
+      return CategoryType.Archive;
+
+    case FolderType.Favorites:
+      return CategoryType.Favorite;
+
+    case FolderType.Recent:
+      return CategoryType.Recent;
+
+    case FolderType.TRASH:
+      return CategoryType.Trash;
+
+    default:
+      return CategoryType.Personal;
+  }
+};
+
+export const getCategoryUrl = (categoryType, folderId = null) => {
+  const cType = categoryType;
+
+  switch (cType) {
+    case CategoryType.Personal:
+      return "/rooms/personal/filter";
+
+    case CategoryType.Shared:
+      return "/rooms/shared/filter";
+
+    case CategoryType.SharedRoom:
+      return `/rooms/shared/${folderId}/filter`;
+
+    case CategoryType.Archive:
+      return "/rooms/archived/filter";
+
+    case CategoryType.ArchivedRoom:
+      return "/rooms/archived/${folderId}/filter";
+
+    case CategoryType.Favorite:
+      return "/files/favorite/filter";
+
+    case CategoryType.Recent:
+      return "/files/recent/filter";
+
+    case CategoryType.Trash:
+      return "/files/trash/filter";
+
+    default:
+      throw new Error("Unknown category type");
+  }
 };

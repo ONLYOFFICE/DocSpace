@@ -63,7 +63,7 @@ import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 const Payments = React.lazy(() => import("./pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
 const Error401 = React.lazy(() => import("studio/Error401"));
-const Home = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
+const Files = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
 
 const About = React.lazy(() => import("./pages/About"));
 const Wizard = React.lazy(() => import("./pages/Wizard"));
@@ -74,6 +74,8 @@ const MyProfile = React.lazy(() => import("./pages/My"));
 const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
 const InvalidError = React.lazy(() => import("./pages/Errors/Invalid"));
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
+
+const FormGallery = React.lazy(() => import("./pages/FormGallery"));
 
 const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -105,10 +107,10 @@ const Error401Route = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
-const HomeRoute = (props) => (
+const FilesRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
-      <Home {...props} />
+      <Files {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -147,13 +149,13 @@ const WizardRoute = (props) => (
   </React.Suspense>
 );
 
-const MyProfileRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <MyProfile {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+// const MyProfileRoute = (props) => (
+//   <React.Suspense fallback={<AppLoader />}>
+//     <ErrorBoundary>
+//       <MyProfile {...props} />
+//     </ErrorBoundary>
+//   </React.Suspense>
+// );
 
 const EnterCodeRoute =
   !IS_PERSONAL &&
@@ -173,7 +175,15 @@ const InvalidRoute = (props) => (
   </React.Suspense>
 );
 
-const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
+const FormGalleryRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <FormGallery {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
+// const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -484,27 +494,50 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               exact
               path={[
                 "/",
-                "/filter",
-                "/rooms",
-                "/settings",
-                "/settings/common",
-                "/settings/admin",
-                "/settings/connected-clouds",
-                "/form-gallery/:folderId",
-              ]}
-              component={HomeRoute}
-            />
-            <Route
-              path={[
+
+                "/rooms/personal",
+                "/rooms/personal/filter",
+
+                "/rooms/shared",
+                "/rooms/shared/filter",
+                "/rooms/shared/:room",
+                "/rooms/shared/:room/filter",
+
+                "/rooms/archived",
+                "/rooms/archived/filter",
+                "/rooms/archived/:room",
+                "/rooms/archived/:room/filter",
+
+                "/files/favorite",
+                "/files/favorite/filter",
+
+                "/files/recent",
+                "/files/recent/filter",
+
+                "/files/trash",
+                "/files/trash/filter",
+
                 "/accounts",
                 "/accounts/filter",
+
                 "/accounts/create/:type",
                 "/accounts/edit/:userId",
                 "/accounts/view/:userId",
                 "/accounts/view/@self",
+
+                "/settings",
+                "/settings/common",
+                "/settings/admin",
+                "/settings/connected-clouds",
               ]}
-              component={HomeRoute}
+              component={FilesRoute}
             />
+
+            <PrivateRoute
+              path={"/form-gallery/:folderId"}
+              component={FormGalleryRoute}
+            />
+
             <PublicRoute exact path={"/wizard"} component={WizardRoute} />
             <PrivateRoute path={"/about"} component={AboutRoute} />
             {loginRoutes}

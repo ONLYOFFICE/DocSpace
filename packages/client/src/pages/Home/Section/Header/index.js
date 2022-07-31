@@ -22,6 +22,7 @@ import { Events } from "@docspace/client/src/helpers/filesConstants";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 
 const StyledContainer = styled.div`
   .table-container_group-menu {
@@ -387,6 +388,8 @@ class SectionHeaderContent extends React.Component {
       history,
 
       setAlreadyFetchingRooms,
+
+      categoryType,
     } = this.props;
 
     setIsLoading(true);
@@ -397,14 +400,14 @@ class SectionHeaderContent extends React.Component {
       .then(() => {
         const filter = RoomsFilter.getDefault();
 
-        const urlFilter = filter.toUrlParams();
+        const filterParamsStr = filter.toUrlParams();
+
+        const url = getCategoryUrl(this.categoryType, filter.folder);
+
+        const pathname = `${url}?${filterParamsStr}`;
 
         history.push(
-          combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            `/rooms?${urlFilter}`
-          )
+          combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
         );
       })
       .finally(() => {
@@ -538,6 +541,8 @@ export default inject(
       activeFolders,
 
       setAlreadyFetchingRooms,
+
+      categoryType,
     } = filesStore;
 
     const {
@@ -633,6 +638,8 @@ export default inject(
       isArchiveFolder,
 
       setAlreadyFetchingRooms,
+
+      categoryType,
     };
   }
 )(

@@ -1,7 +1,7 @@
 import React from "react";
 //import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { Switch, withRouter } from "react-router-dom";
+import { Switch, withRouter, Redirect } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
@@ -28,7 +28,7 @@ import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
 } from "../components/Article";
-import FormGallery from "./FormGallery";
+
 import GlobalEvents from "../components/GlobalEvents";
 import Accounts from "./Accounts";
 
@@ -76,11 +76,44 @@ const FilesArticle = React.memo(({ history }) => {
 const FilesSection = React.memo(() => {
   return (
     <Switch>
+      {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
+      {/* <PrivateRoute path={"/private"} component={PrivateRoomsPage} /> */}
+
       <PrivateRoute
         exact
-        path={["/setiings", "/settings/:setting"]}
-        component={Settings}
+        path={["/", "/rooms"]}
+        component={() => <Redirect to="/rooms/personal" />}
       />
+      <PrivateRoute
+        path={[
+          "/rooms/personal",
+          "/rooms/personal/filter",
+
+          "/rooms/shared",
+          "/rooms/shared/filter",
+          "/rooms/shared/:room",
+          "/rooms/shared/:room/filter",
+
+          "/rooms/archived",
+          "/rooms/archived/filter",
+          "/rooms/archived/:room",
+          "/rooms/archived/:room/filter",
+
+          "/files/favorite",
+          "/files/favorite/filter",
+
+          "/files/recent",
+          "/files/recent/filter",
+
+          "/files/trash",
+          "/files/trash/filter",
+        ]}
+        component={Home}
+      />
+      {/* <PrivateRoute path={["/rooms/personal/filter"]} component={Home} /> */}
+      {/* <PrivateRoute path={"/#preview"} component={Home} /> */}
+      {/* <PrivateRoute path={"/rooms"} component={Home} /> */}
+      {/* <PrivateRoute path={ROOMS_URL} component={VirtualRooms} /> */}
       <PrivateRoute
         exact
         path={[
@@ -93,14 +126,11 @@ const FilesSection = React.memo(() => {
         ]}
         component={Accounts}
       />
-      {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
-      <PrivateRoute path={"/private"} component={PrivateRoomsPage} />
-      <PrivateRoute exact path={"/"} component={Home} />
-      <PrivateRoute path={"/filter"} component={Home} />
-      <PrivateRoute path={"/#preview"} component={Home} />
-      <PrivateRoute path={"/rooms"} component={Home} />
-      <PrivateRoute path={"/form-gallery/:folderId"} component={FormGallery} />
-      {/* <PrivateRoute path={ROOMS_URL} component={VirtualRooms} /> */}
+      <PrivateRoute
+        exact
+        path={["/setiings", "/settings/:setting"]}
+        component={Settings}
+      />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );

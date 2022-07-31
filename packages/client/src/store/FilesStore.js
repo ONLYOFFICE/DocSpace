@@ -19,6 +19,12 @@ import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
+import {
+  getCategoryType,
+  getCategoryTypeByFolderType,
+} from "SRC_DIR/helpers/utils";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -61,6 +67,8 @@ class FilesStore {
 
   filter = FilesFilter.getDefault(); //TODO: FILTER
   roomsFilter = RoomsFilter.getDefault();
+
+  categoryType = getCategoryType(window.location);
 
   loadTimeout = null;
   hotkeyCaret = null;
@@ -583,12 +591,22 @@ class FilesStore {
     return api.files.setFileOwner(folderIds, fileIds, ownerId);
   };
 
-  setFilterUrl = (filter, isRooms = false) => {
-    const urlFilter = filter.toUrlParams();
+  setFilterUrl = (filter) => {
+    const filterParamsStr = filter.toUrlParams();
 
-    const str = isRooms ? `/rooms?${urlFilter}` : `/filter?${urlFilter}`;
+    const url = getCategoryUrl(this.categoryType, filter.folder);
 
-    history.push(combineUrl(AppServerConfig.proxyURL, config.homepage, str));
+    const pathname = `${url}?${filterParamsStr}`;
+
+    console.log("setFilterUrl", {
+      categoryType: this.categoryType,
+      url,
+      filterParamsStr,
+    });
+
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+    );
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
@@ -696,6 +714,19 @@ class FilesStore {
 
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
+
+          runInAction(() => {
+            this.categoryType = getCategoryTypeByFolderType(
+              data.current.rootFolderType,
+              data.current.parentId
+            );
+          });
+
+          console.log("fetchFiles", {
+            categoryType: this.categoryType,
+            rootFolderType: data.current.rootFolderType,
+            parentId: data.current.parentId,
+          });
 
           this.setFilesFilter(filterData); //TODO: FILTER
 
@@ -836,6 +867,19 @@ class FilesStore {
               return this.fetchRooms(folderId, filterData);
             }
           }
+
+          runInAction(() => {
+            this.categoryType = getCategoryTypeByFolderType(
+              data.current.rootFolderType,
+              data.current.parentId
+            );
+          });
+
+          console.log("fetchRooms", {
+            categoryType: this.categoryType,
+            rootFolderType: data.current.rootFolderType,
+            parentId: data.current.parentId,
+          });
 
           this.setRoomsFilter(filterData);
 

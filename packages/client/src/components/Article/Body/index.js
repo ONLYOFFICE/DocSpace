@@ -21,6 +21,8 @@ import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import { withTranslation } from "react-i18next";
 import toastr from "studio/toastr";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
@@ -78,13 +80,19 @@ const ArticleBodyContent = (props) => {
           if (filesSection) {
             const filter = RoomsFilter.getDefault();
 
-            const urlFilter = filter.toUrlParams();
+            const url = getCategoryUrl(
+              data === archiveFolderId
+                ? CategoryType.Archive
+                : CategoryType.Shared
+            );
+
+            const filterParamsStr = filter.toUrlParams();
 
             history.push(
               combineUrl(
                 AppServerConfig.proxyURL,
                 homepage,
-                `/rooms?${urlFilter}`
+                `${url}?${filterParamsStr}`
               )
             );
           }

@@ -28,10 +28,12 @@ import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
-import config from "PACKAGE_FILE";
+//import config from "PACKAGE_FILE";
 import { Consumer } from "@docspace/components/utils/context";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { getCategoryType } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -40,7 +42,7 @@ class PureHome extends React.Component {
       fetchRooms,
       alreadyFetchingRooms,
       setAlreadyFetchingRooms,
-      homepage,
+      //homepage,
       setIsLoading,
       setFirstLoad,
       expandedKeys,
@@ -57,19 +59,12 @@ class PureHome extends React.Component {
       localStorage.removeItem("isFirstUrl");
     }
 
-    const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
-    const roomsReg = new RegExp(`${homepage}((/?)$|/rooms)`, "gmi");
-
-    const match = window.location.pathname.match(reg);
-    const roomsMatch = window.location.pathname.match(roomsReg);
+    const categoryType = getCategoryType(location);
 
     let filterObj = null;
     let isRooms = false;
 
-    if (
-      window.location.href.indexOf("/files/#preview") > 1 &&
-      playlist.length < 1
-    ) {
+    if (window.location.href.indexOf("/#preview") > 1 && playlist.length < 1) {
       const pathname = window.location.href;
       const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
@@ -89,33 +84,26 @@ class PureHome extends React.Component {
       return;
     }
 
-    if (match && match.length > 0) {
-      if (window.location.href.includes("#preview")) {
+    if (
+      categoryType == CategoryType.Shared ||
+      categoryType == CategoryType.Archive
+    ) {
+      filterObj = RoomsFilter.getFilter(window.location);
+
+      isRooms = true;
+
+      if (!filterObj) {
+        setIsLoading(true);
+        this.fetchDefaultRooms();
+
         return;
       }
-
+    } else {
       filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
         setIsLoading(true);
         this.fetchDefaultFiles();
-
-        return;
-      }
-    }
-
-    if (roomsMatch && roomsMatch.length > 0) {
-      if (window.location.href.includes("#preview")) {
-        return;
-      }
-
-      isRooms = true;
-
-      filterObj = RoomsFilter.getFilter(window.location);
-
-      if (!filterObj) {
-        setIsLoading(true);
-        this.fetchDefaultRooms();
 
         return;
       }
@@ -257,9 +245,9 @@ class PureHome extends React.Component {
   }
 
   fetchDefaultFiles = () => {
-    const { isVisitor, fetchFiles, setIsLoading, setFirstLoad } = this.props;
+    const { fetchFiles, setIsLoading, setFirstLoad } = this.props;
     const filterObj = FilesFilter.getDefault();
-    const folderId = isVisitor ? "@common" : filterObj.folder;
+    const folderId = filterObj.folder;
 
     fetchFiles(folderId).finally(() => {
       setIsLoading(false);
@@ -555,7 +543,7 @@ export default inject(
     }
 
     return {
-      homepage: config.homepage,
+      //homepage: config.homepage,
       firstLoad,
       dragging,
       viewAs,
