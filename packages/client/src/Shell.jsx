@@ -32,33 +32,33 @@ import { isMobileOnly } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 
-const { proxyURL } = AppServerConfig;
-const homepage = config.homepage;
+// const { proxyURL } = AppServerConfig;
+// const homepage = config.homepage;
 
-const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
-const HOME_URLS = [
-  combineUrl(PROXY_HOMEPAGE_URL),
-  combineUrl(PROXY_HOMEPAGE_URL, "/"),
-  combineUrl(PROXY_HOMEPAGE_URL, "/error=:error"),
-];
-const WIZARD_URL = combineUrl(PROXY_HOMEPAGE_URL, "/wizard");
-const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
-const LOGIN_URLS = [
-  combineUrl(PROXY_HOMEPAGE_URL, "/login"),
-  combineUrl(PROXY_HOMEPAGE_URL, "/login/confirmed-email=:confirmedEmail"),
-];
-const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
+// const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
+// const HOME_URLS = [
+//   combineUrl(PROXY_HOMEPAGE_URL),
+//   combineUrl(PROXY_HOMEPAGE_URL, "/"),
+//   combineUrl(PROXY_HOMEPAGE_URL, "/error=:error"),
+// ];
+// const WIZARD_URL = combineUrl(PROXY_HOMEPAGE_URL, "/wizard");
+// const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
+// const LOGIN_URLS = [
+//   combineUrl(PROXY_HOMEPAGE_URL, "/login"),
+//   combineUrl(PROXY_HOMEPAGE_URL, "/login/confirmed-email=:confirmedEmail"),
+// ];
+// const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
 
-const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
-const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/portal-settings");
-const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
-const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
-const ENTER_CODE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/code");
-const INVALID_URL = combineUrl(PROXY_HOMEPAGE_URL, "/login/error=:error");
-const PREPARATION_PORTAL = combineUrl(
-  PROXY_HOMEPAGE_URL,
-  "/preparation-portal"
-);
+// const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
+// const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/portal-settings");
+// const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
+// const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
+// const ENTER_CODE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/code");
+// const INVALID_URL = combineUrl(PROXY_HOMEPAGE_URL, "/login/error=:error");
+// const PREPARATION_PORTAL = combineUrl(
+//   PROXY_HOMEPAGE_URL,
+//   "/preparation-portal"
+// );
 
 const Payments = React.lazy(() => import("./pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -193,27 +193,27 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     roomsMode,
     setSnackbarExist,
     userTheme,
-    user,
+    //user,
   } = rest;
 
   useEffect(() => {
     try {
-      if (!window.AppServer) {
-        window.AppServer = {};
-      }
+      // if (!window.AppServer) {
+      //   window.AppServer = {};
+      // }
 
-      //TEMP object, will be removed!!!
-      window.AppServer.studio = {
-        HOME_URLS,
-        WIZARD_URL,
-        ABOUT_URL,
-        LOGIN_URLS,
-        CONFIRM_URL,
+      // //TEMP object, will be removed!!!
+      // window.AppServer.studio = {
+      //   HOME_URLS,
+      //   WIZARD_URL,
+      //   ABOUT_URL,
+      //   LOGIN_URLS,
+      //   CONFIRM_URL,
 
-        PAYMENTS_URL,
-        SETTINGS_URL,
-        ERROR_401_URL,
-      };
+      //   PAYMENTS_URL,
+      //   SETTINGS_URL,
+      //   ERROR_401_URL,
+      // };
 
       loadBaseInfo();
     } catch (err) {
@@ -426,9 +426,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const isEditor = pathname.indexOf("doceditor") !== -1;
   const isLogin = pathname.indexOf("login") !== -1;
 
-  if (!window.AppServer.studio) {
-    window.AppServer.studio = {};
-  }
+  // if (!window.AppServer.studio) {
+  //   window.AppServer.studio = {};
+  // }
 
   const loginRoutes = [];
 
@@ -449,7 +449,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       <PublicRoute
         key={loginSystem.scope}
         exact
-        path={LOGIN_URLS}
+        path={["/login", "/login/confirmed-email=:confirmedEmail"]}
         component={System}
         system={loginSystem}
       />
@@ -459,9 +459,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const roomsRoutes = [];
 
   if (!IS_PERSONAL && roomsMode) {
-    roomsRoutes.push(
-      <Route path={ENTER_CODE_URL} component={EnterCodeRoute} />
-    );
+    roomsRoutes.push();
   }
 
   const currentTheme = isBase ? "Base" : "Dark";
@@ -492,6 +490,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 "/settings/common",
                 "/settings/admin",
                 "/settings/connected-clouds",
+                "/form-gallery/:folderId",
               ]}
               component={HomeRoute}
             />
@@ -506,35 +505,24 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               ]}
               component={HomeRoute}
             />
-            <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
-            <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
+            <PublicRoute exact path={"/wizard"} component={WizardRoute} />
+            <PrivateRoute path={"/about"} component={AboutRoute} />
             {loginRoutes}
-            {roomsRoutes}
-            {!IS_PERSONAL && (
-              <Route path={CONFIRM_URL} component={ConfirmRoute} />
-            )}
-            <Route path={INVALID_URL} component={InvalidRoute} />
-            <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
+            <Route path={"/code"} component={EnterCodeRoute} />
+            <Route path={"/confirm"} component={ConfirmRoute} />
+            <Route path={"/login/error=:error"} component={InvalidRoute} />
+            <PrivateRoute path={"/payments"} component={PaymentsRoute} />
             <PrivateRoute
               restricted
               path={"/portal-settings"}
               component={PortalSettingsRoute}
             />
-            )
             <PrivateRoute
-              exact
-              allowForMe
-              path={PROFILE_MY_URL}
-              component={MyProfileRoute}
-            />
-            <PrivateRoute
-              path={PREPARATION_PORTAL}
+              path={"/preparation-portal"}
               component={PreparationPortalRoute}
             />
-            <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
-            <PrivateRoute
-              component={!personal ? Error404Route : RedirectToHome}
-            />
+            <PrivateRoute path={"/error401"} component={Error401Route} />
+            <PrivateRoute component={Error404Route} />
           </Switch>
         </Main>
       </Router>

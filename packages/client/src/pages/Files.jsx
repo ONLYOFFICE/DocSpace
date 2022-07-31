@@ -1,19 +1,19 @@
 import React from "react";
-import { Provider as FilesProvider } from "mobx-react";
+//import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
 import { Switch, withRouter } from "react-router-dom";
-import config from "PACKAGE_FILE";
+//import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
 import toastr from "studio/toastr";
 import {
-  combineUrl,
+  //combineUrl,
   updateTempContent,
   loadScript,
 } from "@docspace/common/utils";
 
 //import i18n from "./i18n";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import { regDesktop } from "@docspace/common/desktop";
 import Home from "./Home";
 import Settings from "./Settings";
@@ -21,7 +21,7 @@ import Settings from "./Settings";
 import PrivateRoomsPage from "./PrivateRoomsPage";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import Panels from "../components/FilesPanels";
-import { AppServerConfig } from "@docspace/common/constants";
+//import { AppServerConfig } from "@docspace/common/constants";
 import Article from "@docspace/common/components/Article";
 import {
   ArticleBodyContent,
@@ -32,22 +32,22 @@ import FormGallery from "./FormGallery";
 import GlobalEvents from "../components/GlobalEvents";
 import Accounts from "./Accounts";
 
-const { proxyURL } = AppServerConfig;
-const homepage = config.homepage;
+// const { proxyURL } = AppServerConfig;
+// const homepage = config.homepage;
 
-const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
+// const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 
-const HOME_URL = combineUrl(PROXY_HOMEPAGE_URL, "/");
-const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
-const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
-const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
-const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
-const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
-const FORM_GALLERY_URL = combineUrl(
-  PROXY_HOMEPAGE_URL,
-  "/form-gallery/:folderId"
-);
-const ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/rooms");
+// const HOME_URL = combineUrl(PROXY_HOMEPAGE_URL, "/");
+// const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
+// const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
+// const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
+// const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
+// const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
+// const FORM_GALLERY_URL = combineUrl(
+//   PROXY_HOMEPAGE_URL,
+//   "/form-gallery/:folderId"
+// );
+// const ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/rooms");
 
 const Error404 = React.lazy(() => import("studio/Error404"));
 
@@ -94,12 +94,12 @@ const FilesSection = React.memo(() => {
         component={Accounts}
       />
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
-      <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
-      <PrivateRoute exact path={HOME_URL} component={Home} />
-      <PrivateRoute path={FILTER_URL} component={Home} />
-      <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
-      <PrivateRoute path={ROOMS_URL} component={Home} />
-      <PrivateRoute path={FORM_GALLERY_URL} component={FormGallery} />
+      <PrivateRoute path={"/private"} component={PrivateRoomsPage} />
+      <PrivateRoute exact path={"/"} component={Home} />
+      <PrivateRoute path={"/filter"} component={Home} />
+      <PrivateRoute path={"/#preview"} component={Home} />
+      <PrivateRoute path={"/rooms"} component={Home} />
+      <PrivateRoute path={"/form-gallery/:folderId"} component={FormGallery} />
       {/* <PrivateRoute path={ROOMS_URL} component={VirtualRooms} /> */}
       <PrivateRoute component={Error404Route} />
     </Switch>

@@ -17,15 +17,15 @@ class AxiosClient {
     const paymentsURL = combineUrl(proxyURL, "/payments");
     this.paymentsURL = paymentsURL;
 
-    window.AppServer = {
-      ...window.AppServer,
-      origin,
-      proxyURL,
-      apiPrefixURL,
-      apiBaseURL,
-      apiTimeout,
-      paymentsURL,
-    };
+    // window.AppServer = {
+    //   ...window.AppServer,
+    //   origin,
+    //   proxyURL,
+    //   apiPrefixURL,
+    //   apiBaseURL,
+    //   apiTimeout,
+    //   paymentsURL,
+    // };
 
     this.client = axios.create({
       baseURL: apiBaseURL,
@@ -106,9 +106,7 @@ class AxiosClient {
               url: "/authentication/logout",
             }).then(() => {
               this.setWithCredentialsStatus(false);
-              window.location.href = window?.AppServer?.personal
-                ? "/"
-                : loginURL;
+              window.location.href = loginURL;
             });
             break;
           case 402:
