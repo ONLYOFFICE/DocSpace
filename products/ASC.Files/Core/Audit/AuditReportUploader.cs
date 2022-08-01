@@ -27,43 +27,35 @@
 namespace ASC.AuditTrail;
 
 [Scope]
-public class AuditReportCreator
+public class AuditReportUploader
 {
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileUploader _fileUploader;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ILogger<AuditReportCreator> _logger;
+    private readonly ILogger<AuditReportUploader> _logger;
+    private readonly AuditReportCreator _auditReportCreator;
 
-    public AuditReportCreator(
+    public AuditReportUploader(
         GlobalFolderHelper globalFolderHelper,
-        ILogger<AuditReportCreator> logger,
+        ILogger<AuditReportUploader> logger,
         FileUploader fileUploader,
         FilesLinkUtility filesLinkUtility,
-        CommonLinkUtility commonLinkUtility)
+        CommonLinkUtility commonLinkUtility,
+        AuditReportCreator auditReportCreator)
     {
         _globalFolderHelper = globalFolderHelper;
         _logger = logger;
         _fileUploader = fileUploader;
         _filesLinkUtility = filesLinkUtility;
         _commonLinkUtility = commonLinkUtility;
+        _auditReportCreator = auditReportCreator;
     }
 
-    public string CreateCsvReport<TEvent>(IEnumerable<TEvent> events, string reportName) where TEvent : BaseEvent
+    public string UploadCsvReport(Stream stream, string reportName)
     {
         try
         {
-            using var stream = new MemoryStream();
-            using var writer = new StreamWriter(stream, Encoding.UTF8);
-            using var csv = new CsvWriter(writer, CultureInfo.CurrentCulture);
-
-            csv.Context.RegisterClassMap(new BaseEventMap<TEvent>());
-
-            csv.WriteHeader<TEvent>();
-            csv.NextRecord();
-            csv.WriteRecords(events);
-            writer.Flush();
-
             var file = _fileUploader.ExecAsync(_globalFolderHelper.FolderMy, reportName, stream.Length, stream, true).Result;
             var fileUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.Id));
 
@@ -73,7 +65,7 @@ public class AuditReportCreator
         }
         catch (Exception ex)
         {
-            _logger.ErrorWhileGenerating(ex);
+            _logger.ErrorWhileUploading(ex);
             throw;
         }
     }

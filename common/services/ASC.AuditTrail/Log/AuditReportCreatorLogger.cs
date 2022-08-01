@@ -24,21 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.AuditTrail.Models.Mappings;
-internal class BaseEventMap<T> : ClassMap<T> where T : BaseEvent
+namespace ASC.AuditTrail.Log;
+internal static partial class AuditReportCreatorLogger
 {
-    public BaseEventMap()
-    {
-        var eventType = typeof(T);
-        var eventProps = eventType
-            .GetProperties()
-            .Where(r => r.GetCustomAttribute<EventAttribute>() != null)
-            .OrderBy(r => r.GetCustomAttribute<EventAttribute>().Order);
-
-        foreach (var prop in eventProps)
-        {
-            var attr = prop.GetCustomAttribute<EventAttribute>().Resource;
-            Map(eventType, prop).Name(AuditReportResource.ResourceManager.GetString(attr));
-        }
-    }
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error while creating login report:")]
+    public static partial void ErrorWhileCreating(this ILogger<AuditReportCreator> logger, Exception exception);
 }

@@ -24,9 +24,44 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Log;
-internal static partial class AuditReportCreatorLogger
+using System.Globalization;
+using System.Text;
+
+using CsvHelper;
+
+namespace ASC.AuditTrail;
+
+[Scope]
+public class AuditReportCreator
 {
-    [LoggerMessage(Level = LogLevel.Error, Message = "Error while generating login report:")]
-    public static partial void ErrorWhileGenerating(this ILogger<AuditReportCreator> logger, Exception exception);
+    private readonly ILogger<AuditReportCreator> _logger;
+
+    public AuditReportCreator(
+        ILogger<AuditReportCreator> logger)
+    {
+        _logger = logger;
+    }
+    public Stream CreateCsvReport<TEvent>(IEnumerable<TEvent> events) where TEvent : BaseEvent
+    {
+        try
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream, Encoding.UTF8);
+            var csv = new CsvWriter(writer, CultureInfo.CurrentCulture);
+
+            csv.Context.RegisterClassMap(new BaseEventMap<TEvent>());
+
+            csv.WriteHeader<TEvent>();
+            csv.NextRecord();
+            csv.WriteRecords(events);
+            writer.Flush();
+
+            return stream;
+        }
+        catch (Exception ex)
+        {
+            _logger.ErrorWhileCreating(ex);
+            throw;
+        }
+    }
 }
