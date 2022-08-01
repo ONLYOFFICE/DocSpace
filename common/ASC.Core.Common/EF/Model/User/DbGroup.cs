@@ -58,7 +58,8 @@ public static class DbGroupExtension
     {
         modelBuilder.Entity<DbGroup>(entity =>
         {
-            entity.ToTable("core_group");
+            entity.ToTable("core_group")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified");
@@ -80,8 +81,7 @@ public static class DbGroupExtension
 
             entity.Property(e => e.LastModified)
                 .HasColumnName("last_modified")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .HasColumnType("timestamp");
 
             entity.Property(e => e.Name)
                 .IsRequired()
@@ -96,7 +96,10 @@ public static class DbGroupExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Removed).HasColumnName("removed");
+            entity.Property(e => e.Removed)
+            .HasColumnName("removed")
+            .HasColumnType("tinyint(1)")
+            .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Sid)
                 .HasColumnName("sid")

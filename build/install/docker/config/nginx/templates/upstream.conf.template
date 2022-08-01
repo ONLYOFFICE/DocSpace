@@ -1,5 +1,15 @@
 resolver $DNS_NAMESERVER valid=30s;
 
+map $SERVICE_DOCEDITOR $service_doceditor {
+    volatile;
+    $SERVICE_DOCEDITOR $SERVICE_DOCEDITOR;
+}
+
+map $SERVICE_MIGRATION $service_migration {
+    volatile;
+    $SERVICE_MIGRATION $SERVICE_MIGRATION;
+}
+
 map $SERVICE_API_SYSTEM $service_api_system {
     volatile;
     $SERVICE_API_SYSTEM $SERVICE_API_SYSTEM;

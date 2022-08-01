@@ -53,7 +53,8 @@ public static class DbTenantForbidenExtension
             entity.HasKey(e => e.Address)
                 .HasName("PRIMARY");
 
-            entity.ToTable("tenants_forbiden");
+            entity.ToTable("tenants_forbiden")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.Address)
                 .HasColumnName("address")

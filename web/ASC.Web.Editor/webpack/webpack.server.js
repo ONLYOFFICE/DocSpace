@@ -1,13 +1,12 @@
 const { merge } = require("webpack-merge");
 const baseConfig = require("./webpack.base.js");
-const webpackNodeExternals = require("webpack-node-externals");
 const path = require("path");
 const DefinePlugin = require("webpack").DefinePlugin;
 const TerserPlugin = require("terser-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 const serverConfig = {
   target: "node",
-  //mode: "development",
   name: "server",
   entry: {
     server: "./src/server/index.js",
@@ -19,7 +18,16 @@ const serverConfig = {
     libraryTarget: "commonjs2",
     chunkFilename: "chunks/[name].js",
   },
-  externals: [webpackNodeExternals(), { express: "express" }],
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        {
+          //context: path.resolve(process.cwd(), "src/server"),
+          from: "src/server/config/",
+        },
+      ],
+    }),
+  ],
 };
 
 module.exports = (env, argv) => {
@@ -33,9 +41,10 @@ module.exports = (env, argv) => {
     serverConfig.mode = "development";
   }
   serverConfig.plugins = [
+    ...serverConfig.plugins,
     new DefinePlugin({
       IS_DEVELOPMENT: argv.mode !== "production",
-      PORT: process.env.PORT || 5013,
+      PORT: 5013,
       IS_PERSONAL: env.personal || false,
     }),
   ];

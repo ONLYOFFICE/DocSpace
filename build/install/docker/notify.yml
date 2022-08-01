@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.8"
 x-service: 
     &x-service-base
     container_name: base
@@ -11,6 +11,7 @@ x-service:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      DATABASE_MIGRATION: ${DATABASE_MIGRATION}
       APP_DOTNET_ENV: ${APP_DOTNET_ENV}
       APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN}
       APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY}
@@ -26,10 +27,6 @@ x-service:
     - app_data:/app/onlyoffice/data
     - files_data:/var/www/products/ASC.Files/server/
     - people_data:/var/www/products/ASC.People/server/
-    - crm_data:/var/www/products/ASC.CRM/server/
-    - project_data:/var/www/products/ASC.Projects/server/
-    - calendar_data:/var/www/products/ASC.Calendar/server/
-    - mail_data:/var/www/products/ASC.Mail/server/
 
 services:
   onlyoffice-notify:

@@ -14,11 +14,12 @@ import {
   getEditHistory,
   updateFile,
   checkFillFormDraft,
+  convertFile,
 } from "@appserver/common/api/files";
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
-import { canConvert, convertDocumentUrl } from "../helpers/utils";
+import { canConvert } from "../helpers/utils";
 import { assign } from "@appserver/common/utils";
 
 toast.configure();
@@ -73,20 +74,15 @@ function Editor({
   onSDKRequestCompareFile,
   selectFolderDialog,
   onSDKRequestSaveAs,
-  isFileDialogVisible,
-  isFolderDialogVisible,
   isDesktopEditor,
   initDesktop,
   view,
-  preparationPortalDialog,
   mfReady,
-  ...rest
+  fileId,
+  url,
+  filesSettings,
 }) {
-  const [fileInfo, setFileInfo] = useState(rest.fileInfo);
-  const [url, setUrl] = useState(rest.url);
-  const [fileId, setFileId] = useState(rest.fileId);
-  const [version, setVersion] = useState(rest.version);
-
+  const fileInfo = config?.file;
   const { t } = useTranslation(["Editor", "Common"]);
 
   useEffect(() => {
@@ -147,7 +143,7 @@ function Editor({
         url.indexOf("#message/") > -1 &&
         fileInfo &&
         fileInfo?.fileExst &&
-        canConvert(fileInfo.fileExst)
+        canConvert(fileInfo.fileExst, filesSettings)
       ) {
         showDocEditorMessage(url);
       }
@@ -163,6 +159,11 @@ function Editor({
     document.location.reload();
   };
 
+  const convertDocumentUrl = async () => {
+    const convert = await convertFile(fileId, null, true);
+    return convert && convert[0]?.result;
+  };
+
   const showDocEditorMessage = async (url) => {
     const result = await convertDocumentUrl();
     const splitUrl = url.split("#message/");
@@ -171,11 +172,6 @@ function Editor({
       const newUrl = `${result.webUrl}#message/${splitUrl[1]}`;
 
       history.pushState({}, null, newUrl);
-
-      setFileInfo(result);
-      setUrl(newUrl);
-      setFileId(fileId);
-      setVersion(version);
     }
   };
 
@@ -207,7 +203,7 @@ function Editor({
     if (index) {
       let convertUrl = url.substring(0, index);
 
-      if (canConvert(fileInfo.fileExst)) {
+      if (canConvert(fileInfo.fileExst, filesSettings)) {
         const newUrl = await convertDocumentUrl();
         if (newUrl) {
           convertUrl = newUrl.webUrl;
@@ -412,7 +408,7 @@ function Editor({
 
     docSaved = !event.data;
     throttledChangeTitle();
-  }; //+++
+  };
 
   const onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
@@ -567,7 +563,6 @@ function Editor({
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}
-      {preparationPortalDialog}
       <Toast />
     </EditorWrapper>
   );
