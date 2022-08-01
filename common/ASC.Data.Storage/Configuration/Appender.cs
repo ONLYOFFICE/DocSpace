@@ -30,7 +30,11 @@ public static class StorageConfigExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAddSingleton(r => r.GetService<ConfigurationExtension>().GetSetting<Storage>("Storage"));
+        services.TryAddSingleton(r =>
+        {
+            var config = new ConfigurationExtension(r.GetService<IConfiguration>());
+            return config.GetSetting<Storage>("Storage");
+        });
     }
 }
 

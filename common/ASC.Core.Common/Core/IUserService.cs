@@ -26,7 +26,7 @@
 
 namespace ASC.Core;
 
-[Scope(typeof(ConfigureEFUserService), typeof(ConfigureCachedUserService))]
+[Scope(typeof(CachedUserService))]
 public interface IUserService
 {
     IEnumerable<UserInfo> GetUsers(int tenant);

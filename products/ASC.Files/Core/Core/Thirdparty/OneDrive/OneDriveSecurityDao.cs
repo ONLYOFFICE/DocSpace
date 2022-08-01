@@ -34,7 +34,7 @@ internal class OneDriveSecurityDao : OneDriveDaoBase, ISecurityDao<string>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<OneDriveSecurityDao> monitor,
         FileUtility fileUtility,

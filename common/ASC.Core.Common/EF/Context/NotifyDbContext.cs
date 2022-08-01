@@ -26,24 +26,21 @@
 
 namespace ASC.Core.Common.EF.Context;
 
-public class NotifyDbContext : BaseDbContext
+public class NotifyDbContext : DbContext
 {
     public DbSet<NotifyInfo> NotifyInfo { get; set; }
     public DbSet<NotifyQueue> NotifyQueue { get; set; }
 
+    public NotifyDbContext(DbContextOptions<NotifyDbContext> options) : base(options)
+    {
+
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddNotifyInfo()
             .AddNotifyQueue();
-    }
-}
-
-public static class NotifyDbExtension
-{
-    public static DIHelper AddNotifyDbContext(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<NotifyDbContext>();
     }
 }

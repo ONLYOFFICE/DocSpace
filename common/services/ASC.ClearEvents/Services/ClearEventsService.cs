@@ -95,7 +95,7 @@ public class ClearEventsService : IHostedService, IDisposable
         do
         {
             using var scope = _serviceScopeFactory.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+            using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
             var table = compile.Invoke(ef);
 
             var ae = table

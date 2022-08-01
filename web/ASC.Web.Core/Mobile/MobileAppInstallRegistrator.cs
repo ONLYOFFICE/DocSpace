@@ -29,12 +29,11 @@ namespace ASC.Web.Core.Mobile;
 [Scope]
 public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
 {
-    private readonly Lazy<CustomDbContext> _lazyDbContext;
-    private CustomDbContext DbContext { get => _lazyDbContext.Value; }
+    private readonly IDbContextFactory<CustomDbContext> _dbContextFactory;
 
-    public MobileAppInstallRegistrator(DbContextManager<CustomDbContext> dbContext)
+    public MobileAppInstallRegistrator(IDbContextFactory<CustomDbContext> dbContextFactory)
     {
-        _lazyDbContext = new Lazy<CustomDbContext>(() => dbContext.Value);
+        _dbContextFactory = dbContextFactory;
     }
 
     public void RegisterInstall(string userEmail, MobileAppType appType)
@@ -47,13 +46,15 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
             LastSign = DateTime.UtcNow
         };
 
-        DbContext.MobileAppInstall.Add(mai);
-        DbContext.SaveChanges();
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        dbContext.MobileAppInstall.Add(mai);
+        dbContext.SaveChanges();
     }
 
     public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
     {
-        var q = DbContext.MobileAppInstall.Where(r => r.UserEmail == userEmail);
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        var q = dbContext.MobileAppInstall.Where(r => r.UserEmail == userEmail);
 
         if (appType.HasValue)
         {

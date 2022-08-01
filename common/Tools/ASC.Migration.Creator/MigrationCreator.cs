@@ -28,6 +28,13 @@ namespace Migration.Creator;
 
 public class MigrationCreator
 {
+    private readonly IServiceProvider _serviceProvider;
+
+    public MigrationCreator(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
     public void RunCreateMigrations(Options options)
     {
         var counter = 0;
@@ -41,7 +48,7 @@ public class MigrationCreator
                 foreach (var providerInfo in options.Providers)
                 {
                     var providerInfoProjectPath = Solution.GetProviderProjectPath(options.Path, providerInfo);
-                    var dbContextActivator = new DbContextActivator(providerInfo.ConnectionString);
+                    var dbContextActivator = new DbContextActivator(_serviceProvider);
                     var context = dbContextActivator.CreateInstance(contextType, providerInfo);
 
                     var modelDiffChecker = new ModelDifferenceChecker(context);

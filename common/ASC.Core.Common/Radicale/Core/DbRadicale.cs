@@ -29,32 +29,35 @@ namespace ASC.Common.Radicale.Core;
 [Scope]
 public class DbRadicale
 {
-    private UserDbContext UserDbContext => _lazyUserDbContext.Value;
-    private readonly Lazy<UserDbContext> _lazyUserDbContext;
-    public DbRadicale(DbContextManager<UserDbContext> dbContextManager)
+    private readonly IDbContextFactory<UserDbContext> _dbContextFactory;
+
+    public DbRadicale(IDbContextFactory<UserDbContext> dbContextFactory)
     {
-        _lazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
+        _dbContextFactory = dbContextFactory;
     }
 
     public void SaveCardDavUser(int tenant, Guid id)
     {
-        UserDbContext.AddOrUpdate(r => r.UsersDav, new UserDav() { TenantId = tenant, UserId = id });
-        UserDbContext.SaveChanges();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        userDbContext.AddOrUpdate(r => r.UsersDav, new UserDav() { TenantId = tenant, UserId = id });
+        userDbContext.SaveChanges();
     }
 
     public async Task RemoveCardDavUser(int tenant, Guid id)
     {
-        var userDav = await UserDbContext.UsersDav.FirstOrDefaultAsync(r => r.TenantId == tenant && r.UserId == id);
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var userDav = await userDbContext.UsersDav.FirstOrDefaultAsync(r => r.TenantId == tenant && r.UserId == id);
         if (userDav != null)
         {
-            UserDbContext.UsersDav.Remove(userDav);
-            await UserDbContext.SaveChangesAsync();
+            userDbContext.UsersDav.Remove(userDav);
+            await userDbContext.SaveChangesAsync();
         }
     }
 
     public async Task<bool> IsExistCardDavUser(int tenant, Guid id)
     {
-        return await UserDbContext.UsersDav.AnyAsync(r => r.TenantId == tenant && r.UserId == id);
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return await userDbContext.UsersDav.AnyAsync(r => r.TenantId == tenant && r.UserId == id);
     }
 
 }

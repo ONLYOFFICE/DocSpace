@@ -34,7 +34,7 @@ internal class SharpBoxSecurityDao : SharpBoxDaoBase, ISecurityDao<string>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<SharpBoxSecurityDao> monitor,
         FileUtility fileUtility,

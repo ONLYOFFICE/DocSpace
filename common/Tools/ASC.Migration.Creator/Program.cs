@@ -24,25 +24,50 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration.Creator;
-
-class Program
+var options = new WebApplicationOptions
 {
-    static void Main(string[] args)
-    {
-        var builder = new ConfigurationBuilder()
-        .AddJsonFile($"appsettings.json", true)
-        .AddCommandLine(args);
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+};
 
-        var config = builder.Build();
+var builder = WebApplication.CreateBuilder(options);
 
-        var options = config.GetSection("options").Get<Options>();
-        if (!Path.IsPathRooted(options.Path))
-        {
-            options.Path = Path.GetFullPath(options.Path);
-        }
+builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
+{
+    config.AddJsonFile($"appsettings.json", true)
+               .AddCommandLine(args);
+});
 
-        var migrationCreator = new MigrationCreator();
-        migrationCreator.RunCreateMigrations(options);
-    }
+builder.WebHost.ConfigureServices((hostContext, services) =>
+{
+    services.AddScoped<EFLoggerFactory>();
+    services.AddBaseDbContext<AccountLinkContext>();
+    services.AddBaseDbContext<CoreDbContext>();
+    services.AddBaseDbContext<TenantDbContext>();
+    services.AddBaseDbContext<UserDbContext>();
+    services.AddBaseDbContext<TelegramDbContext>();
+    services.AddBaseDbContext<CustomDbContext>();
+    services.AddBaseDbContext<WebstudioDbContext>();
+    services.AddBaseDbContext<InstanceRegistrationContext>();
+    services.AddBaseDbContext<IntegrationEventLogContext>();
+    services.AddBaseDbContext<FeedDbContext>();
+    services.AddBaseDbContext<MessagesContext>();
+    services.AddBaseDbContext<WebhooksDbContext>();
+    services.AddBaseDbContext<MessagesContext>();
+    services.AddBaseDbContext<BackupsContext>();
+    services.AddBaseDbContext<FilesDbContext>();
+    services.AddBaseDbContext<NotifyDbContext>();
+    services.AddBaseDbContext<UrlShortenerFakeDbContext>();
+});
+
+var app = builder.Build();
+
+var conf = app.Configuration.GetSection("options").Get<Options>();
+
+if (!Path.IsPathRooted(conf.Path))
+{
+    conf.Path = Path.GetFullPath(conf.Path);
 }
+
+var migrationCreator = new MigrationCreator(app.Services);
+migrationCreator.RunCreateMigrations(conf);

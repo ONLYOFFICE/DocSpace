@@ -26,29 +26,26 @@
 
 namespace ASC.Core.Common.EF.Context;
 
-public class WebstudioDbContext : BaseDbContext
+public class WebstudioDbContext : DbContext
 {
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     public DbSet<DbWebstudioUserVisit> WebstudioUserVisit { get; set; }
     public DbSet<DbWebstudioIndex> WebstudioIndex { get; set; }
 
+    public WebstudioDbContext(DbContextOptions<WebstudioDbContext> options) : base(options)
+    {
+
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddWebstudioSettings()
             .AddWebstudioUserVisit()
             .AddDbWebstudioIndex()
             .AddDbTenant()
             .AddDbFunction();
-    }
-}
-
-public static class WebstudioDbExtension
-{
-    public static DIHelper AddWebstudioDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<WebstudioDbContext>();
     }
 }

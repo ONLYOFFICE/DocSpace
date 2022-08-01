@@ -27,7 +27,7 @@
 
 namespace ASC.MessagingSystem.EF.Context;
 
-public class MessagesContext : BaseDbContext
+public class MessagesContext : DbContext
 {
     public DbSet<AuditEvent> AuditEvents { get; set; }
     public DbSet<LoginEvent> LoginEvents { get; set; }
@@ -35,23 +35,20 @@ public class MessagesContext : BaseDbContext
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<User> Users { get; set; }
 
+    public MessagesContext(DbContextOptions<MessagesContext> options) : base(options)
+    {
+
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddAuditEvent()
             .AddLoginEvents()
             .AddUser()
             .AddWebstudioSettings()
             .AddDbTenant()
             .AddDbFunction();
-    }
-}
-
-public static class MessagesContextExtension
-{
-    public static DIHelper AddMessagesContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<MessagesContext>();
     }
 }

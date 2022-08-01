@@ -29,7 +29,7 @@ namespace ASC.Web.Files.Core.Search;
 [Scope(Additional = typeof(FactoryIndexerFolderExtension))]
 public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
 {
-    private readonly IDaoFactory _daoFactory;
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     private readonly Settings _settings;
 
     public FactoryIndexerFolder(
@@ -39,41 +39,42 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
         FactoryIndexer factoryIndexer,
         BaseIndexer<DbFolder> baseIndexer,
         IServiceProvider serviceProvider,
-        IDaoFactory daoFactory,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         ICache cache,
         Settings settings)
         : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
     {
-        _daoFactory = daoFactory;
+        _dbContextFactory = dbContextFactory;
         _settings = settings;
     }
 
     public override void IndexAll()
     {
-        var folderDao = _daoFactory.GetFolderDao<int>() as FolderDao;
-
         (int, int, int) getCount(DateTime lastIndexed)
         {
-            var dataQuery = GetBaseQuery(lastIndexed)
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+            var dataQuery = GetBaseQuery(filesDbContext, lastIndexed)
                 .OrderBy(r => r.DbFolder.Id)
                 .Select(r => r.DbFolder.Id);
 
             var minid = dataQuery.FirstOrDefault();
 
-            dataQuery = GetBaseQuery(lastIndexed)
+            dataQuery = GetBaseQuery(filesDbContext, lastIndexed)
                 .OrderByDescending(r => r.DbFolder.Id)
                 .Select(r => r.DbFolder.Id);
 
             var maxid = dataQuery.FirstOrDefault();
 
-            var count = GetBaseQuery(lastIndexed).Count();
+            var count = GetBaseQuery(filesDbContext, lastIndexed).Count();
 
             return new(count, maxid, minid);
         }
 
         List<DbFolder> getData(long start, long stop, DateTime lastIndexed)
         {
-            return GetBaseQuery(lastIndexed)
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            return GetBaseQuery(filesDbContext, lastIndexed)
                 .Where(r => r.DbFolder.Id >= start && r.DbFolder.Id <= stop)
                 .Select(r => r.DbFolder)
                 .ToList();
@@ -84,9 +85,12 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
         {
             var start = 0;
             var result = new List<int>();
+
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+
             while (true)
             {
-                var dataQuery = GetBaseQuery(lastIndexed)
+                var dataQuery = GetBaseQuery(filesDbContext, lastIndexed)
                     .Where(r => r.DbFolder.Id >= start)
                     .OrderBy(r => r.DbFolder.Id)
                     .Select(r => r.DbFolder.Id)
@@ -107,10 +111,10 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
             return result;
         }
 
-        IQueryable<FolderTenant> GetBaseQuery(DateTime lastIndexed) => folderDao.FilesDbContext.Folders
+        IQueryable<FolderTenant> GetBaseQuery(FilesDbContext filesDbContext, DateTime lastIndexed) => filesDbContext.Folders
                 .AsQueryable()
                 .Where(r => r.ModifiedOn >= lastIndexed)
-                .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
                 .Where(r => r.DbTenant.Status == TenantStatus.Active);
 
         try

@@ -77,7 +77,6 @@ public class ConnectionsController : ControllerBase
         _cookiesManager = cookiesManager;
         _cookieStorage = cookieStorage;
         _geolocationHelper = geolocationHelper;
-        _geolocationHelper.Dbid = "teamlabsite";
     }
 
     [HttpGet("activeconnections")]

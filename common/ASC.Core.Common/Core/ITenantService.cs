@@ -26,7 +26,7 @@
 
 namespace ASC.Core;
 
-[Scope(typeof(ConfigureDbTenantService), typeof(ConfigureCachedTenantService))]
+[Scope(typeof(CachedTenantService))]
 public interface ITenantService
 {
     byte[] GetTenantSettings(int tenant, string key);

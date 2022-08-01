@@ -28,8 +28,8 @@ namespace Migration;
 
 public class ModelDifferenceChecker
 {
-    private readonly BaseDbContext _dbContext;
-    public ModelDifferenceChecker(BaseDbContext context)
+    private readonly DbContext _dbContext;
+    public ModelDifferenceChecker(DbContext context)
     {
         _dbContext = context;
     }
