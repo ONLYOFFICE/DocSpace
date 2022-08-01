@@ -26,6 +26,21 @@
       authorType: null,
       withSubfolders: true,
     },
+    keysForReload: [
+      "src",
+      "rootPath",
+      "width",
+      "height",
+      "name",
+      "frameId",
+      "fileId",
+      "type",
+      "editorType",
+    ],
+  };
+
+  oneOfInObject = (array, object) => {
+    return Object.keys(object).some((k) => array.includes(k));
   };
 
   getConfigFromParams = () => {
@@ -232,14 +247,19 @@
 
     const getConfig = () => config;
 
-    const setConfig = (newConfig) => {
-      if (newConfig?.fileId) return initFrame(newConfig);
+    const setConfig = (newConfig = {}, reload = false) => {
+      if (oneOfInObject(config.keysForReload, newConfig)) reload = true;
 
       config = { ...config, ...newConfig };
 
-      return new Promise((resolve) =>
-        executeMethod("setConfig", config, (data) => resolve(data))
-      );
+      return new Promise((resolve) => {
+        if (reload) {
+          initFrame(config);
+          resolve(config);
+        } else {
+          executeMethod("setConfig", config, (data) => resolve(data));
+        }
+      });
     };
 
     const openCrateFileModal = (format) => {
