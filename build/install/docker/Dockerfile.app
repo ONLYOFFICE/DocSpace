@@ -1,21 +1,19 @@
-ARG SRC_PATH=/app/onlyoffice/src
-ARG BUILD_PATH=/var/www
-ARG REPO_SDK=mcr.microsoft.com/dotnet/sdk
-ARG REPO_SDK_TAG=6.0
-ARG REPO_RUN=mcr.microsoft.com/dotnet/aspnet
-ARG REPO_RUN_TAG=6.0
+ARG SRC_PATH="/app/onlyoffice/src"
+ARG BUILD_PATH="/var/www"
+ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:6.0"
+ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:6.0"
 
-FROM $REPO_SDK:$REPO_SDK_TAG AS base
+FROM $DOTNET_SDK AS base
 ARG RELEASE_DATE="2016-06-22"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PRODUCT_VERSION=0.0.0
 ARG BUILD_NUMBER=0
-ARG GIT_BRANCH=master
+ARG GIT_BRANCH="master"
 ARG SRC_PATH
 ARG BUILD_PATH
-ARG BUILD_ARGS=build
-ARG DEPLOY_ARGS=deploy
-ARG DEBUG_INFO=true
+ARG BUILD_ARGS="build"
+ARG DEPLOY_ARGS="deploy"
+ARG DEBUG_INFO="true"
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
@@ -24,8 +22,7 @@ ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
-    apt-get -y update && \
+RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
     apt-get install -yq sudo locales && \
@@ -67,15 +64,14 @@ COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 
 RUN rm -rf /var/lib/apt/lists/*
 
-FROM $REPO_RUN:$REPO_RUN_TAG as builder
+FROM $DOTNET_RUN as builder
 ARG BUILD_PATH
-ARG SRC_PATH 
+ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
 ENV SRC_PATH=${SRC_PATH}
 
 # add defualt user and group for no-root run
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
-    mkdir -p /var/log/onlyoffice && \
+RUN mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
@@ -100,8 +96,7 @@ ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
 ENV SRC_PATH=${SRC_PATH}
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
-    mkdir -p /var/log/onlyoffice && \
+RUN mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
@@ -127,8 +122,7 @@ ENV DNS_NAMESERVER=127.0.0.11 \
     COUNT_WORKER_CONNECTIONS=$COUNT_WORKER_CONNECTIONS \
     MAP_HASH_BUCKET_SIZE=""
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
-    apt-get -y update && \
+RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install -yq vim && \
     # Remove default nginx website
@@ -162,7 +156,16 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/localhost:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5034/$service_migration/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
+
+## Doceditor ##
+FROM nodeBuild as doceditor
+WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
+EXPOSE 5013
+ENTRYPOINT ["node", "server.js"]
 
 ## ASC.Data.Backup.BackgroundTasks ##
 FROM builder AS backup_background
@@ -307,6 +310,18 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
+
+## ASC.Migration.Runner ##
+FROM $DOTNET_RUN AS onlyoffice-migration-runner
+ARG BUILD_PATH
+ARG SRC_PATH 
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
+COPY  ./docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh
+COPY --from=base ${SRC_PATH}/ASC.Migration.Runner/service/ .
+
+ENTRYPOINT ["./docker-migration-entrypoint.sh"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share
