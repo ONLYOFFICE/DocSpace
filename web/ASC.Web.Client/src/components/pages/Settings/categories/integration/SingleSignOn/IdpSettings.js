@@ -25,12 +25,12 @@ const IdpSettings = (props) => {
     ssoUrlRedirect,
     sloUrlPost,
     sloUrlRedirect,
-    spLoginLabelErrorMessage,
-    entityIdErrorMessage,
-    ssoUrlPostErrorMessage,
-    ssoUrlRedirectErrorMessage,
-    sloUrlPostErrorMessage,
-    sloUrlRedirectErrorMessage,
+    entityIdHasError,
+    spLoginLabelHasError,
+    ssoUrlPostHasError,
+    ssoUrlRedirectHasError,
+    sloUrlPostHasError,
+    sloUrlRedirectHasError,
   } = props;
 
   return (
@@ -44,7 +44,7 @@ const IdpSettings = (props) => {
         tabIndex={4}
         tooltipContent={t("CustomEntryTooltip")}
         value={spLoginLabel}
-        errorMessage={spLoginLabelErrorMessage}
+        hasError={spLoginLabelHasError}
       />
 
       <SsoFormField
@@ -54,7 +54,7 @@ const IdpSettings = (props) => {
         tabIndex={5}
         tooltipContent={t("ProviderURLTooltip")}
         value={entityId}
-        errorMessage={entityIdErrorMessage}
+        hasError={entityIdHasError}
       />
 
       <SsoFormField
@@ -64,10 +64,10 @@ const IdpSettings = (props) => {
         tabIndex={7}
         tooltipContent={t("SignOnEndpointUrlTooltip")}
         value={ssoBinding.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
-        errorMessage={
+        hasError={
           ssoBinding.includes("POST")
-            ? ssoUrlPostErrorMessage
-            : ssoUrlRedirectErrorMessage
+            ? ssoUrlPostHasError
+            : ssoUrlRedirectHasError
         }
       >
         <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
@@ -93,10 +93,10 @@ const IdpSettings = (props) => {
         tabIndex={9}
         tooltipContent={t("LogoutEndpointUrlTooltip")}
         value={sloBinding.includes("POST") ? sloUrlPost : sloUrlRedirect}
-        errorMessage={
-          sloBinding.includes("POST")
-            ? sloUrlPostErrorMessage
-            : sloUrlRedirectErrorMessage
+        hasError={
+          ssoBinding.includes("POST")
+            ? sloUrlPostHasError
+            : sloUrlRedirectHasError
         }
       >
         <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
@@ -139,12 +139,12 @@ export default inject(({ ssoStore }) => {
     ssoUrlRedirect,
     sloUrlPost,
     sloUrlRedirect,
-    spLoginLabelErrorMessage,
-    entityIdErrorMessage,
-    ssoUrlPostErrorMessage,
-    ssoUrlRedirectErrorMessage,
-    sloUrlPostErrorMessage,
-    sloUrlRedirectErrorMessage,
+    entityIdHasError,
+    spLoginLabelHasError,
+    ssoUrlPostHasError,
+    ssoUrlRedirectHasError,
+    sloUrlPostHasError,
+    sloUrlRedirectHasError,
   } = ssoStore;
 
   return {
@@ -159,11 +159,11 @@ export default inject(({ ssoStore }) => {
     ssoUrlRedirect,
     sloUrlPost,
     sloUrlRedirect,
-    spLoginLabelErrorMessage,
-    entityIdErrorMessage,
-    ssoUrlPostErrorMessage,
-    ssoUrlRedirectErrorMessage,
-    sloUrlPostErrorMessage,
-    sloUrlRedirectErrorMessage,
+    entityIdHasError,
+    spLoginLabelHasError,
+    ssoUrlPostHasError,
+    ssoUrlRedirectHasError,
+    sloUrlPostHasError,
+    sloUrlRedirectHasError,
   };
 })(observer(IdpSettings));

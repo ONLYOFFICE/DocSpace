@@ -109,30 +109,10 @@ class SsoFormStore {
   titleHasError = false;
   phoneHasError = false;
 
-  spEntityIdHasError = false;
-  spAssertionConsumerUrlHasError = false;
-  spSingleLogoutUrlHasError = false;
-
   // error messages
   //uploadXmlUrlErrorMessage = null;
-  spLoginLabelErrorMessage = null;
 
-  entityIdErrorMessage = null;
-  ssoUrlPostErrorMessage = null;
-  ssoUrlRedirectErrorMessage = null;
-  sloUrlPostErrorMessage = null;
-  sloUrlRedirectErrorMessage = null;
-
-  firstNameErrorMessage = null;
-  lastNameErrorMessage = null;
-  emailErrorMessage = null;
-  locationErrorMessage = null;
-  titleErrorMessage = null;
-  phoneErrorMessage = null;
-
-  spEntityIdErrorMessage = null;
-  spAssertionConsumerUrlErrorMessage = null;
-  spSingleLogoutUrlErrorMessage = null;
+  errorMessage = null;
 
   isSubmitLoading = false;
   isGeneratedCertificate = false;
@@ -589,27 +569,31 @@ class SsoFormStore {
     this.spPrivateKey = certificateObject.key;
   };
 
+  getError = (field) => {
+    const fieldError = `${field}HasError`;
+    console.log("getError", fieldError);
+    return this[fieldError] !== null ? true : false;
+  };
+
   setError = (field, value) => {
     if (typeof value === "boolean") return;
 
     const fieldError = `${field}HasError`;
-    const fieldErrorMessage = `${field}ErrorMessage`;
 
     try {
       this.validate(value);
       this[fieldError] = false;
-      this[fieldErrorMessage] = null;
+      this.errorMessage = null;
     } catch (err) {
       this[fieldError] = true;
-      this[fieldErrorMessage] = err.message;
+      this.errorMessage = err.message;
     }
   };
 
   hideError = (field) => {
     const fieldError = `${field}HasError`;
-    const fieldErrorMessage = `${field}ErrorMessage`;
     this[fieldError] = false;
-    this[fieldErrorMessage] = null;
+    this.errorMessage = null;
   };
 
   validate = (string) => {

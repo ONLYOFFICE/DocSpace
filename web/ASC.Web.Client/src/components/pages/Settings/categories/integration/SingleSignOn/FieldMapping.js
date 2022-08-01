@@ -20,15 +20,15 @@ const FieldMapping = (props) => {
     title,
     phone,
     hideAuthPage,
-    firstNameErrorMessage,
-    lastNameErrorMessage,
-    emailErrorMessage,
-    locationErrorMessage,
-    titleErrorMessage,
-    phoneErrorMessage,
     enableSso,
     setCheckbox,
     isLoadingXml,
+    firstNameHasError,
+    lastNameHasError,
+    emailHasError,
+    locationHasError,
+    titleHasError,
+    phoneHasError,
   } = props;
 
   return (
@@ -56,7 +56,7 @@ const FieldMapping = (props) => {
         placeholder="givenName"
         tabIndex={16}
         value={firstName}
-        errorMessage={firstNameErrorMessage}
+        hasError={firstNameHasError}
       />
 
       <SsoFormField
@@ -65,7 +65,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={17}
         value={lastName}
-        errorMessage={lastNameErrorMessage}
+        hasError={lastNameHasError}
       />
 
       <SsoFormField
@@ -74,7 +74,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={18}
         value={email}
-        errorMessage={emailErrorMessage}
+        hasError={emailHasError}
       />
 
       <SsoFormField
@@ -83,7 +83,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={19}
         value={location}
-        errorMessage={locationErrorMessage}
+        hasError={locationHasError}
       />
 
       <SsoFormField
@@ -92,7 +92,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={20}
         value={title}
-        errorMessage={titleErrorMessage}
+        hasError={titleHasError}
       />
 
       <SsoFormField
@@ -101,7 +101,7 @@ const FieldMapping = (props) => {
         placeholder="sn"
         tabIndex={21}
         value={phone}
-        errorMessage={phoneErrorMessage}
+        hasError={phoneHasError}
       />
 
       <FieldContainer
@@ -134,15 +134,15 @@ export default inject(({ ssoStore }) => {
     title,
     phone,
     hideAuthPage,
-    firstNameErrorMessage,
-    lastNameErrorMessage,
-    emailErrorMessage,
-    locationErrorMessage,
-    titleErrorMessage,
-    phoneErrorMessage,
     enableSso,
     setCheckbox,
     isLoadingXml,
+    firstNameHasError,
+    lastNameHasError,
+    emailHasError,
+    locationHasError,
+    titleHasError,
+    phoneHasError,
   } = ssoStore;
 
   return {
@@ -153,14 +153,14 @@ export default inject(({ ssoStore }) => {
     title,
     phone,
     hideAuthPage,
-    firstNameErrorMessage,
-    lastNameErrorMessage,
-    emailErrorMessage,
-    locationErrorMessage,
-    titleErrorMessage,
-    phoneErrorMessage,
     enableSso,
     setCheckbox,
     isLoadingXml,
+    firstNameHasError,
+    lastNameHasError,
+    emailHasError,
+    locationHasError,
+    titleHasError,
+    phoneHasError,
   };
 })(observer(FieldMapping));

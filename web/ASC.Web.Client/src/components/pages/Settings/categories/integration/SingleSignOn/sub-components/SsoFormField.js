@@ -1,5 +1,5 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import FieldContainer from "@appserver/components/field-container";
@@ -14,22 +14,14 @@ const SsoFormField = ({
   tabIndex,
   tooltipContent,
   value,
-  errorMessage,
+  hasError,
 }) => {
   const { t } = useTranslation("SingleSignOn");
 
-  const errMsg =
-    errorMessage === "email"
-      ? t("EmailErrorMessage")
-      : errorMessage === "phone"
-      ? t("PhoneErrorMessage")
-      : errorMessage === "url"
-      ? t("UrlErrorMessage")
-      : t("EmptyFieldErrorMessage");
   return (
     <FieldContainer
-      errorMessage={t(errorMessage)}
-      hasError={errorMessage !== null}
+      errorMessage={t("EmptyFieldErrorMessage")}
+      hasError={hasError}
       inlineHelpButton
       isVertical
       labelText={labelText}
@@ -38,7 +30,7 @@ const SsoFormField = ({
     >
       {children}
       <SsoTextInput
-        hasError={errorMessage !== null}
+        hasError={hasError}
         name={name}
         placeholder={placeholder}
         tabIndex={tabIndex}
