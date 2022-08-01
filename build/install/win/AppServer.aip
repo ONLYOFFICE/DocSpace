@@ -811,23 +811,23 @@
     <ROW MsiServiceConfig="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigFailureActionsComponent">
-    <ROW MsiServiceConfigFailureActions="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Notify.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Data.Backup.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.ClearEvents.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Files.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_FileService" Name="[ServiceName_FileService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Files.Service.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_Migration" Name="[ServiceName_Migration]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Migration.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Notify.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.People.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="proxy.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Socket.IO.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="SsoAuth.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Studio.Notify.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.TelegramService.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="UrlShortener.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Api.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Studio.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Webhooks.Service.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Data.Backup.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.ClearEvents.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Files.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_FileService" Name="[ServiceName_FileService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Files.Service.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Migration" Name="[ServiceName_Migration]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Migration.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Notify.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.People.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="proxy.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="Socket.IO.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="SsoAuth.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Studio.Notify.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.TelegramService.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="UrlShortener.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Web.Api.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Web.Studio.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
     <ROW ServiceControl="ASC.ClearEvents.exe" Name="[ServiceName_ClearEvents]" Event="161" Wait="0" Component_="ASC.ClearEvents.exe"/>
