@@ -127,6 +127,13 @@ services:
       target: wait_bin_share
     image: "${REPO}/${STATUS}appserver-wait-bin-share:${DOCKER_TAG}"
 
+  onlyoffice-doceditor:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: doceditor
+    image: "${REPO}/${STATUS}appserver-doceditor:${DOCKER_TAG}"
+
   onlyoffice-proxy:
     build:
       context:  ./

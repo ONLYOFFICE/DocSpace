@@ -20,8 +20,15 @@ import { ServerStyleSheet } from "styled-components";
 
 const sheet = new ServerStyleSheet();
 const fallbackLng = "en";
-const port = PORT || 5013;
 
+let port = PORT;
+
+const config = fs.readFileSync(path.join(__dirname, "config.json"), "utf-8");
+const parsedCOnfig = JSON.parse(config);
+
+if (parsedCOnfig?.PORT) {
+  port = parsedCOnfig.PORT;
+}
 const renderApp = (i18n, initialEditorState) => {
   return renderToString(
     sheet.collectStyles(
