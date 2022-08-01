@@ -39,6 +39,20 @@ public class BaseWorkerStartup
     {
         services.AddHttpContextAccessor();
         services.AddCustomHealthCheck(_configuration);
+
+        services.AddScoped<EFLoggerFactory>();
+        services.AddBaseDbContextPool<AccountLinkContext>();
+        services.AddBaseDbContextPool<CoreDbContext>();
+        services.AddBaseDbContextPool<TenantDbContext>();
+        services.AddBaseDbContextPool<UserDbContext>();
+        services.AddBaseDbContextPool<TelegramDbContext>();
+        services.AddBaseDbContextPool<CustomDbContext>();
+        services.AddBaseDbContextPool<WebstudioDbContext>();
+        services.AddBaseDbContextPool<InstanceRegistrationContext>();
+        services.AddBaseDbContextPool<IntegrationEventLogContext>();
+        services.AddBaseDbContextPool<FeedDbContext>();
+        services.AddBaseDbContextPool<MessagesContext>();
+        services.AddBaseDbContextPool<WebhooksDbContext>();
     }
 
     public virtual void Configure(IApplicationBuilder app)

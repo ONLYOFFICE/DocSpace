@@ -85,7 +85,6 @@ public static class DataTests
     public const int RoomIdForUnarchive = 22;
     public const int RoomIdWithTags = 24;
 
-    public const string RoomLinkKey = "394892027511.N5UVJ8F6UJPGN0RZKWSOMEYVZVLTZLECGVHHSDSH7ZA";
     public const string TagNames = "name1,name2";
     public const string Email = "test1@gmail.com";
     public const string Image = "appIcon-180.png";

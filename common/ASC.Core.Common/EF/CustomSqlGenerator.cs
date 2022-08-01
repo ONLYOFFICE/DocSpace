@@ -31,7 +31,9 @@ public class CustomMySqlMigrationsSqlGenerator : MySqlMigrationsSqlGenerator
     public CustomMySqlMigrationsSqlGenerator(
         MigrationsSqlGeneratorDependencies dependencies,
         IRelationalAnnotationProvider migrationsAnnotations,
+#pragma warning disable EF1001 // Internal EF Core API usage.
         IMySqlOptions mySqlOptions)
+#pragma warning restore EF1001 // Internal EF Core API usage.
         : base(dependencies, migrationsAnnotations, mySqlOptions)
     {
     }

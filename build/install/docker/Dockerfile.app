@@ -22,8 +22,7 @@ ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
-    apt-get -y update && \
+RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
     apt-get install -yq sudo locales && \
@@ -72,8 +71,7 @@ ENV BUILD_PATH=${BUILD_PATH}
 ENV SRC_PATH=${SRC_PATH}
 
 # add defualt user and group for no-root run
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
-    mkdir -p /var/log/onlyoffice && \
+RUN mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
@@ -98,8 +96,7 @@ ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
 ENV SRC_PATH=${SRC_PATH}
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
-    mkdir -p /var/log/onlyoffice && \
+RUN mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
@@ -125,8 +122,7 @@ ENV DNS_NAMESERVER=127.0.0.11 \
     COUNT_WORKER_CONNECTIONS=$COUNT_WORKER_CONNECTIONS \
     MAP_HASH_BUCKET_SIZE=""
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
-    apt-get -y update && \
+RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install -yq vim && \
     # Remove default nginx website
@@ -135,7 +131,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
 # copy static services files and config values 
 COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=base /etc/nginx/includes /etc/nginx/includes
-COPY --from=base ${SRC_PATH}/build/deploy/products/ASC.Files/client ${BUILD_PATH}/products/ASC.Files/client
+COPY --from=base ${SRC_PATH}/build/deploy/products ${BUILD_PATH}/products
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY --from=base ${SRC_PATH}/build/deploy/studio ${BUILD_PATH}/studio
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
@@ -167,7 +163,7 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
 FROM nodeBuild as doceditor
 WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
 
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/products/ASC.Files/editor/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
 EXPOSE 5013
 ENTRYPOINT ["node", "server.js"]
 
