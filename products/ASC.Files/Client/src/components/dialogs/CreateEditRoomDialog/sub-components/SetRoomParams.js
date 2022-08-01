@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import styled, { css } from "styled-components";
+import React from "react";
+import styled from "styled-components";
 import RoomTypeDropdown from "./RoomTypeDropdown";
 import StorageLocation from "./StorageLocation";
 
@@ -10,7 +10,9 @@ import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 import AvatarEditor from "@appserver/components/avatar-editor";
 import TagInput from "./TagInput";
-import { StyledParam } from "../common/StyledParam";
+import { StyledParam } from "./StyledParam";
+import RoomType from "./RoomType";
+import { roomTypes } from "../data";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
@@ -42,6 +44,7 @@ const SetRoomParams = ({
   setRoomType,
   tagHandler,
   setIsScrollLocked,
+  isEdit,
 }) => {
   const onChangeName = (e) =>
     setRoomParams({ ...roomParams, title: e.target.value });
@@ -52,13 +55,21 @@ const SetRoomParams = ({
   const onChangeThidpartyFolderName = (e) =>
     setRoomParams({ ...roomParams, thirdpartyFolderName: e.target.value });
 
+  const [currentRoomTypeData] = roomTypes.filter(
+    (room) => room.type === roomParams.type
+  );
+
   return (
     <StyledSetRoomParams>
-      <RoomTypeDropdown
-        t={t}
-        currentRoomType={roomParams.type}
-        setRoomType={setRoomType}
-      />
+      {isEdit ? (
+        <RoomType t={t} room={currentRoomTypeData} type="displayItem" />
+      ) : (
+        <RoomTypeDropdown
+          t={t}
+          currentRoom={currentRoomTypeData}
+          setRoomType={setRoomType}
+        />
+      )}
 
       <div className="set_room_params-input">
         <Label

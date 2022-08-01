@@ -16,12 +16,7 @@ const StyledDropDown = styled(DropDown)`
   border: 1px solid #d0d5da;
   box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
   border-radius: 3px;
-  overflow-y: hidden;
-
-  .scroll-body {
-    /* height: 158px !important; */
-    //margin-bottom: -21px !important;
-  }
+  overflow: hidden;
 
   width: 446px;
   max-width: 446px;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { roomTypes } from "../../../data";
-import RoomType from "../../common/RoomType";
+import { roomTypes } from "../data";
+import RoomType from "./RoomType";
 
 const StyledRoomTypeDropdown = styled.div`
   display: flex;
@@ -34,13 +34,9 @@ const StyledRoomTypeDropdown = styled.div`
   }
 `;
 
-const RoomTypeDropdown = ({ t, currentRoomType, setRoomType }) => {
+const RoomTypeDropdown = ({ t, currentRoom, setRoomType }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleIsOpen = () => setIsOpen(!isOpen);
-
-  const [currentRoom] = roomTypes.filter(
-    (room) => room.type === currentRoomType
-  );
 
   return (
     <StyledRoomTypeDropdown isOpen={isOpen}>

@@ -5,10 +5,7 @@ import Label from "@appserver/components/label";
 import TextInput from "@appserver/components/text-input";
 import TagList from "./TagList";
 import DropDownItem from "@appserver/components/drop-down-item";
-import {
-  StyledDropDown,
-  StyledDropDownWrapper,
-} from "../../common/StyledDropdown";
+import { StyledDropDown, StyledDropDownWrapper } from "../StyledDropdown";
 import { isMobile } from "@appserver/components/utils/device";
 
 const StyledTagInput = styled.div`

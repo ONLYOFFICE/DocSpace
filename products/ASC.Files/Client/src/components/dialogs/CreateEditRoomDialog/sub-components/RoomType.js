@@ -59,20 +59,26 @@ const StyledRoomType = styled.div`
   }
 `;
 
-const StyledListItem = styled(StyledRoomType)`
-  border: 1px solid #f3f4f4;
+const StyledDisplayItem = styled(StyledRoomType)`
+  background-color: #f8f8f8;
+  border: 1px solid #f8f8f8;
   border-radius: 6px;
-  &:hover {
-    background-color: #eceef1;
+
+  .choose_room-forward_btn {
+    display: none;
   }
 `;
 
-const StyledDropdownButton = styled(StyledRoomType)`
-  background-color: #f8f8f8;
+const StyledListItem = styled(StyledRoomType)`
+  background-color: #ffffff;
+  border: 1px solid ${(props) => (props.isOpen ? "#2DA7DB" : "#ECEEF1")};
   border-radius: 6px;
+`;
 
-  border: 1px solid;
-  border-color: ${(props) => (props.isOpen ? "#2DA7DB" : "#f8f8f8")};
+const StyledDropdownButton = styled(StyledRoomType)`
+  background-color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid ${(props) => (props.isOpen ? "#2DA7DB" : "#ECEEF1")};
 
   .choose_room-forward_btn {
     &.dropdown-button {
@@ -83,12 +89,11 @@ const StyledDropdownButton = styled(StyledRoomType)`
 `;
 
 const StyledDropdownItem = styled(StyledRoomType)`
-  border-radius: 0px;
   &:hover {
     background-color: #f3f4f4;
   }
-  div[data-tip="tooltip"] {
-    display: ${(props) => !props.isOpen && "none"};
+  .choose_room-forward_btn {
+    display: none;
   }
 `;
 
@@ -133,14 +138,12 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
         </Text>
       </div>
 
-      {type !== "dropdownItem" && (
-        <IconButton
-          className={arrowClassName}
-          iconName="images/arrow.react.svg"
-          size={16}
-          onClick={() => {}}
-        />
-      )}
+      <IconButton
+        className={arrowClassName}
+        iconName="images/arrow.react.svg"
+        size={16}
+        onClick={() => {}}
+      />
     </>
   );
 
@@ -155,14 +158,19 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
       {content}
     </StyledDropdownItem>
   ) : (
-    <StyledRoomType>{content}</StyledRoomType>
+    <StyledDisplayItem>{content}</StyledDisplayItem>
   );
 };
 
 RoomType.propTypes = {
   room: PropTypes.object,
   onClick: PropTypes.func,
-  type: PropTypes.oneOf(["listItem", "dropdownButton", "dropdownItem"]),
+  type: PropTypes.oneOf([
+    "displayItem",
+    "listItem",
+    "dropdownButton",
+    "dropdownItem",
+  ]),
   isOpen: PropTypes.bool,
 };
 

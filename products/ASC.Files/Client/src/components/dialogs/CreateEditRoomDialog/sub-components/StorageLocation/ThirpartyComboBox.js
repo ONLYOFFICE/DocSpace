@@ -2,18 +2,16 @@ import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 
-import { thirparties } from "../../../data";
+import { thirparties } from "../../data";
+import { StyledDropDown, StyledDropDownWrapper } from "../StyledDropdown";
+
+import { isHugeMobile } from "@appserver/components/utils/device";
+import DomHelpers from "@appserver/components/utils/domHelpers";
 
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import DropDownItem from "@appserver/components/drop-down-item";
-import {
-  StyledDropDown,
-  StyledDropDownWrapper,
-} from "../../common/StyledDropdown";
 import Checkbox from "@appserver/components/checkbox";
-import DomHelpers from "@appserver/components/utils/domHelpers";
-import { isMobile } from "@appserver/components/utils/device";
 
 const StyledStorageLocation = styled.div`
   display: flex;
@@ -84,6 +82,7 @@ const ThirpartyComboBox = ({
   setIsScrollLocked,
 }) => {
   const dropdownRef = useRef(null);
+  let isGrayLabel = true;
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleIsOpen = () => {
@@ -95,13 +94,12 @@ const ThirpartyComboBox = ({
     setIsOpen(!isOpen);
   };
 
-  const [isGrayLabel, setIsGrayLabel] = useState(true);
   const [dropdownDirection, setDropdownDirection] = useState("bottom");
 
   const setStorageLocaiton = (thirparty) => {
-    setIsGrayLabel(false);
+    isGrayLabel = false;
     setRoomParams({ ...roomParams, storageLocation: thirparty });
-    toggleIsOpen();
+    setIsOpen(false);
     setIsScrollLocked(false);
   };
 
@@ -114,7 +112,12 @@ const ThirpartyComboBox = ({
   const calculateDropdownDirection = () => {
     const { top: offsetTop } = DomHelpers.getOffset(dropdownRef.current);
     const offsetBottom = window.innerHeight - offsetTop;
-    const neededheight = isMobile() ? 404 : 180;
+
+    const neededHeightDesktop = Math.min(thirparties.length * 32 + 16, 404);
+    const neededHeightMobile = Math.min(thirparties.length * 32 + 16, 180);
+    const neededheight = isHugeMobile()
+      ? neededHeightMobile
+      : neededHeightDesktop;
 
     setDropdownDirection(neededheight > offsetBottom ? "top" : "bottom");
   };
@@ -151,7 +154,7 @@ const ThirpartyComboBox = ({
           open={isOpen}
           forwardedRef={dropdownRef}
           clickOutsideAction={toggleIsOpen}
-          maxHeight={isMobile() ? 158 : 382}
+          maxHeight={isHugeMobile() ? 158 : 382}
           directionY={dropdownDirection}
           marginTop={dropdownDirection === "bottom" ? "4px" : "-36px"}
         >
