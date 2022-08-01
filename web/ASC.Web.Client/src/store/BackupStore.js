@@ -495,14 +495,6 @@ class BackupStore {
     this.defaultFormSettings = obj;
   };
 
-  updateDefaultSettings = () => {
-    this.defaultFormSettings = { ...this.formSettings };
-  };
-
-  resetNewFormSettings = () => {
-    this.formSettings = { ...this.defaultFormSettings };
-  };
-
   isFormReady = () => {
     let errors = {};
     let firstError = false;

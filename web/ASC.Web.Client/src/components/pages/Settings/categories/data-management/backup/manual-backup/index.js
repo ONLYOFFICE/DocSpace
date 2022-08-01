@@ -64,27 +64,26 @@ class ManualBackup extends React.Component {
   setBasicSettings = async () => {
     const {
       getProgress,
-      setCommonThirdPartyList,
+      // setCommonThirdPartyList,
       t,
-      isDocSpace,
       setThirdPartyStorage,
       setStorageRegions,
     } = this.props;
     try {
       getProgress(t);
 
-      if (isDocSpace) {
-        const [backupStorage, storageRegions] = await Promise.all([
-          getBackupStorage(),
-          getStorageRegions(),
-        ]);
+      //if (isDocSpace) {
+      const [backupStorage, storageRegions] = await Promise.all([
+        getBackupStorage(),
+        getStorageRegions(),
+      ]);
 
-        setThirdPartyStorage(backupStorage);
-        setStorageRegions(storageRegions);
-      } else {
-        const commonThirdPartyList = await getThirdPartyCommonFolderTree();
-        commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
-      }
+      setThirdPartyStorage(backupStorage);
+      setStorageRegions(storageRegions);
+      //   } else {
+      //    const commonThirdPartyList = await getThirdPartyCommonFolderTree();
+      // commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+      //   }
     } catch (error) {
       toastr.error(error);
       this.clearSessionStorage();
@@ -208,11 +207,11 @@ class ManualBackup extends React.Component {
       t,
       temporaryLink,
       downloadingProgress,
-      commonThirdPartyList,
+      //commonThirdPartyList,
       buttonSize,
       organizationName,
       renderTooltip,
-      isDocSpace,
+      //isDocSpace,
     } = this.props;
     const {
       isInitialLoading,
@@ -225,9 +224,9 @@ class ManualBackup extends React.Component {
 
     const isMaxProgress = downloadingProgress === 100;
 
-    const isDisabledThirdParty = isDocSpace
-      ? false
-      : commonThirdPartyList?.length === 0;
+    // const isDisabledThirdParty = isDocSpace
+    //   ? false
+    //   : commonThirdPartyList?.length === 0;
 
     const commonRadioButtonProps = {
       fontSize: "13px",
@@ -366,13 +365,13 @@ export default inject(({ auth, backup }) => {
   const {
     clearProgressInterval,
     clearSessionStorage,
-    commonThirdPartyList,
+    // commonThirdPartyList,
     downloadingProgress,
     getProgress,
     getIntervalProgress,
     setDownloadingProgress,
     setTemporaryLink,
-    setCommonThirdPartyList,
+    // setCommonThirdPartyList,
     temporaryLink,
     getStorageParams,
     setThirdPartyStorage,
@@ -380,23 +379,20 @@ export default inject(({ auth, backup }) => {
   } = backup;
   const { organizationName } = auth.settingsStore;
 
-  const isDocSpace = true;
-
   return {
     organizationName,
     setThirdPartyStorage,
     clearProgressInterval,
     clearSessionStorage,
-    commonThirdPartyList,
+    // commonThirdPartyList,
     downloadingProgress,
     getProgress,
     getIntervalProgress,
     setDownloadingProgress,
     setTemporaryLink,
     setStorageRegions,
-    setCommonThirdPartyList,
+    // setCommonThirdPartyList,
     temporaryLink,
     getStorageParams,
-    isDocSpace,
   };
 })(withTranslation(["Settings", "Common"])(observer(ManualBackup)));

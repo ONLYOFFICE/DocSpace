@@ -24,7 +24,7 @@ import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
-import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
+//import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import AutoBackupLoader from "@appserver/common/components/Loaders/AutoBackupLoader";
 
@@ -81,7 +81,7 @@ class AutomaticBackup extends React.PureComponent {
       t,
       setThirdPartyStorage,
       setBackupSchedule,
-      setCommonThirdPartyList,
+      //setCommonThirdPartyList,
       getProgress,
       setStorageRegions,
     } = this.props;
@@ -90,13 +90,13 @@ class AutomaticBackup extends React.PureComponent {
       getProgress(t);
 
       const [
-        thirdPartyList,
+        ///thirdPartyList,
         backupSchedule,
         backupStorage,
         enableAuto,
         storageRegions,
       ] = await Promise.all([
-        getThirdPartyCommonFolderTree(),
+        //getThirdPartyCommonFolderTree(),
         getBackupSchedule(),
         getBackupStorage(),
         enableAutoBackup(),
@@ -106,7 +106,7 @@ class AutomaticBackup extends React.PureComponent {
       setThirdPartyStorage(backupStorage);
       setBackupSchedule(backupSchedule);
       setStorageRegions(storageRegions);
-      thirdPartyList && setCommonThirdPartyList(thirdPartyList);
+      //thirdPartyList && setCommonThirdPartyList(thirdPartyList);
 
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
 
@@ -329,8 +329,7 @@ class AutomaticBackup extends React.PureComponent {
       setThirdPartyStorage,
       setDefaultOptions,
       setBackupSchedule,
-      updateStorageDefaultSettings,
-      isCheckedThirdPartyStorage,
+
       isCheckedThirdParty,
       isCheckedDocuments,
       setSavingProcess,
@@ -356,8 +355,6 @@ class AutomaticBackup extends React.PureComponent {
       setBackupSchedule(selectedSchedule);
       setThirdPartyStorage(storageInfo);
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
-
-      isCheckedThirdPartyStorage && updateStorageDefaultSettings();
 
       toastr.success(t("SuccessfullySaveSettingsMessage"));
       this.setState({
@@ -401,13 +398,12 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
       isCheckedDocuments,
-      commonThirdPartyList,
+      //commonThirdPartyList,
       buttonSize,
       organizationName,
       theme,
       renderTooltip,
       selectedEnableSchedule,
-      isDocSpace,
     } = this.props;
 
     const {
@@ -418,10 +414,10 @@ class AutomaticBackup extends React.PureComponent {
       isEmptyContentBeforeLoader,
     } = this.state;
 
-    const isDisabledThirdPartyList =
-      isCheckedThirdParty || isDocSpace
-        ? false
-        : commonThirdPartyList?.length === 0;
+    // const isDisabledThirdPartyList =
+    //   isCheckedThirdParty || isDocSpace
+    //     ? false
+    //     : commonThirdPartyList?.length === 0;
 
     const commonProps = {
       isLoadingData,
@@ -490,13 +486,18 @@ class AutomaticBackup extends React.PureComponent {
               )}
             </StyledModules>
 
-            <StyledModules isDisabled={isDisabledThirdPartyList}>
+            <StyledModules
+            // isDisabled={isDisabledThirdPartyList}
+            >
               <RadioButton
                 {...commonRadioButtonProps}
                 label={t("ThirdPartyResource")}
                 name={`${ResourcesModuleType}`}
                 isChecked={isCheckedThirdParty}
-                isDisabled={isLoadingData || isDisabledThirdPartyList}
+                isDisabled={
+                  isLoadingData
+                  // || isDisabledThirdPartyList
+                }
               />
               <Text className="backup-description">
                 {t("ThirdPartyResourceDescription")}
@@ -547,7 +548,7 @@ export default inject(({ auth, backup }) => {
   const { organizationName, theme } = settingsStore;
   const {
     backupSchedule,
-    commonThirdPartyList,
+    //commonThirdPartyList,
     clearProgressInterval,
     deleteSchedule,
     getProgress,
@@ -556,7 +557,7 @@ export default inject(({ auth, backup }) => {
     setBackupSchedule,
     selectedStorageType,
     seStorageType,
-    setCommonThirdPartyList,
+    //setCommonThirdPartyList,
     selectedPeriodLabel,
     selectedWeekdayLabel,
     selectedWeekday,
@@ -569,8 +570,6 @@ export default inject(({ auth, backup }) => {
     toDefault,
     isFormReady,
     getStorageParams,
-    updateDefaultSettings: updateStorageDefaultSettings,
-    resetNewFormSettings: resetStorageSettings,
     setSelectedEnableSchedule,
     selectedEnableSchedule,
     updatePathSettings,
@@ -583,14 +582,14 @@ export default inject(({ auth, backup }) => {
   const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
     selectedStorageType === `${StorageModuleType}`;
-  const isDocSpace = false;
+
   return {
     theme,
     language,
     isFormReady,
     organizationName,
     backupSchedule,
-    commonThirdPartyList,
+    //commonThirdPartyList,
     clearProgressInterval,
     deleteSchedule,
     getProgress,
@@ -599,7 +598,7 @@ export default inject(({ auth, backup }) => {
     setBackupSchedule,
     selectedStorageType,
     seStorageType,
-    setCommonThirdPartyList,
+    //setCommonThirdPartyList,
     selectedPeriodLabel,
     selectedWeekdayLabel,
     selectedWeekday,
@@ -618,11 +617,9 @@ export default inject(({ auth, backup }) => {
 
     getStorageParams,
 
-    updateStorageDefaultSettings,
-    resetStorageSettings,
     setSelectedEnableSchedule,
     selectedEnableSchedule,
-    isDocSpace,
+
     updatePathSettings,
     setSavingProcess,
     setResetProcess,
