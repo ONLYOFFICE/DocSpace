@@ -34,10 +34,10 @@ const StyledBody = styled.div`
   }
 `;
 class AmazonSettings extends React.Component {
-  static formNames = () => {
+  static formNames = (systemName) => {
     return {
       bucket: "",
-      region: "",
+      region: systemName,
       serviceurl: "",
       forcepathstyle: "false",
       usehttp: "false",
@@ -138,6 +138,7 @@ class AmazonSettings extends React.Component {
       for (let value of this.regions) {
         if (value.systemName === formSettings[region]) {
           this.region = value.label;
+          console.log("this.region", this.region);
           this.setState({
             region: value,
           });
@@ -204,9 +205,7 @@ class AmazonSettings extends React.Component {
 
     setIsThirdStorageChanged(true);
 
-    this.setState({
-      managedKeys: { key, label },
-    });
+
   };
   onSelectRegion = (options) => {
     const { addValueInFormSettings, setIsThirdStorageChanged } = this.props;
@@ -218,9 +217,7 @@ class AmazonSettings extends React.Component {
     addValueInFormSettings(region, systemName);
     setIsThirdStorageChanged(true);
 
-    this.setState({
-      region: { key, label, systemName },
-    });
+
   };
 
   onChangeText = (event) => {
@@ -254,11 +251,7 @@ class AmazonSettings extends React.Component {
       isNeedFilePath,
     } = this.props;
     const { region } = this.state;
-    console.log(
-      "region.label",
-
-      region.label
-    );
+    console.log("formSettings", formSettings);
     const renderTooltip = (helpInfo) => {
       return (
         <>

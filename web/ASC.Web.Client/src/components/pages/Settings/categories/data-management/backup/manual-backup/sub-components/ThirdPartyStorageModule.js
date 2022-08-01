@@ -9,7 +9,7 @@ import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
-import { getOptions } from "../../common-container/GetOptions";
+import { getOptions } from "../../common-container/GetThirdPartyStoragesOptions";
 import { getFromSessionStorage } from "../../../../../utils";
 import { StyledManualBackup } from "../../StyledBackup";
 
@@ -23,9 +23,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
     storageId = getFromSessionStorage("LocalCopyStorage");
 
     this.state = {
-      availableOptions: [],
-      availableStorage: {},
-      selectedStorage: "",
+      comboBoxOptions: [],
+      storagesInfo: {},
+      selectedStorageTitle: "",
       selectedId: "",
       isStartCopy: false,
     };
@@ -39,35 +39,34 @@ class ThirdPartyStorageModule extends React.PureComponent {
       const parameters = getOptions(thirdPartyStorage);
 
       const {
-        options,
-        availableStorage,
-        selectedStorage,
-        selectedId,
+        comboBoxOptions,
+        storagesInfo,
+        selectedStorageTitle,
+        selectedStorageId,
       } = parameters;
 
       this.setState({
-        availableOptions: options,
-        availableStorage: availableStorage,
-
-        selectedStorage: storage || selectedStorage,
-        selectedId: storageId || selectedId,
+        comboBoxOptions,
+        storagesInfo,
+        selectedStorageTitle: storage || selectedStorageTitle,
+        selectedId: storageId || selectedStorageId,
       });
     }
   }
 
   onSelect = (option) => {
     const selectedStorageId = option.key;
-    const { availableStorage } = this.state;
+    const { storagesInfo } = this.state;
 
-    const selectedStorage = availableStorage[selectedStorageId];
+    const selectedStorage = storagesInfo[selectedStorageId];
     this.setState({
-      selectedStorage: selectedStorage.title,
+      selectedStorageTitle: selectedStorage.title,
       selectedId: selectedStorage.id,
     });
   };
 
   onMakeCopyIntoStorage = async () => {
-    const { selectedId, selectedStorage } = this.state;
+    const { selectedId, selectedStorageTitle } = this.state;
     const { onMakeCopy, isFormReady } = this.props;
     const { StorageModuleType } = BackupStorageType;
 
@@ -82,7 +81,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       "ThirdPartyStorage",
       `${StorageModuleType}`,
       selectedId,
-      selectedStorage
+      selectedStorageTitle
     );
 
     this.setState({
@@ -93,18 +92,16 @@ class ThirdPartyStorageModule extends React.PureComponent {
   render() {
     const { isMaxProgress, thirdPartyStorage, buttonSize } = this.props;
     const {
-      availableOptions,
-      selectedStorage,
+      comboBoxOptions,
+      selectedStorageTitle,
       selectedId,
       isStartCopy,
-      availableStorage,
+      storagesInfo,
     } = this.state;
-
-    console.log("third-party storage  container  render");
 
     const commonProps = {
       isLoadingData: !isMaxProgress || isStartCopy,
-      selectedStorage: availableStorage[selectedId],
+      selectedStorage: storagesInfo[selectedId],
       isMaxProgress,
       selectedId,
       buttonSize,
@@ -116,8 +113,8 @@ class ThirdPartyStorageModule extends React.PureComponent {
       <StyledManualBackup>
         <div className="manual-backup_storages-module">
           <ComboBox
-            options={availableOptions}
-            selectedOption={{ key: 0, label: selectedStorage }}
+            options={comboBoxOptions}
+            selectedOption={{ key: 0, label: selectedStorageTitle }}
             onSelect={this.onSelect}
             isDisabled={!isMaxProgress || isStartCopy || !!!thirdPartyStorage}
             noBorder={false}

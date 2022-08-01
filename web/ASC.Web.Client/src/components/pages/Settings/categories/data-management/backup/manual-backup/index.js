@@ -14,6 +14,10 @@ import { StyledModules, StyledManualBackup } from "./../StyledBackup";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
 import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 import DataBackupLoader from "@appserver/common/components/Loaders/DataBackupLoader";
+import {
+  getBackupStorage,
+  getStorageRegions,
+} from "@appserver/common/api/settings";
 
 let selectedStorageType = "";
 
@@ -58,15 +62,25 @@ class ManualBackup extends React.Component {
   }
 
   setBasicSettings = async () => {
-    const { getProgress, setCommonThirdPartyList, t, isDocSpace } = this.props;
+    const {
+      getProgress,
+      setCommonThirdPartyList,
+      t,
+      isDocSpace,
+      setThirdPartyStorage,
+      setStorageRegions,
+    } = this.props;
     try {
       getProgress(t);
 
       if (isDocSpace) {
-        //TODO: another parameter
+        const [backupStorage, storageRegions] = await Promise.all([
+          getBackupStorage(),
+          getStorageRegions(),
+        ]);
 
-        const commonThirdPartyList = await getThirdPartyCommonFolderTree();
-        commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+        setThirdPartyStorage(backupStorage);
+        setStorageRegions(storageRegions);
       } else {
         const commonThirdPartyList = await getThirdPartyCommonFolderTree();
         commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
@@ -176,7 +190,7 @@ class ManualBackup extends React.Component {
       );
     }
     console.log("storageParams", storageParams);
-    // return;
+    //return;
     try {
       await startBackup(moduleType, storageParams);
       setDownloadingProgress(1);
@@ -361,6 +375,8 @@ export default inject(({ auth, backup }) => {
     setCommonThirdPartyList,
     temporaryLink,
     getStorageParams,
+    setThirdPartyStorage,
+    setStorageRegions,
   } = backup;
   const { organizationName } = auth.settingsStore;
 
@@ -368,7 +384,7 @@ export default inject(({ auth, backup }) => {
 
   return {
     organizationName,
-
+    setThirdPartyStorage,
     clearProgressInterval,
     clearSessionStorage,
     commonThirdPartyList,
@@ -377,6 +393,7 @@ export default inject(({ auth, backup }) => {
     getIntervalProgress,
     setDownloadingProgress,
     setTemporaryLink,
+    setStorageRegions,
     setCommonThirdPartyList,
     temporaryLink,
     getStorageParams,

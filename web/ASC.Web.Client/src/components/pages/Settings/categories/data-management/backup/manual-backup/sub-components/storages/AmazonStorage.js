@@ -7,9 +7,15 @@ import AmazonSettings from "../../../consumer-storage-settings/AmazonSettings";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { selectedStorage, setCompletedFormFields } = this.props;
+    const {
+      selectedStorage,
+      setCompletedFormFields,
+      storageRegions,
+    } = this.props;
 
-    setCompletedFormFields(AmazonSettings.formNames());
+    setCompletedFormFields(
+      AmazonSettings.formNames(storageRegions[0].systemName)
+    );
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }
@@ -56,9 +62,10 @@ class AmazonStorage extends React.Component {
 }
 
 export default inject(({ backup }) => {
-  const { setCompletedFormFields } = backup;
+  const { setCompletedFormFields, storageRegions } = backup;
 
   return {
+    storageRegions,
     setCompletedFormFields,
   };
 })(observer(withTranslation(["Settings", "Common"])(AmazonStorage)));

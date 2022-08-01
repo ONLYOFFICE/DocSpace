@@ -160,7 +160,6 @@ class BackupStore {
     this.selectedEnableSchedule = this.defaultEnableSchedule;
 
     if (this.defaultFormSettings) {
-      console.log("this.defaultFormSettings", this.defaultFormSettings);
       this.setFormSettings({ ...this.defaultFormSettings });
     }
 
@@ -176,7 +175,7 @@ class BackupStore {
         storageParams,
       } = this.backupSchedule;
 
-      const { folderId } = storageParams;
+      const { folderId, module } = storageParams;
       const { period, day, hour } = cronParams;
 
       let defaultFormSettings = {};
@@ -188,6 +187,7 @@ class BackupStore {
       if (defaultFormSettings) {
         this.setFormSettings({ ...defaultFormSettings });
         this.setDefaultFormSettings({ ...defaultFormSettings });
+        this.isThirdStorageChanged && this.setIsThirdStorageChanged(false);
       }
 
       this.defaultEnableSchedule = true;
@@ -199,6 +199,7 @@ class BackupStore {
       this.defaultMaxCopiesNumber = `${backupsStored}`;
       this.defaultStorageType = `${storageType}`;
       this.defaultFolderId = `${folderId}`;
+      if (module) this.defaultStorageId = `${module}`;
 
       this.selectedDay = this.defaultDay;
       this.selectedHour = this.defaultHour;
@@ -206,6 +207,7 @@ class BackupStore {
       this.selectedMaxCopiesNumber = this.defaultMaxCopiesNumber;
       this.selectedStorageType = this.defaultStorageType;
       this.selectedFolderId = this.defaultFolderId;
+      if (module) this.selectedStorageId = this.defaultStorageId;
 
       this.defaultPeriodLabel = periodObj[+this.defaultPeriodNumber].label;
       this.selectedPeriodLabel = this.defaultPeriodLabel;
@@ -314,13 +316,10 @@ class BackupStore {
     if (folderId !== this.selectedFolderId) this.selectedFolderId = folderId;
   };
 
-  setStorageId = (selectedStorage, defaultStorage) => {
-    if (defaultStorage) {
-      this.defaultStorageId = defaultStorage;
-      this.selectedStorageId = defaultStorage;
-    } else {
-      this.selectedStorageId = selectedStorage;
-    }
+  setStorageId = (selectedStorage) => {
+    console.log("setStorageId", selectedStorage);
+
+    this.selectedStorageId = selectedStorage;
   };
 
   clearSessionStorage = () => {
@@ -528,7 +527,9 @@ class BackupStore {
   setCompletedFormFields = (values, module) => {
     let formSettingsTemp = {};
 
+    console.log("this.defaultStorageId", this.defaultStorageId);
     if (module && module === this.defaultStorageId) {
+      console.log("this.defaultFormSettings", this.defaultFormSettings);
       this.setFormSettings({ ...this.defaultFormSettings });
       return;
     }
