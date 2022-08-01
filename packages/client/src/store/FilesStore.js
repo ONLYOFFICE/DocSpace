@@ -1870,11 +1870,13 @@ class FilesStore {
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
 
+      const url = getCategoryUrl(this.categoryType, id);
+
       const folderUrl = isFolder
         ? combineUrl(
             AppServerConfig.proxyURL,
             config.homepage,
-            `/filter?folder=${id}`
+            `${url}?folder=${id}`
           )
         : null;
 
