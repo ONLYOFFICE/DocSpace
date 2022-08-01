@@ -14,13 +14,13 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: clear-events
     image: "${REPO}/${STATUS}appserver-clear-events:${DOCKER_TAG}"
-
-  onlyoffice-webhooks-wervice:
+  
+  onlyoffice-migration:
     build:
       context: ./
       dockerfile: "${DOCKERFILE}"
-      target: webhooks-wervice
-    image: "${REPO}/${STATUS}appserver-webhooks-wervice:${DOCKER_TAG}"
+      target: migration
+    image: "${REPO}/${STATUS}appserver-migration:${DOCKER_TAG}"
 
   onlyoffice-backup:
     build:
@@ -106,6 +106,13 @@ services:
       target: ssoauth
     image: "${REPO}/${STATUS}appserver-ssoauth:${DOCKER_TAG}"
 
+  onlyoffice-webhooks-service:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: webhooks-service
+    image: "${REPO}/${STATUS}appserver-webhooks-service:${DOCKER_TAG}"
+  
   onlyoffice-bin-share:
     build:
       context: ./
@@ -120,9 +127,23 @@ services:
       target: wait_bin_share
     image: "${REPO}/${STATUS}appserver-wait-bin-share:${DOCKER_TAG}"
 
+  onlyoffice-doceditor:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: doceditor
+    image: "${REPO}/${STATUS}appserver-doceditor:${DOCKER_TAG}"
+
   onlyoffice-proxy:
     build:
       context:  ./
       dockerfile: "${DOCKERFILE}"
       target: web
     image: "${REPO}/${STATUS}appserver-proxy:${DOCKER_TAG}"
+
+  onlyoffice-migration-runner:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: onlyoffice-migration-runner
+    image: "${REPO}/${STATUS}appserver-migration-runner:${DOCKER_TAG}"

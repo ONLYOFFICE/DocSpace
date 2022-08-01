@@ -68,8 +68,9 @@ public static class DbFilesSecurityExtension
             entity.HasKey(e => new { e.TenantId, e.EntryId, e.EntryType, e.Subject })
                 .HasName("PRIMARY");
 
-            entity.ToTable("files_security");
-
+            entity.ToTable("files_security")
+                .HasCharSet("utf8");
+                
             entity.HasIndex(e => e.Owner)
                 .HasDatabaseName("owner");
 
@@ -103,9 +104,7 @@ public static class DbFilesSecurityExtension
 
             entity.Property(e => e.TimeStamp)
                 .HasColumnName("timestamp")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .ValueGeneratedOnAddOrUpdate();
+                .HasColumnType("timestamp");
         });
     }
     public static void PgSqlAddDbFilesSecurity(this ModelBuilder modelBuilder)

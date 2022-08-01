@@ -12,11 +12,13 @@ const initialLanguage = window.initialLanguage;
 initI18n(initialI18nStoreASC);
 
 hydrate(
-  <App
-    initialLanguage={initialLanguage}
-    initialI18nStoreASC={initialI18nStoreASC}
-    {...propsObj}
-  />,
+  <React.Suspense fallback={<div></div>}>
+    <App
+      initialLanguage={initialLanguage}
+      initialI18nStoreASC={initialI18nStoreASC}
+      {...propsObj}
+    />
+  </React.Suspense>,
   document.getElementById("root")
 );
 
