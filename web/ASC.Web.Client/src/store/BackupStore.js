@@ -495,6 +495,15 @@ class BackupStore {
     this.defaultFormSettings = obj;
   };
 
+  get isValidForm() {
+    if (Object.keys(this.requiredFormSettings).length == 0) return;
+
+    for (let key of this.requiredFormSettings) {
+      const elem = this.formSettings[key];
+      if (!elem.trim()) return false;
+    }
+    return true;
+  }
   isFormReady = () => {
     let errors = {};
     let firstError = false;

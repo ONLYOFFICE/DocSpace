@@ -28,6 +28,7 @@ class AmazonStorage extends React.Component {
       selectedStorage,
       buttonSize,
       onMakeCopyIntoStorage,
+      isValidForm,
     } = this.props;
     console.log("amazon storage render");
 
@@ -44,7 +45,7 @@ class AmazonStorage extends React.Component {
             label={t("Common:Duplicate")}
             onClick={onMakeCopyIntoStorage}
             primary
-            isDisabled={!isMaxProgress || this.isDisabled}
+            isDisabled={!isValidForm || !isMaxProgress || this.isDisabled}
             size={buttonSize}
           />
           {!isMaxProgress && (
@@ -62,9 +63,10 @@ class AmazonStorage extends React.Component {
 }
 
 export default inject(({ backup }) => {
-  const { setCompletedFormFields, storageRegions } = backup;
+  const { setCompletedFormFields, storageRegions, isValidForm } = backup;
 
   return {
+    isValidForm,
     storageRegions,
     setCompletedFormFields,
   };

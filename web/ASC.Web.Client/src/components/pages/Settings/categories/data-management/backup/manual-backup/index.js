@@ -325,13 +325,13 @@ class ManualBackup extends React.Component {
           )}
         </StyledModules>
 
-        <StyledModules isDisabled={isDisabledThirdParty}>
+        <StyledModules>
           <RadioButton
             label={t("ThirdPartyResource")}
             name={"isCheckedThirdParty"}
             key={2}
             isChecked={isCheckedThirdParty}
-            isDisabled={isDisabledThirdParty || !isMaxProgress}
+            isDisabled={!isMaxProgress}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description">

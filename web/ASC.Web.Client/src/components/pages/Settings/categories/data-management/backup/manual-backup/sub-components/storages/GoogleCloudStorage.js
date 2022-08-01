@@ -22,6 +22,7 @@ class GoogleCloudStorage extends React.Component {
       selectedStorage,
       buttonSize,
       onMakeCopyIntoStorage,
+      isValidForm,
     } = this.props;
 
     return (
@@ -36,7 +37,7 @@ class GoogleCloudStorage extends React.Component {
             label={t("Common:Duplicate")}
             onClick={onMakeCopyIntoStorage}
             primary
-            isDisabled={!isMaxProgress || this.isDisabled}
+            isDisabled={!isValidForm || !isMaxProgress || this.isDisabled}
             size={buttonSize}
           />
           {!isMaxProgress && (
@@ -54,9 +55,10 @@ class GoogleCloudStorage extends React.Component {
 }
 
 export default inject(({ backup }) => {
-  const { setCompletedFormFields } = backup;
+  const { setCompletedFormFields, isValidForm } = backup;
 
   return {
+    isValidForm,
     setCompletedFormFields,
   };
 })(observer(withTranslation(["Settings", "Common"])(GoogleCloudStorage)));
