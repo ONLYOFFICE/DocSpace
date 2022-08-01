@@ -136,24 +136,24 @@ const HeaderComponent = ({
   const { t } = useTranslation("Common");
   //const isNavAvailable = mainModules.length > 0;
 
-  const onLogoClick = () => {
-    history.push(defaultPage);
-    backdropClick();
-  };
+  // const onLogoClick = () => {
+  //   history.push(defaultPage);
+  //   backdropClick();
+  // };
 
-  const onBadgeClick = React.useCallback((e) => {
-    if (!e) return;
-    const id = e.currentTarget.dataset.id;
-    const item = mainModules.find((m) => m.id === id);
-    toggleAside();
+  // const onBadgeClick = React.useCallback((e) => {
+  //   if (!e) return;
+  //   const id = e.currentTarget.dataset.id;
+  //   const item = mainModules.find((m) => m.id === id);
+  //   toggleAside();
 
-    if (item) item.onBadgeClick(e);
-  }, []);
+  //   if (item) item.onBadgeClick(e);
+  // }, []);
 
-  const handleItemClick = React.useCallback((e) => {
-    onItemClick(e);
-    backdropClick();
-  }, []);
+  // const handleItemClick = React.useCallback((e) => {
+  //   onItemClick(e);
+  //   backdropClick();
+  // }, []);
 
   //const numberOfModules = mainModules.filter((item) => !item.separator).length;
   //const needNavMenu = currentProductId !== "home";
