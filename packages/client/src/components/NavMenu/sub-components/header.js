@@ -113,12 +113,12 @@ const StyledNavigationIconsWrapper = styled.div`
 
 const HeaderComponent = ({
   currentProductName,
-  totalNotifications,
+  //totalNotifications,
   onClick,
   onNavMouseEnter,
   onNavMouseLeave,
   defaultPage,
-  mainModules,
+  //mainModules,
   isNavOpened,
   currentProductId,
   toggleAside,
@@ -134,7 +134,7 @@ const HeaderComponent = ({
   ...props
 }) => {
   const { t } = useTranslation("Common");
-  const isNavAvailable = mainModules.length > 0;
+  //const isNavAvailable = mainModules.length > 0;
 
   const onLogoClick = () => {
     history.push(defaultPage);
@@ -155,13 +155,13 @@ const HeaderComponent = ({
     backdropClick();
   }, []);
 
-  const numberOfModules = mainModules.filter((item) => !item.separator).length;
-  const needNavMenu = currentProductId !== "home";
-  const mainModulesWithoutSettings = mainModules.filter(
-    (module) => module.id !== "settings"
-  );
+  //const numberOfModules = mainModules.filter((item) => !item.separator).length;
+  //const needNavMenu = currentProductId !== "home";
+  // const mainModulesWithoutSettings = mainModules.filter(
+  //   (module) => module.id !== "settings"
+  // );
 
-  const navItems = mainModulesWithoutSettings.map(
+  /*const navItems = mainModulesWithoutSettings.map(
     ({ id, separator, iconUrl, notifications, link, title, dashed }) => {
       const itemLink = getLink(link);
       const shouldRenderIcon = checkIfModuleOld(link);
@@ -185,7 +185,7 @@ const HeaderComponent = ({
         </NavItem>
       );
     }
-  );
+  );*/
 
   const [isDesktopView, setIsDesktopView] = useState(isDesktop());
 
@@ -217,7 +217,7 @@ const HeaderComponent = ({
         isPreparationPortal={isPreparationPortal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
-        needNavMenu={needNavMenu}
+        needNavMenu={false}
         isDesktopView={isDesktopView}
       >
         {((isPersonal && location.pathname.includes("files")) ||
@@ -237,7 +237,7 @@ const HeaderComponent = ({
             />
           )}
         </LinkWithoutRedirect>
-        {isNavAvailable &&
+        {/* {isNavAvailable &&
           isDesktopView &&
           !isPersonal &&
           currentProductId !== "home" && (
@@ -265,10 +265,10 @@ const HeaderComponent = ({
                 );
               })}
             </StyledNavigationIconsWrapper>
-          )}
+          )} */}
       </Header>
 
-      {isNavAvailable && !isDesktopView && (
+      {/* {!isDesktopView && (
         <Nav
           opened={isNavOpened}
           onMouseEnter={onNavMouseEnter}
@@ -305,7 +305,7 @@ const HeaderComponent = ({
             </StyledLink>
           </Box>
         </Nav>
-      )}
+      )} */}
     </>
   );
 };
@@ -313,7 +313,7 @@ const HeaderComponent = ({
 HeaderComponent.displayName = "Header";
 
 HeaderComponent.propTypes = {
-  totalNotifications: PropTypes.number,
+  //totalNotifications: PropTypes.number,
   onClick: PropTypes.func,
 
   defaultPage: PropTypes.string,
@@ -358,7 +358,7 @@ export default inject(({ auth }) => {
     defaultPage,
     logoUrl,
 
-    totalNotifications,
+    //totalNotifications,
     isLoaded,
     version,
     isAuthenticated,
