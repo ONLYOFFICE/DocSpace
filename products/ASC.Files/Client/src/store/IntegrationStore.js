@@ -30,6 +30,7 @@ class IntegrationStore {
       createFolder,
       createRoom,
       refreshFiles,
+      setViewAs,
     } = this.filesStore;
 
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
@@ -104,6 +105,11 @@ class IntegrationStore {
             res = await createRoom(title, type);
 
             refreshFiles();
+          }
+          break;
+        case "setItemsView":
+          {
+            setViewAs(data);
           }
           break;
         default:

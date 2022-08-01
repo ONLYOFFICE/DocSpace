@@ -298,6 +298,10 @@
       );
     };
 
+    const setItemsView = (type) => {
+      executeMethod("setItemsView", type);
+    };
+
     initFrame(config);
 
     return {
@@ -313,6 +317,7 @@
       getItems,
 
       setConfig,
+      setItemsView,
 
       openCrateFileModal,
       openCrateFolderModal,
