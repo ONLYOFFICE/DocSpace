@@ -190,7 +190,7 @@ class PreparationPortal extends React.Component {
     return (
       <StyledPreparationPortal>
         <ErrorContainer
-          headerText={withoutHeader ? "" : t("PreparationPortalTitle")}
+          headerText={withoutHeader ? "" : t("Common:PreparationPortalTitle")}
           style={style}
         >
           <StyledBodyPreparationPortal
@@ -236,7 +236,9 @@ const PreparationPortalWrapper = inject(({ backup }) => {
   return {
     multiplicationFactor,
   };
-})(withTranslation("PreparationPortal")(observer(PreparationPortal)));
+})(
+  withTranslation(["PreparationPortal", "Common"])(observer(PreparationPortal))
+);
 
 PreparationPortal.propTypes = {
   withoutHeader: PropTypes.bool,
