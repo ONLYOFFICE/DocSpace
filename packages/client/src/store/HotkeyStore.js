@@ -3,6 +3,7 @@ import { combineUrl } from "@docspace/common/utils";
 import { isDesktop } from "@docspace/components/utils/device";
 import { makeAutoObservable } from "mobx";
 import config from "PACKAGE_FILE";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { encryptionUploadDialog } from "../helpers/desktop";
 
 class HotkeyStore {
@@ -423,13 +424,17 @@ class HotkeyStore {
   };
 
   goToHomePage = (history) => {
-    const urlFilter = this.filesStore.filter.toUrlParams();
+    const { filter, categoryType } = this.filesStore;
+
+    const filterParamsStr = filter.toUrlParams();
+
+    const url = getCategoryUrl(categoryType, filter.folder);
 
     history.push(
       combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/filter?${urlFilter}`
+        `${url}?${filterParamsStr}`
       )
     );
   };

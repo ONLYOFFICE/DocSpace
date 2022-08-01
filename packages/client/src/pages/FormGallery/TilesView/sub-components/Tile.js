@@ -20,6 +20,7 @@ import {
   StyledContent,
   StyledOptionButton,
 } from "../StyledTileView";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 
 class Tile extends React.PureComponent {
   constructor(props) {
@@ -88,21 +89,22 @@ class Tile extends React.PureComponent {
   };
 
   onCreateForm = () => {
-    const { match, history } = this.props;
-    const { setIsInfoPanelVisible } = this.props;
+    const { match, history, setIsInfoPanelVisible, categoryType } = this.props;
 
     const filter = FilesFilter.getDefault();
+
     filter.folder = match.params.folderId;
-    const urlFilter = filter.toUrlParams();
+
+    const filterParamsStr = filter.toUrlParams();
+
+    const url = getCategoryUrl(categoryType, filter.folder);
+
+    const pathname = `${url}?${filterParamsStr}`;
 
     setIsInfoPanelVisible(false);
 
     history.push(
-      combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/filter?${urlFilter}`
-      )
+      combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
     );
   };
 
@@ -209,7 +211,7 @@ Tile.defaultProps = {
 };
 
 export default inject(({ filesStore, settingsStore, auth }, { item }) => {
-  const { gallerySelected, setGallerySelected } = filesStore;
+  const { gallerySelected, setGallerySelected, categoryType } = filesStore;
   const { getIcon } = settingsStore;
   const { isVisible, setIsVisible } = auth.infoPanelStore;
 
@@ -221,5 +223,6 @@ export default inject(({ filesStore, settingsStore, auth }, { item }) => {
     getIcon,
     setIsInfoPanelVisible: setIsVisible,
     isInfoPanelVisible: isVisible,
+    categoryType,
   };
 })(withTranslation(["FormGallery", "Common"])(withRouter(observer(Tile))));

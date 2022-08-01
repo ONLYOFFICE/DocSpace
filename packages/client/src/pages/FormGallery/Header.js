@@ -12,6 +12,7 @@ import {
 import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
 import { combineUrl } from "@docspace/common/utils";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 
 const SectionHeaderContent = (props) => {
   const {
@@ -21,20 +22,24 @@ const SectionHeaderContent = (props) => {
     isInfoPanelVisible,
     toggleInfoPanel,
     setGallerySelected,
+    categoryType,
   } = props;
 
   const onBackToFiles = () => {
     setGallerySelected(null);
+
     const filter = FilesFilter.getDefault();
+
     filter.folder = match.params.folderId;
-    const urlFilter = filter.toUrlParams();
+
+    const filterParamsStr = filter.toUrlParams();
+
+    const url = getCategoryUrl(categoryType, filter.folder);
+
+    const pathname = `${url}?${filterParamsStr}`;
 
     history.push(
-      combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/filter?${urlFilter}`
-      )
+      combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
     );
   };
 
@@ -68,10 +73,11 @@ const SectionHeaderContent = (props) => {
 
 export default inject(({ auth, filesStore }) => {
   const { toggleIsVisible, isVisible } = auth.infoPanelStore;
-  const { setGallerySelected } = filesStore;
+  const { setGallerySelected, categoryType } = filesStore;
   return {
     toggleInfoPanel: toggleIsVisible,
     isInfoPanelVisible: isVisible,
     setGallerySelected,
+    categoryType,
   };
 })(withTranslation("Common")(withRouter(observer(SectionHeaderContent))));

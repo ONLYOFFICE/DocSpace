@@ -44,101 +44,105 @@ const ArticleBodyContent = (props) => {
     FirebaseHelper,
     theme,
     toggleArticleOpen,
+    categoryType,
   } = props;
 
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  const onClick = React.useCallback((data) => {
-    const {
-      toggleArticleOpen,
-      setIsLoading,
-      fetchFiles,
+  const onClick = React.useCallback(
+    (folderId) => {
+      const {
+        toggleArticleOpen,
+        setIsLoading,
+        fetchFiles,
 
-      fetchRooms,
-      setAlreadyFetchingRooms,
+        fetchRooms,
+        setAlreadyFetchingRooms,
 
-      homepage,
-      history,
-      roomsFolderId,
-      archiveFolderId,
-    } = props;
+        homepage,
+        history,
+        roomsFolderId,
+        archiveFolderId,
+      } = props;
 
-    const filesSection = window.location.pathname.indexOf("/filter") > 0;
+      const filesSection = window.location.pathname.indexOf("/filter") > 0;
 
-    if (filesSection) {
-      setIsLoading(true);
-    } else {
-      showLoader();
-    }
+      if (filesSection) {
+        setIsLoading(true);
+      } else {
+        showLoader();
+      }
 
-    if (data === roomsFolderId || data === archiveFolderId) {
-      setAlreadyFetchingRooms(true);
-      fetchRooms(data, null)
-        .then(() => {
-          if (filesSection) {
-            const filter = RoomsFilter.getDefault();
+      if (folderId === roomsFolderId || folderId === archiveFolderId) {
+        setAlreadyFetchingRooms(true);
+        fetchRooms(folderId, null)
+          .then(() => {
+            if (filesSection) {
+              const filter = RoomsFilter.getDefault();
 
-            const url = getCategoryUrl(
-              data === archiveFolderId
-                ? CategoryType.Archive
-                : CategoryType.Shared
-            );
+              const url = getCategoryUrl(
+                folderId === archiveFolderId
+                  ? CategoryType.Archive
+                  : CategoryType.Shared
+              );
 
-            const filterParamsStr = filter.toUrlParams();
+              const filterParamsStr = filter.toUrlParams();
 
-            history.push(
-              combineUrl(
-                AppServerConfig.proxyURL,
-                homepage,
-                `${url}?${filterParamsStr}`
-              )
-            );
-          }
-        })
-        .finally(() => {
-          if (isMobileOnly || isMobile()) {
-            toggleArticleOpen();
-          }
-          if (filesSection) {
-            setIsLoading(false);
-          } else {
-            hideLoader();
-          }
-        });
-    } else {
-      fetchFiles(data, null, true, false)
-        .then(() => {
-          if (!filesSection) {
-            const filter = FilesFilter.getDefault();
+              history.push(
+                combineUrl(
+                  AppServerConfig.proxyURL,
+                  homepage,
+                  `${url}?${filterParamsStr}`
+                )
+              );
+            }
+          })
+          .finally(() => {
+            if (isMobileOnly || isMobile()) {
+              toggleArticleOpen();
+            }
+            if (filesSection) {
+              setIsLoading(false);
+            } else {
+              hideLoader();
+            }
+          });
+      } else {
+        fetchFiles(folderId, null, true, false)
+          .then(() => {
+            if (!filesSection) {
+              const filter = FilesFilter.getDefault();
 
-            filter.folder = data;
+              filter.folder = folderId;
 
-            const urlFilter = filter.toUrlParams();
+              const filterParamsStr = filter.toUrlParams();
 
-            history.push(
-              combineUrl(
-                AppServerConfig.proxyURL,
-                homepage,
-                `/filter?${urlFilter}`
-              )
-            );
-          }
-        })
-        .catch((err) => toastr.error(err))
-        .finally(() => {
-          if (isMobileOnly || isMobile()) {
-            toggleArticleOpen();
-          }
-          if (filesSection) {
-            setIsLoading(false);
-          } else {
-            hideLoader();
-          }
-        });
-    }
-  }, []);
+              const url = getCategoryUrl(categoryType, filter.folder);
+
+              const pathname = `${url}?${filterParamsStr}`;
+
+              history.push(
+                combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+              );
+            }
+          })
+          .catch((err) => toastr.error(err))
+          .finally(() => {
+            if (isMobileOnly || isMobile()) {
+              toggleArticleOpen();
+            }
+            if (filesSection) {
+              setIsLoading(false);
+            } else {
+              hideLoader();
+            }
+          });
+      }
+    },
+    [categoryType]
+  );
 
   const onShowNewFilesPanel = React.useCallback((folderId) => {
     props.setNewFilesPanelVisible(true, [`${folderId}`]);
@@ -186,6 +190,7 @@ export default inject(
       firstLoad,
       isLoading,
       isLoaded,
+      categoryType,
     } = filesStore;
 
     const {
@@ -246,6 +251,8 @@ export default inject(
 
       roomsFolderId,
       archiveFolderId,
+
+      categoryType,
     };
   }
 )(

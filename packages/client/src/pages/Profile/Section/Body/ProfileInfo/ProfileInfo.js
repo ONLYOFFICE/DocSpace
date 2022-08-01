@@ -128,7 +128,7 @@ class ProfileInfo extends React.PureComponent {
     const url = combineUrl(
       AppServerConfig.proxyURL,
       config.homepage,
-      `/filter?${urlFilter}`
+      `/accounts/filter?${urlFilter}`
     );
     history.push(url);
 
