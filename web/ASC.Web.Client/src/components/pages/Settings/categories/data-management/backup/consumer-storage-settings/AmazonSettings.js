@@ -77,8 +77,8 @@ class AmazonSettings extends React.Component {
     this.sse_kms = "SSE-KMS";
     this.sse_s3 = "SSE-S3";
 
-    this.serverSideEncryption = "Server-Side Encryption";
-    this.clientSideEncryption = "Client-Side Encryption";
+    this.serverSideEncryption = t("AmazonSSE");
+    this.clientSideEncryption = t("AmazonCSE");
     this.defaultManaged = "Default AWS managed CMK";
     this.customerManager = "Customer manager CMK";
     this.noneValue = "None";
@@ -138,7 +138,7 @@ class AmazonSettings extends React.Component {
       for (let value of this.regions) {
         if (value.systemName === formSettings[region]) {
           this.region = value.label;
-          console.log("this.region", this.region);
+
           this.setState({
             region: value,
           });
@@ -204,8 +204,6 @@ class AmazonSettings extends React.Component {
     }
 
     setIsThirdStorageChanged(true);
-
-
   };
   onSelectRegion = (options) => {
     const { addValueInFormSettings, setIsThirdStorageChanged } = this.props;
@@ -216,8 +214,6 @@ class AmazonSettings extends React.Component {
 
     addValueInFormSettings(region, systemName);
     setIsThirdStorageChanged(true);
-
-
   };
 
   onChangeText = (event) => {
@@ -288,7 +284,7 @@ class AmazonSettings extends React.Component {
         <StyledBody>
           <div className="backup_storage-tooltip">
             <Text isBold>{this.bucketPlaceholder}</Text>
-            {renderTooltip(t("AmazonServiceTip"))}
+            {renderTooltip(t("AmazonBucketTip"))}
           </div>
           <TextInput
             name={bucket}
@@ -304,7 +300,7 @@ class AmazonSettings extends React.Component {
         <StyledBody>
           <div className="backup_storage-tooltip">
             <Text isBold>{this.regionPlaceholder}</Text>
-            {renderTooltip(t("AmazonBucketTip"))}
+            {renderTooltip(t("AmazonRegionTip"))}
           </div>
           <ComboBox
             className="backup_text-input"
@@ -326,7 +322,7 @@ class AmazonSettings extends React.Component {
         <StyledBody>
           <div className="backup_storage-tooltip">
             <Text isBold>{this.serviceUrlPlaceholder}</Text>
-            {renderTooltip(t("AmazonRegionTip"))}
+            {renderTooltip(t("AmazonServiceTip"))}
           </div>
           <TextInput
             name={serviceurl}
@@ -340,16 +336,22 @@ class AmazonSettings extends React.Component {
           />
         </StyledBody>
 
-        <Checkbox
-          name={forcepathstyle}
-          label={this.forcePathStylePlaceholder}
-          isChecked={formSettings[forcepathstyle] === "false" ? false : true}
-          isIndeterminate={false}
-          isDisabled={this.isDisabled}
-          onChange={this.onChangeCheckbox}
-          tabIndex={4}
-        />
-
+        <StyledBody>
+          <Checkbox
+            name={forcepathstyle}
+            label={this.forcePathStylePlaceholder}
+            isChecked={formSettings[forcepathstyle] === "false" ? false : true}
+            isIndeterminate={false}
+            isDisabled={this.isDisabled}
+            onChange={this.onChangeCheckbox}
+            tabIndex={4}
+            helpButton={
+              <div className="backup_storage-tooltip">
+                {renderTooltip(t("AmazonForcePathStyleTip"))}
+              </div>
+            }
+          />
+        </StyledBody>
         <Checkbox
           className="backup_checkbox"
           name={usehttp}
@@ -359,10 +361,17 @@ class AmazonSettings extends React.Component {
           isDisabled={this.isDisabled}
           onChange={this.onChangeCheckbox}
           tabIndex={5}
+          helpButton={
+            <div className="backup_storage-tooltip">
+              {renderTooltip(t("AmazonHTTPTip"))}
+            </div>
+          }
         />
         <StyledBody>
-          <Text isBold>{this.SSEPlaceholder}</Text>
-
+          <div className="backup_storage-tooltip">
+            <Text isBold>{this.SSEPlaceholder}</Text>
+            {renderTooltip(t("AmazonSSETip"))}
+          </div>
           <ComboBox
             className="backup_text-input"
             options={this.availableEncryptions}
