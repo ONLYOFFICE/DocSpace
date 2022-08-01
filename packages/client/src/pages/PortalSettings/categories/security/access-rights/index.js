@@ -7,17 +7,17 @@ import OwnerSettings from "./owner";
 // import ModulesSettings from "./sub-components/modules";
 
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
-import Link from "@docspace/components/link";
+//import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import toastr from "@docspace/components/toast/toastr";
 import { inject } from "mobx-react";
 import isEmpty from "lodash/isEmpty";
-import { combineUrl, showLoader, hideLoader } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
+import { /*combineUrl,*/ showLoader, hideLoader } from "@docspace/common/utils";
+//import { AppServerConfig } from "@docspace/common/constants";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import ArrowRightIcon from "@docspace/client/public/images/arrow.right.react.svg";
 import Loader from "@docspace/components/loader";
-import commonSettingsStyles from "../../../utils/commonSettingsStyles";
+//import commonSettingsStyles from "../../../utils/commonSettingsStyles";
 import { Base } from "@docspace/components/themes";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
@@ -97,7 +97,7 @@ class AccessRights extends PureComponent {
     setDocumentTitle(t("Common:AccessRights"));
   }
 
-  async componentDidMount() {
+  /*async componentDidMount() {
     const { admins, updateListAdmins } = this.props;
 
     if (isEmpty(admins, true)) {
@@ -111,7 +111,7 @@ class AccessRights extends PureComponent {
       this.setIsLoading(false);
       hideLoader();
     }
-  }
+  }*/
 
   onClickLink = (e) => {
     e.preventDefault();
@@ -136,7 +136,7 @@ class AccessRights extends PureComponent {
       <MainContainer>
         <Text className="subtitle">{t("AccessRightsSubTitle")} </Text>
         <OwnerSettings />
-        {
+        {/* {
           <div className="category-item-wrapper">
             <div className="category-item-heading">
               <Link
@@ -161,19 +161,19 @@ class AccessRights extends PureComponent {
               {t("PortalAdminsDescription")}
             </Text>
           </div>
-        }
+        } */}
       </MainContainer>
     );
   }
 }
 
 export default inject(({ auth, setup }) => {
-  const { updateListAdmins } = setup;
-  const { admins, adminsTotal } = setup.security.accessRight;
+  // const { updateListAdmins } = setup;
+  // const { admins, adminsTotal } = setup.security.accessRight;
   return {
-    admins,
-    adminsTotal,
-    updateListAdmins,
+    // admins,
+    // adminsTotal,
+    // updateListAdmins,
     organizationName: auth.settingsStore.organizationName,
     owner: auth.settingsStore.owner,
   };
