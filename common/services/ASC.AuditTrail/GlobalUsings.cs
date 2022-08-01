@@ -35,7 +35,6 @@ global using ASC.AuditTrail.Types;
 global using ASC.Common;
 global using ASC.Common.Mapping;
 global using ASC.Core;
-global using ASC.Core.Common.EF;
 global using ASC.Core.Users;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.EF.Context;
@@ -45,6 +44,7 @@ global using Autofac;
 
 global using AutoMapper;
 
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 
 global using NetEscapades.EnumGenerators;
