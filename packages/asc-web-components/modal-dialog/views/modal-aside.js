@@ -116,11 +116,7 @@ const Modal = ({
                         id="modal-scroll"
                         className="modal-scroll"
                       >
-                        {
-                          <div className="body_content-with_scroll">
-                            {bodyComponent}
-                          </div>
-                        }
+                        {bodyComponent}
                       </Scrollbar>
                     ) : (
                       bodyComponent

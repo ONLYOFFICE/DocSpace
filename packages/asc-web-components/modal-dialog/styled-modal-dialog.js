@@ -84,9 +84,6 @@ const StyledHeader = styled.div`
     `1px solid ${props.theme.modalDialog.headerBorderColor}`};
   margin-bottom: 16px;
   height: 52px;
-
-  display: flex;
-  align-items: center;
   padding: 0 16px 0;
 
   .heading {
@@ -106,7 +103,7 @@ const StyledBody = styled(Box)`
 
   #modal-scroll {
     .scroll-body {
-      margin-right: ${isMobile ? 0 : "-15px"} !important;
+      margin-right: ${isMobile ? 0 : "-17px"} !important;
       padding-right: 16px !important;
       ${(props) =>
         props.isScrollLocked &&
@@ -115,24 +112,11 @@ const StyledBody = styled(Box)`
           overflow: hidden !important;
         `}
     }
-    /* ${(props) =>
-      props.isScrollLocked &&
-      css`
-        div:nth-last-child(1),
-        div:nth-last-child(2) {
-          div {
-            display: none !important;
-          }
-        }
-      `} */
   }
 
   ${(props) =>
     props.currentDisplayType === "aside" &&
     css`
-      .body_content-with_scroll {
-        ${isMobile && "margin-right: 8px;"}
-      }
       margin-right: ${props.withBodyScroll ? "-16px" : "0"};
       padding-bottom: 8px;
       height: 100%;
