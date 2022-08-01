@@ -15,6 +15,9 @@ const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
 const TfaAuthForm = lazy(() => import("./sub-components/tfaAuth"));
 const TfaActivationForm = lazy(() => import("./sub-components/tfaActivation"));
 const RemovePortal = lazy(() => import("./sub-components/removePortal"));
+const DeactivatePortal = lazy(() =>
+  import("./sub-components/deactivatePortal")
+);
 
 const Confirm = ({ match }) => {
   //console.log("Confirm render");
@@ -71,6 +74,11 @@ const Confirm = ({ match }) => {
         exact
         path={`${path}/PortalRemove`}
         component={RemovePortal}
+      />
+      <ConfirmRoute
+        exact
+        path={`${path}/PortalSuspend`}
+        component={DeactivatePortal}
       />
 
       {/* <Route component={Error404} /> */}
