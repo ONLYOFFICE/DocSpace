@@ -53,6 +53,14 @@ export function createRoomInThirdpary(id, data) {
   });
 }
 
+export function editRoom(id, data) {
+  const options = { method: "put", url: `/files/rooms/${id}`, data };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
 export function pinRoom(id) {
   const options = { method: "put", url: `/files/rooms/${id}/pin` };
 
@@ -127,6 +135,19 @@ export function addTagsToRoom(id, tagArray) {
   const data = { names: tagArray };
   const options = {
     method: "put",
+    url: `/files/rooms/${id}/tags`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function removeTagsFromRoom(id, tagArray) {
+  const data = { names: tagArray };
+  const options = {
+    method: "delete",
     url: `/files/rooms/${id}/tags`,
     data,
   };

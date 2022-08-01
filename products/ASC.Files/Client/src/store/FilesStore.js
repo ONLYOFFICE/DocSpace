@@ -1533,8 +1533,16 @@ class FilesStore {
     return api.rooms.createRoom(roomParams);
   }
 
+  editRoom(id, roomParams) {
+    return api.rooms.editRoom(id, roomParams);
+  }
+
   addTagsToRoom(id, tagArray) {
     return api.rooms.addTagsToRoom(id, tagArray);
+  }
+
+  removeTagsFromRoom(id, tagArray) {
+    return api.rooms.removeTagsFromRoom(id, tagArray);
   }
 
   setFile = (file) => {
