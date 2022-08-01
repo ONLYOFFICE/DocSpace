@@ -391,3 +391,13 @@ export function assign(obj, keyPath, value) {
   }
   obj[keyPath[lastKeyIndex]] = value;
 }
+
+export const frameCallback = (data) => {
+  window.parent.postMessage(
+    JSON.stringify({
+      type: "onMethodReturn",
+      methodReturnData: data,
+    }),
+    "*"
+  );
+};
