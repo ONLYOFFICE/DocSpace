@@ -12,15 +12,15 @@
     <None Remove="protos\delete_schedule.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Grpc" Version="2.45.0">
+    <PackageReference Include="Grpc" Version="2.46.3">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Grpc.Tools" Version="2.45.0">
+    <PackageReference Include="Grpc.Tools" Version="2.47.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MySql.Data" Version="8.0.29" />
-    <PackageReference Include="protobuf-net" Version="3.1.4" />
+    <PackageReference Include="MySql.Data" Version="8.0.30" />
+    <PackageReference Include="protobuf-net" Version="3.1.17" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
