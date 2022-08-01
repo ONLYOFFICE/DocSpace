@@ -922,7 +922,7 @@ const SharingPanel = inject(
       "SharingPanel",
       "Common",
       "Translations",
-      "FilesHome",
+      "Files",
       "ChangeOwnerPanel",
       "EmbeddingPanel",
     ])(withLoader(SharingPanelComponent)(<Loaders.DialogAsideLoader isPanel />))
@@ -935,7 +935,7 @@ class Panel extends React.Component {
       "SharingPanel",
       "Common",
       "Translations",
-      "FilesHome",
+      "Files",
       "ChangeOwnerPanel",
       "EmbeddingPanel",
     ]);

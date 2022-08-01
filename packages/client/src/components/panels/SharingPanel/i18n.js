@@ -33,7 +33,7 @@ newInstance
       "Common",
       "Translations",
       "EmbeddingPanel",
-      "FilesHome",
+      "Files",
       "ChangeOwnerPanel",
     ],
     defaultNS: "SharingPanel",

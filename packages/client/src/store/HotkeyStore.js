@@ -40,7 +40,7 @@ class HotkeyStore {
       return e;
 
     const isDefaultKeys =
-      ["PageUp", "PageDown", "FilesHome", "End"].indexOf(e.code) > -1;
+      ["PageUp", "PageDown", "Home", "End"].indexOf(e.code) > -1;
 
     if (
       ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(

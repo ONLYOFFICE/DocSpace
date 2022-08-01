@@ -347,7 +347,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["FilesSettings", "Translations", "FilesHome", "Common"])(
+  withTranslation(["FilesSettings", "Translations", "Files", "Common"])(
     observer(withRouter(ConnectClouds))
   )
 );

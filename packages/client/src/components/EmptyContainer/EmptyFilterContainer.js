@@ -54,4 +54,4 @@ export default inject(({ filesStore, selectedFolderStore }) => ({
   fetchFiles: filesStore.fetchFiles,
   selectedFolderId: selectedFolderStore.id,
   setIsLoading: filesStore.setIsLoading,
-}))(withTranslation(["FilesHome", "Common"])(observer(EmptyFilterContainer)));
+}))(withTranslation(["Files", "Common"])(observer(EmptyFilterContainer)));

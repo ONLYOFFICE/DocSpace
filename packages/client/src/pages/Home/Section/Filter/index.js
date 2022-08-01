@@ -925,7 +925,7 @@ export default inject(
 )(
   withRouter(
     withLayoutSize(
-      withTranslation(["FilesHome", "Common", "Translations"])(
+      withTranslation(["Files", "Common", "Translations"])(
         withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
       )
     )

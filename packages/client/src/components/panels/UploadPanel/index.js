@@ -147,7 +147,7 @@ class UploadPanelComponent extends React.Component {
   }
 }
 
-const UploadPanel = withTranslation(["UploadPanel", "FilesHome"])(
+const UploadPanel = withTranslation(["UploadPanel", "Files"])(
   withLoader(UploadPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
 );
 

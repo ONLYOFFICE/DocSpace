@@ -522,7 +522,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["FilesHome", "Common", "Translations"])(
+  withTranslation(["Files", "Common", "Translations"])(
     observer(FilesTableHeader)
   )
 );

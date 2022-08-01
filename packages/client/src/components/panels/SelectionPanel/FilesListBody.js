@@ -216,4 +216,4 @@ export default inject(({ auth, settingsStore }) => {
     viewer: user,
     getIcon,
   };
-})(observer(withTranslation(["Common", "FilesHome"])(FilesListBody)));
+})(observer(withTranslation(["Common", "Files"])(FilesListBody)));

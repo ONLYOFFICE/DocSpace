@@ -432,4 +432,4 @@ export default inject(
       trashIsEmpty,
     };
   }
-)(withTranslation(["FilesHome", "Common", "Translations"])(observer(Items)));
+)(withTranslation(["Files", "Common", "Translations"])(observer(Items)));

@@ -291,26 +291,26 @@ class PureHome extends React.Component {
       case "move":
         if (qty > 1) {
           return toastr.success(
-            <Trans t={t} i18nKey="MoveItems" ns="FilesHome">
+            <Trans t={t} i18nKey="MoveItems" ns="Files">
               {{ qty }} elements has been moved
             </Trans>
           );
         }
         return toastr.success(
-          <Trans t={t} i18nKey="MoveItem" ns="FilesHome">
+          <Trans t={t} i18nKey="MoveItem" ns="Files">
             {{ title }} moved
           </Trans>
         );
       case "duplicate":
         if (qty > 1) {
           return toastr.success(
-            <Trans t={t} i18nKey="CopyItems" ns="FilesHome">
+            <Trans t={t} i18nKey="CopyItems" ns="Files">
               {{ qty }} elements copied
             </Trans>
           );
         }
         return toastr.success(
-          <Trans t={t} i18nKey="CopyItem" ns="FilesHome">
+          <Trans t={t} i18nKey="CopyItem" ns="Filesы">
             {{ title }} copied
           </Trans>
         );
@@ -458,7 +458,7 @@ class PureHome extends React.Component {
   }
 }
 
-const Home = withTranslation("FilesHome")(PureHome);
+const Home = withTranslation("Files")(PureHome);
 
 export default inject(
   ({

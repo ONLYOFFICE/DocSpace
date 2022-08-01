@@ -319,7 +319,7 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["FilesHome", "Common", "Translations"])(
+    withTranslation(["Files", "Common", "Translations"])(
       withLoader(withHotkeys(observer(SectionBodyContent)))()
     )
   )

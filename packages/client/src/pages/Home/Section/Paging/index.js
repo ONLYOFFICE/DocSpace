@@ -19,7 +19,7 @@ const SectionPagingContent = ({
   isHidePagination,
   isRooms,
 }) => {
-  const { t } = useTranslation("FilesHome");
+  const { t } = useTranslation("Files");
   const onNextClick = useCallback(
     (e) => {
       if (!filter.hasNext()) {

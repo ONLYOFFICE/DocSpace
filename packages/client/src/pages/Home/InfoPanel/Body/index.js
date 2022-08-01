@@ -175,7 +175,7 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["InfoPanel", "FilesHome", "Common", "Translations"])(
+    withTranslation(["InfoPanel", "Files", "Common", "Translations"])(
       withLoader(observer(InfoPanelBodyContent))(
         <Loaders.InfoPanelBodyLoader isFolder />
       )

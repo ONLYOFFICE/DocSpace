@@ -93,6 +93,4 @@ export default inject(({ filesStore, selectedFolderStore }) => {
     setIsLoading: filesStore.setIsLoading,
     parentId: selectedFolderStore.parentId,
   };
-})(
-  withTranslation(["FilesHome", "Translations"])(observer(EmptyFolderContainer))
-);
+})(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));

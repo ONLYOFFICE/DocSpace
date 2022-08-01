@@ -68,4 +68,4 @@ TileContainer.defaultProps = {
   id: "rowContainer",
 };
 
-export default withTranslation(["FilesHome", "Common"])(TileContainer);
+export default withTranslation(["Files", "Common"])(TileContainer);

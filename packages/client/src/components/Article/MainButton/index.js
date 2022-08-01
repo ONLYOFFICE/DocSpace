@@ -363,7 +363,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Article", "UploadPanel", "Common", "FilesHome"])(
+  withTranslation(["Article", "UploadPanel", "Common", "Files"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
       <Loaders.ArticleButton />
     )

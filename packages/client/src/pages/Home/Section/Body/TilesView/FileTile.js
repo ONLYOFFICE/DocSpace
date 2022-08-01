@@ -130,7 +130,7 @@ export default inject(({ settingsStore, filesStore }) => {
 
   return { getIcon, setSelection };
 })(
-  withTranslation(["FilesHome", "InfoPanel"])(
+  withTranslation(["Files", "InfoPanel"])(
     withRouter(
       withFileActions(withBadges(withQuickButtons(observer(FileTile))))
     )

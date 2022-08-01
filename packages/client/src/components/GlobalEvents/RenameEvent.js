@@ -26,7 +26,7 @@ const RenameEvent = ({
 
   const [startValue, setStartValue] = React.useState("");
 
-  const { t } = useTranslation(["FilesHome"]);
+  const { t } = useTranslation(["Files"]);
 
   React.useEffect(() => {
     setStartValue(getTitleWithoutExst(item, false));

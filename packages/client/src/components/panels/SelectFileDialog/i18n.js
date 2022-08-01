@@ -28,7 +28,7 @@ newInstance
       loadPath: loadLanguagePath(config.homepage),
     },
 
-    ns: ["SelectFile", "Common", "FilesHome", "Translations"],
+    ns: ["SelectFile", "Common", "Files", "Translations"],
     defaultNS: "SelectFile",
 
     react: {

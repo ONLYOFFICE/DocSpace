@@ -83,4 +83,4 @@ export default inject(({ settingsStore }) => {
   return {
     getIcon,
   };
-})(withTranslation(["InfoPanel", "Common", "FilesHome"])(observer(SingleItem)));
+})(withTranslation(["InfoPanel", "Common", "Files"])(observer(SingleItem)));

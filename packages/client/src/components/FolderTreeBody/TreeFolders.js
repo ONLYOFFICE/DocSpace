@@ -603,4 +603,4 @@ export default inject(
       selectedNodeParentId,
     };
   }
-)(withTranslation(["FilesHome", "Common"])(observer(TreeFolders)));
+)(withTranslation(["Files", "Common"])(observer(TreeFolders)));

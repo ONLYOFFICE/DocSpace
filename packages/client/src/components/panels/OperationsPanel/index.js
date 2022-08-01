@@ -176,11 +176,9 @@ const OperationsPanelComponent = (props) => {
   );
 };
 
-const OperationsPanel = withTranslation([
-  "Translations",
-  "Common",
-  "FilesHome",
-])(OperationsPanelComponent);
+const OperationsPanel = withTranslation(["Translations", "Common", "Files"])(
+  OperationsPanelComponent
+);
 
 export default inject(
   (

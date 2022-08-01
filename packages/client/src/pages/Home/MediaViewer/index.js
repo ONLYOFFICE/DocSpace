@@ -241,6 +241,6 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["FilesHome", "Translations"])(observer(FilesMediaViewer))
+    withTranslation(["Files", "Translations"])(observer(FilesMediaViewer))
   )
 );

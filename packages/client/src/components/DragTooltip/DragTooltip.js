@@ -121,4 +121,4 @@ export default inject(({ filesStore }) => {
     tooltipPageX,
     tooltipPageY,
   };
-})(withTranslation("FilesHome")(observer(DragTooltip)));
+})(withTranslation("Files")(observer(DragTooltip)));

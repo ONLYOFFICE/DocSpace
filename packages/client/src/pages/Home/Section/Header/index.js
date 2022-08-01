@@ -644,7 +644,7 @@ export default inject(
   }
 )(
   withTranslation([
-    "FilesHome",
+    "Files",
     "Common",
     "Translations",
     "InfoPanel",

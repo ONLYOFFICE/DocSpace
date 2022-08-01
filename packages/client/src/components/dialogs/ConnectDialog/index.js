@@ -334,7 +334,7 @@ const ConnectDialog = withTranslation([
   "ConnectDialog",
   "Common",
   "Translations",
-  "FilesHome",
+  "Files",
 ])(PureConnectDialogContainer);
 
 export default inject(

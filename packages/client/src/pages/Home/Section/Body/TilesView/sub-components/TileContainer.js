@@ -415,4 +415,4 @@ export default inject(
       personal,
     };
   }
-)(observer(withTranslation(["FilesHome", "Common"])(TileContainer)));
+)(observer(withTranslation(["Files", "Common"])(TileContainer)));
