@@ -127,7 +127,7 @@ class SettingsSetupStore {
       combineUrl(
         AppServerConfig.proxyURL,
         `${config.homepage}/portal-settings/security/access-rights/admins`,
-        `/filter?page=${filter.page}`
+        `/filter?page=${filter.page}` //TODO: Change url by category
       )
     );
   };

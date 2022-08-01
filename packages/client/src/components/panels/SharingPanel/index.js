@@ -389,7 +389,7 @@ class SharingPanelComponent extends React.Component {
       ? item.canOpenPlayer
         ? `${window.location.href}&preview=${item?.id}`
         : item.webUrl
-      : `${window.location.origin + homepage}/filter?folder=${item?.id}`;
+      : `${window.location.origin + homepage}/filter?folder=${item?.id}`; //TODO: Change url by category
   };
 
   onChangeMessage = (e) => {

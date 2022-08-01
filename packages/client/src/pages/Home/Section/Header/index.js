@@ -185,7 +185,7 @@ class SectionHeaderContent extends React.Component {
     const { t } = this.props;
 
     copy(
-      `${window.location.origin}/products/files/filter?folder=${currentFolderId}`
+      `${window.location.origin}/filter?folder=${currentFolderId}` //TODO: Change url by category
     );
 
     toastr.success(t("Translations:LinkCopySuccess"));
@@ -402,7 +402,7 @@ class SectionHeaderContent extends React.Component {
 
         const filterParamsStr = filter.toUrlParams();
 
-        const url = getCategoryUrl(this.categoryType, filter.folder);
+        const url = getCategoryUrl(categoryType, filter.folder);
 
         const pathname = `${url}?${filterParamsStr}`;
 

@@ -157,7 +157,7 @@ class ContextOptionsStore {
         ? canOpenPlayer
           ? `${window.location.href}&preview=${id}`
           : webUrl
-        : `${window.location.origin + config.homepage}/filter?folder=${id}`
+        : `${window.location.origin + config.homepage}/filter?folder=${id}` //TODO: Change url by category
     );
 
     toastr.success(t("Translations:LinkCopySuccess"));

@@ -448,7 +448,7 @@ function Editor({
           blank: true,
           requestClose: false,
           text: t("FileLocation"),
-          url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`,
+          url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`, //TODO: Change url by category
         };
       }
 

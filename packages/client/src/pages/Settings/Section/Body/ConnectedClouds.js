@@ -154,7 +154,7 @@ class ConnectClouds extends React.Component {
       const urlFilter = newFilter.toUrlParams();
       setFirstLoad(true);
       history.push(
-        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`) //TODO: Change url by category
       );
     });
   };
