@@ -32,7 +32,7 @@
     "e2e.test:translation": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login}' run test:translation:model"
   },
   "devDependencies": {
-    "auto-changelog": "https://github.com/ONLYOFFICE/auto-changelog.git#master",
+    "auto-changelog": "https://github.com/ONLYOFFICE/auto-changelog.git#v2.3.1",
     "shx": "^0.3.3",
     "terser": "^5.8.0"
   },
