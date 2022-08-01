@@ -180,23 +180,35 @@ export function sendDeletePortalEmail() {
   });
 }
 
-export function suspendPortal() {
-  return request({
+export function suspendPortal(confirmKey = null) {
+  const options = {
     method: "put",
     url: "/portal/suspend.json",
-  });
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
 }
 
-export function continuePortal() {
-  return request({
+export function continuePortal(confirmKey = null) {
+  const options = {
     method: "put",
     url: "/portal/continue.json",
-  });
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
 }
 
-export function deletePortal() {
-  return request({
+export function deletePortal(confirmKey = null) {
+  const options = {
     method: "delete",
     url: "/portal/delete.json",
-  });
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
 }
