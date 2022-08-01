@@ -6,10 +6,10 @@ import AmazonSettings from "../../../consumer-storage-settings/AmazonSettings";
 class AmazonStorage extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { setCompletedFormFields } = this.props;
+    const { setCompletedFormFields, storageRegions } = this.props;
 
     setCompletedFormFields({
-      ...AmazonSettings.formNames(),
+      ...AmazonSettings.formNames(storageRegions[0].systemName),
       filePath: "",
     });
   }
@@ -30,9 +30,10 @@ class AmazonStorage extends React.PureComponent {
 }
 
 export default inject(({ backup }) => {
-  const { replaceRequiredFormSettings, setCompletedFormFields } = backup;
+  const { storageRegions, setCompletedFormFields } = backup;
 
   return {
+    storageRegions,
     setCompletedFormFields,
   };
 })(observer(withTranslation("Settings")(AmazonStorage)));
