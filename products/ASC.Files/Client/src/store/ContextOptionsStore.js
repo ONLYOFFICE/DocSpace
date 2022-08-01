@@ -345,8 +345,10 @@ class ContextOptionsStore {
     setIsVisible(true);
   };
 
-  onClickEditRoom = () => {
-    console.log("edit room");
+  onClickEditRoom = (item) => {
+    const event = new Event(Events.ROOM_EDIT);
+    event.item = item;
+    window.dispatchEvent(event);
   };
 
   onClickInviteUsers = () => {
@@ -535,7 +537,7 @@ class ContextOptionsStore {
         key: "edit-room",
         label: "Edit room",
         icon: "images/settings.react.svg",
-        onClick: () => this.onClickEditRoom(),
+        onClick: () => this.onClickEditRoom(item),
         disabled: false,
       },
       {

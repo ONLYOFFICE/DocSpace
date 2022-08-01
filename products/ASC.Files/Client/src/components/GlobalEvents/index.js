@@ -1,12 +1,12 @@
 import React from "react";
 
 import { FileAction } from "@appserver/common/constants";
-
 import { Events } from "../../helpers/constants";
 
 import CreateEvent from "./CreateEvent";
 import RenameEvent from "./RenameEvent";
 import CreateRoomEvent from "./CreateRoomEvent";
+import EditRoomEvent from "./EditRoomEvent";
 
 const GlobalEvents = () => {
   const [createDialogProps, setCreateDialogProps] = React.useState({
@@ -20,12 +20,18 @@ const GlobalEvents = () => {
     onClose: null,
   });
 
+  const [renameDialogProps, setRenameDialogProps] = React.useState({
+    visible: false,
+    item: null,
+    onClose: null,
+  });
+
   const [createRoomDialogProps, setCreateRoomDialogProps] = React.useState({
     visible: false,
     onClose: null,
   });
 
-  const [renameDialogProps, setRenameDialogProps] = React.useState({
+  const [editRoomDialogProps, setEditRoomDialogProps] = React.useState({
     visible: false,
     item: null,
     onClose: null,
@@ -59,14 +65,6 @@ const GlobalEvents = () => {
     });
   }, []);
 
-  const onCreateRoom = React.useCallback((e) => {
-    setCreateRoomDialogProps({
-      visible: true,
-      onClose: () =>
-        setCreateRoomDialogProps({ visible: false, onClose: null }),
-    });
-  }, []);
-
   const onRename = React.useCallback((e) => {
     const visible = e.item ? true : false;
 
@@ -77,8 +75,32 @@ const GlobalEvents = () => {
       onClose: () => {
         setRenameDialogProps({
           visible: false,
-          typ: null,
+          type: null,
           item: null,
+        });
+      },
+    });
+  }, []);
+
+  const onCreateRoom = React.useCallback((e) => {
+    setCreateRoomDialogProps({
+      visible: true,
+      onClose: () =>
+        setCreateRoomDialogProps({ visible: false, onClose: null }),
+    });
+  }, []);
+
+  const onEditRoom = React.useCallback((e) => {
+    const visible = e.item ? true : false;
+
+    setEditRoomDialogProps({
+      visible: visible,
+      item: e.item,
+      onClose: () => {
+        setEditRoomDialogProps({
+          visible: false,
+          item: null,
+          onClose: null,
         });
       },
     });
@@ -86,25 +108,30 @@ const GlobalEvents = () => {
 
   React.useEffect(() => {
     window.addEventListener(Events.CREATE, onCreate);
-    window.addEventListener(Events.ROOM_CREATE, onCreateRoom);
     window.addEventListener(Events.RENAME, onRename);
+    window.addEventListener(Events.ROOM_CREATE, onCreateRoom);
+    window.addEventListener(Events.ROOM_EDIT, onEditRoom);
 
     return () => {
       window.removeEventListener(Events.CREATE, onCreate);
-      window.removeEventListener(Events.ROOM_CREATE, onCreateRoom);
       window.removeEventListener(Events.RENAME, onRename);
+      window.removeEventListener(Events.ROOM_CREATE, onCreateRoom);
+      window.removeEventListener(Events.ROOM_EDIT, onEditRoom);
     };
-  }, [onRename, onCreate]);
+  }, [onRename, onCreate, onCreateRoom, onEditRoom]);
 
   return [
     createDialogProps.visible && (
       <CreateEvent key={Events.CREATE} {...createDialogProps} />
     ),
+    renameDialogProps.visible && (
+      <RenameEvent key={Events.RENAME} {...renameDialogProps} />
+    ),
     createRoomDialogProps.visible && (
       <CreateRoomEvent key={Events.ROOM_CREATE} {...createRoomDialogProps} />
     ),
-    renameDialogProps.visible && (
-      <RenameEvent key={Events.RENAME} {...renameDialogProps} />
+    editRoomDialogProps.visible && (
+      <EditRoomEvent key={Events.ROOM_EDIT} {...editRoomDialogProps} />
     ),
   ];
 };

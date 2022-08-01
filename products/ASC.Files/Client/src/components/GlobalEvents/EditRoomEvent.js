@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
-import { CreateRoomDialog } from "../dialogs";
+import { EditRoomDialog } from "../dialogs";
 
-const CreateRoomEvent = ({
+const EditRoomEvent = ({
   visible,
   onClose,
+  item,
 
-  createRoom,
-  createTag,
+  editRoom,
   addTagsToRoom,
+  removeTagsFromRoom,
+
+  createTag,
   fetchTags,
 
   currrentFolderId,
@@ -24,24 +27,34 @@ const CreateRoomEvent = ({
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const onCreate = async (roomParams) => {
+  const roomId = item.id;
+  const startTags = Object.values(item.tags);
+  const startObjTags = startTags.map((tag, i) => ({ id: i, name: tag }));
+  const fetchedRoomParams = {
+    title: item.title,
+    type: item.roomType,
+    tags: startObjTags,
+    icon: item.icon,
+  };
+
+  const onSave = async (roomParams) => {
     console.log(roomParams);
-    const createRoomParams = {
-      roomType: roomParams.type,
+    const editRoomParams = {
+      // currently only title can be chaned
       title: roomParams.title || "New room",
     };
 
     const tags = roomParams.tags.map((tag) => tag.name);
     const newTags = roomParams.tags.filter((t) => t.isNew).map((t) => t.name);
-    console.log(tags, newTags);
+    const removedTags = startTags.filter((sT) => !tags.includes(sT));
+    console.log(tags, newTags, removedTags);
 
     try {
       setIsLoading(true);
-
-      const room = await createRoom(createRoomParams);
-      console.log(room);
+      await editRoom(roomId, editRoomParams);
       for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
-      await addTagsToRoom(room.id, tags);
+      await addTagsToRoom(roomId, tags);
+      await removeTagsFromRoom(roomId, removedTags);
       await updateCurrentFolder(null, currrentFolderId);
     } catch (err) {
       console.log(err);
@@ -57,11 +70,12 @@ const CreateRoomEvent = ({
   }, []);
 
   return (
-    <CreateRoomDialog
+    <EditRoomDialog
       t={t}
       visible={visible}
       onClose={onClose}
-      onCreate={onCreate}
+      fetchedRoomParams={fetchedRoomParams}
+      onSave={onSave}
       fetchedTags={fetchedTags}
       isLoading={isLoading}
     />
@@ -70,19 +84,21 @@ const CreateRoomEvent = ({
 
 export default inject(
   ({ filesStore, tagsStore, filesActionsStore, selectedFolderStore }) => {
-    const { createRoom, addTagsToRoom } = filesStore;
+    const { editRoom, addTagsToRoom, removeTagsFromRoom } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
     const { id: currrentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
-
     return {
-      createRoom,
+      editRoom,
+      addTagsToRoom,
+      removeTagsFromRoom,
+
       createTag,
       fetchTags,
-      addTagsToRoom,
+
       currrentFolderId,
       updateCurrentFolder,
     };
   }
-)(observer(CreateRoomEvent));
+)(observer(EditRoomEvent));
