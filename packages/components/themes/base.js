@@ -2594,7 +2594,7 @@ const Base = {
     background: "#f8f9f9",
   },
 
-  studio: {
+  client: {
     about: {
       linkColor: blueMain,
       border: "1px solid lightgray",

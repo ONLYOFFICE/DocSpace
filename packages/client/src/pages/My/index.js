@@ -4,7 +4,7 @@ import PeopleStore from "../../store/PeopleStore";
 
 import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import { withRouter } from "react-router";
 
 import { Provider as PeopleProvider, inject, observer } from "mobx-react";

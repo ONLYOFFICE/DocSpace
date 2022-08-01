@@ -8,7 +8,7 @@ import utils from "@docspace/components/utils";
 import { FilterType } from "@docspace/common/constants";
 import isEqual from "lodash/isEqual";
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 
 const { desktop } = utils.device;
 class SelectFileDialog extends React.Component {

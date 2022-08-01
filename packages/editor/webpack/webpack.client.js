@@ -77,7 +77,7 @@ const clientConfig = {
       name: "editor",
       filename: "remoteEntry.js",
       remotes: {
-        studio: `studio@${combineUrl(proxyURL, "/remoteEntry.js")}`,
+        client: `client@${combineUrl(proxyURL, "/remoteEntry.js")}`,
         // files: `files@${combineUrl(
         //   proxyURL,
         //   "/products/files/remoteEntry.js"

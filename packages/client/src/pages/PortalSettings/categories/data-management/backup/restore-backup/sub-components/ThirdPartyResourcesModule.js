@@ -1,5 +1,5 @@
 import React from "react";
-import SelectFileInput from "studio/SelectFileInput";
+import SelectFileInput from "client/SelectFileInput";
 import { inject, observer } from "mobx-react";
 
 class ThirdPartyResources extends React.Component {

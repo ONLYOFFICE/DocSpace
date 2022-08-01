@@ -39,11 +39,11 @@ const StyledAboutBody = styled.div`
     svg {
       g:nth-child(2) {
         path:nth-child(5) {
-          fill: ${(props) => props.theme.studio.about.logoColor};
+          fill: ${(props) => props.theme.client.about.logoColor};
         }
 
         path:nth-child(6) {
-          fill: ${(props) => props.theme.studio.about.logoColor};
+          fill: ${(props) => props.theme.client.about.logoColor};
         }
       }
     }
@@ -87,7 +87,7 @@ const AboutContent = ({ personal, buildVersionInfo, theme }) => {
         </Text>
         <Link
           className="row-el"
-          color={theme.studio.about.linkColor}
+          color={theme.client.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={linkAppServer}
@@ -106,7 +106,7 @@ const AboutContent = ({ personal, buildVersionInfo, theme }) => {
         </Text>
         <Link
           className="row-el"
-          color={theme.studio.about.linkColor}
+          color={theme.client.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={linkDocs}
@@ -156,7 +156,7 @@ const AboutContent = ({ personal, buildVersionInfo, theme }) => {
         </Text>
         <Link
           className="row-el"
-          color={theme.studio.about.linkColor}
+          color={theme.client.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={`mailto:${email}`}

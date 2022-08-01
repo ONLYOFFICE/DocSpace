@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 
 import { ShareAccessRights } from "@docspace/common/constants";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import QuickButtons from "../components/QuickButtons";
 
 export default function withQuickButtons(WrappedComponent) {

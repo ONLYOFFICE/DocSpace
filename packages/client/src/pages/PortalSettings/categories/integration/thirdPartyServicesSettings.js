@@ -44,7 +44,7 @@ const StyledConsumer = styled(Box)`
   }
 `;
 const Separator = styled.div`
-  border: ${(props) => props.theme.studio.settings.integration.separatorBorder};
+  border: ${(props) => props.theme.client.settings.integration.separatorBorder};
 `;
 
 Separator.defaultProps = { theme: Base };
@@ -149,7 +149,7 @@ class ThirdPartyServices extends React.Component {
             <Text>{t("ThirdPartyTitleDescription")}</Text>
             <Box marginProp="16px 0 0 0">
               <Link
-                color={theme.studio.settings.integration.linkColor}
+                color={theme.client.settings.integration.linkColor}
                 isHovered={false}
                 target="_blank"
                 href={urlAuthKeys}

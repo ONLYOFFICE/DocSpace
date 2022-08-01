@@ -5,7 +5,7 @@ import { Switch, withRouter, Redirect } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import {
   //combineUrl,
   updateTempContent,
@@ -49,7 +49,7 @@ import Accounts from "./Accounts";
 // );
 // const ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/rooms");
 
-const Error404 = React.lazy(() => import("studio/Error404"));
+const Error404 = React.lazy(() => import("client/Error404"));
 
 const FilesArticle = React.memo(({ history }) => {
   const isFormGallery = history.location.pathname

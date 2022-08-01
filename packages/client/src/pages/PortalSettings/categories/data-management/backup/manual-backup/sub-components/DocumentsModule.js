@@ -1,6 +1,6 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SelectFolderInput from "studio/SelectFolderInput";
+import SelectFolderInput from "client/SelectFolderInput";
 import Button from "@docspace/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
 import { BackupStorageType } from "@docspace/common/constants";

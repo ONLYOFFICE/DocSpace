@@ -160,7 +160,7 @@ var config = {
       name: "login",
       filename: "remoteEntry.js",
       remotes: {
-        studio: `studio@${combineUrl(proxyURL, "/remoteEntry.js")}`,
+        client: `client@${combineUrl(proxyURL, "/remoteEntry.js")}`,
       },
       exposes: {
         "./login": "./src/Login.jsx",

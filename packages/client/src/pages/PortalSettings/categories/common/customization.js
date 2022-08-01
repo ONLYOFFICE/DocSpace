@@ -39,7 +39,7 @@ const StyledComponent = styled.div`
   }
 
   .category-item-description {
-    color: ${(props) => props.theme.studio.settings.common.descriptionColor};
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
     font-size: 12px;
     max-width: 1024px;
   }

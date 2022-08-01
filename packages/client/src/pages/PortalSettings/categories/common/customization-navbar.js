@@ -89,7 +89,7 @@ const CustomizationNavbar = ({
         </Text>
         <Box paddingProp="10px 0 3px 0">
           <Link
-            color={theme.studio.settings.common.linkColorHelp}
+            color={theme.client.settings.common.linkColorHelp}
             target="_blank"
             isHovered={true}
             href={helpUrlCommonSettings}

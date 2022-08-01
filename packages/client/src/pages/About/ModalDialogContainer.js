@@ -52,7 +52,7 @@ const ModalDialogContainer = styled(ModalDialog)`
 
     .modal-dialog-content {
       padding: 8px 16px;
-      border: ${(props) => props.theme.studio.about.border}
+      border: ${(props) => props.theme.client.about.border}
 
       .modal-dialog-checkbox:not(:last-child) {
         padding-bottom: 4px;

@@ -1,10 +1,10 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import classnames from "classnames";
+//import classnames from "classnames";
 import PropTypes from "prop-types";
-import { LayoutContextConsumer } from "studio/Layout/context";
+//import { LayoutContextConsumer } from "client/Layout/context";
 import { isMobile, isMobileOnly } from "react-device-detect";
-import { tablet, desktop, mobile } from "@docspace/components/utils/device";
+import { tablet, mobile } from "@docspace/components/utils/device";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 
 import Base from "@docspace/components/themes/base";

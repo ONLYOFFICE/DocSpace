@@ -6,7 +6,7 @@ import {
 } from "@docspace/common/constants";
 import { isMobileOnly } from "react-device-detect";
 const { Filter } = api;
-import store from "studio/store";
+import store from "client/store";
 const { auth: authStore } = store;
 class UsersStore {
   users = [];

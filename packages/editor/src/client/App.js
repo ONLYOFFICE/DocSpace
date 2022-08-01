@@ -11,7 +11,7 @@ import {
 import { AppServerConfig } from "@docspace/common/constants";
 import initDesktop from "./helpers/initDesktop";
 import ErrorBoundary from "./components/ErrorBoundary";
-import store from "studio/store";
+import store from "client/store";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import { fonts } from "@docspace/common/fonts.js";

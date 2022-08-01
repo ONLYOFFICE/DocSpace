@@ -207,7 +207,7 @@ module.exports = (env, argv) => {
   }
 
   const remotes = {
-    studio: `studio@${combineUrl(AppServerConfig.proxyURL, "/remoteEntry.js")}`,
+    client: `client@${combineUrl(AppServerConfig.proxyURL, "/remoteEntry.js")}`,
     // people: `people@${combineUrl(
     //   AppServerConfig.proxyURL,
     //   "/products/people/remoteEntry.js"
@@ -227,7 +227,7 @@ module.exports = (env, argv) => {
 
   config.plugins.push(
     new ModuleFederationPlugin({
-      name: "studio",
+      name: "client",
       filename: "remoteEntry.js",
       remotes: remotes,
       exposes: {

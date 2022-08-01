@@ -3,7 +3,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
 import { FileAction } from "@docspace/common/constants";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {

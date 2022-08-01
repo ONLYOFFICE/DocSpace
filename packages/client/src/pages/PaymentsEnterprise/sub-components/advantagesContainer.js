@@ -17,7 +17,7 @@ const StyledBodyAdvantages = styled.div`
   grid-row-gap: 18px;
 
   background: url("images/payments_enterprise.svg")
-    ${(props) => props.theme.studio.paymentsEnterprise.background} bottom 32px
+    ${(props) => props.theme.client.paymentsEnterprise.background} bottom 32px
     right 32px no-repeat;
 
   .header-advantages {
@@ -33,7 +33,7 @@ const StyledBodyAdvantages = styled.div`
   }
 
   @media ${tablet} {
-    background: ${(props) => props.theme.studio.paymentsEnterprise.background};
+    background: ${(props) => props.theme.client.paymentsEnterprise.background};
   }
 `;
 

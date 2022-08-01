@@ -1,7 +1,7 @@
 import api from "@docspace/common/api";
 import { LANGUAGE } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
-import store from "studio/store";
+import store from "client/store";
 
 const { auth: authStore } = store;
 

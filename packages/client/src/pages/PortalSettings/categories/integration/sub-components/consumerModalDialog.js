@@ -103,7 +103,7 @@ class ConsumerModalDialog extends React.Component {
           For more detailed instructions about connecting this service, please
           refer to our{" "}
           <Link
-            color={this.props.theme.studio.settings.integration.linkColor}
+            color={this.props.theme.client.settings.integration.linkColor}
             isHovered={false}
             target="_blank"
             href={`${this.props.urlAuthKeys}#${this.props.selectedConsumer.name}`}
@@ -121,7 +121,7 @@ class ConsumerModalDialog extends React.Component {
       If you still have some questions on how to connect this service or need
       technical assistance, please feel free to contact our{" "}
       <Link
-        color={this.props.theme.studio.settings.integration.linkColor}
+        color={this.props.theme.client.settings.integration.linkColor}
         isHovered={false}
         target="_blank"
         href={this.props.urlSupport}

@@ -5,15 +5,15 @@ import PropTypes from "prop-types";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
-import ToggleContent from "@docspace/components/toggle-content";
+//import ToggleContent from "@docspace/components/toggle-content";
 import Checkbox from "@docspace/components/checkbox";
 import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-scrollbars-virtual-list";
 
 import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
+// import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
 import { resendUserInvites } from "@docspace/common/api/people";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
 

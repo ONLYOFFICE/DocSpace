@@ -1,6 +1,6 @@
 import React from "react";
-import Error403 from "studio/Error403";
-import Error520 from "studio/Error520";
+import Error403 from "client/Error403";
+import Error520 from "client/Error520";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";

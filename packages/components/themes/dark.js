@@ -2604,7 +2604,7 @@ const Dark = {
     background: "#282828",
   },
 
-  studio: {
+  client: {
     about: {
       linkColor: "#E06A1B",
       border: "1px solid #474747",

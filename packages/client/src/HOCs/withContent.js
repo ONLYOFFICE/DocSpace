@@ -1,20 +1,20 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import toastr from "studio/toastr";
+//import toastr from "client/toastr";
 import {
-  AppServerConfig,
-  FileAction,
+  // AppServerConfig,
+  // FileAction,
   FileStatus,
   ShareAccessRights,
 } from "@docspace/common/constants";
-import { combineUrl } from "@docspace/common/utils";
+//import { combineUrl } from "@docspace/common/utils";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 import { LANGUAGE } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
-import EditingWrapperComponent from "../components/EditingWrapperComponent";
+//import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
-import { getDefaultFileName } from "@docspace/client/src/helpers/filesUtils";
-import ItemIcon from "../components/ItemIcon";
+//import { getDefaultFileName } from "@docspace/client/src/helpers/filesUtils";
+//import ItemIcon from "../components/ItemIcon";
 
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {

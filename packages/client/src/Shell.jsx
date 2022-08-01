@@ -10,12 +10,12 @@ import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@docspace/common/history";
 import Toast from "@docspace/components/toast";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import { combineUrl, updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 
-import store from "studio/store";
+import store from "client/store";
 import filesStores from "./store/index.Files";
 
 import config from "PACKAGE_FILE";
@@ -61,8 +61,8 @@ import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 // );
 
 const Payments = React.lazy(() => import("./pages/Payments"));
-const Error404 = React.lazy(() => import("studio/Error404"));
-const Error401 = React.lazy(() => import("studio/Error401"));
+const Error404 = React.lazy(() => import("client/Error404"));
+const Error401 = React.lazy(() => import("client/Error401"));
 const Files = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
 
 const About = React.lazy(() => import("./pages/About"));
@@ -70,7 +70,7 @@ const Wizard = React.lazy(() => import("./pages/Wizard"));
 const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
 
 const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
-const MyProfile = React.lazy(() => import("./pages/My"));
+// const MyProfile = React.lazy(() => import("./pages/My"));
 const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
 const InvalidError = React.lazy(() => import("./pages/Errors/Invalid"));
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
@@ -193,7 +193,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     isDesktop,
     language,
     FirebaseHelper,
-    personal,
+    // personal,
     setCheckedMaintenance,
     socketHelper,
     setPreparationPortalDialogVisible,
@@ -208,23 +208,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   useEffect(() => {
     try {
-      // if (!window.AppServer) {
-      //   window.AppServer = {};
-      // }
-
-      // //TEMP object, will be removed!!!
-      // window.AppServer.studio = {
-      //   HOME_URLS,
-      //   WIZARD_URL,
-      //   ABOUT_URL,
-      //   LOGIN_URLS,
-      //   CONFIRM_URL,
-
-      //   PAYMENTS_URL,
-      //   SETTINGS_URL,
-      //   ERROR_401_URL,
-      // };
-
       loadBaseInfo();
     } catch (err) {
       toastr.error(err);
@@ -435,10 +418,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
   const isLogin = pathname.indexOf("login") !== -1;
-
-  // if (!window.AppServer.studio) {
-  //   window.AppServer.studio = {};
-  // }
 
   const loginRoutes = [];
 

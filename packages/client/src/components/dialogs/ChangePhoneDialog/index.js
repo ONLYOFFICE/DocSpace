@@ -4,7 +4,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 
 class ChangePhoneDialogComponent extends React.Component {
   constructor(props) {

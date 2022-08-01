@@ -4,7 +4,7 @@ import {
   EmployeeActivationStatus,
 } from "@docspace/common/constants";
 import { getUserStatus } from "../helpers/people-helpers";
-import store from "studio/store";
+import store from "client/store";
 const { auth: authStore } = store;
 
 class SelectionStore {

@@ -122,7 +122,7 @@ const StyledModalBody = styled.div`
       width: 3px;
       height: 3px;
       background-color: ${(props) =>
-        props.theme.studio.settings.security.admins.backgroundColor};
+        props.theme.client.settings.security.admins.backgroundColor};
       border-radius: 2px;
       position: absolute;
       left: 0;
@@ -192,7 +192,7 @@ const ToggleContentContainer = styled.div`
   .userRole {
     text-transform: capitalize;
     font-size: 12px;
-    color: ${(props) => props.theme.studio.settings.security.admins.roleColor};
+    color: ${(props) => props.theme.client.settings.security.admins.roleColor};
   }
 
   .styled-element {
@@ -224,7 +224,7 @@ const ToggleContentContainer = styled.div`
       align-items: center;
       padding: 0px 5px;
       background-color: ${(props) =>
-        props.theme.studio.settings.security.admins.backgroundColorWrapper};
+        props.theme.client.settings.security.admins.backgroundColorWrapper};
       border-radius: 9px;
     }
 
@@ -747,7 +747,7 @@ class PortalAdmins extends Component {
                         />
                         <div className="user-info-wrapper">
                           <Text
-                            color={theme.studio.settings.security.admins.color}
+                            color={theme.client.settings.security.admins.color}
                             fontWeight={600}
                             fontSize="19px"
                             truncate={true}
@@ -757,7 +757,7 @@ class PortalAdmins extends Component {
                           {selectedUser.department && (
                             <Text
                               color={
-                                theme.studio.settings.security.admins
+                                theme.client.settings.security.admins
                                   .departmentColor
                               }
                               fontWeight={400}
@@ -781,7 +781,7 @@ class PortalAdmins extends Component {
                               offsetRight={0}
                               tooltipContent={this.fullAccessTooltip()}
                               tooltipColor={
-                                theme.studio.settings.security.admins
+                                theme.client.settings.security.admins
                                   .tooltipColor
                               }
                             />
@@ -812,7 +812,7 @@ class PortalAdmins extends Component {
                                 offsetRight={0}
                                 tooltipContent={this.modulesTooltip()}
                                 tooltipColor={
-                                  theme.studio.settings.security.admins.color
+                                  theme.client.settings.security.admins.color
                                 }
                               />
                             </div>
@@ -885,9 +885,9 @@ class PortalAdmins extends Component {
 
                         const nameColor =
                           getUserStatus(user) === "pending"
-                            ? theme.studio.settings.security.admins
+                            ? theme.client.settings.security.admins
                                 .pendingNameColor
-                            : theme.studio.settings.security.admins.nameColor;
+                            : theme.client.settings.security.admins.nameColor;
 
                         const checked = isUserSelected(user.id);
 
@@ -922,7 +922,7 @@ class PortalAdmins extends Component {
                                     <Text
                                       truncate={true}
                                       color={
-                                        theme.studio.settings.security.admins
+                                        theme.client.settings.security.admins
                                           .textColor
                                       }
                                       fontSize="9px"
@@ -948,7 +948,7 @@ class PortalAdmins extends Component {
                                             iconName={module.iconUrl}
                                             size={14}
                                             color={
-                                              theme.studio.settings.security
+                                              theme.client.settings.security
                                                 .admins.iconColor
                                             }
                                             isfill={true}

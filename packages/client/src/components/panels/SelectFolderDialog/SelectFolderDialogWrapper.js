@@ -2,7 +2,7 @@ import React from "react";
 import { Provider as MobxProvider, inject, observer } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import stores from "../../../store/index.Files";
-import store from "studio/store";
+import store from "client/store";
 import SelectFolderDialog from "./index";
 import i18n from "./i18n";
 import { getFolder } from "@docspace/common/api/files";

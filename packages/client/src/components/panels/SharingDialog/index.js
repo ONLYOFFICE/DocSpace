@@ -4,7 +4,7 @@ import { getShareFiles } from "@docspace/common/api/files";
 import SharingPanel from "../SharingPanel";
 
 import stores from "../../../store/index.Files";
-import store from "studio/store";
+import store from "client/store";
 
 const { auth: authStore } = store;
 

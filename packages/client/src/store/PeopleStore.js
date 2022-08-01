@@ -9,7 +9,7 @@ import SelectionStore from "./SelectionPeopleStore";
 import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
-import store from "studio/store";
+import store from "client/store";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
 import { isMobile } from "react-device-detect";

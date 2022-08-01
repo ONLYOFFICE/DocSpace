@@ -14,7 +14,7 @@ const flex = "4px";
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.theme.studio.settings.common.arrowColor};
+    fill: ${(props) => props.theme.client.settings.common.arrowColor};
   }
 `;
 

@@ -31,7 +31,7 @@ const StyledComponent = styled.div`
 
   .border-img {
     border: ${(props) =>
-      props.theme.studio.settings.common.whiteLabel.borderImg};
+      props.theme.client.settings.common.whiteLabel.borderImg};
     box-sizing: content-box;
   }
 
@@ -40,7 +40,7 @@ const StyledComponent = styled.div`
     height: 23px;
     padding: 10px;
     background-color: ${(props) =>
-      props.theme.studio.settings.common.whiteLabel.backgroundColor};
+      props.theme.client.settings.common.whiteLabel.backgroundColor};
   }
 
   .logo-dark {
@@ -62,17 +62,17 @@ const StyledComponent = styled.div`
 
   .background-green {
     background-color: ${(props) =>
-      props.theme.studio.settings.common.whiteLabel.greenBackgroundColor};
+      props.theme.client.settings.common.whiteLabel.greenBackgroundColor};
   }
 
   .background-blue {
     background-color: ${(props) =>
-      props.theme.studio.settings.common.whiteLabel.blueBackgroundColor};
+      props.theme.client.settings.common.whiteLabel.blueBackgroundColor};
   }
 
   .background-orange {
     background-color: ${(props) =>
-      props.theme.studio.settings.common.whiteLabel.orangeBackgroundColor};
+      props.theme.client.settings.common.whiteLabel.orangeBackgroundColor};
   }
 
   .display {
@@ -359,7 +359,7 @@ const WhiteLabel = (props) => {
                 height="46"
                 data-fontsize="36"
                 data-fontcolor={
-                  theme.studio.settings.common.whiteLabel.dataFontColor
+                  theme.client.settings.common.whiteLabel.dataFontColor
                 }
               >
                 {t("BrowserNoCanvasSupport")}
@@ -405,7 +405,7 @@ const WhiteLabel = (props) => {
                 height="70"
                 data-fontsize="54"
                 data-fontcolor={
-                  theme.studio.settings.common.whiteLabel.dataFontColorBlack
+                  theme.client.settings.common.whiteLabel.dataFontColorBlack
                 }
               >
                 {t("BrowserNoCanvasSupport")}
@@ -463,7 +463,7 @@ const WhiteLabel = (props) => {
                 height="32"
                 data-fontsize="28"
                 data-fontcolor={
-                  theme.studio.settings.common.whiteLabel.dataFontColorBlack
+                  theme.client.settings.common.whiteLabel.dataFontColorBlack
                 }
               >
                 {t("BrowserNoCanvasSupport")}
@@ -510,7 +510,7 @@ const WhiteLabel = (props) => {
                   height="40"
                   data-fontsize="22"
                   data-fontcolor={
-                    theme.studio.settings.common.whiteLabel.dataFontColor
+                    theme.client.settings.common.whiteLabel.dataFontColor
                   }
                 >
                   {t("BrowserNoCanvasSupport")}
@@ -522,7 +522,7 @@ const WhiteLabel = (props) => {
                   height="40"
                   data-fontsize="22"
                   data-fontcolor={
-                    theme.studio.settings.common.whiteLabel.dataFontColor
+                    theme.client.settings.common.whiteLabel.dataFontColor
                   }
                 >
                   {t("BrowserNoCanvasSupport")}
@@ -534,7 +534,7 @@ const WhiteLabel = (props) => {
                   height="40"
                   data-fontsize="22"
                   data-fontcolor={
-                    theme.studio.settings.common.whiteLabel.dataFontColor
+                    theme.client.settings.common.whiteLabel.dataFontColor
                   }
                 >
                   {t("BrowserNoCanvasSupport")}

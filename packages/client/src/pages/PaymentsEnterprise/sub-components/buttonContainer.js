@@ -11,7 +11,7 @@ import { Base } from "@docspace/components/themes";
 
 const StyledButtonContainer = styled.div`
   background: ${(props) =>
-    props.theme.studio.paymentsEnterprise.buttonBackground};
+    props.theme.client.paymentsEnterprise.buttonBackground};
   margin-bottom: 16px;
   display: grid;
   padding: 32px;

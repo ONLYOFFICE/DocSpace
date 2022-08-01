@@ -30,7 +30,7 @@ const CategoryWrapper = (props) => {
         place="right"
         offsetRight={0}
         getContent={tooltip}
-        tooltipColor={theme.studio.settings.security.owner.tooltipColor}
+        tooltipColor={theme.client.settings.security.owner.tooltipColor}
       />
     </StyledCategoryWrapper>
   );

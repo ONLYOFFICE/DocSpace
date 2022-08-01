@@ -3,7 +3,7 @@ import {
   getInvitationLinks,
   getShortenedLink,
 } from "@docspace/common/api/portal";
-import store from "studio/store";
+import store from "client/store";
 
 const { auth: authStore } = store;
 class InviteLinksStore {

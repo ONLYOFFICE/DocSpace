@@ -44,7 +44,7 @@ export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
             {{ save }}
           </Text>{" "}
           <Link
-            color={theme.studio.settings.common.linkColorHelp}
+            color={theme.client.settings.common.linkColorHelp}
             className="display-block font-size"
             isHovered={true}
             href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}

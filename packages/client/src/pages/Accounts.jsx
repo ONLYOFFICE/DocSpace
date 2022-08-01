@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { Redirect, Switch } from "react-router-dom";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
 import { /*combineUrl,*/ updateTempContent } from "@docspace/common/utils";
@@ -13,7 +13,7 @@ import ProfileAction from "./ProfileAction";
 import Filter from "@docspace/common/api/people/filter";
 import { showLoader, hideLoader } from "@docspace/common/utils";
 
-const Error404 = React.lazy(() => import("studio/Error404"));
+const Error404 = React.lazy(() => import("client/Error404"));
 
 const PeopleSection = React.memo(() => {
   return (

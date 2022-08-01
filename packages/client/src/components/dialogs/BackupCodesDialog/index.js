@@ -5,9 +5,9 @@ import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
-import toastr from "studio/toastr";
-import Link from "@docspace/components/link";
-import styled from "styled-components";
+import toastr from "client/toastr";
+// import Link from "@docspace/components/link";
+// import styled from "styled-components";
 
 class BackupCodesDialogComponent extends React.Component {
   constructor(props) {

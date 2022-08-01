@@ -5,7 +5,7 @@ import Headline from "../Headline";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 
-import store from "studio/store";
+import store from "client/store";
 
 const theme = store.auth.settingsStore.theme;
 

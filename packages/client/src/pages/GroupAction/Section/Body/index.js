@@ -6,7 +6,7 @@ import SelectedItem from "@docspace/components/selected-item";
 import TextInput from "@docspace/components/text-input";
 import { tablet } from "@docspace/components/utils/device";
 
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import Loaders from "@docspace/common/components/Loaders";
 //import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import PeopleSelector from "../../../../components/PeopleSelector";

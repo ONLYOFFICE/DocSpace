@@ -1,14 +1,14 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 
 import DropDownItem from "@docspace/components/drop-down-item";
 import ContextMenuButton from "@docspace/components/context-menu-button";
-import { tablet, desktop, mobile } from "@docspace/components/utils/device";
+import { tablet, mobile } from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
 
 import Headline from "@docspace/common/components/Headline";
-// import toastr from "studio/toastr";
+// import toastr from "client/toastr";
 import Loaders from "@docspace/common/components/Loaders";
 import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 import { AppServerConfig } from "@docspace/common/constants";

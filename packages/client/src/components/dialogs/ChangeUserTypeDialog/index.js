@@ -12,7 +12,7 @@ import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-s
 import { withTranslation } from "react-i18next";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import { EmployeeType } from "@docspace/common/constants";
 import ModalDialogContainer from "../ModalDialogContainer";
 

@@ -8,7 +8,7 @@ import ToggleContent from "@docspace/components/toggle-content";
 import ToggleButton from "@docspace/components/toggle-button";
 import Link from "@docspace/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import React from "react";
 import { combineUrl, getProviderTranslation } from "@docspace/common/utils";
 import styled from "styled-components";

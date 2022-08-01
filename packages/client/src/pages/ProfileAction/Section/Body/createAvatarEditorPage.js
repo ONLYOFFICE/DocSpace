@@ -8,7 +8,7 @@ import { isTablet } from "@docspace/components/utils/device";
 import {
   /*createThumbnailsAvatar,*/ loadAvatar,
 } from "@docspace/common/api/people";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { toEmployeeWrapper } from "../../../../helpers/people-helpers";

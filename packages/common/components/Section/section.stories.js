@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import styled from "@emotion/styled";
 import NavMenu from "../NavMenu";
-import Main from "studio/Main";
+import Main from "client/Main";
 import Section from ".";
 import history from "../../history";
 import Headline from "../Headline";

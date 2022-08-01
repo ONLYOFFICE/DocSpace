@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Checkbox from "@docspace/components/checkbox";

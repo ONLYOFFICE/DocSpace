@@ -10,7 +10,7 @@ const StyledPlusIcon = styled(PlusIcon)`
   ${commonIconsStyles}
 
   path {
-    fill: ${(props) => props.theme.studio.settings.iconFill};
+    fill: ${(props) => props.theme.client.settings.iconFill};
   }
 `;
 

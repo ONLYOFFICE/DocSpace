@@ -163,7 +163,7 @@ const InputContainer = ({
         <Link
           className="link"
           type="page"
-          color={theme.studio.wizard.linkColor}
+          color={theme.client.wizard.linkColor}
           fontSize="13px"
           target="_blank"
           href={

@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 
 import { RoomsType } from "@docspace/common/constants";
 

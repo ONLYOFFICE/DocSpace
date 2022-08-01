@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 //import equal from "fast-deep-equal/react";
-//import { LayoutContextConsumer } from "studio/Layout/context";
+//import { LayoutContextConsumer } from "client/Layout/context";
 import { isMobile, isMobileOnly, isDesktop } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 

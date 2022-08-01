@@ -40,7 +40,7 @@ const OwnerContainer = styled.div`
     display: flex;
     padding: 16px;
     background-color: ${(props) =>
-      props.theme.studio.settings.security.owner.backgroundColor};
+      props.theme.client.settings.security.owner.backgroundColor};
     border-radius: 12px;
 
     .avatar_wrapper {
@@ -193,7 +193,7 @@ class OwnerSettings extends Component {
                   fontSize="16px"
                   fontWeight={600}
                   isBold={true}
-                  color={theme.studio.settings.security.owner.linkColor}
+                  color={theme.client.settings.security.owner.linkColor}
                   href={owner.profileUrl}
                 >
                   {owner.displayName}
@@ -212,7 +212,7 @@ class OwnerSettings extends Component {
                   offsetRight={0}
                   tooltipContent={this.ownerInfo()}
                   tooltipColor={
-                    theme.studio.settings.security.owner.tooltipColor
+                    theme.client.settings.security.owner.tooltipColor
                   }
                 />
               </div>
@@ -229,7 +229,7 @@ class OwnerSettings extends Component {
                 <Text
                   as="span"
                   fontSize="12px"
-                  color={theme.studio.settings.security.owner.departmentColor}
+                  color={theme.client.settings.security.owner.departmentColor}
                 >
                   ({t("AccessRightsChangeOwnerConfirmText")})
                 </Text>

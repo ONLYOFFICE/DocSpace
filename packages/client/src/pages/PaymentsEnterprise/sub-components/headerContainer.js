@@ -68,7 +68,7 @@ const HeaderContainer = ({
       </Text>
       <Text
         className="payments-header-additional_support"
-        color={theme.studio.paymentsEnterprise.headerColor}
+        color={theme.client.paymentsEnterprise.headerColor}
         fontWeight="600"
       >
         {t("ExpiryPaidLicense")} {licenseDateString}

@@ -1,5 +1,5 @@
 import React from "react";
-import SelectFileInput from "studio/SelectFileInput";
+import SelectFileInput from "client/SelectFileInput";
 
 class Documents extends React.Component {
   render() {

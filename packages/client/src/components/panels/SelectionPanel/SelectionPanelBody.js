@@ -9,7 +9,7 @@ import {
   getFoldersTree,
   getThirdPartyCommonFolderTree,
 } from "@docspace/common/api/files";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashFolders,

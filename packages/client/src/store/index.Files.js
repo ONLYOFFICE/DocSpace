@@ -14,7 +14,7 @@ import DialogsStore from "./DialogsStore";
 import selectFolderDialogStore from "./SelectFolderDialogStore";
 import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
-import store from "studio/store";
+import store from "client/store";
 import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";

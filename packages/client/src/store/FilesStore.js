@@ -13,7 +13,7 @@ import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
 import { updateTempContent } from "@docspace/common/utils";
 import { isMobile } from "react-device-detect";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";

@@ -6,7 +6,7 @@ import { Base } from "@docspace/components/themes";
 export const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.theme.studio.settings.security.arrowFill};
+    fill: ${(props) => props.theme.client.settings.security.arrowFill};
   }
 `;
 
@@ -67,7 +67,7 @@ export const StyledMobileCategoryWrapper = styled.div`
   }
 
   .category-item-description {
-    color: ${(props) => props.theme.studio.settings.security.descriptionColor};
+    color: ${(props) => props.theme.client.settings.security.descriptionColor};
     font-size: 12px;
     max-width: 1024px;
   }

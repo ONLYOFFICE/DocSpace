@@ -19,7 +19,7 @@ import {
   FileStatus,
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 
 import { Events, TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";

@@ -23,7 +23,7 @@ const ContactContainer = ({ salesEmail, helpUrl, theme }) => {
         {t("ContactEmail")}{" "}
         <Link
           href={`mailto:${salesEmail}`}
-          color={theme.studio.paymentsEnterprise.linkColor}
+          color={theme.client.paymentsEnterprise.linkColor}
         >
           {salesEmail}
         </Link>
@@ -34,7 +34,7 @@ const ContactContainer = ({ salesEmail, helpUrl, theme }) => {
         <Link
           target="_blank"
           href={`${helpUrl}`}
-          color={theme.studio.paymentsEnterprise.linkColor}
+          color={theme.client.paymentsEnterprise.linkColor}
         >
           {helpUrl}
         </Link>

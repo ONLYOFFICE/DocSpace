@@ -3,8 +3,8 @@ import React, { useEffect } from "react";
 import { Redirect, Route } from "react-router-dom";
 //import Loader from "@docspace/components/loader";
 //import Section from "../Section";
-// import Error401 from "studio/Error401";
-// import Error404 from "studio/Error404";
+// import Error401 from "client/Error401";
+// import Error404 from "client/Error404";
 import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
@@ -139,20 +139,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     );
   };
 
-
   //console.log("PrivateRoute render", rest);
   return <Route {...rest} render={renderComponent} />;
 };
 
 export default inject(({ auth }) => {
-  const {
-    userStore,
-    isAuthenticated,
-    isLoaded,
-    isAdmin,
-    settingsStore,
-
-  } = auth;
+  const { userStore, isAuthenticated, isLoaded, isAdmin, settingsStore } = auth;
   const { user } = userStore;
 
   const {
@@ -163,7 +155,6 @@ export default inject(({ auth }) => {
   } = settingsStore;
 
   return {
-
     user,
     isAuthenticated,
     isAdmin,

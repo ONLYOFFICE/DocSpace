@@ -17,7 +17,7 @@ import {
   moveToFolder,
   fileCopyAs,
 } from "@docspace/common/api/files";
-import toastr from "studio/toastr";
+import toastr from "client/toastr";
 class UploadDataStore {
   treeFoldersStore;
   selectedFolderStore;
