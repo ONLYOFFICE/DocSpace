@@ -1,6 +1,7 @@
 {
   "CreateRoom": "Создание комнаты",
   "ChooseRoomType": "Выберите тип комнаты",
+  "RoomEditing": "Редактирование комнаты"
 
   "FillingFormsRoomTitle": "Комната для заполнения форм",
   "CollaborationRoomTitle": "Комната для совместной работы",
