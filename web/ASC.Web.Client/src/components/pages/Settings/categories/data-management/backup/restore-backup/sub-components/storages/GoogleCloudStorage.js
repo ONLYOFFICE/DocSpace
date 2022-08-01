@@ -15,13 +15,13 @@ class GoogleCloudStorage extends React.Component {
   }
 
   render() {
-    const { t, availableStorage, selectedId } = this.props;
+    const { t, selectedStorage } = this.props;
 
     return (
       <>
         <GoogleCloudSettings
           t={t}
-          selectedStorage={availableStorage[selectedId]}
+          selectedStorage={selectedStorage}
           isNeedFilePath
         />
       </>

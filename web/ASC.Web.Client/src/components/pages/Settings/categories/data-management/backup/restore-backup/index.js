@@ -20,8 +20,11 @@ import ThirdPartyResources from "./sub-components/ThirdPartyResourcesModule";
 import ThirdPartyStorages from "./sub-components/ThirdPartyStoragesModule";
 import LocalFile from "./sub-components/LocalFileModule";
 import config from "../../../../../../../../package.json";
-import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
-import { getBackupStorage } from "@appserver/common/api/settings";
+
+import {
+  getBackupStorage,
+  getStorageRegions,
+} from "@appserver/common/api/settings";
 import { enableRestore } from "@appserver/common/api/portal";
 import RestoreBackupLoader from "@appserver/common/components/Loaders/RestoreBackupLoader";
 
@@ -67,25 +70,27 @@ class RestoreBackup extends React.Component {
     const {
       getProgress,
       t,
-      setCommonThirdPartyList,
       setThirdPartyStorage,
+      setStorageRegions,
     } = this.props;
 
     try {
       getProgress(t);
       const [
-        commonThirdPartyList,
+        //commonThirdPartyList,
         backupStorage,
         isEnableRestore,
+        storageRegions,
       ] = await Promise.all([
-        getThirdPartyCommonFolderTree(),
+        //   getThirdPartyCommonFolderTree(),
         getBackupStorage(),
         enableRestore(),
+        getStorageRegions(),
       ]);
 
       setThirdPartyStorage(backupStorage);
-
-      commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+      setStorageRegions(storageRegions);
+      // commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
 
       this.setState({
         isInitialLoading: false,
@@ -310,7 +315,7 @@ class RestoreBackup extends React.Component {
       t,
       history,
       downloadingProgress,
-      commonThirdPartyList,
+
       buttonSize,
       theme,
     } = this.props;
@@ -341,7 +346,7 @@ class RestoreBackup extends React.Component {
       ? { onClick: this.onClickBackupList }
       : {};
 
-    const isDisabledThirdParty = commonThirdPartyList?.length === 0;
+    // const isDisabledThirdParty = commonThirdPartyList?.length === 0;
 
     const isMaxProgress = downloadingProgress === 100;
 
@@ -368,7 +373,7 @@ class RestoreBackup extends React.Component {
           name={"isCheckedThirdParty"}
           key={2}
           isChecked={isCheckedThirdParty}
-          isDisabled={isDisabledThirdParty || !isEnableRestore}
+          isDisabled={!isEnableRestore}
           {...commonRadioButtonProps}
         />
 
@@ -499,8 +504,7 @@ export default inject(({ auth, backup }) => {
     downloadingProgress,
     getProgress,
     clearProgressInterval,
-    commonThirdPartyList,
-    setCommonThirdPartyList,
+    setStorageRegions,
     setThirdPartyStorage,
     isFormReady,
     getStorageParams,
@@ -509,16 +513,17 @@ export default inject(({ auth, backup }) => {
   const buttonSize = isTabletView ? "normal" : "small";
 
   return {
+    setStorageRegions,
     setThirdPartyStorage,
+    buttonSize,
+
     theme,
     clearProgressInterval,
-    commonThirdPartyList,
     downloadingProgress,
     socketHelper,
-    setCommonThirdPartyList,
-    getProgress,
     isFormReady,
+
+    getProgress,
     getStorageParams,
-    buttonSize,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));

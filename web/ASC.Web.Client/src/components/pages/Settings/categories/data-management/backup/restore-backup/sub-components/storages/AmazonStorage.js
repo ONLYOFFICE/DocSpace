@@ -15,12 +15,12 @@ class AmazonStorage extends React.PureComponent {
   }
 
   render() {
-    const { t, availableStorage, selectedId } = this.props;
+    const { t, selectedStorage } = this.props;
 
     return (
       <>
         <AmazonSettings
-          selectedStorage={availableStorage[selectedId]}
+          selectedStorage={selectedStorage}
           t={t}
           isNeedFilePath
         />
