@@ -40,7 +40,7 @@ public class MessagesRepository : IDisposable
     private readonly ILogger<MessagesRepository> _logger;
     private readonly Timer _timer;
     private readonly int _cacheLimit;
-    private readonly HashSet<MessageAction> _forceSaveAuditActions = new HashSet<MessageAction> 
+    private readonly HashSet<MessageAction> _forceSaveAuditActions = new HashSet<MessageAction>
         { MessageAction.RoomInviteLinkUsed, MessageAction.UserSentPasswordChangeInstructions };
 
     public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILogger<MessagesRepository> logger, IMapper mapper, IConfiguration configuration)
@@ -97,7 +97,7 @@ public class MessagesRepository : IDisposable
             }
 
             using var scope = _serviceScopeFactory.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+            using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
 
             if ((int)message.Action < 2000)
             {
@@ -153,43 +153,43 @@ public class MessagesRepository : IDisposable
         }
 
         using var scope = _serviceScopeFactory.CreateScope();
-        using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+        using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
         var strategy = ef.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-        using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
-        var dict = new Dictionary<string, ClientInfo>();
+            using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            var dict = new Dictionary<string, ClientInfo>();
 
-        foreach (var message in events)
-        {
-            if (!string.IsNullOrEmpty(message.UAHeader))
+            foreach (var message in events)
             {
-                try
+                if (!string.IsNullOrEmpty(message.UAHeader))
                 {
-                    MessageSettings.AddInfoMessage(message, dict);
+                    try
+                    {
+                        MessageSettings.AddInfoMessage(message, dict);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.ErrorFlushCache(message.Id, e);
+                    }
                 }
-                catch (Exception e)
+
+                if (!ForseSave(message))
                 {
-                    _logger.ErrorFlushCache(message.Id, e);
+                    // messages with action code < 2000 are related to login-history
+                    if ((int)message.Action < 2000)
+                    {
+                        AddLoginEvent(message, ef);
+                    }
+                    else
+                    {
+                        AddAuditEvent(message, ef);
+                    }
                 }
             }
 
-            if (!ForseSave(message))
-            {
-                // messages with action code < 2000 are related to login-history
-                if ((int)message.Action < 2000)
-                {
-                    AddLoginEvent(message, ef);
-                }
-                else
-                {
-                    AddAuditEvent(message, ef);
-                }
-            }
-        }
-
-        tx.Commit();
+            tx.Commit();
         });
     }
 
@@ -226,7 +226,6 @@ public static class MessagesRepositoryExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAdd<DbContextManager<MessagesContext>>();
         services.TryAdd<EventTypeConverter>();
     }
 }

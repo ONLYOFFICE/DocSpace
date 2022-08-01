@@ -77,7 +77,7 @@ public class NotifyCleanerService : BackgroundService
             var date = DateTime.UtcNow.AddDays(-_notifyServiceCfg.StoreMessagesDays);
 
             using var scope = _scopeFactory.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_notifyServiceCfg.ConnectionStringName);
+            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
             var strategy = dbContext.Database.CreateExecutionStrategy();
 

@@ -27,56 +27,26 @@
 namespace ASC.Core.Data;
 
 [Scope]
-public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
-{
-    private readonly DbContextManager<UserDbContext> _dbContextManager;
-
-    public ConfigureEFUserService(DbContextManager<UserDbContext> dbContextManager)
-    {
-        _dbContextManager = dbContextManager;
-    }
-
-    public void Configure(string name, EFUserService options)
-    {
-        options.DbId = name;
-        options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Get(name));
-        options.UserDbContextManager = _dbContextManager;
-    }
-
-    public void Configure(EFUserService options)
-    {
-        options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Value);
-        options.UserDbContextManager = _dbContextManager;
-    }
-}
-
-[Scope]
 public class EFUserService : IUserService
 {
-    internal UserDbContext UserDbContext => LazyUserDbContext.Value;
-    internal Lazy<UserDbContext> LazyUserDbContext;
-    internal DbContextManager<UserDbContext> UserDbContextManager;
-    private readonly PasswordHasher _passwordHasher;
-    public readonly MachinePseudoKeys MachinePseudoKeys;
-    internal string DbId { get; set; }
+    private readonly IDbContextFactory<UserDbContext> _dbContextFactory;
+    private readonly MachinePseudoKeys _machinePseudoKeys;
     private readonly IMapper _mapper;
 
     public EFUserService(
-        DbContextManager<UserDbContext> userDbContextManager,
-        PasswordHasher passwordHasher,
+        IDbContextFactory<UserDbContext> dbContextFactory,
         MachinePseudoKeys machinePseudoKeys,
         IMapper mapper)
     {
-        UserDbContextManager = userDbContextManager;
-        _passwordHasher = passwordHasher;
-        MachinePseudoKeys = machinePseudoKeys;
-        LazyUserDbContext = new Lazy<UserDbContext>(() => UserDbContextManager.Value);
+        _dbContextFactory = dbContextFactory;
+        _machinePseudoKeys = machinePseudoKeys;
         _mapper = mapper;
     }
 
     public Group GetGroup(int tenant, Guid id)
     {
-        return GetGroupQuery(tenant)
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return GetGroupQuery(userDbContext, tenant)
             .Where(r => r.Id == id)
             .ProjectTo<Group>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
@@ -84,14 +54,16 @@ public class EFUserService : IUserService
 
     public IEnumerable<Group> GetGroups(int tenant)
     {
-        return GetGroupQuery(tenant)
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return GetGroupQuery(userDbContext, tenant)
             .ProjectTo<Group>(_mapper.ConfigurationProvider)
             .ToList();
     }
 
     public UserInfo GetUser(int tenant, Guid id)
     {
-        return GetUserQuery(tenant)
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return GetUserQuery(userDbContext, tenant)
             .Where(r => r.Id == id)
             .ProjectTo<UserInfo>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
@@ -99,14 +71,16 @@ public class EFUserService : IUserService
 
     public UserInfo GetUser(int tenant, string email)
     {
-        return GetUserQuery(tenant)
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return GetUserQuery(userDbContext, tenant)
             .ProjectTo<UserInfo>(_mapper.ConfigurationProvider)
             .FirstOrDefault(r => r.Email == email && !r.Removed);
     }
 
     public UserInfo GetUserByUserName(int tenant, string userName)
     {
-        return GetUserQuery(tenant)
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return GetUserQuery(userDbContext, tenant)
             .ProjectTo<UserInfo>(_mapper.ConfigurationProvider)
             .FirstOrDefault(r => r.UserName == userName && !r.Removed);
     }
@@ -115,14 +89,15 @@ public class EFUserService : IUserService
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(login);
 
+        using var userDbContext = _dbContextFactory.CreateDbContext();
         if (Guid.TryParse(login, out var userId))
         {
             var pwdHash = GetPasswordHash(userId, passwordHash);
 
-            var q = GetUserQuery(tenant)
+            var q = GetUserQuery(userDbContext, tenant)
                 .Where(r => !r.Removed)
                 .Where(r => r.Id == userId)
-                .Join(UserDbContext.UserSecurity, r => r.Id, r => r.UserId, (user, security) => new DbUserSecurity
+                .Join(userDbContext.UserSecurity, r => r.Id, r => r.UserId, (user, security) => new DbUserSecurity
                 {
                     User = user,
                     UserSecurity = security
@@ -141,7 +116,7 @@ public class EFUserService : IUserService
         }
         else
         {
-            var q = GetUserQuery(tenant)
+            var q = GetUserQuery(userDbContext, tenant)
                 .Where(r => !r.Removed)
                 .Where(r => r.Email == login);
 
@@ -150,7 +125,7 @@ public class EFUserService : IUserService
             {
                 var pwdHash = GetPasswordHash(user.Id, passwordHash);
 
-                var any = UserDbContext.UserSecurity
+                var any = userDbContext.UserSecurity
                     .Any(r => r.UserId == user.Id && (r.PwdHash == pwdHash));
 
                 if (any)
@@ -165,7 +140,8 @@ public class EFUserService : IUserService
 
     public IEnumerable<UserInfo> GetUsersAllTenants(IEnumerable<Guid> userIds)
     {
-        var q = UserDbContext.Users
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var q = userDbContext.Users
             .Where(r => userIds.Contains(r.Id))
             .Where(r => !r.Removed);
 
@@ -174,7 +150,8 @@ public class EFUserService : IUserService
 
     public UserGroupRef GetUserGroupRef(int tenant, Guid groupId, UserGroupRefType refType)
     {
-        IQueryable<UserGroup> q = UserDbContext.UserGroups;
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        IQueryable<UserGroup> q = userDbContext.UserGroups;
 
         if (tenant != Tenant.DefaultTenant)
         {
@@ -187,7 +164,8 @@ public class EFUserService : IUserService
 
     public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant)
     {
-        IQueryable<UserGroup> q = UserDbContext.UserGroups;
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        IQueryable<UserGroup> q = userDbContext.UserGroups;
 
         if (tenant != Tenant.DefaultTenant)
         {
@@ -200,7 +178,8 @@ public class EFUserService : IUserService
 
     public DateTime GetUserPasswordStamp(int tenant, Guid id)
     {
-        var stamp = UserDbContext.UserSecurity
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var stamp = userDbContext.UserSecurity
             .Where(r => r.Tenant == tenant)
             .Where(r => r.UserId == id)
             .Select(r => r.LastModified)
@@ -211,7 +190,8 @@ public class EFUserService : IUserService
 
     public byte[] GetUserPhoto(int tenant, Guid id)
     {
-        var photo = UserDbContext.Photos
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var photo = userDbContext.Photos
             .Where(r => r.Tenant == tenant)
             .Where(r => r.UserId == id)
             .Select(r => r.Photo)
@@ -222,21 +202,22 @@ public class EFUserService : IUserService
 
     public IEnumerable<UserInfo> GetUsers(int tenant)
     {
-        return GetUserQuery(tenant)
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return GetUserQuery(userDbContext, tenant)
             .ProjectTo<UserInfo>(_mapper.ConfigurationProvider)
             .ToList();
     }
 
     public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
     {
-        var userDbContext = UserDbContextManager.GetNew(DbId);
+        var userDbContext = _dbContextFactory.CreateDbContext();
         var totalQuery = GetUserQuery(userDbContext, tenant);
-        totalQuery = GetUserQueryForFilter(totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
         total = totalQuery.Count();
 
         var q = GetUserQuery(userDbContext, tenant);
 
-        q = GetUserQueryForFilter(q, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+        q = GetUserQueryForFilter(userDbContext, q, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
 
         if (!string.IsNullOrEmpty(sortBy))
         {
@@ -260,7 +241,7 @@ public class EFUserService : IUserService
 
     public IQueryable<UserInfo> GetUsers(int tenant, out int total)
     {
-        var userDbContext = UserDbContextManager.GetNew(DbId);
+        var userDbContext = _dbContextFactory.CreateDbContext();
         total = userDbContext.Users.Count(r => r.Tenant == tenant);
 
         return GetUserQuery(userDbContext, tenant)
@@ -274,26 +255,28 @@ public class EFUserService : IUserService
 
     public void RemoveGroup(int tenant, Guid id, bool immediate)
     {
-        var ids = CollectGroupChilds(tenant, id);
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var ids = CollectGroupChilds(userDbContext, tenant, id);
         var stringIds = ids.Select(r => r.ToString()).ToList();
 
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tr = UserDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = userDbContext.Database.BeginTransaction();
 
-            UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)));
-            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
-            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
+            userDbContext.Acl.RemoveRange(userDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)));
+            userDbContext.Subscriptions.RemoveRange(userDbContext.Subscriptions.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
+            userDbContext.SubscriptionMethods.RemoveRange(userDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
 
-            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.UserGroupId));
-            var groups = UserDbContext.Groups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Id));
+            var userGroups = userDbContext.UserGroups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.UserGroupId));
+            var groups = userDbContext.Groups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Id));
 
             if (immediate)
             {
-                UserDbContext.UserGroups.RemoveRange(userGroups);
-                UserDbContext.Groups.RemoveRange(groups);
+                userDbContext.UserGroups.RemoveRange(userGroups);
+                userDbContext.Groups.RemoveRange(groups);
             }
             else
             {
@@ -309,7 +292,7 @@ public class EFUserService : IUserService
                 }
             }
 
-            UserDbContext.SaveChanges();
+            userDbContext.SaveChanges();
             tr.Commit();
         });
     }
@@ -321,26 +304,28 @@ public class EFUserService : IUserService
 
     public void RemoveUser(int tenant, Guid id, bool immediate)
     {
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tr = UserDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = userDbContext.Database.BeginTransaction();
 
-            UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id));
-            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
-            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
-            UserDbContext.Photos.RemoveRange(UserDbContext.Photos.Where(r => r.Tenant == tenant && r.UserId == id));
+            userDbContext.Acl.RemoveRange(userDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id));
+            userDbContext.Subscriptions.RemoveRange(userDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
+            userDbContext.SubscriptionMethods.RemoveRange(userDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
+            userDbContext.Photos.RemoveRange(userDbContext.Photos.Where(r => r.Tenant == tenant && r.UserId == id));
 
-            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.Userid == id);
-            var users = UserDbContext.Users.Where(r => r.Tenant == tenant && r.Id == id);
-            var userSecurity = UserDbContext.UserSecurity.Where(r => r.Tenant == tenant && r.UserId == id);
+            var userGroups = userDbContext.UserGroups.Where(r => r.Tenant == tenant && r.Userid == id);
+            var users = userDbContext.Users.Where(r => r.Tenant == tenant && r.Id == id);
+            var userSecurity = userDbContext.UserSecurity.Where(r => r.Tenant == tenant && r.UserId == id);
 
             if (immediate)
             {
-                UserDbContext.UserGroups.RemoveRange(userGroups);
-                UserDbContext.Users.RemoveRange(users);
-                UserDbContext.UserSecurity.RemoveRange(userSecurity);
+                userDbContext.UserGroups.RemoveRange(userGroups);
+                userDbContext.Users.RemoveRange(users);
+                userDbContext.UserSecurity.RemoveRange(userSecurity);
             }
             else
             {
@@ -359,7 +344,7 @@ public class EFUserService : IUserService
                 }
             }
 
-            UserDbContext.SaveChanges();
+            userDbContext.SaveChanges();
 
             tr.Commit();
         });
@@ -372,16 +357,18 @@ public class EFUserService : IUserService
 
     public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType, bool immediate)
     {
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tr = UserDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = userDbContext.Database.BeginTransaction();
 
-            var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.Userid == userId && r.UserGroupId == groupId && r.RefType == refType);
+            var userGroups = userDbContext.UserGroups.Where(r => r.Tenant == tenant && r.Userid == userId && r.UserGroupId == groupId && r.RefType == refType);
             if (immediate)
             {
-                UserDbContext.UserGroups.RemoveRange(userGroups);
+                userDbContext.UserGroups.RemoveRange(userGroups);
             }
             else
             {
@@ -391,9 +378,9 @@ public class EFUserService : IUserService
                     u.Removed = true;
                 }
             }
-            var user = UserDbContext.Users.First(r => r.Tenant == tenant && r.Id == userId);
+            var user = userDbContext.Users.First(r => r.Tenant == tenant && r.Id == userId);
             user.LastModified = DateTime.UtcNow;
-            UserDbContext.SaveChanges();
+            userDbContext.SaveChanges();
 
             tr.Commit();
         });
@@ -412,8 +399,10 @@ public class EFUserService : IUserService
         group.Tenant = tenant;
 
         var dbGroup = _mapper.Map<Group, DbGroup>(group);
-        UserDbContext.AddOrUpdate(r => r.Groups, dbGroup);
-        UserDbContext.SaveChanges();
+
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        userDbContext.AddOrUpdate(r => r.Groups, dbGroup);
+        userDbContext.SaveChanges();
 
         return group;
     }
@@ -442,12 +431,14 @@ public class EFUserService : IUserService
         user.UserName = user.UserName.Trim();
         user.Email = user.Email.Trim();
 
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = UserDbContext.Database.BeginTransaction();
-            var any = GetUserQuery(tenant)
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = userDbContext.Database.BeginTransaction();
+            var any = GetUserQuery(userDbContext, tenant)
                 .Any(r => r.UserName == user.UserName && r.Id != user.Id && !r.Removed);
 
             if (any)
@@ -455,7 +446,7 @@ public class EFUserService : IUserService
                 throw new ArgumentOutOfRangeException("Duplicate username.");
             }
 
-            any = GetUserQuery(tenant)
+            any = GetUserQuery(userDbContext, tenant)
                 .Any(r => r.Email == user.Email && r.Id != user.Id && !r.Removed);
 
             if (any)
@@ -463,8 +454,8 @@ public class EFUserService : IUserService
                 throw new ArgumentOutOfRangeException("Duplicate email.");
             }
 
-            UserDbContext.AddOrUpdate(r => r.Users, _mapper.Map<UserInfo, User>(user));
-            UserDbContext.SaveChanges();
+            userDbContext.AddOrUpdate(r => r.Users, _mapper.Map<UserInfo, User>(user));
+            userDbContext.SaveChanges();
             tx.Commit();
         });
 
@@ -478,20 +469,21 @@ public class EFUserService : IUserService
         userGroupRef.LastModified = DateTime.UtcNow;
         userGroupRef.Tenant = tenant;
 
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tr = UserDbContext.Database.BeginTransaction();
+            using var tr = userDbContext.Database.BeginTransaction();
 
-            var user = GetUserQuery(tenant).FirstOrDefault(a => a.Tenant == tenant && a.Id == userGroupRef.UserId);
+            var user = GetUserQuery(userDbContext, tenant).FirstOrDefault(a => a.Tenant == tenant && a.Id == userGroupRef.UserId);
             if (user != null)
             {
                 user.LastModified = userGroupRef.LastModified;
-                UserDbContext.AddOrUpdate(r => r.UserGroups, _mapper.Map<UserGroupRef, UserGroup>(userGroupRef));
+                userDbContext.AddOrUpdate(r => r.UserGroups, _mapper.Map<UserGroupRef, UserGroup>(userGroupRef));
             }
 
-            UserDbContext.SaveChanges();
+            userDbContext.SaveChanges();
             tr.Commit();
         });
 
@@ -512,19 +504,22 @@ public class EFUserService : IUserService
             LastModified = DateTime.UtcNow
         };
 
-        UserDbContext.AddOrUpdate(r => r.UserSecurity, us);
-        UserDbContext.SaveChanges();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        userDbContext.AddOrUpdate(r => r.UserSecurity, us);
+        userDbContext.SaveChanges();
     }
 
     public void SetUserPhoto(int tenant, Guid id, byte[] photo)
     {
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tr = UserDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = userDbContext.Database.BeginTransaction();
 
-            var userPhoto = UserDbContext.Photos.FirstOrDefault(r => r.UserId == id && r.Tenant == tenant);
+            var userPhoto = userDbContext.Photos.FirstOrDefault(r => r.UserId == id && r.Tenant == tenant);
             if (photo != null && photo.Length != 0)
             {
                 if (userPhoto == null)
@@ -541,21 +536,16 @@ public class EFUserService : IUserService
                     userPhoto.Photo = photo;
                 }
 
-                UserDbContext.AddOrUpdate(r => r.Photos, userPhoto);
+                userDbContext.AddOrUpdate(r => r.Photos, userPhoto);
             }
             else if (userPhoto != null)
             {
-                UserDbContext.Photos.Remove(userPhoto);
+                userDbContext.Photos.Remove(userPhoto);
             }
 
-            UserDbContext.SaveChanges();
+            userDbContext.SaveChanges();
             tr.Commit();
         });
-    }
-
-    private IQueryable<User> GetUserQuery(int tenant)
-    {
-        return GetUserQuery(UserDbContext, tenant);
     }
 
     private IQueryable<User> GetUserQuery(UserDbContext userDbContext, int tenant)
@@ -577,9 +567,9 @@ public class EFUserService : IUserService
         return q;
     }
 
-    private IQueryable<DbGroup> GetGroupQuery(int tenant)
+    private IQueryable<DbGroup> GetGroupQuery(UserDbContext userDbContext, int tenant)
     {
-        var q = UserDbContext.Groups.Where(r => true);
+        var q = userDbContext.Groups.Where(r => true);
 
         if (tenant != Tenant.DefaultTenant)
         {
@@ -590,6 +580,7 @@ public class EFUserService : IUserService
     }
 
     private IQueryable<User> GetUserQueryForFilter(
+        UserDbContext userDbContext,
         IQueryable<User> q,
         bool isAdmin,
         EmployeeStatus? employeeStatus,
@@ -598,14 +589,13 @@ public class EFUserService : IUserService
         EmployeeActivationStatus? activationStatus,
         string text)
     {
-
         q = q.Where(r => !r.Removed);
 
         if (includeGroups != null && includeGroups.Count > 0)
         {
             foreach (var ig in includeGroups)
             {
-                q = q.Where(r => UserDbContext.UserGroups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.Userid == r.Id && ig.Any(r => r == a.UserGroupId)));
+                q = q.Where(r => userDbContext.UserGroups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.Userid == r.Id && ig.Any(r => r == a.UserGroupId)));
             }
         }
 
@@ -613,7 +603,7 @@ public class EFUserService : IUserService
         {
             foreach (var eg in excludeGroups)
             {
-                q = q.Where(r => !UserDbContext.UserGroups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.Userid == r.Id && a.UserGroupId == eg));
+                q = q.Where(r => !userDbContext.UserGroups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.Userid == r.Id && a.UserGroupId == eg));
             }
         }
 
@@ -669,11 +659,11 @@ public class EFUserService : IUserService
         return q;
     }
 
-    private List<Guid> CollectGroupChilds(int tenant, Guid id)
+    private List<Guid> CollectGroupChilds(UserDbContext userDbContext, int tenant, Guid id)
     {
         var result = new List<Guid>();
 
-        var childs = UserDbContext.Groups
+        var childs = userDbContext.Groups
             .Where(r => r.Tenant == tenant)
             .Where(r => r.ParentId == id)
             .Select(r => r.Id);
@@ -681,7 +671,7 @@ public class EFUserService : IUserService
         foreach (var child in childs)
         {
             result.Add(child);
-            result.AddRange(CollectGroupChilds(tenant, child));
+            result.AddRange(CollectGroupChilds(userDbContext, tenant, child));
         }
 
         result.Add(id);
@@ -691,7 +681,8 @@ public class EFUserService : IUserService
 
     public UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp)
     {
-        var q = GetUserQuery(tenant).Where(r => r.Id == id);
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var q = GetUserQuery(userDbContext, tenant).Where(r => r.Id == id);
 
         if (exp != null)
         {
@@ -705,8 +696,9 @@ public class EFUserService : IUserService
 
     public IEnumerable<string> GetDavUserEmails(int tenant)
     {
-        return (from usersDav in UserDbContext.UsersDav
-                join users in UserDbContext.Users on new { tenant = usersDav.TenantId, userId = usersDav.UserId } equals new { tenant = users.Tenant, userId = users.Id }
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return (from usersDav in userDbContext.UsersDav
+                join users in userDbContext.Users on new { tenant = usersDav.TenantId, userId = usersDav.UserId } equals new { tenant = users.Tenant, userId = users.Id }
                 where usersDav.TenantId == tenant
                 select users.Email)
                 .Distinct()
@@ -715,7 +707,7 @@ public class EFUserService : IUserService
 
     protected string GetPasswordHash(Guid userId, string password)
     {
-        return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
+        return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
     }
 }
 

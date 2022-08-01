@@ -26,12 +26,17 @@
 
 namespace ASC.Core.Common.EF.Context;
 
-public class UrlShortenerFakeDbContext : BaseDbContext
+public class UrlShortenerFakeDbContext : DbContext
 {
+    public UrlShortenerFakeDbContext(DbContextOptions<UrlShortenerFakeDbContext> dbContextOptions) : base(dbContextOptions)
+    {
+
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddShortLinks();
     }
 }

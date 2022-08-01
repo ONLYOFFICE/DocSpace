@@ -24,6 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.EF;
+using ASC.Files.Core.EF;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,7 +35,10 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args);
+builder.Host.ConfigureDefault(args, configureServices: (context, services, di) =>
+{
+    services.AddBaseDbContextPool<FilesDbContext>();
+});
 builder.WebHost.ConfigureDefaultKestrel();
 
 var startup = new Startup(builder.Configuration, builder.Environment);

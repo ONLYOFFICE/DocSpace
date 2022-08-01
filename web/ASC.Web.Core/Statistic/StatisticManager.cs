@@ -32,13 +32,11 @@ public class StatisticManager
     private static DateTime _lastSave = DateTime.UtcNow;
     private static readonly TimeSpan _cacheTime = TimeSpan.FromMinutes(2);
     private static readonly IDictionary<string, UserVisit> _cache = new Dictionary<string, UserVisit>();
+    private readonly IDbContextFactory<WebstudioDbContext> _dbContextFactory;
 
-    private readonly Lazy<WebstudioDbContext> _lazyWebstudioDbContext;
-    private WebstudioDbContext WebstudioDbContext { get => _lazyWebstudioDbContext.Value; }
-
-    public StatisticManager(DbContextManager<WebstudioDbContext> dbContextManager)
+    public StatisticManager(IDbContextFactory<WebstudioDbContext> dbContextFactory)
     {
-        _lazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
+        _dbContextFactory = dbContextFactory;
     }
 
     public void SaveUserVisit(int tenantID, Guid userID, Guid productID)
@@ -71,7 +69,8 @@ public class StatisticManager
 
     public List<Guid> GetVisitorsToday(int tenantID, Guid productID)
     {
-        var users = WebstudioDbContext.WebstudioUserVisit
+        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        var users = webstudioDbContext.WebstudioUserVisit
             .Where(r => r.VisitDate == DateTime.UtcNow.Date)
             .Where(r => r.TenantId == tenantID)
             .Where(r => r.ProductId == productID)
@@ -95,7 +94,8 @@ public class StatisticManager
 
     public List<UserVisit> GetHitsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
     {
-        return WebstudioDbContext.WebstudioUserVisit
+        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        return webstudioDbContext.WebstudioUserVisit
             .Where(r => r.TenantId == tenantID)
             .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
             .OrderBy(r => r.VisitDate)
@@ -106,8 +106,9 @@ public class StatisticManager
 
     public List<UserVisit> GetHostsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
     {
+        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
         return
-            WebstudioDbContext.WebstudioUserVisit
+            webstudioDbContext.WebstudioUserVisit
             .Where(r => r.TenantId == tenantID)
             .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
             .OrderBy(r => r.VisitDate)
@@ -131,11 +132,13 @@ public class StatisticManager
             _lastSave = DateTime.UtcNow;
         }
 
-        var strategy = WebstudioDbContext.Database.CreateExecutionStrategy();
+        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = webstudioDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = WebstudioDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = webstudioDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
 
             foreach (var v in visits)
             {
@@ -154,8 +157,8 @@ public class StatisticManager
                     w.LastVisitTime = v.LastVisitTime.Value;
                 }
 
-                WebstudioDbContext.WebstudioUserVisit.Add(w);
-                WebstudioDbContext.SaveChanges();
+                webstudioDbContext.WebstudioUserVisit.Add(w);
+                webstudioDbContext.SaveChanges();
             }
             tx.Commit();
         });

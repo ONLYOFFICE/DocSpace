@@ -26,12 +26,11 @@
 
 namespace ASC.Notify;
 
-[Singletone(Additional = typeof(DbWorkerExtension))]
+[Singletone]
 public class DbWorker
 {
-    private readonly string _dbid;
     private readonly object _syncRoot = new object();
-  
+
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly NotifyServiceCfg _notifyServiceCfg;
 
@@ -39,7 +38,6 @@ public class DbWorker
     {
         _serviceScopeFactory = serviceScopeFactory;
         _notifyServiceCfg = notifyServiceCfg.Value;
-        _dbid = _notifyServiceCfg.ConnectionStringName;
     }
 
     public int SaveMessage(NotifyMessage m)
@@ -48,7 +46,7 @@ public class DbWorker
 
         var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-        using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
+        using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
 
@@ -77,7 +75,7 @@ public class DbWorker
 
             tx.Commit();
         });
-    
+
         return 1;
     }
 
@@ -89,8 +87,8 @@ public class DbWorker
 
             var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
-     
+            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+
             var q = dbContext.NotifyQueue
                 .Join(dbContext.NotifyInfo, r => r.NotifyId, r => r.NotifyId, (queue, info) => new { queue, info })
                 .Where(r => r.info.State == (int)MailSendingState.NotSended || r.info.State == (int)MailSendingState.Error && r.info.ModifyDate < DateTime.UtcNow - TimeSpan.Parse(_notifyServiceCfg.Process.AttemptsInterval))
@@ -142,7 +140,7 @@ public class DbWorker
     public void ResetStates()
     {
         using var scope = _serviceScopeFactory.CreateScope();
-        using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
+        using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
 
@@ -164,7 +162,7 @@ public class DbWorker
     public void SetState(int id, MailSendingState result)
     {
         using var scope = _serviceScopeFactory.CreateScope();
-        using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
+        using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
         using var tx = dbContext.Database.BeginTransaction();
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
@@ -204,13 +202,5 @@ public class DbWorker
 
             tx.Commit();
         });
-    }
-}
-
-public static class DbWorkerExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<DbContextManager<NotifyDbContext>>();
     }
 }

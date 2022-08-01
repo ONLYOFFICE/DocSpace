@@ -55,6 +55,7 @@ global using AutoMapper;
 global using CsvHelper;
 global using CsvHelper.Configuration;
 
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 
 global using NetEscapades.EnumGenerators;

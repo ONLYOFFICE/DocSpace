@@ -26,36 +26,20 @@
 
 namespace ASC.Core.Common.EF.Context;
 
-public class CustomDbContext : BaseDbContext
+public class CustomDbContext : DbContext
 {
-    public CustomDbContext()
-    {
-
-    }
-
-    public CustomDbContext(DbContextOptions<CustomDbContext> options) : base(options)
-    {
-
-    }
-
     public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
     public DbSet<DbipLocation> DbipLocation { get; set; }
     public DbSet<Regions> Regions { get; set; }
 
+    public CustomDbContext(DbContextOptions<CustomDbContext> options) : base(options) { }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-               .From(modelBuilder, _provider)
+               .From(modelBuilder, Database)
                .AddMobileAppInstall()
                .AddDbipLocation()
                .AddRegions();
-    }
-}
-
-public static class CustomDbContextExtension
-{
-    public static DIHelper AddDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<CustomDbContext>();
     }
 }

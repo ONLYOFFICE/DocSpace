@@ -37,7 +37,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger monitor,
         FileUtility fileUtility,

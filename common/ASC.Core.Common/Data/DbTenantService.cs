@@ -27,55 +27,25 @@
 namespace ASC.Core.Data;
 
 [Scope]
-public class ConfigureDbTenantService : IConfigureNamedOptions<DbTenantService>
-{
-    private readonly TenantDomainValidator _tenantDomainValidator;
-    private readonly DbContextManager<TenantDbContext> _dbContextManager;
-
-    public ConfigureDbTenantService(
-        TenantDomainValidator tenantDomainValidator,
-        DbContextManager<TenantDbContext> dbContextManager)
-    {
-        _tenantDomainValidator = tenantDomainValidator;
-        _dbContextManager = dbContextManager;
-    }
-
-    public void Configure(string name, DbTenantService options)
-    {
-        Configure(options);
-        options.LazyTenantDbContext = new Lazy<TenantDbContext>(() => _dbContextManager.Get(name));
-    }
-
-    public void Configure(DbTenantService options)
-    {
-        options.TenantDomainValidator = _tenantDomainValidator;
-        options.LazyTenantDbContext = new Lazy<TenantDbContext>(() => _dbContextManager.Value);
-    }
-}
-
-[Scope]
 public class DbTenantService : ITenantService
 {
-    internal TenantDomainValidator TenantDomainValidator { get; set; }
-    internal TenantDbContext TenantDbContext => LazyTenantDbContext.Value;
-    internal UserDbContext UserDbContext => LazyUserDbContext.Value;
-    internal Lazy<TenantDbContext> LazyTenantDbContext;
-    internal Lazy<UserDbContext> LazyUserDbContext;
-
+    private readonly TenantDomainValidator _tenantDomainValidator;
+    private readonly IDbContextFactory<TenantDbContext> _dbContextFactory;
+    private readonly IDbContextFactory<UserDbContext> _userDbContextFactory;
     private readonly IMapper _mapper;
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private List<string> _forbiddenDomains;
 
     public DbTenantService(
-        DbContextManager<TenantDbContext> dbContextManager,
-        DbContextManager<UserDbContext> DbContextManager,
+        IDbContextFactory<TenantDbContext> dbContextFactory,
+        IDbContextFactory<UserDbContext> userDbContextFactory,
         TenantDomainValidator tenantDomainValidator,
         MachinePseudoKeys machinePseudoKeys,
         IMapper mapper)
     {
-        LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Value);
-        LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
-        TenantDomainValidator = tenantDomainValidator;
+        _dbContextFactory = dbContextFactory;
+        _userDbContextFactory = userDbContextFactory;
+        _tenantDomainValidator = tenantDomainValidator;
         _machinePseudoKeys = machinePseudoKeys;
         _mapper = mapper;
     }
@@ -89,7 +59,8 @@ public class DbTenantService : ITenantService
 
     public IEnumerable<Tenant> GetTenants(DateTime from, bool active = true)
     {
-        var q = TenantsQuery();
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        var q = tenantDbContext.Tenants.AsQueryable();
 
         if (active)
         {
@@ -106,24 +77,28 @@ public class DbTenantService : ITenantService
 
     public IEnumerable<Tenant> GetTenants(List<int> ids)
     {
-        var q = TenantsQuery();
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
-        return q.Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active)
-            .ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
+        return tenantDbContext.Tenants
+            .Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active)
+            .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
+            .ToList();
     }
 
     public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(login);
 
-        IQueryable<TenantUserSecurity> query() => TenantsQuery()
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        using var userDbContext = _userDbContextFactory.CreateDbContext();//TODO: remove
+        IQueryable<TenantUserSecurity> query() => tenantDbContext.Tenants
                 .Where(r => r.Status == TenantStatus.Active)
-                .Join(UserDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
+                .Join(userDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
                 {
                     tenant,
                     user
                 })
-                .Join(UserDbContext.UserSecurity, r => r.user.Id, r => r.UserId, (tenantUser, security) => new TenantUserSecurity
+                .Join(userDbContext.UserSecurity, r => r.user.Id, r => r.UserId, (tenantUser, security) => new TenantUserSecurity
                 {
                     DbTenant = tenantUser.tenant,
                     User = tenantUser.user,
@@ -154,7 +129,7 @@ public class DbTenantService : ITenantService
         }
         else
         {
-            var usersQuery = UserDbContext.Users
+            var usersQuery = userDbContext.Users
                 .Where(r => r.Email == login)
                 .Where(r => r.Status == EmployeeStatus.Active)
                 .Where(r => !r.Removed)
@@ -172,7 +147,8 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenant(int id)
     {
-        return TenantsQuery()
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        return tenantDbContext.Tenants
             .Where(r => r.Id == id)
             .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
             .SingleOrDefault();
@@ -184,7 +160,9 @@ public class DbTenantService : ITenantService
 
         domain = domain.ToLowerInvariant();
 
-        return TenantsQuery()
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+
+        return tenantDbContext.Tenants
             .Where(r => r.Alias == domain || r.MappedDomain == domain)
             .OrderBy(a => a.Status == TenantStatus.Restoring ? TenantStatus.Active : a.Status)
             .ThenByDescending(a => a.Status == TenantStatus.Restoring ? 0 : a.Id)
@@ -194,7 +172,9 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenantForStandaloneWithoutAlias(string ip)
     {
-        return TenantsQuery()
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+
+        return tenantDbContext.Tenants
             .OrderBy(a => a.Status)
             .ThenByDescending(a => a.Id)
             .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
@@ -205,11 +185,13 @@ public class DbTenantService : ITenantService
     {
         ArgumentNullException.ThrowIfNull(tenant);
 
-        var strategy = TenantDbContext.Database.CreateExecutionStrategy();
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = TenantDbContext.Database.BeginTransaction();
+            using var tenantDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = tenantDbContext.Database.BeginTransaction();
 
             if (!string.IsNullOrEmpty(tenant.MappedDomain))
             {
@@ -227,7 +209,7 @@ public class DbTenantService : ITenantService
 
             if (tenant.Id == Tenant.DefaultTenant)
             {
-                tenant.Version = TenantDbContext.TenantVersion
+                tenant.Version = tenantDbContext.TenantVersion
                     .Where(r => r.DefaultVersion == 1 || r.Id == 0)
                     .OrderByDescending(r => r.Id)
                     .Select(r => r.Id)
@@ -237,13 +219,13 @@ public class DbTenantService : ITenantService
 
                 var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
 
-                dbTenant = TenantDbContext.Tenants.Add(dbTenant).Entity;
-                TenantDbContext.SaveChanges();
+                dbTenant = tenantDbContext.Tenants.Add(dbTenant).Entity;
+                tenantDbContext.SaveChanges();
                 tenant.Id = dbTenant.Id;
             }
             else
             {
-                var dbTenant = TenantDbContext.Tenants
+                var dbTenant = tenantDbContext.Tenants
                     .Where(r => r.Id == tenant.Id)
                     .FirstOrDefault();
 
@@ -268,18 +250,18 @@ public class DbTenantService : ITenantService
                     dbTenant.Calls = tenant.Calls;
                 }
 
-                TenantDbContext.SaveChanges();
+                tenantDbContext.SaveChanges();
             }
 
             if (string.IsNullOrEmpty(tenant.PartnerId) && string.IsNullOrEmpty(tenant.AffiliateId) && string.IsNullOrEmpty(tenant.Campaign))
             {
-                var p = TenantDbContext.TenantPartner
+                var p = tenantDbContext.TenantPartner
                     .Where(r => r.TenantId == tenant.Id)
                     .FirstOrDefault();
 
                 if (p != null)
                 {
-                    TenantDbContext.TenantPartner.Remove(p);
+                    tenantDbContext.TenantPartner.Remove(p);
                 }
             }
             else
@@ -292,7 +274,7 @@ public class DbTenantService : ITenantService
                     Campaign = tenant.Campaign
                 };
 
-                TenantDbContext.TenantPartner.Add(tenantPartner);
+                tenantDbContext.TenantPartner.Add(tenantPartner);
             }
 
             tx.Commit();
@@ -306,22 +288,24 @@ public class DbTenantService : ITenantService
     {
         var postfix = auto ? "_auto_deleted" : "_deleted";
 
-        var strategy = TenantDbContext.Database.CreateExecutionStrategy();
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = TenantDbContext.Database.BeginTransaction();
+            using var tenantDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = tenantDbContext.Database.BeginTransaction();
 
-            var alias = TenantDbContext.Tenants
+            var alias = tenantDbContext.Tenants
                 .Where(r => r.Id == id)
                 .Select(r => r.Alias)
                 .FirstOrDefault();
 
-            var count = TenantDbContext.Tenants
+            var count = tenantDbContext.Tenants
                 .Where(r => r.Alias.StartsWith(alias + postfix))
                 .Count();
 
-            var tenant = TenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefault();
+            var tenant = tenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefault();
 
             if (tenant != null)
             {
@@ -331,7 +315,7 @@ public class DbTenantService : ITenantService
                 tenant.LastModified = DateTime.UtcNow;
             }
 
-            TenantDbContext.SaveChanges();
+            tenantDbContext.SaveChanges();
 
             tx.Commit();
         });
@@ -339,7 +323,8 @@ public class DbTenantService : ITenantService
 
     public IEnumerable<TenantVersion> GetTenantVersions()
     {
-        return TenantDbContext.TenantVersion
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        return tenantDbContext.TenantVersion
             .Where(r => r.Visible)
             .Select(r => new TenantVersion(r.Id, r.Version))
             .ToList();
@@ -348,7 +333,8 @@ public class DbTenantService : ITenantService
 
     public byte[] GetTenantSettings(int tenant, string key)
     {
-        return TenantDbContext.CoreSettings
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        return tenantDbContext.CoreSettings
             .Where(r => r.Tenant == tenant)
             .Where(r => r.Id == key)
             .Select(r => r.Value)
@@ -357,22 +343,24 @@ public class DbTenantService : ITenantService
 
     public void SetTenantSettings(int tenant, string key, byte[] data)
     {
-        var strategy = TenantDbContext.Database.CreateExecutionStrategy();
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = TenantDbContext.Database.BeginTransaction();
+            using var tenantDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = tenantDbContext.Database.BeginTransaction();
 
             if (data == null || data.Length == 0)
             {
-                var settings = TenantDbContext.CoreSettings
+                var settings = tenantDbContext.CoreSettings
                     .Where(r => r.Tenant == tenant)
                     .Where(r => r.Id == key)
                     .FirstOrDefault();
 
                 if (settings != null)
                 {
-                    TenantDbContext.CoreSettings.Remove(settings);
+                    tenantDbContext.CoreSettings.Remove(settings);
                 }
             }
             else
@@ -385,23 +373,18 @@ public class DbTenantService : ITenantService
                     LastModified = DateTime.UtcNow
                 };
 
-                TenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
+                tenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
             }
 
-            TenantDbContext.SaveChanges();
+            tenantDbContext.SaveChanges();
             tx.Commit();
         });
-    }
-
-    private IQueryable<DbTenant> TenantsQuery()
-    {
-        return TenantDbContext.Tenants;
     }
 
     private void ValidateDomain(string domain, int tenantId, bool validateCharacters)
     {
         // size
-        TenantDomainValidator.ValidateDomainLength(domain);
+        _tenantDomainValidator.ValidateDomainLength(domain);
 
         // characters
         if (validateCharacters)
@@ -409,24 +392,25 @@ public class DbTenantService : ITenantService
             TenantDomainValidator.ValidateDomainCharacters(domain);
         }
 
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
         // forbidden or exists
         var exists = false;
 
         domain = domain.ToLowerInvariant();
         if (_forbiddenDomains == null)
         {
-            _forbiddenDomains = TenantDbContext.TenantForbiden.Select(r => r.Address).ToList();
+            _forbiddenDomains = tenantDbContext.TenantForbiden.Select(r => r.Address).ToList();
         }
 
         exists = tenantId != 0 && _forbiddenDomains.Contains(domain);
 
         if (!exists)
         {
-            exists = TenantDbContext.Tenants.Where(r => r.Alias == domain && r.Id != tenantId).Any();
+            exists = tenantDbContext.Tenants.Where(r => r.Alias == domain && r.Id != tenantId).Any();
         }
         if (!exists)
         {
-            exists = TenantDbContext.Tenants
+            exists = tenantDbContext.Tenants
                 .Where(r => r.MappedDomain == domain && r.Id != tenantId && !(r.Status == TenantStatus.RemovePending || r.Status == TenantStatus.Restoring))
                 .Any();
         }
@@ -435,7 +419,7 @@ public class DbTenantService : ITenantService
             // cut number suffix
             while (true)
             {
-                if (TenantDomainValidator.MinLength < domain.Length && char.IsNumber(domain, domain.Length - 1))
+                if (_tenantDomainValidator.MinLength < domain.Length && char.IsNumber(domain, domain.Length - 1))
                 {
                     domain = domain[0..^1];
                 }
@@ -445,9 +429,9 @@ public class DbTenantService : ITenantService
                 }
             }
 
-            var existsTenants = TenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address)
-                .Union(TenantDbContext.Tenants.Where(r => r.Alias.StartsWith(domain) && r.Id != tenantId).Select(r => r.Alias))
-                .Union(TenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.Id != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain));
+            var existsTenants = tenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address)
+                .Union(tenantDbContext.Tenants.Where(r => r.Alias.StartsWith(domain) && r.Id != tenantId).Select(r => r.Alias))
+                .Union(tenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.Id != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain));
 
             throw new TenantAlreadyExistsException("Address busy.", existsTenants);
         }

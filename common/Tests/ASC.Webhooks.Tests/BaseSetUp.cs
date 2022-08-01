@@ -34,7 +34,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
-using ASC.Core.Common.EF;
 using ASC.Webhooks.Core;
 using ASC.Webhooks.Core.EF.Context;
 using ASC.Webhooks.Service;
@@ -79,8 +78,8 @@ namespace ASC.Webhooks.Tests
         public async Task DropDb()
         {
             var scope = serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetService<DbContextManager<WebhooksDbContext>>();
-            context.Value.Database.EnsureDeleted();
+            var context = scope.ServiceProvider.GetService<IDbContextFactory<WebhooksDbContext>>().CreateDbContext();
+            context.Database.EnsureDeleted();
             await host.StopAsync();
         }
 
@@ -148,8 +147,8 @@ namespace ASC.Webhooks.Tests
                 configuration["testAssembly"] = testAssembly;
             }
 
-            using var db = serviceProvider.GetService<DbContextManager<WebhooksDbContext>>();
-            db.Value.Database.Migrate();
+            using var db = serviceProvider.GetService<IDbContextFactory<WebhooksDbContext>>().CreateDbContext();
+            db.Database.Migrate();
         }
     }
 }

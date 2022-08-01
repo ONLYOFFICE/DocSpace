@@ -30,9 +30,9 @@ public class MigrationRunner
 {
     private readonly DbContextActivator _dbContextActivator;
 
-    public MigrationRunner(string dbConnectionString)
+    public MigrationRunner(IServiceProvider serviceProvider)
     {
-        _dbContextActivator = new DbContextActivator(dbConnectionString);
+        _dbContextActivator = new DbContextActivator(serviceProvider);
     }
 
     public void RunApplyMigrations(string path, ProviderInfo dbProvider)

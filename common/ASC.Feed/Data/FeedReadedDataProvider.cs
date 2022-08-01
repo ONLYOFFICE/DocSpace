@@ -28,19 +28,15 @@ namespace ASC.Feed.Data;
 
 public class FeedReadedDataProvider
 {
-    private FeedDbContext FeedDbContext => _lazyFeedDbContext.Value;
-
-    private const string DbId = Constants.FeedDbId;
-
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
-    private readonly Lazy<FeedDbContext> _lazyFeedDbContext;
+    private readonly IDbContextFactory<FeedDbContext> _dbContextFactory;
 
-    public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager, DbContextManager<FeedDbContext> dbContextManager)
+    public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager, IDbContextFactory<FeedDbContext> dbContextFactory)
     {
         _authContext = authContext;
         _tenantManager = tenantManager;
-        _lazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(DbId));
+        _dbContextFactory = dbContextFactory;
     }
 
     public DateTime GetTimeReaded()
@@ -55,7 +51,8 @@ public class FeedReadedDataProvider
 
     public DateTime GetTimeReaded(Guid user, string module, int tenant)
     {
-        return FeedDbContext.FeedReaded
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        return feedDbContext.FeedReaded
             .Where(r => r.Tenant == tenant)
             .Where(r => r.UserId == user)
             .Where(r => r.Module == module)
@@ -92,8 +89,9 @@ public class FeedReadedDataProvider
             Tenant = tenant
         };
 
-        FeedDbContext.AddOrUpdate(r => r.FeedReaded, feedReaded);
-        FeedDbContext.SaveChanges();
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        feedDbContext.AddOrUpdate(r => r.FeedReaded, feedReaded);
+        feedDbContext.SaveChanges();
     }
 
     public IEnumerable<string> GetReadedModules(DateTime fromTime)
@@ -103,7 +101,8 @@ public class FeedReadedDataProvider
 
     public IEnumerable<string> GetReadedModules(Guid user, int tenant, DateTime fromTime)
     {
-        return FeedDbContext.FeedReaded
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        return feedDbContext.FeedReaded
             .Where(r => r.Tenant == tenant)
             .Where(r => r.UserId == user)
             .Where(r => r.TimeStamp >= fromTime)

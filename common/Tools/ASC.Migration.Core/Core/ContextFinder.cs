@@ -27,7 +27,7 @@
 namespace Migration;
 public abstract class ContextFinder
 {
-    private readonly Type _baseType = typeof(BaseDbContext);
+    private readonly Type _baseType = typeof(DbContext);
 
     public IEnumerable<Type> GetDependetContextsTypes()
     {

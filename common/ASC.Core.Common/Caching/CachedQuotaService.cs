@@ -64,35 +64,6 @@ class QuotaServiceCache
 }
 
 [Scope]
-class ConfigureCachedQuotaService : IConfigureNamedOptions<CachedQuotaService>
-{
-    private readonly IOptionsSnapshot<DbQuotaService> _service;
-    private readonly QuotaServiceCache _quotaServiceCache;
-
-    public ConfigureCachedQuotaService(
-        IOptionsSnapshot<DbQuotaService> service,
-        QuotaServiceCache quotaServiceCache)
-    {
-        _service = service;
-        _quotaServiceCache = quotaServiceCache;
-    }
-
-    public void Configure(string name, CachedQuotaService options)
-    {
-        Configure(options);
-        options.Service = _service.Get(name);
-    }
-
-    public void Configure(CachedQuotaService options)
-    {
-        options.Service = _service.Value;
-        options.QuotaServiceCache = _quotaServiceCache;
-        options.Cache = _quotaServiceCache.Cache;
-        options.CacheNotify = _quotaServiceCache.CacheNotify;
-    }
-}
-
-[Scope]
 class CachedQuotaService : IQuotaService
 {
     internal IQuotaService Service { get; set; }

@@ -31,20 +31,19 @@ public class BackupPortalTask : PortalTaskBase
 {
     public string BackupFilePath { get; private set; }
     public int Limit { get; private set; }
-    private BackupsContext BackupRecordContext => _lazyBackupsContext.Value;
 
     private const int MaxLength = 250;
     private const int BatchLimit = 5000;
 
     private readonly bool _dump;
+    private readonly IDbContextFactory<BackupsContext> _dbContextFactory;
     private readonly ILogger<BackupPortalTask> _logger;
     private readonly TenantManager _tenantManager;
     private readonly TempStream _tempStream;
-    private readonly Lazy<BackupsContext> _lazyBackupsContext;
 
     public BackupPortalTask(
         DbFactory dbFactory,
-        DbContextManager<BackupsContext> dbContextManager,
+        IDbContextFactory<BackupsContext> dbContextFactory,
         ILogger<BackupPortalTask> logger,
         TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
@@ -55,10 +54,10 @@ public class BackupPortalTask : PortalTaskBase
         : base(dbFactory, logger, storageFactory, storageFactoryConfig, moduleProvider)
     {
         _dump = coreBaseSettings.Standalone;
+        _dbContextFactory = dbContextFactory;
         _logger = logger;
         _tenantManager = tenantManager;
         _tempStream = tempStream;
-        _lazyBackupsContext = new Lazy<BackupsContext>(() => dbContextManager.Value);
     }
 
     public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
@@ -254,7 +253,8 @@ public class BackupPortalTask : PortalTaskBase
     private IEnumerable<BackupFileInfo> GetFiles(int tenantId)
     {
         var files = GetFilesToProcess(tenantId).ToList();
-        var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+        using var backupRecordContext = _dbContextFactory.CreateDbContext();
+        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
         return files;
 
@@ -616,7 +616,9 @@ public class BackupPortalTask : PortalTaskBase
     private List<IGrouping<string, BackupFileInfo>> GetFilesGroup()
     {
         var files = GetFilesToProcess(TenantId).ToList();
-        var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+
+        using var backupRecordContext = _dbContextFactory.CreateDbContext();
+        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
 
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 

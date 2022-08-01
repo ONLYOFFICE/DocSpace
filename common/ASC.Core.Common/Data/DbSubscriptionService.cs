@@ -29,13 +29,12 @@ namespace ASC.Core.Data;
 [Scope]
 public class DbSubscriptionService : ISubscriptionService
 {
-    private readonly Lazy<UserDbContext> _lazyUserDbContext;
-    private UserDbContext UserDbContext => _lazyUserDbContext.Value;
+    private readonly IDbContextFactory<UserDbContext> _dbContextFactory;
     private readonly IMapper _mapper;
 
-    public DbSubscriptionService(DbContextManager<UserDbContext> dbContextManager, IMapper mapper)
+    public DbSubscriptionService(IDbContextFactory<UserDbContext> dbContextFactory, IMapper mapper)
     {
-        _lazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
+        _dbContextFactory = dbContextFactory;
         _mapper = mapper;
     }
 
@@ -44,7 +43,8 @@ public class DbSubscriptionService : ISubscriptionService
         ArgumentNullException.ThrowIfNull(sourceId);
         ArgumentNullException.ThrowIfNull(actionId);
 
-        var q = GetQuery(tenant, sourceId, actionId)
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var q = GetQuery(userDbContext, tenant, sourceId, actionId)
             .Where(r => r.Object == (objectId ?? string.Empty))
             .Where(r => !r.Unsubscribed)
             .Select(r => r.Recipient)
@@ -58,14 +58,18 @@ public class DbSubscriptionService : ISubscriptionService
         ArgumentNullException.ThrowIfNull(sourceId);
         ArgumentNullException.ThrowIfNull(actionId);
 
-        var q = GetQuery(tenant, sourceId, actionId);
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = GetQuery(userDbContext, tenant, sourceId, actionId);
 
         return GetSubscriptions(q, tenant);
     }
 
     public IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, string objectId)
     {
-        var q = GetQuery(tenant, sourceId, actionId);
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = GetQuery(userDbContext, tenant, sourceId, actionId);
 
         if (recipientId != null)
         {
@@ -83,7 +87,9 @@ public class DbSubscriptionService : ISubscriptionService
     {
         ArgumentNullException.ThrowIfNull(recipientId);
 
-        var q = GetQuery(tenant, sourceId, actionId)
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = GetQuery(userDbContext, tenant, sourceId, actionId)
             .Where(r => r.Recipient == recipientId)
             .Where(r => r.Object == (objectId ?? string.Empty));
 
@@ -96,7 +102,8 @@ public class DbSubscriptionService : ISubscriptionService
         ArgumentNullException.ThrowIfNull(sourceId);
         ArgumentNullException.ThrowIfNull(actionId);
 
-        var q = UserDbContext.Subscriptions
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var q = userDbContext.Subscriptions
             .Where(r => r.Source == sourceId &&
                         r.Action == actionId &&
                         r.Tenant == tenant &&
@@ -121,7 +128,9 @@ public class DbSubscriptionService : ISubscriptionService
         ArgumentNullException.ThrowIfNull(sourceId);
         ArgumentNullException.ThrowIfNull(actionId);
 
-        var q = GetQuery(tenant, sourceId, actionId)
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = GetQuery(userDbContext, tenant, sourceId, actionId)
             .Where(r => r.Recipient == recipientId)
             .Distinct();
 
@@ -148,8 +157,9 @@ public class DbSubscriptionService : ISubscriptionService
             Tenant = s.Tenant
         };
 
-        UserDbContext.AddOrUpdate(r => r.Subscriptions, subs);
-        UserDbContext.SaveChanges();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        userDbContext.AddOrUpdate(r => r.Subscriptions, subs);
+        userDbContext.SaveChanges();
     }
 
     public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
@@ -162,12 +172,14 @@ public class DbSubscriptionService : ISubscriptionService
         ArgumentNullException.ThrowIfNull(sourceId);
         ArgumentNullException.ThrowIfNull(actionId);
 
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tr = UserDbContext.Database.BeginTransaction();
-            var q = UserDbContext.Subscriptions
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = userDbContext.Database.BeginTransaction();
+            var q = userDbContext.Subscriptions
                 .Where(r => r.Tenant == tenant)
                 .Where(r => r.Source == sourceId)
                 .Where(r => r.Action == actionId);
@@ -181,7 +193,7 @@ public class DbSubscriptionService : ISubscriptionService
 
             if (sub != null)
             {
-                UserDbContext.Subscriptions.Remove(sub);
+                userDbContext.Subscriptions.Remove(sub);
             }
 
             tr.Commit();
@@ -194,7 +206,8 @@ public class DbSubscriptionService : ISubscriptionService
         ArgumentNullException.ThrowIfNull(sourceId);
         ArgumentNullException.ThrowIfNull(actionId);
 
-        var q = UserDbContext.SubscriptionMethods
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var q = userDbContext.SubscriptionMethods
             .Where(r => r.Tenant == -1 || r.Tenant == tenant)
             .Where(r => r.Source == sourceId);
 
@@ -237,15 +250,17 @@ public class DbSubscriptionService : ISubscriptionService
     {
         ArgumentNullException.ThrowIfNull(m);
 
-        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tr = UserDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = userDbContext.Database.BeginTransaction();
 
             if (m.Methods == null || m.Methods.Length == 0)
             {
-                var q = UserDbContext.SubscriptionMethods
+                var q = userDbContext.SubscriptionMethods
                     .Where(r => r.Tenant == m.Tenant)
                     .Where(r => r.Source == m.Source)
                     .Where(r => r.Recipient == m.Recipient)
@@ -255,7 +270,7 @@ public class DbSubscriptionService : ISubscriptionService
 
                 if (sm != null)
                 {
-                    UserDbContext.SubscriptionMethods.Remove(sm);
+                    userDbContext.SubscriptionMethods.Remove(sm);
                 }
             }
             else
@@ -268,26 +283,22 @@ public class DbSubscriptionService : ISubscriptionService
                     Tenant = m.Tenant,
                     Sender = string.Join("|", m.Methods)
                 };
-                UserDbContext.AddOrUpdate(r => r.SubscriptionMethods, sm);
+                userDbContext.AddOrUpdate(r => r.SubscriptionMethods, sm);
             }
 
-            UserDbContext.SaveChanges();
+            userDbContext.SaveChanges();
             tr.Commit();
         });
-
-
-
-
     }
 
 
-    private IQueryable<Subscription> GetQuery(int tenant, string sourceId, string actionId)
+    private IQueryable<Subscription> GetQuery(UserDbContext userDbContext, int tenant, string sourceId, string actionId)
     {
         ArgumentNullException.ThrowIfNull(sourceId);
         ArgumentNullException.ThrowIfNull(actionId);
 
         return
-            UserDbContext.Subscriptions
+            userDbContext.Subscriptions
             .Where(r => r.Source == sourceId)
             .Where(r => r.Action == actionId)
             .Where(r => r.Tenant == -1 || r.Tenant == tenant)

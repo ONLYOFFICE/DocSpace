@@ -43,12 +43,12 @@ public class DbHelper : IDisposable
     public DbHelper(
         ILogger<DbHelper> logger,
         ConnectionStringSettings connectionString,
-        TenantDbContext tenantDbContext,
-        CoreDbContext coreDbContext)
+        IDbContextFactory<TenantDbContext> tenantDbContext,
+        IDbContextFactory<CoreDbContext> coreDbContext)
     {
         _logger = logger;
-        _tenantDbContext = tenantDbContext;
-        _coreDbContext = coreDbContext;
+        _tenantDbContext = tenantDbContext.CreateDbContext();
+        _coreDbContext = coreDbContext.CreateDbContext();
         var file = connectionString.ElementInformation.Source;
 
         if ("web.connections.config".Equals(Path.GetFileName(file), StringComparison.InvariantCultureIgnoreCase))

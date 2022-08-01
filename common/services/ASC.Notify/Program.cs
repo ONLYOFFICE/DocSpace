@@ -60,6 +60,8 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     services.AddActivePassiveHostedService<NotifySenderService>();
     services.AddActivePassiveHostedService<NotifyCleanerService>();
+
+    services.AddBaseDbContextPool<NotifyDbContext>();
 });
 
 var startup = new BaseWorkerStartup(builder.Configuration);
