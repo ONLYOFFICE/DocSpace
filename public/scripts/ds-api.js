@@ -242,15 +242,39 @@
       );
     };
 
-    const createItem = (format) => {
+    const openCrateFileModal = (format) => {
+      executeMethod("openCreateItemModal", format);
+    };
+
+    const openCrateFolderModal = () => {
+      executeMethod("openCreateItemModal");
+    };
+
+    const openCrateRoomModal = () => {
+      executeMethod("openCrateRoomModal");
+    };
+
+    const createFile = (folderId, title, templateId, formId) => {
       return new Promise((resolve) =>
-        executeMethod("createItem", null, (data) => resolve(data))
+        executeMethod(
+          "createFile",
+          { folderId, title, templateId, formId },
+          (data) => resolve(data)
+        )
       );
     };
 
-    const createRoom = () => {
+    const createFolder = (parentFolderId, title) => {
       return new Promise((resolve) =>
-        executeMethod("createRoom", null, (data) => resolve(data))
+        executeMethod("createFolder", { parentFolderId, title }, (data) =>
+          resolve(data)
+        )
+      );
+    };
+
+    const createRoom = (title, type) => {
+      return new Promise((resolve) =>
+        executeMethod("createRoom", { title, type }, (data) => resolve(data))
       );
     };
 
@@ -270,7 +294,12 @@
 
       setConfig,
 
-      createItem,
+      openCrateFileModal,
+      openCrateFolderModal,
+      openCrateRoomModal,
+
+      createFile,
+      createFolder,
       createRoom,
     };
   };

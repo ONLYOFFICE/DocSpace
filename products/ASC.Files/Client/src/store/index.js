@@ -17,6 +17,7 @@ import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
 import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
+import IntegrationStore from "./IntegrationStore";
 
 const tagsStore = new TagsStore();
 
@@ -91,6 +92,13 @@ const hotkeyStore = new HotkeyStore(
   uploadDataStore
 );
 
+const integrationStore = new IntegrationStore(
+  store.auth,
+  filesStore,
+  settingsStore,
+  filesActionsStore
+);
+
 const stores = {
   filesStore,
 
@@ -108,6 +116,7 @@ const stores = {
   selectFileDialogStore,
 
   tagsStore,
+  integrationStore,
 };
 
 export default stores;

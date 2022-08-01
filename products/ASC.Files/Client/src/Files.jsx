@@ -132,14 +132,14 @@ class FilesContent extends React.Component {
         updateTempContent();
       });
 
-    window.addEventListener("message", this.integrationMessage, false);
+    window.addEventListener("message", this.props.handleMessage, false);
   }
 
   componentWillUnmount() {
     const script = document.getElementById("img-tiff-script");
     document.body.removeChild(script);
 
-    window.removeEventListener("message", this.integrationMessage);
+    window.removeEventListener("message", this.props.handleMessage, false);
   }
 
   componentDidUpdate(prevProps) {
@@ -173,96 +173,6 @@ class FilesContent extends React.Component {
     }
   }
 
-  integrationMessage = async (e) => {
-    const {
-      setFrameConfig,
-      folderInfo,
-      folders,
-      files,
-      selection,
-      user,
-      filesList,
-    } = this.props;
-
-    const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
-
-    if (eventData.data) {
-      const { data, methodName } = eventData.data;
-
-      if (methodName === "setConfig") {
-        const config = await setFrameConfig(data);
-
-        window.parent.postMessage(
-          JSON.stringify({
-            type: "onMethodReturn",
-            methodReturnData: config,
-          }),
-          "*"
-        );
-      }
-
-      if (methodName === "getFolderInfo") {
-        window.parent.postMessage(
-          JSON.stringify({
-            type: "onMethodReturn",
-            methodReturnData: folderInfo,
-          }),
-          "*"
-        );
-      }
-
-      if (methodName === "getFolders") {
-        window.parent.postMessage(
-          JSON.stringify({
-            type: "onMethodReturn",
-            methodReturnData: folders,
-          }),
-          "*"
-        );
-      }
-
-      if (methodName === "getFiles") {
-        window.parent.postMessage(
-          JSON.stringify({
-            type: "onMethodReturn",
-            methodReturnData: files,
-          }),
-          "*"
-        );
-      }
-
-      if (methodName === "getItems") {
-        window.parent.postMessage(
-          JSON.stringify({
-            type: "onMethodReturn",
-            methodReturnData: filesList,
-          }),
-          "*"
-        );
-      }
-
-      if (methodName === "getSelection") {
-        window.parent.postMessage(
-          JSON.stringify({
-            type: "onMethodReturn",
-            methodReturnData: selection,
-          }),
-          "*"
-        );
-      }
-
-      if (methodName === "getUserInfo") {
-        window.parent.postMessage(
-          JSON.stringify({
-            type: "onMethodReturn",
-            methodReturnData: user,
-          }),
-          "*"
-        );
-      }
-    }
-  };
-
   render() {
     const { frameConfig } = this.props;
 
@@ -284,7 +194,7 @@ class FilesContent extends React.Component {
   }
 }
 
-const Files = inject(({ auth, filesStore }) => {
+const Files = inject(({ auth, filesStore, integrationStore }) => {
   return {
     isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
@@ -295,11 +205,7 @@ const Files = inject(({ auth, filesStore }) => {
     setFrameConfig: auth.settingsStore.setFrameConfig,
     isLoaded: auth.isLoaded && filesStore.isLoaded,
     setIsLoaded: filesStore.setIsLoaded,
-    folderInfo: filesStore.selectedFolderStore,
-    files: filesStore.files,
-    folders: filesStore.folders,
-    selection: filesStore.selection,
-    filesList: filesStore.filesList,
+    handleMessage: integrationStore.handleMessage,
 
     setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
     loadFilesInfo: async () => {
