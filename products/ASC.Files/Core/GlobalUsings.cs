@@ -54,6 +54,9 @@ global using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
 global using ASC.Api.Utils;
+global using ASC.AuditTrail;
+global using ASC.AuditTrail.Models;
+global using ASC.AuditTrail.Models.Mappings;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
@@ -152,6 +155,9 @@ global using Box.V2;
 global using Box.V2.Auth;
 global using Box.V2.Config;
 global using Box.V2.Models;
+
+global using CsvHelper;
+global using CsvHelper.Configuration;
 
 global using DocuSign.eSign.Api;
 global using DocuSign.eSign.Client;

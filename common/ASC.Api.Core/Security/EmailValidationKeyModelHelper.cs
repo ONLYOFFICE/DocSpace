@@ -39,6 +39,9 @@ public class EmailValidationKeyModelHelper
     private readonly UserManager _userManager;
     private readonly AuthManager _authentication;
     private readonly RoomInvitationLinksService _roomLinksService;
+    private readonly AuditEventsRepository _auditEventsRepository;
+    private readonly TenantUtil _tenantUtil;
+    private readonly MessageTarget _messageTarget;
 
     public EmailValidationKeyModelHelper(
         IHttpContextAccessor httpContextAccessor,
@@ -46,7 +49,10 @@ public class EmailValidationKeyModelHelper
         AuthContext authContext,
         UserManager userManager,
         AuthManager authentication,
-        RoomInvitationLinksService roomLinksService)
+        RoomInvitationLinksService roomLinksService,
+        AuditEventsRepository auditEventsRepository,
+        TenantUtil tenantUtil,
+        MessageTarget messageTarget)
     {
         _httpContextAccessor = httpContextAccessor;
         _provider = provider;
@@ -54,6 +60,9 @@ public class EmailValidationKeyModelHelper
         _userManager = userManager;
         _authentication = authentication;
         _roomLinksService = roomLinksService;
+        _auditEventsRepository = auditEventsRepository;
+        _tenantUtil = tenantUtil;
+        _messageTarget = messageTarget;
     }
 
     public EmailValidationKeyModel GetModel()
@@ -123,15 +132,29 @@ public class EmailValidationKeyModelHelper
                 break;
 
             case ConfirmType.PortalOwnerChange:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + uiD.HasValue, key, _provider.ValidEmailKeyInterval);
+                checkKeyResult = _provider.ValidateEmailKey(email + type + uiD.GetValueOrDefault(), key, _provider.ValidEmailKeyInterval);
                 break;
 
             case ConfirmType.EmailChange:
                 checkKeyResult = _provider.ValidateEmailKey(email + type + _authContext.CurrentAccount.ID, key, _provider.ValidEmailKeyInterval);
                 break;
             case ConfirmType.PasswordChange:
+                var userInfo = _userManager.GetUserByEmail(email);
+                var auditEvent = _auditEventsRepository.GetByFilter(action: MessageAction.UserSentPasswordChangeInstructions, entry: EntryType.User, target: _messageTarget.Create(userInfo.Id).ToString(), limit: 1).FirstOrDefault();
+                var passwordStamp = _authentication.GetUserPasswordStamp(_userManager.GetUserByEmail(email).Id);
 
-                var hash = _authentication.GetUserPasswordStamp(_userManager.GetUserByEmail(email).Id).ToString("s");
+                string hash;
+
+                if (auditEvent != null)
+                {
+                    var auditEventDate = _tenantUtil.DateTimeToUtc(auditEvent.Date);
+
+                    hash = (auditEventDate.CompareTo(passwordStamp) > 0 ? auditEventDate : passwordStamp).ToString("s");
+                }
+                else
+                {
+                    hash = passwordStamp.ToString("s");
+                }
 
                 checkKeyResult = _provider.ValidateEmailKey(email + type + hash, key, _provider.ValidEmailKeyInterval);
                 break;

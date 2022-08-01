@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
     <ProjectReference Include="..\..\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
   </ItemGroup>
   <ItemGroup>
