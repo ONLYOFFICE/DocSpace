@@ -598,11 +598,11 @@ class FilesStore {
 
     const pathname = `${url}?${filterParamsStr}`;
 
-    console.log("setFilterUrl", {
-      categoryType: this.categoryType,
-      url,
-      filterParamsStr,
-    });
+    // console.log("setFilterUrl", {
+    //   categoryType: this.categoryType,
+    //   url,
+    //   filterParamsStr,
+    // });
 
     history.push(
       combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
@@ -722,11 +722,11 @@ class FilesStore {
             );
           });
 
-          console.log("fetchFiles", {
-            categoryType: this.categoryType,
-            rootFolderType: data.current.rootFolderType,
-            parentId: data.current.parentId,
-          });
+          // console.log("fetchFiles", {
+          //   categoryType: this.categoryType,
+          //   rootFolderType: data.current.rootFolderType,
+          //   parentId: data.current.parentId,
+          // });
 
           this.setFilesFilter(filterData); //TODO: FILTER
 
@@ -875,11 +875,11 @@ class FilesStore {
             );
           });
 
-          console.log("fetchRooms", {
-            categoryType: this.categoryType,
-            rootFolderType: data.current.rootFolderType,
-            parentId: data.current.parentId,
-          });
+          // console.log("fetchRooms", {
+          //   categoryType: this.categoryType,
+          //   rootFolderType: data.current.rootFolderType,
+          //   parentId: data.current.parentId,
+          // });
 
           this.setRoomsFilter(filterData);
 
