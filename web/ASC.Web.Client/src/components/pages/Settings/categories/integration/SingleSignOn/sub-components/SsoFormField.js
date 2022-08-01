@@ -18,6 +18,14 @@ const SsoFormField = ({
 }) => {
   const { t } = useTranslation("SingleSignOn");
 
+  const errMsg =
+    errorMessage === "email"
+      ? t("EmailErrorMessage")
+      : errorMessage === "phone"
+      ? t("PhoneErrorMessage")
+      : errorMessage === "url"
+      ? t("UrlErrorMessage")
+      : t("EmptyFieldErrorMessage");
   return (
     <FieldContainer
       errorMessage={t(errorMessage)}

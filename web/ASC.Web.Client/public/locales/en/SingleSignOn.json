@@ -51,14 +51,14 @@
   "UploadXML": "Load metadata from XML to fill the required fields automatically",
   "UploadXMLPlaceholder": "URL to IdP Metadata XML",
   "UsedFor": "Use for",
-  "emailErrorMessage": "Incorrect email format",
+  "EmailErrorMessage": "Incorrect email format",
   "idpAuthRequest": "Verify Auth Responses Sign",
   "idpCertificates": "IdP Public Certificates",
   "idpCertificatesTooltip": "The Identity provider public certificates used for either verification or decryption (or both) of the requests and responses from the IdP",
   "idpSignExitRequest": "Verify Logout Requests Sign",
   "idpSignResponseRequest": "Verify Logout Responses Sign",
   "idpSigningAlgorithm": "Default Sign Verifying Algorithm",
-  "phoneErrorMessage": "Incorrect phone number format",
+  "PhoneErrorMessage": "Incorrect phone number format",
   "spAuthRequest": "Sign Auth Requests",
   "spCertificates": "SP Certificates",
   "spCertificatesTooltip": "The Service provider certificates used to sign and encrypt the requests and responses from the SP",
@@ -66,5 +66,5 @@
   "spSignExitRequest": "Sign Logout Requests",
   "spSignResponseRequest": "Sign Logout Responses",
   "spSigningAlgorithm": "Signing Algorithm",
-  "urlErrorMessage": "Invalid URL"
+  "UrlErrorMessage": "Invalid URL"
 }
