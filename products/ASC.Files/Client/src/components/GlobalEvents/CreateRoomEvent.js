@@ -28,7 +28,7 @@ const CreateRoomEvent = ({
     console.log(roomParams);
     const createRoomParams = {
       roomType: roomParams.type,
-      title: roomParams.title || "New room",
+      title: roomParams.title || t("Home:NewRoom"),
     };
 
     const tags = roomParams.tags.map((tag) => tag.name);
