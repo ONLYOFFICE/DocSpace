@@ -24,24 +24,47 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration.Runner;
-
-class Program
+var options = new WebApplicationOptions
 {
-    static void Main(string[] args)
-    {
-        var builder = new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.json", true)
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+};
+
+var builder = WebApplication.CreateBuilder(options);
+builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
+ {
+     config.AddJsonFile($"appsettings.json", true)
                 .AddCommandLine(args);
+ });
 
-        var config = builder.Build();
+builder.WebHost.ConfigureServices((hostContext, services) =>
+{
+    services.AddScoped<EFLoggerFactory>();
+    services.AddBaseDbContext<AccountLinkContext>();
+    services.AddBaseDbContext<CoreDbContext>();
+    services.AddBaseDbContext<TenantDbContext>();
+    services.AddBaseDbContext<UserDbContext>();
+    services.AddBaseDbContext<TelegramDbContext>();
+    services.AddBaseDbContext<CustomDbContext>();
+    services.AddBaseDbContext<WebstudioDbContext>();
+    services.AddBaseDbContext<InstanceRegistrationContext>();
+    services.AddBaseDbContext<IntegrationEventLogContext>();
+    services.AddBaseDbContext<FeedDbContext>();
+    services.AddBaseDbContext<MessagesContext>();
+    services.AddBaseDbContext<WebhooksDbContext>();
+    services.AddBaseDbContext<MessagesContext>();
+    services.AddBaseDbContext<BackupsContext>();
+    services.AddBaseDbContext<FilesDbContext>();
+    services.AddBaseDbContext<NotifyDbContext>();
+    services.AddBaseDbContext<UrlShortenerFakeDbContext>();
+});
 
-        var providersInfo = config.GetSection("options").Get<Options>();
+var app = builder.Build();
 
-        foreach (var providerInfo in providersInfo.Providers)
-        {
-            var migrationCreator = new MigrationRunner(providerInfo.ConnectionString);
-            migrationCreator.RunApplyMigrations(AppContext.BaseDirectory, providerInfo);
-        }
-    }
+var providersInfo = app.Configuration.GetSection("options").Get<Options>();
+
+foreach (var providerInfo in providersInfo.Providers)
+{
+    var migrationCreator = new MigrationRunner(app.Services);
+    migrationCreator.RunApplyMigrations(AppContext.BaseDirectory, providerInfo);
 }

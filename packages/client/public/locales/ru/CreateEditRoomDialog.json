@@ -1,0 +1,32 @@
+{
+  "CreateRoom": "Создание комнаты",
+  "ChooseRoomType": "Выберите тип комнаты",
+  "RoomEditing": "Редактирование комнаты",
+
+  "FillingFormsRoomTitle": "Комната для заполнения форм",
+  "CollaborationRoomTitle": "Комната для совместной работы",
+  "ReviewRoomTitle": "Комната для рецензирования",
+  "ViewOnlyRoomTitle": "Комната для просмотра",
+  "CustomRoomTitle": "Пользователсьская комната",
+
+  "FillingFormsRoomDescription": "Данная комната подойдет для сбора форм/анкет/тестов и тд.",
+  "CollaborationRoomDescription": "Совместная работа над одним или несколькими документами с вашей командой",
+  "ReviewRoomDescription": "Запроситe рецензию или комментарии к документам",
+  "ViewOnlyRoomDescription": "Предоставляйте доступ к любым готовым документам, отчетам, документации и другим файлам для просмотра",
+  "CustomRoomDescription": "Примените собственные настройки, чтобы использовать эту комнату для любых пользовательских целей",
+
+  "NamePlaceholder": "Введите имя",
+
+  "TagsPlaceholder": "Добавьте тэг",
+  "CreateTagOption": "Создать тэг",
+
+  "MakeRoomPrivateTitle": "Сделайте комнату приватной",
+  "MakeRoomPrivateDescription": "Все файлы в этой комнате будут зашифрованы",
+
+  "StorageLocationTitle": "Место хранения",
+  "StorageLocationDescription": "Используйте сторонние сервисы в качестве хранилища данных для этой комнаты",
+  "StorageLocationRememberChoice": "Запомнить этот выбор для новых комнат",
+
+  "FolderNameTitle": "Имя папки",
+  "FolderNameDescription": "В подключенном хранилище будет создана новая папка для хранения данных этой комнаты"
+}

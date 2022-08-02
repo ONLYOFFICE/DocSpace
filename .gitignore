@@ -39,3 +39,13 @@ TestsResults/
 /build/install/RadicalePlugins/app_store_plugin/build/lib/app_store_plugin/log.py
 /build/install/RadicalePlugins/app_store_plugin/build/lib/app_store_plugin/sync.py
 /build/install/RadicalePlugins/app_store_plugin/build/lib/app_store_plugin/upload.py
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+
+**/.yarn/cache
