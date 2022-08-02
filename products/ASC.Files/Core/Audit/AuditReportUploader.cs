@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,43 +24,48 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Globalization;
-using System.Text;
-
-using CsvHelper;
-
 namespace ASC.AuditTrail;
 
 [Scope]
-public class AuditReportCreator
+public class AuditReportUploader
 {
-    private readonly ILogger<AuditReportCreator> _logger;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly FileUploader _fileUploader;
+    private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly ILogger<AuditReportUploader> _logger;
+    private readonly AuditReportCreator _auditReportCreator;
 
-    public AuditReportCreator(
-        ILogger<AuditReportCreator> logger)
+    public AuditReportUploader(
+        GlobalFolderHelper globalFolderHelper,
+        ILogger<AuditReportUploader> logger,
+        FileUploader fileUploader,
+        FilesLinkUtility filesLinkUtility,
+        CommonLinkUtility commonLinkUtility,
+        AuditReportCreator auditReportCreator)
     {
+        _globalFolderHelper = globalFolderHelper;
         _logger = logger;
+        _fileUploader = fileUploader;
+        _filesLinkUtility = filesLinkUtility;
+        _commonLinkUtility = commonLinkUtility;
+        _auditReportCreator = auditReportCreator;
     }
-    public Stream CreateCsvReport<TEvent>(IEnumerable<TEvent> events) where TEvent : BaseEvent
+
+    public string UploadCsvReport(Stream stream, string reportName)
     {
         try
         {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream, Encoding.UTF8);
-            var csv = new CsvWriter(writer, CultureInfo.CurrentCulture);
+            var file = _fileUploader.ExecAsync(_globalFolderHelper.FolderMy, reportName, stream.Length, stream, true).Result;
+            var fileUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.Id));
 
-            csv.Context.RegisterClassMap(new BaseEventMap<TEvent>());
+            fileUrl += string.Format("&options={{\"codePage\":{0}}}", Encoding.UTF8.CodePage);
 
-            csv.WriteHeader<TEvent>();
-            csv.NextRecord();
-            csv.WriteRecords(events);
-            writer.Flush();
-
-            return stream;
+            return fileUrl;
         }
         catch (Exception ex)
         {
-            _logger.ErrorWhileCreating(ex);
+            _logger.ErrorWhileUploading(ex);
             throw;
         }
     }
