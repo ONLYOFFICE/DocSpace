@@ -50,7 +50,7 @@ const IdpSettings = (props) => {
       <SsoFormField
         labelText={t("ProviderURL")}
         name="entityId"
-        placeholder="https://www.test.com"
+        placeholder="https://idpservice/idp"
         tabIndex={5}
         tooltipContent={t("ProviderURLTooltip")}
         value={entityId}
@@ -60,7 +60,11 @@ const IdpSettings = (props) => {
       <SsoFormField
         labelText={t("SignOnEndpointUrl")}
         name={ssoBinding.includes("POST") ? "ssoUrlPost" : "ssoUrlRedirect"}
-        placeholder="https://www.test.com/saml/login"
+        placeholder={
+          ssoBinding.includes("POST")
+            ? "https://idpservice/SSO/POST"
+            : "https://idpservice/SSO/REDIRECT"
+        }
         tabIndex={7}
         tooltipContent={t("SignOnEndpointUrlTooltip")}
         value={ssoBinding.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
@@ -89,7 +93,11 @@ const IdpSettings = (props) => {
       <SsoFormField
         labelText={t("LogoutEndpointUrl")}
         name={sloBinding.includes("POST") ? "sloUrlPost" : "sloUrlRedirect"}
-        placeholder="https://www.test.com/saml/logout"
+        placeholder={
+          sloBinding.includes("POST")
+            ? "https://idpservice/SLO/POST"
+            : "https://idpservice/SLO/REDIRECT"
+        }
         tabIndex={9}
         tooltipContent={t("LogoutEndpointUrlTooltip")}
         value={sloBinding.includes("POST") ? sloUrlPost : sloUrlRedirect}
