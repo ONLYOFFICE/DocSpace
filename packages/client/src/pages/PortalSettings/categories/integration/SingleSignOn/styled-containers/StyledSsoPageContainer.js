@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledSsoPage = styled.div`
   box-sizing: border-box;
   outline: none;
-  width: 100%;
+  max-width: 700px;
 
   .intro-text {
     margin-bottom: 18px;
