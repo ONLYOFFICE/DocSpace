@@ -26,13 +26,18 @@
 
 namespace ASC.EventBus.Extensions.Logger;
 
-public class IntegrationEventLogContext : BaseDbContext
+public class IntegrationEventLogContext : DbContext
 {
     public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; }
 
+    public IntegrationEventLogContext(DbContextOptions<IntegrationEventLogContext> dbContextOptions) : base(dbContextOptions)
+    {
+
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        ModelBuilderWrapper.From(modelBuilder, _provider)
+        ModelBuilderWrapper.From(modelBuilder, Database)
                            .AddIntegrationEventLog();
 
     }

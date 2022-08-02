@@ -1,6 +1,6 @@
 const { join } = require("path");
 const { readdirSync, readFileSync, writeFileSync } = require("fs");
-const minifyJson = require("../../packages/asc-web-common/utils/minifyJson.js");
+const minifyJson = require("../../packages/common/utils/minifyJson.js");
 
 const localesDir = join(
   __dirname,

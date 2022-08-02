@@ -28,22 +28,22 @@ namespace ASC.Geolocation;
 
 public class GeolocationHelper
 {
-    public string Dbid { get; set; }
+    private readonly IDbContextFactory<CustomDbContext> _dbContextFactory;
     private readonly ILogger<GeolocationHelper> _logger;
-    private readonly CustomDbContext _dbContext;
 
-    public GeolocationHelper(DbContextManager<CustomDbContext> dbContext, ILogger<GeolocationHelper> logger)
+    public GeolocationHelper(IDbContextFactory<CustomDbContext> dbContextFactory, ILogger<GeolocationHelper> logger)
     {
+        _dbContextFactory = dbContextFactory;
         _logger = logger;
-        _dbContext = dbContext.Get(Dbid);
     }
 
     public IPGeolocationInfo GetIPGeolocation(string ip)
     {
         try
         {
+            using var dbContext = _dbContextFactory.CreateDbContext();
             var ipformatted = FormatIP(ip);
-            var q = _dbContext.DbipLocation
+            var q = dbContext.DbipLocation
                 .Where(r => r.IPStart.CompareTo(ipformatted) <= 0)
                 .Where(r => ipformatted.CompareTo(r.IPEnd) <= 0)
                 .OrderByDescending(r => r.IPStart)

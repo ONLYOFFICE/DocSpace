@@ -37,7 +37,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<SharePointDaoBase> monitor,
         FileUtility fileUtility,
@@ -125,12 +125,14 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
 
     private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
     {
-        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = filesDbContext.Database.BeginTransaction();
+            var oldIDs = await Query(filesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(oldValue))
                 .Select(r => r.Id)
                 .ToListAsync();
@@ -141,7 +143,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
                 var newID = oldID.Replace(oldValue, newValue);
                 var newHashID = await MappingIDAsync(newID);
 
-                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
+                var mappingForUpdate = await Query(filesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.HashId == oldHashID)
                     .ToListAsync();
 
@@ -151,9 +153,9 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
                     m.HashId = newHashID;
                 }
 
-                await FilesDbContext.SaveChangesAsync();
+                await filesDbContext.SaveChangesAsync();
 
-                var securityForUpdate = await Query(FilesDbContext.Security)
+                var securityForUpdate = await Query(filesDbContext.Security)
                     .Where(r => r.EntryId == oldHashID)
                     .ToListAsync();
 
@@ -163,9 +165,9 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
                     s.TimeStamp = DateTime.Now;
                 }
 
-                await FilesDbContext.SaveChangesAsync();
+                await filesDbContext.SaveChangesAsync();
 
-                var linkForUpdate = await Query(FilesDbContext.TagLink)
+                var linkForUpdate = await Query(filesDbContext.TagLink)
                     .Where(r => r.EntryId == oldHashID)
                     .ToListAsync();
 
@@ -174,7 +176,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
                     l.EntryId = newHashID;
                 }
 
-                await FilesDbContext.SaveChangesAsync();
+                await filesDbContext.SaveChangesAsync();
             }
 
             await tx.CommitAsync();

@@ -26,24 +26,18 @@
 
 namespace ASC.Webhooks.Core.EF.Context;
 
-public class WebhooksDbContext : BaseDbContext
+public class WebhooksDbContext : DbContext
 {
     public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
     public virtual DbSet<WebhooksLog> WebhooksLogs { get; set; }
 
+    public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options) : base(options) { }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-        .From(modelBuilder, _provider)
+        .From(modelBuilder, Database)
         .AddWebhooksConfig()
         .AddWebhooksLog();
-    }
-}
-
-public static class WebhooksDbExtension
-{
-    public static DIHelper AddWebhooksDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<WebhooksDbContext>();
     }
 }
