@@ -48,6 +48,7 @@ const AddIdpCertificateModal = (props) => {
             label={t("Common:OKButton")}
             onClick={addIdpCertificate}
             primary
+            isDisabled={!idpCertificate}
             size="small"
           />
           <Button

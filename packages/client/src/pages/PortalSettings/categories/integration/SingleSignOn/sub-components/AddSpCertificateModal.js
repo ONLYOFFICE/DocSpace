@@ -87,7 +87,9 @@ const AddSpCertificateModal = (props) => {
             onClick={addSpCertificate}
             primary
             size="small"
-            isDisabled={isGeneratedCertificate}
+            isDisabled={
+              isGeneratedCertificate || !spCertificate || !spPrivateKey
+            }
           />
           <Button
             label={t("Common:CancelButton")}
