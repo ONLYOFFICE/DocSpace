@@ -9,7 +9,7 @@ import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 
 const ModalComboBox = (props) => {
   const { t } = useTranslation("SingleSignOn");
-  const { isDisabled, spAction, setComboBoxOption } = props;
+  const { isDisabled, spAction, setComboBoxOption, className } = props;
 
   const certificateOptions = [
     { key: "signing", label: t("Signing") },
@@ -22,7 +22,7 @@ const ModalComboBox = (props) => {
   );
 
   return (
-    <FieldContainer isVertical labelText={t("UsedFor")}>
+    <FieldContainer isVertical labelText={t("UsedFor")} className={className}>
       <StyledInputWrapper>
         <ComboBox
           onSelect={setComboBoxOption}

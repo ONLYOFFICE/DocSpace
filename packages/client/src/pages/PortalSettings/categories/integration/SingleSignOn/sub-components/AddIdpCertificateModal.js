@@ -2,7 +2,6 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import Box from "@docspace/components/box";
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
@@ -21,7 +20,8 @@ const AddIdpCertificateModal = (props) => {
 
   return (
     <StyledModalDialog
-      contentHeight="100%"
+      autoMaxHeight
+      autoMaxWidth
       displayType="modal"
       onClose={closeIdpModal}
       visible={idpIsModalVisible}
@@ -38,25 +38,23 @@ const AddIdpCertificateModal = (props) => {
           name="idpCertificate"
           onChange={setInput}
           value={idpCertificate}
+          placeholder={t("PlaceholderCert")}
         />
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        <Box displayProp="flex" marginProp="12px 0 4px 0">
-          <Button
-            className="ok-button"
-            label={t("Common:OKButton")}
-            onClick={addIdpCertificate}
-            primary
-            isDisabled={!idpCertificate}
-            size="small"
-          />
-          <Button
-            label={t("Common:CancelButton")}
-            onClick={closeIdpModal}
-            size="small"
-          />
-        </Box>
+        <Button
+          label={t("Common:OKButton")}
+          onClick={addIdpCertificate}
+          primary
+          isDisabled={!idpCertificate}
+          size="normalTouchscreen"
+        />
+        <Button
+          label={t("Common:CancelButton")}
+          onClick={closeIdpModal}
+          size="normalTouchscreen"
+        />
       </ModalDialog.Footer>
     </StyledModalDialog>
   );

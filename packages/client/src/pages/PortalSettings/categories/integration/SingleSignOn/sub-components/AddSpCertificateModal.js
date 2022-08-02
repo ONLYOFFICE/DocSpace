@@ -35,23 +35,16 @@ const AddSpCertificateModal = (props) => {
       zIndex={310}
       isLoading={!ready}
       autoMaxHeight
+      autoMaxWidth
       onClose={closeSpModal}
       visible={spIsModalVisible}
     >
       <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
 
       <ModalDialog.Body>
-        <Box marginProp="4px 0 15px 0">
-          <Link
-            className="generate"
-            isHovered
-            onClick={onGenerate}
-            type="action"
-          >
-            {t("GenerateCertificate")}
-          </Link>
-        </Box>
-
+        <Link className="generate" isHovered onClick={onGenerate} type="action">
+          {t("GenerateCertificate")}
+        </Link>
         <Text isBold className="text-area-label" noSelect>
           {t("OpenCertificate")}
         </Text>
@@ -74,30 +67,29 @@ const AddSpCertificateModal = (props) => {
           onChange={setInput}
           value={spPrivateKey}
           isDisabled={isGeneratedCertificate}
+          placeholder={t("PlaceholderCert")}
         />
 
-        <ModalComboBox isDisabled={isGeneratedCertificate} />
+        <ModalComboBox
+          className="modal-combo"
+          isDisabled={isGeneratedCertificate}
+        />
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        <Box displayProp="flex">
-          <Button
-            className="ok-button"
-            label={t("Common:OKButton")}
-            onClick={addSpCertificate}
-            primary
-            size="small"
-            isDisabled={
-              isGeneratedCertificate || !spCertificate || !spPrivateKey
-            }
-          />
-          <Button
-            label={t("Common:CancelButton")}
-            onClick={closeSpModal}
-            size="small"
-            isDisabled={isGeneratedCertificate}
-          />
-        </Box>
+        <Button
+          label={t("Common:OKButton")}
+          onClick={addSpCertificate}
+          primary
+          size="normalTouchscreen"
+          isDisabled={isGeneratedCertificate || !spCertificate || !spPrivateKey}
+        />
+        <Button
+          label={t("Common:CancelButton")}
+          onClick={closeSpModal}
+          size="normalTouchscreen"
+          isDisabled={isGeneratedCertificate}
+        />
       </ModalDialog.Footer>
     </StyledModalDialog>
   );

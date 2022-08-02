@@ -3,27 +3,30 @@ import styled from "styled-components";
 import ModalDialog from "@docspace/components/modal-dialog";
 
 const StyledModalDialog = styled(ModalDialog)`
+  .heading {
+    font-size: 21px;
+  }
+
   .generate {
     font-weight: 600;
   }
 
   .text-area {
+    width: 488px !important;
+    height: 72px !important;
     margin-top: 4px;
-    margin-bottom: 16px;
 
     &-label {
       font-weight: 600;
       margin-bottom: 5px;
     }
   }
-
-  .field-label-icon {
-    margin-bottom: 5px;
+  .text-area-label {
+    margin-top: 16px;
   }
 
-  .ok-button {
-    padding: 8px 26px;
-    margin-right: 10px;
+  .modal-combo {
+    margin: 16px 0 0 0;
   }
 `;
 

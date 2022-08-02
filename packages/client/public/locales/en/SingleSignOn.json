@@ -26,6 +26,7 @@
   "NewCertificate": "New Certificate",
   "OpenCertificate": "Public Certificate",
   "Or": "or",
+  "PlaceholderCert": "Paste or type text",
   "PrivateKey": "Private Key",
   "ProviderURL": "IdP Entity Id",
   "ProviderURLTooltip": "Identity Provider Entity Id (Issuer URL)",
