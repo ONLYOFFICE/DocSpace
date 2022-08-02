@@ -82,7 +82,7 @@ const ThirpartyComboBox = ({
   setIsScrollLocked,
 }) => {
   const dropdownRef = useRef(null);
-  let isGrayLabel = true;
+  const [isGrayLabel, setIsGrayLabel] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleIsOpen = () => {
@@ -97,7 +97,7 @@ const ThirpartyComboBox = ({
   const [dropdownDirection, setDropdownDirection] = useState("bottom");
 
   const setStorageLocaiton = (thirparty) => {
-    isGrayLabel = false;
+    setIsGrayLabel(false);
     setRoomParams({ ...roomParams, storageLocation: thirparty });
     setIsOpen(false);
     setIsScrollLocked(false);
