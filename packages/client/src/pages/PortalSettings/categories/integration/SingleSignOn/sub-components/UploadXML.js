@@ -63,7 +63,6 @@ const UploadXML = (props) => {
             !enableSso || uploadXmlUrl.trim().length === 0 || isLoadingXml
           }
           onClick={uploadByUrl}
-          size="small"
           tabIndex={2}
         />
 

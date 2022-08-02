@@ -35,6 +35,8 @@ const StyledSsoPage = styled.div`
   }
 
   .field-label {
+    display: flex;
+    align-items: center;
     height: auto;
     font-weight: 600;
     line-height: 20px;
@@ -70,6 +72,8 @@ const StyledSsoPage = styled.div`
   }
 
   .upload-button {
+    height: 32px;
+    width: 45px;
     margin-left: 9px;
     overflow: inherit;
 
@@ -109,6 +113,10 @@ const StyledSsoPage = styled.div`
 
   .sp-metadata {
     display: ${(props) => (!props.hideMetadata ? "none" : "block")};
+  }
+
+  .advanced-block {
+    margin: 24px 0;
   }
 `;
 

@@ -36,7 +36,7 @@ const ProviderMetadata = (props) => {
         tooltipContent={t("SPSingleLogoutURLTooltip")}
       />
 
-      <Box>
+      <Box marginProp="24px 0">
         <Button
           label={t("DownloadMetadataXML")}
           primary

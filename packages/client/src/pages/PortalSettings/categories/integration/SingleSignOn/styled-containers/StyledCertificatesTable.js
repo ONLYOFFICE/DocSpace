@@ -25,7 +25,7 @@ const StyledCertificatesTable = styled.div`
   }
 
   .row {
-    width: fit-content;
+    width: 350px;
     display: flex;
     gap: 16px;
     align-items: center;
@@ -35,6 +35,7 @@ const StyledCertificatesTable = styled.div`
     .column {
       display: flex;
       flex-direction: column;
+      width: 100%;
 
       .column-row {
         display: flex;

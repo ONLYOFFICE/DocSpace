@@ -59,7 +59,7 @@ const Certificates = (props) => {
         alignItems="center"
         displayProp="flex"
         flexDirection="row"
-        marginProp="24px 0"
+        marginProp="40px 0 12px 0"
       >
         <Text as="h2" fontSize="14px" fontWeight={600} noSelect>
           {prefix === "idp" ? t("idpCertificates") : t("spCertificates")}

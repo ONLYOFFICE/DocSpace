@@ -26,7 +26,7 @@ const HideButton = (props) => {
       marginProp={marginProp}
     >
       {!isAdditionalParameters && (
-        <Text as="h2" fontSize="16px" fontWeight={600} noSelect>
+        <Text as="h2" fontSize="16px" fontWeight={700} noSelect>
           {text}
         </Text>
       )}

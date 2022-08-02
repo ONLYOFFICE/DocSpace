@@ -62,16 +62,14 @@ const CertificatesTable = (props) => {
             <Text fontWeight={600} fontSize="14px" noSelect>
               {certificate.domainName}
             </Text>
-            <Text color="#a3a9ae" fontWeight={600} fontSize="14px" noSelect>
-              {", "}
-              {getFullDate(certificate.startDate)}
-              {" - "}
-              {getFullDate(certificate.expiredDate)}
-            </Text>
           </div>
           <div className="column-row">
             <Text color="#a3a9ae" fontSize="12px" fontWeight={600} noSelect>
               {certificate.action}
+              {" | "}
+              {getFullDate(certificate.startDate)}
+              {" - "}
+              {getFullDate(certificate.expiredDate)}
             </Text>
           </div>
         </div>

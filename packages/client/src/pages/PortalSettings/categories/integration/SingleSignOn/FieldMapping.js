@@ -38,7 +38,7 @@ const FieldMapping = (props) => {
         displayProp="flex"
         flexDirection="row"
         fontSize="14px"
-        marginProp="22px 0 14px 0"
+        marginProp="24px 0 16px 0"
       >
         <Text as="h2" fontSize="14px" fontWeight={600} noSelect>
           {t("AttributeMatching")}
@@ -105,6 +105,7 @@ const FieldMapping = (props) => {
       />
 
       <FieldContainer
+        className="advanced-block"
         inlineHelpButton
         isVertical
         labelText={t("AdvancedSettings")}
