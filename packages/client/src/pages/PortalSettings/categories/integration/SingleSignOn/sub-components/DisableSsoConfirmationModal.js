@@ -41,7 +41,7 @@ const DisableSsoConfirmationModal = (props) => {
           />
           <Button
             label={t("Common:CancelButton")}
-            onClick={onClose}
+            onClick={closeConfirmationDisableModal}
             size="small"
           />
         </Box>

@@ -37,7 +37,7 @@ const ResetConfirmationModal = (props) => {
           />
           <Button
             label={t("Common:CancelButton")}
-            onClick={onClose}
+            onClick={closeResetModal}
             size="small"
           />
         </Box>
