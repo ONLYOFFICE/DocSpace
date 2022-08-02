@@ -263,11 +263,11 @@
     };
 
     const openCrateFileModal = (format) => {
-      executeMethod("openCreateItemModal", format);
+      executeMethod("openCrateItemModal", format);
     };
 
     const openCrateFolderModal = () => {
-      executeMethod("openCreateItemModal");
+      executeMethod("openCrateItemModal");
     };
 
     const openCrateRoomModal = () => {
