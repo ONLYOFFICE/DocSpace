@@ -375,7 +375,7 @@ class SsoFormStore {
         }
 
         if (Array.isArray(object[key])) {
-          this[`${prefix}certificates`] = object[key].slice();
+          this[`${prefix}Certificates`] = object[key].slice();
         } else {
           for (let field of Object.keys(object[key])) {
             this[`${prefix}${field}`] = object[key][field];
