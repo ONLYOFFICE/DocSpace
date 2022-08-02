@@ -74,7 +74,7 @@ const IdpSettings = (props) => {
             : ssoUrlRedirectHasError
         }
       >
-        <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
+        <Box displayProp="flex" flexDirection="row" marginProp="8px 0 4px 0">
           <Text noSelect>{t("Binding")}</Text>
 
           <RadioButtonGroup
@@ -107,7 +107,7 @@ const IdpSettings = (props) => {
             : sloUrlRedirectHasError
         }
       >
-        <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
+        <Box displayProp="flex" flexDirection="row" marginProp="8px 0 4px 0">
           <Text>{t("Binding")}</Text>
 
           <RadioButtonGroup

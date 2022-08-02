@@ -9,7 +9,7 @@ import ToggleButton from "@docspace/components/toggle-button";
 
 import DisableSsoConfirmationModal from "./DisableSsoConfirmationModal";
 
-const borderProp = { radius: "4px" };
+const borderProp = { radius: "6px" };
 
 const ToggleSSO = (props) => {
   const { t } = useTranslation("SingleSignOn");
