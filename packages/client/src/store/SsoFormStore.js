@@ -127,6 +127,7 @@ class SsoFormStore {
     try {
       const res = await getCurrentSsoSettings();
       this.isSsoEnabled = res.enableSso;
+      this.spMetadata = res.enableSso;
       this.defaultSettings = res;
       this.setFieldsFromObject(res);
     } catch (err) {
