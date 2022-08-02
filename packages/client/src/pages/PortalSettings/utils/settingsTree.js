@@ -128,6 +128,13 @@ export const settingsTree = [
         tKey: "ThirdPartyAuthorization",
         isCategory: true,
       },
+      {
+        key: "3-1",
+        icon: "",
+        link: "plugins",
+        tKey: "Plugins",
+        isCategory: true,
+      },
     ],
   },
   {
@@ -249,6 +256,12 @@ export const settingsTreeFull = [
         key: "3-0",
         icon: "",
         link: "third-party-services",
+      },
+      {
+        key: "3-1",
+        icon: "",
+        link: "plugins",
+        tKey: "Plugins",
       },
       {
         title: "SMTP Settings",
