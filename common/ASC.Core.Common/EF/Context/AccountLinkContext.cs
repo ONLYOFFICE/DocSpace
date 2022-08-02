@@ -26,22 +26,16 @@
 
 namespace ASC.Core.Common.EF.Context;
 
-public class AccountLinkContext : BaseDbContext
+public class AccountLinkContext : DbContext
 {
     public DbSet<AccountLinks> AccountLinks { get; set; }
+
+    public AccountLinkContext(DbContextOptions<AccountLinkContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-           .From(modelBuilder, _provider)
+           .From(modelBuilder, Database)
            .AddAccountLinks();
-    }
-}
-
-public static class AccountLinkContextExtension
-{
-    public static DIHelper AddAccountLinkContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<AccountLinkContext>();
     }
 }

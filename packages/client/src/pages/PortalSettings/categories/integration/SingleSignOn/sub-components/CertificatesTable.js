@@ -1,0 +1,118 @@
+import React from "react";
+import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
+
+import Text from "@docspace/components/text";
+import { ContextMenuButton } from "@docspace/components";
+
+import StyledCertificatesTable from "../styled-containers/StyledCertificatesTable";
+import { ReactSVG } from "react-svg";
+
+const CertificatesTable = (props) => {
+  const { t } = useTranslation(["SingleSignOn", "Common"]);
+  const {
+    prefix,
+    setSpCertificate,
+    setIdpCertificate,
+    delSpCertificate,
+    delIdpCertificate,
+    idpCertificates,
+    spCertificates,
+  } = props;
+
+  const renderRow = (certificate, index) => {
+    const onEdit = () => {
+      prefix === "sp"
+        ? setSpCertificate(certificate)
+        : setIdpCertificate(certificate);
+    };
+
+    const onDelete = () => {
+      prefix === "sp"
+        ? delSpCertificate(certificate.crt)
+        : delIdpCertificate(certificate.crt);
+    };
+
+    const contextOptions = [
+      {
+        key: "edit",
+        label: t("Common:EditButton"),
+        icon: "static/images/access.edit.react.svg",
+        onClick: onEdit,
+      },
+      {
+        key: "delete",
+        label: t("Common:Delete"),
+        icon: "static/images/catalog.trash.react.svg",
+        onClick: onDelete,
+      },
+    ];
+
+    const getOptions = () => contextOptions;
+
+    const getFullDate = (date) => {
+      return `${new Date(date).toLocaleDateString()}`;
+    };
+
+    return (
+      <div key={`certificate-${index}`} className="row">
+        <ReactSVG src="/static/images/icons/24/file.svg" />
+        <div className="column">
+          <div className="column-row">
+            <Text fontWeight={600} fontSize="14px" noSelect>
+              {certificate.domainName}
+            </Text>
+            <Text color="#a3a9ae" fontWeight={600} fontSize="14px" noSelect>
+              {", "}
+              {getFullDate(certificate.startDate)}
+              {" - "}
+              {getFullDate(certificate.expiredDate)}
+            </Text>
+          </div>
+          <div className="column-row">
+            <Text color="#a3a9ae" fontSize="12px" fontWeight={600} noSelect>
+              {certificate.action}
+            </Text>
+          </div>
+        </div>
+        <ContextMenuButton
+          className="context-btn"
+          getData={getOptions}
+          usePortal={false}
+        />
+      </div>
+    );
+  };
+
+  return (
+    <StyledCertificatesTable>
+      <div className="body">
+        {prefix === "idp" &&
+          idpCertificates.map((cert, index) => renderRow(cert, index))}
+
+        {prefix === "sp" &&
+          spCertificates.map((cert, index) => renderRow(cert, index))}
+      </div>
+    </StyledCertificatesTable>
+  );
+};
+
+export default inject(({ ssoStore }) => {
+  const {
+    setSpCertificate,
+    setIdpCertificate,
+    delSpCertificate,
+    delIdpCertificate,
+    idpCertificates,
+    spCertificates,
+  } = ssoStore;
+
+  return {
+    setSpCertificate,
+    setIdpCertificate,
+    delSpCertificate,
+    delIdpCertificate,
+    idpCertificates,
+    spCertificates,
+  };
+})(observer(CertificatesTable));

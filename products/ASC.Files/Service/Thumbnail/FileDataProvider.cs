@@ -24,26 +24,26 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Files.ThumbnailBuilder;
 
 [Scope]
 internal class FileDataProvider
 {
-    private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
-
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly ICache _cache;
-    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     private readonly string _cacheKey;
 
     public FileDataProvider(
         ThumbnailSettings settings,
         ICache ascCache,
-        DbContextManager<FilesDbContext> dbContextManager)
+        IDbContextFactory<FilesDbContext> dbContextFactory)
     {
         _thumbnailSettings = settings;
         _cache = ascCache;
-        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(_thumbnailSettings.ConnectionStringName));
+        _dbContextFactory = dbContextFactory;
         _cacheKey = "PremiumTenants";
     }
 
@@ -83,9 +83,10 @@ internal class FileDataProvider
         group by t.tenant
         */
 
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var search =
-            FilesDbContext.Tariffs
-            .Join(FilesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
+            filesDbContext.Tariffs
+            .Join(filesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
             .Where(r =>
                     (
                         r.tariff.Comment == null ||
@@ -115,7 +116,8 @@ internal class FileDataProvider
 
     private IEnumerable<FileData<int>> GetFileData(Expression<Func<DbFile, bool>> where)
     {
-        var search = FilesDbContext.Files
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var search = filesDbContext.Files
             .AsQueryable()
             .Where(r => r.CurrentVersion && r.ThumbnailStatus == ASC.Files.Core.Thumbnail.Waiting && !r.Encrypted)
             .OrderByDescending(r => r.ModifiedOn)
@@ -127,7 +129,7 @@ internal class FileDataProvider
         }
 
         return search
-            .Join(FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+            .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
             .Where(r => r.DbTenant.Status == TenantStatus.Active)
             .Select(r => new FileData<int>(r.DbFile.TenantId, r.DbFile.Id, ""))
             .ToList();

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.ElasticSearch;
 
 public enum UpdateAction
@@ -63,22 +65,21 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     protected internal T Wrapper => _serviceProvider.GetService<T>();
     internal string IndexName => Wrapper.IndexName;
-    private WebstudioDbContext WebstudioDbContext => _lazyWebstudioDbContext.Value;
 
     private bool _isExist;
     private readonly Client _client;
     private readonly ILogger _logger;
+    private readonly IDbContextFactory<WebstudioDbContext> _dbContextFactory;
     protected readonly TenantManager _tenantManager;
     private readonly BaseIndexerHelper _baseIndexerHelper;
     private readonly Settings _settings;
     private readonly IServiceProvider _serviceProvider;
-    private readonly Lazy<WebstudioDbContext> _lazyWebstudioDbContext;
     private static readonly object _locker = new object();
 
     public BaseIndexer(
         Client client,
         ILogger<BaseIndexer<T>> logger,
-        DbContextManager<WebstudioDbContext> dbContextManager,
+        IDbContextFactory<WebstudioDbContext> dbContextFactory,
         TenantManager tenantManager,
         BaseIndexerHelper baseIndexerHelper,
         Settings settings,
@@ -86,11 +87,11 @@ public class BaseIndexer<T> where T : class, ISearchItem
     {
         _client = client;
         _logger = logger;
+        _dbContextFactory = dbContextFactory;
         _tenantManager = tenantManager;
         _baseIndexerHelper = baseIndexerHelper;
         _settings = settings;
         _serviceProvider = serviceProvider;
-        _lazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
     }
 
     public IEnumerable<List<T>> IndexAll(
@@ -98,8 +99,9 @@ public class BaseIndexer<T> where T : class, ISearchItem
         Func<DateTime, List<int>> getIds,
         Func<long, long, DateTime, List<T>> getData)
     {
+        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
         var now = DateTime.UtcNow;
-        var lastIndexed = WebstudioDbContext.WebstudioIndex
+        var lastIndexed = webstudioDbContext.WebstudioIndex
             .Where(r => r.IndexName == Wrapper.IndexName)
             .Select(r => r.LastModified)
             .FirstOrDefault();
@@ -121,13 +123,13 @@ public class BaseIndexer<T> where T : class, ISearchItem
             yield return getData(ids[i], ids[i + 1], lastIndexed);
         }
 
-        WebstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
+        webstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
         {
             IndexName = Wrapper.IndexName,
             LastModified = now
         });
 
-        WebstudioDbContext.SaveChanges();
+        webstudioDbContext.SaveChanges();
 
         _logger.DebugIndexCompleted(Wrapper.IndexName);
     }
@@ -533,14 +535,15 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     private void Clear()
     {
-        var index = WebstudioDbContext.WebstudioIndex.Where(r => r.IndexName == Wrapper.IndexName).FirstOrDefault();
+        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        var index = webstudioDbContext.WebstudioIndex.Where(r => r.IndexName == Wrapper.IndexName).FirstOrDefault();
 
         if (index != null)
         {
-            WebstudioDbContext.WebstudioIndex.Remove(index);
+            webstudioDbContext.WebstudioIndex.Remove(index);
         }
 
-        WebstudioDbContext.SaveChanges();
+        webstudioDbContext.SaveChanges();
 
         _logger.DebugIndexDeleted(Wrapper.IndexName);
         _client.Instance.Indices.Delete(Wrapper.IndexName);
