@@ -61,7 +61,7 @@ const Certificates = (props) => {
         flexDirection="row"
         marginProp="40px 0 12px 0"
       >
-        <Text as="h2" fontSize="14px" fontWeight={600} noSelect>
+        <Text as="h2" fontSize="15px" fontWeight={600} noSelect>
           {prefix === "idp" ? t("idpCertificates") : t("spCertificates")}
         </Text>
 
@@ -122,6 +122,7 @@ const Certificates = (props) => {
           {provider === "IdentityProvider" && (
             <>
               <SsoComboBox
+                isDisabled={idpCertificates.length === 0}
                 labelText={t("idpSigningAlgorithm")}
                 name="idpVerifyAlgorithm"
                 options={verifyAlgorithmsOptions}
@@ -134,6 +135,7 @@ const Certificates = (props) => {
           {provider === "ServiceProvider" && (
             <>
               <SsoComboBox
+                isDisabled={spCertificates.length === 0}
                 labelText={t("spSigningAlgorithm")}
                 name="spSigningAlgorithm"
                 options={verifyAlgorithmsOptions}
@@ -142,6 +144,7 @@ const Certificates = (props) => {
               />
 
               <SsoComboBox
+                isDisabled={spCertificates.length === 0}
                 labelText={t("StandardDecryptionAlgorithm")}
                 name={"spEncryptAlgorithm"}
                 options={decryptAlgorithmsOptions}

@@ -40,7 +40,7 @@ const FieldMapping = (props) => {
         fontSize="14px"
         marginProp="24px 0 16px 0"
       >
-        <Text as="h2" fontSize="14px" fontWeight={600} noSelect>
+        <Text as="h2" fontSize="15px" fontWeight={600} noSelect>
           {t("AttributeMatching")}
         </Text>
 

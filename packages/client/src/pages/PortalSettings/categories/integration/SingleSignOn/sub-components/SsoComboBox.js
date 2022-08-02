@@ -16,6 +16,7 @@ const SsoComboBox = (props) => {
     setComboBox,
     enableSso,
     isLoadingXml,
+    isDisabled,
   } = props;
 
   const currentOption =
@@ -29,7 +30,7 @@ const SsoComboBox = (props) => {
     <FieldContainer isVertical labelText={labelText}>
       <StyledInputWrapper>
         <ComboBox
-          isDisabled={!enableSso || isLoadingXml}
+          isDisabled={!enableSso || isLoadingXml || isDisabled}
           onSelect={onSelect}
           options={options}
           scaled

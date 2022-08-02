@@ -117,6 +117,11 @@ const StyledSsoPage = styled.div`
 
   .advanced-block {
     margin: 24px 0;
+
+    .field-label {
+      font-size: 15px;
+      font-weight: 600;
+    }
   }
 `;
 

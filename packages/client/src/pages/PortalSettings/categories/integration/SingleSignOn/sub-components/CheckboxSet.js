@@ -36,7 +36,7 @@ const CheckboxSet = (props) => {
   } = props;
 
   return (
-    <Box marginProp="12px 0">
+    <Box marginProp="16px 0">
       <Checkbox
         className="checkbox-input"
         isDisabled={!enableSso || isLoadingXml}
