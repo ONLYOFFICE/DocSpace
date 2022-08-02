@@ -27,6 +27,6 @@
 namespace ASC.AuditTrail.Log;
 internal static partial class AuditReportCreatorLogger
 {
-    [LoggerMessage(Level = LogLevel.Error, Message = "Error while generating login report:")]
-    public static partial void ErrorWhileGenerating(this ILogger<AuditReportCreator> logger, Exception exception);
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error while creating login report:")]
+    public static partial void ErrorWhileCreating(this ILogger<AuditReportCreator> logger, Exception exception);
 }

@@ -50,6 +50,8 @@ global using ASC.Api.Core.Log;
 global using ASC.Api.Core.Middleware;
 global using ASC.Api.Core.Routing;
 global using ASC.Api.Core.Security;
+global using ASC.AuditTrail.Repositories;
+global using ASC.AuditTrail.Types;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
