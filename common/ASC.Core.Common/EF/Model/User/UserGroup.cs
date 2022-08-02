@@ -29,14 +29,14 @@ namespace ASC.Core.Common.EF;
 public class UserGroup : BaseEntity, IMapFrom<UserGroupRef>
 {
     public int Tenant { get; set; }
-    public Guid UserId { get; set; }
-    public Guid GroupId { get; set; }
+    public Guid Userid { get; set; }
+    public Guid UserGroupId { get; set; }
     public UserGroupRefType RefType { get; set; }
     public bool Removed { get; set; }
     public DateTime LastModified { get; set; }
     public override object[] GetKeys()
     {
-        return new object[] { Tenant, UserId, GroupId, RefType };
+        return new object[] { Tenant, Userid, UserGroupId, RefType };
     }
 }
 
@@ -51,9 +51,10 @@ public static class DbUserGroupExtension
             new UserGroup
             {
                 Tenant = 1,
-                UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
-                GroupId = Guid.Parse("cd84e66b-b803-40fc-99f9-b2969a54a1de"),
-                RefType = 0
+                Userid = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
+                UserGroupId = Guid.Parse("cd84e66b-b803-40fc-99f9-b2969a54a1de"),
+                RefType = 0,
+                LastModified = new DateTime(2022, 7, 8)
             }
             );
 
@@ -64,23 +65,24 @@ public static class DbUserGroupExtension
     {
         modelBuilder.Entity<UserGroup>(entity =>
         {
-            entity.HasKey(e => new { e.Tenant, e.UserId, e.GroupId, e.RefType })
+            entity.HasKey(e => new { e.Tenant, e.Userid, e.UserGroupId, e.RefType })
                 .HasName("PRIMARY");
 
-            entity.ToTable("core_usergroup");
+            entity.ToTable("core_usergroup")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-            entity.Property(e => e.UserId)
+            entity.Property(e => e.Userid)
                 .HasColumnName("userid")
                 .HasColumnType("varchar(38)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.GroupId)
+            entity.Property(e => e.UserGroupId)
                 .HasColumnName("groupid")
                 .HasColumnType("varchar(38)")
                 .HasCharSet("utf8")
@@ -90,17 +92,19 @@ public static class DbUserGroupExtension
 
             entity.Property(e => e.LastModified)
                 .HasColumnName("last_modified")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .HasColumnType("timestamp");
 
-            entity.Property(e => e.Removed).HasColumnName("removed");
+            entity.Property(e => e.Removed)
+            .HasColumnName("removed")
+            .HasColumnType("tinyint(1)")
+            .HasDefaultValueSql("'0'");
         });
     }
     public static void PgSqlAddUserGroup(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserGroup>(entity =>
         {
-            entity.HasKey(e => new { e.Tenant, e.UserId, e.GroupId, e.RefType })
+            entity.HasKey(e => new { e.Tenant, e.Userid, e.UserGroupId, e.RefType })
                 .HasName("core_usergroup_pkey");
 
             entity.ToTable("core_usergroup", "onlyoffice");
@@ -110,11 +114,11 @@ public static class DbUserGroupExtension
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-            entity.Property(e => e.UserId)
+            entity.Property(e => e.Userid)
                 .HasColumnName("userid")
                 .HasMaxLength(38);
 
-            entity.Property(e => e.GroupId)
+            entity.Property(e => e.UserGroupId)
                 .HasColumnName("groupid")
                 .HasMaxLength(38);
 

@@ -26,29 +26,19 @@
 
 namespace ASC.Core.Common.Hosting;
 
-public class MySqlIntegrationEventLogContext : InstanceRegistrationContext { }
-public class PostgreSqlIntegrationEventLogContext : InstanceRegistrationContext { }
-
-public class InstanceRegistrationContext : BaseDbContext
+public class InstanceRegistrationContext : DbContext
 {
     public DbSet<InstanceRegistration> InstanceRegistrations { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public InstanceRegistrationContext(DbContextOptions<InstanceRegistrationContext> options) : base(options)
     {
-        ModelBuilderWrapper.From(modelBuilder, _provider)
-                           .AddInstanceRegistration();
 
     }
 
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlIntegrationEventLogContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlIntegrationEventLogContext() } ,
-                };
-        }
+        ModelBuilderWrapper.From(modelBuilder, Database)
+                           .AddInstanceRegistration();
+
     }
 }

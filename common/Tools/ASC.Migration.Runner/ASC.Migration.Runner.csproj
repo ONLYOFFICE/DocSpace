@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>1701;1702;EF1001</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Microsoft.Build" Version="17.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\migrations\mysql\ASC.Migrations.MySql.csproj" />
+    <ProjectReference Include="..\..\..\migrations\postgre\ASC.Migrations.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
+    <ProjectReference Include="..\..\ASC.ActiveDirectory\ASC.ActiveDirectory.csproj" />
+    <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\..\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
+    <ProjectReference Include="..\ASC.Migration.Core\ASC.Migration.Core.csproj" />
+  </ItemGroup>
+
+</Project>

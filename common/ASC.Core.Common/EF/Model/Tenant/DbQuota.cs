@@ -83,11 +83,16 @@ public static class DbQuotaExtension
             entity.HasKey(e => e.Tenant)
                 .HasName("PRIMARY");
 
-            entity.ToTable("tenants_quota");
+            entity.ToTable("tenants_quota")
+                .HasCharSet("utf8");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.Tenant)
+                .HasColumnName("tenant")
+                .ValueGeneratedNever();
 
-            entity.Property(e => e.ActiveUsers).HasColumnName("active_users");
+            entity.Property(e => e.ActiveUsers)
+                .HasColumnName("active_users")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.AvangateId)
                 .HasColumnName("avangate_id")
@@ -103,13 +108,15 @@ public static class DbQuotaExtension
 
             entity.Property(e => e.Features)
                 .HasColumnName("features")
-                .HasColumnType("text")
-                .HasCharSet("utf8")
-                .UseCollation("utf8_general_ci");
+                .HasColumnType("text");
 
-            entity.Property(e => e.MaxFileSize).HasColumnName("max_file_size");
+            entity.Property(e => e.MaxFileSize)
+                .HasColumnName("max_file_size")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.MaxTotalSize).HasColumnName("max_total_size");
+            entity.Property(e => e.MaxTotalSize)
+                .HasColumnName("max_total_size")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Name)
                 .HasColumnName("name")
@@ -119,9 +126,13 @@ public static class DbQuotaExtension
 
             entity.Property(e => e.Price)
                 .HasColumnName("price")
+                .HasDefaultValueSql("'0.00'")
                 .HasColumnType("decimal(10,2)");
 
-            entity.Property(e => e.Visible).HasColumnName("visible");
+            entity.Property(e => e.Visible)
+                .HasColumnName("visible")
+                .HasColumnType("tinyint(1)")
+                .HasDefaultValueSql("'0'");
         });
     }
     public static void PgSqlAddDbQuota(this ModelBuilder modelBuilder)

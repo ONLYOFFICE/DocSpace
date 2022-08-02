@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using DbContext = Microsoft.EntityFrameworkCore.DbContext;
-
 namespace ASC.Core.Common.EF;
 
 public enum Provider
@@ -34,51 +32,38 @@ public enum Provider
     MySql
 }
 
-public class BaseDbContext : DbContext
+public static class BaseDbContextExtension
 {
-    public ConnectionStringSettings ConnectionStringSettings { get; set; }
-    internal string MigrateAssembly { get; set; }
-    internal ILoggerFactory LoggerFactory { get; set; }
-    public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
-
-    protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
-    protected Provider _provider;
-
-    public BaseDbContext() { }
-    public BaseDbContext(DbContextOptions options) : base(options) { }
-
-    public void Migrate()
+    public static void OptionsAction(IServiceProvider sp, DbContextOptionsBuilder optionsBuilder)
     {
-        if (ProviderContext != null)
-        {
-            var provider = GetProviderByConnectionString();
+        var configuration = new ConfigurationExtension(sp.GetRequiredService<IConfiguration>());
+        var migrateAssembly = configuration["testAssembly"];
+        var connectionString = configuration.GetConnectionStrings("default");
+        var loggerFactory = sp.GetRequiredService<EFLoggerFactory>();
 
-            using var sqlProvider = ProviderContext[provider]();
-            sqlProvider.ConnectionStringSettings = ConnectionStringSettings;
-            sqlProvider.LoggerFactory = LoggerFactory;
-            sqlProvider.MigrateAssembly = MigrateAssembly;
-
-            sqlProvider.Database.Migrate();
-        }
-        else
-        {
-            Database.Migrate();
-        }
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseLoggerFactory(LoggerFactory);
+        optionsBuilder.UseLoggerFactory(loggerFactory);
         optionsBuilder.EnableSensitiveDataLogging();
-        _provider = GetProviderByConnectionString();
+
+        var _provider = Provider.MySql;
+        switch (connectionString.ProviderName)
+        {
+            case "MySql.Data.MySqlClient":
+                _provider = Provider.MySql;
+                break;
+            case "Npgsql":
+                _provider = Provider.PostgreSql;
+                break;
+        }
+
         switch (_provider)
         {
             case Provider.MySql:
-                optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, providerOptions =>
+                optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomMySqlMigrationsSqlGenerator>();
+                optionsBuilder.UseMySql(connectionString.ConnectionString, ServerVersion.Parse("8.0.25"), providerOptions =>
                 {
-                    if (!string.IsNullOrEmpty(MigrateAssembly))
+                    if (!string.IsNullOrEmpty(migrateAssembly))
                     {
-                        providerOptions.MigrationsAssembly(MigrateAssembly);
+                        providerOptions.MigrationsAssembly(migrateAssembly);
                     }
 
                     //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
@@ -86,30 +71,28 @@ public class BaseDbContext : DbContext
                 });
                 break;
             case Provider.PostgreSql:
-                optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+                optionsBuilder.UseNpgsql(connectionString.ConnectionString, providerOptions =>
+                {
+                    if (!string.IsNullOrEmpty(migrateAssembly))
+                    {
+                        providerOptions.MigrationsAssembly(migrateAssembly);
+                    }
+                });
                 break;
         }
     }
 
-    public Provider GetProviderByConnectionString()
+    public static void AddBaseDbContextPool<T>(this IServiceCollection services) where T : DbContext
     {
-        switch (ConnectionStringSettings.ProviderName)
-        {
-            case "MySql.Data.MySqlClient":
-                return Provider.MySql;
-            case "Npgsql":
-                return Provider.PostgreSql;
-            default:
-                break;
-        }
-
-        return Provider.MySql;
+        services.AddPooledDbContextFactory<T>(OptionsAction);
     }
-}
 
-public static class BaseDbContextExtension
-{
-    public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+    public static void AddBaseDbContext<T>(this IServiceCollection services) where T : DbContext
+    {
+        services.AddDbContext<T>(OptionsAction);
+    }
+
+    public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : DbContext
     {
         var dbSet = expressionDbSet.Compile().Invoke(b);
         var existingBlog = dbSet.Find(entity.GetKeys());
@@ -125,7 +108,7 @@ public static class BaseDbContextExtension
         }
     }
 
-    public static async Task<T> AddOrUpdateAsync<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+    public static async Task<T> AddOrUpdateAsync<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : DbContext
     {
         var dbSet = expressionDbSet.Compile().Invoke(b);
         var existingBlog = await dbSet.FindAsync(entity.GetKeys());
@@ -147,43 +130,4 @@ public static class BaseDbContextExtension
 public abstract class BaseEntity
 {
     public abstract object[] GetKeys();
-}
-
-public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T : BaseDbContext, new()
-{
-    public MultiRegionalDbContext() { }
-
-    internal List<T> Context { get; set; }
-
-    public void Dispose()
-    {
-        if (Context == null)
-        {
-            return;
-        }
-
-        foreach (var c in Context)
-        {
-            if (c != null)
-            {
-                c.Dispose();
-            }
-        }
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return Context == null ? ValueTask.CompletedTask : InternalDisposeAsync();
-    }
-
-    private async ValueTask InternalDisposeAsync()
-    {
-        foreach (var c in Context)
-        {
-            if (c != null)
-            {
-                await c.DisposeAsync();
-            }
-        }
-    }
 }

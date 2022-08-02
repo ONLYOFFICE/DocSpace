@@ -112,13 +112,13 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Archive" xml:space="preserve">
-    <value>Archive</value>
+    <value>Archived</value>
   </data>
   <data name="CorporateFiles" xml:space="preserve">
     <value>Common</value>
@@ -134,6 +134,9 @@
   </data>
   <data name="MyFiles" xml:space="preserve">
     <value>My documents</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Personal</value>
   </data>
   <data name="PrivacyRoom" xml:space="preserve">
     <value>Private Room</value>
@@ -151,6 +154,6 @@
     <value>Trash</value>
   </data>
   <data name="VirtualRooms" xml:space="preserve">
-    <value>VirtualRooms</value>
+    <value>Shared</value>
   </data>
 </root>

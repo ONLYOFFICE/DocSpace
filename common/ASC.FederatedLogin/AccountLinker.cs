@@ -58,54 +58,24 @@ public class AccountLinkerStorage
 }
 
 [Scope]
-public class ConfigureAccountLinker : IConfigureNamedOptions<AccountLinker>
+public class AccountLinker
 {
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly AccountLinkerStorage _accountLinkerStorage;
-    private readonly DbContextManager<AccountLinkContext> _dbContextManager;
+    private readonly IDbContextFactory<AccountLinkContext> _accountLinkContextManager;
 
-    public ConfigureAccountLinker(
-        Signature signature,
-        InstanceCrypto instanceCrypto,
-        AccountLinkerStorage accountLinkerStorage,
-        DbContextManager<AccountLinkContext> dbContextManager)
+    public AccountLinker(Signature signature, InstanceCrypto instanceCrypto, AccountLinkerStorage accountLinkerStorage, IDbContextFactory<AccountLinkContext> accountLinkContextManager)
     {
         _signature = signature;
         _instanceCrypto = instanceCrypto;
         _accountLinkerStorage = accountLinkerStorage;
-        _dbContextManager = dbContextManager;
+        _accountLinkContextManager = accountLinkContextManager;
     }
-
-    public void Configure(string name, AccountLinker options)
-    {
-        options.DbId = name;
-        options.AccountLinkerStorage = _accountLinkerStorage;
-        options.InstanceCrypto = _instanceCrypto;
-        options.Signature = _signature;
-        options.AccountLinkContextManager = _dbContextManager;
-    }
-
-    public void Configure(AccountLinker options)
-    {
-        Configure("default", options);
-    }
-}
-
-[Scope(typeof(ConfigureAccountLinker))]
-public class AccountLinker
-{
-    public string DbId { get; set; }
-    public AccountLinkContext AccountLinkContext => AccountLinkContextManager.Get(DbId);
-    public DbSet<AccountLinks> AccountLinks => AccountLinkContext.AccountLinks;
-    internal Signature Signature { get; set; }
-    internal InstanceCrypto InstanceCrypto { get; set; }
-    internal AccountLinkerStorage AccountLinkerStorage { get; set; }
-    internal DbContextManager<AccountLinkContext> AccountLinkContextManager { get; set; }
 
     public IEnumerable<string> GetLinkedObjects(string id, string provider)
     {
-        return GetLinkedObjects(new LoginProfile(Signature, InstanceCrypto) { Id = id, Provider = provider });
+        return GetLinkedObjects(new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
     }
 
     public IEnumerable<string> GetLinkedObjects(LoginProfile profile)
@@ -115,7 +85,8 @@ public class AccountLinker
 
     public IEnumerable<string> GetLinkedObjectsByHashId(string hashid)
     {
-        return AccountLinks
+        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
+        return accountLinkContext.AccountLinks
             .Where(r => r.UId == hashid)
             .Where(r => r.Provider != string.Empty)
             .Select(r => r.Id)
@@ -129,7 +100,7 @@ public class AccountLinker
 
     public IEnumerable<LoginProfile> GetLinkedProfiles(string obj)
     {
-        return AccountLinkerStorage.GetFromCache(obj, GetLinkedProfilesFromDB);
+        return _accountLinkerStorage.GetFromCache(obj, GetLinkedProfilesFromDB);
     }
 
     public void AddLink(string obj, LoginProfile profile)
@@ -143,20 +114,21 @@ public class AccountLinker
             Linked = DateTime.UtcNow
         };
 
-        AccountLinkContext.AddOrUpdate(r => r.AccountLinks, accountLink);
-        AccountLinkContext.SaveChanges();
+        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
+        accountLinkContext.AddOrUpdate(r => r.AccountLinks, accountLink);
+        accountLinkContext.SaveChanges();
 
-        AccountLinkerStorage.RemoveFromCache(obj);
+        _accountLinkerStorage.RemoveFromCache(obj);
     }
 
     public void AddLink(string obj, string id, string provider)
     {
-        AddLink(obj, new LoginProfile(Signature, InstanceCrypto) { Id = id, Provider = provider });
+        AddLink(obj, new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
     }
 
     public void RemoveLink(string obj, string id, string provider)
     {
-        RemoveLink(obj, new LoginProfile(Signature, InstanceCrypto) { Id = id, Provider = provider });
+        RemoveLink(obj, new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
     }
 
     public void RemoveLink(string obj, LoginProfile profile)
@@ -166,13 +138,15 @@ public class AccountLinker
 
     public void RemoveProvider(string obj, string provider = null, string hashId = null)
     {
-        var strategy = AccountLinkContext.Database.CreateExecutionStrategy();
+        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
+        var strategy = accountLinkContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tr = AccountLinkContext.Database.BeginTransaction();
+            using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
+            using var tr = accountLinkContext.Database.BeginTransaction();
 
-            var accountLinkQuery = AccountLinks
+            var accountLinkQuery = accountLinkContext.AccountLinks
                 .Where(r => r.Id == obj);
 
             if (!string.IsNullOrEmpty(provider))
@@ -186,24 +160,26 @@ public class AccountLinker
             }
 
             var accountLink = accountLinkQuery.FirstOrDefault();
-            AccountLinks.Remove(accountLink);
-            AccountLinkContext.SaveChanges();
+            accountLinkContext.AccountLinks.Remove(accountLink);
+            accountLinkContext.SaveChanges();
 
             tr.Commit();
         });
 
 
 
-        AccountLinkerStorage.RemoveFromCache(obj);
+        _accountLinkerStorage.RemoveFromCache(obj);
     }
 
     private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
     {
+        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
+
         //Retrieve by uinque id
-        return AccountLinks
+        return accountLinkContext.AccountLinks
                 .Where(r => r.Id == obj)
                 .Select(r => r.Profile)
                 .ToList()
-                .ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, x));
+                .ConvertAll(x => LoginProfile.CreateFromSerializedString(_signature, _instanceCrypto, x));
     }
 }

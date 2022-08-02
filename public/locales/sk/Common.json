@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Minimálna dĺžka",
   "People": "Ľudia",
   "Phone": "Telefón",
+  "PreparationPortalTitle": "Prebieha obnova portálu.",
   "Previous": "Predchádzajúci",
   "Profile": "Profil",
   "ProjectsProduct": "Projekty",
@@ -168,5 +169,9 @@
   "View": "Vyhliadka",
   "ViewWeb": "Zobraziť webovú verziu",
   "Warning": "Upozornenie",
-  "Hotkeys": "Klávesové skratky"
+  "Hotkeys": "Klávesové skratky",
+  "PaymentsTitle": "Platby",
+  "AboutCompanyTitle": "O programe",
+  "LogoutButton": "Odhlásiť Sa",
+  "HelpCenter": "Centrum pomoci"
 }

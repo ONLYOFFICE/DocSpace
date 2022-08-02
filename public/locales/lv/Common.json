@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Minimālais garums",
   "People": "Cilvēki",
   "Phone": "Tālrunis",
+  "PreparationPortalTitle": "Notiek portāla atjaunošana.",
   "Previous": "Iepriekšējais",
   "Profile": "Profils",
   "ProjectsProduct": "Projekti",
@@ -168,5 +169,9 @@
   "View": "Skatīt",
   "ViewWeb": "Skatīt tīmekļa versiju",
   "Warning": "Brīdinājums",
-  "Hotkeys": "Ātrie taustiņi"
+  "Hotkeys": "Ātrie taustiņi",
+  "PaymentsTitle": "Maksājumi",
+  "AboutCompanyTitle": "Par šo programmu",
+  "LogoutButton": "Izrakstīties",
+  "HelpCenter": "Palīdzības centrs"
 }

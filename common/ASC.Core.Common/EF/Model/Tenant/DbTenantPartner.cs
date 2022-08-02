@@ -54,9 +54,12 @@ public static class DbTenantPartnerExtension
             entity.HasKey(e => e.TenantId)
                 .HasName("PRIMARY");
 
-            entity.ToTable("tenants_partners");
+            entity.ToTable("tenants_partners")
+                .HasCharSet("utf8");
 
-            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+            entity.Property(e => e.TenantId)
+                .HasColumnName("tenant_id")
+                .ValueGeneratedNever();
 
             entity.Property(e => e.AffiliateId)
                 .HasColumnName("affiliate_id")

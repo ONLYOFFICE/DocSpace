@@ -39,7 +39,7 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<OneDriveFolderDao> monitor,
         FileUtility fileUtility,
@@ -47,8 +47,9 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         OneDriveDaoSelector oneDriveDaoSelector,
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _crossDao = crossDao;
         _oneDriveDaoSelector = oneDriveDaoSelector;
@@ -73,6 +74,50 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         return GetRootFolderAsync(fileId);
     }
 
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    {
+        if (CheckInvalidFilter(filterType))
+        {
+            return AsyncEnumerable.Empty<Folder<string>>();
+        }
+
+        var rooms = GetFoldersAsync(parentId);
+
+        rooms = FilterByRoomType(rooms, filterType);
+        rooms = FilterByOwner(rooms, ownerId, withoutMe);
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            rooms = rooms.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
+
+        rooms = FilterByTags(rooms, withoutTags, tags);
+
+        return rooms;
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    {
+        if (CheckInvalidFilter(filterType))
+        {
+            return AsyncEnumerable.Empty<Folder<string>>();
+        }
+
+        var folders = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
+
+        folders = FilterByRoomType(folders, filterType);
+        folders = FilterByOwner(folders, ownerId, withoutMe);
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
+
+        folders = FilterByTags(folders, withoutTags, tags);
+
+        return folders;
+    }
+
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
         var items = await GetOneDriveItemsAsync(parentId, true);
@@ -83,24 +128,16 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
-        IEnumerable<string> tagNames = null)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
     {
-        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagNames);
-    }
-
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
-        IEnumerable<string> tagNames = null)
-        {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly or FilterType.SpreadsheetsOnly
+            or FilterType.ArchiveOnly or FilterType.MediaOnly)
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = GetFoldersAsync(parentId); //TODO:!!!
                                                  
-        folders = SetFilterByTypes(folders, filterTypes);
-
                                                  //Filter
         if (subjectID != Guid.Empty)
         {
@@ -114,12 +151,7 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        folders = FilterByTags(folders, tagNames);
-
-        if (orderBy == null)
-        {
-            orderBy = new OrderBy(SortedByType.DateAndTime, false);
-        }
+        orderBy ??= new OrderBy(SortedByType.DateAndTime, false);
 
         folders = orderBy.SortedBy switch
         {
@@ -133,23 +165,15 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        IEnumerable<string> tagNames = null)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
     {
-        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
-    }
-
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        IEnumerable<string> tagNames = null)
-        {
-        if (!CheckForInvalidFilters(filterTypes))
+        if (filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly or FilterType.SpreadsheetsOnly
+            or FilterType.ArchiveOnly or FilterType.MediaOnly)
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e));
-
-        folders = SetFilterByTypes(folders, filterTypes);
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
@@ -162,8 +186,6 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
-
-        folders = FilterByTags(folders, tagNames);
 
         return folders;
     }
@@ -239,44 +261,45 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         var onedriveFolder = await GetOneDriveItemAsync(folderId);
         var id = MakeId(onedriveFolder);
 
-        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
-        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-        using (var tx = await FilesDbContext.Database.BeginTransactionAsync())
-        {
-            var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using (var tx = await filesDbContext.Database.BeginTransactionAsync())
+            {
+                var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
                .Where(r => r.Id.StartsWith(id))
                .Select(r => r.HashId)
                .ToListAsync()
                ;
 
-            var link = await Query(FilesDbContext.TagLink)
+                var link = await Query(filesDbContext.TagLink)
                 .Where(r => hashIDs.Any(h => h == r.EntryId))
                 .ToListAsync();
 
-            FilesDbContext.TagLink.RemoveRange(link);
-            await FilesDbContext.SaveChangesAsync();
+                filesDbContext.TagLink.RemoveRange(link);
+                await filesDbContext.SaveChangesAsync();
 
-            var tagsToRemove = from ft in FilesDbContext.Tag
-                               join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                var tagsToRemove = from ft in filesDbContext.Tag
+                                   join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
                                where ftl == null
                                select ft;
 
-            FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
-            var securityToDelete = Query(FilesDbContext.Security)
+                var securityToDelete = Query(filesDbContext.Security)
                 .Where(r => hashIDs.Any(h => h == r.EntryId));
 
-            FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-            await FilesDbContext.SaveChangesAsync();
+                filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                await filesDbContext.SaveChangesAsync();
 
-            var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
+                var mappingToDelete = Query(filesDbContext.ThirdpartyIdMapping)
                 .Where(r => hashIDs.Any(h => h == r.HashId));
 
-            FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
-            await FilesDbContext.SaveChangesAsync();
+                filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                await filesDbContext.SaveChangesAsync();
 
             await tx.CommitAsync();
         }

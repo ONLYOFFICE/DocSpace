@@ -59,7 +59,7 @@ public static class UserDavExtension
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
             entity.Property(e => e.UserId)
-                .HasColumnName("userid")
+                .HasColumnName("user_id")
                 .HasColumnType("varchar(38)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
@@ -78,7 +78,7 @@ public static class UserDavExtension
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
             entity.Property(e => e.UserId)
-                .HasColumnName("userid")
+                .HasColumnName("user_id")
                 .HasMaxLength(38);
         });
 

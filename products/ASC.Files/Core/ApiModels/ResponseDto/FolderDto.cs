@@ -37,7 +37,10 @@ public class FolderDto<T> : FileEntryDto<T>
     public IEnumerable<string> Tags { get; set; }
     public Logo Logo { get; set; }
     public bool Pinned { get; set; }
+    public RoomType? RoomType { get; set; }
+
     protected internal override FileEntryType EntryType { get => FileEntryType.Folder; }
+
     public FolderDto() { }
 
     public static FolderDto<int> GetSample()
@@ -109,6 +112,15 @@ public class FolderDtoHelper : FileEntryDtoHelper
             }
 
             result.Logo = await _roomLogoManager.GetLogo(folder.Id);
+            result.RoomType = folder.FolderType switch
+            {
+                FolderType.FillingFormsRoom => RoomType.FillingFormsRoom,
+                FolderType.EditingRoom => RoomType.EditingRoom,
+                FolderType.ReviewRoom => RoomType.ReviewRoom,
+                FolderType.ReadOnlyRoom => RoomType.ReadOnlyRoom,
+                FolderType.CustomRoom => RoomType.CustomRoom,
+                _ => null,
+            };
         }
 
         if (folder.RootFolderType == FolderType.USER

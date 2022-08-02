@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Comprimento mínimo",
   "People": "Pessoas",
   "Phone": "Telefone",
+  "PreparationPortalTitle": "Restauração do portal está em andamento.",
   "Previous": "Anterior",
   "Profile": "Perfil",
   "ProjectsProduct": "Projetos",
@@ -168,5 +169,9 @@
   "View": "Ver",
   "ViewWeb": "Veja a versão web",
   "Warning": "Aviso",
-  "Hotkeys": "Teclas de acesso"
+  "Hotkeys": "Teclas de acesso",
+  "PaymentsTitle": "Pagamentos",
+  "AboutCompanyTitle": "Sobre este programa",
+  "LogoutButton": "Sair",
+  "HelpCenter": "Central de Ajuda"
 }

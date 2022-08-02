@@ -1,3 +1,0 @@
-export const GUID_EMPTY = "00000000-0000-0000-0000-000000000000";
-export const ID_NO_GROUP_MANAGER = "4a515a15-d4d6-4b8e-828e-e0586f18f3a3";
-export const ADS_TIMEOUT = 300000; // 5 min

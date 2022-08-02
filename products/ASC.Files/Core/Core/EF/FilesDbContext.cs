@@ -26,9 +26,7 @@
 
 namespace ASC.Files.Core.EF;
 
-public class MySqlFilesDbContext : FilesDbContext { }
-public class PostgreSqlFilesDbContext : FilesDbContext { }
-public class FilesDbContext : BaseDbContext
+public class FilesDbContext : DbContext
 {
     public DbSet<DbFile> Files { get; set; }
     public DbSet<DbFolder> Folders { get; set; }
@@ -45,22 +43,14 @@ public class FilesDbContext : BaseDbContext
     public DbSet<DbTariff> Tariffs { get; set; }
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlFilesDbContext() },
-                { Provider.PostgreSql, () => new PostgreSqlFilesDbContext() },
-            };
-        }
-    }
+    public DbSet<FilesConverts> FilesConverts { get; set; }
+
+    public FilesDbContext(DbContextOptions<FilesDbContext> dbContextOptions) : base(dbContextOptions) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddDbFiles()
             .AddDbFolder()
             .AddDbFolderTree()
@@ -75,14 +65,7 @@ public class FilesDbContext : BaseDbContext
             .AddDbFilesProperties()
             .AddDbTariff()
             .AddDbQuota()
-            .AddDbTenant();
-    }
-}
-
-public static class FilesDbExtension
-{
-    public static DIHelper AddFilesDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<FilesDbContext>();
+            .AddDbTenant()
+            .AddFilesConverts();
     }
 }

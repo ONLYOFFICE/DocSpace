@@ -33,16 +33,16 @@ public static partial class CommonLogger
     [LoggerMessage(Level = LogLevel.Error)]
     public static partial void ErrorWithException(this ILogger logger, string message, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Error)]
+    [LoggerMessage(Level = LogLevel.Error, Message = "{message}")]
     public static partial void Error(this ILogger logger, string message);
 
-    [LoggerMessage(Level = LogLevel.Debug)]
+    [LoggerMessage(Level = LogLevel.Debug, Message = "{message}")]
     public static partial void Debug(this ILogger logger, string message);
 
-    [LoggerMessage(Level = LogLevel.Information)]
+    [LoggerMessage(Level = LogLevel.Information, Message = "{message}")]
     public static partial void Information(this ILogger logger, string message);
 
-    [LoggerMessage(Level = LogLevel.Warning)]
+    [LoggerMessage(Level = LogLevel.Warning, Message = "{message}")]
     public static partial void Warning(this ILogger logger, string message);
 
     [LoggerMessage(Level = LogLevel.Warning)]

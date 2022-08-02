@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Минимальная длина",
   "People": "Люди",
   "Phone": "Телефон",
+  "PreparationPortalTitle": "Выполняется восстановление портала",
   "Previous": "Предыдущая",
   "Profile": "Профиль",
   "ProjectsProduct": "Проекты",
@@ -168,5 +169,9 @@
   "View": "Просмотр",
   "ViewWeb": "Просмотреть веб-версию",
   "Warning": "Внимание",
-  "Hotkeys": "Горячие клавиши"
+  "Hotkeys": "Горячие клавиши",
+  "PaymentsTitle": "Платежи",
+  "AboutCompanyTitle": "О программе",
+  "LogoutButton": "Выйти",
+  "HelpCenter": "Справочный центр"
 }

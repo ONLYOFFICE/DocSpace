@@ -54,7 +54,8 @@ public static class DbWebstudioIndexExtension
             entity.HasKey(e => e.IndexName)
                 .HasName("PRIMARY");
 
-            entity.ToTable("webstudio_index");
+            entity.ToTable("webstudio_index")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.IndexName)
                 .HasColumnName("index_name")
@@ -64,9 +65,7 @@ public static class DbWebstudioIndexExtension
 
             entity.Property(e => e.LastModified)
                 .HasColumnName("last_modified")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .ValueGeneratedOnAddOrUpdate();
+                .HasColumnType("timestamp");
         });
     }
     public static void PgSqlAddDbWebstudioIndex(this ModelBuilder modelBuilder)

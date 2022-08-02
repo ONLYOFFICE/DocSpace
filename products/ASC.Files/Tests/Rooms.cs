@@ -169,25 +169,21 @@ public partial class BaseFilesTests
         Assert.IsTrue(invites.First().Success);
     }
 
-    [TestCase(DataTests.RoomId, DataTests.RoomLinkKey)]
-    [Category("Room")]
-    [Order(14)]
-    [Description("put - rooms/{id}/share - share a room by link")]
-    public async Task ShareRoomByLink(int id, string key)
-    {
-        var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", new { Access = Core.Security.FileShare.Read, Key = key });
-        Assert.IsNotNull(share);
-    }
-
     [TestCase(DataTests.RoomId)]
     [Category("Room")]
     [Order(15)]
-    [Description("get - rooms/{id}/links - get invitation links")]
-    public async Task GetLink(int id)
+    [Description("get - rooms/{id}/links - get invitation links /// put - rooms/{id}/share - share a room by link")]
+    public async Task GetLinkAndShareRoomByLink(int id)
     {
-        var invites = await GetAsync<string>($"rooms/{id}/links?access=2");
-        Assert.IsNotNull(invites);
-        Assert.IsNotEmpty(invites);
+        var invite = await GetAsync<string>($"rooms/{id}/links?access=2");
+        Assert.IsNotNull(invite);
+        Assert.IsNotEmpty(invite);
+
+        var key = invite.Substring(invite.IndexOf("&key=") + 5);
+        key = key.Substring(0, key.IndexOf('&'));
+
+        var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", new { Access = Core.Security.FileShare.Read, Key = key });
+        Assert.IsNotNull(share);
     }
 
     //[TestCase(DataTests.RoomId, DataTests.Image)]

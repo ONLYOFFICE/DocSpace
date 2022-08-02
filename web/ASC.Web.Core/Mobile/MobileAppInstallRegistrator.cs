@@ -24,19 +24,16 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using DbContext = ASC.Core.Common.EF.Context.DbContext;
-
 namespace ASC.Web.Core.Mobile;
 
 [Scope]
 public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
 {
-    private readonly Lazy<DbContext> _lazyDbContext;
-    private DbContext DbContext { get => _lazyDbContext.Value; }
+    private readonly IDbContextFactory<CustomDbContext> _dbContextFactory;
 
-    public MobileAppInstallRegistrator(DbContextManager<DbContext> dbContext)
+    public MobileAppInstallRegistrator(IDbContextFactory<CustomDbContext> dbContextFactory)
     {
-        _lazyDbContext = new Lazy<DbContext>(() => dbContext.Value);
+        _dbContextFactory = dbContextFactory;
     }
 
     public void RegisterInstall(string userEmail, MobileAppType appType)
@@ -49,13 +46,15 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
             LastSign = DateTime.UtcNow
         };
 
-        DbContext.MobileAppInstall.Add(mai);
-        DbContext.SaveChanges();
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        dbContext.MobileAppInstall.Add(mai);
+        dbContext.SaveChanges();
     }
 
     public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
     {
-        var q = DbContext.MobileAppInstall.Where(r => r.UserEmail == userEmail);
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        var q = dbContext.MobileAppInstall.Where(r => r.UserEmail == userEmail);
 
         if (appType.HasValue)
         {
