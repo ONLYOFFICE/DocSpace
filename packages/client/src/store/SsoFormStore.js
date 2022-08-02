@@ -532,6 +532,7 @@ class SsoFormStore {
 
     try {
       const res = await this.validateCertificate(data);
+      if (!res) throw Error("Invalid certificate");
       const newCertificates = res.data;
       newCertificates.map((cert) => {
         this.spCertificates = [...this.spCertificates, cert];
@@ -554,6 +555,7 @@ class SsoFormStore {
 
     try {
       const res = await this.validateCertificate(data);
+      if (!res) throw Error("Invalid certificate");
       const newCertificates = res.data;
       newCertificates.map((cert) => {
         this.idpCertificates = [...this.idpCertificates, cert];
