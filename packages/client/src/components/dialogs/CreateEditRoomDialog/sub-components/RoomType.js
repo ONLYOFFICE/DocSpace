@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import IconButton from "@appserver/components/icon-button";
-import Text from "@appserver/components/text";
-import RoomLogo from "@appserver/components/room-logo";
-import HelpButton from "@appserver/components/help-button";
+import IconButton from "@docspace/components/icon-button";
+import Text from "@docspace/components/text";
+import RoomLogo from "@docspace/components/room-logo";
+import HelpButton from "@docspace/components/help-button";
 
 const StyledRoomType = styled.div`
   cursor: pointer;

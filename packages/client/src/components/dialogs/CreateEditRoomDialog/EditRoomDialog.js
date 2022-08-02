@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ModalDialog from "@appserver/components/modal-dialog";
-import Button from "@appserver/components/button";
+import ModalDialog from "@docspace/components/modal-dialog";
+import Button from "@docspace/components/button";
 
 import TagHandler from "./handlers/tagHandler";
 import { roomTypes } from "./data";

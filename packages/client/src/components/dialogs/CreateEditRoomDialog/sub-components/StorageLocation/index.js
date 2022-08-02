@@ -1,10 +1,10 @@
 import React from "react";
 
-import Text from "@appserver/components/text";
+import Text from "@docspace/components/text";
 
-import Checkbox from "@appserver/components/checkbox";
+import Checkbox from "@docspace/components/checkbox";
 import { StyledParam } from "../StyledParam";
-import HelpButton from "@appserver/components/help-button";
+import HelpButton from "@docspace/components/help-button";
 import ThirpartyComboBox from "./ThirpartyComboBox";
 
 const StorageLocation = ({

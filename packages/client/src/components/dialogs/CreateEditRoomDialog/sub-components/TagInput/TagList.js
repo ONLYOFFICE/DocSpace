@@ -1,4 +1,4 @@
-import Tag from "@appserver/components/tag";
+import Tag from "@docspace/components/tag";
 import React from "react";
 import styled from "styled-components";
 

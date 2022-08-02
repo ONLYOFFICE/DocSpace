@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
 
-import Label from "@appserver/components/label";
-import TextInput from "@appserver/components/text-input";
+import Label from "@docspace/components/label";
+import TextInput from "@docspace/components/text-input";
 import TagList from "./TagList";
-import DropDownItem from "@appserver/components/drop-down-item";
+import DropDownItem from "@docspace/components/drop-down-item";
 import { StyledDropDown, StyledDropDownWrapper } from "../StyledDropdown";
-import { isMobile } from "@appserver/components/utils/device";
+import { isMobile } from "@docspace/components/utils/device";
 
 const StyledTagInput = styled.div`
   .set_room_params-tag_input {

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import ModalDialog from "@appserver/components/modal-dialog";
-import Button from "@appserver/components/button";
+import ModalDialog from "@docspace/components/modal-dialog";
+import Button from "@docspace/components/button";
 
 import TagHandler from "./handlers/tagHandler";
 
 import SetRoomParams from "./sub-components/SetRoomParams";
 import RoomTypeList from "./sub-components/RoomTypeList";
 import { roomTypes } from "./data";
-import IconButton from "@appserver/components/icon-button";
+import IconButton from "@docspace/components/icon-button";
 
 const StyledModalDialog = styled(ModalDialog)`
   .header-with-button {

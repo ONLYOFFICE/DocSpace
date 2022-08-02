@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-import { smallTablet } from "@appserver/components/utils/device";
+import { smallTablet } from "@docspace/components/utils/device";
 
-import DropDown from "@appserver/components/drop-down";
+import DropDown from "@docspace/components/drop-down";
 
 const StyledDropDownWrapper = styled.div`
   width: 100%;

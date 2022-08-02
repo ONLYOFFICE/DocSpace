@@ -5,13 +5,13 @@ import { ReactSVG } from "react-svg";
 import { thirparties } from "../../data";
 import { StyledDropDown, StyledDropDownWrapper } from "../StyledDropdown";
 
-import { isHugeMobile } from "@appserver/components/utils/device";
-import DomHelpers from "@appserver/components/utils/domHelpers";
+import { isHugeMobile } from "@docspace/components/utils/device";
+import DomHelpers from "@docspace/components/utils/domHelpers";
 
-import Text from "@appserver/components/text";
-import Button from "@appserver/components/button";
-import DropDownItem from "@appserver/components/drop-down-item";
-import Checkbox from "@appserver/components/checkbox";
+import Text from "@docspace/components/text";
+import Button from "@docspace/components/button";
+import DropDownItem from "@docspace/components/drop-down-item";
+import Checkbox from "@docspace/components/checkbox";
 
 const StyledStorageLocation = styled.div`
   display: flex;

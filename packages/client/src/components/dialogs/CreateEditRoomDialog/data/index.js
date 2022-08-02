@@ -1,4 +1,4 @@
-import { RoomsType } from "@appserver/common/constants";
+import { RoomsType } from "@docspace/common/constants";
 
 export const roomTypes = [
   {

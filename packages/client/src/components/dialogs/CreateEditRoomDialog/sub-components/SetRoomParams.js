@@ -3,12 +3,12 @@ import styled from "styled-components";
 import RoomTypeDropdown from "./RoomTypeDropdown";
 import StorageLocation from "./StorageLocation";
 
-import TextInput from "@appserver/components/text-input";
-import Label from "@appserver/components/label";
-import ToggleButton from "@appserver/components/toggle-button";
-import HelpButton from "@appserver/components/help-button";
-import Text from "@appserver/components/text";
-import AvatarEditor from "@appserver/components/avatar-editor";
+import TextInput from "@docspace/components/text-input";
+import Label from "@docspace/components/label";
+import ToggleButton from "@docspace/components/toggle-button";
+import HelpButton from "@docspace/components/help-button";
+import Text from "@docspace/components/text";
+import AvatarEditor from "@docspace/components/avatar-editor";
 import TagInput from "./TagInput";
 import { StyledParam } from "./StyledParam";
 import RoomType from "./RoomType";
