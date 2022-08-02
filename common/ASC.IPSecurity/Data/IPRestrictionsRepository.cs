@@ -29,22 +29,19 @@ namespace ASC.IPSecurity;
 [Scope]
 public class IPRestrictionsRepository
 {
-    private TenantDbContext TenantDbContext => _lazyTenantDbContext.Value;
-
-    private const string DbId = "core";
-
-    private readonly Lazy<TenantDbContext> _lazyTenantDbContext;
+    private readonly IDbContextFactory<TenantDbContext> _dbContextManager;
     private readonly IMapper _mapper;
 
-    public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager, IMapper mapper)
+    public IPRestrictionsRepository(IDbContextFactory<TenantDbContext> dbContextManager, IMapper mapper)
     {
-        _lazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Get(DbId));
+        _dbContextManager = dbContextManager;
         _mapper = mapper;
     }
 
     public List<IPRestriction> Get(int tenant)
     {
-        return TenantDbContext.TenantIpRestrictions
+        using var tenantDbContext = _dbContextManager.CreateDbContext();
+        return tenantDbContext.TenantIpRestrictions
             .Where(r => r.Tenant == tenant)
             .ProjectTo<IPRestriction>(_mapper.ConfigurationProvider)
             .ToList();
@@ -52,15 +49,17 @@ public class IPRestrictionsRepository
 
     public List<string> Save(IEnumerable<string> ips, int tenant)
     {
-        var strategy = TenantDbContext.Database.CreateExecutionStrategy();
+        using var tenantDbContext = _dbContextManager.CreateDbContext();
+        var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = TenantDbContext.Database.BeginTransaction();
+            using var tenantDbContext = _dbContextManager.CreateDbContext();
+            using var tx = tenantDbContext.Database.BeginTransaction();
 
-            var restrictions = TenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ToList();
-            TenantDbContext.TenantIpRestrictions.RemoveRange(restrictions);
-            TenantDbContext.SaveChanges();
+            var restrictions = tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ToList();
+            tenantDbContext.TenantIpRestrictions.RemoveRange(restrictions);
+            tenantDbContext.SaveChanges();
 
             var ipsList = ips.Select(r => new TenantIpRestrictions
             {
@@ -68,8 +67,8 @@ public class IPRestrictionsRepository
                 Ip = r
             });
 
-            TenantDbContext.TenantIpRestrictions.AddRange(ipsList);
-            TenantDbContext.SaveChanges();
+            tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
+            tenantDbContext.SaveChanges();
 
             tx.Commit();
         });

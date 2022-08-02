@@ -93,6 +93,8 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     diHelper.TryAdd<TenantManager>();
     diHelper.TryAdd<UserManager>();
 
+    services.AddBaseDbContextPool<FilesDbContext>();
+
     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 });
 
