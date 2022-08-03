@@ -78,10 +78,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
       heightTablet={32}
       key={i}
       label={tag}
-      onClick={() => {
-        addFetchedTag(tag);
-        console.log(tag);
-      }}
+      onClick={() => addFetchedTag(tag)}
     />
   ));
 
