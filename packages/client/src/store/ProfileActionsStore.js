@@ -4,6 +4,7 @@ import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import authStore from "@docspace/common/store/AuthStore";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
+import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 
 const { proxyURL } = AppServerConfig;
 
@@ -191,6 +192,17 @@ class ProfileActionsStore {
         icon: "/static/images/info.react.svg",
         label: "Debug Info",
         onClick: this.onDebugClick,
+      });
+    }
+
+    const pluginActions = getProfileMenuItems();
+
+    if (pluginActions) {
+      pluginActions.forEach((option) => {
+        actions.splice(option.value.position, 0, {
+          key: option.key,
+          ...option.value,
+        });
       });
     }
 
