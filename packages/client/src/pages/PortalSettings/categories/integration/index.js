@@ -1,35 +1,81 @@
-import React, { lazy, Suspense } from "react";
-import { Route, Switch } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
-import Loader from "@docspace/components/loader";
+import { withTranslation } from "react-i18next";
+
 import { combineUrl } from "@docspace/common/utils";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
+import AppLoader from "@docspace/common/components/AppLoader";
 
-const ThirdPartyServices = lazy(() => import("./thirdPartyServicesSettings"));
+import Submenu from "@docspace/components/submenu";
 
-const PROXY_BASE_URL = combineUrl(
-  AppServerConfig.proxyURL,
-  "/portal-settings/integration"
-);
+import ThirdPartyServices from "./thirdPartyServicesSettings";
+import PortalIntegration from "./portalIntegration";
 
-const Integration = ({ match }) => {
+import config from "PACKAGE_FILE";
+
+const Integration = (props) => {
+  const { t, history } = props;
+  const [currentTab, setCurrentTab] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const data = [
+    {
+      id: "third-party-services",
+      name: t("ThirdPartyAuthorization"),
+      content: <ThirdPartyServices />,
+    },
+    {
+      id: "portal-integration",
+      name: "Portal Integration",
+      content: <PortalIntegration />,
+    },
+  ];
+
+  const load = async () => {
+    const { loadBaseInfo } = props;
+
+    await loadBaseInfo();
+
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+
+    if (currentTab !== -1) setCurrentTab(currentTab);
+
+    setIsLoading(true);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const onSelect = (e) => {
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/portal-settings/integration/${e.id}`
+      )
+    );
+  };
+
+  if (!isLoading) return <AppLoader />;
+
   return (
-    <Suspense
-      fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
-    >
-      <Switch>
-        <Route
-          exact
-          path={[
-            combineUrl(PROXY_BASE_URL, "/third-party-services"),
-            combineUrl(AppServerConfig.proxyURL, "/integration"),
-            match.path,
-          ]}
-          component={ThirdPartyServices}
-        />
-      </Switch>
-    </Suspense>
+    <Submenu
+      data={data}
+      startSelect={currentTab}
+      onSelect={(e) => onSelect(e)}
+    />
   );
 };
 
-export default withRouter(Integration);
+export default inject(({ setup }) => {
+  const { initSettings } = setup;
+
+  return {
+    loadBaseInfo: async () => {
+      await initSettings();
+    },
+  };
+})(withTranslation("Settings")(withRouter(observer(Integration))));

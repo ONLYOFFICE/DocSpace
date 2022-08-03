@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 import toastr from "@docspace/components/toast/toastr";
 import Section from "@docspace/common/components/Section";
-import { showLoader, hideLoader } from "@docspace/common/utils";
+import { showLoader, hideLoader, frameCallback } from "@docspace/common/utils";
 import FilesFilter from "@docspace/common/api/files/filter";
 import { getGroup } from "@docspace/common/api/groups";
 import { getUserById } from "@docspace/common/api/people";
@@ -242,6 +242,8 @@ class PureHome extends React.Component {
         setFirstLoad(false);
         setAlreadyFetchingRooms(false);
       });
+
+    window.addEventListener("message", this.handleMessage, false);
   }
 
   fetchDefaultFiles = () => {
@@ -355,6 +357,113 @@ class PureHome extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("message", this.handleMessage, false);
+  }
+
+  handleMessage = async (e) => {
+    const {
+      setFrameConfig,
+      user,
+      folders,
+      files,
+      selection,
+      filesList,
+      selectedFolderStore,
+      createFile,
+      createFolder,
+      createRoom,
+      refreshFiles,
+      setViewAs,
+    } = this.props;
+
+    const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+
+    if (eventData.data) {
+      const { data, methodName } = eventData.data;
+
+      let res;
+
+      switch (methodName) {
+        case "setConfig":
+          res = await setFrameConfig(data);
+          break;
+        case "getFolderInfo":
+          res = selectedFolderStore;
+          break;
+        case "getFolders":
+          res = folders;
+          break;
+        case "getFiles":
+          res = files;
+          break;
+        case "getItems":
+          res = filesList;
+          break;
+        case "getSelection":
+          res = selection;
+          break;
+        case "getUserInfo":
+          res = user;
+          break;
+        case "openCrateItemModal":
+          {
+            const item = new Event(Events.CREATE);
+
+            const payload = {
+              extension: data,
+              id: -1,
+            };
+
+            item.payload = payload;
+
+            window.dispatchEvent(item);
+          }
+          break;
+        case "openCrateRoomModal":
+          {
+            const room = new Event(Events.ROOM_CREATE);
+
+            window.dispatchEvent(room);
+          }
+          break;
+        case "createFile":
+          {
+            const { folderId, title, templateId, formId } = data;
+            res = await createFile(folderId, title, templateId, formId);
+
+            refreshFiles();
+          }
+          break;
+        case "createFolder":
+          {
+            const { parentFolderId, title } = data;
+            res = await createFolder(parentFolderId, title);
+
+            refreshFiles();
+          }
+          break;
+        case "createRoom":
+          {
+            const { title, type } = data;
+            res = await createRoom(title, type);
+
+            refreshFiles();
+          }
+          break;
+        case "setItemsView":
+          {
+            setViewAs(data);
+          }
+          break;
+        default:
+          res = "Wrong method";
+      }
+
+      frameCallback(res);
+    }
+  };
+
   render() {
     //console.log("Home render");
     const {
@@ -382,7 +491,12 @@ class PureHome extends React.Component {
       checkedMaintenance,
       setMaintenanceExist,
       snackbarExist,
+      frameConfig,
     } = this.props;
+
+    const isFrame = frameConfig && window.name === frameConfig.name;
+    const showTitle = frameConfig && JSON.parse(frameConfig.showTitle);
+    const showFilter = frameConfig && JSON.parse(frameConfig.showFilter);
 
     return (
       <>
@@ -414,7 +528,11 @@ class PureHome extends React.Component {
           firstLoad={firstLoad}
         >
           <Section.SectionHeader>
-            <SectionHeaderContent />
+            {isFrame ? (
+              showTitle && <SectionHeaderContent />
+            ) : (
+              <SectionHeaderContent />
+            )}
           </Section.SectionHeader>
 
           <Section.SectionBar>
@@ -428,7 +546,11 @@ class PureHome extends React.Component {
           </Section.SectionBar>
 
           <Section.SectionFilter>
-            <SectionFilterContent />
+            {isFrame ? (
+              showFilter && <SectionFilterContent />
+            ) : (
+              <SectionFilterContent />
+            )}
           </Section.SectionFilter>
 
           <Section.SectionBody>
@@ -492,6 +614,16 @@ export default inject(
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
+
+      folders,
+      files,
+      filesList,
+      selectedFolderStore,
+      createFile,
+      createFolder,
+      createRoom,
+      refreshFiles,
+      setViewAs,
     } = filesStore;
 
     const {
@@ -598,6 +730,20 @@ export default inject(
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
+
+      setFrameConfig: auth.settingsStore.setFrameConfig,
+      frameConfig: auth.settingsStore.frameConfig,
+      user: auth.userStore.user,
+      folders,
+      files,
+      selection,
+      filesList,
+      selectedFolderStore,
+      createFile,
+      createFolder,
+      createRoom,
+      refreshFiles,
+      setViewAs,
     };
   }
 )(withRouter(observer(Home)));

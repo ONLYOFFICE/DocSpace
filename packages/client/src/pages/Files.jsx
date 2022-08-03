@@ -203,13 +203,20 @@ class FilesContent extends React.Component {
   }
 
   render() {
-    //const { /*, isDesktop*/ } = this.props;
+    const { frameConfig } = this.props;
+
+    const isFrame = frameConfig && window.name === frameConfig.name;
+    const showArticle = frameConfig && JSON.parse(frameConfig.showArticle);
 
     return (
       <>
         <GlobalEvents />
         <Panels />
-        <FilesArticle history={this.props.history} />
+        {isFrame ? (
+          showArticle && <FilesArticle history={this.props.history} />
+        ) : (
+          <FilesArticle history={this.props.history} />
+        )}
         <FilesSection />
       </>
     );
@@ -219,6 +226,7 @@ class FilesContent extends React.Component {
 const Files = inject(({ auth, filesStore }) => {
   return {
     isDesktop: auth.settingsStore.isDesktopClient,
+    frameConfig: auth.settingsStore.frameConfig,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
     encryptionKeys: auth.settingsStore.encryptionKeys,

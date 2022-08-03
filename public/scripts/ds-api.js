@@ -1,7 +1,7 @@
 (function (DocSpace) {
   const defaultConfig = {
     src: `${window.location.protocol}//${window.location.hostname}:8092`,
-    rootPath: "/products/files/",
+    rootPath: "/rooms/personal/",
     width: "100%",
     height: "100%",
     name: "frameDocSpace",
