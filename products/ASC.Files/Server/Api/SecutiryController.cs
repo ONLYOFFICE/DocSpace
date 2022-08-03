@@ -29,14 +29,24 @@ namespace ASC.Files.Api;
 [ConstraintRoute("int")]
 public class SecutiryControllerInternal : SecutiryController<int>
 {
-    public SecutiryControllerInternal(FileStorageService<int> fileStorageService, SecurityControllerHelper<int> securityControllerHelper) : base(fileStorageService, securityControllerHelper)
+    public SecutiryControllerInternal(
+        FileStorageService<int> fileStorageService,
+        SecurityControllerHelper<int> securityControllerHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageService, securityControllerHelper, folderDtoHelper, fileDtoHelper)
     {
     }
 }
 
 public class SecutiryControllerThirdparty : SecutiryController<string>
 {
-    public SecutiryControllerThirdparty(FileStorageService<string> fileStorageService, SecurityControllerHelper<string> securityControllerHelper) : base(fileStorageService, securityControllerHelper)
+    public SecutiryControllerThirdparty(
+        FileStorageService<string> fileStorageService,
+        SecurityControllerHelper<string> securityControllerHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageService, securityControllerHelper, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -46,7 +56,9 @@ public abstract class SecutiryController<T> : ApiControllerBase
     private readonly FileStorageService<T> _fileStorageService;
     private readonly SecurityControllerHelper<T> _securityControllerHelper;
 
-    public SecutiryController(FileStorageService<T> fileStorageService, SecurityControllerHelper<T> securityControllerHelper)
+    public SecutiryController(FileStorageService<T> fileStorageService, SecurityControllerHelper<T> securityControllerHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
         _securityControllerHelper = securityControllerHelper;
@@ -162,7 +174,9 @@ public class SecutiryControllerCommon : ApiControllerBase
         FileStorageService<int> fileStorageServiceInt,
         FileStorageService<string> fileStorageServiceString,
         SecurityControllerHelper<int> securityControllerHelperInt,
-        SecurityControllerHelper<string> securityControllerHelperString)
+        SecurityControllerHelper<string> securityControllerHelperString,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageServiceInt = fileStorageServiceInt;
         _fileStorageServiceString = fileStorageServiceString;
@@ -184,7 +198,7 @@ public class SecutiryControllerCommon : ApiControllerBase
 
         foreach (var e in data)
         {
-            result.Add(await _securityControllerHelperInt.GetFileEntryWrapperAsync(e));
+            result.Add(await GetFileEntryWrapperAsync(e));
         }
 
         return result;

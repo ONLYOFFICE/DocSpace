@@ -35,12 +35,7 @@ internal abstract class ThirdPartyProviderDao
         return Task.CompletedTask;
     }
 
-    public Task<List<File<string>>> GetFilesAsync(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-    {
-        return Task.FromResult(new List<File<string>>());
-    }
-
-    public IAsyncEnumerable<File<string>> GetFilesAsyncEnumerable(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
     {
         return AsyncEnumerable.Empty<File<string>>();
     }
@@ -441,27 +436,27 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
 
         var filter = filterType switch
-            {
-                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
-                FilterType.EditingRooms => FolderType.EditingRoom,
-                FilterType.ReviewRooms => FolderType.ReviewRoom,
-                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
-                FilterType.CustomRooms => FolderType.CustomRoom,
+        {
+            FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+            FilterType.EditingRooms => FolderType.EditingRoom,
+            FilterType.ReviewRooms => FolderType.ReviewRoom,
+            FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+            FilterType.CustomRooms => FolderType.CustomRoom,
             _ => FolderType.CustomRoom,
         };
 
         return rooms.Where(f => f.FolderType == filter);
-        }
+    }
 
     protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)
     {
         if (ownerId != Guid.Empty && !withoutMe)
         {
             rooms = rooms.Where(f => f.CreateBy == ownerId);
-    }
+        }
 
         if (ownerId == Guid.Empty && withoutMe)
-    {
+        {
             rooms = rooms.Where((f => f.CreateBy != _authContext.CurrentAccount.ID));
         }
 
@@ -483,20 +478,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
-    public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+    public IAsyncEnumerable<FileShareRecord> GetSharesAsync(IEnumerable<Guid> subjects)
     {
-        List<FileShareRecord> result = null;
-        return Task<List<FileShareRecord>>.FromResult(result);
-    }
-
-    public IAsyncEnumerable<FileShareRecord> GetSharesAsyncEnumerable(IEnumerable<Guid> subjects)
-    {
-        return  AsyncEnumerable.Empty<FileShareRecord>();
-    }
-
-    public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entry)
-    {
-        return null;
+        return AsyncEnumerable.Empty<FileShareRecord>();
     }
 
     public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
@@ -509,12 +493,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
-    public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
-    {
-        return null;
-    }
-
-    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IAsyncEnumerable<FileEntry<string>> entries)
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
     {
         return null;
     }
@@ -539,11 +518,6 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     #region TagDao
 
     public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
-    {
-        return AsyncEnumerable.Empty<Tag>();
-    }
-
-    public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IAsyncEnumerable<FileEntry<string>> fileEntries)
     {
         return AsyncEnumerable.Empty<Tag>();
     }
@@ -688,7 +662,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         var tags = new List<Tag>();
 
         foreach (var r in qList)
-            {
+        {
             tags.Add(new Tag
             {
                 Name = r.tag.Name,

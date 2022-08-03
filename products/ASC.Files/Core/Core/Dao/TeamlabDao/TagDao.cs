@@ -96,46 +96,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             q = q.Where(r => r.Link.CreateBy == subject);
         }
 
-        await foreach (var e in FromQueryAsync(q))
-        {
-            yield return e;
-        }
-    }
-
-    public async IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IAsyncEnumerable<FileEntry<T>> fileEntries)
-    {
-        var filesId = new HashSet<string>();
-        var foldersId = new HashSet<string>();
-
-        await foreach (var f in fileEntries)
-        {
-            var idObj = await MappingIDAsync(f.Id);
-            var id = idObj.ToString();
-            if (f.FileEntryType == FileEntryType.File)
-            {
-                filesId.Add(id);
-            }
-            else if (f.FileEntryType == FileEntryType.Folder)
-            {
-                foldersId.Add(id);
-            }
-        }
-
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        var q = Query(filesDbContext.Tag)
-            .Join(filesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
-            .Where(r => r.Link.TenantId == r.Tag.TenantId)
-            .Where(r => r.Tag.Type == tagType)
-            .Where(r => r.Link.EntryType == FileEntryType.File && filesId.Contains(r.Link.EntryId)
-            || r.Link.EntryType == FileEntryType.Folder && foldersId.Contains(r.Link.EntryId));
-
-        if (subject != Guid.Empty)
-        {
-            q = q.Where(r => r.Link.CreateBy == subject);
-        }
-
-        await foreach (var e in FromQueryAsync(q))
+        await foreach (var e in FromQueryAsync(q.AsAsyncEnumerable()))
         {
             yield return e;
         }
@@ -235,7 +196,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .Where(r => r.Link.EntryId == mappedId)
             .Where(r => r.Tag.Type == tagType);
 
-        await foreach (var e in FromQueryAsync(q))
+        await foreach (var e in FromQueryAsync(q.AsAsyncEnumerable()))
         {
             yield return e;
         }
@@ -258,7 +219,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .Where(r => names.Contains(r.Tag.Name))
             .Where(r => r.Tag.Type == tagType);
 
-        await foreach (var e in FromQueryAsync(q))
+        await foreach (var e in FromQueryAsync(q.AsAsyncEnumerable()))
         {
             yield return e;
         }
@@ -287,7 +248,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         q = q.OrderByDescending(r => r.Link.CreateOn);
 
-        await foreach (var e in FromQueryAsync(q))
+        await foreach (var e in FromQueryAsync(q.AsAsyncEnumerable()))
         {
             yield return e;
         }
@@ -315,7 +276,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         q = q.Skip(from);
 
-        await foreach (var tag in FromQueryAsync(q))
+        await foreach (var tag in FromQueryAsync(q.AsAsyncEnumerable()))
         {
             yield return tag;
         }
@@ -326,7 +287,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         var q = Query(filesDbContext.Tag).AsNoTracking().Where(r => names.Contains(r.Name));
 
-        await foreach (var tag in FromQueryAsync(q))
+        await foreach (var tag in FromQueryAsync(q.AsAsyncEnumerable()))
         {
             yield return tag;
         }
@@ -966,7 +927,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                 sqlQuery = sqlQuery.Where(r => r.Tag.Owner == subject);
             }
 
-            await foreach (var e in FromQueryAsync(sqlQuery))
+            await foreach (var e in FromQueryAsync(sqlQuery.AsAsyncEnumerable()))
             {
                 yield return e;
             }
@@ -1014,7 +975,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                 sqlQuery = sqlQuery.Where(r => r.Tag.Owner == subject);
             }
 
-            await foreach (var e in FromQueryAsync(sqlQuery))
+            await foreach (var e in FromQueryAsync(sqlQuery.AsAsyncEnumerable()))
             {
                 yield return e;
             }
@@ -1118,23 +1079,9 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         }
     }
 
-    protected async IAsyncEnumerable<Tag> FromQueryAsync(IQueryable<TagLinkData> dbFilesTags)
+    protected async IAsyncEnumerable<TagInfo> FromQueryAsync(IAsyncEnumerable<DbFilesTag> dbFilesTags)
     {
-        var files = await dbFilesTags
-            .ToListAsync();
-
-        foreach (var file in files)
-        {
-            yield return await ToTagAsync(file);
-        }
-    }
-
-    protected async IAsyncEnumerable<TagInfo> FromQueryAsync(IQueryable<DbFilesTag> dbFilesTags)
-    {
-        var tags = await dbFilesTags
-            .ToListAsync();
-
-        foreach (var tag in tags)
+        await foreach (var tag in dbFilesTags)
         {
             yield return _mapper.Map<DbFilesTag, TagInfo>(tag);
         }
@@ -1142,11 +1089,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     protected async IAsyncEnumerable<Tag> FromQueryAsync(IAsyncEnumerable<TagLinkData> dbFilesTags)
     {
-        var files = await dbFilesTags
-            .ToListAsync()
-            ;
-
-        foreach (var file in files)
+        await foreach (var file in dbFilesTags)
         {
             yield return await ToTagAsync(file);
         }

@@ -34,7 +34,6 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
     private readonly UserManager _userManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly FileConverter _fileConverter;
-    private readonly FileOperationDtoHelper _fileOperationDtoHelper;
     private readonly PathProvider _pathProvider;
 
     public FilesControllerHelper(
@@ -72,7 +71,6 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         _fileConverter = fileConverter;
         _userManager = userManager;
         _displayUserSettingsHelper = displayUserSettingsHelper;
-        _fileOperationDtoHelper = fileOperationDtoHelper;
         _pathProvider = pathProvider;
     }
 
@@ -290,17 +288,5 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
             var controller = _serviceProvider.GetService<FilesControllerHelper<TTemplate>>();
             return await controller.InsertFileAsync(destFolderId, fileStream, destTitle, true);
         }
-    }
-
-    public async Task<IEnumerable<FileOperationDto>> DeleteFileAsync(T fileId, bool deleteAfter, bool immediately)
-    {
-        var result = new List<FileOperationDto>();
-
-        foreach (var e in _fileStorageService.DeleteFile("delete", fileId, false, deleteAfter, immediately))
-        {
-            result.Add(await _fileOperationDtoHelper.GetAsync(e));
-        }
-
-        return result;
     }
 }

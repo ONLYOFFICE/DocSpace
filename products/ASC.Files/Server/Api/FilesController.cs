@@ -34,8 +34,11 @@ public class FilesControllerInternal : FilesController<int>
     public FilesControllerInternal(
         FilesControllerHelper<int> filesControllerHelper,
         FileStorageService<int> fileStorageService,
-        IMapper mapper)
-        : base(filesControllerHelper, fileStorageService, mapper)
+        IMapper mapper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(filesControllerHelper, fileStorageService, mapper, fileOperationDtoHelper, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -50,8 +53,11 @@ public class FilesControllerThirdparty : FilesController<string>
         FileStorageService<string> fileStorageService,
         ThirdPartySelector thirdPartySelector,
         DocumentServiceHelper documentServiceHelper,
-        IMapper mapper)
-        : base(filesControllerHelper, fileStorageService, mapper)
+        IMapper mapper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(filesControllerHelper, fileStorageService, mapper, fileOperationDtoHelper, folderDtoHelper, fileDtoHelper)
     {
         _thirdPartySelector = thirdPartySelector;
         _documentServiceHelper = documentServiceHelper;
@@ -64,7 +70,7 @@ public class FilesControllerThirdparty : FilesController<string>
         var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
         var file = app.GetFile(fileId?.ToString(), out var editable);
         var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
-        return await _filesControllerHelper.GetFileEntryWrapperAsync(docParams.File);
+        return await GetFileEntryWrapperAsync(docParams.File);
     }
 }
 
@@ -73,12 +79,20 @@ public abstract class FilesController<T> : ApiControllerBase
     protected readonly FilesControllerHelper<T> _filesControllerHelper;
     private readonly FileStorageService<T> _fileStorageService;
     private readonly IMapper _mapper;
+    private readonly FileOperationDtoHelper _fileOperationDtoHelper;
 
-    public FilesController(FilesControllerHelper<T> filesControllerHelper, FileStorageService<T> fileStorageService, IMapper mapper)
+    public FilesController(
+        FilesControllerHelper<T> filesControllerHelper,
+        FileStorageService<T> fileStorageService,
+        IMapper mapper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _filesControllerHelper = filesControllerHelper;
         _fileStorageService = fileStorageService;
         _mapper = mapper;
+        _fileOperationDtoHelper = fileOperationDtoHelper;
     }
 
     /// <summary>
@@ -189,9 +203,16 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="immediately">Don't move to the Recycle Bin</param>
     /// <returns>Operation result</returns>
     [HttpDelete("file/{fileId}")]
-    public Task<IEnumerable<FileOperationDto>> DeleteFile(T fileId, [FromBody] DeleteRequestDto inDto)
+    public async Task<IEnumerable<FileOperationDto>> DeleteFile(T fileId, [FromBody] DeleteRequestDto inDto)
     {
-        return _filesControllerHelper.DeleteFileAsync(fileId, inDto.DeleteAfter, inDto.Immediately);
+        var result = new List<FileOperationDto>();
+
+        foreach (var e in _fileStorageService.DeleteFile("delete", fileId, false, inDto.DeleteAfter, inDto.Immediately))
+        {
+            result.Add(await _fileOperationDtoHelper.GetAsync(e));
+        }
+
+        return result;
     }
 
     [AllowAnonymous]
@@ -328,7 +349,9 @@ public class FilesControllerCommon : ApiControllerBase
         IServiceScopeFactory serviceScopeFactory,
         GlobalFolderHelper globalFolderHelper,
         FileStorageService<string> fileStorageServiceThirdparty,
-        FilesControllerHelper<int> filesControllerHelperInternal)
+        FilesControllerHelper<int> filesControllerHelperInternal,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _mapper = mapper;
         _serviceScopeFactory = serviceScopeFactory;

@@ -28,7 +28,6 @@ namespace ASC.Files.Helpers;
 
 public class FoldersControllerHelper<T> : FilesHelperBase<T>
 {
-    private readonly FileOperationDtoHelper _fileOperationDtoHelper;
     private readonly EntryManager _entryManager;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
@@ -46,7 +45,6 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         FolderContentDtoHelper folderContentDtoHelper,
         IHttpContextAccessor httpContextAccessor,
         FolderDtoHelper folderDtoHelper,
-        FileOperationDtoHelper fileOperationDtoHelper,
         EntryManager entryManager,
         UserManager userManager,
         SecurityContext securityContext,
@@ -64,7 +62,6 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             httpContextAccessor,
             folderDtoHelper)
     {
-        _fileOperationDtoHelper = fileOperationDtoHelper;
         _globalFolderHelper = globalFolderHelper;
         _coreBaseSettings = coreBaseSettings;
         _fileUtility = fileUtility;
@@ -80,18 +77,6 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         return await _folderDtoHelper.GetAsync(folder);
     }
 
-    public async Task<IEnumerable<FileOperationDto>> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
-    {
-        var result = new List<FileOperationDto>();
-
-        foreach (var e in _fileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately))
-        {
-            result.Add(await _fileOperationDtoHelper.GetAsync(e));
-        }
-
-        return result;
-    }
-
     public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
     {
         var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, searchInContent, withSubFolders);
@@ -104,38 +89,6 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         var folder = await _fileStorageService.GetFolderAsync(folderId).NotFoundIfNull("Folder not found");
 
         return await _folderDtoHelper.GetAsync(folder);
-    }
-
-    public async IAsyncEnumerable<FileEntryDto> GetFolderPathAsync(T folderId)
-    {
-        var breadCrumbs = await _entryManager.GetBreadCrumbsAsync(folderId);
-
-        foreach (var e in breadCrumbs)
-        {
-            yield return await GetFileEntryWrapperAsync(e);
-        }
-    }
-
-    public async IAsyncEnumerable<FileEntryDto> GetFoldersAsync(T folderId)
-    {
-        var folders = await _fileStorageService.GetFoldersAsync(folderId);
-        foreach (var folder in folders)
-        {
-            yield return await GetFileEntryWrapperAsync(folder);
-        }
-    }
-
-    public async Task<List<FileEntryDto>> GetNewItemsAsync(T folderId)
-    {
-        var newItems = await _fileStorageService.GetNewItemsAsync(folderId);
-        var result = new List<FileEntryDto>();
-
-        foreach (var e in newItems)
-        {
-            result.Add(await GetFileEntryWrapperAsync(e));
-        }
-
-        return result;
     }
 
     public async Task<SortedSet<int>> GetRootFoldersIdsAsync(bool withoutTrash, bool withoutAdditionalFolder)
@@ -155,7 +108,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             folders.Add(_globalFolderHelper.FolderMy);
         }
 
-        if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace 
+        if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace
             && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOutsider(_userManager))
         {
             folders.Add(await _globalFolderHelper.FolderShareAsync);

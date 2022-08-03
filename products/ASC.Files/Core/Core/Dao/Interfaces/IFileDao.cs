@@ -258,8 +258,7 @@ public interface IFileDao<T>
     /// <param name="searchText"></param>
     /// <param name="searchInContent"></param>
     /// <returns></returns>
-    Task<List<File<T>>> GetFilesAsync(IEnumerable<T> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
-    IAsyncEnumerable<File<T>> GetFilesAsyncEnumerable(IEnumerable<T> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+    IAsyncEnumerable<File<T>> GetFilesAsync(IEnumerable<T> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
     /// <summary>
     /// Search the list of files containing text
     /// Only in TMFileDao
@@ -286,7 +285,7 @@ public interface IFileDao<T>
 
     Task SaveThumbnailAsync(File<T> file, Stream thumbnail, int width, int height);
 
-    Task<Stream> GetThumbnailAsync(File<T> file, int width, int height);    
+    Task<Stream> GetThumbnailAsync(File<T> file, int width, int height);
 
     Task<Stream> GetThumbnailAsync(T fileId, int width, int height);
 

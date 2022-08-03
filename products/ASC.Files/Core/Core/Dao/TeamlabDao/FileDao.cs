@@ -1280,87 +1280,17 @@ internal class FileDao : AbstractDao, IFileDao<int>
         await filesDbContext.SaveChangesAsync();
     }
 
-    public Task<List<File<int>>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-    {
-        if (parentIds == null || !parentIds.Any() || filterType == FilterType.FoldersOnly)
-        {
-            return Task.FromResult(new List<File<int>>());
-        }
-
-        return InternalGetFilesAsync(parentIds, filterType, subjectGroup, subjectID, searchText, searchInContent);
-    }
-
-    public IAsyncEnumerable<File<int>> GetFilesAsyncEnumerable(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+    public IAsyncEnumerable<File<int>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
     {
         if (parentIds == null || !parentIds.Any() || filterType == FilterType.FoldersOnly)
         {
             return AsyncEnumerable.Empty<File<int>>();
         }
 
-        return InternalGetFilesAsyncEnumerable(parentIds, filterType, subjectGroup, subjectID, searchText, searchInContent);
+        return InternalGetFilesAsync(parentIds, filterType, subjectGroup, subjectID, searchText, searchInContent);
     }
 
-    private async Task<List<File<int>>> InternalGetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-    {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        var q = GetFileQuery(filesDbContext, r => r.CurrentVersion)
-            .AsNoTracking()
-            .Join(filesDbContext.Tree, a => a.ParentId, t => t.FolderId, (file, tree) => new { file, tree })
-            .Where(r => parentIds.Contains(r.tree.ParentId))
-            .Select(r => r.file);
-
-        if (!string.IsNullOrEmpty(searchText))
-        {
-            var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
-
-            if (_factoryIndexer.TrySelectIds(s => func(s), out var searchIds))
-            {
-                q = q.Where(r => searchIds.Contains(r.Id));
-            }
-            else
-            {
-                q = BuildSearch(q, searchText, SearhTypeEnum.Any);
-            }
-        }
-
-        if (subjectID != Guid.Empty)
-        {
-            if (subjectGroup)
-            {
-                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
-                q = q.Where(r => users.Contains(r.CreateBy));
-            }
-            else
-            {
-                q = q.Where(r => r.CreateBy == subjectID);
-            }
-        }
-
-        switch (filterType)
-        {
-            case FilterType.DocumentsOnly:
-            case FilterType.ImagesOnly:
-            case FilterType.PresentationsOnly:
-            case FilterType.SpreadsheetsOnly:
-            case FilterType.ArchiveOnly:
-            case FilterType.MediaOnly:
-                q = q.Where(r => r.Category == (int)filterType);
-                break;
-            case FilterType.ByExtension:
-                if (!string.IsNullOrEmpty(searchText))
-                {
-                    q = BuildSearch(q, searchText, SearhTypeEnum.End);
-                }
-                break;
-        }
-
-        var query = await FromQueryWithShared(filesDbContext, q).ToListAsync();
-
-        return query.ConvertAll(e => _mapper.Map<DbFileQuery, File<int>>(e));
-    }
-
-    private async IAsyncEnumerable<File<int>> InternalGetFilesAsyncEnumerable(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+    private async IAsyncEnumerable<File<int>> InternalGetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
     {
         var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 

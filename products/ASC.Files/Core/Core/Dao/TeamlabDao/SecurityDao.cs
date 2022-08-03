@@ -183,15 +183,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
     }
 
-    public async Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
-    {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-        var q = GetQuery(filesDbContext, r => subjects.Contains(r.Subject));
-
-        return await FromQueryAsync(q);
-    }
-
-    public IAsyncEnumerable<FileShareRecord> GetSharesAsyncEnumerable(IEnumerable<Guid> subjects)
+    public IAsyncEnumerable<FileShareRecord> GetSharesAsync(IEnumerable<Guid> subjects)
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = GetQuery(filesDbContext, r => subjects.Contains(r.Subject));
@@ -199,17 +191,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         return FromQueryAsyncEnumerable(q);
     }
 
-    public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
-    {
-        if (entries == null)
-        {
-            return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
-        }
-
-        return InternalGetPureShareRecordsAsync(entries);
-    }
-
-    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IAsyncEnumerable<FileEntry<T>> entries)
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
     {
         if (entries == null)
         {
@@ -232,12 +214,12 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         return await GetPureShareRecordsDbAsync(files, folders);
     }
 
-    private async IAsyncEnumerable<FileShareRecord> InternalGetPureShareRecordsAsyncEnumerable(IAsyncEnumerable<FileEntry<T>> entries)
+    private async IAsyncEnumerable<FileShareRecord> InternalGetPureShareRecordsAsyncEnumerable(IEnumerable<FileEntry<T>> entries)
     {
         var files = new List<string>();
         var folders = new List<string>();
 
-        await foreach (var entry in entries)
+        foreach (var entry in entries)
         {
             await SelectFilesAndFoldersForShareAsync(entry, files, folders, null);
         }
@@ -308,10 +290,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         return result;
     }
 
-    private IAsyncEnumerable<FileShareRecord> GetPureShareRecordsDbAsyncEnumerable(List<string> files, List<string> folders)
+    private async IAsyncEnumerable<FileShareRecord> GetPureShareRecordsDbAsyncEnumerable(List<string> files, List<string> folders)
     {
-        var result = AsyncEnumerable.Empty<FileShareRecord>();
-
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var q = GetQuery(filesDbContext, r => folders.Contains(r.EntryId) && r.EntryType == FileEntryType.Folder);
@@ -321,37 +301,10 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
             q = q.Union(GetQuery(filesDbContext, r => files.Contains(r.EntryId) && r.EntryType == FileEntryType.File));
         }
 
-        result.Concat(FromQueryAsyncEnumerable(q));
-
-        return result;
-    }
-
-    /// <summary>
-    /// Get file share records with hierarchy.
-    /// </summary>
-    /// <param name="entries"></param>
-    /// <returns></returns>
-    public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<T>> entries)
-    {
-        if (entries == null)
+        await foreach (var record in FromQueryAsyncEnumerable(q))
         {
-            return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            yield return record;
         }
-
-        return InternalGetSharesAsync(entries);
-    }
-
-    private async Task<IEnumerable<FileShareRecord>> InternalGetSharesAsync(IEnumerable<FileEntry<T>> entries)
-    {
-        var files = new List<string>();
-        var foldersInt = new List<int>();
-
-        foreach (var entry in entries)
-        {
-            await SelectFilesAndFoldersForShareAsync(entry, files, null, foldersInt);
-        }
-
-        return await SaveFilesAndFoldersForShareAsync(files, foldersInt);
     }
 
     /// <summary>

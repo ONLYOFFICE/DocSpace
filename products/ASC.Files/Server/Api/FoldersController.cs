@@ -29,25 +29,51 @@ namespace ASC.Files.Api;
 [ConstraintRoute("int")]
 public class FoldersControllerInternal : FoldersController<int>
 {
-    public FoldersControllerInternal(FoldersControllerHelper<int> foldersControllerHelper) : base(foldersControllerHelper)
+    public FoldersControllerInternal(
+        EntryManager entryManager,
+        FoldersControllerHelper<int> foldersControllerHelper,
+        FileStorageService<int> fileStorageService,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(entryManager, foldersControllerHelper, fileStorageService, fileOperationDtoHelper, folderDtoHelper, fileDtoHelper)
     {
     }
 }
 
 public class FoldersControllerThirdparty : FoldersController<string>
 {
-    public FoldersControllerThirdparty(FoldersControllerHelper<string> foldersControllerHelper) : base(foldersControllerHelper)
+    public FoldersControllerThirdparty(
+        EntryManager entryManager,
+        FoldersControllerHelper<string> foldersControllerHelper,
+        FileStorageService<string> fileStorageService,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(entryManager, foldersControllerHelper, fileStorageService, fileOperationDtoHelper, folderDtoHelper, fileDtoHelper)
     {
     }
 }
 
 public abstract class FoldersController<T> : ApiControllerBase
 {
+    private readonly EntryManager _entryManager;
     private readonly FoldersControllerHelper<T> _foldersControllerHelper;
+    private readonly FileStorageService<T> _fileStorageService;
+    private readonly FileOperationDtoHelper _fileOperationDtoHelper;
 
-    public FoldersController(FoldersControllerHelper<T> foldersControllerHelper)
+    public FoldersController(
+        EntryManager entryManager,
+        FoldersControllerHelper<T> foldersControllerHelper,
+        FileStorageService<T> fileStorageService,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
+        _entryManager = entryManager;
         _foldersControllerHelper = foldersControllerHelper;
+        _fileStorageService = fileStorageService;
+        _fileOperationDtoHelper = fileOperationDtoHelper;
     }
 
     /// <summary>
@@ -76,9 +102,12 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="immediately">Don't move to the Recycle Bin</param>
     /// <returns>Operation result</returns>
     [HttpDelete("folder/{folderId}")]
-    public Task<IEnumerable<FileOperationDto>> DeleteFolder(T folderId, DeleteFolderDto model)
+    public async IAsyncEnumerable<FileOperationDto> DeleteFolder(T folderId, DeleteFolderDto model)
     {
-        return _foldersControllerHelper.DeleteFolder(folderId, model.DeleteAfter, model.Immediately);
+        foreach (var e in _fileStorageService.DeleteFolder("delete", folderId, false, model.DeleteAfter, model.Immediately))
+        {
+            yield return await _fileOperationDtoHelper.GetAsync(e);
+        }
     }
 
     /// <summary>
@@ -119,21 +148,35 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <category>Folders</category>
     /// <returns>Parent folders</returns>
     [HttpGet("folder/{folderId}/path")]
-    public IAsyncEnumerable<FileEntryDto> GetFolderPathAsync(T folderId)
+    public async IAsyncEnumerable<FileEntryDto> GetFolderPathAsync(T folderId)
     {
-        return _foldersControllerHelper.GetFolderPathAsync(folderId);
+        var breadCrumbs = await _entryManager.GetBreadCrumbsAsync(folderId);
+
+        foreach (var e in breadCrumbs)
+        {
+            yield return await GetFileEntryWrapperAsync(e);
+        }
     }
 
     [HttpGet("{folderId}/subfolders")]
-    public IAsyncEnumerable<FileEntryDto> GetFoldersAsync(T folderId)
+    public async IAsyncEnumerable<FileEntryDto> GetFoldersAsync(T folderId)
     {
-        return _foldersControllerHelper.GetFoldersAsync(folderId);
+        var folders = await _fileStorageService.GetFoldersAsync(folderId);
+        foreach (var folder in folders)
+        {
+            yield return await GetFileEntryWrapperAsync(folder);
+        }
     }
 
     [HttpGet("{folderId}/news")]
-    public Task<List<FileEntryDto>> GetNewItemsAsync(T folderId)
+    public async IAsyncEnumerable<FileEntryDto> GetNewItemsAsync(T folderId)
     {
-        return _foldersControllerHelper.GetNewItemsAsync(folderId);
+        var newItems = await _fileStorageService.GetNewItemsAsync(folderId);
+
+        foreach (var e in newItems)
+        {
+            yield return await GetFileEntryWrapperAsync(e);
+        }
     }
 
     /// <summary>
@@ -156,18 +199,17 @@ public abstract class FoldersController<T> : ApiControllerBase
 public class FoldersControllerCommon : ApiControllerBase
 {
     private readonly GlobalFolderHelper _globalFolderHelper;
-    private readonly TenantManager _tenantManager;
     private readonly FoldersControllerHelper<int> _foldersControllerHelperInt;
     private readonly FoldersControllerHelper<string> _foldersControllerHelperString;
 
     public FoldersControllerCommon(
         GlobalFolderHelper globalFolderHelper,
-        TenantManager tenantManager,
         FoldersControllerHelper<int> foldersControllerHelperInt,
-        FoldersControllerHelper<string> foldersControllerHelperString)
+        FoldersControllerHelper<string> foldersControllerHelperString,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _globalFolderHelper = globalFolderHelper;
-        _tenantManager = tenantManager;
         _foldersControllerHelperInt = foldersControllerHelperInt;
         _foldersControllerHelperString = foldersControllerHelperString;
     }

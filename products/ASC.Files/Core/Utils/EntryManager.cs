@@ -591,7 +591,7 @@ public class EntryManager
 
             if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
             {
-                var folderList = GetThirpartyFoldersAsyncEnumerable(parent, searchText);
+                var folderList = GetThirpartyFoldersAsync(parent, searchText);
                 var thirdPartyFolder = FilterEntriesEnumerable(folderList, filterType, subjectGroup, subjectId, searchText, searchInContent);
 
                 var task3 = thirdPartyFolder.ToListAsync();
@@ -711,53 +711,7 @@ public class EntryManager
         }
     }
 
-    public async Task<IEnumerable<Folder<string>>> GetThirpartyFoldersAsync<T>(Folder<T> parent, string searchText = null)
-    {
-        var folderList = new List<Folder<string>>();
-
-        if ((parent.Id.Equals(_globalFolderHelper.FolderMy) || parent.Id.Equals(await _globalFolderHelper.FolderCommonAsync))
-            && _thirdpartyConfiguration.SupportInclusion(_daoFactory)
-            && (_filesSettingsHelper.EnableThirdParty
-                || _coreBaseSettings.Personal))
-        {
-            var providerDao = _daoFactory.ProviderDao;
-            if (providerDao == null)
-            {
-                return folderList;
-            }
-
-            var fileSecurity = _fileSecurity;
-
-            var providers = providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText);
-
-            await foreach (var providerInfo in providers)
-            {
-                var fake = GetFakeThirdpartyFolder(providerInfo, parent.Id.ToString());
-                if (await fileSecurity.CanReadAsync(fake))
-                {
-                    folderList.Add(fake);
-                }
-            }
-
-            if (folderList.Count > 0)
-            {
-                var securityDao = _daoFactory.GetSecurityDao<string>();
-                var pureShareRecords = await securityDao.GetPureShareRecordsAsync(folderList);
-                var ids = pureShareRecords
-                //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-                .Select(x => x.EntryId).Distinct();
-
-                foreach (var id in ids)
-                {
-                    folderList.First(y => y.Id.Equals(id)).Shared = true;
-                }
-            }
-        }
-
-        return folderList;
-    }
-
-    public async IAsyncEnumerable<Folder<string>> GetThirpartyFoldersAsyncEnumerable<T>(Folder<T> parent, string searchText = null)
+    public async IAsyncEnumerable<Folder<string>> GetThirpartyFoldersAsync<T>(Folder<T> parent, string searchText = null)
     {
         if ((parent.Id.Equals(_globalFolderHelper.FolderMy) || parent.Id.Equals(await _globalFolderHelper.FolderCommonAsync))
             && _thirdpartyConfiguration.SupportInclusion(_daoFactory)
