@@ -129,7 +129,7 @@ class SsoFormStore {
       this.isSsoEnabled = res.enableSso;
       this.spMetadata = res.enableSso;
       this.defaultSettings = res;
-      this.setFieldsFromObject(res);
+      this.setFields(res);
     } catch (err) {
       console.log(err);
     }
@@ -349,40 +349,94 @@ class SsoFormStore {
 
   resetForm = async () => {
     try {
-      const response = await resetSsoForm();
+      const config = await resetSsoForm();
 
-      this.setFieldsFromObject(response);
+      this.setFields(config);
     } catch (err) {
       toastr.error(err);
       console.error(err);
     }
   };
 
-  setFieldsFromObject = (object) => {
-    for (let key of Object.keys(object)) {
-      if (typeof object[key] !== "object") {
-        this[key] = object[key];
-      } else {
-        let prefix = "";
+  setFields = (config) => {
+    const {
+      enableSso,
+      idpSettings,
+      idpCertificates,
+      idpCertificateAdvanced,
+      spLoginLabel,
+      spCertificates,
+      spCertificateAdvanced,
+      fieldMapping,
+      hideAuthPage,
+    } = config;
+    const { entityId, ssoBinding, sloBinding, nameIdFormat } = idpSettings;
+    const {
+      verifyAlgorithm,
+      verifyAuthResponsesSign,
+      verifyLogoutRequestsSign,
+      verifyLogoutResponsesSign,
+      decryptAlgorithm,
+      decryptAssertions,
+    } = idpCertificateAdvanced;
+    const { firstName, lastName, email, title, location, phone } = fieldMapping;
 
-        if (key === "idpSettings") {
-          this.setSsoUrls(object[key]);
-          this.setSloUrls(object[key]);
-        }
+    const {
+      signingAlgorithm,
+      signAuthRequests,
+      signLogoutRequests,
+      signLogoutResponses,
+      encryptAlgorithm,
+      decryptAlgorithm: spDecryptAlgorithm,
+      encryptAssertions,
+    } = spCertificateAdvanced;
 
-        if (key !== "fieldMapping" && key !== "idpSettings") {
-          prefix = key.includes("idp") ? "idp" : "sp";
-        }
+    this.enableSso = enableSso;
 
-        if (Array.isArray(object[key])) {
-          this[`${prefix}Certificates`] = object[key].slice();
-        } else {
-          for (let field of Object.keys(object[key])) {
-            this[`${prefix}${field}`] = object[key][field];
-          }
-        }
-      }
-    }
+    // idpSettings
+    this.entityId = entityId;
+    this.ssoBinding = ssoBinding;
+    this.setSsoUrls(idpSettings);
+
+    this.sloBinding = sloBinding;
+    this.setSloUrls(idpSettings);
+
+    this.nameIdFormat = nameIdFormat;
+
+    //idpCertificates
+    this.idpCertificates = [...idpCertificates];
+
+    //idpCertificateAdvanced
+    this.idpVerifyAlgorithm = verifyAlgorithm;
+    this.idpVerifyAuthResponsesSign = verifyAuthResponsesSign;
+    this.idpVerifyLogoutRequestsSign = verifyLogoutRequestsSign;
+    this.idpVerifyLogoutResponsesSign = verifyLogoutResponsesSign;
+    this.idpDecryptAlgorithm = decryptAlgorithm;
+    this.ipdDecryptAssertions = decryptAssertions;
+
+    this.spLoginLabel = spLoginLabel;
+
+    //spCertificates
+    this.spCertificates = [...spCertificates];
+
+    //spCertificateAdvanced
+    this.spSigningAlgorithm = signingAlgorithm;
+    this.spSignAuthRequests = signAuthRequests;
+    this.spSignLogoutRequests = signLogoutRequests;
+    this.spSignLogoutResponses = signLogoutResponses;
+    this.spEncryptAlgorithm = encryptAlgorithm;
+    this.spDecryptAlgorithm = spDecryptAlgorithm;
+    this.spEncryptAssertions = encryptAssertions;
+
+    //fieldMapping
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.title = title;
+    this.location = location;
+    this.phone = phone;
+
+    this.hideAuthPage = hideAuthPage;
   };
 
   setSsoUrls = (o) => {
