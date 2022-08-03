@@ -34,14 +34,11 @@ const EditRoomDialog = ({
 
   const tagHandler = new TagHandler(roomParams.tags, setRoomTags, fetchedTags);
 
-  const setRoomType = (newRoomType) => {
-    const [roomByType] = roomTypes.filter((room) => room.type === newRoomType);
-    tagHandler.refreshDefaultTag(t(roomByType.title));
+  const setRoomType = (newRoomType) =>
     setRoomParams((prev) => ({
       ...prev,
       type: newRoomType,
     }));
-  };
 
   const onEditRoom = () => {
     onSave(roomParams);
