@@ -4,6 +4,7 @@ const StyledSsoPage = styled.div`
   box-sizing: border-box;
   outline: none;
   max-width: 700px;
+  padding-top: 5px;
 
   .intro-text {
     margin-bottom: 18px;
@@ -13,6 +14,12 @@ const StyledSsoPage = styled.div`
   .toggle {
     position: static;
     margin-top: 2px;
+  }
+
+  .toggle-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .tooltip-button,

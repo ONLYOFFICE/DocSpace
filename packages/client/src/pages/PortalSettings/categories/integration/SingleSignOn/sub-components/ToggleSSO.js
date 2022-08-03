@@ -45,14 +45,14 @@ const ToggleSSO = (props) => {
           }
         />
 
-        <Box>
+        <div className="toggle-caption">
           <Text as="span" fontWeight={600} lineHeight="20px" noSelect>
             {t("TurnOnSSO")}
           </Text>
-          <Text lineHeight="16px" noSelect>
+          <Text fontSize="12px" fontWeight={400} lineHeight="16px" noSelect>
             {t("TurnOnSSOCaption")}
           </Text>
-        </Box>
+        </div>
       </Box>
 
       {confirmationDisableModal && <DisableSsoConfirmationModal />}
