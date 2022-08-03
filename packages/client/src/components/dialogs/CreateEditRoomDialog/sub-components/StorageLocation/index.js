@@ -2,10 +2,9 @@ import React from "react";
 
 import Text from "@docspace/components/text";
 
-import Checkbox from "@docspace/components/checkbox";
 import { StyledParam } from "../StyledParam";
-import HelpButton from "@docspace/components/help-button";
 import ThirpartyComboBox from "./ThirpartyComboBox";
+import SecondaryInfoButton from "../SecondaryInfoButton";
 
 const StorageLocation = ({
   t,
@@ -20,14 +19,7 @@ const StorageLocation = ({
           <Text className="set_room_params-info-title-text">
             {t("StorageLocationTitle")}
           </Text>
-          <HelpButton
-            displayType="auto"
-            className="set_room_params-info-title-help"
-            iconName="/static/images/info.react.svg"
-            offsetRight={0}
-            tooltipContent={t("StorageLocationDescription")}
-            size={12}
-          />
+          <SecondaryInfoButton content={t("StorageLocationDescription")} />
         </div>
         <div className="set_room_params-info-description">
           {t("StorageLocationDescription")}

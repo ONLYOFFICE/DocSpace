@@ -6,6 +6,7 @@ import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import RoomLogo from "@docspace/components/room-logo";
 import HelpButton from "@docspace/components/help-button";
+import SecondaryInfoButton from "./SecondaryInfoButton";
 
 const StyledRoomType = styled.div`
   cursor: pointer;
@@ -122,14 +123,7 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
           </Text>
           {room.withSecondaryInfo && (
             <div onClick={onSecondaryInfoClick}>
-              <HelpButton
-                displayType="auto"
-                className="choose_room-title-info_button"
-                iconName="/static/images/info.react.svg"
-                offsetRight={0}
-                tooltipContent={isOpen ? t(room.description) : null}
-                size={12}
-              />
+              <SecondaryInfoButton content={t(room.secondaryInfo)} />
             </div>
           )}
         </div>
