@@ -15,6 +15,7 @@ import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -237,6 +238,17 @@ const ArticleMainButtonContent = (props) => {
 
       menuModel.push(...uploadActions);
       setUploadActions(uploadActions);
+    }
+
+    const pluginOptions = getMainButtonItems();
+
+    if (pluginOptions) {
+      pluginOptions.forEach((option) => {
+        menuModel.splice(option.value.position, 0, {
+          key: option.key,
+          ...option.value,
+        });
+      });
     }
 
     setModel(menuModel);
