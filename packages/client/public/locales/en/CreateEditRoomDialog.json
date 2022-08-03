@@ -15,6 +15,11 @@
   "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing",
   "CustomRoomDescription": "Apply your own settings to use this room for any custom purpose",
 
+  "FillingFormsRoomSecondaryInfo": "NO TEXT",
+  "CollaborationRoomSecondaryInfo": "In this room participants will be able to edit documents together. This room can be useful for quick preparation of documents.",
+  "ReviewRoomSecondaryInfo": "In the review room participants will be able to discuss, comment and review documents. Taking into account the reviews, you can create/supplement a document in the room.",
+  "ViewOnlyRoomSecondaryInfo": "In this room you can add any files that need to be provided to users for review.",
+
   "NamePlaceholder": "Enter name",
 
   "TagsPlaceholder": "Add a tag",

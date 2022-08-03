@@ -6,24 +6,28 @@ export const roomTypes = [
     title: "FillingFormsRoomTitle",
     description: "FillingFormsRoomDescription",
     withSecondaryInfo: true,
+    secondaryInfo: "FillingFormsRoomSecondaryInfo",
   },
   {
     type: RoomsType.EditingRoom,
     title: "CollaborationRoomTitle",
     description: "CollaborationRoomDescription",
     withSecondaryInfo: true,
+    secondaryInfo: "CollaborationRoomSecondaryInfo",
   },
   {
     type: RoomsType.ReviewRoom,
     title: "ReviewRoomTitle",
     description: "ReviewRoomDescription",
     withSecondaryInfo: true,
+    secondaryInfo: "ReviewRoomSecondaryInfo",
   },
   {
     type: RoomsType.ReadOnlyRoom,
     title: "ViewOnlyRoomTitle",
     description: "ViewOnlyRoomDescription",
     withSecondaryInfo: true,
+    secondaryInfo: "ViewOnlyRoomSecondaryInfo",
   },
   {
     type: RoomsType.CustomRoom,
