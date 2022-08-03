@@ -11,6 +11,7 @@ import {
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 
 class ContextOptionsStore {
   authStore;
@@ -719,6 +720,19 @@ class ContextOptionsStore {
     ];
 
     const options = this.filterModel(optionsModel, contextOptions);
+
+    const pluginOptions = getContextMenuItems();
+
+    if (pluginOptions) {
+      pluginOptions.forEach((option) => {
+        if (contextOptions.includes(option.key)) {
+          options.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+          });
+        }
+      });
+    }
 
     return options;
   };
