@@ -19,7 +19,7 @@ const StorageLocation = ({
           <Text className="set_room_params-info-title-text">
             {t("StorageLocationTitle")}
           </Text>
-          <SecondaryInfoButton content={t("StorageLocationDescription")} />
+          <SecondaryInfoButton content={t("StorageLocationSecondaryInfo")} />
         </div>
         <div className="set_room_params-info-description">
           {t("StorageLocationDescription")}

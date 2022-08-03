@@ -100,7 +100,7 @@ const SetRoomParams = ({
             <Text className="set_room_params-info-title-text">
               {t("MakeRoomPrivateTitle")}
             </Text>
-            <SecondaryInfoButton content={t("MakeRoomPrivateDescription")} />
+            <SecondaryInfoButton content={t("MakeRoomPrivateSecondaryInfo")} />
           </div>
           <div className="set_room_params-info-description">
             {t("MakeRoomPrivateDescription")}
