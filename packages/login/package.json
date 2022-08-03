@@ -33,7 +33,13 @@
     "test:parallel": "run-s -c test:chromium:parallel test:firefox:parallel test:webkit:parallel && yarn test:parse-xml",
     "test:sequential": "run-s -c test:chromium:sequential test:firefox:sequential test:webkit:sequential && yarn test:parse-xml",
     "test:model": "run-s -c test:chromium:model test:firefox:model test:webkit:model && yarn test:parse-xml",
-    "test:parse-xml": "node tests/helpers/parserXML.js"
+    "test:parse-xml": "node tests/helpers/parserXML.js",
+    "start-ssr": "yarn clean && npm-run-all --parallel start-ssr:*",
+    "start-ssr:client": "webpack --config webpack/webpack.client.js --watch --no-cache",
+    "start-ssr:server": "webpack --config webpack/webpack.server.js --watch --no-cache",
+    "start-ssr:common": "yarn build:dev-client && yarn build:dev-server && nodemon --watch dist/server.js dist/server.js",
+    "build:dev-server": "webpack --config webpack/webpack.server.js",
+    "build:dev-client": "webpack --config webpack/webpack.client.js"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -86,11 +92,14 @@
   "title": "ONLYOFFICE",
   "socketPath": "/login/ws",
   "dependencies": {
+    "bufferutil": "^4.0.6",
     "compression": "^1.7.4",
     "express": "^4.18.1",
     "i18next-express-middleware": "^2.0.0",
     "i18next-fs-backend": "^1.1.4",
+    "iconv-lite": "^0.6.3",
     "morgan": "^1.10.0",
+    "utf-8-validate": "^5.0.9",
     "winston": "^3.8.1",
     "winston-daily-rotate-file": "^4.7.1"
   }

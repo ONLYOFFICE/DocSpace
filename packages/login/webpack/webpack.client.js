@@ -30,7 +30,7 @@ const clientConfig = {
   output: {
     path: path.resolve(process.cwd(), "dist/client"),
     filename: "static/js/[name].[contenthash].bundle.js",
-    publicPath: "/products/files/doceditor/",
+    publicPath: "/login/",
     chunkFilename: "static/js/[id].[contenthash].js",
   },
 
@@ -80,10 +80,10 @@ const clientConfig = {
         studio: `studio@${combineUrl(proxyURL, "/remoteEntry.js")}`,
       },
       exposes: {
-        "./login": "./src/client/components/Login.tsx",
-        "./roomsLogin": "./src/client/components/RoomsLogin.tsx",
-        "./codeLogin": "./src/client/components/CodeLogin.tsx",
-        "./moreLogin": "./src/client/components/sub-components/more-login.tsx",
+        // "./login": "../src/Login.tsx",
+        // "./roomsLogin": "../src/RoomsLogin.tsx",
+        // "./codeLogin": "../src/CodeLogin.tsx",
+        // "./moreLogin": "../src/sub-components/more-login.tsx",
       },
       shared: { ...sharedDeps, ...deps },
     }),
@@ -91,7 +91,7 @@ const clientConfig = {
     new CopyPlugin({
       patterns: [
         {
-          context: path.resolve(__dirname, "public"),
+          context: path.resolve(__dirname, "../public"),
           from: "locales/**/*.json",
           transform: minifyJson,
         },
@@ -118,7 +118,7 @@ module.exports = (env, argv) => {
     ...clientConfig.plugins,
     new DefinePlugin({
       IS_DEVELOPMENT: argv.mode !== "production",
-      PORT: process.env.PORT || 5011,
+      PORT: process.env.PORT || 9000,
     }),
   ];
 

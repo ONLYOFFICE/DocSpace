@@ -9,7 +9,7 @@ const serverConfig = {
   target: "node",
   name: "server",
   entry: {
-    server: "./src/server/index.ts",
+    server: "./src/server/index.tsx",
   },
 
   output: {
@@ -18,7 +18,14 @@ const serverConfig = {
     libraryTarget: "commonjs2",
     chunkFilename: "chunks/[name].js",
   },
-  externals: [webpackNodeExternals(), { express: "express" }],
+  externals: [
+    webpackNodeExternals(),
+    {
+      express: "express",
+      bufferutil: "bufferutil",
+      "utf-8-validate": "utf-8-validate",
+    },
+  ],
 };
 
 module.exports = (env, argv) => {
@@ -34,7 +41,7 @@ module.exports = (env, argv) => {
   serverConfig.plugins = [
     new DefinePlugin({
       IS_DEVELOPMENT: argv.mode !== "production",
-      PORT: process.env.PORT || 5011,
+      PORT: process.env.PORT || 9000,
     }),
   ];
 
