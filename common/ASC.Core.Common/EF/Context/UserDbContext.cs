@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Common.EF;
 
-public class UserDbContext : BaseDbContext
+public class UserDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<UserSecurity> UserSecurity { get; set; }
@@ -38,10 +38,15 @@ public class UserDbContext : BaseDbContext
     public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
     public DbSet<UserDav> UsersDav { get; set; }
 
+    public UserDbContext(DbContextOptions<UserDbContext> dbContextOptions) : base(dbContextOptions)
+    {
+
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-        .From(modelBuilder, _provider)
+        .From(modelBuilder, Database)
         .AddSubscriptionMethod()
         .AddUser()
         .AddAcl()
@@ -51,13 +56,5 @@ public class UserDbContext : BaseDbContext
         .AddUserGroup()
         .AddSubscription()
         .AddUserDav();
-    }
-}
-
-public static class UserDbExtension
-{
-    public static DIHelper AddUserDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<UserDbContext>();
     }
 }

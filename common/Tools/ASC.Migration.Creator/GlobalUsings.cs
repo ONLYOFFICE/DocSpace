@@ -24,7 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using Migration;
+global using ASC.ActiveDirectory.Base;
+global using ASC.Common.Logging;
+global using ASC.Core.Common.EF;
+global using ASC.Core.Common.EF.Context;
+global using ASC.Core.Common.Hosting;
+global using ASC.Data.Backup.EF.Context;
+global using ASC.EventBus.Extensions.Logger;
+global using ASC.Feed.Context;
+global using ASC.Files.Core.EF;
+global using ASC.MessagingSystem.EF.Context;
+global using ASC.Webhooks.Core.EF.Context;
+
+global using Microsoft.Extensions.Hosting.WindowsServices;
+
 global using Migration.Core.Utils;
+global using Migration.Creator;
 
 global using DbContextActivator = Migration.Core.Utils.DbContextActivator;
