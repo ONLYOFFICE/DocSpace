@@ -20,6 +20,7 @@ const SecondaryInfoButton = ({ content }) => {
       iconName="/static/images/info.react.svg"
       tooltipProps={{ globalEventOff: "click" }}
       tooltipContent={content}
+      offsetRight={0}
       size={12}
     />
   );
