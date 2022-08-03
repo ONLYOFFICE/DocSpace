@@ -27,9 +27,11 @@
 
   "MakeRoomPrivateTitle": "Сделайте комнату приватной",
   "MakeRoomPrivateDescription": "Все файлы в этой комнате будут зашифрованы",
+  "MakeRoomPrivateSecondaryInfo": "NO TEXT",
 
   "StorageLocationTitle": "Место хранения",
   "StorageLocationDescription": "Используйте сторонние сервисы в качестве хранилища данных для этой комнаты",
+  "StorageLocationSecondaryInfo": "NO TEXT",
   "StorageLocationRememberChoice": "Запомнить этот выбор для новых комнат",
 
   "FolderNameTitle": "Имя папки",
