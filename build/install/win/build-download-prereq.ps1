@@ -47,4 +47,16 @@ $prerequisites = @(
   }
 )
 
+$path_nuget_packages = "${pwd}\.nuget\packages\"
+
+$nuget_packages = @(
+  @{  
+    download_allways = $false; 
+    name = "rabbitmq.client.3.6.5.nupkg"; 
+    link = "https://www.nuget.org/api/v2/package/RabbitMQ.Client/3.6.5";
+  }
+)
+
 DownloadComponents $prerequisites $path_prereq
+
+DownloadComponents $nuget_packages $path_nuget_packages
