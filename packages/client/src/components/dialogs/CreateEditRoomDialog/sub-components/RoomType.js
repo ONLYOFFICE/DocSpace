@@ -123,7 +123,7 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
           </Text>
           {room.withSecondaryInfo && (
             <div onClick={onSecondaryInfoClick}>
-              <SecondaryInfoButton content={t(room.secondaryInfo)} />
+              {/* <SecondaryInfoButton content={t(room.secondaryInfo)} /> */}
             </div>
           )}
         </div>
