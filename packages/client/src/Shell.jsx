@@ -31,6 +31,7 @@ import { useThemeDetector } from "SRC_DIR/helpers/utils";
 import { isMobileOnly } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
+import { initPluginStore } from "./helpers/plugins";
 
 // const { proxyURL } = AppServerConfig;
 // const homepage = config.homepage;
@@ -381,6 +382,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         console.error(err);
       });
   };
+
+  useEffect(() => {
+    initPluginStore();
+  }, []);
 
   useEffect(() => {
     if (!isLoaded) return;
