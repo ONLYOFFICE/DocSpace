@@ -39,14 +39,6 @@ const StyledParam = styled.div`
         font-size: 13px;
         line-height: 20px;
       }
-      .set_room_params-info-title-help {
-        border-radius: 50%;
-        background-color: #a3a9ae;
-        circle,
-        rect {
-          fill: #ffffff;
-        }
-      }
     }
     .set_room_params-info-description {
       font-weight: 400;
