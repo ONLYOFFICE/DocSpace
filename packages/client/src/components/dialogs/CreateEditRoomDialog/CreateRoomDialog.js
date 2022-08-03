@@ -50,7 +50,7 @@ const CreateRoomDialog = ({
 
   const setRoomType = (newRoomType) => {
     const [roomByType] = roomTypes.filter((room) => room.type === newRoomType);
-    tagHandler.refreshDefaultTag(t(roomByType.title));
+    tagHandler.refreshDefaultTag(t(roomByType.defaultTag));
     setRoomParams((prev) => ({
       ...prev,
       type: newRoomType,

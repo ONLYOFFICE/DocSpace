@@ -18,7 +18,7 @@ const CreateRoomEvent = ({
   const { t } = useTranslation([
     "CreateEditRoomDialog",
     "Common",
-    "Settings",
+    "Files",
     "Home",
   ]);
   const [fetchedTags, setFetchedTags] = useState([]);
