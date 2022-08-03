@@ -1,17 +1,15 @@
 REM echo ######## Set variables ########
 set "publisher="Ascensio System SIA""
 set "nginx_version=1.21.1"
+set "nuget="%cd%\thirdparty\SimpleRestServices\src\.nuget\NuGet.exe""
 
 REM echo ######## Extracting and preparing files to build ########
 %sevenzip% x build\install\win\nginx-%nginx_version%.zip -o"build\install\win\Files" -y
-%sevenzip% x build\install\win\rabbitmq.client.3.6.5.nupkg -o"build\install\win\rabbitmq.client.3.6.5" -y
-%sevenzip% x build\install\win\rabbitmq.servicemodel.3.6.5.nupkg -o"build\install\win\rabbitmq.servicemodel.3.6.5" -y
 xcopy "build\install\win\Files\nginx-%nginx_version%" "build\install\win\Files\nginx" /s /y /b /i
 rmdir build\install\win\Files\nginx-%nginx_version% /s /q
 md build\install\win\Files\nginx\temp
 md build\install\win\Files\nginx\logs
 md build\install\win\Files\tools
-md build\install\win\CustomActions\C#\Utils\redistributable
 copy build\install\win\WinSW.NET4.exe "build\install\win\Files\tools\proxy.exe" /y
 copy build\install\win\tools\proxy.xml "build\install\win\Files\tools\proxy.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Socket.IO.exe" /y
@@ -21,12 +19,10 @@ copy build\install\win\tools\UrlShortener.xml "build\install\win\Files\tools\Url
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\SsoAuth.exe" /y
 copy build\install\win\tools\SsoAuth.xml "build\install\win\Files\tools\SsoAuth.xml" /y
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
-copy build\install\win\rabbitmq.client.3.6.5\lib\net45\RabbitMQ.Client.dll "build\install\win\CustomActions\C#\Utils\redistributable\RabbitMQ.Client.dll" /y
-copy build\install\win\rabbitmq.client.3.6.5\lib\net45\RabbitMQ.Client.xml "build\install\win\CustomActions\C#\Utils\redistributable\RabbitMQ.Client.xml" /y
-copy build\install\win\rabbitmq.servicemodel.3.6.5\lib\net45\RabbitMQ.ServiceModel.dll "build\install\win\CustomActions\C#\Utils\redistributable\RabbitMQ.ServiceModel.dll" /y
 rmdir build\install\win\publish /s /q
 
 REM echo ######## Build Utils ########
+%nuget% install %cd%\build\install\win\CustomActions\C#\Utils\packages.config -OutputDirectory %cd%\build\install\win\CustomActions\C#\Utils\packages
 %msbuild% build\install\win\CustomActions\C#\Utils\Utils.csproj
 copy build\install\win\CustomActions\C#\Utils\bin\Debug\Utils.CA.dll build\install\win\Utils.CA.dll /y
 rmdir build\install\win\CustomActions\C#\Utils\bin /s /q

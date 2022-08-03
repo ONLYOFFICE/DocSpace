@@ -45,18 +45,6 @@ $prerequisites = @(
     name = "WinSW.NET4new.exe"; 
     link = "https://github.com/winsw/winsw/releases/download/v2.11.0/WinSW.NET4.exe";
   }
-
-  @{  
-    download_allways = $false; 
-    name = "rabbitmq.client.3.6.5.nupkg"; 
-    link = "https://www.nuget.org/api/v2/package/RabbitMQ.Client/3.6.5";
-  }
-
-  @{  
-    download_allways = $false; 
-    name = "rabbitmq.servicemodel.3.6.5.nupkg"; 
-    link = "https://www.nuget.org/api/v2/package/RabbitMQ.ServiceModel/3.6.5";
-  }
 )
 
 DownloadComponents $prerequisites $path_prereq
