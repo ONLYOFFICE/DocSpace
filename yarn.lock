@@ -2241,6 +2241,7 @@ __metadata:
     "@svgr/webpack": ^5.5.0
     "@types/compression": ^1.7.2
     "@types/express": ^4.17.13
+    "@types/morgan": ^1.9.3
     "@types/node": ^18.6.1
     "@types/react": ^18.0.15
     "@types/react-dom": ^18.0.6
@@ -5743,6 +5744,15 @@ __metadata:
   version: 3.0.5
   resolution: "@types/minimatch@npm:3.0.5"
   checksum: c41d136f67231c3131cf1d4ca0b06687f4a322918a3a5adddc87ce90ed9dbd175a3610adee36b106ae68c0b92c637c35e02b58c8a56c424f71d30993ea220b92
+  languageName: node
+  linkType: hard
+
+"@types/morgan@npm:^1.9.3":
+  version: 1.9.3
+  resolution: "@types/morgan@npm:1.9.3"
+  dependencies:
+    "@types/node": "*"
+  checksum: 0b9bc8641ce03f7176f617523b8da300e5d47225b1667396749950ac7fdfa1f990447d490648fbaff050c2b0ef5fa60c3f2f00c6b76efec06fe5148de5020813
   languageName: node
   linkType: hard
 
