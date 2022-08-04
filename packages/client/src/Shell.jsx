@@ -421,29 +421,29 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const loginRoutes = [];
 
-  if (isLoaded && !IS_PERSONAL) {
-    let module;
-    if (roomsMode) {
-      module = "./roomsLogin";
-    } else {
-      module = "./login";
-    }
+  //if (isLoaded && !IS_PERSONAL) {
+  //   let module;
+  //   if (roomsMode) {
+  //     module = "./roomsLogin";
+  //   } else {
+  //     module = "./login";
+  //   }
 
-    const loginSystem = {
-      url: combineUrl(AppServerConfig.proxyURL, "/login/remoteEntry.js"),
-      scope: "login",
-      module: module,
-    };
-    loginRoutes.push(
-      <PublicRoute
-        key={loginSystem.scope}
-        exact
-        path={["/login", "/login/confirmed-email=:confirmedEmail"]}
-        component={System}
-        system={loginSystem}
-      />
-    );
-  }
+  //   const loginSystem = {
+  //     url: combineUrl(AppServerConfig.proxyURL, "/login/remoteEntry.js"),
+  //     scope: "login",
+  //     module: module,
+  //   };
+  //   loginRoutes.push(
+  //     <PublicRoute
+  //       key={loginSystem.scope}
+  //       exact
+  //       path={["/login", "/login/confirmed-email=:confirmedEmail"]}
+  //       component={System}
+  //       system={loginSystem}
+  //     />
+  //   );
+  // }
 
   const roomsRoutes = [];
 

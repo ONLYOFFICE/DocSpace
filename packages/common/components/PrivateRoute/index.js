@@ -40,17 +40,19 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       }
 
       console.log("PrivateRoute render Redirect to login", rest);
-      return (
-        <Redirect
-          to={{
-            pathname: combineUrl(
-              AppServerConfig.proxyURL,
-              wizardCompleted ? "/login" : "/wizard"
-            ),
-            state: { from: props.location },
-          }}
-        />
-      );
+      const redirectPath = wizardCompleted ? "/login" : "/wizard";
+      window.location.replace(redirectPath);
+      // return (
+      //   <Redirect
+      //     to={{
+      //       pathname: combineUrl(
+      //         AppServerConfig.proxyURL,
+      //         wizardCompleted ? "/login" : "/wizard"
+      //       ),
+      //       state: { from: props.location },
+      //     }}
+      //   />
+      // );
     }
 
     if (location.pathname === "/" && personal) {
