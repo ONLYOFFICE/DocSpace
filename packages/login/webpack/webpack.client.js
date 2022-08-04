@@ -8,11 +8,11 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const combineUrl = require("@appserver/common/utils/combineUrl");
-const minifyJson = require("@appserver/common/utils/minifyJson");
-const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const combineUrl = require("@docspace/common/utils/combineUrl");
+const minifyJson = require("@docspace/common/utils/minifyJson");
+const AppServerConfig = require("@docspace/common/constants/AppServerConfig");
 const { proxyURL } = AppServerConfig;
-const sharedDeps = require("@appserver/common/constants/sharedDependencies");
+const sharedDeps = require("@docspace/common/constants/sharedDependencies");
 const baseConfig = require("./webpack.base.js");
 const pkg = require("../package.json");
 const deps = pkg.dependencies || {};
@@ -118,7 +118,7 @@ module.exports = (env, argv) => {
     ...clientConfig.plugins,
     new DefinePlugin({
       IS_DEVELOPMENT: argv.mode !== "production",
-      PORT: process.env.PORT || 9000,
+      PORT: process.env.PORT || 5011,
     }),
   ];
 
