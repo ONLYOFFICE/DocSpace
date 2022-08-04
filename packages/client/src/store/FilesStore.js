@@ -1572,9 +1572,12 @@ class FilesStore {
   }
 
   createRoom(roomParams) {
-    if (roomParams.storageLocation)
-      return api.rooms.createRoomInThirdpary(roomParams);
     return api.rooms.createRoom(roomParams);
+  }
+
+  createRoomInThirdpary(thirpartyFolderId, roomParams) {
+    console.log(thirpartyFolderId, roomParams);
+    return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
   }
 
   editRoom(id, roomParams) {

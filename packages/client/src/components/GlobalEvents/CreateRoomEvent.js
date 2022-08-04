@@ -8,6 +8,7 @@ const CreateRoomEvent = ({
   onClose,
 
   createRoom,
+  createRoomInThirdpary,
   createTag,
   addTagsToRoom,
   fetchTags,
@@ -37,12 +38,13 @@ const CreateRoomEvent = ({
 
     try {
       setIsLoading(true);
-
       const room = await createRoom(createRoomParams);
       console.log(room);
       for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
       await addTagsToRoom(room.id, tags);
       await updateCurrentFolder(null, currrentFolderId);
+      // let thirpartyFolderId = "sbox-1-|ПАПКА ОТ ДОКСПЕЙС";
+      // createRoomInThirdpary(thirpartyFolderId, createRoomParams);
     } catch (err) {
       console.log(err);
     } finally {
@@ -70,7 +72,7 @@ const CreateRoomEvent = ({
 
 export default inject(
   ({ filesStore, tagsStore, filesActionsStore, selectedFolderStore }) => {
-    const { createRoom, addTagsToRoom } = filesStore;
+    const { createRoom, createRoomInThirdpary, addTagsToRoom } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
     const { id: currrentFolderId } = selectedFolderStore;
@@ -78,6 +80,7 @@ export default inject(
 
     return {
       createRoom,
+      createRoomInThirdpary,
       createTag,
       fetchTags,
       addTagsToRoom,
