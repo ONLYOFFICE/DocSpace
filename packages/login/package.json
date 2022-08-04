@@ -53,6 +53,7 @@
     "@codeceptjs/examples": "^1.2.1",
     "@codeceptjs/ui": "^0.4.6",
     "@svgr/webpack": "^5.5.0",
+    "@types/compression": "^1.7.2",
     "@types/express": "^4.17.13",
     "@types/node": "^18.6.1",
     "@types/react": "^18.0.15",
