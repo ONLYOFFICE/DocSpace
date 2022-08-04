@@ -27,20 +27,17 @@ const ResetConfirmationModal = (props) => {
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        <Box displayProp="flex" marginProp="12px 0 4px 0">
-          <Button
-            className="ok-button"
-            label={t("Common:OKButton")}
-            onClick={confirmReset}
-            primary
-            size="small"
-          />
-          <Button
-            label={t("Common:CancelButton")}
-            onClick={closeResetModal}
-            size="small"
-          />
-        </Box>
+        <Button
+          label={t("Common:OKButton")}
+          onClick={confirmReset}
+          primary
+          size="small"
+        />
+        <Button
+          label={t("Common:CancelButton")}
+          onClick={closeResetModal}
+          size="small"
+        />
       </ModalDialog.Footer>
     </StyledModalDialog>
   );
