@@ -11,7 +11,18 @@ import { renderToString } from "react-dom/server";
 import React from "react";
 import App from "../client/App";
 
-let port: number = 5011;
+interface IParsedConfig extends Object {
+  PORT?: number;
+}
+
+let port = PORT;
+
+const config = fs.readFileSync(path.join(__dirname, "config.json"), "utf-8");
+const parsedConfig: IParsedConfig = JSON.parse(config);
+
+if (parsedConfig?.PORT) {
+  port = parsedConfig.PORT;
+}
 
 const renderApp = () => {
   return renderToString(<App />);

@@ -4,6 +4,7 @@ const webpackNodeExternals = require("webpack-node-externals");
 const path = require("path");
 const DefinePlugin = require("webpack").DefinePlugin;
 const TerserPlugin = require("terser-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 const serverConfig = {
   target: "node",
@@ -26,6 +27,17 @@ const serverConfig = {
       "utf-8-validate": "utf-8-validate",
     },
   ],
+
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        {
+          //context: path.resolve(process.cwd(), "src/server"),
+          from: "src/server/config/",
+        },
+      ],
+    }),
+  ],
 };
 
 module.exports = (env, argv) => {
@@ -39,9 +51,10 @@ module.exports = (env, argv) => {
     serverConfig.mode = "development";
   }
   serverConfig.plugins = [
+    ...serverConfig.plugins,
     new DefinePlugin({
       IS_DEVELOPMENT: argv.mode !== "production",
-      PORT: process.env.PORT || 9000,
+      PORT: process.env.PORT || 5011,
     }),
   ];
 
