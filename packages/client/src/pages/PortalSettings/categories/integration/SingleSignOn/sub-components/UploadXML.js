@@ -43,7 +43,7 @@ const UploadXML = (props) => {
     >
       <Box alignItems="center" displayProp="flex" flexDirection="row">
         <SsoTextInput
-          maxWidth="300px"
+          maxWidth="297px"
           name="uploadXmlUrl"
           placeholder={t("UploadXMLPlaceholder")}
           tabIndex={1}

@@ -55,6 +55,7 @@ const AddSpCertificateModal = (props) => {
           onChange={setInput}
           value={spCertificate}
           isDisabled={isGeneratedCertificate}
+          placeholder={t("PlaceholderCert")}
         />
 
         <Text isBold className="text-area-label" noSelect>

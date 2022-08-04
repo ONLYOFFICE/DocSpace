@@ -13,7 +13,7 @@ const StyledSsoPage = styled.div`
 
   .toggle {
     position: static;
-    margin-top: 2px;
+    margin-top: 1px;
   }
 
   .toggle-caption {
@@ -28,11 +28,14 @@ const StyledSsoPage = styled.div`
   }
 
   .hide-button {
-    margin-left: 16px;
+    margin-left: 12px;
   }
 
-  .hide-additional-button {
-    margin-left: 8px;
+  .field-input {
+    ::placeholder {
+      font-size: 13px;
+      font-weight: 400;
+    }
   }
 
   .field-label-icon {
@@ -67,7 +70,7 @@ const StyledSsoPage = styled.div`
   }
 
   .radio-button-group {
-    margin-left: 25px;
+    margin-left: 24px;
   }
 
   .combo-button-label {
@@ -83,10 +86,6 @@ const StyledSsoPage = styled.div`
     width: 45px;
     margin-left: 9px;
     overflow: inherit;
-
-    & > div {
-      margin-top: 2px;
-    }
   }
 
   .save-button {

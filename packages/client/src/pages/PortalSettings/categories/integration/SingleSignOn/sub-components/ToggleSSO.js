@@ -46,7 +46,7 @@ const ToggleSSO = (props) => {
         />
 
         <div className="toggle-caption">
-          <Text as="span" fontWeight={600} lineHeight="20px" noSelect>
+          <Text fontWeight={600} lineHeight="20px" noSelect>
             {t("TurnOnSSO")}
           </Text>
           <Text fontSize="12px" fontWeight={400} lineHeight="16px" noSelect>

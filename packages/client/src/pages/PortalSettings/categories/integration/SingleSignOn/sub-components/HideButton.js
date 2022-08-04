@@ -10,9 +10,6 @@ const HideButton = (props) => {
   const { t } = useTranslation("SingleSignOn");
   const { text, label, isAdditionalParameters, value, setHideLabel } = props;
   const marginProp = isAdditionalParameters ? null : "24px 0";
-  const className = isAdditionalParameters
-    ? "hide-additional-button"
-    : "hide-button";
 
   const onClick = () => {
     setHideLabel(label);
@@ -31,7 +28,7 @@ const HideButton = (props) => {
         </Text>
       )}
 
-      <Link className={className} isHovered onClick={onClick} type="action">
+      <Link className="hide-button" isHovered onClick={onClick} type="action">
         {value
           ? isAdditionalParameters
             ? t("HideAdditionalParameters")
