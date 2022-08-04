@@ -7,12 +7,12 @@ import TextInput from "@docspace/components/text-input";
 import Label from "@docspace/components/label";
 import ToggleButton from "@docspace/components/toggle-button";
 import Text from "@docspace/components/text";
-import AvatarEditor from "@docspace/components/avatar-editor";
 import TagInput from "./TagInput";
 import { StyledParam } from "./StyledParam";
 import RoomType from "./RoomType";
 import { roomTypes } from "../data";
 import SecondaryInfoButton from "./SecondaryInfoButton";
+import IconEditor from "./IconEditor";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
@@ -148,9 +148,7 @@ const SetRoomParams = ({
         </div>
       </StyledParam>
 
-      {/* <StyledIconEditorWrapper>
-        <AvatarEditor useModalDialog={false}></AvatarEditor>
-      </StyledIconEditorWrapper> */}
+      <IconEditor />
     </StyledSetRoomParams>
   );
 };
