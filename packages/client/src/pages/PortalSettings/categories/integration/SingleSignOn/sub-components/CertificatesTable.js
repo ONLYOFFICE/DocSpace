@@ -56,7 +56,7 @@ const CertificatesTable = (props) => {
 
     return (
       <div key={`certificate-${index}`} className="row">
-        <ReactSVG src="/static/images/icons/24/file.svg" />
+        <ReactSVG src="/static/images/icons/32/file.svg" />
         <div className="column">
           <div className="column-row">
             <Text fontWeight={600} fontSize="14px" noSelect>
