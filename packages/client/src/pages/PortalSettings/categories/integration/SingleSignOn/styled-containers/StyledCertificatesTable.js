@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledCertificatesTable = styled.div`
   width: 100%;
   max-width: 600px;
-  margin-top: -13px;
+  margin-top: 12px;
   margin-bottom: 16px;
 
   .header {
