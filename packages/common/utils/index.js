@@ -378,11 +378,21 @@ export function assign(obj, keyPath, value) {
   obj[keyPath[lastKeyIndex]] = value;
 }
 
-export const frameCallback = (data) => {
+export const frameCallbackData = (data) => {
   window.parent.postMessage(
     JSON.stringify({
       type: "onMethodReturn",
       methodReturnData: data,
+    }),
+    "*"
+  );
+};
+
+export const frameCallCommand = (command) => {
+  window.parent.postMessage(
+    JSON.stringify({
+      type: "onCallCommand",
+      commandName: command,
     }),
     "*"
   );
