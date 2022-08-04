@@ -1,6 +1,5 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import template from "./lib/template";
-import devMiddleware from "./lib/middleware/devMiddleware";
 import path from "path";
 import compression from "compression";
 import ws from "./lib/websocket";
@@ -29,10 +28,18 @@ app.use("/login", express.static(path.resolve(path.join(__dirname, "client"))));
 //app.use(logger("dev", { stream: winston.stream }));
 
 if (IS_DEVELOPMENT) {
-  app.use(devMiddleware);
+  app.get("/login", async (req: Request, res: Response) => {
+    let assets: assetsType;
 
-  app.get("/login", async (req: DevRequest, res) => {
-    const { assets } = req;
+    try {
+      assets = await getAssets();
+    } catch (e) {
+      let message: string | unknown = e;
+      if (e instanceof Error) {
+        message = e.message;
+      }
+      console.log(message);
+    }
     const appComponent = renderApp();
 
     const htmlString = template(

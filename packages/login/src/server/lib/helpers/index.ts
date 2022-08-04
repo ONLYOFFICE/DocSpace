@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 
-export const getAssets = (): object => {
+export const getAssets = (): assetsType => {
   const manifest = fs.readFileSync(
     path.join(__dirname, "client/manifest.json"),
     "utf-8"
@@ -12,7 +12,7 @@ export const getAssets = (): object => {
   return assets;
 };
 
-export const getScripts = (assets: object | undefined): string[] | void => {
+export const getScripts = (assets: assetsType): string[] | void => {
   if (!assets || typeof assets !== "object") return;
   const regTest = /static\/js\/.*/;
   const keys = [];

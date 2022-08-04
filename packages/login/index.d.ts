@@ -13,9 +13,11 @@ declare global {
     error?: string | object;
   }
 
-  interface DevRequest extends Request {
-    assets?: object;
+  interface DevRequest {
+    assets: assetsType;
   }
   var IS_DEVELOPMENT: boolean;
   var PORT: number;
+
+  type assetsType = { [key: string]: string } | undefined;
 }

@@ -1,7 +1,5 @@
 import { getScripts } from "./helpers";
 
-type assetsType = { [key: string]: string } | undefined;
-
 type Template = (
   initLoginState: IInitLoginState,
   appComponent: string,
