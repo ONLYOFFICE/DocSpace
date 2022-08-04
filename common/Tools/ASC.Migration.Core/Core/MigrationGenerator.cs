@@ -28,7 +28,7 @@ namespace Migration;
 
 public class MigrationGenerator
 {
-    private readonly BaseDbContext _dbContext;
+    private readonly DbContext _dbContext;
     private readonly string _providerInfoProjectPath;
     private readonly string _typeName;
     private readonly Regex _pattern = new Regex(@"\d+$", RegexOptions.Compiled);
@@ -42,7 +42,7 @@ public class MigrationGenerator
         }
     }
 
-    public MigrationGenerator(BaseDbContext context, Provider provider, string providerInfoProjectPath)
+    public MigrationGenerator(DbContext context, Provider provider, string providerInfoProjectPath)
     {
         _dbContext = context;
         _providerInfoProjectPath = providerInfoProjectPath;

@@ -26,13 +26,18 @@
 
 namespace ASC.Core.Common.Hosting;
 
-public class InstanceRegistrationContext : BaseDbContext
+public class InstanceRegistrationContext : DbContext
 {
     public DbSet<InstanceRegistration> InstanceRegistrations { get; set; }
 
+    public InstanceRegistrationContext(DbContextOptions<InstanceRegistrationContext> options) : base(options)
+    {
+
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        ModelBuilderWrapper.From(modelBuilder, _provider)
+        ModelBuilderWrapper.From(modelBuilder, Database)
                            .AddInstanceRegistration();
 
     }
