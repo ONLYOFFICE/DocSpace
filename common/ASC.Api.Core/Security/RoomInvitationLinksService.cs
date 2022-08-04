@@ -33,23 +33,23 @@ public class RoomInvitationLinksService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MessageTarget _messageTarget;
     private readonly UserManager _userManager;
-    private readonly Lazy<MessagesContext> _messagesContext;
     private readonly MessageService _messageService;
+    private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
 
     public RoomInvitationLinksService(
         CommonLinkUtility commonLinkUtility,
         IHttpContextAccessor httpContextAccessor,
         MessageTarget messageTarget,
         UserManager userManager,
-        DbContextManager<MessagesContext> dbContextManager,
-        MessageService messageService)
+        MessageService messageService,
+        IDbContextFactory<MessagesContext> dbContextFactory)
     {
         _commonLinkUtility = commonLinkUtility;
         _httpContextAccessor = httpContextAccessor;
         _messageTarget = messageTarget;
         _userManager = userManager;
-        _messagesContext = new Lazy<MessagesContext>(() => dbContextManager.Value);
         _messageService = messageService;
+        _dbContextFactory = dbContextFactory;
     }
 
     public string GenerateLink<T>(T id, int fileShare, EmployeeType employeeType, Guid guid)
@@ -108,7 +108,7 @@ public class RoomInvitationLinksService
 
     private AuditEvent GetLinkInfo(string id, string email, string key)
     {
-        var context = _messagesContext.Value;
+        using var context = _dbContextFactory.CreateDbContext();
         var target = _messageTarget.CreateFromGroupValues(email != null ? new[] { id, email } : new[] { id });
         var description = JsonConvert.SerializeObject(new[] { key },
             new JsonSerializerSettings
@@ -116,7 +116,7 @@ public class RoomInvitationLinksService
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc
             });
 
-        var message = context.AuditEvents.Where(a => a.Target == target.ToString() && 
+        var message = context.AuditEvents.Where(a => a.Target == target.ToString() &&
             a.DescriptionRaw == description).FirstOrDefault();
 
         return message;

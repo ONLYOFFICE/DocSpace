@@ -56,7 +56,8 @@ public static class DbFilesThirdpartyIdMappingExtension
             entity.HasKey(e => e.HashId)
                 .HasName("PRIMARY");
 
-            entity.ToTable("files_thirdparty_id_mapping");
+            entity.ToTable("files_thirdparty_id_mapping")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => new { e.TenantId, e.HashId })
                 .HasDatabaseName("index_1");

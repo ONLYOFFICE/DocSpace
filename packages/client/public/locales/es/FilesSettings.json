@@ -1,0 +1,22 @@
+{
+  "Clouds": "Nubes",
+  "CommonSettings": "Configuración común",
+  "ConnectAdminDescription": "Para que la conexión tenga éxito, introduzca los datos necesarios en <1>esta página</1>.",
+  "ConnectCloud": "Conectar nube",
+  "ConnectDescriptionText": "Todavía no se han conectado nubes de terceros.",
+  "ConnectEmpty": "No hay nada aquí",
+  "ConnectMakeShared": "Hacer que sea compartido y ponerlo en la carpeta 'Documentos comunes'",
+  "ConnectMessage": "Usted puede conectar siguientes servicios a su cuenta ONLYOFFICE. Ellos se mostrarán en la carpeta \"Mis Documentos\" y Usted podrá editar y guardar todos sus documentos en un espacio de trabajo.",
+  "ConnextOtherAccount": "Otra cuenta",
+  "DisplayFavorites": "Mostrar Favoritos",
+  "DisplayNotification": "Mostrar notificación al mover elementos a la Papelera",
+  "DisplayRecent": "Mostrar Recientes",
+  "DisplayTemplates": "Mostrar plantillas",
+  "IntermediateVersion": "Mantener todas las versiones intermedias guardadas",
+  "KeepIntermediateVersion": "Mantener las versiones intermedias al editar",
+  "OriginalCopy": "Guardar también la copia del archivo en el formato original",
+  "StoringFileVersion": "Almacenar las versiones de los archivos",
+  "ThirdPartyBtn": "Permitir que los usuarios conecten almacenamientos de terceros",
+  "ThirdPartySettings": "Nubes conectadas",
+  "UpdateOrCreate": "Actualice la versión del archivo existente con el mismo nombre. En caso contrario, se creará una copia del archivo."
+}

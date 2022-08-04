@@ -1,0 +1,10 @@
+{
+  "MoveToTrashButton": "Move to Trash",
+  "MoveToTrashFile": "You are about to delete this file? Please note, that if you have shared it with someone, it will become unavailable. Are you sure you want to continue?",
+  "MoveToTrashFolder": "You are about to delete this folder? Please note, that if you have shared it with someone, it will become unavailable. Are you sure you want to continue?",
+  "MoveToTrashItems": "You are about to delete these items? Please note, that if you have shared it with someone, they will become unavailable. Are you sure you want to continue?",
+  "MoveToTrashTitle": "Move to Trash?",
+  "UnsubscribeButton": "Unsubscribe",
+  "UnsubscribeNote": "Are you sure you want to unsubscribe from the selected items from the list?",
+  "UnsubscribeTitle": "Unsubscribe confirmation"
+}

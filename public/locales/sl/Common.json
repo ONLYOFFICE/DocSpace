@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Minimalna dolžina",
   "People": "Ljudje",
   "Phone": "Telefon",
+  "PreparationPortalTitle": "Obnavljanje portala je v teku",
   "Previous": "Prejšnji",
   "Profile": "Profil",
   "ProjectsProduct": "Projekti",
@@ -168,5 +169,9 @@
   "View": "Ogled",
   "ViewWeb": "Ogled spletne verzije",
   "Warning": "Opozorilo",
-  "Hotkeys": "Bližnjice"
+  "Hotkeys": "Bližnjice",
+  "PaymentsTitle": "Plačila",
+  "AboutCompanyTitle": "O tem programu",
+  "LogoutButton": "Odjava",
+  "HelpCenter": "Center pomoči"
 }

@@ -34,13 +34,14 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
         base(options, logger, encoder, clock)
     {
     }
+
     public AuthHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
         ISystemClock clock,
         IConfiguration configuration,
-        IOptionsMonitor<ILog> option,
+        ILogger<AuthHandler> log,
         ApiSystemHelper apiSystemHelper,
         MachinePseudoKeys machinePseudoKeys,
         IHttpContextAccessor httpContextAccessor) :
@@ -48,14 +49,14 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         Configuration = configuration;
 
-        Log = option.Get("ASC.ApiSystem");
+        Log = log;
 
         ApiSystemHelper = apiSystemHelper;
         MachinePseudoKeys = machinePseudoKeys;
         HttpContextAccessor = httpContextAccessor;
     }
 
-    private ILog Log { get; }
+    private ILogger<AuthHandler> Log { get; }
 
     private IConfiguration Configuration { get; }
 
@@ -67,7 +68,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         if (Convert.ToBoolean(Configuration[Scheme.Name] ?? "false"))
         {
-            Log.DebugFormat("Auth for {0} skipped", Scheme.Name);
+            Log.LogDebug("Auth for {0} skipped", Scheme.Name);
 
             return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
         }
@@ -80,7 +81,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 
             if (string.IsNullOrEmpty(header))
             {
-                Log.Debug("Auth header is NULL");
+                Log.LogDebug("Auth header is NULL");
 
                 return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
             }
@@ -93,7 +94,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 
                 if (splitted.Length < 3)
                 {
-                    Log.DebugFormat("Auth failed: invalid token {0}.", header);
+                    Log.LogDebug("Auth failed: invalid token {0}.", header);
 
                     return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
                 }
@@ -102,7 +103,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
                 var date = splitted[1];
                 var orighash = splitted[2];
 
-                Log.Debug("Variant of correct auth:" + ApiSystemHelper.CreateAuthToken(pkey));
+                Log.LogDebug("Variant of correct auth:" + ApiSystemHelper.CreateAuthToken(pkey));
 
                 if (!string.IsNullOrWhiteSpace(date))
                 {
@@ -112,7 +113,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 
                     if (DateTime.UtcNow > timestamp.Add(trustInterval))
                     {
-                        Log.DebugFormat("Auth failed: invalid timesatmp {0}, now {1}.", timestamp, DateTime.UtcNow);
+                        Log.LogDebug("Auth failed: invalid timesatmp {0}, now {1}.", timestamp, DateTime.UtcNow);
 
                         return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Forbidden))));
                     }
@@ -125,27 +126,27 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 
                 if (WebEncoders.Base64UrlEncode(hash) != orighash && Convert.ToBase64String(hash) != orighash)
                 {
-                    Log.DebugFormat("Auth failed: invalid token {0}, expect {1} or {2}.", orighash, WebEncoders.Base64UrlEncode(hash), Convert.ToBase64String(hash));
+                    Log.LogDebug("Auth failed: invalid token {0}, expect {1} or {2}.", orighash, WebEncoders.Base64UrlEncode(hash), Convert.ToBase64String(hash));
 
                     return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Forbidden))));
                 }
             }
             else
             {
-                Log.DebugFormat("Auth failed: invalid auth header. Sheme: {0}, parameter: {1}.", Scheme.Name, header);
+                Log.LogDebug("Auth failed: invalid auth header. Sheme: {0}, parameter: {1}.", Scheme.Name, header);
 
                 return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Forbidden))));
             }
         }
         catch (Exception ex)
         {
-            Log.Error(ex);
+            Log.LogError(ex, "auth error");
 
             return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.InternalServerError))));
         }
         var identity = new ClaimsIdentity(Scheme.Name);
 
-        Log.InfoFormat("Auth success {0}", Scheme.Name);
+        Log.LogInformation("Auth success {0}", Scheme.Name);
         if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = new CustomClaimsPrincipal(new ClaimsIdentity(Scheme.Name), identity);
         return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
     }

@@ -1,6 +1,6 @@
 {
 	"ssoauth": {
 		"path": "../../ASC.SsoAuth",
-		"port": "9834",
+		"port": "9834"
 	}
 }

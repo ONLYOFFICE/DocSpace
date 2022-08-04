@@ -24,12 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.MessagingSystem.Data;
 
-public class MySqlMessagesContext : MessagesContext { }
-public class PostgreSqlMessagesContext : MessagesContext { }
+namespace ASC.MessagingSystem.EF.Context;
 
-public class MessagesContext : BaseDbContext
+public class MessagesContext : DbContext
 {
     public DbSet<AuditEvent> AuditEvents { get; set; }
     public DbSet<LoginEvent> LoginEvents { get; set; }
@@ -37,35 +35,20 @@ public class MessagesContext : BaseDbContext
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<User> Users { get; set; }
 
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+    public MessagesContext(DbContextOptions<MessagesContext> options) : base(options)
     {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlMessagesContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlMessagesContext() } ,
-            };
-        }
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddAuditEvent()
             .AddLoginEvents()
             .AddUser()
             .AddWebstudioSettings()
             .AddDbTenant()
             .AddDbFunction();
-    }
-}
-
-public static class MessagesContextExtension
-{
-    public static DIHelper AddMessagesContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<MessagesContext>();
     }
 }

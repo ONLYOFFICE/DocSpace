@@ -1,16 +1,21 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation, Trans } from "react-i18next";
-import { LANGUAGE } from "@appserver/common/constants";
-import Text from "@appserver/components/text";
+import { LANGUAGE } from "@docspace/common/constants";
+import Text from "@docspace/components/text";
 import { ReactSVG } from "react-svg";
 import {
   StyledProperties,
   StyledSubtitle,
   StyledGalleryThumbnail,
   StyledTitle,
+<<<<<<<< HEAD:products/ASC.Files/Client/src/pages/Home/InfoPanel/Body/views/Gallery/GalleryItem.js
 } from "../../styles/styles.js";
 import getCorrectDate from "@appserver/components/utils/getCorrectDate";
+========
+} from "./styles/styles.js";
+import getCorrectDate from "@docspace/components/utils/getCorrectDate";
+>>>>>>>> develop:packages/client/src/pages/Home/InfoPanel/Body/GalleryItem.js
 
 const SingleItem = (props) => {
   const { t, selectedItem, getIcon, culture, personal } = props;
@@ -83,4 +88,4 @@ export default inject(({ settingsStore }) => {
   return {
     getIcon,
   };
-})(withTranslation(["InfoPanel", "Common", "Home"])(observer(SingleItem)));
+})(withTranslation(["InfoPanel", "Common", "Files"])(observer(SingleItem)));

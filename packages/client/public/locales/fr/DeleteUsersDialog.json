@@ -1,0 +1,5 @@
+{
+  "DeleteGroupUsersSuccessMessage": "Les utilisateurs ont été supprimés avec succès.",
+  "DeleteUsers": "Supprimer les utilisateurs",
+  "DeleteUsersMessage": "Les utilisateurs désactivés sélectionnés seront supprimés du portail. Les documents personnels de ces utilisateurs qui sont partagés avec d'autres seront supprimés. Pour éviter cela, vous devez démarrer le processus de transfert de données avant la suppression."
+}

@@ -24,28 +24,26 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using DbContext = ASC.Core.Common.EF.Context.DbContext;
-
 namespace ASC.Geolocation;
 
 public class GeolocationHelper
 {
-    public string Dbid { get; set; }
+    private readonly IDbContextFactory<CustomDbContext> _dbContextFactory;
     private readonly ILogger<GeolocationHelper> _logger;
-    private readonly DbContext _dbContext;
 
-    public GeolocationHelper(DbContextManager<DbContext> dbContext, ILogger<GeolocationHelper> logger)
+    public GeolocationHelper(IDbContextFactory<CustomDbContext> dbContextFactory, ILogger<GeolocationHelper> logger)
     {
+        _dbContextFactory = dbContextFactory;
         _logger = logger;
-        _dbContext = dbContext.Get(Dbid);
     }
 
     public IPGeolocationInfo GetIPGeolocation(string ip)
     {
         try
         {
+            using var dbContext = _dbContextFactory.CreateDbContext();
             var ipformatted = FormatIP(ip);
-            var q = _dbContext.DbipLocation
+            var q = dbContext.DbipLocation
                 .Where(r => r.IPStart.CompareTo(ipformatted) <= 0)
                 .Where(r => ipformatted.CompareTo(r.IPEnd) <= 0)
                 .OrderByDescending(r => r.IPStart)
@@ -55,7 +53,7 @@ public class GeolocationHelper
                     IPEnd = r.IPEnd,
                     IPStart = r.IPStart,
                     Key = r.Country,
-                    TimezoneOffset = r.TimezoneOffset,
+                    TimezoneOffset = r.TimezoneOffset ?? 0,
                     TimezoneName = r.TimezoneName
                 })
                 .FirstOrDefault();

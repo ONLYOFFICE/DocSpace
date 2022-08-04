@@ -1,0 +1,22 @@
+{
+  "Clouds": "Oblaky",
+  "CommonSettings": "Všeobecné nastavenia",
+  "ConnectAdminDescription": "Pre úspešné pripojenie zadajte potrebné údaje na <1>tejto stránke</1>.",
+  "ConnectCloud": "Pripojiť účet",
+  "ConnectDescriptionText": "Zatiaľ ste nepripojili žiadne cloudy tretích strán.",
+  "ConnectEmpty": "Nič tu nie je",
+  "ConnectMakeShared": "Nastavte ako zdieľané a vložte do priečinka 'Všeobecné'",
+  "ConnectMessage": "K Dokumentom ONLYOFFICE môžete pripojiť nasledujúce účty. Zobrazia sa v priečinku 'Moje dokumenty' a budete ich môcť upraviť a uložiť priamo na portáli na jednom mieste.",
+  "ConnextOtherAccount": "Iný účet",
+  "DisplayFavorites": "Zobraziť obľúbené položky",
+  "DisplayNotification": "Zobraziť upozornenie pri presúvaní položiek do koša",
+  "DisplayRecent": "Zobraziť posledné",
+  "DisplayTemplates": "Zobraziť šablóny",
+  "IntermediateVersion": "Ponechať všetky uložené priebežné verzie",
+  "KeepIntermediateVersion": "Pri úprave ponechať priebežné verzie",
+  "OriginalCopy": "Uložte kópiu súboru aj v pôvodnom formáte",
+  "StoringFileVersion": "Ukladanie verzií súborov",
+  "ThirdPartyBtn": "Umožnite používateľom pripojiť úložiská tretích strán",
+  "ThirdPartySettings": "Pripojené cloudy",
+  "UpdateOrCreate": "Aktualizujte verziu súboru pre existujúci súbor s rovnakým názvom. V opačnom prípade sa vytvorí kópia súboru."
+}

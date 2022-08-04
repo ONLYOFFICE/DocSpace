@@ -112,7 +112,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     protected readonly FolderDtoHelper _folderDtoHelper;
     private readonly FileSecurity _fileSecurity;
     private readonly FileSecurityCommon _fileSecurityCommon;
-    protected readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
 
     protected VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<T> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomInvitationLinksService roomLinksService, CustomTagsService<T> customTagsService, RoomLogoManager roomLogoManager, StudioNotifyService studioNotifyService, FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper, FileSecurity fileSecurity, FileSecurityCommon fileSecurityCommon, EmailValidationKeyProvider emailValidationKeyProvider)
     {
@@ -636,22 +636,28 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// <param name="searchArea">
     /// Room search area
     /// </param>
+    /// <param name="withoutTags">
+    /// Search by rooms without tags
+    /// </param>
     /// <param name="tags">
     /// Filter by tags
+    /// </param>
+    /// <param name="withoutMe">
+    /// Exclude your rooms from search
     /// </param>
     /// <returns>
     /// Virtual Rooms content
     /// </returns>
     [HttpGet("rooms")]
-    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(string types, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea, string tags)
+    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomType type, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea, bool withoutTags, string tags,
+        bool withoutMe)
     {
         ErrorIfNotDocSpace();
 
-        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<int>();
+        var parentId = searchArea != SearchArea.Archive ? await _globalFolderHelper.GetFolderVirtualRooms<int>()
+            : await _globalFolderHelper.GetFolderArchive<int>();
 
-        var roomTypes = !string.IsNullOrEmpty(types) ? JsonSerializer.Deserialize<IEnumerable<RoomType>>(types) : null;
-
-        var filterTypes = roomTypes != null ? roomTypes.Select(t => t switch
+        var filterType = type switch
         {
             RoomType.FillingFormsRoom => FilterType.FillingFormsRooms,
             RoomType.ReadOnlyRoom => FilterType.ReadOnlyRooms,
@@ -659,7 +665,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
             RoomType.ReviewRoom => FilterType.ReviewRooms,
             RoomType.CustomRoom => FilterType.CustomRooms,
             _ => FilterType.None
-        }) : new[] { FilterType.None };
+        };
 
         var tagNames = !string.IsNullOrEmpty(tags) ? JsonSerializer.Deserialize<IEnumerable<string>>(tags) : null;
 
@@ -673,7 +679,8 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var filterValue = _apiContext.FilterValue;
 
-        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filterTypes, false, subjectId, filterValue, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filterType, false, subjectId, filterValue, 
+            searchInContent, withSubfolders, orderBy, searchArea, withoutTags, tagNames, withoutMe);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
 

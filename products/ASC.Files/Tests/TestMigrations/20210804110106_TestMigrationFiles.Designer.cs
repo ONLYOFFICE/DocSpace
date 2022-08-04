@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ASC.Core.Common.Migrations
 {
-    [DbContext(typeof(Files.Core.EF.MySqlFilesDbContext))]
+    [DbContext(typeof(Files.Core.EF.FilesDbContext))]
     [Migration("20210804110106_TestFilesMigration")]
     partial class TestFilesMigration
     {

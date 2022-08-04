@@ -49,22 +49,26 @@ services:
     expose:
       - "9200"
       - "9300"
-
-  onlyoffice-api-system:
+  onlyoffice-backup-background-tasks:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-api-system:${DOCKER_TAG}"
-    container_name: ${API_SYSTEM_HOST}
-  
+    image: "${REPO}/${STATUS}appserver-backup-background:${DOCKER_TAG}"
+    container_name: ${BACKUP_BACKGRUOND_TASKS_HOST}
+
   onlyoffice-backup:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-backup:${DOCKER_TAG}"
     container_name: ${BACKUP_HOST}
   
-  onlyoffice-storage-encryption:
+  onlyoffice-clear-events:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-storage-encryption:${DOCKER_TAG}"
-    container_name: ${STORAGE_ENCRYPTION_HOST}
-  
+    image: "${REPO}/${STATUS}appserver-clear-events:${DOCKER_TAG}"
+    container_name: ${CLEAR_EVENTS_HOST}
+
+  onlyoffice-migration:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-migration:${DOCKER_TAG}"
+    container_name: ${MIGRATION_HOST}
+
   onlyoffice-files:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-files:${DOCKER_TAG}"
@@ -74,11 +78,6 @@ services:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-files-services:${DOCKER_TAG}"
     container_name: ${FILES_SERVICES_HOST}
-
-  onlyoffice-storage-migration:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-storage-migration:${DOCKER_TAG}"
-    container_name: ${STORAGE_MIGRATION_HOST}
   
   onlyoffice-people-server:
     <<: *x-service-base
@@ -91,7 +90,6 @@ services:
     container_name: ${SOCKET_HOST}
     expose:
     - ${SERVICE_PORT}
-    - "9899"
   
   onlyoffice-studio-notify:
     <<: *x-service-base
@@ -103,14 +101,6 @@ services:
     image: "${REPO}/${STATUS}appserver-telegram-service:${DOCKER_TAG}"
     container_name: ${TELEGRAM_SERVICE_HOST}
 
-  onlyoffice-thumbnails:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-thumbnails:${DOCKER_TAG}"
-    container_name: ${THUMBNAILS_HOST}
-    expose:
-    - ${SERVICE_PORT}
-    - "9800"
-    
   onlyoffice-urlshortener:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-urlshortener:${DOCKER_TAG}"
@@ -137,6 +127,18 @@ services:
     - ${SERVICE_PORT}
     - "9834"
 
+  onlyoffice-webhooks-service:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-webhooks-service:${DOCKER_TAG}"
+    container_name: ${WEBHOOKS_SERVICE_HOST}  
+
+  onlyoffice-doceditor:
+    image: "${REPO}/${STATUS}appserver-doceditor:${DOCKER_TAG}"
+    container_name: ${DOCEDITOR_HOST}
+    restart: always
+    expose:
+      - "5013"
+
   onlyoffice-proxy:
     image: "${REPO}/${STATUS}appserver-proxy:${DOCKER_TAG}"
     container_name: ${PROXY_HOST}
@@ -148,38 +150,38 @@ services:
     ports:
       - 8092:8092 
     depends_on:
-      - onlyoffice-api-system
+      - onlyoffice-backup-background-tasks
       - onlyoffice-backup
-      - onlyoffice-storage-encryption
+      - onlyoffice-clear-events
+      - onlyoffice-migration
+      - onlyoffice-webhooks-service
       - onlyoffice-files
       - onlyoffice-files-services
-      - onlyoffice-storage-migration
       - onlyoffice-people-server
       - onlyoffice-socket
       - onlyoffice-studio-notify
       - onlyoffice-telegram-service
-      - onlyoffice-thumbnails
       - onlyoffice-urlshortener
       - onlyoffice-api
       - onlyoffice-studio
       - onlyoffice-ssoauth
     environment:
-      - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
       - SERVICE_BACKUP=${SERVICE_BACKUP}
-      - SERVICE_STORAGE_ENCRYPTION=${SERVICE_STORAGE_ENCRYPTION}
       - SERVICE_FILES=${SERVICE_FILES}
       - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
-      - SERVICE_STORAGE_MIGRATION=${SERVICE_STORAGE_MIGRATION}
+      - SERVICE_CLEAR_EVENTS=${SERVICE_CLEAR_EVENTS}
+      - SERVICE_MIGRATION=${SERVICE_MIGRATION}
+      - SERVICE_WEBHOOKS_SERVICE=${SERVICE_WEBHOOKS_SERVICE}
       - SERVICE_NOTIFY=${SERVICE_NOTIFY}
       - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
       - SERVICE_SOCKET=${SERVICE_SOCKET}
       - SERVICE_STUDIO_NOTIFY=${SERVICE_STUDIO_NOTIFY}
       - SERVICE_TELEGRAM_SERVICE=${SERVICE_TELEGRAM_SERVICE}
-      - SERVICE_THUMBNAILS=${SERVICE_THUMBNAILS}
       - SERVICE_URLSHORTENER=${SERVICE_URLSHORTENER}
       - SERVICE_API=${SERVICE_API}
       - SERVICE_STUDIO=${SERVICE_STUDIO}
       - SERVICE_SSOAUTH=${SERVICE_SSOAUTH}
+      - SERVICE_DOCEDITOR=${SERVICE_DOCEDITOR}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:

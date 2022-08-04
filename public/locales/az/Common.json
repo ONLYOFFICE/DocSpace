@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Minimal uzunluq",
   "People": "İnsanlar",
   "Phone": "Nömrə",
+  "PreparationPortalTitle": "Portalın bərpası davam edir",
   "Previous": "Əvvəlki ",
   "Profile": "Profil",
   "ProjectsProduct": "Layihələr",
@@ -168,5 +169,9 @@
   "View": "Baxın",
   "ViewWeb": "Veb versiyaya baxın",
   "Warning": "Xəbərdarlıq",
-  "Hotkeys": "Qısayollar"
+  "Hotkeys": "Qısayollar",
+  "PaymentsTitle": "Ödənişlər",
+  "AboutCompanyTitle": "Proqram haqqında",
+  "LogoutButton": "Çıxış edin",
+  "HelpCenter": "Yardım Mərkəzi"
 }

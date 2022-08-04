@@ -47,28 +47,29 @@ public class DbLoginEventsManager
 
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
+    private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
     private readonly IMapper _mapper;
-
-    private MessagesContext LoginEventContext => _lazyLoginEventContext.Value;
-    private readonly Lazy<MessagesContext> _lazyLoginEventContext;
 
     public DbLoginEventsManager(
         TenantManager tenantManager,
         AuthContext authContext,
-        DbContextManager<MessagesContext> dbContextManager,
+        IDbContextFactory<MessagesContext> dbContextFactory,
         IMapper mapper)
     {
         _tenantManager = tenantManager;
         _authContext = authContext;
+        _dbContextFactory = dbContextFactory;
         _mapper = mapper;
-        _lazyLoginEventContext = new Lazy<MessagesContext>(() => dbContextManager.Value);
     }
 
     public async Task<List<int>> GetLoginEventIds(int tenantId, Guid userId)
     {
         var date = DateTime.UtcNow.AddYears(-1);
-        var resultList = await LoginEventContext.LoginEvents
-            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action) && r.Date >= date && r.Active)
+
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
+
+        var resultList = await loginEventContext.LoginEvents
+            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action ?? 0) && r.Date >= date && r.Active)
             .Select(r => r.Id)
             .ToListAsync();
 
@@ -78,8 +79,10 @@ public class DbLoginEventsManager
     public async Task<List<BaseEvent>> GetLoginEvents(int tenantId, Guid userId)
     {
         var date = DateTime.UtcNow.AddYears(-1);
-        var loginInfo = await LoginEventContext.LoginEvents
-            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action) && r.Date >= date && r.Active)
+
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        var loginInfo = await loginEventContext.LoginEvents
+            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action ?? 0) && r.Date >= date && r.Active)
             .OrderByDescending(r => r.Id)
             .ToListAsync();
 
@@ -88,7 +91,8 @@ public class DbLoginEventsManager
 
     public async Task LogOutEvent(int loginEventId)
     {
-        var events = await LoginEventContext.LoginEvents
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        var events = await loginEventContext.LoginEvents
            .Where(r => r.Id == loginEventId)
            .ToListAsync();
 
@@ -97,14 +101,15 @@ public class DbLoginEventsManager
             e.Active = false;
         }
 
-        await LoginEventContext.SaveChangesAsync();
+        await loginEventContext.SaveChangesAsync();
 
         ResetCache();
     }
 
     public async Task LogOutAllActiveConnections(int tenantId, Guid userId)
     {
-        var events = await LoginEventContext.LoginEvents
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        var events = await loginEventContext.LoginEvents
               .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Active)
               .ToListAsync();
 
@@ -113,14 +118,15 @@ public class DbLoginEventsManager
             e.Active = false;
         }
 
-        await LoginEventContext.SaveChangesAsync();
+        await loginEventContext.SaveChangesAsync();
 
         ResetCache(tenantId, userId);
     }
 
     public async Task LogOutAllActiveConnectionsForTenant(int tenantId)
     {
-        var events = await LoginEventContext.LoginEvents
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        var events = await loginEventContext.LoginEvents
               .Where(r => r.TenantId == tenantId && r.Active)
               .ToListAsync();
 
@@ -129,12 +135,13 @@ public class DbLoginEventsManager
             e.Active = false;
         }
 
-        await LoginEventContext.SaveChangesAsync();
+        await loginEventContext.SaveChangesAsync();
     }
 
     public async Task LogOutAllActiveConnectionsExceptThis(int loginEventId, int tenantId, Guid userId)
     {
-        var events = await LoginEventContext.LoginEvents
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        var events = await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Id != loginEventId && r.Active)
             .ToListAsync();
 
@@ -143,7 +150,7 @@ public class DbLoginEventsManager
             e.Active = false;
         }
 
-        await LoginEventContext.SaveChangesAsync();
+        await loginEventContext.SaveChangesAsync();
 
         ResetCache(tenantId, userId);
     }

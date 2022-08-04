@@ -233,18 +233,15 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     protected readonly IServiceProvider _serviceProvider;
     protected readonly UserManager _userManager;
     protected readonly TenantUtil _tenantUtil;
-    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
-    protected FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
+    protected readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     protected readonly SetupInfo _setupInfo;
     protected readonly ILogger _logger;
     protected readonly FileUtility _fileUtility;
     protected readonly TempPath _tempPath;
+    protected readonly AuthContext _authContext;
     protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
     protected T ProviderInfo { get; set; }
     protected string PathPrefix { get; private set; }
-    protected List<FilterType> _constraintFolderFilters =
-        new List<FilterType> { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly,
-            FilterType.PresentationsOnly, FilterType.SpreadsheetsOnly, FilterType.ArchiveOnly, FilterType.MediaOnly };
 
     protected abstract string Id { get; }
 
@@ -253,21 +250,23 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         SetupInfo setupInfo,
         ILogger logger,
         FileUtility fileUtility,
-        TempPath tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
     {
         _serviceProvider = serviceProvider;
         _userManager = userManager;
         _tenantUtil = tenantUtil;
-        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+        _dbContextFactory = dbContextFactory;
         _setupInfo = setupInfo;
         _logger = logger;
         _fileUtility = fileUtility;
         _tempPath = tempPath;
         TenantID = tenantManager.GetCurrentTenant().Id;
+        _authContext = authContext;
     }
 
     public void Init(BaseProviderInfo<T> providerInfo, RegexDaoSelectorBase<T> selectorBase)
@@ -294,6 +293,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     private async Task<string> InternalMappingIDAsync(string id, bool saveIfNotExist = false)
     {
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+
         string result;
         if (id.StartsWith(Id))
         {
@@ -301,7 +302,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
         else
         {
-            result = await FilesDbContext.ThirdpartyIdMapping
+            result = await filesDbContext.ThirdpartyIdMapping
                     .AsQueryable()
                     .Where(r => r.HashId == id)
                     .Select(r => r.Id)
@@ -317,8 +318,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
                 TenantId = TenantID
             };
 
-            await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping).ConfigureAwait(false);
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await filesDbContext.ThirdpartyIdMapping.AddAsync(newMapping).ConfigureAwait(false);
+            await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         return result;
@@ -402,47 +403,70 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, IEnumerable<string> tagNames)
+    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, bool withoutTags, IEnumerable<string> tagNames)
     {
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+        if (withoutTags)
+        {
+            return folders.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+                .WhereAwait(async r => !await filesDbContext.TagLink.Join(filesDbContext.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
+                .Where(r => r.tag.Type == TagType.Custom).ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
+                .Select(r => r.folder);
+        }
+
         if (tagNames == null || !tagNames.Any())
         {
             return folders;
         }
 
-        var filtered = folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
-            .Join(FilesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
-            .Join(FilesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
+        var filtered = folders.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+            .Join(filesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
+            .Join(filesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
                 .Where(r => tagNames.Contains(r.Name))
                 .Select(r => r.folder);
 
         return filtered;
     }
 
-    protected IAsyncEnumerable<Folder<string>> SetFilterByTypes(IAsyncEnumerable<Folder<string>> folders, IEnumerable<FilterType> filterTypes)
+    protected IAsyncEnumerable<Folder<string>> FilterByRoomType(IAsyncEnumerable<Folder<string>> rooms, FilterType filterType)
     {
-        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None))
+        if (filterType == FilterType.None)
         {
-            var filter = filterTypes.Select(f => f switch
-            {
-                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
-                FilterType.EditingRooms => FolderType.EditingRoom,
-                FilterType.ReviewRooms => FolderType.ReviewRoom,
-                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
-                FilterType.CustomRooms => FolderType.CustomRoom,
-                _ => FolderType.CustomRoom
-            }).ToHashSet();
-
-            return folders.Where(f => filter.Contains(f.FolderType));
+            return rooms;
         }
 
-        return folders;
+        var filter = filterType switch
+        {
+            FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+            FilterType.EditingRooms => FolderType.EditingRoom,
+            FilterType.ReviewRooms => FolderType.ReviewRoom,
+            FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+            FilterType.CustomRooms => FolderType.CustomRoom,
+            _ => FolderType.CustomRoom,
+        };
+
+        return rooms.Where(f => f.FolderType == filter);
     }
 
-    protected bool CheckForInvalidFilters(IEnumerable<FilterType> filterTypes)
+    protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)
     {
-        var intersection = filterTypes.Intersect(_constraintFolderFilters);
+        if (ownerId != Guid.Empty && !withoutMe)
+        {
+            rooms = rooms.Where(f => f.CreateBy == ownerId);
+        }
 
-        return !intersection.Any();
+        if (ownerId == Guid.Empty && withoutMe)
+        {
+            rooms = rooms.Where((f => f.CreateBy != _authContext.CurrentAccount.ID));
+        }
+
+        return rooms;
+    }
+
+    protected bool CheckInvalidFilter(FilterType filterType)
+    {
+        return filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly
+            or FilterType.SpreadsheetsOnly or FilterType.ArchiveOnly or FilterType.MediaOnly;
     }
 
     protected abstract string MakeId(string path = null);
@@ -603,7 +627,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     {
         var folderId = DaoSelector.ConvertId(parentFolder.Id);
 
-        var entryIDs = await FilesDbContext.ThirdpartyIdMapping
+        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var entryIDs = await filesDbContext.ThirdpartyIdMapping
                    .AsQueryable()
                    .Where(r => r.Id.StartsWith(parentFolder.Id))
                    .Select(r => r.HashId)
@@ -615,8 +640,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             yield break;
         }
 
-        var q = from r in FilesDbContext.Tag
-                from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+        var q = from r in filesDbContext.Tag
+                from l in filesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
                 where r.TenantId == TenantID && l.TenantId == TenantID && r.Type == TagType.New && entryIDs.Contains(l.EntryId)
                 select new { tag = r, tagLink = l };
 

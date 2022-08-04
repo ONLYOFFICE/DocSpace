@@ -1,0 +1,22 @@
+{
+  "Clouds": "클라우드",
+  "CommonSettings": "공통 설정",
+  "ConnectAdminDescription": "성공적인 연결을 위해 <1>이 페이지</1>에 필요헌 데이터를 입력해주세요.",
+  "ConnectCloud": "계정을 연결",
+  "ConnectDescriptionText": "아직 타사 클라우드를 연결하지 않았습니다.",
+  "ConnectEmpty": "여기에 아무 것도 없습니다",
+  "ConnectMakeShared": "공유하고 '공통' 폴더에 넣기",
+  "ConnectMessage": "당신은 ONLYOFFICE 문서에 다음 계정을 연결할 수 있습니다. 그들은 '내 문서'폴더에 표시됩니다 그리고 당신은 한 곳에서 모두 수정하고 포털에서 마우스 오른쪽을 저장 할 수 있습니다.",
+  "ConnextOtherAccount": "기타 계정",
+  "DisplayFavorites": "즐겨 찾기 표시",
+  "DisplayNotification": "항목을 휴지통에 넣을 때 알림 표시",
+  "DisplayRecent": "최근 표시",
+  "DisplayTemplates": "템플릿 표시",
+  "IntermediateVersion": "저장된 중간 버전 모두 유지",
+  "KeepIntermediateVersion": "편집 시 중간 버전 유지",
+  "OriginalCopy": "파일 복사본을 원본 형식으로도 저장",
+  "StoringFileVersion": "파일 버전 저장 중",
+  "ThirdPartyBtn": "사용자가 제3자 스토리지에 연결하도록 허용",
+  "ThirdPartySettings": "연결된 클라우드",
+  "UpdateOrCreate": "같은 이름을 가진 기존 파일의 파일 버전을 업데이트하세요. 그렇지 않으면, 파일 복사본이 생성됩니다."
+}

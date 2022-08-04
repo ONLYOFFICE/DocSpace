@@ -1,0 +1,22 @@
+{
+  "Clouds": "Clouds",
+  "CommonSettings": "Algemene instellingen",
+  "ConnectAdminDescription": "Voor een succesvolle verbinding, voer de nodige gegevens in op <1>deze pagina</1>.",
+  "ConnectCloud": "Verbind account",
+  "ConnectDescriptionText": "U heeft nog geen clouds van derden aangesloten.",
+  "ConnectEmpty": "Er is nog niets",
+  "ConnectMakeShared": "Maak gedeeld en zet in de 'Gemeenschappelijk' map",
+  "ConnectMessage": "Je kan de volgende services koppelen aan uw ONLYOFFICE account. Deze zullen worden weergegeven in de 'Mijn Documenten'-map en je zal in staat zijn deze te bewerken en op te slaan op de portal op één plaats.",
+  "ConnextOtherAccount": "Andere account",
+  "DisplayFavorites": "Favorieten Tonen",
+  "DisplayNotification": "Meldingen weergeven wanneer items naar de Prullenbak worden verplaatst",
+  "DisplayRecent": "Recent Weergeven",
+  "DisplayTemplates": "Sjablonen Weergeven",
+  "IntermediateVersion": "Bewaar alle opgeslagen tussenversies",
+  "KeepIntermediateVersion": "Bewaar tussenversies bij het bewerken",
+  "OriginalCopy": "Bewaar de bestandskopie ook in het oorspronkelijke formaat",
+  "StoringFileVersion": "Opslaan van bestandsversies",
+  "ThirdPartyBtn": "Sta gebruikers toe opslag van derden aan te sluiten",
+  "ThirdPartySettings": "Gekoppelde clouds",
+  "UpdateOrCreate": "Update de bestandsversie voor het bestaande bestand met dezelfde naam. Anders wordt een kopie van het bestand gemaakt."
+}

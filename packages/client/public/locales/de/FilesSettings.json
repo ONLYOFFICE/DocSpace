@@ -1,0 +1,22 @@
+{
+  "Clouds": "Clouds",
+  "CommonSettings": "Allgemeine Einstellungen",
+  "ConnectAdminDescription": "Für erfolgreiche Verbindung geben Sie die notwendigen Daten <1>auf dieser Seite</1> ein.",
+  "ConnectCloud": "Cloud verbinden",
+  "ConnectDescriptionText": "Sie haben noch keine Cloud-Dienste von Drittanbietern verbunden.",
+  "ConnectEmpty": "Nichts gefunden",
+  "ConnectMakeShared": "Freigeben und in den Ordner \"Gemeinsame Dokumente\" verschieben",
+  "ConnectMessage": "Sie können die folgenden Dienste mit Ihrem ONLYOFFICE-Konto verbinden. Sie werden dann im Ordner \"Meine Dokumente\" angezeigt und Sie können alle Ihre Dokumente in einem einzigen Arbeitsbereich bearbeiten und speichern. ",
+  "ConnextOtherAccount": "Anderes Konto",
+  "DisplayFavorites": "Favoriten anzeigen",
+  "DisplayNotification": "Benachrichtigung beim Verschieben in den Papierkorb anzeigen",
+  "DisplayRecent": "Neuste anzeigen",
+  "DisplayTemplates": "Vorlagen anzeigen",
+  "IntermediateVersion": "Alle gespeicherten Zwischenversionen aufbewahren",
+  "KeepIntermediateVersion": "Zwischenversionen bei der Bearbeitung aufbewahren",
+  "OriginalCopy": "Dateikopie auch im Originalformat speichern",
+  "StoringFileVersion": "Speicherung von Dateiversionen",
+  "ThirdPartyBtn": "Erlaube Benutzern Drittanbieterdienste zu verbinden",
+  "ThirdPartySettings": "Verbundene Cloud-Konten",
+  "UpdateOrCreate": "Die Version dieser Datei mit demselben Namen erneuern. Ansonsten wird eine Kopie erstellt."
+}

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { FileType } from "@appserver/common/constants";
-import { LANGUAGE } from "@appserver/common/constants";
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
-import Tooltip from "@appserver/components/tooltip";
+import { FileType } from "@docspace/common/constants";
+import { LANGUAGE } from "@docspace/common/constants";
+import Link from "@docspace/components/link";
+import Text from "@docspace/components/text";
+import Tooltip from "@docspace/components/tooltip";
 import {
   StyledAccess,
   StyledAccessItem,
@@ -12,8 +12,13 @@ import {
   StyledSubtitle,
   StyledThumbnail,
   StyledTitle,
+<<<<<<<< HEAD:products/ASC.Files/Client/src/pages/Home/InfoPanel/Body/views/Details/SingleItem.js
 } from "../../styles/styles.js";
 import getCorrectDate from "@appserver/components/utils/getCorrectDate";
+========
+} from "./styles/styles.js";
+import getCorrectDate from "@docspace/components/utils/getCorrectDate";
+>>>>>>>> develop:packages/client/src/pages/Home/InfoPanel/Body/SingleItem.js
 
 const SingleItem = (props) => {
   const {

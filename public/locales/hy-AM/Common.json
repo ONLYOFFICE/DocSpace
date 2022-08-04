@@ -121,6 +121,7 @@
   "PasswordMinimumLength": "Նվազագույն երկարությունը",
   "People": "Մարդիկ",
   "Phone": "Հեռախոս",
+  "PreparationPortalTitle": "Կայքէջի վերականգնումը ընթացքի մեջ է",
   "Previous": "Նախորդ",
   "Profile": "Պրոֆիլ",
   "ProjectsProduct": "Նախագծեր",
@@ -166,5 +167,8 @@
   "Video": "Տեսանյութ",
   "View": "Դիտել",
   "ViewWeb": "Դիտել վեբ տարբերակը",
-  "Warning": "Զգուշացում"
+  "Warning": "Զգուշացում",
+  "PaymentsTitle": "Վճարումներ",
+  "AboutCompanyTitle": "Այս ծրագրի մասին",
+  "LogoutButton": "Դուրս գալ"
 }

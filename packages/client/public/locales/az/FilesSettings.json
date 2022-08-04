@@ -1,0 +1,20 @@
+{
+  "Clouds": "Buludlar",
+  "CommonSettings": "Ümumi sazlamalar",
+  "ConnectAdminDescription": "Uğurlu qoşulma üçün, qeyd olunan məlumatları <1>bu səhifəyə</1> daxil edin.",
+  "ConnectDescriptionText": "Hələ üçüncü tərəf buludlarına qoşulmamısınız",
+  "ConnectEmpty": "Burada heç nə yoxdur",
+  "ConnectMakeShared": "Paylanılmış edərək, \"Ümumi\" qovluğuna yerləşdirmək",
+  "ConnextOtherAccount": "Digər akkaunt",
+  "DisplayFavorites": "Ən çox istifadə olunanları göstər",
+  "DisplayNotification": "Zibil qutusuna atılan zaman bildirişi göstər",
+  "DisplayRecent": "Son istifadə olunanları göstər",
+  "DisplayTemplates": "Şablonları göstər",
+  "IntermediateVersion": "Bütün aralıq versiyalarını yadda saxla",
+  "KeepIntermediateVersion": "Aralıq versiyaları redaktə edəndə yadda saxla",
+  "OriginalCopy": "Faylın nüsxəsini orijinal formatda da yadda saxla",
+  "StoringFileVersion": "Fayl versiyaları saxla",
+  "ThirdPartyBtn": "İstifadəçilər üçün üçüncü tərəf ayarlarını açıq et",
+  "ThirdPartySettings": "Buluda qoşulanlar",
+  "UpdateOrCreate": "Eyni adı olan mövcud faylın fayl versiyasını yeniləyin. Əks halda, faylın bir nüsxəsi yaradılacaq. "
+}
