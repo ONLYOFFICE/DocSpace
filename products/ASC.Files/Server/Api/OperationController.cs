@@ -30,15 +30,18 @@ public class OperationController : ApiControllerBase
 {
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
     private readonly FileStorageService<string> _fileStorageServiceString;
+    private readonly FileStorageService<int> _fileStorageService;
 
     public OperationController(
         FileOperationDtoHelper fileOperationDtoHelper,
         FileStorageService<string> fileStorageServiceString,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        FileStorageService<int> fileStorageService) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileOperationDtoHelper = fileOperationDtoHelper;
         _fileStorageServiceString = fileStorageServiceString;
+        _fileStorageService = fileStorageService;
     }
 
     /// <summary>
@@ -127,7 +130,7 @@ public class OperationController : ApiControllerBase
     [HttpPut("fileops/emptytrash")]
     public async IAsyncEnumerable<FileOperationDto> EmptyTrashAsync()
     {
-        var emptyTrash = await _fileStorageServiceString.EmptyTrashAsync();
+        var emptyTrash = await _fileStorageService.EmptyTrashAsync();
 
         foreach (var e in emptyTrash)
         {

@@ -137,8 +137,8 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         }
 
         var folders = GetFoldersAsync(parentId); //TODO:!!!
-                                                 
-                                                 //Filter
+
+        //Filter
         if (subjectID != Guid.Empty)
         {
             folders = folders.Where(x => subjectGroup
@@ -190,7 +190,7 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public async Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
+    public async IAsyncEnumerable<Folder<string>> GetParentFoldersAsync(string folderId)
     {
         var path = new List<Folder<string>>();
 
@@ -210,7 +210,11 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         }
 
         path.Reverse();
-        return path;
+
+        await foreach (var p in path.ToAsyncEnumerable())
+        {
+            yield return p;
+        }
     }
 
     public Task<string> SaveFolderAsync(Folder<string> folder)
@@ -284,8 +288,8 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
 
                 var tagsToRemove = from ft in filesDbContext.Tag
                                    join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                               where ftl == null
-                               select ft;
+                                   where ftl == null
+                                   select ft;
 
                 filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
@@ -301,8 +305,8 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
                 await filesDbContext.SaveChangesAsync();
 
-            await tx.CommitAsync();
-        }
+                await tx.CommitAsync();
+            }
         });
 
 

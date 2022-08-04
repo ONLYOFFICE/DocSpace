@@ -188,7 +188,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public async Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
+    public async IAsyncEnumerable<Folder<string>> GetParentFoldersAsync(string folderId)
     {
         var path = new List<Folder<string>>();
 
@@ -209,7 +209,10 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
         path.Reverse();
 
-        return path;
+        await foreach (var p in path.ToAsyncEnumerable())
+        {
+            yield return p;
+        }
     }
 
 
@@ -269,7 +272,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
         {
             using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
-        {
+            {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
                .Where(r => r.Id.StartsWith(id))
                .Select(r => r.HashId)
@@ -286,8 +289,8 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
                 var tagsToRemove = from ft in filesDbContext.Tag
                                    join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                               where ftl == null
-                               select ft;
+                                   where ftl == null
+                                   select ft;
 
                 filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
@@ -303,8 +306,8 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
                 await filesDbContext.SaveChangesAsync();
 
-            await tx.CommitAsync();
-        }
+                await tx.CommitAsync();
+            }
         });
 
         if (boxFolder is not ErrorFolder)

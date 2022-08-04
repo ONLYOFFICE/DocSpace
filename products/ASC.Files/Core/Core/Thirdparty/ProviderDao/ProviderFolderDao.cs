@@ -96,7 +96,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var folderDao = selector.GetFolderDao(parentId);
         var rooms = folderDao.GetRoomsAsync(selector.ConvertId(parentId), filterType, tags, ownerId, searchText, withSubfolders, withoutTags, withoutMe);
         var result = await rooms.Where(r => r != null).ToListAsync();
-        
+
         await SetSharedPropertyAsync(result);
 
         foreach (var r in result)
@@ -186,7 +186,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return result.Distinct();
     }
 
-    public Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
+    public IAsyncEnumerable<Folder<string>> GetParentFoldersAsync(string folderId)
     {
         var selector = GetSelector(folderId);
         var folderDao = selector.GetFolderDao(folderId);

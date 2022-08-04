@@ -62,7 +62,7 @@ public interface IFolderDao<T>
 
     IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders,
         bool withoutTags, bool withoutMe);
-    
+
     /// <summary>
     ///     Get a list of folders in current folder.
     /// </summary>
@@ -102,7 +102,7 @@ public interface IFolderDao<T>
     /// </summary>
     /// <param name="folderId">folder id</param>
     /// <returns></returns>
-    Task<List<Folder<T>>> GetParentFoldersAsync(T folderId);
+    IAsyncEnumerable<Folder<T>> GetParentFoldersAsync(T folderId);
     /// <summary>
     ///     save or update folder
     /// </summary>

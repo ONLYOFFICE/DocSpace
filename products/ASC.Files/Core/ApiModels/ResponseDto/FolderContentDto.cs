@@ -113,9 +113,8 @@ public class FolderContentDtoHelper
             if (ids.Any())
             {
                 var folderDao = _daoFactory.GetFolderDao<T1>();
-                var folders = await folderDao.GetFoldersAsync(ids).ToListAsync();
 
-                return await _fileSecurity.CanReadAsync(folders);
+                return await _fileSecurity.CanReadAsync(folderDao.GetFoldersAsync(ids));
             }
 
             return new List<Tuple<FileEntry<T1>, bool>>();

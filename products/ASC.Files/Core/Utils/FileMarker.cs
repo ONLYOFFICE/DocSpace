@@ -121,7 +121,7 @@ public class FileMarker
             parentFolderId = ((Folder<T>)obj.FileEntry).Id;
         }
 
-        var parentFolders = await folderDao.GetParentFoldersAsync(parentFolderId);
+        var parentFolders = await folderDao.GetParentFoldersAsync(parentFolderId).ToListAsync();
         parentFolders.Reverse();
 
         var userIDs = obj.UserIDs;
@@ -454,7 +454,7 @@ public class FileMarker
             removeTags.AddRange(listTags);
         }
 
-        var parentFolders = await folderDao.GetParentFoldersAsync(folderID);
+        var parentFolders = await folderDao.GetParentFoldersAsync(folderID).ToListAsync();
         parentFolders.Reverse();
 
         var rootFolder = parentFolders.LastOrDefault();
@@ -785,7 +785,7 @@ public class FileMarker
                     }
 
                     var cacheFolderId = parent.Id;
-                    var parentsList = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(parent.Id);
+                    var parentsList = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(parent.Id).ToListAsync();
                     parentsList.Reverse();
                     parentsList.Remove(parent);
 
@@ -927,7 +927,7 @@ public class FileMarker
                 }
 
                 var cacheFolderId = parent.Id;
-                var parentsList = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(parent.Id);
+                var parentsList = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(parent.Id).ToListAsync();
                 parentsList.Reverse();
                 parentsList.Remove(parent);
 

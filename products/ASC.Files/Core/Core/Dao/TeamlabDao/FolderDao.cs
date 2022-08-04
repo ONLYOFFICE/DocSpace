@@ -338,9 +338,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>).Distinct();
     }
 
-    public async Task<List<Folder<int>>> GetParentFoldersAsync(int folderId)
+    public IAsyncEnumerable<Folder<int>> GetParentFoldersAsync(int folderId)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var q = GetFolderQuery(filesDbContext)
             .AsNoTracking()
@@ -349,9 +349,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .OrderByDescending(r => r.tree.Level)
             .Select(r => r.folder);
 
-        var query = await FromQueryWithShared(filesDbContext, q).ToListAsync();
+        var dbFolders = FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable();
 
-        return _mapper.Map<List<DbFolderQuery>, List<Folder<int>>>(query);
+        return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
 
     public Task<int> SaveFolderAsync(Folder<int> folder)

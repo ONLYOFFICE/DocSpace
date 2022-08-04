@@ -122,7 +122,7 @@ public class FilesModule : FeedModule
             }
         }
 
-        var canRead = _fileSecurity.CanReadAsync(files, userId).Result.Where(r => r.Item2).ToList();
+        var canRead = _fileSecurity.CanReadAsync(files.ToAsyncEnumerable(), userId).Result.Where(r => r.Item2).ToList();
 
         foreach (var f in feed1)
         {

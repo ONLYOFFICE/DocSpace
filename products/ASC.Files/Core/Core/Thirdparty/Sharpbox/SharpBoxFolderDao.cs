@@ -94,7 +94,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         if (!string.IsNullOrEmpty(searchText))
         {
             rooms = rooms.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
-    }
+        }
 
         rooms = FilterByTags(rooms, withoutTags, tags);
 
@@ -106,7 +106,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         if (CheckInvalidFilter(filterType))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
-    }
+        }
 
         var folders = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
@@ -124,7 +124,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
-        {
+    {
         var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
 
         return parentFolder.OfType<ICloudDirectoryEntry>().Select(ToFolder).ToAsyncEnumerable();
@@ -192,7 +192,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
+    public IAsyncEnumerable<Folder<string>> GetParentFoldersAsync(string folderId)
     {
         var path = new List<Folder<string>>();
         var folder = GetFolderById(folderId);
@@ -206,7 +206,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         path.Reverse();
 
-        return Task.FromResult(path);
+        return path.ToAsyncEnumerable();
     }
 
 
@@ -264,7 +264,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         {
             using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
-        {
+            {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
                .Where(r => r.Id.StartsWith(id))
                .Select(r => r.HashId)
@@ -281,8 +281,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
                 var tagsToRemove = from ft in filesDbContext.Tag
                                    join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                               where ftl == null
-                               select ft;
+                                   where ftl == null
+                                   select ft;
 
                 filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
@@ -298,8 +298,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
                 await filesDbContext.SaveChangesAsync();
 
-            await tx.CommitAsync();
-        }
+                await tx.CommitAsync();
+            }
         });
 
 

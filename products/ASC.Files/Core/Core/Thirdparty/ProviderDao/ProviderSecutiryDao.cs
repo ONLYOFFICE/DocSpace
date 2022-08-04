@@ -136,7 +136,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
                 continue;
             }
 
-            var parentFolders = await folderDao.GetParentFoldersAsync(selector.ConvertId(folder.Id));
+            var parentFolders = await folderDao.GetParentFoldersAsync(selector.ConvertId(folder.Id)).ToListAsync();
             if (parentFolders == null || parentFolders.Count == 0)
             {
                 continue;

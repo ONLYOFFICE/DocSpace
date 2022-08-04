@@ -83,14 +83,14 @@ public class FileSecurity : IFileSecurity
         _filesSettingsHelper = filesSettingsHelper;
     }
 
-    public Task<List<Tuple<FileEntry<T>, bool>>> CanReadAsync<T>(IEnumerable<FileEntry<T>> entry, Guid userId)
+    public Task<List<Tuple<FileEntry<T>, bool>>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.Read);
+        return CanAsync(entries, userId, FilesSecurityActions.Read);
     }
 
-    public Task<List<Tuple<FileEntry<T>, bool>>> CanReadAsync<T>(IEnumerable<FileEntry<T>> entry)
+    public Task<List<Tuple<FileEntry<T>, bool>>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Read);
+        return CanAsync(entries, _authContext.CurrentAccount.ID, FilesSecurityActions.Read);
     }
 
     public Task<bool> CanReadAsync<T>(FileEntry<T> entry, Guid userId)
@@ -397,29 +397,31 @@ public class FileSecurity : IFileSecurity
         return result;
     }
 
-    public Task<IEnumerable<FileEntry<T>>> FilterReadAsync<T>(IEnumerable<FileEntry<T>> entries)
-    {
-        return FilterAsync(entries, FilesSecurityActions.Read, _authContext.CurrentAccount.ID);
-    }
-
     public IAsyncEnumerable<FileEntry<T>> FilterReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
     {
         return FilterAsync(entries, FilesSecurityActions.Read, _authContext.CurrentAccount.ID);
     }
 
-    public Task<IEnumerable<FileEntry<T>>> FilterEditAsync<T>(IEnumerable<FileEntry<T>> entries)
-    {
-        return FilterAsync(entries, FilesSecurityActions.Edit, _authContext.CurrentAccount.ID);
-    }
-
     private async Task<bool> CanAsync<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
     {
-        return (await FilterAsync(new[] { entry }, action, userId, shares)).Any();
+        var user = _userManager.GetUsers(userId);
+        var isOutsider = user.IsOutsider(_userManager);
+
+        if (isOutsider && action != FilesSecurityActions.Read)
+        {
+            return false;
+        }
+
+        var isVisitor = user.IsVisitor(_userManager);
+        var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
+        var isAdmin = _fileSecurityCommon.IsAdministrator(userId);
+
+        return await FilterEntry(entry, action, userId, shares, isOutsider, isVisitor, isAuthenticated, isAdmin);
     }
 
-    public async Task<IEnumerable<FileEntry<T>>> FilterDownloadAsync<T>(IEnumerable<FileEntry<T>> entries)
+    public IAsyncEnumerable<FileEntry<T>> FilterDownloadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
     {
-        return (await FilterReadAsync(entries)).Where(CheckDenyDownload).ToList();
+        return FilterReadAsync(entries).Where(CheckDenyDownload);
     }
 
     private bool CheckDenyDownload<T>(FileEntry<T> entry)
@@ -429,11 +431,6 @@ public class FileSecurity : IFileSecurity
             : true;
     }
 
-    public async Task<IEnumerable<FileEntry<T>>> FilterSharingAsync<T>(IEnumerable<FileEntry<T>> entries)
-    {
-        return (await FilterEditAsync(entries)).Where(CheckDenySharing).ToList();
-    }
-
     private bool CheckDenySharing<T>(FileEntry<T> entry)
     {
         return entry.DenySharing
@@ -441,46 +438,11 @@ public class FileSecurity : IFileSecurity
             : true;
     }
 
-    private async Task<List<Tuple<FileEntry<T>, bool>>> CanAsync<T>(IEnumerable<FileEntry<T>> entry, Guid userId, FilesSecurityActions action)
+    private async Task<List<Tuple<FileEntry<T>, bool>>> CanAsync<T>(IAsyncEnumerable<FileEntry<T>> entry, Guid userId, FilesSecurityActions action)
     {
-        var filtres = await FilterAsync(entry, action, userId);
+        var filtres = await FilterAsync(entry, action, userId).ToListAsync();
 
-        return entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.Id.Equals(r.Id)))).ToList();
-    }
-
-    private async Task<IEnumerable<FileEntry<T>>> FilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
-    {
-        if (entries == null || !entries.Any())
-        {
-            return Enumerable.Empty<FileEntry<T>>();
-        }
-
-        var user = _userManager.GetUsers(userId);
-        var isOutsider = user.IsOutsider(_userManager);
-
-        if (isOutsider && action != FilesSecurityActions.Read)
-        {
-            return Enumerable.Empty<FileEntry<T>>();
-        }
-
-        return await InternalFilterAsync(entries, action, userId, shares, user, isOutsider).ToListAsync();
-    }
-
-    private async IAsyncEnumerable<FileEntry<T>> InternalFilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, UserInfo user, bool isOutsider)
-    {
-        // save entries order
-        //var order = entries.Select((f, i) => new { Id = f.UniqID, Pos = i }).ToDictionary(e => e.Id, e => e.Pos);
-        var isVisitor = user.IsVisitor(_userManager);
-        var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
-        var isAdmin = _fileSecurityCommon.IsAdministrator(userId);
-
-        foreach (var e in entries.Where(f => f != null))
-        {
-            if (await FilterEntry(e, action, userId, shares, isOutsider, isVisitor, isAuthenticated, isAdmin))
-            {
-                yield return e;
-            }
-        }
+        return await entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.Id.Equals(r.Id)))).ToListAsync();
     }
 
     private IAsyncEnumerable<FileEntry<T>> FilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
