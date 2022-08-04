@@ -75,8 +75,9 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
   display: flex;
   gap: 4px;
   flex-direction: column;
-  padding: 4px 14px 0;
+  padding-top: 4px;
   line-height: 20px;
+  margin-right: 20px;
 `;
 
 export const StyledSubmenuItemText = styled.div`
@@ -93,8 +94,8 @@ StyledSubmenuItemText.defaultProps = { theme: Base };
 
 export const StyledSubmenuItemLabel = styled.div`
   z-index: 1;
-  width: calc(100% + 28px);
-  margin-left: -14px;
+  width: 100%;
+  //margin-left: -14px;
   height: 4px;
   bottom: 0px;
   border-radius: 4px 4px 0 0;
