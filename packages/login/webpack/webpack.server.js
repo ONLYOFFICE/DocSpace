@@ -10,7 +10,7 @@ const serverConfig = {
   target: "node",
   name: "server",
   entry: {
-    server: "./src/server/index.tsx",
+    server: "./src/server/index.ts",
   },
 
   output: {

@@ -7,9 +7,7 @@ import fs from "fs";
 import logger from "morgan";
 import winston, { stream } from "./lib/logger";
 import { getAssets } from "./lib/helpers";
-import { renderToString } from "react-dom/server";
-import React from "react";
-import App from "../client/App";
+import renderApp, { getStyleTags } from "./lib/helpers/render-app";
 
 interface IParsedConfig extends Object {
   PORT?: number;
@@ -23,10 +21,6 @@ const parsedConfig: IParsedConfig = JSON.parse(config);
 if (parsedConfig?.PORT) {
   port = parsedConfig.PORT;
 }
-
-const renderApp = () => {
-  return renderToString(<App />);
-};
 
 const app = express();
 app.use(compression());
@@ -49,11 +43,11 @@ if (IS_DEVELOPMENT) {
     }
 
     const appComponent = renderApp();
-
+    const styleTags = getStyleTags();
     const htmlString = template(
       {},
       appComponent,
-      "styleTags",
+      styleTags,
       {},
       "userLng",
       assets
