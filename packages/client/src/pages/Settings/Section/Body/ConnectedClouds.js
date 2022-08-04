@@ -168,7 +168,7 @@ class ConnectClouds extends React.Component {
         "data-provider-id": item.provider_id,
         "data-provider-key": item.provider_key,
         icon: "images/folder.react.svg",
-        label: t("Home:Open"),
+        label: t("Files:Open"),
         onClick: this.openLocation,
         disabled: !isMobile,
       },
