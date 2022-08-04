@@ -1,12 +1,14 @@
 import { getScripts } from "./helpers";
 
+type assetsType = { [key: string]: string } | undefined;
+
 type Template = (
   initLoginState: IInitLoginState,
   appComponent: string,
   styleTags: string,
   initialI18nStoreASC: object,
   initialLanguage: string,
-  assets: object
+  assets: assetsType
 ) => string;
 
 const template: Template = (
@@ -16,7 +18,7 @@ const template: Template = (
   initialI18nStoreASC,
   initialLanguage,
   assets
-): string => {
+) => {
   const title = "Login";
 
   let clientScripts =
@@ -26,10 +28,12 @@ const template: Template = (
 
   if (!IS_DEVELOPMENT) {
     const productionBundleKeys = getScripts(assets);
-    productionBundleKeys.map((key) => {
-      clientScripts =
-        clientScripts + `<script defer="defer" src='${assets[key]}'></script>`;
-    });
+    if (productionBundleKeys && typeof assets === "object")
+      productionBundleKeys.map((key) => {
+        clientScripts =
+          clientScripts +
+          `<script defer="defer" src='${assets[key]}'></script>`;
+      });
   }
 
   const scripts = `   

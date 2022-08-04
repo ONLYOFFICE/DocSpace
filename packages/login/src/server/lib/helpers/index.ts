@@ -12,7 +12,8 @@ export const getAssets = (): object => {
   return assets;
 };
 
-export const getScripts = (assets: object): string[] => {
+export const getScripts = (assets: object | undefined): string[] | void => {
+  if (!assets || typeof assets !== "object") return;
   const regTest = /static\/js\/.*/;
   const keys = [];
   console.log(assets);
