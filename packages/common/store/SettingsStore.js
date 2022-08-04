@@ -127,34 +127,7 @@ class SettingsStore {
   tenantStatus = null;
   helpLink = null;
   hotkeyPanelVisible = false;
-  frameConfig = {
-    src: window.location.origin,
-    rootPath: "/rooms/personal/",
-    width: "800px",
-    height: "600px",
-    name: "frameDocSpace",
-    type: "desktop",
-    frameId: "ds-frame",
-    fileId: null,
-    editorType: "embedded",
-    showHeader: false,
-    showArticle: false,
-    showTitle: true,
-    showFilter: false,
-    destroyText: "Frame container",
-    viewAs: "row",
-    filter: {
-      folder: "@my",
-      count: 25,
-      page: 0,
-      sortorder: "descending",
-      sortby: "DateAndTime",
-      search: null,
-      filterType: null,
-      authorType: null,
-      withSubfolders: true,
-    },
-  };
+  frameConfig = null;
 
   constructor() {
     makeAutoObservable(this);
