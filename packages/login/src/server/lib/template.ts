@@ -1,28 +1,28 @@
 import { getScripts } from "./helpers";
-import pkg from "../../../package.json";
 
-declare var IS_DEVELOPMENT: boolean;
+type Template = (
+  initLoginState: IInitLoginState,
+  appComponent: string,
+  styleTags: string,
+  initialI18nStoreASC: object,
+  initialLanguage: string,
+  assets: object
+) => string;
 
-export default function template(
-  initialEditorState = {},
+const template: Template = (
+  initLoginState = {},
   appComponent = "",
-  styleTags: any,
-  initialI18nStoreASC: any,
-  initialLanguage: any,
-  assets: any
-) {
-  const { title } = pkg;
-  const { docApiUrl, error } = initialEditorState;
+  styleTags,
+  initialI18nStoreASC,
+  initialLanguage,
+  assets
+): string => {
+  const title = "Login";
 
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
       ? `<script defer="defer" src='${assets["client.js"]}'></script>`
       : "";
-
-  const editorApiScript =
-    error || !docApiUrl
-      ? ""
-      : `<script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>`;
 
   if (!IS_DEVELOPMENT) {
     const productionBundleKeys = getScripts(assets);
@@ -32,14 +32,11 @@ export default function template(
     });
   }
 
-  console.log(clientScripts);
   const scripts = `   
-    <script id="__ASC_INITIAL_EDITOR_STATE__">
-      window.__ASC_INITIAL_EDITOR_STATE__ = ${JSON.stringify(
-        initialEditorState
-      )}
+    <script id="__ASC_INITIAL_LOGIN_STATE__">
+      window.__ASC_INITIAL_LOGIN_STATE__ = ${JSON.stringify(initLoginState)}
     </script>
-    <script id="__ASC_INITIAL_EDITOR_I18N__">
+    <script id="__ASC_INITIAL_LOGIN_I18N__">
       window.initialI18nStoreASC = ${JSON.stringify(initialI18nStoreASC)}
       window.initialLanguage = '${initialLanguage}'
     </script>
@@ -47,7 +44,7 @@ export default function template(
     <script>
       console.log("It's Login INIT");
     </script>
-    ${editorApiScript} 
+
 
 `;
 
@@ -81,4 +78,6 @@ export default function template(
   `;
 
   return page;
-}
+};
+
+export default template;
