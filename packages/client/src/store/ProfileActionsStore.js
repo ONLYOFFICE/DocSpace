@@ -17,11 +17,16 @@ const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
 
 class ProfileActionsStore {
   authStore = null;
+  filesStore = null;
+  peopleStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
 
-  constructor(authStore) {
+  constructor(authStore, filesStore, peopleStore) {
     this.authStore = authStore;
+    this.filesStore = filesStore;
+    this.peopleStore = peopleStore;
+
     makeAutoObservable(this);
   }
 
@@ -79,8 +84,18 @@ class ProfileActionsStore {
     }
   };
 
-  onLogoutClick = () => {
-    this.authStore.logout && this.authStore.logout();
+  onLogoutClick = async () => {
+    await this.authStore.logout();
+
+    this.authStore.reset();
+
+    this.filesStore.reset();
+
+    this.peopleStore.reset();
+
+    this.authStore.init();
+
+    history.push("/login");
   };
 
   onDebugClick = () => {

@@ -52,6 +52,11 @@ class PeopleStore {
     return this.authStore.isAdmin;
   }
 
+  reset = () => {
+    this.loadingStore.reset();
+    this.isInit = false;
+  };
+
   init = async () => {
     if (this.isInit) return;
     this.isInit = true;

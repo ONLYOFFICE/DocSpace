@@ -34,7 +34,6 @@ const confirmStore = new ConfirmStore();
 const backupStore = new BackupStore();
 const commonStore = new CommonStore();
 const bannerStore = new BannerStore();
-const profileActionsStore = new ProfileActionsStore(authStore);
 
 const peopleStore = new PeopleStore(authStore);
 
@@ -109,6 +108,12 @@ const hotkeyStore = new HotkeyStore(
   filesActionsStore,
   treeFoldersStore,
   uploadDataStore
+);
+
+const profileActionsStore = new ProfileActionsStore(
+  authStore,
+  filesStore,
+  peopleStore
 );
 
 const store = {
