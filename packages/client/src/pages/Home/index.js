@@ -9,7 +9,12 @@ import {
 import axios from "axios";
 import toastr from "@docspace/components/toast/toastr";
 import Section from "@docspace/common/components/Section";
-import { showLoader, hideLoader, frameCallback } from "@docspace/common/utils";
+import {
+  showLoader,
+  hideLoader,
+  frameCallbackData,
+  frameCallCommand,
+} from "@docspace/common/utils";
 import FilesFilter from "@docspace/common/api/files/filter";
 import { getGroup } from "@docspace/common/api/groups";
 import { getUserById } from "@docspace/common/api/people";
@@ -460,7 +465,7 @@ class PureHome extends React.Component {
           res = "Wrong method";
       }
 
-      frameCallback(res);
+      frameCallbackData(res);
     }
   };
 
@@ -493,6 +498,10 @@ class PureHome extends React.Component {
       snackbarExist,
       frameConfig,
     } = this.props;
+
+    if (window.parent && !frameConfig) {
+      frameCallCommand("setConfig");
+    }
 
     const isFrame = frameConfig && window.name === frameConfig.name;
     const showTitle = frameConfig && JSON.parse(frameConfig.showTitle);
