@@ -10,6 +10,7 @@ import { getAssets } from "./lib/helpers";
 import { renderToString } from "react-dom/server";
 import React from "react";
 import App from "../client/App";
+import { Server } from "ws";
 
 let port: number = 5011;
 
@@ -73,7 +74,8 @@ if (IS_DEVELOPMENT) {
       waitTimeout = setTimeout(() => {
         fsWait = false;
         clearTimeout(waitTimeout);
-        wss.broadcast("reload");
+
+        wss.broadcast && wss.broadcast("reload");
       }, 100);
     }
   });
