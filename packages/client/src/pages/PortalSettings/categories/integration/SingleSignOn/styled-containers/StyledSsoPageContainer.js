@@ -129,6 +129,18 @@ const StyledSsoPage = styled.div`
       font-weight: 600;
     }
   }
+
+  .metadata-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+    max-width: 350px;
+
+    .input {
+      width: 350px;
+    }
+  }
 `;
 
 export default StyledSsoPage;

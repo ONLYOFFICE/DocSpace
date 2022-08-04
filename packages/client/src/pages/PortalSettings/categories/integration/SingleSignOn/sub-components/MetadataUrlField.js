@@ -1,21 +1,35 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
-import FieldContainer from "@docspace/components/field-container";
+import { Text, HelpButton, InputBlock } from "@docspace/components";
+import toastr from "@docspace/components/toast/toastr";
 
-import SsoTextInput from "./SsoTextInput";
+import copy from "copy-to-clipboard";
 
 const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
+  const { t } = useTranslation("InviteDialog");
+
+  const onCopyClick = () => {
+    copy(placeholder);
+    toastr.success(t("InviteDialog:LinkCopySuccess"));
+  };
+
   return (
-    <FieldContainer
-      inlineHelpButton
-      isVertical
-      labelText={labelText}
-      place="top"
-      tooltipContent={tooltipContent}
-    >
-      <SsoTextInput isDisabled name={name} placeholder={placeholder} />
-    </FieldContainer>
+    <div className="metadata-field">
+      <Text fontSize="13px" fontWeight={600}>
+        {labelText}
+      </Text>
+      <InputBlock
+        className="input"
+        isDisabled
+        name={name}
+        placeholder={placeholder}
+        iconName="/static/images/copy.react.svg"
+        iconSize={16}
+        onIconClick={onCopyClick}
+      />
+    </div>
   );
 };
 
