@@ -140,6 +140,11 @@ const StyledSsoPage = styled.div`
     .input {
       width: 350px;
     }
+
+    p > div {
+      display: inline-flex;
+      margin-left: 4px;
+    }
   }
 `;
 
