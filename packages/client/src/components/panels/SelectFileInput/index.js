@@ -1,10 +1,10 @@
 import React from "react";
 import { Provider as MobxProvider, inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import stores from "../../../store/index.Files";
 import SelectFileDialog from "../SelectFileDialog";
 import StyledComponent from "./StyledSelectFileInput";
 import SimpleFileInput from "../../SimpleFileInput";
+import store from "SRC_DIR/store";
 
 class SelectFileInputBody extends React.PureComponent {
   constructor(props) {
@@ -88,7 +88,7 @@ const SelectFileInputBodyWrapper = inject(({ filesStore }) => {
 class SelectFileInput extends React.Component {
   render() {
     return (
-      <MobxProvider {...stores}>
+      <MobxProvider {...store}>
         <SelectFileInputBodyWrapper {...this.props} />
       </MobxProvider>
     );

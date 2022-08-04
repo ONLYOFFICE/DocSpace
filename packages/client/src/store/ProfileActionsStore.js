@@ -2,14 +2,13 @@ import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
-import authStore from "@docspace/common/store/AuthStore";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 
 const { proxyURL } = AppServerConfig;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
-const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
+//const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
 const HELP_URL = "https://onlyoffice.com/";
@@ -21,7 +20,7 @@ class ProfileActionsStore {
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
 
-  constructor() {
+  constructor(authStore) {
     this.authStore = authStore;
     makeAutoObservable(this);
   }
