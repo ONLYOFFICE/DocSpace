@@ -51,7 +51,7 @@ const PortalIntegration = (props) => {
 
   setDocumentTitle(`Portal integration`);
 
-  const scriptUrl = `${window.location.origin}/static/scripts/ds-api.js`;
+  const scriptUrl = `${window.location.origin}/static/scripts/api.js`;
 
   const dataSortBy = [
     { key: "DateAndTime", label: "Last modified date", default: true },
