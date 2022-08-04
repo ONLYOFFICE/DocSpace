@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Text;
+
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Api.Core.Middleware;
@@ -67,8 +69,9 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute
 
         if (context.Result is ObjectResult objectResult)
         {
-            var resultContent = JsonSerializer.Serialize(objectResult.Value, _jsonSerializerOptions);
-
+            using var memorystream = new MemoryStream();
+            JsonSerializer.SerializeAsync(memorystream, objectResult.Value, _jsonSerializerOptions).Wait();
+            var resultContent = Encoding.UTF8.GetString(memorystream.ToArray());
             var eventName = $"method: {method}, route: {routePattern}";
 
             _webhookPublisher.Publish(eventName, resultContent);
