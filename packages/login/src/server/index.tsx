@@ -4,13 +4,12 @@ import path from "path";
 import compression from "compression";
 import ws from "./lib/websocket";
 import fs from "fs";
-// import logger from "morgan";
-// import winston from "./lib/logger";
+import logger from "morgan";
+import winston, { stream } from "./lib/logger";
 import { getAssets } from "./lib/helpers";
 import { renderToString } from "react-dom/server";
 import React from "react";
 import App from "../client/App";
-import { Server } from "ws";
 
 let port: number = 5011;
 
@@ -18,15 +17,11 @@ const renderApp = () => {
   return renderToString(<App />);
 };
 
-// winston.stream = {
-//   write: (message) => winston.info(message),
-// };
-
 const app = express();
 app.use(compression());
 app.use("/login", express.static(path.resolve(path.join(__dirname, "client"))));
 
-//app.use(logger("dev", { stream: winston.stream }));
+app.use(logger("dev", { stream: stream }));
 
 if (IS_DEVELOPMENT) {
   app.get("/login", async (req: Request, res: Response) => {
@@ -39,8 +34,9 @@ if (IS_DEVELOPMENT) {
       if (e instanceof Error) {
         message = e.message;
       }
-      console.log(message);
+      winston.error(message);
     }
+
     const appComponent = renderApp();
 
     const htmlString = template(
@@ -56,7 +52,7 @@ if (IS_DEVELOPMENT) {
   });
 
   const server = app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`);
+    winston.info(`Server is listening on port ${port}`);
   });
 
   const wss = ws(server);

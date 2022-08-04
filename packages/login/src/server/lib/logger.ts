@@ -1,4 +1,4 @@
-import winston from "winston";
+import { createLogger, transports, format } from "winston";
 import "winston-daily-rotate-file";
 import path from "path";
 import fs from "fs";
@@ -12,10 +12,10 @@ if (logpath != null) {
 }
 
 const fileName = IS_DEVELOPMENT
-  ? path.join(__dirname, "..", "..", "..", "Logs", "editor.%DATE%.log")
+  ? path.join(__dirname, "..", "..", "..", "Logs", "login.%DATE%.log")
   : logpath
-  ? path.join(logpath, "editor.%DATE%.log")
-  : path.join(__dirname, "..", "..", "..", "Logs", "editor.%DATE%.log");
+  ? path.join(logpath, "login.%DATE%.log")
+  : path.join(__dirname, "..", "..", "..", "Logs", "login.%DATE%.log");
 const dirName = path.dirname(fileName);
 
 if (!fs.existsSync(dirName)) {
@@ -41,18 +41,22 @@ const options = {
   },
 };
 
-const transports = [
-  new winston.transports.Console(options.console),
-  new winston.transports.DailyRotateFile(options.file),
-];
-
-export default new winston.createLogger({
-  format: winston.format.combine(
-    winston.format.timestamp({
+const logger = createLogger({
+  format: format.combine(
+    format.timestamp({
       format: "YYYY-MM-DD HH:mm:ss",
     }),
-    winston.format.json()
+    format.json()
   ),
-  transports: transports,
+  transports: [
+    new transports.Console(options.console),
+    new transports.DailyRotateFile(options.file),
+  ],
   exitOnError: false,
 });
+
+export default logger;
+
+export const stream = {
+  write: (message: string) => logger.info(message),
+};
