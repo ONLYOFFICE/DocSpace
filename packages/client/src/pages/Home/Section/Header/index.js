@@ -23,6 +23,7 @@ import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
   .table-container_group-menu {
@@ -176,6 +177,17 @@ class SectionHeaderContent extends React.Component {
         icon: "images/actions.upload.react.svg",
       },*/
         ];
+
+    const pluginOptions = getMainButtonItems();
+
+    if (pluginOptions) {
+      pluginOptions.forEach((option) => {
+        options.splice(option.value.position, 0, {
+          key: option.key,
+          ...option.value,
+        });
+      });
+    }
 
     return options;
   };
