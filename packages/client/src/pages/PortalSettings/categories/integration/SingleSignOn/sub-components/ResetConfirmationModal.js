@@ -31,12 +31,14 @@ const ResetConfirmationModal = (props) => {
           label={t("Common:OKButton")}
           onClick={confirmReset}
           primary
-          size="small"
+          scale
+          size="normalTouchscreen"
         />
         <Button
           label={t("Common:CancelButton")}
           onClick={closeResetModal}
-          size="small"
+          scale
+          size="normalTouchscreen"
         />
       </ModalDialog.Footer>
     </StyledModalDialog>

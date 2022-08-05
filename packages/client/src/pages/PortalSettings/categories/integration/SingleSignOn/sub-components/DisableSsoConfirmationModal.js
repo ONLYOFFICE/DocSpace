@@ -35,12 +35,14 @@ const DisableSsoConfirmationModal = (props) => {
           label={t("Common:OKButton")}
           onClick={confirmDisable}
           primary
-          size="small"
+          scale
+          size="normalTouchscreen"
         />
         <Button
           label={t("Common:CancelButton")}
           onClick={closeConfirmationDisableModal}
-          size="small"
+          scale
+          size="normalTouchscreen"
         />
       </ModalDialog.Footer>
     </StyledModalDialog>
