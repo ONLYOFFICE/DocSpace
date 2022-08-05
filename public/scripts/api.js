@@ -5,22 +5,23 @@
     width: "100%",
     height: "100%",
     name: "frameDocSpace",
-    type: "desktop",
+    type: "desktop", // TODO: ["desktop", "mobile"]
     frameId: "ds-frame",
+    mode: "manager", //TODO: ["manager", "editor", "viewer", "file selector", "folder selector", "user picker"]
     fileId: null,
-    editorType: "embedded",
+    editorType: "embedded", //TODO: ["desktop", "embedded"]
     showHeader: false,
     showArticle: false,
     showTitle: true,
     showFilter: false,
     destroyText: "Frame container",
-    viewAs: "row",
+    viewAs: "row", //TODO: ["row", "table", "tile"]
     filter: {
       folder: "@my",
       count: 25,
       page: 0,
-      sortorder: "descending",
-      sortby: "DateAndTime",
+      sortorder: "descending", //TODO: ["descending", "ascending"]
+      sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
       search: null,
       filterType: null,
       authorType: null,
@@ -80,15 +81,32 @@
     #createIframe = (config) => {
       const iframe = document.createElement("iframe");
 
-      const filter = config.filter
-        ? `filter?${new URLSearchParams(config.filter).toString()}`
-        : ``;
+      let path = "";
 
-      const editor = `/doceditor/?fileId=${config.fileId}&type=${config.editorType}`;
+      switch (config.mode) {
+        case "manager": {
+          if (config.filter)
+            path = `${config.rootPath}filter?${new URLSearchParams(
+              config.filter
+            ).toString()}`;
+          break;
+        }
 
-      const pathname = config.fileId ? editor : config.rootPath + filter;
+        case "editor": {
+          path = `/doceditor/?fileId=${config.fileId}&type=${config.editorType}`;
+          break;
+        }
 
-      iframe.src = config.src + pathname;
+        case "viewer": {
+          path = `/doceditor/?fileId=${config.fileId}&type=${config.editorType}&action=view`;
+          break;
+        }
+
+        default:
+          path = config.rootPath;
+      }
+
+      iframe.src = config.src + path;
       iframe.width = config.width;
       iframe.height = config.height;
       iframe.name = config.name;
