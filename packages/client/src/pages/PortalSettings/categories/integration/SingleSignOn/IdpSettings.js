@@ -78,7 +78,7 @@ const IdpSettings = (props) => {
           displayProp="flex"
           alignItems="center"
           flexDirection="row"
-          marginProp="4px 0"
+          marginProp="6px 0"
         >
           <Text fontSize="12px" fontWeight={400} noSelect>
             {t("Binding")}
@@ -118,7 +118,7 @@ const IdpSettings = (props) => {
           displayProp="flex"
           alignItems="center"
           flexDirection="row"
-          marginProp="4px 0"
+          marginProp="6px 0"
         >
           <Text fontSize="12px" fontWeight={400}>
             {t("Binding")}
