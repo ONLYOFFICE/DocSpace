@@ -676,6 +676,19 @@ export default inject(
       : null;
 
     const { setToPreviewFile, playlist } = mediaViewerDataStore;
+
+    const {
+      checkedMaintenance,
+      setMaintenanceExist,
+      snackbarExist,
+      isHeaderVisible,
+      setHeaderVisible,
+      personal,
+      setFrameConfig,
+      frameConfig,
+      isFrame,
+    } = auth.settingsStore;
+
     if (!firstLoad) {
       if (isLoading) {
         showLoader();
@@ -694,9 +707,9 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
-      checkedMaintenance: auth.settingsStore.checkedMaintenance,
-      setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
-      snackbarExist: auth.settingsStore.snackbarExist,
+      checkedMaintenance,
+      setMaintenanceExist,
+      snackbarExist,
       expandedKeys,
 
       primaryProgressDataVisible,
@@ -731,9 +744,9 @@ export default inject(
       setSelections,
       startUpload,
       uploadEmptyFolders,
-      isHeaderVisible: auth.settingsStore.isHeaderVisible,
-      setHeaderVisible: auth.settingsStore.setHeaderVisible,
-      personal: auth.settingsStore.personal,
+      isHeaderVisible,
+      setHeaderVisible,
+      personal,
       setToPreviewFile,
       playlist,
       isMediaOrImage: settingsStore.isMediaOrImage,
@@ -741,11 +754,11 @@ export default inject(
       gallerySelected,
       setIsUpdatingRowItem,
 
-      setFrameConfig: auth.settingsStore.setFrameConfig,
-      frameConfig: auth.settingsStore.frameConfig,
-      isFrame: window.name === auth.settingsStore.frameConfig?.name,
-      showTitle: auth.settingsStore.frameConfig?.showTitle,
-      showFilter: auth.settingsStore.frameConfig?.showFilter,
+      setFrameConfig,
+      frameConfig,
+      isFrame,
+      showTitle: frameConfig?.showTitle,
+      showFilter: frameConfig?.showFilter,
       user: auth.userStore.user,
       folders,
       files,

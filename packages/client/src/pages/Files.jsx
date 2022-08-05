@@ -223,6 +223,7 @@ class FilesContent extends React.Component {
 const Files = inject(({ auth, filesStore }) => {
   const {
     frameConfig,
+    isFrame,
     isDesktopClient,
     encryptionKeys,
     setEncryptionKeys,
@@ -230,7 +231,7 @@ const Files = inject(({ auth, filesStore }) => {
   } = auth.settingsStore;
   return {
     isDesktop: isDesktopClient,
-    isFrame: window.name === frameConfig?.name,
+    isFrame,
     showArticle: frameConfig?.showArticle,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,

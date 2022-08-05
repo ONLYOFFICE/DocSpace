@@ -222,7 +222,7 @@ NavMenu.defaultProps = {
 
 const NavMenuWrapper = inject(({ auth, backup }) => {
   const { settingsStore, isAuthenticated, isLoaded, language } = auth;
-  const { isDesktopClient: isDesktop, frameConfig } = settingsStore;
+  const { isDesktopClient: isDesktop, frameConfig, isFrame } = settingsStore;
   const { preparationPortalDialogVisible } = backup;
   return {
     isAuthenticated,
@@ -231,7 +231,7 @@ const NavMenuWrapper = inject(({ auth, backup }) => {
     language,
     preparationPortalDialogVisible,
     showHeader: frameConfig?.showHeader,
-    isFrame: window.name === frameConfig?.name,
+    isFrame,
   };
 })(observer(withTranslation(["NavMenu", "Common"])(withRouter(NavMenu))));
 

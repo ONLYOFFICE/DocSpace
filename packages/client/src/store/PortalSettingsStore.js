@@ -544,6 +544,10 @@ class SettingsStore {
     this.frameConfig = frameConfig;
     return frameConfig;
   };
+
+  get isFrame() {
+    return this.frameConfig?.name === window.name;
+  }
 }
 
 export default SettingsStore;
