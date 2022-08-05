@@ -3,8 +3,7 @@ import styled from "styled-components";
 const StyledCertificatesTable = styled.div`
   width: 100%;
   max-width: 600px;
-  margin-top: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 
   .header {
     display: grid;
@@ -27,9 +26,9 @@ const StyledCertificatesTable = styled.div`
   .row {
     width: 350px;
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
-    padding: 12px 0;
+    padding: 11px 0 10px;
     border-bottom: 1px solid #eceef1;
 
     .column {

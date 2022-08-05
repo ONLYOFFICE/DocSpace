@@ -78,7 +78,7 @@ const StyledSsoPage = styled.div`
   }
 
   .checkbox-input {
-    margin: 6px 8px 6px 0;
+    margin: 10px 8px 6px 0;
   }
 
   .upload-button {

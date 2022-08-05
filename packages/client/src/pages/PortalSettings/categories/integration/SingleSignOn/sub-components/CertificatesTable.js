@@ -59,12 +59,18 @@ const CertificatesTable = (props) => {
         <ReactSVG src="/static/images/icons/32/file.svg" />
         <div className="column">
           <div className="column-row">
-            <Text fontWeight={600} fontSize="14px" noSelect>
+            <Text fontWeight={600} fontSize="14px" lineHeight="16px" noSelect>
               {certificate.domainName}
             </Text>
           </div>
           <div className="column-row">
-            <Text color="#a3a9ae" fontSize="12px" fontWeight={600} noSelect>
+            <Text
+              color="#a3a9ae"
+              fontSize="12px"
+              fontWeight={600}
+              lineHeight="16px"
+              noSelect
+            >
               {certificate.action}
               {" | "}
               {getFullDate(certificate.startDate)}
