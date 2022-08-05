@@ -116,6 +116,7 @@ class SsoFormStore {
 
   isSubmitLoading = false;
   isGeneratedCertificate = false;
+  isCertificateLoading = false;
 
   defaultSettings = null;
 
@@ -584,15 +585,22 @@ class SsoFormStore {
       },
     ];
 
+    this.isCertificateLoading = true;
+
     try {
       const res = await this.validateCertificate(data);
-      if (!res) throw Error("Invalid certificate");
+      if (!res) {
+        this.isCertificateLoading = false;
+        return;
+      }
       const newCertificates = res.data;
       newCertificates.map((cert) => {
         this.spCertificates = [...this.spCertificates, cert];
       });
+      this.isCertificateLoading = false;
       this.closeSpModal();
     } catch (err) {
+      this.isCertificateLoading = false;
       toastr.error(err);
       console.error(err);
     }
@@ -607,15 +615,22 @@ class SsoFormStore {
       },
     ];
 
+    this.isCertificateLoading = true;
+
     try {
       const res = await this.validateCertificate(data);
-      if (!res) throw Error("Invalid certificate");
+      if (!res) {
+        this.isCertificateLoading = false;
+        return;
+      }
       const newCertificates = res.data;
       newCertificates.map((cert) => {
         this.idpCertificates = [...this.idpCertificates, cert];
       });
+      this.isCertificateLoading = false;
       this.closeIdpModal();
     } catch (err) {
+      this.isCertificateLoading = false;
       toastr.error(err);
       console.error(err);
     }
