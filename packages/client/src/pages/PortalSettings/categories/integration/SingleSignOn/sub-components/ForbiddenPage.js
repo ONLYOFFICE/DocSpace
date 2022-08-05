@@ -11,7 +11,7 @@ const ForbiddenPage = () => {
       descriptionText={t("ForbiddenPageDescription")}
       headerText={t("ForbiddenPageHeader")}
       imageAlt="Empty screen image"
-      imageSrc="images/empty_screen_privacy.png"
+      imageSrc="/static/images/manage.access.rights.react.svg"
     />
   );
 };
