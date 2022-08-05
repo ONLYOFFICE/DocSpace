@@ -203,10 +203,7 @@ class FilesContent extends React.Component {
   }
 
   render() {
-    const { frameConfig } = this.props;
-
-    const isFrame = frameConfig && window.name === frameConfig.name;
-    const showArticle = frameConfig && JSON.parse(frameConfig.showArticle);
+    const { showArticle, isFrame } = this.props;
 
     return (
       <>
@@ -224,17 +221,25 @@ class FilesContent extends React.Component {
 }
 
 const Files = inject(({ auth, filesStore }) => {
+  const {
+    frameConfig,
+    isDesktopClient,
+    encryptionKeys,
+    setEncryptionKeys,
+    isEncryptionSupport,
+  } = auth.settingsStore;
   return {
-    isDesktop: auth.settingsStore.isDesktopClient,
-    frameConfig: auth.settingsStore.frameConfig,
+    isDesktop: isDesktopClient,
+    isFrame: window.name === frameConfig?.name,
+    showArticle: frameConfig?.showArticle,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
-    encryptionKeys: auth.settingsStore.encryptionKeys,
-    isEncryption: auth.settingsStore.isEncryptionSupport,
+    encryptionKeys: encryptionKeys,
+    isEncryption: isEncryptionSupport,
     isLoaded: auth.isLoaded && filesStore.isLoaded,
     setIsLoaded: filesStore.setIsLoaded,
 
-    setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
+    setEncryptionKeys: setEncryptionKeys,
     loadFilesInfo: async () => {
       await filesStore.initFiles();
       //auth.setProductVersion(config.version);

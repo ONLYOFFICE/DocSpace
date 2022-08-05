@@ -498,16 +498,15 @@ class PureHome extends React.Component {
       checkedMaintenance,
       setMaintenanceExist,
       snackbarExist,
+      isFrame,
+      showTitle,
+      showFilter,
       frameConfig,
     } = this.props;
 
     if (window.parent && !frameConfig) {
       frameCallCommand("setConfig");
     }
-
-    const isFrame = frameConfig && window.name === frameConfig.name;
-    const showTitle = frameConfig && JSON.parse(frameConfig.showTitle);
-    const showFilter = frameConfig && JSON.parse(frameConfig.showFilter);
 
     return (
       <>
@@ -744,6 +743,9 @@ export default inject(
 
       setFrameConfig: auth.settingsStore.setFrameConfig,
       frameConfig: auth.settingsStore.frameConfig,
+      isFrame: window.name === auth.settingsStore.frameConfig?.name,
+      showTitle: auth.settingsStore.frameConfig?.showTitle,
+      showFilter: auth.settingsStore.frameConfig?.showFilter,
       user: auth.userStore.user,
       folders,
       files,
