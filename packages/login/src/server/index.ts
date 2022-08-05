@@ -10,12 +10,15 @@ import { getAssets } from "./lib/helpers";
 import renderApp, { getStyleTags } from "./lib/helpers/render-app";
 import i18nextMiddleware, { I18next } from "i18next-express-middleware";
 import i18n from "./i18n";
+import cookieParser from "cookie-parser";
+
 interface IParsedConfig extends Object {
   PORT?: number;
 }
 interface ILoginRequest extends Request {
   i18n?: I18next;
 }
+type Timeout = ReturnType<typeof setTimeout>;
 
 let port = PORT;
 
@@ -29,13 +32,15 @@ if (parsedConfig?.PORT) {
 const app = express();
 app.use(i18nextMiddleware.handle(i18n));
 app.use(compression());
+app.use(cookieParser());
 app.use("/login", express.static(path.resolve(path.join(__dirname, "client"))));
 
 app.use(logger("dev", { stream: stream }));
 
 if (IS_DEVELOPMENT) {
   app.get("/login", async (req: ILoginRequest, res: Response) => {
-    const { i18n } = req;
+    const { i18n, cookies } = req;
+    console.log(cookies);
 
     let initialI18nStore = {};
     if (i18n) initialI18nStore = i18n.services.resourceStore.data;
@@ -77,7 +82,7 @@ if (IS_DEVELOPMENT) {
   );
 
   let fsWait = false;
-  let waitTimeout: ReturnType<typeof setTimeout>;
+  let waitTimeout: Timeout;
   fs.watch(manifestFile, (event, filename) => {
     if (filename && event === "change") {
       if (fsWait) return;

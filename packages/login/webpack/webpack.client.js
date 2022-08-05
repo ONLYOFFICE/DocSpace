@@ -80,7 +80,7 @@ const clientConfig = {
         studio: `studio@${combineUrl(proxyURL, "/remoteEntry.js")}`,
       },
       exposes: {
-        // "./login": "../src/Login.tsx",
+        "./login": "./src/client/App.tsx",
         // "./roomsLogin": "../src/RoomsLogin.tsx",
         // "./codeLogin": "../src/CodeLogin.tsx",
         // "./moreLogin": "../src/sub-components/more-login.tsx",
