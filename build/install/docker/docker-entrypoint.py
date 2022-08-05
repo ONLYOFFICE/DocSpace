@@ -42,6 +42,9 @@ KAFKA_HOST = os.environ["KAFKA_HOST"] if environ.get("KAFKA_HOST") else "kafka:9
 RUN_FILE = sys.argv[1] if sys.argv[1] else "none"
 LOG_FILE = sys.argv[2] if sys.argv[2] else "none"
 
+REDIS_HOST=os.environ["REDIS_HOST"] if environ.get("REDIS_HOST") else "onlyoffice-redis"
+REBBIT_HOST=os.environ["REBBIT_HOST"] if environ.get("REBBIT_HOST") else "onlyoffice-rebbitmq"
+
 class RunServices:
     def __init__(self, SERVICE_PORT, PATH_TO_CONF):
         self.SERVICE_PORT = SERVICE_PORT
@@ -159,12 +162,12 @@ writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/rabbitmq.json"
 jsonData = openJsonFile(filePath)
-updateJsonData(jsonData,"$.RabbitMQ.Hostname", "onlyoffice-rebbitmq")
+updateJsonData(jsonData,"$.RabbitMQ.Hostname", REBBIT_HOST)
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/redis.json"
 jsonData = openJsonFile(filePath)
-updateJsonData(jsonData,"$.Redis.Hosts.[0].Host", "onlyoffice-redis")
+updateJsonData(jsonData,"$.Redis.Hosts.[0].Host", REDIS_HOST)
 writeJsonFile(filePath, jsonData)
 
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)

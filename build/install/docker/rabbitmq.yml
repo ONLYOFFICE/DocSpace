@@ -1,0 +1,13 @@
+version: '3'
+services:       
+   onlyoffice-rebbitmq:
+    image: rabbitmq:3
+    container_name: onlyoffice-rebbitmq
+    restart: always
+    expose:
+      - "5672"
+      - "80"
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}
