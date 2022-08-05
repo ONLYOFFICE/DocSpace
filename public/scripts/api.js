@@ -49,7 +49,10 @@
     let object = {};
 
     if (searchUrl && searchUrl.length) {
-      object = Object.fromEntries(new URLSearchParams(searchUrl));
+      object = JSON.parse(
+        `{"${searchUrl.replace(/&/g, '","').replace(/=/g, '":"')}"}`,
+        (k, v) => (v === "true" ? true : v === "false" ? false : v)
+      );
 
       object.filter = defaultConfig.filter;
 
