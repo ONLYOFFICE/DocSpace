@@ -151,12 +151,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("docs", value);
     }
 
-    public bool HasDomain
-    {
-        get => GetFeature("domain");
-        set => SetFeature("domain", value);
-    }
-
     public bool HasMigration
     {
         get => GetFeature("migration");
