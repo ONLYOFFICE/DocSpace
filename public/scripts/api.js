@@ -212,7 +212,7 @@
     }
 
     destroyFrame() {
-      var target = document.createElement("div");
+      const target = document.createElement("div");
 
       target.setAttribute("id", this.config.frameId);
       target.innerHTML = this.config.destroyText;
