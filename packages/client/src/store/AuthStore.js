@@ -1,16 +1,22 @@
 import { makeAutoObservable } from "mobx";
-import api from "../api";
-import { setWithCredentialsStatus } from "../api/client";
-import history from "../history";
+import api from "@docspace/common/api";
+import { setWithCredentialsStatus } from "@docspace/common/api/client";
+//import history from "../history";
 
-import SettingsStore from "./SettingsStore";
+import SettingsStore from "./PortalSettingsStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
-import { logout as logoutDesktop, desktopConstants } from "../desktop";
-import { combineUrl, isAdmin } from "../utils";
-import { AppServerConfig, LANGUAGE, TenantStatus } from "../constants";
-const { proxyURL } = AppServerConfig;
+import {
+  logout as logoutDesktop,
+  desktopConstants,
+} from "@docspace/common/desktop";
+import { /*combineUrl,*/ isAdmin } from "@docspace/common/utils";
+import {
+  /*AppServerConfig,*/ LANGUAGE,
+  TenantStatus,
+} from "@docspace/common/constants";
+//const { proxyURL } = AppServerConfig;
 
 class AuthStore {
   userStore = null;
@@ -104,7 +110,7 @@ class AuthStore {
 
       if (response.tfa && response.confirmUrl) {
         const url = response.confirmUrl.replace(window.location.origin, "");
-        return Promise.resolve({ url, user, hash });
+        return url;
       }
 
       setWithCredentialsStatus(true);
@@ -113,7 +119,7 @@ class AuthStore {
 
       this.init();
 
-      return Promise.resolve({ url: this.settingsStore.defaultPage });
+      return this.settingsStore.defaultPage;
     } catch (e) {
       return Promise.reject(e);
     }
@@ -158,33 +164,16 @@ class AuthStore {
     this.settingsStore = new SettingsStore();
   };
 
-  logout = async (redirectToLogin = true, redirectPath = null) => {
+  logout = async () => {
     await api.user.logout();
 
     //console.log("Logout response ", response);
 
     setWithCredentialsStatus(false);
 
-    const { isDesktopClient: isDesktop, personal } = this.settingsStore;
+    const { isDesktopClient: isDesktop } = this.settingsStore;
 
     isDesktop && logoutDesktop();
-
-    if (redirectToLogin) {
-      if (redirectPath) {
-        return window.location.replace(redirectPath);
-      }
-      if (personal) {
-        return window.location.replace("/");
-      } else {
-        this.reset(true);
-        this.userStore.setUser(null);
-        this.init();
-        return history.push(combineUrl(proxyURL, "/login"));
-      }
-    } else {
-      this.reset();
-      this.init();
-    }
   };
 
   get isAuthenticated() {

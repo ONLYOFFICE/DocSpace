@@ -1,9 +1,8 @@
-import filesStore from "../store";
-import store from "client/store";
+import store from "SRC_DIR/store";
 import { desktopConstants } from "@docspace/common/desktop";
 
 export function encryptionUploadDialog(callback) {
-  const filter = filesStore.settingsStore.extsWebEncrypt
+  const filter = store.filesStore.settingsStore.extsWebEncrypt
     .map((f) => "*" + f)
     .join(" ");
 
