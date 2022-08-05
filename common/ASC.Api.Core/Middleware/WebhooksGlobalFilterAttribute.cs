@@ -26,57 +26,88 @@
 
 using System.Text;
 
-using JsonSerializer = System.Text.Json.JsonSerializer;
-
 namespace ASC.Api.Core.Middleware;
 
 [Scope]
-public class WebhooksGlobalFilterAttribute : ResultFilterAttribute
+public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
 {
+    private readonly MemoryStream _stream;
+    private Stream _bodyStream;
     private readonly IWebhookPublisher _webhookPublisher;
-    private readonly JsonSerializerOptions _jsonSerializerOptions;
     private static readonly List<string> _methodList = new List<string> { "POST", "UPDATE", "DELETE" };
 
-    public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher, Action<JsonOptions> projectJsonOptions)
+    public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher)
     {
+        _stream = new MemoryStream();
         _webhookPublisher = webhookPublisher;
-
-        var jsonOptions = new JsonOptions();
-        projectJsonOptions.Invoke(jsonOptions);
-        _jsonSerializerOptions = jsonOptions.JsonSerializerOptions;
     }
 
-    public override void OnResultExecuted(ResultExecutedContext context)
+    public override void OnResultExecuting(ResultExecutingContext context)
     {
-        var method = context.HttpContext.Request.Method;
-
-        if (!_methodList.Contains(method) || context.Canceled)
+        if (!Skip(context.HttpContext))
         {
-            base.OnResultExecuted(context);
+            _bodyStream = context.HttpContext.Response.Body;
+            context.HttpContext.Response.Body = _stream;
+        }
 
+        base.OnResultExecuting(context);
+    }
+
+    public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
+    {
+        await base.OnResultExecutionAsync(context, next);
+
+        if (context.Cancel || Skip(context.HttpContext))
+        {
             return;
         }
 
-        var endpoint = (RouteEndpoint)context.HttpContext.GetEndpoint();
+        if (_stream != null && _stream.CanRead)
+        {
+            _stream.Position = 0;
+            await _stream.CopyToAsync(_bodyStream);
+            context.HttpContext.Response.Body = _bodyStream;
+
+            var (method, routePattern) = GetData(context.HttpContext);
+
+            var resultContent = Encoding.UTF8.GetString(_stream.ToArray());
+            var eventName = $"method: {method}, route: {routePattern}";
+            _webhookPublisher.Publish(eventName, resultContent);
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_stream != null)
+        {
+            _stream.Dispose();
+        }
+    }
+
+    private (string, string) GetData(HttpContext context)
+    {
+        var method = context.Request.Method;
+        var endpoint = (RouteEndpoint)context.GetEndpoint();
         var routePattern = endpoint?.RoutePattern.RawText;
+
+        return (method, routePattern);
+    }
+
+    private bool Skip(HttpContext context)
+    {
+        var (method, routePattern) = GetData(context);
+
+        return false;
+        if (!_methodList.Contains(method))
+        {
+            return true;
+        }
 
         if (routePattern == null)
         {
-            base.OnResultExecuted(context);
-
-            return;
+            return true;
         }
 
-        if (context.Result is ObjectResult objectResult)
-        {
-            using var memorystream = new MemoryStream();
-            JsonSerializer.SerializeAsync(memorystream, objectResult.Value, _jsonSerializerOptions).Wait();
-            var resultContent = Encoding.UTF8.GetString(memorystream.ToArray());
-            var eventName = $"method: {method}, route: {routePattern}";
-
-            _webhookPublisher.Publish(eventName, resultContent);
-        }
-
-        base.OnResultExecuted(context);
+        return false;
     }
 }
