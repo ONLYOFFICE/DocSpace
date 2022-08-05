@@ -64,10 +64,7 @@ export function getObjectByLocation(location) {
   return object;
 }
 
-export function changeLanguage(
-  i18n,
-  currentLng = localStorage.getItem(LANGUAGE)
-) {
+export function changeLanguage(i18n, currentLng = getCookie(LANGUAGE)) {
   return currentLng
     ? i18n.language !== currentLng
       ? i18n.changeLanguage(currentLng)
@@ -151,7 +148,6 @@ export function isMe(user, userName) {
 }
 
 export function isAdmin(currentUser, currentProductId) {
-
   return (
     currentUser.isAdmin ||
     currentUser.isOwner ||

@@ -1,9 +1,13 @@
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
 import { LANGUAGE, TenantStatus } from "@docspace/common/constants";
-import { combineUrl } from "@docspace/common/utils";
+import { combineUrl, setCookie, getCookie } from "@docspace/common/utils";
 import FirebaseHelper from "@docspace/common/utils/firebase";
-import { AppServerConfig, ThemeKeys } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  ThemeKeys,
+  COOKIE_EXPIRATION_YEAR,
+} from "@docspace/common/constants";
 import { version } from "PACKAGE_FILE";
 import SocketIOHelper from "@docspace/common/utils/socket";
 
@@ -193,9 +197,11 @@ class SettingsStore {
             : newSettings[key]
         );
         if (key === "culture") {
-          const language = localStorage.getItem(LANGUAGE);
+          const language = getCookie(LANGUAGE);
           if (!language || language == "undefined") {
-            localStorage.setItem(LANGUAGE, newSettings[key]);
+            setCookie(LANGUAGE, newSettings[key], {
+              "max-age": COOKIE_EXPIRATION_YEAR,
+            });
           }
         }
         // if (key === "personal") {

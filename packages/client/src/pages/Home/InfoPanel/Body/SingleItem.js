@@ -14,6 +14,7 @@ import {
   StyledTitle,
 } from "./styles/styles.js";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
+import { getCookie } from "@docspace/common/utils/index.js";
 
 const SingleItem = (props) => {
   const {
@@ -83,7 +84,7 @@ const SingleItem = (props) => {
       };
 
       const parseAndFormatDate = (date) => {
-        const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+        const locale = personal ? getCookie(LANGUAGE) : culture;
         const correctDate = getCorrectDate(locale, date);
         return correctDate;
       };
