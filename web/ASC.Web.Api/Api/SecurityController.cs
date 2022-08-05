@@ -41,6 +41,7 @@ public class SecurityController : ControllerBase
     private readonly LoginEventsRepository _loginEventsRepository;
     private readonly AuditEventsRepository _auditEventsRepository;
     private readonly AuditReportCreator _auditReportCreator;
+    private readonly AuditReportUploader _auditReportSaver;
     private readonly SettingsManager _settingsManager;
     private readonly AuditActionMapper _auditActionMapper;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -54,6 +55,7 @@ public class SecurityController : ControllerBase
         LoginEventsRepository loginEventsRepository,
         AuditEventsRepository auditEventsRepository,
         AuditReportCreator auditReportCreator,
+        AuditReportUploader auditReportSaver,
         SettingsManager settingsManager,
         AuditActionMapper auditActionMapper,
         CoreBaseSettings coreBaseSettings,
@@ -66,6 +68,7 @@ public class SecurityController : ControllerBase
         _loginEventsRepository = loginEventsRepository;
         _auditEventsRepository = auditEventsRepository;
         _auditReportCreator = auditReportCreator;
+        _auditReportSaver = auditReportSaver;
         _settingsManager = settingsManager;
         _auditActionMapper = auditActionMapper;
         _coreBaseSettings = coreBaseSettings;
@@ -201,7 +204,9 @@ public class SecurityController : ControllerBase
 
         var reportName = string.Format(AuditReportResource.LoginHistoryReportName + ".csv", from.ToShortDateString(), to.ToShortDateString());
         var events = _loginEventsRepository.GetByFilter(fromDate: from, to: to);
-        var result = _auditReportCreator.CreateCsvReport(events, reportName);
+
+        using var stream = _auditReportCreator.CreateCsvReport(events);
+        var result = _auditReportSaver.UploadCsvReport(stream, reportName);
 
         _messageService.Send(MessageAction.LoginHistoryReportDownloaded);
         return result;
@@ -224,7 +229,9 @@ public class SecurityController : ControllerBase
         var reportName = string.Format(AuditReportResource.AuditTrailReportName + ".csv", from.ToString("MM.dd.yyyy"), to.ToString("MM.dd.yyyy"));
 
         var events = _auditEventsRepository.GetByFilter(from: from, to: to);
-        var result = _auditReportCreator.CreateCsvReport(events, reportName);
+
+        using var stream = _auditReportCreator.CreateCsvReport(events);
+        var result = _auditReportSaver.UploadCsvReport(stream, reportName);
 
         _messageService.Send(MessageAction.AuditTrailReportDownloaded);
         return result;
