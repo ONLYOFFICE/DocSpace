@@ -2239,6 +2239,7 @@ __metadata:
     "@codeceptjs/examples": ^1.2.1
     "@codeceptjs/ui": ^0.4.6
     "@svgr/webpack": ^5.5.0
+    "@types/accept-language-parser": ^1.5.3
     "@types/compression": ^1.7.2
     "@types/cookie-parser": ^1.4.3
     "@types/express": ^4.17.13
@@ -2250,6 +2251,7 @@ __metadata:
     "@types/styled-components": ^5.1.25
     "@types/winston": ^2.4.4
     "@types/ws": ^8.5.3
+    accept-language-parser: ^1.5.0
     babel-loader: ^8.2.2
     bufferutil: ^4.0.6
     clean-webpack-plugin: ^4.0.0
@@ -5399,6 +5401,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/accept-language-parser@npm:^1.5.3":
+  version: 1.5.3
+  resolution: "@types/accept-language-parser@npm:1.5.3"
+  checksum: ceecd89b2f5ce85c44fa2dd8b8b729c6871ed068b5137afbcaca5469eb7cfea0bc87ad2204ad89cbcc5df3abe2b7c005cf5f29b75150aa9086a52e097a53d944
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:^7.1.0":
   version: 7.1.19
   resolution: "@types/babel__core@npm:7.1.19"
@@ -6629,6 +6638,13 @@ __metadata:
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
   checksum: a4a97ec07d7ea112c517036882b2ac22f3109b7b19077dc656316d07d308438aac28e4d9746dc4d84bf6b1e75b4a7b0a5f3cb30592419f128ca9a8cee3bcfa17
+  languageName: node
+  linkType: hard
+
+"accept-language-parser@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "accept-language-parser@npm:1.5.0"
+  checksum: e32124e500f67d30da7dd15462b3ff7a718df327ff8bd1c97ae02d8ee5cf0917a3f600bf3b171965b1f95fef480b96d36752f674eff2cb0069c276d9783d32f6
   languageName: node
   linkType: hard
 

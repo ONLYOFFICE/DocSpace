@@ -53,6 +53,7 @@
     "@codeceptjs/examples": "^1.2.1",
     "@codeceptjs/ui": "^0.4.6",
     "@svgr/webpack": "^5.5.0",
+    "@types/accept-language-parser": "^1.5.3",
     "@types/compression": "^1.7.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/express": "^4.17.13",
@@ -98,6 +99,7 @@
   "socketPath": "/login/ws",
   "dependencies": {
     "@types/ws": "^8.5.3",
+    "accept-language-parser": "^1.5.0",
     "bufferutil": "^4.0.6",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
