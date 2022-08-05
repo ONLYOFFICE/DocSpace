@@ -1,6 +1,5 @@
 const { merge } = require("webpack-merge");
 const baseConfig = require("./webpack.base.js");
-const webpackNodeExternals = require("webpack-node-externals");
 const path = require("path");
 const DefinePlugin = require("webpack").DefinePlugin;
 const TerserPlugin = require("terser-webpack-plugin");
@@ -19,20 +18,11 @@ const serverConfig = {
     libraryTarget: "commonjs2",
     chunkFilename: "chunks/[name].js",
   },
-  externals: [
-    webpackNodeExternals(),
-    {
-      express: "express",
-      bufferutil: "bufferutil",
-      "utf-8-validate": "utf-8-validate",
-    },
-  ],
 
   plugins: [
     new CopyPlugin({
       patterns: [
         {
-          //context: path.resolve(process.cwd(), "src/server"),
           from: "src/server/config/",
         },
       ],
