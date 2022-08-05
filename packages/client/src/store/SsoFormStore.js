@@ -181,7 +181,7 @@ class SsoFormStore {
   };
 
   setComboBoxOption = (option) => {
-    this.spCertificateUsedFor = option.key;
+    this.spAction = option.key;
   };
 
   disableSso = () => {
