@@ -14,7 +14,7 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
 
 const IntegrationWrapper = (props) => {
-  const { t, history, loadBaseInfo } = props;
+  const { t, tReady, history, loadBaseInfo } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,7 +53,8 @@ const IntegrationWrapper = (props) => {
     );
   };
 
-  if (!isLoading) return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
+  if (!isLoading && !tReady)
+    return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
 
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
@@ -66,4 +67,8 @@ export default inject(({ setup }) => {
       await initSettings();
     },
   };
-})(withTranslation("Settings")(withRouter(observer(IntegrationWrapper))));
+})(
+  withTranslation(["Settings", "SingleSignOn"])(
+    withRouter(observer(IntegrationWrapper))
+  )
+);
