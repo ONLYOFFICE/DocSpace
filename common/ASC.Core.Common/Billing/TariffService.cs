@@ -309,9 +309,10 @@ public class TariffService : ITariffService
         return payments;
     }
 
-    public Uri GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, string quantity = null, string backUrl = null)
+    public Uri GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null)
     {
-        var key = "shopingurl_all";
+        var hasQuantity = quantity != null && quantity.Any();
+        var key = "shopingurl_" + (hasQuantity ? string.Join('_', quantity.Keys.ToArray()) : "all");
         var url = _cache.Get<string>(key);
         if (url == null)
         {
@@ -320,9 +321,12 @@ public class TariffService : ITariffService
             {
                 try
                 {
-                    var productIds = _quotaService.GetTenantQuotas()
-                                               .Where(q => !string.IsNullOrEmpty(q.ProductId) && q.Visible)
-                                               .Select(q => q.ProductId);
+                    var quotas = _quotaService.GetTenantQuotas()
+                                               .Where(q =>
+                                                    !string.IsNullOrEmpty(q.ProductId)
+                                                    && q.Visible);
+
+                    var productIds = quantity.Select(item => quotas.FirstOrDefault(q => q.Name == item.Key)?.ProductId);
 
                     var client = GetBillingClient();
                     url =
@@ -334,7 +338,7 @@ public class TariffService : ITariffService
                             !string.IsNullOrEmpty(currency) ? "__Currency__" : null,
                             !string.IsNullOrEmpty(language) ? "__Language__" : null,
                             !string.IsNullOrEmpty(customerEmail) ? "__CustomerEmail__" : null,
-                            !string.IsNullOrEmpty(quantity) ? "__Quantity__" : null,
+                            hasQuantity ? "__Quantity__" : null,
                             !string.IsNullOrEmpty(backUrl) ? "__BackUrl__" : null
                             );
                 }
@@ -358,8 +362,8 @@ public class TariffService : ITariffService
                                .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
                                .Replace("__Language__", HttpUtility.UrlEncode((language ?? "").ToLower()))
                                .Replace("__CustomerEmail__", HttpUtility.UrlEncode(customerEmail ?? ""))
-                               .Replace("__Quantity__", HttpUtility.UrlEncode(quantity ?? ""))
-                                .Replace("__BackUrl__", HttpUtility.UrlEncode(backUrl ?? "")));
+                               .Replace("__Quantity__", hasQuantity ? string.Join(',', quantity.Values) : "")
+                               .Replace("__BackUrl__", HttpUtility.UrlEncode(backUrl ?? "")));
         return result;
     }
 

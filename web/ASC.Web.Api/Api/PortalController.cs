@@ -196,8 +196,8 @@ public class PortalController : ControllerBase
         return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
     }
 
-    [HttpGet("payment/url")]
-    public Uri GetPaymentUrl(string currency, string backUrl)
+    [HttpPut("payment/url")]
+    public Uri GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
         if (_paymentManager.GetTariffPayments(Tenant.Id).Any()
             || !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
@@ -205,10 +205,11 @@ public class PortalController : ControllerBase
             return null;
         }
 
-        return _paymentManager.GetShoppingUri(currency,
+        return _paymentManager.GetShoppingUri(inDto.Currency,
             Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
             _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email,
-                backUrl: backUrl);
+            inDto.Quantity,
+            inDto.BackUrl);
     }
 
     [HttpGet("payment/account")]
