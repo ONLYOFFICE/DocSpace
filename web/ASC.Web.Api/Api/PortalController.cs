@@ -211,6 +211,18 @@ public class PortalController : ControllerBase
             inDto.Quantity,
             inDto.BackUrl);
     }
+    
+    [HttpPut("payment/update")]
+    public bool PaymentUpdate(PaymentUrlRequestsDto inDto)
+    {
+        if (!_paymentManager.GetTariffPayments(Tenant.Id).Any()
+            || !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
+        {
+            return false;
+        }
+
+        return _paymentManager.ChangePayment(inDto.Quantity);
+    }
 
     [HttpGet("payment/account")]
     public Uri GetPaymentAccount(string backUrl)

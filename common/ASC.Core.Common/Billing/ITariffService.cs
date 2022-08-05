@@ -41,4 +41,5 @@ public interface ITariffService
     void SaveButton(int tariffId, string partnerId, string buttonUrl);
     void SetTariff(int tenantId, Tariff tariff);
     Uri GetAccountLink(int tenant, string backUrl);
+    bool PaymentChange(int tenant, Dictionary<string, int> quantity);
 }

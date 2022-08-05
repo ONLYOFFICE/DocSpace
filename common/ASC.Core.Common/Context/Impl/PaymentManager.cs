@@ -83,6 +83,11 @@ public class PaymentManager
         return _tariffService.GetAccountLink(tenantId, backUrl);
     }
 
+    public bool ChangePayment(Dictionary<string, int> quantity)
+    {
+        return _tariffService.PaymentChange(_tenantManager.GetCurrentTenant().Id, quantity);
+    }
+
     public void ActivateKey(string key)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
@@ -119,5 +124,4 @@ public class PaymentManager
 
         return $"ASC :{now}:{hash}";
     }
-
 }

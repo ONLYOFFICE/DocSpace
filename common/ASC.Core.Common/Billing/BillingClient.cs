@@ -185,6 +185,18 @@ public class BillingClient
         return paymentUrl;
     }
 
+    public bool ChangePayment(string portalId, string[] products, int[] quantity)
+    {
+        var parameters = products.Select(p => Tuple.Create("ProductId", p))
+            .Concat(quantity.Select(q => Tuple.Create("ProductQty", q.ToString())))
+            .ToArray();
+
+        var result = Request("ChangeSubscription", portalId, parameters);
+        var changed = JsonConvert.DeserializeObject<bool>(result);
+
+        return changed;
+    }
+
     public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
     {
         ArgumentNullException.ThrowIfNull(productIds);

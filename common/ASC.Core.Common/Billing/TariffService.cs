@@ -227,6 +227,35 @@ public class TariffService : ITariffService
         return tariff;
     }
 
+    public bool PaymentChange(int tenantId, Dictionary<string, int> quantity)
+    {
+        if (quantity == null || !quantity.Any()
+            || !_billingClient.Configured)
+            return false;
+
+        var productIds = _quotaService.GetTenantQuotas()
+                                   .Where(q =>
+                                        !string.IsNullOrEmpty(q.ProductId)
+                                        && quantity.ContainsKey(q.Name))
+                                   .Select(q => q.ProductId);
+
+        try
+        {
+            var client = GetBillingClient();
+            var changed = client.ChangePayment(GetPortalId(tenantId), productIds.ToArray(), quantity.Values.ToArray());
+
+            if (!changed) return false;
+
+            ClearCache(tenantId);
+        }
+        catch (Exception error)
+        {
+            _logger.ErrorWithException(error);
+        }
+
+        return true;
+    }
+
     public void SetTariff(int tenantId, Tariff tariff)
     {
         ArgumentNullException.ThrowIfNull(tariff);
