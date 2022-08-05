@@ -91,7 +91,7 @@ const IdpSettings = (props) => {
             onClick={setInput}
             options={bindingOptions}
             selected={ssoBinding}
-            spacing="21px"
+            spacing="20px"
             tabIndex={6}
           />
         </Box>
@@ -118,7 +118,7 @@ const IdpSettings = (props) => {
           displayProp="flex"
           alignItems="center"
           flexDirection="row"
-          marginProp="6px 0"
+          marginProp="4px 0 6px"
         >
           <Text fontSize="12px" fontWeight={400}>
             {t("Binding")}
@@ -131,7 +131,7 @@ const IdpSettings = (props) => {
             onClick={setInput}
             options={bindingOptions}
             selected={sloBinding}
-            spacing="21px"
+            spacing="20px"
             tabIndex={8}
           />
         </Box>
