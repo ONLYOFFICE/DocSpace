@@ -478,7 +478,7 @@ const Dark = {
     testColor: grayMaxLight,
     textDisableColor: "#5c5c5c",
 
-    marginRight: "4px",
+    marginRight: "8px",
 
     background: "#292929",
     disableBackground: "#646464",
@@ -968,8 +968,8 @@ const Dark = {
       iconButton: {
         margin: "0",
         padding: "0px 8px",
-        width: "13px",
-        height: "13px",
+        width: "12px",
+        height: "12px",
       },
     },
 

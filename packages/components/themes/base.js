@@ -480,7 +480,7 @@ const Base = {
     textColor: black,
     textDisableColor: gray,
 
-    marginRight: "4px",
+    marginRight: "8px",
 
     background: white,
     disableBackground: grayLight,
@@ -971,8 +971,8 @@ const Base = {
       iconButton: {
         margin: "0",
         padding: "0px 8px",
-        width: "13px",
-        height: "13px",
+        width: "12px",
+        height: "12px",
       },
     },
 

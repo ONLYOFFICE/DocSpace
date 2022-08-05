@@ -74,8 +74,15 @@ const IdpSettings = (props) => {
             : ssoUrlRedirectHasError
         }
       >
-        <Box displayProp="flex" flexDirection="row" marginProp="8px 0 4px 0">
-          <Text noSelect>{t("Binding")}</Text>
+        <Box
+          displayProp="flex"
+          alignItems="center"
+          flexDirection="row"
+          marginProp="5px 0"
+        >
+          <Text fontSize="12px" fontWeight={400} noSelect>
+            {t("Binding")}
+          </Text>
 
           <RadioButtonGroup
             className="radio-button-group"
@@ -84,7 +91,7 @@ const IdpSettings = (props) => {
             onClick={setInput}
             options={bindingOptions}
             selected={ssoBinding}
-            spacing="21px"
+            spacing="20px"
             tabIndex={6}
           />
         </Box>
@@ -107,8 +114,15 @@ const IdpSettings = (props) => {
             : sloUrlRedirectHasError
         }
       >
-        <Box displayProp="flex" flexDirection="row" marginProp="8px 0 4px 0">
-          <Text>{t("Binding")}</Text>
+        <Box
+          displayProp="flex"
+          alignItems="center"
+          flexDirection="row"
+          marginProp="5px 0"
+        >
+          <Text fontSize="12px" fontWeight={400}>
+            {t("Binding")}
+          </Text>
 
           <RadioButtonGroup
             className="radio-button-group"
@@ -117,7 +131,7 @@ const IdpSettings = (props) => {
             onClick={setInput}
             options={bindingOptions}
             selected={sloBinding}
-            spacing="21px"
+            spacing="20px"
             tabIndex={8}
           />
         </Box>

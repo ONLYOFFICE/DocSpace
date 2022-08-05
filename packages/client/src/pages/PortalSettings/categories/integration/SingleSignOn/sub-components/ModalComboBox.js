@@ -5,8 +5,6 @@ import { useTranslation } from "react-i18next";
 import ComboBox from "@docspace/components/combobox";
 import FieldContainer from "@docspace/components/field-container";
 
-import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
-
 const ModalComboBox = (props) => {
   const { t } = useTranslation("SingleSignOn");
   const { isDisabled, spAction, setComboBoxOption, className } = props;
@@ -23,17 +21,15 @@ const ModalComboBox = (props) => {
 
   return (
     <FieldContainer isVertical labelText={t("UsedFor")} className={className}>
-      <StyledInputWrapper>
-        <ComboBox
-          onSelect={setComboBoxOption}
-          options={certificateOptions}
-          scaled
-          scaledOptions
-          selectedOption={currentOption}
-          showDisabledItems
-          isDisabled={isDisabled}
-        />
-      </StyledInputWrapper>
+      <ComboBox
+        onSelect={setComboBoxOption}
+        options={certificateOptions}
+        scaled
+        scaledOptions
+        selectedOption={currentOption}
+        showDisabledItems
+        isDisabled={isDisabled}
+      />
     </FieldContainer>
   );
 };

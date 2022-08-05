@@ -149,7 +149,7 @@ HelpButton.defaultProps = {
   offsetTop: 0,
   offsetBottom: 0,
   className: "icon-button",
-  size: 13,
+  size: 12,
 };
 
 export default HelpButton;

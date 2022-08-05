@@ -16,6 +16,7 @@ const AddIdpCertificateModal = (props) => {
     idpIsModalVisible,
     setInput,
     idpCertificate,
+    isCertificateLoading,
   } = props;
 
   return (
@@ -47,6 +48,8 @@ const AddIdpCertificateModal = (props) => {
           label={t("Common:OKButton")}
           onClick={addIdpCertificate}
           primary
+          scale
+          isLoading={isCertificateLoading}
           isDisabled={!idpCertificate}
           size="normalTouchscreen"
         />
@@ -54,6 +57,8 @@ const AddIdpCertificateModal = (props) => {
           label={t("Common:CancelButton")}
           onClick={closeIdpModal}
           size="normalTouchscreen"
+          scale
+          isDisabled={isCertificateLoading}
         />
       </ModalDialog.Footer>
     </StyledModalDialog>
@@ -67,6 +72,7 @@ export default inject(({ ssoStore }) => {
     idpIsModalVisible,
     setInput,
     idpCertificate,
+    isCertificateLoading,
   } = ssoStore;
 
   return {
@@ -75,5 +81,6 @@ export default inject(({ ssoStore }) => {
     idpIsModalVisible,
     setInput,
     idpCertificate,
+    isCertificateLoading,
   };
 })(observer(AddIdpCertificateModal));

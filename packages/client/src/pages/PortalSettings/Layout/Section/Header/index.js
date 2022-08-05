@@ -28,7 +28,7 @@ const HeaderContainer = styled.div`
   max-width: calc(100vw - 32px);
 
   h1 {
-    line-height: 53px;
+    line-height: 69px;
   }
 
   .action-wrapper {

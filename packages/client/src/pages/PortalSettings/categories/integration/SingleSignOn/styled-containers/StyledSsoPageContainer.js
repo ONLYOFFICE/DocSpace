@@ -4,6 +4,7 @@ const StyledSsoPage = styled.div`
   box-sizing: border-box;
   outline: none;
   max-width: 700px;
+  padding-top: 5px;
 
   .intro-text {
     margin-bottom: 18px;
@@ -12,7 +13,13 @@ const StyledSsoPage = styled.div`
 
   .toggle {
     position: static;
-    margin-top: 2px;
+    margin-top: 1px;
+  }
+
+  .toggle-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .tooltip-button,
@@ -21,11 +28,14 @@ const StyledSsoPage = styled.div`
   }
 
   .hide-button {
-    margin-left: 16px;
+    margin-left: 12px;
   }
 
-  .hide-additional-button {
-    margin-left: 8px;
+  .field-input {
+    ::placeholder {
+      font-size: 13px;
+      font-weight: 400;
+    }
   }
 
   .field-label-icon {
@@ -60,7 +70,7 @@ const StyledSsoPage = styled.div`
   }
 
   .radio-button-group {
-    margin-left: 25px;
+    margin-left: 24px;
   }
 
   .combo-button-label {
@@ -68,7 +78,7 @@ const StyledSsoPage = styled.div`
   }
 
   .checkbox-input {
-    margin: 6px 8px 6px 0;
+    margin: 10px 8px 6px 0;
   }
 
   .upload-button {
@@ -76,10 +86,6 @@ const StyledSsoPage = styled.div`
     width: 45px;
     margin-left: 9px;
     overflow: inherit;
-
-    & > div {
-      margin-top: 2px;
-    }
   }
 
   .save-button {
@@ -121,6 +127,23 @@ const StyledSsoPage = styled.div`
     .field-label {
       font-size: 15px;
       font-weight: 600;
+    }
+  }
+
+  .metadata-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+    max-width: 350px;
+
+    .input {
+      width: 350px;
+    }
+
+    p > div {
+      display: inline-flex;
+      margin-left: 4px;
     }
   }
 `;

@@ -23,6 +23,7 @@ const AddSpCertificateModal = (props) => {
     spCertificate,
     spPrivateKey,
     isGeneratedCertificate,
+    isCertificateLoading,
   } = props;
 
   const onGenerate = () => {
@@ -55,6 +56,7 @@ const AddSpCertificateModal = (props) => {
           onChange={setInput}
           value={spCertificate}
           isDisabled={isGeneratedCertificate}
+          placeholder={t("PlaceholderCert")}
         />
 
         <Text isBold className="text-area-label" noSelect>
@@ -82,13 +84,14 @@ const AddSpCertificateModal = (props) => {
           onClick={addSpCertificate}
           primary
           size="normalTouchscreen"
+          isLoading={isCertificateLoading}
           isDisabled={isGeneratedCertificate || !spCertificate || !spPrivateKey}
         />
         <Button
           label={t("Common:CancelButton")}
           onClick={closeSpModal}
           size="normalTouchscreen"
-          isDisabled={isGeneratedCertificate}
+          isDisabled={isGeneratedCertificate || isCertificateLoading}
         />
       </ModalDialog.Footer>
     </StyledModalDialog>
@@ -105,6 +108,7 @@ export default inject(({ ssoStore }) => {
     spCertificate,
     spPrivateKey,
     isGeneratedCertificate,
+    isCertificateLoading,
   } = ssoStore;
 
   return {
@@ -116,5 +120,6 @@ export default inject(({ ssoStore }) => {
     spCertificate,
     spPrivateKey,
     isGeneratedCertificate,
+    isCertificateLoading,
   };
 })(observer(AddSpCertificateModal));
