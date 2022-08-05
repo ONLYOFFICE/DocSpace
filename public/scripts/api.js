@@ -22,7 +22,7 @@
       page: 0,
       sortorder: "descending", //TODO: ["descending", "ascending"]
       sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
-      search: null,
+      search: "",
       filterType: null,
       authorType: null,
       withSubfolders: true,
@@ -51,7 +51,7 @@
     if (searchUrl && searchUrl.length) {
       object = Object.fromEntries(new URLSearchParams(searchUrl));
 
-      object.filter = {};
+      object.filter = defaultConfig.filter;
 
       for (prop in object) {
         if (prop in defaultConfig.filter) {
@@ -85,10 +85,10 @@
 
       switch (config.mode) {
         case "manager": {
-          if (config.filter)
-            path = `${config.rootPath}filter?${new URLSearchParams(
-              config.filter
-            ).toString()}`;
+          if (config.filter) {
+            const filterString = new URLSearchParams(config.filter).toString();
+            path = `${config.rootPath}filter?${filterString}`;
+          }
           break;
         }
 
@@ -217,7 +217,7 @@
       target.setAttribute("id", this.config.frameId);
       target.innerHTML = this.config.destroyText;
 
-      if (this.iframe) {
+      if (this.#iframe) {
         window.removeEventListener("message", this.#onMessage, false);
         this.#isConnected = false;
 
