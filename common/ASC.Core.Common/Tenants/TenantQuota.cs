@@ -133,12 +133,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("update", value);
     }
 
-    public bool Support
-    {
-        get => GetFeature("support");
-        set => SetFeature("support", value);
-    }
-
     public bool Audit
     {
         get => GetFeature("audit");

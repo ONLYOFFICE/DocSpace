@@ -62,7 +62,7 @@ public static class DbQuotaExtension
                     Name = "default",
                     Description = null,
                     MaxFileSize = 102400,
-                    Features = "audit,ldap,sso,whitelabel,update,support,restore,total_size:10995116277760,users:10000",
+                    Features = "audit,ldap,sso,whitelabel,update,restore,total_size:10995116277760,users:10000",
                     Price = decimal.Parse("0,00"),
                     ProductId = "0",
                     Visible = false
