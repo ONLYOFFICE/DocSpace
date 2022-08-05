@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 
 import { combineUrl } from "@docspace/common/utils";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
@@ -19,18 +20,21 @@ const Integration = (props) => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const integrationData = {
+    id: "portal-integration",
+    name: "Portal Integration",
+    content: <PortalIntegration />,
+  };
+
   const data = [
     {
       id: "third-party-services",
       name: t("ThirdPartyAuthorization"),
       content: <ThirdPartyServices />,
     },
-    {
-      id: "portal-integration",
-      name: "Portal Integration",
-      content: <PortalIntegration />,
-    },
   ];
+
+  if (!isMobile) data.push(integrationData);
 
   const load = async () => {
     const { loadBaseInfo } = props;
