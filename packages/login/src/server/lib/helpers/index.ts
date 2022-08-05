@@ -25,3 +25,18 @@ export const getScripts = (assets: assetsType): string[] | void => {
 
   return keys;
 };
+
+export const loadPath = (language: string, nameSpace: string): string => {
+  let resourcePath = path.resolve(
+    path.join(__dirname, "client", `locales/${language}/${nameSpace}.json`)
+  );
+  if (nameSpace === "Common")
+    resourcePath = path.resolve(
+      path.join(
+        __dirname,
+        `../../../public/locales/${language}/${nameSpace}.json`
+      )
+    );
+
+  return resourcePath;
+};
