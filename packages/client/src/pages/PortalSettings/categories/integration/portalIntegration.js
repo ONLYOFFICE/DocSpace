@@ -31,18 +31,44 @@ const Controls = styled(Box)`
 
 const ControlsGroup = styled(Box)`
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
 `;
 
 const Frame = styled(Box)`
   margin-top: 16px;
+
+  > div {
+    border: 1px dashed gray;
+    border-radius: 3px;
+    min-width: 100%;
+    min-height: 400px;
+  }
 `;
 
 const Buttons = styled(Box)`
   margin-top: 16px;
   button {
     margin-right: 16px;
+  }
+`;
+
+const Container = styled(Box)`
+  width: 100%;
+  display: flex;
+  gap: 16px;
+`;
+
+const Preview = styled(Box)`
+  width: 50%;
+  flex-direction: row;
+
+  .frameStyle {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -89,6 +115,9 @@ const PortalIntegration = (props) => {
   ];
 
   const [config, setConfig] = useState({
+    width: "100%",
+    height: "400px",
+    frameId: "ds-frame",
     showHeader: false,
     showTitle: true,
     showArticle: false,
@@ -237,30 +266,39 @@ const PortalIntegration = (props) => {
   const codeBlock = `<div id="${frameId}">Fallback text</div>\n<script src="${scriptUrl}${params}"></script>`;
 
   return (
-    <Box>
+    <Container>
       <Controls>
         <Heading level={1} size="small">
           Frame options
         </Heading>
-        <TextInput
-          scale={true}
-          onChange={onChangeFrameId}
-          placeholder="Frame id"
-          value={config.frameId}
-        />
-        <TextInput
-          scale={true}
-          onChange={onChangeWidth}
-          placeholder="Frame width"
-          value={config.width}
-        />
-        <TextInput
-          scale={true}
-          onChange={onChangeHeight}
-          placeholder="Frame height"
-          value={config.height}
-        />
         <ControlsGroup>
+          <Label className="label" text="Frame id" />
+          <TextInput
+            scale={true}
+            onChange={onChangeFrameId}
+            placeholder="Frame id"
+            value={config.frameId}
+          />
+        </ControlsGroup>
+        <ControlsGroup>
+          <Label className="label" text="Frame width" />
+          <TextInput
+            scale={true}
+            onChange={onChangeWidth}
+            placeholder="Frame width"
+            value={config.width}
+          />
+        </ControlsGroup>
+        <ControlsGroup>
+          <Label className="label" text="Frame height" />
+          <TextInput
+            scale={true}
+            onChange={onChangeHeight}
+            placeholder="Frame height"
+            value={config.height}
+          />
+        </ControlsGroup>
+        {/* <ControlsGroup>
           <Label className="label" text="Display mode: " />
           <ComboBox
             scale={true}
@@ -270,7 +308,7 @@ const PortalIntegration = (props) => {
             selectedOption={displayType}
             displaySelectedOption
           />
-        </ControlsGroup>
+        </ControlsGroup> */}
         <Checkbox
           label="Show header"
           onChange={onChangeShowHeader}
@@ -294,43 +332,58 @@ const PortalIntegration = (props) => {
         <Heading level={1} size="small">
           Filter options
         </Heading>
-        <TextInput
-          scale={true}
-          onChange={onChangeFolderId}
-          placeholder="Folder id"
-          value={config.folder}
-        />
-        <TextInput
-          scale={true}
-          onChange={onChangeCount}
-          placeholder="Items count"
-          value={config.count}
-        />
-        <TextInput
-          scale={true}
-          onChange={onChangePage}
-          placeholder="Page"
-          value={config.page}
-        />
         <ControlsGroup>
+          <Label className="label" text="Folder id" />
           <TextInput
             scale={true}
-            onChange={onChangeSearch}
-            placeholder="Search term"
-            value={config.search}
-          />
-          <Checkbox
-            label="With subfolders"
-            onChange={onChangeWithSubfolders}
-            isChecked={withSubfolders}
+            onChange={onChangeFolderId}
+            placeholder="Folder id"
+            value={config.folder}
           />
         </ControlsGroup>
-        <TextInput
-          scale={true}
-          onChange={onChangeAuthor}
-          placeholder="Author"
-          value={config.authorType}
-        />
+        <ControlsGroup>
+          <Label className="label" text="Items count" />
+          <TextInput
+            scale={true}
+            onChange={onChangeCount}
+            placeholder="Items count"
+            value={config.count}
+          />
+        </ControlsGroup>
+        <ControlsGroup>
+          <Label className="label" text="Page" />
+          <TextInput
+            scale={true}
+            onChange={onChangePage}
+            placeholder="Page"
+            value={config.page}
+          />
+        </ControlsGroup>
+        <ControlsGroup>
+          <Label className="label" text="Search term" />
+          <Box style={{ flexDirection: "row", display: "flex", gap: "16px" }}>
+            <TextInput
+              scale={true}
+              onChange={onChangeSearch}
+              placeholder="Search term"
+              value={config.search}
+            />
+            <Checkbox
+              label="With subfolders"
+              onChange={onChangeWithSubfolders}
+              isChecked={withSubfolders}
+            />
+          </Box>
+        </ControlsGroup>
+        <ControlsGroup>
+          <Label className="label" text="Author" />
+          <TextInput
+            scale={true}
+            onChange={onChangeAuthor}
+            placeholder="Author"
+            value={config.authorType}
+          />
+        </ControlsGroup>
         <ControlsGroup>
           <Label className="label" text="Filter type:" />
           <ComboBox
@@ -339,6 +392,7 @@ const PortalIntegration = (props) => {
             scaled={true}
             selectedOption={filterType}
             displaySelectedOption
+            directionY="top"
           />
         </ControlsGroup>
         <ControlsGroup>
@@ -349,6 +403,7 @@ const PortalIntegration = (props) => {
             scaled={true}
             selectedOption={sortBy}
             displaySelectedOption
+            directionY="top"
           />
         </ControlsGroup>
         <ControlsGroup>
@@ -359,24 +414,34 @@ const PortalIntegration = (props) => {
             scaled={true}
             selectedOption={sortOrder}
             displaySelectedOption
+            directionY="top"
           />
         </ControlsGroup>
       </Controls>
-      <Heading level={1} size="xsmall">
-        Paste this code block on page:
-      </Heading>
+      <Preview>
+        <Frame>
+          <Box id={frameId} className="frameStyle">
+            Frame content
+          </Box>
+        </Frame>
 
-      <Textarea value={codeBlock} />
+        <Buttons>
+          <Button primary size="normal" label="Preview" onClick={loadFrame} />
+          <Button
+            primary
+            size="normal"
+            label="Destroy"
+            onClick={destroyFrame}
+          />
+        </Buttons>
 
-      <Buttons>
-        <Button primary size="normal" label="Preview" onClick={loadFrame} />
-        <Button primary size="normal" label="Destroy" onClick={destroyFrame} />
-      </Buttons>
+        <Heading level={1} size="xsmall">
+          Paste this code block on page:
+        </Heading>
 
-      <Frame>
-        <Box id={frameId}>Frame content</Box>
-      </Frame>
-    </Box>
+        <Textarea value={codeBlock} />
+      </Preview>
+    </Container>
   );
 };
 
