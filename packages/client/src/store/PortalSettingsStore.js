@@ -127,6 +127,7 @@ class SettingsStore {
   tenantStatus = null;
   helpLink = null;
   hotkeyPanelVisible = false;
+  frameConfig = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -538,6 +539,15 @@ class SettingsStore {
   setHotkeyPanelVisible = (hotkeyPanelVisible) => {
     this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
+
+  setFrameConfig = (frameConfig) => {
+    this.frameConfig = frameConfig;
+    return frameConfig;
+  };
+
+  get isFrame() {
+    return this.frameConfig?.name === window.name;
+  }
 }
 
 export default SettingsStore;

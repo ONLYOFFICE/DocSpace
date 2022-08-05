@@ -61,6 +61,8 @@ const WhiteLabel = lazy(() =>
 
 const Branding = lazy(() => import("./categories/common/branding"));
 
+const Integration = lazy(() => import("./categories/integration"));
+
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
 
 const COMMON_URLS = [
@@ -120,10 +122,12 @@ const SESSION_LIFETIME_PAGE_URL = combineUrl(
 );
 
 const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
-const THIRD_PARTY_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/integration/third-party-services"
-);
+
+const INTEGRATION_URLS = [
+  combineUrl(PROXY_BASE_URL, "/integration/third-party-services"),
+  combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
+];
+
 const DATA_MANAGEMENT_URL = combineUrl(
   PROXY_BASE_URL,
   "/datamanagement/backup"
@@ -184,7 +188,7 @@ const Settings = (props) => {
             component={SessionLifetimePage}
           />
 
-          <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
+          <Route exact path={INTEGRATION_URLS} component={Integration} />
           <Route
             exact
             path={DATA_MANAGEMENT_URL}
