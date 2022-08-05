@@ -61,12 +61,12 @@ public static class DbQuotaExtension
                     Tenant = -1,
                     Name = "default",
                     Description = null,
-                    MaxFileSize = 102400,
-                    Features = "audit,ldap,sso,whitelabel,update,restore,total_size:10995116277760,users:10000",
+                    MaxFileSize = 100,
+                    Features = "audit,ldap,sso,whitelabel,update,restore,admin:1,total_size:107374182400",
                     Price = decimal.Parse("0,00"),
-                    ProductId = "0",
+                    ProductId = null,
                     Visible = false
-                });
+                }); ;
 
         return modelBuilder;
     }
