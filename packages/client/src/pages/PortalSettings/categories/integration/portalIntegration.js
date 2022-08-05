@@ -122,20 +122,6 @@ const PortalIntegration = (props) => {
     loadScript(`${scriptUrl}${params}`, "integration");
   };
 
-  const showMessage = (message) => {
-    const data = message.data;
-
-    if (data.frameId === frameId) {
-      toastr.success(data.message, "Frame message");
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("message", showMessage, false);
-
-    return () => window.removeEventListener("message", showMessage, false);
-  }, [showMessage]);
-
   const onChangeWidth = (e) => {
     setConfig((config) => {
       return { ...config, width: e.target.value };
