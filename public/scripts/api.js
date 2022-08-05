@@ -253,8 +253,8 @@
       return this.#getMethodPromise("getFolders");
     }
 
-    getItems() {
-      return this.#getMethodPromise("getItems");
+    getList() {
+      return this.#getMethodPromise("getList");
     }
 
     getUserInfo() {
@@ -274,16 +274,8 @@
       return this.#getMethodPromise("setConfig", this.config, reload);
     }
 
-    openCrateFileModal(format) {
-      return this.#getMethodPromise("openCrateItemModal", format);
-    }
-
-    openCrateFolderModal() {
-      return this.#getMethodPromise("openCrateItemModal");
-    }
-
-    openCrateRoomModal() {
-      return this.#getMethodPromise("openCrateRoomModal");
+    openModal(type, options) {
+      return this.#getMethodPromise("openModal", { type, options });
     }
 
     createFile(folderId, title, templateId, formId) {
@@ -309,7 +301,7 @@
       });
     }
 
-    setItemsView(type) {
+    setListView(type) {
       return this.#getMethodPromise("setItemsView", type);
     }
   }

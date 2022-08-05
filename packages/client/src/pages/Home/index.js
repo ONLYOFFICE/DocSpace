@@ -402,7 +402,7 @@ class PureHome extends React.Component {
         case "getFiles":
           res = files;
           break;
-        case "getItems":
+        case "getList":
           res = filesList;
           break;
         case "getSelection":
@@ -411,12 +411,14 @@ class PureHome extends React.Component {
         case "getUserInfo":
           res = user;
           break;
-        case "openCrateItemModal":
-          {
+        case "openModal": {
+          const { type, options } = data;
+
+          if (type === "CreateFile" || type === "CreateFolder") {
             const item = new Event(Events.CREATE);
 
             const payload = {
-              extension: data,
+              extension: options,
               id: -1,
             };
 
@@ -424,14 +426,14 @@ class PureHome extends React.Component {
 
             window.dispatchEvent(item);
           }
-          break;
-        case "openCrateRoomModal":
-          {
+
+          if (type === "CreateRoom") {
             const room = new Event(Events.ROOM_CREATE);
 
             window.dispatchEvent(room);
           }
           break;
+        }
         case "createFile":
           {
             const { folderId, title, templateId, formId } = data;
@@ -456,7 +458,7 @@ class PureHome extends React.Component {
             refreshFiles();
           }
           break;
-        case "setItemsView":
+        case "setListView":
           {
             setViewAs(data);
           }
