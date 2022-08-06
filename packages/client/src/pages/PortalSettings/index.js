@@ -67,8 +67,6 @@ const WhiteLabel = lazy(() =>
 
 const Branding = lazy(() => import("./categories/common/branding"));
 
-const Integration = lazy(() => import("./categories/integration"));
-
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
 
 const COMMON_URLS = [
@@ -132,17 +130,13 @@ const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const INTEGRATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/integration/third-party-services"),
   combineUrl(PROXY_BASE_URL, "/integration/single-sign-on"),
+  combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
 ];
 
 const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
 );
-
-const INTEGRATION_URLS = [
-  combineUrl(PROXY_BASE_URL, "/integration/third-party-services"),
-  combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
-];
 
 const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
 const DATA_MANAGEMENT_URL = combineUrl(
