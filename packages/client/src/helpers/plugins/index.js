@@ -15,7 +15,7 @@ export const initPluginStore = async () => {
 
 export const initPlugin = (plugin, callback) => {
   const onLoad = () => {
-    const newPlugin = eval(`${plugin.name}`);
+    const newPlugin = eval(`${plugin.name}`); //window.DocSpace.plugins[plugin.name]
     newPlugin.isActive = plugin.isActive;
     newPlugin.id = plugin.id;
 
