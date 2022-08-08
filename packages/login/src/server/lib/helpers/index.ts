@@ -1,5 +1,11 @@
 import path from "path";
 import fs from "fs";
+import {
+  getSettings,
+  getBuildVersion,
+  getAuthProviders,
+  getCapabilities,
+} from "@docspace/common/api/settings";
 
 export const getAssets = (): assetsType => {
   const manifest = fs.readFileSync(
@@ -39,4 +45,27 @@ export const loadPath = (language: string, nameSpace: string): string => {
     );
 
   return resourcePath;
+};
+
+export const getInitialState = async (): Promise<IInitialState> => {
+  let portalSettings: IPortalSettings,
+    buildInfo: IBuildInfo,
+    providers: ProvidersType,
+    capabilities: ICapabilities;
+
+  [portalSettings, buildInfo, providers, capabilities] = await Promise.all([
+    getSettings(),
+    getBuildVersion(),
+    getAuthProviders(),
+    getCapabilities(),
+  ]);
+
+  const initialState: IInitialState = {
+    portalSettings,
+    buildInfo,
+    providers,
+    capabilities,
+  };
+
+  return initialState;
 };

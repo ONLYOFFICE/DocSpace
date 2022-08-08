@@ -6,7 +6,7 @@ import ws from "./lib/websocket";
 import fs from "fs";
 import logger from "morgan";
 import winston, { stream } from "./lib/logger";
-import { getAssets } from "./lib/helpers";
+import { getAssets, getInitialState } from "./lib/helpers";
 import renderApp, { getStyleTags } from "./lib/helpers/render-app";
 import i18nextMiddleware, { I18next } from "i18next-express-middleware";
 import i18next from "./i18n";
@@ -15,13 +15,14 @@ import { LANGUAGE } from "@docspace/common/constants";
 import parser from "accept-language-parser";
 import { getPortalCultures } from "@docspace/common/api/settings";
 import { initSSR } from "@docspace/common/api/client";
+
 interface IParsedConfig extends Object {
   PORT: number;
 }
 interface ILoginRequest extends Request {
   i18n?: I18next;
 }
-type Timeout = ReturnType<typeof setTimeout>;
+type timeoutType = ReturnType<typeof setTimeout>;
 interface IAcceptLanguage extends Object {
   code?: string;
   quality?: number;
@@ -76,9 +77,23 @@ if (IS_DEVELOPMENT) {
     if (i18n) initialI18nStore = i18n.services.resourceStore.data;
 
     let assets: assetsType;
-
+    let initialState: IInitialState;
     try {
       assets = await getAssets();
+      initialState = await getInitialState();
+
+      const appComponent = renderApp();
+      const styleTags = getStyleTags();
+      const htmlString = template(
+        initialState,
+        appComponent,
+        styleTags,
+        initialI18nStore,
+        currentLanguage,
+        assets
+      );
+
+      res.send(htmlString);
     } catch (e) {
       let message: string | unknown = e;
       if (e instanceof Error) {
@@ -86,19 +101,6 @@ if (IS_DEVELOPMENT) {
       }
       winston.error(message);
     }
-
-    const appComponent = renderApp();
-    const styleTags = getStyleTags();
-    const htmlString = template(
-      {},
-      appComponent,
-      styleTags,
-      initialI18nStore,
-      currentLanguage,
-      assets
-    );
-
-    res.send(htmlString);
   });
 
   const server = app.listen(port, () => {
@@ -112,7 +114,7 @@ if (IS_DEVELOPMENT) {
   );
 
   let fsWait = false;
-  let waitTimeout: Timeout;
+  let waitTimeout: timeoutType;
   fs.watch(manifestFile, (event, filename) => {
     if (filename && event === "change") {
       if (fsWait) return;

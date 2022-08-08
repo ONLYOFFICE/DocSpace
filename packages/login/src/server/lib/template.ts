@@ -1,7 +1,7 @@
 import { getScripts } from "./helpers";
 
 type Template = (
-  initLoginState: IInitLoginState,
+  initLoginState: IInitialState,
   appComponent: string,
   styleTags: string,
   initialI18nStoreASC: object,
@@ -10,8 +10,8 @@ type Template = (
 ) => string;
 
 const template: Template = (
-  initLoginState = {},
-  appComponent = "",
+  initLoginState,
+  appComponent,
   styleTags,
   initialI18nStoreASC,
   initialLanguage,
@@ -37,6 +37,7 @@ const template: Template = (
   const scripts = `   
     <script id="__ASC_INITIAL_LOGIN_STATE__">
       window.__ASC_INITIAL_LOGIN_STATE__ = ${JSON.stringify(initLoginState)}
+      console.log(${JSON.stringify(initLoginState)})
     </script>
     <script id="__ASC_INITIAL_LOGIN_I18N__">
       window.initialI18nStoreASC = ${JSON.stringify(initialI18nStoreASC)}
