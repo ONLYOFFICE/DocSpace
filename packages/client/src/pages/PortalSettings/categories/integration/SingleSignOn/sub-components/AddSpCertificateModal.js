@@ -81,7 +81,7 @@ const AddSpCertificateModal = (props) => {
       <ModalDialog.Footer>
         <Button
           label={t("Common:OKButton")}
-          onClick={addSpCertificate}
+          onClick={() => addSpCertificate(t)}
           primary
           size="normalTouchscreen"
           isLoading={isCertificateLoading}
