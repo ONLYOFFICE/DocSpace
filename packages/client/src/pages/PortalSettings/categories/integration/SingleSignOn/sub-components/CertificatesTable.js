@@ -29,7 +29,7 @@ const CertificatesTable = (props) => {
 
     const onDelete = () => {
       prefix === "sp"
-        ? delSpCertificate(certificate.crt)
+        ? delSpCertificate(certificate.crt, certificate.action)
         : delIdpCertificate(certificate.crt);
     };
 

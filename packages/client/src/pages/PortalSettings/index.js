@@ -130,12 +130,14 @@ const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const INTEGRATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/integration/third-party-services"),
   combineUrl(PROXY_BASE_URL, "/integration/single-sign-on"),
+  combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
 ];
 
 const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
 );
+
 const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
 const DATA_MANAGEMENT_URL = combineUrl(
   PROXY_BASE_URL,

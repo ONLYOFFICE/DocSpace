@@ -151,7 +151,6 @@ export function isMe(user, userName) {
 }
 
 export function isAdmin(currentUser, currentProductId) {
-
   return (
     currentUser.isAdmin ||
     currentUser.isOwner ||
@@ -378,3 +377,23 @@ export function assign(obj, keyPath, value) {
   }
   obj[keyPath[lastKeyIndex]] = value;
 }
+
+export const frameCallbackData = (data) => {
+  window.parent.postMessage(
+    JSON.stringify({
+      type: "onMethodReturn",
+      methodReturnData: data,
+    }),
+    "*"
+  );
+};
+
+export const frameCallCommand = (command) => {
+  window.parent.postMessage(
+    JSON.stringify({
+      type: "onCallCommand",
+      commandName: command,
+    }),
+    "*"
+  );
+};
