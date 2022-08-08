@@ -97,7 +97,6 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
     {
         var (method, routePattern) = GetData(context);
 
-        return false;
         if (!_methodList.Contains(method))
         {
             return true;
