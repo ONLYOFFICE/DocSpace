@@ -95,7 +95,7 @@ public interface IFileDao<T>
     /// </summary>
     /// <param name="parentId"></param>
     /// <returns></returns>
-    Task<List<T>> GetFilesAsync(T parentId);
+    IAsyncEnumerable<T> GetFilesAsync(T parentId);
 
     /// <summary>
     ///     Get files in folder
@@ -277,7 +277,7 @@ public interface IFileDao<T>
 
     Task SaveEditHistoryAsync(File<T> file, string changes, Stream differenceStream);
 
-    Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
+    IAsyncEnumerable<EditHistory> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
 
     Task<Stream> GetDifferenceStreamAsync(File<T> file);
 
@@ -289,9 +289,9 @@ public interface IFileDao<T>
 
     Task<Stream> GetThumbnailAsync(T fileId, int width, int height);
 
-    Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to);
+    IAsyncEnumerable<FileWithShare> GetFeedsAsync(int tenant, DateTime from, DateTime to);
 
-    Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime);
+    IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime);
 
     Task<EntryProperties> GetProperties(T fileId);
 

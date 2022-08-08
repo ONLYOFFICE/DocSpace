@@ -196,7 +196,7 @@ public class FileStorageService<T> //: IFileStorageService
     public async Task<IEnumerable<FileEntry>> GetFoldersAsync(T parentId)
     {
         var folderDao = GetFolderDao();
-        var entries = Enumerable.Empty<FileEntry>();
+        IEnumerable<FileEntry> entries;
 
         try
         {
@@ -327,12 +327,12 @@ public class FileStorageService<T> //: IFileStorageService
 
         entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder ||
         x is File<string> f1 && !_fileConverter.IsConverting(f1) ||
-         x is File<int> f2 && !_fileConverter.IsConverting(f2));
+        x is File<int> f2 && !_fileConverter.IsConverting(f2));
 
         var result = new DataWrapper<T>
         {
             Total = total,
-            Entries = new List<FileEntry>(entries.ToList()),
+            Entries = entries.ToList(),
             FolderPathParts = new List<object>(breadCrumbs.Select(f =>
             {
                 if (f is Folder<string> f1)
@@ -369,17 +369,18 @@ public class FileStorageService<T> //: IFileStorageService
     {
         var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
 
-        var entries = Enumerable.Empty<FileEntry<TId>>();
+        var entries = AsyncEnumerable.Empty<FileEntry<TId>>();
 
         var folderDao = _daoFactory.GetFolderDao<TId>();
         var fileDao = _daoFactory.GetFileDao<TId>();
 
-        entries = entries.Concat(await _fileSecurity.FilterReadAsync(folderDao.GetFoldersAsync(foldersId)).ToListAsync());
-        entries = entries.Concat(await _fileSecurity.FilterReadAsync(fileDao.GetFilesAsync(filesId)).ToListAsync());
-
+        entries = entries.Concat(_fileSecurity.FilterReadAsync(folderDao.GetFoldersAsync(foldersId)));
+        entries = entries.Concat(_fileSecurity.FilterReadAsync(fileDao.GetFilesAsync(filesId)));
         entries = _entryManager.FilterEntries(entries, filter, subjectGroup, subjectId, search, true);
 
-        foreach (var fileEntry in entries)
+        var result = new List<FileEntry>();
+
+        await foreach (var fileEntry in entries)
         {
             if (fileEntry is File<TId> file)
             {
@@ -399,12 +400,14 @@ public class FileStorageService<T> //: IFileStorageService
                     folder.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<TId>();
                 }
             }
+
+            result.Add(fileEntry);
         }
 
-        await _entryStatusManager.SetFileStatusAsync(entries);
-        await _entryStatusManager.SetIsFavoriteFoldersAsync(entries);
+        await _entryStatusManager.SetFileStatusAsync(result);
+        await _entryStatusManager.SetIsFavoriteFoldersAsync(result);
 
-        return new List<FileEntry>(entries);
+        return result;
     }
 
     public Task<Folder<T>> CreateNewFolderAsync(T parentId, string title)
@@ -1076,23 +1079,20 @@ public class FileStorageService<T> //: IFileStorageService
         }
     }
 
-    public async Task<List<File<T>>> GetFileHistoryAsync(T fileId)
+    public async IAsyncEnumerable<File<T>> GetFileHistoryAsync(T fileId)
     {
         var fileDao = GetFileDao();
         var file = await fileDao.GetFileAsync(fileId);
         ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-        var result = await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
-
-        foreach (var r in result)
+        await foreach (var r in fileDao.GetFileHistoryAsync(fileId))
         {
             await _entryStatusManager.SetFileStatusAsync(r);
+            yield return r;
         }
-
-        return result;
     }
 
-    public async Task<KeyValuePair<File<T>, List<File<T>>>> UpdateToVersionAsync(T fileId, int version)
+    public async Task<KeyValuePair<File<T>, IAsyncEnumerable<File<T>>>> UpdateToVersionAsync(T fileId, int version)
     {
         var file = await _entryManager.UpdateToVersionFileAsync(fileId, version);
         _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
@@ -1107,7 +1107,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
         }
 
-        return new KeyValuePair<File<T>, List<File<T>>>(file, await GetFileHistoryAsync(fileId));
+        return new KeyValuePair<File<T>, IAsyncEnumerable<File<T>>>(file, GetFileHistoryAsync(fileId));
     }
 
     public async Task<string> UpdateCommentAsync(T fileId, int version, string comment)
@@ -1126,7 +1126,7 @@ public class FileStorageService<T> //: IFileStorageService
         return comment;
     }
 
-    public async Task<KeyValuePair<File<T>, List<File<T>>>> CompleteVersionAsync(T fileId, int version, bool continueVersion)
+    public async Task<KeyValuePair<File<T>, IAsyncEnumerable<File<T>>>> CompleteVersionAsync(T fileId, int version, bool continueVersion)
     {
         var file = await _entryManager.CompleteVersionFileAsync(fileId, version, continueVersion);
 
@@ -1144,7 +1144,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
         }
 
-        return new KeyValuePair<File<T>, List<File<T>>>(file, await GetFileHistoryAsync(fileId));
+        return new KeyValuePair<File<T>, IAsyncEnumerable<File<T>>>(file, GetFileHistoryAsync(fileId));
     }
 
     public async Task<File<T>> LockFileAsync(T fileId, bool lockfile)
@@ -1215,7 +1215,7 @@ public class FileStorageService<T> //: IFileStorageService
         return file;
     }
 
-    public async Task<List<EditHistory>> GetEditHistoryAsync(T fileId, string doc = null)
+    public async IAsyncEnumerable<EditHistory> GetEditHistoryAsync(T fileId, string doc = null)
     {
         var fileDao = GetFileDao();
         var (readLink, file, _) = await _fileShareLink.CheckAsync(doc, true, fileDao);
@@ -1228,7 +1228,10 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(!readLink && !await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
         ErrorIf(file.ProviderEntry, FilesCommonResource.ErrorMassage_BadRequest);
 
-        return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.Id));
+        await foreach (var f in fileDao.GetEditHistoryAsync(_documentServiceHelper, file.Id))
+        {
+            yield return f;
+        }
     }
 
     public async Task<EditHistoryDataDto> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
@@ -1318,7 +1321,7 @@ public class FileStorageService<T> //: IFileStorageService
         return result;
     }
 
-    public async Task<List<EditHistory>> RestoreVersionAsync(T fileId, int version, string url = null, string doc = null)
+    public async IAsyncEnumerable<EditHistory> RestoreVersionAsync(T fileId, int version, string url = null, string doc = null)
     {
         IFileDao<T> fileDao;
         File<T> file;
@@ -1335,11 +1338,12 @@ public class FileStorageService<T> //: IFileStorageService
             file = await _entryManager.SaveEditingAsync(fileId, null, url, null, doc, string.Format(FilesCommonResource.CommentRevertChanges, modifiedOnString));
         }
 
-        _filesMessageService.Send(file, _httpContextAccessor?.HttpContext?.Request?.Headers, MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
+        _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
-        fileDao = GetFileDao();
-
-        return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.Id));
+        await foreach (var f in GetFileDao().GetEditHistoryAsync(_documentServiceHelper, file.Id))
+        {
+            yield return f;
+        }
     }
 
     public async Task<FileLink> GetPresignedUriAsync(T fileId)
@@ -1505,7 +1509,7 @@ public class FileStorageService<T> //: IFileStorageService
             var folderDao = GetFolderDao();
             folder = await folderDao.GetFolderAsync(folderId);
 
-            var result = await _fileMarker.MarkedItemsAsync(folder);
+            var result = await _fileMarker.MarkedItemsAsync(folder).ToListAsync();
 
             result = new List<FileEntry>(_entryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
 
@@ -1532,63 +1536,56 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileOperationsManager.MarkAsRead(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersId, filesId, GetHttpHeaders());
     }
 
-    public Task<List<ThirdPartyParams>> GetThirdPartyAsync()
+    public IAsyncEnumerable<ThirdPartyParams> GetThirdPartyAsync()
     {
         var providerDao = GetProviderDao();
         if (providerDao == null)
         {
-            return Task.FromResult(new List<ThirdPartyParams>());
+            return AsyncEnumerable.Empty<ThirdPartyParams>();
         }
 
-        return internalGetThirdPartyAsync(providerDao);
+        return InternalGetThirdPartyAsync(providerDao);
     }
 
-    public async Task<List<ThirdPartyParams>> internalGetThirdPartyAsync(IProviderDao providerDao)
+    public async IAsyncEnumerable<ThirdPartyParams> InternalGetThirdPartyAsync(IProviderDao providerDao)
     {
-        var providersInfo = await providerDao.GetProvidersInfoAsync().ToListAsync();
-
-        var resultList = providersInfo
-            .Select(r =>
-                    new ThirdPartyParams
-                    {
-                        CustomerTitle = r.CustomerTitle,
-                        Corporate = r.RootFolderType == FolderType.COMMON,
-                        ProviderId = r.ID.ToString(),
-                        ProviderKey = r.ProviderKey
-                    });
-
-        return new List<ThirdPartyParams>(resultList.ToList());
+        await foreach (var r in providerDao.GetProvidersInfoAsync())
+        {
+            yield return new ThirdPartyParams
+            {
+                CustomerTitle = r.CustomerTitle,
+                Corporate = r.RootFolderType == FolderType.COMMON,
+                ProviderId = r.ID.ToString(),
+                ProviderKey = r.ProviderKey
+            };
+        }
     }
 
-    public Task<List<FileEntry>> GetThirdPartyFolderAsync(int folderType = 0)
+    public IAsyncEnumerable<FileEntry> GetThirdPartyFolderAsync(int folderType = 0)
     {
         if (!_filesSettingsHelper.EnableThirdParty)
         {
-            return Task.FromResult(new List<FileEntry>());
+            return AsyncEnumerable.Empty<FileEntry>();
         }
 
         var providerDao = GetProviderDao();
         if (providerDao == null)
         {
-            return Task.FromResult(new List<FileEntry>());
+            return AsyncEnumerable.Empty<FileEntry>();
         }
 
         return InternalGetThirdPartyFolderAsync(folderType, providerDao);
     }
 
-    private async Task<List<FileEntry>> InternalGetThirdPartyFolderAsync(int folderType, IProviderDao providerDao)
+    private async IAsyncEnumerable<FileEntry> InternalGetThirdPartyFolderAsync(int folderType, IProviderDao providerDao)
     {
-        var providersInfo = await providerDao.GetProvidersInfoAsync((FolderType)folderType).ToListAsync();
-
-        var folders = providersInfo.Select(providerInfo =>
+        await foreach (var providerInfo in providerDao.GetProvidersInfoAsync((FolderType)folderType))
         {
             var folder = _entryManager.GetFakeThirdpartyFolder(providerInfo);
             folder.NewForMe = folder.RootFolderType == FolderType.COMMON ? 1 : 0;
 
-            return folder;
-        });
-
-        return new List<FileEntry>(folders);
+            yield return folder;
+        }
     }
 
     public Task<Folder<T>> SaveThirdPartyAsync(ThirdPartyParams thirdPartyParams)
@@ -1853,7 +1850,7 @@ public class FileStorageService<T> //: IFileStorageService
                 continue;
             }
 
-            var filesPr = fileDao.GetFilesAsync(folderProject.Id);
+            var filesPr = fileDao.GetFilesAsync(folderProject.Id).ToListAsync();
             var foldersTmp = folderDao.GetFoldersAsync(folderProject.Id);
             var foldersPr = foldersTmp.Select(d => d.Id).ToListAsync();
 
@@ -1914,7 +1911,7 @@ public class FileStorageService<T> //: IFileStorageService
         var fileDao = GetFileDao();
         var trashId = await folderDao.GetFolderIDTrashAsync(true);
         var foldersIdTask = await folderDao.GetFoldersAsync(trashId).Select(f => f.Id).ToListAsync();
-        var filesIdTask = await fileDao.GetFilesAsync(trashId);
+        var filesIdTask = await fileDao.GetFilesAsync(trashId).ToListAsync();
 
         return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersIdTask, filesIdTask, false, true, false, GetHttpHeaders(), true);
     }
@@ -2269,29 +2266,17 @@ public class FileStorageService<T> //: IFileStorageService
         return files;
     }
 
-    public async Task<List<FileEntry<T>>> GetTemplatesAsync(FilterType filter, int from, int count, bool subjectGroup, string subjectID, string search, bool searchInContent)
+    public async IAsyncEnumerable<FileEntry<T>> GetTemplatesAsync(FilterType filter, int from, int count, bool subjectGroup, string subjectID, string search, bool searchInContent)
     {
-        try
+        var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
+        var folderDao = GetFolderDao();
+        var fileDao = GetFileDao();
+
+        var result = _entryManager.GetTemplatesAsync(folderDao, fileDao, filter, subjectGroup, subjectId, search, searchInContent);
+
+        await foreach (var r in result.Skip(from).Take(count))
         {
-
-            var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
-            var folderDao = GetFolderDao();
-            var fileDao = GetFileDao();
-
-            var result = await _entryManager.GetTemplatesAsync(folderDao, fileDao, filter, subjectGroup, subjectId, search, searchInContent);
-
-            if (result.Count() <= from)
-            {
-                return null;
-            }
-
-            result = result.Skip(from).Take(count);
-
-            return new List<FileEntry<T>>(result);
-        }
-        catch (Exception e)
-        {
-            throw GenerateException(e);
+            yield return r;
         }
     }
 
@@ -2312,11 +2297,10 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileSharing.GetSharedInfoShortFolderAsync(folderId);
     }
 
-    public async Task<List<T>> SetAceObjectAsync(AceCollection<T> aceCollection, bool notify, bool invite = false)
+    public async Task SetAceObjectAsync(AceCollection<T> aceCollection, bool notify, bool invite = false)
     {
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
-        var result = new List<T>();
 
         var entries = new List<FileEntry<T>>();
 
@@ -2359,39 +2343,31 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 throw GenerateException(e);
             }
-
-            var securityDao = GetSecurityDao();
-            if (await securityDao.IsSharedAsync(entry.Id, entry.FileEntryType))
-            {
-                result.Add(entry.Id);
-            }
         }
-
-        return result;
     }
 
     public async Task RemoveAceAsync(List<T> filesId, List<T> foldersId)
     {
         ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-        var entries = AsyncEnumerable.Empty<FileEntry<T>>();
 
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
-        entries = entries.Concat(filesId.ToAsyncEnumerable().SelectAwait(async fileId => await fileDao.GetFileAsync(fileId)));
-        entries = entries.Concat(foldersId.ToAsyncEnumerable().SelectAwait(async e => await folderDao.GetFolderAsync(e)));
 
-        await _fileSharingAceHelper.RemoveAceAsync(entries);
+        var headers = GetHttpHeaders();
 
-        await foreach (var entry in entries)
+        foreach (var fileId in filesId)
         {
-            if (entry.FileEntryType == FileEntryType.File)
-            {
-                _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.FileRemovedFromList, entry.Title);
-            }
-            else
-            {
-                _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.FolderRemovedFromList, entry.Title);
-            }
+            var entry = await fileDao.GetFileAsync(fileId);
+            await _fileSharingAceHelper.RemoveAceAsync(entry);
+            _filesMessageService.Send(entry, headers, MessageAction.FileRemovedFromList, entry.Title);
+
+        }
+
+        foreach (var folderId in foldersId)
+        {
+            var entry = await folderDao.GetFolderAsync(folderId);
+            await _fileSharingAceHelper.RemoveAceAsync(entry);
+            _filesMessageService.Send(entry, headers, MessageAction.FolderRemovedFromList, entry.Title);
         }
     }
 
@@ -2458,7 +2434,6 @@ public class FileStorageService<T> //: IFileStorageService
 
     public async Task<List<MentionWrapper>> InternalSharedUsersAsync(T fileId)
     {
-
         FileEntry<T> file;
         var fileDao = GetFileDao();
         file = await fileDao.GetFileAsync(fileId);
@@ -2522,14 +2497,12 @@ public class FileStorageService<T> //: IFileStorageService
     {
         ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
 
-        File<T> file;
         var fileDao = GetFileDao();
-        file = await fileDao.GetFileAsync(fileId);
+        var file = await fileDao.GetFileAsync(fileId);
 
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
-        var fileSecurity = _fileSecurity;
-        var canRead = await fileSecurity.CanReadAsync(file);
+        var canRead = await _fileSecurity.CanReadAsync(file);
         ErrorIf(!canRead, FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
         ErrorIf(mentionMessage == null || mentionMessage.Emails == null, FilesCommonResource.ErrorMassage_BadRequest);
 
@@ -2557,7 +2530,7 @@ public class FileStorageService<T> //: IFileStorageService
                 continue;
             }
 
-            if (!await fileSecurity.CanReadAsync(file, recipient.Id))
+            if (!await _fileSecurity.CanReadAsync(file, recipient.Id))
             {
                 if (!canShare.Value)
                 {
@@ -2680,16 +2653,15 @@ public class FileStorageService<T> //: IFileStorageService
         //return new List<string>(accounts);
     }
 
-    public async Task<IEnumerable<FileEntry>> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
+    public async IAsyncEnumerable<FileEntry> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
     {
         var userInfo = _userManager.GetUsers(userId);
         ErrorIf(Equals(userInfo, Constants.LostUser) || userInfo.IsVisitor(_userManager), FilesCommonResource.ErrorMassage_ChangeOwner);
 
-        var entries = new List<FileEntry>();
-
         var folderDao = GetFolderDao();
-        var folders = await folderDao.GetFoldersAsync(foldersId).ToListAsync();
-        foreach (var folder in folders)
+        var folders = folderDao.GetFoldersAsync(foldersId);
+
+        await foreach (var folder in folders)
         {
             ErrorIf(!await _fileSecurity.CanEditAsync(folder), FilesCommonResource.ErrorMassage_SecurityException);
             ErrorIf(folder.RootFolderType != FolderType.COMMON, FilesCommonResource.ErrorMassage_SecurityException);
@@ -2713,13 +2685,14 @@ public class FileStorageService<T> //: IFileStorageService
 
                 _filesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
             }
-            entries.Add(newFolder);
+
+            yield return newFolder;
         }
 
         var fileDao = GetFileDao();
-        var files = await fileDao.GetFilesAsync(filesId).ToListAsync();
+        var files = fileDao.GetFilesAsync(filesId);
 
-        foreach (var file in files)
+        await foreach (var file in files)
         {
             ErrorIf(!await _fileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
             ErrorIf(await _entryManager.FileLockedForMeAsync(file.Id), FilesCommonResource.ErrorMassage_LockedFile);
@@ -2770,10 +2743,8 @@ public class FileStorageService<T> //: IFileStorageService
 
                 _filesMessageService.Send(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
             }
-            entries.Add(newFile);
+            yield return newFile;
         }
-
-        return entries;
     }
 
     public bool StoreOriginal(bool set)

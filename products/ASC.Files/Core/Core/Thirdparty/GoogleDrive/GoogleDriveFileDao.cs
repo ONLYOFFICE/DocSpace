@@ -170,11 +170,14 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         return files;
     }
 
-    public async Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
         var entries = await GetDriveEntriesAsync(parentId, false);
 
-        return entries.Select(entry => MakeId(entry.Id)).ToList();
+        foreach (var entry in entries)
+        {
+            yield return MakeId(entry.Id);
+        }
     }
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)

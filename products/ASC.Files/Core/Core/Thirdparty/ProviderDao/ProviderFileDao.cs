@@ -173,13 +173,16 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         return result;
     }
 
-    public async Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
         var selector = GetSelector(parentId);
         var fileDao = selector.GetFileDao(parentId);
-        var files = await fileDao.GetFilesAsync(selector.ConvertId(parentId));
+        var files = fileDao.GetFilesAsync(selector.ConvertId(parentId));
 
-        return files.Where(r => r != null).ToList();
+        await foreach (var f in files.Where(r => r != null))
+        {
+            yield return f;
+        }
     }
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)

@@ -318,15 +318,20 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async Task<List<int>> GetFilesAsync(int parentId)
+    public async IAsyncEnumerable<int> GetFilesAsync(int parentId)
     {
         var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await Query(filesDbContext.Files)
+
+        var q = Query(filesDbContext.Files)
             .AsNoTracking()
             .Where(r => r.ParentId == parentId && r.CurrentVersion)
             .Select(r => r.Id)
-            .ToListAsync()
-;
+            .AsAsyncEnumerable();
+
+        await foreach (var i in q)
+        {
+            yield return i;
+        }
     }
 
     public IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -1427,9 +1432,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
         await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
     }
 
-    public async Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
+    public async IAsyncEnumerable<EditHistory> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         var query = Query(filesDbContext.Files)
             .Where(r => r.Id == fileId)
             .Where(r => r.Forcesave == ForcesaveType.None);
@@ -1440,24 +1445,21 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         query = query.OrderBy(r => r.Version);
-        var dbFiles = await query.ToListAsync();
 
-        return dbFiles
-                .Select(r =>
-                    {
-                        var item = _serviceProvider.GetService<EditHistory>();
+        await foreach (var r in query.AsAsyncEnumerable())
+        {
+            var item = _serviceProvider.GetService<EditHistory>();
 
-                        item.ID = r.Id;
-                        item.Version = r.Version;
-                        item.VersionGroup = r.VersionGroup;
-                        item.ModifiedOn = _tenantUtil.DateTimeFromUtc(r.ModifiedOn);
-                        item.ModifiedBy = r.ModifiedBy;
-                        item.ChangesString = r.Changes;
-                        item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, _tenantUtil.DateTimeFromUtc(r.CreateOn));
+            item.ID = r.Id;
+            item.Version = r.Version;
+            item.VersionGroup = r.VersionGroup;
+            item.ModifiedOn = _tenantUtil.DateTimeFromUtc(r.ModifiedOn);
+            item.ModifiedBy = r.ModifiedBy;
+            item.ChangesString = r.Changes;
+            item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, _tenantUtil.DateTimeFromUtc(r.CreateOn));
 
-                        return item;
-                    })
-                .ToList();
+            yield return item;
+        }
     }
 
     public Task<Stream> GetDifferenceStreamAsync(File<int> file)
@@ -1475,11 +1477,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
 ;
     }
 
-    public async Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
+    public async IAsyncEnumerable<FileWithShare> GetFeedsAsync(int tenant, DateTime from, DateTime to)
     {
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+
         var q1 = filesDbContext.Files
-            .AsQueryable()
             .Where(r => r.TenantId == tenant)
             .Where(r => r.CurrentVersion)
             .Where(r => r.ModifiedOn >= from && r.ModifiedOn <= to);
@@ -1488,50 +1490,52 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Select(r => new DbFileQueryWithSecurity() { DbFileQuery = r, Security = null });
 
         var q3 = filesDbContext.Files
-            .AsQueryable()
             .Where(r => r.TenantId == tenant)
             .Where(r => r.CurrentVersion);
 
-        var q4Task = FromQuery(filesDbContext, q3)
+        var q4 = FromQuery(filesDbContext, q3)
             .Join(filesDbContext.Security.AsQueryable().DefaultIfEmpty(), r => r.File.Id.ToString(), s => s.EntryId, (f, s) => new DbFileQueryWithSecurity { DbFileQuery = f, Security = s })
             .Where(r => r.Security.TenantId == tenant)
             .Where(r => r.Security.EntryType == FileEntryType.File)
-            .Where(r => r.Security.Share == FileShare.Restrict)
-            //.Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to)
-            .ToListAsync();
+            .Where(r => r.Security.Share == FileShare.Restrict);
+        //.Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to);
 
-        var fileWithShare = await q2.Select(e => _mapper.Map<DbFileQueryWithSecurity, FileWithShare>(e))
-            .ToListAsync();
-        var q4 = await q4Task;
+        await foreach (var e in q2.AsAsyncEnumerable())
+        {
+            yield return _mapper.Map<DbFileQueryWithSecurity, FileWithShare>(e);
+        }
 
-        return fileWithShare.Union(_mapper.Map<IEnumerable<DbFileQueryWithSecurity>, IEnumerable<FileWithShare>>(q4));
+        await foreach (var e in q4.AsAsyncEnumerable())
+        {
+            yield return _mapper.Map<DbFileQueryWithSecurity, FileWithShare>(e);
+        }
     }
 
-    public async Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime)
+    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime)
     {
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+
         var q1Task = filesDbContext.Files
-            .AsQueryable()
             .Where(r => r.ModifiedOn > fromTime)
             .GroupBy(r => r.TenantId)
             .Where(r => r.Any())
-            .Select(r => r.Key)
-            .ToListAsync()
-            ;
+            .Select(r => r.Key);
+
+        await foreach (var q in q1Task.AsAsyncEnumerable())
+        {
+            yield return q;
+        }
 
         var q2Task = filesDbContext.Security
-            .AsQueryable()
             .Where(r => r.TimeStamp > fromTime)
             .GroupBy(r => r.TenantId)
             .Where(r => r.Any())
-            .Select(r => r.Key)
-            .ToListAsync()
-            ;
+            .Select(r => r.Key);
 
-        var q1 = await q1Task;
-        var q2 = await q2Task;
-
-        return q1.Union(q2);
+        await foreach (var q in q2Task.AsAsyncEnumerable())
+        {
+            yield return q;
+        }
     }
 
     private const string ThumbnailTitle = "thumb";
@@ -1706,7 +1710,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     protected IQueryable<DbFileQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
+        var fileType = FileEntryType.File;
         var cId = _authContext.CurrentAccount.ID;
+        var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
+        var denyDownload = FileConstant.DenyDownloadId;
+        var denySharing = FileConstant.DenySharingId;
 
         return from r in dbFiles
                select new DbFileQuery
@@ -1723,7 +1731,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                            select f
                           ).FirstOrDefault(),
                    Shared = (from f in filesDbContext.Security.AsQueryable()
-                             where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && !(new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(f.Subject)
+                             where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && !denyArray.Contains(f.Subject)
                              select f
                              ).Any(),
                    IsFillFormDraft = (from f in filesDbContext.FilesLink
@@ -1731,14 +1739,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
                                       select f)
                              .Any(),
                    Deny = (from f in filesDbContext.Security.AsQueryable()
-                           where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && (new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(f.Subject)
+                           where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
                            select f
                             ).GroupBy(a => a.EntryId,
                             (a, b) =>
                             new DbFileDeny
                             {
-                                DenyDownload = b.Any(c => c.Subject == FileConstant.DenyDownloadId),
-                                DenySharing = b.Any(c => c.Subject == FileConstant.DenySharingId)
+                                DenyDownload = b.Any(c => c.Subject == denyDownload),
+                                DenySharing = b.Any(c => c.Subject == denySharing)
                             })
                             .FirstOrDefault(),
                };
@@ -1746,7 +1754,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     protected IQueryable<DbFileQuery> FromQuery(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
+        var fileType = FileEntryType.File;
         var cId = _authContext.CurrentAccount.ID;
+        var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
+        var denyDownload = FileConstant.DenyDownloadId;
+        var denySharing = FileConstant.DenySharingId;
 
         return dbFiles
             .Select(r => new DbFileQuery
@@ -1768,14 +1780,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
                                    select f)
                              .Any(),
                 Deny = (from f in filesDbContext.Security.AsQueryable()
-                        where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && (new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(f.Subject)
+                        where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
                         select f
                             ).GroupBy(a => a.EntryId,
                             (a, b) =>
                             new DbFileDeny
                             {
-                                DenyDownload = b.Any(c => c.Subject == FileConstant.DenyDownloadId),
-                                DenySharing = b.Any(c => c.Subject == FileConstant.DenySharingId)
+                                DenyDownload = b.Any(c => c.Subject == denyDownload),
+                                DenySharing = b.Any(c => c.Subject == denySharing)
                             })
                             .FirstOrDefault(),
             });

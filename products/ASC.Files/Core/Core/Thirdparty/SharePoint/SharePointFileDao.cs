@@ -161,11 +161,14 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         return files;
     }
 
-    public async Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
         var files = await ProviderInfo.GetFolderFilesAsync(parentId);
 
-        return files.Select(r => ProviderInfo.ToFile(r).Id).ToList();
+        foreach (var entry in files)
+        {
+            yield return ProviderInfo.ToFile(entry).Id;
+        }
     }
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)

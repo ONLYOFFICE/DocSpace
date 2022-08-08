@@ -185,23 +185,19 @@ public class SecutiryControllerCommon : ApiControllerBase
     }
 
     [HttpPost("owner")]
-    public async Task<IEnumerable<FileEntryDto>> ChangeOwnerAsync(ChangeOwnerRequestDto inDto)
+    public async IAsyncEnumerable<FileEntryDto> ChangeOwnerAsync(ChangeOwnerRequestDto inDto)
     {
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
-        var data = Enumerable.Empty<FileEntry>();
-        data = data.Concat(await _fileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, inDto.UserId));
-        data = data.Concat(await _fileStorageServiceString.ChangeOwnerAsync(folderStringIds, fileStringIds, inDto.UserId));
+        var data = AsyncEnumerable.Empty<FileEntry>();
+        data = data.Concat(_fileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, inDto.UserId));
+        data = data.Concat(_fileStorageServiceString.ChangeOwnerAsync(folderStringIds, fileStringIds, inDto.UserId));
 
-        var result = new List<FileEntryDto>();
-
-        foreach (var e in data)
+        await foreach (var e in data)
         {
-            result.Add(await GetFileEntryWrapperAsync(e));
+            yield return await GetFileEntryWrapperAsync(e);
         }
-
-        return result;
     }
 
     [HttpPost("share")]

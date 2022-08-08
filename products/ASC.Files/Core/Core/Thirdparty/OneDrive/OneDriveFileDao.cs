@@ -170,11 +170,14 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     }
 
 
-    public async Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
         var items = await GetOneDriveItemsAsync(parentId, false);
 
-        return items.Select(entry => MakeId(entry.Id)).ToList();
+        foreach (var entry in items)
+        {
+            yield return MakeId(entry.Id);
+        }
     }
 
 
@@ -360,7 +363,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         {
             using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
-        {
+            {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(id))
                 .Select(r => r.HashId)
@@ -377,8 +380,8 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
                 var tagsToRemove = from ft in filesDbContext.Tag
                                    join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                               where ftl == null
-                               select ft;
+                                   where ftl == null
+                                   select ft;
 
                 filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
@@ -394,8 +397,8 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
                 await filesDbContext.SaveChangesAsync();
 
-            await tx.CommitAsync();
-        }
+                await tx.CommitAsync();
+            }
         });
 
         if (onedriveFile is not ErrorItem)

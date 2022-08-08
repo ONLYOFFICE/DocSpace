@@ -233,7 +233,7 @@ public interface IFolderDao<T>
     /// <returns></returns>
     Task<T> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists);
 
-    Task<IEnumerable<T>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists);
+    IAsyncEnumerable<T> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists);
 
     /// <summary>
     ///  Returns id folder "Shared Documents"
@@ -342,9 +342,9 @@ public interface IFolderDao<T>
     /// <returns></returns>
     Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<T> folderIDs);
 
-    Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
+    IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
 
-    Task<IEnumerable<T>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);
+    IAsyncEnumerable<T> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);
 
     #endregion
 }

@@ -115,8 +115,12 @@ public class FileOperationDtoHelper
                     }
                 }
 
-                result.Folders = await GetFoldersAsync(folders);
-                result.Folders.AddRange(await GetFoldersAsync(fInt));
+                var internalFolders = GetFoldersAsync(folders).ToListAsync();
+                var thirdPartyFolders = GetFoldersAsync(fInt).ToListAsync();
+
+                result.Folders = new List<FileEntryDto>();
+                result.Folders.AddRange(await internalFolders);
+                result.Folders.AddRange(await thirdPartyFolders);
             }
 
             var files = arr
@@ -140,8 +144,12 @@ public class FileOperationDtoHelper
                     }
                 }
 
-                result.Files = await GetFilesAsync(fString);
-                result.Files.AddRange(await GetFilesAsync(fInt));
+                var internalFiles = GetFilesAsync(fString).ToListAsync();
+                var thirdPartyFiles = GetFilesAsync(fInt).ToListAsync();
+
+                result.Files = new List<FileEntryDto>();
+                result.Files.AddRange(await internalFiles);
+                result.Files.AddRange(await thirdPartyFiles);
             }
 
             if (result.OperationType == FileOperationType.Download)
@@ -152,20 +160,24 @@ public class FileOperationDtoHelper
 
         return result;
 
-        async Task<List<FileEntryDto>> GetFoldersAsync<T>(IEnumerable<T> folders)
+        async IAsyncEnumerable<FileEntryDto> GetFoldersAsync<T>(IEnumerable<T> folders)
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
-            var folderEnum = folderDao.GetFoldersAsync(folders).SelectAwait(async r => await _folderWrapperHelper.GetAsync(r)).Cast<FileEntryDto>();
 
-            return await folderEnum.ToListAsync();
+            await foreach (var folder in folderDao.GetFoldersAsync(folders))
+            {
+                yield return await _folderWrapperHelper.GetAsync(folder);
+            }
         }
 
-        async Task<List<FileEntryDto>> GetFilesAsync<T>(IEnumerable<T> files)
+        async IAsyncEnumerable<FileEntryDto> GetFilesAsync<T>(IEnumerable<T> files)
         {
             var fileDao = _daoFactory.GetFileDao<T>();
-            var filesEnum = fileDao.GetFilesAsync(files).SelectAwait(async r => await _filesWrapperHelper.GetAsync(r)).Cast<FileEntryDto>();
 
-            return await filesEnum.ToListAsync(); ;
+            await foreach (var file in fileDao.GetFilesAsync(files))
+            {
+                yield return await _filesWrapperHelper.GetAsync(file);
+            }
         }
     }
 }

@@ -104,7 +104,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [HttpPut("file/{fileId}/history")]
-    public Task<IEnumerable<FileDto<T>>> ChangeHistoryAsync(T fileId, ChangeHistoryRequestDto inDto)
+    public IAsyncEnumerable<FileDto<T>> ChangeHistoryAsync(T fileId, ChangeHistoryRequestDto inDto)
     {
         return _filesControllerHelper.ChangeHistoryAsync(fileId, inDto.Version, inDto.ContinueVersion);
     }
@@ -224,7 +224,7 @@ public abstract class FilesController<T> : ApiControllerBase
 
     [AllowAnonymous]
     [HttpGet("file/{fileId}/edit/history")]
-    public Task<List<EditHistoryDto>> GetEditHistoryAsync(T fileId, string doc = null)
+    public IAsyncEnumerable<EditHistoryDto> GetEditHistoryAsync(T fileId, string doc = null)
     {
         return _filesControllerHelper.GetEditHistoryAsync(fileId, doc);
     }
@@ -250,7 +250,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="fileId">File ID</param>
     /// <returns>File information</returns>
     [HttpGet("file/{fileId}/history")]
-    public Task<IEnumerable<FileDto<T>>> GetFileVersionInfoAsync(T fileId)
+    public IAsyncEnumerable<FileDto<T>> GetFileVersionInfoAsync(T fileId)
     {
         return _filesControllerHelper.GetFileVersionInfoAsync(fileId);
     }
@@ -263,7 +263,7 @@ public abstract class FilesController<T> : ApiControllerBase
 
     [AllowAnonymous]
     [HttpGet("file/{fileId}/restoreversion")]
-    public Task<List<EditHistoryDto>> RestoreVersionAsync(T fileId, int version = 0, string url = null, string doc = null)
+    public IAsyncEnumerable<EditHistoryDto> RestoreVersionAsync(T fileId, int version = 0, string url = null, string doc = null)
     {
         return _filesControllerHelper.RestoreVersionAsync(fileId, version, url, doc);
     }
@@ -444,7 +444,6 @@ public class FilesControllerCommon : ApiControllerBase
 
         foreach (var fileId in batchEntryPropertiesRequestDto.FilesId)
         {
-
             if (fileId.ValueKind == JsonValueKind.String)
             {
                 await AddProps(fileId.GetString());

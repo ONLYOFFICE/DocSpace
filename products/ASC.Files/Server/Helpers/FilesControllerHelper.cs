@@ -74,19 +74,15 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         _pathProvider = pathProvider;
     }
 
-    public async Task<IEnumerable<FileDto<T>>> ChangeHistoryAsync(T fileId, int version, bool continueVersion)
+    public async IAsyncEnumerable<FileDto<T>> ChangeHistoryAsync(T fileId, int version, bool continueVersion)
     {
         var pair = await _fileStorageService.CompleteVersionAsync(fileId, version, continueVersion);
         var history = pair.Value;
 
-        var result = new List<FileDto<T>>();
-
-        foreach (var e in history)
+        await foreach (var e in history)
         {
-            result.Add(await _fileDtoHelper.GetAsync(e));
+            yield return await _fileDtoHelper.GetAsync(e);
         }
-
-        return result;
     }
 
     public async Task<string> GetPresignedUri(T fileId)
@@ -194,24 +190,20 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         return _fileStorageService.GetEditDiffUrlAsync(fileId, version, doc);
     }
 
-    public async Task<List<EditHistoryDto>> GetEditHistoryAsync(T fileId, string doc = null)
+    public async IAsyncEnumerable<EditHistoryDto> GetEditHistoryAsync(T fileId, string doc = null)
     {
-        var result = await _fileStorageService.GetEditHistoryAsync(fileId, doc);
-
-        return result.Select(r => new EditHistoryDto(r, _apiDateTimeHelper, _userManager, _displayUserSettingsHelper)).ToList();
+        await foreach (var f in _fileStorageService.GetEditHistoryAsync(fileId, doc))
+        {
+            yield return new EditHistoryDto(f, _apiDateTimeHelper, _userManager, _displayUserSettingsHelper);
+        }
     }
 
-    public async Task<IEnumerable<FileDto<T>>> GetFileVersionInfoAsync(T fileId)
+    public async IAsyncEnumerable<FileDto<T>> GetFileVersionInfoAsync(T fileId)
     {
-        var files = await _fileStorageService.GetFileHistoryAsync(fileId);
-        var result = new List<FileDto<T>>();
-
-        foreach (var e in files)
+        await foreach (var e in _fileStorageService.GetFileHistoryAsync(fileId))
         {
-            result.Add(await _fileDtoHelper.GetAsync(e));
+            yield return await _fileDtoHelper.GetAsync(e);
         }
-
-        return result;
     }
 
     public async Task<FileDto<T>> LockFileAsync(T fileId, bool lockFile)
@@ -221,11 +213,12 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         return await _fileDtoHelper.GetAsync(result);
     }
 
-    public async Task<List<EditHistoryDto>> RestoreVersionAsync(T fileId, int version = 0, string url = null, string doc = null)
+    public async IAsyncEnumerable<EditHistoryDto> RestoreVersionAsync(T fileId, int version = 0, string url = null, string doc = null)
     {
-        var result = await _fileStorageService.RestoreVersionAsync(fileId, version, url, doc);
-
-        return result.Select(r => new EditHistoryDto(r, _apiDateTimeHelper, _userManager, _displayUserSettingsHelper)).ToList();
+        await foreach (var e in _fileStorageService.RestoreVersionAsync(fileId, version, url, doc))
+        {
+            yield return new EditHistoryDto(e, _apiDateTimeHelper, _userManager, _displayUserSettingsHelper);
+        }
     }
 
     public IAsyncEnumerable<ConversationResultDto<T>> StartConversionAsync(CheckConversionRequestDto<T> cheqConversionRequestDto)

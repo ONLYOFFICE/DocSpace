@@ -56,7 +56,7 @@ internal abstract class ThirdPartyProviderDao
         return Task.CompletedTask;
     }
 
-    public Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
+    public IAsyncEnumerable<EditHistory> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
     {
         return null;
     }
@@ -107,12 +107,12 @@ internal abstract class ThirdPartyProviderDao
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
+    public IAsyncEnumerable<FileWithShare> GetFeedsAsync(int tenant, DateTime from, DateTime to)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime)
+    public IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime)
     {
         throw new NotImplementedException();
     }
@@ -136,9 +136,9 @@ internal abstract class ThirdPartyProviderDao
         return null;
     }
 
-    public Task<IEnumerable<string>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+    public IAsyncEnumerable<string> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
     {
-        return Task.FromResult((IEnumerable<string>)new List<string>());
+        return AsyncEnumerable.Empty<string>();
     }
 
     public Task<string> GetFolderIDCommonAsync(bool createIfNotExists)
@@ -214,12 +214,12 @@ internal abstract class ThirdPartyProviderDao
         return null;
     }
 
-    public Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    public IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<string>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
+    public IAsyncEnumerable<string> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
     {
         throw new NotImplementedException();
     }
@@ -498,7 +498,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return null;
     }
 
-    public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<string> entry)
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(FileEntry<string> entry)
     {
         return null;
     }

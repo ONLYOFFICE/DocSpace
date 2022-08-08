@@ -28,8 +28,8 @@ namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FolderContentDto<T>
 {
-    public List<FileEntryDto> Files { get; set; }
-    public List<FileEntryDto> Folders { get; set; }
+    public IAsyncEnumerable<FileEntryDto> Files { get; set; }
+    public IAsyncEnumerable<FileEntryDto> Folders { get; set; }
     public FolderDto<T> Current { get; set; }
     public object PathParts { get; set; }
     public int StartIndex { get; set; }
@@ -44,8 +44,8 @@ public class FolderContentDto<T>
         return new FolderContentDto<int>
         {
             Current = FolderDto<int>.GetSample(),
-            Files = new List<FileEntryDto>(new[] { FileDto<int>.GetSample(), FileDto<int>.GetSample() }),
-            Folders = new List<FileEntryDto>(new[] { FolderDto<int>.GetSample(), FolderDto<int>.GetSample() }),
+            //Files = new List<FileEntryDto>(new[] { FileDto<int>.GetSample(), FileDto<int>.GetSample() }),
+            //Folders = new List<FileEntryDto>(new[] { FolderDto<int>.GetSample(), FolderDto<int>.GetSample() }),
             PathParts = new
             {
                 key = "Key",
@@ -81,20 +81,55 @@ public class FolderContentDtoHelper
 
     public async Task<FolderContentDto<T>> GetAsync<T>(DataWrapper<T> folderItems, int startIndex)
     {
-        var foldersIntWithRightsTask = GetFoldersIntWithRightsAsync<int>();
-        var foldersStringWithRightsTask = GetFoldersIntWithRightsAsync<string>();
+        var parentInternalIds = new HashSet<int>();
+        var parentThirdPartyIds = new HashSet<string>();
+
+        var files = new List<FileEntry>();
+        var folders = new List<FileEntry>();
+
+        foreach (var e in folderItems.Entries)
+        {
+            if (e.FileEntryType == FileEntryType.File)
+            {
+                files.Add(e);
+            }
+            else if (e.FileEntryType == FileEntryType.Folder)
+            {
+                folders.Add(e);
+            }
+
+            if (e is FileEntry<int> internalEntry)
+            {
+                parentInternalIds.Add(internalEntry.ParentId);
+            }
+            else if (e is FileEntry<string> thirdParty)
+            {
+                if (int.TryParse(thirdParty.ParentId, out var pId))
+                {
+                    parentInternalIds.Add(pId);
+                }
+                else
+                {
+                    parentThirdPartyIds.Add(thirdParty.ParentId);
+                }
+            }
+        }
+
+        var foldersIntWithRightsTask = GetFoldersWithRightsAsync(parentInternalIds).ToListAsync();
+        var foldersStringWithRightsTask = GetFoldersWithRightsAsync(parentThirdPartyIds).ToListAsync();
 
         var foldersIntWithRights = await foldersIntWithRightsTask;
         var foldersStringWithRights = await foldersStringWithRightsTask;
 
-        var filesTask = GetFilesDto().ToListAsync();
-        var foldersTask = GetFoldersDto().ToListAsync();
+        var filesTask = GetFilesDto(files);
+        var foldersTask = GetFoldersDto(folders);
+
         var currentTask = _folderDtoHelper.GetAsync(folderItems.FolderInfo);
 
         var result = new FolderContentDto<T>
         {
-            Files = await filesTask,
-            Folders = await foldersTask,
+            Files = filesTask,
+            Folders = foldersTask,
             PathParts = folderItems.FolderPathParts,
             StartIndex = startIndex,
             Current = await currentTask,
@@ -102,45 +137,39 @@ public class FolderContentDtoHelper
             New = folderItems.New
         };
 
-        result.Count = result.Files.Count + result.Folders.Count;
+        result.Count = folderItems.Entries.Count;
 
         return result;
 
-
-        async ValueTask<List<Tuple<FileEntry<T1>, bool>>> GetFoldersIntWithRightsAsync<T1>()
+        IAsyncEnumerable<Tuple<FileEntry<T1>, bool>> GetFoldersWithRightsAsync<T1>(IEnumerable<T1> ids)
         {
-            var ids = folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.ParentId).Distinct().ToList();
             if (ids.Any())
             {
                 var folderDao = _daoFactory.GetFolderDao<T1>();
 
-                return await _fileSecurity.CanReadAsync(folderDao.GetFoldersAsync(ids));
+                return _fileSecurity.CanReadAsync(folderDao.GetFoldersAsync(ids));
             }
 
-            return new List<Tuple<FileEntry<T1>, bool>>();
+            return AsyncEnumerable.Empty<Tuple<FileEntry<T1>, bool>>();
         }
 
-        async IAsyncEnumerable<FileEntryDto> GetFilesDto()
+        async IAsyncEnumerable<FileEntryDto> GetFilesDto(IEnumerable<FileEntry> fileEntries)
         {
-            var fileEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.File);
             foreach (var r in fileEntries)
             {
                 if (r is File<int> fol1)
                 {
                     yield return await _fileDtoHelper.GetAsync(fol1, foldersIntWithRights);
                 }
-
-                if (r is File<string> fol2)
+                else if (r is File<string> fol2)
                 {
                     yield return await _fileDtoHelper.GetAsync(fol2, foldersStringWithRights);
                 }
             }
         }
 
-        async IAsyncEnumerable<FileEntryDto> GetFoldersDto()
+        async IAsyncEnumerable<FileEntryDto> GetFoldersDto(IEnumerable<FileEntry> folderEntries)
         {
-            var folderEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.Folder);
-
             foreach (var r in folderEntries)
             {
                 if (r is Folder<int> fol1)

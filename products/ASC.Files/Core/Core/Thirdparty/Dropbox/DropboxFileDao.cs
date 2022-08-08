@@ -171,11 +171,14 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         return files;
     }
 
-    public async Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
         var items = await GetDropboxItemsAsync(parentId, false);
 
-        return items.Select(entry => MakeId(entry)).ToList();
+        foreach (var entry in items)
+        {
+            yield return MakeId(entry);
+        }
     }
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -357,7 +360,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         {
             using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
-        {
+            {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(id))
                 .Select(r => r.HashId)
@@ -374,8 +377,8 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
 
                 var tagsToRemove = from ft in filesDbContext.Tag
                                    join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                               where ftl == null
-                               select ft;
+                                   where ftl == null
+                                   select ft;
 
                 filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
@@ -391,8 +394,8 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
                 await filesDbContext.SaveChangesAsync();
 
-            await tx.CommitAsync();
-        }
+                await tx.CommitAsync();
+            }
         });
 
 

@@ -187,9 +187,9 @@ public class ThirdpartyController : ApiControllerBase
     /// <short>Get third party list</short>
     /// <returns>Connected providers</returns>
     [HttpGet("thirdparty")]
-    public async Task<IEnumerable<ThirdPartyParams>> GetThirdPartyAccountsAsync()
+    public IAsyncEnumerable<ThirdPartyParams> GetThirdPartyAccountsAsync()
     {
-        return await _fileStorageServiceThirdparty.GetThirdPartyAsync();
+        return _fileStorageServiceThirdparty.GetThirdPartyAsync();
     }
 
     /// <visible>false</visible>

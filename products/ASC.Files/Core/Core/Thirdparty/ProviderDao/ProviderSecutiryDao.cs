@@ -44,19 +44,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         return _securityDao.SetShareAsync(r);
     }
 
-    public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
-    {
-        var result = new List<FileShareRecord>();
-
-        if (entry == null)
-        {
-            return Task.FromResult<IEnumerable<FileShareRecord>>(result);
-        }
-
-        return InternalGetSharesAsync(entry);
-    }
-
-    private async Task<IEnumerable<FileShareRecord>> InternalGetSharesAsync(FileEntry<string> entry)
+    public async Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
     {
         var result = new List<FileShareRecord>();
 
@@ -70,23 +58,20 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         {
             await GetFoldersForShareAsync(file.ParentId, folders);
 
-            var pureShareRecords = await _securityDao.GetPureShareRecordsAsync(entry);
-            if (pureShareRecords != null)
+            var pureShareRecords = _securityDao.GetPureShareRecordsAsync(entry);
+            await foreach (var pureShareRecord in pureShareRecords)
             {
-                foreach (var pureShareRecord in pureShareRecords)
+                if (pureShareRecord == null)
                 {
-                    if (pureShareRecord == null)
-                    {
-                        continue;
-                    }
-
-                    pureShareRecord.Level = -1;
-                    result.Add(pureShareRecord);
+                    continue;
                 }
+
+                pureShareRecord.Level = -1;
+                result.Add(pureShareRecord);
             }
         }
 
-        result.AddRange(await GetShareForFoldersAsync(folders));
+        result.AddRange(await GetShareForFoldersAsync(folders).ToListAsync());
 
         return result;
     }
@@ -113,20 +98,8 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         }
     }
 
-    private Task<List<FileShareRecord>> GetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
+    private async IAsyncEnumerable<FileShareRecord> GetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
     {
-        if (folders.Count == 0)
-        {
-            return Task.FromResult(new List<FileShareRecord>());
-        }
-
-        return InternalGetShareForFoldersAsync(folders);
-    }
-
-    private async Task<List<FileShareRecord>> InternalGetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
-    {
-        var result = new List<FileShareRecord>();
-
         foreach (var folder in folders)
         {
             var selector = GetSelector(folder.Id);
@@ -161,11 +134,9 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
 
                 pureShareRecord.Level = parentFolders.IndexOf(f);
                 pureShareRecord.EntryId = folder.Id;
-                result.Add(pureShareRecord);
+                yield return pureShareRecord;
             }
         }
-
-        return result;
     }
 
     public Task RemoveSubjectAsync(Guid subject)
@@ -183,7 +154,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         return _securityDao.GetPureShareRecordsAsync(entries);
     }
 
-    public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<string> entry)
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(FileEntry<string> entry)
     {
         return _securityDao.GetPureShareRecordsAsync(entry);
     }

@@ -91,7 +91,7 @@ public class AbstractDao
     {
         var tenantId = TenantID;
 
-        return set.AsQueryable().Where(r => r.TenantId == tenantId);
+        return set.Where(r => r.TenantId == tenantId);
     }
 
     protected internal IQueryable<DbFile> GetFileQuery(FilesDbContext filesDbContext, Expression<Func<DbFile, bool>> where)

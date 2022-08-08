@@ -155,13 +155,14 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         return files;
     }
 
-    public Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
-        var folder = GetFolderById(parentId).AsEnumerable();
+        var folder = GetFolderById(parentId).ToAsyncEnumerable();
 
-        return Task.FromResult(folder
-            .Where(x => x is not ICloudDirectoryEntry)
-                .Select(x => MakeId(x)).ToList());
+        await foreach (var entry in folder.Where(x => x is not ICloudDirectoryEntry))
+        {
+            yield return MakeId(entry);
+        }
     }
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)

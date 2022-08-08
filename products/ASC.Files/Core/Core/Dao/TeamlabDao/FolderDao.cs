@@ -1005,7 +1005,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return fromQuery.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
 
-    public Task<IEnumerable<int>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+    public IAsyncEnumerable<int> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(module);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(bunch);
@@ -1013,7 +1013,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return InternalGetFolderIDsAsync(module, bunch, data, createIfNotExists);
     }
 
-    private async Task<IEnumerable<int>> InternalGetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+    private async IAsyncEnumerable<int> InternalGetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
     {
         var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
@@ -1021,10 +1021,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var folderIdsDictionary = await Query(filesDbContext.BunchObjects)
             .AsNoTracking()
             .Where(r => keys.Length > 1 ? keys.Any(a => a == r.RightNode) : r.RightNode == keys[0])
-            .ToDictionaryAsync(r => r.RightNode, r => r.LeftNode)
-            ;
-
-        var folderIds = new List<int>();
+            .ToDictionaryAsync(r => r.RightNode, r => r.LeftNode);
 
         foreach (var key in keys)
         {
@@ -1106,10 +1103,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 });
             }
 
-            folderIds.Add(newFolderId);
+            yield return newFolderId;
         }
-
-        return folderIds;
     }
 
     public Task<int> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
@@ -1289,6 +1284,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     protected IQueryable<DbFolderQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFolder> dbFiles)
     {
+        var folderType = FileEntryType.Folder;
         var e = from r in dbFiles
                 select new DbFolderQuery
                 {
@@ -1304,7 +1300,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                             select f
                            ).FirstOrDefault(),
                     Shared = (from f in filesDbContext.Security.AsQueryable()
-                              where f.EntryType == FileEntryType.Folder && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
+                              where f.EntryType == folderType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
                               select f
                               ).Any()
                 };
@@ -1354,11 +1350,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .ToDictionaryAsync(r => r.LeftNode, r => r.RightNode);
     }
 
-    public async Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    public async IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
     {
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+
         var q1 = filesDbContext.Folders
-            .AsQueryable()
             .Where(r => r.TenantId == tenant)
             .Where(r => r.FolderType == FolderType.DEFAULT)
             .Where(r => r.CreateOn >= from && r.ModifiedOn <= to);
@@ -1367,7 +1363,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .Select(r => new DbFolderQueryWithSecurity() { DbFolderQuery = r, Security = null });
 
         var q3 = filesDbContext.Folders
-            .AsQueryable()
             .Where(r => r.TenantId == tenant)
             .Where(r => r.FolderType == FolderType.DEFAULT);
 
@@ -1378,35 +1373,42 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .Where(r => r.Security.Share == FileShare.Restrict)
             .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to);
 
-        var firstQuery = await q2.ToListAsync();
-        var secondQuery = await q4.ToListAsync();
+        await foreach (var e in q2.AsAsyncEnumerable())
+        {
+            yield return _mapper.Map<DbFolderQueryWithSecurity, FolderWithShare>(e);
+        }
 
-        //return firstQuery.Select(ToFolderWithShare).Union(secondQuery.Select(ToFolderWithShare));
-
-        return _mapper.Map<IEnumerable<DbFolderQueryWithSecurity>, IEnumerable<FolderWithShare>>(firstQuery)
-            .Union(_mapper.Map<IEnumerable<DbFolderQueryWithSecurity>, IEnumerable<FolderWithShare>>(secondQuery));
+        await foreach (var e in q4.AsAsyncEnumerable())
+        {
+            yield return _mapper.Map<DbFolderQueryWithSecurity, FolderWithShare>(e);
+        }
     }
 
-    public async Task<IEnumerable<int>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
+    public async IAsyncEnumerable<int> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
     {
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-        var q1 = await filesDbContext.Files
-            .AsQueryable()
+
+        var q1 = filesDbContext.Files
             .Where(r => r.ModifiedOn > fromTime)
             .GroupBy(r => r.TenantId)
             .Where(r => r.Any())
-            .Select(r => r.Key)
-            .ToListAsync();
+            .Select(r => r.Key);
 
-        var q2 = await filesDbContext.Security
-            .AsQueryable()
+        await foreach (var q in q1.AsAsyncEnumerable())
+        {
+            yield return q;
+        }
+
+        var q2 = filesDbContext.Security
             .Where(r => r.TimeStamp > fromTime)
             .GroupBy(r => r.TenantId)
             .Where(r => r.Any())
-            .Select(r => r.Key)
-            .ToListAsync();
+            .Select(r => r.Key);
 
-        return q1.Union(q2);
+        await foreach (var q in q2.AsAsyncEnumerable())
+        {
+            yield return q;
+        }
     }
 
     private IQueryable<DbFolder> BuildRoomsQuery(FilesDbContext filesDbContext, IQueryable<DbFolder> query, FolderType filterByType, IEnumerable<string> tags, Guid ownerId, bool searchByTags, bool withoutTags,

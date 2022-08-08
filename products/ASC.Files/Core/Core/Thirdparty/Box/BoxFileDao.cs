@@ -169,11 +169,14 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         return files;
     }
 
-    public async Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
         var items = await GetBoxItemsAsync(parentId, false);
 
-        return items.Select(entry => MakeId(entry.Id)).ToList();
+        foreach (var entry in items)
+        {
+            yield return MakeId(entry.Id);
+        }
     }
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -357,7 +360,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         {
             using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
-        {
+            {
                 var hashIDs = Query(filesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(id))
                 .Select(r => r.HashId);
@@ -371,8 +374,8 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
                 var tagsToRemove = from ft in filesDbContext.Tag
                                    join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                               where ftl == null
-                               select ft;
+                                   where ftl == null
+                                   select ft;
 
                 filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
@@ -389,7 +392,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
                 await filesDbContext.SaveChangesAsync();
 
                 await tx.CommitAsync();
-        }
+            }
         });
 
         if (boxFile is not ErrorFile)

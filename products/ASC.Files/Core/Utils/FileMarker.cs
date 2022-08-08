@@ -596,7 +596,7 @@ public class FileMarker
         return 0;
     }
 
-    public Task<List<FileEntry>> MarkedItemsAsync<T>(Folder<T> folder)
+    public IAsyncEnumerable<FileEntry> MarkedItemsAsync<T>(Folder<T> folder)
     {
         if (folder == null)
         {
@@ -606,7 +606,7 @@ public class FileMarker
         return InternalMarkedItemsAsync(folder);
     }
 
-    private async Task<List<FileEntry>> InternalMarkedItemsAsync<T>(Folder<T> folder)
+    private async IAsyncEnumerable<FileEntry> InternalMarkedItemsAsync<T>(Folder<T> folder)
     {
         if (!await _fileSecurity.CanReadAsync(folder))
         {
@@ -625,7 +625,7 @@ public class FileMarker
 
         if (!tags.Any())
         {
-            return new List<FileEntry>();
+            yield break;
         }
 
         if (Equals(folder.Id, _globalFolder.GetFolderMy(this, _daoFactory)) ||
@@ -697,14 +697,17 @@ public class FileMarker
             }
         }
 
-        var result = new List<FileEntry>();
+        await foreach (var r in GetResultAsync(entryTagsInternal))
+        {
+            yield return r;
+        }
 
-        await GetResultAsync(entryTagsInternal);
-        await GetResultAsync(entryTagsProvider);
+        await foreach (var r in GetResultAsync(entryTagsProvider))
+        {
+            yield return r;
+        }
 
-        return result;
-
-        async Task GetResultAsync<TEntry>(Dictionary<FileEntry<TEntry>, Tag> entryTags)
+        async IAsyncEnumerable<FileEntry> GetResultAsync<TEntry>(Dictionary<FileEntry<TEntry>, Tag> entryTags)
         {
             foreach (var entryTag in entryTags)
             {
@@ -716,7 +719,7 @@ public class FileMarker
 
                 if (entryTag.Value.Count > 0)
                 {
-                    result.Add(entryTag.Key);
+                    yield return entryTag.Key;
                 }
             }
         }
@@ -808,15 +811,13 @@ public class FileMarker
                             parentsList.Add(await _daoFactory.GetFolderDao<T>().GetFolderAsync(rootFolderId));
                         }
 
-                        var fileSecurity = _fileSecurity;
-
                         foreach (var folderFromList in parentsList)
                         {
                             var parentTreeTag = await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, folderFromList).FirstOrDefaultAsync();
 
                             if (parentTreeTag == null)
                             {
-                                if (await fileSecurity.CanReadAsync(folderFromList))
+                                if (await _fileSecurity.CanReadAsync(folderFromList))
                                 {
                                     tagDao.SaveTags(Tag.New(_authContext.CurrentAccount.ID, folderFromList, -diff));
                                 }
@@ -950,15 +951,13 @@ public class FileMarker
                         parentsList.Add(await _daoFactory.GetFolderDao<T>().GetFolderAsync(rootFolderId));
                     }
 
-                    var fileSecurity = _fileSecurity;
-
                     foreach (var folderFromList in parentsList)
                     {
                         var parentTreeTag = await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, folderFromList).FirstOrDefaultAsync();
 
                         if (parentTreeTag == null)
                         {
-                            if (await fileSecurity.CanReadAsync(folderFromList))
+                            if (await _fileSecurity.CanReadAsync(folderFromList))
                             {
                                 tagDao.SaveTags(Tag.New(_authContext.CurrentAccount.ID, folderFromList, -diff));
                             }
