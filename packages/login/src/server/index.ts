@@ -64,7 +64,6 @@ if (IS_DEVELOPMENT) {
         (acceptLang: IAcceptLanguage) =>
           typeof acceptLang === "object" &&
           acceptLang?.code &&
-          acceptLang.quality === 1 &&
           availableLanguages.includes(acceptLang.code)
       );
 
@@ -95,7 +94,7 @@ if (IS_DEVELOPMENT) {
       appComponent,
       styleTags,
       initialI18nStore,
-      "userLng",
+      currentLanguage,
       assets
     );
 
