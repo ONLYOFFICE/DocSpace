@@ -58,12 +58,11 @@ public class Signature
     {
         try
         {
-            var rightSignature = signature.Replace("\"", "");
-            var payloadParts = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(rightSignature)).Split('?');
+            var payloadParts = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(signature)).Split('?');
 
-            if (GetHashBase64(payloadParts[1] + secret) == payloadParts[0])
+            if (GetHashBase64(payloadParts[1].Trim() + secret) == payloadParts[0])
             {
-                return JsonConvert.DeserializeObject<T>(payloadParts[1]); //Sig correct
+                return JsonConvert.DeserializeObject<T>(payloadParts[1].Trim()); //Sig correct
             }
         }
         catch (Exception) { }
