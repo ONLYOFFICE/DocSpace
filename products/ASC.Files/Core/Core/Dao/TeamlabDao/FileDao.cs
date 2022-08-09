@@ -848,25 +848,23 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var trashIdTask = _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
 
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        var fromFolders = await Query(filesDbContext.Files)
-            .Where(r => r.Id == fileId)
-            .Select(a => a.ParentId)
-            .Distinct()
-            .ToListAsync();
-
-        toUpdate = await Query(filesDbContext.Files)
-            .Where(r => r.Id == fileId)
-            .ToListAsync();
-
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
             using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-            using (var tx = await filesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
-            {
+            var fromFolders = await Query(filesDbContext.Files)
+                .Where(r => r.Id == fileId)
+                .Select(a => a.ParentId)
+                .Distinct()
+                .ToListAsync();
 
+            toUpdate = await Query(filesDbContext.Files)
+                .Where(r => r.Id == fileId)
+                .ToListAsync();
+
+            using (var tx = await filesDbContext.Database.BeginTransactionAsync())
+            {
                 foreach (var f in toUpdate)
                 {
                     f.ParentId = toFolderId;
@@ -889,21 +887,22 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
                 await RecalculateFilesCountAsync(toFolderId);
             }
+
+
+            var parentFoldersTask =
+                filesDbContext.Tree
+                .Where(r => r.FolderId == toFolderId)
+                .OrderByDescending(r => r.Level)
+                .ToListAsync();
+
+            var toUpdateFile = toUpdate.FirstOrDefault(r => r.CurrentVersion);
+
+            if (toUpdateFile != null)
+            {
+                toUpdateFile.Folders = await parentFoldersTask;
+                _factoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
+            }
         });
-
-        var parentFoldersTask =
-            filesDbContext.Tree
-            .Where(r => r.FolderId == toFolderId)
-            .OrderByDescending(r => r.Level)
-            .ToListAsync();
-
-        var toUpdateFile = toUpdate.FirstOrDefault(r => r.CurrentVersion);
-
-        if (toUpdateFile != null)
-        {
-            toUpdateFile.Folders = await parentFoldersTask;
-            _factoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
-        }
 
         return fileId;
     }
