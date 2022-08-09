@@ -49,7 +49,14 @@ public class WarmupServicesStartupTask : IStartupTask
 
             foreach (var service in GetServices(_services))
             {
-                scope.ServiceProvider.GetServices(service);
+                try
+                {
+                    scope.ServiceProvider.GetServices(service);
+                }
+                catch(Exception ex)
+                {
+
+                }                
             }
         }
 
