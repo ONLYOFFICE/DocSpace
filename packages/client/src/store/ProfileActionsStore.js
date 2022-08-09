@@ -2,14 +2,13 @@ import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
-import authStore from "@docspace/common/store/AuthStore";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 
 const { proxyURL } = AppServerConfig;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
-const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
+//const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
 const HELP_URL = "https://onlyoffice.com/";
@@ -18,11 +17,16 @@ const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
 
 class ProfileActionsStore {
   authStore = null;
+  filesStore = null;
+  peopleStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
 
-  constructor() {
+  constructor(authStore, filesStore, peopleStore) {
     this.authStore = authStore;
+    this.filesStore = filesStore;
+    this.peopleStore = peopleStore;
+
     makeAutoObservable(this);
   }
 
@@ -80,8 +84,18 @@ class ProfileActionsStore {
     }
   };
 
-  onLogoutClick = () => {
-    this.authStore.logout && this.authStore.logout();
+  onLogoutClick = async () => {
+    await this.authStore.logout();
+
+    this.authStore.reset();
+
+    this.filesStore.reset();
+
+    this.peopleStore.reset();
+
+    this.authStore.init();
+
+    history.push("/login");
   };
 
   onDebugClick = () => {

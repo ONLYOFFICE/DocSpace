@@ -86,7 +86,7 @@ class UploadPanelComponent extends React.Component {
       ? t("Uploads")
       : isUploadingAndConversion
       ? t("UploadAndConvert")
-      : t("Home:Convert");
+      : t("Files:Convert");
 
     return (
       <StyledAsidePanel visible={visible}>

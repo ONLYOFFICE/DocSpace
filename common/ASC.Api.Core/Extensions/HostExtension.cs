@@ -24,9 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using ASC.Web.HealthChecks.UI;
-global using ASC.Api.Core.Extensions;
+namespace ASC.Api.Core.Extensions;
 
-global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-global using Microsoft.Extensions.Diagnostics.HealthChecks;
-global using Microsoft.Extensions.Hosting.WindowsServices;
+public interface IStartupTask
+{
+    Task ExecuteAsync(CancellationToken cancellationToken = default);
+}
+
+public static class HostExtension
+{
+    public static async Task RunWithTasksAsync(this WebApplication webHost, CancellationToken cancellationToken = default)
+    {
+        // Load all tasks from DI
+        var startupTasks = webHost.Services.GetServices<IStartupTask>();
+
+        // Execute all the tasks
+        foreach (var startupTask in startupTasks)
+        {
+            await startupTask.ExecuteAsync(cancellationToken);
+        }
+
+        // Start the tasks as normal
+        await webHost.RunAsync(cancellationToken);
+    }
+}

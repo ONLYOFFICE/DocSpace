@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -43,4 +44,4 @@ var app = builder.Build();
 
 startup.Configure(app, app.Environment);
 
-app.Run();
+await app.RunWithTasksAsync();

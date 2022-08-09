@@ -115,7 +115,7 @@ var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService
 
 eventBus.Subscribe<ThumbnailRequestedIntegrationEvent, ThumbnailRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 public partial class Program
 {
