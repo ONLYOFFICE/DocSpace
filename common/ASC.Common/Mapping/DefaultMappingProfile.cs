@@ -26,9 +26,9 @@
 
 namespace ASC.Common.Mapping;
 
-public class MappingProfile : Profile
+public class DefaultMappingProfile : Profile
 {
-    public MappingProfile()
+    public DefaultMappingProfile()
     {
         Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => ApplyMappingsFromAssembly(a));
         ApplyPrimitiveMappers();
@@ -53,11 +53,14 @@ public class MappingProfile : Profile
 
         foreach (var type in types)
         {
-            var resolvedType = type.IsGenericType ? type.MakeGenericType(new[] { typeof(int) }) : type;
+            if (type.ContainsGenericParameters)
+            {
+                throw new Exception("Denied for using type with generic parameters.");
+            }
 
-            var instance = Activator.CreateInstance(resolvedType);
+            var instance = Activator.CreateInstance(type);
 
-            var methodInfo = resolvedType.GetMethod(mappingMethodName);
+            var methodInfo = type.GetMethod(mappingMethodName);
 
             if (methodInfo != null)
             {
@@ -65,7 +68,7 @@ public class MappingProfile : Profile
             }
             else
             {
-                var interfaces = resolvedType.GetInterfaces().Where(HasInterface).ToList();
+                var interfaces = type.GetInterfaces().Where(HasInterface).ToList();
 
                 if (interfaces.Count > 0)
                 {
