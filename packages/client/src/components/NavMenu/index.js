@@ -140,11 +140,12 @@ class NavMenu extends React.Component {
       history,
       isDesktop,
       preparationPortalDialogVisible,
+      isFrame,
+      showHeader,
     } = this.props;
 
     const isAsideAvailable = !!asideContent;
-    const hideHeader =
-      isDesktop || history.location.pathname === "/products/files/private";
+    const hideHeader = isDesktop || (!showHeader && isFrame);
     //console.log("NavMenu render", this.state, this.props);
     const isPreparationPortal =
       history.location.pathname === "/preparation-portal";
@@ -221,7 +222,7 @@ NavMenu.defaultProps = {
 
 const NavMenuWrapper = inject(({ auth, backup }) => {
   const { settingsStore, isAuthenticated, isLoaded, language } = auth;
-  const { isDesktopClient: isDesktop } = settingsStore;
+  const { isDesktopClient: isDesktop, frameConfig, isFrame } = settingsStore;
   const { preparationPortalDialogVisible } = backup;
   return {
     isAuthenticated,
@@ -229,6 +230,8 @@ const NavMenuWrapper = inject(({ auth, backup }) => {
     isDesktop,
     language,
     preparationPortalDialogVisible,
+    showHeader: frameConfig?.showHeader,
+    isFrame,
   };
 })(observer(withTranslation(["NavMenu", "Common"])(withRouter(NavMenu))));
 

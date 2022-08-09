@@ -203,13 +203,17 @@ class FilesContent extends React.Component {
   }
 
   render() {
-    //const { /*, isDesktop*/ } = this.props;
+    const { showArticle, isFrame } = this.props;
 
     return (
       <>
         <GlobalEvents />
         <Panels />
-        <FilesArticle history={this.props.history} />
+        {isFrame ? (
+          showArticle && <FilesArticle history={this.props.history} />
+        ) : (
+          <FilesArticle history={this.props.history} />
+        )}
         <FilesSection />
       </>
     );
@@ -217,16 +221,26 @@ class FilesContent extends React.Component {
 }
 
 const Files = inject(({ auth, filesStore }) => {
+  const {
+    frameConfig,
+    isFrame,
+    isDesktopClient,
+    encryptionKeys,
+    setEncryptionKeys,
+    isEncryptionSupport,
+  } = auth.settingsStore;
   return {
-    isDesktop: auth.settingsStore.isDesktopClient,
+    isDesktop: isDesktopClient,
+    isFrame,
+    showArticle: frameConfig?.showArticle,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
-    encryptionKeys: auth.settingsStore.encryptionKeys,
-    isEncryption: auth.settingsStore.isEncryptionSupport,
+    encryptionKeys: encryptionKeys,
+    isEncryption: isEncryptionSupport,
     isLoaded: auth.isLoaded && filesStore.isLoaded,
     setIsLoaded: filesStore.setIsLoaded,
 
-    setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
+    setEncryptionKeys: setEncryptionKeys,
     loadFilesInfo: async () => {
       await filesStore.initFiles();
       //auth.setProductVersion(config.version);

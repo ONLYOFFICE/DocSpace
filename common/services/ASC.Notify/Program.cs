@@ -82,7 +82,7 @@ var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService
 eventBus.Subscribe<NotifyInvokeSendMethodRequestedIntegrationEvent, NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
 eventBus.Subscribe<NotifySendMessageRequestedIntegrationEvent, NotifySendMessageRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 public partial class Program
 {

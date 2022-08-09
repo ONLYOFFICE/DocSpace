@@ -639,7 +639,10 @@ public class SharePointProviderInfo : IProviderInfo
 
     public void Dispose()
     {
-        _clientContext.Dispose();
+        if (_clientContext != null)
+        {
+            _clientContext.Dispose();
+        }
     }
 
     private void SetFolderType(Folder<string> folder, bool isRoot)
