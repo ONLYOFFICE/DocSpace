@@ -28,71 +28,8 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Core;
 
+
 [Scope]
-class ConfigureHostedSolution : IConfigureNamedOptions<HostedSolution>
-{
-    private readonly UserFormatter _userFormatter;
-    private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
-    private readonly IOptionsSnapshot<CachedUserService> _userService;
-    private readonly IOptionsSnapshot<CachedQuotaService> _quotaService;
-    private readonly IOptionsSnapshot<TariffService> _tariffService;
-    private readonly IOptionsSnapshot<TenantManager> _tenantManager;
-    private readonly IOptionsSnapshot<TenantUtil> _tenantUtil;
-    private readonly IOptionsSnapshot<DbSettingsManager> _dbSettingsManager;
-    private readonly IOptionsSnapshot<CoreSettings> _coreSettings;
-
-    public ConfigureHostedSolution(
-        UserFormatter userFormatter,
-        IOptionsSnapshot<CachedTenantService> tenantService,
-        IOptionsSnapshot<CachedUserService> userService,
-        IOptionsSnapshot<CachedQuotaService> quotaService,
-        IOptionsSnapshot<TariffService> tariffService,
-        IOptionsSnapshot<TenantManager> tenantManager,
-        IOptionsSnapshot<TenantUtil> tenantUtil,
-        IOptionsSnapshot<DbSettingsManager> dbSettingsManager,
-        IOptionsSnapshot<CoreSettings> coreSettings
-        )
-    {
-        _userFormatter = userFormatter;
-        _tenantService = tenantService;
-        _userService = userService;
-        _quotaService = quotaService;
-        _tariffService = tariffService;
-        _tenantManager = tenantManager;
-        _tenantUtil = tenantUtil;
-        _dbSettingsManager = dbSettingsManager;
-        _coreSettings = coreSettings;
-    }
-
-    public void Configure(HostedSolution hostedSolution)
-    {
-        hostedSolution.UserFormatter = _userFormatter;
-        hostedSolution.TenantService = _tenantService.Value;
-        hostedSolution.UserService = _userService.Value;
-        hostedSolution.QuotaService = _quotaService.Value;
-        hostedSolution.TariffService = _tariffService.Value;
-        hostedSolution.ClientTenantManager = _tenantManager.Value;
-        hostedSolution.TenantUtil = _tenantUtil.Value;
-        hostedSolution.SettingsManager = _dbSettingsManager.Value;
-        hostedSolution.CoreSettings = _coreSettings.Value;
-    }
-
-    public void Configure(string name, HostedSolution hostedSolution)
-    {
-        Configure(hostedSolution);
-        hostedSolution.Region = name;
-        hostedSolution.TenantService = _tenantService.Get(name);
-        hostedSolution.UserService = _userService.Get(name);
-        hostedSolution.QuotaService = _quotaService.Get(name);
-        hostedSolution.TariffService = _tariffService.Get(name);
-        hostedSolution.ClientTenantManager = _tenantManager.Get(name);
-        hostedSolution.TenantUtil = _tenantUtil.Get(name);
-        hostedSolution.SettingsManager = _dbSettingsManager.Get(name);
-        hostedSolution.CoreSettings = _coreSettings.Get(name);
-    }
-}
-
-[Scope(typeof(ConfigureHostedSolution))]
 public class HostedSolution
 {
     internal ITenantService TenantService { get; set; }

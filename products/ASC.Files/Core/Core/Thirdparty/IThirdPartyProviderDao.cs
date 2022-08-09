@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Folder = Microsoft.OneDrive.Sdk.Folder;
-
 namespace ASC.Files.Thirdparty;
 
 internal abstract class ThirdPartyProviderDao
@@ -235,8 +233,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     protected readonly IServiceProvider _serviceProvider;
     protected readonly UserManager _userManager;
     protected readonly TenantUtil _tenantUtil;
-    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
-    protected FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
+    protected readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     protected readonly SetupInfo _setupInfo;
     protected readonly ILogger _logger;
     protected readonly FileUtility _fileUtility;
@@ -253,7 +250,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         SetupInfo setupInfo,
         ILogger logger,
         FileUtility fileUtility,
@@ -263,7 +260,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         _serviceProvider = serviceProvider;
         _userManager = userManager;
         _tenantUtil = tenantUtil;
-        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+        _dbContextFactory = dbContextFactory;
         _setupInfo = setupInfo;
         _logger = logger;
         _fileUtility = fileUtility;
@@ -296,6 +293,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     private async Task<string> InternalMappingIDAsync(string id, bool saveIfNotExist = false)
     {
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+
         string result;
         if (id.StartsWith(Id))
         {
@@ -303,7 +302,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
         else
         {
-            result = await FilesDbContext.ThirdpartyIdMapping
+            result = await filesDbContext.ThirdpartyIdMapping
                     .AsQueryable()
                     .Where(r => r.HashId == id)
                     .Select(r => r.Id)
@@ -319,8 +318,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
                 TenantId = TenantID
             };
 
-            await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping).ConfigureAwait(false);
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await filesDbContext.ThirdpartyIdMapping.AddAsync(newMapping).ConfigureAwait(false);
+            await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         return result;
@@ -406,10 +405,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, bool withoutTags, IEnumerable<string> tagNames)
     {
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         if (withoutTags)
         {
-            return folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
-                .WhereAwait(async r => !await FilesDbContext.TagLink.Join(FilesDbContext.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
+            return folders.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+                .WhereAwait(async r => !await filesDbContext.TagLink.Join(filesDbContext.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
                 .Where(r => r.tag.Type == TagType.Custom).ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
                 .Select(r => r.folder);
         }
@@ -419,9 +419,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             return folders;
         }
 
-        var filtered = folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
-            .Join(FilesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
-            .Join(FilesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
+        var filtered = folders.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+            .Join(filesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
+            .Join(filesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
                 .Where(r => tagNames.Contains(r.Name))
                 .Select(r => r.folder);
 
@@ -627,7 +627,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     {
         var folderId = DaoSelector.ConvertId(parentFolder.Id);
 
-        var entryIDs = await FilesDbContext.ThirdpartyIdMapping
+        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var entryIDs = await filesDbContext.ThirdpartyIdMapping
                    .AsQueryable()
                    .Where(r => r.Id.StartsWith(parentFolder.Id))
                    .Select(r => r.HashId)
@@ -639,8 +640,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             yield break;
         }
 
-        var q = from r in FilesDbContext.Tag
-                from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+        var q = from r in filesDbContext.Tag
+                from l in filesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
                 where r.TenantId == TenantID && l.TenantId == TenantID && r.Type == TagType.New && entryIDs.Contains(l.EntryId)
                 select new { tag = r, tagLink = l };
 

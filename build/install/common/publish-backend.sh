@@ -78,9 +78,9 @@ services_name_backend+=(ASC.TelegramService)
 services_name_backend+=(ASC.UrlShortener.Svc)
 services_name_backend+=(ASC.Web.Api)
 services_name_backend+=(ASC.Web.Studio)
-#services_name_backend+=(ASC.Thumbnails.Svc)
 services_name_backend+=(ASC.Data.Backup.BackgroundTasks)
 services_name_backend+=(ASC.ClearEvents)
+services_name_backend+=(ASC.Migration)
 services_name_backend+=(ASC.Webhooks.Service)
 
 # Publish backend services
@@ -93,7 +93,6 @@ done
 
 # Array of names backend services in directory common (Nodejs)
 services_name_backend_nodejs=()  
-#services_name_backend_nodejs+=(ASC.Thumbnails)
 services_name_backend_nodejs+=(ASC.UrlShortener)
 services_name_backend_nodejs+=(ASC.Socket.IO)
 services_name_backend_nodejs+=(ASC.SsoAuth)

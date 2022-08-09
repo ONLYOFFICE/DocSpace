@@ -58,7 +58,8 @@ public static class NotifyQueueExtension
             entity.HasKey(e => e.NotifyId)
                 .HasName("PRIMARY");
 
-            entity.ToTable("notify_queue");
+            entity.ToTable("notify_queue")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.NotifyId).HasColumnName("notify_id");
 

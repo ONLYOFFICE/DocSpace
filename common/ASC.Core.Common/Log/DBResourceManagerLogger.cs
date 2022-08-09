@@ -29,18 +29,6 @@ using TMResourceData;
 namespace ASC.Core.Common.Log;
 internal static partial class DBResourceManagerLogger
 {
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Can not {getType}() from assembly {assemblyName}, try {getExportedTypes}()")]
-    public static partial void CanNotGetType(this ILogger<DBResourceManager> logger, string getType, string assemblyName, string getExportedTypes, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "Can not {getExportedTypes}() from assembly {assemblyName}")]
-    public static partial void CanNotGetExportedTypes(this ILogger<DBResourceManager> logger, string getExportedTypes, string assemblyName, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "Can not get resource from {fileName} for {culture}: GetString({name})")]
-    public static partial void CanNotGetResource(this ILogger<DBResourceManager> logger, string fileName, string culture, string name, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "DBResourceSet")]
-    public static partial void ErrorDBResourceSet(this ILogger<DBResourceManager> logger, Exception exception);
-
     [LoggerMessage(Level = LogLevel.Error, Message = "SetNewText")]
     public static partial void ErrorSetNewText(this ILogger logger, Exception exception);
 

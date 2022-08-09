@@ -58,7 +58,8 @@ public static class DbQuotaRowExtension
             entity.HasKey(e => new { e.Tenant, e.Path })
                 .HasName("PRIMARY");
 
-            entity.ToTable("tenants_quotarow");
+            entity.ToTable("tenants_quotarow")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified");
@@ -71,12 +72,13 @@ public static class DbQuotaRowExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Counter).HasColumnName("counter");
+            entity.Property(e => e.Counter)
+                .HasColumnName("counter")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.LastModified)
                 .HasColumnName("last_modified")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .HasColumnType("timestamp");
 
             entity.Property(e => e.Tag)
                 .HasColumnName("tag")

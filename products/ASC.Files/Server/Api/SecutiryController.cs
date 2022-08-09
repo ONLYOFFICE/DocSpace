@@ -137,6 +137,18 @@ public abstract class SecutiryController<T> : ApiControllerBase
     {
         return _securityControllerHelper.SetFolderSecurityInfoAsync(folderId, inDto.Share, inDto.Notify, inDto.SharingMessage);
     }
+
+    [HttpGet("file/{fileId}/publickeys")]
+    public Task<List<EncryptionKeyPairDto>> GetEncryptionAccess(T fileId)
+    {
+        return _fileStorageService.GetEncryptionAccessAsync(fileId);
+    }
+
+    [HttpPost("file/{fileId}/sendeditornotify")]
+    public Task<List<AceShortWrapper>> SendEditorNotify(T fileId, MentionMessageWrapper mentionMessage)
+    {
+        return _fileStorageService.SendEditorNotifyAsync(fileId, mentionMessage);
+    }
 }
 
 public class SecutiryControllerCommon : ApiControllerBase

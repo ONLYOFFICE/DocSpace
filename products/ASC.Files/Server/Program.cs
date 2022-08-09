@@ -37,7 +37,11 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     config
           .AddJsonFile("elastic.json", true)
           .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
+}, (context, services, di) =>
+{
+    services.AddBaseDbContextPool<FilesDbContext>();
 });
+
 builder.WebHost.ConfigureDefaultKestrel((hostingContext, serverOptions) =>
 {
     serverOptions.Limits.MaxRequestBodySize = 100 * 1024 * 1024;
@@ -59,4 +63,4 @@ var app = builder.Build();
 
 startup.Configure(app, app.Environment);
 
-app.Run();
+await app.RunWithTasksAsync();

@@ -58,7 +58,8 @@ public static class AccountLinksExtension
             entity.HasKey(e => new { e.Id, e.UId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("account_links");
+            entity.ToTable("account_links")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.UId)
                 .HasDatabaseName("uid");

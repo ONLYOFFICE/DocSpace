@@ -31,8 +31,8 @@ global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.EF.Model;
 global using ASC.Web.Webhooks;
-global using ASC.Webhooks.Core.Dao;
-global using ASC.Webhooks.Core.Dao.Models;
+global using ASC.Webhooks.Core.EF.Context;
+global using ASC.Webhooks.Core.EF.Model;
 
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Infrastructure;

@@ -48,7 +48,8 @@ public static class TenantIpRestrictionsExtension
     {
         modelBuilder.Entity<TenantIpRestrictions>(entity =>
         {
-            entity.ToTable("tenants_iprestrictions");
+            entity.ToTable("tenants_iprestrictions")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.Tenant)
                 .HasDatabaseName("tenant");

@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Api.Core;
 
@@ -58,6 +59,20 @@ public abstract class BaseStartup
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
         services.AddHttpClient();
+
+        services.AddScoped<EFLoggerFactory>();
+        services.AddBaseDbContextPool<AccountLinkContext>();
+        services.AddBaseDbContextPool<CoreDbContext>();
+        services.AddBaseDbContextPool<TenantDbContext>();
+        services.AddBaseDbContextPool<UserDbContext>();
+        services.AddBaseDbContextPool<TelegramDbContext>();
+        services.AddBaseDbContextPool<CustomDbContext>();
+        services.AddBaseDbContextPool<WebstudioDbContext>();
+        services.AddBaseDbContextPool<InstanceRegistrationContext>();
+        services.AddBaseDbContextPool<IntegrationEventLogContext>();
+        services.AddBaseDbContextPool<FeedDbContext>();
+        services.AddBaseDbContextPool<MessagesContext>();
+        services.AddBaseDbContextPool<WebhooksDbContext>();
 
         if (AddAndUseSession)
         {
@@ -142,6 +157,12 @@ public abstract class BaseStartup
         }
 
         services.AddAutoMapper(typeof(MappingProfile));
+               
+        if (!_hostEnvironment.IsDevelopment())
+        {
+            services.AddStartupTask<WarmupServicesStartupTask>()
+                    .TryAddSingleton(services);
+        }
     }
 
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)

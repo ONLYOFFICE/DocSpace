@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.MessagingSystem.Models;
+namespace ASC.MessagingSystem.EF.Model;
 
 public class AuditEvent : MessageEvent, IMapFrom<EventMessage>
 {
@@ -54,17 +54,20 @@ public static class AuditEventExtension
     {
         modelBuilder.Entity<AuditEvent>(entity =>
         {
-            entity.ToTable("audit_events");
+            entity.ToTable("audit_events")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => new { e.TenantId, e.Date })
                 .HasDatabaseName("date");
 
             entity
-            .Property(e => e.Id)
-            .HasColumnName("id")
-            .ValueGeneratedOnAdd();
+                .Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
 
-            entity.Property(e => e.Action).HasColumnName("action");
+            entity.Property(e => e.Action)
+                .HasColumnName("action")
+                .IsRequired(false);
 
             entity.Property(e => e.Browser)
                 .HasColumnName("browser")
@@ -116,6 +119,7 @@ public static class AuditEventExtension
 
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id")
+                .IsRequired(false)
                 .HasColumnType("char(38)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");

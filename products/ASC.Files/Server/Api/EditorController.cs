@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Web.Files.ThirdPartyApp;
-
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Files.Api;
@@ -40,8 +38,11 @@ public class EditorControllerInternal : EditorController<int>
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
         EntryManager entryManager,
-        IHttpContextAccessor httpContextAccessor)
-        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper,
+        CommonLinkUtility commonLinkUtility,
+        FilesLinkUtility filesLinkUtility)
+        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility)
     {
     }
 }
@@ -49,7 +50,6 @@ public class EditorControllerInternal : EditorController<int>
 public class EditorControllerThirdparty : EditorController<string>
 {
     private readonly ThirdPartySelector _thirdPartySelector;
-    private readonly FilesControllerHelper<string> _filesControllerHelper;
 
     public EditorControllerThirdparty(
         FileStorageService<string> fileStorageService,
@@ -60,11 +60,12 @@ public class EditorControllerThirdparty : EditorController<string>
         EntryManager entryManager,
         IHttpContextAccessor httpContextAccessor,
         ThirdPartySelector thirdPartySelector,
-        FilesControllerHelper<string> filesControllerHelper)
-        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor)
+        IMapper mapper,
+        CommonLinkUtility commonLinkUtility,
+        FilesLinkUtility filesLinkUtility)
+        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility)
     {
         _thirdPartySelector = thirdPartySelector;
-        _filesControllerHelper = filesControllerHelper;
     }
 
     [AllowAnonymous]
@@ -116,6 +117,9 @@ public abstract class EditorController<T> : ApiControllerBase
     protected readonly SettingsManager _settingsManager;
     protected readonly EntryManager _entryManager;
     protected readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly FilesLinkUtility _filesLinkUtility;
 
     public EditorController(
         FileStorageService<T> fileStorageService,
@@ -124,7 +128,10 @@ public abstract class EditorController<T> : ApiControllerBase
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
         EntryManager entryManager,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper,
+        CommonLinkUtility commonLinkUtility,
+        FilesLinkUtility filesLinkUtility)
     {
         _fileStorageService = fileStorageService;
         _fileDtoHelper = fileDtoHelper;
@@ -133,6 +140,9 @@ public abstract class EditorController<T> : ApiControllerBase
         _settingsManager = settingsManager;
         _entryManager = entryManager;
         _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
+        _commonLinkUtility = commonLinkUtility;
+        _filesLinkUtility = filesLinkUtility;
     }
 
     /// <summary>
@@ -202,7 +212,7 @@ public abstract class EditorController<T> : ApiControllerBase
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("file/{fileId}/openedit")]
-    public async Task<Configuration<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
+    public async Task<ConfigurationDto<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
     {
         var docParams = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, true, !view, true);
         var configuration = docParams.Configuration;
@@ -229,13 +239,22 @@ public abstract class EditorController<T> : ApiControllerBase
 
         configuration.Token = _documentServiceHelper.GetSignature(configuration);
 
-        return configuration;
+        var result = _mapper.Map<Configuration<T>, ConfigurationDto<T>>(configuration);
+        result.EditorUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceApiUrl);
+        result.File = await _fileDtoHelper.GetAsync(file);
+        return result;
     }
 
     [HttpGet("file/{fileId}/presigned")]
     public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
     {
         return _fileStorageService.GetPresignedUriAsync(fileId);
+    }
+
+    [HttpGet("file/{fileId}/sharedusers")]
+    public Task<List<MentionWrapper>> SharedUsers(T fileId)
+    {
+        return _fileStorageService.SharedUsersAsync(fileId);
     }
 }
 

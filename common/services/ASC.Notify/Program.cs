@@ -60,6 +60,8 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     services.AddActivePassiveHostedService<NotifySenderService>();
     services.AddActivePassiveHostedService<NotifyCleanerService>();
+
+    services.AddBaseDbContextPool<NotifyDbContext>();
 });
 
 var startup = new BaseWorkerStartup(builder.Configuration);
@@ -80,7 +82,7 @@ var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService
 eventBus.Subscribe<NotifyInvokeSendMethodRequestedIntegrationEvent, NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
 eventBus.Subscribe<NotifySendMessageRequestedIntegrationEvent, NotifySendMessageRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 public partial class Program
 {

@@ -51,7 +51,7 @@ public static class UserSecurityExtension
                 Tenant = 1,
                 UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                 PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
-                LastModified = DateTime.UtcNow
+                LastModified = new DateTime(2022, 7, 8)
             });
 
         return modelBuilder;
@@ -64,7 +64,8 @@ public static class UserSecurityExtension
             entity.HasKey(e => e.UserId)
                 .HasName("PRIMARY");
 
-            entity.ToTable("core_usersecurity");
+            entity.ToTable("core_usersecurity")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.PwdHash)
                 .HasDatabaseName("pwdhash");
@@ -80,8 +81,7 @@ public static class UserSecurityExtension
 
             entity.Property(e => e.LastModified)
                 .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .ValueGeneratedOnAddOrUpdate();
+                .IsRequired();
 
             entity.Property(e => e.PwdHash)
                 .HasColumnName("pwdhash")

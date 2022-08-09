@@ -56,6 +56,7 @@ global using ASC.Files.AutoCleanUp;
 global using ASC.Files.Core;
 global using ASC.Files.Core.Core.Entries;
 global using ASC.Files.Core.EF;
+global using ASC.Files.Core.Helpers;
 global using ASC.Files.Core.IntegrationEvents.Events;
 global using ASC.Files.Core.Log;
 global using ASC.Files.Core.Resources;
@@ -65,7 +66,6 @@ global using ASC.Files.Service.Log;
 global using ASC.Files.ThumbnailBuilder;
 global using ASC.Thumbnail.IntegrationEvents.EventHandling;
 global using ASC.Web.Core;
-global using ASC.Web.Core.Files;
 global using ASC.Web.Files.Classes;
 global using ASC.Web.Files.Core.Search;
 global using ASC.Web.Files.Services.DocumentService;
@@ -81,4 +81,4 @@ global using Microsoft.Extensions.Logging;
 
 global using SixLabors.ImageSharp;
 
-global using static ASC.Web.Core.Files.DocumentService;
+global using static ASC.Files.Core.Helpers.DocumentService;

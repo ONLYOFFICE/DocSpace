@@ -65,4 +65,4 @@ var app = builder.Build();
 
 startup.Configure(app);
 
-await app.RunAsync();
+await app.RunWithTasksAsync();

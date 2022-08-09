@@ -53,7 +53,8 @@ public static class UserPhotoExtension
             entity.HasKey(e => e.UserId)
                 .HasName("PRIMARY");
 
-            entity.ToTable("core_userphoto");
+            entity.ToTable("core_userphoto")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.Tenant)
                 .HasDatabaseName("tenant");

@@ -93,6 +93,8 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     diHelper.TryAdd<TenantManager>();
     diHelper.TryAdd<UserManager>();
 
+    services.AddBaseDbContextPool<FilesDbContext>();
+
     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 });
 
@@ -113,7 +115,7 @@ var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService
 
 eventBus.Subscribe<ThumbnailRequestedIntegrationEvent, ThumbnailRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 public partial class Program
 {
