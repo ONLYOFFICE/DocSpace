@@ -6,15 +6,12 @@ import { isMobile } from "react-device-detect";
 
 const reactWindowContainerStyles = css`
   height: 100%;
-  overflow: hidden;
   display: block;
-  margin-top: 0;
 `;
 
 const reactWindowBodyStyles = css`
   display: block;
   height: 100%;
-  height: 95%; //TODO: inf-scroll
 `;
 
 const StyledTableContainer = styled.div`

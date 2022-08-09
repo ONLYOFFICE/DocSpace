@@ -299,35 +299,34 @@ class FilesTableHeader extends React.Component {
     localStorage.setItem(this.props.tableStorageName, tableColumns);
   };
 
-//TODO: inf-scroll
   componentDidMount() {
-    //this.customScrollElm = document.getElementsByClassName("section-scroll")[0];
-    //this.customScrollElm.addEventListener("scroll", this.onBeginScroll);
+    this.customScrollElm = document.getElementsByClassName("section-scroll")[0];
+    this.customScrollElm.addEventListener("scroll", this.onBeginScroll);
   }
 
-  // onBeginScroll = () => {
-  //   const { firstElemChecked } = this.props;
+  onBeginScroll = () => {
+    const { firstElemChecked } = this.props;
 
-  //   const currentScrollPosition = this.customScrollElm.scrollTop;
-  //   const elem = document.getElementById("table-container_caption-header");
+    const currentScrollPosition = this.customScrollElm.scrollTop;
+    const elem = document.getElementById("table-container_caption-header");
 
-  //   if (currentScrollPosition === 0) {
-  //     this.isBeginScrolling = false;
+    if (currentScrollPosition === 0) {
+      this.isBeginScrolling = false;
 
-  //     this.props.headerBorder &&
-  //       elem?.classList?.add("hotkeys-lengthen-header");
+      this.props.headerBorder &&
+        elem?.classList?.add("hotkeys-lengthen-header");
 
-  //     !firstElemChecked && elem?.classList?.remove("lengthen-header");
-  //     return;
-  //   }
+      !firstElemChecked && elem?.classList?.remove("lengthen-header");
+      return;
+    }
 
-  //   if (!this.isBeginScrolling) {
-  //     elem?.classList?.remove("hotkeys-lengthen-header");
-  //     elem?.classList?.add("lengthen-header");
-  //   }
+    if (!this.isBeginScrolling) {
+      elem?.classList?.remove("hotkeys-lengthen-header");
+      elem?.classList?.add("lengthen-header");
+    }
 
-  //   this.isBeginScrolling = true;
-  // };
+    this.isBeginScrolling = true;
+  };
   componentDidUpdate(prevProps) {
     if (this.props.isRooms !== this.state.isRooms) {
       return this.getTableColumns(true);
@@ -351,10 +350,9 @@ class FilesTableHeader extends React.Component {
     }
   }
 
-//TODO: inf-scroll
-  // componentWillUnmount() {
-  //   this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
-  // }
+  componentWillUnmount() {
+    this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
+  }
   getColumns = (defaultColumns, splitColumns) => {
     const columns = [];
 

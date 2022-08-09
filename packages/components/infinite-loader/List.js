@@ -1,8 +1,8 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useEffect, useRef } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { FixedSizeList as List, areEqual } from "react-window";
-import Scroll from "./Scroll";
+//import Scroll from "./Scroll";
 import Loaders from "@docspace/common/components/Loaders";
 import { StyledTableLoader, StyledRowLoader } from "./StyledInfiniteLoader";
 
@@ -15,9 +15,19 @@ const ListComponent = ({
   itemSize,
   onScroll,
   columnStorageName,
+  selectedFolderId,
   children,
   className,
+  listRef,
 }) => {
+  const listComponentRef = useRef(null);
+
+  useEffect(() => {
+    //TODO: inf-scroll it is slow
+
+    listComponentRef?.current?.resetAfterIndex(0);
+  }, [selectedFolderId]);
+
   const renderRow = memo(({ index, style }) => {
     const isLoaded = isItemLoaded(index + 1);
     if (!isLoaded) return getLoader(style);
@@ -72,29 +82,36 @@ const ListComponent = ({
     }
   };
 
-  const renderList = ({ height, width }) => (
-    <InfiniteLoader
-      isItemLoaded={isItemLoaded}
-      itemCount={itemCount}
-      loadMoreItems={loadMoreItems}
-    >
-      {({ onItemsRendered, ref }) => (
-        <List
-          onScroll={onScroll}
-          className={className}
-          height={height}
-          width={width}
-          itemSize={itemSize}
-          itemCount={children.length}
-          onItemsRendered={onItemsRendered}
-          ref={ref}
-          outerElementType={Scroll}
-        >
-          {viewAs === "table" ? renderTable : renderRow}
-        </List>
-      )}
-    </InfiniteLoader>
-  );
+  const renderList = ({ height, width }) => {
+    return (
+      <InfiniteLoader
+        isItemLoaded={isItemLoaded}
+        itemCount={itemCount}
+        loadMoreItems={loadMoreItems}
+      >
+        {({ onItemsRendered, ref }) => (
+          <List
+            onScroll={onScroll}
+            className={className}
+            height={height}
+            width={width}
+            itemCount={children.length}
+            itemSize={itemSize}
+            onItemsRendered={onItemsRendered}
+            ref={(refList) => {
+              ref(listRef);
+              listComponentRef.current = refList;
+              listRef.current = refList;
+            }}
+            style={{ height: "100% !important" }}
+            //outerElementType={Scroll}
+          >
+            {viewAs === "table" ? renderTable : renderRow}
+          </List>
+        )}
+      </InfiniteLoader>
+    );
+  };
 
   return <AutoSizer>{renderList}</AutoSizer>;
 };

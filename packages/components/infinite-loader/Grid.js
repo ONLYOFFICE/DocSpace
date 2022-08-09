@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useRef } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { VariableSizeList as List, areEqual } from "react-window";
-import Scroll from "./Scroll";
+//import Scroll from "./Scroll";
 
 const GridComponent = ({
   hasMoreFiles,
@@ -14,11 +14,12 @@ const GridComponent = ({
   selectedFolderId,
   children,
   className,
+  listRef,
 }) => {
   const gridRef = useRef(null);
 
   useEffect(() => {
-    //TODO:it is slow
+    //TODO: inf-scroll it is slow
     //console.log("resetAfterIndex");
 
     gridRef?.current?.resetAfterIndex(0);
@@ -63,16 +64,18 @@ const GridComponent = ({
             onScroll={onScroll}
             className={className}
             height={height}
+            width={width}
             itemCount={children.length}
             itemSize={getItemSize}
-            width={width}
             onItemsRendered={onItemsRendered}
-            ref={(listRef) => {
+            ref={(refList) => {
               ref(listRef);
-              gridRef.current = listRef;
+              gridRef.current = refList;
+              listRef.current = refList;
             }}
-            outerElementType={Scroll}
+            //outerElementType={Scroll}
             overscanCount={5} //TODO: inf-scroll
+            style={{ height: "100% !important" }}
           >
             {renderTile}
           </List>

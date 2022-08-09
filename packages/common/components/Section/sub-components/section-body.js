@@ -23,8 +23,6 @@ const paddingStyles = css`
       ? "19px 3px 16px 16px"
       : "19px 3px 16px 20px"};
 
-  ${({ withScroll }) => !withScroll && "padding: 0"}; //TODO: inf-scroll
-
   @media ${tablet} {
     padding: ${(props) =>
       props.settingsStudio ? "0 0 16px 24px" : "19px 0 16px 24px"};
@@ -70,6 +68,8 @@ const commonStyles = css`
   }
 
   .section-wrapper-content {
+    height: 100%;
+
     ${paddingStyles}
     flex: 1 0 auto;
     outline: none;
@@ -137,7 +137,6 @@ const StyledSectionBody = styled.div`
 
 const StyledDropZoneBody = styled(DragAndDrop)`
   max-width: 100vw !important;
-  /* padding-right: 20px; */ //TODO: inf-scroll
 
   ${commonStyles} .drag-and-drop {
     user-select: none;
