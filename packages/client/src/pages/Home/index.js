@@ -22,7 +22,6 @@ import {
   SectionPagingContent,
   Bar,
 } from "./Section";
-import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
 import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
@@ -34,6 +33,7 @@ import { Events } from "@docspace/client/src/helpers/filesConstants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
+import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -364,6 +364,8 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isPrivacyFolder,
       isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -383,6 +385,16 @@ class PureHome extends React.Component {
       setMaintenanceExist,
       snackbarExist,
     } = this.props;
+
+    const categoryType = getCategoryType(location);
+    let isRooms = false;
+    if (
+      categoryType == CategoryType.Shared ||
+      categoryType == CategoryType.SharedRoom ||
+      categoryType == CategoryType.Archive ||
+      categoryType == CategoryType.ArchivedRoom
+    )
+      isRooms = true;
 
     return (
       <>
@@ -442,11 +454,11 @@ class PureHome extends React.Component {
           </Section.SectionBody>
 
           <Section.InfoPanelHeader>
-            <InfoPanelHeaderContent isRoom />
+            <InfoPanelHeaderContent isRooms={isRooms} />
           </Section.InfoPanelHeader>
 
           <Section.InfoPanelBody>
-            <InfoPanelBodyContent />
+            <InfoPanelBodyContent isRooms={isRooms} />
           </Section.InfoPanelBody>
 
           <Section.SectionPaging>
@@ -499,6 +511,8 @@ export default inject(
       isPrivacyFolder,
       expandedKeys,
       setExpandedKeys,
+      isRoomsFolder,
+      isArchiveFolder,
     } = treeFoldersStore;
 
     const {
@@ -576,6 +590,9 @@ export default inject(
 
       itemsSelectionLength,
       itemsSelectionTitle,
+
+      isRoomsFolder,
+      isArchiveFolder,
 
       setExpandedKeys,
       setFirstLoad,
