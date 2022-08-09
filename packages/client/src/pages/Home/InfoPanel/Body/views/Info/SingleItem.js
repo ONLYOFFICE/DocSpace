@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
+
 import { FileType } from "@docspace/common/constants";
 import { LANGUAGE } from "@docspace/common/constants";
+
+import getCorrectDate from "@docspace/components/utils/getCorrectDate";
+
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Tooltip from "@docspace/components/tooltip";
+
 import {
   StyledAccess,
   StyledAccessItem,
@@ -13,7 +18,6 @@ import {
   StyledThumbnail,
   StyledTitle,
 } from "../../styles/styles.js";
-import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 
 const SingleItem = (props) => {
   const {
@@ -21,7 +25,6 @@ const SingleItem = (props) => {
     selectedItem,
     onSelectItem,
     setSharingPanelVisible,
-    //getFolderInfo,
     getIcon,
     getFolderIcon,
     getShareUsers,
@@ -276,6 +279,8 @@ const SingleItem = (props) => {
         [selectedItem.isFolder ? selectedItem.parentId : selectedItem.folderId],
         [selectedItem.id]
       );
+
+      console.log(accesses);
 
       const result = {
         owner: {},

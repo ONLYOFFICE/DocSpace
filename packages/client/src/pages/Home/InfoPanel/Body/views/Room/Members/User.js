@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyledUser } from "../../styles/VirtualRoom/members";
+import { StyledUser } from "../../../styles/VirtualRoom/members";
 import Avatar from "@docspace/components/avatar";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 
@@ -37,7 +37,7 @@ const User = ({ t, user, selfId, isExpect }) => {
           fontWeight={600}
           hasScroll={true}
           withBackdrop={false}
-          dropdownType="apparDashedAfterHover"
+          dropdownType="appearDashedAfterHover"
           isDisabled={user.role === "Owner"}
           data={[
             {

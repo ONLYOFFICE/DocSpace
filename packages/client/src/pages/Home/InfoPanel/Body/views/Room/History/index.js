@@ -2,12 +2,12 @@ import Avatar from "@docspace/components/avatar";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import Text from "@docspace/components/text";
 import React from "react";
-import { StyledTitle } from "../../styles/styles";
+import { StyledTitle } from "../../../styles/styles";
 import {
   StyledHistoryBlock,
   StyledHistoryList,
-} from "../../styles/VirtualRoom/history";
-import { fillingFormsVR } from "../mock_data";
+} from "../../../styles/VirtualRoom/history";
+import { fillingFormsVR } from "../../mock_data";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 import HistoryBlockContent from "./historyBlockContent";
 

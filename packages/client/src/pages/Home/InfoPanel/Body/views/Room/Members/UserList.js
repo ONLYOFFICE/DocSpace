@@ -2,17 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import User from "./User";
 
-import { StyledUserList } from "../../styles/VirtualRoom/members";
+import { StyledUserList } from "../../../styles/VirtualRoom/members";
 
 const UserList = ({ t, users, selfId, isExpect }) => {
   return (
     <StyledUserList>
-      {users.map((user) => (
+      {Object.values(users).map((user) => (
         <User
           t={t}
-          key={user.id}
+          key={user.sharedTo.id}
           selfId={selfId}
-          user={user}
+          user={user.sharedTo}
           isExpect={isExpect}
         />
       ))}

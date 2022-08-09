@@ -5,15 +5,15 @@ import { tablet } from "@docspace/components/utils/device";
 const StyledInfoPanelHeader = styled.div`
   width: 100%;
   max-width: 100%;
-  height: ${(props) => (props.isRoom ? "85px" : "52px")};
-  min-height: ${(props) => (props.isRoom ? "85px" : "52px")};
+  height: ${(props) => (props.isRooms ? "85px" : "52px")};
+  min-height: ${(props) => (props.isRooms ? "85px" : "52px")};
   display: flex;
   flex-direction: column;
   border-bottom: ${(props) =>
-    props.isRoom ? "none" : `1px solid ${props.theme.infoPanel.borderColor}`};
+    props.isRooms ? "none" : `1px solid ${props.theme.infoPanel.borderColor}`};
   .main {
-    height: ${(props) => (props.isRoom ? "53px" : "52px")};
-    min-height: ${(props) => (props.isRoom ? "53px" : "52px")};
+    height: ${(props) => (props.isRooms ? "53px" : "52px")};
+    min-height: ${(props) => (props.isRooms ? "53px" : "52px")};
     display: flex;
     flex-direction: row;
     align-items: center;

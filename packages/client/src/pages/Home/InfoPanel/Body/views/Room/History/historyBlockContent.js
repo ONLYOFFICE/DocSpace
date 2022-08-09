@@ -3,7 +3,7 @@ import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import IconButton from "@docspace/components/icon-button";
 import { ReactSVG } from "react-svg";
-import { StyledUserNameLink } from "../../styles/VirtualRoom/history";
+import { StyledUserNameLink } from "../../../styles/VirtualRoom/history";
 
 const HistoryBlockContent = ({ t, action, details }) => {
   return (

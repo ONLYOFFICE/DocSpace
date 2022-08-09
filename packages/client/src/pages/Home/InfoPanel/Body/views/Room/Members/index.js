@@ -1,26 +1,35 @@
+import React, { useState, useEffect } from "react";
+
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
-import React from "react";
-import { StyledTitle } from "../../styles/styles";
-import { StyledUserTypeHeader } from "../../styles/VirtualRoom/members";
-import { fillingFormsVR } from "../mock_data";
+import { StyledTitle } from "../../../styles/styles";
+import { StyledUserTypeHeader } from "../../../styles/VirtualRoom/members";
 import UserList from "./UserList";
 
-const Members = ({ t, selfId }) => {
-  const data = fillingFormsVR;
+const Members = ({ t, selfId, selectedItem, getShareUsers }) => {
+  const [members, setMembers] = useState([]);
+
+  useEffect(async () => {
+    const fetchedMembers = await getShareUsers(
+      [selectedItem.parentId],
+      [selectedItem.id]
+    );
+    setMembers(fetchedMembers);
+    console.log("members", fetchedMembers);
+  }, []);
 
   return (
     <>
       <StyledTitle withBottomBorder>
-        <img className="icon" src={data.icon} alt="thumbnail-icon" />
-        <Text className="text">{data.title}</Text>
+        <img className="icon" src={selectedItem.icon} alt="thumbnail-icon" />
+        <Text className="text">{selectedItem.title}</Text>
         <ContextMenuButton getData={() => {}} className="context-menu-button" />
       </StyledTitle>
 
       <StyledUserTypeHeader>
         <Text className="title">
-          {t("Users in room")} : {data.members.inRoom.length}
+          {t("Users in room")} : {members.length}
         </Text>
         <IconButton
           className={"icon"}
@@ -33,9 +42,9 @@ const Members = ({ t, selfId }) => {
         />
       </StyledUserTypeHeader>
 
-      <UserList t={t} users={data.members.inRoom} selfId={selfId} />
+      <UserList t={t} users={members} selfId={selfId} />
 
-      <StyledUserTypeHeader>
+      {/* <StyledUserTypeHeader>
         <Text className="title">{`${t("Expect people")}:`}</Text>
         <IconButton
           className={"icon"}
@@ -48,7 +57,7 @@ const Members = ({ t, selfId }) => {
         />
       </StyledUserTypeHeader>
 
-      <UserList t={t} users={data.members.expect} isExpect />
+      <UserList t={t} users={data.members.expect} isExpect /> */}
     </>
   );
 };

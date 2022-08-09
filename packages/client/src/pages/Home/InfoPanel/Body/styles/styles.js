@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
 import { mobile } from "@docspace/components/utils/device";
 
-const StyledInfoRoomBody = styled.div`
+const StyledInfoPanelBody = styled.div`
   padding: 0 3px 0 20px;
   @media ${mobile} {
     padding: 0 8px 0 16px;
@@ -252,7 +252,7 @@ const StyledOpenSharingPanel = styled.div`
   text-decoration: underline;
   text-decoration-style: dashed;
 `;
-StyledInfoRoomBody.defaultProps = { theme: Base };
+StyledInfoPanelBody.defaultProps = { theme: Base };
 StyledTitle.defaultProps = { theme: Base };
 StyledThumbnail.defaultProps = { theme: Base };
 StyledAccess.defaultProps = { theme: Base };
@@ -260,7 +260,7 @@ StyledAccessItem.defaultProps = { theme: Base };
 StyledOpenSharingPanel.defaultProps = { theme: Base };
 
 export {
-  StyledInfoRoomBody,
+  StyledInfoPanelBody,
   StyledTitle,
   StyledThumbnail,
   StyledSubtitle,

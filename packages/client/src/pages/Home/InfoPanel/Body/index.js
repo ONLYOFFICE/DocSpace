@@ -1,19 +1,21 @@
-import { inject, observer } from "mobx-react";
 import React from "react";
-import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import GalleryItem from "./views/Gallery/GalleryItem";
-import GalleryEmptyScreen from "./views/Gallery/GalleryEmptyScreen";
-import { StyledInfoRoomBody } from "./styles/styles.js";
+import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
+
 import { Base } from "@docspace/components/themes";
 import withLoader from "../../../../HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
-import Members from "./views/Members";
-import History from "./views/History";
-import Details from "./views/Details";
+
+import { StyledInfoPanelBody } from "./styles/styles.js";
+
+import Gallery from "./views/Gallery";
+import Room from "./views/Room";
+import Info from "./views/Info";
 
 const InfoPanelBodyContent = ({
   t,
+  isRooms,
   selfId,
   selectedFolder,
   selectedItems,
@@ -24,11 +26,9 @@ const InfoPanelBodyContent = ({
   onSelectItem,
   setSharingPanelVisible,
   isRootFolder,
-  isRecycleBinFolder,
-  isRecentFolder,
   isFavoritesFolder,
-  isShareFolder,
-  isCommonFolder,
+  isRecentFolder,
+  isRecycleBinFolder,
   isGallery,
   gallerySelected,
   personal,
@@ -45,11 +45,9 @@ const InfoPanelBodyContent = ({
     isRecycleBinFolder,
     isRecentFolder,
     isFavoritesFolder,
-    isShareFolder,
-    isCommonFolder,
   };
 
-  const filesProps = {
+  const detailsProps = {
     selectedFolder,
     getFolderInfo,
     getIcon,
@@ -60,45 +58,35 @@ const InfoPanelBodyContent = ({
     createThumbnail,
   };
 
-  const virtualRoomProps = {
+  const roomProps = {
+    selectedItems,
+    selectedFolder,
     roomState,
+    defaultProps,
+    membersProps: {
+      selfId,
+      getShareUsers,
+    },
+    historyProps: {
+      personal,
+      culture,
+    },
+    detailsProps,
   };
-  return isGallery ? (
-    !gallerySelected ? (
-      <GalleryEmptyScreen />
-    ) : (
-      <StyledInfoRoomBody>
-        <GalleryItem
-          selectedItem={gallerySelected}
-          personal={personal}
-          culture={culture}
-        />
-      </StyledInfoRoomBody>
-    )
-  ) : (
-    <StyledInfoRoomBody>
-      {roomState === "members" ? (
-        <Members t={t} selfId={selfId} />
-      ) : roomState === "history" ? (
-        <History t={t} personal={personal} culture={culture} />
-      ) : (
-        <Details {...defaultProps} {...filesProps} />
-      )}
-      {/* {isPrivacyFolder ? (
-        <>
-          {roomState === "members" ? (
-            <Members t={t} selfId={selfId} />
-          ) : roomState === "history" ? (
-            <History t={t} personal={personal} culture={culture} />
-          ) : (
-            <Details {...defaultProps} {...filesProps} />
-          )}
-        </>
-      ) : (
-        <Details {...defaultProps} {...filesProps} />
-      )} */}
-    </StyledInfoRoomBody>
-  );
+
+  const galleryProps = {
+    gallerySelected,
+    personal,
+    culture,
+  };
+
+  const getInfoPanelBodyContent = () => {
+    if (isGallery) return <Gallery {...galleryProps} />;
+    else if (isRooms) return <Room {...roomProps} />;
+    else return <Info {...defaultProps} {...detailsProps} />;
+  };
+
+  return <StyledInfoPanelBody>{getInfoPanelBodyContent()}</StyledInfoPanelBody>;
 };
 
 InfoPanelBodyContent.defaultProps = { theme: Base };
@@ -126,18 +114,16 @@ export default inject(
       createThumbnail,
     } = filesStore;
 
-    const { getIcon, getFolderIcon } = settingsStore;
-    const { onSelectItem } = filesActionsStore;
-    const { setSharingPanelVisible } = dialogsStore;
-    const { isRootFolder } = selectedFolderStore;
-
     const {
       isRecycleBinFolder,
       isRecentFolder,
       isFavoritesFolder,
-      isShareFolder,
-      isCommonFolder,
     } = treeFoldersStore;
+
+    const { getIcon, getFolderIcon } = settingsStore;
+    const { onSelectItem } = filesActionsStore;
+    const { setSharingPanelVisible } = dialogsStore;
+    const { isRootFolder } = selectedFolderStore;
 
     const selectedItems =
       selection?.length > 0
@@ -145,6 +131,9 @@ export default inject(
         : bufferSelection
         ? [bufferSelection]
         : [];
+
+    console.log(selectedItems);
+    console.log({ ...selectedFolderStore });
 
     return {
       selfId,
@@ -159,11 +148,9 @@ export default inject(
       setSharingPanelVisible,
 
       isRootFolder,
-      isRecycleBinFolder,
-      isRecentFolder,
       isFavoritesFolder,
-      isShareFolder,
-      isCommonFolder,
+      isRecentFolder,
+      isRecycleBinFolder,
 
       gallerySelected,
       personal,

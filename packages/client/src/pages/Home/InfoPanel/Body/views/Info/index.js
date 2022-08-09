@@ -3,7 +3,7 @@ import EmptyScreen from "./EmptyScreen";
 import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
 
-const Details = ({
+const Info = ({
   t,
 
   selectedItems,
@@ -24,9 +24,6 @@ const Details = ({
   isRecycleBinFolder,
   isRecentFolder,
   isFavoritesFolder,
-  isShareFolder,
-  isCommonFolder,
-  isPrivacyFolder,
 }) => {
   const singleItem = (item) => {
     const dontShowLocation = isRootFolder;
@@ -64,11 +61,7 @@ const Details = ({
       {selectedItems.length === 0 ? (
         // Can get future changes, currently only "My documents" displays its info
         isRootFolder &&
-        (isRecycleBinFolder ||
-          isRecentFolder ||
-          isFavoritesFolder ||
-          isShareFolder ||
-          isCommonFolder) ? (
+        (isRecycleBinFolder || isRecentFolder || isFavoritesFolder) ? (
           <EmptyScreen />
         ) : (
           singleItem({
@@ -85,4 +78,4 @@ const Details = ({
   );
 };
 
-export default Details;
+export default Info;
