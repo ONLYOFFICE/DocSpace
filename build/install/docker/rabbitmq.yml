@@ -1,8 +1,8 @@
 version: '3'
 services:       
-   onlyoffice-rebbitmq:
+   onlyoffice-rabbitmq:
     image: rabbitmq:3
-    container_name: onlyoffice-rebbitmq
+    container_name: onlyoffice-rabbitmq
     restart: always
     expose:
       - "5672"
