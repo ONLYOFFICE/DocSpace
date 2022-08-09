@@ -104,16 +104,14 @@ public class AbstractDao
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var folders = await filesDbContext.Folders
-            .AsQueryable()
             .Where(r => r.TenantId == TenantID)
-            .Where(r => filesDbContext.Tree.AsQueryable().Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
+            .Where(r => filesDbContext.Tree.Where(r => r.FolderId == folderId).Any(a => r.ParentId == r.Id))
             .ToListAsync();
 
         foreach (var f in folders)
         {
             f.FilesCount = await
                 filesDbContext.Files
-                .AsQueryable()
                 .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Where(r => r.file.TenantId == f.TenantId)
                 .Where(r => r.tree.ParentId == f.Id)

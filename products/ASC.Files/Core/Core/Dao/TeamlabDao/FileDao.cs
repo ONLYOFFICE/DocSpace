@@ -252,72 +252,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Select(e => _mapper.Map<DbFileQuery, File<int>>(e));
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesFilteredAsyncEnumerable(IAsyncEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
-    {
-        var fileIdsList = await fileIds.ToListAsync();
-
-        if (fileIdsList == null || !fileIdsList.Any() || filterType == FilterType.FoldersOnly)
-        {
-            yield break;
-        }
-
-        var filesDbContext = _dbContextFactory.CreateDbContext();
-        var query = GetFileQuery(filesDbContext, r => fileIdsList.Contains(r.Id) && r.CurrentVersion).AsNoTracking();
-
-        if (!string.IsNullOrEmpty(searchText))
-        {
-            var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
-
-            if (_factoryIndexer.TrySelectIds(s => func(s).In(r => r.Id, fileIdsList.ToArray()), out var searchIds))
-            {
-                query = query.Where(r => searchIds.Contains(r.Id));
-            }
-            else
-            {
-                query = BuildSearch(query, searchText, SearhTypeEnum.Any);
-            }
-        }
-
-        if (subjectID != Guid.Empty)
-        {
-            if (subjectGroup)
-            {
-                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
-                query = query.Where(r => users.Contains(r.CreateBy));
-            }
-            else
-            {
-                query = query.Where(r => r.CreateBy == subjectID);
-            }
-        }
-
-        switch (filterType)
-        {
-            case FilterType.DocumentsOnly:
-            case FilterType.ImagesOnly:
-            case FilterType.PresentationsOnly:
-            case FilterType.SpreadsheetsOnly:
-            case FilterType.ArchiveOnly:
-            case FilterType.MediaOnly:
-                query = query.Where(r => r.Category == (int)filterType);
-                break;
-            case FilterType.ByExtension:
-                if (!string.IsNullOrEmpty(searchText))
-                {
-                    query = BuildSearch(query, searchText, SearhTypeEnum.End);
-                }
-                break;
-        }
-
-        var result = (checkShared ? FromQueryWithShared(filesDbContext, query) : FromQuery(filesDbContext, query)).AsAsyncEnumerable()
-            .Select(e => _mapper.Map<DbFileQuery, File<int>>(e));
-
-        await foreach (var e in result)
-        {
-            yield return e;
-        }
-    }
-
     public async IAsyncEnumerable<int> GetFilesAsync(int parentId)
     {
         var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -550,7 +484,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             var parentFolders =
                 filesDbContext.Tree
-                .AsQueryable()
                 .Where(r => r.FolderId == file.ParentId)
                 .OrderByDescending(r => r.Level)
                 .ToList();
@@ -560,7 +493,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             if (parentFoldersIds.Count > 0)
             {
                 var folderToUpdate = filesDbContext.Folders
-                    .AsQueryable()
                     .Where(r => parentFoldersIds.Contains(r.Id));
 
                 foreach (var f in folderToUpdate)
@@ -699,7 +631,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             file.PureTitle = file.Title;
 
             var parentFolders = filesDbContext.Tree
-                .AsQueryable()
                 .Where(r => r.FolderId == file.ParentId)
                 .OrderByDescending(r => r.Level)
                 .ToList();
@@ -709,7 +640,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             if (parentFoldersIds.Count > 0)
             {
                 var folderToUpdate = filesDbContext.Folders
-                    .AsQueryable()
                     .Where(r => parentFoldersIds.Contains(r.Id));
 
                 foreach (var f in folderToUpdate)
@@ -923,15 +853,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Where(r => r.Id == fileId)
             .Select(a => a.ParentId)
             .Distinct()
-            .AsAsyncEnumerable()
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
         toUpdate = await Query(filesDbContext.Files)
             .Where(r => r.Id == fileId)
-            .ToListAsync()
-            ;
-
+            .ToListAsync();
 
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
@@ -967,11 +893,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var parentFoldersTask =
             filesDbContext.Tree
-            .AsQueryable()
             .Where(r => r.FolderId == toFolderId)
             .OrderByDescending(r => r.Level)
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
         var toUpdateFile = toUpdate.FirstOrDefault(r => r.CurrentVersion);
 
@@ -991,8 +915,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
             fileId, this, r => r,
             toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
-            true)
-            ;
+            true);
 
         return moved.Id;
     }
@@ -1068,8 +991,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var toUpdate = await Query(filesDbContext.Files)
             .Where(r => r.Id == file.Id)
             .Where(r => r.CurrentVersion)
-            .FirstOrDefaultAsync()
-            ;
+            .FirstOrDefaultAsync();
 
         toUpdate.Title = newTitle;
         toUpdate.ModifiedOn = DateTime.UtcNow;
@@ -1494,7 +1416,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Where(r => r.CurrentVersion);
 
         var q4 = FromQuery(filesDbContext, q3)
-            .Join(filesDbContext.Security.AsQueryable().DefaultIfEmpty(), r => r.File.Id.ToString(), s => s.EntryId, (f, s) => new DbFileQueryWithSecurity { DbFileQuery = f, Security = s })
+            .Join(filesDbContext.Security.DefaultIfEmpty(), r => r.File.Id.ToString(), s => s.EntryId, (f, s) => new DbFileQueryWithSecurity { DbFileQuery = f, Security = s })
             .Where(r => r.Security.TenantId == tenant)
             .Where(r => r.Security.EntryType == FileEntryType.File)
             .Where(r => r.Security.Share == FileShare.Restrict);
@@ -1554,9 +1476,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         var toUpdate = await filesDbContext.Files
-            .AsQueryable()
-            .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID)
-            ;
+            .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
 
         if (toUpdate != null)
         {
@@ -1720,9 +1640,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
                select new DbFileQuery
                {
                    File = r,
-                   Root = (from f in filesDbContext.Folders.AsQueryable()
+                   Root = (from f in filesDbContext.Folders
                            where f.Id ==
-                           (from t in filesDbContext.Tree.AsQueryable()
+                           (from t in filesDbContext.Tree
                             where t.FolderId == r.ParentId
                             orderby t.Level descending
                             select t.ParentId
@@ -1730,7 +1650,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                            where f.TenantId == r.TenantId
                            select f
                           ).FirstOrDefault(),
-                   Shared = (from f in filesDbContext.Security.AsQueryable()
+                   Shared = (from f in filesDbContext.Security
                              where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && !denyArray.Contains(f.Subject)
                              select f
                              ).Any(),
@@ -1738,7 +1658,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                                       where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
                                       select f)
                              .Any(),
-                   Deny = (from f in filesDbContext.Security.AsQueryable()
+                   Deny = (from f in filesDbContext.Security
                            where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
                            select f
                             ).GroupBy(a => a.EntryId,
@@ -1764,9 +1684,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Select(r => new DbFileQuery
             {
                 File = r,
-                Root = (from f in filesDbContext.Folders.AsQueryable()
+                Root = (from f in filesDbContext.Folders
                         where f.Id ==
-                        (from t in filesDbContext.Tree.AsQueryable()
+                        (from t in filesDbContext.Tree
                          where t.FolderId == r.ParentId
                          orderby t.Level descending
                          select t.ParentId
@@ -1779,7 +1699,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                                    where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
                                    select f)
                              .Any(),
-                Deny = (from f in filesDbContext.Security.AsQueryable()
+                Deny = (from f in filesDbContext.Security
                         where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
                         select f
                             ).GroupBy(a => a.EntryId,

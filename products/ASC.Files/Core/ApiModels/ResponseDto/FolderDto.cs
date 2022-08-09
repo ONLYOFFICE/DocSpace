@@ -102,9 +102,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
             {
                 var tagDao = _daoFactory.GetTagDao<T>();
 
-                var tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).ToListAsync();
-
-                result.Tags = tags.Select(t => t.Name);
+                result.Tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).Select(t => t.Name).ToListAsync();
             }
             else
             {

@@ -167,9 +167,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         if (filesId.Any() || foldersId.Any())
         {
             using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-            var fromQuery = await FromQueryAsync(_getTagsQuery(filesDbContext, TenantID, subject, tagType, filesId, foldersId))
-                .ToListAsync()
-                ;
+            var fromQuery = await FromQueryAsync(_getTagsQuery(filesDbContext, TenantID, subject, tagType, filesId, foldersId)).ToListAsync();
 
             return fromQuery
                 .GroupBy(r => r.EntryId)
@@ -423,7 +421,6 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         if (!cacheTagId.TryGetValue(cacheTagIdKey, out var id))
         {
             id = await filesDbContext.Tag
-                .AsQueryable()
                 .Where(r => r.Owner == t.Owner)
                 .Where(r => r.Name == t.Name)
                 .Where(r => r.Type == t.Type)

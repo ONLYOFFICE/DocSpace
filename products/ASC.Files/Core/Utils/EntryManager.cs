@@ -420,7 +420,7 @@ public class EntryManager
         else if (parent.FolderType == FolderType.SHARE)
         {
             //share
-            var shared = await _fileSecurity.GetSharesForMeAsync(filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+            var shared = await _fileSecurity.GetSharesForMeAsync(filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
 
             entries.AddRange(shared);
 
@@ -497,14 +497,19 @@ public class EntryManager
 
                 var task3 = thirdPartyFolder.ToListAsync();
 
-                entries.AddRange(await task1);
-                entries.AddRange(await task2);
+                foreach (var items in await Task.WhenAll(task1.AsTask(), task2.AsTask()))
+                {
+                    entries.AddRange(items);
+                }
+
                 entries.AddRange(await task3);
             }
             else
             {
-                entries.AddRange(await task1);
-                entries.AddRange(await task2);
+                foreach (var items in await Task.WhenAll(task1.AsTask(), task2.AsTask()))
+                {
+                    entries.AddRange(items);
+                }
             }
         }
 
@@ -669,8 +674,10 @@ public class EntryManager
         var firstTask = GetRecentByIdsAsync(fileIdsInt, filter, subjectGroup, subjectId, searchText, searchInContent).ToListAsync();
         var secondTask = GetRecentByIdsAsync(fileIdsString, filter, subjectGroup, subjectId, searchText, searchInContent).ToListAsync();
 
-        files.AddRange(await firstTask);
-        files.AddRange(await secondTask);
+        foreach (var items in await Task.WhenAll(firstTask.AsTask(), secondTask.AsTask()))
+        {
+            files.AddRange(items);
+        }
 
         var result = files.OrderBy(file =>
         {

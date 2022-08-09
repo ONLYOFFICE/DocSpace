@@ -255,11 +255,9 @@ internal class ProviderAccountDao : IProviderDao
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
         var forUpdate = await filesDbContext.ThirdpartyAccount
-            .AsQueryable()
             .Where(r => r.Id == linkId)
             .Where(r => r.TenantId == TenantID)
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
         foreach (var f in forUpdate)
         {
@@ -283,7 +281,6 @@ internal class ProviderAccountDao : IProviderDao
         {
             var querySelect =
                 filesDbContext.ThirdpartyAccount
-                .AsQueryable()
                 .Where(r => r.TenantId == TenantID)
                 .Where(r => r.Id == linkId);
 
@@ -321,11 +318,9 @@ internal class ProviderAccountDao : IProviderDao
         }
 
         var toUpdate = await filesDbContext.ThirdpartyAccount
-            .AsQueryable()
             .Where(r => r.Id == linkId)
             .Where(r => r.TenantId == TenantID)
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
         foreach (var t in toUpdate)
         {
@@ -367,47 +362,39 @@ internal class ProviderAccountDao : IProviderDao
         {
             using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
-        var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
+            var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
 
             var entryIDs = await filesDbContext.ThirdpartyIdMapping
-            .AsQueryable()
             .Where(r => r.TenantId == TenantID)
             .Where(r => r.Id.StartsWith(folderId))
             .Select(r => r.HashId)
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
             var forDelete = await filesDbContext.Security
-            .AsQueryable()
             .Where(r => r.TenantId == TenantID)
             .Where(r => entryIDs.Any(a => a == r.EntryId))
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
             filesDbContext.Security.RemoveRange(forDelete);
             await filesDbContext.SaveChangesAsync();
 
             var linksForDelete = await filesDbContext.TagLink
-            .AsQueryable()
             .Where(r => r.TenantId == TenantID)
             .Where(r => entryIDs.Any(e => e == r.EntryId))
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
             filesDbContext.TagLink.RemoveRange(linksForDelete);
             await filesDbContext.SaveChangesAsync();
 
             var accountsForDelete = await filesDbContext.ThirdpartyAccount
-            .AsQueryable()
             .Where(r => r.Id == linkId)
             .Where(r => r.TenantId == TenantID)
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
             filesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
             await filesDbContext.SaveChangesAsync();
 
-        await tx.CommitAsync();
+            await tx.CommitAsync();
         });
     }
 
@@ -691,8 +678,8 @@ internal class ProviderAccountDao : IProviderDao
     {
         try
         {
-        return string.IsNullOrEmpty(password) ? string.Empty : _instanceCrypto.Decrypt(password);
-    }
+            return string.IsNullOrEmpty(password) ? string.Empty : _instanceCrypto.Decrypt(password);
+        }
         catch (Exception e)
         {
             _logger.ErrorDecryptPassword(id, _securityContext.CurrentAccount.ID, e);

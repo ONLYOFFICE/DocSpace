@@ -112,7 +112,6 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
         }
 
         IQueryable<FolderTenant> GetBaseQuery(FilesDbContext filesDbContext, DateTime lastIndexed) => filesDbContext.Folders
-                .AsQueryable()
                 .Where(r => r.ModifiedOn >= lastIndexed)
                 .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
                 .Where(r => r.DbTenant.Status == TenantStatus.Active);

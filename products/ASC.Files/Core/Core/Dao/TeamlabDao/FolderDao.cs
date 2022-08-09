@@ -472,7 +472,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             //full path to root
             var oldTree = filesDbContext.Tree
-                .AsQueryable()
                 .Where(r => r.FolderId == folder.ParentId);
 
             foreach (var o in oldTree)
@@ -527,7 +526,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
             var subfolders =
                 await filesDbContext.Tree
-                .AsQueryable()
                 .Where(r => r.ParentId == id)
                 .Select(r => r.FolderId)
                 .ToListAsync();
@@ -550,7 +548,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 await _factoryIndexer.DeleteAsync(f);
             }
 
-            var treeToDelete = await filesDbContext.Tree.AsQueryable().Where(r => subfolders.Contains(r.FolderId)).ToListAsync();
+            var treeToDelete = await filesDbContext.Tree.Where(r => subfolders.Contains(r.FolderId)).ToListAsync();
             filesDbContext.Tree.RemoveRange(treeToDelete);
 
             var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
@@ -622,11 +620,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 var recalcFolders = new List<int> { toFolderId };
                 var parent = await filesDbContext.Folders
-                    .AsQueryable()
                     .Where(r => r.Id == folderId)
                     .Select(r => r.ParentId)
-                    .FirstOrDefaultAsync()
-                    ;
+                    .FirstOrDefaultAsync();
 
                 if (parent != 0 && !recalcFolders.Contains(parent))
                 {
@@ -635,37 +631,31 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 var toUpdate = await Query(filesDbContext.Folders)
                     .Where(r => r.Id == folderId)
-                    .FirstOrDefaultAsync()
-                    ;
+                    .FirstOrDefaultAsync();
 
                 toUpdate.ParentId = toFolderId;
                 toUpdate.ModifiedOn = DateTime.UtcNow;
                 toUpdate.ModifiedBy = _authContext.CurrentAccount.ID;
 
-                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await filesDbContext.SaveChangesAsync();
 
                 var subfolders = await filesDbContext.Tree
-                    .AsQueryable()
                     .Where(r => r.ParentId == folderId)
-                    .ToDictionaryAsync(r => r.FolderId, r => r.Level)
-                    ;
+                    .ToDictionaryAsync(r => r.FolderId, r => r.Level);
 
 #pragma warning disable CA1841 // Prefer Dictionary.Contains methods
                 var toDelete = await filesDbContext.Tree
-                    .AsQueryable()
-                        .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
+                    .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
                     .ToListAsync();
 #pragma warning restore CA1841 // Prefer Dictionary.Contains methods
 
                 filesDbContext.Tree.RemoveRange(toDelete);
-                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await filesDbContext.SaveChangesAsync();
 
                 var toInsert = await filesDbContext.Tree
-                    .AsQueryable()
                     .Where(r => r.FolderId == toFolderId)
                     .OrderBy(r => r.Level)
-                    .ToListAsync()
-                    ;
+                    .ToListAsync();
 
                 foreach (var subfolder in subfolders)
                 {
@@ -806,16 +796,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 .AsNoTracking()
                 .Where(r => r.Id == folderId)
                 .Select(r => r.Title.ToLower())
-                .FirstOrDefaultAsync()
-                ;
+                .FirstOrDefaultAsync();
 
             var conflict = await Query(filesDbContext.Folders)
                 .AsNoTracking()
                 .Where(r => r.Title.ToLower() == title)
                 .Where(r => r.ParentId == to)
                 .Select(r => r.Id)
-                .FirstOrDefaultAsync()
-                ;
+                .FirstOrDefaultAsync();
 
             if (conflict != 0)
             {
@@ -825,8 +813,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                     .Where(r => r.f1.TenantId == TenantID && r.f1.CurrentVersion && r.f1.ParentId == folderId)
                     .Where(r => r.f2.TenantId == TenantID && r.f2.CurrentVersion && r.f2.ParentId == conflict)
                     .Select(r => r.f1)
-                    .ToListAsync()
-                    ;
+                    .ToListAsync();
 
                 foreach (var file in files)
                 {
@@ -877,9 +864,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         var count = await filesDbContext.Tree
-            .AsQueryable()
-            .CountAsync(r => r.ParentId == parentId && r.Level > 0)
-            ;
+            .CountAsync(r => r.ParentId == parentId && r.Level > 0);
 
         return count;
     }
@@ -946,16 +931,15 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .Join(filesDbContext.Tree, r => r.Id, r => r.ParentId, (file, tree) => new { file, tree })
             .Where(r => r.tree.FolderId == id)
             .Select(r => r.file)
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
         foreach (var f in toUpdate)
         {
-            var count = await filesDbContext.Tree.AsQueryable().Where(r => r.ParentId == f.Id).CountAsync().ConfigureAwait(false) - 1;
+            var count = await filesDbContext.Tree.Where(r => r.ParentId == f.Id).CountAsync() - 1;
             f.FoldersCount = count;
         }
 
-        await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        await filesDbContext.SaveChangesAsync();
     }
 
     #region Only for TMFolderDao
@@ -1289,9 +1273,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 select new DbFolderQuery
                 {
                     Folder = r,
-                    Root = (from f in filesDbContext.Folders.AsQueryable()
+                    Root = (from f in filesDbContext.Folders
                             where f.Id ==
-                             (from t in filesDbContext.Tree.AsQueryable()
+                             (from t in filesDbContext.Tree
                               where t.FolderId == r.ParentId
                               orderby t.Level descending
                               select t.ParentId
@@ -1299,7 +1283,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                             where f.TenantId == r.TenantId
                             select f
                            ).FirstOrDefault(),
-                    Shared = (from f in filesDbContext.Security.AsQueryable()
+                    Shared = (from f in filesDbContext.Security
                               where f.EntryType == folderType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
                               select f
                               ).Any()
@@ -1316,9 +1300,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .Select(r => new DbFolderQuery
             {
                 Folder = r,
-                Root = (from f in filesDbContext.Folders.AsQueryable()
+                Root = (from f in filesDbContext.Folders
                         where f.Id ==
-                        (from t in filesDbContext.Tree.AsQueryable()
+                        (from t in filesDbContext.Tree
                          where t.FolderId == r.ParentId
                          orderby t.Level descending
                          select t.ParentId
@@ -1367,7 +1351,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .Where(r => r.FolderType == FolderType.DEFAULT);
 
         var q4 = FromQuery(filesDbContext, q3)
-            .Join(filesDbContext.Security.AsQueryable().DefaultIfEmpty(), r => r.Folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
+            .Join(filesDbContext.Security.DefaultIfEmpty(), r => r.Folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
             .Where(r => r.Security.TenantId == tenant)
             .Where(r => r.Security.EntryType == FileEntryType.Folder)
             .Where(r => r.Security.Share == FileShare.Restrict)

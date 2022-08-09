@@ -119,8 +119,10 @@ public class FileOperationDtoHelper
                 var thirdPartyFolders = GetFoldersAsync(fInt).ToListAsync();
 
                 result.Folders = new List<FileEntryDto>();
-                result.Folders.AddRange(await internalFolders);
-                result.Folders.AddRange(await thirdPartyFolders);
+                foreach (var f in await Task.WhenAll(internalFolders.AsTask(), thirdPartyFolders.AsTask()))
+                {
+                    result.Folders.AddRange(f);
+                }
             }
 
             var files = arr
@@ -148,8 +150,11 @@ public class FileOperationDtoHelper
                 var thirdPartyFiles = GetFilesAsync(fInt).ToListAsync();
 
                 result.Files = new List<FileEntryDto>();
-                result.Files.AddRange(await internalFiles);
-                result.Files.AddRange(await thirdPartyFiles);
+
+                foreach (var f in await Task.WhenAll(internalFiles.AsTask(), thirdPartyFiles.AsTask()))
+                {
+                    result.Files.AddRange(f);
+                }
             }
 
             if (result.OperationType == FileOperationType.Download)

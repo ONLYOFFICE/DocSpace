@@ -221,7 +221,6 @@ public class FileSecurity : IFileSecurity
     {
         return CanEditRoomAsync(entry, _authContext.CurrentAccount.ID);
     }
-
     public Task<bool> CanShare<T>(FileEntry<T> entry)
     {
         return CanShareAsync(entry, _authContext.CurrentAccount.ID);
@@ -883,21 +882,22 @@ public class FileSecurity : IFileSecurity
         return _daoFactory.GetSecurityDao<T>().GetSharesAsync(entry);
     }
 
-    public async Task<IEnumerable<FileEntry>> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
+    public async IAsyncEnumerable<FileEntry> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
         var subjects = GetUserSubjects(_authContext.CurrentAccount.ID);
         var records = await securityDao.GetSharesAsync(subjects).ToListAsync();
 
-        var result = new List<FileEntry>();
-
         var firstTask = GetSharesForMeAsync<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync();
         var secondTask = GetSharesForMeAsync<string>(records.Where(r => r.EntryId is string), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync();
 
-        result.AddRange(await firstTask);
-        result.AddRange(await secondTask);
-
-        return result;
+        foreach (var items in await Task.WhenAll(firstTask.AsTask(), secondTask.AsTask()))
+        {
+            foreach (var item in items)
+            {
+                yield return item;
+            }
+        }
     }
 
     public async Task<List<FileEntry>> GetVirtualRoomsAsync(FilterType filterType, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders,

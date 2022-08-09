@@ -636,7 +636,7 @@ public class FileStorageService<T> //: IFileStorageService
         return file;
     }
 
-    public async Task<IEnumerable<FileEntry<T>>> GetSiblingsFileAsync(T fileId, T parentId, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
+    public async IAsyncEnumerable<FileEntry<T>> GetSiblingsFileAsync(T fileId, T parentId, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
     {
         var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
 
@@ -653,7 +653,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (filter == FilterType.FoldersOnly)
         {
-            return Enumerable.Empty<FileEntry<T>>();
+            yield break;
         }
         if (filter == FilterType.None)
         {
@@ -695,9 +695,14 @@ public class FileStorageService<T> //: IFileStorageService
 
         var previewedType = new[] { FileType.Image, FileType.Audio, FileType.Video };
 
-        var result = await _fileSecurity.FilterReadAsync(entries.OfType<File<T>>().ToAsyncEnumerable()).ToListAsync();
 
-        return result.OfType<File<T>>().Where(f => previewedType.Contains(FileUtility.GetFileTypeByFileName(f.Title)));
+        await foreach (var f in _fileSecurity.FilterReadAsync(entries.OfType<File<T>>().ToAsyncEnumerable()))
+        {
+            if (f is File<T> && previewedType.Contains(FileUtility.GetFileTypeByFileName(f.Title)))
+            {
+                yield return f;
+            }
+        }
     }
 
     public Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
@@ -2043,11 +2048,8 @@ public class FileStorageService<T> //: IFileStorageService
         var providerDao = GetProviderDao();
         if (providerDao != null)
         {
-            var providersInfo = await providerDao.GetProvidersInfoAsync(userFrom.Id).ToListAsync();
-            var commonProvidersInfo = providersInfo.Where(provider => provider.RootFolderType == FolderType.COMMON);
-
             //move common thirdparty storage userFrom
-            foreach (var commonProviderInfo in commonProvidersInfo)
+            await foreach (var commonProviderInfo in providerDao.GetProvidersInfoAsync(userFrom.Id).Where(provider => provider.RootFolderType == FolderType.COMMON))
             {
                 _logger.InformationReassignProvider(commonProviderInfo.ID, userFrom.Id, userTo.Id);
                 await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.Id);
@@ -2092,10 +2094,8 @@ public class FileStorageService<T> //: IFileStorageService
         var providerDao = GetProviderDao();
         if (providerDao != null)
         {
-            var providersInfo = await providerDao.GetProvidersInfoAsync(userId).ToListAsync();
-
             //delete thirdparty storage
-            foreach (var myProviderInfo in providersInfo)
+            await foreach (var myProviderInfo in providerDao.GetProvidersInfoAsync(userId))
             {
                 _logger.InformationDeleteProvider(myProviderInfo.ID, userId);
                 await providerDao.RemoveProviderInfoAsync(myProviderInfo.ID);
@@ -2178,13 +2178,16 @@ public class FileStorageService<T> //: IFileStorageService
         var tagDao = GetTagDao();
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
-        List<FileEntry<T>> entries = new();
 
         var files = _fileSecurity.FilterReadAsync(fileDao.GetFilesAsync(filesId).Where(file => !file.Encrypted)).ToListAsync();
         var folders = _fileSecurity.FilterReadAsync(folderDao.GetFoldersAsync(foldersId)).ToListAsync();
 
-        entries.AddRange(await files);
-        entries.AddRange(await folders);
+        List<FileEntry<T>> entries = new();
+
+        foreach (var items in await Task.WhenAll(files.AsTask(), folders.AsTask()))
+        {
+            entries.AddRange(items);
+        }
 
         var tags = entries.Select(entry => Tag.Favorite(_authContext.CurrentAccount.ID, entry));
 
@@ -2203,13 +2206,16 @@ public class FileStorageService<T> //: IFileStorageService
         var tagDao = GetTagDao();
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
-        List<FileEntry<T>> entries = new();
 
         var files = _fileSecurity.FilterReadAsync(fileDao.GetFilesAsync(filesId)).ToListAsync();
         var folders = _fileSecurity.FilterReadAsync(folderDao.GetFoldersAsync(foldersId)).ToListAsync();
 
-        entries.AddRange(await files);
-        entries.AddRange(await folders);
+        List<FileEntry<T>> entries = new();
+
+        foreach (var items in await Task.WhenAll(files.AsTask(), folders.AsTask()))
+        {
+            entries.AddRange(items);
+        }
 
         var tags = entries.Select(entry => Tag.Favorite(_authContext.CurrentAccount.ID, entry));
 
@@ -2242,14 +2248,15 @@ public class FileStorageService<T> //: IFileStorageService
         var tagDao = GetTagDao();
         var fileDao = GetFileDao();
 
-        var files = (await _fileSecurity.FilterReadAsync(fileDao.GetFilesAsync(filesId)).ToListAsync())
-            .Where(file => _fileUtility.ExtsWebTemplate.Contains(FileUtility.GetFileExtension(file.Title), StringComparer.CurrentCultureIgnoreCase));
+        var files = await _fileSecurity.FilterReadAsync(fileDao.GetFilesAsync(filesId))
+            .Where(file => _fileUtility.ExtsWebTemplate.Contains(FileUtility.GetFileExtension(file.Title), StringComparer.CurrentCultureIgnoreCase))
+            .ToListAsync();
 
         var tags = files.Select(file => Tag.Template(_authContext.CurrentAccount.ID, file));
 
         tagDao.SaveTags(tags);
 
-        return new List<FileEntry<T>>(files);
+        return files;
     }
 
     public async Task<List<FileEntry<T>>> DeleteTemplatesAsync(IEnumerable<T> filesId)

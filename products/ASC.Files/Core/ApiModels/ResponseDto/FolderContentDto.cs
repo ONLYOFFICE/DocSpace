@@ -28,8 +28,8 @@ namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FolderContentDto<T>
 {
-    public IAsyncEnumerable<FileEntryDto> Files { get; set; }
-    public IAsyncEnumerable<FileEntryDto> Folders { get; set; }
+    public List<FileEntryDto> Files { get; set; }
+    public List<FileEntryDto> Folders { get; set; }
     public FolderDto<T> Current { get; set; }
     public object PathParts { get; set; }
     public int StartIndex { get; set; }
@@ -121,23 +121,23 @@ public class FolderContentDtoHelper
         var foldersIntWithRights = await foldersIntWithRightsTask;
         var foldersStringWithRights = await foldersStringWithRightsTask;
 
-        var filesTask = GetFilesDto(files);
-        var foldersTask = GetFoldersDto(folders);
-
+        var filesTask = GetFilesDto(files).ToListAsync();
+        var foldersTask = GetFoldersDto(folders).ToListAsync();
         var currentTask = _folderDtoHelper.GetAsync(folderItems.FolderInfo);
 
         var result = new FolderContentDto<T>
         {
-            Files = filesTask,
-            Folders = foldersTask,
             PathParts = folderItems.FolderPathParts,
             StartIndex = startIndex,
-            Current = await currentTask,
             Total = folderItems.Total,
-            New = folderItems.New
+            New = folderItems.New,
+            Count = folderItems.Entries.Count,
+            Current = await currentTask
         };
 
-        result.Count = folderItems.Entries.Count;
+        var tasks = await Task.WhenAll(filesTask.AsTask(), foldersTask.AsTask());
+        result.Files = tasks[0];
+        result.Folders = tasks[1];
 
         return result;
 

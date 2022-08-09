@@ -115,9 +115,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         return fileDao.GetFileHistoryAsync(selector.ConvertId(fileId));
     }
 
-    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
     {
-        var result = AsyncEnumerable.Empty<File<string>>();
 
         foreach (var selector in GetSelectors())
         {
@@ -129,24 +128,23 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
                 continue;
             }
 
-            result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
-                .ToAsyncEnumerable()
-                .SelectMany(matchedId =>
+            foreach (var matchedId in matchedIds.GroupBy(selectorLocal.GetIdCode))
+            {
+                var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
+
+                await foreach (var file in fileDao.GetFilesAsync(matchedId.Select(selectorLocal.ConvertId).ToList()))
                 {
-                    var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
-
-                    return fileDao.GetFilesAsync(matchedId.Select(selectorLocal.ConvertId).ToList());
-                })
-                .Where(r => r != null));
+                    if (file != null)
+                    {
+                        yield return file;
+                    }
+                }
+            }
         }
-
-        return result;
     }
 
-    public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
+    public async IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
     {
-        var result = AsyncEnumerable.Empty<File<string>>();
-
         foreach (var selector in GetSelectors())
         {
             var selectorLocal = selector;
@@ -157,20 +155,19 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
                 continue;
             }
 
-            result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
-                .ToAsyncEnumerable()
-                .SelectMany(matchedId =>
+            foreach (var matchedId in matchedIds.GroupBy(selectorLocal.GetIdCode))
+            {
+                var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
+
+                await foreach (var file in fileDao.GetFilesFilteredAsync(matchedId.Select(selectorLocal.ConvertId).ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent))
                 {
-                    var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
-                    var result = fileDao.GetFilesFilteredAsync(matchedId.Select(selectorLocal.ConvertId).ToArray(),
-                        filterType, subjectGroup, subjectID, searchText, searchInContent);
-
-                    return result;
-                })
-                .Where(r => r != null));
+                    if (file != null)
+                    {
+                        yield return file;
+                    }
+                }
+            }
         }
-
-        return result;
     }
 
     public async IAsyncEnumerable<string> GetFilesAsync(string parentId)

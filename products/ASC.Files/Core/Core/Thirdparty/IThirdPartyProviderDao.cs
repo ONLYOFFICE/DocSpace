@@ -278,7 +278,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
     {
-        return set.AsQueryable().Where(r => r.TenantId == TenantID);
+        return set.Where(r => r.TenantId == TenantID);
     }
 
     protected Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
@@ -303,11 +303,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         else
         {
             result = await filesDbContext.ThirdpartyIdMapping
-                    .AsQueryable()
                     .Where(r => r.HashId == id)
                     .Select(r => r.Id)
-                    .FirstOrDefaultAsync()
-                    ;
+                    .FirstOrDefaultAsync();
         }
         if (saveIfNotExist)
         {
@@ -633,11 +631,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         var entryIDs = await filesDbContext.ThirdpartyIdMapping
-                   .AsQueryable()
                    .Where(r => r.Id.StartsWith(parentFolder.Id))
                    .Select(r => r.HashId)
-                   .ToListAsync()
-                   ;
+                   .ToListAsync();
 
         if (!entryIDs.Any())
         {
@@ -645,7 +641,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
 
         var q = from r in filesDbContext.Tag
-                from l in filesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                from l in filesDbContext.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
                 where r.TenantId == TenantID && l.TenantId == TenantID && r.Type == TagType.New && entryIDs.Contains(l.EntryId)
                 select new { tag = r, tagLink = l };
 
