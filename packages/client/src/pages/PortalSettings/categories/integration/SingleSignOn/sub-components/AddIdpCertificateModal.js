@@ -46,7 +46,7 @@ const AddIdpCertificateModal = (props) => {
       <ModalDialog.Footer>
         <Button
           label={t("Common:OKButton")}
-          onClick={addIdpCertificate}
+          onClick={() => addIdpCertificate(t)}
           primary
           scale
           isLoading={isCertificateLoading}

@@ -5,6 +5,7 @@
   "AttributeMatching": "Attribute Mapping",
   "AttributeMatchingTooltip": "The correspondence of the single sign-on attributes to the fields of the portal 'People' module",
   "Binding": "Binding:",
+  "CertificateExist": "Certificate with same action type already exists",
   "ConfirmationText": "All the data you entered will be lost. Are you sure you want to continue?",
   "CustomEntryButton": "Custom login button caption",
   "CustomEntryTooltip": "The caption for the button used to login to the portal with Single Sign-on service",

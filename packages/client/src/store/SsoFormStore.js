@@ -576,7 +576,7 @@ class SsoFormStore {
     );
   };
 
-  addSpCertificate = async () => {
+  addSpCertificate = async (t) => {
     const data = [
       {
         crt: this.spCertificate,
@@ -584,6 +584,11 @@ class SsoFormStore {
         action: this.spAction,
       },
     ];
+
+    if (this.spCertificates.find((item) => item.action === this.spAction)) {
+      toastr.error(t("CertificateExist"));
+      return;
+    }
 
     this.isCertificateLoading = true;
 
@@ -606,7 +611,7 @@ class SsoFormStore {
     }
   };
 
-  addIdpCertificate = async () => {
+  addIdpCertificate = async (t) => {
     const data = [
       {
         crt: this.idpCertificate,
@@ -614,6 +619,11 @@ class SsoFormStore {
         action: this.idpAction,
       },
     ];
+
+    if (this.idpCertificates.find((item) => item.crt === this.idpCertificate)) {
+      toastr.error(t("CertificateExist"));
+      return;
+    }
 
     this.isCertificateLoading = true;
 
