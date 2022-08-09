@@ -169,4 +169,12 @@ public static class ServiceCollectionExtension
 
         services.AddSingleton<IDistributedTaskQueueFactory, DefaultDistributedTaskQueueFactory>();
     }
+
+    public static IServiceCollection AddStartupTask<T>(this IServiceCollection services)
+                                    where T : class, IStartupTask
+    {
+        services.AddTransient<IStartupTask, T>();
+
+        return services;
+    }
 }

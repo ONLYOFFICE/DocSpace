@@ -1,4 +1,4 @@
-import authStore from "@docspace/common/store/AuthStore";
+import authStore from "SRC_DIR/store/AuthStore";
 import { toCommunityHostname } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 import { useEffect, useState } from "react";

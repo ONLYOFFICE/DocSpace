@@ -224,6 +224,7 @@ class TableHeader extends React.Component {
       resetColumnsSize,
       sectionWidth,
       infoPanelVisible,
+      columns,
     } = this.props;
 
     if (!infoPanelVisible && this.state.hideColumns) {
@@ -272,6 +273,11 @@ class TableHeader extends React.Component {
     const tableContainer = storageSize
       ? storageSize.split(" ")
       : container.style.gridTemplateColumns.split(" ");
+
+    // columns.length + 1 - its settings column
+    if (tableContainer.length !== columns.length + 1) {
+      return this.resetColumns(true);
+    }
 
     const containerWidth = +container.clientWidth;
 

@@ -219,9 +219,9 @@ const Form = (props) => {
     //errorText && setErrorText("");
     let hasError = false;
 
-    const userName = identifier.trim();
+    const user = identifier.trim();
 
-    if (!userName) {
+    if (!user) {
       hasError = true;
       setIdentifierValid(false);
       setIsEmailErrorShow(true);
@@ -243,15 +243,18 @@ const Form = (props) => {
 
     isDesktop && checkPwd();
     const session = !isChecked;
-    login(userName, hash, session)
-      .then((res) => {
-        const { url, user, hash } = res;
+    login(user, hash, session)
+      .then((url) => {
         const redirectPath = localStorage.getItem("redirectPath");
 
         if (redirectPath) {
           localStorage.removeItem("redirectPath");
           window.location.href = redirectPath;
-        } else history.push(url, { user, hash });
+          return;
+        }
+
+        window.location.replace(url); //TODO: save { user, hash } for tfa
+        //history.push(url, { user, hash });
       })
       .catch((error) => {
         setIsEmailErrorShow(true);

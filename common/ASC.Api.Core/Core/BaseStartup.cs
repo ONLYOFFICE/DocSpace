@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Api.Core;
 
@@ -156,6 +157,12 @@ public abstract class BaseStartup
         }
 
         services.AddAutoMapper(typeof(MappingProfile));
+               
+        if (!_hostEnvironment.IsDevelopment())
+        {
+            services.AddStartupTask<WarmupServicesStartupTask>()
+                    .TryAddSingleton(services);
+        }
     }
 
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
