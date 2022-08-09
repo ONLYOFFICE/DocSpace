@@ -349,7 +349,7 @@ public class SsoHandlerService
             userInfo.Location = location;
             userInfo.Title = title;
 
-            var portalUserContacts = userInfo.ContactsList;
+            var portalUserContacts = userInfo.ContactsList == null ? new List<string>() : userInfo.ContactsList;
 
             var newContacts = new List<string>();
             var phones = new List<string>();
