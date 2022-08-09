@@ -24,9 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using ASC.Web.HealthChecks.UI;
-global using ASC.Api.Core.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-global using Microsoft.Extensions.Diagnostics.HealthChecks;
-global using Microsoft.Extensions.Hosting.WindowsServices;
+namespace ASC.Api.Core.Log;
+
+internal static partial class WarmupServicesStartupTaskLogger
+{
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Warm up services is starting...")]
+    public static partial void TraceWarmupStarted(this ILogger<WarmupServicesStartupTask> logger);
+
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Warm up services finished. Processed: {processed}, Successed: {successed}, Failed: {failed}, Time: {processedTime} ms")]
+    public static partial void TraceWarmupFinished(this ILogger<WarmupServicesStartupTask> logger, int processed, int successed, int failed, double processedTime);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "#{index} Failed proccessed {serviceTitle} service with exception {errorMessage}")]
+    public static partial void DebugWarmupFailed(this ILogger<WarmupServicesStartupTask> logger, int index, String serviceTitle, String errorMessage);
+}

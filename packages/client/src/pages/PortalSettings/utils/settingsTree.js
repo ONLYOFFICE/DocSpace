@@ -128,6 +128,13 @@ export const settingsTree = [
         tKey: "ThirdPartyAuthorization",
         isCategory: true,
       },
+      {
+        key: "3-1",
+        icon: "",
+        link: "portal-integration",
+        tKey: "PortalIntegration",
+        isCategory: true,
+      },
     ],
   },
   {
