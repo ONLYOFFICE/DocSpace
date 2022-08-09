@@ -601,6 +601,7 @@ class SsoFormStore {
       const newCertificates = res.data;
       newCertificates.map((cert) => {
         this.spCertificates = [...this.spCertificates, cert];
+        this.checkedSpBoxes(cert);
       });
       this.isCertificateLoading = false;
       this.closeSpModal();
@@ -608,6 +609,21 @@ class SsoFormStore {
       this.isCertificateLoading = false;
       toastr.error(err);
       console.error(err);
+    }
+  };
+
+  checkedSpBoxes = (cert) => {
+    if (cert.action === "signing") {
+      this.spSignAuthRequests = true;
+      this.spSignLogoutRequests = true;
+    }
+    if (cert.action === "encrypt") {
+      this.spEncryptAssertions = true;
+    }
+    if (cert.action === "signing and encrypt") {
+      this.spSignAuthRequests = true;
+      this.spSignLogoutRequests = true;
+      this.spEncryptAssertions = true;
     }
   };
 
@@ -636,6 +652,7 @@ class SsoFormStore {
       const newCertificates = res.data;
       newCertificates.map((cert) => {
         this.idpCertificates = [...this.idpCertificates, cert];
+        this.checkedIdpBoxes(cert);
       });
       this.isCertificateLoading = false;
       this.closeIdpModal();
@@ -643,6 +660,21 @@ class SsoFormStore {
       this.isCertificateLoading = false;
       toastr.error(err);
       console.error(err);
+    }
+  };
+
+  checkedIdpBoxes = (cert) => {
+    if (cert.action === "verification") {
+      this.idpVerifyAuthResponsesSign = true;
+      this.idpVerifyLogoutRequestsSign = true;
+    }
+    if (cert.action === "decrypt") {
+      this.idpVerifyLogoutResponsesSign = true;
+    }
+    if (cert.action === "verification and decrypt") {
+      this.idpVerifyAuthResponsesSign = true;
+      this.idpVerifyLogoutRequestsSign = true;
+      this.idpVerifyLogoutResponsesSign = true;
     }
   };
 
