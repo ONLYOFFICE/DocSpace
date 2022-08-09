@@ -1,13 +1,16 @@
 import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { WindowScroller } from "react-virtualized";
+import { isMobile } from "react-device-detect";
 import ListComponent from "./List";
 import GridComponent from "./Grid";
 
 const InfiniteLoaderComponent = (props) => {
   const ref = useRef(null);
 
-  const scroll = document.getElementsByClassName("section-scroll")[0];
+  const scroll = isMobile
+    ? document.getElementsByClassName("mobile-scroll")[0]
+    : document.getElementsByClassName("section-scroll")[0];
 
   const onScroll = ({ scrollTop }) => {
     ref.current.scrollTo(scrollTop);
