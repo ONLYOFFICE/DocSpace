@@ -564,9 +564,9 @@ class SsoFormStore {
     this.idpIsModalVisible = true;
   };
 
-  delSpCertificate = (cert, action) => {
+  delSpCertificate = (action) => {
     this.spCertificates = this.spCertificates.filter(
-      (certificate) => certificate.crt !== cert && certificate.action !== action
+      (certificate) => certificate.action !== action
     );
   };
 
