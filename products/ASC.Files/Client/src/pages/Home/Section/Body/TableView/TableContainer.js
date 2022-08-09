@@ -7,7 +7,6 @@ import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
-import { isTablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 
 const marginCss = css`
@@ -119,6 +118,9 @@ const Table = ({
   theme,
   infoPanelVisible,
   userId,
+  fetchMoreFiles,
+  hasMoreFiles,
+  filterTotal,
   isRooms,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
@@ -181,7 +183,7 @@ const Table = ({
     : `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
 
   return (
-    <StyledTableContainer forwardedRef={ref}>
+    <StyledTableContainer useReactWindow forwardedRef={ref}>
       <TableHeader
         sectionWidth={sectionWidth}
         containerRef={ref}
@@ -194,7 +196,15 @@ const Table = ({
         roomsColumnInfoPanelStorageName={`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`}
         isRooms={isRooms}
       />
-      <TableBody>
+
+      <TableBody
+        fetchMoreFiles={fetchMoreFiles}
+        columnStorageName={columnStorageName}
+        filesLength={filesList.length}
+        hasMoreFiles={hasMoreFiles}
+        itemCount={filterTotal}
+        useReactWindow
+      >
         {filesList.map((item, index) => {
           return index === 0 && item.isRoom ? (
             <TableRow
@@ -250,6 +260,9 @@ export default inject(({ filesStore, treeFoldersStore, auth }) => {
     setViewAs,
     setFirsElemChecked,
     setHeaderBorder,
+    fetchMoreFiles,
+    hasMoreFiles,
+    filterTotal,
   } = filesStore;
 
   return {
@@ -261,7 +274,9 @@ export default inject(({ filesStore, treeFoldersStore, auth }) => {
     theme: auth.settingsStore.theme,
     userId: auth.userStore.user.id,
     infoPanelVisible,
-
+    fetchMoreFiles,
+    hasMoreFiles,
+    filterTotal,
     isRooms,
   };
 })(observer(Table));

@@ -5,7 +5,6 @@ import SimpleFilesRow from "./SimpleFilesRow";
 import { isMobile } from "react-device-detect";
 import styled from "styled-components";
 import marginStyles from "./CommonStyles";
-import { isTablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 
 const StyledRowContainer = styled(RowContainer)`
@@ -64,6 +63,9 @@ const FilesRowContainer = ({
   viewAs,
   setViewAs,
   infoPanelVisible,
+  filterTotal,
+  fetchMoreFiles,
+  hasMoreFiles,
   isRooms,
 }) => {
   useEffect(() => {
@@ -84,8 +86,12 @@ const FilesRowContainer = ({
   return (
     <StyledRowContainer
       className="files-row-container"
+      filesLength={filesList.length}
+      itemCount={filterTotal}
+      fetchMoreFiles={fetchMoreFiles}
+      hasMoreFiles={hasMoreFiles}
       draggable
-      useReactWindow={false}
+      useReactWindow
     >
       {filesList.map((item, index) => (
         <SimpleFilesRow
@@ -101,7 +107,14 @@ const FilesRowContainer = ({
 };
 
 export default inject(({ filesStore, auth, treeFoldersStore }) => {
-  const { filesList, viewAs, setViewAs } = filesStore;
+  const {
+    filesList,
+    viewAs,
+    setViewAs,
+    filterTotal,
+    fetchMoreFiles,
+    hasMoreFiles,
+  } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
@@ -112,6 +125,9 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     viewAs,
     setViewAs,
     infoPanelVisible,
+    filterTotal,
+    fetchMoreFiles,
+    hasMoreFiles,
     isRooms,
   };
 })(observer(FilesRowContainer));

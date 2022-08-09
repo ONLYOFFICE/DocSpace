@@ -7,7 +7,9 @@ let percentage = 0;
 let increasePercentage = 0.75;
 let moreIncreasePercentage = 3;
 
-let elem = document.getElementById("ipl-progress-indicator");
+let elem =
+  typeof document !== "undefined" &&
+  document.getElementById("ipl-progress-indicator");
 
 const startInterval = () => {
   if (timerId) return;

@@ -389,7 +389,6 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreAlert,
 
       dragging,
-      tReady,
       personal,
       checkedMaintenance,
       setMaintenanceExist,
@@ -402,7 +401,7 @@ class PureHome extends React.Component {
         <DragTooltip />
         <Section
           dragging={dragging}
-          withBodyScroll
+          withBodyScroll={false}//TODO: inf-scroll
           withBodyAutoFocus={!isMobile}
           uploadFiles
           onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
@@ -460,10 +459,6 @@ class PureHome extends React.Component {
           <Section.InfoPanelBody>
             <InfoPanelBodyContent />
           </Section.InfoPanelBody>
-
-          <Section.SectionPaging>
-            <SectionPagingContent tReady={tReady} />
-          </Section.SectionPaging>
         </Section>
       </>
     );

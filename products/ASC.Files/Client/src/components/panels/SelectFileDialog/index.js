@@ -6,6 +6,7 @@ import throttle from "lodash/throttle";
 import SelectFileDialogAsideView from "./AsideView";
 import utils from "@appserver/components/utils";
 import { FilterType } from "@appserver/common/constants";
+import isEqual from "lodash/isEqual";
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 import toastr from "studio/toastr";
 
@@ -131,6 +132,13 @@ class SelectFileDialog extends React.Component {
       resultingFolderTree: tree,
     });
   }
+
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps, this.props)) {
+      this.setFilter();
+    }
+  }
+
   componentWillUnmount() {
     const {
       setFolderId,

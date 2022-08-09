@@ -1,7 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import Backend from "@appserver/common/utils/i18next-http-backend";
-import config from "../package.json";
+import config from "../../package.json";
 import { LANGUAGE } from "@appserver/common/constants";
 import { loadLanguagePath } from "@appserver/common/utils";
 

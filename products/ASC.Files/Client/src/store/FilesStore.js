@@ -19,6 +19,7 @@ import config from "../../package.json";
 import { thumbnailStatuses } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import { openDocEditor as openEditor } from "../helpers/utils";
+import { isDesktop } from "@appserver/components/utils/device";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -82,6 +83,7 @@ class FilesStore {
   pageItemsLength = null;
   isHidePagination = false;
   trashIsEmpty = false;
+  filesIsLoading = false;
 
   constructor(
     authStore,
@@ -121,9 +123,9 @@ class FilesStore {
 
             const newFiles = [file, ...this.files];
 
-            if (newFiles.length > this.filter.pageCount) {
-              newFiles.pop(); // Remove last
-            }
+            // if (newFiles.length > this.filter.pageCount) {
+            //   newFiles.pop(); // Remove last
+            // }
 
             this.setFiles(newFiles);
           }
@@ -169,6 +171,7 @@ class FilesStore {
                 return index !== foundIndex;
               })
             );
+            this.filter.total -= 1;
 
             // Hide pagination when deleting files
             runInAction(() => {
@@ -282,7 +285,12 @@ class FilesStore {
     this.isLoaded = isLoaded;
   };
 
-  setViewAs = (viewAs) => {
+  setViewAs = async (viewAs) => {
+    // this.setIsLoading(true);
+    // await this.fetchFiles(this.selectedFolderStore.id, null, true);
+
+    // this.setIsLoading(false);
+
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
   };
@@ -656,6 +664,8 @@ class FilesStore {
       filterData.pageCount = +splitFilter[1];
       filterData.sortOrder = splitFilter[2];
     }
+
+    filterData.page = 0;
 
     setSelectedNode([folderId + ""]);
 
@@ -2409,6 +2419,49 @@ class FilesStore {
 
   setTrashIsEmpty = (isEmpty) => {
     this.trashIsEmpty = isEmpty;
+  };
+
+  get filterTotal() {
+    return this.filter.total;
+  }
+
+  get hasMoreFiles() {
+    return this.filesList.length < this.filterTotal;
+  }
+
+  setFilesIsLoading = (filesIsLoading) => {
+    this.filesIsLoading = filesIsLoading;
+  };
+
+  fetchMoreFiles = async () => {
+    if (!this.hasMoreFiles || this.filesIsLoading || this.isLoading) return;
+
+    this.setFilesIsLoading(true);
+    console.log("fetchMoreFiles");
+
+    const newFilter = this.filter.clone();
+    newFilter.page += 1;
+    this.setFilter(newFilter);
+    const newFiles = await api.files.getFolder(newFilter.folder, newFilter);
+
+    runInAction(() => {
+      this.setFiles([...this.files, ...newFiles.files]);
+      this.setFolders([...this.folders, ...newFiles.folders]);
+      this.setFilesIsLoading(false);
+    });
+  };
+
+  //Duplicate of countTilesInRow, used to update the number of tiles in a row after the window is resized.
+  getCountTilesInRow = () => {
+    const isDesktopView = isDesktop();
+    const tileGap = isDesktopView ? 16 : 14;
+    const minTileWidth = 216 + tileGap;
+    const sectionPadding = isDesktopView ? 24 : 16;
+
+    const body = document.getElementById("section");
+    const sectionWidth = body ? body.offsetWidth - sectionPadding : 0;
+
+    return Math.floor(sectionWidth / minTileWidth);
   };
 }
 
