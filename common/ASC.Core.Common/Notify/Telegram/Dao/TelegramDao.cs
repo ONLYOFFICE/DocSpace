@@ -29,12 +29,12 @@ namespace ASC.Core.Common.Notify.Telegram;
 [Scope]
 public class TelegramDao
 {
-    public TelegramDbContext TelegramDbContext { get; set; }
-    public TelegramDao() { }
+    private readonly IDbContextFactory<TelegramDbContext> _dbContextFactory;
 
-    public TelegramDao(DbContextManager<TelegramDbContext> dbContextManager)
+
+    public TelegramDao(IDbContextFactory<TelegramDbContext> dbContextFactory)
     {
-        TelegramDbContext = dbContextManager.Value;
+        _dbContextFactory = dbContextFactory;
     }
 
     public void RegisterUser(Guid userId, int tenantId, long telegramId)
@@ -46,18 +46,22 @@ public class TelegramDao
             TelegramUserId = telegramId
         };
 
-        TelegramDbContext.AddOrUpdate(r => r.Users, user);
-        TelegramDbContext.SaveChanges();
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        dbContext.AddOrUpdate(r => r.Users, user);
+        dbContext.SaveChanges();
     }
 
     public TelegramUser GetUser(Guid userId, int tenantId)
     {
-        return TelegramDbContext.Users.Find(tenantId, userId);
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        return dbContext.Users.Find(tenantId, userId);
     }
 
     public List<TelegramUser> GetUser(long telegramId)
     {
-        return TelegramDbContext.Users
+        using var dbContext = _dbContextFactory.CreateDbContext();
+
+        return dbContext.Users
             .AsNoTracking()
             .Where(r => r.TelegramUserId == telegramId)
             .ToList();
@@ -65,22 +69,26 @@ public class TelegramDao
 
     public void Delete(Guid userId, int tenantId)
     {
-        var toRemove = TelegramDbContext.Users
+        using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var toRemove = dbContext.Users
             .Where(r => r.PortalUserId == userId)
             .Where(r => r.TenantId == tenantId)
             .ToList();
 
-        TelegramDbContext.Users.RemoveRange(toRemove);
-        TelegramDbContext.SaveChanges();
+        dbContext.Users.RemoveRange(toRemove);
+        dbContext.SaveChanges();
     }
 
     public void Delete(long telegramId)
     {
-        var toRemove = TelegramDbContext.Users
+        using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var toRemove = dbContext.Users
             .Where(r => r.TelegramUserId == telegramId)
             .ToList();
 
-        TelegramDbContext.Users.RemoveRange(toRemove);
-        TelegramDbContext.SaveChanges();
+        dbContext.Users.RemoveRange(toRemove);
+        dbContext.SaveChanges();
     }
 }

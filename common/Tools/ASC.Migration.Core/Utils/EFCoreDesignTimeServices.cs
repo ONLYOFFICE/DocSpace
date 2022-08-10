@@ -28,7 +28,7 @@ namespace Migration.Core.Utils;
 
 public static class EFCoreDesignTimeServices
 {
-    public static ServiceProvider GetServiceProvider(BaseDbContext context)
+    public static ServiceProvider GetServiceProvider(DbContext context)
     {
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddEntityFrameworkDesignTimeServices();

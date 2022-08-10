@@ -50,7 +50,7 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
 builder.WebHost.ConfigureDefaultKestrel();
 
-var startup = new BaseWorkerStartup(builder.Configuration);
+var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 
@@ -58,4 +58,4 @@ var app = builder.Build();
 
 startup.Configure(app);
 
-await app.RunAsync();
+await app.RunWithTasksAsync();

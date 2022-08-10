@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using System.Collections.Concurrent;
 global using System.ComponentModel;
 global using System.Globalization;
@@ -50,6 +51,8 @@ global using ASC.Api.Core.Log;
 global using ASC.Api.Core.Middleware;
 global using ASC.Api.Core.Routing;
 global using ASC.Api.Core.Security;
+global using ASC.AuditTrail.Repositories;
+global using ASC.AuditTrail.Types;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
@@ -61,6 +64,7 @@ global using ASC.Common.Utils;
 global using ASC.Common.Web;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
+global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.Hosting;
 global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Core.Common.Settings;
@@ -68,7 +72,9 @@ global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.EventBus;
 global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Extensions.Logger;
 global using ASC.EventBus.RabbitMQ;
+global using ASC.Feed.Context;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.EF.Context;
@@ -80,6 +86,7 @@ global using ASC.Web.Core.Helpers;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
+global using ASC.Webhooks.Core.EF.Context;
 
 global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
@@ -109,6 +116,7 @@ global using Microsoft.AspNetCore.Routing.Constraints;
 global using Microsoft.AspNetCore.Routing.Patterns;
 global using Microsoft.AspNetCore.Server.Kestrel.Core;
 global using Microsoft.AspNetCore.WebUtilities;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Diagnostics.HealthChecks;

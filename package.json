@@ -1,60 +1,38 @@
 {
-  "name": "appserver",
+  "name": "docspace",
   "version": "1.2.0",
   "private": true,
-  "workspaces": [
-    "packages/asc-web-components",
-    "packages/asc-web-common",
-    "packages/browserslist-config-asc",
-    "web/ASC.Web.Login",
-    "web/ASC.Web.Client",
-    "web/ASC.Web.Editor",
-    "products/ASC.People/Client",
-    "products/ASC.Files/Client"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "engines": {
+    "node": ">=14",
+    "yarn": ">=3"
+  },
   "scripts": {
-    "build": "lerna run build --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc",
-    "build:personal": "lerna run build:personal --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor}",
-    "build:test": "lerna run build:test --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info",
-    "build:test.translation": "lerna run build:test.translation --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info",
-    "build:test.translation:personal": "lerna run build:test.translation:personal --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info",
-    "bump": "lerna version --no-push --no-git-tag-version",
-    "clean": "lerna run clean --parallel",
-    "deploy": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc && shx cp -r public build/deploy && node build/scripts/minify-common-locales.js",
-    "deploy:personal": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor} && shx cp -r public build/deploy && node build/scripts/minify-common-locales.js",
-    "serve": "lerna run serve --parallel  --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc",
-    "start": "lerna run start --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc",
-    "start:personal": "lerna run start:personal --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor}",
-    "start-prod": "lerna run start-prod --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc",
-    "storybook": "yarn workspace @appserver/components storybook",
-    "storybook-build": "yarn workspace @appserver/components run storybook-build",
-    "sw-build": "workbox injectManifest config/workbox-config.js && yarn sw-modify && yarn sw-minimize",
-    "sw-build:personal": "workbox injectManifest config/workbox-config.js && yarn sw-modify:personal && yarn sw-minimize",
-    "sw-files-editor-replace": "replace-in-files --string='products/ASC.Files/editor/' --replacement='products/files/doceditor/' build/deploy/public/sw.js",
-    "sw-files-replace": "replace-in-files --string='products/ASC.Files/client/' --replacement='products/files/' build/deploy/public/sw.js",
-    "sw-minimize": "yarn terser --compress --mangle -- build/deploy/public/sw.js --output build/deploy/public/sw.js",
-    "sw-modify": "yarn sw-files-replace && yarn sw-files-editor-replace && yarn sw-people-replace && yarn sw-studio-replace && yarn sw-studio-login-replace && yarn sw-public-replace",
-    "sw-modify:personal": "yarn sw-files-replace && yarn sw-files-editor-replace && yarn sw-people-replace && yarn sw-studio-replace && yarn sw-public-replace",
-    "sw-people-replace": "replace-in-files --string='products/ASC.People/client/' --replacement='products/people/' build/deploy/public/sw.js",
-    "sw-public-replace": "replace-in-files --string='public/' --replacement='static/' build/deploy/public/sw.js",
-    "sw-studio-login-replace": "replace-in-files --string='studio/login/' --replacement='login/' build/deploy/public/sw.js",
-    "sw-studio-replace": "replace-in-files --string='studio/client/' --replacement='/' build/deploy/public/sw.js",
-    "test": "yarn workspace @appserver/components test",
-    "wipe": "shx rm -rf node_modules yarn.lock web/**/node_modules products/**/node_modules",
-    "debug-info": "auto-changelog --unreleased-only --template debuginfo --output public/debuginfo.md",
-    "e2e.test": "lerna run test:sequential --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
-    "e2e.test:sequential": "yarn workspace @appserver/people test:sequential && yarn workspace @appserver/files test:sequential && yarn workspace @appserver/login test:sequential",
-    "e2e.test:model": "yarn workspace @appserver/people test:model && yarn workspace @appserver/files test:model && yarn workspace @appserver/login test:model",
-    "e2e.test:translation": "lerna run test:translation:model --parallel --scope {@appserver/people,@appserver/files}  && lerna run test:translation --parallel --scope {@appserver/people,@appserver/files}",
-    "e2e.test:translation:personal": "lerna run test:translation:model:personal --parallel --scope {@appserver/people,@appserver/files}  && lerna run test:translation:personal --parallel --scope {@appserver/people,@appserver/files}"
+    "build": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login,@docspace/editor}' run build",
+    "build:test": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login,@docspace/editor}' run build:test",
+    "build:test.translation": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login,@docspace/editor}' run build:test.translation",
+    "bump": "yarn version apply --all",
+    "clean": "yarn workspaces foreach -vptiR run clean",
+    "deploy": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/client && yarn workspaces foreach -ptR --from '{@docspace/client,@docspace/login,@docspace/editor}' run deploy && shx cp -r public build/deploy && node build/scripts/minify-common-locales.js",
+    "serve": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login,@docspace/editor}' run serve",
+    "start": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login,@docspace/editor}' run start",
+    "start-prod": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login,@docspace/editor}' run start-prod",
+    "storybook": "yarn workspace @docspace/components storybook",
+    "storybook-build": "yarn workspace @docspace/components run storybook-build",
+    "test": "yarn workspace @docspace/components test",
+    "wipe": "shx rm -rf node_modules yarn.lock packages/**/node_modules",
+    "e2e.test": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login}' run test:sequential",
+    "e2e.test:sequential": "yarn workspace @docspace/client test:sequential && yarn workspace @docspace/login test:sequential",
+    "e2e.test:model": "yarn workspace @docspace/client test:model && yarn workspace @docspace/login test:model",
+    "e2e.test:translation": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login}' run test:translation:model"
   },
   "devDependencies": {
-    "auto-changelog": "https://github.com/ONLYOFFICE/auto-changelog.git#master",
-    "lerna": "3.22.1",
-    "replace-in-files-cli": "^1.0.0",
     "shx": "^0.3.3",
-    "terser": "^5.8.0",
-    "workbox-cli": "^6.3.0"
+    "terser": "^5.8.0"
   },
-  "dependencies": {}
+  "packageManager": "yarn@3.2.2"
 }

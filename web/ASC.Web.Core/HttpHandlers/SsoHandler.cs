@@ -49,6 +49,7 @@ public class SsoHandlerService
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
+    private readonly CommonLinkUtility _commonLinkUtility;
     private readonly CookiesManager _cookiesManager;
     private readonly Signature _signature;
     private readonly SecurityContext _securityContext;
@@ -72,6 +73,7 @@ public class SsoHandlerService
         UserManager userManager,
         TenantManager tenantManager,
         SettingsManager settingsManager,
+        CommonLinkUtility commonLinkUtility,
         CookiesManager cookiesManager,
         Signature signature,
         SecurityContext securityContext,
@@ -88,6 +90,7 @@ public class SsoHandlerService
         _userManager = userManager;
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
+        _commonLinkUtility = commonLinkUtility;
         _cookiesManager = cookiesManager;
         _signature = signature;
         _securityContext = securityContext;
@@ -180,8 +183,9 @@ public class SsoHandlerService
                 userInfo = AddUser(userInfo);
 
                 var authKey = _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSSO);
+                
+                context.Response.Redirect(_commonLinkUtility.GetDefault() + "?token=" + HttpUtility.UrlEncode(authKey), false);
 
-                await context.Response.WriteAsync($"Authenticated with token: {authKey}");
             }
             else if (context.Request.Query["logout"] == "true")
             {
@@ -349,7 +353,7 @@ public class SsoHandlerService
             userInfo.Location = location;
             userInfo.Title = title;
 
-            var portalUserContacts = userInfo.ContactsList;
+            var portalUserContacts = userInfo.ContactsList == null ? new List<string>() : userInfo.ContactsList;
 
             var newContacts = new List<string>();
             var phones = new List<string>();
