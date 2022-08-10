@@ -29,6 +29,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Migration.Runner", "com
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ActiveDirectory", "common\ASC.ActiveDirectory\ASC.ActiveDirectory.csproj", "{DD482D67-F700-4C30-9AA6-A2BE7A1079B5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Migration.PersonalToDocspace.Creator", "common\Tools\ASC.MigrationPersonalToDocspace\ASC.Migration.PersonalToDocspace.Creator.csproj", "{9493BF4B-46DF-4BE7-AC63-83992B205A00}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Common", "common\ASC.Common\ASC.Common.csproj", "{1C5691B2-4AB1-4D3C-931C-AF7AD9CE8241}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +91,14 @@ Global
 		{DD482D67-F700-4C30-9AA6-A2BE7A1079B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD482D67-F700-4C30-9AA6-A2BE7A1079B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD482D67-F700-4C30-9AA6-A2BE7A1079B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9493BF4B-46DF-4BE7-AC63-83992B205A00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9493BF4B-46DF-4BE7-AC63-83992B205A00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9493BF4B-46DF-4BE7-AC63-83992B205A00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9493BF4B-46DF-4BE7-AC63-83992B205A00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C5691B2-4AB1-4D3C-931C-AF7AD9CE8241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C5691B2-4AB1-4D3C-931C-AF7AD9CE8241}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C5691B2-4AB1-4D3C-931C-AF7AD9CE8241}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C5691B2-4AB1-4D3C-931C-AF7AD9CE8241}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

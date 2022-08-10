@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ASC.Migration.PersonalToDocspace.Creator": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "$STORAGE_ROOT": "../../../Data"
+      }
+    }
+  }
+}

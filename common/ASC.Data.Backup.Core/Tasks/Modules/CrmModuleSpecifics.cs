@@ -13,7 +13,7 @@
 //
 // You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
 //
-// The  interactive user interfaces in modified source and object code versions of the Program must
+// The  interactive user interfaces in modifed source and object code versions of the Program must
 // display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
 //
 // Pursuant to Section 7(b) of the License you must retain the original Product logo when
@@ -77,8 +77,8 @@ public class CrmModuleSpecifics : ModuleSpecificsBase
             new TableInfo("crm_task_template_task", "tenant_id"),
             new TableInfo("crm_currency_rate", "tenant_id", "id")
             {
-                UserIDColumns = new[] {"create_by", "last_modified_by"},
-                DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"last_modified_on", false}}
+                UserIDColumns = new[] {"create_by", "last_modifed_by"},
+                DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"last_modifed_on", false}}
             }
         };
 
@@ -267,19 +267,19 @@ public class CrmInvoiceModuleSpecifics : ModuleSpecificsBase
                     },
                     new TableInfo("crm_invoice", "tenant_id", "id")
                     {
-                        UserIDColumns = new[] {"create_by", "last_modified_by"},
-                        DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"last_modified_on", false}, {"due_date", false}, {"issue_date", false}}
+                        UserIDColumns = new[] {"create_by", "last_modifed_by"},
+                        DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"last_modifed_on", false}, {"due_date", false}, {"issue_date", false}}
                     },
                     new TableInfo("crm_invoice_item", "tenant_id", "id")
                     {
-                        UserIDColumns = new[] {"create_by", "last_modified_by"},
-                        DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"last_modified_on", false}}
+                        UserIDColumns = new[] {"create_by", "last_modifed_by"},
+                        DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"last_modifed_on", false}}
                     },
                     new TableInfo("crm_invoice_line", "tenant_id", "id"),
                     new TableInfo("crm_invoice_tax", "tenant_id", "id")
                     {
-                        UserIDColumns = new[] {"create_by", "last_modified_by"},
-                        DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"last_modified_on", false}}
+                        UserIDColumns = new[] {"create_by", "last_modifed_by"},
+                        DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"last_modifed_on", false}}
                     }
                 };
         }

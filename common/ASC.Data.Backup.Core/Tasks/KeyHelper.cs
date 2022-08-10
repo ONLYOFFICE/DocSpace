@@ -26,7 +26,7 @@
 
 namespace ASC.Data.Backup.Tasks;
 
-internal static class KeyHelper
+public static class KeyHelper
 {
     private const string Databases = "databases";
 

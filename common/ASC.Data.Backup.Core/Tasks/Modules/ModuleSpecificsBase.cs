@@ -89,6 +89,24 @@ public abstract class ModuleSpecificsBase : IModuleSpecifics
         return command;
     }
 
+    public DbCommand CreateSelectCommand(DbConnection connection, int tenantId, TableInfo table, int limit, int offset, Guid id)
+    {
+        var command = connection.CreateCommand();
+        var where = "";
+        if (table.UserIDColumns.Count() > 0)
+        {
+            foreach (var column in table.UserIDColumns)
+            {
+                where = " and ";
+                where = where +  "t." + column + " = '" + id + "' ";
+            }
+        }
+
+        command.CommandText = string.Format("select t.* from {0} as t {1} {4} limit {2},{3};", table.Name, GetSelectCommandConditionText(tenantId, table), offset, limit, where);
+
+        return command;
+    }
+
     public DbCommand CreateDeleteCommand(DbConnection connection, int tenantId, TableInfo table)
     {
         var command = connection.CreateCommand();
