@@ -58,14 +58,14 @@ public class Signature
     {
         try
         {
-            var mod4 = signature.Length % 4;
+            var lastSignChar = Int32.Parse(signature.Substring(signature.Length - 1));
+            signature = signature.Remove(signature.Length - 1);
 
-            while (mod4 > 0)
+            while(lastSignChar > 0)
             {
-                signature = signature.Remove(signature.Length - 1);
-                mod4 = signature.Length % 4;
+                signature = signature + "=";
+                lastSignChar--;
             }
-
             var payloadParts = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(signature)).Split('?');
 
             if (GetHashBase64(payloadParts[1].Trim() + secret) == payloadParts[0])
