@@ -21,9 +21,10 @@ const CertificatesTable = (props) => {
   } = props;
 
   const renderRow = (certificate, index) => {
+    console.log(prefix, index);
     const onEdit = () => {
       prefix === "sp"
-        ? setSpCertificate(certificate)
+        ? setSpCertificate(certificate, index)
         : setIdpCertificate(certificate);
     };
 

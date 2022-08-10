@@ -119,6 +119,7 @@ class SsoFormStore {
   isCertificateLoading = false;
 
   defaultSettings = null;
+  editIndex = 0;
 
   constructor() {
     makeAutoObservable(this);
@@ -183,6 +184,7 @@ class SsoFormStore {
     this.spCertificate = "";
     this.spPrivateKey = "";
     this.spIsModalVisible = false;
+    this.editIndex = 0;
   };
 
   setComboBoxOption = (option) => {
@@ -554,10 +556,11 @@ class SsoFormStore {
     return array.filter((item, index, array) => array.indexOf(item) == index);
   };
 
-  setSpCertificate = (certificate) => {
+  setSpCertificate = (certificate, index) => {
     this.spCertificate = certificate.crt;
     this.spPrivateKey = certificate.key;
     this.spAction = certificate.action;
+    this.editIndex = index;
     this.spIsModalVisible = true;
   };
 
@@ -589,7 +592,12 @@ class SsoFormStore {
       },
     ];
 
-    if (this.spCertificates.find((item) => item.action === this.spAction)) {
+    if (
+      this.spCertificates.find(
+        (item, index) =>
+          item.action === this.spAction && this.editIndex !== index
+      )
+    ) {
       toastr.error(t("CertificateExist"));
       return;
     }
