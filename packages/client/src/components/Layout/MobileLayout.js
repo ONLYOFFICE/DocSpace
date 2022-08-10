@@ -132,12 +132,7 @@ class MobileLayout extends Component {
     const { children } = this.props;
 
     return (
-      <Scrollbar
-        id="customScrollBar"
-        {...scrollProp}
-        stype="mediumBlack"
-        scrollclass="mobile-scroll"
-      >
+      <Scrollbar id="customScrollBar" {...scrollProp} stype="mediumBlack">
         <LayoutContextProvider
           value={{
             scrollRefLayout: this.scrollRefPage,
