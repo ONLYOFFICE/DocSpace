@@ -81,23 +81,23 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         return ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileId));
     }
 
-    public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
+    public async IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
     {
-        return GetFileAsync(fileId).ToAsyncEnumerable();
+        var file = await GetFileAsync(fileId);
+        yield return file;
     }
 
-    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
     {
-        var list = new List<File<string>>();
-
         if (fileIds == null || !fileIds.Any())
         {
-            return AsyncEnumerable.Empty<File<string>>();
+            yield break;
         }
 
-        var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileIds)));
-
-        return result;
+        foreach (var fileId in fileIds)
+        {
+            yield return ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileId));
+        }
     }
 
     public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)

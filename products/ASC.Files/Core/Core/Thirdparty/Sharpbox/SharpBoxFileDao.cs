@@ -84,9 +84,10 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         return Task.FromResult(ToFile(GetFileById(fileId)));
     }
 
-    public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
+    public async IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
     {
-        return GetFileAsync(fileId).ToAsyncEnumerable();
+        var file = await GetFileAsync(fileId);
+        yield return file;
     }
 
     public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
@@ -365,12 +366,12 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
         var id = MakeId(file);
 
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             using (var tx = filesDbContext.Database.BeginTransaction())
             {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)

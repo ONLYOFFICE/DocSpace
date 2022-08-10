@@ -255,12 +255,12 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         var driveFolder = await GetDriveEntryAsync(folderId);
         var id = MakeId(driveFolder);
 
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)

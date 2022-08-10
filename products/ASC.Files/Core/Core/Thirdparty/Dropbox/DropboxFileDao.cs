@@ -94,21 +94,23 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         return ToFile(await GetDropboxFileAsync(fileId));
     }
 
-    public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
+    public async IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
     {
-        return GetFileAsync(fileId).ToAsyncEnumerable();
+        var file = await GetFileAsync(fileId);
+        yield return file;
     }
 
-    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
     {
         if (fileIds == null || !fileIds.Any())
         {
-            return AsyncEnumerable.Empty<File<string>>();
+            yield break;
         }
 
-        var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetDropboxFileAsync(e)));
-
-        return result;
+        foreach (var fileId in fileIds)
+        {
+            yield return ToFile(await GetDropboxFileAsync(fileId));
+        }
     }
 
     public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
@@ -353,12 +355,12 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
 
         var id = MakeId(dropboxFile);
 
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)

@@ -265,12 +265,12 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
         var boxFolder = await GetBoxFolderAsync(folderId);
         var id = MakeId(boxFolder);
 
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)

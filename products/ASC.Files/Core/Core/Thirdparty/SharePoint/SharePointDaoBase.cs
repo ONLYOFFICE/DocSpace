@@ -125,12 +125,12 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
 
     private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tx = filesDbContext.Database.BeginTransaction();
             var oldIDs = await Query(filesDbContext.ThirdpartyIdMapping)
             .Where(r => r.Id.StartsWith(oldValue))

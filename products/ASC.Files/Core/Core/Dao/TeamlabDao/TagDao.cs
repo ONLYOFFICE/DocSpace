@@ -83,7 +83,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             }
         }
 
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = Query(filesDbContext.Tag)
             .Join(filesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
             .Where(r => r.Link.TenantId == r.Tag.TenantId)
@@ -96,9 +96,9 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             q = q.Where(r => r.Link.CreateBy == subject);
         }
 
-        await foreach (var e in FromQueryAsync(q.AsAsyncEnumerable()))
+        await foreach (var e in q.AsAsyncEnumerable())
         {
-            yield return e;
+            yield return await ToTagAsync(e);
         }
     }
 
@@ -134,7 +134,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         if (filesId.Any() || foldersId.Any())
         {
 
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             var fromQuery = await FromQueryAsync(_getTagsQuery(filesDbContext, TenantID, subject, tagType, filesId, foldersId)).ToListAsync();
 
             return fromQuery
@@ -166,7 +166,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         if (filesId.Any() || foldersId.Any())
         {
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             var fromQuery = await FromQueryAsync(_getTagsQuery(filesDbContext, TenantID, subject, tagType, filesId, foldersId)).ToListAsync();
 
             return fromQuery
@@ -186,7 +186,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
     {
         var mappedId = (await MappingIDAsync(entryID)).ToString();
 
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = Query(filesDbContext.Tag)
             .Join(filesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
             .Where(r => r.Link.TenantId == r.Tag.TenantId)
@@ -194,9 +194,9 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .Where(r => r.Link.EntryId == mappedId)
             .Where(r => r.Tag.Type == tagType);
 
-        await foreach (var e in FromQueryAsync(q.AsAsyncEnumerable()))
+        await foreach (var e in q.AsAsyncEnumerable())
         {
-            yield return e;
+            yield return await ToTagAsync(e);
         }
     }
 
@@ -209,7 +209,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     public async IAsyncEnumerable<Tag> InternalGetTagsAsync(string[] names, TagType tagType)
     {
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = Query(filesDbContext.Tag)
             .Join(filesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
             .Where(r => r.Link.TenantId == r.Tag.TenantId)
@@ -217,9 +217,9 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .Where(r => names.Contains(r.Tag.Name))
             .Where(r => r.Tag.Type == tagType);
 
-        await foreach (var e in FromQueryAsync(q.AsAsyncEnumerable()))
+        await foreach (var e in q.AsAsyncEnumerable())
         {
-            yield return e;
+            yield return await ToTagAsync(e);
         }
     }
 
@@ -232,7 +232,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     public async IAsyncEnumerable<Tag> GetTagsAsync(Guid owner, TagType tagType)
     {
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         var q =
             Query(filesDbContext.Tag)
             .Join(filesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
@@ -246,15 +246,15 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         q = q.OrderByDescending(r => r.Link.CreateOn);
 
-        await foreach (var e in FromQueryAsync(q.AsAsyncEnumerable()))
+        await foreach (var e in q.AsAsyncEnumerable())
         {
-            yield return e;
+            yield return await ToTagAsync(e);
         }
     }
 
     public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0)
     {
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = Query(filesDbContext.Tag).AsNoTracking().Where(r => r.Type == tagType);
 
         if (byName)
@@ -274,26 +274,26 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         q = q.Skip(from);
 
-        await foreach (var tag in FromQueryAsync(q.AsAsyncEnumerable()))
+        await foreach (var tag in q.AsAsyncEnumerable())
         {
-            yield return tag;
+            yield return _mapper.Map<DbFilesTag, TagInfo>(tag);
         }
     }
 
     public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<string> names)
     {
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = Query(filesDbContext.Tag).AsNoTracking().Where(r => names.Contains(r.Name));
 
-        await foreach (var tag in FromQueryAsync(q.AsAsyncEnumerable()))
+        await foreach (var tag in q.AsAsyncEnumerable())
         {
-            yield return tag;
+            yield return _mapper.Map<DbFilesTag, TagInfo>(tag);
         }
     }
 
     public async Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var tagDb = _mapper.Map<TagInfo, DbFilesTag>(tagInfo);
         tagDb.TenantId = TenantID;
 
@@ -414,7 +414,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     private async Task<Tag> SaveTagAsync(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var cacheTagIdKey = string.Join("/", new[] { TenantID.ToString(), t.Owner.ToString(), t.Name, ((int)t.Type).ToString(CultureInfo.InvariantCulture) });
 
@@ -520,7 +520,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     private async Task InternalUpdateNewTagsInDbAsync(Tag tag, DateTime createOn)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var mappedId = (await MappingIDAsync(tag.EntryId)).ToString();
         var forUpdate = Query(filesDbContext.TagLink)
             .Where(r => r.TagId == tag.Id)
@@ -591,7 +591,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
     public async Task RemoveTagsAsync(FileEntry<T> entry, IEnumerable<int> tagsIds)
     {
         var entryId = (await MappingIDAsync(entry.Id)).ToString();
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var toDelete = await Query(filesDbContext.TagLink)
             .Where(r => tagsIds.Contains(r.TagId) && r.EntryId == entryId && r.EntryType == entry.FileEntryType)
@@ -603,7 +603,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     public async Task RemoveTagsAsync(IEnumerable<int> tagsIds)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var toDeleteTags = await Query(filesDbContext.Tag)
             .Where(r => tagsIds.Contains(r.Id)).ToListAsync();
@@ -637,7 +637,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     private async Task InternalRemoveTagInDbAsync(Tag tag)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var id = await Query(filesDbContext.Tag)
             .Where(r => r.Name == tag.Name &&
@@ -886,7 +886,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<T>> fileEntries)
     {
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var tags = new List<DbFilesTagLink>();
         var entryIds = new HashSet<string>();
@@ -924,9 +924,9 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                 sqlQuery = sqlQuery.Where(r => r.Tag.Owner == subject);
             }
 
-            await foreach (var e in FromQueryAsync(sqlQuery.AsAsyncEnumerable()))
+            await foreach (var e in sqlQuery.AsAsyncEnumerable())
             {
-                yield return e;
+                yield return await ToTagAsync(e);
             }
         }
 
@@ -958,7 +958,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         if (entryIds.Count > 0)
         {
-            var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            var filesDbContext = _dbContextFactory.CreateDbContext();
             var sqlQuery = Query(filesDbContext.Tag)
                 .Join(filesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
                 .Where(r => r.Link.TenantId == r.Tag.TenantId)
@@ -972,9 +972,9 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                 sqlQuery = sqlQuery.Where(r => r.Tag.Owner == subject);
             }
 
-            await foreach (var e in FromQueryAsync(sqlQuery.AsAsyncEnumerable()))
+            await foreach (var e in sqlQuery.AsAsyncEnumerable())
             {
-                yield return e;
+                yield return await ToTagAsync(e);
             }
         }
     }
@@ -991,62 +991,67 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     private async IAsyncEnumerable<Tag> InternalGetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch)
     {
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var result = AsyncEnumerable.Empty<Tag>();
-
-        var monitorFolderIds = new object[] { parentFolder.Id }.ToAsyncEnumerable();
+        var monitorFolderIds = new List<object> { parentFolder.Id };
 
         var tenantId = TenantID;
 
-        var tempTags = AsyncEnumerable.Empty<Tag>();
+        var tempTags = AsyncEnumerable.Empty<TagLinkData>();
 
         if (parentFolder.FolderType == FolderType.SHARE)
         {
-            tempTags = tempTags.Concat(FromQueryAsync(_tmpShareFileTagsQuery(filesDbContext, tenantId, subject, FolderType.USER)));
-            tempTags = tempTags.Concat(FromQueryAsync(_tmpShareFolderTagsQuery(filesDbContext, tenantId, subject, FolderType.USER)));
-            tempTags = tempTags.Concat(FromQueryAsync(_tmpShareSboxTagsQuery(filesDbContext, tenantId, subject)));
+            tempTags = tempTags.Concat(_tmpShareFileTagsQuery(filesDbContext, tenantId, subject, FolderType.USER));
+            tempTags = tempTags.Concat(_tmpShareFolderTagsQuery(filesDbContext, tenantId, subject, FolderType.USER));
+            tempTags = tempTags.Concat(_tmpShareSboxTagsQuery(filesDbContext, tenantId, subject));
         }
         else if (parentFolder.FolderType == FolderType.Privacy)
         {
-            tempTags = tempTags.Concat(FromQueryAsync(_tmpShareFileTagsQuery(filesDbContext, tenantId, subject, FolderType.Privacy)));
-            tempTags = tempTags.Concat(FromQueryAsync(_tmpShareFolderTagsQuery(filesDbContext, tenantId, subject, FolderType.Privacy)));
+            tempTags = tempTags.Concat(_tmpShareFileTagsQuery(filesDbContext, tenantId, subject, FolderType.Privacy));
+            tempTags = tempTags.Concat(_tmpShareFolderTagsQuery(filesDbContext, tenantId, subject, FolderType.Privacy));
         }
         else if (parentFolder.FolderType == FolderType.Projects)
         {
-            tempTags = tempTags.Concat(FromQueryAsync(_projectsQuery(filesDbContext, tenantId, subject)));
+            tempTags = tempTags.Concat(_projectsQuery(filesDbContext, tenantId, subject));
         }
 
-        if (await tempTags.AnyAsync())
+        if (!deepSearch)
         {
-            if (!deepSearch)
+            await foreach (var e in tempTags)
             {
-                await foreach (var e in tempTags)
-                {
-                    yield return e;
-                }
-
-                yield break;
+                yield return await ToTagAsync(e);
             }
 
-            monitorFolderIds = monitorFolderIds.Concat(tempTags.Where(x => x.EntryType == FileEntryType.Folder).Select(x => x.EntryId));
-            result = result.Concat(tempTags);
+            yield break;
         }
 
-        var monitorFolderIdsInt = await monitorFolderIds.OfType<int>().ToListAsync();
+        await foreach (var e in tempTags)
+        {
+            var tag = await ToTagAsync(e);
+            yield return tag;
+
+            if (tag.EntryType == FileEntryType.Folder)
+            {
+                monitorFolderIds.Add(tag.EntryId);
+            }
+        }
+
+
+        var monitorFolderIdsInt = monitorFolderIds.OfType<int>().ToList();
         var subFoldersSqlQuery = _getFolderQuery(filesDbContext, monitorFolderIdsInt, deepSearch);
 
-        monitorFolderIds = monitorFolderIds.Concat(subFoldersSqlQuery.Select(r => (object)r));
+        monitorFolderIds.AddRange(await subFoldersSqlQuery.Select(r => (object)r).ToListAsync());
 
-        var monitorFolderIdsStrings = await monitorFolderIds.Select(r => r.ToString()).ToListAsync();
+        var monitorFolderIdsStrings = monitorFolderIds.Select(r => r.ToString()).ToList();
 
-        result = result.Concat(FromQueryAsync(_newTagsForFoldersQuery(filesDbContext, tenantId, subject, monitorFolderIdsStrings)));
+        var result = AsyncEnumerable.Empty<TagLinkData>();
+        result = result.Concat(_newTagsForFoldersQuery(filesDbContext, tenantId, subject, monitorFolderIdsStrings));
 
-        var where = (deepSearch ? await monitorFolderIds.ToArrayAsync() : new object[] { parentFolder.Id })
+        var where = (deepSearch ? monitorFolderIds : new List<object> { parentFolder.Id })
             .Select(r => r.ToString())
             .ToList();
 
-        result = result.Concat(FromQueryAsync(_newTagsForFilesQuery(filesDbContext, tenantId, subject, where)));
+        result = result.Concat(_newTagsForFilesQuery(filesDbContext, tenantId, subject, where));
 
         if (parentFolder.FolderType == FolderType.USER || parentFolder.FolderType == FolderType.COMMON)
         {
@@ -1062,25 +1067,17 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
             if (thirdpartyFolderIds.Count > 0)
             {
-                result = result.Concat(FromQueryAsync(_newTagsForSBoxQuery(filesDbContext, tenantId, subject, thirdpartyFolderIds)));
+                result = result.Concat(_newTagsForSBoxQuery(filesDbContext, tenantId, subject, thirdpartyFolderIds));
             }
         }
         if (parentFolder.FolderType == FolderType.VirtualRooms)
         {
-            result = result.Concat(FromQueryAsync(_newTagsThirdpartyRoomsQuery(filesDbContext, tenantId, subject)));
+            result = result.Concat(_newTagsThirdpartyRoomsQuery(filesDbContext, tenantId, subject));
         }
 
         await foreach (var e in result)
         {
-            yield return e;
-        }
-    }
-
-    protected async IAsyncEnumerable<TagInfo> FromQueryAsync(IAsyncEnumerable<DbFilesTag> dbFilesTags)
-    {
-        await foreach (var tag in dbFilesTags)
-        {
-            yield return _mapper.Map<DbFilesTag, TagInfo>(tag);
+            yield return await ToTagAsync(e);
         }
     }
 
