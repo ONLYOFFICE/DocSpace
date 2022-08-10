@@ -107,7 +107,7 @@ const ListComponent = ({
               listComponentRef.current = refList;
               listRef.current = refList;
             }}
-            style={{ height: "100% !important" }}
+            style={{ height: "100% !important", overflow: "hidden" }}
             //outerElementType={Scroll}
           >
             {viewAs === "table" ? renderTable : renderRow}

@@ -79,7 +79,7 @@ const GridComponent = ({
             }}
             //outerElementType={Scroll}
             overscanCount={5} //TODO: inf-scroll
-            style={{ height: "100% !important" }}
+            style={{ height: "100% !important", overflow: "hidden" }}
           >
             {renderTile}
           </List>
