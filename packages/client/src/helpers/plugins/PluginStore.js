@@ -1,7 +1,10 @@
+import { PluginType } from "./constants";
+
 class PluginStore {
   plugins = null;
   contextMenuItems = null;
   mainButtonItems = null;
+  profileMenuItems = null;
 
   constructor() {
     this.plugins = new Map();
@@ -11,8 +14,6 @@ class PluginStore {
   }
 
   installPlugin(id, plugin) {
-    plugin.init(this);
-
     this.plugins.set(+id, plugin);
 
     if (plugin.isActive) {
@@ -30,12 +31,48 @@ class PluginStore {
 
   activatePlugin(id) {
     this.plugins.get(+id).isActive = true;
-    this.plugins.get(+id).activate();
+    const pluginItems = this.plugins.get(+id).activate();
+
+    if (!pluginItems) return;
+
+    Array.from(itemsMap, ([key, value]) => {
+      switch (key) {
+        case PluginType.CONTEXT_MENU:
+          Array.from(value, ([key, item]) =>
+            this.addContextMenuItem(key, item)
+          );
+          return;
+        case PluginType.ACTION_BUTTON:
+          Array.from(value, ([key, item]) => this.addMainButtonItem(key, item));
+          return;
+        case PluginType.PROFILE_MENU:
+          Array.from(value, ([key, item]) =>
+            this.addProfileMenuItem(key, item)
+          );
+          return;
+      }
+    });
   }
 
   deactivatePlugin(id) {
     this.plugins.get(+id).isActive = false;
-    this.plugins.get(+id).deactivate();
+    const pluginItems = this.plugins.get(+id).deactivate();
+
+    if (!pluginItems) return;
+
+    Array.from(itemsMap, ([key, value]) => {
+      switch (key) {
+        case PluginType.CONTEXT_MENU:
+          value.map((key) => this.deleteContextMenuItem(key));
+          return;
+        case PluginType.ACTION_BUTTON:
+          value.map((key) => this.deleteMainButtonItem(key));
+          return;
+        case PluginType.PROFILE_MENU:
+          value.map((key) => this.deleteProfileMenuItem(key));
+          return;
+      }
+    });
   }
 
   addContextMenuItem(key, contextMenuItem) {
