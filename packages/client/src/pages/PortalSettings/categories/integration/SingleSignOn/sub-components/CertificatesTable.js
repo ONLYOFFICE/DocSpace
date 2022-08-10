@@ -21,15 +21,16 @@ const CertificatesTable = (props) => {
   } = props;
 
   const renderRow = (certificate, index) => {
+    console.log(prefix, index);
     const onEdit = () => {
       prefix === "sp"
-        ? setSpCertificate(certificate)
+        ? setSpCertificate(certificate, index)
         : setIdpCertificate(certificate);
     };
 
     const onDelete = () => {
       prefix === "sp"
-        ? delSpCertificate(certificate.crt, certificate.action)
+        ? delSpCertificate(certificate.action)
         : delIdpCertificate(certificate.crt);
     };
 

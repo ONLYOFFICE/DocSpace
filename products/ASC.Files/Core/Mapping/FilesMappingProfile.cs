@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,38 +24,29 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var options = new WebApplicationOptions
+namespace ASC.Files.Core.Mapping;
+
+public class FilesMappingProfile : AutoMapper.Profile
 {
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
-};
+    public FilesMappingProfile()
+    {
+        CreateMap(typeof(Configuration<>), typeof(ConfigurationDto<>));
 
-var builder = WebApplication.CreateBuilder(options);
+        CreateMap<DbFileQuery, File<int>>()
+                .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.CreateOn))
+                .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.ModifiedOn))
+                .IncludeMembers(r => r.File)
+                .ConstructUsingServiceLocator();
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile($"appsettings.services.json", true);
-}, (hostContext, services, diHelper) =>
-{
-    services.AddHttpClient();
+        CreateMap<DbFile, File<int>>();
 
-    diHelper.TryAdd<DbWorker>();
+        CreateMap<DbFolder, Folder<int>>();
 
-    services.AddHostedService<BuildQueueService>();
-    diHelper.TryAdd<BuildQueueService>();
-
-    services.AddHostedService<WorkerService>();
-    diHelper.TryAdd<WorkerService>();
-});
-
-builder.WebHost.ConfigureDefaultKestrel();
-
-var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-var app = builder.Build();
-
-startup.Configure(app);
-
-await app.RunWithTasksAsync();
+        CreateMap<DbFolderQuery, Folder<int>>()
+            .IncludeMembers(r => r.Folder)
+            .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.CreateOn))
+            .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.ModifiedOn))
+            .AfterMap<FolderMappingAction>()
+            .ConstructUsingServiceLocator();
+    }
+}

@@ -2755,6 +2755,13 @@ const Dark = {
       color: "#C4C4C4",
     },
   },
+
+  tag: {
+    background: "#3D3D3D",
+    hoverBackground: "#333333",
+    disabledBackground: "#858585",
+    newTagBackground: "#333333",
+  },
 };
 
 export default Dark;

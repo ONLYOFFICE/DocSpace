@@ -119,6 +119,7 @@ class SsoFormStore {
   isCertificateLoading = false;
 
   defaultSettings = null;
+  editIndex = 0;
 
   constructor() {
     makeAutoObservable(this);
@@ -174,11 +175,16 @@ class SsoFormStore {
   };
 
   closeIdpModal = () => {
+    this.idpCertificate = "";
+    this.idpPrivateKey = "";
     this.idpIsModalVisible = false;
   };
 
   closeSpModal = () => {
+    this.spCertificate = "";
+    this.spPrivateKey = "";
     this.spIsModalVisible = false;
+    this.editIndex = 0;
   };
 
   setComboBoxOption = (option) => {
@@ -550,10 +556,11 @@ class SsoFormStore {
     return array.filter((item, index, array) => array.indexOf(item) == index);
   };
 
-  setSpCertificate = (certificate) => {
+  setSpCertificate = (certificate, index) => {
     this.spCertificate = certificate.crt;
     this.spPrivateKey = certificate.key;
     this.spAction = certificate.action;
+    this.editIndex = index;
     this.spIsModalVisible = true;
   };
 
@@ -564,9 +571,9 @@ class SsoFormStore {
     this.idpIsModalVisible = true;
   };
 
-  delSpCertificate = (cert, action) => {
+  delSpCertificate = (action) => {
     this.spCertificates = this.spCertificates.filter(
-      (certificate) => certificate.crt !== cert && certificate.action !== action
+      (certificate) => certificate.action !== action
     );
   };
 
@@ -585,7 +592,12 @@ class SsoFormStore {
       },
     ];
 
-    if (this.spCertificates.find((item) => item.action === this.spAction)) {
+    if (
+      this.spCertificates.find(
+        (item, index) =>
+          item.action === this.spAction && this.editIndex !== index
+      )
+    ) {
       toastr.error(t("CertificateExist"));
       return;
     }
@@ -601,6 +613,7 @@ class SsoFormStore {
       const newCertificates = res.data;
       newCertificates.map((cert) => {
         this.spCertificates = [...this.spCertificates, cert];
+        this.checkedSpBoxes(cert);
       });
       this.isCertificateLoading = false;
       this.closeSpModal();
@@ -608,6 +621,21 @@ class SsoFormStore {
       this.isCertificateLoading = false;
       toastr.error(err);
       console.error(err);
+    }
+  };
+
+  checkedSpBoxes = (cert) => {
+    if (cert.action === "signing") {
+      this.spSignAuthRequests = true;
+      this.spSignLogoutRequests = true;
+    }
+    if (cert.action === "encrypt") {
+      this.spEncryptAssertions = true;
+    }
+    if (cert.action === "signing and encrypt") {
+      this.spSignAuthRequests = true;
+      this.spSignLogoutRequests = true;
+      this.spEncryptAssertions = true;
     }
   };
 
@@ -636,6 +664,7 @@ class SsoFormStore {
       const newCertificates = res.data;
       newCertificates.map((cert) => {
         this.idpCertificates = [...this.idpCertificates, cert];
+        this.checkedIdpBoxes(cert);
       });
       this.isCertificateLoading = false;
       this.closeIdpModal();
@@ -643,6 +672,21 @@ class SsoFormStore {
       this.isCertificateLoading = false;
       toastr.error(err);
       console.error(err);
+    }
+  };
+
+  checkedIdpBoxes = (cert) => {
+    if (cert.action === "verification") {
+      this.idpVerifyAuthResponsesSign = true;
+      this.idpVerifyLogoutRequestsSign = true;
+    }
+    if (cert.action === "decrypt") {
+      this.idpVerifyLogoutResponsesSign = true;
+    }
+    if (cert.action === "verification and decrypt") {
+      this.idpVerifyAuthResponsesSign = true;
+      this.idpVerifyLogoutRequestsSign = true;
+      this.idpVerifyLogoutResponsesSign = true;
     }
   };
 
