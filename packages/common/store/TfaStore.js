@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
-import api from "@docspace/common/api";
-//import history from "../history";
+import api from "../api";
+import history from "../history";
 
 class TfaStore {
   tfaSettings = null;

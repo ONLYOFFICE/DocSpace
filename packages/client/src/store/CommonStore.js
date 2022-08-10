@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import authStore from "SRC_DIR/store/AuthStore";
+import authStore from "@docspace/common/store/AuthStore";
 import api from "@docspace/common/api";
 
 class CommonStore {

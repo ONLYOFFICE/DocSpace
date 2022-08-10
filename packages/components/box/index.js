@@ -69,8 +69,10 @@ const StyledBox = styled.div`
   ${(props) => props.widthProp && widthStyle(props.widthProp)}
 `;
 
-const Box = (props) => <StyledBox {...props} />;
+const Box = (props) => <StyledBox as={props.as} {...props} />;
 Box.propTypes = {
+  /** sets the tag through which to render the component */
+  as: PropTypes.string,
   /** sets the distribution of space between and around content items
    * along a flexbox's cross-axis or a grid's block axis */
   alignContent: PropTypes.string,

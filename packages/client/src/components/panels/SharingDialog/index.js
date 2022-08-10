@@ -2,7 +2,10 @@ import React, { useEffect } from "react";
 import { Provider as MobxProvider, inject, observer } from "mobx-react";
 import { getShareFiles } from "@docspace/common/api/files";
 import SharingPanel from "../SharingPanel";
-import store from "SRC_DIR/store";
+
+import stores from "../../../store/index.Files";
+import store from "client/store";
+
 const { auth: authStore } = store;
 
 const SharingDialog = ({
@@ -66,7 +69,7 @@ class SharingModal extends React.Component {
 
   render() {
     return (
-      <MobxProvider {...store}>
+      <MobxProvider auth={authStore} {...stores}>
         <SharingDialogWrapper {...this.props} />
       </MobxProvider>
     );

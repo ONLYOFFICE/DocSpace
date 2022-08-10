@@ -1,11 +1,11 @@
 import { makeAutoObservable } from "mobx";
-import api from "@docspace/common/api";
-import { LANGUAGE, TenantStatus } from "@docspace/common/constants";
-import { combineUrl } from "@docspace/common/utils";
-import FirebaseHelper from "@docspace/common/utils/firebase";
-import { AppServerConfig, ThemeKeys } from "@docspace/common/constants";
-import { version } from "PACKAGE_FILE";
-import SocketIOHelper from "@docspace/common/utils/socket";
+import api from "../api";
+import { LANGUAGE, TenantStatus } from "../constants";
+import { combineUrl } from "../utils";
+import FirebaseHelper from "../utils/firebase";
+import { AppServerConfig, ThemeKeys } from "../constants";
+import { version } from "../package.json";
+import SocketIOHelper from "../utils/socket";
 
 import { Dark, Base } from "@docspace/components/themes";
 

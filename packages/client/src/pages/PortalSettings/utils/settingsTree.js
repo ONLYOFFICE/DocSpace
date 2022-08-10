@@ -124,6 +124,13 @@ export const settingsTree = [
       {
         key: "3-0",
         icon: "",
+        link: "single-sign-on",
+        tKey: "SingleSignOn",
+        isCategory: true,
+      },
+      {
+        key: "3-1",
+        icon: "",
         link: "third-party-services",
         tKey: "ThirdPartyAuthorization",
         isCategory: true,

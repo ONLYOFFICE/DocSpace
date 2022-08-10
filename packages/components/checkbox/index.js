@@ -57,6 +57,7 @@ class Checkbox extends React.Component {
   }
 
   onInputChange(e) {
+    if (this.props.isDisabled) return e.preventDefault();
     e.stopPropagation();
     this.setState({ checked: e.target.checked });
     this.props.onChange && this.props.onChange(e);

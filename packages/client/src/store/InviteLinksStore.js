@@ -3,14 +3,14 @@ import {
   getInvitationLinks,
   getShortenedLink,
 } from "@docspace/common/api/portal";
+import store from "client/store";
 
+const { auth: authStore } = store;
 class InviteLinksStore {
   userLink = null;
   guestLink = null;
-  authStore = null;
 
-  constructor(authStore) {
-    this.authStore = authStore;
+  constructor() {
     makeAutoObservable(this);
   }
 
@@ -22,7 +22,7 @@ class InviteLinksStore {
   };
 
   getPortalInviteLinks = async () => {
-    const isViewerAdmin = this.authStore.isAdmin;
+    const isViewerAdmin = authStore.isAdmin;
 
     if (!isViewerAdmin) return Promise.resolve();
 
