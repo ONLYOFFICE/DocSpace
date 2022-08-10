@@ -61,7 +61,6 @@ public class FileSecurity : IFileSecurity
     private readonly AuthManager _authManager;
     private readonly GlobalFolder _globalFolder;
     private readonly FileSecurityCommon _fileSecurityCommon;
-    private readonly FilesSettingsHelper _filesSettingsHelper;
 
     public FileSecurity(
         IDaoFactory daoFactory,
@@ -70,8 +69,7 @@ public class FileSecurity : IFileSecurity
         AuthContext authContext,
         AuthManager authManager,
         GlobalFolder globalFolder,
-        FileSecurityCommon fileSecurityCommon,
-        FilesSettingsHelper filesSettingsHelper)
+        FileSecurityCommon fileSecurityCommon)
     {
         _daoFactory = daoFactory;
         _userManager = userManager;
@@ -80,7 +78,6 @@ public class FileSecurity : IFileSecurity
         _authManager = authManager;
         _globalFolder = globalFolder;
         _fileSecurityCommon = fileSecurityCommon;
-        _filesSettingsHelper = filesSettingsHelper;
     }
 
     public IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
@@ -457,7 +454,7 @@ public class FileSecurity : IFileSecurity
         }
     }
 
-    private IAsyncEnumerable<FileEntry<T>> FilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
+    private IAsyncEnumerable<FileEntry<T>> FilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId)
     {
         var user = _userManager.GetUsers(userId);
         var isOutsider = user.IsOutsider(_userManager);
@@ -467,10 +464,10 @@ public class FileSecurity : IFileSecurity
             return AsyncEnumerable.Empty<FileEntry<T>>();
         }
 
-        return InternalFilterAsync(entries, action, userId, shares, user, isOutsider);
+        return InternalFilterAsync(entries, action, userId, user, isOutsider);
     }
 
-    private async IAsyncEnumerable<FileEntry<T>> InternalFilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, UserInfo user, bool isOutsider)
+    private async IAsyncEnumerable<FileEntry<T>> InternalFilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, UserInfo user, bool isOutsider)
     {
         var isVisitor = user.IsVisitor(_userManager);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
@@ -478,7 +475,7 @@ public class FileSecurity : IFileSecurity
 
         await foreach (var e in entries.Where(f => f != null))
         {
-            if (await FilterEntry(e, action, userId, shares, isOutsider, isVisitor, isAuthenticated, isAdmin))
+            if (await FilterEntry(e, action, userId, null, isOutsider, isVisitor, isAuthenticated, isAdmin))
             {
                 yield return e;
             }
@@ -644,7 +641,7 @@ public class FileSecurity : IFileSecurity
                 }
             }
 
-            if (e.RootFolderType == FolderType.COMMON && isAuthenticated)
+            if (e.RootFolderType == FolderType.COMMON && isAdmin)
             {
                 // administrator in Common has all right
                 return true;
@@ -661,12 +658,12 @@ public class FileSecurity : IFileSecurity
                 return true;
             }
 
+            var subjects = new List<Guid>();
             if (shares == null)
             {
-                var subjects = GetUserSubjects(userId);
+                subjects = GetUserSubjects(userId);
                 shares = (await GetSharesAsync(e))
                     .Join(subjects, r => r.Subject, s => s, (r, s) => r)
-                    .OrderBy(r => r, new SubjectComparer(subjects))
                     .ToList();
                 // shares ordered by level
             }
@@ -675,21 +672,23 @@ public class FileSecurity : IFileSecurity
             if (e.FileEntryType == FileEntryType.File)
             {
                 ace = shares
-                    .OrderByDescending(r => r.Share, new FileShareRecord.ShareComparer())
+                    .OrderBy(r => r, new SubjectComparer(subjects))
+                    .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
                     .FirstOrDefault(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.File);
                 if (ace == null)
                 {
                     // share on parent folders
                     ace = shares.Where(r => Equals(r.EntryId, file.ParentId) && r.EntryType == FileEntryType.Folder)
-                                .OrderBy(r => r.Level)
-                                .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
+                                .OrderBy(r => r, new SubjectComparer(subjects))
+                                .ThenBy(r => r.Level)
                                 .FirstOrDefault();
                 }
             }
             else
             {
                 ace = shares.Where(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.Folder)
-                            .OrderBy(r => r.Level)
+                            .OrderBy(r => r, new SubjectComparer(subjects))
+                            .ThenBy(r => r.Level)
                             .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
                             .FirstOrDefault();
             }
