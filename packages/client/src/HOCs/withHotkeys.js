@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
-import { FileAction } from "@docspace/common/constants";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 import toastr from "client/toastr";
 
@@ -51,6 +50,7 @@ const withHotkeys = (Component) => {
 
       selection,
       setFavoriteAction,
+      filesIsLoading,
     } = props;
 
     const hotkeysFilter = {
@@ -58,7 +58,11 @@ const withHotkeys = (Component) => {
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
-      enabled: !someDialogIsOpen && enabledHotkeys && !mediaViewerIsVisible,
+      enabled:
+        !someDialogIsOpen &&
+        enabledHotkeys &&
+        !mediaViewerIsVisible &&
+        !filesIsLoading,
       // keyup: true,
       // keydown: false,
     };
@@ -322,9 +326,9 @@ const withHotkeys = (Component) => {
         setSelected,
         viewAs,
         setViewAs,
-        fileActionStore,
         enabledHotkeys,
         selection,
+        filesIsLoading,
       } = filesStore;
 
       const {
@@ -413,6 +417,7 @@ const withHotkeys = (Component) => {
 
         selection,
         setFavoriteAction,
+        filesIsLoading,
       };
     }
   )(observer(WithHotkeys));

@@ -85,7 +85,14 @@ class HotkeyStore {
       ) {
         //console.log("element is visible");
       } else {
-        scroll.scrollTo(0, el.offsetTop - scrollRect.height / 2);
+        const offset = el.closest(".window-item")?.offsetTop;
+        const offsetTop = offset
+          ? offset
+          : viewAs === "tile"
+          ? el.parentElement.parentElement.offsetTop
+          : el.offsetTop;
+
+        scroll.scrollTo(0, offsetTop - scrollRect.height / 2);
         //console.log("element is not visible");
       }
     }
