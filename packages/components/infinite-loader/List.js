@@ -32,7 +32,11 @@ const ListComponent = ({
     const isLoaded = isItemLoaded(index + 1);
     if (!isLoaded) return getLoader(style);
 
-    return <div style={style}>{children[index]}</div>;
+    return (
+      <div className="row-list-item window-item" style={style}>
+        {children[index]}
+      </div>
+    );
   }, areEqual);
 
   const isItemLoaded = useCallback(
@@ -48,7 +52,7 @@ const ListComponent = ({
 
     return (
       <div
-        className="table-row-list-item"
+        className="table-list-item window-item"
         style={{
           ...style,
           display: "grid",

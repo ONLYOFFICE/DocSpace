@@ -7,7 +7,6 @@ import TableHeader from "./TableHeader";
 import TableBody from "@docspace/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
-import { isTablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
 const marginCss = css`

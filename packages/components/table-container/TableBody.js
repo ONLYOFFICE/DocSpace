@@ -41,6 +41,7 @@ const TableBody = (props) => {
 
 TableBody.defaultProps = {
   itemHeight: 40,
+  useReactWindow: false,
 };
 
 export default TableBody;

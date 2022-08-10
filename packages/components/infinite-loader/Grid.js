@@ -33,7 +33,11 @@ const GridComponent = ({
   );
 
   const renderTile = memo(({ index, style }) => {
-    return <div style={style}>{children[index]}</div>;
+    return (
+      <div className="window-item" style={style}>
+        {children[index]}
+      </div>
+    );
   }, areEqual);
 
   const getItemSize = (index) => {

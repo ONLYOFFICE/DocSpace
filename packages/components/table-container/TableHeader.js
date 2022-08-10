@@ -563,7 +563,7 @@ class TableHeader extends React.Component {
   updateTableRows = (str) => {
     if (!this.props.useReactWindow) return;
 
-    const rows = document.querySelectorAll(".table-row, .table-row-list-item");
+    const rows = document.querySelectorAll(".table-row, .table-list-item");
 
     if (rows?.length) {
       for (let i = 0; i < rows.length; i++) {
@@ -708,6 +708,7 @@ class TableHeader extends React.Component {
 TableHeader.defaultProps = {
   sortingVisible: true,
   infoPanelVisible: false,
+  useReactWindow: false,
 };
 
 TableHeader.propTypes = {

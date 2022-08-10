@@ -16,6 +16,10 @@ const TableContainer = (props) => {
   );
 };
 
+TableContainer.defaultProps = {
+  useReactWindow: false,
+};
+
 TableContainer.propTypes = {
   forwardedRef: PropTypes.shape({ current: PropTypes.any }),
   useReactWindow: PropTypes.bool,
