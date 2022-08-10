@@ -45,4 +45,5 @@ builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
 });
 
 var app = builder.Build();
-await app.RunAsync();
+
+await app.RunWithTasksAsync();

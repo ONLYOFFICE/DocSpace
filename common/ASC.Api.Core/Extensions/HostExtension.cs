@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,38 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var options = new WebApplicationOptions
+namespace ASC.Api.Core.Extensions;
+
+public interface IStartupTask
 {
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
-};
+    Task ExecuteAsync(CancellationToken cancellationToken = default);
+}
 
-var builder = WebApplication.CreateBuilder(options);
-
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
+public static class HostExtension
 {
-    config.AddJsonFile($"appsettings.services.json", true);
-}, (hostContext, services, diHelper) =>
-{
-    services.AddHttpClient();
+    public static async Task RunWithTasksAsync(this WebApplication webHost, CancellationToken cancellationToken = default)
+    {
+        // Load all tasks from DI
+        var startupTasks = webHost.Services.GetServices<IStartupTask>();
 
-    diHelper.TryAdd<DbWorker>();
+        // Execute all the tasks
+        foreach (var startupTask in startupTasks)
+        {
+            await startupTask.ExecuteAsync(cancellationToken);
+        }
 
-    services.AddHostedService<BuildQueueService>();
-    diHelper.TryAdd<BuildQueueService>();
-
-    services.AddHostedService<WorkerService>();
-    diHelper.TryAdd<WorkerService>();
-});
-
-builder.WebHost.ConfigureDefaultKestrel();
-
-var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-var app = builder.Build();
-
-startup.Configure(app);
-
-await app.RunWithTasksAsync();
+        // Start the tasks as normal
+        await webHost.RunAsync(cancellationToken);
+    }
+}

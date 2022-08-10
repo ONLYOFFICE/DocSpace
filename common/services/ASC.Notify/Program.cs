@@ -53,8 +53,6 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     diHelper.TryAdd<SmtpSender>();
     diHelper.TryAdd<AWSSender>(); // fix private
 
-    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
-
     diHelper.TryAdd<NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
     diHelper.TryAdd<NotifySendMessageRequestedIntegrationEventHandler>();
 
@@ -64,7 +62,7 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     services.AddBaseDbContextPool<NotifyDbContext>();
 });
 
-var startup = new BaseWorkerStartup(builder.Configuration);
+var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 
@@ -82,7 +80,7 @@ var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService
 eventBus.Subscribe<NotifyInvokeSendMethodRequestedIntegrationEvent, NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
 eventBus.Subscribe<NotifySendMessageRequestedIntegrationEvent, NotifySendMessageRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 public partial class Program
 {

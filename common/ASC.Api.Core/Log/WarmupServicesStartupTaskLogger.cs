@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,38 +24,16 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var options = new WebApplicationOptions
+namespace ASC.Api.Core.Log;
+
+internal static partial class WarmupServicesStartupTaskLogger
 {
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
-};
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Warm up services is starting...")]
+    public static partial void TraceWarmupStarted(this ILogger<WarmupServicesStartupTask> logger);
 
-var builder = WebApplication.CreateBuilder(options);
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Warm up services finished. Processed: {processed}, Successed: {successed}, Failed: {failed}, Time: {processedTime} ms")]
+    public static partial void TraceWarmupFinished(this ILogger<WarmupServicesStartupTask> logger, int processed, int successed, int failed, double processedTime);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile($"appsettings.services.json", true);
-}, (hostContext, services, diHelper) =>
-{
-    services.AddHttpClient();
-
-    diHelper.TryAdd<DbWorker>();
-
-    services.AddHostedService<BuildQueueService>();
-    diHelper.TryAdd<BuildQueueService>();
-
-    services.AddHostedService<WorkerService>();
-    diHelper.TryAdd<WorkerService>();
-});
-
-builder.WebHost.ConfigureDefaultKestrel();
-
-var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-var app = builder.Build();
-
-startup.Configure(app);
-
-await app.RunWithTasksAsync();
+    [LoggerMessage(Level = LogLevel.Debug, Message = "#{index} Failed proccessed {serviceTitle} service with exception {errorMessage}")]
+    public static partial void DebugWarmupFailed(this ILogger<WarmupServicesStartupTask> logger, int index, String serviceTitle, String errorMessage);
+}

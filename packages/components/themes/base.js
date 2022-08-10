@@ -2745,6 +2745,13 @@ const Base = {
       color: grayMain,
     },
   },
+
+  tag: {
+    background: "#f3f4f4",
+    hoverBackground: "#eceef1",
+    disabledBackground: "#f8f9f9",
+    newTagBackground: "#eceef1",
+  },
 };
 
 export default Base;
