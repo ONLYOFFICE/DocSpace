@@ -933,52 +933,6 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         yield break;
     }
 
-    public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IAsyncEnumerable<FileEntry<T>> fileEntries)
-    {
-        var tags = new List<DbFilesTagLink>();
-        var entryIds = new HashSet<string>();
-        var entryTypes = new HashSet<int>();
-
-        await foreach (var r in fileEntries)
-        {
-            var idObj = await MappingIDAsync(r.Id);
-            var id = idObj.ToString();
-            var entryType = (r.FileEntryType == FileEntryType.File) ? FileEntryType.File : FileEntryType.Folder;
-
-            tags.Add(new DbFilesTagLink
-            {
-                TenantId = TenantID,
-                EntryId = id,
-                EntryType = entryType
-            });
-
-            entryIds.Add(id);
-            entryTypes.Add((int)entryType);
-        }
-
-        if (entryIds.Count > 0)
-        {
-            var filesDbContext = _dbContextFactory.CreateDbContext();
-            var sqlQuery = Query(filesDbContext.Tag)
-                .Join(filesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
-                .Where(r => r.Link.TenantId == r.Tag.TenantId)
-                .Where(r => r.Tag.Type == TagType.New)
-                .Where(x => x.Link.EntryId != null)
-                //.Where(r => tags.Any(t => t.TenantId == r.Link.TenantId && t.EntryId == r.Link.EntryId && t.EntryType == (int)r.Link.EntryType)); ;
-                .Where(r => entryIds.Contains(r.Link.EntryId) && entryTypes.Contains((int)r.Link.EntryType));
-
-            if (subject != Guid.Empty)
-            {
-                sqlQuery = sqlQuery.Where(r => r.Tag.Owner == subject);
-            }
-
-            await foreach (var e in sqlQuery.AsAsyncEnumerable())
-            {
-                yield return await ToTagAsync(e);
-            }
-        }
-    }
-
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch)
     {
         if (parentFolder == null || EqualityComparer<T>.Default.Equals(parentFolder.Id, default(T)))
