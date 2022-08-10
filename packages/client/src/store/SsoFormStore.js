@@ -174,10 +174,14 @@ class SsoFormStore {
   };
 
   closeIdpModal = () => {
+    this.idpCertificate = "";
+    this.idpPrivateKey = "";
     this.idpIsModalVisible = false;
   };
 
   closeSpModal = () => {
+    this.spCertificate = "";
+    this.spPrivateKey = "";
     this.spIsModalVisible = false;
   };
 
