@@ -3,10 +3,13 @@ import { hydrate } from "react-dom";
 import App from "./App";
 import { registerSW } from "@docspace/common/sw/helper";
 import pkg from "../../package.json";
+import { initI18n } from "./helpers/utils";
 
 const propsObj: IInitialState = window.__ASC_INITIAL_LOGIN_STATE__;
-const initialI18nStoreASC = window.initialI18nStoreASC;
+const initialI18nStoreASC: IInitialI18nStoreASC = window.initialI18nStoreASC;
 const initialLanguage = window.initialLanguage;
+
+initI18n(initialI18nStoreASC);
 
 hydrate(
   <React.Suspense fallback={<div></div>}>

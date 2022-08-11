@@ -1,12 +1,24 @@
 import { Request } from "express";
 export {};
 
+type WindowI18nType = {
+  inLoad: object[];
+  loaded: {
+    [key: string]: {
+      data: {
+        [key: string]: string | undefined;
+      };
+      namespaces?: string;
+    };
+  };
+};
 declare global {
   interface Window {
     authCallback?: (profile: object) => {};
     __ASC_INITIAL_LOGIN_STATE__: IInitialState;
-    initialI18nStoreASC?: object;
+    initialI18nStoreASC: IInitialI18nStoreASC;
     initialLanguage: string;
+    i18n: WindowI18nType;
   }
 
   interface IPortalSettings extends Object {
@@ -65,4 +77,15 @@ declare global {
   var PORT: number;
 
   type assetsType = { [key: string]: string } | undefined;
+
+  interface IInitialI18nStoreASC extends Object {
+    en: {
+      [Common: string]: { [key: any]: string };
+      [Login: string]: { [key: any]: string };
+    };
+    [key: string]: {
+      [Common: string]: { [key: any]: string };
+      [Login: string]: { [key: any]: string };
+    };
+  }
 }
