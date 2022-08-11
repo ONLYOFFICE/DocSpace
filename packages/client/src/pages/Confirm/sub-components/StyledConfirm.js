@@ -66,13 +66,13 @@ export const StyledBody = styled.div`
     margin-bottom: 16px;
   }
 
-  .info-delete {
-    margin-bottom: 24px;
-  }
-
   .phone-input {
     margin-top: 32px;
     margin-bottom: 16px;
+  }
+
+  .delete-profile-confirm {
+    margin-bottom: 8px;
   }
 `;
 

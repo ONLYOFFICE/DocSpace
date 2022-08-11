@@ -61,17 +61,21 @@ const ProfileRemoveForm = (props) => {
         </StyledHeader>
 
         <FormWrapper>
-          <Text fontSize="16px" fontWeight="600" className="confirm-subtitle">
-            {t("DeleteProfileConfirmation")}
-          </Text>
-          <Text className="info-delete">
-            {t("DeleteProfileConfirmationInfo")}
-          </Text>
+          <div className="subtitle">
+            <Text
+              fontSize="16px"
+              fontWeight="600"
+              className="delete-profile-confirm"
+            >
+              {t("DeleteProfileConfirmation")}
+            </Text>
+            <Text>{t("DeleteProfileConfirmationInfo")}</Text>
+          </div>
 
           <Button
-            className="confirm-button"
             primary
-            size="normal"
+            scale
+            size="medium"
             label={t("DeleteProfileBtn")}
             tabIndex={1}
             isDisabled={isLoading}
