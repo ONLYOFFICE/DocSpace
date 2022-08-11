@@ -722,35 +722,34 @@ public class EntryManager
         var tagDao = _daoFactory.GetTagDao<int>();
         var tags = tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Favorite);
 
-        var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File);
         var fileIdsInt = Enumerable.Empty<int>();
         var fileIdsString = Enumerable.Empty<string>();
-
-        await foreach (var fileId in fileIds)
-        {
-            if (fileId.EntryId is int)
-            {
-                fileIdsInt.Append((int)fileId.EntryId);
-            }
-            if (fileId.EntryId is string)
-            {
-                fileIdsString.Append((string)fileId.EntryId);
-            }
-        }
-
-        var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder);
         var folderIdsInt = Enumerable.Empty<int>();
         var folderIdsString = Enumerable.Empty<string>();
 
-        await foreach (var folderId in folderIds)
+        await foreach (var tag in tags)
         {
-            if (folderId.EntryId is int)
+            if (tag.EntryType == FileEntryType.File)
             {
-                folderIdsInt.Append((int)folderId.EntryId);
+                if (tag.EntryId is int)
+                {
+                    fileIdsInt.Append((int)tag.EntryId);
+                }
+                else if (tag.EntryId is string)
+                {
+                    fileIdsString.Append((string)tag.EntryId);
+                }
             }
-            if (folderId.EntryId is string)
+            else
             {
-                folderIdsString.Append((string)folderId.EntryId);
+                if (tag.EntryId is int)
+                {
+                    folderIdsInt.Append((int)tag.EntryId);
+                }
+                else if (tag.EntryId is string)
+                {
+                    folderIdsString.Append((string)tag.EntryId);
+                }
             }
         }
 
