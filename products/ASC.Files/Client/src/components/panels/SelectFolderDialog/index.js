@@ -284,6 +284,7 @@ SelectFolderDialog.propTypes = {
     "third-party",
     "exceptSortedByTags",
     "exceptPrivacyTrashFolders",
+    "rooms",
     "",
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),

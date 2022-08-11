@@ -256,6 +256,7 @@ SelectFolderInput.propTypes = {
     "third-party",
     "exceptSortedByTags",
     "exceptPrivacyTrashFolders",
+    "rooms",
     "",
   ]),
 };
