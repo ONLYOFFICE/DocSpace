@@ -6,13 +6,12 @@ import { renderToString } from "react-dom/server";
 import { I18nextProvider } from "react-i18next";
 import i18next from "i18next";
 
-const sheet = new ServerStyleSheet();
-
 const renderApp = (
   i18n: typeof i18next,
   initialState: IInitialState
-): string => {
-  return renderToString(
+): { component: string; styleTags: string } => {
+  const sheet = new ServerStyleSheet();
+  const component = renderToString(
     sheet.collectStyles(
       <I18nextProvider i18n={i18n}>
         <GlobalStyle />
@@ -20,8 +19,9 @@ const renderApp = (
       </I18nextProvider>
     )
   );
+  const styleTags = sheet.getStyleTags();
+
+  return { component, styleTags };
 };
 
 export default renderApp;
-
-export const getStyleTags = sheet.getStyleTags;

@@ -7,7 +7,7 @@ import fs from "fs";
 import logger from "morgan";
 import winston, { stream } from "./lib/logger";
 import { getAssets, getInitialState } from "./lib/helpers";
-import renderApp, { getStyleTags } from "./lib/helpers/render-app";
+import renderApp from "./lib/helpers/render-app";
 import i18nextMiddleware, { I18next } from "i18next-express-middleware";
 import i18next from "./i18n";
 import cookieParser from "cookie-parser";
@@ -82,11 +82,11 @@ if (IS_DEVELOPMENT) {
       assets = await getAssets();
       initialState = await getInitialState();
 
-      const appComponent = renderApp(i18n, initialState);
-      const styleTags = getStyleTags();
+      const { component, styleTags } = renderApp(i18n, initialState);
+
       const htmlString = template(
         initialState,
-        appComponent,
+        component,
         styleTags,
         initialI18nStore,
         currentLanguage,
