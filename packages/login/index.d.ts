@@ -21,7 +21,7 @@ declare global {
     i18n: WindowI18nType;
   }
 
-  interface IPortalSettings extends Object {
+  interface IPortalSettings {
     culture: string;
     debugInfo: boolean;
     docSpace: boolean;
