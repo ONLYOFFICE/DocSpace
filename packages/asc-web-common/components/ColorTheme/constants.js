@@ -9,8 +9,9 @@ export const ThemeType = {
   TabContainer: "tabContainer",
   IconButton: "iconButton",
   MainButtonMobile: "mainButtonMobile",
-  IndicatorFilterButton: "indicatorFilterButtonTheme",
-  FilterBlockItemTag: "filterBlockItemTagTheme",
-  IconWrapper: "iconWrapperTheme",
-  Calendar: "calendarTheme",
+  IndicatorFilterButton: "indicatorFilterButton",
+  FilterBlockItemTag: "filterBlockItemTag",
+  IconWrapper: "iconWrapper",
+  Calendar: "calendar",
+  VersionBadge: "versionBadge",
 };

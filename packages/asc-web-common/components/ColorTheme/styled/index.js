@@ -25,3 +25,5 @@ export { default as FilterBlockItemTagTheme } from "./filterBlockItemTag";
 export { default as IconWrapperTheme } from "./iconWrapper";
 
 export { default as CalendarTheme } from "./calendar";
+
+export { default as VersionBadgeTheme } from "./versionBadge";

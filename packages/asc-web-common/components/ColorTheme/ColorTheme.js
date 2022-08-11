@@ -16,6 +16,7 @@ import {
   FilterBlockItemTagTheme,
   IconWrapperTheme,
   CalendarTheme,
+  VersionBadgeTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -63,6 +64,9 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.Calendar: {
       return <CalendarTheme ref={ref} {...props} />;
+    }
+    case ThemeType.VersionBadge: {
+      return <VersionBadgeTheme ref={ref} {...props} />;
     }
   }
 });
