@@ -4,9 +4,9 @@ export {};
 declare global {
   interface Window {
     authCallback?: (profile: object) => {};
-    __ASC_INITIAL_LOGIN_STATE__?: object;
+    __ASC_INITIAL_LOGIN_STATE__: IInitialState;
     initialI18nStoreASC?: object;
-    initialLanguage?: string;
+    initialLanguage: string;
   }
 
   interface IPortalSettings extends Object {
