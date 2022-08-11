@@ -132,6 +132,13 @@ services:
     image: "${REPO}/${STATUS}appserver-webhooks-service:${DOCKER_TAG}"
     container_name: ${WEBHOOKS_SERVICE_HOST}  
 
+  onlyoffice-doceditor:
+    image: "${REPO}/${STATUS}appserver-doceditor:${DOCKER_TAG}"
+    container_name: ${DOCEDITOR_HOST}
+    restart: always
+    expose:
+      - "5013"
+
   onlyoffice-proxy:
     image: "${REPO}/${STATUS}appserver-proxy:${DOCKER_TAG}"
     container_name: ${PROXY_HOST}
@@ -174,6 +181,7 @@ services:
       - SERVICE_API=${SERVICE_API}
       - SERVICE_STUDIO=${SERVICE_STUDIO}
       - SERVICE_SSOAUTH=${SERVICE_SSOAUTH}
+      - SERVICE_DOCEDITOR=${SERVICE_DOCEDITOR}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:

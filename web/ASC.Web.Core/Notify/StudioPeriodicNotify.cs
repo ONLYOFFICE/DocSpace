@@ -40,7 +40,7 @@ public class StudioPeriodicNotify
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly ApiSystemHelper _apiSystemHelper;
     private readonly SetupInfo _setupInfo;
-    private readonly DbContextManager<FeedDbContext> _dbContextManager;
+    private readonly IDbContextFactory<FeedDbContext> _dbContextFactory;
     private readonly IConfiguration _configuration;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -62,7 +62,7 @@ public class StudioPeriodicNotify
         CommonLinkUtility commonLinkUtility,
         ApiSystemHelper apiSystemHelper,
         SetupInfo setupInfo,
-        DbContextManager<FeedDbContext> dbContextManager,
+        IDbContextFactory<FeedDbContext> dbContextFactory,
         IConfiguration configuration,
         SettingsManager settingsManager,
         CoreBaseSettings coreBaseSettings,
@@ -81,7 +81,7 @@ public class StudioPeriodicNotify
         _commonLinkUtility = commonLinkUtility;
         _apiSystemHelper = apiSystemHelper;
         _setupInfo = setupInfo;
-        _dbContextManager = dbContextManager;
+        _dbContextFactory = dbContextFactory;
         _configuration = configuration;
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
@@ -464,7 +464,6 @@ public class StudioPeriodicNotify
     public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
     {
         var nowDate = scheduleDate.Date;
-        const string dbid = "webstudio";
 
         _log.InformationStartSendTariffEnterpriseLetters();
 
@@ -620,7 +619,7 @@ public class StudioPeriodicNotify
                         List<DateTime> datesWithActivity;
 
                         datesWithActivity =
-                                _dbContextManager.Get(dbid).FeedAggregates
+                                _dbContextFactory.CreateDbContext().FeedAggregates
                                 .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
                             .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
                             .GroupBy(r => r.CreatedDate.Date)

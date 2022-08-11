@@ -35,7 +35,7 @@ public class SettingsManager : DbSettingsManager
         ILogger<DbSettingsManager> option,
         AuthContext authContext,
         TenantManager tenantManager,
-        DbContextManager<WebstudioDbContext> dbContextManager)
+        IDbContextFactory<WebstudioDbContext> dbContextManager)
         : base(serviceProvider, dbSettingsManagerCache, option, authContext, tenantManager, dbContextManager)
     {
 
