@@ -26,26 +26,25 @@ const ChangeOwnerForm = (props) => {
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-
-          <Text className="subtitle">
-            {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
-          </Text>
         </StyledHeader>
 
         <FormWrapper>
+          <Text className="subtitle">
+            {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
+          </Text>
           <ButtonsWrapper>
             <Button
-              className="button"
               primary
-              size="normal"
+              scale
+              size="medium"
               label={t("Common:SaveButton")}
               tabIndex={2}
               isDisabled={false}
               //onClick={this.onAcceptClick} // call toast with t("ConfirmOwnerPortalSuccessMessage")
             />
             <Button
-              className="button"
-              size="normal"
+              scale
+              size="medium"
               label={t("Common:CancelButton")}
               tabIndex={2}
               isDisabled={false}

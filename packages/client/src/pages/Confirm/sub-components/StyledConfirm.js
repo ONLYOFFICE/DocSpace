@@ -15,13 +15,16 @@ export const StyledPage = styled.div`
   @media ${mobile} {
     margin-top: 72px;
   }
+
+  .subtitle {
+    margin-bottom: 32px;
+  }
 `;
 
 export const StyledHeader = styled.div`
-  text-align: left;
-
   .title {
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+    text-align: center;
   }
 
   .subtitle {
@@ -81,11 +84,7 @@ export const StyledBody = styled.div`
 
 export const ButtonsWrapper = styled.div`
   display: flex;
-  flex: 1fr 1fr;
   flex-direction: row;
   gap: 16px;
-
-  .button {
-    width: 100%;
-  }
+  width: 100%;
 `;
