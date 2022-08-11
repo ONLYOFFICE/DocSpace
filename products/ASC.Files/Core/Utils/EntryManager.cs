@@ -611,35 +611,24 @@ public class EntryManager
             }
 
             var providers = providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText);
-
-            //var securityDao = _daoFactory.GetSecurityDao<string>();
-            //var pureShareRecords = securityDao.GetPureShareRecordsAsyncEnumerable(folderList);
-            //var ids = pureShareRecords
-            //   //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-            //   .Select(x => x.EntryId).Distinct();
-
-            //folderList.Intersect(ids, y => dfs);
-
-
-            //if (folderList.Count > 0)
-            //{
-            //    var securityDao = _daoFactory.GetSecurityDao<string>();
-            //    var pureShareRecords = securityDao.GetPureShareRecordsAsyncEnumerable(folderList);
-            //    var ids = pureShareRecords
-            //    //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-            //    .Select(x => x.EntryId).Distinct();
-
-            //    await foreach (var id in ids)
-            //    {
-            //        folderList.First(y => y.Id.Equals(id)).Shared = true;
-            //    }
-            //}
+            var securityDao = _daoFactory.GetSecurityDao<string>();
 
             await foreach (var e in providers)
             {
                 var fake = GetFakeThirdpartyFolder(e, parent.Id.ToString());
                 if (await _fileSecurity.CanReadAsync(fake))
                 {
+                    var pureShareRecords = securityDao.GetPureShareRecordsAsync(fake);
+                    var isShared = await pureShareRecords
+                    //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
+                    .Where(x => fake.Id.Equals(x.EntryId))
+                    .AnyAsync();
+
+                    if (isShared)
+                    {
+                        fake.Shared = true;
+                    }
+
                     yield return fake;
                 }
             }
