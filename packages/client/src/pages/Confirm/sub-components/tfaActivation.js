@@ -18,26 +18,29 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
 
 const StyledForm = styled(Box)`
-  margin: 63px auto auto 216px;
+  margin-top: 63px;
   display: flex;
   flex: 1fr 1fr;
   gap: 80px;
   flex-direction: row;
+  justify-content: center;
 
   @media ${tablet} {
-    margin: 120px auto;
-    width: 480px;
+    margin: 100px auto 0 auto;
+    display: flex;
     flex: 1fr;
     flex-direction: column;
+    align-items: center;
     gap: 32px;
   }
 
   @media ${hugeMobile} {
-    margin-top: 72px;
+    margin-top: 32px;
     width: 100%;
     flex: 1fr;
     flex-direction: column;
     gap: 0px;
+    padding-right: 8px;
   }
 
   .app-code-wrapper {
@@ -49,13 +52,12 @@ const StyledForm = styled(Box)`
   }
 
   .docspace-logo {
-    padding-bottom: 32px;
+    padding-bottom: 64px;
 
     @media ${tablet} {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-bottom: 64px;
     }
   }
 
@@ -76,14 +78,17 @@ const StyledForm = styled(Box)`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px 80px;
-    background: #f8f9f9;
+    padding: 0px 80px;
     border-radius: 6px;
     margin-bottom: 32px;
 
     @media ${hugeMobile} {
       display: none;
     }
+  }
+
+  .app-code-continue-btn {
+    margin-top: 8px;
   }
 `;
 const TfaActivationForm = withLoader((props) => {
