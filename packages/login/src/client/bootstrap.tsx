@@ -4,7 +4,7 @@ import App from "./App";
 import { registerSW } from "@docspace/common/sw/helper";
 import pkg from "../../package.json";
 
-const propsObj = window.__ASC_INITIAL_LOGIN_STATE__;
+const propsObj: IInitialState = window.__ASC_INITIAL_LOGIN_STATE__;
 const initialI18nStoreASC = window.initialI18nStoreASC;
 const initialLanguage = window.initialLanguage;
 
