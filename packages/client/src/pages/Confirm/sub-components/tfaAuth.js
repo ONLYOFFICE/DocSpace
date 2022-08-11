@@ -36,8 +36,8 @@ const StyledForm = styled(Box)`
   }
 
   @media ${hugeMobile} {
-    margin: 72px 8px auto 8px;
-    padding: 16px;
+    margin: 32px 8px auto 8px;
+    padding-left: 8px;
     width: 100%;
   }
 
@@ -45,11 +45,7 @@ const StyledForm = styled(Box)`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-bottom: 32px;
-
-    @media ${tablet} {
-      padding-bottom: 64px;
-    }
+    padding-bottom: 64px;
   }
 
   .app-code-wrapper {
@@ -57,7 +53,11 @@ const StyledForm = styled(Box)`
   }
 
   .app-code-text {
-    margin-bottom: 14px;
+    margin-bottom: 8px;
+  }
+
+  .app-code-continue-btn {
+    margin-top: 8px;
   }
 `;
 
