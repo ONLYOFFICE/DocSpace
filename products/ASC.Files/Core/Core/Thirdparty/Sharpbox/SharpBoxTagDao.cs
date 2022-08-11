@@ -34,7 +34,7 @@ internal class SharpBoxTagDao : SharpBoxDaoBase, ITagDao<string>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<SharpBoxTagDao> monitor,
         FileUtility fileUtility,

@@ -29,9 +29,7 @@ namespace ASC.Web.Files;
 [Scope]
 public class FilesSpaceUsageStatManager : SpaceUsageStatManager
 {
-    private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
-
-    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly UserPhotoManager _userPhotoManager;
@@ -41,7 +39,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
     private readonly PathProvider _pathProvider;
 
     public FilesSpaceUsageStatManager(
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         TenantManager tenantManager,
         UserManager userManager,
         UserPhotoManager userPhotoManager,
@@ -50,7 +48,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
         GlobalFolderHelper globalFolderHelper,
         PathProvider pathProvider)
     {
-        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+        _dbContextFactory = dbContextFactory;
         _tenantManager = tenantManager;
         _userManager = userManager;
         _userPhotoManager = userPhotoManager;
@@ -62,20 +60,21 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
 
     public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
     {
-        var myFiles = FilesDbContext.Files
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var myFiles = filesDbContext.Files
             .AsQueryable()
-            .Join(FilesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
-            .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
+            .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
+            .Join(filesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
             .Where(r => r.file.TenantId == r.bunch.TenantId)
             .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.bunch.RightNode.StartsWith("files/my/") || r.bunch.RightNode.StartsWith("files/trash/"))
             .GroupBy(r => r.file.CreateBy)
             .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
 
-        var commonFiles = FilesDbContext.Files
+        var commonFiles = filesDbContext.Files
             .AsQueryable()
-            .Join(FilesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
-            .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
+            .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
+            .Join(filesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
             .Where(r => r.file.TenantId == r.bunch.TenantId)
             .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.bunch.RightNode.StartsWith("files/common/"))
@@ -115,22 +114,20 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
 [Scope]
 public class FilesUserSpaceUsage : IUserSpaceUsage
 {
-    private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
-
-    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     private readonly TenantManager _tenantManager;
     private readonly GlobalFolder _globalFolder;
     private readonly FileMarker _fileMarker;
     private readonly IDaoFactory _daoFactory;
 
     public FilesUserSpaceUsage(
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         TenantManager tenantManager,
         GlobalFolder globalFolder,
         FileMarker fileMarker,
         IDaoFactory daoFactory)
     {
-        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+        _dbContextFactory = dbContextFactory;
         _tenantManager = tenantManager;
         _globalFolder = globalFolder;
         _fileMarker = fileMarker;
@@ -143,7 +140,8 @@ public class FilesUserSpaceUsage : IUserSpaceUsage
         var my = _globalFolder.GetFolderMy(_fileMarker, _daoFactory);
         var trash = await _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
 
-        return await FilesDbContext.Files
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        return await filesDbContext.Files
             .AsQueryable()
             .Where(r => r.TenantId == tenantId && (r.ParentId == my || r.ParentId == trash))
             .SumAsync(r => r.ContentLength);
