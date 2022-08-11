@@ -35,7 +35,7 @@ class PluginStore {
 
     if (!pluginItems) return;
 
-    Array.from(itemsMap, ([key, value]) => {
+    Array.from(pluginItems, ([key, value]) => {
       switch (key) {
         case PluginType.CONTEXT_MENU:
           Array.from(value, ([key, item]) =>

@@ -15,8 +15,6 @@ const activatePlugin = async (id) => {
 };
 
 const uploadPlugin = async (formData) => {
-  console.log(formData);
-
   const plugin = await (
     await fetch("http://localhost:3000/plugins/upload", {
       method: "POST",
