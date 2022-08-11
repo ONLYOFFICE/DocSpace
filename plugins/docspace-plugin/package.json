@@ -1,0 +1,24 @@
+{
+  "name": "docspace-plugin",
+  "version": "1.0.0",
+  "description": "Simple plugin system for onlyoffice docspace",
+  "author": "ONLYOFFICE",
+  "main": "dist/index.ts",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "bin": {
+    "create-docspace-plugin": "./npx/index.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "tsc"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.10",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "inquirer": "^9.1.0"
+  }
+}
