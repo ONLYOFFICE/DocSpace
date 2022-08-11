@@ -1,37 +1,47 @@
 {
-    "folders": [{
-            "name": "🌐 root",
-            "path": "."
-        }, {
-            "name": "🚀 @docspace/client",
-            "path": "packages\\client"
-        }, {
-            "name": "🔑 @docspace/login",
-            "path": "packages\\login"
-        }, {
-            "name": "📄 @docspace/editor",
-            "path": "packages\\editor"
-        }, {
-            "name": "📦 @docspace/common",
-            "path": "packages\\common"
-        }, {
-            "name": "📦 @docspace/components",
-            "path": "packages\\components"
-        },
-    ],
-    "settings": {
-        "window.zoomLevel": 0,
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "liveServer.settings.multiRootWorkspaceName": "✨ docspace",
-        "cSpell.words": ["docspace", "browserslist", "debuginfo", "doceditor"],
-        "jest.autoRun": "false"
+  "folders": [
+    {
+      "name": "🌐 root",
+      "path": "."
     },
-    "extensions": {
-        "recommendations": [
-            "folke.vscode-monorepo-workspace",
-            "orta.vscode-jest",
-            "firsttris.vscode-jest-runner"
-        ]
+    {
+      "name": "🚀 @docspace/client",
+      "path": "packages\\client"
+    },
+    {
+      "name": "🔑 @docspace/login",
+      "path": "packages\\login"
+    },
+    {
+      "name": "📄 @docspace/editor",
+      "path": "packages\\editor"
+    },
+    {
+      "name": "📦 @docspace/common",
+      "path": "packages\\common"
+    },
+    {
+      "name": "📦 @docspace/components",
+      "path": "packages\\components"
+    },
+    {
+      "name": "📦 @docspace/plugins",
+      "path": ".\\plugins"
     }
+  ],
+  "settings": {
+    "window.zoomLevel": 0,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "liveServer.settings.multiRootWorkspaceName": "✨ docspace",
+    "cSpell.words": ["docspace", "browserslist", "debuginfo", "doceditor"],
+    "jest.autoRun": "false"
+  },
+  "extensions": {
+    "recommendations": [
+      "folke.vscode-monorepo-workspace",
+      "orta.vscode-jest",
+      "firsttris.vscode-jest-runner"
+    ]
+  }
 }
