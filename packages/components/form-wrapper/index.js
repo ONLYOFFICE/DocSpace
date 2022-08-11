@@ -14,6 +14,7 @@ const StyledWrapper = styled.div`
 
   @media ${tablet} {
     max-width: 480px;
+    min-width: 480px;
   }
 
   @media ${hugeMobile} {
@@ -21,6 +22,7 @@ const StyledWrapper = styled.div`
     border-radius: 0;
     box-shadow: none;
     max-width: 311px;
+    min-width: 311px;
     background: #ffffff;
   }
 `;
