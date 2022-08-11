@@ -500,6 +500,7 @@ class BackupStore {
 
     for (let key of this.requiredFormSettings) {
       const elem = this.formSettings[key];
+      if (!elem) return false;
       if (!elem.trim()) return false;
     }
     return true;

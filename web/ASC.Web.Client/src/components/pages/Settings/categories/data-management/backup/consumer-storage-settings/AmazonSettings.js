@@ -32,6 +32,12 @@ const StyledBody = styled.div`
       margin-right: 8px;
     }
   }
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.iconButton.color} !important;
+    }
+  }
 `;
 class AmazonSettings extends React.Component {
   static formNames = (systemName) => {
@@ -245,6 +251,7 @@ class AmazonSettings extends React.Component {
       formSettings,
       t,
       isNeedFilePath,
+      theme,
     } = this.props;
     const { region } = this.state;
     console.log("formSettings", formSettings);
@@ -336,7 +343,7 @@ class AmazonSettings extends React.Component {
           />
         </StyledBody>
 
-        <StyledBody>
+        <StyledBody theme={theme}>
           <Checkbox
             name={forcepathstyle}
             label={this.forcePathStylePlaceholder}
@@ -352,21 +359,23 @@ class AmazonSettings extends React.Component {
             }
           />
         </StyledBody>
-        <Checkbox
-          className="backup_checkbox"
-          name={usehttp}
-          label={this.useHttpPlaceholder}
-          isChecked={formSettings[usehttp] === "false" ? false : true}
-          isIndeterminate={false}
-          isDisabled={this.isDisabled}
-          onChange={this.onChangeCheckbox}
-          tabIndex={5}
-          helpButton={
-            <div className="backup_storage-tooltip">
-              {renderTooltip(t("AmazonHTTPTip"))}
-            </div>
-          }
-        />
+        <StyledBody theme={theme}>
+          <Checkbox
+            className="backup_checkbox"
+            name={usehttp}
+            label={this.useHttpPlaceholder}
+            isChecked={formSettings[usehttp] === "false" ? false : true}
+            isIndeterminate={false}
+            isDisabled={this.isDisabled}
+            onChange={this.onChangeCheckbox}
+            tabIndex={5}
+            helpButton={
+              <div className="backup_storage-tooltip">
+                {renderTooltip(t("AmazonHTTPTip"))}
+              </div>
+            }
+          />
+        </StyledBody>
         <StyledBody>
           <div className="backup_storage-tooltip">
             <Text isBold>{this.SSEPlaceholder}</Text>
@@ -484,7 +493,7 @@ class AmazonSettings extends React.Component {
   }
 }
 
-export default inject(({ backup }) => {
+export default inject(({ auth, backup }) => {
   const {
     setRequiredFormSettings,
     formSettings,
@@ -498,7 +507,7 @@ export default inject(({ backup }) => {
     defaultFormSettings,
   } = backup;
   const defaultRegion = defaultFormSettings.region;
-
+  const { theme } = auth.settingsStore;
   return {
     setRequiredFormSettings,
     formSettings,
@@ -509,5 +518,6 @@ export default inject(({ backup }) => {
     deleteValueFormSetting,
     defaultRegion,
     requiredFormSettings,
+    theme,
   };
 })(observer(AmazonSettings));
