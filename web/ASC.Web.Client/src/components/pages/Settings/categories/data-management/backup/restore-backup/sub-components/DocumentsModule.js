@@ -7,7 +7,7 @@ class Documents extends React.Component {
     return (
       <SelectFileInput
         {...this.props}
-        foldersType="common"
+        foldersType="rooms"
         withoutProvider
         isArchiveOnly
         searchParam=".gz"
@@ -15,6 +15,7 @@ class Documents extends React.Component {
         withoutResetFolderTree
         ignoreSelectedFolderTree
         maxFolderInputWidth="446px"
+        withoutBasicSelection
       />
     );
   }

@@ -52,12 +52,13 @@ class DocumentsModule extends React.PureComponent {
             onClickInput={this.onClickInput}
             isPanelVisible={isPanelVisible}
             isError={isError}
-            foldersType="common"
+            foldersType="rooms"
             withoutProvider
             isDisabled={isLoadingData}
             id={passedId}
             isReset={isResetProcess}
             isSuccessSave={isSavingProcess}
+            withoutBasicSelection
           />
         </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />

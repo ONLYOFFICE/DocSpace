@@ -7,6 +7,7 @@ import {
   getCommonFoldersTree,
   getFolder,
   getFoldersTree,
+  getSharedRoomsTree,
   getThirdPartyCommonFolderTree,
 } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
@@ -196,6 +197,13 @@ class SelectionPanel extends React.Component {
         case "third-party":
           try {
             return getThirdPartyCommonFolderTree();
+          } catch (err) {
+            console.error(err);
+          }
+          break;
+        case "rooms":
+          try {
+            return getSharedRoomsTree();
           } catch (err) {
             console.error(err);
           }
