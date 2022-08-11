@@ -13,16 +13,16 @@ const StyledWrapper = styled.div`
   max-width: 320px;
 
   @media ${tablet} {
-    max-width: 480px;
-    min-width: 480px;
+    max-width: 416px;
+    min-width: 416px;
   }
 
   @media ${hugeMobile} {
     padding: 0;
     border-radius: 0;
     box-shadow: none;
-    max-width: 311px;
-    min-width: 311px;
+    max-width: 343px;
+    min-width: 343px;
     background: #ffffff;
   }
 `;
