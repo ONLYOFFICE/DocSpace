@@ -84,16 +84,17 @@ const ChangePasswordForm = (props) => {
       <StyledBody>
         <StyledHeader>
           <DocspaceLogo className="docspace-logo" />
-          <Text fontSize="23px" fontWeight="700">
+          <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
         </StyledHeader>
 
         <FormWrapper>
-          <div className="password-change-form">
-            <Text className="confirm-subtitle">{t("PassworResetTitle")}</Text>
+          <div className="password-form">
+            <Text fontSize="16px" fontWeight="600" className="subtitle">
+              {t("PassworResetTitle")}
+            </Text>
             <FieldContainer
-              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={isPasswordErrorShow && !passwordValid}
@@ -102,7 +103,6 @@ const ChangePasswordForm = (props) => {
               )}: ${getPasswordErrorMessage(t, settings)}`}
             >
               <PasswordInput
-                className="confirm-input"
                 simpleView={false}
                 passwordSettings={settings}
                 id="password"
@@ -112,7 +112,7 @@ const ChangePasswordForm = (props) => {
                 inputValue={password}
                 hasError={isPasswordErrorShow && !passwordValid}
                 size="large"
-                scale={true}
+                scale
                 tabIndex={1}
                 autoComplete="current-password"
                 onChange={onChangePassword}
@@ -134,9 +134,9 @@ const ChangePasswordForm = (props) => {
           </div>
 
           <Button
-            className="confirm-button"
             primary
-            size="normal"
+            size="medium"
+            scale
             label={t("Common:Create")}
             tabIndex={5}
             onClick={onSubmit}

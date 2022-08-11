@@ -13,11 +13,16 @@ export const StyledPage = styled.div`
   }
 
   @media ${mobile} {
-    margin-top: 72px;
+    margin-top: 32px;
   }
 
   .subtitle {
     margin-bottom: 32px;
+  }
+
+  .password-form {
+    width: 100%;
+    margin-bottom: 8px;
   }
 `;
 
@@ -40,11 +45,9 @@ export const StyledHeader = styled.div`
 `;
 
 export const StyledBody = styled.div`
-  width: 320px;
-
-  @media ${tablet} {
-    justify-content: center;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   @media ${mobile} {
     width: 100%;
@@ -58,18 +61,9 @@ export const StyledBody = styled.div`
     width: 100%;
   }
 
-  .confirm-button {
-    width: 100%;
-    margin-top: 8px;
-  }
-
   .password-change-form {
     margin-top: 32px;
     margin-bottom: 16px;
-  }
-
-  .confirm-subtitle {
-    margin-bottom: 8px;
   }
 
   .info-delete {
