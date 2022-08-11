@@ -23,16 +23,19 @@ const ChangePhoneForm = (props) => {
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-          <Text fontSize="16px" fontWeight="600" className="confirm-subtitle">
-            {t("EnterPhone")}
-          </Text>
-          <Text>
-            {t("CurrentNumber")}: {currentNumber}
-          </Text>
-          <Text>{t("PhoneSubtitle")}</Text>
         </StyledHeader>
 
         <FormWrapper>
+          <div className="subtitle">
+            <Text fontSize="16px" fontWeight="600" className="phone-title">
+              {t("EnterPhone")}
+            </Text>
+            <Text>
+              {t("CurrentNumber")}: {currentNumber}
+            </Text>
+            <Text>{t("PhoneSubtitle")}</Text>
+          </div>
+
           <TextInput
             className="phone-input"
             id="phone"
@@ -47,9 +50,9 @@ const ChangePhoneForm = (props) => {
           />
 
           <Button
-            className="confirm-button"
             primary
-            size="normal"
+            scale
+            size="medium"
             label={t("GetCode")}
             tabIndex={2}
             isDisabled={false}

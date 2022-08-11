@@ -67,11 +67,14 @@ export const StyledBody = styled.div`
   }
 
   .phone-input {
-    margin-top: 32px;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
   }
 
   .delete-profile-confirm {
+    margin-bottom: 8px;
+  }
+
+  .phone-title {
     margin-bottom: 8px;
   }
 `;
