@@ -82,7 +82,7 @@ if (IS_DEVELOPMENT) {
       assets = await getAssets();
       initialState = await getInitialState();
 
-      const appComponent = renderApp();
+      const appComponent = renderApp(i18n, initialState);
       const styleTags = getStyleTags();
       const htmlString = template(
         initialState,
