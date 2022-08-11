@@ -119,9 +119,7 @@ public class BreadCrumbsManager
             return new List<FileEntry>();
         }
 
-        var tmpBreadCrumbs = await _fileSecurity.FilterReadAsync(folderDao.GetParentFoldersAsync(folderId)).ToListAsync();
-        var breadCrumbs = tmpBreadCrumbs.Cast<FileEntry>().ToList();
-
+        var breadCrumbs = await _fileSecurity.FilterReadAsync(folderDao.GetParentFoldersAsync(folderId)).Cast<FileEntry>().ToListAsync();
         var firstVisible = breadCrumbs.ElementAtOrDefault(0) as Folder<T>;
 
         var rootId = 0;
