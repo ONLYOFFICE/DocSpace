@@ -379,6 +379,8 @@ public class FileStorageService<T> //: IFileStorageService
         entries = _entryManager.FilterEntries(entries, filter, subjectGroup, subjectId, search, true);
 
         var result = new List<FileEntry>();
+        var files = new List<File<TId>>();
+        var folders = new List<Folder<TId>>();
 
         await foreach (var fileEntry in entries)
         {
@@ -390,6 +392,10 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<TId>();
                 }
+                if (!Equals(file.Id, default(TId)))
+                {
+                    files.Add(file);
+                }
             }
             else if (fileEntry is Folder<TId> folder)
             {
@@ -399,13 +405,20 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     folder.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<TId>();
                 }
+
+                if (!Equals(folder.Id, default(TId)))
+                {
+                    folders.Add(folder);
+                }
             }
 
             result.Add(fileEntry);
         }
 
-        await _entryStatusManager.SetFileStatusAsync(result);
-        await _entryStatusManager.SetIsFavoriteFoldersAsync(result);
+        var setFilesStatus = _entryStatusManager.SetFileStatusAsync(files);
+        var setFavorites = _entryStatusManager.SetIsFavoriteFoldersAsync(folders);
+
+        await Task.WhenAll(setFilesStatus, setFavorites);
 
         return result;
     }

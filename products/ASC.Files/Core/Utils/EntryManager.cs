@@ -195,13 +195,6 @@ public class EntryStatusManager
         await SetFileStatusAsync(new List<File<T>>(1) { file });
     }
 
-    public async Task SetFileStatusAsync(IEnumerable<FileEntry> files)
-    {
-        var t1 = SetFileStatusAsync(files.OfType<File<int>>().Where(r => r.Id != 0));
-        var t2 = SetFileStatusAsync(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.Id)));
-        await Task.WhenAll(t1, t2);
-    }
-
     public async Task SetFileStatusAsync<T>(IEnumerable<File<T>> files)
     {
         if (!files.Any())
@@ -264,13 +257,6 @@ public class EntryStatusManager
         }
 
         await SetIsFavoriteFoldersAsync(new List<Folder<T>>(1) { folder });
-    }
-
-    public async Task SetIsFavoriteFoldersAsync(IEnumerable<FileEntry> files)
-    {
-        var t1 = SetIsFavoriteFoldersAsync(files.OfType<Folder<int>>().Where(r => r.Id != 0));
-        var t2 = SetIsFavoriteFoldersAsync(files.OfType<Folder<string>>().Where(r => !string.IsNullOrEmpty(r.Id)));
-        await Task.WhenAll(t1, t2);
     }
 
     public async Task SetIsFavoriteFoldersAsync<T>(IEnumerable<Folder<T>> folders)
@@ -557,9 +543,42 @@ public class EntryManager
             data = data.ToList();
         }
 
-        var t1 = _entryStatusManager.SetFileStatusAsync(data.Where(r => r != null && r.FileEntryType == FileEntryType.File));
-        var t2 = _entryStatusManager.SetIsFavoriteFoldersAsync(data.Where(r => r != null && r.FileEntryType == FileEntryType.Folder));
-        await Task.WhenAll(t1, t2);
+        var internalFiles = new List<File<int>>();
+        var internalFolders = new List<Folder<int>>();
+        var thirdPartyFiles = new List<File<string>>();
+        var thirdPartyFolders = new List<Folder<string>>();
+
+        foreach (var item in data.Where(r => r != null))
+        {
+            if (item.FileEntryType == FileEntryType.File)
+            {
+                if (item is File<int> internalFile)
+                {
+                    internalFiles.Add(internalFile);
+                }
+                else if (item is File<string> thirdPartyFile)
+                {
+                    thirdPartyFiles.Add(thirdPartyFile);
+                }
+            }
+            else
+            {
+                if (item is Folder<int> internalFolder)
+                {
+                    internalFolders.Add(internalFolder);
+                }
+                else if (item is Folder<string> thirdPartyFolder)
+                {
+                    thirdPartyFolders.Add(thirdPartyFolder);
+                }
+            }
+        }
+
+        var t1 = _entryStatusManager.SetFileStatusAsync(internalFiles);
+        var t2 = _entryStatusManager.SetIsFavoriteFoldersAsync(internalFolders);
+        var t3 = _entryStatusManager.SetFileStatusAsync(thirdPartyFiles);
+        var t4 = _entryStatusManager.SetIsFavoriteFoldersAsync(thirdPartyFolders);
+        await Task.WhenAll(t1, t2, t3, t4);
 
         return (data, total);
 
