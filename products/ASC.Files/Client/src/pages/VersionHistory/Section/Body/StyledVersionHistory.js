@@ -1,5 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Row from "@appserver/components/row";
+import VersionSvg from "../../../../../public/images/versionrevision_active.react.svg";
 import { tablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 
@@ -278,4 +279,19 @@ const StyledVersionRow = styled(Row)`
 
 StyledVersionRow.defaultProps = { theme: Base };
 
-export { StyledBody, StyledVersionRow, StyledVersionList };
+const StyledVersionSvg = styled(VersionSvg)`
+  path {
+    stroke-dasharray: ${(props) => (props.isVersion ? "2 0" : "3 1")};
+    stroke-linejoin: ${(props) => (props.isVersion ? "unset" : "round")};
+
+    ${(props) =>
+      props.isVersion &&
+      css`
+        stroke-width: 2;
+      `}
+  }
+`;
+
+StyledVersionSvg.defaultProps = { theme: Base };
+
+export { StyledBody, StyledVersionRow, StyledVersionList, StyledVersionSvg };
