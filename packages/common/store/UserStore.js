@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import api from "@docspace/common/api";
+import api from "../api";
 
 class UserStore {
   user = null;

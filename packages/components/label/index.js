@@ -15,6 +15,7 @@ const Label = (props) => {
     className,
     id,
     style,
+    children,
     theme,
   } = props;
   const errorProp = error ? { color: "#c30" } : {};
@@ -33,7 +34,7 @@ const Label = (props) => {
       title={title}
       className={className}
     >
-      {text} {isRequired && " *"}
+      {text} {isRequired && " *"} {children}
     </Text>
   );
 };
@@ -51,8 +52,8 @@ Label.propTypes = {
   truncate: PropTypes.bool,
   /** The field ID to which the label is attached */
   htmlFor: PropTypes.string,
-  /** Text */
-  text: PropTypes.string,
+  /** Text or element */
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   /** Sets the 'display' property */
   display: PropTypes.string,
   /** Class name */
@@ -61,6 +62,7 @@ Label.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  children: PropTypes.node,
 };
 
 Label.defaultProps = {

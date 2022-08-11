@@ -39,9 +39,15 @@ const PortalRenaming = lazy(() =>
   import("./categories/common/settingsCustomization/portal-renaming")
 );
 const TeamTemplate = lazy(() => import("./categories/common/team-template"));
-const ThirdPartyServices = lazy(() =>
-  import("./categories/integration/thirdPartyServicesSettings")
+
+const Integration = lazy(() => import("./categories/integration"));
+const ThirdParty = lazy(() =>
+  import("./categories/integration/ThirdPartyServicesSettings")
 );
+const SingleSignOn = lazy(() =>
+  import("./categories/integration/SingleSignOn")
+);
+
 const DataManagementSettings = lazy(() =>
   import("./categories/data-management/backup")
 );
@@ -60,8 +66,6 @@ const WhiteLabel = lazy(() =>
 );
 
 const Branding = lazy(() => import("./categories/common/branding"));
-
-const Integration = lazy(() => import("./categories/integration"));
 
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
 
@@ -125,9 +129,16 @@ const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 
 const INTEGRATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/integration/third-party-services"),
+  combineUrl(PROXY_BASE_URL, "/integration/single-sign-on"),
   combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
 ];
 
+const THIRD_PARTY_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/integration/third-party-services"
+);
+
+const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
 const DATA_MANAGEMENT_URL = combineUrl(
   PROXY_BASE_URL,
   "/datamanagement/backup"
@@ -189,6 +200,8 @@ const Settings = (props) => {
           />
 
           <Route exact path={INTEGRATION_URLS} component={Integration} />
+          <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
+          <Route exact path={SSO_URL} component={SingleSignOn} />
           <Route
             exact
             path={DATA_MANAGEMENT_URL}

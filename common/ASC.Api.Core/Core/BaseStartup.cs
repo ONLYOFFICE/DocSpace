@@ -25,7 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Api.Core;
 
@@ -148,7 +147,6 @@ public abstract class BaseStartup
             config.OutputFormatters.Add(new XmlOutputFormatter());
         });
 
-
         var authBuilder = services.AddAuthentication("cookie")
             .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
@@ -157,13 +155,18 @@ public abstract class BaseStartup
             authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
         }
 
-        services.AddAutoMapper(typeof(MappingProfile));
+        services.AddAutoMapper(GetAutoMapperProfileAssemblies());
                
         if (!_hostEnvironment.IsDevelopment())
         {
             services.AddStartupTask<WarmupServicesStartupTask>()
                     .TryAddSingleton(services);
         }
+    }
+
+    private IEnumerable<Assembly> GetAutoMapperProfileAssemblies()
+    {
+        return AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name.StartsWith("ASC."));
     }
 
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)

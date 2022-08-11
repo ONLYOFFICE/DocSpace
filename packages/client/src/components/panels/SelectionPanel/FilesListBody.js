@@ -196,7 +196,7 @@ const FilesListBody = ({
         <div className="select-file-dialog_empty-container">
           <EmptyContainer
             theme={theme}
-            headerText={t("Files:EmptyFolderHeader")}
+            headerText={t("Home:EmptyFolderHeader")}
             imageSrc="/static/images/empty.screen.react.svg"
           />
         </div>

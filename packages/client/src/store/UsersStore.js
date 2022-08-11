@@ -6,7 +6,8 @@ import {
 } from "@docspace/common/constants";
 import { isMobileOnly } from "react-device-detect";
 const { Filter } = api;
-
+import store from "client/store";
+const { auth: authStore } = store;
 class UsersStore {
   users = [];
   providers = [];
@@ -236,9 +237,9 @@ class UsersStore {
       const statusType = this.getStatusType(user);
       const role = this.getUserRole(user);
       const isMySelf =
-        this.peopleStore.authStore.userStore.user &&
-        user.userName === this.peopleStore.authStore.userStore.user.userName;
-      const isViewerAdmin = this.peopleStore.authStore.isAdmin;
+        authStore.userStore.user &&
+        user.userName === authStore.userStore.user.userName;
+      const isViewerAdmin = authStore.isAdmin;
 
       const options = this.getUserContextOptions(
         isMySelf,
