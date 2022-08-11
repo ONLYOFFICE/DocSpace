@@ -11,6 +11,7 @@ const StyledWrapper = styled.div`
   box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.07);
   border-radius: 12px;
   max-width: 320px;
+  min-width: 320px;
 
   @media ${tablet} {
     max-width: 416px;
