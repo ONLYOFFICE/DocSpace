@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActionCreateBlog" xml:space="preserve">
     <value>Blog wurde erstellt</value>
@@ -227,7 +227,7 @@ ONLYOFFICE™ Support Team
 [www.onlyoffice.com](http://onlyoffice.com/)</value>
   </data>
   <data name="pattern_change_email_v115" xml:space="preserve">
-    <value>Möchten Sie Ihre E-Mail im ONLYOFFICE-Konto ändern?
+    <value>Möchten Sie Ihre E-Mail im ${LetterLogoText}-Konto ändern?
 
 Klicken Sie auf die unten stehende Schaltfläche und melden Sie sich* bei Ihrer Cloud an.
 
@@ -235,22 +235,9 @@ $GreenButton
 
 Der Link ist 7 Tage gültig.
 
-*Wenn Sie in diesem Browser bei ONLYOFFICE nicht angemeldet sind, müssen Sie Ihre alte E-Mail-Adresse zur Bestätigung verwenden. Wenn Sie diese vergessen haben, wenden Sie sich an Ihren Portaladministrator.
+*Wenn Sie in diesem Browser bei ${LetterLogoText} nicht angemeldet sind, müssen Sie Ihre alte E-Mail-Adresse zur Bestätigung verwenden. Wenn Sie diese vergessen haben, wenden Sie sich an Ihren Portaladministrator.
 
 Möchten Sie Ihre E-Mail-Adresse nicht ändern? Ignorieren Sie einfach diese Nachricht.</value>
-  </data>
-  <data name="pattern_change_password" xml:space="preserve">
-    <value>h1.Anfrage aif die Kennwortänderung auf dem Portal "${__VirtualRootPath}":"${__VirtualRootPath}"
-
-Es wurde die Änderung Ihres Kennworts angefragt, das Sie zum Einloggen ins Portal "${__VirtualRootPath}":"${__VirtualRootPath}" verwenden.
-
-Bitte folgen Sie dem unten angegebenen Link, um Ihr Kennwort zu ändern:
-
-$GreenButton
-
-*Hinweis*: Dieser Link ist nur 7 Tage gültig. Bitte schließen Sie die Änderung des Kennworts in dieser Zeitperiode ab.
-
-Wenn Sie Ihr Kennwort nicht ändern möchten oder diese Mail aus Versehen erhalten haben, lassen Sie diese außer Acht oder kontaktieren Sie den Administrator des Portals "${__VirtualRootPath}":"${__VirtualRootPath}", um Details zu erfahren.</value>
   </data>
   <data name="pattern_change_phone" xml:space="preserve">
     <value>h1.ein Antrag auf Änderung der Handynummer
@@ -441,7 +428,7 @@ So können Sie Ihr Online-Office noch sicherer machen:
 
 *Nutzen Sie LDAP für die Zugriffskontrolle*. Importieren Sie einfach die notwendigen Benutzer und Gruppen von Ihrem LDAP-Server (z.B. OpenLDAP Server oder Microsoft Active Directory) in Ihr Portal. Erfahren Sie mehr "hier":"${__HelpLink}/server/windows/community/ldap-settings.aspx" mehr darüber.
 
-*Nutzen Sie Ihren eigenen SMTP-Server*. Standardmäßig werden Benachrichtigungen für Benutzer von ONLYOFFICE Workspace (z.B. wenn ihnen der Zugriff auf ein Dokument gewährt wird) über den standardmäßigen ONLYOFFICE SMTP-Server verschickt. Konfigurieren Sie Ihren eigenen SMTP-Server, sodass keine Daten an Server enes Drittanbieters übermittelt werden. "Anleitungen &gt;&gt;":"${__HelpLink}/server/enterprise/configure-enterprise.aspx"
+*Nutzen Sie Ihren eigenen SMTP*. Standardmäßig werden Benachrichtigungen für Benutzer von ONLYOFFICE Workspace (z.B. wenn ihnen der Zugriff auf ein Dokument gewährt wird) über den standardmäßigen ONLYOFFICE SMTP-Server verschickt. Konfigurieren Sie Ihren eigenen SMTP-Server, sodass keine Daten an Server enes Drittanbieters übermittelt werden. "Anleitungen &gt;&gt;":"${__HelpLink}/installation/groups-smtp-settings.aspx"
 
 *Schließen Sie alle nicht benötigten Ports*. Die Liste aller Ports, die für ONLYOFFICE benötigt werden, finden Sie "hier":"${__HelpLink}/server/docker/community/open-ports.aspx".
 
@@ -563,9 +550,9 @@ So können Sie Ihr Online-Office noch sicherer machen:
 
 *Nutzen Sie LDAP für die Zugriffskontrolle*. Importieren Sie einfach die notwendigen Benutzer und Gruppen von Ihrem LDAP-Server (z.B. OpenLDAP Server oder Microsoft Active Directory) in Ihr Portal.
 
-*Nutzen Sie Ihren eigenen SMTP-Server* und schließen Sie alle nicht benötigten Ports.
+*Nutzen Sie Ihren eigenen SMTP* und schließen Sie alle nicht benötigten Ports.
 
-Machen Sie Ihr ONLYOFFICE jetzt noch sicherer.
+Machen Sie Ihr Online-Office jetzt noch sicherer.
 
 $GreenButton</value>
   </data>
@@ -650,7 +637,7 @@ $GreenButton
   <data name="pattern_mailbox_created" xml:space="preserve">
     <value> Sehr geehrte/er Frau/ Herr $UserName,
 
-      Der Administrator hat ein neues &lt;b&gt; $ Address &lt;/ b&gt; Mailbox für Sie auf dem"$ {__ VirtualRootPath}" Portal "$ {__ VirtualRootPath}" erstellt.
+      Der Administrator hat ein neues &lt;b&gt;$Address&lt;/ b&gt; Mailbox für Sie auf dem "${__VirtualRootPath}":"${__VirtualRootPath}" erstellt.
 
       Verwenden Sie die folgenden Einstellungen für andere E-Mail-Clients:
 
@@ -681,7 +668,7 @@ $GreenButton
   <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
     <value>Sehr geehrte/er Frau/ Herr $UserName,
 
-     Der Administrator hat eine neue &lt;b&gt; $ Address &lt;/ b&gt; -Mailbox auf dem Portal "$ {__ VirtualRootPath}": "$ {__ VirtualRootPath}" erstellt.
+     Der Administrator hat eine neue &lt;b&gt;$Address&lt;/ b&gt; Mailbox auf dem Portal "${__VirtualRootPath}":"${__VirtualRootPath}" erstellt.
 
       Wenn Sie diese E-Mail aus Versehen erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.
     </value>
@@ -698,7 +685,7 @@ Mit freundlichen Grüßen,
 ONLYOFFICE™ Support Team
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Sie erhalten diese E-Mail-Nachricht, weil Sie ein registrierter Benutzer des  "${__VirtualRootPath}":"${__VirtualRootPath}" Portals sind. Um den Benachrichtigungstyp zu ändern, verwalten Sie Ihre "Abonnement-Einstellungen":"$RecipientSubscriptionConfigURL".^</value>
+^Um den Benachrichtigungstyp zu ändern, verwalten Sie Ihre "Abonnement-Einstellungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_migration_server_failure" xml:space="preserve">
     <value>h1.Andere Region Portal Migration Fehler
@@ -712,7 +699,7 @@ Mit freundlichen Grüßen,
 ONLYOFFICE™ Support Team
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Sie erhalten diese E-Mail-Nachricht, weil Sie ein registrierter Benutzer des  "${__VirtualRootPath}":"${__VirtualRootPath}" Portals sind. Um den Benachrichtigungstyp zu ändern, verwalten Sie Ihre "Abonnement-Einstellungen":"$RecipientSubscriptionConfigURL".^</value>
+^Um den Benachrichtigungstyp zu ändern, verwalten Sie Ihre "Abonnement-Einstellungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_migration_start" xml:space="preserve">
     <value>h1.Andere Region Portal Migration Begann
@@ -725,9 +712,7 @@ Falls Sie einige Fragen haben oder Hilfe brauchen, kontaktieren Sie uns bitte un
 
 Mit freundlichen Grüßen,
 ONLYOFFICE™ Support Team
-"www.onlyoffice.com":"http://onlyoffice.com/"
-
-^Sie erhalten diese E-Mail-Nachricht, weil Sie ein registrierter Benutzer des  "${__VirtualRootPath}":"${__VirtualRootPath}" Portals sind.^</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_migration_success_v115" xml:space="preserve">
     <value>h1.Migration eines Portals
@@ -785,7 +770,7 @@ Es gibt ein paar Punkte, wie Sie Ihr Online-Büro noch sicherer machen können:
 
 *Nutzen Sie LDAP für die Zugriffsverwaltung*. Importieren Sie auf einfache Art notwendige Benutzer und Gruppen aus Ihrem LDAP-Server (z.B. OpenLDAP Server oder Microsoft Active Directory) in Ihr Portal. Erfahren Sie "hier":"${__HelpLink}/server/windows/community/ldap-settings.aspx" mehr darüber.
 
-*Nutzen Sie Ihren eigenen SMTP-Server*. Standardmäßig werden Benachrichtigungen für Benutzer (z.B. wenn sie Zugriff auf ein Dokument erhalten haben) über den Standard-ONLYOFFICE-SMTP-Server verschickt. Konfigurieren Sie Ihren eigenen SMTP-Server, so dass die Benachrichtigungen über keinen Server eines Drittanbieters geleitet werden. "Ableitung&gt;&gt;":"${__HelpLink}/server/windows/community/smtp-settings.aspx"
+*Nutzen Sie Ihren eigenen SMTP*. Standardmäßig werden Benachrichtigungen für Benutzer (z.B. wenn sie Zugriff auf ein Dokument erhalten haben) über den Standard-ONLYOFFICE-SMTP-Server verschickt. Konfigurieren Sie Ihren eigenen SMTP-Server, so dass die Benachrichtigungen über keinen Server eines Drittanbieters geleitet werden. "Ableitung&gt;&gt;":"${__HelpLink}/installation/groups-smtp-settings.aspx"
 
 *Schließen Sie alle nicht benötigten Ports*. Die Liste aller Ports, die für ONLYOFFICE geöffnet werden müssen, finden Sie "hier":"${__HelpLink}/server/docker/community/open-ports.aspx"
 
@@ -958,7 +943,7 @@ h3.Arbeiten Sie mit Ihrem Team zusammen oder verwalten Sie Ihr Projekt mit ONLYO
 
 Erstellen Sie eine gemeinsame Arbeitsumgebung für Sie und Ihr Team.
 
-Registrieren Sie sich für eine 30-Tage-Testversion von ONLYOFFICE "in der Cloud":"https://www.onlyoffice.com/registration.aspx" oder "auf Ihrem Server":"https://www.onlyoffice.com/download-commercial.aspx?from=enterprise-edition" ohne funktionale Einschränkungen und sehen Sie, wie sich Ihr Workflow sofort verbessert! 
+Registrieren Sie sich für eine 30-Tage-Testversion von ONLYOFFICE "in der Cloud":"https://www.onlyoffice.com/registration.aspx" oder "auf Ihrem Server":"https://www.onlyoffice.com/download-workspace.aspx?from=enterprise-edition" ohne funktionale Einschränkungen und sehen Sie, wie sich Ihr Workflow sofort verbessert! 
 
 Mit freundlichen Grüßen,
 ONLYOFFICE Team</value>
@@ -1025,20 +1010,6 @@ Der Link ist 7 Tage gültig.
 *Wenn Sie in diesem Browser bei ONLYOFFICE nicht angemeldet sind, müssen Sie Ihre alte E-Mail-Adresse zur Bestätigung verwenden.
 
 Möchten Sie Ihre E-Mail-Adresse nicht ändern? Ignorieren Sie einfach diese Nachricht.</value>
-  </data>
-  <data name="pattern_personal_change_password" xml:space="preserve">
-    <value>Es wurde neue Passwortänderung zum Einloggen am Portal "${__VirtualRootPath}":"${__VirtualRootPath}" beantragt.
-
-Bitte folgen Sie dem unten angegebenen Link, um Ihr Kennwort zu ändern:
-
-$GreenButton
-
-*Hinweis*: Dieser Link ist nur 7 Tage gültig. Bitte schließen Sie die Änderung des Kennworts in dieser Zeitperiode ab.
-
-Wenn Sie Ihr Kennwort nicht ändern möchten oder diese E-Mail aus Versehen erhalten haben, lassen Sie diese außer Acht.
-
-Mit freundlichen Grüßen,
-ONLYOFFICE team</value>
   </data>
   <data name="pattern_personal_confirmation" xml:space="preserve">
     <value>Hallo,
@@ -1202,9 +1173,7 @@ Sehr geehrte/r Frau/Herr $UserName,
 Ihre Benutzerprofilsdetails auf "$__VirtualRootPath":"$__VirtualRootPath" wurden von "$__AuthorName":"$__AuthorUrl" geändert.
 
 Um Ihr Profil anzusehen, folgen Sie bitte dem Link unten:
-"$UserName":"$MyStaffLink"
-
-^Sie erhalten diese E-Mail, weil Sie ein registrierter Benutzer von "${__VirtualRootPath}":"${__VirtualRootPath}" Portal sind.^</value>
+"$UserName":"$MyStaffLink"</value>
   </data>
   <data name="pattern_profile_updated_tg" xml:space="preserve">
     <value>Ihr Profil unter [${__VirtualRootPath}](${__VirtualRootPath}) wurde geändert
@@ -1214,25 +1183,19 @@ Hallo $UserName,
 Ihre Profil-Details unter [${__VirtualRootPath}](${__VirtualRootPath}) wurden von [$__AuthorName]($__AuthorUrl) geändert.
 
 Nutzen Sie folgenden Link, um Ihr Profil anzusehen:
-[$UserName]($MyStaffLink)
-
-Sie erhalten diese E-Mail, da Sie ein registrierter Benutzer des Portals [${__VirtualRootPath}](${__VirtualRootPath}) sind.</value>
+[$UserName]($MyStaffLink)</value>
   </data>
   <data name="pattern_reassigns_completed" xml:space="preserve">
     <value>Sehr geehrte/r Frau/Herr $UserName,
 
-Der Vorgang der Datenzuweisung vom Benutzer "$FromUserName":"$FromUserLink" an den Benutzer "$ToUserName":"$ToUserLink" wurde erfolgreich abgeschlossen.
-
-^Sie erhalten diese E-Mail, weil Sie ein registrierter Benutzer bzw. eine registrierte Benutzerin des Portals "${__VirtualRootPath}":"${__VirtualRootPath}" sind.^</value>
+Der Vorgang der Datenzuweisung vom Benutzer "$FromUserName":"$FromUserLink" an den Benutzer "$ToUserName":"$ToUserLink" wurde erfolgreich abgeschlossen.</value>
   </data>
   <data name="pattern_reassigns_failed" xml:space="preserve">
     <value>Sehr geehrte/r Frau/Herr $UserName,
 
 Der Vorgang der Datenzuweisung vom Benutzer "$FromUserName":"$FromUserLink" an den Benutzer "$ToUserName":"$ToUserLink" ist fehlgeschlagen.
 
-Ausnahmemeldung: $Message
-
-^Sie erhalten diese E-Mail, weil Sie ein registrierter Benutzer bzw. eine registrierte Benutzerin des Portals "${__VirtualRootPath}":"${__VirtualRootPath}" sind.^</value>
+Ausnahmemeldung: $Message</value>
   </data>
   <data name="pattern_remove_user_data_completed" xml:space="preserve">
     <value>Sehr geehrte/r Frau/Herr $UserName,
@@ -1244,18 +1207,14 @@ Die Löschung personenbezogener Daten befreit:
 # Dokumente - $DocsSpace
 # CRM - $CrmSpace
 # E-Mail - $MailSpace
-# Chat- $TalkSpace
-
-^Sie erhalten diese E-Mail, weil Sie ein registrierter Benutzer bzw. eine registrierte Benutzerin des Portals "${__VirtualRootPath}":"${__VirtualRootPath}" sind.^</value>
+# Chat- $TalkSpace</value>
   </data>
   <data name="pattern_remove_user_data_failed" xml:space="preserve">
     <value>Sehr geehrte/r Frau/Herr $UserName,
 
 Der Vorgang der Datenzuweisung vom Benutzer "$FromUserName":"$FromUserLink" ist fehlgeschlagen.
 
-Ausnahmemeldung: $Message
-
-^Sie erhalten diese E-Mail, weil Sie ein registrierter Benutzer bzw. eine registrierte Benutzerin des Portals "${__VirtualRootPath}":"${__VirtualRootPath}" sind.^</value>
+Ausnahmemeldung: $Message</value>
   </data>
   <data name="pattern_request_license" xml:space="preserve">
     <value>h1.Enterprise-Lizenz Anforderung
@@ -1320,6 +1279,18 @@ $CompanySize
 h3.Inhalt der Anfrage
 $Body</value>
   </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Wiederherstellung des Portals
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Ihr Portal wurde wiederhergestellt. Greifen Sie es, indem Sie ein neues Passwort festlegen:
+
+$GreenButton
+
+*Hinweis*: dieser Link ist innerhalb von 7 Tagen gültig.
+
+Ignorieren Sie diese Nachricht, falls Sie diese E-Mail versehentlich erhalten haben, oder kontaktieren Sie Administratoren des Portals ${__VirtualRootPath}":"${__VirtualRootPath}, für weitere Informationen.</value>
+  </data>
   <data name="pattern_restore_started" xml:space="preserve">
     <value>h1.Wiederherstellen des Portals
 
@@ -1333,7 +1304,7 @@ Mit freundlichen Grüßen,
 ONLYOFFICE™ Support Team
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Sie erhalten diese E-Mail-Nachricht, weil Sie ein registrierter Benutzer des  "${__VirtualRootPath}":"${__VirtualRootPath}" Portals sind. Um den Benachrichtigungstyp zu ändern, verwalten Sie Ihre "Abonnement-Einstellungen":"$RecipientSubscriptionConfigURL".^</value>
+^Um den Benachrichtigungstyp zu ändern, verwalten Sie Ihre "Abonnement-Einstellungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_saas_admin_activation_v115" xml:space="preserve">
     <value>Hallo, $UserName!
@@ -1351,7 +1322,7 @@ ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Hallo, $ UserName!
+    <value>Hallo, $UserName!
 
 Wir haben ein Paar Tipps vorbereitet, die Ihre Arbeit in ONLYOFFICE einfacher machen können.
 
@@ -1404,7 +1375,7 @@ ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Hallo, $ UserName!
+    <value>Hallo, $UserName!
 
 Vielen Dank, dass Sie sich für ONLYOFFICE entschieden haben! Aktivieren Sie Ihren Business-Tarifplan heute und sparen Sie 20% mit dem Gutschein Reactivate20. Verwenden Sie diesen einfach beim Einkauf für folgende Möglichkeiten:
 
@@ -1482,7 +1453,7 @@ ONLYOFFICE Team
 
 Erhalten Sie kostenlose ONLYOFFICE-Apps für Arbeit an Dokumenten und Projekten auf allen Geräten.
 
-# Für Offline-Arbeit auf Windows, Linux und macOS, laden Sie "ONLYOFFICE Desktop Editoren":"https://www.onlyoffice.com/de/apps.aspx" herunter. Sie können die App zur Cloud verbinden und "Zugriff auf Profi-Funktionen erhalten":"https://helpcenter.onlyoffice.com/de/installation/desktop-pro-features.aspx" (Inhaltssteuerelemente, Tabellenansichten, Vergleich von Dokumenten).
+# Für Offline-Arbeit auf Windows, Linux und macOS, laden Sie "ONLYOFFICE Desktop Editoren":"https://www.onlyoffice.com/de/apps.aspx" herunter.
 # Bearbeiten Sie Dokumente auf mobilen Geräten mit ONLYOFFICE Documents für "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" oder "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 # Verwalten Sie Projekte auch unterwegs mit ONLYOFFICE Projects für "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".
 
@@ -1564,7 +1535,7 @@ ONLYOFFICE Team
     <value>*Arbeiten Sie an Tabellenkalkulationen einfacher zusammen*</value>
   </data>
   <data name="pattern_saas_admin_welcome_v115" xml:space="preserve">
-    <value>Hallo, $ UserName!
+    <value>Hallo, $UserName!
 
 Testen Sie ONLYOFFICE-Cloud für Business 30 Tage kostenlos:
 
@@ -1629,7 +1600,7 @@ ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_user_welcome_v115" xml:space="preserve">
-    <value>Hallo, $ UserName!
+    <value>Hallo, $UserName!
 
 Willkommen auf ONLYOFFICE! Ihr Profil wurde auf dem Portal unter "${__VirtualRootPath}":"${__VirtualRootPath}" erfolgreich hinzugefügt. Jetzt können Sie:
 
@@ -1653,7 +1624,7 @@ ONLYOFFICE Team
 
 "$__AuthorName":"$__AuthorUrl" hat sein/ihr Profil unter "${__VirtualRootPath}":"${__VirtualRootPath}" geändert.
 
-^Sie erhalten diese E-Mail, weil Sie ein Administrator des Portals "${__VirtualRootPath}":"${__VirtualRootPath}" sind. Wenn Sie keine Benachrichtigungen über die Profilaktualisierung erhalten möchten, bearbeiten Sie die "Einstellungen Ihrer Benachrichtigungen":"$RecipientSubscriptionConfigURL".^</value>
+^Wenn Sie keine Benachrichtigungen über die Profilaktualisierung erhalten möchten, bearbeiten Sie die "Einstellungen Ihrer Benachrichtigungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_self_profile_updated_tg" xml:space="preserve">
     <value>[${__VirtualRootPath}](${__VirtualRootPath}) Benachrichtigung über Portalprofil-Änderung
@@ -1678,7 +1649,7 @@ h2.$activity.Key
 #end
 
 
-^Sie erhalten diese E-Mail, weil Sie ein registrierter Benutzer bzw. eine registrierte Benutzerin von "${__VirtualRootPath}":"${__VirtualRootPath}" Portal sind. Wenn Sie keine Benachrichtigungen über neuen Ereignisse auf "${__VirtualRootPath}":"${__VirtualRootPath}" Portal erhalten möchten, bitte ändern Sie die Einstellungen für Abonnement:"$RecipientSubscriptionConfigURL".^</value>
+^Wenn Sie keine Benachrichtigungen über neuen Ereignisse auf "${__VirtualRootPath}":"${__VirtualRootPath}" Portal erhalten möchten, bitte ändern Sie die Einstellungen für Abonnement:"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP Testnachricht
@@ -1735,7 +1706,7 @@ Ihr Portal steht wieder zur Verfügung.</value>
 
 "$__AuthorName":"$__AuthorUrl" ist Ihrem Portal unter "${__VirtualRootPath}":"${__VirtualRootPath}" beigetreten.
 
-^Sie erhalten diese E-Mail, weil Sie ein Administrator des Portals "${__VirtualRootPath}":"${__VirtualRootPath}" sind. Wenn Sie keine Benachrichtigungen über neue Benutzer erhalten möchten, bearbeiten Sie die "Einstellungen Ihrer Benachrichtigungen":"$RecipientSubscriptionConfigURL".^</value>
+^Wenn Sie keine Benachrichtigungen über neue Benutzer erhalten möchten, bearbeiten Sie die "Einstellungen Ihrer Benachrichtigungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_user_has_join_tg" xml:space="preserve">
     <value>Neuen Benutzer zum Portal [${__VirtualRootPath}](${__VirtualRootPath}) hinzugefügt.
@@ -1760,9 +1731,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_change_email_v115" xml:space="preserve">
     <value>Bestätigen Sie die Änderung Ihrer E-Mail-Adresse</value>
-  </data>
-  <data name="subject_change_password" xml:space="preserve">
-    <value>${LetterLogoText} Passworthilfe</value>
   </data>
   <data name="subject_change_phone" xml:space="preserve">
     <value>${LetterLogoText}. Mobiltelefon-Änderungsanforderung</value>
@@ -1907,13 +1875,10 @@ Dieser Link ist nur 7 Tage gültig.</value>
     <value>Brauchen Sie mehr Funktionen? Probieren Sie ONLYOFFICE für Teams</value>
   </data>
   <data name="subject_personal_after_registration28" xml:space="preserve">
-    <value>Wie man die Sicherheit Ihres Web Offices verbessern kann</value>
+    <value>Laden Sie kostenlose ONLYOFFICE-Apps herunter</value>
   </data>
   <data name="subject_personal_after_registration7" xml:space="preserve">
     <value>Verbinden Sie Ihren beliebigen Cloud-Speicher mit ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_change_password" xml:space="preserve">
-    <value>ONLYOFFICE Personal Unterstützung des Kennworts</value>
   </data>
   <data name="subject_personal_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Bitte aktivieren Sie Ihre E-Mail-Adresse</value>
@@ -2039,7 +2004,7 @@ Dieser Link ist nur 7 Tage gültig.</value>
     <value>${LetterLogoText}. Verschlüsselung abgeschlossen</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
-    <value>Neu hizugefügte Benutzer auf ${LetterLogoText} Portal</value>
+    <value>Neuer Benutzer ist zum Portal ${LetterLogoText} hinzugefügt</value>
   </data>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>Sie sind eingeladen, ${__VirtualRootPath} beizutreten</value>

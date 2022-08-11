@@ -1,0 +1,22 @@
+{
+  "Clouds": "Oblaki",
+  "CommonSettings": "Skupne nastavitve",
+  "ConnectAdminDescription": "Za uspešno povezavo vnesite potrebne podatke na <1>tej strani</1>.",
+  "ConnectCloud": "Poveži račun",
+  "ConnectDescriptionText": "Niste še povezali nobenega oblaka tretjih oseb.",
+  "ConnectEmpty": "Tu ni ničesar",
+  "ConnectMakeShared": "Naredi deljeno in premakni v 'Skupno' mapo",
+  "ConnectMessage": "Sledeče račune lahko povežete z ONLYOFFICE dokumenti. Prikazani bodo v mapi 'Moji Dokumenti', kjer jih boste lahko urejali in shranjevali na portalu na skupnem mestu.",
+  "ConnextOtherAccount": "Drugi račun",
+  "DisplayFavorites": "Prikaži priljubljene",
+  "DisplayNotification": "Prikažite obvestilo pri premikanju elementov v koš",
+  "DisplayRecent": "Prikaži nedavne",
+  "DisplayTemplates": "Prikaži predloge",
+  "IntermediateVersion": "Ohranite vse shranjene vmesne različice",
+  "KeepIntermediateVersion": "Pri urejanju ohranite vmesne različice",
+  "OriginalCopy": "Kopijo datoteke shranite tudi v izvirni obliki",
+  "StoringFileVersion": "Shranjevanje različic datotek",
+  "ThirdPartyBtn": "Dovoli uporabnikom, da povezujejo shranjevanje pri tretjih straneh",
+  "ThirdPartySettings": "Povezani oblaki",
+  "UpdateOrCreate": "Posodobite različico datoteke za obstoječo datoteko z istim imenom. V nasprotnem primeru bo ustvarjena kopija datoteke."
+}

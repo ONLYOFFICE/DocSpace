@@ -215,7 +215,7 @@ public class FoldersControllerCommon : ApiControllerBase
     [HttpGet("@privacy")]
     public async Task<FolderContentDto<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
-        if (PrivacyRoomSettings.IsAvailable(_tenantManager))
+        if (PrivacyRoomSettings.IsAvailable())
         {
             throw new System.Security.SecurityException();
         }
@@ -263,6 +263,7 @@ public class FoldersControllerCommon : ApiControllerBase
 
         return result;
     }
+
     /// <summary>
     /// Returns the detailed list of files and folders located in the 'Shared with Me' section
     /// </summary>

@@ -286,7 +286,7 @@ ONLYOFFICE™ Support Team
 [www.onlyoffice.com](http://onlyoffice.com/)</value>
   </data>
   <data name="pattern_change_email_v115" xml:space="preserve">
-    <value>Want to change the email on your ONLYOFFICE account?
+    <value>Want to change the email on your ${LetterLogoText} account?
 
 Click the button below and log in* to your cloud.
 
@@ -294,33 +294,9 @@ $GreenButton
 
 The link is valid for 7 days.
 
-*If you are not signed in to ONLYOFFICE in this browser, you’ll need to use your old email for confirmation. If you don’t remember it, contact your portal admin.
+*If you are not signed in to ${LetterLogoText} in this browser, you’ll need to use your old email for confirmation. If you don’t remember it, contact your portal admin.
 
 Don’t want to change your email? Just ignore this message.</value>
-  </data>
-  <data name="pattern_change_password" xml:space="preserve">
-    <value>h1.Password change request for the "${__VirtualRootPath}":"${__VirtualRootPath}" portal
-
-There has been a request to change your password used to enter the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
-
-Please follow the link below to change your password:
-
-$GreenButton
-
-*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-
-If you do not want to change your password or received this email by mistake, please ignore it or contact your "${__VirtualRootPath}":"${__VirtualRootPath}" portal administrator to find out the details.</value>
-  </data>
-  <data name="pattern_change_phone" xml:space="preserve">
-    <value>h1.Mobile phone change request
-
-You have requested to change your mobile phone used to enter the ${LetterLogoText} portal.
-
-Please follow the link below to change your mobile phone:
-
-$GreenButton
-
-If you do not want to change your mobile phone or received this email by mistake, please ignore it or contact your portal administrator to find out the details.</value>
   </data>
   <data name="pattern_change_tfa" xml:space="preserve">
     <value>h1.Security notification
@@ -362,13 +338,13 @@ $GreenButton
 
 You have just created the ONLYOFFICE portal, your team's cloud office that would enhance internal cooperation. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-Please, confirm your email:
+Please, confirm your email following the link
 
 $GreenButton
 
 You may change your email or password in your "personal profile page":"$MyStaffLink".
 
-To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions "here":"${__HelpLink}/server/windows/community/smtp-settings.aspx".
+To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions "here":"${__HelpLink}/installation/groups-smtp-settings.aspx".
 
 More information in ONLYOFFICE "Help Center":"${__HelpLink}".</value>
   </data>
@@ -379,6 +355,7 @@ You can customize ONLYOFFICE for your needs, for example:
 
 $TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
 
+Configure Right Now
 $GreenButton
    
 Done. It's time to invite teammates to your web-office!
@@ -420,12 +397,13 @@ More information in our "Help Center":"${__HelpLink}".</value>
 
 Your cloud office is ready at "${__VirtualRootPath}":"${__VirtualRootPath}". It's time to invite your teammates!
 
-The easiest way to add your team is to import the necessary users and groups from an LDAP Server (e.g. OpenLDAP Server or Microsoft Active Directory). The LDAP settings are available in your Control Panel. Instructions are available in our "Help Center":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
+The easiest way to add your team is to import the necessary users and groups from an LDAP Server (e.g. OpenLDAP Server or Microsoft Active Directory). The LDAP settings are available in your Control Panel. Instructions are available in our "Help Center":""${__HelpLink}/administration/control-panel-ldap.aspx".
 
-You can also distribute the invitation link using the Invite users to portal option or add your teammates manually one by one using the *Create New...* button in the *People* module or export users from:
-    "your Yahoo or Google account":"${__HelpLink}/administratorguides/import-contacts-from-web.aspx";
-    "your mail client address book":"${__HelpLink}/administratorguides/import-contacts-from-mail-client.aspx";
-    "a CSV file":"${__HelpLink}/administratorguides/import-contacts-from-csv.aspx".</value>
+You can also distribute the invitation link using the Invite users to portal option or add your teammates manually one by one using the *Create New*... button in the *People* module or export users from:
+
+    - "your Google account":"${__HelpLink}/administratorguides/import-contacts-from-web.aspx";
+    - "your mail client address book":"${__HelpLink}/administratorguides/import-contacts-from-mail-client.aspx";
+    - "a CSV file":"${__HelpLink}/administratorguides/import-contacts-from-csv.aspx".</value>
   </data>
   <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>Hello, $UserName!
@@ -450,22 +428,23 @@ For any further product installation, activation and technical support issues, p
   <data name="pattern_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
-Thanks for choosing ONLYOFFICE. We just want to remind you that the trial period for your Enterprise Edition will be over in seven days.
+Thanks for choosing ONLYOFFICE. We just want to remind you that the trial period for your Workspace 
+ Enterprise Edition will be over in seven days.
 
-Please, check all the available pricing plans for Enterprise Edition and choose the most suitable one for your business.
+Please, check all the available pricing plans for Workspace Enterprise Edition and choose the most suitable one for your business.
 
-$GreenButton
+"See prices":"https://www.onlyoffice.com/workspace-enterprise-prices.aspx"
 
-$BlueButton
+"Request a call":"http://www.onlyoffice.com/call-back-form.aspx"
 
 For any purchase questions, contact us at "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". For solving any technical problems, write to "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
   </data>
   <data name="pattern_enterprise_admin_trial_warning_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
-Thanks for choosing ONLYOFFICE Workspace. Your trial expires today. To continue using pro features, purchase the full license.
+Thanks for choosing ONLYOFFICE. Your trial expires today. To continue using it, purchase the full license.
 
-Buy now: "https://www.onlyoffice.com/workspace-enterprise-prices.aspx":"https://www.onlyoffice.com/workspace-enterprise-prices.aspx"
+"Buy now":"https://www.onlyoffice.com/workspace-enterprise-prices.aspx"
 
 For any purchase questions, contact us at "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". For solving any technical problems, write to "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
   </data>
@@ -474,16 +453,16 @@ For any purchase questions, contact us at "sales@onlyoffice.com":"mailto:sales@o
 
 Get free ONLYOFFICE apps to work on documents and projects from any of your devices.
 
-# To work on documents offline on Windows, Linux and Mac, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/apps.aspx".
-# To edit documents on mobile devices, ONLYOFFICE Documents app for "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-# To manage your team performance on the go, get ONLYOFFICE Projects for "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".</value>
+#To work on documents offline on Windows, Linux and Mac, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+#To edit documents on mobile devices, get Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+#To manage your team performance on the go, get Projects for "iOS":"https://apps.apple.com/us/app/onlyoffice-projects/id1353395928" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects". </value>
   </data>
   <data name="pattern_enterprise_admin_user_docs_tips_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
 We hope you enjoy using document editors available in your web-office. Here are some tips on how to make it more effective.
 
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm</value>
+$TableItemsTop $TableItem2 $TableItem1 $TableItem4 $TableItem3 $TableItem7 $TableItem6 $TableItem5 $TableItemsBtm</value>
   </data>
   <data name="pattern_enterprise_admin_welcome_v10" xml:space="preserve">
     <value>Hello, $UserName!
@@ -492,21 +471,21 @@ Here’s what you can do to make your web-office even more secure:
 
 *Get an SSL certificate* if you are going to provide not only local but also external portal access for your users. Generate a newly signed certificate in the Control Panel or purchase one from the provider you trust.
 
-*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our "Help Center":"${__HelpLink}/server/controlpanel/enterprise/backup-restore.aspx".
+*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our "Help Center":"${__HelpLink}/administration/control-panel-backup.aspx".
 
-*Adjust portal security settings*: restrict access using IP whitelisting, specify trusted mail domains, set password length and more. "More information &gt;&gt;":"${__HelpLink}/server/enterprise/configure-enterprise.aspx" 
+*Adjust portal security settings*: restrict access using IP whitelisting, specify trusted mail domains, set password length and more. "More information &gt;&gt;":"${__HelpLink}/installation/workspace-enterprise-configure.aspx" 
 
-*Enable 2-factor authentication* via SMS or authenticator app. Instructions "here":"${__HelpLink}/guides/two-factor-authentication.aspx".
+*Enable 2-factor authentication* via SMS or authenticator app. Instructions "here":"${__HelpLink}/administration/two-factor-authentication.aspx".
 
-*Use LDAP for access centralization*. Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal. Learn more "here":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
+*Use LDAP for access centralization*. Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal. Learn more "here":"${__HelpLink}/administration/control-panel-ldap.aspx".
 
-*Use own SMPT server*. By default notifications for ONLYOFFICE Workspace users (for example, if they are granted access to a document) are provided by means of standard ONLYOFFICE SMPT server. Configure your own SMTP server so that your notifications won’t pass through any third-party server. "Instructions &gt;&gt;":"${__HelpLink}/server/enterprise/configure-enterprise.aspx"
+*Use own SMPT*. By default notifications for ONLYOFFICE Workspace Enterprise Edition users (for example, if they are granted access to a document) are provided by means of standard ONLYOFFICE SMPT server. Configure your own SMTP server so that your notifications won’t pass through any third-party server. "Instructions &gt;&gt;":"${__HelpLink}/installation/groups-smtp-settings.aspx"
 
-*Close all the unnecessary ports*. The list of all the ports which must be opened for ONLYOFFICE is "here":"${__HelpLink}/server/docker/community/open-ports.aspx".
+*Close all the unnecessary ports*. The list of all the ports which must be opened for ONLYOFFICE is "here":"${__HelpLink}/installation/groups-open-ports.aspx".
 
 Make your ONLYOFFICE more secure now.
 
-$GreenButton
+To access your web-office, follow the "the link":"$ControlPanelUrl"
 
 More information in our "Help Center":"${__HelpLink}".</value>
   </data>
@@ -520,7 +499,7 @@ Please, don’t hesitate to contact us at "support.onlyoffice.com":"https://supp
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
-$__AuthorName has invited you as a guest user to "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
+You are invited to join "${__VirtualRootPath}":"${__VirtualRootPath}" as a guest user. Accept the invitation by clicking the link:
 
 $GreenButton
 
@@ -533,39 +512,41 @@ You will get more tips on how to use your web-office. You can cancel the subscri
 
 Your guest profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-# Edit your "profile":"$MyStaffLink".
-# View and comment the content available in the "Community":"${__VirtualRootPath}/Products/Community/" and "Projects":"${__VirtualRootPath}/Products/Projects/".
-# Add and download files available for you in the "Documents":"${__VirtualRootPath}/Products/Files/".
-# Organize your schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
-# Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
+1. Edit your profile. 
+2. View and comment the content available in the Community and Projects.
+3. Add and download files available for you in the Documents.
+4. Organize your schedule with the built-in Calendar.
+5. Use Chat to exchange instant messages.
 
+To access your web-office, follow the link
 $GreenButton</value>
   </data>
   <data name="pattern_enterprise_user_activation_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
-$__AuthorName has invited you to join your company's safe and secure web-office that would enhance your collaboration. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
+You are invited to join your company's safe and secure web-office that would enhance your collaboration. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-Accept the invitation by clicking the link:
+Accept the invitation by following the link
 
 $GreenButton
 
 The link is only valid for 7 days.
 
-You will get more tips on how to use your we-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
+You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
   </data>
   <data name="pattern_enterprise_user_welcome_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
 Your user profile has been successfully added to the portal at "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-# Create and edit "Documents":"${__VirtualRootPath}/Products/Files/", share them with teammates, and collaborate in real time.
-# Add your email accounts and manage all correspondence in one place with "Mail":"${__VirtualRootPath}/addons/mail/".
-# Manage your workflow with "Projects":"${__VirtualRootPath}/Products/Projects/" and your customer relationships using "CRM":"${__VirtualRootPath}/Products/CRM/".
-# Use "Community":"${__VirtualRootPath}/Products/Community/" to start your blogs, forums, add events, share bookmarks.
-# Organize your work schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
-# Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
+1.	Create and edit Documents, work with forms, share them with teammates, and collaborate in real time.
+2.	Add your email accounts and manage all correspondence in one place with Mail.
+3.	Manage your workflow with Projects and your customer relationships using CRM.
+4.	Use Community to start your blogs, forums, add events, share bookmarks.
+5.	Organize your work schedule with the built-in Calendar.
+6.	Use Chat to exchange instant messages.
 
+To access your web-office, follow the link
 $GreenButton</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_activation_v10" xml:space="preserve">
@@ -621,9 +602,9 @@ Here’s what you can do to make your web-office even more secure:
 
 *Use LDAP for access centralization*. Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal.
 
-*Use own SMPT server* and close all the unnecessary ports.
+*Use own SMPT* and close all the unnecessary ports.
 
-Make your ONLYOFFICE more secure now.
+Make your online office more secure now.
 
 $GreenButton</value>
   </data>
@@ -662,12 +643,12 @@ $GreenButton
 
 The link is only valid for 7 days.
 
-You will get more tips on how to use your we-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
+You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
   </data>
   <data name="pattern_enterprise_whitelabel_user_welcome_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
-Your user profile has been successfully added to the portal at "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
+Welcome to ONLYOFFICE! Your user profile has been successfully added to the portal at "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
 # Create and edit "Documents":"${__VirtualRootPath}/Products/Files/", share them with teammates, and collaborate in real time.
 # Add your email accounts and manage all correspondence in one place with "Mail":"${__VirtualRootPath}/addons/mail/".
@@ -760,7 +741,7 @@ Best regards,
 ONLYOFFICE™ Support Team
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal. To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
+^To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_migration_server_failure" xml:space="preserve">
     <value>h1.Another region portal migration error
@@ -774,7 +755,7 @@ Best regards,
 ONLYOFFICE™ Support Team
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal. To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
+^To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_migration_start" xml:space="preserve">
     <value>h1.Another region portal migration started
@@ -787,9 +768,7 @@ If you have any questions or need assistance please feel free to contact us at "
 
 Best regards,
 ONLYOFFICE™ Support Team
-"www.onlyoffice.com":"http://onlyoffice.com/"
-
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_migration_success_v115" xml:space="preserve">
     <value>h1.Portal migration
@@ -811,9 +790,9 @@ You have just created the ONLYOFFICE portal, your team's cloud office that would
 
 Please, confirm your email following the "link":"$ActivateUrl".
 
-You can change your email or password in your "personal profile page":"$MyStaffLink".
+You may change your email or password in your "personal profile page":"$MyStaffLink".
 
-To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, follow the instructions "here":"${__HelpLink}/server/windows/community/smtp-settings.aspx".
+To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions "here":"${__HelpLink}/server/windows/community/smtp-settings.aspx".
 
 More information in ONLYOFFICE "Help Center":"${__HelpLink}".</value>
   </data>
@@ -837,23 +816,23 @@ We hope you enjoy using integrated ONLYOFFICE document editors. Here are some ti
 
 Here’s what you can do to make your web-office even more secure:
 
-*Get an SSL certificate* if you are going to provide not only local but also external portal access for your users. Generate a new signed certificate in the Control Panel or purchase one from the provider you trust.
+*Get an SSL certificate*, if you are going to provide not only local but also external portal access for your users. Generate a new signed certificate in the Control Panel or purchase one from the provider you trust.
 
-*Enable automatic backups* in the Control Panel. We also recommend that you use 3rd services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our "Help Center":"${__HelpLink}/server/controlpanel/enterprise/backup-restore.aspx".
+*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our "Help Center":"${__HelpLink}/server/controlpanel/enterprise/backup-restore.aspx".
 
-*Adjust portal security settings*: restrict access using IP whitelisting, specify trusted mail domains, set password length and more. "More information&gt;&gt;":"${__HelpLink}/server/enterprise/configure-enterprise.aspx?_ga=2.111477636.160074001.1555312634-699576329.1539952318"
+*Adjust portal security settings*: Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal. "Learn more &gt;&gt;":"${__HelpLink}/server/enterprise/configure-enterprise.aspx?_ga=2.111477636.160074001.1555312634-699576329.1539952318"
 
 *Enable 2-factor authentication* via SMS or authenticator app. Instructions "here":"${__HelpLink}/guides/two-factor-authentication.aspx?_ga=2.115795846.160074001.1555312634-699576329.1539952318".
 
-*Use LDAP for access centralization*. Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal. Learn more "here":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
+*Use LDAP for access centralization*. Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal. Learn more "here":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
 
-*Use own SMPT server*. By default notifications for users (for example, if they are granted access to a document) are provided by means of standard ONLYOFFICE SMPT server. Configure your own SMTP server so that your notifications won’t pass through any third-party server. "Instructions&gt;&gt;":"${__HelpLink}/server/windows/community/smtp-settings.aspx"
+*Use own SMPT*. By default notifications for ONLYOFFICE users (for example, if they are granted access to a document) are provided by means of standard ONLYOFFICE SMPT server. Configure your own SMTP server so that your notifications won’t pass through any third-party server. "Instructions&gt;&gt;":"${__HelpLink}/installation/groups-smtp-settings.aspx"
 
-*Close all the unnecessary ports*. The list of all the ports which must be opened for ONLYOFFICE is "here":"${__HelpLink}/server/docker/community/open-ports.aspx".
+*Close all the unnecessary ports*. The list of all the ports which must be opened for ONLYOFFICE is "here":"${__HelpLink}/server/docker/community/open-ports.aspx".
 
 *Encrypt your data at rest*. To do so, follow "the instructions":"${__HelpLink}". If you want to protect collaboration process, activate Private Rooms. "Learn more":"${__HelpLink}"
 
-To secure your web-office, follow "the link":"$ControlPanelUrl"
+Make your ONLYOFFICE more secure now follow the "link":"$ControlPanelUrl"
 
 More information in our "Help Center":"${__HelpLink}".</value>
   </data>
@@ -959,21 +938,21 @@ You have just created your personal office in the cloud.
 
 h3.It's a virtual workspace where you can edit and store documents, work with them from anywhere providing access to your friends or colleagues.
 
-ONLYOFFICE is compatible with Microsoft Office™ document formats and guarantees no loss of formatting or quality of created objects. We promise to relieve you from formatting fidelity headache and give full professional editing toolset in your hands.
-
 h3.For a quick start, here's what you can do in ONLYOFFICE:
 
-- Upload files from your computer or create new;
+- Create, view and edit text documents, spreadsheets, presentations.
 
-- Work with all popular file formats;
+- Work with all popular formats. Highest compatibility with MS Office files.
 
-- Edit autoshapes, charts, tables, equations and other objects;
+- Create and co-edit "ready-to-fill-out forms":"https://www.onlyoffice.com/form-creator.aspx".
 
-- Use various addons for extended editing features;
+- Share and collaborate on documents online.
+
+- Use various plugins to apply extra features.
 
 - Easily access your Personal cloud via "Chrome extension":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
 
-You can also edit documents offline with our free "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" or get a "mobile editing suite":"https://www.onlyoffice.com/mobile.aspx" for your iOS or Android device.
+You can also edit documents offline with our free "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" or get a mobile editing suite for your "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" device.
 
 Sincerely,
 ONLYOFFICE team</value>
@@ -989,17 +968,19 @@ h3.ONLYOFFICE provides a number of features for freelance community whether you 
 
 - Strict co-editing mode for editing parts of the document privately;
 
-- Version History;
+- Creating and filling out digital forms, e.g. a freelance project proposal;
+
+- Document comparison and Version History;
 
 - Change tracking &amp; suggesting;
 
-- built-in chat.
-
-No need to download files and send them via email. Simply share them from your cloud office with external links and collaborate from wherever you are.  
+- Built-in chat, Telegram and Jitsi plugins.
 
 Need more work instruments?  
 
-ONLYOFFICE solutions for business are free for a 30 day trial period and provide you with even more opportunities for freelance and distant work. For instance, you can create and submit invoices to your clients, contact them with email and VoIP. To learn more about ONLYOFFICE for commerce proceed to our "CRM overview":"http://www.onlyoffice.com/crm.aspx".
+Try a business cloud which allows you to manage events and mails, tasks and clients, make calls, and more. You can choose an absolutely free tariff for teams with up to 5 users:
+
+"START NOW":"https://www.onlyoffice.com/registration.aspx"
 
 Sincerely,
 ONLYOFFICE team</value>
@@ -1007,43 +988,31 @@ ONLYOFFICE team</value>
   <data name="pattern_personal_after_registration21" xml:space="preserve">
     <value>$PersonalHeaderStart Need more features and automation? Give a try to ONLYOFFICE for teams $PersonalHeaderEnd
 
-h3.In case you collaborate with a team or manage a project, we suggest you try ONLYOFFICE Workspace. In addition to the online editors and document management features, you'll be able to:
+h3.In case you collaborate with a team or manage a project, we suggest you to try ONLYOFFICE for business. In addition to the online editors and document management features, you'll be able to:
 
-- Control tasks and use *Gantt* chart in the project management module;
+- Control tasks and use Gantt chart in the project management module;
 
-- Track sales, relations with customers and create invoices in *CRM*;
+- Track sales, relations with customers and create invoices in CRM;
 
-- Manage all your email accounts in the email *aggregator*;
+- Manage all your email accounts and create corporate mailboxes;
 
-- Set up team communication with messenger, blog, forums and wiki.
+- Create and share calendars, schedule group meetings;
 
-Create a single collaborative workspace for you and your teammates.
+- Use advanced security features like SSO, 2FA or end-to-end encryption.
 
-Register a trial "in the cloud":"https://www.onlyoffice.com/registration.aspx" or "on your server":"https://www.onlyoffice.com/download-commercial.aspx?from=enterprise-edition" without any functional restrictions for 30 days and see how your workflow would immediately improve! 
+Create a single collaborative workspace for you and your teammates "in the cloud":"https://www.onlyoffice.com/registration.aspx" or "on your server":"https://www.onlyoffice.com/download-workspace.aspx" and see how your workflow would immediately improve! You can take advantage of the "free tariff":"https://www.onlyoffice.com/saas.aspx" for teams with up to 5 users.
 
 Sincerely,
 ONLYOFFICE team</value>
   </data>
   <data name="pattern_personal_after_registration28" xml:space="preserve">
-    <value>$PersonalHeaderStart How to enhance security of your web office $PersonalHeaderEnd
+    <value>$PersonalHeaderStart Get free ONLYOFFICE apps $PersonalHeaderEnd
 
-Looking for the ways to protect your data?
+h3.Need to edit documents on the go? Looking for a reliable application to ensure you will be able to work offline when the Internet connection is unstable? Get free ONLYOFFICE apps to edit files from any of your devices.
 
-h3.Сonsider additional instruments for keeping your documents safe and secure offered in our private server solutions:
+- To work on documents offline on Windows, Linux and macOS, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
 
-- Get full control over your data with *a private cloud* on your own server;
-
-- Set up *two-factor authentication* and use *Single Sign-On* with third-party services;
-
-- Apply multi-level *log-in security settings*;
-
-- Monitor *user activity* in your web office;
-
-- Perform manual or automatic *back up* of your data.
-
-$GreenButton
-
-Learn more about how ONLYOFFICE keeps your data safe in our security overview.
+- To edit documents on mobile devices, get ONLYOFFICE Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 
 Sincerely,
 ONLYOFFICE team</value>
@@ -1074,6 +1043,15 @@ Interested? Learn more about "ONLYOFFICE for business":"http://www.onlyoffice.co
 Sincerely,
 ONLYOFFICE team</value>
   </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Hi there!
+There was an attempt to register a new "ONLYOFFICE Personal":"$PortalUrl" account using this email. If it was you, we want to inform you that the account already exists — proceed to ONLYOFFICE Personal and log in.
+If you lost your password, you can recover it on "password recovery page":"$LinkToRecovery".
+If you didn’t attempt to register a new account, probably someone else did it by mistake. In this case, please ignore this email.
+
+Have a nice day!
+ONLYOFFICE team</value>
+  </data>
   <data name="pattern_personal_change_email_v115" xml:space="preserve">
     <value>Want to change the email on your ONLYOFFICE account?
 
@@ -1087,20 +1065,6 @@ The link is valid for 7 days.
 
 Don’t want to change your email? Just ignore this message.</value>
   </data>
-  <data name="pattern_personal_change_password" xml:space="preserve">
-    <value>There has been a request to change your password used to enter the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
-
-Please follow the link below to change your password:
-
-$GreenButton
-
-*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-
-If you do not want to change your password or received this email by mistake, please ignore it.
-
-Sincerely,
-ONLYOFFICE team</value>
-  </data>
   <data name="pattern_personal_confirmation" xml:space="preserve">
     <value>Hello,
 
@@ -1111,24 +1075,14 @@ If you can't open the link, please copy the following "$InviteLink":"$InviteLink
 Sincerely,
 ONLYOFFICE team</value>
   </data>
-  <data name="pattern_personal_already_exist" xml:space="preserve">
-    <value>Hi there!
-There was an attempt to register a new "ONLYOFFICE Personal":"$PortalUrl" account using this email. If it was you, we want to inform you that the account already exists — proceed to ONLYOFFICE Personal and log in.
-If you lost your password, you can recover it on "password recovery page":"$LinkToRecovery".
-If you didn’t attempt to register a new account, probably someone else did it by mistake. In this case, please ignore this email.
-
-Have a nice day!
-ONLYOFFICE team</value>
-  </data>
-  <data name="subject_personal_already_exist" xml:space="preserve">
-    <value>Log in to your ONLYOFFICE Personal account</value>
-  </data>
   <data name="pattern_personal_profile_delete" xml:space="preserve">
     <value>You have requested a termination of your account at personal.onlyoffice.com. Follow the link to complete the request (the link is active for a 7-day period): 
 
 $GreenButton
 
-*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our "Privacy statement":"https://help.onlyoffice.com/Products/Files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our "Privacy statement":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Read more about account termination":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
 
 Ignore this email if you do not want to proceed. 
 
@@ -1275,10 +1229,7 @@ Dear $UserName,
 Your user profile details at "$__VirtualRootPath":"$__VirtualRootPath" have been changed by "$__AuthorName":"$__AuthorUrl".
 
 To view your profile follow the link below:
-"$UserName":"$MyStaffLink"
-
-
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+"$UserName":"$MyStaffLink"</value>
   </data>
   <data name="pattern_profile_updated_tg" xml:space="preserve">
     <value>Your profile at [${__VirtualRootPath}](${__VirtualRootPath}) has been changed
@@ -1288,25 +1239,19 @@ Dear $UserName,
 Your user profile details at [${__VirtualRootPath}](${__VirtualRootPath}) have been changed by [$__AuthorName]($__AuthorUrl).
 
 To view your profile follow the link below:
-[$UserName]($MyStaffLink)
-
-You receive this email because you are a registered user of the [${__VirtualRootPath}](${__VirtualRootPath}) portal.</value>
+[$UserName]($MyStaffLink)</value>
   </data>
   <data name="pattern_reassigns_completed" xml:space="preserve">
     <value>Dear $UserName,
 
-The process of data reassignment from user "$FromUserName":"$FromUserLink" to user "$ToUserName":"$ToUserLink" has been successfully completed.
-
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+The process of data reassignment from user "$FromUserName":"$FromUserLink" to user "$ToUserName":"$ToUserLink" has been successfully completed.</value>
   </data>
   <data name="pattern_reassigns_failed" xml:space="preserve">
     <value>Dear $UserName,
 
 The process of data reassignment from user "$FromUserName":"$FromUserLink" to user "$ToUserName":"$ToUserLink" failed.
 
-Exception message: $Message
-
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+Exception message: $Message</value>
   </data>
   <data name="pattern_remove_user_data_completed" xml:space="preserve">
     <value>Dear $UserName,
@@ -1318,18 +1263,14 @@ The deletion of personal data allowed to free:
 # Documents - $DocsSpace
 # CRM - $CrmSpace
 # Mail - $MailSpace
-# Talk - $TalkSpace
-
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+# Talk - $TalkSpace</value>
   </data>
   <data name="pattern_remove_user_data_failed" xml:space="preserve">
     <value>Dear $UserName,
 
 The process of data removal for user "$FromUserName":"$FromUserLink" failed.
 
-Exception message: $Message
-
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+Exception message: $Message</value>
   </data>
   <data name="pattern_request_license" xml:space="preserve">
     <value>h1.Enterprise license request
@@ -1419,7 +1360,7 @@ Best regards,
 ONLYOFFICE™ Support Team
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal. To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
+^To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_saas_admin_activation_v115" xml:space="preserve">
     <value>Hello, $UserName!
@@ -1442,46 +1383,42 @@ ONLYOFFICE Team
 We have prepared several tips to make your work with ONLYOFFICE  more comfortable.
 
 *#1 Get quick answers*
-
-Browse "Help Center":"${__HelpLink}" when you are not sure how to perform your task. Contact "our support team":"https://helpdesk.onlyoffice.com/hc/en-us" if you face tech problems. 
+Browse "Help Center":"${__HelpLink}" when you are not sure how to perform your task. Contact "our support team":"https://helpdesk.onlyoffice.com" if you face tech problems.
 
 *#2 Don’t forget about 3rd party extensions*
-
-ONLYOFFICE functionality can be enhanced with 3rd party extensions. For example, you can make VoIP calls with Twilio or e-sign your documents with DocuSign. "Find out more &gt;&gt;":"${__HelpLink}/server/windows/community/authorization-keys.aspx"  
+ONLYOFFICE functionality can be enhanced with 3rd party extensions. For example, you can make VoIP calls with Twilio or e-sign your documents with DocuSign. "Find out more":"https://helpcenter.onlyoffice.com/tipstricks/authorization-keys-saas.aspx".
 
 *#3 Manage your subscriptions*
+You’ll get notified about shared docs, projects updates, and your colleagues birthdays. Switch notifications on/off on your Profile page. "Learn more &gt;&gt;&gt;":"https://helpcenter.onlyoffice.com/tipstricks/managing-subscriptions.aspx".
 
-You’ll get notified about shared docs, projects updates, and your colleagues birthdays. Switch notifications on/off on your Profile page. "Learn more &gt;&gt;":"${__HelpLink}/tipstricks/managing-subscriptions.aspx"
-
-*#4 Request special training*
-
-To get a real quick start with ONLYOFFICE, ask us to teach your whole team to use all the modules and features. This is a paid option. "Contact us &gt;&gt;":"https://support.onlyoffice.com" 
+*#4 Take training courses*
+To ensure your quick start with ONLYOFFICE, we provide training courses on how to use all the modules and features. "Learn more":"https://www.onlyoffice.com/training-courses.aspx".
 
 *#5 Consider VIP cloud*
 VIP cloud is offered to those who need enterprise-grade security and scalability: 
-#Up to 5,000 users per portal with 250 Gb of storage per teammate. 
-#Dedicated server from a European provider. 
-#Multitenancy: separate portals for company branches.
-#Encryption at rest and encrypted collaboration via Private Rooms.
+·	Dedicated server from a European provider. 
+·	Multitenancy: separate portals for company branches.
+·	Encryption at rest and encrypted collaboration via Private Rooms.
 
 $GreenButton
 
 Truly yours,
+
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_admin_modules_v115" xml:space="preserve">
     <value>Hello, $UserName!
 
-ONLYOFFICE will help you with all your daily tasks. Here’s what you can do with its modules:
+ONLYOFFICE will help you with all your daily tasks. Here’s what you can do:
 
-# *Documents.* Store and manage docs, sheets, and slides. Edit them and collaborate with your team. 
-# *Projects.* Plan activities, create and assign tasks, set deadlines. 
-# *CRM.* Maintain customers database, track sales, create invoices. 
-# *Calendar.* Arrange meetings with shareable calendars and set reminders. 
-# *Mail.* Gather mail from different accounts in one place.  Add your own domain to create corporate mailboxes. 
-# *Community.* Create your own social network ans maintain corporate wiki. 
-# *Talk.* Exchange instant messages with your team. 
+# *Documents*. Store and manage docs, sheets, and slides. Edit them and collaborate with your team. Create and co-edit professional-looking forms online, let other users fill them in, save forms as PDF files. 
+# *Projects*. Plan activities, create and assign tasks, set deadlines. 
+# *CRM*. Maintain customers database, track sales, create invoices. 
+# *Calendar*. Arrange meetings with shareable calendars and set reminders. 
+# *Mail*. Gather mail from different accounts in one place. Add your own domain to create corporate mailboxes. 
+# *Community*. Create your own social network ans maintain corporate wiki. 
+# *Talk*. Exchange instant messages with your team. 
 
 $GreenButton
 
@@ -1491,14 +1428,15 @@ ONLYOFFICE Team
   </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Hello, $UserName!
+
 Thanks for choosing ONLYOFFICE! Re-activate your Business plan today and save 20% OFF with Reactivate20 coupon! Just use it while purchasing to:
 
 # *Add up to 1,000 users* with 100 Gb per each and appoint unlimited number of admins. 
 # *Customize your online office* style to match your branding. 
 # *Edit unlimited number of docs*, sheets, and slides simultaneously. 
-# *Ensure security:* enable 2FA, configure automatic backups, track user actions.
-# *Integrate with your infrastructure:* use LDAP, SSO, and your domain name for portal address.
-# *Connect apps for productive work:* Twilio, DocuSign, etc.
+# *Ensure security*: enable 2FA, configure automatic backups, track user actions.
+# *Integrate with your infrastructure*: use LDAP, SSO, and your domain name for portal address.
+# *Connect apps for productive work*: Twilio, DocuSign, etc.
 
 $GreenButton
 
@@ -1515,7 +1453,7 @@ We would appreciate your feedback. Why have you decided to stop using ONLYOFFICE
 
 $GreenButton
 
-If you think this is a mistake and want to continue using ONLYOFFICE, please contact our "support team":"mailto:support@onlyoffice.com".
+If you think this is a mistake and want to continue using ONLYOFFICE, please contact our "support team":"https://helpdesk.onlyoffice.com".
 
 Truly yours,
 ONLYOFFICE Team
@@ -1538,11 +1476,11 @@ ONLYOFFICE Team
     <value>Hello, $UserName!
 
 The trial period for your account at "${__VirtualRootPath}":"${__VirtualRootPath}" will be over in 5 days.
-
 *Buy a subscription today with 10% off!*
 
 Just use this coupon code while purchasing: *$Coupon*. It will be valid within the next 10 days. 
 
+Use discount
 $GreenButton
 
 Truly yours,
@@ -1556,7 +1494,7 @@ The trial period for your portal at "${__VirtualRootPath}":"${__VirtualRootPath}
 
 To extend your trial, contact our "sales team":"mailto:sales@onlyoffice.com". 
 
-You can switch to free Startup plan on "Payments page":"$PricingPage". Free plan has up to 5 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. "Compare plans":"https://www.onlyoffice.com/saas.aspx".
+You can switch to free Startup plan on "Payments page":"$PricingPage". Free plan has up to 10 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. "Compare plans":"https://www.onlyoffice.com/saas.aspx"
 
 Truly yours,
 ONLYOFFICE Team
@@ -1567,9 +1505,9 @@ ONLYOFFICE Team
 
 Get free ONLYOFFICE apps to work on documents and projects from any of your devices.
 
-# To work on documents offline on Windows, Linux and macOS, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/apps.aspx". You can connect the app to your cloud and "get access to pro features":"https://helpcenter.onlyoffice.com/installation/desktop-pro-features.aspx" (content controls, sheet views, document comparison).
-# To edit documents on mobile devices, ONLYOFFICE Documents app for "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-# To manage your team performance on the go, get ONLYOFFICE Projects for "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".
+·	To work on documents offline on Windows, Linux and Mac, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx". You can connect the app to your cloud for online collaboration.
+·	To edit documents on mobile devices, get ONLYOFFICE Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+·	To manage your team performance on the go, get ONLYOFFICE Projects for "iOS":"https://apps.apple.com/us/app/onlyoffice-projects/id1353395928" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects". 
 
 Truly yours,
 ONLYOFFICE Team
@@ -1580,7 +1518,7 @@ ONLYOFFICE Team
 
 We hope you enjoy using ONLYOFFICE editors. Here are some tips on how to make it more effective.
 
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm
+$TableItemsTop $TableItem2 $TableItem1 $TableItem4 $TableItem3 $TableItem7 $TableItem6 $TableItem5 $TableItemsBtm
 
 $GreenButton
 
@@ -1595,10 +1533,10 @@ ONLYOFFICE Team
     <value>*Connect 3rd party clouds*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_apps" xml:space="preserve">
-    <value>Download the apps to work on docs &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://www.onlyoffice.com/apps.aspx"&gt;offline&lt;/a&gt; as well as on &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://itunes.apple.com/us/app/onlyoffice-documents/id944896972"&gt;iOS&lt;/a&gt; and &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://play.google.com/store/apps/details?id=com.onlyoffice.documents"&gt;Android&lt;/a&gt; devices.</value>
+    <value>Create ready-to-fill-out forms together with your teammates, let other users fill them in, save forms as PDF files. "Learn more":"https://helpcenter.onlyoffice.com/userguides/docs-index.aspx"</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_apps_hdr" xml:space="preserve">
-    <value>*Get the apps*</value>
+    <value>*Create ready-to-fill-out forms*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_attach" xml:space="preserve">
     <value>Documents are integrated with all the other ONLYOFFICE modules, so you’ll forget about downloading docs and uploading them somewhere else forever.</value>
@@ -1613,10 +1551,10 @@ ONLYOFFICE Team
     <value>*Choose co-editing mode*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_contentcontrols" xml:space="preserve">
-    <value>Use Content Controls to create customizable forms.</value>
+    <value>Create and co-edit "fillable document forms":"https://www.onlyoffice.com/form-creator.aspx" online, let other users fill them in, save forms as PDF files.</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr" xml:space="preserve">
-    <value>*Use Content Controls*</value>
+    <value>*Create professional-looking forms*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_differences" xml:space="preserve">
     <value>Quickly find differences in two versions of the same document with the Compare documents feature.</value>
@@ -1625,19 +1563,19 @@ ONLYOFFICE Team
     <value>*Quickly find differences*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_formatting" xml:space="preserve">
-    <value>ONLYOFFICE provides you with the most complete set of styling and formatting tools.</value>
+    <value>ONLYOFFICE provides you with the most complete set of styling and formatting tools. "Learn more":"https://helpcenter.onlyoffice.com/userguides/docs-index.aspx"</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr" xml:space="preserve">
     <value>*Explore advanced formatting*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_review" xml:space="preserve">
-    <value>Use Review to suggest changes without modifying the original doc, add Comments to share your thoughts on a specific extract, or chat inside your doc via instant messages.</value>
+    <value>Use Review to suggest changes without modifying the original doc, add comments and tag other users for feedback. Exchange instant messages via built-in chat or Telegram, make video calls using Jitsi.</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_review_hdr" xml:space="preserve">
     <value>*Review, comment, and chat*</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_share" xml:space="preserve">
-    <value>Share docs to individuals or user groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access.</value>
+    <value>Share docs to individuals or user groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access. To protect documents, you can restrict printing, downloading, copying, and sharing.</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v115_item_share_hdr" xml:space="preserve">
     <value>*Share documents*</value>
@@ -1651,18 +1589,17 @@ ONLYOFFICE Team
   <data name="pattern_saas_admin_welcome_v115" xml:space="preserve">
     <value>Hello, $UserName!
 
-Test ONLYOFFFICE Business cloud for 30 days for free:
+Test ONLYOFFICE Business cloud for 30 days for free:
 
-# *Add up to 30 users* with 100 Gb per each. After purchasing the subscription, you will be able to add any number of users.
+# *Edit unlimited number of docs*, sheets, slides, and forms simultaneously.
 # *Customize your online office* style to match your branding.
-# *Edit unlimited number of docs*, sheets, and slides simultaneously.
 # *Ensure security:* enable 2FA, configure automatic backups, track user actions.
 # *Integrate with your infrastructure:* use LDAP, SSO, and your domain name for portal address.
 # *Connect apps for productive work:* Twilio, DocuSign, etc.
 
-If you need instructions on configuring/using ONLYOFFICE, visit our "Help Center":"${__HelpLink}"! 
+If you need instructions on configuring/using ONLYOFFICE, visit our "Help Center":"${__HelpLink}".
 
-You can purchase subscription on "Payments Page":"$PricingPage" or ask us to extend your trial if you need more time for testing.
+You can purchase subscription on "Payments page":"$PricingPage" or ask us to extend your trial if you need more time for testing.
 
 Truly yours,
 ONLYOFFICE Team
@@ -1686,11 +1623,11 @@ ONLYOFFICE Team
 
 Your guest profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}".  Now you can:
 
-# Edit your "profile":"$MyStaffLink".
-# View and comment the content available in the "Community":"${__VirtualRootPath}/Products/Community/" and "Projects":"${__VirtualRootPath}/Products/Projects/".
-# Add and download files available for you in the "Documents":"${__VirtualRootPath}/Products/Files/".
-# Organize your schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
-# Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
+1. Edit your "profile":"$MyStaffLink".
+2. View and comment the content available in the "Community":"${__VirtualRootPath}/Products/Community/" and "Projects":"${__VirtualRootPath}/Products/Projects/".
+3. Add and download files available for you in the "Documents":"${__VirtualRootPath}/Products/Files/".
+4. Organize your schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
+5. Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
 
 $GreenButton
 
@@ -1718,16 +1655,16 @@ ONLYOFFICE Team
 
 Welcome to ONLYOFFICE! Your user profile has been successfully added to the portal at "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-# Create and edit "Documents":"${__VirtualRootPath}/Products/Files/", share them with teammates, and collaborate in real time.
-# Add your email accounts and manage all correspondence in one place with "Mail":"${__VirtualRootPath}/addons/mail/".
-# Manage your workflow with "Projects":"${__VirtualRootPath}/Products/Projects/" and your customer relationships using "CRM":"${__VirtualRootPath}/Products/CRM/".
-# Use "Community":"${__VirtualRootPath}/Products/Community/" to start your blogs, forums, add events, share bookmarks.
-# Organize your work schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
-# Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
+1. Create and edit "Documents":"${__VirtualRootPath}/Products/Files/",  share them with teammates, collaborate in real time, and work with forms.
+2. Add your email accounts and manage all correspondence in one place with "Mail":"${__VirtualRootPath}/addons/mail/".
+3. Manage your workflow with "Projects":"${__VirtualRootPath}/Products/Projects/" and your customer relationships using "CRM":"${__VirtualRootPath}/Products/CRM/".
+4. Use "Community":"${__VirtualRootPath}/Products/Community/" to start your blogs, forums, add events, share bookmarks.
+5. Organize your work schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
+6. Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
 
 $GreenButton
 
-If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"https://support.onlyoffice.com".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"https://helpdesk.onlyoffice.com".
 
 Truly yours,
 ONLYOFFICE Team
@@ -1739,7 +1676,7 @@ ONLYOFFICE Team
 "$__AuthorName":"$__AuthorUrl" has changed his/her profile details at the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
 
 
-^You receive this email because you are an administrator of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal. If you do not want to receive the notifications about profile updates, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
+^If you do not want to receive the notifications about profile updates, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_self_profile_updated_tg" xml:space="preserve">
     <value>[${__VirtualRootPath}](${__VirtualRootPath}) portal profile change notification
@@ -1764,7 +1701,7 @@ h2.$activity.Key
 #end
 
 
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal. If you do not want to receive the notifications about the new events on the "${__VirtualRootPath}":"${__VirtualRootPath}" portal, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
+^If you do not want to receive the notifications about the new events on the "${__VirtualRootPath}":"${__VirtualRootPath}" portal, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP test message
@@ -1823,7 +1760,7 @@ Your portal is available again.</value>
 "$__AuthorName":"$__AuthorUrl" has joined your portal at "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 
-^You receive this email because you are an administrator user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal. If you do not want to receive the notifications about new users, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
+^If you do not want to receive the notifications about new users, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_user_has_join_tg" xml:space="preserve">
     <value>New user added to [${__VirtualRootPath}](${__VirtualRootPath}) portal
@@ -1848,9 +1785,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_change_email_v115" xml:space="preserve">
     <value>Confirm changing your email</value>
-  </data>
-  <data name="subject_change_password" xml:space="preserve">
-    <value>${LetterLogoText} password assistance</value>
   </data>
   <data name="subject_change_phone" xml:space="preserve">
     <value>${LetterLogoText}. Mobile phone change request</value>
@@ -1886,7 +1820,7 @@ The link is only valid for 7 days.</value>
     <value>Your Enterprise Edition trial expires today</value>
   </data>
   <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Get free ONLYOFFICE apps</value>
+    <value>Get free desktop and mobile apps</value>
   </data>
   <data name="subject_enterprise_admin_user_docs_tips_v10" xml:space="preserve">
     <value>7 tips for effective work on your docs</value>
@@ -1994,13 +1928,10 @@ The link is only valid for 7 days.</value>
     <value>Need more features? Give a try to ONLYOFFICE for teams</value>
   </data>
   <data name="subject_personal_after_registration28" xml:space="preserve">
-    <value>How to enhance security of your web office</value>
+    <value>Get free ONLYOFFICE apps</value>
   </data>
   <data name="subject_personal_after_registration7" xml:space="preserve">
     <value>Connect your favorite cloud storage to ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_change_password" xml:space="preserve">
-    <value>ONLYOFFICE Personal password assistance</value>
   </data>
   <data name="subject_personal_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Please activate your email address</value>
@@ -2130,5 +2061,52 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>You’re invited to join ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
+
+$GreenButton
+
+The link is valid for 7 days.
+
+Don’t want to change your password? Just ignore this message&lt;/value&gt;
+  &lt;/data&gt;
+  &lt;data name="pattern_personal_change_password_v115" xml:space="preserve"&gt;
+    &lt;value&gt;Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
+
+$GreenButton 
+
+The link is valid for 7 days.
+
+Don’t want to change your password? Just ignore this message.</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Confirm changing your password</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Confirm Room Invite</value>
+  </data>
+  <data name="pattern_change_phone" xml:space="preserve">
+    <value>h1.Mobile phone change request
+
+You have requested to change your mobile phone used to enter the ${LetterLogoText} portal.
+
+Please follow the link below to change your mobile phone:
+
+$GreenButton
+
+If you do not want to change your mobile phone or received this email by mistake, please ignore it or contact your portal administrator to find out the details.</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
+
+$GreenButton 
+
+The link is valid for 7 days.
+
+Don’t want to change your password? Just ignore this message.</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Log in to your ONLYOFFICE Personal account</value>
   </data>
 </root>

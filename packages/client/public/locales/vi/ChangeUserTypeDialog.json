@@ -1,0 +1,7 @@
+{
+  "ChangeUserTypeButton": "Thay đổi loại",
+  "ChangeUserTypeHeader": "Thay đổi loại người dùng",
+  "ChangeUserTypeMessage": "Người dùng loại '{{ firstType }}' sẽ được chuyển sang loại '{{ secondType }}'.",
+  "ChangeUserTypeMessageWarning": "Bạn không thể thay đổi loại cho quản trị viên cổng thông tin và cho chính bạn",
+  "SuccessChangeUserType": "Loại người dùng đã được thay đổi thành công"
+}

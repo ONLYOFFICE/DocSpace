@@ -31,6 +31,7 @@ public class PersonalQuotaSettings : ISettings<PersonalQuotaSettings>
 {
     public long MaxSpace { get; set; }
 
+    [JsonIgnore]
     public Guid ID => new Guid("{C634A747-C39B-4517-8698-B3B39BF2BD8E}");
 
     public PersonalQuotaSettings GetDefault()

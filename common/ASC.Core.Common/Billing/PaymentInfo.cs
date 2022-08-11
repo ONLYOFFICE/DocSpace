@@ -37,7 +37,8 @@ public class PaymentInfo
     public string LName { get; set; }
     public string Email { get; set; }
     public DateTime PaymentDate { get; set; }
-    public Decimal Price { get; set; }
+    public decimal Price { get; set; }
+    public int Qty { get; set; }
     public string PaymentCurrency { get; set; }
     public string PaymentMethod { get; set; }
     public int QuotaId { get; set; }

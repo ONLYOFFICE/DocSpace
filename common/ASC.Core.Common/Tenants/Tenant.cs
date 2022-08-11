@@ -149,7 +149,8 @@ public class Tenant : IMapFrom<DbTenant>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<DbTenant, Tenant>();
+        profile.CreateMap<DbTenant, Tenant>()
+            .ForMember(r => r.TrustedDomainsType, opt => opt.MapFrom(src => src.TrustedDomainsEnabled));
 
         profile.CreateMap<TenantUserSecurity, Tenant>()
             .IncludeMembers(src => src.DbTenant);

@@ -33,6 +33,7 @@ public class ChunkedUploadSession<T> : CommonChunkedUploadSession
     public T FolderId { get; set; }
     public File<T> File { get; set; }
     public bool Encrypted { get; set; }
+    public bool KeepVersion { get; set; }
 
     //hack for Backup bug 48873
     [NonSerialized]
@@ -62,7 +63,7 @@ public class ChunkedUploadSession<T> : CommonChunkedUploadSession
     public static ChunkedUploadSession<T> Deserialize(Stream stream, FileHelper fileHelper)
     {
         var chunkedUploadSession = JsonSerializer.Deserialize<ChunkedUploadSession<T>>(stream);
-        chunkedUploadSession.File.FileHelper = fileHelper;
+        chunkedUploadSession.File.FileHelper = fileHelper; //TODO
         chunkedUploadSession.TransformItems();
 
         return chunkedUploadSession;

@@ -35,12 +35,13 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger monitor,
         FileUtility fileUtility,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
     }
 
@@ -144,12 +145,14 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             return;
         }
 
-        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var tx = await FilesDbContext.Database.BeginTransactionAsync();
-            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            var oldIDs = await Query(filesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(oldValue))
                 .Select(r => r.Id)
                 .ToListAsync();
@@ -160,7 +163,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
                 var newID = oldID.Replace(oldValue, newValue);
                 var newHashID = await MappingIDAsync(newID);
 
-                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
+                var mappingForUpdate = await Query(filesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.HashId == oldHashID)
                     .ToListAsync();
 
@@ -170,20 +173,21 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
                     m.HashId = newHashID;
                 }
 
-                await FilesDbContext.SaveChangesAsync();
+                await filesDbContext.SaveChangesAsync();
 
-                var securityForUpdate = await Query(FilesDbContext.Security)
+                var securityForUpdate = await Query(filesDbContext.Security)
                     .Where(r => r.EntryId == oldHashID)
                     .ToListAsync();
 
                 foreach (var s in securityForUpdate)
                 {
                     s.EntryId = newHashID;
+                    s.TimeStamp = DateTime.Now;
                 }
 
-                await FilesDbContext.SaveChangesAsync();
+                await filesDbContext.SaveChangesAsync();
 
-                var linkForUpdate = await Query(FilesDbContext.TagLink)
+                var linkForUpdate = await Query(filesDbContext.TagLink)
                     .Where(r => r.EntryId == oldHashID)
                     .ToListAsync();
 
@@ -192,7 +196,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
                     l.EntryId = newHashID;
                 }
 
-                await FilesDbContext.SaveChangesAsync();
+                await filesDbContext.SaveChangesAsync();
             }
 
             await tx.CommitAsync();
@@ -284,6 +288,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         folder.Title = MakeTitle(fsEntry);
         folder.FilesCount = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
         folder.FoldersCount = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
+        SetFolderType(folder, isRoot);
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {

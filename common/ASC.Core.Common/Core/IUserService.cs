@@ -26,7 +26,7 @@
 
 namespace ASC.Core;
 
-[Scope(typeof(ConfigureEFUserService), typeof(ConfigureCachedUserService))]
+[Scope(typeof(CachedUserService))]
 public interface IUserService
 {
     IEnumerable<UserInfo> GetUsers(int tenant);
@@ -59,6 +59,7 @@ public interface IUserService
     UserInfo SaveUser(int tenant, UserInfo user);
     void RemoveGroup(int tenant, Guid id);
     void RemoveUser(int tenant, Guid id);
+    IEnumerable<string> GetDavUserEmails(int tenant);
     void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType);
     void SetUserPasswordHash(int tenant, Guid id, string passwordHash);
     void SetUserPhoto(int tenant, Guid id, byte[] photo);

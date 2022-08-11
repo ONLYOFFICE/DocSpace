@@ -31,7 +31,7 @@ namespace ASC.Files.Service.Core;
 public class FilesModule : FeedModule
 {
     public override Guid ProductID => WebItemManager.DocumentsProductID;
-    public override string Name => Constants.FilesModule;
+    public override string Name => Feed.Constants.FilesModule;
     public override string Product => "documents";
     protected override string DbId => "files";
 

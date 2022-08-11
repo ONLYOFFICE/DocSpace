@@ -71,5 +71,21 @@ public static class DataTests
     public const bool Immediately = true;
 
     public const bool Notify = false;
-    public const string Message = "folder_test";
+    public const string Message = "test_message";
+
+    public const string RoomTitle = "Room_Title";
+
+    public const string NewRoomTitle = "New_Room_Title";
+
+    public const int CustomRoomId = 5;
+    public const int RoomId = 18;
+    public const int RoomIdForDelete = 19;
+    public const int RoomIdForArchive = 20;
+    public const int RoomIdForUnpin = 21;
+    public const int RoomIdForUnarchive = 22;
+    public const int RoomIdWithTags = 24;
+
+    public const string TagNames = "name1,name2";
+    public const string Email = "test1@gmail.com";
+    public const string Image = "appIcon-180.png";
 }

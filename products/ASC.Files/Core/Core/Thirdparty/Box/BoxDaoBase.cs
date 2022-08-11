@@ -35,11 +35,12 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger monitor,
         FileUtility fileUtility,
-        TempPath tempPath) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
     }
 
@@ -122,6 +123,7 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
         folder.Title = MakeFolderTitle(boxFolder);
         folder.FilesCount = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFile) : 0;
         folder.FoldersCount = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFolder) : 0;
+        SetFolderType(folder, isRoot);
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {
@@ -191,6 +193,7 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
         file.ModifiedOn = boxFile.ModifiedAt.HasValue ? _tenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value.UtcDateTime) : default;
         file.NativeAccessor = boxFile;
         file.Title = MakeFileTitle(boxFile);
+        file.ThumbnailStatus = Thumbnail.Created;
 
         return file;
     }

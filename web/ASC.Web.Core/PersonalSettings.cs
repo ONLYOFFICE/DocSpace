@@ -36,6 +36,7 @@ public class PersonalSettings : ISettings<PersonalSettings>
     [JsonPropertyName("IsNotActivated")]
     public bool IsNotActivatedSetting { get; set; }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{B3427865-8E32-4E66-B6F3-91C61922239F}"); }

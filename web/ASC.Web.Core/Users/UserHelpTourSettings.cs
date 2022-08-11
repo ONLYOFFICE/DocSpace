@@ -29,6 +29,7 @@ namespace ASC.Web.Core.Users;
 [Serializable]
 public class UserHelpTourSettings : ISettings<UserHelpTourSettings>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{DF4B94B7-42C8-4fce-AAE2-D479F3B39BDD}"); }

@@ -1,8 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (criação)",
-  "GroupAction": "Ação em grupo",
-  "Members": "Membros",
-  "SearchAddedMembers": "Pesquisar membros adicionados",
-  "SelectAction": "Selecionar",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' foi salvo com sucesso"
-}

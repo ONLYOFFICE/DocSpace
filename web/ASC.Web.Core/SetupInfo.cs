@@ -44,7 +44,6 @@ public class SetupInfo
     public List<CultureInfo> EnabledCultures { get; private set; }
     private List<CultureInfo> EnabledCulturesPersonal { get; set; }
     public List<KeyValuePair<string, CultureInfo>> PersonalCultures { get; private set; }
-    public decimal ExchangeRateRuble { get; private set; }
     public long MaxImageUploadSize { get; private set; }
 
     /// <summary>
@@ -63,8 +62,8 @@ public class SetupInfo
 
     public string TeamlabSiteRedirect { get; private set; }
     public long ChunkUploadSize { get; private set; }
+    public long ProviderMaxUploadSize { get; private set; }
     public bool ThirdPartyAuthEnabled { get; private set; }
-    public bool ThirdPartyBannerEnabled { get; private set; }
     public string NoTenantRedirectURL { get; private set; }
     public string NotifyAddress { get; private set; }
     public string TipsAddress { get; private set; }
@@ -95,7 +94,6 @@ public class SetupInfo
     public string ShareFacebookUrl { get; private set; }
     public string ControlPanelUrl { get; private set; }
     public string FontOpenSansUrl { get; private set; }
-    public bool VoipEnabled { get; private set; }
     public string StartProductList { get; private set; }
     public string SsoSamlLoginUrl { get; private set; }
     public string DownloadForDesktopUrl { get; private set; }
@@ -145,16 +143,14 @@ public class SetupInfo
             .ToList();
 
         PersonalCultures = GetPersonalCultures();
-
-        ExchangeRateRuble = GetAppSettings("exchange-rate.ruble", 65);
         MaxImageUploadSize = GetAppSettings<long>("web:max-upload-size", 1024 * 1024);
         AvailableFileSize = GetAppSettings("web:available-file-size", 100L * 1024L * 1024L);
         AvailableFileSize = GetAppSettings("web.available-file-size", 100L * 1024L * 1024L);
 
         TeamlabSiteRedirect = GetAppSettings("web.teamlab-site", string.Empty);
         ChunkUploadSize = GetAppSettings("files:uploader:chunk-size", 10 * 1024 * 1024);
-        ThirdPartyAuthEnabled = string.Equals(GetAppSettings("web.thirdparty-auth", "true"), "true");
-        ThirdPartyBannerEnabled = string.Equals(GetAppSettings("web.thirdparty-banner", "false"), "true");
+        ProviderMaxUploadSize = GetAppSettings("files:provider:max-upload-size", 1024L * 1024L * 1024L);
+        ThirdPartyAuthEnabled = string.Equals(GetAppSettings("web:thirdparty-auth", "true"), "true");
         NoTenantRedirectURL = GetAppSettings("web.notenant-url", "");
 
         NotifyAddress = GetAppSettings("web.promo-url", string.Empty);
@@ -182,7 +178,6 @@ public class SetupInfo
         ShareFacebookUrl = GetAppSettings("web.share.facebook", "");
         ControlPanelUrl = GetAppSettings("web:controlpanel:url", "");
         FontOpenSansUrl = GetAppSettings("web.font.opensans.url", "");
-        VoipEnabled = GetAppSettings("voip.enabled", true);
         StartProductList = GetAppSettings("web.start.product.list", "");
         SsoSamlLoginUrl = GetAppSettings("web.sso.saml.login.url", "");
         SsoSamlLogoutUrl = GetAppSettings("web.sso.saml.logout.url", "");

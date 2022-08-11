@@ -1,0 +1,10 @@
+{
+  "MoveToTrashButton": "Mettre dans la corbeille",
+  "MoveToTrashFile": "Vous êtes sur le point de supprimer ce fichier? Veuillez noter que si vous l'avez partagé avec quelqu'un, il deviendra indisponible. Êtes-vous sûr de vouloir continuer?",
+  "MoveToTrashFolder": "Vous êtes sur le point de supprimer ce dossier? Veuillez noter que si vous l'avez partagé avec quelqu'un, il deviendra indisponible. Êtes-vous sûr de vouloir continuer?",
+  "MoveToTrashItems": "Vous êtes sur le point de supprimer ces éléments? Veuillez noter que si vous les avez partagés avec quelqu'un, ils deviendront indisponibles. Êtes-vous sûr de vouloir continuer?",
+  "MoveToTrashTitle": "Déplacer vers la corbeille ?",
+  "UnsubscribeButton": "Se désabonner",
+  "UnsubscribeNote": "Êtes-vous sûr de vouloir vous désabonner des éléments sélectionnés dans la liste ?",
+  "UnsubscribeTitle": "Confirmation de désabonnement"
+}

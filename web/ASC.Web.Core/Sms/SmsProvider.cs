@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Core.Sms;
 
-[Scope(Additional = typeof(TwilioProviderExtention))]
+[Scope]
 public class SmsProviderManager
 {
     private readonly ConsumerFactory _consumerFactory;
@@ -365,12 +365,26 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
 {
     protected override string Key
     {
-        get { return this["twilioAccountSid"]; }
+        get { return this["twilioKeySid"]; }
+        set { }
     }
 
     protected override string Secret
     {
+        get { return this["twilioKeySecret"]; }
+        set { }
+    }
+
+    protected string AccountSid
+    {
+        get { return this["twilioAccountSid"]; }
+        set { }
+    }
+
+    protected string AuthToken
+    {
         get { return this["twilioAuthToken"]; }
+        set { }
     }
 
     protected override string Sender
@@ -378,17 +392,12 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         get { return this["twiliosender"]; }
     }
 
-    private readonly AuthContext _authContext;
-    private readonly TenantUtil _tenantUtil;
-    private readonly SecurityContext _securityContext;
-    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
-    private readonly TwilioProviderCleaner _twilioProviderCleaner;
-
     public override bool Enable()
     {
         return
             !string.IsNullOrEmpty(Key)
             && !string.IsNullOrEmpty(Secret)
+            && !string.IsNullOrEmpty(AccountSid)
             && !string.IsNullOrEmpty(Sender);
     }
 
@@ -399,7 +408,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
             number = "+" + number;
         }
 
-        var twilioRestClient = new TwilioRestClient(Key, Secret);
+        var twilioRestClient = new TwilioRestClient(Key, Secret, AccountSid);
 
         try
         {
@@ -419,41 +428,12 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         return Task.FromResult(false);
     }
 
-    public TwilioProvider()
-    {
-    }
-
-    public TwilioProvider(
-        AuthContext authContext,
-        TenantUtil tenantUtil,
-        SecurityContext securityContext,
-        BaseCommonLinkUtility baseCommonLinkUtility,
-        TwilioProviderCleaner twilioProviderCleaner,
-        TenantManager tenantManager,
-        CoreBaseSettings coreBaseSettings,
-        CoreSettings coreSettings,
-        IConfiguration configuration,
-        ICacheNotify<ConsumerCacheItem> cache,
-        ConsumerFactory consumerFactory,
-        ILogger<TwilioProvider> options,
-        IHttpClientFactory clientFactory,
-        ICache memCache,
-        string name, int order, Dictionary<string, string> props)
-        : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props)
-    {
-        _authContext = authContext;
-        _tenantUtil = tenantUtil;
-        _securityContext = securityContext;
-        _baseCommonLinkUtility = baseCommonLinkUtility;
-        _twilioProviderCleaner = twilioProviderCleaner;
-    }
-
 
     public bool ValidateKeys()
     {
         try
         {
-            new VoipService.Twilio.TwilioProvider(Key, Secret, _authContext, _tenantUtil, _securityContext, _baseCommonLinkUtility).GetExistingPhoneNumbers();
+            IncomingPhoneNumberResource.Read(client: new TwilioRestClient(AccountSid, AuthToken));
             return true;
         }
         catch (Exception)
@@ -461,81 +441,9 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
             return false;
         }
     }
-
-    public void ClearOldNumbers()
-    {
-        _twilioProviderCleaner.ClearOldNumbers(Key, Secret);
-    }
 }
 
 [Scope]
 public class TwilioSaaSProvider : TwilioProvider
 {
-    public TwilioSaaSProvider()
-    {
-    }
-
-    public TwilioSaaSProvider(
-        AuthContext authContext,
-        TenantUtil tenantUtil,
-        SecurityContext securityContext,
-        BaseCommonLinkUtility baseCommonLinkUtility,
-        TwilioProviderCleaner twilioProviderCleaner,
-        TenantManager tenantManager,
-        CoreBaseSettings coreBaseSettings,
-        CoreSettings coreSettings,
-        IConfiguration configuration,
-        ICacheNotify<ConsumerCacheItem> cache,
-        ConsumerFactory consumerFactory,
-        ILogger<TwilioSaaSProvider> options,
-        IHttpClientFactory clientFactory,
-        ICache memCache,
-        string name, int order)
-        : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, null)
-    {
-    }
-}
-
-[Scope]
-public class TwilioProviderCleaner
-{
-    private readonly VoipDao _voipDao;
-    private readonly AuthContext _authContext;
-    private readonly TenantUtil _tenantUtil;
-    private readonly SecurityContext _securityContext;
-    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
-
-    public TwilioProviderCleaner(VoipDao voipDao, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
-    {
-        _voipDao = voipDao;
-        _authContext = authContext;
-        _tenantUtil = tenantUtil;
-        _securityContext = securityContext;
-        _baseCommonLinkUtility = baseCommonLinkUtility;
-    }
-
-    public void ClearOldNumbers(string key, string secret)
-    {
-        if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(secret))
-        {
-            return;
-        }
-
-        var provider = new VoipService.Twilio.TwilioProvider(key, secret, _authContext, _tenantUtil, _securityContext, _baseCommonLinkUtility);
-
-        var numbers = _voipDao.GetNumbers();
-        foreach (var number in numbers)
-        {
-            provider.DisablePhone(number);
-            _voipDao.DeleteNumber(number.Id);
-        }
-    }
-}
-
-public static class TwilioProviderExtention
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<TwilioSaaSProvider>();
-    }
 }

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.Web.Api.Controllers;
 
 [Scope]
@@ -367,6 +365,38 @@ public class PortalController : ControllerBase
         }
 
         return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
+    }
+
+    [HttpDelete("deleteportalimmediately")]
+    public async Task DeletePortalImmediately()
+    {
+        var tenant = _tenantManager.GetCurrentTenant();
+
+        if (_securityContext.CurrentAccount.ID != tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
+        _tenantManager.RemoveTenant(tenant.Id);
+
+        if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+        {
+            await _apiSystemHelper.RemoveTenantFromCacheAsync(tenant.Alias, _securityContext.CurrentAccount.ID);
+        }
+
+        try
+        {
+            if (!_securityContext.IsAuthenticated)
+            {
+                _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+            }
+
+            _messageService.Send(MessageAction.PortalDeleted);
+        }
+        finally
+        {
+            _securityContext.Logout();
+        }
     }
 
     [HttpPost("suspend")]

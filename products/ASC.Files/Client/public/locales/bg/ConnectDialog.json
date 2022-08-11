@@ -1,9 +1,0 @@
-﻿{
-  "Account": "Профил",
-  "ConnectFolderTitle": "Заглавие на папката",
-  "ConnectionUrl": "Свързващ url",
-  "ConnectMakeShared": "Сподели и постави в папка 'Често срещани'",
-  "Login": "Вписване",
-  "Reconnect": "Повторно свързване",
-  "ConvertedFileDestination": "Копие на файла ще бъде създадено в папката <strong>{{folderTitle}}</strong>"
-}

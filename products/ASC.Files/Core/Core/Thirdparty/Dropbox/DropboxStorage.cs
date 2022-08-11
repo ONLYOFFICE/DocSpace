@@ -24,8 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ThumbnailSize = Dropbox.Api.Files.ThumbnailSize;
+
 namespace ASC.Files.Thirdparty.Dropbox;
 
+[Scope]
 internal class DropboxStorage : IDisposable
 {
     public bool IsOpened { get; private set; }
@@ -135,8 +138,36 @@ internal class DropboxStorage : IDisposable
     public async Task<List<Metadata>> GetItemsAsync(string folderPath)
     {
         var data = await _dropboxClient.Files.ListFolderAsync(folderPath);
-
         return new List<Metadata>(data.Entries);
+    }
+
+    public async Task<Stream> GetThumbnailsAsync(string filePath, int width, int height)
+    {
+        try
+        {
+            var path = new PathOrLink.Path(filePath);
+            var size = Convert(width, height);
+            var arg = new ThumbnailV2Arg(path, size: size);
+
+            var responce = await _dropboxClient.Files.GetThumbnailV2Async(arg);
+            return await responce.GetContentAsStreamAsync();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private ThumbnailSize Convert(int width, int height)
+    {
+        if (width > 368)
+        {
+            return ThumbnailSize.W480h320.Instance;
+        }
+        else
+        {
+            return ThumbnailSize.W256h256.Instance;
+        }
     }
 
     public Task<Stream> DownloadStreamAsync(string filePath, int offset = 0)

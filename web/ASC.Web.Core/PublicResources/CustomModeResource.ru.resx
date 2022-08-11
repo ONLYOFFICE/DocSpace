@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
     <value>Здравствуйте, $UserName,
@@ -85,7 +85,7 @@ $GreenButton
 команда ${LetterLogoText}</value>
   </data>
   <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
-    <value>h1.Добро пожаловать тестовое в облако для совместной работы Р7-Офис
+    <value>h1.Добро пожаловать в тестовое облако для совместной работы Р7-Офис
 
 Вы только что создали тестовый облачный офис для совместной работы над документами.
 
@@ -111,15 +111,20 @@ h3.Возможности тестового облака Р7-Офис:
   <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
     <value>$PersonalHeaderStart Подключите свое облачное хранилище к ONLYOFFICE $PersonalHeaderEnd
 
-Прошла неделя с тех пор, как вы создали свой облачный офис, и мы хотели бы рассказать вам о некоторых полезных возможностях, которые вы могли не заметить.
+Прошла неделя с тех пор, как вы создали свой облачный офис, и мы хотели бы поделиться с вами некоторыми рекомендациями и полезной информацией о том, как сделать вашу работу еще более эффективной.
 
-Подключите *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* или *Yandex.Disk* к ONLYOFFICE, чтобы создать единое пространство для управления всеми документами. Вы сможете редактировать сторонние файлы в ONLYOFFICE и сохранять их в том хранилище, где ведете документацию. Инструкции по подключению файловых хранилищ к ONLYOFFICE можно найти "здесь":"${__HelpLink}/tipstricks/add-resource.aspx".
+*Соберите все документы в едином пространстве*
+
+Подключите Dropbox, Google Drive, Box, OneDrive, Nextcloud, ownCloud, kDrive или Yandex.Disk к ONLYOFFICE, чтобы создать единое пространство для управления всеми документами.
+"Узнать больше":"https://helpcenter.onlyoffice.com/ru/tipstricks/add-resource.aspx"
+
+*Редактируйте документы в Google Drive*
 
 Вы также можете интегрировать редакторы ONLYOFFICE в Google Drive с помощью нашего "коннектора":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
 
-Еще больше возможностей для управления документами
+*Используйте инструменты для продуктивной работы*
 
-h3.Попробуйте бизнес-решения ONLYOFFICE "в облаке":"https://www.onlyoffice.com/cloud-office.aspx" или "на собственном сервере":"https://www.onlyoffice.com/server-solutions.aspx". Они бесплатны в течение 30 дней пробного периода и наряду с набором инструментов для бизнеса включают в себя расширенные возможности управления документами:
+h3.Попробуйте бизнес-решения ONLYOFFICE "в облаке":"https://www.onlyoffice.com/ru/cloud-office.aspx" или "на собственном сервере":"https://www.onlyoffice.com/ru/workspace-enterprise.aspx". Они бесплатны в течение 30 дней пробного периода и наряду с набором инструментов для бизнеса включают в себя расширенные возможности управления документами:
 
 - Управление проектной документацией;
 
@@ -129,7 +134,7 @@ h3.Попробуйте бизнес-решения ONLYOFFICE "в облаке"
 
 - Оптимизация рабочего процесса с помощью инструментов для взаимодействия с командой.
 
-Узнайте больше о возможностях "бизнес-версий ONLYOFFICE":"http://www.onlyoffice.com/document-management.aspx".
+Вы можете выбрать абсолютно бесплатный тариф для команд, объединяющих до 5 пользователей. "Зарегистрируйтесь":"https://www.onlyoffice.com/ru/registration.aspx"
 
 С уважением,
 команда ONLYOFFICE</value>
@@ -146,20 +151,6 @@ $GreenButton
 *Если вы не войдете в облачный офис в этом браузере, потребуется использовать старый адрес электронной почты для подтверждения.
 
 Не хотите менять адрес электронной почты? Просто проигнорируйте это сообщение.</value>
-  </data>
-  <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Был получен запрос на смену пароля, который Вы используете для входа на портал "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Пожалуйста, перейдите по ссылке ниже, чтобы сменить Ваш пароль:
-
-$GreenButton
-
-*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните смену пароля в течение этого времени.
-
-Если Вы не хотите менять Ваш пароль или получили это письмо по ошибке, пожалуйста, проигнорируйте его.
-
-С уважением,
-Команда Р7-Офис</value>
   </data>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Здравствуйте,
@@ -195,9 +186,7 @@ $GreenButton
 # Документы - $DocsSpace
 # CRM - $CrmSpace
 # Почта - $MailSpace
-# Чат - $TalkSpace
-
-^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+# Чат - $TalkSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Зарегистрирован новый портал
@@ -217,12 +206,6 @@ $GreenButton
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Добро пожаловать в ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Работайте над документами совместно в тестовом облаке Р7-Офис</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Р7-Офис. Помощь с паролем</value>
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Р7-Офис. Пожалуйста, активируйте Ваш адрес электронной почты</value>

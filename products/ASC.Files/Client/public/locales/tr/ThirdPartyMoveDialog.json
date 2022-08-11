@@ -1,5 +1,0 @@
-﻿{
-  "MoveConfirmation": "Taşıma onayı",
-  "MoveConfirmationAlert": "Öğeleri taşımak istediğinize emin misiniz?",
-  "MoveConfirmationMessage": "Öğeleri {{provider}} dizininden taşımak üzeresiniz. Bunlar {{provider}} hesabınızdan silinecekler ve artık diğer kullanıcılar tarafından erişilemeyecekler."
-}

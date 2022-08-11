@@ -73,7 +73,7 @@ public class UserGroupRef : IMapFrom<UserGroup>
             GroupId = new Guid(cache.GroupId)
         };
 
-        if (Enum.TryParse<UserGroupRefType>(cache.RefType, out var refType))
+        if (UserGroupRefTypeExtensions.TryParse(cache.RefType, out var refType))
         {
             result.RefType = refType;
         }

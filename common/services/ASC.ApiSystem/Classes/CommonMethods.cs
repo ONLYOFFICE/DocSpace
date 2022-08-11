@@ -61,7 +61,7 @@ public class CommonMethods
 
     private IConfiguration Configuration { get; }
 
-    private ILog Log { get; }
+    private ILogger<CommonMethods> Log { get; }
 
     private CoreSettings CoreSettings { get; }
 
@@ -86,7 +86,7 @@ public class CommonMethods
     public CommonMethods(
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
-        IOptionsMonitor<ILog> option,
+        ILogger<CommonMethods> log,
         CoreSettings coreSettings,
         CommonLinkUtility commonLinkUtility,
         EmailValidationKeyProvider emailValidationKeyProvider,
@@ -101,7 +101,7 @@ public class CommonMethods
 
         Configuration = configuration;
 
-        Log = option.Get("ASC.ApiSystem");
+        Log = log;
 
         CoreSettings = coreSettings;
 
@@ -166,7 +166,7 @@ public class CommonMethods
 
         if (skipWelcome)
         {
-            Log.DebugFormat("congratulations skiped");
+            Log.LogDebug("congratulations skiped");
             return false;
         }
 
@@ -183,7 +183,7 @@ public class CommonMethods
 
             var result = reader.ReadToEnd();
 
-            Log.DebugFormat("congratulations result = {0}", result);
+            Log.LogDebug("congratulations result = {0}", result);
 
             var resObj = JObject.Parse(result);
 
@@ -194,7 +194,7 @@ public class CommonMethods
         }
         catch (Exception ex)
         {
-            Log.Error("SendCongratulations error", ex);
+            Log.LogError(ex, "SendCongratulations error");
             return false;
         }
 
@@ -241,7 +241,7 @@ public class CommonMethods
     {
         if (IsTestEmail(model.Email)) return false;
 
-        Log.DebugFormat("clientIP = {0}", clientIP);
+        Log.LogDebug("clientIP = {0}", clientIP);
 
         var cacheKey = "ip_" + clientIP;
 
@@ -272,7 +272,7 @@ public class CommonMethods
 
         if (ipAttemptsCount <= CommonConstants.MaxAttemptsCount) return false;
 
-        Log.DebugFormat("PortalName = {0}; Too much reqests from ip: {1}", model.PortalName, clientIP);
+        Log.LogDebug("PortalName = {0}; Too much reqests from ip: {1}", model.PortalName, clientIP);
         sw.Stop();
 
         return true;
@@ -338,17 +338,17 @@ public class CommonMethods
             }
             else
             {
-                Log.DebugFormat("Recaptcha error: {0}", resp);
+                Log.LogDebug("Recaptcha error: {0}", resp);
             }
 
             if (resObj["error-codes"] != null && resObj["error-codes"].HasValues)
             {
-                Log.DebugFormat("Recaptcha api returns errors: {0}", resp);
+                Log.LogDebug("Recaptcha api returns errors: {0}", resp);
             }
         }
         catch (Exception ex)
         {
-            Log.Error(ex);
+            Log.LogError(ex, "ValidateRecaptcha");
         }
         return false;
     }

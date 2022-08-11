@@ -24,52 +24,125 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using FileShare = ASC.Files.Core.Security.FileShare;
+
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
 public class EditorControllerInternal : EditorController<int>
 {
-    public EditorControllerInternal(FileStorageService<int> fileStorageService, FileDtoHelper fileDtoHelper, DocumentServiceHelper documentServiceHelper, DocumentServiceTrackerHelper documentServiceTrackerHelper, EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper, SettingsManager settingsManager, EntryManager entryManager, IHttpContextAccessor httpContextAccessor) : base(fileStorageService, fileDtoHelper, documentServiceHelper, documentServiceTrackerHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor)
+    public EditorControllerInternal(
+        FileStorageService<int> fileStorageService,
+        FileDtoHelper fileDtoHelper,
+        DocumentServiceHelper documentServiceHelper,
+        EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
+        SettingsManager settingsManager,
+        EntryManager entryManager,
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper,
+        CommonLinkUtility commonLinkUtility,
+        FilesLinkUtility filesLinkUtility)
+        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility)
     {
     }
 }
 
 public class EditorControllerThirdparty : EditorController<string>
 {
-    public EditorControllerThirdparty(FileStorageService<string> fileStorageService, FileDtoHelper fileDtoHelper, DocumentServiceHelper documentServiceHelper, DocumentServiceTrackerHelper documentServiceTrackerHelper, EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper, SettingsManager settingsManager, EntryManager entryManager, IHttpContextAccessor httpContextAccessor) : base(fileStorageService, fileDtoHelper, documentServiceHelper, documentServiceTrackerHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor)
+    private readonly ThirdPartySelector _thirdPartySelector;
+
+    public EditorControllerThirdparty(
+        FileStorageService<string> fileStorageService,
+        FileDtoHelper fileDtoHelper,
+        DocumentServiceHelper documentServiceHelper,
+        EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
+        SettingsManager settingsManager,
+        EntryManager entryManager,
+        IHttpContextAccessor httpContextAccessor,
+        ThirdPartySelector thirdPartySelector,
+        IMapper mapper,
+        CommonLinkUtility commonLinkUtility,
+        FilesLinkUtility filesLinkUtility)
+        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility)
     {
+        _thirdPartySelector = thirdPartySelector;
+    }
+
+    [AllowAnonymous]
+    [AllowNotPayment]
+    [HttpGet("file/app-{fileId}/openedit")]
+    public async Task<Configuration<string>> OpenEditThirdPartyAsync(string fileId)
+    {
+        fileId = "app-" + fileId;
+        var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
+        bool editable;
+        var file = app.GetFile(fileId?.ToString(), out editable);
+        var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
+        var configuration = docParams.Configuration;
+        configuration.Document.Url = app.GetFileStreamUrl(file);
+        configuration.Document.Info.Favorite = null;
+        configuration.EditorConfig.Customization.GobackUrl = string.Empty;
+        configuration.EditorType = EditorType.External;
+
+        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))
+        {
+            var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
+            if (keyPair != null)
+            {
+                configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig
+                {
+                    PrivateKeyEnc = keyPair.PrivateKeyEnc,
+                    PublicKey = keyPair.PublicKey,
+                };
+            }
+        }
+
+        if (!file.Encrypted && !file.ProviderEntry)
+        {
+            _entryManager.MarkAsRecent(file);
+        }
+
+        configuration.Token = _documentServiceHelper.GetSignature(configuration);
+
+        return configuration;
     }
 }
 
 public abstract class EditorController<T> : ApiControllerBase
 {
-    private readonly FileStorageService<T> _fileStorageService;
-    private readonly FileDtoHelper _fileDtoHelper;
-    private readonly DocumentServiceHelper _documentServiceHelper;
-    private readonly DocumentServiceTrackerHelper _documentServiceTrackerHelper;
-    private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairDtoHelper;
-    private readonly SettingsManager _settingsManager;
-    private readonly EntryManager _entryManager;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    protected readonly FileStorageService<T> _fileStorageService;
+    protected readonly FileDtoHelper _fileDtoHelper;
+    protected readonly DocumentServiceHelper _documentServiceHelper;
+    protected readonly EncryptionKeyPairDtoHelper _encryptionKeyPairDtoHelper;
+    protected readonly SettingsManager _settingsManager;
+    protected readonly EntryManager _entryManager;
+    protected readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly FilesLinkUtility _filesLinkUtility;
 
     public EditorController(
         FileStorageService<T> fileStorageService,
         FileDtoHelper fileDtoHelper,
         DocumentServiceHelper documentServiceHelper,
-        DocumentServiceTrackerHelper documentServiceTrackerHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
         EntryManager entryManager,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper,
+        CommonLinkUtility commonLinkUtility,
+        FilesLinkUtility filesLinkUtility)
     {
         _fileStorageService = fileStorageService;
         _fileDtoHelper = fileDtoHelper;
         _documentServiceHelper = documentServiceHelper;
-        _documentServiceTrackerHelper = documentServiceTrackerHelper;
         _encryptionKeyPairDtoHelper = encryptionKeyPairDtoHelper;
         _settingsManager = settingsManager;
         _entryManager = entryManager;
         _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
+        _commonLinkUtility = commonLinkUtility;
+        _filesLinkUtility = filesLinkUtility;
     }
 
     /// <summary>
@@ -139,18 +212,14 @@ public abstract class EditorController<T> : ApiControllerBase
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("file/{fileId}/openedit")]
-    public async Task<Configuration<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
+    public async Task<ConfigurationDto<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
     {
         var docParams = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, true, !view, true);
         var configuration = docParams.Configuration;
-
+        var file = docParams.File;
         configuration.EditorType = EditorType.External;
-        if (configuration.EditorConfig.ModeWrite)
-        {
-            configuration.EditorConfig.CallbackUrl = _documentServiceTrackerHelper.GetCallbackUrl(configuration.Document.Info.GetFile().Id.ToString());
-        }
 
-        if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))
+        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))
         {
             var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
             if (keyPair != null)
@@ -163,20 +232,29 @@ public abstract class EditorController<T> : ApiControllerBase
             }
         }
 
-        if (!configuration.Document.Info.GetFile().Encrypted && !configuration.Document.Info.GetFile().ProviderEntry)
+        if (!file.Encrypted && !file.ProviderEntry)
         {
-            _entryManager.MarkAsRecent(configuration.Document.Info.GetFile());
+            _entryManager.MarkAsRecent(file);
         }
 
         configuration.Token = _documentServiceHelper.GetSignature(configuration);
 
-        return configuration;
+        var result = _mapper.Map<Configuration<T>, ConfigurationDto<T>>(configuration);
+        result.EditorUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceApiUrl);
+        result.File = await _fileDtoHelper.GetAsync(file);
+        return result;
     }
 
     [HttpGet("file/{fileId}/presigned")]
     public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
     {
         return _fileStorageService.GetPresignedUriAsync(fileId);
+    }
+
+    [HttpGet("file/{fileId}/sharedusers")]
+    public Task<List<MentionWrapper>> SharedUsers(T fileId)
+    {
+        return _fileStorageService.SharedUsersAsync(fileId);
     }
 }
 

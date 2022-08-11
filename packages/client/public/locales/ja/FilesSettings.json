@@ -1,0 +1,22 @@
+{
+  "Clouds": "クラウド",
+  "CommonSettings": "共通設定",
+  "ConnectAdminDescription": "接続を成功させるためには、<1>このページ</1>に必要なデータを入力してください。",
+  "ConnectCloud": "クラウドを接続する",
+  "ConnectDescriptionText": "サードパーティーのクラウドをまだ接続していない",
+  "ConnectEmpty": "ここには何もありません",
+  "ConnectMakeShared": "共有化して「共通」フォルダに入れる",
+  "ConnectMessage": "ONLYOFFICEアカウントには、以下のサービスを接続することができます。これらは「私の文書」フォルダに表示され、一つのワークスペースですべてのドキュメントを編集・保存することができるようになります。",
+  "ConnextOtherAccount": "その他のアカウント",
+  "DisplayFavorites": "お気に入りの表示",
+  "DisplayNotification": "ゴミ箱への移動時に通知を表示",
+  "DisplayRecent": "最近の表示",
+  "DisplayTemplates": "テンプレートの表示",
+  "IntermediateVersion": "保存された中間バージョンをすべて残す",
+  "KeepIntermediateVersion": "編集時に中間バージョンを残す",
+  "OriginalCopy": "ピーしたファイルをオリジナルのフォーマットでも保存する",
+  "StoringFileVersion": "ファイルバージョンの保存",
+  "ThirdPartyBtn": "ユーザーが第三者機関のストレージに接続できる",
+  "ThirdPartySettings": "接続されたクラウド",
+  "UpdateOrCreate": "同じ名前の既存のファイルに対して、ファイルのバージョンを更新します。それ以外の場合は、ファイルのコピーが作成されます。"
+}

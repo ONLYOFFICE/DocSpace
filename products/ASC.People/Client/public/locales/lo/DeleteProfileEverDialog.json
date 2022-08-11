@@ -1,5 +1,0 @@
-﻿{
-  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> ຈະຖືກລົບ",
-  "DeleteUserDataConfirmation": "ເອກະສານຂອງຜູ້ໃຊ້ທີ່ຖືກແບ່ງປັນກັບຄົນອື່ນຈະຖືກລຶບອອກ. ເພື່ອຫລີກລ້ຽງບັນຫານທີ່ຈະເກີດຂື້ນໃນການປ້ອນຂໍ້ມູນ",
-  "SuccessfullyDeleteUserInfoMessage": "ຜູ້ໃຊ້ຖືກລຶບອອກແລ້ວ"
-}

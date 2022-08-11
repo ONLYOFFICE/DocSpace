@@ -27,6 +27,9 @@
 namespace ASC.Core.Common.Log;
 internal static partial class CookieStorageLogger
 {
-    [LoggerMessage(Level = LogLevel.Error, Message = "Authenticate error: cookie {cookie}, tenant {tenant}, userid {userid}, indexTenant {indexTenant}, expire {expire}")]
-    public static partial void AuthenticateError(this ILogger<CookieStorage> logger, string cookie, int tenant, Guid userId, int indexTenant, string expire, Exception exception);
+    [LoggerMessage(Level = LogLevel.Error, Message = "Authenticate error: cookie {cookie}, tenant {tenant}, userid {userid}, indexTenant {indexTenant}, expire {expire}, loginEvent {loginEvent}")]
+    public static partial void AuthenticateError(this ILogger<CookieStorage> logger, string cookie, int tenant, Guid userId, int indexTenant, string expire, int loginEvent, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to get login event ID from cookie: cookie {cookie}, loginEvent {loginEventId}")]
+    public static partial void ErrorLoginEvent(this ILogger<CookieStorage> logger, string cookie, int loginEventId, Exception exception);
 }

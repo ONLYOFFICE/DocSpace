@@ -29,6 +29,7 @@ namespace ASC.Web.Studio.Core.SMS;
 [Serializable]
 public class StudioSmsNotificationSettings : ISettings<StudioSmsNotificationSettings>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{2802df61-af0d-40d4-abc5-a8506a5352ff}"); }
@@ -67,6 +68,16 @@ public class StudioSmsNotificationSettingsHelper
     }
 
     public bool IsVisibleSettings()
+    {
+        return SetupInfo.IsVisibleSettings<StudioSmsNotificationSettings>();
+    }
+
+    public bool IsVisibleAndAvailableSettings()
+    {
+        return IsVisibleSettings() && IsAvailableSettings();
+    }
+
+    public bool IsAvailableSettings()
     {
         var quota = _tenantExtra.GetTenantQuota();
         return _coreBaseSettings.Standalone

@@ -214,14 +214,14 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
                 if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
                 {
-                    data.ForEach(r => Index(r, immediately));
+                    data.Where(r => r != null).ToList().ForEach(r => Index(r, immediately));
                 }
                 else if (e.Response.HttpStatusCode == 429)
                 {
                     Thread.Sleep(60000);
-                    if (retry < 5)
+                    if (retry < 10)
                     {
-                        Index(data, immediately, retry + 1);
+                        Index(data.Where(r => r != null).ToList(), immediately, retry + 1);
                         return;
                     }
 
@@ -246,14 +246,14 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
                 if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
                 {
                     Logger.Error(inner.Response.HttpStatusCode.ToString());
-                    data.ForEach(r => Index(r, immediately));
+                    data.Where(r => r != null).ToList().ForEach(r => Index(r, immediately));
                 }
                 else if (inner.Response.HttpStatusCode == 429)
                 {
                     Thread.Sleep(60000);
-                    if (retry < 5)
+                    if (retry < 10)
                     {
-                        Index(data, immediately, retry + 1);
+                        Index(data.Where(r => r != null).ToList(), immediately, retry + 1);
                         return;
                     }
 
@@ -294,14 +294,14 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
                 if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
                 {
-                    data.ForEach(r => Index(r, immediately));
+                    data.Where(r => r != null).ToList().ForEach(r => Index(r, immediately));
                 }
                 else if (e.Response.HttpStatusCode == 429)
                 {
                     await Task.Delay(60000);
-                    if (retry < 5)
+                    if (retry < 10)
                     {
-                        await IndexAsync(data, immediately, retry + 1);
+                        await IndexAsync(data.Where(r => r != null).ToList(), immediately, retry + 1);
                         return;
                     }
 
@@ -326,14 +326,14 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
                 if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
                 {
                     Logger.Error(inner.Response.HttpStatusCode.ToString());
-                    data.ForEach(r => Index(r, immediately));
+                    data.Where(r => r != null).ToList().ForEach(r => Index(r, immediately));
                 }
                 else if (inner.Response.HttpStatusCode == 429)
                 {
                     await Task.Delay(60000);
-                    if (retry < 5)
+                    if (retry < 10)
                     {
-                        await IndexAsync(data, immediately, retry + 1);
+                        await IndexAsync(data.Where(r => r != null).ToList(), immediately, retry + 1);
                         return;
                     }
 

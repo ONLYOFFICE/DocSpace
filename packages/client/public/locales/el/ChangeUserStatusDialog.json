@@ -1,0 +1,8 @@
+{
+  "ChangeUserStatusDialog": "Οι χρήστες με κατάσταση '{{ userStatus }}' θα είναι {{ status }}.",
+  "ChangeUserStatusDialogHeader": "Αλλαγή κατάστασης χρήστη",
+  "ChangeUserStatusDialogMessage": "Δεν μπορείτε να αλλάξετε την κατάσταση για τον κάτοχο της πύλης και για εσάς",
+  "ChangeUsersActiveStatus": "ενεργοποιημένο",
+  "ChangeUsersDisableStatus": "απενεργοποιημένο",
+  "ChangeUsersStatusButton": "Αλλαγή κατάστασης χρήστη"
+}

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using JWT;
+
 namespace ASC.Web.Files.Services.DocumentService;
 
 [Scope(Additional = typeof(ConfigurationExtention))]
@@ -285,6 +287,8 @@ public class DocumentServiceHelper
             await _entryStatusManager.SetFileStatusAsync(file);
         }
 
+        var rightToDownload = await CanDownloadAsync(fileSecurity, file, linkRight);
+
         var configuration = new Configuration<T>(file, _serviceProvider)
         {
             Document =
@@ -298,7 +302,9 @@ public class DocumentServiceHelper
                         FillForms = rightToFillForms && lastVersion,
                         Comment = rightToComment && lastVersion,
                         ChangeHistory = rightChangeHistory,
-                        ModifyFilter = rightModifyFilter
+                        ModifyFilter = rightModifyFilter,
+                        Print = rightToDownload,
+                        Download = rightToDownload
                     }
                 },
             EditorConfig =
@@ -316,6 +322,30 @@ public class DocumentServiceHelper
         return (file, configuration);
     }
 
+    private async Task<bool> CanDownloadAsync<T>(FileSecurity fileSecurity, File<T> file, FileShare linkRight)
+    {
+        if (!file.DenyDownload)
+        {
+            return true;
+        }
+
+        var canDownload = linkRight != FileShare.Restrict && linkRight != FileShare.Read && linkRight != FileShare.Comment;
+
+        if (canDownload || _authContext.CurrentAccount.ID.Equals(ASC.Core.Configuration.Constants.Guest.ID))
+        {
+            return canDownload;
+        }
+
+        if (linkRight == FileShare.Read || linkRight == FileShare.Comment)
+        {
+            var fileDao = _daoFactory.GetFileDao<T>();
+            file = await fileDao.GetFileAsync(file.Id); // reset Access prop
+        }
+
+        canDownload = await fileSecurity.CanDownloadAsync(file);
+
+        return canDownload;
+    }
 
     public string GetSignature(object payload)
     {
@@ -324,7 +354,14 @@ public class DocumentServiceHelper
             return null;
         }
 
-        return JsonWebToken.Encode(payload, _fileUtility.SignatureSecret);
+#pragma warning disable CS0618 // Type or member is obsolete
+        var encoder = new JwtEncoder(new HMACSHA256Algorithm(),
+                                     new JwtSerializer(),
+                                     new JwtBase64UrlEncoder());
+#pragma warning restore CS0618 // Type or member is obsolete
+
+
+        return encoder.Encode(payload, _fileUtility.SignatureSecret);
     }
 
 

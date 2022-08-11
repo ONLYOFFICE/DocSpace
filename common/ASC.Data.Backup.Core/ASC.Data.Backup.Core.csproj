@@ -1,5 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,34 +7,29 @@
     <NoWarn>NU1701</NoWarn>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="protos\backup_progress.proto" />
     <None Remove="protos\delete_schedule.proto" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Grpc" Version="2.45.0">
+    <PackageReference Include="Grpc" Version="2.46.3">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Grpc.Tools" Version="2.45.0">
+    <PackageReference Include="Grpc.Tools" Version="2.47.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MySql.Data" Version="8.0.29" />
-    <PackageReference Include="protobuf-net" Version="3.1.4" />
+    <PackageReference Include="MySql.Data" Version="8.0.30" />
+    <PackageReference Include="protobuf-net" Version="3.1.17" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
     <ProjectReference Include="..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Protobuf Include="protos\backup_progress.proto" />
     <Protobuf Include="protos\delete_schedule.proto" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="BackupResource.Designer.cs">
       <DependentUpon>BackupResource.resx</DependentUpon>
@@ -42,11 +37,22 @@
       <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="BackupResource.resx">
       <LastGenOutput>BackupResource.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="BackupResource.el.resx">
+      <DependentUpon>BackupResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="BackupResource.fr.resx">
+      <DependentUpon>BackupResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="BackupResource.tr.resx">
+      <DependentUpon>BackupResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="BackupResource.az.resx">
+      <DependentUpon>BackupResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

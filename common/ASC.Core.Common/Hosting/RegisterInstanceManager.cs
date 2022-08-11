@@ -51,7 +51,7 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
         var instance = registeredInstance ?? new InstanceRegistration
         {
             InstanceRegistrationId = instanceId,
-            WorkerTypeName = typeof(T).Name
+            WorkerTypeName = typeof(T).GetFormattedName()
         };
 
         instance.LastUpdated = DateTime.UtcNow;

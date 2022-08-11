@@ -29,7 +29,10 @@ namespace ASC.Files.Thirdparty.ProviderDao;
 [Scope]
 internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 {
+    private readonly SetupInfo _setupInfo;
+
     public ProviderFolderDao(
+        SetupInfo setupInfo,
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
         SecurityDao<string> securityDao,
@@ -37,6 +40,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         CrossDao crossDao)
         : base(serviceProvider, tenantManager, securityDao, tagDao, crossDao)
     {
+        _setupInfo = setupInfo;
     }
 
     public Task<Folder<string>> GetFolderAsync(string folderId)
@@ -53,11 +57,11 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     private async Task<Folder<string>> InternalGetFolderAsync(string folderId, IDaoSelector selector)
     {
         var folderDao = selector.GetFolderDao(folderId);
-        var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId)).ConfigureAwait(false);
+        var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId));
 
         if (result != null)
         {
-            await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
+            await SetSharedPropertyAsync(new[] { result });
         }
 
         return result;
@@ -86,6 +90,49 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folderDao.GetRootFolderByFileAsync(selector.ConvertId(fileId));
     }
 
+    public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    {
+        var selector = GetSelector(parentId);
+        var folderDao = selector.GetFolderDao(parentId);
+        var rooms = folderDao.GetRoomsAsync(selector.ConvertId(parentId), filterType, tags, ownerId, searchText, withSubfolders, withoutTags, withoutMe);
+        var result = await rooms.Where(r => r != null).ToListAsync();
+        
+        await SetSharedPropertyAsync(result);
+
+        foreach (var r in result)
+        {
+            yield return r;
+        }
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    {
+        var result = AsyncEnumerable.Empty<Folder<string>>();
+
+        foreach (var selector in GetSelectors())
+        {
+            var selectorLocal = selector;
+            var matchedIds = roomsIds.Where(selectorLocal.IsMatch).ToList();
+
+            if (matchedIds.Count == 0)
+            {
+                continue;
+            }
+
+            result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
+                .ToAsyncEnumerable()
+                .SelectMany(matchedId =>
+                {
+                    var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
+
+                    return folderDao.GetRoomsAsync(matchedId.Select(selectorLocal.ConvertId).ToList(), filterType, tags, ownerId, searchText, withSubfolders, withoutTags, withoutMe);
+                })
+                .Where(r => r != null));
+        }
+
+        return result.Distinct();
+    }
+
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
         var selector = GetSelector(parentId);
@@ -100,11 +147,11 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var selector = GetSelector(parentId);
         var folderDao = selector.GetFolderDao(parentId);
         var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders);
-        var result = folders.Where(r => r != null);
+        var result = await folders.Where(r => r != null).ToListAsync();
 
-        await SetSharedPropertyAsync(result).ConfigureAwait(false);
+        await SetSharedPropertyAsync(result);
 
-        await foreach (var r in result.ConfigureAwait(false))
+        foreach (var r in result)
         {
             yield return r;
         }
@@ -280,7 +327,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
     public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
     {
-        if (folderIds.Length > 0)
+        if (folderIds.Length == 0)
         {
             return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }
@@ -288,7 +335,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var selector = GetSelector(to);
         var matchedIds = folderIds.Where(selector.IsMatch).ToArray();
 
-        if (matchedIds.Length > 0)
+        if (matchedIds.Length == 0)
         {
             return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }
@@ -383,7 +430,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
         if (storageMaxUploadSize == -1 || storageMaxUploadSize == long.MaxValue)
         {
-            storageMaxUploadSize = 1024L * 1024L * 1024L;
+            storageMaxUploadSize = _setupInfo.ProviderMaxUploadSize;
         }
 
         return storageMaxUploadSize;

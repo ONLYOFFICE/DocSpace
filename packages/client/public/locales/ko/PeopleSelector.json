@@ -1,0 +1,7 @@
+{
+  "AllUsers": "모든 사용자",
+  "CustomAllGroups": "전체 {{ groupsCaption, lowercase }}",
+  "EmptySearchUsersResult": "해당 이름의 사용자가 없습니다",
+  "EmptyUsers": "사용자가 없습니다",
+  "SearchUsersPlaceholder": "사용자 검색"
+}

@@ -1,7 +1,0 @@
-﻿{
-  "ChangeUserTypeButton": "Zmień rodzaj",
-  "ChangeUserTypeHeader": "Zmień rodzaj użytkownika",
-  "ChangeUserTypeMessage": "Użytkownicy o rodzaju'{{ firstType }}' zostaną przeniesieni do rodzaju '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "Nie możesz zmienić swojego rodzaju, ani rodzaju administratorów portalu",
-  "SuccessChangeUserType": "Rodzaj użytkownika został pomyślnie zmieniony"
-}

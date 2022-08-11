@@ -92,4 +92,5 @@ public interface IEvent : IICalFormatView
     SharingOptions SharingOptions { get; }
     EventStatus Status { get; }
     TimeZoneInfo TimeZone { get; }
+    bool HasAttachments { get; }
 }

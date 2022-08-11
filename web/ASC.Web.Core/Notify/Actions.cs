@@ -34,8 +34,6 @@ public static class Actions
     public static readonly INotifyAction SelfProfileUpdated = new NotifyAction("self_profile_updated", "self profile updated");
     public static readonly INotifyAction UserHasJoin = new NotifyAction("user_has_join", "user has join");
     public static readonly INotifyAction UserMessageToAdmin = new NotifyAction("for_admin_notify", "for_admin_notify");
-    public static readonly INotifyAction VoipWarning = new NotifyAction("admin_voip_warning", "admin_voip_warning");
-    public static readonly INotifyAction VoipBlocked = new NotifyAction("admin_voip_blocked", "admin_voip_blocked");
     public static readonly INotifyAction RequestTariff = new NotifyAction("request_tariff", "request_tariff");
     public static readonly INotifyAction RequestLicense = new NotifyAction("request_license", "request_license");
 
@@ -61,7 +59,7 @@ public static class Actions
     public static readonly INotifyAction ConfirmOwnerChange = new NotifyAction("owner_confirm_change", "owner_confirm_change");
     public static readonly INotifyAction ActivateEmail = new NotifyAction("activate_email", "activate_email");
     public static readonly INotifyAction EmailChangeV115 = new NotifyAction("change_email_v115", "change_email_v115");
-    public static readonly INotifyAction PasswordChange = new NotifyAction("change_password", "change_password");
+    public static readonly INotifyAction PasswordChangeV115 = new NotifyAction("change_password_v115", "change_password_v115");
     public static readonly INotifyAction PhoneChange = new NotifyAction("change_phone", "change_phone");
     public static readonly INotifyAction TfaChange = new NotifyAction("change_tfa", "change_tfa");
     public static readonly INotifyAction MigrationPortalStart = new NotifyAction("migration_start", "migration start");
@@ -143,16 +141,15 @@ public static class Actions
     public static readonly INotifyAction PersonalAfterRegistration21 = new NotifyAction("personal_after_registration21");
     public static readonly INotifyAction PersonalAfterRegistration28 = new NotifyAction("personal_after_registration28");
     public static readonly INotifyAction PersonalConfirmation = new NotifyAction("personal_confirmation");
-    public static readonly INotifyAction PersonalPasswordChange = new NotifyAction("personal_change_password");
     public static readonly INotifyAction PersonalEmailChangeV115 = new NotifyAction("personal_change_email_v115");
+    public static readonly INotifyAction PersonalPasswordChangeV115 = new NotifyAction("personal_change_password_v115");
     public static readonly INotifyAction PersonalProfileDelete = new NotifyAction("personal_profile_delete");
     public static readonly INotifyAction PersonalAlreadyExist = new NotifyAction("personal_already_exist");
 
     public static readonly INotifyAction PersonalCustomModeAfterRegistration1 = new NotifyAction("personal_custom_mode_after_registration1");
-    public static readonly INotifyAction PersonalCustomModeAfterRegistration7 = new NotifyAction("personal_custom_mode_after_registration7");
     public static readonly INotifyAction PersonalCustomModeConfirmation = new NotifyAction("personal_custom_mode_confirmation");
-    public static readonly INotifyAction PersonalCustomModePasswordChange = new NotifyAction("personal_custom_mode_change_password");
     public static readonly INotifyAction PersonalCustomModeEmailChangeV115 = new NotifyAction("personal_custom_mode_change_email_v115");
+    public static readonly INotifyAction PersonalCustomModePasswordChangeV115 = new NotifyAction("personal_custom_mode_change_password_v115");
     public static readonly INotifyAction PersonalCustomModeProfileDelete = new NotifyAction("personal_custom_mode_profile_delete");
     public static readonly INotifyAction PersonalCustomModeAlreadyExist = new NotifyAction("personal_custom_mode_already_exist");
 
@@ -164,4 +161,6 @@ public static class Actions
     public static readonly INotifyAction StorageDecryptionStart = new NotifyAction("storage_decryption_start");
     public static readonly INotifyAction StorageDecryptionSuccess = new NotifyAction("storage_decryption_success");
     public static readonly INotifyAction StorageDecryptionError = new NotifyAction("storage_decryption_error");
+
+    public static readonly INotifyAction RoomInvite = new NotifyAction("room_invite");
 }

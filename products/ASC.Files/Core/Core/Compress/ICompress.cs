@@ -35,13 +35,13 @@ public interface ICompress : IDisposable
     /// The record name is created (the name of a separate file in the archive)
     /// </summary>
     /// <param name="title">File name with extension, this name will have the file in the archive</param>
-    void CreateEntry(string title);
+    void CreateEntry(string title, DateTime? lastModification = null);
 
     /// <summary>
     /// Transfer the file itself to the archive
     /// </summary>
     /// <param name="readStream">File data</param>
-    void PutStream(Stream readStream);
+        Task PutStream(Stream readStream);
 
     /// <summary>
     /// Put an entry on the output stream.

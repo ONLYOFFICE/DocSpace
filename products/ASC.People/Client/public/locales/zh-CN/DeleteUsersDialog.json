@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "您所选择的已禁用用户将被删除。",
-  "DeleteGroupUsersMessageHeader": "从门户中删除用户",
-  "DeleteGroupUsersSuccessMessage": "用户已成功删除。",
-  "DeleteUserDataConfirmation": "与他人共享的用户文档将被删除。如需避免此问题，可重新分配数据。"
-}

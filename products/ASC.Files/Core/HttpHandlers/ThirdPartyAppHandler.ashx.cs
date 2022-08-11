@@ -28,6 +28,8 @@ namespace ASC.Web.Files.HttpHandlers;
 
 public class ThirdPartyAppHandler
 {
+    public static string HandlerPath = "~/ThirdPartyApp";
+
     public ThirdPartyAppHandler(RequestDelegate next)
     {
     }
@@ -44,19 +46,21 @@ public class ThirdPartyAppHandlerService
     private readonly AuthContext _authContext;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly ILogger<ThirdPartyAppHandlerService> _log;
-
+    private readonly ThirdPartySelector _thirdPartySelector;
     public string HandlerPath { get; set; }
 
     public ThirdPartyAppHandlerService(
         ILogger<ThirdPartyAppHandlerService> logger,
         AuthContext authContext,
         BaseCommonLinkUtility baseCommonLinkUtility,
-        CommonLinkUtility commonLinkUtility)
+        CommonLinkUtility commonLinkUtility,
+        ThirdPartySelector thirdPartySelector)
     {
         _authContext = authContext;
         _commonLinkUtility = commonLinkUtility;
         _log = logger;
-        HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
+        _thirdPartySelector = thirdPartySelector;
+        HandlerPath = baseCommonLinkUtility.ToAbsolute(ThirdPartyAppHandler.HandlerPath);
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -67,7 +71,7 @@ public class ThirdPartyAppHandlerService
 
         try
         {
-            var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
+            var app = _thirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
             _log.DebugThirdPartyAppApp(app);
 
             if (await app.RequestAsync(context))

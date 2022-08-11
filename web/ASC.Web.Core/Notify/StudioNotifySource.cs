@@ -51,7 +51,7 @@ public class StudioNotifySource : NotifySource
                 Actions.DnsChange,
                 Actions.ConfirmOwnerChange,
                 Actions.EmailChangeV115,
-                Actions.PasswordChange,
+                Actions.PasswordChangeV115,
                 Actions.ActivateEmail,
                 Actions.ProfileDelete,
                 Actions.ProfileHasDeletedItself,
@@ -67,9 +67,6 @@ public class StudioNotifySource : NotifySource
                 Actions.MigrationPortalServerFailure,
 
                 Actions.UserMessageToAdmin,
-
-                Actions.VoipWarning,
-                Actions.VoipBlocked,
 
                 Actions.SaasAdminActivationV115,
                 Actions.EnterpriseAdminActivationV10,
@@ -140,7 +137,7 @@ public class StudioNotifySource : NotifySource
                 Actions.PersonalAfterRegistration21,
                 Actions.PersonalAfterRegistration28,
                 Actions.PersonalConfirmation,
-                Actions.PersonalPasswordChange,
+                Actions.PersonalPasswordChangeV115,
                 Actions.PersonalEmailChangeV115,
                 Actions.PersonalProfileDelete,
                 Actions.PersonalAlreadyExist,
@@ -152,9 +149,8 @@ public class StudioNotifySource : NotifySource
                 Actions.MailboxWithoutSettingsCreated,
 
                 Actions.PersonalCustomModeAfterRegistration1,
-                Actions.PersonalCustomModeAfterRegistration7,
                 Actions.PersonalCustomModeConfirmation,
-                Actions.PersonalCustomModePasswordChange,
+                Actions.PersonalCustomModePasswordChangeV115,
                 Actions.PersonalCustomModeEmailChangeV115,
                 Actions.PersonalCustomModeProfileDelete,
                 Actions.PersonalCustomModeAlreadyExist,
@@ -250,9 +246,7 @@ public class StudioNotifySource : NotifySource
         {
             if (Actions.SelfProfileUpdated.ID == action.ID ||
                 Actions.UserHasJoin.ID == action.ID ||
-                Actions.UserMessageToAdmin.ID == action.ID ||
-                Actions.VoipWarning.ID == action.ID ||
-                Actions.VoipBlocked.ID == action.ID
+                Actions.UserMessageToAdmin.ID == action.ID
                 )
             {
                 return Actions.AdminNotify;

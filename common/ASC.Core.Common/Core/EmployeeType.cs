@@ -31,6 +31,7 @@ namespace ASC.Core.Users;
 
 [Flags]
 [JsonConverter(typeof(JsonStringEnumConverter))]
+[EnumExtensions]
 public enum EmployeeType
 {
     All = 0,

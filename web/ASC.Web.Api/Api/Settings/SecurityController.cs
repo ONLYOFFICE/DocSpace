@@ -28,6 +28,8 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class SecurityController : BaseSettingsController
 {
+    private readonly TenantExtra _tenantExtra;
+    private readonly CoreBaseSettings _coreBaseSettings;
     private readonly MessageService _messageService;
     private readonly EmployeeDtoHelper _employeeHelperDto;
     private readonly UserManager _userManager;
@@ -40,6 +42,8 @@ public class SecurityController : BaseSettingsController
     private readonly MessageTarget _messageTarget;
 
     public SecurityController(
+        TenantExtra tenantExtra,
+        CoreBaseSettings coreBaseSettings,
         MessageService messageService,
         ApiContext apiContext,
         UserManager userManager,
@@ -56,6 +60,8 @@ public class SecurityController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _employeeHelperDto = employeeWraperHelper;
+        _tenantExtra = tenantExtra;
+        _coreBaseSettings = coreBaseSettings;
         _messageService = messageService;
         _userManager = userManager;
         _authContext = authContext;
@@ -243,6 +249,12 @@ public class SecurityController : BaseSettingsController
     public object SetProductAdministrator(SecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var isStartup = !_coreBaseSettings.CustomMode && _tenantExtra.Saas && _tenantExtra.GetTenantQuota().Free;
+        if (isStartup)
+        {
+            throw new BillingException(Resource.ErrorNotAllowedOption, "Administrator");
+        }
 
         _webItemSecurity.SetProductAdministrator(inDto.ProductId, inDto.UserId, inDto.Administrator);
 

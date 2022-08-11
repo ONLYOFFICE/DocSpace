@@ -1,6 +1,0 @@
-﻿{
-  "CustomAllGroups": "すべての{{ groupsCaption, lowercase }}",
-  "EmptySearchUsersResult": "このような名前のユーザーはいません。",
-  "EmptyUsers": "ユーザーはいません。",
-  "SearchUsersPlaceholder": "ユーザー検索"
-}

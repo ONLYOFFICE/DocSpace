@@ -82,12 +82,112 @@ public static class UserPhotoThumbnailManager
                                  width,
                                  height);
 
-        var destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
+            var result = mainImg.Clone(x => x.BackgroundColor(Color.White).Crop(rect).Resize(new ResizeOptions
         {
             Size = size
         }));
 
-        return destRound;
+            return result;
+    }
+
+    public static void CheckImgFormat(byte[] data)
+    {
+        IImageFormat imgFormat;
+        try
+        {
+            using var img = Image.Load(data, out var format);
+            imgFormat = format;
+        }
+        catch (OutOfMemoryException)
+        {
+            throw new ImageSizeLimitException();
+        }
+        catch (ArgumentException error)
+        {
+            throw new UnknownImageFormatException(error);
+        }
+
+        if (imgFormat.Name != "PNG" && imgFormat.Name != "JPEG")
+        {
+            throw new UnknownImageFormatException();
+        }
+    }
+
+    public static byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out IImageFormat imgFormat, out int width, out int height)
+    {
+        if (data == null || data.Length <= 0)
+        {
+            throw new UnknownImageFormatException();
+        }
+
+        if (maxFileSize != -1 && data.Length > maxFileSize)
+        {
+            throw new ImageSizeLimitException();
+        }
+
+        //data = ImageHelper.RotateImageByExifOrientationData(data, Log);
+
+        try
+        {
+            using var img = Image.Load(data, out var format);
+            imgFormat = format;
+            width = img.Width;
+            height = img.Height;
+            var maxWidth = maxsize.Width;
+            var maxHeight = maxsize.Height;
+
+            if ((maxHeight != -1 && img.Height > maxHeight) || (maxWidth != -1 && img.Width > maxWidth))
+            {
+                #region calulate height and width
+
+                if (width > maxWidth && height > maxHeight)
+                {
+
+                    if (width > height)
+                    {
+                        height = (int)(height * (double)maxWidth / width + 0.5);
+                        width = maxWidth;
+                    }
+                    else
+                    {
+                        width = (int)(width * (double)maxHeight / height + 0.5);
+                        height = maxHeight;
+                    }
+                }
+
+                if (width > maxWidth && height <= maxHeight)
+                {
+                    height = (int)(height * (double)maxWidth / width + 0.5);
+                    width = maxWidth;
+                }
+
+                if (width <= maxWidth && height > maxHeight)
+                {
+                    width = (int)(width * (double)maxHeight / height + 0.5);
+                    height = maxHeight;
+                }
+
+                var tmpW = width;
+                var tmpH = height;
+                #endregion
+                using var destRound = img.Clone(x => x.Resize(new ResizeOptions
+                {
+                    Size = new Size(tmpW, tmpH),
+                    Mode = ResizeMode.Stretch
+                }));
+
+                data = CommonPhotoManager.SaveToBytes(destRound);
+            }
+            return data;
+        }
+        catch (OutOfMemoryException)
+        {
+            throw new ImageSizeLimitException();
+        }
+        catch (ArgumentException error)
+        {
+            throw new Users.UnknownImageFormatException(error);
+        }
     }
 }
 

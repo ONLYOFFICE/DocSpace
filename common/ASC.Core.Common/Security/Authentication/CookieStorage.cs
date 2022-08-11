@@ -56,13 +56,14 @@ public class CookieStorage
         _httpContext = httpContextAccessor.HttpContext;
     }
 
-    public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out int indexTenant, out DateTime expire, out int indexUser)
+    public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out int indexTenant, out DateTime expire, out int indexUser, out int loginEventId)
     {
         tenant = Tenant.DefaultTenant;
         userid = Guid.Empty;
         indexTenant = 0;
         expire = DateTime.MaxValue;
         indexUser = 0;
+        loginEventId = 0;
 
         if (string.IsNullOrEmpty(cookie))
         {
@@ -94,30 +95,57 @@ public class CookieStorage
             {
                 indexUser = int.Parse(s[7]);
             }
-
+            if (8 < s.Length)
+            {
+                loginEventId = !string.IsNullOrEmpty(s[8]) ? int.Parse(s[8]) : 0;
+            }
             return true;
         }
         catch (Exception err)
         {
-            _logger.AuthenticateError(cookie, tenant, userid, indexTenant, expire.ToString(DateTimeFormat), err);
+            _logger.AuthenticateError(cookie, tenant, userid, indexTenant, expire.ToString(DateTimeFormat), loginEventId, err);
         }
 
         return false;
     }
 
 
-    public string EncryptCookie(int tenant, Guid userid)
+    public int GetLoginEventIdFromCookie(string cookie)
+    {
+        var loginEventId = 0;
+        if (string.IsNullOrEmpty(cookie))
+        {
+            return loginEventId;
+        }
+
+        try
+        {
+            cookie = (HttpUtility.UrlDecode(cookie) ?? "").Replace(' ', '+');
+            var s = _instanceCrypto.Decrypt(cookie).Split('$');
+            if (8 < s.Length)
+            {
+                loginEventId = !string.IsNullOrEmpty(s[8]) ? int.Parse(s[8]) : 0;
+            }
+        }
+        catch (Exception err)
+        {
+            _logger.ErrorLoginEvent(cookie, loginEventId, err);
+        }
+        return loginEventId;
+    }
+
+    public string EncryptCookie(int tenant, Guid userid, int loginEventId)
     {
         var settingsTenant = _tenantCookieSettingsHelper.GetForTenant(tenant);
         var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
         var settingsUser = _tenantCookieSettingsHelper.GetForUser(tenant, userid);
 
-        return EncryptCookie(tenant, userid, settingsTenant.Index, expires, settingsUser.Index);
+        return EncryptCookie(tenant, userid, settingsTenant.Index, expires, settingsUser.Index, loginEventId);
     }
 
-    public string EncryptCookie(int tenant, Guid userid, int indexTenant, DateTime expires, int indexUser)
+    public string EncryptCookie(int tenant, Guid userid, int indexTenant, DateTime expires, int indexUser, int loginEventId)
     {
-        var s = string.Format("{0}${1}${2}${3}${4}${5}${6}${7}",
+        var s = string.Format("{0}${1}${2}${3}${4}${5}${6}${7}${8}",
             string.Empty, //login
             tenant,
             string.Empty, //password
@@ -125,7 +153,8 @@ public class CookieStorage
             userid.ToString("N"),
             indexTenant,
             expires.ToString(DateTimeFormat, CultureInfo.InvariantCulture),
-            indexUser);
+            indexUser,
+            loginEventId != 0 ? loginEventId.ToString() : null);
 
         return _instanceCrypto.Encrypt(s);
     }

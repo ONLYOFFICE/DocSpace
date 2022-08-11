@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "Vámi vybraní zakázaní uživatelé budou smazáni.",
-  "DeleteGroupUsersMessageHeader": "Odstranit uživatele z portálu",
-  "DeleteGroupUsersSuccessMessage": "Uživatelé byli úspěšně odstraněni.",
-  "DeleteUserDataConfirmation": "Dokumenty uživatelů sdílené ostatními budou odstraněny. Chcete-li tomu předejít, přiřaďte data znovu."
-}

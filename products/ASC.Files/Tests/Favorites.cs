@@ -27,7 +27,7 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-class Favorites : BaseFilesTests
+public partial class BaseFilesTests
 {
     [TestCase(DataTests.SubFolderId, DataTests.FileId)]
     [Category("Favorite")]
@@ -35,7 +35,7 @@ class Favorites : BaseFilesTests
     [Description("post - files/favorites - add file and folder to favorites")]
     public async Task AddFavoriteFolderAndFileToFolderWrapper(int folderID, int fileId)
     {
-        var favorite = await PostAsync<bool>("favorites", JsonContent.Create(new { FolderIds = new List<int> { folderID }, FileIds = new List<int> { fileId } }), _options);
+        var favorite = await PostAsync<bool>("favorites", new { FolderIds = new List<int> { folderID }, FileIds = new List<int> { fileId } });
 
         Assert.IsTrue(favorite);
     }
@@ -46,7 +46,7 @@ class Favorites : BaseFilesTests
     [Description("delete - files/favorites - delete file and folder from favorites")]
     public async Task DeleteFavoriteFolderAndFileToFolderWrapper(int folderID, int fileId)
     {
-        var favorite = await DeleteAsync<bool>("favorites", JsonContent.Create(new { FolderIds = new List<int> { folderID }, FileIds = new List<int> { fileId } }), _options);
+        var favorite = await DeleteAsync<bool>("favorites", new { FolderIds = new List<int> { folderID }, FileIds = new List<int> { fileId } });
 
         Assert.IsTrue(favorite);
     }

@@ -103,18 +103,18 @@ public static class AclExtension
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|1e04460243b54d7982f3fd6208a11960", AceType = 0 },
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6743007c6f954d208c88a8601ce5e76d", AceType = 0 },
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|e67be73df9ae4ce18fec1880cb518cb4", AceType = 0 },
-                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|ea942538e68e49079394035336ee0ba8", AceType = 0 },
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|ea942538e68e49079394035336ee0ba8", AceType = (AceType)1 },
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|32d24cb57ece46069c9419216ba42086", AceType = 0 },
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|bf88953e3c434850a3fbb1e43ad53a3e", AceType = 0 },
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|2a9230378b2d487b9a225ac0918acf3f", AceType = 0 },
                 new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|f4d98afdd336433287783c6945c81ea0", AceType = 0 },
-                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|28b10049dd204f54b986873bc14ccfc7", AceType = 0 },
-                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|3cfd481b46f24a4ab55cb8c0c9def02c", AceType = 0 },
-                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6a598c7491ae437da5f4ad339bd11bb2", AceType = 0 },
-                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca", AceType = 0 },
-                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234", AceType = 0 },
-                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|46cfa73af32046cf8d5bcd82e1d67f26", AceType = 0 }
-            );
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|28b10049dd204f54b986873bc14ccfc7", AceType = (AceType)1 },
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|3cfd481b46f24a4ab55cb8c0c9def02c", AceType = (AceType)1 },
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6a598c7491ae437da5f4ad339bd11bb2", AceType = (AceType)1 },
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca", AceType = (AceType)1 },
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234", AceType = (AceType)1 },
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|46cfa73af32046cf8d5bcd82e1d67f26", AceType = 0 },
+                new Acl { Tenant = -1, Subject = Guid.Parse("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), Action = Guid.Parse("77777777-32ae-425f-99b5-83176061d1ae"), Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|37620ae5c40b45ce855a39dd7d76a1fa", AceType = 0 });
 
         return modelBuilder;
     }
@@ -126,7 +126,8 @@ public static class AclExtension
             entity.HasKey(e => new { e.Tenant, e.Subject, e.Action, e.Object })
                 .HasName("PRIMARY");
 
-            entity.ToTable("core_acl");
+            entity.ToTable("core_acl")
+                .HasCharSet("utf8");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
 

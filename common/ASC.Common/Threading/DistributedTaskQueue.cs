@@ -305,6 +305,13 @@ public class DistributedTaskQueue
 
     private void SaveToCache(IEnumerable<DistributedTask> queueTasks)
     {
+        if (!queueTasks.Any())
+        {
+            _distributedCache.Remove(_name);
+
+            return;
+        }
+
         using var ms = new MemoryStream();
 
         Serializer.Serialize(ms, queueTasks);
@@ -332,21 +339,11 @@ public class DistributedTaskQueue
 
     private IEnumerable<DistributedTask> DeleteOrphanCacheItem(IEnumerable<DistributedTask> queueTasks)
     {
-        if (!queueTasks.Any())
-        {
-            return queueTasks;
-        }
+        var listTasks = queueTasks.ToList();
 
-        var orphans = queueTasks.Where(IsOrphanCacheItem);
+        listTasks.RemoveAll(IsOrphanCacheItem);
 
-        if (!orphans.Any())
-        {
-            return queueTasks;
-        }
-
-        queueTasks = queueTasks.Except(queueTasks);
-
-        SaveToCache(queueTasks);
+        SaveToCache(listTasks);
 
         return queueTasks;
     }

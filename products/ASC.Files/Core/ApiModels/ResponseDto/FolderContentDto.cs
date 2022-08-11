@@ -64,8 +64,8 @@ public class FolderContentDtoHelper
 {
     private readonly FileSecurity _fileSecurity;
     private readonly IDaoFactory _daoFactory;
-    private readonly FileDtoHelper _fileWrapperHelper;
-    private readonly FolderDtoHelper _folderWrapperHelper;
+    private readonly FileDtoHelper _fileDtoHelper;
+    private readonly FolderDtoHelper _folderDtoHelper;
 
     public FolderContentDtoHelper(
         FileSecurity fileSecurity,
@@ -75,8 +75,8 @@ public class FolderContentDtoHelper
     {
         _fileSecurity = fileSecurity;
         _daoFactory = daoFactory;
-        _fileWrapperHelper = fileWrapperHelper;
-        _folderWrapperHelper = folderWrapperHelper;
+        _fileDtoHelper = fileWrapperHelper;
+        _folderDtoHelper = folderWrapperHelper;
     }
 
     public async Task<FolderContentDto<T>> GetAsync<T>(DataWrapper<T> folderItems, int startIndex)
@@ -92,27 +92,28 @@ public class FolderContentDtoHelper
             FileEntryDto wrapper = null;
             if (r is File<int> fol1)
             {
-                wrapper = await _fileWrapperHelper.GetAsync(fol1, foldersIntWithRights);
+                wrapper = await _fileDtoHelper.GetAsync(fol1, foldersIntWithRights);
             }
-            if (r is File<string> fol2)
+            else if (r is File<string> fol2)
             {
-                wrapper = await _fileWrapperHelper.GetAsync(fol2, foldersStringWithRights);
+                wrapper = await _fileDtoHelper.GetAsync(fol2, foldersStringWithRights);
             }
 
             files.Add(wrapper);
         }
 
         var folderEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.Folder);
+
         foreach (var r in folderEntries)
         {
             FileEntryDto wrapper = null;
             if (r is Folder<int> fol1)
             {
-                wrapper = await _folderWrapperHelper.GetAsync(fol1, foldersIntWithRights);
+                wrapper = await _folderDtoHelper.GetAsync(fol1, foldersIntWithRights);
             }
-            if (r is Folder<string> fol2)
+            else if (r is Folder<string> fol2)
             {
-                wrapper = await _folderWrapperHelper.GetAsync(fol2, foldersStringWithRights);
+                wrapper = await _folderDtoHelper.GetAsync(fol2, foldersStringWithRights);
             }
 
             folders.Add(wrapper);
@@ -126,7 +127,7 @@ public class FolderContentDtoHelper
             StartIndex = startIndex
         };
 
-        result.Current = await _folderWrapperHelper.GetAsync(folderItems.FolderInfo);
+        result.Current = await _folderDtoHelper.GetAsync(folderItems.FolderInfo);
         result.Count = result.Files.Count + result.Folders.Count;
         result.Total = folderItems.Total;
         result.New = folderItems.New;

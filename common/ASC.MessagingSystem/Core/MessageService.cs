@@ -69,57 +69,57 @@ public class MessageService
 
     public void Send(MessageAction action)
     {
-        SendRequestMessage(null, action, null);
+        SendRequestMessage(null, null, action, null);
     }
 
     public void Send(MessageAction action, string d1)
     {
-        SendRequestMessage(null, action, null, d1);
+        SendRequestMessage(null, null, action, null, d1);
     }
 
     public void Send(MessageAction action, string d1, string d2)
     {
-        SendRequestMessage(null, action, null, d1, d2);
+        SendRequestMessage(null, null, action, null, d1, d2);
     }
 
     public void Send(MessageAction action, string d1, string d2, string d3)
     {
-        SendRequestMessage(null, action, null, d1, d2, d3);
+        SendRequestMessage(null, null, action, null, d1, d2, d3);
     }
 
     public void Send(MessageAction action, string d1, string d2, string d3, string d4)
     {
-        SendRequestMessage(null, action, null, d1, d2, d3, d4);
+        SendRequestMessage(null, null, action, null, d1, d2, d3, d4);
     }
 
     public void Send(MessageAction action, IEnumerable<string> d1, string d2)
     {
-        SendRequestMessage(null, action, null, string.Join(", ", d1), d2);
+        SendRequestMessage(null, null, action, null, string.Join(", ", d1), d2);
     }
 
     public void Send(MessageAction action, string d1, IEnumerable<string> d2)
     {
-        SendRequestMessage(null, action, null, d1, string.Join(", ", d2));
+        SendRequestMessage(null, null, action, null, d1, string.Join(", ", d2));
     }
 
     public void Send(MessageAction action, string d1, string d2, IEnumerable<string> d3)
     {
-        SendRequestMessage(null, action, null, d1, d2, string.Join(", ", d3));
+        SendRequestMessage(null, null, action, null, d1, d2, string.Join(", ", d3));
     }
 
     public void Send(MessageAction action, IEnumerable<string> d1)
     {
-        SendRequestMessage(null, action, null, string.Join(", ", d1));
+        SendRequestMessage(null, null, action, null, string.Join(", ", d1));
     }
 
     public void Send(string loginName, MessageAction action)
     {
-        SendRequestMessage(loginName, action, null);
+        SendRequestMessage(loginName, null, action, null);
     }
 
     public void Send(string loginName, MessageAction action, string d1)
     {
-        SendRequestMessage(loginName, action, null, d1);
+        SendRequestMessage(loginName, null, action, null, d1);
     }
 
     #endregion
@@ -128,62 +128,66 @@ public class MessageService
 
     public void Send(MessageAction action, MessageTarget target)
     {
-        SendRequestMessage(null, action, target);
+        SendRequestMessage(null, null, action, target);
+    }
+    public void Send(DateTime? dateTime, MessageAction action, MessageTarget target, string d1)
+    {
+        SendRequestMessage(null, dateTime, action, target, d1);
     }
 
     public void Send(MessageAction action, MessageTarget target, string d1)
     {
-        SendRequestMessage(null, action, target, d1);
+        SendRequestMessage(null, null, action, target, d1);
     }
 
     public void Send(MessageAction action, MessageTarget target, string d1, string d2)
     {
-        SendRequestMessage(null, action, target, d1, d2);
+        SendRequestMessage(null, null, action, target, d1, d2);
     }
 
     public void Send(MessageAction action, MessageTarget target, string d1, string d2, string d3)
     {
-        SendRequestMessage(null, action, target, d1, d2, d3);
+        SendRequestMessage(null, null, action, target, d1, d2, d3);
     }
 
     public void Send(MessageAction action, MessageTarget target, string d1, string d2, string d3, string d4)
     {
-        SendRequestMessage(null, action, target, d1, d2, d3, d4);
+        SendRequestMessage(null, null, action, target, d1, d2, d3, d4);
     }
 
     public void Send(MessageAction action, MessageTarget target, IEnumerable<string> d1, string d2)
     {
-        SendRequestMessage(null, action, target, string.Join(", ", d1), d2);
+        SendRequestMessage(null, null, action, target, string.Join(", ", d1), d2);
     }
 
     public void Send(MessageAction action, MessageTarget target, string d1, IEnumerable<string> d2)
     {
-        SendRequestMessage(null, action, target, d1, string.Join(", ", d2));
+        SendRequestMessage(null, null, action, target, d1, string.Join(", ", d2));
     }
 
     public void Send(MessageAction action, MessageTarget target, string d1, string d2, IEnumerable<string> d3)
     {
-        SendRequestMessage(null, action, target, d1, d2, string.Join(", ", d3));
+        SendRequestMessage(null, null, action, target, d1, d2, string.Join(", ", d3));
     }
 
     public void Send(MessageAction action, MessageTarget target, IEnumerable<string> d1)
     {
-        SendRequestMessage(null, action, target, string.Join(", ", d1));
+        SendRequestMessage(null, null, action, target, string.Join(", ", d1));
     }
 
     public void Send(string loginName, MessageAction action, MessageTarget target)
     {
-        SendRequestMessage(loginName, action, target);
+        SendRequestMessage(loginName, null, action, target);
     }
 
     public void Send(string loginName, MessageAction action, MessageTarget target, string d1)
     {
-        SendRequestMessage(loginName, action, target, d1);
+        SendRequestMessage(loginName, null, action, target, d1);
     }
 
     #endregion
 
-    private void SendRequestMessage(string loginName, MessageAction action, MessageTarget target, params string[] description)
+    private void SendRequestMessage(string loginName, DateTime? dateTime, MessageAction action, MessageTarget target, params string[] description)
     {
         if (_sender == null)
         {
@@ -197,7 +201,7 @@ public class MessageService
             return;
         }
 
-        var message = _messageFactory.Create(_request, loginName, action, target, description);
+        var message = _messageFactory.Create(_request, loginName, dateTime, action, target, description);
         if (!_messagePolicy.Check(message))
         {
             return;
@@ -295,12 +299,27 @@ public class MessageService
             return;
         }
 
-        var message = _messageFactory.Create(_request, initiator, action, target, description);
+        var message = _messageFactory.Create(_request, initiator, null, action, target, description);
         if (!_messagePolicy.Check(message))
         {
             return;
         }
 
         _sender.Send(message);
+    }
+    public int SendLoginMessage(MessageUserData userData, MessageAction action)
+    {
+        if (_sender == null)
+        {
+            return 0;
+        }
+
+        var message = _messageFactory.Create(_request, userData, action);
+        if (!_messagePolicy.Check(message))
+        {
+            return 0;
+        }
+
+        return _sender.Send(message);
     }
 }

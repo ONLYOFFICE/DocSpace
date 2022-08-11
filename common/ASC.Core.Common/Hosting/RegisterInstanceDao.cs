@@ -30,18 +30,19 @@ namespace ASC.Core.Common.Hosting;
 public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedService
 {
     private readonly ILogger _logger;
-    private readonly InstanceRegistrationContext _instanceRegistrationContext;
+    private readonly IDbContextFactory<InstanceRegistrationContext> _dbContextFactory;
 
     public RegisterInstanceDao(
         ILogger<RegisterInstanceDao<T>> logger,
-        DbContextManager<InstanceRegistrationContext> dbContextManager)
+        IDbContextFactory<InstanceRegistrationContext> dbContextFactory)
     {
         _logger = logger;
-        _instanceRegistrationContext = dbContextManager.Value;
+        _dbContextFactory = dbContextFactory;
     }
 
     public async Task AddOrUpdate(InstanceRegistration obj)
     {
+        using var _instanceRegistrationContext = _dbContextFactory.CreateDbContext();
         var inst = _instanceRegistrationContext.InstanceRegistrations.Find(obj.InstanceRegistrationId);
 
         if (inst == null)
@@ -78,13 +79,15 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
 
     public async Task<IEnumerable<InstanceRegistration>> GetAll()
     {
+        using var _instanceRegistrationContext = _dbContextFactory.CreateDbContext();
         return await _instanceRegistrationContext.InstanceRegistrations
-                                                .Where(x => x.WorkerTypeName == typeof(T).Name)
+                                                .Where(x => x.WorkerTypeName == typeof(T).GetFormattedName())
                                                 .ToListAsync();
     }
 
     public async Task Delete(string instanceId)
     {
+        using var _instanceRegistrationContext = _dbContextFactory.CreateDbContext();
         var item = _instanceRegistrationContext.InstanceRegistrations.Find(instanceId);
 
         if (item == null)

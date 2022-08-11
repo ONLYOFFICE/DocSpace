@@ -1,0 +1,20 @@
+{
+  "Administrator": "Administrator",
+  "ChangeToGuest": "Zu {{guestCaption}} ändern",
+  "ChangeToUser": "Zu {{userCaption}} ändern",
+  "EmptyGroupDescription": "Sie können neue Teammitglieder manuell oder über den Link einladen.",
+  "EmptyGroupTitle": "Keine Teammitglieder hier",
+  "LblInviteAgain": "Erneut einladen",
+  "LblInvited": "Eingeladen",
+  "LblSendEmail": "E-Mail senden",
+  "LblSendMessage": "Nachricht senden",
+  "LblSetActive": "Aktivieren",
+  "LblSetDisabled": "Deaktivieren",
+  "MakeInvitationLink": "Einladungslink erstellen",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Anleitungen zur Änderung eines Passworts wurden an <1>{{email}}</1> gesendet",
+  "NotFoundDescription": "Ändern oder entfernen Sie Filterungsoptionen, um alle Personen im Bereich zu sehen.",
+  "NotFoundTitle": "Keine Teammitglieder gefunden",
+  "ReassignmentData": "Neuzuweisung von Daten",
+  "SuccessfullyRemovedGroup": "Die Gruppe wurde erfolgreich entfernt",
+  "UserStatus": "Status"
+}

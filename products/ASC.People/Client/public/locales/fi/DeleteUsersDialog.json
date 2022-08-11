@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "Valitsemasi käytöstä poistetut käyttäjät poistetaan.",
-  "DeleteGroupUsersMessageHeader": "Poista käyttäjät portaalista",
-  "DeleteGroupUsersSuccessMessage": "Käyttäjät on poistettu.",
-  "DeleteUserDataConfirmation": "Toisten kanssa jaetut käyttäjäasiakirjat poistetaan. Voit välttää tämän määrittämällä tiedot uudelleen."
-}

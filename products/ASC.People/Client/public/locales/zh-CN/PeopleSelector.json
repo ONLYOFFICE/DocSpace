@@ -1,6 +1,0 @@
-﻿{
-  "CustomAllGroups": "所有{{ groupsCaption, lowercase }}",
-  "EmptySearchUsersResult": "没有此名称的用户",
-  "EmptyUsers": "没有用户",
-  "SearchUsersPlaceholder": "搜索用户"
-}

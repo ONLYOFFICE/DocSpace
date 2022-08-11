@@ -1,5 +1,0 @@
-﻿{
-  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> sera supprimé.",
-  "DeleteUserDataConfirmation": "Les documents de l'utilisateur partagés avec d'autres seront supprimés. Pour éviter cela, réaffectez les données.",
-  "SuccessfullyDeleteUserInfoMessage": "L'utilisateur a été supprimé avec succès"
-}

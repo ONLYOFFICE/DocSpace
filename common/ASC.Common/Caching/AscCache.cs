@@ -46,8 +46,8 @@ public class AscCacheNotify
     public void OnClearCache()
     {
         _cache.Reset();
-        }
     }
+}
 
 [Singletone]
 public class AscCache : ICache
@@ -67,27 +67,14 @@ public class AscCache : ICache
         return _memoryCache.Get<T>(key);
     }
 
-    public void Insert(string key, object value, TimeSpan sligingExpiration)
+    public void Insert(string key, object value, TimeSpan sligingExpiration, Action<object, object, EvictionReason, object> evictionCallback = null)
     {
-        var options = new MemoryCacheEntryOptions()
-            .SetSlidingExpiration(sligingExpiration)
-            .RegisterPostEvictionCallback(EvictionCallback)
-            .AddExpirationToken(new CancellationChangeToken(_resetCacheToken.Token));
-
-        _memoryCache.Set(key, value, options);
-        _memoryCacheKeys.TryAdd(key, null);
+        Insert(key, value, sligingExpiration, null, evictionCallback);
     }
 
-    public void Insert(string key, object value, DateTime absolutExpiration)
+    public void Insert(string key, object value, DateTime absolutExpiration, Action<object, object, EvictionReason, object> evictionCallback = null)
     {
-        var options = new MemoryCacheEntryOptions()
-            .SetAbsoluteExpiration(absolutExpiration == DateTime.MaxValue ? DateTimeOffset.MaxValue : new DateTimeOffset(absolutExpiration))
-            .RegisterPostEvictionCallback(EvictionCallback)
-            .AddExpirationToken(new CancellationChangeToken(_resetCacheToken.Token));
-
-
-        _memoryCache.Set(key, value, options);
-        _memoryCacheKeys.TryAdd(key, null);
+        Insert(key, value, null, absolutExpiration, evictionCallback);
     }
 
     public void Remove(string key)
@@ -158,6 +145,31 @@ public class AscCache : ICache
                 _memoryCache.Set(key, dic, options);
             }
         }
+    }
+
+    private void Insert(string key, object value, TimeSpan? sligingExpiration = null, DateTime? absolutExpiration = null, Action<object, object, EvictionReason, object> evictionCallback = null)
+    {
+        var options = new MemoryCacheEntryOptions()
+            .RegisterPostEvictionCallback(EvictionCallback)
+            .AddExpirationToken(new CancellationChangeToken(_resetCacheToken.Token));
+
+        if (sligingExpiration.HasValue)
+        {
+            options = options.SetSlidingExpiration(sligingExpiration.Value);
+        }
+
+        if (absolutExpiration.HasValue)
+        {
+            options = options.SetAbsoluteExpiration(absolutExpiration.Value == DateTime.MaxValue ? DateTimeOffset.MaxValue : new DateTimeOffset(absolutExpiration.Value));
+        }
+
+        if (evictionCallback != null)
+        {
+            options = options.RegisterPostEvictionCallback(new PostEvictionDelegate(evictionCallback));
+        }
+
+        _memoryCache.Set(key, value, options);
+        _memoryCacheKeys.TryAdd(key, null);
     }
 
     private void EvictionCallback(object key, object value, EvictionReason reason, object state)

@@ -32,15 +32,17 @@ internal class CrossDao //Additional SharpBox
     private readonly IServiceProvider _serviceProvider;
     private readonly SetupInfo _setupInfo;
     private readonly FileConverter _fileConverter;
-
+    private readonly ThumbnailSettings _thumbnailSettings;
     public CrossDao(
         IServiceProvider serviceProvider,
         SetupInfo setupInfo,
-        FileConverter fileConverter)
+            FileConverter fileConverter,
+            ThumbnailSettings thumbnailSettings)
     {
         _serviceProvider = serviceProvider;
         _setupInfo = setupInfo;
         _fileConverter = fileConverter;
+            _thumbnailSettings = thumbnailSettings;
     }
 
     public async Task<File<TTo>> PerformCrossDaoFileCopyAsync<TFrom, TTo>(
@@ -85,10 +87,14 @@ internal class CrossDao //Additional SharpBox
 
         if (fromFile.ThumbnailStatus == Thumbnail.Created)
         {
-            using (var thumbnail = await fromFileDao.GetThumbnailAsync(fromFile))
+                foreach (var size in _thumbnailSettings.Sizes)
             {
-                await toFileDao.SaveThumbnailAsync(toFile, thumbnail);
-            }
+                    using (var thumbnail = await fromFileDao.GetThumbnailAsync(fromFile, size.Width, size.Height))
+                    {
+                        await toFileDao.SaveThumbnailAsync(toFile, thumbnail, size.Width, size.Height);
+                    }
+                }
+
             toFile.ThumbnailStatus = Thumbnail.Created;
         }
 

@@ -27,10 +27,11 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetOpenAuth.Ultimate" Version="4.3.4.13329" />
-    <PackageReference Include="Grpc.Tools" Version="2.45.0">
+    <PackageReference Include="Grpc.Tools" Version="2.47.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.19.0" />
   </ItemGroup>
 
   <ItemGroup>

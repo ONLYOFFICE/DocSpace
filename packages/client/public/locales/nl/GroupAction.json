@@ -1,0 +1,8 @@
+{
+  "AddHeadOfDepartment": "Afdelingshoofd toevoegen",
+  "CustomNewDepartment": "{{groupCaption}} (gemaakt)",
+  "GroupAction": "Groepsactie",
+  "Members": "Leden",
+  "SearchAddedMembers": "Zoek toegevoegde leden",
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' is met succes opgeslagen"
+}

@@ -109,6 +109,8 @@ internal class SharpBoxProviderInfo : IProviderInfo
     }
 
     public FolderType RootFolderType { get; set; }
+    public FolderType FolderType { get; set; }
+    public string FolderId { get; set; }
     private readonly SharpBoxStorageDisposableWrapper _wrapper;
 }
 

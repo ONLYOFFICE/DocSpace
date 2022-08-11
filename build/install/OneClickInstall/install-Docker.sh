@@ -63,6 +63,7 @@ MYSQL_USER=""
 MYSQL_PASSWORD=""
 MYSQL_ROOT_PASSWORD=""
 MYSQL_HOST=""
+DATABASE_MIGRATION="true"
 
 ZOO_PORT=""
 ZOO_HOST=""
@@ -290,6 +291,13 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+		
+		-dbm | --databasemigration )
+			if [ "$2" != "" ]; then
+				DATABASE_MIGRATION=$2
+				shift
+			fi
+		;;
 
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
@@ -320,6 +328,7 @@ while [ "$1" != "" ]; do
 			echo "      -ep, --externalport               external appserver port (default value 8092)"
 			echo "      -mk, --machinekey                 setting for core.machinekey"
 			echo "      -ls, --local_scripts              run the installation from local scripts"
+			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			echo "    Install all the components without document server:"
@@ -538,6 +547,7 @@ install_docker_compose () {
 		rm get-pip.py
 	fi	
 
+	python3 -m pip install --upgrade pip
 	python3 -m pip install docker-compose
 	sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
@@ -790,7 +800,6 @@ download_files () {
 	fi
 
 	svn export --force https://github.com/ONLYOFFICE/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
-	svn export --force https://github.com/ONLYOFFICE/CommunityServer/branches/master/build/sql/ ${BASE_DIR}/config/ #Download SQL scripts
 
 	reconfigure STATUS ${STATUS}
 }
@@ -822,6 +831,7 @@ install_mysql_server () {
 	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
 	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
 	reconfigure MYSQL_HOST ${MYSQL_HOST}
+	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}
 
 	docker-compose -f $BASE_DIR/db.yml up -d
 }

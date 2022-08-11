@@ -41,25 +41,26 @@ public class DbMessageSender : IMessageSender
         _logger = options.CreateLogger("ASC.Messaging");
     }
 
-    public void Send(EventMessage message)
+    public int Send(EventMessage message)
     {
         try
         {
             if (!_messagingEnabled)
             {
-                return;
+                return 0;
             }
 
             if (message == null)
             {
-                return;
+                return 0;
             }
 
-            _messagesRepository.Add(message);
+            return _messagesRepository.Add(message);
         }
         catch (Exception ex)
         {
             _logger.ErrorFailedSend(ex);
+            return 0;
         }
     }
 }

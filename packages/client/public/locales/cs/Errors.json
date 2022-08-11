@@ -1,0 +1,9 @@
+{
+  "Error401Text": "Omlouváme se, ale tento zdroj není v současné době přístupný.",
+  "Error403Text": "Omlouváme se, přístup odepřen.",
+  "Error404Text": "Omlouváme se, zdroj nelze najít.",
+  "ErrorEmptyResponse": "Prázdná reakce",
+  "ErrorInvalidHeader": "Nesprávný e-mail nebo neplatný odkaz",
+  "ErrorInvalidText": "Za 10 sekund budete přesměrováni na <1>přihlašovací stránku</1>",
+  "ErrorOfflineText": "Nebylo nalezeno připojení k internetu."
+}

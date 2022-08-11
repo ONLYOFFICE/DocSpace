@@ -1,9 +1,0 @@
-﻿{
-  "ConversionFileMessage": "더욱 빠른 보기 및 편집을 위해 파일이 OOXML(docx, xlsx 또는 pptx)로 변환됩니다.",
-  "ConversionMessage": "더욱 빠른 편집을 위해 업로드한 모든 문서가 Office Open XML 형식(docx, xlsx 또는 pptx)으로 변환됩니다.",
-  "ConversionTitle": "문서 업로드 중",
-  "ConvertAndOpenTitle": "문서 변환 후 열기",
-  "HideMessage": "이 메시지 다시 표시 안함",
-  "SaveOriginalFormatMessage": "파일 복사본을 원본 형식으로 저장",
-  "ConvertedFileDestination": "파일 복사가 <strong>{{folderTitle}}</strong> 폴더에 생성됩니다"
-}

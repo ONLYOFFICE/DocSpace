@@ -1,0 +1,8 @@
+{
+  "ChangeUserStatusDialog": "Lietotāji ar '{{ userStatus }}' statusu tiks {{ status }}.",
+  "ChangeUserStatusDialogHeader": "Mainiet lietotāja statusu",
+  "ChangeUserStatusDialogMessage": "Jūs nevarat mainīt statusu portāla īpašniekam un sev",
+  "ChangeUsersActiveStatus": "atspējots",
+  "ChangeUsersDisableStatus": "iespējots",
+  "ChangeUsersStatusButton": "Mainīt lietotāja statusu"
+}

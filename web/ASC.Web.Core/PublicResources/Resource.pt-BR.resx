@@ -1,0 +1,316 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Campo de código de validação não pode estar vazio</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Inserir número de celular</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Campo de código de validação não pode estar vazio</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Notificações do Administrador</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Sua mensagem foi enviada com sucesso. Você será contatado pelo administrador do portal.</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Por SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Por aplicativo autenticador</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Um link para confirmar a operação foi enviado para :email (O endereço de e-mail para o proprietário do portal).</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Operação de recuperação de senha é proibida para um usuário LDAP</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Operação de recuperação de senha é proibida para um usuário SSO</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Personalizado</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Um link para confirmar a operação foi enviado para {0} (O endereço de e-mail do proprietário do portal).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Identificação de instância incorreta.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Endereço de email incorreto</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Código promocional incorreto</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Sem permissão para executar esta ação</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>O acesso ao portal é restrito.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Más chaves</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>O seu perfil está suspenso</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} com este e-mail já existe</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>E-mails deste domínio não são permitidos para registro</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>O campo de e-mail está vazio</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>O e-mail atual e o novo e-mail são o mesmo</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Por favor, preencha todos os campos</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>O texto da mensagem está vazio</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Não foi possível encontrar o arquivo enviado</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>O tamanho do arquivo de imagem é muito grande</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Nome ou sobrenome incorreto</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>O seu plano de preços não suporta essa opção</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>E-mail inválido</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Nome de dominio inválido</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>A senha está vazia.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>de {0} a {1} caracteres</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Senha deve conter</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>A senha deve conter</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>dígitos</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>caracteres especiais</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>letras maiúsculas</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>O limite de solicitação é excedido</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>O domínio do locatário não pode estar vazio.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>O nome de domínio deve ter entre {0} e {1} caracteres.</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>O usuário não foi encontrado</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>O usuário com o e-mail "{0}" não foi encontrado</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>Região UE (Frankfurt)</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>O tamanho máximo do arquivo foi excedido</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Nota: o tamanho do arquivo não pode exceder {1}{0}{2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>bytes,KB,MB,GB,TB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>O link para confirmar sua conta foi enviado para o e-mail específicado</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>o servidor não salvou as configurações.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Demasiadas operações LDAP.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Licença não está correta</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Licença expirou</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>O número de portais excede o que é permitido pela licença</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>O número de usuários excede o que é permitido pela licença</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Carregado com sucesso</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Carregado com sucesso. {0}Suporte e atualizações não estão disponíveis para esta licença desde {2}.{1}.</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Carregado com sucesso. {0}Não há suporte disponível para esta licença desde {2}.{1}.</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>As instruções de alteração de e-mail foram enviadas com sucesso</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Se existir um usuário com o e-mail {0}, a instrução de mudança de senha foi enviada para este endereço de e-mail.</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Para alterar o número, você precisa excluir seu número de telefone atual</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>Região ORG</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Proprietário</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Cota de espaço em disco excedida</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Acesso ao portal</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>O processo de reatribuição de dados para {0} não está completo.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptcha inválido</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Ásia-Pacífico (Cingapura)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Código incorreto</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Código: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Período de uso do código expirou. Solicite uma nova mensagem de texto.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>Configurações de SMS não estão disponíveis</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Você enviou demasiadas mensagens de texto. Tente novamente depois.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Não é possível salvar as configurações</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Configurações não podem estar nulas</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Vinculação inválida: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>ID de entidade inválida</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Mapeamento de campos inválido</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Configurações da página de boas-vindas foram salvas com sucesso</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>As configurações foram atualizadas com sucesso</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Instruções sobre como excluir seu perfil foram enviadas para seu endereço de e-mail {0}</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Código incorreto</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>As configurações da aplicação TFA não estão disponíveis</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Você enviou demasiadas mensagens de texto. Tente novamente depois.</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>Região Oeste dos EUA (Oregon)</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>O que há de novo</value>
+  </data>
+</root>

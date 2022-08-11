@@ -74,7 +74,7 @@ public class DispatchEngine
         }
         else if (response.Result == SendResult.Impossible)
         {
-            _logger.LogErrorResponceWithException( message.Subject, message.Recipient, senderName, response.Result, response.Exception);
+            _logger.LogErrorResponceWithException(message.Subject, message.Recipient, senderName, response.Result, response.Exception);
         }
         else
         {

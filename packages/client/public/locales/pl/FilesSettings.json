@@ -1,0 +1,22 @@
+{
+  "Clouds": "Chmury",
+  "CommonSettings": "Ustawienia ogólne",
+  "ConnectAdminDescription": "Aby podłączyć, wpisz wymagane dane na <1>tej stronie</1>.",
+  "ConnectCloud": "Powiąż konto",
+  "ConnectDescriptionText": "Nie podłączono jeszcze żadnej chmury innych usługodawców.",
+  "ConnectEmpty": "Nic tu nie ma",
+  "ConnectMakeShared": "Udostępnij i umieść w folderze 'Wspólne'",
+  "ConnectMessage": "Możesz powiązać poniższe konta z dokumentami ONLYOFFICE. Dokumenty w nich zawarte pojawią się w folderze 'Moje dokumenty' i będziesz mógł edytować i zapisywać je tutaj na portalu.",
+  "ConnextOtherAccount": "Inne konta",
+  "DisplayFavorites": "Wyświetlaj ulubione",
+  "DisplayNotification": "Wyświetlaj powiadomienia podczas przenoszenia elementów do kosza",
+  "DisplayRecent": "Wyświetlaj ostatnie",
+  "DisplayTemplates": "Wyświetlaj szablony",
+  "IntermediateVersion": "Zachowuj wszystkie zapisane wersje pośrednie",
+  "KeepIntermediateVersion": "Zachowuj wersje pośrednie podczas edycji",
+  "OriginalCopy": "Zapisuj również kopię pliku w oryginalnym formacie",
+  "StoringFileVersion": "Przechowywanie wersji pliku",
+  "ThirdPartyBtn": "Pozwalaj użytkownikom na podłączenie usług stron trzecich umożliwiających przechowywanie plików",
+  "ThirdPartySettings": "Podłączone chmury",
+  "UpdateOrCreate": "Zaktualizuj wersję pliku dla istniejącego pliku o tej samej nazwie. W przeciwnym razie zostanie utworzona kopia pliku."
+}

@@ -46,6 +46,7 @@ public class ColorThemesSettings : ISettings<ColorThemesSettings>
         };
     }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{AB5B3C97-A972-475C-BB13-71936186C4E6}"); }

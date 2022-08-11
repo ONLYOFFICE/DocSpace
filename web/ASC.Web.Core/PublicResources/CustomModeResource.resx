@@ -150,21 +150,21 @@ You have just created your personal office in the cloud.
 
 h3.It's a virtual workspace where you can edit and store documents, work with them from anywhere providing access to your friends or colleagues.
 
-ONLYOFFICE is compatible with Microsoft Office™ document formats and guarantees no loss of formatting or quality of created objects. We promise to relieve you from formatting fidelity headache and give full professional editing toolset in your hands.
-
 h3.For a quick start, here's what you can do in ONLYOFFICE:
 
-- Upload files from your computer or create new;
+- Create, view and edit text documents, spreadsheets, presentations.
 
-- Work with all popular file formats;
+- Work with all popular formats. Highest compatibility with MS Office files.
 
-- Edit autoshapes, charts, tables, equations and other objects;
+- Create and co-edit "ready-to-fill-out forms":"https://www.onlyoffice.com/form-creator.aspx".
 
-- Use various addons for extended editing features;
+- Share and collaborate on documents online.
 
-- Easily access your Personal cloud via "Chrome extension":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US". 
+- Use various plugins to apply extra features.
 
-You can also edit documents offline with our free "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" or get a "mobile editing suite":"https://www.onlyoffice.com/mobile.aspx" for your iOS or Android device.
+- Easily access your Personal cloud via "Chrome extension":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+You can also edit documents offline with our free "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" or get a mobile editing suite for your "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" device.
 
 Sincerely,
 ONLYOFFICE team</value>
@@ -172,25 +172,30 @@ ONLYOFFICE team</value>
   <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
     <value>$PersonalHeaderStart Connect your favorite cloud storage to ONLYOFFICE $PersonalHeaderEnd
 
-It has been a week since you created your cloud office, so we believe it's time to unveil some beneficial features you might have missed.
+It has been a week since you created your cloud office, so we believe it's time to unveil some tips and recommendations on how to make your work even more effective.
 
-Connect *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* or *Yandex.Disk* to ONLYOFFICE and create a single document management space for all your documents. You'll be able to edit external files in ONLYOFFICE and save them to the storage you keep documents in. Read details about connecting file storages to ONLYOFFICE "here":"${__HelpLink}/tipstricks/add-resource.aspx".
+*Bring all your docs together*
+
+Connect Dropbox, Google Drive, Box, OneDrive, Nextcloud, ownCloud, kDrive, or Yandex.Disk to ONLYOFFICE and create a single document management space for all your documents.
+"Learn more":"https://helpcenter.onlyoffice.com/tipstricks/add-resource.aspx"
+
+*Edit docs in your Google Drive*
 
 You can also integrate ONLYOFFICE editors into Google Drive using our "connector app":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
 
-Need more of document management?
+*Use productivity tools*
 
-h3.Try ONLYOFFICE for business "in the cloud":"https://www.onlyoffice.com/cloud-office.aspx" or "on your server":"https://www.onlyoffice.com/server-solutions.aspx" for free for 30 days and check out extended document management opportunities together with a business toolset:
+h3.Try ONLYOFFICE for business "in the cloud":"https://www.onlyoffice.com/cloud-office.aspx" or "on your server":"https://www.onlyoffice.com/workspace-enterprise.aspx" for free for 30 days and check out extended document management opportunities together with a business toolset:
 
-- Manage team documents in projects;
+·	Manage team documents in projects;
 
-- Integrate documents with CRM and Email;
+·	Integrate documents with CRM and Email;
 
-- Share files to groups of users;
+·	Share files to groups of users;
 
-- Optimize your workflow with team communication tools.
+·	Optimize your workflow with team communication tools.
 
-Interested? Learn more about "ONLYOFFICE for business":"http://www.onlyoffice.com/document-management.aspx".
+You can choose an absolutely free tariff for teams with up to 5 users. "Register":"https://www.onlyoffice.com/registration.aspx"
 
 Sincerely,
 ONLYOFFICE team</value>
@@ -208,19 +213,14 @@ The link is valid for 7 days.
 
 Don’t want to change your email? Just ignore this message.</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
-    <value>There has been a request to change your password used to enter the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
-
-Please follow the link below to change your password:
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Want to change the password on your cloud office account? Click the button below to confirm.
 
 $GreenButton
 
-*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
+The link is valid for 7 days.
 
-If you do not want to change your password or received this email by mistake, please ignore it.
-
-Sincerely,
-ONLYOFFICE team</value>
+Don’t want to change your password? Just ignore this message.</value>
   </data>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Hello,
@@ -232,21 +232,14 @@ If you can't open the link, please copy the following "$InviteLink":"$InviteLink
 Sincerely,
 ONLYOFFICE team</value>
   </data>
-  <data name="pattern_personal_custom_mode_already_exist" xml:space="preserve">
-    <value>Hi there!
-There was an attempt to register a new "ONLYOFFICE Personal":"$PortalUrl" account using this email. If it was you, we want to inform you that the account already exists — proceed to ONLYOFFICE Personal and log in.
-If you lost your password, you can recover it on "password recovery page":"$LinkToRecovery".
-If you didn’t attempt to register a new account, probably someone else did it by mistake. In this case, please ignore this email.
-
-Have a nice day!
-ONLYOFFICE team</value>
-  </data>
   <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
     <value>You have requested a termination of your account at personal.onlyoffice.com. Follow the link to complete the request (the link is active for a 7-day period): 
 
-$GreenButton
+Confirm account termination
 
-*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our "Privacy statement":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our "Privacy statement":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Read more about account termination":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
 
 Ignore this email if you do not want to proceed. 
 
@@ -264,9 +257,7 @@ The deletion of personal data allowed to free:
 
 # Documents - $DocsSpace
 # Mail - $MailSpace
-# Talk - $TalkSpace
-
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+# Talk - $TalkSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.New portal has been registered
@@ -287,17 +278,8 @@ The deletion of personal data allowed to free:
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Welcome to ONLYOFFICE Personal</value>
   </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Connect your favorite cloud storage to ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
-    <value>ONLYOFFICE Personal password assistance</value>
-  </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Please activate your email address</value>
-  </data>
-  <data name="subject_personal_custom_mode_already_exist" xml:space="preserve">
-    <value>Log in to your ONLYOFFICE Personal account</value>
   </data>
   <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
     <value>ONLYOFFICE Personal account termination</value>

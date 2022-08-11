@@ -46,7 +46,7 @@ public class PortalController : ControllerBase
     private TimeZonesProvider TimeZonesProvider { get; }
     private TimeZoneConverter TimeZoneConverter { get; }
     public PasswordHasher PasswordHasher { get; }
-    private ILog Log { get; }
+    private ILogger<PortalController> Log { get; }
 
     public PortalController(
         IConfiguration configuration,
@@ -61,7 +61,7 @@ public class PortalController : ControllerBase
         UserFormatter userFormatter,
         UserManagerWrapper userManagerWrapper,
         CommonConstants commonConstants,
-        IOptionsMonitor<ILog> option,
+        ILogger<PortalController> option,
         TimeZonesProvider timeZonesProvider,
         TimeZoneConverter timeZoneConverter,
         PasswordHasher passwordHasher)
@@ -81,7 +81,7 @@ public class PortalController : ControllerBase
         TimeZonesProvider = timeZonesProvider;
         TimeZoneConverter = timeZoneConverter;
         PasswordHasher = passwordHasher;
-        Log = option.Get("ASC.ApiSystem");
+        Log = option;
     }
 
     #region For TEST api
@@ -170,7 +170,7 @@ public class PortalController : ControllerBase
             return BadRequest(error);
         }
 
-        Log.DebugFormat("PortalName = {0}; Elapsed ms. CheckExistingNamePortal: {1}", model.PortalName, sw.ElapsedMilliseconds);
+        Log.LogDebug("PortalName = {0}; Elapsed ms. CheckExistingNamePortal: {1}", model.PortalName, sw.ElapsedMilliseconds);
 
         var clientIP = CommonMethods.GetClientIp();
 
@@ -188,27 +188,22 @@ public class PortalController : ControllerBase
             return BadRequest(error);
         }
 
-        if (!CheckRegistrationPayment(out error))
-        {
-            return BadRequest(error);
-        }
-
         var language = model.Language ?? string.Empty;
 
         var tz = TimeZonesProvider.GetCurrentTimeZoneInfo(language);
 
-        Log.DebugFormat("PortalName = {0}; Elapsed ms. TimeZonesProvider.GetCurrentTimeZoneInfo: {1}", model.PortalName, sw.ElapsedMilliseconds);
+        Log.LogDebug("PortalName = {0}; Elapsed ms. TimeZonesProvider.GetCurrentTimeZoneInfo: {1}", model.PortalName, sw.ElapsedMilliseconds);
 
         if (!string.IsNullOrEmpty(model.TimeZoneName))
         {
             tz = TimeZoneConverter.GetTimeZone(model.TimeZoneName.Trim(), false) ?? tz;
 
-            Log.DebugFormat("PortalName = {0}; Elapsed ms. TimeZonesProvider.OlsonTimeZoneToTimeZoneInfo: {1}", model.PortalName, sw.ElapsedMilliseconds);
+            Log.LogDebug("PortalName = {0}; Elapsed ms. TimeZonesProvider.OlsonTimeZoneToTimeZoneInfo: {1}", model.PortalName, sw.ElapsedMilliseconds);
         }
 
         var lang = TimeZonesProvider.GetCurrentCulture(language);
 
-        Log.DebugFormat("PortalName = {0}; model.Language = {1}, resultLang.DisplayName = {2}", model.PortalName, language, lang.DisplayName);
+        Log.LogDebug("PortalName = {0}; model.Language = {1}, resultLang.DisplayName = {2}", model.PortalName, language, lang.DisplayName);
 
         var info = new TenantRegistrationInfo
         {
@@ -255,20 +250,20 @@ public class PortalController : ControllerBase
             {
                 await ApiSystemHelper.AddTenantToCacheAsync(info.Address, SecurityContext.CurrentAccount.ID);
 
-                Log.DebugFormat("PortalName = {0}; Elapsed ms. CacheController.AddTenantToCache: {1}", model.PortalName, sw.ElapsedMilliseconds);
+                Log.LogDebug("PortalName = {0}; Elapsed ms. CacheController.AddTenantToCache: {1}", model.PortalName, sw.ElapsedMilliseconds);
             }
 
             HostedSolution.RegisterTenant(info, out t);
 
             /*********/
 
-            Log.DebugFormat("PortalName = {0}; Elapsed ms. HostedSolution.RegisterTenant: {1}", model.PortalName, sw.ElapsedMilliseconds);
+            Log.LogDebug("PortalName = {0}; Elapsed ms. HostedSolution.RegisterTenant: {1}", model.PortalName, sw.ElapsedMilliseconds);
         }
         catch (Exception e)
         {
             sw.Stop();
 
-            Log.Error(e);
+            Log.LogError(e, "");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new
             {
@@ -321,13 +316,13 @@ public class PortalController : ControllerBase
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                Log.LogError(e, "RegisterAsync");
             }
         }
 
         var reference = CommonMethods.CreateReference(Request.Scheme, t.GetTenantDomain(CoreSettings), info.Email, isFirst);
 
-        Log.DebugFormat("PortalName = {0}; Elapsed ms. CreateReferenceByCookie...: {1}", model.PortalName, sw.ElapsedMilliseconds);
+        Log.LogDebug("PortalName = {0}; Elapsed ms. CreateReferenceByCookie...: {1}", model.PortalName, sw.ElapsedMilliseconds);
 
         sw.Stop();
 
@@ -346,7 +341,7 @@ public class PortalController : ControllerBase
     {
         if (!CommonMethods.GetTenant(model, out var tenant))
         {
-            Log.Error("Model without tenant");
+            Log.LogError("Model without tenant");
 
             return BadRequest(new
             {
@@ -357,7 +352,7 @@ public class PortalController : ControllerBase
 
         if (tenant == null)
         {
-            Log.Error("Tenant not found");
+            Log.LogError("Tenant not found");
 
             return BadRequest(new
             {
@@ -381,7 +376,7 @@ public class PortalController : ControllerBase
     {
         if (!CommonMethods.GetTenant(model, out var tenant))
         {
-            Log.Error("Model without tenant");
+            Log.LogError("Model without tenant");
 
             return BadRequest(new
             {
@@ -392,7 +387,7 @@ public class PortalController : ControllerBase
 
         if (tenant == null)
         {
-            Log.Error("Tenant not found");
+            Log.LogError("Tenant not found");
 
             return BadRequest(new
             {
@@ -505,7 +500,7 @@ public class PortalController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex);
+            Log.LogError(ex, "");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new
             {
@@ -578,7 +573,7 @@ public class PortalController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex);
+            Log.LogError(ex, "CheckExistingNamePortal");
             error = new { error = "error", message = ex.Message, stacktrace = ex.StackTrace };
             return (false, error);
         }
@@ -624,28 +619,6 @@ public class PortalController : ControllerBase
         return true;
     }
 
-    private bool CheckRegistrationPayment(out object error)
-    {
-        error = null;
-        if (Configuration["core:base-domain"] == "localhost")
-        {
-            var tenants = HostedSolution.GetTenants(DateTime.MinValue);
-            var firstTenant = tenants.FirstOrDefault();
-            if (firstTenant != null)
-            {
-                var activePortals = tenants.Count(r => r.Status != TenantStatus.Suspended && r.Status != TenantStatus.RemovePending);
-
-                var quota = HostedSolution.GetTenantQuota(firstTenant.Id);
-                if (quota.CountPortals > 0 && quota.CountPortals <= activePortals)
-                {
-                    error = new { error = "portalsCountTooMuch", message = "Too much portals registered already", };
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
 
     #region Recaptcha
 
@@ -657,7 +630,7 @@ public class PortalController : ControllerBase
         {
             if (!string.IsNullOrEmpty(model.AppKey) && CommonConstants.AppSecretKeys.Contains(model.AppKey))
             {
-                Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha via app key: {1}. {2}", model.PortalName, model.AppKey, sw.ElapsedMilliseconds);
+                Log.LogDebug("PortalName = {0}; Elapsed ms. ValidateRecaptcha via app key: {1}. {2}", model.PortalName, model.AppKey, sw.ElapsedMilliseconds);
                 return true;
             }
 
@@ -666,7 +639,7 @@ public class PortalController : ControllerBase
             /*** validate recaptcha ***/
             if (!CommonMethods.ValidateRecaptcha(model.RecaptchaResponse, model.RecaptchaType, clientIP))
             {
-                Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha error: {1} {2}", model.PortalName, sw.ElapsedMilliseconds, data);
+                Log.LogDebug("PortalName = {0}; Elapsed ms. ValidateRecaptcha error: {1} {2}", model.PortalName, sw.ElapsedMilliseconds, data);
                 sw.Stop();
 
                 error = new { error = "recaptchaInvalid", message = "Recaptcha is invalid" };
@@ -674,7 +647,7 @@ public class PortalController : ControllerBase
 
             }
 
-            Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha: {1} {2}", model.PortalName, sw.ElapsedMilliseconds, data);
+            Log.LogDebug("PortalName = {0}; Elapsed ms. ValidateRecaptcha: {1} {2}", model.PortalName, sw.ElapsedMilliseconds, data);
         }
 
         return true;

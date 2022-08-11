@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FooterCommonV10" xml:space="preserve">
     <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;&lt;td colspan="3" style="height: 10px; line-height: 10px; background: #fff; padding: 0; margin: 0;"&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
@@ -195,7 +195,7 @@
   <data name="TextForFooterWithUnsubscribeLink" xml:space="preserve">
     <value>Это сообщение создано автоматически, и отвечать на него не нужно.
 &lt;br /&gt;Вы получили это сообщение, так как являетесь зарегистрированным пользователем &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt;
-&lt;br /&gt;Если вы больше не хотите получать эти сообщения, нажмите на следующую ссылку: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Отписаться&lt;/a&gt;
+&lt;br /&gt;Если вы хотите отписаться от информационных электронных писем, нажмите на следующую ссылку: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Отписаться&lt;/a&gt;
 &lt;br /&gt;</value>
   </data>
 </root>

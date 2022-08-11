@@ -62,7 +62,7 @@ rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.r
 rpm -ivh https://rpms.remirepo.net/enterprise/remi-release-$REV.rpm || true
 
 #add nodejs repo
-curl -sL https://rpm.nodesource.com/setup_12.x | bash - || true
+curl -sL https://rpm.nodesource.com/setup_14.x | bash - || true
 
 #add yarn
 curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo || true
@@ -183,7 +183,7 @@ ${package_manager} -y install epel-release \
 			gcc-c++ \
 			make \
 			yarn \
-			dotnet-sdk-5.0 \
+			dotnet-sdk-6.0 \
 			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
@@ -207,4 +207,4 @@ if [ ! -e /usr/bin/json ]; then
 fi
 
 systemctl daemon-reload
-package_services="rabbitmq-server postgresql redis supervisord nginx kafka mysqld"
+package_services="rabbitmq-server postgresql redis supervisord nginx mysqld"

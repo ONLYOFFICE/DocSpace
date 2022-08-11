@@ -37,6 +37,7 @@ public class SmsManager
     private readonly SmsKeyStorage _smsKeyStorage;
     private readonly SmsSender _smsSender;
     private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
+    private readonly CookiesManager _cookieManager;
 
     public SmsManager(
         UserManager userManager,
@@ -44,7 +45,8 @@ public class SmsManager
         TenantManager tenantManager,
         SmsKeyStorage smsKeyStorage,
         SmsSender smsSender,
-        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper)
+        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
+        CookiesManager cookieManager)
     {
         _userManager = userManager;
         _securityContext = securityContext;
@@ -52,6 +54,7 @@ public class SmsManager
         _smsKeyStorage = smsKeyStorage;
         _smsSender = smsSender;
         _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+        _cookieManager = cookieManager;
     }
 
     public Task<string> SaveMobilePhoneAsync(UserInfo user, string mobilePhone)
@@ -82,14 +85,14 @@ public class SmsManager
         user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
         if (_securityContext.IsAuthenticated)
         {
-            _userManager.SaveUserInfo(user);
+            _userManager.SaveUserInfo(user, syncCardDav: true);
         }
         else
         {
             try
             {
                 _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                _userManager.SaveUserInfo(user);
+                _userManager.SaveUserInfo(user, syncCardDav: true);
             }
             finally
             {
@@ -112,7 +115,7 @@ public class SmsManager
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (!_studioSmsNotificationSettingsHelper.IsVisibleSettings() || !_studioSmsNotificationSettingsHelper.Enable)
+        if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() || !_studioSmsNotificationSettingsHelper.Enable)
         {
             throw new MethodAccessException();
         }
@@ -140,9 +143,9 @@ public class SmsManager
         }
     }
 
-    public void ValidateSmsCode(UserInfo user, string code)
+    public void ValidateSmsCode(UserInfo user, string code, bool isEntryPoint = false)
     {
-        if (!_studioSmsNotificationSettingsHelper.IsVisibleSettings()
+        if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings()
             || !_studioSmsNotificationSettingsHelper.Enable)
         {
             return;
@@ -172,8 +175,8 @@ public class SmsManager
 
         if (!_securityContext.IsAuthenticated)
         {
-            _securityContext.AuthenticateMe(user.Id);
-            //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
+            var action = isEntryPoint ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaSms;
+            _cookieManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
         }
 
         if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)

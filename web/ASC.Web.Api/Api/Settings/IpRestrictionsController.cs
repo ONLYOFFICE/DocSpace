@@ -62,6 +62,14 @@ public class IpRestrictionsController : BaseSettingsController
         return _iPRestrictionsService.Save(inDto.Ips, Tenant.Id);
     }
 
+    [HttpGet("iprestrictions/settings")]
+    public IPRestrictionsSettings ReadIpRestrictionsSettings()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        return _settingsManager.Load<IPRestrictionsSettings>();
+    }
+
     [HttpPut("iprestrictions/settings")]
     public IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto inDto)
     {

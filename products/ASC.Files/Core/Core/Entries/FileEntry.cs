@@ -83,6 +83,7 @@ public abstract class FileEntry : ICloneable
     public Guid RootCreateBy { get; set; }
     public abstract bool IsNew { get; set; }
     public FileEntryType FileEntryType { get; set; }
+    public IEnumerable<Tag> Tags { get; set; }
 
     private string _modifiedByString;
     private string _createByString;
@@ -110,10 +111,26 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
     public T Id { get; set; }
     public T ParentId { get; set; }
     private T _folderIdDisplay;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly SettingsManager _settingsManager;
+    private readonly FilesSettingsHelper _filesSettingsHelper;
+    private readonly FileDateTime _fileDateTime;
 
     protected FileEntry() { }
 
-    protected FileEntry(FileHelper fileHelper, Global global) : base(fileHelper, global) { }
+    protected FileEntry(
+        FileHelper fileHelper,
+        Global global,
+        GlobalFolderHelper globalFolderHelper,
+        SettingsManager settingsManager,
+        FilesSettingsHelper filesSettingsHelper,
+        FileDateTime fileDateTime) : base(fileHelper, global)
+    {
+        _globalFolderHelper = globalFolderHelper;
+        _settingsManager = settingsManager;
+        _filesSettingsHelper = filesSettingsHelper;
+        _fileDateTime = fileDateTime;
+    }
 
     public T FolderIdDisplay
     {
@@ -128,6 +145,26 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
         }
         set => _folderIdDisplay = value;
     }
+
+    public string DeletedPermanentlyOnString
+    {
+        get
+        {
+            if (!ModifiedOn.Equals(default(DateTime)) && Equals(FolderIdDisplay, _globalFolderHelper.FolderTrash) && _filesSettingsHelper.AutomaticallyCleanUp.IsAutoCleanUp)
+            {
+                var deletedPermanentlyOn = _fileDateTime.GetModifiedOnWithAutoCleanUp(ModifiedOn, _filesSettingsHelper.AutomaticallyCleanUp.Gap);
+                return deletedPermanentlyOn.ToString("g");
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+
+    public bool DenyDownload { get; set; }
+
+    public bool DenySharing { get; set; }
 
     public T RootId { get; set; }
 

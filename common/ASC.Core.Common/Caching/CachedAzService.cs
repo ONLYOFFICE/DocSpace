@@ -99,7 +99,7 @@ class CachedAzService : IAzService
     public AzRecord SaveAce(int tenant, AzRecord r)
     {
         r = _service.SaveAce(tenant, r);
-        _cacheNotify.Publish(r, CacheNotifyAction.InsertOrUpdate);
+        _cacheNotify.Publish((AzRecordCache)r, CacheNotifyAction.InsertOrUpdate);
 
         return r;
     }
@@ -107,6 +107,6 @@ class CachedAzService : IAzService
     public void RemoveAce(int tenant, AzRecord r)
     {
         _service.RemoveAce(tenant, r);
-        _cacheNotify.Publish(r, CacheNotifyAction.Remove);
+        _cacheNotify.Publish((AzRecordCache)r, CacheNotifyAction.Remove);
     }
 }

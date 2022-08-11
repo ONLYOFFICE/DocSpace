@@ -41,6 +41,13 @@ public enum FolderType
     Recent = 11,
     Templates = 12,
     Privacy = 13,
+    VirtualRooms = 14,
+    FillingFormsRoom = 15,
+    EditingRoom = 16,
+    ReviewRoom = 17,
+    ReadOnlyRoom = 18,
+    CustomRoom = 19,
+    Archive = 20,
 }
 
 public interface IFolder
@@ -51,11 +58,13 @@ public interface IFolder
     public bool Shareable { get; set; }
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
+    public bool Pinned { get; set; }
+    public IEnumerable<Tag> Tags { get; set; }
 }
 
 [DebuggerDisplay("{Title} ({Id})")]
 [Transient]
-public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
+public class Folder<T> : FileEntry<T>, IFolder
 {
     public FolderType FolderType { get; set; }
     public int FilesCount { get; set; }
@@ -63,11 +72,14 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
     public bool Shareable { get; set; }
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
+    public bool Pinned { get; set; }
     public override bool IsNew
     {
         get => Convert.ToBoolean(NewForMe);
         set => NewForMe = Convert.ToInt32(value);
     }
+
+    public bool IsFavorite { get; set; }
 
     public Folder()
     {
@@ -75,80 +87,17 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
         FileEntryType = FileEntryType.Folder;
     }
 
-    public Folder(FileHelper fileHelper, Global global) : this()
+    public Folder(
+        FileHelper fileHelper,
+        Global global,
+        GlobalFolderHelper globalFolderHelper,
+        SettingsManager settingsManager,
+        FilesSettingsHelper filesSettingsHelper,
+        FileDateTime fileDateTime) : base(fileHelper, global, globalFolderHelper, settingsManager, filesSettingsHelper, fileDateTime)
     {
-        FileHelper = fileHelper;
-        Global = global;
+        Title = string.Empty;
+        FileEntryType = FileEntryType.Folder;
     }
 
     public override string UniqID => $"folder_{Id}";
-
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<DbFolder, Folder<int>>();
-
-        profile.CreateMap<DbFolderQuery, Folder<int>>()
-            .IncludeMembers(r => r.Folder)
-            .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.CreateOn))
-            .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.ModifiedOn))
-            .AfterMap((q, result) =>
-            {
-                switch (result.FolderType)
-                {
-                    case FolderType.COMMON:
-                        result.Title = FilesUCResource.CorporateFiles;
-                        break;
-                    case FolderType.USER:
-                        result.Title = FilesUCResource.MyFiles;
-                        break;
-                    case FolderType.SHARE:
-                        result.Title = FilesUCResource.SharedForMe;
-                        break;
-                    case FolderType.Recent:
-                        result.Title = FilesUCResource.Recent;
-                        break;
-                    case FolderType.Favorites:
-                        result.Title = FilesUCResource.Favorites;
-                        break;
-                    case FolderType.TRASH:
-                        result.Title = FilesUCResource.Trash;
-                        break;
-                    case FolderType.Privacy:
-                        result.Title = FilesUCResource.PrivacyRoom;
-                        break;
-                    case FolderType.Projects:
-                        result.Title = FilesUCResource.ProjectFiles;
-                        break;
-                    case FolderType.BUNCH:
-                        try
-                        {
-                            result.Title = string.Empty;
-                        }
-                        catch (Exception)
-                        {
-                            //Global.Logger.Error(e);
-                        }
-                        break;
-                }
-
-                if (result.FolderType != FolderType.DEFAULT)
-                {
-                    if (0.Equals(result.ParentId))
-                    {
-                        result.RootFolderType = result.FolderType;
-                    }
-
-                    if (result.RootCreateBy == default)
-                    {
-                        result.RootCreateBy = result.CreateBy;
-                    }
-
-                    if (0.Equals(result.RootId))
-                    {
-                        result.RootId = result.Id;
-                    }
-                }
-            })
-            .ConstructUsingServiceLocator();
-    }
 }

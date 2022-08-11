@@ -36,10 +36,12 @@ public class EmailValidationKeyProvider
         Expired
     }
 
+    public TimeSpan ValidEmailKeyInterval { get; }
+    public TimeSpan ValidAuthKeyInterval { get; }
+    public TimeSpan ValidVisitLinkInterval { get; }
+
     private readonly ILogger<EmailValidationKeyProvider> _logger;
     private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
-    internal readonly TimeSpan _validEmailKeyInterval;
-    internal readonly TimeSpan _validAuthKeyInterval;
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private readonly TenantManager _tenantManager;
 
@@ -55,9 +57,13 @@ public class EmailValidationKeyProvider
         {
             authValidInterval = TimeSpan.FromHours(1);
         }
-
-        _validEmailKeyInterval = validInterval;
-        _validAuthKeyInterval = authValidInterval;
+        if (!TimeSpan.TryParse(configuration["visit:validinterval"], out var validVisitLinkInterval))
+        {
+            ValidVisitLinkInterval = TimeSpan.FromMinutes(15);
+        }
+       
+        ValidEmailKeyInterval = validInterval;
+        ValidAuthKeyInterval = authValidInterval;
         _logger = logger;
     }
 
@@ -162,133 +168,11 @@ public class EmailValidationKeyModel
     public string Email { get; set; }
     public Guid? UiD { get; set; }
     public ConfirmType? Type { get; set; }
+    public int RoomAccess { get; set; }
+    public string RoomId { get; set; }
 
-    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type)
+    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int roomAccess, out string roomId)
     {
-        (key, emplType, email, uiD, type) = (Key, EmplType, Email, UiD, Type);
-    }
-}
-
-[Transient]
-public class EmailValidationKeyModelHelper
-{
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly EmailValidationKeyProvider _provider;
-    private readonly AuthContext _authContext;
-    private readonly UserManager _userManager;
-    private readonly AuthManager _authentication;
-
-    public EmailValidationKeyModelHelper(
-        IHttpContextAccessor httpContextAccessor,
-        EmailValidationKeyProvider provider,
-        AuthContext authContext,
-        UserManager userManager,
-        AuthManager authentication)
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _provider = provider;
-        _authContext = authContext;
-        _userManager = userManager;
-        _authentication = authentication;
-    }
-
-    public EmailValidationKeyModel GetModel()
-    {
-        var request = QueryHelpers.ParseQuery(_httpContextAccessor.HttpContext.Request.Headers["confirm"]);
-
-        request.TryGetValue("type", out var type);
-
-        ConfirmType? cType = null;
-        if (Enum.TryParse<ConfirmType>(type, out var confirmType))
-        {
-            cType = confirmType;
-        }
-
-        request.TryGetValue("key", out var key);
-
-        request.TryGetValue("emplType", out var emplType);
-        Enum.TryParse<EmployeeType>(emplType, out var employeeType);
-
-        request.TryGetValue("email", out var _email);
-        request.TryGetValue("uid", out var userIdKey);
-        Guid.TryParse(userIdKey, out var userId);
-
-        return new EmailValidationKeyModel
-        {
-            Email = _email,
-            EmplType = employeeType,
-            Key = key,
-            Type = cType,
-            UiD = userId
-        };
-    }
-
-    public ValidationResult Validate(EmailValidationKeyModel inDto)
-    {
-        var (key, emplType, email, uiD, type) = inDto;
-
-        ValidationResult checkKeyResult;
-
-        switch (type)
-        {
-            case ConfirmType.EmpInvite:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + (int)emplType, key, _provider._validEmailKeyInterval);
-                break;
-
-            case ConfirmType.LinkInvite:
-                checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)emplType, key, _provider._validEmailKeyInterval);
-                break;
-
-            case ConfirmType.PortalOwnerChange:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + uiD.HasValue, key, _provider._validEmailKeyInterval);
-                break;
-
-            case ConfirmType.EmailChange:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + _authContext.CurrentAccount.ID, key, _provider._validEmailKeyInterval);
-                break;
-            case ConfirmType.PasswordChange:
-
-                var hash = _authentication.GetUserPasswordStamp(_userManager.GetUserByEmail(email).Id).ToString("s");
-
-                checkKeyResult = _provider.ValidateEmailKey(email + type + hash, key, _provider._validEmailKeyInterval);
-                break;
-
-            case ConfirmType.Activation:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + uiD, key, _provider._validEmailKeyInterval);
-                break;
-
-            case ConfirmType.ProfileRemove:
-                // validate UiD
-                var user = _userManager.GetUsers(uiD.GetValueOrDefault());
-                if (user == null || user.Status == EmployeeStatus.Terminated || _authContext.IsAuthenticated && _authContext.CurrentAccount.ID != uiD)
-                {
-                    return ValidationResult.Invalid;
-                }
-
-                checkKeyResult = _provider.ValidateEmailKey(email + type + uiD, key, _provider._validEmailKeyInterval);
-                break;
-
-            case ConfirmType.Wizard:
-                checkKeyResult = _provider.ValidateEmailKey("" + type, key, _provider._validEmailKeyInterval);
-                break;
-
-            case ConfirmType.PhoneActivation:
-            case ConfirmType.PhoneAuth:
-            case ConfirmType.TfaActivation:
-            case ConfirmType.TfaAuth:
-            case ConfirmType.Auth:
-                checkKeyResult = _provider.ValidateEmailKey(email + type, key, _provider._validAuthKeyInterval);
-                break;
-
-            case ConfirmType.PortalContinue:
-                checkKeyResult = _provider.ValidateEmailKey(email + type, key);
-                break;
-
-            default:
-                checkKeyResult = _provider.ValidateEmailKey(email + type, key, _provider._validEmailKeyInterval);
-                break;
-        }
-
-        return checkKeyResult;
+        (key, emplType, email, uiD, type, roomAccess, roomId) = (Key, EmplType, Email, UiD, Type, RoomAccess, RoomId);
     }
 }

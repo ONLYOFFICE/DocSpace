@@ -1,5 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -14,26 +14,22 @@
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
 	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>false</Optimize>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\..\..\common\ASC.Data.Reassigns\ASC.Data.Reassigns.csproj" />
+    <ProjectReference Include="..\..\ASC.Files\Core\ASC.Files.Core.csproj" />
   </ItemGroup>
-  
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
-  
   <ItemGroup>
     <Compile Update="Resources\PeopleResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -41,7 +37,6 @@
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-  
   <ItemGroup>
     <EmbeddedResource Update="Resources\PeopleResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -60,6 +55,60 @@
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.it.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.bg.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.cs.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.el.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.fi.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.ja.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.ko.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.lv.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.nl.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.pl.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.pt-BR.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.pt.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.ro.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.sk.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.sl.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.tr.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.uk.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.vi.resx">
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.zh-CN.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

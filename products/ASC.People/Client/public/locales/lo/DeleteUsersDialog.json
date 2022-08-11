@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "ຜູ້ໃຊ້ທີ່ຖືກປິດການໃຊ້ງານທີ່ທ່ານເລືອກຈະຖືກລົບອອກ.",
-  "DeleteGroupUsersMessageHeader": "ລົບຜູ້ໃຊ້ອອກຈາກ Portal",
-  "DeleteGroupUsersSuccessMessage": "ຢູເຊີ້ນີ້ມີແລ້ວ",
-  "DeleteUserDataConfirmation": "ເອກະສານຜູ້ໃຊ້ທີ່ແບ່ງປັນໃຫ້ຜູ້ອື່ນຈະຖືກລຶບອອກ. ເພື່ອຫລີກລ້ຽງສິ່ງນີ້, ໃຫ້ຂໍ້ມູນຄືນໃຫມ່."
-}

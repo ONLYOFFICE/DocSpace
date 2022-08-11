@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
     <value>A l'extérieur du portail </value>
@@ -109,6 +109,9 @@
   <data name="CommentCreateByDocuSign" xml:space="preserve">
     <value>Créée par DocuSign</value>
   </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Créé pour remplir le formulaire</value>
+  </data>
   <data name="CommentEdit" xml:space="preserve">
     <value>Modifié(e)</value>
   </data>
@@ -129,6 +132,9 @@
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Restaurée à partir de la modification du document de {0}</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Formulaire soumis</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Chargée</value>
@@ -170,7 +176,7 @@
     <value>Le fichier est ouvert pour l'édition par {0}. Actuellement, la coédition n'est pas prise en charge pour ce type de fichier.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>Le fichier est verrouillé pour modification dans une application mobile par {0}</value>
+    <value>Le fichier est ouvert pour modification dans une application mobile par {0}</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
     <value>Fichier vide</value>
@@ -307,17 +313,26 @@
   <data name="MessageFileCreated" xml:space="preserve">
     <value>Fichier créé dans le dossier "{0}"</value>
   </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Le document OFORM remplissable est prêt. Il est enregistré dans le dossier {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>La copie du fichier OFORM est créée dans le dossier {0}. Veuillez remplir le formulaire et télécharger le résultat sous forme de fichier PDF ou DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Le dossier n'est plus un brouillon pour remplir le formulaire.</value>
+  </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
     <value>Faire la même chose qu'un utilisateur|Lier Dropbox, Box et d'autres comptes dans la section 'Documents communs'|Définir les droits d'accès aux documents et aux dossiers dans la section 'Documents communs'</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Créez, modifiez et partagez des documents. Travaillez à plusieurs sur les documents en temps réel. La compatibilité 100% avec les formats MS Office est garantie.</value>
+    <value>Créez, modifiez et partagez des documents. Travaillez à plusieurs sur les documents en temps réel. Compatibilité maximale garantie avec les fichiers docx, xlsx et pptx. </value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Editez, partagez et collaborez sur les documents en temps réel. Créez et gérez les documents communs, accessibles à toute l'équipe. La compatibilité 100% avec les formats MS Office est garantie.</value>
+    <value>Éditez, partagez et collaborez sur les documents bureautiques en temps réel. Créez et gérez les documents communs accessibles à toute l'équipe. Compatibilité maximale avec docx, xlsx, pptx. </value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
-    <value>Affichez et téléchargez les documents partagés. Chargez les documents dans les dossiers partagés. La compatibilité à 100% avec les fichiers docx, xlsx, pptx est garantie.</value>
+    <value>Affichez et téléchargez les documents partagés. Téléchargez les fichiers vers les dossiers partagés. Compatibilité maximale garantie avec les fichiers docx, xlsx, pptx.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Documents</value>

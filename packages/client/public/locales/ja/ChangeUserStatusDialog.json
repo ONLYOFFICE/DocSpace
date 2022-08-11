@@ -1,0 +1,8 @@
+{
+  "ChangeUserStatusDialog": "ステータスが'{{ userStatus }}' のユーザーは {{ status }} になります。",
+  "ChangeUserStatusDialogHeader": "ユーザーステータスの変更",
+  "ChangeUserStatusDialogMessage": "ポータルオーナーと自分自身のステータスを変更することはできません",
+  "ChangeUsersActiveStatus": "無効",
+  "ChangeUsersDisableStatus": "使用可能",
+  "ChangeUsersStatusButton": "ユーザーステータスの変更"
+}

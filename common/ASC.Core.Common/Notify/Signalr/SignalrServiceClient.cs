@@ -224,7 +224,7 @@ public class SignalrServiceClient
         }
     }
 
-    public void SendMailNotification(int tenant, string userId, int state)
+    public void SendMailNotification(int tenant, string userId, MailNotificationState state)
     {
         try
         {
@@ -314,6 +314,18 @@ public class SignalrServiceClient
         try
         {
             MakeRequest("create-file", new { room, fileId, data });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void UpdateFile<T>(T fileId, string room, string data)
+    {
+        try
+        {
+            MakeRequest("update-file", new { room, fileId, data });
         }
         catch (Exception error)
         {

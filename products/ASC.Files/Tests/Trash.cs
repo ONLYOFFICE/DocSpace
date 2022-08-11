@@ -27,16 +27,16 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-class Trash : BaseFilesTests
+public partial class BaseFilesTests
 {
     [Test]
     [Category("Folder")]
-    [Order(1)]
+    [Order(100)]
     [Description("put - files/fileops/emptytrash - empty trash")]
     public async Task DeleteFileFromTrash()
     {
-        var Empty = await PutAsync<IEnumerable<FileOperationDto>>("fileops/emptytrash", null, _options);
+        await PutAsync<IEnumerable<FileOperationDto>>("fileops/emptytrash");
         var statuses = await WaitLongOperation();
-        Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+        CheckStatuses(statuses);
     }
 }

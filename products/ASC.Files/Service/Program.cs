@@ -37,7 +37,8 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     config.AddJsonFile($"appsettings.services.json", true)
           .AddJsonFile("notify.json")
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
-          .AddJsonFile("elastic.json", true);
+          .AddJsonFile("elastic.json", true)
+          .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
 },
 (hostContext, services, diHelper) =>
 {
@@ -68,10 +69,22 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     diHelper.TryAdd<FileDataQueue>();
 
+    services.AddActivePassiveHostedService<FileConverterService<int>>();
+    diHelper.TryAdd<FileConverterService<int>>();
+
+    services.AddActivePassiveHostedService<FileConverterService<string>>();
+    diHelper.TryAdd<FileConverterService<string>>();
+
     services.AddHostedService<ThumbnailBuilderService>();
     diHelper.TryAdd<ThumbnailBuilderService>();
 
     diHelper.TryAdd<ThumbnailRequestedIntegrationEventHandler>();
+
+    services.AddHostedService<Launcher>();
+    diHelper.TryAdd<Launcher>();
+
+    services.AddHostedService<DeleteExpiredService>();
+    diHelper.TryAdd<DeleteExpiredService>();
 
     diHelper.TryAdd<AuthManager>();
     diHelper.TryAdd<BaseCommonLinkUtility>();
@@ -80,7 +93,7 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     diHelper.TryAdd<TenantManager>();
     diHelper.TryAdd<UserManager>();
 
-    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+    services.AddBaseDbContextPool<FilesDbContext>();
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
@@ -88,7 +101,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
 });
 
-var startup = new BaseWorkerStartup(builder.Configuration);
+var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 
@@ -100,7 +113,7 @@ var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService
 
 eventBus.Subscribe<ThumbnailRequestedIntegrationEvent, ThumbnailRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 public partial class Program
 {

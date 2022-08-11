@@ -1,8 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (luominen)",
-  "GroupAction": "Ryhmätoiminta",
-  "Members": "Jäsenet",
-  "SearchAddedMembers": "Hae lisättyjä jäseniä",
-  "SelectAction": "Valitse",
-  "SuccessSaveGroup": "{{groupCaption}} ’{{groupName}}’ on tallennettu onnistuneesti"
-}

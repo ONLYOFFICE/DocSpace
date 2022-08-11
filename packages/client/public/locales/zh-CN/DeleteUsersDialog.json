@@ -1,0 +1,5 @@
+{
+  "DeleteGroupUsersSuccessMessage": "用户已成功删除。",
+  "DeleteUsers": "删除用户",
+  "DeleteUsersMessage": "选择的禁用用户将从门户网站中删除。这些用户对其他人可用的个人文档将被删除。为了避免这种情况，您必须在删除前启动数据传输过程。"
+}

@@ -26,6 +26,7 @@
 
 namespace ASC.Files.Core;
 
+[EnumExtensions]
 public enum SortedByType
 {
     DateAndTime,
@@ -34,7 +35,9 @@ public enum SortedByType
     Author,
     Type,
     New,
-    DateAndTimeCreation
+    DateAndTimeCreation,
+    RoomType,
+    Tags
 }
 
 [DebuggerDisplay("{SortedBy} {IsAsc}")]

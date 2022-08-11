@@ -33,6 +33,7 @@ public class TenantControlPanelSettings : ISettings<TenantControlPanelSettings>
     [DataMember(Name = "LimitedAccess")]
     public bool LimitedAccess { get; set; }
 
+    [JsonIgnore]
     public Guid ID => new Guid("{880585C4-52CD-4AE2-8DA4-3B8E2772753B}");
 
     public TenantControlPanelSettings GetDefault()

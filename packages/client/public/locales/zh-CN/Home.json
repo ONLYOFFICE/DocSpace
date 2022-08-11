@@ -1,0 +1,6 @@
+{
+  "GoodAfternoon": "下午好, {{displayName}}!",
+  "GoodEvening": "晚上好, {{displayName}}!",
+  "GoodMorning": "早上好, {{displayName}}!",
+  "NoOneModulesAvailable": "无可用模块"
+}

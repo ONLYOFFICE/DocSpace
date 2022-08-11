@@ -94,6 +94,12 @@ public class ZipReadOperator : IDataReadOperator
 
         return files;
     }
+    public IEnumerable<string> GetDirectories(string key)
+    {
+        var path = Path.Combine(_tmpDir, key);
+        var files = Directory.EnumerateDirectories(path);
+        return files;
+    }
 
     public void Dispose()
     {

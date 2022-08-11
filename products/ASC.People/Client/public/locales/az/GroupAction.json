@@ -1,8 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (yaradılma)",
-  "GroupAction": "Qrup işləri",
-  "Members": "Üzvlər",
-  "SearchAddedMembers": "Əlavə olunan üzvlərin axtarışı",
-  "SelectAction": "Seçmək",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' müvəffəqiyyətlə yadda saxlanılmışdır"
-}

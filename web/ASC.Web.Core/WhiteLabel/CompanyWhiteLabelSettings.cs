@@ -73,6 +73,7 @@ public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 
     #region ISettings Members
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{C3C5A846-01A3-476D-A962-1CFD78C04ADB}"); }

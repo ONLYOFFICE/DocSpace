@@ -1,5 +1,0 @@
-﻿{
-  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> ще бъде изтрит.",
-  "DeleteUserDataConfirmation": "Потребителските документи, споделени с другите, ще бъдат изтрити. За да избегнете това, пренасочете данните.",
-  "SuccessfullyDeleteUserInfoMessage": "Потребителят беше изтрит успешно"
-}

@@ -31,8 +31,8 @@ internal static partial class RegisterInstanceWorkerServiceLogger
     [LoggerMessage(Level = LogLevel.Trace, Message = "DbUpdateConcurrencyException: then updating {instanceName} at {time} time.")]
     public static partial void TraceDbUpdateConcurrencyException(this ILogger logger, string instanceName, DateTimeOffset time);
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Worker running at: {time}")]
-    public static partial void InformationWorkingRunnging(this ILogger logger, DateTimeOffset time);
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Worker running at: {time}")]
+    public static partial void TraceWorkingRunnging(this ILogger logger, DateTimeOffset time);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "UnRegister Instance {instanceName} running at: {time}.")]
     public static partial void InformationUnRegister(this ILogger logger, string instanceName, DateTimeOffset time);

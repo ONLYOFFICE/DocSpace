@@ -45,7 +45,7 @@ public enum FileStatus
 [Transient]
 [Serializable]
 [DebuggerDisplay("{Title} ({Id} v{Version})")]
-public class File<T> : FileEntry<T>, IFileEntry<T>, IMapFrom<DbFileQuery>
+public class File<T> : FileEntry<T>, IFileEntry<T>
 {
     private FileStatus _status;
 
@@ -56,10 +56,17 @@ public class File<T> : FileEntry<T>, IFileEntry<T>, IMapFrom<DbFileQuery>
         FileEntryType = FileEntryType.File;
     }
 
-    public File(FileHelper fileHelper, Global global) : this()
+    public File(
+        FileHelper fileHelper,
+        Global global,
+        GlobalFolderHelper globalFolderHelper,
+        SettingsManager settingsManager,
+        FilesSettingsHelper filesSettingsHelper,
+        FileDateTime fileDateTime) : base(fileHelper, global, globalFolderHelper, settingsManager, filesSettingsHelper, fileDateTime)
     {
-        FileHelper = fileHelper;
-        Global = global;
+        Version = 1;
+        VersionGroup = 1;
+        FileEntryType = FileEntryType.File;
     }
 
     public int Version { get; set; }
@@ -215,17 +222,6 @@ public class File<T> : FileEntry<T>, IFileEntry<T>, IMapFrom<DbFileQuery>
     }
 
     public object NativeAccessor { get; set; }
-
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<DbFileQuery, File<int>>()
-            .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.CreateOn))
-            .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.ModifiedOn))
-            .IncludeMembers(r => r.File)
-            .ConstructUsingServiceLocator();
-
-        profile.CreateMap<DbFile, File<int>>();
-    }
 }
 
 

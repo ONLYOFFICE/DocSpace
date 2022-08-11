@@ -2,6 +2,7 @@
   "solution": {
     "path": "ASC.Web.sln",
     "projects": [
+      "common\\ASC.ActiveDirectory\\ASC.ActiveDirectory.csproj",
       "common\\ASC.Api.Core\\ASC.Api.Core.csproj",
       "common\\ASC.Common\\ASC.Common.csproj",
       "common\\ASC.Core.Common\\ASC.Core.Common.csproj",
@@ -16,9 +17,9 @@
       "common\\ASC.Feed\\ASC.Feed.csproj",
       "common\\ASC.IPSecurity\\ASC.IPSecurity.csproj",
       "common\\ASC.MessagingSystem\\ASC.MessagingSystem.csproj",
+      "common\\ASC.Migration\\ASC.Migration.csproj",
       "common\\ASC.Notify.Textile\\ASC.Notify.Textile.csproj",
       "common\\ASC.Textile\\ASC.Textile.csproj",
-      "common\\ASC.VoipService\\ASC.VoipService.csproj",
       "common\\ASC.Webhooks.Core\\ASC.Webhooks.Core.csproj",
       "common\\services\\ASC.AuditTrail\\ASC.AuditTrail.csproj",
       "common\\services\\ASC.ClearEvents\\ASC.ClearEvents.csproj",

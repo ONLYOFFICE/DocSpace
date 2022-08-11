@@ -34,12 +34,11 @@ using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Web.Webhooks;
 using ASC.Webhooks.Core;
-using ASC.Webhooks.Core.Dao.Models;
+using ASC.Webhooks.Core.EF.Model;
 using ASC.Webhooks.Service;
 
 using Microsoft.AspNetCore.Builder;
@@ -48,7 +47,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 
 using Moq;
@@ -99,13 +98,10 @@ namespace ASC.Webhooks.Tests
 
                 dbWorker.AddWebhookConfig(testWebhookConfig);
 
-                var mockedLog = new Mock<IOptionsMonitor<ILog>>();
-                mockedLog.Setup(a => a.Get("ASC.Webhooks")).Verifiable();
-
                 var mockedKafkaCaches = new Mock<ICacheNotify<WebhookRequest>>();
                 mockedKafkaCaches.Setup(a => a.Publish(testWebhookRequest, testCacheNotifyAction)).Verifiable();
 
-                var publisher = new WebhookPublisher(dbWorker, tenantManager, mockedLog.Object, mockedKafkaCaches.Object);
+                var publisher = new WebhookPublisher(dbWorker, tenantManager, mockedKafkaCaches.Object);
                 publisher.Publish(EventName, content);
 
                 mockedKafkaCaches.Verify(a => a.Publish(testWebhookRequest, testCacheNotifyAction), Times.Once);
@@ -142,11 +138,11 @@ namespace ASC.Webhooks.Tests
             var successWebhookPayloadId = dbWorker.WriteToJournal(successWebhookPayload);
             var failedWebhookPayloadId = dbWorker.WriteToJournal(failedWebhookPayload);
 
-            var mockedLog = new Mock<ILog>();
-            mockedLog.Setup(a => a.Error(It.IsAny<string>())).Verifiable();
+            var mockedLog = new Mock<ILoggerProvider>();
+            //mockedLog.Setup(a => a.Error(It.IsAny<string>())).Verifiable();
 
-            var mockedLogOptions = new Mock<IOptionsMonitor<ILog>>();
-            mockedLogOptions.Setup(a => a.Get("ASC.Webhooks.Core")).Returns(mockedLog.Object).Verifiable();
+            //var mockedLogOptions = new Mock<IOptionsMonitor<ILog>>();
+            //mockedLogOptions.Setup(a => a.Get("ASC.Webhooks.Core")).Returns(mockedLog.Object).Verifiable();
 
             var source = new CancellationTokenSource();
             var token = source.Token;
@@ -154,7 +150,7 @@ namespace ASC.Webhooks.Tests
             var SuccessedWebhookRequest = new WebhookRequest { Id = successWebhookPayloadId };
             var FailedWebhookRequest = new WebhookRequest { Id = failedWebhookPayloadId };
 
-            var sender = new WebhookSender(mockedLogOptions.Object, serviceProvider.GetRequiredService<IServiceScopeFactory>(), settings, httpClientFactory);
+            var sender = new WebhookSender(mockedLog.Object, serviceProvider.GetRequiredService<IServiceScopeFactory>(), settings, httpClientFactory);
             await sender.Send(SuccessedWebhookRequest, token);
             await sender.Send(FailedWebhookRequest, token);
 

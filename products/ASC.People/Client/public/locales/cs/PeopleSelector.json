@@ -1,6 +1,0 @@
-﻿{
-  "CustomAllGroups": "Všichni {{ groupsCaption, lowercase }}",
-  "EmptySearchUsersResult": "Neexistují žádní uživatelé s tímto jménem",
-  "EmptyUsers": "Nejsou žádní uživatelé",
-  "SearchUsersPlaceholder": "Hledat uživatele"
-}

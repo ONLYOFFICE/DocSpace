@@ -38,10 +38,12 @@ public class SharePointProviderInfo : IProviderInfo
     public string ProviderKey { get; set; }
     public Guid Owner { get; set; }
     public FolderType RootFolderType { get; set; }
+    public FolderType FolderType { get; set; }
     public DateTime CreateOn { get; set; }
     public string CustomerTitle { get; set; }
     public string RootFolderId => "spoint-" + ID;
     public string SpRootFolderId { get; set; } = "/Shared Documents";
+    public string FolderId { get; set; }
 
     public SharePointProviderInfo(
         ILogger<SharePointProviderInfo> logger,
@@ -557,7 +559,7 @@ public class SharePointProviderInfo : IProviderInfo
             result.ParentId = null;
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
-            result.FolderType = FolderType.DEFAULT;
+            result.FolderType = Core.FolderType.DEFAULT;
             result.ModifiedBy = Owner;
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
@@ -580,7 +582,7 @@ public class SharePointProviderInfo : IProviderInfo
         result.ParentId = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
         result.CreateBy = Owner;
         result.CreateOn = CreateOn;
-        result.FolderType = FolderType.DEFAULT;
+        result.FolderType = Core.FolderType.DEFAULT;
         result.ModifiedBy = Owner;
         result.ModifiedOn = CreateOn;
         result.ProviderId = ID;
@@ -592,6 +594,8 @@ public class SharePointProviderInfo : IProviderInfo
         result.Title = isRoot ? CustomerTitle : MakeTitle(folder.Name);
         result.FilesCount = 0;
         result.FoldersCount = 0;
+
+        SetFolderType(result, isRoot);
 
         return result;
     }
@@ -635,7 +639,23 @@ public class SharePointProviderInfo : IProviderInfo
 
     public void Dispose()
     {
-        _clientContext.Dispose();
+        if (_clientContext != null)
+        {
+            _clientContext.Dispose();
+        }
+    }
+
+    private void SetFolderType(Folder<string> folder, bool isRoot)
+    {
+        if (isRoot && (RootFolderType == FolderType.VirtualRooms ||
+            RootFolderType == FolderType.Archive))
+        {
+            folder.FolderType = RootFolderType;
+        }
+        else if (FolderId == folder.Id)
+        {
+            folder.FolderType = FolderType;
+        }
     }
 }
 

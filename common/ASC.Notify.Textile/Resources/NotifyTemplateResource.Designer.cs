@@ -115,7 +115,7 @@ namespace ASC.Notify.Textile.Resources {
         /// <summary>
         ///   Looks up a localized string similar to This email is generated automatically and you do not need to answer it.
         ///&lt;br /&gt;You receive this email because you are a registered user of &lt;a href=&quot;{0}&quot; style=&quot;color: #7b7b7b;&quot; target=&quot;_blank&quot;&gt;{0}&lt;/a&gt;
-        ///&lt;br /&gt;If you no longer wish to receive these emails, click on the following link: &lt;a href=&quot;{1}&quot; style=&quot;color: #7b7b7b;&quot; target=&quot;_blank&quot;&gt;Unsubscribe&lt;/a&gt;
+        ///&lt;br /&gt;Click here to unsubscribe from informational emails: &lt;a href=&quot;{1}&quot; style=&quot;color: #7b7b7b;&quot; target=&quot;_blank&quot;&gt;Unsubscribe&lt;/a&gt;
         ///&lt;br /&gt;.
         /// </summary>
         public static string TextForFooterWithUnsubscribeLink {

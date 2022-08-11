@@ -1,8 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}}の (作成)",
-  "GroupAction": "団体行動",
-  "Members": "メンバー",
-  "SearchAddedMembers": "追加されたメンバーの検索",
-  "SelectAction": "選択",
-  "SuccessSaveGroup": "{{groupCaption}}の '{{ groupName }}'が正常に保存されました。"
-}

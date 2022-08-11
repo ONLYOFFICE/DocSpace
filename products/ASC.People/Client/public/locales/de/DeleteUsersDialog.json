@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "Die ausgewählten deaktivierten Benutzer werden gelöscht.",
-  "DeleteGroupUsersMessageHeader": "Löschung der Benutzer aus dem Portal",
-  "DeleteGroupUsersSuccessMessage": "Benutzer wurden erfolgreich gelöscht.",
-  "DeleteUserDataConfirmation": "Freigegebene Dokumente dieses Benutzers werden gelöscht. Um dies zu vermeiden, weisen Sie Daten neu zu."
-}

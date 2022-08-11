@@ -279,16 +279,7 @@ public class LoginProfile
         var key = HashHelper.MD5(Transport());
         memoryCache.Set(key, this, TimeSpan.FromMinutes(15));
 
-        return AppendQueryParam(uri, QuerySessionParamName, key);
-    }
-
-    internal Uri AppendSessionProfile(Uri uri, HttpContext context)
-    {
-        //gen key
-        var key = HashHelper.MD5(Transport());
-        context.Session.SetString(key, JsonConvert.SerializeObject(this));
-
-        return AppendQueryParam(uri, QuerySessionParamName, key);
+        return AppendQueryParam(uri, QueryCacheParamName, key);
     }
 
     internal void ParseFromUrl(HttpContext context, Uri uri, IMemoryCache memoryCache)
@@ -297,10 +288,6 @@ public class LoginProfile
         if (!string.IsNullOrEmpty(queryString[QueryParamName]))
         {
             FromTransport(queryString[QueryParamName]);
-        }
-        else if (!string.IsNullOrEmpty(queryString[QuerySessionParamName]))
-        {
-            FromTransport(context.Session.GetString(queryString[QuerySessionParamName]));
         }
         else if (!string.IsNullOrEmpty(queryString[QueryCacheParamName]))
         {

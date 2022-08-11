@@ -35,12 +35,13 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger monitor,
         FileUtility fileUtility,
-        TempPath tempPath)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        TempPath tempPath,
+        AuthContext authContext)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
     }
 
@@ -125,6 +126,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         folder.ParentId = isRoot ? null : MakeId(GetParentFolderId(onedriveFolder));
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.CreatedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFolder.CreatedDateTime.Value.DateTime) : default);
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.LastModifiedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFolder.LastModifiedDateTime.Value.DateTime) : default);
+        SetFolderType(folder, isRoot);
 
         folder.Title = MakeItemTitle(onedriveFolder);
 
@@ -191,6 +193,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         file.ModifiedOn = onedriveFile.LastModifiedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFile.LastModifiedDateTime.Value.DateTime) : default;
         file.NativeAccessor = onedriveFile;
         file.Title = MakeItemTitle(onedriveFile);
+        file.ThumbnailStatus = Thumbnail.Created;
 
         return file;
     }

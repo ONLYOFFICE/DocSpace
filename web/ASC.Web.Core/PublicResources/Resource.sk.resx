@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Pole validačného kódu nemôže byť prázdne</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Zadajte číslo mobilného telefónu</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Upozornenia správcu</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Vaša správa bola úspešne odoslaná. Správca portálu vás bude kontaktovať.</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Zapnúť</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Odkaz na potvrdenie operácie bol odoslaný na: email (e-mailová adresa majiteľa portálu).</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Obnova hesla pre používateľa LDAP je zakázaná</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Obnova hesla je zakázaná pre SSO používateľa </value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Vlastný</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Odkaz na potvrdenie operácie bol odoslaný na {0} (e-mailová adresa majiteľa portálu).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Nesprávna e-mailová adresa</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Nesprávny promo kód</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Nemáte povolenie na vykonanie tejto akcie</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Prístup do portálu je obmedzený.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Zlé kľúče</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Váš profil je pozastavený</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} s týmto e-mailom je už zaregistrovaný</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>E-maily z tejto domény nie sú povolené na registráciu</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Pole e-mail je prázdne</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Aktuálny e-mail a nový e-mail sú rovnaké</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Vyplňte prosím všetky polia</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Nahraný súbor sa nenašiel</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Veľkosť súboru obrázka je príliš veľká</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Váš cenový plán túto možnosť nepodporuje</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Nesprávny e-mail</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Neplatný názov domény</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Heslo je prázdne.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>od {0} do {1} znakov</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Heslo musí obsahovať</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Musí obsahovať</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>číslice</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>špeciálne znaky</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>veľké písmená</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Používateľa sa nepodarilo nájsť</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>Používateľ s e-mailom "{0}" nebol nájdený</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>EÚ Región (Frankfurt)</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Maximálna veľkosť súboru je prekročená</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Poznámka: Veľkosť súboru nesmie presiahnuť {1}{0}{2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>bytes,KB,MB,GB,TB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Odkaz na potvrdenie Vášho účtu bol odoslaný na zadaný e-mail</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Server nemohol uložiť nastavenia.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Príliš veľa LDAP operácií.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Licencia nie je správna</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Platnosť licencie uplynula</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Počet portálov presahuje počet, ktorý dovoľuje licencia</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Počet používateľov presahuje počet, ktorý dovoľuje licencia</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Nahranie úspešné</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Pokyny na zmenu e-mailu boli úspešne odoslané</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Ak chcete zmeniť číslo, musíte odstrániť Vaše aktuálne telefónne číslo</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG Región</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Majiteľ</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Prístup k portálu</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>Preradenie údajov pre {0} nie je dokončené.</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Ázia Pacifik (Singapur)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Nesprávny kód</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Kód: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Čas použitia kódu uplynul. Požiadajte o novú textovú správu.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>Nastavenie SMS nie je dostupné</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Poslali ste príliš veľa textových správ. Skúste neskôr prosím.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Nastavenia sa nepodarilo uložiť</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Nastavenia nemôžu byť nulové.</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Neplatná väzba: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Neplatné ID entity</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Mapovanie neplatných polí</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Nastavenie úvodnej stránky bolo úspešne uložené</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Nastavenia boli úspešne aktualizované</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Pokyny k zmazaniu Vášho profilu boli odoslané na e-mailovú adresu {0}.</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>Región Západ USA (Oregon)</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Čo je nové</value>
+  </data>
+</root>

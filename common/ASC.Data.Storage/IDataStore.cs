@@ -305,8 +305,6 @@ public interface IDataStore
 
     string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize,
                          string contentType, string contentDisposition, string submitLabel);
-
-    Task<string> GetUploadedUrlAsync(string domain, string directoryPath);
     string GetUploadUrl();
 
     string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,

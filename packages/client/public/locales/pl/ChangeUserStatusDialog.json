@@ -1,0 +1,8 @@
+{
+  "ChangeUserStatusDialog": "Użytkownicy o statusie '{{ userStatus }}' zostaną {{ status }}.",
+  "ChangeUserStatusDialogHeader": "Zmień status użytkownika",
+  "ChangeUserStatusDialogMessage": "Nie możesz zmienić swojego statusu, ani statusu właściciela portalu",
+  "ChangeUsersActiveStatus": "aktywny",
+  "ChangeUsersDisableStatus": "nieaktywny",
+  "ChangeUsersStatusButton": "Zmień status użytkownika"
+}

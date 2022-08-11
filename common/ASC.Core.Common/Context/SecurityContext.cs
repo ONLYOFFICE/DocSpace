@@ -30,6 +30,8 @@ namespace ASC.Core;
 public class SecurityContext
 {
     private readonly ILogger<SecurityContext> _logger;
+    private readonly DbLoginEventsManager _dbLoginEventsManager;
+
     public IAccount CurrentAccount => _authContext.CurrentAccount;
     public bool IsAuthenticated => _authContext.IsAuthenticated;
 
@@ -50,10 +52,12 @@ public class SecurityContext
         UserFormatter userFormatter,
         CookieStorage cookieStorage,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        ILogger<SecurityContext> logger
+        ILogger<SecurityContext> logger,
+        DbLoginEventsManager dbLoginEventsManager
         )
     {
         _logger = logger;
+        _dbLoginEventsManager = dbLoginEventsManager;
         _userManager = userManager;
         _authentication = authentication;
         _authContext = authContext;
@@ -72,14 +76,15 @@ public class SecurityContext
         UserFormatter userFormatter,
         CookieStorage cookieStorage,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        ILogger<SecurityContext> logger
-        ) : this(userManager, authentication, authContext, tenantManager, userFormatter, cookieStorage, tenantCookieSettingsHelper, logger)
+        ILogger<SecurityContext> logger,
+        DbLoginEventsManager dbLoginEventsManager
+        ) : this(userManager, authentication, authContext, tenantManager, userFormatter, cookieStorage, tenantCookieSettingsHelper, logger, dbLoginEventsManager)
     {
         _httpContextAccessor = httpContextAccessor;
     }
 
 
-    public string AuthenticateMe(string login, string passwordHash)
+    public string AuthenticateMe(string login, string passwordHash, Func<int> funcLoginEvent = null)
     {
         ArgumentNullException.ThrowIfNull(login);
         ArgumentNullException.ThrowIfNull(passwordHash);
@@ -87,7 +92,7 @@ public class SecurityContext
         var tenantid = _tenantManager.GetCurrentTenant().Id;
         var u = _userManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
 
-        return AuthenticateMe(new UserAccount(u, tenantid, _userFormatter));
+        return AuthenticateMe(new UserAccount(u, tenantid, _userFormatter), funcLoginEvent);
     }
 
     public bool AuthenticateMe(string cookie)
@@ -110,7 +115,7 @@ public class SecurityContext
                 }
                 _logger.InformationEmptyBearer(ipFrom, address);
             }
-            else if (_cookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser))
+            else if (_cookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser, out var loginEventId))
             {
                 if (tenant != _tenantManager.GetCurrentTenant().Id)
                 {
@@ -136,8 +141,13 @@ public class SecurityContext
                         return false;
                     }
 
-                    AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));
+                    var settingLoginEvents = _dbLoginEventsManager.GetLoginEventIds(tenant, userid).Result; // remove Result
+                    if (loginEventId != 0 && !settingLoginEvents.Contains(loginEventId))
+                    {
+                        return false;
+                    }
 
+                    AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));
                     return true;
                 }
                 catch (InvalidCredentialException ice)
@@ -174,7 +184,13 @@ public class SecurityContext
         return false;
     }
 
-    public string AuthenticateMe(IAccount account, List<Claim> additionalClaims = null)
+    public string AuthenticateMe(Guid userId, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
+    {
+        var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId);
+        return AuthenticateMe(account, funcLoginEvent, additionalClaims);
+    }
+
+    public string AuthenticateMe(IAccount account, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
     {
         AuthenticateMeWithoutCookie(account, additionalClaims);
 
@@ -182,7 +198,13 @@ public class SecurityContext
 
         if (account is IUserAccount)
         {
-            cookie = _cookieStorage.EncryptCookie(_tenantManager.GetCurrentTenant().Id, account.ID);
+            var loginEventId = 0;
+            if (funcLoginEvent != null)
+            {
+                loginEventId = funcLoginEvent();
+            }
+
+            cookie = _cookieStorage.EncryptCookie(_tenantManager.GetCurrentTenant().Id, account.ID, loginEventId);
         }
 
         return cookie;
@@ -249,13 +271,6 @@ public class SecurityContext
         }
 
         _authContext.Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
-    }
-
-    public string AuthenticateMe(Guid userId, List<Claim> additionalClaims = null)
-    {
-        var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId);
-
-        return AuthenticateMe(account, additionalClaims);
     }
 
     public void AuthenticateMeWithoutCookie(Guid userId, List<Claim> additionalClaims = null)

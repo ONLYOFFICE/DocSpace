@@ -267,10 +267,10 @@ internal class OneDriveStorage
             Method = HttpMethod.Post
         };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
-        request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
-        {
-            CharSet = Encoding.UTF8.WebName
-        };
+        //request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
+        //{
+        //    CharSet = Encoding.UTF8.WebName
+        //};
 
         var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
 
@@ -312,11 +312,11 @@ internal class OneDriveStorage
             Method = HttpMethod.Put
         };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
-        request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
-                                                           oneDriveSession.BytesTransfered,
-                                                           oneDriveSession.BytesTransfered + chunkLength - 1,
-                                                           oneDriveSession.BytesToTransfer));
         request.Content = new StreamContent(stream);
+
+        request.Content.Headers.ContentRange = new ContentRangeHeaderValue(oneDriveSession.BytesTransfered,
+                                                               oneDriveSession.BytesTransfered + chunkLength - 1,
+                                                               oneDriveSession.BytesToTransfer);
 
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
@@ -353,6 +353,30 @@ internal class OneDriveStorage
 
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
+    }
+
+    public async Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
+    {
+        var thumbnails = await OnedriveClient.Drive.Items[fileId].Thumbnails.Request().GetAsync();
+        if (thumbnails.Count > 0)
+        {
+            var url = thumbnails[0].Medium.Url;
+            url = url.Substring(0, url.IndexOf("?width"));
+            url = url + $"?width={width}&height={height}&cropmode=none";
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(url),
+                Method = HttpMethod.Get
+            };
+            var httpClient = _clientFactory.CreateClient();
+            using var response = await httpClient.SendAsync(request);
+            var bytes = await response.Content.ReadAsByteArrayAsync();
+            return new MemoryStream(bytes);
+        }
+        else
+        {
+            return null;
+        }
     }
 }
 

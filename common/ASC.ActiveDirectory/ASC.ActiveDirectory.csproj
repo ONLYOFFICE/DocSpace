@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+  </ItemGroup>
+
+</Project>

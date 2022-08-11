@@ -54,6 +54,8 @@ internal class OneDriveProviderInfo : IProviderInfo
     public string RootFolderId => "onedrive-" + ID;
     public string ProviderKey { get; set; }
     public FolderType RootFolderType { get; set; }
+    public FolderType FolderType { get; set; }
+    public string FolderId { get; set; }
 
     private readonly OneDriveStorageDisposableWrapper _wrapper;
     private readonly OneDriveProviderInfoHelper _oneDriveProviderInfoHelper;
@@ -120,6 +122,12 @@ internal class OneDriveProviderInfo : IProviderInfo
     internal Task CacheResetAsync(string onedriveId = null)
     {
         return _oneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId);
+    }
+
+    internal async Task<Stream> GetThumbnailAsync(string onedriveId, int width, int height)
+    {
+        var storage = await StorageAsync;
+        return await _oneDriveProviderInfoHelper.GetThumbnailAsync(storage, onedriveId, width, height);
     }
 }
 
@@ -209,6 +217,7 @@ public class OneDriveProviderInfoHelper
         _cacheNotify = cacheNotify;
         _cacheNotify.Subscribe((i) =>
         {
+            ResetMemoryCache(i);
             if (i.ResetAll)
             {
                 _cacheChildItems.Remove(new Regex("^onedrivei-" + i.Key + ".*"));
@@ -253,16 +262,38 @@ public class OneDriveProviderInfoHelper
     internal async Task CacheResetAsync(int id, string onedriveId = null)
     {
         var key = id + "-";
+        var item = new OneDriveCacheItem { Key = key };
+
         if (string.IsNullOrEmpty(onedriveId))
         {
-            await _cacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            item.ResetAll = true;
         }
         else
         {
-            key += onedriveId;
-
-            await _cacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            item.Key += onedriveId;
         }
+
+        ResetMemoryCache(item);
+        await _cacheNotify.PublishAsync(item, CacheNotifyAction.Remove);
+    }
+
+    private void ResetMemoryCache(OneDriveCacheItem i)
+    {
+        if (i.ResetAll)
+        {
+            _cacheChildItems.Remove(new Regex("^onedrivei-" + i.Key + ".*"));
+            _cacheItem.Remove(new Regex("^onedrive-" + i.Key + ".*"));
+        }
+        else
+        {
+            _cacheChildItems.Remove(new Regex("onedrivei-" + i.Key));
+            _cacheItem.Remove("onedrive-" + i.Key);
+        }
+    }
+
+    internal async Task<Stream> GetThumbnailAsync(OneDriveStorage storage, string onedriveId, int width, int height)
+    {
+        return await storage.GetThumbnailAsync(onedriveId, width, height).ConfigureAwait(false);
     }
 }
 public static class OneDriveProviderInfoExtention

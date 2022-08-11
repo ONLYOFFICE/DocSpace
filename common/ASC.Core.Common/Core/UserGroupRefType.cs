@@ -26,6 +26,7 @@
 
 namespace ASC.Core;
 
+[EnumExtensions]
 public enum UserGroupRefType
 {
     Contains,

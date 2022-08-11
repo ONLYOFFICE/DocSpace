@@ -1,0 +1,8 @@
+{
+  "AddHeadOfDepartment": "Şöbə müdirini əlavə edin",
+  "CustomNewDepartment": "{{groupCaption}} (yaradılma)",
+  "GroupAction": "Qrup işləri",
+  "Members": "Üzvlər",
+  "SearchAddedMembers": "Əlavə olunan üzvlərin axtarışı",
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' müvəffəqiyyətlə yadda saxlanılmışdır"
+}

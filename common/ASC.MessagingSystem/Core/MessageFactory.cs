@@ -30,11 +30,6 @@ namespace ASC.MessagingSystem.Core;
 public class MessageFactory
 {
     private readonly ILogger<MessageFactory> _logger;
-    private const string UserAgentHeader = "User-Agent";
-    private const string ForwardedHeader = "X-Forwarded-For";
-    private const string HostHeader = "Host";
-    private const string RefererHeader = "Referer";
-
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
 
@@ -45,22 +40,22 @@ public class MessageFactory
         _logger = logger;
     }
 
-    public EventMessage Create(HttpRequest request, string initiator, MessageAction action, MessageTarget target, params string[] description)
+    public EventMessage Create(HttpRequest request, string initiator, DateTime? dateTime, MessageAction action, MessageTarget target, params string[] description)
     {
         try
         {
             return new EventMessage
             {
-                Ip = request != null ? request.Headers[ForwardedHeader].ToString() ?? request.GetUserHostAddress() : null,
+                Ip = MessageSettings.GetIP(request),
                 Initiator = initiator,
-                Date = DateTime.UtcNow,
+                Date = dateTime.HasValue ? dateTime.Value : DateTime.UtcNow,
                 TenantId = _tenantManager.GetCurrentTenant().Id,
                 UserId = _authContext.CurrentAccount.ID,
-                Page = request?.GetTypedHeaders().Referer?.ToString(),
+                Page = MessageSettings.GetReferer(request),
                 Action = action,
                 Description = description,
                 Target = target,
-                UAHeader = request?.Headers[UserAgentHeader].FirstOrDefault()
+                UAHeader = MessageSettings.GetUAHeader(request)
             };
         }
         catch (Exception ex)
@@ -87,12 +82,11 @@ public class MessageFactory
 
             if (headers != null)
             {
-                var userAgent = headers.ContainsKey(UserAgentHeader) ? headers[UserAgentHeader].ToString() : null;
-                var forwarded = headers.ContainsKey(ForwardedHeader) ? headers[ForwardedHeader].ToString() : null;
-                var host = headers.ContainsKey(HostHeader) ? headers[HostHeader].ToString() : null;
-                var referer = headers.ContainsKey(RefererHeader) ? headers[RefererHeader].ToString() : null;
+                var ip = MessageSettings.GetIP(headers);
+                var userAgent = MessageSettings.GetUAHeader(headers);
+                var referer = MessageSettings.GetReferer(headers);
 
-                message.Ip = forwarded ?? host;
+                message.Ip = ip;
                 message.UAHeader = userAgent;
                 message.Page = referer;
             }
@@ -125,6 +119,39 @@ public class MessageFactory
         {
             _logger.ErrorWhileParseInitiatorMessage(action, ex);
 
+            return null;
+        }
+    }
+
+    public EventMessage Create(HttpRequest request, MessageUserData userData, MessageAction action)
+    {
+        try
+        {
+            var message = new EventMessage
+            {
+                Date = DateTime.UtcNow,
+                TenantId = userData == null ? _tenantManager.GetCurrentTenant().Id : userData.TenantId,
+                UserId = userData == null ? _authContext.CurrentAccount.ID : userData.UserId,
+                Action = action,
+                Active = true
+            };
+
+            if (request != null)
+            {
+                var ip = MessageSettings.GetIP(request);
+                var userAgent = MessageSettings.GetUAHeader(request);
+                var referer = MessageSettings.GetReferer(request);
+
+                message.Ip = ip;
+                message.UAHeader = userAgent;
+                message.Page = referer;
+            }
+
+            return message;
+        }
+        catch (Exception ex)
+        {
+            _logger.ErrorWhileParseInitiatorMessage(action, ex);
             return null;
         }
     }

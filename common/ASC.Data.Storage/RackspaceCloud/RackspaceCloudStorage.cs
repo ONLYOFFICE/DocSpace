@@ -187,13 +187,18 @@ public class RackspaceCloudStorage : BaseStorage
         return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
     }
 
+        private bool EnableQuotaCheck(string domain)
+        {
+            return (QuotaController != null) && !domain.EndsWith("_temp");
+        }
+
     public Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
                       string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
     DateTime? deleteAt = null, long? deleteAfter = null)
     {
         var buffered = _tempStream.GetBuffered(stream);
 
-        if (QuotaController != null)
+            if (EnableQuotaCheck(domain))
         {
             QuotaController.QuotaUsedCheck(buffered.Length);
         }
@@ -602,10 +607,6 @@ public class RackspaceCloudStorage : BaseStorage
     }
 
     public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize, string contentType, string contentDisposition, string submitLabel)
-    {
-        throw new NotImplementedException();
-    }
-    public override Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
     {
         throw new NotImplementedException();
     }

@@ -26,6 +26,12 @@
 
 
 
+using ASC.Files.Core.EF;
+using ASC.MessagingSystem.EF.Context;
+using ASC.Webhooks.Core.EF.Context;
+
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Files.Tests;
 
 class FilesApplication : WebApplicationFactory<Program>
@@ -51,7 +57,14 @@ class FilesApplication : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
-            var DIHelper = new ASC.Common.DIHelper();
+            services.AddBaseDbContext<UserDbContext>();
+            services.AddBaseDbContext<FilesDbContext>();
+            services.AddBaseDbContext<MessagesContext>();
+            services.AddBaseDbContext<WebhooksDbContext>();
+            services.AddBaseDbContext<TenantDbContext>();
+            services.AddBaseDbContext<CoreDbContext>();
+
+            var DIHelper = new DIHelper();
             DIHelper.Configure(services);
             foreach (var a in Assembly.Load("ASC.Files").GetTypes().Where(r => r.IsAssignableTo<ControllerBase>() && !r.IsAbstract))
             {
@@ -67,24 +80,23 @@ class FilesApplication : WebApplicationFactory<Program>
 public class MySetUpClass
 {
     protected IServiceScope Scope { get; set; }
-    private readonly string _pathToProducts = Path.Combine("..", "..", "..", "Data.Test");
 
     [OneTimeSetUp]
     public void CreateDb()
     {
-        var host = new FilesApplication(new Dictionary<string, string>
+        var args = new Dictionary<string, string>
                 {
                     { "pathToConf", Path.Combine("..","..", "..", "config") },
                     { "ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection },
                     { "migration:enabled", "true" },
                     { "core:products:folder", Path.Combine("..", "..", "..", "products") },
                     { "web:hub:internal", "" }
-                })
-                   .WithWebHostBuilder(builder =>
-                   {
-                   });
+                };
 
-        Migrate(host.Services);
+        var host = new FilesApplication(args);
+        Migrate(host.Services, "ASC.Migrations.MySql");
+
+        host = new FilesApplication(args);
         Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
 
         Scope = host.Services.CreateScope();
@@ -97,40 +109,50 @@ public class MySetUpClass
     [OneTimeTearDown]
     public void DropDb()
     {
-        var context = Scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-        context.Value.Database.EnsureDeleted();
+        var context = Scope.ServiceProvider.GetService<IDbContextFactory<UserDbContext>>();
+        context.CreateDbContext().Database.EnsureDeleted();
 
         try
         {
-            Directory.Delete(Path.Combine("..", "..", "..", _pathToProducts), true);
+            Directory.Delete(Path.Combine(Path.Combine("..", "..", "..", "..", "..", "..", "Data.Test")), true);
         }
         catch { }
     }
 
-    private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
+    private void Migrate(IServiceProvider serviceProvider, string testAssembly)
     {
         using var scope = serviceProvider.CreateScope();
 
-        if (!string.IsNullOrEmpty(testAssembly))
-        {
-            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-            configuration["testAssembly"] = testAssembly;
-        }
+        var configuration = scope.ServiceProvider.GetService<IConfiguration>();
+        configuration["testAssembly"] = testAssembly;
 
-        using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-        db.Value.Migrate();
+        using var db = scope.ServiceProvider.GetService<UserDbContext>();
+        db.Database.Migrate();
 
-        using var filesDb = scope.ServiceProvider.GetService<DbContextManager<Core.EF.FilesDbContext>>();
-        filesDb.Value.Migrate();
+        using var filesDb = scope.ServiceProvider.GetService<FilesDbContext>();
+        filesDb.Database.Migrate();
+
+        using var messagesDb = scope.ServiceProvider.GetService<MessagesContext>();
+        messagesDb.Database.Migrate();
+
+        using var webHookDb = scope.ServiceProvider.GetService<WebhooksDbContext>();
+        webHookDb.Database.Migrate();
+
+        using var tenantDb = scope.ServiceProvider.GetService<TenantDbContext>();
+        tenantDb.Database.Migrate();
+
+        using var coreDb = scope.ServiceProvider.GetService<CoreDbContext>();
+        coreDb.Database.Migrate();
     }
 }
 
-public class BaseFilesTests
+public partial class BaseFilesTests
 {
-    protected readonly JsonSerializerOptions _options;
+    private readonly JsonSerializerOptions _options;
     protected UserManager _userManager;
-    private protected HttpClient _client;
+    private HttpClient _client;
     private readonly string _baseAddress;
+    private string _cookie;
 
     public static readonly string TestConnection = string.Format("Server=localhost;Database=onlyoffice_test.{0};User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True", DateTime.Now.Ticks);
 
@@ -149,7 +171,7 @@ public class BaseFilesTests
     }
 
     [OneTimeSetUp]
-    public Task OneTimeSetup()
+    public async Task OneTimeSetup()
     {
         var host = new FilesApplication(new Dictionary<string, string>
             {
@@ -176,13 +198,13 @@ public class BaseFilesTests
         tenantManager.SetCurrentTenant(tenant);
 
         var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-        var cookie = securityContext.AuthenticateMe(tenant.OwnerId);
+        _cookie = securityContext.AuthenticateMe(tenant.OwnerId);
 
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cookie);
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         _client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json;");
 
-        return Task.CompletedTask;
+        await _client.GetAsync("/");
     }
 
     public BatchRequestDto GetBatchModel(string text)
@@ -207,82 +229,29 @@ public class BaseFilesTests
         return batchModel;
     }
 
-    protected async Task<T> GetAsync<T>(string url, JsonSerializerOptions options)
+    protected Task<T> GetAsync<T>(string url)
     {
-        var request = await _client.GetAsync(url);
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync<T>(HttpMethod.Get, url);
     }
 
-    protected async Task<T> GetAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    protected Task<T> PostAsync<T>(string url, object data = null)
     {
-        var request = new HttpRequestMessage
-        {
-            RequestUri = new Uri(_baseAddress + url),
-            Method = HttpMethod.Delete,
-            Content = content
-        };
-
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync<T>(HttpMethod.Post, url, data);
     }
 
-    protected async Task<T> PostAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    protected Task<T> PutAsync<T>(string url, object data = null)
     {
-        var request = await _client.PostAsync(url, content);
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync<T>(HttpMethod.Put, url, data);
     }
 
-    protected async Task<T> PutAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    protected Task<T> DeleteAsync<T>(string url, object data = null)
     {
-        var request = await _client.PutAsync(url, content);
-        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync<T>(HttpMethod.Delete, url, data);
     }
 
-    private protected async Task<HttpResponseMessage> DeleteAsync(string url, JsonContent content)
+    private protected Task<SuccessApiResponse> DeleteAsync(string url, object data = null)
     {
-        var request = new HttpRequestMessage
-        {
-            RequestUri = new Uri(_baseAddress + url),
-            Method = HttpMethod.Delete,
-            Content = content
-        };
-
-        return await _client.SendAsync(request);
-    }
-
-    protected async Task<T> DeleteAsync<T>(string url, JsonContent content, JsonSerializerOptions options)
-    {
-        var sendRequest = await DeleteAsync(url, content);
-        var result = await sendRequest.Content.ReadFromJsonAsync<SuccessApiResponse>();
-
-        if (result.Response is JsonElement jsonElement)
-        {
-            return jsonElement.Deserialize<T>(options);
-        }
-        throw new Exception("can't parsing result");
+        return SendAsync(HttpMethod.Delete, url, data);
     }
 
     protected async Task<List<FileOperationResult>> WaitLongOperation()
@@ -291,7 +260,7 @@ public class BaseFilesTests
 
         while (true)
         {
-            statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
+            statuses = await GetAsync<List<FileOperationResult>>("fileops");
 
             if (statuses.TrueForAll(r => r.Finished))
             {
@@ -301,5 +270,42 @@ public class BaseFilesTests
         }
 
         return statuses;
+    }
+
+    protected void CheckStatuses(List<FileOperationResult> statuses)
+    {
+        Assert.IsTrue(statuses.Count > 0);
+        Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+    }
+
+    protected async Task<T> SendAsync<T>(HttpMethod method, string url, object data = null)
+    {
+        var result = await SendAsync(method, url, data);
+
+        if (result.Response is JsonElement jsonElement)
+        {
+            return jsonElement.Deserialize<T>(_options);
+        }
+        throw new Exception("can't parsing result");
+    }
+
+    protected async Task<SuccessApiResponse> SendAsync(HttpMethod method, string url, object data = null)
+    {
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
+
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(_baseAddress + url),
+            Method = method,
+        };
+
+        if (data != null)
+        {
+            request.Content = JsonContent.Create(data);
+        }
+
+        var response = await _client.SendAsync(request);
+
+        return await response.Content.ReadFromJsonAsync<SuccessApiResponse>();
     }
 }

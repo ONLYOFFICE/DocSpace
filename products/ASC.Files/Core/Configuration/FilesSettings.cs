@@ -74,6 +74,18 @@ public class FilesSettings : ISettings<FilesSettings>
     [JsonPropertyName("DownloadZip")]
     public bool DownloadTarGzSetting { get; set; }
 
+    [JsonPropertyName("ShareLink")]
+    public bool DisableShareLinkSetting { get; set; }
+
+    [JsonPropertyName("ShareLinkSocialMedia")]
+    public bool DisableShareSocialMediaSetting { get; set; }
+
+    [JsonPropertyName("AutomaticallyCleanUp")]
+    public AutoCleanUpData AutomaticallyCleanUpSetting { get; set; }
+
+    [JsonPropertyName("DefaultSharingAccessRights")]
+    public List<FileShare> DefaultSharingAccessRightsSetting { get; set; }
+
     public FilesSettings GetDefault()
     {
         return new FilesSettings
@@ -92,10 +104,13 @@ public class FilesSettings : ISettings<FilesSettings>
             HideRecentSetting = false,
             HideFavoritesSetting = false,
             HideTemplatesSetting = false,
-            DownloadTarGzSetting = false
+            DownloadTarGzSetting = false,
+            AutomaticallyCleanUpSetting = null,
+            DefaultSharingAccessRightsSetting = null
         };
     }
 
+    [JsonIgnore]
     public Guid ID => new Guid("{03B382BD-3C20-4f03-8AB9-5A33F016316E}");
 }
 
@@ -175,6 +190,32 @@ public class FilesSettingsHelper
             _settingsManager.Save(setting);
         }
         get => _settingsManager.Load<FilesSettings>().EnableThirdpartySetting;
+    }
+
+    public bool ExternalShare
+    {
+        set
+        {
+            var settings = Load();
+            settings.DisableShareLinkSetting = !value;
+            Save(settings);
+        }
+        get { return !Load().DisableShareLinkSetting; }
+    }
+
+    public bool ExternalShareSocialMedia
+    {
+        set
+        {
+            var settings = Load();
+            settings.DisableShareSocialMediaSetting = !value;
+            Save(settings);
+        }
+        get
+        {
+            var setting = Load();
+            return !setting.DisableShareLinkSetting && !setting.DisableShareSocialMediaSetting;
+        }
     }
 
     public bool StoreOriginalFiles
@@ -322,10 +363,89 @@ public class FilesSettingsHelper
         }
         get => LoadForCurrentUser().DownloadTarGzSetting;
     }
+    public AutoCleanUpData AutomaticallyCleanUp
+    {
+        set
+        {
+            var setting = LoadForCurrentUser();
+            setting.AutomaticallyCleanUpSetting = value;
+            SaveForCurrentUser(setting);
+        }
+        get
+        {
+            var setting = LoadForCurrentUser().AutomaticallyCleanUpSetting;
+            return setting ?? new AutoCleanUpData();
+        }
+    }
+
+    public List<FileShare> DefaultSharingAccessRights
+    {
+        set
+        {
+            List<FileShare> GetNormalizedList(List<FileShare> src)
+            {
+                if (src == null || !src.Any())
+                {
+                    return null;
+                }
+
+                var res = new List<FileShare>();
+
+                if (src.Contains(FileShare.FillForms))
+                {
+                    res.Add(FileShare.FillForms);
+                }
+
+                if (src.Contains(FileShare.CustomFilter))
+                {
+                    res.Add(FileShare.CustomFilter);
+                }
+
+                if (src.Contains(FileShare.Review))
+                {
+                    res.Add(FileShare.Review);
+                }
+
+                if (src.Contains(FileShare.ReadWrite))
+                {
+                    res.Add(FileShare.ReadWrite);
+                    return res;
+                }
+
+                if (src.Contains(FileShare.Comment))
+                {
+                    res.Add(FileShare.Comment);
+                    return res;
+                }
+
+                res.Add(FileShare.Read);
+                return res;
+            }
+
+            var setting = LoadForCurrentUser();
+            setting.DefaultSharingAccessRightsSetting = GetNormalizedList(value);
+            SaveForCurrentUser(setting);
+        }
+        get
+        {
+            var setting = LoadForCurrentUser().DefaultSharingAccessRightsSetting;
+            return setting ?? new List<FileShare>() { FileShare.Read };
+        }
+    }
 
     public long ChunkUploadSize
     {
         get => _setupInfo.ChunkUploadSize;
+    }
+
+    private FilesSettings Load()
+    {
+        return _settingsManager.Load<FilesSettings>();
+    }
+
+    private void Save(FilesSettings settings)
+    {
+        _settingsManager.Save(settings);
     }
 
     private FilesSettings LoadForCurrentUser()

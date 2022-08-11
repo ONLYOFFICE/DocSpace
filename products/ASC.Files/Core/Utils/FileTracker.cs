@@ -29,16 +29,19 @@ namespace ASC.Web.Files.Utils;
 [Singletone]
 public class FileTrackerHelper
 {
-    private const string _tracker = "filesTracker";
+    private const string Tracker = "filesTracker";
     private readonly ICache _cache;
-
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger<FileTrackerHelper> _logger;
     public static readonly TimeSpan TrackTimeout = TimeSpan.FromSeconds(12);
     public static readonly TimeSpan CacheTimeout = TimeSpan.FromSeconds(60);
     public static readonly TimeSpan CheckRightTimeout = TimeSpan.FromMinutes(1);
 
-    public FileTrackerHelper(ICache cache)
+    public FileTrackerHelper(ICache cache, IServiceScopeFactory serviceScopeFactory, ILogger<FileTrackerHelper> logger)
     {
         _cache = cache;
+        _serviceScopeFactory = serviceScopeFactory;
+        _logger = logger;
     }
 
     public Guid Add<T>(Guid userId, T fileId)
@@ -198,7 +201,7 @@ public class FileTrackerHelper
     {
         if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
         {
-            return _cache.Get<FileTracker>(_tracker + fileId);
+            return _cache.Get<FileTracker>(Tracker + fileId);
         }
 
         return null;
@@ -210,13 +213,46 @@ public class FileTrackerHelper
         {
             if (tracker != null)
             {
-                _cache.Insert(_tracker + fileId, tracker, CacheTimeout);
+                _cache.Insert(Tracker + fileId, tracker, CacheTimeout, EvictionCallback(fileId, tracker));
             }
             else
             {
-                _cache.Remove(_tracker + fileId);
+                _cache.Remove(Tracker + fileId);
             }
         }
+    }
+
+    private Action<object, object, EvictionReason, object> EvictionCallback<T>(T fileId, FileTracker fileTracker)
+    {
+        return async (key, value, reason, state) =>
+        {
+            if (reason != EvictionReason.Expired)
+            {
+                return;
+            }
+
+            try
+            {
+                using var scope = _serviceScopeFactory.CreateScope();
+
+                var helper = scope.ServiceProvider.GetRequiredService<DocumentServiceHelper>();
+                var tracker = scope.ServiceProvider.GetRequiredService<DocumentServiceTrackerHelper>();
+                var daoFactory = scope.ServiceProvider.GetRequiredService<IDaoFactory>();
+                var socketManager = scope.ServiceProvider.GetRequiredService<SocketManager>();
+
+                var docKey = helper.GetDocKey(await daoFactory.GetFileDao<T>().GetFileAsync(fileId));
+
+                if (await tracker.StartTrackAsync(fileId.ToString(), docKey))
+                {
+                    _cache.Insert(Tracker + fileId, fileTracker, CacheTimeout, EvictionCallback(fileId, fileTracker));
+                    socketManager.StartEdit(fileId);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.ErrorWithException(e);
+            }
+        };
     }
 }
 

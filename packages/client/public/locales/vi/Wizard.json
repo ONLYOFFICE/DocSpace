@@ -1,0 +1,22 @@
+{
+  "ChangeEmailTitle": "Thay đổi email",
+  "Desc": "Vui lòng thiết lập dữ liệu đăng ký cổng thông tin.",
+  "Domain": "Miền:",
+  "ErrorEmail": "Địa chỉ email không hợp lệ",
+  "ErrorInitWizard": "Dịch vụ hiện không khả dụng, vui lòng thử lại sau.",
+  "ErrorInitWizardButton": "Thử lại",
+  "ErrorLicenseBody": "Giấy phép không hợp lệ. Hãy đảm bảo rằng bạn chọn đúng tệp ",
+  "ErrorLicenseRead": "Chấp nhận thỏa thuận cấp phép",
+  "ErrorLicenseTitle": "Lỗi tải thông tin",
+  "ErrorParamsBody": "Dữ liệu đã nhập không chính xác:",
+  "ErrorParamsTitle": "Lỗi đăng ký",
+  "ErrorPassword": "Mật khẩu không đáp ứng yêu cầu",
+  "ErrorUploadLicenseFile": "Chọn tệp giấy phép",
+  "GeneratePassword": "Tạo mật khẩu",
+  "License": "Chấp nhận các điều khoản của",
+  "LicenseLink": "Thỏa thuận giấy phép",
+  "PlaceholderLicense": "Tệp giấy phép của bạn",
+  "Timezone": "Múi giờ",
+  "WelcomeTitle": "Chào mừng đến với cổng thông tin của bạn!",
+  "WizardTitle": "Thiết lập cổng thông tin của bạn"
+}

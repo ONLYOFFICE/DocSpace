@@ -24,55 +24,32 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using AutoMapper.QueryableExtensions;
-
 namespace ASC.Core.Data;
-
-[Scope]
-class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
-{
-    private readonly DbContextManager<CoreDbContext> _dbContextManager;
-    public string DbId { get; set; }
-
-    public ConfigureDbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
-    {
-        _dbContextManager = dbContextManager;
-    }
-
-    public void Configure(string name, DbQuotaService options)
-    {
-        options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Get(name));
-    }
-
-    public void Configure(DbQuotaService options)
-    {
-        options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Value);
-    }
-}
 
 [Scope]
 class DbQuotaService : IQuotaService
 {
-    internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
-    internal Lazy<CoreDbContext> LazyCoreDbContext;
+    private readonly IDbContextFactory<CoreDbContext> _dbContextFactory;
     private readonly IMapper _mapper;
 
-    public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager, IMapper mapper)
+    public DbQuotaService(IDbContextFactory<CoreDbContext> dbContextManager, IMapper mapper)
     {
-        LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
+        _dbContextFactory = dbContextManager;
         _mapper = mapper;
     }
 
     public IEnumerable<TenantQuota> GetTenantQuotas()
     {
-        return CoreDbContext.Quotas
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        return coreDbContext.Quotas
             .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
             .ToList();
     }
 
     public TenantQuota GetTenantQuota(int id)
     {
-        return CoreDbContext.Quotas
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        return coreDbContext.Quotas
             .Where(r => r.Tenant == id)
             .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
             .SingleOrDefault();
@@ -82,27 +59,30 @@ class DbQuotaService : IQuotaService
     {
         ArgumentNullException.ThrowIfNull(quota);
 
-        CoreDbContext.AddOrUpdate(r => r.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
-        CoreDbContext.SaveChanges();
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        coreDbContext.AddOrUpdate(r => r.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
+        coreDbContext.SaveChanges();
 
         return quota;
     }
 
     public void RemoveTenantQuota(int id)
     {
-        var strategy = CoreDbContext.Database.CreateExecutionStrategy();
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = coreDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tr = CoreDbContext.Database.BeginTransaction();
-            var d = CoreDbContext.Quotas
+            using var coreDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = coreDbContext.Database.BeginTransaction();
+            var d = coreDbContext.Quotas
                  .Where(r => r.Tenant == id)
                  .SingleOrDefault();
 
             if (d != null)
             {
-                CoreDbContext.Quotas.Remove(d);
-                CoreDbContext.SaveChanges();
+                coreDbContext.Quotas.Remove(d);
+                coreDbContext.SaveChanges();
             }
 
             tr.Commit();
@@ -114,13 +94,15 @@ class DbQuotaService : IQuotaService
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        var strategy = CoreDbContext.Database.CreateExecutionStrategy();
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = coreDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = CoreDbContext.Database.BeginTransaction();
+            using var coreDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = coreDbContext.Database.BeginTransaction();
 
-            var counter = CoreDbContext.QuotaRows
+            var counter = coreDbContext.QuotaRows
                 .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
                 .Select(r => r.Counter)
                 .Take(1)
@@ -130,8 +112,8 @@ class DbQuotaService : IQuotaService
             dbQuotaRow.Counter = exchange ? counter + row.Counter : row.Counter;
             dbQuotaRow.LastModified = DateTime.UtcNow;
 
-            CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
-            CoreDbContext.SaveChanges();
+            coreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
+            coreDbContext.SaveChanges();
 
             tx.Commit();
         });
@@ -139,7 +121,8 @@ class DbQuotaService : IQuotaService
 
     public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
     {
-        IQueryable<DbQuotaRow> q = CoreDbContext.QuotaRows;
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        IQueryable<DbQuotaRow> q = coreDbContext.QuotaRows;
 
         if (tenantId != Tenant.DefaultTenant)
         {

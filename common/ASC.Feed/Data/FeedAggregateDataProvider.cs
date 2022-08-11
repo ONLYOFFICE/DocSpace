@@ -24,26 +24,26 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
+
 namespace ASC.Feed.Data;
 
 [Scope]
 public class FeedAggregateDataProvider
 {
-    private FeedDbContext FeedDbContext => _lazyFeedDbContext.Value;
-
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
-    private readonly Lazy<FeedDbContext> _lazyFeedDbContext;
     private readonly IMapper _mapper;
+    private readonly IDbContextFactory<FeedDbContext> _dbContextFactory;
 
     public FeedAggregateDataProvider(
         AuthContext authContext,
         TenantManager tenantManager,
-        DbContextManager<FeedDbContext> dbContextManager,
+        IDbContextFactory<FeedDbContext> dbContextFactory,
         IMapper mapper)
         : this(authContext, tenantManager, mapper)
     {
-        _lazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(Constants.FeedDbId));
+        _dbContextFactory = dbContextFactory;
     }
 
     public FeedAggregateDataProvider(
@@ -58,7 +58,8 @@ public class FeedAggregateDataProvider
 
     public DateTime GetLastTimeAggregate(string key)
     {
-        var value = FeedDbContext.FeedLast.Where(r => r.LastKey == key).Select(r => r.LastDate).FirstOrDefault();
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        var value = feedDbContext.FeedLast.Where(r => r.LastKey == key).Select(r => r.LastDate).FirstOrDefault();
 
         return value != default ? value.AddSeconds(1) : value;
     }
@@ -71,8 +72,9 @@ public class FeedAggregateDataProvider
             LastDate = value
         };
 
-        FeedDbContext.AddOrUpdate(r => r.FeedLast, feedLast);
-        FeedDbContext.SaveChanges();
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        feedDbContext.AddOrUpdate(r => r.FeedLast, feedLast);
+        feedDbContext.SaveChanges();
 
         const int feedsPortionSize = 1000;
         var aggregatedDate = DateTime.UtcNow;
@@ -98,11 +100,13 @@ public class FeedAggregateDataProvider
 
     private void SaveFeedsPortion(IEnumerable<FeedRow> feeds, DateTime aggregatedDate)
     {
-        var strategy = FeedDbContext.Database.CreateExecutionStrategy();
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = FeedDbContext.Database.BeginTransaction();
+            using var feedDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = feedDbContext.Database.BeginTransaction();
 
             foreach (var f in feeds)
             {
@@ -116,14 +120,14 @@ public class FeedAggregateDataProvider
 
                 if (f.ClearRightsBeforeInsert)
                 {
-                    var fu = FeedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefault();
+                    var fu = feedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefault();
                     if (fu != null)
                     {
-                        FeedDbContext.FeedUsers.Remove(fu);
+                        feedDbContext.FeedUsers.Remove(fu);
                     }
                 }
 
-                FeedDbContext.AddOrUpdate(r => r.FeedAggregates, feedAggregate);
+                feedDbContext.AddOrUpdate(r => r.FeedAggregates, feedAggregate);
 
                 foreach (var u in f.Users)
                 {
@@ -133,11 +137,11 @@ public class FeedAggregateDataProvider
                         UserId = u
                     };
 
-                    FeedDbContext.AddOrUpdate(r => r.FeedUsers, feedUser);
+                    feedDbContext.AddOrUpdate(r => r.FeedUsers, feedUser);
                 }
             }
 
-            FeedDbContext.SaveChanges();
+            feedDbContext.SaveChanges();
 
             tx.Commit();
         });
@@ -145,17 +149,19 @@ public class FeedAggregateDataProvider
 
     public void RemoveFeedAggregate(DateTime fromTime)
     {
-        var strategy = FeedDbContext.Database.CreateExecutionStrategy();
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = FeedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var feedDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = feedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            var aggregates = FeedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime);
-            FeedDbContext.FeedAggregates.RemoveRange(aggregates);
+            var aggregates = feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime);
+            feedDbContext.FeedAggregates.RemoveRange(aggregates);
 
-            var users = FeedDbContext.FeedUsers.Where(r => FeedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId));
-            FeedDbContext.FeedUsers.RemoveRange(users);
+            var users = feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId));
+            feedDbContext.FeedUsers.RemoveRange(users);
 
             tx.Commit();
         });
@@ -196,10 +202,11 @@ public class FeedAggregateDataProvider
 
     private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
     {
-        var q = FeedDbContext.FeedAggregates
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        var q = feedDbContext.FeedAggregates
             .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
-            .Join(FeedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
+            .Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
             .Where(r => r.users.UserId == _authContext.CurrentAccount.ID)
             .OrderByDescending(r => r.aggregates.ModifiedDate)
             .Skip(filter.Offset)
@@ -248,10 +255,11 @@ public class FeedAggregateDataProvider
 
     public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
     {
-        var count = FeedDbContext.FeedAggregates
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        var count = feedDbContext.FeedAggregates
             .Where(r => r.Tenant == tenantManager.GetCurrentTenant().Id)
             .Where(r => r.ModifiedBy != authContext.CurrentAccount.ID)
-            .Join(FeedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
+            .Join(feedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
             .Where(r => r.user.UserId == authContext.CurrentAccount.ID);
 
         if (1 < lastReadedTime.Year)
@@ -264,7 +272,8 @@ public class FeedAggregateDataProvider
 
     public IEnumerable<int> GetTenants(TimeInterval interval)
     {
-        return FeedDbContext.FeedAggregates
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        return feedDbContext.FeedAggregates
             .Where(r => r.AggregateDate >= interval.From && r.AggregateDate <= interval.To)
             .GroupBy(r => r.Tenant)
             .Select(r => r.Key)
@@ -273,8 +282,9 @@ public class FeedAggregateDataProvider
 
     public FeedResultItem GetFeedItem(string id)
     {
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
         var news =
-            FeedDbContext.FeedAggregates
+            feedDbContext.FeedAggregates
             .Where(r => r.Id == id)
             .FirstOrDefault();
 
@@ -283,19 +293,21 @@ public class FeedAggregateDataProvider
 
     public void RemoveFeedItem(string id)
     {
-        var strategy = FeedDbContext.Database.CreateExecutionStrategy();
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
-            using var tx = FeedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var feedDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = feedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            var aggregates = FeedDbContext.FeedAggregates.Where(r => r.Id == id);
-            FeedDbContext.FeedAggregates.RemoveRange(aggregates);
+            var aggregates = feedDbContext.FeedAggregates.Where(r => r.Id == id);
+            feedDbContext.FeedAggregates.RemoveRange(aggregates);
 
-            var users = FeedDbContext.FeedUsers.Where(r => r.FeedId == id);
-            FeedDbContext.FeedUsers.RemoveRange(users);
+            var users = feedDbContext.FeedUsers.Where(r => r.FeedId == id);
+            feedDbContext.FeedUsers.RemoveRange(users);
 
-            FeedDbContext.SaveChanges();
+            feedDbContext.SaveChanges();
 
             tx.Commit();
         });
@@ -311,6 +323,7 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
     public string GroupId { get; private set; }
     public bool IsToday { get; private set; }
     public bool IsYesterday { get; private set; }
+    public bool IsTomorrow { get; private set; }
     public DateTime CreatedDate { get; private set; }
     public DateTime ModifiedDate { get; private set; }
     public DateTime AggregatedDate { get; private set; }
@@ -338,11 +351,19 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
 
         GroupId = groupId;
 
-        if (now.Year == createdDate.Year && now.Date == createdDate.Date)
+        var compareDate = JsonNode.Parse(Json)["IsAllDayEvent"].GetValue<bool>()
+                ? tenantUtil.DateTimeToUtc(createdDate).Date
+                : createdDate.Date;
+
+        if (now.Date == compareDate.AddDays(-1))
+        {
+            IsTomorrow = true;
+        }
+        else if (now.Date == compareDate)
         {
             IsToday = true;
         }
-        else if (now.Year == createdDate.Year && now.Date == createdDate.Date.AddDays(1))
+        else if (now.Date == compareDate.AddDays(1))
         {
             IsYesterday = true;
         }

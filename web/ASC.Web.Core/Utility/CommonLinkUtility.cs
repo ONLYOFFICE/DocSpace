@@ -511,6 +511,15 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         return GetRegionalUrl(url, inCurrentCulture ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : null);
     }
 
+    public string GetFeedbackAndSupportLink(SettingsManager settingsManager, bool inCurrentCulture = true)
+    {
+        var settings = settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+
+        return !settings.FeedbackAndSupportEnabled || string.IsNullOrEmpty(settings.FeedbackAndSupportUrl)
+            ? string.Empty
+            : GetRegionalUrl(settings.FeedbackAndSupportUrl, inCurrentCulture ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : null);
+    }
+
     #endregion
 
     #region management links

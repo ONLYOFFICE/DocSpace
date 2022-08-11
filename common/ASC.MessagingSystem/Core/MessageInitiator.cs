@@ -31,4 +31,5 @@ public enum MessageInitiator
     System,
     DocsService,
     ThirdPartyProvider,
+    AutoCleanUp
 }

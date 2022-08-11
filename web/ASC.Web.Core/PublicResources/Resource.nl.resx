@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Veld met validatiecode mag niet leeg zijn</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Mobiel telefoonnummer invoeren</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Beheerdersmeldingen</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Uw bericht is succesvol verzonden. De portaalbeheerder zal contact met u opnemen.</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Een link om de actie te bevestigen is verzonden naar :email (het e-mailadres van de portaaleigenaar).</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Wachtwoordherstelactie is verboden voor een LDAP-gebruiker</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Wachtwoordherstelactie is verboden voor een SSO-gebruiker</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Aangepast</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Een link om de actie te bevestigen is verzonden naar {0}(het e-mailadres van de portaaleigenaar).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Onjuist e-mailadres</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Onjuiste promocode</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Geen toestemming om deze actie uit te voeren</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>De toegang tot het portaal is beperkt.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Verkeerde sleutels</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Uw profiel is geschorst</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} met dit e-mailadres is al geregistreerd</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>E-mails van dit domein zijn niet toegestaan voor registratie</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Veld E-mail is leeg</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>De huidige e-mail en de nieuwe e-mail zijn hetzelfde</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Vul alstublieft alle velden in</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Het geüploade bestand kon niet worden gevonden</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>De bestandsgrootte van de afbeelding is te groot</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Uw abonnement ondersteunt deze optie niet</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Onjuiste e-mail</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Ongeldige domeinnaam</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Het wachtwoord is leeg.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>van {0} tot {1} karakters</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Wachtwoord moet bevatten</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Het moet bevatten</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>cijfers</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>speciale karakters</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>hoofdletters</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>De gebruiker kon niet worden gevonden </value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>De gebruiker met "{0}" e-mail kon niet worden gevonden</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>EU (Frankfurt) Regio</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>De maximale bestandsgrootte is overschreden</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Opmerking: de bestandsgrootte mag niet meer bedragen dan {1}{0}{2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>bytes,KB,MB,GB,TB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>De link om uw account te bevestigen is verstuurd naar de gespecificeerde e-mail</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>De server kon de instellingen niet opslaan.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Teveel LDAP acties.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Licentie is niet correct</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Licentie is verlopen</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Het aantal portalen overschrijdt het aantal toegestaan voor de licentie</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Het aantal gebruikers overschrijdt het aantal toegestaan voor de licentie</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Succesvol geüpload </value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>De e-mailwijzigingsinstructies zijn succesvol verzonden</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Om het nummer te veranderen, moet u uw huidige telefoonnummer verwijderen</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG Regio</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Eigenaar</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Portaaltoegang</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Asia Pacific (Singapore)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Incorrecte code</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Code: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>De tijd om de code te kunnen gebruiken is verlopen. Vraag alstublieft een nieuw tekstbericht aan.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>SMS instellingen zijn niet beschikbaar</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>U heeft teveel tekstberichten verstuurd. Probeer het alstublieft later nog eens.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Kon instellingen niet opslaan</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Instellingen mogen niet leeg zijn</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Ongeldige binding: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Ongeldige entityID</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Ongeldige veldenindeling</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Welkomstpagina instellingen zijn succesvol opgeslagen</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Instellingen zijn met succes bijgewerkt</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Instructies om profiel te verwijderen is verzonden naar {0} e-mailadres</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>VS West (Oregon) Regio</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>What's New</value>
+  </data>
+</root>

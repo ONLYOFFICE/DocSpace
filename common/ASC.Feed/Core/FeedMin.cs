@@ -46,6 +46,7 @@ public class FeedMin : IMapFrom<FeedResultItem>
     public string AdditionalInfo { get; set; }
     public string AdditionalInfo2 { get; set; }
     public string Module { get; set; }
+    public bool? IsAllDayEvent { get; set; }
     public string ExtraLocation { get; set; }
     public IEnumerable<FeedComment> Comments { get; set; }
 

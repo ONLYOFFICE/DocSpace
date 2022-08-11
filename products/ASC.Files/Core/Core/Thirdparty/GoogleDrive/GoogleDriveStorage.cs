@@ -155,7 +155,6 @@ internal class GoogleDriveStorage : IDisposable
         try
         {
             var request = _driveService.Files.Get(entryId);
-
             request.Fields = GoogleLoginProvider.FilesFields;
 
             return await request.ExecuteAsync();
@@ -167,6 +166,21 @@ internal class GoogleDriveStorage : IDisposable
                 return null;
             }
             throw;
+        }
+    }
+
+    public async Task<Stream> GetThumbnail(string fileId, int width, int height)
+    {
+        try
+        {
+            var url = $"https://lh3.google.com/u/0/d/{fileId}=w{width}-h{height}-p-k-nu-iv1";
+            var httpClient = _driveService.HttpClient;
+            var response = await httpClient.GetAsync(url);
+            return await response.Content.ReadAsStreamAsync();
+        }
+        catch (Exception)
+        {
+            return null;
         }
     }
 
@@ -541,7 +555,7 @@ internal class GoogleDriveStorage : IDisposable
             var titleData = !string.IsNullOrEmpty(driveFile.Name) ? $"\"name\":\"{driveFile.Name}\"" : "";
             var parentData = !string.IsNullOrEmpty(folderId) ? $",\"parents\":[\"{folderId}\"]" : "";
 
-            body = !string.IsNullOrEmpty(titleData + parentData) ? "{{" + titleData + parentData + "}}" : "";
+            body = !string.IsNullOrEmpty(titleData + parentData) ? "{" + titleData + parentData + "}" : "";
         }
 
         var request = new HttpRequestMessage
@@ -586,11 +600,10 @@ internal class GoogleDriveStorage : IDisposable
             Method = HttpMethod.Put
         };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
-        request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
-                                                           googleDriveSession.BytesTransfered,
-                                                           googleDriveSession.BytesTransfered + chunkLength - 1,
-                                                           googleDriveSession.BytesToTransfer));
         request.Content = new StreamContent(stream);
+        request.Content.Headers.ContentRange = new ContentRangeHeaderValue(googleDriveSession.BytesTransfered,
+                                                                           googleDriveSession.BytesTransfered + chunkLength - 1,
+                                                                           googleDriveSession.BytesToTransfer);
         var httpClient = _clientFactory.CreateClient();
         HttpResponseMessage response;
 
@@ -622,10 +635,11 @@ internal class GoogleDriveStorage : IDisposable
 
             if (response != null)
             {
-                var locationHeader = response.Headers.Location.ToString();
-                if (!string.IsNullOrEmpty(locationHeader))
+                var locationHeader = response.Headers.Location;
+
+                if (locationHeader != null)
                 {
-                    uplSession.Location = locationHeader;
+                    uplSession.Location = locationHeader.ToString();
                 }
             }
         }

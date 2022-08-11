@@ -34,6 +34,7 @@ public class CapabilitiesController : ControllerBase
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly TenantManager _tenantManager;
     private readonly ProviderManager _providerManager;
+    private readonly SettingsManager _settingsManager;
     private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger _log;
@@ -43,6 +44,7 @@ public class CapabilitiesController : ControllerBase
         CoreBaseSettings coreBaseSettings,
         TenantManager tenantManager,
         ProviderManager providerManager,
+        SettingsManager settingsManager,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
         ILogger<CapabilitiesController> logger)
@@ -50,6 +52,7 @@ public class CapabilitiesController : ControllerBase
         _coreBaseSettings = coreBaseSettings;
         _tenantManager = tenantManager;
         _providerManager = providerManager;
+        _settingsManager = settingsManager;
         _configuration = configuration;
         _httpContextAccessor = httpContextAccessor;
         _log = logger;
@@ -69,16 +72,17 @@ public class CapabilitiesController : ControllerBase
         var result = new CapabilitiesDto
         {
             LdapEnabled = false,
-            Providers = null,
+            OauthEnabled = _coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Oauth,
+            Providers = new List<string>(0),
             SsoLabel = string.Empty,
             SsoUrl = string.Empty
         };
 
         try
         {
-            if (SetupInfo.IsVisibleSettings(nameof(ManagementType.LdapSettings))
-                && (!_coreBaseSettings.Standalone
-                    || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Ldap))
+            if (_coreBaseSettings.Standalone
+                    || SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
+                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Ldap)
             {
                 //var settings = SettingsManager.Load<LdapSettings>();
 
@@ -93,12 +97,20 @@ public class CapabilitiesController : ControllerBase
 
         try
         {
-            result.Providers = ProviderManager.AuthProviders.Where(loginProvider =>
+            if (result.OauthEnabled)
             {
-                var provider = _providerManager.GetLoginProvider(loginProvider);
-                return provider != null && provider.IsEnabled;
-            })
-            .ToList();
+                result.Providers = ProviderManager.AuthProviders.Where(loginProvider =>
+                {
+                    if ((loginProvider == ProviderConstants.Facebook || loginProvider == ProviderConstants.AppleId)
+                                                                    && _coreBaseSettings.Standalone && HttpContext.Request.MobileApp())
+                    {
+                        return false;
+                    }
+                    var provider = _providerManager.GetLoginProvider(loginProvider);
+                    return provider != null && provider.IsEnabled;
+                })
+                .ToList();
+            }
         }
         catch (Exception ex)
         {
@@ -107,21 +119,17 @@ public class CapabilitiesController : ControllerBase
 
         try
         {
-            if (SetupInfo.IsVisibleSettings(nameof(ManagementType.SingleSignOnSettings))
-                && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso)
+            if (_coreBaseSettings.Standalone
+                    || SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
+                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso)
             {
-                //var settings = SettingsManager.Load<SsoSettingsV2>();
+                var settings = _settingsManager.Load<SsoSettingsV2>();
 
-                //if (settings.EnableSso)
-                //{
-                var uri = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
-
-                var configUrl = _configuration["web:sso:saml:login:url"] ?? "";
-
-                result.SsoUrl = $"{uri.Scheme}://{uri.Host}{((uri.Port == 80 || uri.Port == 443) ? "" : ":" + uri.Port)}{configUrl}";
-                result.SsoLabel = string.Empty;
-                //    result.SsoLabel = settings.SpLoginLabel;
-                //}
+                if (settings.EnableSso)
+                {
+                    result.SsoUrl = settings.IdpSettings.SsoUrl;
+                    result.SsoLabel = settings.SpLoginLabel;
+                }
             }
         }
         catch (Exception ex)

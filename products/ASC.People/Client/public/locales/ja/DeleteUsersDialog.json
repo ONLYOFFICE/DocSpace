@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "選択した無効化されたユーザーが削除されます。",
-  "DeleteGroupUsersMessageHeader": "ポータルからユーザーを削除します",
-  "DeleteGroupUsersSuccessMessage": "ユーザーが正常に削除されました。",
-  "DeleteUserDataConfirmation": "他の人と共有しているユーザードキュメントは削除されます。これを防ぐには、データの再割り当てを行ってください。"
-}

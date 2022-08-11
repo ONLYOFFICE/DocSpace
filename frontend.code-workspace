@@ -1,50 +1,37 @@
 {
-  "folders": [
-    {
-      "name": "✨ appserver",
-      "path": "."
+    "folders": [{
+            "name": "🌐 root",
+            "path": "."
+        }, {
+            "name": "🚀 @docspace/client",
+            "path": "packages\\client"
+        }, {
+            "name": "🔑 @docspace/login",
+            "path": "packages\\login"
+        }, {
+            "name": "📄 @docspace/editor",
+            "path": "packages\\editor"
+        }, {
+            "name": "📦 @docspace/common",
+            "path": "packages\\common"
+        }, {
+            "name": "📦 @docspace/components",
+            "path": "packages\\components"
+        },
+    ],
+    "settings": {
+        "window.zoomLevel": 0,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "liveServer.settings.multiRootWorkspaceName": "✨ docspace",
+        "cSpell.words": ["docspace", "browserslist", "debuginfo", "doceditor"],
+        "jest.autoRun": "false"
     },
-    {
-      "name": "📦 @appserver/common",
-      "path": "packages\\asc-web-common"
-    },
-    {
-      "name": "📦 @appserver/components",
-      "path": "packages\\asc-web-components"
-    },
-    {
-      "name": "🚀 @appserver/files",
-      "path": "products\\ASC.Files\\Client"
-    },
-    {
-      "name": "🚀 @appserver/people",
-      "path": "products\\ASC.People\\Client"
-    },
-    {
-      "name": "🚀 @appserver/studio",
-      "path": "web\\ASC.Web.Client"
-    },
-    {
-      "name": "🚀 @appserver/login",
-      "path": "web\\ASC.Web.Login"
-    },
-    {
-      "name": "🚀 @appserver/editor",
-      "path": "web\\ASC.Web.Editor"
+    "extensions": {
+        "recommendations": [
+            "folke.vscode-monorepo-workspace",
+            "orta.vscode-jest",
+            "firsttris.vscode-jest-runner"
+        ]
     }
-  ],
-  "settings": {
-    "window.zoomLevel": 0,
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "liveServer.settings.multiRootWorkspaceName": "✨ appserver",
-    "cSpell.words": ["appserver", "browserslist", "debuginfo", "doceditor"]
-  },
-  "extensions": {
-    "recommendations": [
-      "folke.vscode-monorepo-workspace",
-      "orta.vscode-jest",
-      "firsttris.vscode-jest-runner"
-    ]
-  }
 }

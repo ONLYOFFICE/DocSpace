@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 global using System.Data;
+global using System.Text.Json.Nodes;
 
 global using ASC.Common;
 global using ASC.Common.Mapping;
@@ -33,10 +34,11 @@ global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
+global using ASC.Feed.Context;
 global using ASC.Feed.Core;
 global using ASC.Feed.Data;
 global using ASC.Feed.Mapping;
-global using ASC.Feed.Models;
+global using ASC.Feed.Model;
 
 global using Autofac;
 

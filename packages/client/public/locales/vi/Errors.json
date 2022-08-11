@@ -1,0 +1,9 @@
+{
+  "Error401Text": " Xin lỗi, hiện không thể truy cập tài nguyên.",
+  "Error403Text": " Xin lỗi, truy cập bị từ chối.",
+  "Error404Text": " Xin lỗi, không thể tìm thấy tài nguyên.",
+  "ErrorEmptyResponse": "Không có hồi đáp",
+  "ErrorInvalidHeader": "Email không chính xác hoặc liên kết hết hạn",
+  "ErrorInvalidText": "Trong 10 giây, bạn sẽ được chuyển hướng đến <1>trang đăng nhập</1>",
+  "ErrorOfflineText": "Không tìm thấy kết nối internet."
+}

@@ -40,6 +40,7 @@ public class MailWhiteLabelSettings : ISettings<MailWhiteLabelSettings>
     public string DemoUrl { get; set; }
     public string SiteUrl { get; set; }
 
+    [JsonIgnore]
     public Guid ID => new Guid("{C3602052-5BA2-452A-BD2A-ADD0FAF8EB88}");
 
     public MailWhiteLabelSettings(IConfiguration configuration)

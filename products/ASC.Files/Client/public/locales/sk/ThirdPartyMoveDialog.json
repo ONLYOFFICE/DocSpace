@@ -1,5 +1,0 @@
-﻿{
-  "MoveConfirmation": "Potvrdenie presunu",
-  "MoveConfirmationAlert": "Ste si istí, že chcete presunúť prvky?",
-  "MoveConfirmationMessage": "Chystáte sa presunúť prvky z priečinka {{provider}}. Tieto prvky budú odstránené z vášho účtu {{provider}} a už nebudú prístupné iným používateľom."
-}

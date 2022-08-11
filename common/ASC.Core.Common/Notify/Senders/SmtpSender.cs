@@ -30,6 +30,7 @@ namespace ASC.Core.Notify.Senders;
 public class SmtpSender : INotifySender
 {
     protected ILogger _logger;
+    private IDictionary<string, string> _initProperties;
     protected readonly IConfiguration _configuration;
     protected IServiceProvider _serviceProvider;
 
@@ -45,6 +46,7 @@ public class SmtpSender : INotifySender
         IServiceProvider serviceProvider,
         ILoggerProvider options)
     {
+        _initProperties = new Dictionary<string, string>();
         _logger = options.CreateLogger("ASC.Notify");
         _configuration = configuration;
         _serviceProvider = serviceProvider;
@@ -52,32 +54,7 @@ public class SmtpSender : INotifySender
 
     public virtual void Init(IDictionary<string, string> properties)
     {
-        if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
-        {
-            _useCoreSettings = true;
-        }
-        else
-        {
-            _host = properties["host"];
-            _port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
-            _ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
-            if (properties.TryGetValue("userName", out var property))
-            {
-                _credentials = new NetworkCredential(property, properties["password"]);
-            }
-        }
-    }
-
-    private void InitUseCoreSettings(CoreConfiguration configuration)
-    {
-        var s = configuration.SmtpSettings;
-
-        _host = s.Host;
-        _port = s.Port;
-        _ssl = s.EnableSSL;
-        _credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
-            ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword)
-            : null;
+        _initProperties = properties;
     }
 
     public virtual NoticeSendResult Send(NotifyMessage m)
@@ -94,10 +71,7 @@ public class SmtpSender : INotifySender
         {
             try
             {
-                if (_useCoreSettings)
-                {
-                    InitUseCoreSettings(configuration);
-                }
+                BuildSmtpSettings(configuration);
 
                 var mail = BuildMailMessage(m);
 
@@ -178,6 +152,49 @@ public class SmtpSender : INotifySender
         return result;
     }
 
+    private void BuildSmtpSettings(CoreConfiguration configuration)
+    {
+        if (configuration.SmtpSettings.IsDefaultSettings && _initProperties.ContainsKey("host") && !string.IsNullOrEmpty(_initProperties["host"]))
+        {
+            _host = _initProperties["host"];
+
+            if (_initProperties.ContainsKey("port") && !string.IsNullOrEmpty(_initProperties["port"]))
+            {
+                _port = int.Parse(_initProperties["port"]);
+            }
+            else
+            {
+                _port = 25;
+            }
+
+            if (_initProperties.ContainsKey("enableSsl") && !string.IsNullOrEmpty(_initProperties["enableSsl"]))
+            {
+                _ssl = bool.Parse(_initProperties["enableSsl"]);
+            }
+            else
+            {
+                _ssl = false;
+            }
+
+            if (_initProperties.ContainsKey("userName"))
+            {
+                _credentials = new NetworkCredential(
+                     _initProperties["userName"],
+                     _initProperties["password"]);
+            }
+        }
+        else
+        {
+            var s = configuration.SmtpSettings;
+
+            _host = s.Host;
+            _port = s.Port;
+            _ssl = s.EnableSSL;
+            _credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
+                ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword)
+                : null;
+        }
+    }
     private MimeMessage BuildMailMessage(NotifyMessage m)
     {
         var mimeMessage = new MimeMessage

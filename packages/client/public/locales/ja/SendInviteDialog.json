@@ -1,0 +1,4 @@
+{
+  "SendInviteAgainDialog": "選択されたユーザーに招待状が「保留」ステータスで再度送信されます。",
+  "SendInviteAgainDialogMessage": "ユーザーが招待状を承諾すると、ステータスが「アクティブ」に変更されます。"
+}

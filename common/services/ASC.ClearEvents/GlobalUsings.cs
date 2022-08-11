@@ -34,8 +34,8 @@ global using ASC.Common.DependencyInjection;
 global using ASC.Common.Log;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Tenants;
-global using ASC.MessagingSystem.Data;
-global using ASC.MessagingSystem.Models;
+global using ASC.MessagingSystem.EF.Context;
+global using ASC.MessagingSystem.EF.Model;
 
 global using Autofac;
 

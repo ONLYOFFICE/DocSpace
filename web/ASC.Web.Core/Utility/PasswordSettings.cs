@@ -29,6 +29,7 @@ namespace ASC.Web.Core.Utility;
 [Serializable]
 public sealed class PasswordSettings : ISettings<PasswordSettings>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("aa93a4d1-012d-4ccd-895a-e094e809c840"); }
@@ -37,10 +38,38 @@ public sealed class PasswordSettings : ISettings<PasswordSettings>
     public const int MaxLength = 30;
     private readonly IConfiguration _configuration;
 
+    private bool? _printableASCII;
+
+    private bool PrintableASCII
+    {
+        get
+        {
+            if (_printableASCII == null)
+            {
+                _printableASCII = true;
+
+                if (bool.TryParse(_configuration["web:password:ascii:cut"], out var cut))
+                {
+                    _printableASCII = !cut;
+                }
+            }
+
+            return _printableASCII.Value;
+        }
+    }
+
     /// <summary>
     /// Minimal length password has
     /// </summary>
     public int MinLength { get; set; }
+
+    public string AllowedCharactersRegexStr
+    {
+        get
+        {
+            return PrintableASCII ? @"[\x21-\x7E]" : @"[0-9a-zA-Z!""#$%&()*+,.:;<>?@^_{}~]"; // excluding SPACE or (SPACE and '-/=[\]`|)
+        }
+    }
 
     /// <summary>
     /// Password must contains upper case
@@ -52,11 +81,33 @@ public sealed class PasswordSettings : ISettings<PasswordSettings>
     /// </summary>
     public bool Digits { get; set; }
 
+    public string DigitsRegexStr
+    {
+        get
+        {
+            return @"(?=.*\d)";
+        }
+    }
+
+    public string UpperCaseRegexStr
+    {
+        get
+        {
+            return @"(?=.*[A-Z])";
+        }
+    }
+
     /// <summary>
     /// Password must contains special symbols
     /// </summary>
     public bool SpecSymbols { get; set; }
-
+    public string SpecSymbolsRegexStr
+    {
+        get
+        {
+            return PrintableASCII ? @"(?=.*[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E])" : @"(?=.*[!""#$%&()*+,.:;<>?@^_{}~])";
+        }
+    }
     public PasswordSettings(IConfiguration configuration)
     {
         _configuration = configuration;

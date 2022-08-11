@@ -93,7 +93,7 @@ public class TfaManager
         return _tfa.GenerateSetupCode(_setupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), false, 4);
     }
 
-    public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true)
+    public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true, bool isEntryPoint = false)
     {
         if (!TfaAppAuthSettings.IsVisibleSettings
             || !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
@@ -136,8 +136,8 @@ public class TfaManager
 
         if (!_securityContext.IsAuthenticated)
         {
-            var cookiesKey = _securityContext.AuthenticateMe(user.Id);
-            _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
+            var action = isEntryPoint ? MessageAction.LoginSuccessViaApiTfa : MessageAction.LoginSuccesViaTfaApp;
+            _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
         }
 
         if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))

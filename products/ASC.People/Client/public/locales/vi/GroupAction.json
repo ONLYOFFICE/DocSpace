@@ -1,8 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (tạo)",
-  "GroupAction": "Hành động nhóm",
-  "Members": "Thành viên",
-  "SearchAddedMembers": "Tìm kiếm thành viên đã thêm ",
-  "SelectAction": "Chọn",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' đã được lưu thành công "
-}

@@ -92,7 +92,7 @@ while [ "$1" != "" ]; do
 
 		-zkp | --zookeeperport )
 			if [ "$2" != "" ]; then
-				ZOOKEEPER_HOST=$2
+				ZOOKEEPER_PORT=$2
 				shift
 			fi
 		;;
@@ -208,30 +208,26 @@ install_json() {
 		chown onlyoffice:onlyoffice $USER_CONF
 	
 		set_core_machinekey
-		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" \
+		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", \
+		'products': { 'folder': '/var/www/appserver/products', 'subfolder': 'server'} }" \
 		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
 		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" >/dev/null 2>&1
-		$JSON $APP_DIR/appsettings.json -e "this.core.products.subfolder='server'" >/dev/null 2>&1
-		$JSON $APP_DIR/appsettings.services.json -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
-		
 	fi
 }
 
 restart_services() {
 	echo -n "Restarting services... "
 
-	sed -i "s/Type=.*/Type=simple/" $SYSTEMD_DIR/${PRODUCT}-calendar.service >/dev/null 2>&1 #Fix non-start of service
 	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
 	for SVC in nginx ${MYSQL_PACKAGE} ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
 	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
 	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
-	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
-	${PRODUCT}-calendar ${PRODUCT}-mail elasticsearch kafka zookeeper
+	${PRODUCT}-storage-migration ${PRODUCT}-telegram-service elasticsearch $KAFKA_SERVICE $ZOOKEEPER_SERVICE
 	do
-		systemctl enable $SVC.service >/dev/null 2>&1
-		systemctl restart $SVC.service
+		systemctl enable $SVC >/dev/null 2>&1
+		systemctl restart $SVC
 	done
 	echo "OK"
 }
@@ -242,10 +238,27 @@ input_db_params(){
     local def_DB_NAME=$(echo $user_connectionString | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
     local def_DB_USER=$(echo $user_connectionString | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
 
-	if [ -z $def_DB_HOST ] && [ -z $DB_HOST ]; then read -e -p "Database host: " -i "$DB_HOST" DB_HOST; fi
-	if [ -z $def_DB_NAME ] && [ -z $DB_NAME ]; then read -e -p "Database name: " -i "$DB_NAME" DB_NAME; fi
-	if [ -z $def_DB_USER ] && [ -z $DB_USER ]; then read -e -p "Database user: " -i "$DB_USER" DB_USER; fi
-	if [ -z $DB_PWD ]; then read -e -p "Database password: " -i "$DB_PWD" DB_PWD; fi
+	if [ -z $def_DB_HOST ] && [ -z $DB_HOST ]; then 
+		read -e -p "Database host: " -i "$DB_HOST" DB_HOST;
+	else
+		DB_HOST=${DB_HOST:-$def_DB_HOST}
+	fi
+
+	if [ -z $def_DB_NAME ] && [ -z $DB_NAME ]; then 
+		read -e -p "Database name: " -i "$DB_NAME" DB_NAME; 
+	else
+		DB_NAME=${DB_NAME:-$def_DB_NAME}
+	fi
+
+	if [ -z $def_DB_USER ] && [ -z $DB_USER ]; then 
+		read -e -p "Database user: " -i "$DB_USER" DB_USER; 
+	else
+		DB_USER=${DB_USER:-$def_DB_USER}
+	fi
+
+	if [ -z $DB_PWD ]; then 
+		read -e -p "Database password: " -i "$DB_PWD" -s DB_PWD; 
+	fi
 }
 
 establish_mysql_conn(){
@@ -267,8 +280,16 @@ establish_mysql_conn(){
 
     #Save db settings in .json
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \
-	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none\"}}" >/dev/null 2>&1
+	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300\"}}" >/dev/null 2>&1
 
+	change_mysql_config
+
+	#Enable database migration
+	$JSON_USERCONF "this.migration={'enabled': \"true\"}" >/dev/null 2>&1
+
+	#Fixing appserver-backup startup error \ Adding backup_backup and backup_schedule tables
+	$MYSQL -D "$DB_NAME" -e 'CREATE TABLE IF NOT EXISTS `backup_backup` ( `id` char(38) NOT NULL, `tenant_id` int(11) NOT NULL, `is_scheduled` int(1) NOT NULL, `name` varchar(255) NOT NULL, `storage_type` int(11) NOT NULL, `storage_base_path` varchar(255) DEFAULT NULL, `storage_path` varchar(255) NOT NULL, `created_on` datetime NOT NULL, `expires_on` datetime NOT NULL DEFAULT "0001-01-01 00:00:00", `storage_params` TEXT NULL, `hash` char(64) NOT NULL, PRIMARY KEY (`id`), KEY `tenant_id` (`tenant_id`), KEY `expires_on` (`expires_on`), KEY `is_scheduled` (`is_scheduled`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >/dev/null 2>&1
+	$MYSQL -D "$DB_NAME" -e 'CREATE TABLE IF NOT EXISTS `backup_schedule` ( `tenant_id` int(11) NOT NULL, `backup_mail` int(11) NOT NULL DEFAULT "0", `cron` varchar(255) NOT NULL, `backups_stored` int(11) NOT NULL, `storage_type` int(11) NOT NULL, `storage_base_path` varchar(255) DEFAULT NULL, `last_backup_time` datetime NOT NULL, `storage_params` TEXT NULL, PRIMARY KEY (`tenant_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >/dev/null 2>&1
 	echo "OK"
 }
 
@@ -376,47 +397,6 @@ change_mysql_config(){
 	systemctl restart ${MYSQL_PACKAGE} >/dev/null 2>&1
 }
 
-execute_mysql_script(){
-
-	change_mysql_config
-
-    while ! $MYSQL -e ";" >/dev/null 2>&1; do
-    	sleep 1
-	done
-    
-    if [ "$DB_USER" = "root" ] && [ ! "$(mysql -V | grep ' 5.5.')" ]; then
-	   # allow connect via mysql_native_password with root and empty password
-	   $MYSQL -D "mysql" -e "update user set plugin='mysql_native_password' where user='root';ALTER USER '${DB_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_PWD}';" >/dev/null 2>&1
-	fi
-
-	#Checking the quantity of the tables created in the db
-    DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'"); 
-    
-	local SQL_DIR="/var/www/${PRODUCT}/sql"
-    if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
-
-		echo -n "Installing MYSQL database... "
-
-		#Adding data to the db
-		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql #Fix a bug related to an incorrect date
-		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
-		echo 'CREATE TABLE IF NOT EXISTS `Tenants` ( `id` varchar(200) NOT NULL, `Status` varchar(200) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> $SQL_DIR/onlyoffice.sql #Fix non-existent tables Tenants
-		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.data.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
-		for i in $(ls $SQL_DIR/*upgrade*.sql); do
-			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
-		done
-	else
-		echo -n "Upgrading MySQL database... "
-		for i in $(ls $SQL_DIR/*upgrade*.sql); do
-			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
-		done
-    fi
-    echo "OK"
-}
-
 setup_nginx(){
 	echo -n "Configuring nginx... "
 	
@@ -443,7 +423,6 @@ setup_nginx(){
 					PORTS+=('5002') #ASC.People
 					PORTS+=('5008') #ASC.Files/client
 					PORTS+=('5013') #ASC.Files/editor
-					PORTS+=('5014') #ASC.CRM
 					setsebool -P httpd_can_network_connect on
 				;;
 				disabled)
@@ -549,8 +528,6 @@ change_elasticsearch_config(){
 	if [ -d /etc/elasticsearch/ ]; then 
 		chmod g+ws /etc/elasticsearch/
 	fi
-
-	systemctl start elasticsearch
 }
 
 setup_elasticsearch() {
@@ -566,7 +543,8 @@ setup_elasticsearch() {
 
 setup_kafka() {
 
-	KAFKA_SERVICE=$(systemctl list-units --no-legend "*kafka*" | cut -f1 -d' ')
+	KAFKA_SERVICE=$(systemctl list-unit-files --no-legend "*kafka*" | grep -oE '[^ ]+.service')
+	ZOOKEEPER_SERVICE=$(systemctl list-unit-files --no-legend "*zookeeper*" | grep -oE '[^ ]+.service')
 
 	if [ -n ${KAFKA_SERVICE} ]; then
 
@@ -582,7 +560,9 @@ setup_kafka() {
 		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/connect-standalone.properties
 		sed -i "s/logger.kafka.controller=.*,/logger.kafka.controller=INFO,/g" $KAFKA_CONF/log4j.properties
 		sed -i "s/logger.state.change.logger=.*,/logger.state.change.logger=INFO,/g" $KAFKA_CONF/log4j.properties
-		echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
+		if ! grep -q "DefaultEventHandler" $KAFKA_CONF/log4j.properties; then
+			echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
+		fi
 		
 		#Save kafka parameters in .json
 		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
@@ -607,7 +587,6 @@ install_json
 if $PACKAGE_MANAGER mysql-client >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-community-client >/dev/null 2>&1; then
     input_db_params
     establish_mysql_conn || exit $?
-    execute_mysql_script || exit $?
 fi 
 
 if $PACKAGE_MANAGER nginx >/dev/null 2>&1; then

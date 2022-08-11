@@ -1,0 +1,8 @@
+{
+  "ChangeUserStatusDialog": "'{{ userStatus }}'ունեցող օգտվողները կլինեն {{ status }}.",
+  "ChangeUserStatusDialogHeader": "Փոխել օգտվողի կարգավիճակը",
+  "ChangeUserStatusDialogMessage": "Դուք չեք կարող փոխել կարգավիճակը կայքէջի սեփականատիրոջ և ինքներդ Ձեզ համար",
+  "ChangeUsersActiveStatus": "Միացված է",
+  "ChangeUsersDisableStatus": "Անջատված է",
+  "ChangeUsersStatusButton": "Փոխել օգտվողի կարգավիճակը"
+}

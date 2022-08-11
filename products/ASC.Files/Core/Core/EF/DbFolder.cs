@@ -68,7 +68,8 @@ public static class DbFolderExtension
     {
         modelBuilder.Entity<DbFolder>(entity =>
         {
-            entity.ToTable("files_folder");
+            entity.ToTable("files_folder")
+                .HasCharSet("utf8");
 
             entity.Ignore(r => r.IndexName);
 
@@ -91,11 +92,17 @@ public static class DbFolderExtension
                 .HasColumnName("create_on")
                 .HasColumnType("datetime");
 
-            entity.Property(e => e.FilesCount).HasColumnName("filesCount");
+            entity.Property(e => e.FilesCount)
+                .HasColumnName("filesCount")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.FolderType).HasColumnName("folder_type");
+            entity.Property(e => e.FolderType)
+                .HasColumnName("folder_type")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.FoldersCount).HasColumnName("foldersCount");
+            entity.Property(e => e.FoldersCount)
+                .HasColumnName("foldersCount")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.ModifiedBy)
                 .IsRequired()
@@ -108,7 +115,9 @@ public static class DbFolderExtension
                 .HasColumnName("modified_on")
                 .HasColumnType("datetime");
 
-            entity.Property(e => e.ParentId).HasColumnName("parent_id");
+            entity.Property(e => e.ParentId)
+                .HasColumnName("parent_id")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 

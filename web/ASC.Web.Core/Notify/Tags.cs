@@ -74,8 +74,6 @@ public static class Tags
     public const string ToUserLink = "ToUserLink";
     public const string Message = "Message";
 
-    public const string Coupon = "Coupon";
-
     public const string Address = "Address";
     public const string Login = "Login";
     public const string Server = "Server";

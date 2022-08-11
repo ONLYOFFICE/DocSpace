@@ -88,7 +88,7 @@ public class EditHistory
                     {
                         Author = new EditHistoryAuthor(_userManager, _displayUserSettingsHelper)
                         {
-                            Id = new Guid(r.User.Id ?? Guid.Empty.ToString()),
+                            Id = r.User.Id ?? "",
                             Name = r.User.Name,
                         }
                     };
@@ -150,18 +150,23 @@ public class EditHistoryAuthor
         _displayUserSettingsHelper = displayUserSettingsHelper;
     }
 
-    public Guid Id { get; set; }
+    public string Id { get; set; }
 
     private string _name;
     public string Name
     {
         get
         {
+            if (!Guid.TryParse(Id, out var idInternal))
+            {
+                return _name;
+            }
+
             UserInfo user;
             return
-                Id.Equals(Guid.Empty)
-                      || Id.Equals(ASC.Core.Configuration.Constants.Guest.ID)
-                      || (user = _userManager.GetUsers(Id)).Equals(Constants.LostUser)
+                idInternal.Equals(Guid.Empty)
+                      || idInternal.Equals(ASC.Core.Configuration.Constants.Guest.ID)
+                      || (user = _userManager.GetUsers(idInternal)).Equals(Constants.LostUser)
                           ? string.IsNullOrEmpty(_name)
                                 ? FilesCommonResource.Guest
                                 : _name

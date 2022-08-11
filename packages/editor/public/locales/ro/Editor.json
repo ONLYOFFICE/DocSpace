@@ -1,0 +1,9 @@
+{
+  "DocumentsFileType": "documente",
+  "FileLocation": "Deschidere locația fișierului",
+  "FileName": "Numele fișierului",
+  "ImageFileType": "imagini",
+  "MailMergeFileType": "Selectare fișier format XLSX",
+  "OpenSavedDocument": "Deschide documentul salvat într-o filă nouă",
+  "SelectFilesType": "Selectare tip de fișier: {{fileType}}"
+}

@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyTitle>ASC.Notify.Textile</AssemblyTitle>
@@ -48,6 +49,51 @@
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.it.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.bg.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.cs.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.el.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.fi.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.ja.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.lv.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.nl.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.pl.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.pt-BR.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.sk.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.tr.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.uk.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.vi.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.zh-CN.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.az.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

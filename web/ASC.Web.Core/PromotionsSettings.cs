@@ -31,6 +31,7 @@ public class PromotionsSettings : ISettings<PromotionsSettings>
 {
     public bool Show { get; set; }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{D291A4C1-179D-4ced-895A-E094E809C859}"); }

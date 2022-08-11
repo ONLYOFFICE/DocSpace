@@ -26,6 +26,7 @@
 
 namespace ASC.Common.Security.Authorizing;
 
+[EnumExtensions]
 public enum AceType
 {
     Allow,

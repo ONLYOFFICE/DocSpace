@@ -25,7 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using AuthenticationException = System.Security.Authentication.AuthenticationException;
-using SecurityContext = ASC.Core.SecurityContext;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace ASC.Api.Settings.Smtp;

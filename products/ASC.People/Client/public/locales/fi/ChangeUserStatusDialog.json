@@ -1,8 +1,0 @@
-﻿{
-  "ChangeUsersActiveStatus": "Poistettu käytöstä",
-  "ChangeUsersDisableStatus": "Käytössä",
-  "ChangeUsersStatusButton": "Muuta käyttäjän tilaa",
-  "ChangeUserStatusDialog": "Käyttäjät, joilla on tila {{userStatus}}, tulee {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Muuta käyttäjän tilaa",
-  "ChangeUserStatusDialogMessage": "Et voi muuttaa portaalin omistajan tai omaa tilaasi"
-}

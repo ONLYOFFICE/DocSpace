@@ -31,6 +31,7 @@ public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
     [JsonPropertyName("enbaled")]
     public bool EnabledSetting { get; set; }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{FCF002BC-EC4B-4DAB-A6CE-BDE0ABDA44D3}"); }
@@ -49,9 +50,9 @@ public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
         return settingsManager.Load<PrivacyRoomSettings>().EnabledSetting;
     }
 
-    public static void SetEnabled(TenantManager tenantManager, SettingsManager settingsManager, bool value)
+    public static void SetEnabled(SettingsManager settingsManager, bool value)
     {
-        if (!IsAvailable(tenantManager))
+        if (!IsAvailable())
         {
             return;
         }
@@ -61,9 +62,8 @@ public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
         settingsManager.Save(settings);
     }
 
-    public static bool IsAvailable(TenantManager tenantManager)
+    public static bool IsAvailable()
     {
-        return SetupInfo.IsVisibleSettings(nameof(ManagementType.PrivacyRoom))
-            && tenantManager.GetTenantQuota(tenantManager.GetCurrentTenant().Id).PrivacyRoom;
+        return SetupInfo.IsVisibleSettings(nameof(ManagementType.PrivacyRoom));
     }
 }

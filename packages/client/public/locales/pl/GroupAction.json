@@ -1,0 +1,8 @@
+{
+  "AddHeadOfDepartment": "Dodaj kierownika działu",
+  "CustomNewDepartment": "{{groupCaption}} (tworzenie)",
+  "GroupAction": "Działanie grupowe",
+  "Members": "Członkowie",
+  "SearchAddedMembers": "Wyszukaj dodanych członków",
+  "SuccessSaveGroup": "Grupa {{groupCaption}} '{{ groupName }}' została pomyślnie zapisana"
+}

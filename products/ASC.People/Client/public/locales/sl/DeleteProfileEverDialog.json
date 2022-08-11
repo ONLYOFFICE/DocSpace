@@ -1,5 +1,0 @@
-﻿{
-  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> bo izbrisan.",
-  "DeleteUserDataConfirmation": "Uporabniški dokumenti v skupni rabi z drugimi bodo izbrisani. Da bi se temu izognili, znova dodelite podatke.",
-  "SuccessfullyDeleteUserInfoMessage": "Uporabnik je bil uspešno izbrisan"
-}

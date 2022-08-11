@@ -29,21 +29,10 @@ namespace ASC.ElasticSearch.Service;
 [Singletone]
 public class Settings
 {
-    public string Host
-    {
-        get => _host ?? "localhost";
-        set => _host = value;
-    }
-    public int? Port
-    {
-        get => _port ?? 9200;
-        set => _port = value;
-    }
-    public string Scheme
-    {
-        get => _scheme ?? "http";
-        set => _scheme = value;
-    }
+    public string Host { get; set; }
+    public int? Port { get; set; }
+    public string Scheme { get; set; }
+
     public int? Period
     {
         get => _period ?? 1;
@@ -70,9 +59,6 @@ public class Settings
         set => _httpCompression = value;
     }
 
-    private string _host;
-    private int? _port;
-    private string _scheme;
     private int? _period;
     private long? _maxContentLength;
     private long? _maxFileSize;

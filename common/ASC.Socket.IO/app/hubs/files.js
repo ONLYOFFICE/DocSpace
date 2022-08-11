@@ -115,10 +115,15 @@
     modifyFolder(room, "create", fileId, "file", data);
   }
 
+  function updateFile({ fileId, room, data } = {}) {
+    logger.info(`update file ${fileId} in room ${room}`);
+    modifyFolder(room, "update", fileId, "file", data);
+  }
+
   function deleteFile({ fileId, room } = {}) {
     logger.info(`delete file ${fileId} in room ${room}`);
     modifyFolder(room, "delete", fileId, "file");
   }
 
-  return { startEdit, stopEdit, createFile, deleteFile };
+  return { startEdit, stopEdit, createFile, deleteFile, updateFile };
 };

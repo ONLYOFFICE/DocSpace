@@ -33,6 +33,7 @@ public class SpamEmailSettings : ISettings<SpamEmailSettings>
 
     public DateTime MailsSendedDate { get; set; }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{A9819A62-60AF-48E3-989C-08259772FA57}"); }

@@ -48,8 +48,16 @@ public class ProviderManager
             ProviderConstants.MailRu,
             ProviderConstants.VK,
             ProviderConstants.Yandex,
-            ProviderConstants.GosUslugi
+            ProviderConstants.GosUslugi,
+            ProviderConstants.AppleId,
+            ProviderConstants.Microsoft
         };
+
+    public static List<string> InviteExceptProviders = new List<string>
+            {
+                ProviderConstants.Twitter,
+                ProviderConstants.AppleId,
+            };
 
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;
@@ -64,9 +72,7 @@ public class ProviderManager
 
     public ILoginProvider GetLoginProvider(string providerType)
     {
-        return providerType == ProviderConstants.OpenId
-            ? new OpenIdLoginProvider(_signature, _instanceCrypto, _consumerFactory)
-            : _consumerFactory.GetByKey(providerType) as ILoginProvider;
+        return _consumerFactory.GetByKey(providerType) as ILoginProvider;
     }
 
     public LoginProfile Process(string providerType, HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
@@ -74,7 +80,7 @@ public class ProviderManager
         return GetLoginProvider(providerType).ProcessAuthoriztion(context, @params, additionalStateArgs);
     }
 
-    public LoginProfile GetLoginProfile(string providerType, string accessToken)
+    public LoginProfile GetLoginProfile(string providerType, string accessToken = null, string codeOAuth = null)
     {
         var consumer = GetLoginProvider(providerType);
         if (consumer == null)
@@ -84,6 +90,10 @@ public class ProviderManager
 
         try
         {
+            if (accessToken == null && codeOAuth != null)
+            {
+                return consumer.GetLoginProfile(consumer.GetToken(codeOAuth));
+            }
             return consumer.GetLoginProfile(accessToken);
         }
         catch (Exception ex)

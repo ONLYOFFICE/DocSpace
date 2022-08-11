@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
-
 namespace ASC.Web.Files.Services.DocumentService;
 
 public class DocumentServiceTracker
@@ -49,6 +47,7 @@ public class DocumentServiceTracker
     {
         public List<Action> Actions { get; set; }
         public string ChangesUrl { get; set; }
+        public string Filetype { get; set; }
         public ForceSaveInitiator ForceSaveType { get; set; }
         public object History { get; set; }
         public string Key { get; set; }
@@ -71,7 +70,8 @@ public class DocumentServiceTracker
         {
             Command = 0,
             User = 1,
-            Timer = 2
+            Timer = 2,
+            UserSubmit = 3
         }
     }
 
@@ -148,7 +148,7 @@ public class DocumentServiceTrackerHelper
     private readonly FileTrackerHelper _fileTracker;
     private readonly ILogger<DocumentServiceTrackerHelper> _logger;
     private readonly IHttpClientFactory _clientFactory;
-
+    private readonly ThirdPartySelector _thirdPartySelector;
     public DocumentServiceTrackerHelper(
         SecurityContext securityContext,
         UserManager userManager,
@@ -169,7 +169,8 @@ public class DocumentServiceTrackerHelper
         NotifyClient notifyClient,
         MailMergeTaskRunner mailMergeTaskRunner,
         FileTrackerHelper fileTracker,
-        IHttpClientFactory clientFactory)
+            IHttpClientFactory clientFactory,
+            ThirdPartySelector thirdPartySelector)
     {
         _securityContext = securityContext;
         _userManager = userManager;
@@ -191,6 +192,7 @@ public class DocumentServiceTrackerHelper
         _fileTracker = fileTracker;
         _logger = logger;
         _clientFactory = clientFactory;
+        _thirdPartySelector = thirdPartySelector;
     }
 
     public string GetCallbackUrl<T>(T fileId)
@@ -240,7 +242,7 @@ public class DocumentServiceTrackerHelper
 
     private async Task ProcessEditAsync<T>(T fileId, TrackerData fileData)
     {
-        if (ThirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
+        if (_thirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
         {
             return;
         }
@@ -249,7 +251,7 @@ public class DocumentServiceTrackerHelper
         var usersDrop = new List<string>();
 
         string docKey;
-        var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+        var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app == null)
         {
             File<T> fileStable;
@@ -273,10 +275,17 @@ public class DocumentServiceTrackerHelper
             {
                 if (!Guid.TryParse(user, out var userId))
                 {
-                    _logger.InformationDocServiceUserIdIsNotGuid(user);
-                    continue;
-                }
+                    if (!string.IsNullOrEmpty(user) && user.StartsWith("uid-"))
+                    {
+                        userId = Guid.Empty;
+                    }
+                    else
+                    {
+                        _logger.InformationDocServiceUserIdIsNotGuid(user);
+                        continue;
+                    }
 
+                }
                 users.Remove(userId);
 
                 try
@@ -324,7 +333,7 @@ public class DocumentServiceTrackerHelper
             userId = Guid.Empty;
         }
 
-        var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+        var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app == null)
         {
             File<T> fileStable;
@@ -335,7 +344,7 @@ public class DocumentServiceTrackerHelper
             {
                 _logger.ErrorDocServiceSavingFile(fileId.ToString(), docKey, fileData.Key);
 
-                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), fileData.Filetype);
 
                 return new TrackResponse { Message = "Expected key " + docKey };
             }
@@ -395,22 +404,26 @@ public class DocumentServiceTrackerHelper
                 {
                     case TrackerData.ForceSaveInitiator.Command:
                         forcesaveType = ForcesaveType.Command;
+                        comments.Add(FilesCommonResource.CommentAutosave);
                         break;
                     case TrackerData.ForceSaveInitiator.Timer:
                         forcesaveType = ForcesaveType.Timer;
+                        comments.Add(FilesCommonResource.CommentAutosave);
                         break;
                     case TrackerData.ForceSaveInitiator.User:
                         forcesaveType = ForcesaveType.User;
+                        comments.Add(FilesCommonResource.CommentForcesave);
+                        break;
+                    case TrackerData.ForceSaveInitiator.UserSubmit:
+                        forcesaveType = ForcesaveType.UserSubmit;
+                        comments.Add(FilesCommonResource.CommentSubmitFillForm);
                         break;
                 }
-                comments.Add(fileData.ForceSaveType == TrackerData.ForceSaveInitiator.User
-                                 ? FilesCommonResource.CommentForcesave
-                                 : FilesCommonResource.CommentAutosave);
             }
 
             try
             {
-                file = await _entryManager.SaveEditingAsync(fileId, null, _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
+                file = await _entryManager.SaveEditingAsync(fileId, fileData.Filetype, _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
                 saveMessage = fileData.Status == TrackerStatus.MustSave || fileData.Status == TrackerStatus.ForceSave ? null : "Status " + fileData.Status;
             }
             catch (Exception ex)
@@ -418,7 +431,7 @@ public class DocumentServiceTrackerHelper
                 _logger.ErrorDocServiceSave(fileId.ToString(), userId, fileData.Key, fileData.Url, ex);
                 saveMessage = ex.Message;
 
-                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), fileData.Filetype);
             }
         }
 
@@ -439,11 +452,14 @@ public class DocumentServiceTrackerHelper
             {
                 await SaveHistoryAsync(file, (fileData.History ?? "").ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.ChangesUrl));
             }
+
+            if (fileData.Status == TrackerStatus.ForceSave && fileData.ForceSaveType == TrackerData.ForceSaveInitiator.UserSubmit)
+            {
+                await _entryManager.SubmitFillForm(file);
+            }
         }
 
-        var result = new TrackResponse { Message = saveMessage };
-
-        return result;
+        return new TrackResponse { Message = saveMessage };
     }
 
     private async Task<TrackResponse> ProcessMailMergeAsync<T>(T fileId, TrackerData fileData)
@@ -575,7 +591,7 @@ public class DocumentServiceTrackerHelper
         return new TrackResponse { Message = saveMessage };
     }
 
-    private async Task StoringFileAfterErrorAsync<T>(T fileId, string userId, string downloadUri)
+    private async Task StoringFileAfterErrorAsync<T>(T fileId, string userId, string downloadUri, string downloadType)
     {
         if (string.IsNullOrEmpty(downloadUri))
         {
@@ -584,7 +600,13 @@ public class DocumentServiceTrackerHelper
 
         try
         {
-            var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + FileUtility.GetFileExtension(downloadUri));
+            if (string.IsNullOrEmpty(downloadType))
+            {
+                downloadType = FileUtility.GetFileExtension(downloadUri).Trim('.');
+            }
+
+            var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + "." + downloadType);
+
             var path = $@"save_crash\{DateTime.UtcNow:yyyy_MM_dd}\{userId}_{fileName}";
 
             var store = _globalStore.GetStore();

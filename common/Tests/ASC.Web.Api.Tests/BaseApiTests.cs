@@ -25,6 +25,9 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
 namespace ASC.Web.Api.Tests;
 
 class ApiApplication : WebApplicationFactory<Program>
@@ -91,8 +94,8 @@ public class MySetUpClass
     [OneTimeTearDown]
     public void DropDb()
     {
-        var context = _scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-        context.Value.Database.EnsureDeleted();
+        var context = _scope.ServiceProvider.GetService<IDbContextFactory<UserDbContext>>().CreateDbContext();
+        context.Database.EnsureDeleted();
     }
 
 
@@ -106,13 +109,14 @@ public class MySetUpClass
             configuration["testAssembly"] = testAssembly;
         }
 
-        using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-        db.Value.Migrate();
+        using var db = scope.ServiceProvider.GetService<IDbContextFactory<UserDbContext>>().CreateDbContext();
+        db.Database.Migrate();
     }
 }
+
 class BaseApiTests
 {
-    protected ILog _log;
+    protected ILogger _log;
     protected UserManager _userManager;
     protected Tenant _currentTenant;
     protected SecurityContext _securityContext;
@@ -147,7 +151,7 @@ class BaseApiTests
         _userManager = _scope.ServiceProvider.GetService<UserManager>();
         _securityContext = _scope.ServiceProvider.GetService<SecurityContext>();
         _userOptions = _scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
-        _log = _scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+        _log = _scope.ServiceProvider.GetService<ILogger<BaseApiTests>>();
         _securityContext.AuthenticateMe(_currentTenant.OwnerId);
     }
 

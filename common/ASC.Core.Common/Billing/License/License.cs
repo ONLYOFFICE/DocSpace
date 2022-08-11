@@ -33,30 +33,14 @@ namespace ASC.Core.Billing;
 public class License
 {
     public string OriginalLicense { get; set; }
-
-    [JsonPropertyName("affiliate_id")]
-    public string AffiliateId { get; set; }
-
-    //[Obsolete]
-    public bool WhiteLabel { get; set; }
     public bool Customization { get; set; }
-    public bool Branding { get; set; }
-    public bool SSBranding { get; set; }
 
     [JsonPropertyName("end_date")]
     public DateTime DueDate { get; set; }
-
-    [JsonPropertyName("portal_count")]
-    public int PortalCount { get; set; }
     public bool Trial { get; set; }
-
-    [JsonPropertyName("user_quota")]
-    public int ActiveUsers { get; set; }
 
     [JsonPropertyName("customer_id")]
     public string CustomerId { get; set; }
-    public string Signature { get; set; }
-    public bool? DiscEncryption { get; set; }
 
     [JsonPropertyName("users_count")]
     public int DSUsersCount { get; set; }
@@ -66,6 +50,9 @@ public class License
 
     [JsonPropertyName("connections")]
     public int DSConnections { get; set; }
+
+    [JsonPropertyName("signature")]
+    public string Signature { get; set; }
 
     public static License Parse(string licenseString)
     {

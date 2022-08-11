@@ -322,6 +322,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Room Invite.
+        /// </summary>
+        public static string ButtonConfirmRoomInvite {
+            get {
+                return ResourceManager.GetString("ButtonConfirmRoomInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm account termination.
         /// </summary>
         public static string ButtonConfirmTermination {
@@ -496,7 +505,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Want to change the email on your ONLYOFFICE account?
+        ///   Looks up a localized string similar to Want to change the email on your ${LetterLogoText} account?
         ///
         ///Click the button below and log in* to your cloud.
         ///
@@ -504,7 +513,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The link is valid for 7 days.
         ///
-        ///*If you are not signed in to ONLYOFFICE in this browser, you’ll need to use your old email for confirmation. If you don’t remember it, contact your portal admin.
+        ///*If you are not signed in to ${LetterLogoText} in this browser, you’ll need to use your old email for confirmation. If you don’t remember it, contact your portal admin.
         ///
         ///Don’t want to change your email? Just ignore this message..
         /// </summary>
@@ -515,21 +524,26 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1.Password change request for the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
-        ///
-        ///There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
-        ///
-        ///Please follow the link below to change your password:
+        ///   Looks up a localized string similar to Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
         ///
         ///$GreenButton
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
+        ///The link is valid for 7 days.
         ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it or contact your &quot;${__Virtual [rest of string was truncated]&quot;;.
+        ///Don’t want to change your password? Just ignore this message&lt;/value&gt;
+        ///  &lt;/data&gt;
+        ///  &lt;data name=&quot;pattern_personal_change_password_v115&quot; xml:space=&quot;preserve&quot;&gt;
+        ///    &lt;value&gt;Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
+        ///
+        ///$GreenButton 
+        ///
+        ///The link is valid for 7 days.
+        ///
+        ///Don’t want to change your password? Just ignore  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_change_password {
+        public static string pattern_change_password_v115 {
             get {
-                return ResourceManager.GetString("pattern_change_password", resourceCulture);
+                return ResourceManager.GetString("pattern_change_password_v115", resourceCulture);
             }
         }
         
@@ -606,15 +620,15 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
-        ///Please, confirm your email:
+        ///Please, confirm your email following the link
         ///
         ///$GreenButton
         ///
         ///You may change your email or password in your &quot;personal profile page&quot;:&quot;$MyStaffLink&quot;.
         ///
-        ///To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions &quot;here&quot;:&quot;${__HelpLink}/server/windows/community/smtp-setti [rest of string was truncated]&quot;;.
+        ///To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions &quot;here&quot;:&quot;${__HelpLink}/installation/group [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_admin_activation_v10 {
             get {
@@ -629,6 +643,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
         ///
+        ///Configure Right Now
         ///$GreenButton
         ///   
         ///Done. It&apos;s time to invite teammates to your web-office!
@@ -736,9 +751,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your cloud office is ready at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. It&apos;s time to invite your teammates!
         ///
-        ///The easiest way to add your team is to import the necessary users and groups from an LDAP Server (e.g. OpenLDAP Server or Microsoft Active Directory). The LDAP settings are available in your Control Panel. Instructions are available in our &quot;Help Center&quot;:&quot;${__HelpLink}/server/windows/community/ldap-settings.aspx&quot;.
+        ///The easiest way to add your team is to import the necessary users and groups from an LDAP Server (e.g. OpenLDAP Server or Microsoft Active Directory). The LDAP settings are available in your Control Panel. Instructions are available in our &quot;Help Center&quot;:&quot;&quot;${__HelpLink}/administration/control-panel-ldap.aspx&quot;.
         ///
-        ///You can also distribute the invitation link using the Inv [rest of string was truncated]&quot;;.
+        ///You can also distribute the invitation link using the Invite u [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_admin_invite_teammates_v10 {
             get {
@@ -781,15 +796,16 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Thanks for choosing ONLYOFFICE. We just want to remind you that the trial period for your Enterprise Edition will be over in seven days.
+        ///Thanks for choosing ONLYOFFICE. We just want to remind you that the trial period for your Workspace 
+        /// Enterprise Edition will be over in seven days.
         ///
-        ///Please, check all the available pricing plans for Enterprise Edition and choose the most suitable one for your business.
+        ///Please, check all the available pricing plans for Workspace Enterprise Edition and choose the most suitable one for your business.
         ///
-        ///$GreenButton
+        ///&quot;See prices&quot;:&quot;https://www.onlyoffice.com/workspace-enterprise-prices.aspx&quot;
         ///
-        ///$BlueButton
+        ///&quot;Request a call&quot;:&quot;http://www.onlyoffice.com/call-back-form.aspx&quot;
         ///
-        ///For any purchase questions, contact us at &quot;sales@onlyoffice.com&quot;:&quot;mailto:sales@onlyoffice.com&quot;. For solving any technical problems, write to &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com [rest of string was truncated]&quot;;.
+        ///For any purchase questions, contact us at &quot;sales@onlyoffice.com [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_admin_trial_warning_before7_v10 {
             get {
@@ -800,9 +816,9 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Thanks for choosing ONLYOFFICE Workspace. Your trial expires today. To continue using pro features, purchase the full license.
+        ///Thanks for choosing ONLYOFFICE. Your trial expires today. To continue using it, purchase the full license.
         ///
-        ///Buy now: &quot;https://www.onlyoffice.com/workspace-enterprise-prices.aspx&quot;:&quot;https://www.onlyoffice.com/workspace-enterprise-prices.aspx&quot;
+        ///&quot;Buy now&quot;:&quot;https://www.onlyoffice.com/workspace-enterprise-prices.aspx&quot;
         ///
         ///For any purchase questions, contact us at &quot;sales@onlyoffice.com&quot;:&quot;mailto:sales@onlyoffice.com&quot;. For solving any technical problems, write to &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;.
         /// </summary>
@@ -817,9 +833,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Get free ONLYOFFICE apps to work on documents and projects from any of your devices.
         ///
-        ///# To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/apps.aspx&quot;.
-        ///# To edit documents on mobile devices, ONLYOFFICE Documents app for &quot;iOS&quot;:&quot;https://itunes.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;.
-        ///# To manage your team performance on  [rest of string was truncated]&quot;;.
+        ///#To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
+        ///#To edit documents on mobile devices, get Documents app for &quot;iOS&quot;:&quot;https://apps.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;.
+        ///#To manage your team performance on th [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_admin_user_apps_tips_v10 {
             get {
@@ -832,7 +848,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using document editors available in your web-office. Here are some tips on how to make it more effective.
         ///
-        ///$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm.
+        ///$TableItemsTop $TableItem2 $TableItem1 $TableItem4 $TableItem3 $TableItem7 $TableItem6 $TableItem5 $TableItemsBtm.
         /// </summary>
         public static string pattern_enterprise_admin_user_docs_tips_v10 {
             get {
@@ -871,7 +887,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///$__AuthorName has invited you as a guest user to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///You are invited to join &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; as a guest user. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
         ///
@@ -890,10 +906,14 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///# Edit your &quot;profile&quot;:&quot;$MyStaffLink&quot;.
-        ///# View and comment the content available in the &quot;Community&quot;:&quot;${__VirtualRootPath}/Products/Community/&quot; and &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot;.
-        ///# Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
-        ///# Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPath [rest of string was truncated]&quot;;.
+        ///1. Edit your profile. 
+        ///2. View and comment the content available in the Community and Projects.
+        ///3. Add and download files available for you in the Documents.
+        ///4. Organize your schedule with the built-in Calendar.
+        ///5. Use Chat to exchange instant messages.
+        ///
+        ///To access your web-office, follow the link
+        ///$GreenButton.
         /// </summary>
         public static string pattern_enterprise_guest_welcome_v10 {
             get {
@@ -904,15 +924,15 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///$__AuthorName has invited you to join your company&apos;s safe and secure web-office that would enhance your collaboration. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You are invited to join your company&apos;s safe and secure web-office that would enhance your collaboration. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
-        ///Accept the invitation by clicking the link:
+        ///Accept the invitation by following the link
         ///
         ///$GreenButton
         ///
         ///The link is only valid for 7 days.
         ///
-        ///You will get more tips on how to use your we-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
+        ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
         /// </summary>
         public static string pattern_enterprise_user_activation_v10 {
             get {
@@ -925,9 +945,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///# Create and edit &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;, share them with teammates, and collaborate in real time.
-        ///# Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
-        ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot; and your customer relationships using [rest of string was truncated]&quot;;.
+        ///1.	Create and edit Documents, work with forms, share them with teammates, and collaborate in real time.
+        ///2.	Add your email accounts and manage all correspondence in one place with Mail.
+        ///3.	Manage your workflow with Projects and your customer relationships using CRM.
+        ///4.	Use Community to start your blogs, forums, add events, share bookmarks.
+        ///5.	Organize your work sc [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_user_welcome_v10 {
             get {
@@ -938,7 +960,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email:
         ///
@@ -1058,7 +1080,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The link is only valid for 7 days.
         ///
-        ///You will get more tips on how to use your we-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
+        ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
         /// </summary>
         public static string pattern_enterprise_whitelabel_user_activation_v10 {
             get {
@@ -1069,11 +1091,11 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE! Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
         ///# Create and edit &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;, share them with teammates, and collaborate in real time.
         ///# Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
-        ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot; and your customer relationships using [rest of string was truncated]&quot;;.
+        ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot; and your custom [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_whitelabel_user_welcome_v10 {
             get {
@@ -1194,7 +1216,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE™ Support Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
         ///
-        ///^You receive this email because you are a registered user of the &quot; [rest of string was truncated]&quot;;.
+        ///^To change the notification type, please manage your &quot;subscription [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_migration_error {
             get {
@@ -1214,7 +1236,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE™ Support Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
         ///
-        ///^You receive this email because you are a registered user of the &quot;${__Virt [rest of string was truncated]&quot;;.
+        ///^To change the notification type, please manage your &quot;subscription setting [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_migration_server_failure {
             get {
@@ -1262,13 +1284,13 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email following the &quot;link&quot;:&quot;$ActivateUrl&quot;.
         ///
-        ///You can change your email or password in your &quot;personal profile page&quot;:&quot;$MyStaffLink&quot;.
+        ///You may change your email or password in your &quot;personal profile page&quot;:&quot;$MyStaffLink&quot;.
         ///
-        ///To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, follow the instructions &quot;here&quot;:&quot;${__HelpLink}/server/windows/commun [rest of string was truncated]&quot;;.
+        ///To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions &quot;here&quot;:&quot;${__HelpLink}/server/windows/ [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_admin_activation_v11 {
             get {
@@ -1296,9 +1318,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Here’s what you can do to make your web-office even more secure:
         ///
-        ///*Get an SSL certificate* if you are going to provide not only local but also external portal access for your users. Generate a new signed certificate in the Control Panel or purchase one from the provider you trust.
+        ///*Get an SSL certificate*, if you are going to provide not only local but also external portal access for your users. Generate a new signed certificate in the Control Panel or purchase one from the provider you trust.
         ///
-        ///*Enable automatic backups* in the Control Panel. We also recommend that you use 3rd services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our &quot;Help Cen [rest of string was truncated]&quot;;.
+        ///*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our &quot; [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_admin_welcome_v11 {
             get {
@@ -1421,9 +1443,13 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///h3.It&apos;s a virtual workspace where you can edit and store documents, work with them from anywhere providing access to your friends or colleagues.
         ///
-        ///ONLYOFFICE is compatible with Microsoft Office™ document formats and guarantees no loss of formatting or quality of created objects. We promise to relieve you from formatting fidelity headache and give full professional editing toolset in your hands.
+        ///h3.For a quick start, here&apos;s what you can do in ONLYOFFICE:
         ///
-        ///h3.For a quick start, [rest of string was truncated]&quot;;.
+        ///- Create, view and edit text documents, spreadsheets, presentations.
+        ///
+        ///- Work with all popular formats. Highest compatibility with MS Office files.
+        ///
+        ///- Create and co-edit &quot;ready-to-fill-out forms&quot;:&quot;https://www.only [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_after_registration1 {
             get {
@@ -1442,13 +1468,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///- Strict co-editing mode for editing parts of the document privately;
         ///
-        ///- Version History;
+        ///- Creating and filling out digital forms, e.g. a freelance project proposal;
         ///
-        ///- Change tracking &amp; suggesting;
-        ///
-        ///- built-in chat.
-        ///
-        ///No need to download files and send them v [rest of string was truncated]&quot;;.
+        ///- Document comparison and Version Histo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_after_registration14 {
             get {
@@ -1459,15 +1481,15 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to $PersonalHeaderStart Need more features and automation? Give a try to ONLYOFFICE for teams $PersonalHeaderEnd
         ///
-        ///h3.In case you collaborate with a team or manage a project, we suggest you try ONLYOFFICE Workspace. In addition to the online editors and document management features, you&apos;ll be able to:
+        ///h3.In case you collaborate with a team or manage a project, we suggest you to try ONLYOFFICE for business. In addition to the online editors and document management features, you&apos;ll be able to:
         ///
-        ///- Control tasks and use *Gantt* chart in the project management module;
+        ///- Control tasks and use Gantt chart in the project management module;
         ///
-        ///- Track sales, relations with customers and create invoices in *CRM*;
+        ///- Track sales, relations with customers and create invoices in CRM;
         ///
-        ///- Manage all your email accounts in the email *aggregator*;
+        ///- Manage all your email accounts and create corporate mailboxes;
         ///
-        ///- Set u [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_after_registration21 {
             get {
@@ -1476,19 +1498,13 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to $PersonalHeaderStart How to enhance security of your web office $PersonalHeaderEnd
+        ///   Looks up a localized string similar to $PersonalHeaderStart Get free ONLYOFFICE apps $PersonalHeaderEnd
         ///
-        ///Looking for the ways to protect your data?
+        ///h3.Need to edit documents on the go? Looking for a reliable application to ensure you will be able to work offline when the Internet connection is unstable? Get free ONLYOFFICE apps to edit files from any of your devices.
         ///
-        ///h3.Сonsider additional instruments for keeping your documents safe and secure offered in our private server solutions:
+        ///- To work on documents offline on Windows, Linux and macOS, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
         ///
-        ///- Get full control over your data with *a private cloud* on your own server;
-        ///
-        ///- Set up *two-factor authentication* and use *Single Sign-On* with third-party services;
-        ///
-        ///- Apply multi-level *log-in security settings*;
-        ///
-        ///- Monitor *user activity* in your w [rest of string was truncated]&quot;;.
+        ///- To edit documents on mobile devices, get ONLYOFFICE Documents app f [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_after_registration28 {
             get {
@@ -1544,22 +1560,17 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
+        ///   Looks up a localized string similar to Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
         ///
-        ///Please follow the link below to change your password:
+        ///$GreenButton 
         ///
-        ///$GreenButton
+        ///The link is valid for 7 days.
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-        ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it.
-        ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
+        ///Don’t want to change your password? Just ignore this message..
         /// </summary>
-        public static string pattern_personal_change_password {
+        public static string pattern_personal_change_password_v115 {
             get {
-                return ResourceManager.GetString("pattern_personal_change_password", resourceCulture);
+                return ResourceManager.GetString("pattern_personal_change_password_v115", resourceCulture);
             }
         }
         
@@ -1584,9 +1595,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$GreenButton
         ///
-        ///*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our &quot;Privacy statement&quot;:&quot;https://help.onlyoffice.com/Products/Files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;.
+        ///*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our &quot;Privacy statement&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;.
         ///
-        ///Ignore this email if you do not want to  [rest of string was truncated]&quot;;.
+        ///&quot;Read more about account termination&quot;:&quot; [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_profile_delete {
             get {
@@ -1742,10 +1753,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Your user profile details at &quot;$__VirtualRootPath&quot;:&quot;$__VirtualRootPath&quot; have been changed by &quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot;.
         ///
         ///To view your profile follow the link below:
-        ///&quot;$UserName&quot;:&quot;$MyStaffLink&quot;
-        ///
-        ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
+        ///&quot;$UserName&quot;:&quot;$MyStaffLink&quot;.
         /// </summary>
         public static string pattern_profile_updated {
             get {
@@ -1761,9 +1769,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Your user profile details at [${__VirtualRootPath}](${__VirtualRootPath}) have been changed by [$__AuthorName]($__AuthorUrl).
         ///
         ///To view your profile follow the link below:
-        ///[$UserName]($MyStaffLink)
-        ///
-        ///You receive this email because you are a registered user of the [${__VirtualRootPath}](${__VirtualRootPath}) portal..
+        ///[$UserName]($MyStaffLink).
         /// </summary>
         public static string pattern_profile_updated_tg {
             get {
@@ -1774,9 +1780,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Dear $UserName,
         ///
-        ///The process of data reassignment from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; to user &quot;$ToUserName&quot;:&quot;$ToUserLink&quot; has been successfully completed.
-        ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
+        ///The process of data reassignment from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; to user &quot;$ToUserName&quot;:&quot;$ToUserLink&quot; has been successfully completed..
         /// </summary>
         public static string pattern_reassigns_completed {
             get {
@@ -1789,9 +1793,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The process of data reassignment from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; to user &quot;$ToUserName&quot;:&quot;$ToUserLink&quot; failed.
         ///
-        ///Exception message: $Message
-        ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
+        ///Exception message: $Message.
         /// </summary>
         public static string pattern_reassigns_failed {
             get {
@@ -1809,9 +1811,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# Documents - $DocsSpace
         ///# CRM - $CrmSpace
         ///# Mail - $MailSpace
-        ///# Talk - $TalkSpace
-        ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
+        ///# Talk - $TalkSpace.
         /// </summary>
         public static string pattern_remove_user_data_completed {
             get {
@@ -1824,9 +1824,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The process of data removal for user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; failed.
         ///
-        ///Exception message: $Message
-        ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
+        ///Exception message: $Message.
         /// </summary>
         public static string pattern_remove_user_data_failed {
             get {
@@ -1940,7 +1938,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE™ Support Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
         ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRoot [rest of string was truncated]&quot;;.
+        ///^To change the notification type, please manage your &quot;subscription settings&quot;:&quot;$Re [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_restore_started {
             get {
@@ -1951,7 +1949,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
         ///
         ///Please, confirm your email: 
         ///
@@ -1975,12 +1973,10 @@ namespace ASC.Web.Core.PublicResources {
         ///We have prepared several tips to make your work with ONLYOFFICE  more comfortable.
         ///
         ///*#1 Get quick answers*
-        ///
-        ///Browse &quot;Help Center&quot;:&quot;${__HelpLink}&quot; when you are not sure how to perform your task. Contact &quot;our support team&quot;:&quot;https://helpdesk.onlyoffice.com/hc/en-us&quot; if you face tech problems. 
+        ///Browse &quot;Help Center&quot;:&quot;${__HelpLink}&quot; when you are not sure how to perform your task. Contact &quot;our support team&quot;:&quot;https://helpdesk.onlyoffice.com&quot; if you face tech problems.
         ///
         ///*#2 Don’t forget about 3rd party extensions*
-        ///
-        ///ONLYOFFICE functionality can be enhanced with 3rd party extensions. For example, you can make VoIP calls with Twilio or e-sign your documents wit [rest of string was truncated]&quot;;.
+        ///ONLYOFFICE functionality can be enhanced with 3rd party extensions. For example, you can make VoIP calls with Twilio or e-sign your documents with DocuSign. &quot;Fi [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_comfort_tips_v115 {
             get {
@@ -1991,13 +1987,12 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///ONLYOFFICE will help you with all your daily tasks. Here’s what you can do with its modules:
+        ///ONLYOFFICE will help you with all your daily tasks. Here’s what you can do:
         ///
-        ///# *Documents.* Store and manage docs, sheets, and slides. Edit them and collaborate with your team. 
-        ///# *Projects.* Plan activities, create and assign tasks, set deadlines. 
-        ///# *CRM.* Maintain customers database, track sales, create invoices. 
-        ///# *Calendar.* Arrange meetings with shareable calendars and set reminders. 
-        ///# *Mail.* Gather mail from different accounts in one place.  Add your own [rest of string was truncated]&quot;;.
+        ///# *Documents*. Store and manage docs, sheets, and slides. Edit them and collaborate with your team. Create and co-edit professional-looking forms online, let other users fill them in, save forms as PDF files. 
+        ///# *Projects*. Plan activities, create and assign tasks, set deadlines. 
+        ///# *CRM*. Maintain customers database, track sales, create invoices. 
+        ///# *Calendar*. Arrange meetings with shareable calendars and se [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_modules_v115 {
             get {
@@ -2007,12 +2002,13 @@ namespace ASC.Web.Core.PublicResources {
         
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
+        ///
         ///Thanks for choosing ONLYOFFICE! Re-activate your Business plan today and save 20% OFF with Reactivate20 coupon! Just use it while purchasing to:
         ///
         ///# *Add up to 1,000 users* with 100 Gb per each and appoint unlimited number of admins. 
         ///# *Customize your online office* style to match your branding. 
         ///# *Edit unlimited number of docs*, sheets, and slides simultaneously. 
-        ///# *Ensure security:* enable 2FA, configure automatic backups, track user actions.
+        ///# *Ensure security*: enable 2FA, configure automatic backups, track user actions.
         ///# *Integrate with your infrastructur [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_payment_warning_every_2months_v115 {
@@ -2059,11 +2055,11 @@ namespace ASC.Web.Core.PublicResources {
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
         ///The trial period for your account at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; will be over in 5 days.
-        ///
         ///*Buy a subscription today with 10% off!*
         ///
         ///Just use this coupon code while purchasing: *$Coupon*. It will be valid within the next 10 days. 
         ///
+        ///Use discount
         ///$GreenButton
         ///
         ///Truly yours,
@@ -2083,7 +2079,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///To extend your trial, contact our &quot;sales team&quot;:&quot;mailto:sales@onlyoffice.com&quot;. 
         ///
-        ///You can switch to free Startup plan on &quot;Payments page&quot;:&quot;$PricingPage&quot;. Free plan has up to 5 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. &quot;Compare plan [rest of string was truncated]&quot;;.
+        ///You can switch to free Startup plan on &quot;Payments page&quot;:&quot;$PricingPage&quot;. Free plan has up to 10 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. &quot;Compare pla [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_trial_warning_v115 {
             get {
@@ -2096,8 +2092,8 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Get free ONLYOFFICE apps to work on documents and projects from any of your devices.
         ///
-        ///# To work on documents offline on Windows, Linux and macOS, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/apps.aspx&quot;. You can connect the app to your cloud and &quot;get access to pro features&quot;:&quot;https://helpcenter.onlyoffice.com/installation/desktop-pro-features.aspx&quot; (content controls, sheet views, document comparison).
-        ///# To edit documents on mobile devices, ONLYOFFICE Documents app  [rest of string was truncated]&quot;;.
+        ///·	To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;. You can connect the app to your cloud for online collaboration.
+        ///·	To edit documents on mobile devices, get ONLYOFFICE Documents app for &quot;iOS&quot;:&quot;https://apps.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_user_apps_tips_v115 {
             get {
@@ -2110,7 +2106,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using ONLYOFFICE editors. Here are some tips on how to make it more effective.
         ///
-        ///$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm
+        ///$TableItemsTop $TableItem2 $TableItem1 $TableItem4 $TableItem3 $TableItem7 $TableItem6 $TableItem5 $TableItemsBtm
         ///
         ///$GreenButton
         ///
@@ -2143,7 +2139,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download the apps to work on docs &lt;a target=&quot;_blank&quot; style=&quot;color: #0078bd; font-family: Arial; font-size: 14px;&quot; href=&quot;https://www.onlyoffice.com/apps.aspx&quot;&gt;offline&lt;/a&gt; as well as on &lt;a target=&quot;_blank&quot; style=&quot;color: #0078bd; font-family: Arial; font-size: 14px;&quot; href=&quot;https://itunes.apple.com/us/app/onlyoffice-documents/id944896972&quot;&gt;iOS&lt;/a&gt; and &lt;a target=&quot;_blank&quot; style=&quot;color: #0078bd; font-family: Arial; font-size: 14px;&quot; href=&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;&gt;Androi [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to Create ready-to-fill-out forms together with your teammates, let other users fill them in, save forms as PDF files. &quot;Learn more&quot;:&quot;https://helpcenter.onlyoffice.com/userguides/docs-index.aspx&quot;.
         /// </summary>
         public static string pattern_saas_admin_user_docs_tips_v115_item_apps {
             get {
@@ -2152,7 +2148,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *Get the apps*.
+        ///   Looks up a localized string similar to *Create ready-to-fill-out forms*.
         /// </summary>
         public static string pattern_saas_admin_user_docs_tips_v115_item_apps_hdr {
             get {
@@ -2197,7 +2193,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Content Controls to create customizable forms..
+        ///   Looks up a localized string similar to Create and co-edit &quot;fillable document forms&quot;:&quot;https://www.onlyoffice.com/form-creator.aspx&quot; online, let other users fill them in, save forms as PDF files..
         /// </summary>
         public static string pattern_saas_admin_user_docs_tips_v115_item_contentcontrols {
             get {
@@ -2206,7 +2202,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *Use Content Controls*.
+        ///   Looks up a localized string similar to *Create professional-looking forms*.
         /// </summary>
         public static string pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr {
             get {
@@ -2233,7 +2229,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE provides you with the most complete set of styling and formatting tools..
+        ///   Looks up a localized string similar to ONLYOFFICE provides you with the most complete set of styling and formatting tools. &quot;Learn more&quot;:&quot;https://helpcenter.onlyoffice.com/userguides/docs-index.aspx&quot;.
         /// </summary>
         public static string pattern_saas_admin_user_docs_tips_v115_item_formatting {
             get {
@@ -2251,7 +2247,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Review to suggest changes without modifying the original doc, add Comments to share your thoughts on a specific extract, or chat inside your doc via instant messages..
+        ///   Looks up a localized string similar to Use Review to suggest changes without modifying the original doc, add comments and tag other users for feedback. Exchange instant messages via built-in chat or Telegram, make video calls using Jitsi..
         /// </summary>
         public static string pattern_saas_admin_user_docs_tips_v115_item_review {
             get {
@@ -2269,7 +2265,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Share docs to individuals or user groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access..
+        ///   Looks up a localized string similar to Share docs to individuals or user groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access. To protect documents, you can restrict printing, downloading, copying, and sharing..
         /// </summary>
         public static string pattern_saas_admin_user_docs_tips_v115_item_share {
             get {
@@ -2307,13 +2303,15 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Test ONLYOFFFICE Business cloud for 30 days for free:
+        ///Test ONLYOFFICE Business cloud for 30 days for free:
         ///
-        ///# *Add up to 30 users* with 100 Gb per each. After purchasing the subscription, you will be able to add any number of users.
+        ///# *Edit unlimited number of docs*, sheets, slides, and forms simultaneously.
         ///# *Customize your online office* style to match your branding.
-        ///# *Edit unlimited number of docs*, sheets, and slides simultaneously.
         ///# *Ensure security:* enable 2FA, configure automatic backups, track user actions.
-        ///# *Integrate with your infrastructure:* use LDAP, SSO, and your domain name for portal add [rest of string was truncated]&quot;;.
+        ///# *Integrate with your infrastructure:* use LDAP, SSO, and your domain name for portal address.
+        ///# *Connect apps for productive work:* Twilio, DocuSign, etc.
+        ///
+        ///If you need instructions on configuring/using ONLYO [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_welcome_v115 {
             get {
@@ -2345,10 +2343,10 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.  Now you can:
         ///
-        ///# Edit your &quot;profile&quot;:&quot;$MyStaffLink&quot;.
-        ///# View and comment the content available in the &quot;Community&quot;:&quot;${__VirtualRootPath}/Products/Community/&quot; and &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot;.
-        ///# Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
-        ///# Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPat [rest of string was truncated]&quot;;.
+        ///1. Edit your &quot;profile&quot;:&quot;$MyStaffLink&quot;.
+        ///2. View and comment the content available in the &quot;Community&quot;:&quot;${__VirtualRootPath}/Products/Community/&quot; and &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot;.
+        ///3. Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
+        ///4. Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPa [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_guest_welcome_v115 {
             get {
@@ -2380,9 +2378,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE! Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///# Create and edit &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;, share them with teammates, and collaborate in real time.
-        ///# Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
-        ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot; and your custo [rest of string was truncated]&quot;;.
+        ///1. Create and edit &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;,  share them with teammates, collaborate in real time, and work with forms.
+        ///2. Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
+        ///3. Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projec [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_user_welcome_v115 {
             get {
@@ -2396,7 +2394,7 @@ namespace ASC.Web.Core.PublicResources {
         ///&quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; has changed his/her profile details at the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
         ///
         ///
-        ///^You receive this email because you are an administrator of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal. If you do not want to receive the notifications about profile updates, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
+        ///^If you do not want to receive the notifications about profile updates, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
         /// </summary>
         public static string pattern_self_profile_updated {
             get {
@@ -2433,7 +2431,7 @@ namespace ASC.Web.Core.PublicResources {
         ///#end
         ///
         ///
-        ///^You receive this email because you are a regi [rest of string was truncated]&quot;;.
+        ///^If you do not want to receive the notificatio [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_send_whats_new {
             get {
@@ -2540,7 +2538,7 @@ namespace ASC.Web.Core.PublicResources {
         ///&quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; has joined your portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///
-        ///^You receive this email because you are an administrator user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal. If you do not want to receive the notifications about new users, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
+        ///^If you do not want to receive the notifications about new users, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
         /// </summary>
         public static string pattern_user_has_join {
             get {
@@ -2603,11 +2601,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ${LetterLogoText} password assistance.
+        ///   Looks up a localized string similar to Confirm changing your password.
         /// </summary>
-        public static string subject_change_password {
+        public static string subject_change_password_v115 {
             get {
-                return ResourceManager.GetString("subject_change_password", resourceCulture);
+                return ResourceManager.GetString("subject_change_password_v115", resourceCulture);
             }
         }
         
@@ -2711,7 +2709,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
+        ///   Looks up a localized string similar to Get free desktop and mobile apps.
         /// </summary>
         public static string subject_enterprise_admin_user_apps_tips_v10 {
             get {
@@ -3035,7 +3033,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to How to enhance security of your web office.
+        ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
         /// </summary>
         public static string subject_personal_after_registration28 {
             get {
@@ -3058,15 +3056,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_personal_already_exist {
             get {
                 return ResourceManager.GetString("subject_personal_already_exist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE Personal password assistance.
-        /// </summary>
-        public static string subject_personal_change_password {
-            get {
-                return ResourceManager.GetString("subject_personal_change_password", resourceCulture);
             }
         }
         

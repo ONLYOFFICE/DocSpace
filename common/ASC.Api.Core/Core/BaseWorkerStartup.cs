@@ -29,16 +29,46 @@ namespace ASC.Api.Core;
 public class BaseWorkerStartup
 {
     private readonly IConfiguration _configuration;
+    private readonly IHostEnvironment _hostEnvironment;
 
-    public BaseWorkerStartup(IConfiguration configuration)
+    public BaseWorkerStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
         _configuration = configuration;
+        _hostEnvironment = hostEnvironment;
     }
 
     public virtual void ConfigureServices(IServiceCollection services)
     {
         services.AddHttpContextAccessor();
         services.AddCustomHealthCheck(_configuration);
+
+        services.AddScoped<EFLoggerFactory>();
+        services.AddBaseDbContextPool<AccountLinkContext>();
+        services.AddBaseDbContextPool<CoreDbContext>();
+        services.AddBaseDbContextPool<TenantDbContext>();
+        services.AddBaseDbContextPool<UserDbContext>();
+        services.AddBaseDbContextPool<TelegramDbContext>();
+        services.AddBaseDbContextPool<CustomDbContext>();
+        services.AddBaseDbContextPool<WebstudioDbContext>();
+        services.AddBaseDbContextPool<InstanceRegistrationContext>();
+        services.AddBaseDbContextPool<IntegrationEventLogContext>();
+        services.AddBaseDbContextPool<FeedDbContext>();
+        services.AddBaseDbContextPool<MessagesContext>();
+        services.AddBaseDbContextPool<WebhooksDbContext>();
+
+        services.AddAutoMapper(GetAutoMapperProfileAssemblies());
+
+        if (!_hostEnvironment.IsDevelopment())
+        {
+            services.AddStartupTask<WarmupServicesStartupTask>()
+                    .TryAddSingleton(services);
+        }
+
+    }
+
+    private IEnumerable<Assembly> GetAutoMapperProfileAssemblies()
+    {
+        return AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name.StartsWith("ASC."));
     }
 
     public virtual void Configure(IApplicationBuilder app)

@@ -1,9 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (создание)",
-  "GroupAction": "Работа с группой",
-  "Members": "Участники",
-  "SearchAddedMembers": "Поиск добавленных участников",
-  "SelectAction": "Выбрать",
-  "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} '{{ groupName }}'",
-  "AddHeadOfDepartment": "Добавить руководителя группы"
-}

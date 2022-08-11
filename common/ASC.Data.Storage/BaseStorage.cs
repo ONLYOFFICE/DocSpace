@@ -321,7 +321,6 @@ public abstract class BaseStorage : IDataStore
     public abstract string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize,
                                          string contentType, string contentDisposition, string submitLabel);
 
-    public abstract Task<string> GetUploadedUrlAsync(string domain, string directoryPath);
     public abstract string GetUploadUrl();
 
     public abstract string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,

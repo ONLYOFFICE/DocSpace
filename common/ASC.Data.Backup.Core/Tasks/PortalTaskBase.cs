@@ -235,7 +235,7 @@ public abstract class PortalTaskBase
 
     protected void RunMysqlFile(string file, bool db = false)
     {
-        var connectionString = ParseConnectionString(DbFactory.ConnectionStringSettings.ConnectionString);
+        var connectionString = ParseConnectionString(DbFactory.ConnectionStringSettings());
         var args = new StringBuilder()
                 .Append($"-h {connectionString["server"]} ")
                 .Append($"-u {connectionString["user id"]} ")
@@ -274,42 +274,137 @@ public abstract class PortalTaskBase
         Logger.DebugCompleteMySQlFile(file);
     }
 
-    protected Task RunMysqlFile(Stream stream, string delimiter = ";")
+    protected Task RunMysqlFile(Stream stream, string db, string delimiter = ";")
     {
         if (stream == null)
         {
             return Task.CompletedTask;
         }
 
-        return InternalRunMysqlFile(stream, delimiter);
+        return InternalRunMysqlFile(stream, db, delimiter);
     }
 
-    private async Task InternalRunMysqlFile(Stream stream, string delimiter)
+    private async Task InternalRunMysqlFile(Stream stream, string db, string delimiter = ";")
     {
         using var reader = new StreamReader(stream, Encoding.UTF8);
         string commandText;
 
-        while ((commandText = await reader.ReadLineAsync()) != null)
+        using var connection = DbFactory.OpenConnection(connectionString: db);
+        var command = connection.CreateCommand();
+        command.CommandText = "SET FOREIGN_KEY_CHECKS=0;";
+        await command.ExecuteNonQueryAsync();
+
+        if (delimiter != null)
         {
-            var sb = new StringBuilder(commandText);
-            while (!commandText.EndsWith(delimiter))
+            while ((commandText = await reader.ReadLineAsync()) != null)
             {
-                var newline = await reader.ReadLineAsync();
-                if (newline == null)
+                var sb = new StringBuilder(commandText);
+                while (!commandText.EndsWith(delimiter))
                 {
-                    break;
+                    var newline = await reader.ReadLineAsync();
+                    if (newline == null)
+                    {
+                        break;
+                    }
+                    sb.Append(newline);
                 }
-                sb.Append(newline);
+                commandText = sb.ToString();
+                try
+                {
+                    commandText = commandText.Replace("\\r", "\r").Replace("\\n", "\n");
+                    command = connection.CreateCommand();
+                    command.CommandText = commandText;
+                    await command.ExecuteNonQueryAsync();
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        if (commandText.StartsWith("REPLACE INTO"))
+                        {
+                            var innerValues = commandText.Split(',').ToList();
+                            for (var i = 0; i < innerValues.Count(); i++)
+                            {
+                                var flag1 = false;
+                                var flag2 = false;
+                                if (innerValues[i].StartsWith("("))
+                                {
+                                    flag1 = true;
+                                    innerValues[i] = innerValues[i].TrimStart('(');
+                                }
+                                else if (innerValues[i].EndsWith(")") && !innerValues[i].StartsWith("'")
+                                    || innerValues[i].EndsWith("')") && innerValues[i] != "')")
+                                {
+                                    flag2 = true;
+                                    innerValues[i] = innerValues[i].TrimEnd(')');
+                                }
+                                if (i == innerValues.Count() - 1)
+                                {
+                                    innerValues[i] = innerValues[i].Remove(innerValues[i].Length - 2, 2);
+                                }
+                                if (innerValues[i].StartsWith("\'") && ((!innerValues[i].EndsWith("\'") || innerValues[i] == "'")
+                                    || i != innerValues.Count() - 1 && (!innerValues[i + 1].StartsWith("\'") && innerValues[i + 1].EndsWith("\'") && !innerValues[i + 1].StartsWith("(\'") || innerValues[i + 1] == "'")))
+                                {
+                                    innerValues[i] += "," + innerValues[i + 1];
+                                    innerValues.RemoveAt(i + 1);
+                                }
+                                if (innerValues[i].StartsWith("\'") && innerValues[i].EndsWith("\'"))
+                                {
+                                    if (innerValues[i] != "''")
+                                    {
+                                        var sw = new StringWriter();
+                                        sw.Write("0x");
+                                        foreach (var b in Encoding.UTF8.GetBytes(innerValues[i].Trim('\'')))
+                                        {
+                                            sw.Write("{0:x2}", b);
+                                        }
+
+                                        innerValues[i] = string.Format("CONVERT({0} USING utf8)", sw.ToString());
+                                    }
+                                }
+                                if (flag1)
+                                {
+                                    innerValues[i] = "(" + innerValues[i];
+                                }
+                                else if (flag2)
+                                {
+                                    innerValues[i] = innerValues[i] + ")";
+                                }
+                                if (i == innerValues.Count() - 1)
+                                {
+                                    innerValues[i] = innerValues[i] + ");";
+                                }
+                            }
+
+                            commandText = string.Join(",", innerValues).ToString();
+                            command = connection.CreateCommand();
+                            command.CommandText = commandText;
+                            await command.ExecuteNonQueryAsync();
+                        }
+                        else
+                        {
+                            await Task.Delay(1000);//avoiding deadlock
+                            command = connection.CreateCommand();
+                            command.CommandText = commandText;
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.ErrorRestore(ex);
+                    }
+                }
             }
-            commandText = sb.ToString();
+        }
+        else
+        {
+            commandText = await reader.ReadToEndAsync();
+
             try
             {
-
-                using var connection = DbFactory.OpenConnection();
-                var command = connection.CreateCommand();
+                command = connection.CreateCommand();
                 command.CommandText = commandText;
                 await command.ExecuteNonQueryAsync();
-                //  await dbManager.ExecuteNonQueryAsync(commandText, null);
             }
             catch (Exception e)
             {

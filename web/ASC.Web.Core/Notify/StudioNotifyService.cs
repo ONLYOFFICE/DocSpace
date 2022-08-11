@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.Notify;
@@ -47,6 +48,8 @@ public class StudioNotifyService
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly SettingsManager _settingsManager;
     private readonly WebItemSecurity _webItemSecurity;
+    private readonly MessageService _messageService;
+    private readonly MessageTarget _messageTarget;
     private readonly ILogger _log;
 
     public StudioNotifyService(
@@ -63,6 +66,8 @@ public class StudioNotifyService
         DisplayUserSettingsHelper displayUserSettingsHelper,
         SettingsManager settingsManager,
         WebItemSecurity webItemSecurity,
+        MessageService messageService,
+        MessageTarget messageTarget,
         ILoggerProvider option)
     {
         _log = option.CreateLogger("ASC.Notify");
@@ -77,6 +82,8 @@ public class StudioNotifyService
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _settingsManager = settingsManager;
         _webItemSecurity = webItemSecurity;
+        _messageService = messageService;
+        _messageTarget = messageTarget;
         _userManager = userManager;
         _studioNotifyHelper = studioNotifyHelper;
     }
@@ -141,38 +148,31 @@ public class StudioNotifyService
                              new TagValue(Tags.Body, message));
     }
 
-    #region Voip
-
-    public void SendToAdminVoipWarning(double balance)
-    {
-        _client.SendNoticeAsync(Actions.VoipWarning, null, new TagValue(Tags.Body, balance));
-    }
-
-    public void SendToAdminVoipBlocked()
-    {
-        _client.SendNoticeAsync(Actions.VoipBlocked, null);
-    }
-
-    #endregion
-
     #region User Password
 
     public void UserPasswordChange(UserInfo userInfo)
     {
-        var hash = _authentication.GetUserPasswordStamp(userInfo.Id).ToString("s");
+        var auditEventDate = DateTime.UtcNow;
+
+        var hash = auditEventDate.ToString("s");
+
         var confirmationUrl = _commonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
         var action = _coreBaseSettings.Personal
-                         ? (_coreBaseSettings.CustomMode ? Actions.PersonalCustomModePasswordChange : Actions.PersonalPasswordChange)
-                     : Actions.PasswordChange;
+                         ? (_coreBaseSettings.CustomMode ? Actions.PersonalCustomModeEmailChangeV115 : Actions.PersonalPasswordChangeV115)
+                     : Actions.PasswordChangeV115;
 
         _client.SendNoticeToAsync(
                 action,
                     _studioNotifyHelper.RecipientFromEmail(userInfo.Email, false),
                 new[] { EMailSenderName },
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
+
+        var displayUserName = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
+
+        _messageService.Send(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(userInfo.Id), displayUserName);
     }
 
     #endregion
@@ -210,6 +210,18 @@ public class StudioNotifyService
                 new TagValue(Tags.InviteLink, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                     new TagValue(Tags.UserDisplayName, (user.DisplayUserName(_displayUserSettingsHelper) ?? string.Empty).Trim()));
+    }
+
+    public void SendEmailRoomInvite(string email, string confirmationUrl)
+    {
+        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmRoomInvite;
+
+        _client.SendNoticeToAsync(
+            Actions.RoomInvite,
+                _studioNotifyHelper.RecipientFromEmail(email, false),
+                new[] { EMailSenderName },
+                new TagValue(Tags.InviteLink, confirmationUrl),
+                TagValues.GreenButton(greenButtonText, confirmationUrl));
     }
 
     #endregion
@@ -620,6 +632,7 @@ public class StudioNotifyService
             notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV10 : Actions.EnterpriseWhitelabelAdminWelcomeV10;
 
             tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonAccessControlPanel, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl)));
+            tagValues.Add(new TagValue(Tags.ControlPanelUrl, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl).TrimEnd('/')));
         }
         else if (_tenantExtra.Opensource)
         {
@@ -633,6 +646,7 @@ public class StudioNotifyService
             //tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonConfigureRightNow, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General))));
 
             tagValues.Add(new TagValue(CommonTags.Footer, "common"));
+            tagValues.Add(new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx")));
         }
 
         tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));

@@ -57,11 +57,18 @@ public interface IFolderDao<T>
     /// <returns>root folder</returns>
     Task<Folder<T>> GetRootFolderByFileAsync(T fileId);
 
+    IAsyncEnumerable<Folder<T>> GetRoomsAsync(T parentId, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders,
+        bool withoutTags, bool withoutMe);
+
+    IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders,
+        bool withoutTags, bool withoutMe);
+    
     /// <summary>
     ///     Get a list of folders in current folder.
     /// </summary>
     /// <param name="parentId"></param>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId);
+
     /// <summary>
     /// Get a list of folders.
     /// </summary>
@@ -72,6 +79,7 @@ public interface IFolderDao<T>
     /// <param name="subjectID"></param>
     /// <param name="searchText"></param>
     /// <param name="withSubfolders"></param>
+    /// <param name="tagIds"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
 
@@ -79,14 +87,15 @@ public interface IFolderDao<T>
     /// Gets the folder (s) by ID (s)
     /// </summary>
     /// <param name="folderIds"></param>
-    /// <param name="filterType"></param>
+    /// <param name="filterTypes"></param>
     /// <param name="subjectGroup"></param>
     /// <param name="subjectID"></param>
     /// <param name="searchText"></param>
     /// <param name="searchSubfolders"></param>
     /// <param name="checkShare"></param>
+    /// <param name="tagIds"></param>
     /// <returns></returns>
-    IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
+    IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterTypes = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
 
     /// <summary>
     ///     Get folder, contains folder with id
@@ -301,6 +310,21 @@ public interface IFolderDao<T>
     /// <returns></returns>
     Task<T> GetFolderIDProjectsAsync(bool createIfNotExists);
 
+    /// <summary>
+    /// Returns id folder "VirtualRooms"
+    /// Only in TMFolderDao
+    /// </summary>
+    /// <param name="createIfNotExists"></param>
+    /// <returns></returns>
+    Task<T> GetFolderIDVirtualRooms(bool createIfNotExists);
+
+    /// <summary>
+    /// Returns id folder "Archive"
+    /// Only in TMFolderDao
+    /// </summary>
+    /// <param name="createIfNotExists"></param>
+    /// <returns></returns>
+    Task<T> GetFolderIDArchive(bool createIfNotExists);
 
     /// <summary>
     /// Return id of related object

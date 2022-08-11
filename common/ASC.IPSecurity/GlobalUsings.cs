@@ -45,5 +45,6 @@ global using AutoMapper.QueryableExtensions;
 
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Http.Extensions;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Logging;

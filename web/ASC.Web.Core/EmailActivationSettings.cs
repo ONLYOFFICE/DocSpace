@@ -31,6 +31,7 @@ public class EmailActivationSettings : ISettings<EmailActivationSettings>
 {
     public bool Show { get; set; }
 
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{85987929-1339-48EB-B06D-B9D097BDACF6}"); }

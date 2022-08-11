@@ -1,5 +1,0 @@
-﻿{
-  "DeleteUserConfirmation": "Ο χρήστης {{userCaption}} <strong>{{user}}</strong> θα διαγραφεί.",
-  "DeleteUserDataConfirmation": "Τα έγγραφα του χρήστη που έχουν κοινοποιηθεί σε άλλους θα διαγραφούν. Για να μην γίνει αυτό, αναθέστε εκ νέου τα δεδομένα.",
-  "SuccessfullyDeleteUserInfoMessage": "Ο χρήστης έχει διαγραφεί επιτυχώς"
-}

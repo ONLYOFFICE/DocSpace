@@ -1,0 +1,20 @@
+{
+  "Clouds": "Medii Cloud",
+  "CommonSettings": "Setări Comune",
+  "ConnectAdminDescription": "Pentru o conexiune de succes, introduceți datele necesare pe <1>această pagină</1>.",
+  "ConnectDescriptionText": "Nu v-ați conectat încă cu niciun cont cloud terț.",
+  "ConnectEmpty": "Nu este nimic aici",
+  "ConnectMakeShared": "A fost partajat și salvat în dosarul Comune",
+  "ConnextOtherAccount": "Un alt cont",
+  "DisplayFavorites": "Afișare Preferințe",
+  "DisplayNotification": "Afișează notificare când elemente sunt mutate în Coșul de gunoi",
+  "DisplayRecent": "Afișează recente",
+  "DisplayTemplates": "Afișează Șabloane",
+  "IntermediateVersion": "Păstrați toate versiuni intermediare salvate",
+  "KeepIntermediateVersion": "Păstrați versiuni intermediare în timpul editării",
+  "OriginalCopy": "Salvează copia și în formatul original",
+  "StoringFileVersion": "Stocarea versiunilor fișierelor",
+  "ThirdPartyBtn": "Permiteți utilizatorilor să conecteze serviciile de stocare terțe",
+  "ThirdPartySettings": "Serviciile cloud conectate",
+  "UpdateOrCreate": "Actualizați versiunea fișierului pentru fișierul existent cu același nume. În caz contrar, copia fișierului nu va fi creată."
+}

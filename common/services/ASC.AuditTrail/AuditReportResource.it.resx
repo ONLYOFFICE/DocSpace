@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActionCol" xml:space="preserve">
     <value>Azione</value>
@@ -1027,6 +1027,12 @@
   <data name="PortalDeleted" xml:space="preserve">
     <value>Portale eliminato</value>
   </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Private Room è disabilitata</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Private Room è abilitata</value>
+  </data>
   <data name="ProductAccessOpened" xml:space="preserve">
     <value>Prodotti [{0}]. Accesso aperto</value>
   </data>
@@ -1158,6 +1164,12 @@
   </data>
   <data name="StartBackupSetting" xml:space="preserve">
     <value>Backup avviato</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Avviare la decrittografia dello spazio di archiviazione</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Avviare la crittografia dello spazio di archiviazione</value>
   </data>
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Migrazione portale all'altro regione avviata</value>

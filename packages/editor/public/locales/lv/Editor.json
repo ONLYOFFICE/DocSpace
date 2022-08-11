@@ -1,0 +1,9 @@
+{
+  "DocumentsFileType": "dokumenti",
+  "FileLocation": "Atvērt faila atrašanās vietu",
+  "FileName": "Faila nosaukums",
+  "ImageFileType": "attēli",
+  "MailMergeFileType": "Atlasiet failu XLSX formātā",
+  "OpenSavedDocument": "Atvērt saglabāto dokumentu jaunā cilnē",
+  "SelectFilesType": "Atlasīt šāda veida failus: {{fileType}}"
+}

@@ -108,7 +108,7 @@ public sealed class UserManagerWrapper
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
-    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
+    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
 
@@ -136,7 +136,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = _userManager.SaveUserInfo(userInfo);
+        var newUserInfo = _userManager.SaveUserInfo(userInfo, isVisitor, isCardDav);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -200,62 +200,30 @@ public sealed class UserManagerWrapper
 
         if (!CheckPasswordRegex(passwordSettingsObj, password))
         {
-            throw new Exception(GenerateErrorMessage(passwordSettingsObj));
+            throw new Exception(GetPasswordHelpMessage(passwordSettingsObj));
         }
     }
 
     public string GetPasswordRegex(PasswordSettings passwordSettings)
     {
-        var pwdBuilder = new StringBuilder();
+        var pwdBuilder = new StringBuilder("^");
 
-        if (_coreBaseSettings.CustomMode)
+        if (passwordSettings.Digits)
         {
-            pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
-
-            if (passwordSettings.Digits)
-            {
-                pwdBuilder.Append(@"(?=.*\d)");
-            }
-
-            if (passwordSettings.UpperCase)
-            {
-                pwdBuilder.Append(@"(?=.*[A-Z])");
-            }
-
-            if (passwordSettings.SpecSymbols)
-            {
-                pwdBuilder.Append(@"(?=.*[_\-.~!$^*()=|])");
-            }
-
-            pwdBuilder.Append(@"[0-9a-zA-Z_\-.~!$^*()=|]");
-        }
-        else
-        {
-            pwdBuilder.Append(@"^(?=.*\p{Ll}{0,})");
-
-            if (passwordSettings.Digits)
-            {
-                pwdBuilder.Append(@"(?=.*\d)");
-            }
-
-            if (passwordSettings.UpperCase)
-            {
-                pwdBuilder.Append(@"(?=.*\p{Lu})");
-            }
-
-            if (passwordSettings.SpecSymbols)
-            {
-                pwdBuilder.Append(@"(?=.*[\W])");
-            }
-
-            pwdBuilder.Append('.');
+            pwdBuilder.Append(passwordSettings.DigitsRegexStr);
         }
 
-        pwdBuilder.Append('{');
-        pwdBuilder.Append(passwordSettings.MinLength);
-        pwdBuilder.Append(',');
-        pwdBuilder.Append(PasswordSettings.MaxLength);
-        pwdBuilder.Append(@"}$");
+        if (passwordSettings.UpperCase)
+        {
+            pwdBuilder.Append(passwordSettings.UpperCaseRegexStr);
+        }
+
+        if (passwordSettings.SpecSymbols)
+        {
+            pwdBuilder.Append(passwordSettings.SpecSymbolsRegexStr);
+        }
+
+        pwdBuilder.Append($"{passwordSettings.AllowedCharactersRegexStr}{{{passwordSettings.MinLength},{PasswordSettings.MaxLength}}}$");
 
         return pwdBuilder.ToString();
     }
@@ -302,9 +270,6 @@ public sealed class UserManagerWrapper
 
         _studioNotifyService.UserPasswordChange(userInfo);
 
-        var displayUserName = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
-        _messageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
-
         return null;
     }
 
@@ -325,52 +290,36 @@ public sealed class UserManagerWrapper
         return sb.ToString();
     }
 
-    internal static string GenerateErrorMessage(PasswordSettings passwordSettings)
+    public static string GetPasswordHelpMessage(PasswordSettings passwordSettings)
     {
-        var error = new StringBuilder();
+        var text = new StringBuilder();
 
-        error.Append($"{Resource.ErrorPasswordMessage} ");
-        error.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
+        text.AppendFormat("{0} ", Resource.ErrorPasswordMessage);
+        text.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
+        text.AppendFormat(", {0}", Resource.ErrorPasswordOnlyLatinLetters);
+        text.AppendFormat(", {0}", Resource.ErrorPasswordNoSpaces);
+
         if (passwordSettings.UpperCase)
         {
-            error.AppendFormat($", {Resource.ErrorPasswordNoUpperCase}");
+            text.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
         }
 
         if (passwordSettings.Digits)
         {
-            error.Append($", {Resource.ErrorPasswordNoDigits}");
+            text.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
         }
 
         if (passwordSettings.SpecSymbols)
         {
-            error.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
+            text.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
         }
 
-        return error.ToString();
+        return text.ToString();
     }
 
     public string GetPasswordHelpMessage()
     {
-        var info = new StringBuilder();
-        var passwordSettings = _settingsManager.Load<PasswordSettings>();
-        info.Append($"{Resource.ErrorPasswordMessageStart} ");
-        info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
-        if (passwordSettings.UpperCase)
-        {
-            info.Append($", {Resource.ErrorPasswordNoUpperCase}");
-        }
-
-        if (passwordSettings.Digits)
-        {
-            info.Append($", {Resource.ErrorPasswordNoDigits}");
-        }
-
-        if (passwordSettings.SpecSymbols)
-        {
-            info.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
-        }
-
-        return info.ToString();
+        return GetPasswordHelpMessage(_settingsManager.Load<PasswordSettings>());
     }
 
     #endregion

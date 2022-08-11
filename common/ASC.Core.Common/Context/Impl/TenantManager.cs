@@ -26,55 +26,8 @@
 
 namespace ASC.Core;
 
+
 [Scope]
-class ConfigureTenantManager : IConfigureNamedOptions<TenantManager>
-{
-    private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
-    private readonly IOptionsSnapshot<CachedQuotaService> _quotaService;
-    private readonly IOptionsSnapshot<TariffService> _tariffService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly CoreSettings _coreSettings;
-
-    public ConfigureTenantManager(
-        IOptionsSnapshot<CachedTenantService> tenantService,
-        IOptionsSnapshot<CachedQuotaService> quotaService,
-        IOptionsSnapshot<TariffService> tariffService,
-        IHttpContextAccessor httpContextAccessor,
-        CoreBaseSettings coreBaseSettings,
-        CoreSettings coreSettings
-        )
-    {
-        _tenantService = tenantService;
-        _quotaService = quotaService;
-        _tariffService = tariffService;
-        _httpContextAccessor = httpContextAccessor;
-        _coreBaseSettings = coreBaseSettings;
-        _coreSettings = coreSettings;
-    }
-
-    public void Configure(string name, TenantManager options)
-    {
-        Configure(options);
-
-        options.TenantService = _tenantService.Get(name);
-        options.QuotaService = _quotaService.Get(name);
-        options.TariffService = _tariffService.Get(name);
-    }
-
-    public void Configure(TenantManager options)
-    {
-        options.HttpContextAccessor = _httpContextAccessor;
-        options.CoreBaseSettings = _coreBaseSettings;
-        options.CoreSettings = _coreSettings;
-
-        options.TenantService = _tenantService.Value;
-        options.QuotaService = _quotaService.Value;
-        options.TariffService = _tariffService.Value;
-    }
-}
-
-[Scope(typeof(ConfigureTenantManager))]
 public class TenantManager
 {
     private Tenant _currentTenant;
@@ -328,6 +281,7 @@ public class TenantManager
                 {
                     currentQuota.ActiveUsers = tariff.Quantity;
                     currentQuota.MaxTotalSize *= currentQuota.ActiveUsers;
+                    currentQuota.Price *= currentQuota.ActiveUsers;
                 }
 
                 return currentQuota;

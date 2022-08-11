@@ -53,42 +53,34 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_DocuSignComplete" xml:space="preserve">
     <value>h1. Trabajo con el documento ha sido finalizado $DocumentTitle
 
-Todas las personas han firmado el documento "$DocumentTitle":"$DocumentURL".
-
-^Usted ha recibido este mensaje como un usuario registrado en el portal "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Todas las personas han firmado el documento "$DocumentTitle":"$DocumentURL".</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle
 
-Para recibir una información adicional entre en su cuenta de DocuSign.
-
-^Usted ha recibido este mensaje como un usuario registrado en el portal "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Para recibir una información adicional entre en su cuenta de DocuSign.</value>
   </data>
   <data name="pattern_EditorMentions" xml:space="preserve">
     <value>h1. "$__AuthorName":"$__AuthorUrl" le ha mencionado en el comentario del documento
 
 Este es un mensaje de correo electrónico para notificarle que usted ha sido mencionado por "$__AuthorName":"$__AuthorUrl" en el comentario del documento "$DocumentTitle":"$DocumentURL":
 
-$Message
-
-^Usted ha recibido este correo electrónico porque es un usuario registrado del portal "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+$Message</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Envío está completo
 
 Es un mensaje de correo electrónico para notificarle que el envío de mensajes de $MailsCount que usted ha solicitado ha finalizado.
 
-Puede comprobar el estado de estos mensajes de correo electrónico en su carpeta "Enviado":"$__VirtualRootPath/addons/mail/# enviado" del módulo Correo.
-
-^Usted ha recibido este mensaje como un usuario registrado en el "${__VirtualRootPath}":".${__VirtualRootPath}"portal.^</value>
+Puede comprobar el estado de estos mensajes de correo electrónico en su carpeta "Enviado":"$__VirtualRootPath/addons/mail/# enviado" del módulo Correo.</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1.Acceso concedido al documento: "$DocumentTitle":"$DocumentURL"

@@ -24,30 +24,61 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using FileShare = ASC.Files.Core.Security.FileShare;
+
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
 public class FilesControllerInternal : FilesController<int>
 {
-    public FilesControllerInternal(FilesControllerHelper<int> filesControllerHelper) : base(filesControllerHelper)
+    public FilesControllerInternal(
+        FilesControllerHelper<int> filesControllerHelper,
+        FileStorageService<int> fileStorageService,
+        IMapper mapper)
+        : base(filesControllerHelper, fileStorageService, mapper)
     {
     }
 }
 
 public class FilesControllerThirdparty : FilesController<string>
 {
-    public FilesControllerThirdparty(FilesControllerHelper<string> filesControllerHelper) : base(filesControllerHelper)
+    private readonly ThirdPartySelector _thirdPartySelector;
+    private readonly DocumentServiceHelper _documentServiceHelper;
+
+    public FilesControllerThirdparty(
+        FilesControllerHelper<string> filesControllerHelper,
+        FileStorageService<string> fileStorageService,
+        ThirdPartySelector thirdPartySelector,
+        DocumentServiceHelper documentServiceHelper,
+        IMapper mapper)
+        : base(filesControllerHelper, fileStorageService, mapper)
     {
+        _thirdPartySelector = thirdPartySelector;
+        _documentServiceHelper = documentServiceHelper;
+    }
+
+    [HttpGet("file/app-{fileId}", Order = 1)]
+    public async Task<FileEntryDto> GetFileInfoThirdPartyAsync(string fileId)
+    {
+        fileId = "app-" + fileId;
+        var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
+        var file = app.GetFile(fileId?.ToString(), out var editable);
+        var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
+        return await _filesControllerHelper.GetFileEntryWrapperAsync(docParams.File);
     }
 }
 
 public abstract class FilesController<T> : ApiControllerBase
 {
-    private readonly FilesControllerHelper<T> _filesControllerHelper;
+    protected readonly FilesControllerHelper<T> _filesControllerHelper;
+    private readonly FileStorageService<T> _fileStorageService;
+    private readonly IMapper _mapper;
 
-    public FilesController(FilesControllerHelper<T> filesControllerHelper)
+    public FilesController(FilesControllerHelper<T> filesControllerHelper, FileStorageService<T> fileStorageService, IMapper mapper)
     {
         _filesControllerHelper = filesControllerHelper;
+        _fileStorageService = fileStorageService;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -82,7 +113,13 @@ public abstract class FilesController<T> : ApiControllerBase
         });
     }
 
-    [HttpPost("file/{fileId}/copyas", Order = int.MaxValue)]
+    [HttpGet("file/{fileId}/presigneduri")]
+    public async Task<string> GetPresignedUri(T fileId)
+    {
+        return await _filesControllerHelper.GetPresignedUri(fileId);
+    }
+
+    [HttpPost("file/{fileId}/copyas")]
     public async Task<FileEntryDto> CopyFileAs(T fileId, CopyAsRequestDto<JsonElement> inDto)
     {
         if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
@@ -183,6 +220,7 @@ public abstract class FilesController<T> : ApiControllerBase
         return _filesControllerHelper.GetFileInfoAsync(fileId, version);
     }
 
+
     /// <summary>
     /// Returns the detailed information about all the available file versions with the ID specified in the request
     /// </summary>
@@ -262,19 +300,38 @@ public abstract class FilesController<T> : ApiControllerBase
     {
         return _filesControllerHelper.UpdateFileStreamAsync(_filesControllerHelper.GetFileFromRequest(inDto).OpenReadStream(), fileId, inDto.FileExtension, inDto.Encrypted, inDto.Forcesave);
     }
+
+    [HttpGet("{fileId}/properties")]
+    public async Task<EntryPropertiesRequestDto> GetProperties(T fileId)
+    {
+        return _mapper.Map<EntryProperties, EntryPropertiesRequestDto>(await _fileStorageService.GetFileProperties(fileId));
+    }
+
+
+    [HttpPut("{fileId}/properties")]
+    public Task<EntryProperties> SetProperties(T fileId, EntryPropertiesRequestDto fileProperties)
+    {
+        return _fileStorageService.SetFileProperties(fileId, _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(fileProperties));
+    }
 }
 
 public class FilesControllerCommon : ApiControllerBase
 {
+    private readonly IMapper _mapper;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileStorageService<string> _fileStorageServiceThirdparty;
     private readonly FilesControllerHelper<int> _filesControllerHelperInternal;
 
     public FilesControllerCommon(
+        IMapper mapper,
+        IServiceScopeFactory serviceScopeFactory,
         GlobalFolderHelper globalFolderHelper,
         FileStorageService<string> fileStorageServiceThirdparty,
         FilesControllerHelper<int> filesControllerHelperInternal)
     {
+        _mapper = mapper;
+        _serviceScopeFactory = serviceScopeFactory;
         _globalFolderHelper = globalFolderHelper;
         _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
         _filesControllerHelperInternal = filesControllerHelperInternal;
@@ -354,5 +411,41 @@ public class FilesControllerCommon : ApiControllerBase
     public Task<IEnumerable<JsonElement>> CreateThumbnailsAsync(BaseBatchRequestDto inDto)
     {
         return _fileStorageServiceThirdparty.CreateThumbnailsAsync(inDto.FileIds.ToList());
+    }
+
+
+    [HttpPut("batch/properties")]
+    public async Task<List<EntryProperties>> SetProperties(BatchEntryPropertiesRequestDto batchEntryPropertiesRequestDto)
+    {
+        var result = new List<EntryProperties>();
+
+        foreach (var fileId in batchEntryPropertiesRequestDto.FilesId)
+        {
+
+            if (fileId.ValueKind == JsonValueKind.String)
+            {
+                await AddProps(fileId.GetString());
+            }
+            else if (fileId.ValueKind == JsonValueKind.String)
+            {
+                await AddProps(fileId.GetInt32());
+            }
+        }
+
+        return result;
+
+        async Task AddProps<T>(T fileId)
+        {
+            using var scope = _serviceScopeFactory.CreateScope();
+            var fileStorageService = scope.ServiceProvider.GetRequiredService<FileStorageService<T>>();
+            var props = _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(batchEntryPropertiesRequestDto.FileProperties);
+            if (batchEntryPropertiesRequestDto.CreateSubfolder)
+            {
+                var file = await fileStorageService.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
+                props.FormFilling.CreateFolderTitle = Path.GetFileNameWithoutExtension(file.Title);
+            }
+
+            result.Add(await fileStorageService.SetFileProperties(fileId, props));
+        }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ASC.Core.Common.Migrations
 {
-    [DbContext(typeof(MySqlUserDbContext))]
+    [DbContext(typeof(UserDbContext))]
     [Migration("20210804110106_TestMigration")]
     partial class TestMigration
     {
@@ -1447,12 +1447,6 @@ namespace ASC.Core.Common.Migrations
                         .UseCollation("utf8_general_ci")
                         .HasCharSet("utf8");
 
-                    b.Property<string>("PwdHashSha512")
-                        .HasColumnType("varchar(512)")
-                        .HasColumnName("pwdhashsha512")
-                        .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
-
                     b.Property<int>("Tenant")
                         .HasColumnType("int")
                         .HasColumnName("tenant");
@@ -1481,7 +1475,6 @@ namespace ASC.Core.Common.Migrations
                             UserId = "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5",
                             LastModified = new DateTime(2021, 8, 4, 11, 1, 4, 554, DateTimeKind.Utc).AddTicks(9779),
                             PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                            PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
                             Tenant = 1
                         });
                 });

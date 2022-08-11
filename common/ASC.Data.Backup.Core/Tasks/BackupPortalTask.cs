@@ -31,20 +31,19 @@ public class BackupPortalTask : PortalTaskBase
 {
     public string BackupFilePath { get; private set; }
     public int Limit { get; private set; }
-    private BackupsContext BackupRecordContext => _lazyBackupsContext.Value;
 
     private const int MaxLength = 250;
     private const int BatchLimit = 5000;
 
     private readonly bool _dump;
+    private readonly IDbContextFactory<BackupsContext> _dbContextFactory;
     private readonly ILogger<BackupPortalTask> _logger;
     private readonly TenantManager _tenantManager;
     private readonly TempStream _tempStream;
-    private readonly Lazy<BackupsContext> _lazyBackupsContext;
 
     public BackupPortalTask(
         DbFactory dbFactory,
-        DbContextManager<BackupsContext> dbContextManager,
+        IDbContextFactory<BackupsContext> dbContextFactory,
         ILogger<BackupPortalTask> logger,
         TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
@@ -55,10 +54,10 @@ public class BackupPortalTask : PortalTaskBase
         : base(dbFactory, logger, storageFactory, storageFactoryConfig, moduleProvider)
     {
         _dump = coreBaseSettings.Standalone;
+        _dbContextFactory = dbContextFactory;
         _logger = logger;
         _tenantManager = tenantManager;
         _tempStream = tempStream;
-        _lazyBackupsContext = new Lazy<BackupsContext>(() => dbContextManager.Get(DbFactory.ConnectionStringSettings.ConnectionString));
     }
 
     public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
@@ -124,25 +123,43 @@ public class BackupPortalTask : PortalTaskBase
 
     private void DoDump(IDataWriteOperator writer)
     {
+        var databases = new Dictionary<Tuple<string, string>, List<string>>();
+        using (var connection = DbFactory.OpenConnection())
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = "select id, connection_string from mail_server_server";
+            ExecuteList(command).ForEach(r =>
+            {
+                var connectionString = GetConnectionString((int)r[0], JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(r[1]))["DbConnection"].ToString());
+
+                var command = connection.CreateCommand();
+                command.CommandText = "show tables";
+                var tables = ExecuteList(command).Select(r => Convert.ToString(r[0])).ToList();
+                databases.Add(new Tuple<string, string>(connectionString.Name, connectionString.ConnectionString), tables);
+            });
+        }
+
+        using (var connection = DbFactory.OpenConnection())
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = "show tables";
+            var tables = ExecuteList(command).Select(r => Convert.ToString(r[0])).ToList();
+            databases.Add(new Tuple<string, string>("default", DbFactory.ConnectionStringSettings()), tables);
+        }
+
         using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(true.ToString())))
         {
             writer.WriteEntry(KeyHelper.GetDumpKey(), stream);
         }
 
-        List<string> tables;
         var files = new List<BackupFileInfo>();
-        using (var connection = DbFactory.OpenConnection())
-        {
-            var command = connection.CreateCommand();
-            command.CommandText = "show tables";
-            tables = ExecuteList(command).Select(r => Convert.ToString(r[0])).ToList();
-        }
-        /*  using (var dbManager = new DbManager("default", 100000))
-          {
-              tables = dbManager.ExecuteList("show tables;").Select(r => Convert.ToString(r[0])).ToList();
-          }*/
 
-        var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
+        var stepscount = 0;
+        foreach (var db in databases)
+        {
+            stepscount += db.Value.Count * 4;// (schema + data) * (dump + zip)
+        }
+
         if (ProcessStorage)
         {
             var tenants = _tenantManager.GetTenants(false).Select(r => r.Id);
@@ -157,14 +174,42 @@ public class BackupPortalTask : PortalTaskBase
 
         SetStepsCount(stepscount);
 
+        foreach (var db in databases)
+        {
+            DoDump(writer, db.Key.Item1, db.Key.Item2, db.Value);
+        }
+        var dir = Path.GetDirectoryName(BackupFilePath);
+        var subDir = Path.Combine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
+        _logger.DebugDirRemoveStart(subDir);
+        Directory.Delete(subDir, true);
+        _logger.DebugDirRemoveEnd(subDir);
+
+        if (ProcessStorage)
+        {
+            DoDumpStorage(writer, files);
+        }
+    }
+
+    private void DoDump(IDataWriteOperator writer, string dbName, string connectionString, List<string> tables)
+    {
         var excluded = ModuleProvider.AllModules.Where(r => _ignoredModules.Contains(r.ModuleName)).SelectMany(r => r.Tables).Select(r => r.Name).ToList();
         excluded.AddRange(_ignoredTables);
         excluded.Add("res_");
 
         var dir = Path.GetDirectoryName(BackupFilePath);
         var subDir = CrossPlatform.PathCombine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
-        var schemeDir = CrossPlatform.PathCombine(subDir, KeyHelper.GetDatabaseSchema());
-        var dataDir = CrossPlatform.PathCombine(subDir, KeyHelper.GetDatabaseData());
+        var schemeDir = "";
+        var dataDir = "";
+        if (dbName == "default")
+        {
+            schemeDir = Path.Combine(subDir, KeyHelper.GetDatabaseSchema());
+            dataDir = Path.Combine(subDir, KeyHelper.GetDatabaseData());
+        }
+        else
+        {
+            schemeDir = Path.Combine(subDir, dbName, KeyHelper.GetDatabaseSchema());
+            dataDir = Path.Combine(subDir, dbName, KeyHelper.GetDatabaseData());
+        }
 
         if (!Directory.Exists(schemeDir))
         {
@@ -175,7 +220,11 @@ public class BackupPortalTask : PortalTaskBase
             Directory.CreateDirectory(dataDir);
         }
 
-        var dict = tables.ToDictionary(t => t, SelectCount);
+        var dict = new Dictionary<string, int>();
+        foreach (var table in tables)
+        {
+            dict.Add(table, SelectCount(table, connectionString));
+        }
         tables.Sort((pair1, pair2) => dict[pair1].CompareTo(dict[pair2]));
 
         for (var i = 0; i < tables.Count; i += TasksLimit)
@@ -184,10 +233,10 @@ public class BackupPortalTask : PortalTaskBase
             for (var j = 0; j < TasksLimit && i + j < tables.Count; j++)
             {
                 var t = tables[i + j];
-                tasks.Add(Task.Run(() => DumpTableScheme(t, schemeDir)));
+                tasks.Add(Task.Run(() => DumpTableScheme(t, schemeDir, connectionString)));
                 if (!excluded.Any(t.StartsWith))
                 {
-                    tasks.Add(Task.Run(() => DumpTableData(t, dataDir, dict[t])));
+                    tasks.Add(Task.Run(() => DumpTableData(t, dataDir, dict[t], connectionString)));
                 }
                 else
                 {
@@ -199,32 +248,24 @@ public class BackupPortalTask : PortalTaskBase
 
             ArchiveDir(writer, subDir);
         }
-
-        _logger.DebugDirRemoveStart(subDir);
-        Directory.Delete(subDir, true);
-        _logger.DebugDirRemoveEnd(subDir);
-
-        if (ProcessStorage)
-        {
-            DoDumpStorage(writer, files);
-        }
     }
 
     private IEnumerable<BackupFileInfo> GetFiles(int tenantId)
     {
         var files = GetFilesToProcess(tenantId).ToList();
-        var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+        using var backupRecordContext = _dbContextFactory.CreateDbContext();
+        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
         return files;
 
     }
 
-    private void DumpTableScheme(string t, string dir)
+    private void DumpTableScheme(string t, string dir, string connectionString)
     {
         try
         {
             _logger.DebugDumpTableSchemeStart(t);
-            using (var connection = DbFactory.OpenConnection())
+            using (var connection = DbFactory.OpenConnection(connectionString: connectionString))
             {
                 var command = connection.CreateCommand();
                 command.CommandText = $"SHOW CREATE TABLE `{t}`";
@@ -252,16 +293,15 @@ public class BackupPortalTask : PortalTaskBase
         catch (Exception e)
         {
             _logger.ErrorDumpTableScheme(e);
-            throw;
         }
 
     }
 
-    private int SelectCount(string t)
+    private int SelectCount(string t, string dbName)
     {
         try
         {
-            using var connection = DbFactory.OpenConnection();
+            using var connection = DbFactory.OpenConnection(connectionString: dbName);
             using var analyzeCommand = connection.CreateCommand();
             analyzeCommand.CommandText = $"analyze table {t}";
             analyzeCommand.ExecuteNonQuery();
@@ -278,7 +318,7 @@ public class BackupPortalTask : PortalTaskBase
 
     }
 
-    private void DumpTableData(string t, string dir, int count)
+    private void DumpTableData(string t, string dir, int count, string connectionString)
     {
         try
         {
@@ -298,7 +338,7 @@ public class BackupPortalTask : PortalTaskBase
 
             List<string> columns;
 
-            using (var connection = DbFactory.OpenConnection())
+            using (var connection = DbFactory.OpenConnection(connectionString: connectionString))
             {
                 var command = connection.CreateCommand();
                 command.CommandText = string.Format($"SHOW COLUMNS FROM `{t}`");
@@ -350,12 +390,12 @@ public class BackupPortalTask : PortalTaskBase
 
                 if (searchWithPrimary)
                 {
-                    result = GetDataWithPrimary(t, columns, primaryIndex, primaryIndexStart, primaryIndexStep);
+                    result = GetDataWithPrimary(t, columns, primaryIndex, primaryIndexStart, primaryIndexStep, connectionString);
                     primaryIndexStart += primaryIndexStep;
                 }
                 else
                 {
-                    result = GetData(t, columns, offset);
+                    result = GetData(t, columns, offset, connectionString);
                 }
 
                 offset += Limit;
@@ -369,10 +409,6 @@ public class BackupPortalTask : PortalTaskBase
 
                 SaveToFile(path, t, columns, result);
 
-                if (resultCount < Limit)
-                {
-                    break;
-                }
             } while (true);
 
 
@@ -386,9 +422,9 @@ public class BackupPortalTask : PortalTaskBase
         }
     }
 
-    private List<object[]> GetData(string t, List<string> columns, int offset)
+    private List<object[]> GetData(string t, List<string> columns, int offset, string connectionString)
     {
-        using var connection = DbFactory.OpenConnection();
+        using var connection = DbFactory.OpenConnection(connectionString: connectionString);
         var command = connection.CreateCommand();
         var selects = string.Join(',', columns);
         command.CommandText = $"select {selects} from {t} LIMIT {offset}, {Limit}";
@@ -396,14 +432,20 @@ public class BackupPortalTask : PortalTaskBase
         return ExecuteList(command);
     }
 
-    private List<object[]> GetDataWithPrimary(string t, List<string> columns, string primary, int start, int step)
+    private List<object[]> GetDataWithPrimary(string t, List<string> columns, string primary, int start, int step, string connectionString)
     {
-        using var connection = DbFactory.OpenConnection();
+        using var connection = DbFactory.OpenConnection(connectionString: connectionString);
         var command = connection.CreateCommand();
         var selects = string.Join(',', columns);
         command.CommandText = $"select {selects} from {t} where {primary} BETWEEN  {start} and {start + step} ";
 
         return ExecuteList(command);
+    }
+
+    private ConnectionStringSettings GetConnectionString(int id, string connectionString)
+    {
+        connectionString = connectionString + ";convert zero datetime=True";
+        return new ConnectionStringSettings("mailservice-" + id, connectionString, "MySql.Data.MySqlClient");
     }
 
     private void SaveToFile(string path, string t, IReadOnlyCollection<string> columns, List<object[]> data)
@@ -428,7 +470,7 @@ public class BackupPortalTask : PortalTaskBase
                     for (var i = 0; i < obj.Length; i++)
                     {
                         var value = obj[i];
-                        if (value is byte[] byteArray)
+                        if (value is byte[] byteArray && byteArray.Length != 0)
                         {
                             sw.Write("0x");
                             foreach (var b in byteArray)
@@ -438,8 +480,16 @@ public class BackupPortalTask : PortalTaskBase
                         }
                         else
                         {
-                            var ser = new JsonSerializer();
-                            ser.Serialize(writer, value);
+                            var s = obj[i] as string;
+                            if (s != null)
+                            {
+                                sw.Write("'" + s.Replace("\r", "\\r").Replace("\n", "\\n") + "'");
+                            }
+                            else
+                            {
+                                var ser = new JsonSerializer();
+                                ser.Serialize(writer, value);
+                            }
                         }
                         if (i != obj.Length - 1)
                         {
@@ -566,7 +616,9 @@ public class BackupPortalTask : PortalTaskBase
     private List<IGrouping<string, BackupFileInfo>> GetFilesGroup()
     {
         var files = GetFilesToProcess(TenantId).ToList();
-        var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+
+        using var backupRecordContext = _dbContextFactory.CreateDbContext();
+        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
 
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 

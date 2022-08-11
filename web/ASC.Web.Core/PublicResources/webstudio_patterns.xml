@@ -12,7 +12,7 @@
   </pattern>
   <pattern id="self_profile_updated" sender="telegram.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_self_profile_updated_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.MarkDownStyler,ASC.Notify.Textile" resource="|pattern_self_profile_updated_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
   
   <!-- user_has_join -->
@@ -26,7 +26,7 @@
   </pattern>
   <pattern id="user_has_join" sender="telegram.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_user_has_join_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.MarkDownStyler,ASC.Notify.Textile" resource="|pattern_user_has_join_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
   
   <!-- for_admin_notify -->
@@ -40,7 +40,7 @@
   </pattern>
   <pattern id="for_admin_notify" sender="telegram.sender">
     <subject resource="|subject_for_admin_notify|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core"></subject>
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_for_admin_notify_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.MarkDownStyler,ASC.Notify.Textile" resource="|pattern_for_admin_notify_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
   
   <!-- profile_updated -->
@@ -54,7 +54,7 @@
   </pattern>
   <pattern id="profile_updated" sender="telegram.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_profile_updated_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.MarkDownStyler,ASC.Notify.Textile" resource="|pattern_profile_updated_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
   
   <!-- join -->
@@ -86,16 +86,16 @@ $activity.Key
   </pattern>
   <pattern id="send_whats_new" sender="telegram.sender">
     <subject resource="|subject_send_whats_new|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile">
-      #foreach($activity in $Activities)
-      $activity.Key
+    <body styler="ASC.Notify.Textile.MarkDownStyler,ASC.Notify.Textile">
+		#foreach($activity in $Activities)
+		$activity.Key
 
-      #foreach($whatsNewActivity in $activity.Value)#foreach($b in $whatsNewActivity.BreadCrumbs) $b &gt; #end [$whatsNewActivity.Title]($whatsNewActivity.URL)
-      [$whatsNewActivity.UserName]($whatsNewActivity.UserAbsoluteURL)    $whatsNewActivity.Date.ToShortTimeString()
+		#foreach($whatsNewActivity in $activity.Value)#foreach($b in $whatsNewActivity.BreadCrumbs)$b&#58; #end[$whatsNewActivity.Title]($whatsNewActivity.URL)
+		[$whatsNewActivity.UserName]($whatsNewActivity.UserAbsoluteURL)    $whatsNewActivity.Date.ToShortTimeString()
 
-      #end
-      #end
-    </body>
+		#end
+		#end
+	</body>
   </pattern>
   
   <!-- backup_created -->
@@ -109,7 +109,7 @@ $activity.Key
   </pattern>
   <pattern id="backup_created" sender="telegram.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_backup_created_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.MarkDownStyler,ASC.Notify.Textile" resource="|pattern_backup_created_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
   
   <!-- restore_started -->
@@ -135,7 +135,7 @@ $activity.Key
   </pattern>
   <pattern id="portal_deactivate" sender="telegram.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_portal_deactivate_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.MarkDownStyler,ASC.Notify.Textile" resource="|pattern_portal_deactivate_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
   
   <!-- portal_delete -->
@@ -149,7 +149,7 @@ $activity.Key
   </pattern>
   <pattern id="portal_delete" sender="telegram.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_portal_delete_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.MarkDownStyler,ASC.Notify.Textile" resource="|pattern_portal_delete_tg|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
   
   <!-- portal_delete_success_v115 -->
@@ -223,13 +223,13 @@ $activity.Key
     <subject resource="|subject_change_email_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_change_email_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
-
-  <!-- change_password -->
-  <pattern id="change_password">
-    <subject resource="|subject_change_password|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_change_password|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
+	
+	<!-- change_password v115 -->
+	<pattern id="change_password_v115">
+		<subject resource="|subject_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+	</pattern>
+	
   <!-- change_phone -->
   <pattern id="change_phone">
     <subject resource="|subject_change_phone|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
@@ -670,18 +670,18 @@ $activity.Key
 	   <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_already_exist|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
    </pattern>
 
-  <!-- personal change password -->
-  <pattern id="personal_change_password">
-    <subject resource="|subject_personal_change_password|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_change_password|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
   <!-- personal change email-->
   <pattern id="personal_change_email_v115">
     <subject resource="|subject_change_email_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_change_email_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
-
+	
+	<!-- personal change password v115-->
+	<pattern id="personal_change_password_v115">
+		<subject resource="|subject_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+	</pattern>
+	
   <!-- personal profile delete -->
   <pattern id="personal_profile_delete">
     <subject resource="|subject_personal_profile_delete|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
@@ -693,10 +693,6 @@ $activity.Key
     <subject resource="|subject_personal_custom_mode_after_registration1|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_after_registration1|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
   </pattern>
-  <pattern id="personal_custom_mode_after_registration7">
-    <subject resource="|subject_personal_custom_mode_after_registration7|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_after_registration8|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
-  </pattern>
 
   <!-- personal custom mode confirmation -->
   <pattern id="personal_custom_mode_confirmation">
@@ -704,18 +700,18 @@ $activity.Key
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_confirmation|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
   </pattern>
 
-  <!-- personal custom mode change password -->
-  <pattern id="personal_custom_mode_change_password">
-    <subject resource="|subject_personal_custom_mode_change_password|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_change_password|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
-  </pattern>
-
   <!-- personal custom mode change email-->
   <pattern id="personal_custom_mode_change_email_v115">
     <subject resource="|subject_change_email_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_change_email_v115|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
   </pattern>
-
+	
+	<!-- personal custom mode change password v115-->
+	<pattern id="personal_custom_mode_change_password_v115">
+		<subject resource="|subject_change_password_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_change_password_v115|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
+	</pattern>
+	
   <!-- personal custom mode profile delete -->
   <pattern id="personal_custom_mode_profile_delete">
     <subject resource="|subject_personal_custom_mode_profile_delete|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />

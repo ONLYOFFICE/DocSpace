@@ -39,11 +39,11 @@
     <PackageReference Include="Google.Apis.Core" Version="1.57.0" />
     <PackageReference Include="Google.Apis.Storage.v1" Version="1.57.0.2647" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="3.7.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.45.0">
+    <PackageReference Include="Grpc.Tools" Version="2.47.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="openstack.net" Version="1.8.0" />
+    <PackageReference Include="Rackspace" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
