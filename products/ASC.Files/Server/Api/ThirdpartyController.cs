@@ -167,17 +167,15 @@ public class ThirdpartyController : ApiControllerBase
     /// <short>Get third party folder</short>
     /// <returns>Connected providers folder</returns>
     [HttpGet("thirdparty/common")]
-    public async Task<IEnumerable<FolderDto<string>>> GetCommonThirdPartyFoldersAsync()
+    public async IAsyncEnumerable<FolderDto<string>> GetCommonThirdPartyFoldersAsync()
     {
         var parent = await _fileStorageService.GetFolderAsync(await _globalFolderHelper.FolderCommonAsync);
-        var thirdpartyFolders = await _entryManager.GetThirpartyFoldersAsync(parent).ToListAsync();
-        var result = new List<FolderDto<string>>();
+        var thirdpartyFolders = _entryManager.GetThirpartyFoldersAsync(parent);
 
-        foreach (var r in thirdpartyFolders)
+        await foreach (var r in thirdpartyFolders)
         {
-            result.Add(await _folderDtoHelper.GetAsync(r));
+            yield return await _folderDtoHelper.GetAsync(r);
         }
-        return result;
     }
 
     /// <summary>

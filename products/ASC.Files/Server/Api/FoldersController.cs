@@ -292,18 +292,14 @@ public class FoldersControllerCommon : ApiControllerBase
     }
 
     [HttpGet("@root")]
-    public async Task<IEnumerable<FolderContentDto<int>>> GetRootFoldersAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool searchInContent, bool withoutAdditionalFolder)
+    public async IAsyncEnumerable<FolderContentDto<int>> GetRootFoldersAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool searchInContent, bool withoutAdditionalFolder)
     {
-        var foldersIds = await _foldersControllerHelperInt.GetRootFoldersIdsAsync(withoutTrash, withoutAdditionalFolder);
+        var foldersIds = _foldersControllerHelperInt.GetRootFoldersIdsAsync(withoutTrash, withoutAdditionalFolder);
 
-        var result = new List<FolderContentDto<int>>();
-
-        foreach (var folder in foldersIds)
+        await foreach (var folder in foldersIds)
         {
-            result.Add(await _foldersControllerHelperInt.GetFolderAsync(folder, userIdOrGroupId, filterType, searchInContent, withsubfolders));
+            yield return await _foldersControllerHelperInt.GetFolderAsync(folder, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
-
-        return result;
     }
 
     /// <summary>

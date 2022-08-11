@@ -203,16 +203,12 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="immediately">Don't move to the Recycle Bin</param>
     /// <returns>Operation result</returns>
     [HttpDelete("file/{fileId}")]
-    public async Task<IEnumerable<FileOperationDto>> DeleteFile(T fileId, [FromBody] DeleteRequestDto inDto)
+    public async IAsyncEnumerable<FileOperationDto> DeleteFile(T fileId, [FromBody] DeleteRequestDto inDto)
     {
-        var result = new List<FileOperationDto>();
-
         foreach (var e in _fileStorageService.DeleteFile("delete", fileId, false, inDto.DeleteAfter, inDto.Immediately))
         {
-            result.Add(await _fileOperationDtoHelper.GetAsync(e));
+            yield return await _fileOperationDtoHelper.GetAsync(e);
         }
-
-        return result;
     }
 
     [AllowAnonymous]

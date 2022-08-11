@@ -91,11 +91,11 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         return await _folderDtoHelper.GetAsync(folder);
     }
 
-    public async Task<SortedSet<int>> GetRootFoldersIdsAsync(bool withoutTrash, bool withoutAdditionalFolder)
+    public async IAsyncEnumerable<int> GetRootFoldersIdsAsync(bool withoutTrash, bool withoutAdditionalFolder)
     {
-        var IsVisitor = _userManager.GetUsers(_securityContext.CurrentAccount.ID).IsVisitor(_userManager);
-        var IsOutsider = _userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOutsider(_userManager);
-        var folders = new SortedSet<int>();
+        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var IsVisitor = user.IsVisitor(_userManager);
+        var IsOutsider = user.IsOutsider(_userManager);
 
         if (IsOutsider)
         {
@@ -105,36 +105,37 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
 
         if (!IsVisitor)
         {
-            folders.Add(_globalFolderHelper.FolderMy);
+            yield return _globalFolderHelper.FolderMy;
         }
 
         if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace
-            && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOutsider(_userManager))
+            && !user.IsOutsider(_userManager))
         {
-            folders.Add(await _globalFolderHelper.FolderShareAsync);
+            yield return await _globalFolderHelper.FolderShareAsync;
         }
 
         if (!IsVisitor && !withoutAdditionalFolder)
         {
             if (_filesSettingsHelper.FavoritesSection)
             {
-                folders.Add(await _globalFolderHelper.FolderFavoritesAsync);
+                yield return await _globalFolderHelper.FolderFavoritesAsync;
             }
+
             if (_filesSettingsHelper.RecentSection)
             {
-                folders.Add(await _globalFolderHelper.FolderRecentAsync);
+                yield return await _globalFolderHelper.FolderRecentAsync;
             }
 
             if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace
                 && PrivacyRoomSettings.IsAvailable())
             {
-                folders.Add(await _globalFolderHelper.FolderPrivacyAsync);
+                yield return await _globalFolderHelper.FolderPrivacyAsync;
             }
         }
 
         if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace)
         {
-            folders.Add(await _globalFolderHelper.FolderCommonAsync);
+            yield return await _globalFolderHelper.FolderCommonAsync;
         }
 
         if (!IsVisitor
@@ -143,21 +144,19 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
            && _fileUtility.ExtsWebTemplate.Count > 0
            && _filesSettingsHelper.TemplatesSection)
         {
-            folders.Add(await _globalFolderHelper.FolderTemplatesAsync);
+            yield return await _globalFolderHelper.FolderTemplatesAsync;
         }
 
         if (!withoutTrash)
         {
-            folders.Add((int)_globalFolderHelper.FolderTrash);
+            yield return (int)_globalFolderHelper.FolderTrash;
         }
 
         if (!_coreBaseSettings.DisableDocSpace)
         {
-            folders.Add(await _globalFolderHelper.FolderVirtualRoomsAsync);
-            folders.Add(await _globalFolderHelper.FolderArchiveAsync);
+            yield return await _globalFolderHelper.FolderVirtualRoomsAsync;
+            yield return await _globalFolderHelper.FolderArchiveAsync;
         }
-
-        return folders;
     }
 
     public async Task<FolderDto<T>> RenameFolderAsync(T folderId, string title)
