@@ -29,7 +29,7 @@ import withLoader from "../withLoader";
 import MoreLoginModal from "login/moreLogin";
 import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
-import { tablet } from "@docspace/components/utils/device";
+import { hugeMobile, tablet } from "@docspace/components/utils/device";
 import { getPasswordErrorMessage } from "../../../helpers/utils";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
@@ -37,11 +37,7 @@ import DocspaceLogo from "../../../DocspaceLogo";
 export const ButtonsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 320px;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+  width: 100%;
 
   .buttonWrapper {
     margin-bottom: 8px;
@@ -50,15 +46,29 @@ export const ButtonsWrapper = styled.div`
 `;
 
 const ConfirmContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 70px;
-  align-items: center;
-  margin: 80px auto 0 auto;
-  max-width: 960px;
+  display: flex;
+  flex: 1fr 1fr;
+  gap: 80px;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 80px;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+  @media ${tablet} {
+    margin: 100px auto 0 auto;
+    display: flex;
+    flex: 1fr;
+    flex-direction: column;
+    align-items: center;
+    gap: 80px;
+  }
+
+  @media ${hugeMobile} {
+    margin-top: 32px;
+    width: 100%;
+    flex: 1fr;
+    flex-direction: column;
+    gap: 80px;
+    padding-right: 8px;
   }
 `;
 
@@ -73,9 +83,17 @@ const GreetingContainer = styled.div`
     display: ${(props) => !props.isGreetingMode && "none"};
   }
 
+  @media ${hugeMobile} {
+    width: 100%;
+  }
+
   .greeting-title {
     width: 100%;
     padding-bottom: 32px;
+
+    @media ${tablet} {
+      text-align: center;
+    }
   }
 
   .greeting-block {
@@ -131,6 +149,7 @@ const RegisterContainer = styled.div`
   flex-direction: column;
   align-items: center;
   height: 100%;
+  width: 100%;
 
   .or-label {
     margin: 0 8px;
@@ -142,18 +161,10 @@ const RegisterContainer = styled.div`
 
   .line {
     display: flex;
-    width: 320px;
+    width: 100%;
     align-items: center;
     color: #eceef1;
     padding-top: 35px;
-
-    @media (max-width: 768px) {
-      width: 480px;
-    }
-
-    @media (max-width: 414px) {
-      width: 311px;
-    }
   }
 
   .line:before,
@@ -169,7 +180,7 @@ const RegisterContainer = styled.div`
 
   .auth-form-container {
     margin-top: 32px;
-    width: 320px;
+    width: 100%;
 
     .form-field {
       height: 48px;
@@ -729,7 +740,7 @@ const Confirm = (props) => {
                 id="submit"
                 className="login-button"
                 primary
-                size="normal"
+                size="medium"
                 scale={true}
                 label={
                   isLoading
@@ -747,7 +758,7 @@ const Confirm = (props) => {
               id="submit"
               className="login-button is-greeting-mode-button"
               primary
-              size="normal"
+              size="medium"
               scale={true}
               label={
                 isLoading
