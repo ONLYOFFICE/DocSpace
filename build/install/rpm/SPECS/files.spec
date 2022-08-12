@@ -73,14 +73,8 @@
 %{_sysconfdir}/nginx/includes/*
 %{_sysconfdir}/nginx/conf.d/*
 %{buildpath}/public/
-%{buildpath}/studio/client/
-%{buildpath}/studio/login/
-%{buildpath}/products/ASC.People/client/
-%{buildpath}/products/ASC.Files/client/
-%dir %{buildpath}/studio/
-%dir %{buildpath}/products/
-%dir %{buildpath}/products/ASC.People/
-%dir %{buildpath}/products/ASC.Files/
+%{buildpath}/client/
+%{buildpath}/login/
 
 %files studio-notify
 %defattr(-, onlyoffice, onlyoffice, -)
