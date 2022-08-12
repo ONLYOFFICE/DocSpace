@@ -8,6 +8,7 @@ import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import { StyledAutoBackup } from "../../StyledBackup";
+import { getOptions } from "../../common-container/GetThirdPartyStoragesOptions";
 
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {

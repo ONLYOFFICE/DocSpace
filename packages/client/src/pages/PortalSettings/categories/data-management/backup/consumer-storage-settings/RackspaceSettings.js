@@ -1,7 +1,6 @@
 import React from "react";
 import TextInput from "@docspace/components/text-input";
 import { inject, observer } from "mobx-react";
-//import { onChangeTextInput } from "./InputsMethods";
 
 const regionInput = "region";
 const publicInput = "public_container";
@@ -39,16 +38,16 @@ class RackspaceSettings extends React.Component {
     this.regionPlaceholder =
       selectedStorage && selectedStorage.properties[2].title;
   }
-  onChangeText = (e) => {
-    const {
-      formSettings,
-      setFormSettings,
-      setIsThirdStorageChanged,
-    } = this.props;
-    //const newState = onChangeTextInput(formSettings, e);
-    // setIsThirdStorageChanged(true);
-    // setFormSettings(newState);
+  onChangeText = (event) => {
+    const { addValueInFormSettings } = this.props;
+
+    const { target } = event;
+    const value = target.value;
+    const name = target.name;
+
+    addValueInFormSettings(name, value);
   };
+
   render() {
     const {
       formSettings,
@@ -65,8 +64,8 @@ class RackspaceSettings extends React.Component {
           name={privateInput}
           className="backup_text-input"
           scale
-          value={formSettings.private_container}
-          hasError={isError?.private_container}
+          value={formSettings[private_container]}
+          hasError={isError[private_container]}
           onChange={this.onChangeText}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.privatePlaceholder || ""}
@@ -76,8 +75,8 @@ class RackspaceSettings extends React.Component {
           name={publicInput}
           className="backup_text-input"
           scale
-          value={formSettings.public_container}
-          hasError={isError?.public_container}
+          value={formSettings[public_container]}
+          hasError={isError[public_container]}
           onChange={this.onChangeText}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.publicPlaceholder || ""}
@@ -87,8 +86,8 @@ class RackspaceSettings extends React.Component {
           name={regionInput}
           className="backup_text-input"
           scale
-          value={formSettings.region}
-          hasError={isError?.region}
+          value={formSettings[region]}
+          hasError={isError[region]}
           onChange={this.onChangeText}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.regionPlaceholder || ""}
@@ -96,15 +95,15 @@ class RackspaceSettings extends React.Component {
         />
         {isNeedFilePath && (
           <TextInput
-            name="filePath"
+            name={filePath}
             className="backup_text-input"
             scale
-            value={formSettings.filePath}
+            value={formSettings[filePath]}
             onChange={this.onChangeText}
             isDisabled={isLoadingData || isLoading || this.isDisabled}
             placeholder={t("Path")}
             tabIndex={4}
-            hasError={isError?.filePath}
+            hasError={isError[filePath]}
           />
         )}
       </>
@@ -119,6 +118,7 @@ export default inject(({ backup }) => {
     formSettings,
     errorsFieldsBeforeSafe,
     setIsThirdStorageChanged,
+    addValueInFormSettings,
   } = backup;
 
   return {
@@ -127,5 +127,6 @@ export default inject(({ backup }) => {
     formSettings,
     errorsFieldsBeforeSafe,
     setIsThirdStorageChanged,
+    addValueInFormSettings,
   };
 })(observer(RackspaceSettings));

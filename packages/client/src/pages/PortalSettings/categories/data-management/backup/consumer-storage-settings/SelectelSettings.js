@@ -1,7 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import TextInput from "@docspace/components/text-input";
-//import { onChangeTextInput } from "./InputsMethods";
 
 const publicInput = "public_container";
 const privateInput = "private_container";
@@ -32,15 +31,14 @@ class SelectelSettings extends React.Component {
       selectedStorage && selectedStorage.properties[1].title;
   }
 
-  onChangeText = (e) => {
-    const {
-      formSettings,
-      setFormSettings,
-      setIsThirdStorageChanged,
-    } = this.props;
-    // const newState = onChangeTextInput(formSettings, e);
-    // setIsThirdStorageChanged(true);
-    // setFormSettings(newState);
+  onChangeText = (event) => {
+    const { addValueInFormSettings } = this.props;
+
+    const { target } = event;
+    const value = target.value;
+    const name = target.name;
+
+    addValueInFormSettings(name, value);
   };
   render() {
     const {
@@ -58,8 +56,8 @@ class SelectelSettings extends React.Component {
           name={privateInput}
           className="backup_text-input"
           scale={true}
-          value={formSettings.private_container}
-          hasError={isError?.private_container}
+          value={formSettings[private_container]}
+          hasError={isError[private_container]}
           onChange={this.onChangeText}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.privatePlaceholder || ""}
@@ -69,8 +67,8 @@ class SelectelSettings extends React.Component {
           name={publicInput}
           className="backup_text-input"
           scale={true}
-          value={formSettings.public_container}
-          hasError={isError?.public_container}
+          value={formSettings[public_container]}
+          hasError={isError[public_container]}
           onChange={this.onChangeText}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.publicPlaceholder || ""}
@@ -79,15 +77,15 @@ class SelectelSettings extends React.Component {
 
         {isNeedFilePath && (
           <TextInput
-            name="filePath"
+            name={filePath}
             className="backup_text-input"
             scale
-            value={formSettings.filePath}
+            value={formSettings[filePath]}
             onChange={this.onChangeText}
             isDisabled={isLoadingData || isLoading || this.isDisabled}
             placeholder={t("Path")}
             tabIndex={3}
-            hasError={isError?.filePath}
+            hasError={isError[filePath]}
           />
         )}
       </>
@@ -102,6 +100,7 @@ export default inject(({ backup }) => {
     formSettings,
     errorsFieldsBeforeSafe,
     setIsThirdStorageChanged,
+    addValueInFormSettings,
   } = backup;
 
   return {
@@ -110,5 +109,6 @@ export default inject(({ backup }) => {
     formSettings,
     errorsFieldsBeforeSafe,
     setIsThirdStorageChanged,
+    addValueInFormSettings,
   };
 })(observer(SelectelSettings));
