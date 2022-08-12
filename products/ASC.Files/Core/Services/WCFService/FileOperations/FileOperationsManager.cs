@@ -86,7 +86,7 @@ public class FileOperationsManager
             })
             .ToList();
 
-        return new List<FileOperationResult>(results);
+        return results;
     }
 
     public List<FileOperationResult> CancelOperations(Guid userId)

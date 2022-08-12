@@ -444,8 +444,8 @@ public class FileConverter
     public async Task<FileOperationResult> ExecSynchronouslyAsync<T>(File<T> file, string doc)
     {
         var fileDao = _daoFactory.GetFileDao<T>();
-        var fileSecurity = _fileSecurity;
-        if (!await fileSecurity.CanReadAsync(file))
+
+        if (!await _fileSecurity.CanReadAsync(file))
         {
             (var readLink, file, _) = await _fileShareLink.CheckAsync(doc, true, fileDao);
             if (file == null)
@@ -493,7 +493,7 @@ public class FileConverter
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
             var folder = await folderDao.GetFolderAsync(newFile.ParentId);
-            var folderTitle = await fileSecurity.CanReadAsync(folder) ? folder.Title : null;
+            var folderTitle = await _fileSecurity.CanReadAsync(folder) ? folder.Title : null;
             operationResult.Result = await GetFileConverter<T>().FileJsonSerializerAsync(_entryStatusManager, newFile, folderTitle);
         }
 
@@ -550,14 +550,13 @@ public class FileConverter
 
     public async Task<File<T>> SaveConvertedFileAsync<T>(File<T> file, string convertedFileUrl)
     {
-        var fileSecurity = _fileSecurity;
         var fileDao = _daoFactory.GetFileDao<T>();
         var folderDao = _daoFactory.GetFolderDao<T>();
         File<T> newFile = null;
         var markAsTemplate = false;
         var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, _fileUtility.GetInternalExtension(file.Title));
 
-        if (!_filesSettingsHelper.StoreOriginalFiles && await fileSecurity.CanEditAsync(file))
+        if (!_filesSettingsHelper.StoreOriginalFiles && await _fileSecurity.CanEditAsync(file))
         {
             newFile = (File<T>)file.Clone();
             newFile.Version++;
@@ -570,7 +569,7 @@ public class FileConverter
 
             var parent = await folderDao.GetFolderAsync(file.ParentId);
             if (parent != null
-                && await fileSecurity.CanCreateAsync(parent))
+                && await _fileSecurity.CanCreateAsync(parent))
             {
                 folderId = parent.Id;
             }
@@ -583,7 +582,7 @@ public class FileConverter
             if (_filesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.Id) || !file.ProviderEntry))
             {
                 newFile = await fileDao.GetFileAsync(folderId, newFileTitle);
-                if (newFile != null && await fileSecurity.CanEditAsync(newFile) && !await _entryManager.FileLockedForMeAsync(newFile.Id) && !_fileTracker.IsEditing(newFile.Id))
+                if (newFile != null && await _fileSecurity.CanEditAsync(newFile) && !await _entryManager.FileLockedForMeAsync(newFile.Id) && !_fileTracker.IsEditing(newFile.Id))
                 {
                     newFile.Version++;
                 }
