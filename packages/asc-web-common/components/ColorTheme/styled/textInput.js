@@ -15,7 +15,7 @@ const getDefaultStyles = ({
     (isDisabled && theme.input.focusDisabledBorderColor) ||
     (theme.isBase === true
       ? currentColorScheme.accentColor
-      : theme.input.focusBorderColor)} !important;
+      : theme.input.focusBorderColor)};
   }
 `;
 
