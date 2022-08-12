@@ -42,6 +42,8 @@ import {
 import AppLoader from "@appserver/common/components/AppLoader";
 import EmailInput from "@appserver/components/email-input";
 
+import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+
 const settings = {
   minLength: 6,
   upperCase: false,
@@ -365,7 +367,7 @@ const Form = (props) => {
   //console.log("Login render");
 
   return (
-    <LoginContainer>
+    <ColorTheme {...props} type={ThemeType.LinkForgotPassword}>
       {!isLoaded ? (
         <AppLoader />
       ) : (
@@ -482,7 +484,6 @@ const Form = (props) => {
 
                 <Link
                   fontSize="13px"
-                  color="#316DAA"
                   className="login-link"
                   type="page"
                   isHovered={false}
@@ -536,7 +537,7 @@ const Form = (props) => {
           />
         </>
       )}
-    </LoginContainer>
+    </ColorTheme>
   );
 };
 

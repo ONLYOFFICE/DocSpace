@@ -18,4 +18,5 @@ export const ThemeType = {
   InputBlock: "inputBlock",
   TextInput: "textInput",
   ComboButton: "comboButton",
+  LinkForgotPassword: "linkForgotPassword",
 };

@@ -35,3 +35,5 @@ export { default as InputBlockTheme } from "./inputBlock";
 export { default as TextInputTheme } from "./textInput";
 
 export { default as ComboButtonTheme } from "./comboButton";
+
+export { default as LinkForgotPasswordTheme } from "./linkForgotPassword";

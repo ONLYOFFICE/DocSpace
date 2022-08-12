@@ -21,6 +21,7 @@ import {
   InputBlockTheme,
   TextInputTheme,
   ComboButtonTheme,
+  LinkForgotPasswordTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -83,6 +84,9 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.ComboButton: {
       return <ComboButtonTheme ref={ref} {...props} />;
+    }
+    case ThemeType.LinkForgotPassword: {
+      return <LinkForgotPasswordTheme ref={ref} {...props} />;
     }
   }
 });
