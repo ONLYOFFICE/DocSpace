@@ -736,6 +736,7 @@ export function saveSettingsThirdParty(
   };
   return request({ method: "post", url: "files/thirdparty/backup", data });
 }
+
 export function getSettingsThirdParty() {
   return request({ method: "get", url: "files/thirdparty/backup" });
 }

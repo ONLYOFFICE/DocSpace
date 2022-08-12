@@ -32,7 +32,6 @@ class AmazonStorage extends React.Component {
           selectedStorage={selectedStorage}
           t={t}
         />
-
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
       </StyledStoragesModule>
     );

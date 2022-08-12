@@ -9,138 +9,55 @@ import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import { StyledAutoBackup } from "../../StyledBackup";
 
-let googleStorageId = ThirdPartyStorages.GoogleId;
-
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { thirdPartyStorage } = this.props;
+    const { thirdPartyStorage, defaultStorageId, setStorageId } = this.props;
 
     this.state = {
       availableOptions: [],
       availableStorage: {},
     };
 
-    thirdPartyStorage && this.getOptions(thirdPartyStorage);
-    this._isMount = false;
+    const { comboBoxOptions, storagesInfo, selectedStorageId } = getOptions(
+      thirdPartyStorage
+    );
+
+    !defaultStorageId && setStorageId(selectedStorageId);
+
+    this.state = {
+      comboBoxOptions,
+      storagesInfo,
+    };
   }
-  componentDidMount() {
-    this._isMount = true;
-  }
-
-  componentWillUnmount() {
-    this._isMount = false;
-  }
-  componentDidUpdate(prevProps) {
-    const { isSuccessSave, thirdPartyStorage } = this.props;
-
-    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
-      thirdPartyStorage && this.getOptions(thirdPartyStorage);
-    }
-  }
-
-  getOptions = (storageBackup) => {
-    const { setStorageId } = this.props;
-
-    let isSetDefaultIdStorage = false;
-    let isFirstSet = false;
-    let firstSetId = "";
-    let options = [];
-    let availableStorage = {};
-
-    for (let item = 0; item < storageBackup.length; item++) {
-      const backupElem = storageBackup[item];
-
-      const { isSet, properties, title, id, current } = backupElem;
-
-      let tempObj = {
-        [id]: {
-          isSet: isSet,
-          properties: properties,
-          title: title,
-          id: id,
-        },
-      };
-
-      let titleObj = {
-        key: id,
-        label: title,
-        disabled: false,
-      };
-
-      options.push(titleObj);
-      availableStorage = { ...availableStorage, ...tempObj };
-
-      if (current) {
-        isSetDefaultIdStorage = true;
-        !this._isMount ? setStorageId(null, id) : setStorageId(id);
-      }
-
-      if (!isFirstSet && isSet) {
-        isFirstSet = true;
-        firstSetId = id;
-      }
-    }
-
-    if (!isSetDefaultIdStorage && !isFirstSet) {
-      const currentStorage = availableStorage[googleStorageId];
-      const { id } = currentStorage;
-
-      !this._isMount ? setStorageId(null, id) : setStorageId(id);
-    }
-
-    if (!isSetDefaultIdStorage && isFirstSet) {
-      const currentStorage = availableStorage[firstSetId];
-      const { id } = currentStorage;
-
-      !this._isMount ? setStorageId(null, id) : setStorageId(id);
-    }
-
-    this._isMount
-      ? this.setState({
-          availableOptions: options,
-          availableStorage: availableStorage,
-        })
-      : (this.state = {
-          availableOptions: options,
-          availableStorage: availableStorage,
-        });
-  };
 
   onSelect = (option) => {
     const selectedStorageId = option.key;
-    const { availableStorage } = this.state;
+    const { storagesInfo } = this.state;
     const { setStorageId } = this.props;
-    const storage = availableStorage[selectedStorageId];
+    const storage = storagesInfo[selectedStorageId];
 
     setStorageId(storage.id);
   };
 
   render() {
-    const {
-      isLoadingData,
-      isErrorsFields,
-      selectedStorageId,
-      ...rest
-    } = this.props;
-    const { availableOptions, availableStorage } = this.state;
+    const { isLoadingData, selectedStorageId, ...rest } = this.props;
+    const { comboBoxOptions, storagesInfo } = this.state;
 
     const commonProps = {
-      selectedStorage: availableStorage[selectedStorageId],
+      selectedStorage: storagesInfo[selectedStorageId],
       selectedId: selectedStorageId,
-      formErrors: isErrorsFields,
       isLoadingData,
     };
-
     const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
 
-    const storageTitle = availableStorage[selectedStorageId]?.title;
+    const storageTitle = storagesInfo[selectedStorageId]?.title;
 
     return (
       <StyledAutoBackup>
         <div className="auto-backup_storages-module">
           <ComboBox
-            options={availableOptions}
+            options={comboBoxOptions}
             selectedOption={{
               key: 0,
               label: storageTitle,
@@ -176,11 +93,17 @@ class ThirdPartyStorageModule extends React.PureComponent {
 }
 
 export default inject(({ backup }) => {
-  const { thirdPartyStorage, setStorageId, selectedStorageId } = backup;
+  const {
+    thirdPartyStorage,
+    setStorageId,
+    selectedStorageId,
+    defaultStorageId,
+  } = backup;
 
   return {
     thirdPartyStorage,
     setStorageId,
     selectedStorageId,
+    defaultStorageId,
   };
 })(withTranslation("Settings")(observer(ThirdPartyStorageModule)));

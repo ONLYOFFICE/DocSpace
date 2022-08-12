@@ -1,14 +1,14 @@
 import React from "react";
 import { withTranslation, Trans } from "react-i18next";
-import Submenu from "@appserver/components/submenu";
-import Link from "@appserver/components/link";
-import HelpButton from "@appserver/components/help-button";
-import { AppServerConfig } from "@appserver/common/constants";
-import { combineUrl } from "@appserver/common/utils";
+import Submenu from "@docspace/components/submenu";
+import Link from "@docspace/components/link";
+import HelpButton from "@docspace/components/help-button";
+import { AppServerConfig } from "@docspace/common/constants";
+import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
-import config from "../../../../../../../package.json";
+import config from "PACKAGE_FILE";
 
 const Backup = ({ helpUrlCreatingBackup, buttonSize, t, history }) => {
   const renderTooltip = (helpInfo) => {

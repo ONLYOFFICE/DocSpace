@@ -5,6 +5,7 @@ import SelectFolderInput from "client/SelectFolderInput";
 import Button from "@docspace/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
 import { BackupStorageType } from "@docspace/common/constants";
+import DirectThirdPartyConnection from "../../common-container/DirectThirdPartyConnection";
 
 let folder = "";
 class ThirdPartyModule extends React.Component {
@@ -19,6 +20,7 @@ class ThirdPartyModule extends React.Component {
       selectedFolder: folder || "",
       isPanelVisible: false,
       isError: false,
+      isLoading: false,
     };
   }
 
@@ -77,20 +79,44 @@ class ThirdPartyModule extends React.Component {
     await onMakeCopy(
       selectedFolder,
       "ThirdPartyResource",
-      `${ResourcesModuleType}`,
-      "folderId"
+      `${ResourcesModuleType}`
     );
 
     this.setState({
       isStartCopy: false,
     });
   };
+
+  onCopyingDirectly = () => {
+    console.log("copy");
+  };
+  onSelectAccount = (options) => {
+    const key = options.key;
+
+    this.setState({
+      selectedAccount: { ...this.accounts[+key] },
+    });
+  };
+
   render() {
-    const { isMaxProgress, t, commonThirdPartyList, buttonSize } = this.props;
-    const { isPanelVisible, isLoadingData, isError, isStartCopy } = this.state;
+    const {
+      isMaxProgress,
+      t,
+      commonThirdPartyList,
+      buttonSize,
+      isDocSpace,
+    } = this.props;
+    const {
+      isPanelVisible,
+      isLoadingData,
+      isError,
+      isStartCopy,
+      selectedFolder,
+    } = this.state;
 
     const isModuleDisabled = !isMaxProgress || isStartCopy || isLoadingData;
-    return (
+
+    return !isDocSpace ? (
       <>
         <div className="manual-backup_folder-input">
           <SelectFolderInput
@@ -104,7 +130,7 @@ class ThirdPartyModule extends React.Component {
             isError={isError}
             foldersType="third-party"
             foldersList={commonThirdPartyList}
-            ignoreSelectedFolderTree
+            withoutBasicSelection
           />
         </div>
         <div className="manual-backup_buttons">
@@ -112,7 +138,7 @@ class ThirdPartyModule extends React.Component {
             label={t("Common:Duplicate")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={isModuleDisabled}
+            isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
             size={buttonSize}
           />
           {!isMaxProgress && (
@@ -125,13 +151,39 @@ class ThirdPartyModule extends React.Component {
           )}
         </div>
       </>
+    ) : (
+      <div className="manual-backup_third-party-module">
+        <DirectThirdPartyConnection
+          t={t}
+          onSelectFolder={this.onSelectFolder}
+          onClose={this.onClose}
+          onClickInput={this.onClickInput}
+          onSetLoadingData={this.onSetLoadingData}
+          isDisabled={isModuleDisabled}
+          isPanelVisible={isPanelVisible}
+          withoutBasicSelection={true}
+          isError={isError}
+        />
+
+        <Button
+          label={t("Common:Duplicate")}
+          onClick={this.onMakeCopy}
+          primary
+          isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
+          size={buttonSize}
+        />
+      </div>
     );
   }
 }
-export default inject(({ backup }) => {
-  const { commonThirdPartyList } = backup;
-
+export default inject(({ backup, settingsStore }) => {
+  const { commonThirdPartyList, openConnectWindow, getOAuthToken } = backup;
+  //  const { openConnectWindow } = settingsStore.thirdPartyStore;
+  const isDocSpace = true;
   return {
     commonThirdPartyList,
+    isDocSpace,
+    openConnectWindow,
+    getOAuthToken,
   };
 })(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));

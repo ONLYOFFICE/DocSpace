@@ -360,8 +360,10 @@ internal class ProviderAccountDao : IProviderDao
 
     public virtual async Task<int> UpdateBackupProviderInfoAsync(string providerKey, string customerTitle, AuthData newAuthData)
     {
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+
         var querySelect =
-                FilesDbContext.ThirdpartyAccount
+                filesDbContext.ThirdpartyAccount
                 .AsQueryable()
                 .Where(r => r.TenantId == TenantID)
                 .Where(r => r.FolderType == FolderType.ThirdpartyBackup);
@@ -411,7 +413,7 @@ internal class ProviderAccountDao : IProviderDao
             thirdparty.Url = newAuthData.Url ?? "";
         }
 
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+        await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
         return thirdparty.Id;
     }

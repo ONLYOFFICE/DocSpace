@@ -7,6 +7,7 @@ import {
   getCommonFoldersTree,
   getFolder,
   getFoldersTree,
+  getSharedRoomsTree,
   getThirdPartyCommonFolderTree,
 } from "@docspace/common/api/files";
 import toastr from "client/toastr";
@@ -173,7 +174,7 @@ class SelectionPanel extends React.Component {
     onSetBaseFolderPath,
     onSelectFolder,
     foldersList,
-    isFilesPanel = false
+    withoutBasicSelection = false
   ) => {
     const getRequestFolderTree = () => {
       switch (foldersType) {
@@ -196,6 +197,13 @@ class SelectionPanel extends React.Component {
         case "third-party":
           try {
             return getThirdPartyCommonFolderTree();
+          } catch (err) {
+            console.error(err);
+          }
+          break;
+        case "rooms":
+          try {
+            return getSharedRoomsTree();
           } catch (err) {
             console.error(err);
           }
@@ -242,15 +250,13 @@ class SelectionPanel extends React.Component {
     const foldersTree =
       treeFoldersLength > 0 ? treeFolders : requestedTreeFolders;
 
-    const passedId = id ? id : foldersTree[0].id;
+    const passedId = id ? id : foldersTree[0]?.id;
 
-    if (foldersType === "third-party") {
-      isFilesPanel && onSetBaseFolderPath && onSetBaseFolderPath(passedId);
-    } else {
-      onSetBaseFolderPath && onSetBaseFolderPath(passedId);
-    }
+    !withoutBasicSelection &&
+      onSetBaseFolderPath &&
+      onSetBaseFolderPath(passedId);
 
-    onSelectFolder && onSelectFolder(passedId);
+    !withoutBasicSelection && onSelectFolder && onSelectFolder(passedId);
 
     if (
       foldersType === "exceptSortedByTags" ||

@@ -1,13 +1,13 @@
 import React from "react";
-import SelectFileInput from "client/SelectFileInput";
 
+import SelectFileInputWrapper from "client/SelectFolderInput";
 class Documents extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <SelectFileInput
+      <SelectFileInputWrapper
         {...this.props}
-        foldersType="common"
+        foldersType="rooms"
         withoutProvider
         isArchiveOnly
         searchParam=".gz"
@@ -15,9 +15,9 @@ class Documents extends React.Component {
         withoutResetFolderTree
         ignoreSelectedFolderTree
         maxFolderInputWidth="446px"
+        withoutBasicSelection
       />
     );
   }
 }
-
 export default Documents;

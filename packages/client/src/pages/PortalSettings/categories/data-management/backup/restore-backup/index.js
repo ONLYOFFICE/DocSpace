@@ -1,9 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { isMobileOnly } from "react-device-detect";
 import Button from "@docspace/components/button";
-import Loader from "@docspace/components/loader";
 import Checkbox from "@docspace/components/checkbox";
 import Text from "@docspace/components/text";
 import RadioButton from "@docspace/components/radio-button";
@@ -19,7 +17,12 @@ import ThirdPartyResources from "./sub-components/ThirdPartyResourcesModule";
 import ThirdPartyStorages from "./sub-components/ThirdPartyStoragesModule";
 import LocalFile from "./sub-components/LocalFileModule";
 import config from "PACKAGE_FILE";
-import { getThirdPartyCommonFolderTree } from "@docspace/common/api/files";
+import {
+  getBackupStorage,
+  getStorageRegions,
+} from "@docspace/common/api/settings";
+import { enableRestore } from "@docspace/common/api/portal";
+import RestoreBackupLoader from "@docspace/common/components/Loaders/RestoreBackupLoader";
 
 const {
   DocumentModuleType,
@@ -30,7 +33,6 @@ const {
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isChecked: false,
       isNotify: true,
@@ -42,10 +44,11 @@ class RestoreBackup extends React.Component {
       isCheckedLocalFile: false,
       selectedFileId: "",
       selectedFile: "",
-      isStorageFillingError: {},
+
       isFileSelectedError: false,
-      isInitialLoading: isMobileOnly ? true : false,
+      isInitialLoading: true,
       checkingRecoveryData: false,
+      isEnableRestore: false,
     };
 
     this.switches = [
@@ -56,35 +59,55 @@ class RestoreBackup extends React.Component {
     ];
 
     this.storageId = "";
-    this.formSettings = "";
   }
 
   setBasicSettings = async () => {
-    const { getProgress, t, setCommonThirdPartyList } = this.props;
+    const {
+      getProgress,
+      t,
+      setThirdPartyStorage,
+      setStorageRegions,
+    } = this.props;
 
     try {
       getProgress(t);
+      const [
+        //commonThirdPartyList,
+        backupStorage,
+        isEnableRestore,
+        storageRegions,
+      ] = await Promise.all([
+        //   getThirdPartyCommonFolderTree(),
+        getBackupStorage(),
+        enableRestore(),
+        getStorageRegions(),
+      ]);
 
-      const commonThirdPartyList = await getThirdPartyCommonFolderTree();
-      commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+      setThirdPartyStorage(backupStorage);
+      setStorageRegions(storageRegions);
+      // commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
+
+      this.setState({
+        isInitialLoading: false,
+        isEnableRestore,
+      });
     } catch (error) {
       toastr.error(error);
-    }
 
-    this.setState({
-      isInitialLoading: false,
-    });
+      this.setState({
+        isInitialLoading: false,
+      });
+    }
   };
 
   componentDidMount() {
-    isMobileOnly && this.setBasicSettings();
+    this.setBasicSettings();
   }
 
   componentWillUnmount() {
     const { clearProgressInterval } = this.props;
     clearProgressInterval();
   }
-
   onChangeCheckbox = () => {
     this.setState({
       isChecked: !this.state.isChecked,
@@ -100,19 +123,16 @@ class RestoreBackup extends React.Component {
       isVisibleDialog: !this.state.isVisibleDialog,
     });
   };
-
   onModalClose = () => {
     this.setState({
       isVisibleDialog: false,
     });
   };
-
   onClickInput = () => {
     this.setState({
       isPanelVisible: true,
     });
   };
-
   onPanelClose = () => {
     this.setState({
       isPanelVisible: false,
@@ -122,27 +142,22 @@ class RestoreBackup extends React.Component {
     let newStateObj = {};
     const name = e.target.name;
     newStateObj[name] = true;
-
     const newState = this.switches.filter((el) => el !== name);
     newState.forEach((name) => (newStateObj[name] = false));
-
     this.setState({
       ...newStateObj,
     });
   };
-
   onSelectFile = (file) => {
     this.setState({
       selectedFileId: file.id,
     });
   };
-
   onSelectLocalFile = (data) => {
     this.setState({
       selectedFile: data,
     });
   };
-
   canRestore = () => {
     const {
       isCheckedDocuments,
@@ -153,42 +168,19 @@ class RestoreBackup extends React.Component {
       isCheckedThirdParty,
     } = this.state;
 
+    const { isFormReady } = this.props;
+
     if (isCheckedDocuments || isCheckedThirdParty) {
       if (!selectedFileId) return false;
       return true;
     }
-
     if (isCheckedLocalFile) {
       if (!selectedFile) return false;
       return true;
     }
 
     if (isCheckedThirdPartyStorage) {
-      let errors = {};
-      let firstError = false;
-
-      for (let key of this.formNames) {
-        const field = this.formSettings[key];
-        if (!field) {
-          if (!firstError) {
-            firstError = true;
-          }
-          errors[key] = true;
-        } else {
-          if (!firstError && !field.trim()) {
-            firstError = true;
-          }
-          errors[key] = !field.trim();
-        }
-      }
-
-      if (firstError) {
-        this.setState({
-          isStorageFillingError: errors,
-        });
-        return false;
-      }
-      return true;
+      return isFormReady();
     }
   };
   onRestoreClick = async () => {
@@ -201,7 +193,7 @@ class RestoreBackup extends React.Component {
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
     } = this.state;
-    const { history, socketHelper } = this.props;
+    const { history, socketHelper, getStorageParams } = this.props;
 
     if (!this.canRestore()) {
       this.setState({
@@ -209,15 +201,12 @@ class RestoreBackup extends React.Component {
       });
       return;
     }
-
     this.setState({
       checkingRecoveryData: true,
       isFileSelectedError: false,
     });
-
     let storageParams = [];
     let obj = {};
-
     const backupId = "";
     const storageType = isCheckedDocuments
       ? `${DocumentModuleType}`
@@ -228,21 +217,7 @@ class RestoreBackup extends React.Component {
       : `${StorageModuleType}`;
 
     if (isCheckedThirdPartyStorage) {
-      storageParams.push({
-        key: "module",
-        value: this.storageId,
-      });
-      let tmpObj = {};
-      const arraySettings = Object.entries(this.formSettings);
-
-      for (let i = 0; i < this.formNames.length; i++) {
-        tmpObj = {
-          key: arraySettings[i][0],
-          value: arraySettings[i][1],
-        };
-
-        storageParams.push(tmpObj);
-      }
+      storageParams = getStorageParams(true, null, this.storageId);
     } else {
       obj.key = "filePath";
       if (isCheckedDocuments || isCheckedThirdParty) {
@@ -252,7 +227,6 @@ class RestoreBackup extends React.Component {
       }
       storageParams.push(obj);
     }
-
     let checkedFile;
     try {
       if (isCheckedLocalFile) {
@@ -271,7 +245,6 @@ class RestoreBackup extends React.Component {
       });
       return;
     }
-
     if (isCheckedLocalFile && checkedFile?.Message) {
       toastr.error(checkedFile.Message);
       this.setState({
@@ -280,6 +253,15 @@ class RestoreBackup extends React.Component {
       return;
     }
 
+    console.log(
+      "backupId",
+      backupId,
+      "storageType",
+      storageType,
+      "storageParams",
+      storageParams
+    );
+    // return;
     startRestore(backupId, storageType, storageParams, isNotify)
       .then(() => {
         socketHelper.emit({
@@ -304,33 +286,16 @@ class RestoreBackup extends React.Component {
       });
   };
 
-  onSetRequiredFormNames = (namesArray) => {
-    this.formNames = namesArray;
-  };
-
-  onResetFormSettings = () => {
-    this.formSettings = {};
-    this.setState({
-      isStorageFillingError: {},
-    });
-  };
-
   onSetStorageId = (storageId) => {
     this.storageId = storageId;
   };
 
-  onSetFormSettings = (name, value) => {
-    this.formSettings = {
-      ...this.formSettings,
-      ...{ [name]: value },
-    };
-  };
   render() {
     const {
       t,
       history,
       downloadingProgress,
-      commonThirdPartyList,
+
       buttonSize,
       theme,
     } = this.props;
@@ -344,9 +309,9 @@ class RestoreBackup extends React.Component {
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
       isCheckedLocalFile,
-      isStorageFillingError,
       checkingRecoveryData,
       isFileSelectedError,
+      isEnableRestore,
     } = this.state;
 
     const commonRadioButtonProps = {
@@ -357,14 +322,18 @@ class RestoreBackup extends React.Component {
       onClick: this.onClickShowStorage,
     };
 
-    const isDisabledThirdParty = commonThirdPartyList?.length === 0;
+    const onClickVersionListProp = isEnableRestore
+      ? { onClick: this.onClickBackupList }
+      : {};
+
+    // const isDisabledThirdParty = commonThirdPartyList?.length === 0;
 
     const isMaxProgress = downloadingProgress === 100;
 
     return isInitialLoading ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
+      <RestoreBackupLoader />
     ) : (
-      <StyledRestoreBackup theme={theme}>
+      <StyledRestoreBackup theme={theme} isEnableRestore={isEnableRestore}>
         <div className="restore-description">
           <Text className="restore-description">
             {t("RestoreBackupDescription")}
@@ -375,7 +344,7 @@ class RestoreBackup extends React.Component {
           name={"isCheckedDocuments"}
           key={1}
           isChecked={isCheckedDocuments}
-          isDisabled={false}
+          isDisabled={!isEnableRestore}
           {...commonRadioButtonProps}
         />
 
@@ -384,7 +353,7 @@ class RestoreBackup extends React.Component {
           name={"isCheckedThirdParty"}
           key={2}
           isChecked={isCheckedThirdParty}
-          isDisabled={isDisabledThirdParty}
+          isDisabled={!isEnableRestore}
           {...commonRadioButtonProps}
         />
 
@@ -393,7 +362,7 @@ class RestoreBackup extends React.Component {
           name={"isCheckedThirdPartyStorage"}
           key={3}
           isChecked={isCheckedThirdPartyStorage}
-          isDisabled={false}
+          isDisabled={!isEnableRestore}
           {...commonRadioButtonProps}
         />
 
@@ -402,13 +371,14 @@ class RestoreBackup extends React.Component {
           name={"isCheckedLocalFile"}
           key={4}
           isChecked={isCheckedLocalFile}
-          isDisabled={false}
+          isDisabled={!isEnableRestore}
           {...commonRadioButtonProps}
         />
 
         <div className="restore-backup_modules">
           {isCheckedDocuments && (
             <Documents
+              isDisabled={!isEnableRestore}
               t={t}
               isPanelVisible={isPanelVisible}
               onClose={this.onPanelClose}
@@ -429,11 +399,8 @@ class RestoreBackup extends React.Component {
           )}
           {isCheckedThirdPartyStorage && (
             <ThirdPartyStorages
-              onSetRequiredFormNames={this.onSetRequiredFormNames}
               onResetFormSettings={this.onResetFormSettings}
-              isErrors={isStorageFillingError}
               onSetStorageId={this.onSetStorageId}
-              onSetFormSettings={this.onSetFormSettings}
             />
           )}
           {isCheckedLocalFile && (
@@ -444,7 +411,11 @@ class RestoreBackup extends React.Component {
           )}
         </div>
 
-        <Text className="restore-backup_list" onClick={this.onClickBackupList}>
+        <Text
+          className="restore-backup_list"
+          {...onClickVersionListProp}
+          noSelect
+        >
           {t("BackupList")}
         </Text>
 
@@ -463,16 +434,17 @@ class RestoreBackup extends React.Component {
           onChange={this.onChangeCheckboxNotify}
           isChecked={isNotify}
           label={t("SendNotificationAboutRestoring")}
+          isDisabled={!isEnableRestore}
         />
 
-        <Text className="restore-backup_warning">
+        <Text className="restore-backup_warning" noSelect>
           {t("Common:Warning")}
           {"!"}
         </Text>
-        <Text className="restore-backup_warning-description">
+        <Text className="restore-backup_warning-description" noSelect>
           {t("RestoreBackupWarningText")}
         </Text>
-        <Text className="restore-backup_warning-link">
+        <Text className="restore-backup_warning-link" noSelect>
           {t("RestoreBackupResetInfoWarningText")}
         </Text>
 
@@ -482,6 +454,7 @@ class RestoreBackup extends React.Component {
           onChange={this.onChangeCheckbox}
           isChecked={isChecked}
           label={t("UserAgreement")}
+          isDisabled={!isEnableRestore}
         />
 
         <Button
@@ -489,7 +462,12 @@ class RestoreBackup extends React.Component {
           label={t("Common:Restore")}
           onClick={this.onRestoreClick}
           primary
-          isDisabled={checkingRecoveryData || !isMaxProgress || !isChecked}
+          isDisabled={
+            checkingRecoveryData ||
+            !isMaxProgress ||
+            !isChecked ||
+            !isEnableRestore
+          }
           isLoading={checkingRecoveryData}
           size={buttonSize}
           tabIndex={10}
@@ -501,22 +479,31 @@ class RestoreBackup extends React.Component {
 
 export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
-  const { socketHelper, theme } = settingsStore;
+  const { socketHelper, theme, isTabletView } = settingsStore;
   const {
     downloadingProgress,
     getProgress,
     clearProgressInterval,
-    commonThirdPartyList,
-    setCommonThirdPartyList,
+    setStorageRegions,
+    setThirdPartyStorage,
+    isFormReady,
+    getStorageParams,
   } = backup;
 
+  const buttonSize = isTabletView ? "normal" : "small";
+
   return {
+    setStorageRegions,
+    setThirdPartyStorage,
+    buttonSize,
+
     theme,
     clearProgressInterval,
-    commonThirdPartyList,
     downloadingProgress,
     socketHelper,
-    setCommonThirdPartyList,
+    isFormReady,
+
     getProgress,
+    getStorageParams,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));
