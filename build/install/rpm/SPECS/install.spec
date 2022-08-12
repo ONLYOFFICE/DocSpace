@@ -58,6 +58,6 @@ cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.SsoAuth/service/* "%{buil
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Studio.Notify/service/* "%{buildroot}%{buildpath}/services/ASC.Studio.Notify/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.TelegramService/service/* "%{buildroot}%{buildpath}/services/ASC.TelegramService/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.UrlShortener/service/* "%{buildroot}%{buildpath}/services/ASC.UrlShortener/"
-cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Api/service/* "%{buildroot}%{buildpath}/studio/api/"
-cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Studio/service/* "%{buildroot}%{buildpath}/studio/server/"
+cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Api/service/* "%{buildroot}%{buildpath}/studio/ASC.Web.Api/"
+cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Studio/service/* "%{buildroot}%{buildpath}/studio/ASC.Web.Studio/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Webhooks.Service/service/* "%{buildroot}%{buildpath}/services/ASC.Webhooks.Service/"
