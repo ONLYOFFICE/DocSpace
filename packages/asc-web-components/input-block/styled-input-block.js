@@ -49,12 +49,6 @@ const StyledInputGroup = styled(CustomInputGroup)`
 
   ${commonInputStyle}
 
-  :focus-within {
-    border-color: ${(props) =>
-      (props.hasError && props.theme.input.focusErrorBorderColor) ||
-      props.theme.inputBlock.borderColor};
-  }
-
   svg {
     path {
       fill: ${(props) =>
