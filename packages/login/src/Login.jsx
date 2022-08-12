@@ -531,7 +531,8 @@ const Form = (props) => {
                 onClick={onSubmit}
               />
 
-              <div className="login-link">
+              {/*Uncomment when add api*/}
+              {/*<div className="login-link">
                 <Link
                   fontWeight="600"
                   fontSize="13px"
@@ -542,7 +543,7 @@ const Form = (props) => {
                 >
                   {t("SignInWithCode")}
                 </Link>
-              </div>
+              </div>*/}
 
               {confirmedEmail && (
                 <Text isBold={true} fontSize="16px">
