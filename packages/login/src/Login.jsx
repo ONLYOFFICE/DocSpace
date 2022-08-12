@@ -86,6 +86,7 @@ const Form = (props) => {
     history,
     thirdPartyLogin,
     providers,
+    setRoomsMode,
   } = props;
 
   const { error, confirmedEmail } = match.params;
@@ -261,6 +262,10 @@ const Form = (props) => {
         setIsLoading(false);
         focusInput();
       });
+  };
+
+  const onLoginWithCodeClick = () => {
+    setRoomsMode(true);
   };
 
   const onSocialButtonClick = useCallback((e) => {
@@ -513,7 +518,7 @@ const Form = (props) => {
                 id="submit"
                 className="login-button"
                 primary
-                size="normal"
+                size="medium"
                 scale={true}
                 label={
                   isLoading
@@ -525,6 +530,19 @@ const Form = (props) => {
                 isLoading={isLoading}
                 onClick={onSubmit}
               />
+
+              <div className="login-link">
+                <Link
+                  fontWeight="600"
+                  fontSize="13px"
+                  color="#316DAA"
+                  type="action"
+                  isHovered={true}
+                  onClick={onLoginWithCodeClick}
+                >
+                  {t("SignInWithCode")}
+                </Link>
+              </div>
 
               {confirmedEmail && (
                 <Text isBold={true} fontSize="16px">
@@ -611,6 +629,7 @@ const Login = inject(({ auth }) => {
     isDesktopClient: isDesktop,
     getOAuthToken,
     getLoginLink,
+    setRoomsMode,
   } = settingsStore;
 
   return {
@@ -628,6 +647,7 @@ const Login = inject(({ auth }) => {
     getLoginLink,
     setProviders,
     providers,
+    setRoomsMode,
   };
 })(withRouter(observer(withTranslation(["Login", "Common"])(LoginForm))));
 

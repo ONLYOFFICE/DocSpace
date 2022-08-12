@@ -132,9 +132,7 @@ export const LoginContainer = styled.div`
     }
 
     .login-forgot-wrapper {
-      height: 36px;
-      padding: 14px 0;
-
+      margin-bottom: 14px;
       .login-checkbox-wrapper {
         display: flex;
         //align-items: center;
@@ -161,7 +159,8 @@ export const LoginContainer = styled.div`
     }
 
     .login-button {
-      margin-bottom: 16px;
+      margin-top: 8px;
+      margin-bottom: 24px;
     }
 
     .login-button-dialog {
@@ -176,6 +175,10 @@ export const LoginContainer = styled.div`
 
     .login-bottom-text {
       margin: 0 8px;
+    }
+
+    .login-link {
+      text-align: center;
     }
   }
 
