@@ -1,3 +1,13 @@
+import React from "react";
+import { inject, observer } from "mobx-react";
+import PropTypes from "prop-types";
+import StyledComponent from "./StyledSelectFolderInput";
+import { getFolder, getFolderPath } from "@docspace/common/api/files";
+import toastr from "@docspace/components/toast/toastr";
+import SelectFolderDialog from "../SelectFolderDialog";
+import SimpleFileInput from "../../SimpleFileInput";
+import { withTranslation } from "react-i18next";
+import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 class SelectFolderInput extends React.PureComponent {
   constructor(props) {
     super(props);
