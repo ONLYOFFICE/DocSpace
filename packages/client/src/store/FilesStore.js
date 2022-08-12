@@ -666,6 +666,8 @@ class FilesStore {
       getSubfolders,
     } = this.treeFoldersStore;
 
+    this.scrollToTop();
+
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
@@ -1622,15 +1624,19 @@ class FilesStore {
     this.folders[idx].pinned = !this.folders[idx].pinned;
   };
 
-  addFile = (item) => {
-    this.filter.total += 1;
-    this.files.unshift(item);
-
+  scrollToTop = () => {
     const scrollElm = isMobileOnly
       ? document.querySelector("#customScrollBar > .scroll-body")
       : document.querySelector("#sectionScroll > .scroll-body");
 
     scrollElm && scrollElm.scrollTo(0, 0);
+  };
+
+  addFile = (item) => {
+    this.filter.total += 1;
+    this.files.unshift(item);
+
+    this.scrollToTop();
   };
 
   updateFile = (fileId, title) => {

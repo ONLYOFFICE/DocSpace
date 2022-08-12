@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { InfiniteLoader, WindowScroller, AutoSizer } from "react-virtualized";
+import { InfiniteLoader, WindowScroller } from "react-virtualized";
 import { StyledList } from "./StyledInfiniteLoader";
 
 const GridComponent = ({
@@ -52,28 +52,30 @@ const GridComponent = ({
     >
       {({ onRowsRendered, registerChild }) => (
         <WindowScroller scrollElement={scroll}>
-          {({ height, isScrolling, onChildScroll, scrollTop }) => (
-            <AutoSizer>
-              {({ width }) => (
-                <StyledList
-                  autoHeight
-                  height={height}
-                  onRowsRendered={onRowsRendered}
-                  ref={registerChild}
-                  rowCount={children.length}
-                  rowHeight={getItemSize}
-                  rowRenderer={renderTile}
-                  width={width}
-                  className={className}
-                  isScrolling={isScrolling}
-                  onChildScroll={onChildScroll}
-                  scrollTop={scrollTop}
-                  overscanRowCount={3}
-                  onScroll={onScroll}
-                />
-              )}
-            </AutoSizer>
-          )}
+          {({ height, isScrolling, onChildScroll, scrollTop }) => {
+            const width =
+              document.getElementById("tileContainer")?.getBoundingClientRect()
+                .width ?? 0;
+
+            return (
+              <StyledList
+                autoHeight
+                height={height}
+                onRowsRendered={onRowsRendered}
+                ref={registerChild}
+                rowCount={children.length}
+                rowHeight={getItemSize}
+                rowRenderer={renderTile}
+                width={width}
+                className={className}
+                isScrolling={isScrolling}
+                onChildScroll={onChildScroll}
+                scrollTop={scrollTop}
+                overscanRowCount={3}
+                onScroll={onScroll}
+              />
+            );
+          }}
         </WindowScroller>
       )}
     </InfiniteLoader>

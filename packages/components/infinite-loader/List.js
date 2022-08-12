@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { InfiniteLoader, WindowScroller, AutoSizer } from "react-virtualized";
+import { InfiniteLoader, WindowScroller } from "react-virtualized";
 import Loaders from "@docspace/common/components/Loaders";
 import { StyledList } from "./StyledInfiniteLoader";
 
@@ -91,27 +91,30 @@ const ListComponent = ({
               height = scroll.getBoundingClientRect().height;
             }
 
+            const viewId =
+              viewAs === "table" ? "table-container" : "rowContainer";
+
+            const width =
+              document.getElementById(viewId)?.getBoundingClientRect().width ??
+              0;
+
             return (
-              <AutoSizer>
-                {({ width }) => (
-                  <StyledList
-                    autoHeight
-                    height={height}
-                    onRowsRendered={onRowsRendered}
-                    ref={registerChild}
-                    rowCount={children.length}
-                    rowHeight={itemSize}
-                    rowRenderer={viewAs === "table" ? renderTable : renderRow}
-                    width={width}
-                    className={className}
-                    isScrolling={isScrolling}
-                    onChildScroll={onChildScroll}
-                    scrollTop={scrollTop}
-                    overscanRowCount={3}
-                    onScroll={onScroll}
-                  />
-                )}
-              </AutoSizer>
+              <StyledList
+                autoHeight
+                height={height}
+                onRowsRendered={onRowsRendered}
+                ref={registerChild}
+                rowCount={children.length}
+                rowHeight={itemSize}
+                rowRenderer={viewAs === "table" ? renderTable : renderRow}
+                width={width}
+                className={className}
+                isScrolling={isScrolling}
+                onChildScroll={onChildScroll}
+                scrollTop={scrollTop}
+                overscanRowCount={3}
+                onScroll={onScroll}
+              />
             );
           }}
         </WindowScroller>

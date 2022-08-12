@@ -40,7 +40,7 @@ const TableBody = (props) => {
 };
 
 TableBody.defaultProps = {
-  itemHeight: 40,
+  itemHeight: 41,
   useReactWindow: false,
 };
 
