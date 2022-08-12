@@ -43,12 +43,12 @@ public class DbHelper : IDisposable
     public DbHelper(
         ILogger<DbHelper> logger,
         ConnectionStringSettings connectionString,
-        TenantDbContext tenantDbContext,
-        CoreDbContext coreDbContext)
+        IDbContextFactory<TenantDbContext> tenantDbContext,
+        IDbContextFactory<CoreDbContext> coreDbContext)
     {
         _logger = logger;
-        _tenantDbContext = tenantDbContext;
-        _coreDbContext = coreDbContext;
+        _tenantDbContext = tenantDbContext.CreateDbContext();
+        _coreDbContext = coreDbContext.CreateDbContext();
         var file = connectionString.ElementInformation.Source;
 
         if ("web.connections.config".Equals(Path.GetFileName(file), StringComparison.InvariantCultureIgnoreCase))
@@ -184,6 +184,7 @@ public class DbHelper : IDisposable
                         {
                             var tariff = _coreDbContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
                             tariff.Tenant = (int)r[table.Columns["id"]];
+                            tariff.CreateOn = DateTime.Now;
                             //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
                             _coreDbContext.Entry(tariff).State = EntityState.Modified;
                             _coreDbContext.SaveChanges();

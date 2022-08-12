@@ -32,4 +32,41 @@ namespace ASC.Files.Api;
 [ControllerName("files")]
 public abstract class ApiControllerBase : ControllerBase
 {
+    protected FolderDtoHelper _folderDtoHelper;
+    protected FileDtoHelper _fileDtoHelper;
+
+    public ApiControllerBase(FolderDtoHelper folderDtoHelper, FileDtoHelper fileDtoHelper)
+    {
+        _folderDtoHelper = folderDtoHelper;
+        _fileDtoHelper = fileDtoHelper;
+    }
+
+    public async Task<FileEntryDto> GetFileEntryWrapperAsync(FileEntry r)
+    {
+        FileEntryDto wrapper = null;
+        if (r.FileEntryType == FileEntryType.Folder)
+        {
+            if (r is Folder<int> fol1)
+            {
+                wrapper = await _folderDtoHelper.GetAsync(fol1);
+            }
+            else if (r is Folder<string> fol2)
+            {
+                wrapper = await _folderDtoHelper.GetAsync(fol2);
+            }
+        }
+        else
+        {
+            if (r is File<int> file1)
+            {
+                wrapper = await _fileDtoHelper.GetAsync(file1);
+            }
+            else if (r is File<string> file2)
+            {
+                wrapper = await _fileDtoHelper.GetAsync(file2);
+            }
+        }
+
+        return wrapper;
+    }
 }

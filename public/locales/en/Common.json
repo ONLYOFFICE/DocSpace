@@ -123,6 +123,7 @@
   "PasswordMinimumLength": "Minimum length",
   "People": "People",
   "Phone": "Phone",
+  "PreparationPortalTitle": "Portal restoring is underway",
   "Previous": "Previous",
   "Profile": "Profile",
   "ProjectsProduct": "Projects",
@@ -169,5 +170,12 @@
   "View": "View",
   "ViewWeb": "View web version",
   "Warning": "Warning",
-  "Hotkeys": "Hotkeys"
+  "Hotkeys": "Hotkeys",
+  "PaymentsTitle": "Payments",
+  "AboutCompanyTitle": "About this program",
+  "LogoutButton": "Sign Out",
+  "HelpCenter": "Help center",
+  "FeedbackAndSupport": "Feedback & Support",
+  "VideoGuides": "Video Guides",
+  "SelectFile": "Select file"
 }

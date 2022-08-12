@@ -121,6 +121,7 @@
   "PasswordMinimumLength": "Ελάχιστο μήκος",
   "People": "Άτομα",
   "Phone": "Τηλέφωνο",
+  "PreparationPortalTitle": "Η αποκατάσταση της πύλης βρίσκεται σε εξέλιξη",
   "Previous": "Προηγούμενο",
   "Profile": "Προφίλ",
   "ProjectsProduct": "Έργα",
@@ -167,5 +168,10 @@
   "View": "Προβολή",
   "ViewWeb": "Προβολή διαδικτυακής έκδοσης",
   "Warning": "Προειδοποίηση",
-  "Hotkeys": "Πλήκτρα συντόμευσης"
+  "Hotkeys": "Πλήκτρα συντόμευσης",
+  "PaymentsTitle": "Πληρωμές",
+  "AboutCompanyTitle": "Σχετικά με αυτό το πρόγραμμα",
+  "LogoutButton": "Αποσύνδεση",
+  "HelpCenter": "Κέντρο Βοήθειας",
+  "SelectFile": "Επιλογή αρχείου"
 }

@@ -29,30 +29,29 @@ namespace ASC.AuditTrail.Repositories;
 [Scope(Additional = typeof(AuditEventsRepositoryExtensions))]
 public class AuditEventsRepository
 {
-    private MessagesContext AuditTrailContext => _lazyAuditTrailContext.Value;
-
-    private readonly Lazy<MessagesContext> _lazyAuditTrailContext;
     private readonly AuditActionMapper _auditActionMapper;
     private readonly TenantManager _tenantManager;
+    private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
     private readonly IMapper _mapper;
 
     public AuditEventsRepository(
         AuditActionMapper auditActionMapper,
         TenantManager tenantManager,
-        DbContextManager<MessagesContext> dbContextManager,
+        IDbContextFactory<MessagesContext> dbContextFactory,
         IMapper mapper)
     {
-        _lazyAuditTrailContext = new Lazy<MessagesContext>(() => dbContextManager.Value);
         _auditActionMapper = auditActionMapper;
         _tenantManager = tenantManager;
+        _dbContextFactory = dbContextFactory;
         _mapper = mapper;
     }
 
     private IEnumerable<AuditEventDto> Get(int tenant, DateTime? fromDate, DateTime? to, int? limit)
     {
+        using var auditTrailContext = _dbContextFactory.CreateDbContext();
         var query =
-           (from q in AuditTrailContext.AuditEvents
-            from p in AuditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+           (from q in auditTrailContext.AuditEvents
+            from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
             where q.TenantId == tenant
             orderby q.Date descending
             select new AuditEventQuery
@@ -90,10 +89,10 @@ public class AuditEventsRepository
         int limit = 0)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
-
+        using var auditTrailContext = _dbContextFactory.CreateDbContext();
         var query =
-          (from q in AuditTrailContext.AuditEvents
-           from p in AuditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+          (from q in auditTrailContext.AuditEvents
+           from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
            where q.TenantId == tenant
            orderby q.Date descending
            select new AuditEventQuery
@@ -172,7 +171,7 @@ public class AuditEventsRepository
             else
             {
                 var keys = actions.Select(x => (int)x.Key).ToList();
-                query = query.Where(r => keys.Contains(r.Event.Action));
+                query = query.Where(r => keys.Contains(r.Event.Action ?? 0));
             }
         }
 
@@ -218,7 +217,9 @@ public class AuditEventsRepository
 
     public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
     {
-        var query = AuditTrailContext.AuditEvents
+        using var auditTrailContext = _dbContextFactory.CreateDbContext();
+
+        var query = auditTrailContext.AuditEvents
             .Where(a => a.TenantId == tenant);
 
         if (from.HasValue && to.HasValue)

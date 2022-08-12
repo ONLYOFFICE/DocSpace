@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Мінімальна довжина",
   "People": "Люди",
   "Phone": "Телефон",
+  "PreparationPortalTitle": "Портал відновлюється.",
   "Previous": "Назад",
   "Profile": "Профіль",
   "ProjectsProduct": "Проекти",
@@ -168,5 +169,10 @@
   "View": "Переглянути",
   "ViewWeb": "Переглянути веб-версію",
   "Warning": "Попередження",
-  "Hotkeys": "Сполучення клавіш"
+  "Hotkeys": "Сполучення клавіш",
+  "PaymentsTitle": "Платежі",
+  "AboutCompanyTitle": "Про цю програму",
+  "LogoutButton": "Вихід",
+  "HelpCenter": "Центр довідки",
+  "SelectFile": "Вибрати файл"
 }

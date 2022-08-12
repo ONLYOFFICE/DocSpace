@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Longueur minimale",
   "People": "Personnes",
   "Phone": "Téléphone",
+  "PreparationPortalTitle": "Restauration du portail est en cours.",
   "Previous": "Précédent",
   "Profile": "Profil",
   "ProjectsProduct": "Projets",
@@ -168,5 +169,10 @@
   "View": "Afficher",
   "ViewWeb": "Voir la version web",
   "Warning": "Attention",
-  "Hotkeys": "Raccourcis clavier"
+  "Hotkeys": "Raccourcis clavier",
+  "PaymentsTitle": "Paiements",
+  "AboutCompanyTitle": "À propos de ce programme",
+  "LogoutButton": "Déconnexion",
+  "HelpCenter": "Centre d'aide",
+  "SelectFile": "Sélectionner le fichier"
 }

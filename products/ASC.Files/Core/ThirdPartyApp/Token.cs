@@ -37,11 +37,11 @@ public class Token : OAuth20Token
         App = app;
     }
 
-        public string GetRefreshedToken(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper, ThirdPartySelector thirdPartySelector)
+    public string GetRefreshedToken(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper, ThirdPartySelector thirdPartySelector)
     {
         if (IsExpired)
         {
-                var app = thirdPartySelector.GetApp(App);
+            var app = thirdPartySelector.GetApp(App);
             try
             {
                 tokenHelper.Logger.DebugRefreshToken(App);
@@ -73,22 +73,21 @@ public class Token : OAuth20Token
 [Scope]
 public class TokenHelper
 {
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     public ILogger<TokenHelper> Logger;
-    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
-    private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
 
     public TokenHelper(
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         ILogger<TokenHelper> logger,
         InstanceCrypto instanceCrypto,
         AuthContext authContext,
         TenantManager tenantManager)
     {
+        _dbContextFactory = dbContextFactory;
         Logger = logger;
-        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
         _instanceCrypto = instanceCrypto;
         _authContext = authContext;
         _tenantManager = tenantManager;
@@ -101,11 +100,13 @@ public class TokenHelper
             App = token.App,
             Token = EncryptToken(token),
             UserId = _authContext.CurrentAccount.ID,
-            TenantId = _tenantManager.GetCurrentTenant().Id
+            TenantId = _tenantManager.GetCurrentTenant().Id,
+            ModifiedOn = DateTime.UtcNow
         };
 
-        FilesDbContext.AddOrUpdate(r => r.ThirdpartyApp, dbFilesThirdpartyApp);
-        FilesDbContext.SaveChanges();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        filesDbContext.AddOrUpdate(r => r.ThirdpartyApp, dbFilesThirdpartyApp);
+        filesDbContext.SaveChanges();
     }
 
     public Token GetToken(string app)
@@ -115,8 +116,8 @@ public class TokenHelper
 
     public Token GetToken(string app, Guid userId)
     {
-        var oAuth20Token = FilesDbContext.ThirdpartyApp
-            .AsQueryable()
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var oAuth20Token = filesDbContext.ThirdpartyApp
             .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.UserId == userId)
             .Where(r => r.App == app)
@@ -133,14 +134,14 @@ public class TokenHelper
 
     public void DeleteToken(string app, Guid? userId = null)
     {
-        var apps = FilesDbContext.ThirdpartyApp
-            .AsQueryable()
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var apps = filesDbContext.ThirdpartyApp
             .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.UserId == (userId ?? _authContext.CurrentAccount.ID))
             .Where(r => r.App == app);
 
-        FilesDbContext.RemoveRange(apps);
-        FilesDbContext.SaveChanges();
+        filesDbContext.RemoveRange(apps);
+        filesDbContext.SaveChanges();
     }
 
     private string EncryptToken(OAuth20Token token)

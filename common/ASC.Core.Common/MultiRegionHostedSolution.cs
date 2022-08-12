@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using DbContext = ASC.Core.Common.EF.Context.DbContext;
-
 namespace ASC.Core;
 
 public class MultiRegionHostedSolution
@@ -211,14 +209,14 @@ public class MultiRegionHostedSolution
             var find = false;
             foreach (var cs in connectionStrings)
             {
-                var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>();
+                var dbContextOptionsBuilder = new DbContextOptionsBuilder<CustomDbContext>();
                 var options = dbContextOptionsBuilder
                     //.UseMySql(cs.ConnectionString)
                     .UseNpgsql(cs.ConnectionString)
                     .UseLoggerFactory(_loggerFactory)
                     .Options;
 
-                using var dbContext = new DbContext(options);
+                using var dbContext = new CustomDbContext(options);
 
                 if (cs.Name.StartsWith(_dbid + "."))
                 {
@@ -241,14 +239,14 @@ public class MultiRegionHostedSolution
                 {
                     try
                     {
-                        var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>();
+                        var dbContextOptionsBuilder = new DbContextOptionsBuilder<CustomDbContext>();
                         var options = dbContextOptionsBuilder
                             //.UseMySql(connectionString.ConnectionString)
                             .UseNpgsql(connectionString.ConnectionString)
                             .UseLoggerFactory(_loggerFactory)
                             .Options;
 
-                        using var dbContext = new DbContext(options);
+                        using var dbContext = new CustomDbContext(options);
 
                         var q = dbContext.Regions.ToList();
 

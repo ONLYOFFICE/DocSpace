@@ -51,22 +51,31 @@ public static class NotifyInfoExtension
             entity.HasKey(e => e.NotifyId)
                 .HasName("PRIMARY");
 
-            entity.ToTable("notify_info");
+            entity.ToTable("notify_info")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.State)
                 .HasDatabaseName("state");
 
-            entity.Property(e => e.NotifyId).HasColumnName("notify_id");
+            entity.Property(e => e.NotifyId)
+                .HasColumnName("notify_id")
+                .ValueGeneratedNever();
 
-            entity.Property(e => e.Attempts).HasColumnName("attempts");
+            entity.Property(e => e.Attempts)
+                .HasColumnName("attempts")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.ModifyDate)
                 .HasColumnName("modify_date")
                 .HasColumnType("datetime");
 
-            entity.Property(e => e.Priority).HasColumnName("priority");
+            entity.Property(e => e.Priority)
+                .HasColumnName("priority")
+                .HasDefaultValueSql("'0'");
 
-            entity.Property(e => e.State).HasColumnName("state");
+            entity.Property(e => e.State)
+                .HasColumnName("state")
+                .HasDefaultValueSql("'0'");
         });
     }
     public static void PgSqlAddNotifyInfo(this ModelBuilder modelBuilder)

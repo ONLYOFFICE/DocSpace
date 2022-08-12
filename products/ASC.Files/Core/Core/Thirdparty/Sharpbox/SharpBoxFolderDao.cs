@@ -39,7 +39,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<SharpBoxFolderDao> monitor,
         FileUtility fileUtility,
@@ -85,7 +85,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
-        
+
         var rooms = GetFoldersAsync(parentId);
 
         rooms = FilterByRoomType(rooms, filterType);
@@ -102,7 +102,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
-{
+    {
         if (CheckInvalidFilter(filterType))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
@@ -175,7 +175,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             return AsyncEnumerable.Empty<Folder<string>>();
         }
 
-        var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
+        var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e));
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
@@ -192,7 +192,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
+    public IAsyncEnumerable<Folder<string>> GetParentFoldersAsync(string folderId)
     {
         var path = new List<Folder<string>>();
         var folder = GetFolderById(folderId);
@@ -206,7 +206,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         path.Reverse();
 
-        return Task.FromResult(path);
+        return path.ToAsyncEnumerable();
     }
 
 
@@ -225,7 +225,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             {
                 var parentFolder = GetFolderById(folder.ParentId);
 
-                folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync).ConfigureAwait(false);
+                folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync);
 
                 var newFolder = ProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
 
@@ -257,46 +257,48 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         var folder = GetFolderById(folderId);
         var id = MakeId(folder);
 
-        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using (var tx = await filesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
             {
-                var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
-                   .Where(r => r.Id.StartsWith(id))
-                   .Select(r => r.HashId)
-                   .ToListAsync()
-                   .ConfigureAwait(false);
+                var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
+               .Where(r => r.Id.StartsWith(id))
+               .Select(r => r.HashId)
+               .ToListAsync()
+               ;
 
-                var link = await Query(FilesDbContext.TagLink)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                var link = await Query(filesDbContext.TagLink)
+                .Where(r => hashIDs.Any(h => h == r.EntryId))
+                .ToListAsync()
+                ;
 
-                FilesDbContext.TagLink.RemoveRange(link);
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                filesDbContext.TagLink.RemoveRange(link);
+                await filesDbContext.SaveChangesAsync();
 
-                var tagsToRemove = from ft in FilesDbContext.Tag
-                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                var tagsToRemove = from ft in filesDbContext.Tag
+                                   join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
                                    where ftl == null
                                    select ft;
 
-                FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
-                var securityToDelete = Query(FilesDbContext.Security)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId));
+                var securityToDelete = Query(filesDbContext.Security)
+                .Where(r => hashIDs.Any(h => h == r.EntryId));
 
-                FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                await filesDbContext.SaveChangesAsync();
 
-                var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => hashIDs.Any(h => h == r.HashId));
+                var mappingToDelete = Query(filesDbContext.ThirdpartyIdMapping)
+                .Where(r => hashIDs.Any(h => h == r.HashId));
 
-                FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                await filesDbContext.SaveChangesAsync();
 
-                await tx.CommitAsync().ConfigureAwait(false);
+                await tx.CommitAsync();
             }
         });
 
@@ -331,12 +333,12 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         if (toFolderId is int tId)
         {
-            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken), typeof(TTo));
         }
 
         if (toFolderId is string tsId)
         {
-            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken), typeof(TTo));
         }
 
         throw new NotImplementedException();
@@ -348,7 +350,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             folderId, this, _sharpBoxDaoSelector.GetFileDao(folderId), _sharpBoxDaoSelector.ConvertId,
             toFolderId, _folderDao, _fileDao, r => r,
             true, cancellationToken)
-            .ConfigureAwait(false);
+            ;
 
         return moved.Id;
     }
@@ -367,7 +369,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         var newFolderId = MakeId(entry);
 
-        await UpdatePathInDBAsync(oldFolderId, newFolderId).ConfigureAwait(false);
+        await UpdatePathInDBAsync(oldFolderId, newFolderId);
 
         return newFolderId;
     }
@@ -376,12 +378,12 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         if (toFolderId is int tId)
         {
-            return await CopyFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
+            return await CopyFolderAsync(folderId, tId, cancellationToken) as Folder<TTo>;
         }
 
         if (toFolderId is string tsId)
         {
-            return await CopyFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
+            return await CopyFolderAsync(folderId, tsId, cancellationToken) as Folder<TTo>;
         }
 
         throw new NotImplementedException();
@@ -393,7 +395,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             folderId, this, _sharpBoxDaoSelector.GetFileDao(folderId), _sharpBoxDaoSelector.ConvertId,
             toFolderId, _folderDao, _fileDao, r => r,
             false, cancellationToken)
-            .ConfigureAwait(false);
+            ;
 
         return moved;
     }
@@ -444,13 +446,13 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         if ("/".Equals(MakePath(folder.Id)))
         {
             //It's root folder
-            await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle).ConfigureAwait(false);
+            await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
             //rename provider customer title
         }
         else
         {
             var parentFolder = GetFolderById(folder.ParentId);
-            newTitle = await GetAvailableTitleAsync(newTitle, parentFolder, IsExistAsync).ConfigureAwait(false);
+            newTitle = await GetAvailableTitleAsync(newTitle, parentFolder, IsExistAsync);
 
             //rename folder
             if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
@@ -462,7 +464,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             }
         }
 
-        await UpdatePathInDBAsync(oldId, newId).ConfigureAwait(false);
+        await UpdatePathInDBAsync(oldId, newId);
 
         return newId;
     }

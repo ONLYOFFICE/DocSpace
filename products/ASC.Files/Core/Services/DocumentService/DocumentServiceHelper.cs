@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using JWT;
-
 namespace ASC.Web.Files.Services.DocumentService;
 
 [Scope(Additional = typeof(ConfigurationExtention))]
@@ -138,10 +136,9 @@ public class DocumentServiceHelper
             rightToComment = false;
         }
 
-        var fileSecurity = _fileSecurity;
         rightToEdit = rightToEdit
                       && (linkRight == FileShare.ReadWrite || linkRight == FileShare.CustomFilter
-                          || await fileSecurity.CanEditAsync(file) || await fileSecurity.CanCustomFilterEditAsync(file));
+                          || await _fileSecurity.CanEditAsync(file) || await _fileSecurity.CanCustomFilterEditAsync(file));
         if (editPossible && !rightToEdit)
         {
             editPossible = false;
@@ -149,13 +146,13 @@ public class DocumentServiceHelper
 
         rightModifyFilter = rightModifyFilter
             && (linkRight == FileShare.ReadWrite
-                || await fileSecurity.CanEditAsync(file));
+                || await _fileSecurity.CanEditAsync(file));
 
-        rightToRename = rightToRename && rightToEdit && await fileSecurity.CanEditAsync(file);
+        rightToRename = rightToRename && rightToEdit && await _fileSecurity.CanEditAsync(file);
 
         rightToReview = rightToReview
                         && (linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                            || await fileSecurity.CanReviewAsync(file));
+                            || await _fileSecurity.CanReviewAsync(file));
         if (reviewPossible && !rightToReview)
         {
             reviewPossible = false;
@@ -163,7 +160,7 @@ public class DocumentServiceHelper
 
         rightToFillForms = rightToFillForms
                            && (linkRight == FileShare.FillForms || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                               || await fileSecurity.CanFillFormsAsync(file));
+                               || await _fileSecurity.CanFillFormsAsync(file));
         if (fillFormsPossible && !rightToFillForms)
         {
             fillFormsPossible = false;
@@ -171,7 +168,7 @@ public class DocumentServiceHelper
 
         rightToComment = rightToComment
                          && (linkRight == FileShare.Comment || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                             || await fileSecurity.CanCommentAsync(file));
+                             || await _fileSecurity.CanCommentAsync(file));
         if (commentPossible && !rightToComment)
         {
             commentPossible = false;
@@ -179,7 +176,7 @@ public class DocumentServiceHelper
 
         if (linkRight == FileShare.Restrict
             && !(editPossible || reviewPossible || fillFormsPossible || commentPossible)
-            && !await fileSecurity.CanReadAsync(file))
+            && !await _fileSecurity.CanReadAsync(file))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
         }
@@ -287,7 +284,7 @@ public class DocumentServiceHelper
             await _entryStatusManager.SetFileStatusAsync(file);
         }
 
-        var rightToDownload = await CanDownloadAsync(fileSecurity, file, linkRight);
+        var rightToDownload = await CanDownloadAsync(_fileSecurity, file, linkRight);
 
         var configuration = new Configuration<T>(file, _serviceProvider)
         {
@@ -384,13 +381,12 @@ public class DocumentServiceHelper
 
     public async Task CheckUsersForDropAsync<T>(File<T> file)
     {
-        var fileSecurity = _fileSecurity;
         var sharedLink =
-            await fileSecurity.CanEditAsync(file, FileConstant.ShareLinkId)
-            || await fileSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId)
-            || await fileSecurity.CanReviewAsync(file, FileConstant.ShareLinkId)
-            || await fileSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId)
-            || await fileSecurity.CanCommentAsync(file, FileConstant.ShareLinkId);
+            await _fileSecurity.CanEditAsync(file, FileConstant.ShareLinkId)
+            || await _fileSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId)
+            || await _fileSecurity.CanReviewAsync(file, FileConstant.ShareLinkId)
+            || await _fileSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId)
+            || await _fileSecurity.CanCommentAsync(file, FileConstant.ShareLinkId);
 
         var usersDrop = new List<string>();
 
@@ -402,11 +398,11 @@ public class DocumentServiceHelper
                 continue;
             }
 
-            if (!await fileSecurity.CanEditAsync(file, uid)
-                && !await fileSecurity.CanCustomFilterEditAsync(file, uid)
-                && !await fileSecurity.CanReviewAsync(file, uid)
-                && !await fileSecurity.CanFillFormsAsync(file, uid)
-                && !await fileSecurity.CanCommentAsync(file, uid))
+            if (!await _fileSecurity.CanEditAsync(file, uid)
+                && !await _fileSecurity.CanCustomFilterEditAsync(file, uid)
+                && !await _fileSecurity.CanReviewAsync(file, uid)
+                && !await _fileSecurity.CanFillFormsAsync(file, uid)
+                && !await _fileSecurity.CanCommentAsync(file, uid))
             {
                 usersDrop.Add(uid.ToString());
             }

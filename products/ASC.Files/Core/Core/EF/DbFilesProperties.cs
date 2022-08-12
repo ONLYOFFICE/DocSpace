@@ -57,7 +57,8 @@ public static class DbFilesPropertiesExtension
 
             entity.ToTable("files_properties");
 
-            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+            entity.Property(e => e.TenantId)
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.EntryId)
                 .HasColumnName("entry_id")
@@ -65,7 +66,7 @@ public static class DbFilesPropertiesExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.EntryId)
+            entity.Property(e => e.Data)
                 .HasColumnName("data")
                 .HasColumnType("mediumtext")
                 .HasCharSet("utf8")

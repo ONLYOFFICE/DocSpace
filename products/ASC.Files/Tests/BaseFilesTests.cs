@@ -26,6 +26,12 @@
 
 
 
+using ASC.Files.Core.EF;
+using ASC.MessagingSystem.EF.Context;
+using ASC.Webhooks.Core.EF.Context;
+
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Files.Tests;
 
 class FilesApplication : WebApplicationFactory<Program>
@@ -51,7 +57,14 @@ class FilesApplication : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
-            var DIHelper = new ASC.Common.DIHelper();
+            services.AddBaseDbContext<UserDbContext>();
+            services.AddBaseDbContext<FilesDbContext>();
+            services.AddBaseDbContext<MessagesContext>();
+            services.AddBaseDbContext<WebhooksDbContext>();
+            services.AddBaseDbContext<TenantDbContext>();
+            services.AddBaseDbContext<CoreDbContext>();
+
+            var DIHelper = new DIHelper();
             DIHelper.Configure(services);
             foreach (var a in Assembly.Load("ASC.Files").GetTypes().Where(r => r.IsAssignableTo<ControllerBase>() && !r.IsAbstract))
             {
@@ -71,19 +84,19 @@ public class MySetUpClass
     [OneTimeSetUp]
     public void CreateDb()
     {
-        var host = new FilesApplication(new Dictionary<string, string>
+        var args = new Dictionary<string, string>
                 {
                     { "pathToConf", Path.Combine("..","..", "..", "config") },
                     { "ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection },
                     { "migration:enabled", "true" },
                     { "core:products:folder", Path.Combine("..", "..", "..", "products") },
                     { "web:hub:internal", "" }
-                })
-                   .WithWebHostBuilder(builder =>
-                   {
-                   });
+                };
 
-        Migrate(host.Services);
+        var host = new FilesApplication(args);
+        Migrate(host.Services, "ASC.Migrations.MySql");
+
+        host = new FilesApplication(args);
         Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
 
         Scope = host.Services.CreateScope();
@@ -96,8 +109,8 @@ public class MySetUpClass
     [OneTimeTearDown]
     public void DropDb()
     {
-        var context = Scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-        context.Value.Database.EnsureDeleted();
+        var context = Scope.ServiceProvider.GetService<IDbContextFactory<UserDbContext>>();
+        context.CreateDbContext().Database.EnsureDeleted();
 
         try
         {
@@ -106,21 +119,30 @@ public class MySetUpClass
         catch { }
     }
 
-    private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
+    private void Migrate(IServiceProvider serviceProvider, string testAssembly)
     {
         using var scope = serviceProvider.CreateScope();
 
-        if (!string.IsNullOrEmpty(testAssembly))
-        {
-            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-            configuration["testAssembly"] = testAssembly;
-        }
+        var configuration = scope.ServiceProvider.GetService<IConfiguration>();
+        configuration["testAssembly"] = testAssembly;
 
-        using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-        db.Value.Migrate();
+        using var db = scope.ServiceProvider.GetService<UserDbContext>();
+        db.Database.Migrate();
 
-        using var filesDb = scope.ServiceProvider.GetService<DbContextManager<Core.EF.FilesDbContext>>();
-        filesDb.Value.Migrate();
+        using var filesDb = scope.ServiceProvider.GetService<FilesDbContext>();
+        filesDb.Database.Migrate();
+
+        using var messagesDb = scope.ServiceProvider.GetService<MessagesContext>();
+        messagesDb.Database.Migrate();
+
+        using var webHookDb = scope.ServiceProvider.GetService<WebhooksDbContext>();
+        webHookDb.Database.Migrate();
+
+        using var tenantDb = scope.ServiceProvider.GetService<TenantDbContext>();
+        tenantDb.Database.Migrate();
+
+        using var coreDb = scope.ServiceProvider.GetService<CoreDbContext>();
+        coreDb.Database.Migrate();
     }
 }
 

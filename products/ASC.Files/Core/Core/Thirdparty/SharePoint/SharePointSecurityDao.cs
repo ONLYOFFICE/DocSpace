@@ -34,7 +34,7 @@ internal class SharePointSecurityDao : SharePointDaoBase, ISecurityDao<string>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<SharePointSecurityDao> monitor,
         FileUtility fileUtility,
