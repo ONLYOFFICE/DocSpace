@@ -12,13 +12,6 @@ const ClearScrollbar = ({ isDisabled, heightScale, hasError, ...props }) => (
 const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
 
-  :focus-within {
-    border-color: ${(props) =>
-      props.hasError
-        ? props.theme.textArea.focusErrorBorderColor
-        : props.theme.textArea.focusBorderColor};
-  }
-
   :focus {
     outline: ${(props) => props.theme.textArea.focusOutline};
   }
