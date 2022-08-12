@@ -1639,6 +1639,14 @@ class FilesStore {
     this.scrollToTop();
   };
 
+  removeFiles = (fileIds, folderIds) => {
+    this.filter.total -= fileIds.length + folderIds.length;
+
+    if (fileIds) this.files = this.files.filter((x) => !fileIds.includes(x.id));
+    if (folderIds)
+      this.folders = this.folders.filter((x) => !folderIds.includes(x.id));
+  };
+
   updateFile = (fileId, title) => {
     return api.files
       .updateFile(fileId, title)
@@ -2482,12 +2490,13 @@ class FilesStore {
     this.trashIsEmpty = isEmpty;
   };
 
+  //TODO: filter.total is not updated, need move filter to new filterStore
   get filterTotal() {
     return this.filter.total;
   }
 
   get hasMoreFiles() {
-    return this.filesList.length < this.filterTotal;
+    return this.filesList.length < this.filter.total;
   }
 
   setFilesIsLoading = (filesIsLoading) => {

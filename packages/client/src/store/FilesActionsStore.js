@@ -289,6 +289,7 @@ class FilesActionStore {
 
             //this.updateCurrentFolder(fileIds, folderIds, false);
             this.updateFilesAfterDelete(folderIds);
+            this.filesStore.removeFiles(fileIds, folderIds);
 
             if (currentFolderId) {
               const { socketHelper } = this.authStore.settingsStore;
@@ -623,6 +624,7 @@ class FilesActionStore {
           await this.uploadDataStore.loopFilesOperations(data, pbData);
           //this.updateCurrentFolder([itemId]);
           this.updateFilesAfterDelete();
+          this.filesStore.removeFiles([itemId]);
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else if (isRoom) {
@@ -648,6 +650,7 @@ class FilesActionStore {
           await this.uploadDataStore.loopFilesOperations(data, pbData);
           //this.updateCurrentFolder(null, [itemId]);
           this.updateFilesAfterDelete([itemId]);
+          this.filesStore.removeFiles([itemId]);
           getIsEmptyTrash();
         })
         .then(() => toastr.success(translations.successRemoveFolder));
