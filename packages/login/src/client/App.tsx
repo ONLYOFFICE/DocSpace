@@ -10,6 +10,7 @@ import i18n from "./i18n";
 import Login from "./components/Login";
 
 const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
+if (isDesktopEditor) typeof window["AscDesktopEditor"];
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
