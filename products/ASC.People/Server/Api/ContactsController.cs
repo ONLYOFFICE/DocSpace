@@ -44,7 +44,7 @@ public class ContactsController : PeopleControllerBase
     }
 
     [HttpDelete("{userid}/contacts")]
-    public EmployeeFullDto DeleteMemberContacts(string userid, UpdateMemberRequestDto inDto)
+    public async Task<EmployeeFullDto> DeleteMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -56,11 +56,11 @@ public class ContactsController : PeopleControllerBase
         DeleteContacts(inDto.Contacts, user);
         _userManager.SaveUserInfo(user, syncCardDav: true);
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpPost("{userid}/contacts")]
-    public EmployeeFullDto SetMemberContacts(string userid, UpdateMemberRequestDto inDto)
+    public async Task<EmployeeFullDto> SetMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -73,11 +73,11 @@ public class ContactsController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
         _userManager.SaveUserInfo(user, syncCardDav: true);
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpPut("{userid}/contacts")]
-    public EmployeeFullDto UpdateMemberContacts(string userid, UpdateMemberRequestDto inDto)
+    public async Task<EmployeeFullDto> UpdateMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -89,7 +89,7 @@ public class ContactsController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
         _userManager.SaveUserInfo(user, syncCardDav: true);
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     private void DeleteContacts(IEnumerable<Contact> contacts, UserInfo user)

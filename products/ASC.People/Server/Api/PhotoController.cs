@@ -64,7 +64,7 @@ public class PhotoController : PeopleControllerBase
     }
 
     [HttpPost("{userid}/photo/thumbnails")]
-    public ThumbnailsDataDto CreateMemberPhotoThumbnails(string userid, ThumbnailsRequestDto inDto)
+    public async Task<ThumbnailsDataDto> CreateMemberPhotoThumbnails(string userid, ThumbnailsRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -84,22 +84,21 @@ public class PhotoController : PeopleControllerBase
 
             _settingsManager.SaveForUser(settings, user.Id);
             _userPhotoManager.RemovePhoto(user.Id);
-            _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
+            await _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
             _userPhotoManager.RemoveTempPhoto(fileName);
         }
         else
         {
-            UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, inDto.X, inDto.Y, inDto.Width, inDto.Height, user.Id);
+            await UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, inDto.X, inDto.Y, inDto.Width, inDto.Height, user.Id);
         }
 
         _userManager.SaveUserInfo(user, syncCardDav: true);
         _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-
-        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
+        return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }
 
     [HttpDelete("{userid}/photo")]
-    public ThumbnailsDataDto DeleteMemberPhoto(string userid)
+    public async Task<ThumbnailsDataDto> DeleteMemberPhoto(string userid)
     {
         var user = GetUserInfo(userid);
 
@@ -114,11 +113,11 @@ public class PhotoController : PeopleControllerBase
         _userManager.SaveUserInfo(user, syncCardDav: true);
         _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
+        return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }
 
     [HttpGet("{userid}/photo")]
-    public ThumbnailsDataDto GetMemberPhoto(string userid)
+    public async Task<ThumbnailsDataDto> GetMemberPhoto(string userid)
     {
         var user = GetUserInfo(userid);
 
@@ -127,11 +126,11 @@ public class PhotoController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
+        return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }
 
     [HttpPut("{userid}/photo")]
-    public ThumbnailsDataDto UpdateMemberPhoto(string userid, UpdateMemberRequestDto inDto)
+    public async Task<ThumbnailsDataDto> UpdateMemberPhoto(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -140,7 +139,7 @@ public class PhotoController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        if (inDto.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
+        if (inDto.Files != await _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
             UpdatePhotoUrl(inDto.Files, user);
         }
@@ -148,7 +147,7 @@ public class PhotoController : PeopleControllerBase
         _userManager.SaveUserInfo(user, syncCardDav: true);
         _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
+        return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }
 
     [HttpPost("{userid}/photo")]
