@@ -14,4 +14,8 @@ export const ThemeType = {
   IconWrapper: "iconWrapper",
   Calendar: "calendar",
   VersionBadge: "versionBadge",
+  Textarea: "textarea",
+  InputBlock: "inputBlock",
+  TextInput: "textInput",
+  ComboButton: "comboButton",
 };

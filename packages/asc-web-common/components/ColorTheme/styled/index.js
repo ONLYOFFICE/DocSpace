@@ -27,3 +27,11 @@ export { default as IconWrapperTheme } from "./iconWrapper";
 export { default as CalendarTheme } from "./calendar";
 
 export { default as VersionBadgeTheme } from "./versionBadge";
+
+export { default as TextareaTheme } from "./textarea";
+
+export { default as InputBlockTheme } from "./inputBlock";
+
+export { default as TextInputTheme } from "./textInput";
+
+export { default as ComboButtonTheme } from "./comboButton";

@@ -17,6 +17,10 @@ import {
   IconWrapperTheme,
   CalendarTheme,
   VersionBadgeTheme,
+  TextareaTheme,
+  InputBlockTheme,
+  TextInputTheme,
+  ComboButtonTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -67,6 +71,18 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.VersionBadge: {
       return <VersionBadgeTheme ref={ref} {...props} />;
+    }
+    case ThemeType.Textarea: {
+      return <TextareaTheme ref={ref} {...props} />;
+    }
+    case ThemeType.InputBlock: {
+      return <InputBlockTheme ref={ref} {...props} />;
+    }
+    case ThemeType.TextInput: {
+      return <TextInputTheme ref={ref} {...props} />;
+    }
+    case ThemeType.ComboButton: {
+      return <ComboButtonTheme ref={ref} {...props} />;
     }
   }
 });
