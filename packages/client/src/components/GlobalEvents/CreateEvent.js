@@ -103,7 +103,7 @@ const CreateEvent = ({
           addActiveItems(null, [folder.id]);
           setCreatedItem({ id: createdFolderId, type: "folder" });
         })
-        .then(() => editCompleteAction(id, item, false, type))
+        .then(() => editCompleteAction(item, type))
         .catch((e) => toastr.error(e))
         .finally(() => {
           const folderIds = [+id];
@@ -123,7 +123,7 @@ const CreateEvent = ({
 
             open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(id, item, false, type))
+          .then(() => editCompleteAction(item, type))
           .catch((err) => {
             if (err.indexOf("password") == -1) {
               toastr.error(err, t("Common:Warning"));
@@ -173,7 +173,7 @@ const CreateEvent = ({
 
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(id, item, false, type))
+          .then(() => editCompleteAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
@@ -209,7 +209,7 @@ const CreateEvent = ({
 
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(id, item, false, type))
+          .then(() => editCompleteAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];

@@ -489,35 +489,12 @@ class FilesActionStore {
     return this.downloadFiles(fileIds, folderIds, label);
   };
 
-  editCompleteAction = async (id, selectedItem, isCancelled = false, type) => {
-    const {
-      filter,
-      folders,
-      files,
+  editCompleteAction = async (selectedItem, type) => {
+    if (type === FileAction.Create) {
+      this.filesStore.addFile(selectedItem);
+    }
 
-      fetchFiles,
-      setIsLoading,
-    } = this.filesStore;
-
-    const { treeFolders, setTreeFolders } = this.treeFoldersStore;
-
-    const items = [...folders, ...files];
-    const item = items.find((o) => o.id === id && !o.fileExst); //TODO: maybe need files find and folders find, not at one function?
     if (type === FileAction.Create || type === FileAction.Rename) {
-      setIsLoading(true);
-
-      if (!isCancelled) {
-        const data = await fetchFiles(this.selectedFolderStore.id, filter);
-        const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
-        if (!selectedItem.fileExst && !selectedItem.contentLength) {
-          const path = data.selectedFolder.pathParts;
-          const folders = await getSubfolders(this.selectedFolderStore.id);
-          loopTreeFolders(path, treeFolders, folders, null, newItem);
-          setTreeFolders(treeFolders);
-        }
-      }
-
-      setIsLoading(false);
       type === FileAction.Rename &&
         this.onSelectItem(
           {

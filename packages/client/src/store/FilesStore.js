@@ -12,7 +12,7 @@ import {
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
 import { updateTempContent } from "@docspace/common/utils";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "client/toastr";
 
 import config from "PACKAGE_FILE";
@@ -671,9 +671,7 @@ class FilesStore {
       treeFolders,
       setSelectedNode,
       getSubfolders,
-      selectedTreeNode,
     } = this.treeFoldersStore;
-    const { id } = this.selectedFolderStore;
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -1629,6 +1627,17 @@ class FilesStore {
 
     if (idx === -1) return;
     this.folders[idx].pinned = !this.folders[idx].pinned;
+  };
+
+  addFile = (item) => {
+    this.filter.total += 1;
+    this.files.unshift(item);
+
+    const scrollElm = isMobileOnly
+      ? document.querySelector("#customScrollBar > .scroll-body")
+      : document.querySelector("#sectionScroll > .scroll-body");
+
+    scrollElm && scrollElm.scrollTo(0, 0);
   };
 
   updateFile = (fileId, title) => {
