@@ -1632,9 +1632,9 @@ class FilesStore {
     scrollElm && scrollElm.scrollTo(0, 0);
   };
 
-  addFile = (item) => {
+  addFile = (item, isFolder) => {
     this.filter.total += 1;
-    this.files.unshift(item);
+    isFolder ? this.folders.unshift(item) : this.files.unshift(item);
 
     this.scrollToTop();
   };

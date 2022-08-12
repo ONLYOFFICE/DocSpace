@@ -103,7 +103,7 @@ const CreateEvent = ({
           addActiveItems(null, [folder.id]);
           setCreatedItem({ id: createdFolderId, type: "folder" });
         })
-        .then(() => editCompleteAction(item, type))
+        .then(() => editCompleteAction(item, type, true))
         .catch((e) => toastr.error(e))
         .finally(() => {
           const folderIds = [+id];

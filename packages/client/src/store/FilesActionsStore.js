@@ -489,9 +489,9 @@ class FilesActionStore {
     return this.downloadFiles(fileIds, folderIds, label);
   };
 
-  editCompleteAction = async (selectedItem, type) => {
+  editCompleteAction = async (selectedItem, type, isFolder = false) => {
     if (type === FileAction.Create) {
-      this.filesStore.addFile(selectedItem);
+      this.filesStore.addFile(selectedItem, isFolder);
     }
 
     if (type === FileAction.Create || type === FileAction.Rename) {

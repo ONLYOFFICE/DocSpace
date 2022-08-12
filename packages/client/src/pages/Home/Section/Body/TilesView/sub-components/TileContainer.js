@@ -172,19 +172,12 @@ class TileContainer extends React.PureComponent {
     super(props);
 
     this.state = {
-      isOpen: false,
       selectedFilterData: {
         sortId: props.filter.sortBy,
         sortDirection: props.filter.sortOrder,
       },
     };
   }
-
-  toggleDropdown = () => {
-    this.setState((prev) => ({
-      isOpen: !prev.isOpen,
-    }));
-  };
 
   render() {
     const {
@@ -197,7 +190,7 @@ class TileContainer extends React.PureComponent {
       headingFiles,
     } = this.props;
 
-    const { isOpen, selectedFilterData } = this.state;
+    const { selectedFilterData } = this.state;
 
     const Rooms = [];
     const Folders = [];
