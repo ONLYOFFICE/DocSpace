@@ -35,7 +35,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger monitor,
         FileUtility fileUtility,
@@ -145,59 +145,61 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             return;
         }
 
-        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var tx = await FilesDbContext.Database.BeginTransactionAsync();
-            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.Id.StartsWith(oldValue))
-                .Select(r => r.Id)
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            var oldIDs = await Query(filesDbContext.ThirdpartyIdMapping)
+            .Where(r => r.Id.StartsWith(oldValue))
+            .Select(r => r.Id)
+            .ToListAsync();
+
+        foreach (var oldID in oldIDs)
+        {
+            var oldHashID = await MappingIDAsync(oldID);
+            var newID = oldID.Replace(oldValue, newValue);
+            var newHashID = await MappingIDAsync(newID);
+
+                var mappingForUpdate = await Query(filesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.HashId == oldHashID)
                 .ToListAsync();
 
-            foreach (var oldID in oldIDs)
+            foreach (var m in mappingForUpdate)
             {
-                var oldHashID = await MappingIDAsync(oldID);
-                var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = await MappingIDAsync(newID);
-
-                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == oldHashID)
-                    .ToListAsync();
-
-                foreach (var m in mappingForUpdate)
-                {
-                    m.Id = newID;
-                    m.HashId = newHashID;
-                }
-
-                await FilesDbContext.SaveChangesAsync();
-
-                var securityForUpdate = await Query(FilesDbContext.Security)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToListAsync();
-
-                foreach (var s in securityForUpdate)
-                {
-                    s.EntryId = newHashID;
-                    s.TimeStamp = DateTime.Now;
-                }
-
-                await FilesDbContext.SaveChangesAsync();
-
-                var linkForUpdate = await Query(FilesDbContext.TagLink)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToListAsync();
-
-                foreach (var l in linkForUpdate)
-                {
-                    l.EntryId = newHashID;
-                }
-
-                await FilesDbContext.SaveChangesAsync();
+                m.Id = newID;
+                m.HashId = newHashID;
             }
 
-            await tx.CommitAsync();
+                await filesDbContext.SaveChangesAsync();
+
+                var securityForUpdate = await Query(filesDbContext.Security)
+                .Where(r => r.EntryId == oldHashID)
+                .ToListAsync();
+
+            foreach (var s in securityForUpdate)
+            {
+                s.EntryId = newHashID;
+                    s.TimeStamp = DateTime.Now;
+            }
+
+                await filesDbContext.SaveChangesAsync();
+
+                var linkForUpdate = await Query(filesDbContext.TagLink)
+                .Where(r => r.EntryId == oldHashID)
+                .ToListAsync();
+
+            foreach (var l in linkForUpdate)
+            {
+                l.EntryId = newHashID;
+            }
+
+                await filesDbContext.SaveChangesAsync();
+        }
+
+        await tx.CommitAsync();
         });
     }
 

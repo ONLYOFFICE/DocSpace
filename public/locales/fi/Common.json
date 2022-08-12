@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Vähimmäispituus",
   "People": "Ihmiset",
   "Phone": "Puhelin",
+  "PreparationPortalTitle": "Portaalin palautus on käynnissä.",
   "Previous": "Edellinen",
   "Profile": "Profiili",
   "ProjectsProduct": "Projektit",
@@ -172,5 +173,6 @@
   "PaymentsTitle": "Maksut",
   "AboutCompanyTitle": "Tietoja tästä ohjelmasta",
   "LogoutButton": "Kirjaudu ulos",
-  "HelpCenter": "Ohjekeskus (englanniksi)"
+  "HelpCenter": "Ohjekeskus (englanniksi)",
+  "SelectFile": "Valitse tiedosto"
 }

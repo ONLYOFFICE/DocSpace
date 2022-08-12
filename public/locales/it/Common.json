@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Lunghezza minima",
   "People": "Persone",
   "Phone": "Telefono",
+  "PreparationPortalTitle": "Ripristino portale in corso.",
   "Previous": "Indietro",
   "Profile": "Profilo",
   "ProjectsProduct": "Progetti",
@@ -172,5 +173,6 @@
   "PaymentsTitle": "Pagamenti",
   "AboutCompanyTitle": "Informazioni sul programma",
   "LogoutButton": "Disconnetti",
-  "HelpCenter": "Centro assistenza"
+  "HelpCenter": "Centro assistenza",
+  "SelectFile": "Selezionare file"
 }

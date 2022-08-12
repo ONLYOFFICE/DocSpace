@@ -25,7 +25,8 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.EF;
-public class FilesDbContext : BaseDbContext
+
+public class FilesDbContext : DbContext
 {
     public DbSet<DbFile> Files { get; set; }
     public DbSet<DbFolder> Folders { get; set; }
@@ -43,10 +44,13 @@ public class FilesDbContext : BaseDbContext
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<FilesConverts> FilesConverts { get; set; }
+
+    public FilesDbContext(DbContextOptions<FilesDbContext> dbContextOptions) : base(dbContextOptions) { }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddDbFiles()
             .AddDbFolder()
             .AddDbFolderTree()
@@ -63,13 +67,5 @@ public class FilesDbContext : BaseDbContext
             .AddDbQuota()
             .AddDbTenant()
             .AddFilesConverts();
-    }
-}
-
-public static class FilesDbExtension
-{
-    public static DIHelper AddFilesDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<FilesDbContext>();
     }
 }

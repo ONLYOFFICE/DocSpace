@@ -123,6 +123,7 @@
   "PasswordMinimumLength": "Minimum length",
   "People": "People",
   "Phone": "Phone",
+  "PreparationPortalTitle": "Portal restoring is underway",
   "Previous": "Previous",
   "Profile": "Profile",
   "ProjectsProduct": "Projects",
@@ -175,5 +176,6 @@
   "LogoutButton": "Sign Out",
   "HelpCenter": "Help center",
   "FeedbackAndSupport": "Feedback & Support",
-  "VideoGuides": "Video Guides"
+  "VideoGuides": "Video Guides",
+  "SelectFile": "Select file"
 }

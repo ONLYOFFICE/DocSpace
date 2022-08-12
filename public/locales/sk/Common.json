@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Minimálna dĺžka",
   "People": "Ľudia",
   "Phone": "Telefón",
+  "PreparationPortalTitle": "Prebieha obnova portálu.",
   "Previous": "Predchádzajúci",
   "Profile": "Profil",
   "ProjectsProduct": "Projekty",
@@ -172,5 +173,6 @@
   "PaymentsTitle": "Platby",
   "AboutCompanyTitle": "O programe",
   "LogoutButton": "Odhlásiť Sa",
-  "HelpCenter": "Centrum pomoci"
+  "HelpCenter": "Centrum pomoci",
+  "SelectFile": "Vybrať súbor"
 }

@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "最小长度",
   "People": "人脉",
   "Phone": "电话",
+  "PreparationPortalTitle": "门户恢复正在进行中。",
   "Previous": "上一个",
   "Profile": "档案",
   "ProjectsProduct": "项目",
@@ -172,5 +173,6 @@
   "PaymentsTitle": "付款",
   "AboutCompanyTitle": "关于本计划",
   "LogoutButton": "登出",
-  "HelpCenter": "帮助中心"
+  "HelpCenter": "帮助中心",
+  "SelectFile": "选择文件"
 }

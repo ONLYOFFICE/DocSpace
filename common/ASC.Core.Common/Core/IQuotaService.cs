@@ -26,7 +26,7 @@
 
 namespace ASC.Core;
 
-[Scope(typeof(ConfigureDbQuotaService), typeof(ConfigureCachedQuotaService))]
+[Scope(typeof(CachedQuotaService))]
 public interface IQuotaService
 {
     IEnumerable<TenantQuota> GetTenantQuotas();

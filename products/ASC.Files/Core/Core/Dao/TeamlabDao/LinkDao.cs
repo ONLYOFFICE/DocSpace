@@ -31,7 +31,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 {
     public LinkDao(
         UserManager userManager,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
         SetupInfo setupInfo,
@@ -61,7 +61,9 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task AddLinkAsync(string sourceId, string linkedId)
     {
-        await FilesDbContext.AddOrUpdateAsync(r => r.FilesLink, new DbFilesLink()
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        await filesDbContext.AddOrUpdateAsync(r => r.FilesLink, new DbFilesLink()
         {
             TenantId = TenantID,
             SourceId = sourceId,
@@ -69,20 +71,23 @@ internal class LinkDao : AbstractDao, ILinkDao
             LinkedFor = _authContext.CurrentAccount.ID
         });
 
-        await FilesDbContext.SaveChangesAsync();
+        await filesDbContext.SaveChangesAsync();
     }
 
-    public Task<string> GetSourceAsync(string linkedId)
+    public async Task<string> GetSourceAsync(string linkedId)
     {
-        return FilesDbContext.FilesLink
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        return await filesDbContext.FilesLink
             .Where(r => r.TenantId == TenantID && r.LinkedId == linkedId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .Select(r => r.SourceId)
             .SingleOrDefaultAsync();
     }
 
-    public Task<string> GetLinkedAsync(string sourceId)
+    public async Task<string> GetLinkedAsync(string sourceId)
     {
-        return FilesDbContext.FilesLink
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        return await filesDbContext.FilesLink
             .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .Select(r => r.LinkedId)
             .SingleOrDefaultAsync();
@@ -90,21 +95,25 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task DeleteLinkAsync(string sourceId)
     {
-        var link = await FilesDbContext.FilesLink
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        var link = await filesDbContext.FilesLink
             .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .SingleOrDefaultAsync();
 
-        FilesDbContext.FilesLink.Remove(link);
+        filesDbContext.FilesLink.Remove(link);
 
-        await FilesDbContext.SaveChangesAsync();
+        await filesDbContext.SaveChangesAsync();
     }
 
     public async Task DeleteAllLinkAsync(string fileId)
     {
-        var link = await FilesDbContext.FilesLink.Where(r => r.TenantId == TenantID && (r.SourceId == fileId || r.LinkedId == fileId)).ToListAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        FilesDbContext.FilesLink.RemoveRange(link);
+        var link = await filesDbContext.FilesLink.Where(r => r.TenantId == TenantID && (r.SourceId == fileId || r.LinkedId == fileId)).ToListAsync();
 
-        await FilesDbContext.SaveChangesAsync();
+        filesDbContext.FilesLink.RemoveRange(link);
+
+        await filesDbContext.SaveChangesAsync();
     }
 }

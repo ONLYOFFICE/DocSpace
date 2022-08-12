@@ -33,7 +33,6 @@ public class EditorControllerInternal : EditorController<int>
 {
     public EditorControllerInternal(
         FileStorageService<int> fileStorageService,
-        FileDtoHelper fileDtoHelper,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
@@ -41,8 +40,10 @@ public class EditorControllerInternal : EditorController<int>
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper,
         CommonLinkUtility commonLinkUtility,
-        FilesLinkUtility filesLinkUtility)
-        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility)
+        FilesLinkUtility filesLinkUtility,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -53,7 +54,6 @@ public class EditorControllerThirdparty : EditorController<string>
 
     public EditorControllerThirdparty(
         FileStorageService<string> fileStorageService,
-        FileDtoHelper fileDtoHelper,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
@@ -62,8 +62,10 @@ public class EditorControllerThirdparty : EditorController<string>
         ThirdPartySelector thirdPartySelector,
         IMapper mapper,
         CommonLinkUtility commonLinkUtility,
-        FilesLinkUtility filesLinkUtility)
-        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility)
+        FilesLinkUtility filesLinkUtility,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper)
     {
         _thirdPartySelector = thirdPartySelector;
     }
@@ -111,7 +113,6 @@ public class EditorControllerThirdparty : EditorController<string>
 public abstract class EditorController<T> : ApiControllerBase
 {
     protected readonly FileStorageService<T> _fileStorageService;
-    protected readonly FileDtoHelper _fileDtoHelper;
     protected readonly DocumentServiceHelper _documentServiceHelper;
     protected readonly EncryptionKeyPairDtoHelper _encryptionKeyPairDtoHelper;
     protected readonly SettingsManager _settingsManager;
@@ -123,7 +124,6 @@ public abstract class EditorController<T> : ApiControllerBase
 
     public EditorController(
         FileStorageService<T> fileStorageService,
-        FileDtoHelper fileDtoHelper,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
@@ -131,10 +131,11 @@ public abstract class EditorController<T> : ApiControllerBase
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper,
         CommonLinkUtility commonLinkUtility,
-        FilesLinkUtility filesLinkUtility)
+        FilesLinkUtility filesLinkUtility,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
-        _fileDtoHelper = fileDtoHelper;
         _documentServiceHelper = documentServiceHelper;
         _encryptionKeyPairDtoHelper = encryptionKeyPairDtoHelper;
         _settingsManager = settingsManager;
@@ -269,7 +270,9 @@ public class EditorController : ApiControllerBase
         FilesLinkUtility filesLinkUtility,
         MessageService messageService,
         DocumentServiceConnector documentServiceConnector,
-        CommonLinkUtility commonLinkUtility)
+        CommonLinkUtility commonLinkUtility,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _filesLinkUtility = filesLinkUtility;
         _messageService = messageService;

@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Минимална дължина",
   "People": "Хора",
   "Phone": "Телефон",
+  "PreparationPortalTitle": "Възстановяването на портала е в ход.",
   "Previous": "Предишен",
   "Profile": "Профил",
   "ProjectsProduct": "Проекти",
@@ -172,5 +173,6 @@
   "PaymentsTitle": "Плащания",
   "AboutCompanyTitle": "За тази програма",
   "LogoutButton": "Отписване",
-  "HelpCenter": "Помощен център"
+  "HelpCenter": "Помощен център",
+  "SelectFile": "Избери файл"
 }

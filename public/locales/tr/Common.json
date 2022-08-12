@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Minimum uzunluk",
   "People": "Kişiler",
   "Phone": "Telefon",
+  "PreparationPortalTitle": "Portal geri yükleme yapılıyor.",
   "Previous": "Önceki",
   "Profile": "Profil",
   "ProjectsProduct": "Projeler",
@@ -172,5 +173,6 @@
   "PaymentsTitle": "Ödemeler",
   "AboutCompanyTitle": "Bu program hakkında",
   "LogoutButton": "Çıkış",
-  "HelpCenter": "Yardım Merkezi"
+  "HelpCenter": "Yardım Merkezi",
+  "SelectFile": "Dosya Seç"
 }

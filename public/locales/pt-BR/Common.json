@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Comprimento mínimo",
   "People": "Pessoas",
   "Phone": "Telefone",
+  "PreparationPortalTitle": "Restauração do portal está em andamento.",
   "Previous": "Anterior",
   "Profile": "Perfil",
   "ProjectsProduct": "Projetos",
@@ -172,5 +173,6 @@
   "PaymentsTitle": "Pagamentos",
   "AboutCompanyTitle": "Sobre este programa",
   "LogoutButton": "Sair",
-  "HelpCenter": "Central de Ajuda"
+  "HelpCenter": "Central de Ajuda",
+  "SelectFile": "Selecionar arquivo"
 }

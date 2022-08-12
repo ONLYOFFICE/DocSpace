@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Minimalna dolžina",
   "People": "Ljudje",
   "Phone": "Telefon",
+  "PreparationPortalTitle": "Obnavljanje portala je v teku",
   "Previous": "Prejšnji",
   "Profile": "Profil",
   "ProjectsProduct": "Projekti",
@@ -172,5 +173,6 @@
   "PaymentsTitle": "Plačila",
   "AboutCompanyTitle": "O tem programu",
   "LogoutButton": "Odjava",
-  "HelpCenter": "Center pomoči"
+  "HelpCenter": "Center pomoči",
+  "SelectFile": "Izberi datoteko"
 }

@@ -93,7 +93,7 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     diHelper.TryAdd<TenantManager>();
     diHelper.TryAdd<UserManager>();
 
-    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+    services.AddBaseDbContextPool<FilesDbContext>();
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
@@ -101,7 +101,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
 });
 
-var startup = new BaseWorkerStartup(builder.Configuration);
+var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 
@@ -113,7 +113,7 @@ var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService
 
 eventBus.Subscribe<ThumbnailRequestedIntegrationEvent, ThumbnailRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 public partial class Program
 {

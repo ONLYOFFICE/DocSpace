@@ -121,6 +121,7 @@
   "PasswordMinimumLength": "Lungimea minimă",
   "People": "Persoane",
   "Phone": "Telefon",
+  "PreparationPortalTitle": "Restaurarea portalului este în curs de desfășurare",
   "Previous": "Anterior",
   "Profile": "Profil",
   "ProjectsProduct": "Proiecte",
@@ -170,5 +171,6 @@
   "Hotkeys": "Comenzi rapide",
   "PaymentsTitle": "Plăți",
   "AboutCompanyTitle": "Despre aplicația",
-  "LogoutButton": "Deconectare"
+  "LogoutButton": "Deconectare",
+  "SelectFile": "Selectare fișier"
 }

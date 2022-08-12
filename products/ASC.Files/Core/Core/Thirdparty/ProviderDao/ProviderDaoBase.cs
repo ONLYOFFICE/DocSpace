@@ -92,23 +92,23 @@ internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
         return Selectors.FirstOrDefault(selector => selector.IsMatch(id));
     }
 
-        protected async Task SetSharedPropertyAsync(IEnumerable<FileEntry<string>> entries)
+    protected async Task SetSharedPropertyAsync(IEnumerable<FileEntry<string>> entries)
     {
-        var pureShareRecords = await _securityDao.GetPureShareRecordsAsync(entries);
+        var pureShareRecords = await _securityDao.GetPureShareRecordsAsync(entries).ToListAsync();
         var ids = pureShareRecords
             //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
             .Select(x => x.EntryId).Distinct();
 
-            foreach (var id in ids)
-            {
-                var firstEntry = entries.FirstOrDefault(y => y.Id.Equals(id));
+        foreach (var id in ids)
+        {
+            var firstEntry = entries.FirstOrDefault(y => y.Id.Equals(id));
 
-                if (firstEntry != null)
-                {
-                    firstEntry.Shared = true;
-                }
+            if (firstEntry != null)
+            {
+                firstEntry.Shared = true;
             }
         }
+    }
 
     protected IEnumerable<IDaoSelector> GetSelectors()
     {
