@@ -157,7 +157,7 @@ reassign_values (){
   SERVICE_NAME="$1"
   if [[ "${EXEC_FILE}" == *".js" ]]; then
 	EXEC_START="${WORK_DIR}${EXEC_FILE}"
-  else if [[ "${SERVICE_NAME}" = "migration-runner" ]]; then
+  elif [[ "${SERVICE_NAME}" = "migration-runner" ]]; then
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE}"
   else
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
