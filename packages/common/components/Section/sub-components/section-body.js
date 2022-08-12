@@ -68,8 +68,6 @@ const commonStyles = css`
   }
 
   .section-wrapper-content {
-    height: 100%;
-
     ${paddingStyles}
     flex: 1 0 auto;
     outline: none;
