@@ -22,6 +22,7 @@ import {
   TextInputTheme,
   ComboButtonTheme,
   LinkForgotPasswordTheme,
+  LoadingButtonTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -87,6 +88,9 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.LinkForgotPassword: {
       return <LinkForgotPasswordTheme ref={ref} {...props} />;
+    }
+    case ThemeType.LoadingButton: {
+      return <LoadingButtonTheme ref={ref} {...props} />;
     }
   }
 });
