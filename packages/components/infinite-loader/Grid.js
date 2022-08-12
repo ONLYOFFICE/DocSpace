@@ -15,7 +15,7 @@ const GridComponent = ({
 }) => {
   const isItemLoaded = useCallback(
     ({ index }) => {
-      return !hasMoreFiles || index * countTilesInRow < filesLength;
+      return !hasMoreFiles || (index + 1) * countTilesInRow < filesLength;
     },
     [filesLength, hasMoreFiles, countTilesInRow]
   );
