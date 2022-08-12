@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { CalendarStyle } from "@appserver/components/calendar/styled-calendar";
+import { CalendarStyle } from "@docspace/components/calendar/styled-calendar";
 
 const getDefaultStyles = ({ currentColorScheme, color }) => css`
   .calendar-month_selected-day {

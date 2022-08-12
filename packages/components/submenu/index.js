@@ -13,7 +13,7 @@ import {
 } from "./styled-submenu";
 import LoaderSubmenu from "./loader";
 
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const Submenu = (props) => {
   const { data, startSelect = 0, onSelect, isLoading, ...rest } = props;

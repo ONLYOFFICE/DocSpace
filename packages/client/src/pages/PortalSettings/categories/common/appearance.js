@@ -12,13 +12,13 @@ import Preview from "./settingsAppearance/preview";
 
 import ColorSchemeDialog from "./sub-components/colorSchemeDialog";
 
-import DropDownItem from "@appserver/components/drop-down-item";
-import DropDownContainer from "@appserver/components/drop-down";
+import DropDownItem from "@docspace/components/drop-down-item";
+import DropDownContainer from "@docspace/components/drop-down";
 
 import HexColorPickerComponent from "./sub-components/hexColorPicker";
 import { isMobileOnly } from "react-device-detect";
 
-import Loaders from "@appserver/common/components/Loaders";
+import Loaders from "@docspace/common/components/Loaders";
 
 import { StyledComponent } from "./settingsAppearance/StyledApperance.js";
 

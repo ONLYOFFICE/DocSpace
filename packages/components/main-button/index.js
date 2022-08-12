@@ -8,7 +8,7 @@ import {
   GroupMainButton,
 } from "./styled-main-button";
 import ContextMenu from "../context-menu";
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const MainButton = (props) => {
   const {

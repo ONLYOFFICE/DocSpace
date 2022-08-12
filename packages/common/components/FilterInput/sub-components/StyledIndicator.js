@@ -1,4 +1,4 @@
-import { Base } from "@appserver/components/themes";
+import { Base } from "@docspace/components/themes";
 import styled, { css } from "styled-components";
 
 const StyledIndicator = styled.div`

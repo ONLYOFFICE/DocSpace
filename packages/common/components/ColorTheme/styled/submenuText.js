@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-import StyledText from "@appserver/components/text/styled-text";
+import StyledText from "@docspace/components/text/styled-text";
 
 const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
   color: ${isActive && currentColorScheme.accentColor};

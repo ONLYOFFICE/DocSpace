@@ -4,7 +4,7 @@ import {
   StyledCatalogItemContainer,
   StyledCatalogItemImg,
   StyledCatalogItemText,
-} from "@appserver/components/catalog-item/styled-catalog-item";
+} from "@docspace/components/catalog-item/styled-catalog-item";
 
 const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
   ${StyledCatalogItemText} {

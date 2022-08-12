@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
-import { StyledInputGroup } from "@appserver/components/input-block/styled-input-block";
-import Base from "@appserver/components/themes/base";
+import { StyledInputGroup } from "@docspace/components/input-block/styled-input-block";
+import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ currentColorScheme, hasError, theme }) => css`
   :focus-within {

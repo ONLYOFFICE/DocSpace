@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
-import { StyledVersionSvg } from "@appserver/files/src/pages/VersionHistory/Section/Body/StyledVersionHistory";
-
+import { StyledVersionSvg } from "@docspace/client/src/pages/VersionHistory/Section/Body/StyledVersionHistory";
 const getDefaultStyles = ({
   currentColorScheme,
   isVersion,

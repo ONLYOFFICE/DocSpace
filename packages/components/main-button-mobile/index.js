@@ -27,7 +27,7 @@ import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";
 
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}

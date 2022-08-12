@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { StyledMainButton } from "@appserver/components/main-button/styled-main-button";
+import { StyledMainButton } from "@docspace/components/main-button/styled-main-button";
 
 const getDefaultStyles = ({ currentColorScheme }) => css`
   background: ${currentColorScheme.accentColor};

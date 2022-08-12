@@ -43,7 +43,7 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
 import { ReactSVG } from "react-svg";
 
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const settings = {
   minLength: 6,

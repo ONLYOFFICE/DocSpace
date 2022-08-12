@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import {
   StyledBadge,
   StyledInner,
-} from "@appserver/components/badge/styled-badge";
+} from "@docspace/components/badge/styled-badge";
 
 const getDefaultStyles = ({ currentColorScheme }) => css`
   ${StyledInner} {

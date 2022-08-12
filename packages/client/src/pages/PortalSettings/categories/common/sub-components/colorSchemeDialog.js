@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
-import ModalDialog from "@appserver/components/modal-dialog";
+import ModalDialog from "@docspace/components/modal-dialog";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
-import Button from "@appserver/components/button";
+import Button from "@docspace/components/button";
 
 const StyledComponent = styled(ModalDialog)`
   .modal-dialog-aside-footer {

@@ -10,7 +10,7 @@ import globalColors from "../utils/globalColors";
 import { motion } from "framer-motion";
 import Base from "../themes/base";
 
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const ToggleIcon = ({ isChecked, isLoading }) => {
   return (

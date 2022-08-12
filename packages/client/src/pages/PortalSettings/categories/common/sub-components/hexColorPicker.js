@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
-import Button from "@appserver/components/button";
+import Button from "@docspace/components/button";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 import { isMobileOnly } from "react-device-detect";
 

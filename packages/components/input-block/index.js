@@ -9,7 +9,7 @@ import {
   StyledChildrenBlock,
   StyledIconBlock,
 } from "./styled-input-block";
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 //const iconNames = Object.keys(Icons);
 

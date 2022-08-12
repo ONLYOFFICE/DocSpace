@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
-import { StyledScrollbar } from "@appserver/components/textarea/styled-textarea";
-import Base from "@appserver/components/themes/base";
+import { StyledScrollbar } from "@docspace/components/textarea/styled-textarea";
+import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ currentColorScheme, hasError, theme }) => css`
   :focus-within {

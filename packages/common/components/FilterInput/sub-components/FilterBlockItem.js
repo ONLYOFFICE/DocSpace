@@ -21,7 +21,7 @@ import {
   StyledFilterBlockItemSeparator,
 } from "./StyledFilterBlock";
 
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import XIcon from "../svg/x.react.svg";
 

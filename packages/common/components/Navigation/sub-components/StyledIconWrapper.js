@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Base } from "@appserver/components/themes";
+import { Base } from "@docspace/components/themes";
 
 const StyledIconWrapper = styled.div`
   width: 17px;

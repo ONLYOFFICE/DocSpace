@@ -3,8 +3,8 @@ import {
   StyledCircle,
   StyledLoadingButton,
   StyledCircleWrap,
-} from "@appserver/files/src/components/panels/UploadPanel/SubComponents/StyledLoadingButton";
-import { Base } from "@appserver/components/themes";
+} from "@docspace/client/src/components/panels/UploadPanel/SubComponents/StyledLoadingButton";
+import { Base } from "@docspace/components/themes";
 
 const getDefaultStyles = ({ currentColorScheme, theme }) => css`
   ${StyledCircle} {

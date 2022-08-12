@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Base } from "@appserver/components/themes";
+import { Base } from "@docspace/components/themes";
 
 const StyledComponent = styled.div`
   padding-top: 5px;

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { StyledTextarea, StyledScrollbar } from "./styled-textarea";
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 

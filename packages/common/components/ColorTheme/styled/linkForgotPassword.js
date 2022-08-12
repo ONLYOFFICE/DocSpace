@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { LoginContainer } from "@appserver/login/src/StyledLogin";
+import { LoginContainer } from "@docspace/login/src/StyledLogin";
 
 const getDefaultStyles = ({ currentColorScheme }) => css`
   .login-link {

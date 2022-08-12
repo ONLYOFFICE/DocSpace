@@ -14,7 +14,7 @@ import {
 import ExpanderDownIcon from "../../../../public/images/expander-down.react.svg";
 import commonIconsStyles from "../../utils/common-icons-style";
 
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}

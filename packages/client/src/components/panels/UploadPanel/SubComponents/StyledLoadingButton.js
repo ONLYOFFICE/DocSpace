@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from "styled-components";
-import globalColors from "@appserver/components/utils/globalColors";
-import { Base } from "@appserver/components/themes";
+import globalColors from "@docspace/components/utils/globalColors";
+import { Base } from "@docspace/components/themes";
 
 const backgroundColor = "none";
 

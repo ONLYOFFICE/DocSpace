@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
 import Base from "../themes/base";
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 class TextInput extends React.Component {
   shouldComponentUpdate(nextProps) {

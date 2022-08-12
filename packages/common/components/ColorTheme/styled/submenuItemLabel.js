@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-import { StyledSubmenuItemLabel } from "@appserver/components/submenu/styled-submenu";
+import { StyledSubmenuItemLabel } from "@docspace/components/submenu/styled-submenu";
 
 const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
   background-color: ${isActive ? currentColorScheme.accentColor : "none"};

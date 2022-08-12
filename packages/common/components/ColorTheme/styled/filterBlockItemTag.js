@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { StyledFilterBlockItemTag } from "@appserver/common/components/FilterInput/sub-components/StyledFilterBlock";
+import { StyledFilterBlockItemTag } from "@docspace/common/components/FilterInput/sub-components/StyledFilterBlock";
 
 const getDefaultStyles = ({ currentColorScheme, isSelected }) => css`
   background: ${isSelected && currentColorScheme.accentColor};

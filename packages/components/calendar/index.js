@@ -14,7 +14,7 @@ import {
   ComboBoxStyle,
 } from "./styled-calendar.js";
 
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 class Calendar extends Component {
   constructor(props) {

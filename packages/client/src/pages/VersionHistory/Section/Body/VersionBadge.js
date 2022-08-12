@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
 import VersionSvg from "@docspace/client/public/images/versionrevision_active.react.svg";
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 
 

@@ -7,7 +7,7 @@ import FilterBlock from "./FilterBlock";
 
 import StyledButton from "./StyledButton";
 
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 const FilterButton = ({
   t,
   onFilter,

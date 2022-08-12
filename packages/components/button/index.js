@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Loader from "../loader";
 import StyledButton from "./styled-button";
 import Base from "../themes/base";
-import { ColorTheme, ThemeType } from "@appserver/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 const Button = React.forwardRef((props, ref) => {
