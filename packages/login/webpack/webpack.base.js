@@ -33,8 +33,17 @@ module.exports = {
         type: "asset",
       },
       {
-        test: /\.svg/,
-        type: "asset/inline",
+        test: /\.react.svg$/,
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              svgoConfig: {
+                plugins: [{ removeViewBox: false }],
+              },
+            },
+          },
+        ],
       },
       {
         test: imageExtensions,
