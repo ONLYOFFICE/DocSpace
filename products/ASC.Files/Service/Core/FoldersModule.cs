@@ -96,14 +96,14 @@ public class FoldersModule : FeedModule
 
     public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).Result;
+        return _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync().Result;
     }
 
     public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
     {
-        var folders = _folderDao.GetFeedsForFoldersAsync(filter.Tenant, filter.Time.From, filter.Time.To).Result
+        var folders = _folderDao.GetFeedsForFoldersAsync(filter.Tenant, filter.Time.From, filter.Time.To)
                     .Where(f => f.Folder.RootFolderType != FolderType.TRASH && f.Folder.RootFolderType != FolderType.BUNCH)
-                    .ToList();
+                    .ToListAsync().Result;
 
         var parentFolderIDs = folders.Select(r => r.Folder.ParentId).ToList();
         var parentFolders = _folderDao.GetFoldersAsync(parentFolderIDs, checkShare: false).ToListAsync().Result;

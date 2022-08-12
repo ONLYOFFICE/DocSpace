@@ -42,6 +42,9 @@ KAFKA_HOST = os.environ["KAFKA_HOST"] if environ.get("KAFKA_HOST") else "kafka:9
 RUN_FILE = sys.argv[1] if sys.argv[1] else "none"
 LOG_FILE = sys.argv[2] if sys.argv[2] else "none"
 
+REDIS_HOST=os.environ["REDIS_HOST"] if environ.get("REDIS_HOST") else "onlyoffice-redis"
+RABBIT_HOST=os.environ["RABBIT_HOST"] if environ.get("RABBIT_HOST") else "onlyoffice-rabbitmq"
+
 class RunServices:
     def __init__(self, SERVICE_PORT, PATH_TO_CONF):
         self.SERVICE_PORT = SERVICE_PORT
@@ -68,7 +71,7 @@ class RunServices:
             self.RunService(RUN_FILE, ENV_EXTENSION)
         elif  ENV_EXTENSION == "none":
             os.system("dotnet " + RUN_FILE + " --urls=" + URLS + self.SERVICE_PORT +\
-                " --$STORAGE_ROOT=" + APP_STORAGE_ROOT +\
+                " --\'$STORAGE_ROOT\'=" + APP_STORAGE_ROOT +\
                     " --pathToConf=" + self.PATH_TO_CONF +\
                         " --log:dir=" + LOG_DIR +\
                             " --log:name=" + LOG_FILE +\
@@ -76,7 +79,7 @@ class RunServices:
                                     " core:products:subfolder=server")
         else:
             os.system("dotnet " + RUN_FILE + " --urls=" + URLS + self.SERVICE_PORT +\
-                 " --$STORAGE_ROOT=" + APP_STORAGE_ROOT +\
+                 " --\'$STORAGE_ROOT\'=" + APP_STORAGE_ROOT +\
                     " --pathToConf=" + self.PATH_TO_CONF +\
                         " --log:dir=" + LOG_DIR +\
                             " --log:name=" + LOG_FILE +\
@@ -159,12 +162,12 @@ writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/rabbitmq.json"
 jsonData = openJsonFile(filePath)
-updateJsonData(jsonData,"$.RabbitMQ.Hostname", "onlyoffice-rebbitmq")
+updateJsonData(jsonData,"$.RabbitMQ.Hostname", RABBIT_HOST)
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/redis.json"
 jsonData = openJsonFile(filePath)
-updateJsonData(jsonData,"$.Redis.Hosts.[0].Host", "onlyoffice-redis")
+updateJsonData(jsonData,"$.Redis.Hosts.[0].Host", REDIS_HOST)
 writeJsonFile(filePath, jsonData)
 
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)

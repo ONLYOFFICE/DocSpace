@@ -18,7 +18,7 @@ import {
 const paddingStyles = css`
   padding: ${(props) =>
     props.settingsStudio
-      ? "0 7px 16px 24px"
+      ? "0 7px 16px 20px"
       : props.viewAs === "row"
       ? "19px 3px 16px 16px"
       : "19px 3px 16px 20px"};

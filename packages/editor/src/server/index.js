@@ -11,14 +11,9 @@ import fs from "fs";
 import logger from "morgan";
 import winston from "./lib/logger.js";
 import { getAssets, initDocEditor } from "./lib/helpers";
-import GlobalStyle from "../client/components/GlobalStyle.js";
-import { I18nextProvider } from "react-i18next";
-import React from "react";
-import { renderToString } from "react-dom/server";
-import Editor from "../client/components/Editor.js";
-import { ServerStyleSheet } from "styled-components";
+import renderApp from "./lib/helpers/render-app";
 
-const sheet = new ServerStyleSheet();
+//const sheet = new ServerStyleSheet();
 const fallbackLng = "en";
 
 let port = PORT;
@@ -29,16 +24,6 @@ const parsedCOnfig = JSON.parse(config);
 if (parsedCOnfig?.PORT) {
   port = parsedCOnfig.PORT;
 }
-const renderApp = (i18n, initialEditorState) => {
-  return renderToString(
-    sheet.collectStyles(
-      <I18nextProvider i18n={i18n}>
-        <GlobalStyle />
-        <Editor {...initialEditorState} />
-      </I18nextProvider>
-    )
-  );
-};
 
 winston.stream = {
   write: (message) => winston.info(message),
@@ -102,12 +87,11 @@ if (IS_DEVELOPMENT) {
       winston.error(initialEditorState.error.errorMessage);
     }
 
-    const appComponent = renderApp(i18n, initialEditorState);
-    const styleTags = sheet.getStyleTags();
+    const { component, styleTags } = renderApp(i18n, initialEditorState);
 
     const htmlString = template(
       initialEditorState,
-      appComponent,
+      component,
       styleTags,
       initialI18nStoreASC,
       userLng,

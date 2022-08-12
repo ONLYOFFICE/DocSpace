@@ -2,6 +2,8 @@ import api from "@docspace/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
 import SelectionStore from "./SelectionStore";
+//import CommonStore from "./CommonStore";
+import authStore from "@docspace/common/store/AuthStore";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
@@ -38,7 +40,7 @@ class SettingsSetupStore {
     commonThirdPartyList: [],
   };
 
-  constructor(authStore) {
+  constructor() {
     this.selectionStore = new SelectionStore(this);
     this.authStore = authStore;
     makeAutoObservable(this);
@@ -48,12 +50,12 @@ class SettingsSetupStore {
     if (this.isInit) return;
     this.isInit = true;
 
-    if (this.authStore.isAuthenticated) {
-      await this.authStore.settingsStore.getPortalPasswordSettings();
-      await this.authStore.tfaStore.getTfaType();
-      await this.authStore.settingsStore.getIpRestrictionsEnable();
-      await this.authStore.settingsStore.getIpRestrictions();
-      await this.authStore.settingsStore.getSessionLifetime();
+    if (authStore.isAuthenticated) {
+      await authStore.settingsStore.getPortalPasswordSettings();
+      await authStore.tfaStore.getTfaType();
+      await authStore.settingsStore.getIpRestrictionsEnable();
+      await authStore.settingsStore.getIpRestrictions();
+      await authStore.settingsStore.getSessionLifetime();
     }
   };
 

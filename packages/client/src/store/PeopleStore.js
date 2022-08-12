@@ -9,12 +9,13 @@ import SelectionStore from "./SelectionPeopleStore";
 import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
+import store from "client/store";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
 import { isMobile } from "react-device-detect";
+const { auth: authStore } = store;
 
 class PeopleStore {
-  authStore = null;
   groupsStore = null;
   usersStore = null;
   targetUserStore = null;
@@ -30,8 +31,7 @@ class PeopleStore {
   isInit = false;
   viewAs = isMobile ? "row" : "table";
 
-  constructor(authStore) {
-    this.authStore = authStore;
+  constructor() {
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this);
     this.targetUserStore = new TargetUserStore(this);
@@ -41,7 +41,7 @@ class PeopleStore {
     this.selectionStore = new SelectionStore(this);
     this.headerMenuStore = new HeaderMenuStore(this);
     this.avatarEditorStore = new AvatarEditorStore(this);
-    this.inviteLinksStore = new InviteLinksStore(authStore);
+    this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
     this.loadingStore = new LoadingStore();
 
@@ -49,21 +49,16 @@ class PeopleStore {
   }
 
   get isPeoplesAdmin() {
-    return this.authStore.isAdmin;
+    return authStore.isAdmin;
   }
-
-  reset = () => {
-    this.loadingStore.reset();
-    this.isInit = false;
-  };
 
   init = async () => {
     if (this.isInit) return;
     this.isInit = true;
 
-    //this.authStore.settingsStore.setModuleInfo(config.homepage, config.id);
+    //authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
-    await this.authStore.settingsStore.getPortalPasswordSettings();
+    await authStore.settingsStore.getPortalPasswordSettings();
 
     this.loadingStore.setIsLoaded(true);
   };
@@ -84,10 +79,7 @@ class PeopleStore {
   };
 
   getHeaderMenu = (t) => {
-    const {
-      userCaption,
-      guestCaption,
-    } = this.authStore.settingsStore.customNames;
+    const { userCaption, guestCaption } = authStore.settingsStore.customNames;
     const {
       hasUsersToMakeEmployees,
       hasUsersToMakeGuests,

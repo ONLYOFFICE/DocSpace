@@ -94,8 +94,6 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     diHelper.TryAdd<UserManager>();
 
     services.AddBaseDbContextPool<FilesDbContext>();
-
-    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
@@ -103,7 +101,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
 });
 
-var startup = new BaseWorkerStartup(builder.Configuration);
+var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 

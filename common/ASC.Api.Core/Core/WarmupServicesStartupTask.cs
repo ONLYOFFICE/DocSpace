@@ -40,24 +40,42 @@ public class WarmupServicesStartupTask : IStartupTask
     }
 
     public Task ExecuteAsync(CancellationToken cancellationToken)
-    {
+    {      
+        var processedFailed = 0;
+        var processedSuccessed = 0;
+        var startTime = DateTime.UtcNow;
+
         using (var scope = _provider.CreateScope())
         {
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var logger = scope.ServiceProvider.GetService<ILogger<WarmupServicesStartupTask>>();
+
+            logger.TraceWarmupStarted();
 
             tenantManager.SetCurrentTenant("localhost");
-
+            
             foreach (var service in GetServices(_services))
             {
                 try
-                {
+                {      
                     scope.ServiceProvider.GetServices(service);
-                }
-                catch(Exception ex)
-                {
 
-                }                
+                    processedSuccessed++;
+                }
+                catch (Exception ex)
+                {
+                    processedFailed++;
+
+                    logger.DebugWarmupFailed(processedFailed, service.FullName, ex.Message);
+                }
             }
+
+            var processed = processedSuccessed + processedFailed;
+
+            logger.TraceWarmupFinished(processed, 
+                                       processedSuccessed, 
+                                       processedFailed, 
+                                       (DateTime.UtcNow - startTime).TotalMilliseconds);
         }
 
         return Task.CompletedTask;

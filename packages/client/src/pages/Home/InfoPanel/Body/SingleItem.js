@@ -101,13 +101,13 @@ const SingleItem = (props) => {
           case FileType.Image:
             return t("Common:Image");
           case FileType.Spreadsheet:
-            return t("Files:Spreadsheet");
+            return t("Home:Spreadsheet");
           case FileType.Presentation:
-            return t("Files:Presentation");
+            return t("Home:Presentation");
           case FileType.Document:
-            return t("Files:Document");
+            return t("Home:Document");
           default:
-            return t("Files:Folder");
+            return t("Home:Folder");
         }
       };
 
@@ -147,7 +147,7 @@ const SingleItem = (props) => {
         },
         {
           id: "ByLastModifiedDate",
-          title: t("Files:ByLastModifiedDate"),
+          title: t("Home:ByLastModifiedDate"),
           content: styledText(parseAndFormatDate(item.updated)),
         },
         {
@@ -162,7 +162,7 @@ const SingleItem = (props) => {
         },
         {
           id: "ByCreationDate",
-          title: t("Files:ByCreationDate"),
+          title: t("Home:ByCreationDate"),
           content: styledText(parseAndFormatDate(item.created)),
         },
       ];
