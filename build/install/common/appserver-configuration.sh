@@ -184,9 +184,9 @@ restart_services() {
 	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
-	for SVC in api urlshortener socket studio-notify notify people-server files \
-	files-services studio backup telegram-service webhooks-service \
-	clear-events backup-background migration ssoauth
+	for SVC in migration-runner api urlshortener socket studio-notify notify \
+	people-server files files-services studio backup telegram-service \
+	webhooks-service clear-events backup-background migration ssoauth doceditor
 	do
 		systemctl enable ${PRODUCT}-$SVC >/dev/null 2>&1
 		systemctl restart ${PRODUCT}-$SVC

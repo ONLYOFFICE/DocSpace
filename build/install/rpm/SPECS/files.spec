@@ -77,7 +77,6 @@
 %{buildpath}/studio/login/
 %{buildpath}/products/ASC.People/client/
 %{buildpath}/products/ASC.Files/client/
-%{buildpath}/products/ASC.Files/editor/
 %dir %{buildpath}/studio/
 %dir %{buildpath}/products/
 %dir %{buildpath}/products/ASC.People/
@@ -183,3 +182,16 @@
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/Tools/radicale/
 %dir %{buildpath}/Tools/
+
+%files doceditor
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/products/ASC.Files/editor/
+/usr/lib/systemd/system/%{product}-doceditor.service
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.Files/
+
+%files migration-runner
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/services/ASC.Migration.Runner/
+/usr/lib/systemd/system/%{product}-migration-runner.service
+%dir %{buildpath}/services/

@@ -147,3 +147,19 @@ Requires:       %name-common  = %version-%release
 Requires:       python3 >= 3.6
 AutoReqProv:    no
 %description    radicale
+
+%package        doceditor
+Summary:        doceditor
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       nodejs >= 14.0
+AutoReqProv:    no
+%description    doceditor
+
+%package        migration-runner
+Summary:        migration-runner
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       dotnet-sdk-6.0
+AutoReqProv:    no
+%description    migration-runner

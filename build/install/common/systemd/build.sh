@@ -58,6 +58,8 @@ SERVICE_NAME=(
 	clear-events
 	backup-background
 	migration
+	doceditor
+	migration-runner
 	)
 
 reassign_values (){
@@ -142,10 +144,21 @@ reassign_values (){
 		WORK_DIR="${BASE_DIR}/services/ASC.Migration/"
 		EXEC_FILE="ASC.Migration.dll"
 	;;
+	doceditor )
+		SERVICE_PORT="5013"
+		WORK_DIR="${BASE_DIR}/products/ASC.Files/editor/"
+		EXEC_FILE="server.js"
+	;;
+	migration-runner )
+		WORK_DIR="${BASE_DIR}/services/ASC.Migration.Runner/"
+		EXEC_FILE="ASC.Migration.Runner.dll"
+	;;
   esac
   SERVICE_NAME="$1"
   if [[ "${EXEC_FILE}" == *".js" ]]; then
 	EXEC_START="${WORK_DIR}${EXEC_FILE}"
+  else if [[ "${SERVICE_NAME}" = "migration-runner" ]]; then
+	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE}"
   else
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
 	--'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
