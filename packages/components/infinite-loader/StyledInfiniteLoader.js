@@ -1,16 +1,6 @@
+import { List } from "react-virtualized";
 import styled from "styled-components";
 import Base from "../themes/base";
-
-const StyledTableLoader = styled.div`
-  grid-column-start: 1;
-  grid-column-end: -1;
-  display: grid;
-  padding-top: 16px;
-`;
-
-const StyledRowLoader = styled.div`
-  padding-top: 16px;
-`;
 
 const StyledScroll = styled.div`
   overflow: scroll;
@@ -38,8 +28,12 @@ const StyledScroll = styled.div`
   scrollbar-color: ${({ theme }) => theme.scrollbar.backgroundColorVertical};
 `;
 
+const StyledList = styled(List)`
+  outline: none;
+`;
+
 StyledScroll.defaultProps = {
   theme: Base,
 };
 
-export { StyledTableLoader, StyledRowLoader, StyledScroll };
+export { StyledScroll, StyledList };

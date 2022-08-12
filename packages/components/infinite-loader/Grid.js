@@ -1,8 +1,6 @@
-import React, { memo, useCallback, useEffect, useRef } from "react";
-import AutoSizer from "react-virtualized-auto-sizer";
-import InfiniteLoader from "react-window-infinite-loader";
-import { VariableSizeList as List, areEqual } from "react-window";
-//import Scroll from "./Scroll";
+import React, { useCallback } from "react";
+import { InfiniteLoader, WindowScroller, AutoSizer } from "react-virtualized";
+import { StyledList } from "./StyledInfiniteLoader";
 
 const GridComponent = ({
   hasMoreFiles,
@@ -11,36 +9,26 @@ const GridComponent = ({
   loadMoreItems,
   onScroll,
   countTilesInRow,
-  selectedFolderId,
   children,
   className,
-  listRef,
+  scroll,
 }) => {
-  const gridRef = useRef(null);
-
-  useEffect(() => {
-    //TODO: inf-scroll it is slow
-    //console.log("resetAfterIndex");
-
-    gridRef?.current?.resetAfterIndex(0);
-  }, [selectedFolderId]);
-
   const isItemLoaded = useCallback(
-    (index) => {
+    ({ index }) => {
       return !hasMoreFiles || index * countTilesInRow < filesLength;
     },
     [filesLength, hasMoreFiles, countTilesInRow]
   );
 
-  const renderTile = memo(({ index, style }) => {
+  const renderTile = ({ index, style, key }) => {
     return (
-      <div className="window-item" style={style}>
+      <div className="window-item" style={style} key={key}>
         {children[index]}
       </div>
     );
-  }, areEqual);
+  };
 
-  const getItemSize = (index) => {
+  const getItemSize = ({ index }) => {
     const itemClassNames = children[index]?.props?.className;
     const isFile = itemClassNames?.includes("isFile");
     const isFolder = itemClassNames?.includes("isFolder");
@@ -56,41 +44,40 @@ const GridComponent = ({
     return isFolder ? folderHeight : isFile ? fileHeight : titleHeight;
   };
 
-  const renderGrid = ({ height, width }) => {
-    return (
-      <InfiniteLoader
-        isItemLoaded={isItemLoaded}
-        itemCount={itemCount}
-        loadMoreItems={loadMoreItems}
-      >
-        {({ onItemsRendered, ref }) => (
-          <List
-            onScroll={onScroll}
-            className={className}
-            height={height}
-            width={width}
-            itemCount={children.length}
-            itemSize={getItemSize}
-            onItemsRendered={onItemsRendered}
-            ref={(refList) => {
-              ref(listRef);
-              gridRef.current = refList;
-              listRef.current = refList;
-            }}
-            //outerElementType={Scroll}
-            overscanCount={5} //TODO: inf-scroll
-            style={{ height: "100% !important", overflow: "hidden" }}
-          >
-            {renderTile}
-          </List>
-        )}
-      </InfiniteLoader>
-    );
-  };
-
-  //console.log("GridComponent render");
-
-  return <AutoSizer>{renderGrid}</AutoSizer>;
+  return (
+    <InfiniteLoader
+      isRowLoaded={isItemLoaded}
+      rowCount={itemCount}
+      loadMoreRows={loadMoreItems}
+    >
+      {({ onRowsRendered, registerChild }) => (
+        <WindowScroller scrollElement={scroll}>
+          {({ height, isScrolling, onChildScroll, scrollTop }) => (
+            <AutoSizer>
+              {({ width }) => (
+                <StyledList
+                  autoHeight
+                  height={height}
+                  onRowsRendered={onRowsRendered}
+                  ref={registerChild}
+                  rowCount={children.length}
+                  rowHeight={getItemSize}
+                  rowRenderer={renderTile}
+                  width={width}
+                  className={className}
+                  isScrolling={isScrolling}
+                  onChildScroll={onChildScroll}
+                  scrollTop={scrollTop}
+                  overscanRowCount={3}
+                  onScroll={onScroll}
+                />
+              )}
+            </AutoSizer>
+          )}
+        </WindowScroller>
+      )}
+    </InfiniteLoader>
+  );
 };
 
 export default GridComponent;

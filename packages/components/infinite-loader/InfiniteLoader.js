@@ -1,33 +1,18 @@
-import React, { useRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { WindowScroller } from "react-virtualized";
 import { isMobileOnly } from "react-device-detect";
 import ListComponent from "./List";
 import GridComponent from "./Grid";
 
 const InfiniteLoaderComponent = (props) => {
-  const ref = useRef(null);
-
   const scroll = isMobileOnly
     ? document.querySelector("#customScrollBar > .scroll-body")
     : document.querySelector("#sectionScroll > .scroll-body");
 
-  const onScroll = ({ scrollTop }) => {
-    ref.current.scrollTo(scrollTop);
-  };
-
-  return (
-    <>
-      <WindowScroller scrollElement={scroll} onScroll={onScroll}>
-        {() => <div />}
-      </WindowScroller>
-
-      {props.viewAs === "tile" ? (
-        <GridComponent listRef={ref} {...props} />
-      ) : (
-        <ListComponent listRef={ref} {...props} />
-      )}
-    </>
+  return props.viewAs === "tile" ? (
+    <GridComponent scroll={scroll} {...props} />
+  ) : (
+    <ListComponent scroll={scroll} {...props} />
   );
 };
 InfiniteLoaderComponent.propTypes = {
