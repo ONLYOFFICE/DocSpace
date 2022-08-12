@@ -199,7 +199,7 @@ export const LoginFormWrapper = styled.div`
     props.enabledJoin
       ? props.isDesktop
         ? css`1fr 10px`
-        : css`1fr 66px`
+        : css`1fr 68px`
       : css`1fr`};
   width: 100%;
   height: 100vh;
