@@ -37,6 +37,7 @@ class DocumentsModule extends React.PureComponent {
       passedId,
       isSavingProcess,
       isResetProcess,
+      isDocumentsDefault,
       ...rest
     } = this.props;
 
@@ -55,7 +56,7 @@ class DocumentsModule extends React.PureComponent {
             id={passedId}
             isReset={isResetProcess}
             isSuccessSave={isSavingProcess}
-            withoutBasicSelection
+            withoutBasicSelection={isDocumentsDefault ? false : true}
           />
         </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
@@ -75,6 +76,7 @@ export default inject(({ backup }) => {
 
   const isDocumentsDefault =
     defaultStorageType === `${BackupStorageType.DocumentModuleType}`;
+
   const passedId = isDocumentsDefault ? defaultFolderId : "";
 
   return {
@@ -84,5 +86,6 @@ export default inject(({ backup }) => {
     passedId,
     isSavingProcess,
     isResetProcess,
+    isDocumentsDefault,
   };
 })(observer(DocumentsModule));

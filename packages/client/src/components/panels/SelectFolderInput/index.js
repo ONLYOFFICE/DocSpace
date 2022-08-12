@@ -48,7 +48,6 @@ class SelectFolderInput extends React.PureComponent {
         this.onSetBaseFolderPath,
         onSelectFolder,
         foldersList,
-
         withoutBasicSelection
       );
     } catch (e) {
@@ -200,7 +199,16 @@ class SelectFolderInput extends React.PureComponent {
       onSelectFolder,
       ...rest
     } = this.props;
+
     const passedId = newId ? newId : baseId;
+    console.log(
+      "newId",
+      newId,
+      "baseId",
+      baseId,
+      "resultingFolderTree",
+      resultingFolderTree
+    );
     return (
       <StyledComponent maxWidth={maxInputWidth}>
         <SimpleFileInput
@@ -210,7 +218,12 @@ class SelectFolderInput extends React.PureComponent {
           isError={isError}
           onClickInput={onClickInput}
           placeholder={placeholder}
-          isDisabled={isFolderTreeLoading || isDisabled || isLoading}
+          isDisabled={
+            isFolderTreeLoading ||
+            isDisabled ||
+            isLoading ||
+            resultingFolderTree?.length === 0
+          }
         />
         {!isFolderTreeLoading && isPanelVisible && (
           <SelectFolderDialog

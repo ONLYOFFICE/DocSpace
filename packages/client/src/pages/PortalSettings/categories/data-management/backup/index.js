@@ -62,7 +62,7 @@ const Backup = ({ helpUrlCreatingBackup, buttonSize, t, history }) => {
       combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/settings/backup/${e.id}`
+        `/portal-settings/backup/${e.id}`
       )
     );
   };

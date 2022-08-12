@@ -1,3 +1,5 @@
+import React from "react";
+import { inject, observer } from "mobx-react";
 import AmazonStorage from "./storages/AmazonStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";

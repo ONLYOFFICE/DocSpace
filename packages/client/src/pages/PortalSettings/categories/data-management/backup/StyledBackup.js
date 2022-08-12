@@ -147,7 +147,7 @@ const StyledAutoBackup = styled.div`
   .backup_toggle-wrapper {
     margin-bottom: 16px;
     background-color: ${(props) =>
-      props.theme.studio.settings.backup.rectangleBackgroundColor};
+      props.theme.client.settings.backup.rectangleBackgroundColor};
     padding: 12px;
     max-width: 724px;
     box-sizing: border-box;
@@ -343,7 +343,7 @@ const StyledBackup = styled.div`
   .backup_modules-separation {
     margin-bottom: 28px;
     border-bottom: ${(props) =>
-      props.theme.studio.settings.backup.separatorBorder};
+      props.theme.client.settings.backup.separatorBorder};
   }
   .backup_modules-header {
     font-size: 16px;
