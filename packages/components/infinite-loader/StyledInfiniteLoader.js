@@ -30,6 +30,7 @@ const StyledScroll = styled.div`
 
 const StyledList = styled(List)`
   outline: none;
+  overflow: hidden !important;
 `;
 
 StyledScroll.defaultProps = {
