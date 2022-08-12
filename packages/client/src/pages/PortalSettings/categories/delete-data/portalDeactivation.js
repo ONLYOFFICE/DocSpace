@@ -1,21 +1,29 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
+import toastr from "@docspace/components/toast/toastr";
 import { MainContainer } from "./StyledDeleteData";
 import { setDocumentTitle } from "../../../../helpers/utils";
 import api from "@docspace/common/api";
 
 const PortalDeactivation = (props) => {
-  const { t } = props;
+  const { t, getPortalOwner, owner } = props;
 
   useEffect(() => {
     setDocumentTitle(t("PortalDeactivation"));
+    getPortalOwner();
   }, []);
 
   const onDeactivateClick = async () => {
-    await api.portal.sendSuspendPortalEmail();
+    try {
+      await api.portal.sendSuspendPortalEmail();
+      toastr.success(t("ConfirmEmailSended", { ownerName: owner.displayName }));
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
   return (
@@ -38,4 +46,10 @@ const PortalDeactivation = (props) => {
   );
 };
 
-export default withTranslation("Settings")(withRouter(PortalDeactivation));
+export default inject(({ auth }) => {
+  const { getPortalOwner, owner } = auth.settingsStore;
+  return {
+    getPortalOwner,
+    owner,
+  };
+})(withTranslation("Settings")(withRouter(PortalDeactivation)));
