@@ -61,7 +61,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task AddLinkAsync(string sourceId, string linkedId)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         await filesDbContext.AddOrUpdateAsync(r => r.FilesLink, new DbFilesLink()
         {
@@ -76,7 +76,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task<string> GetSourceAsync(string linkedId)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         return await filesDbContext.FilesLink
             .Where(r => r.TenantId == TenantID && r.LinkedId == linkedId && r.LinkedFor == _authContext.CurrentAccount.ID)
@@ -86,7 +86,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task<string> GetLinkedAsync(string sourceId)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         return await filesDbContext.FilesLink
             .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .Select(r => r.LinkedId)
@@ -95,7 +95,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task DeleteLinkAsync(string sourceId)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var link = await filesDbContext.FilesLink
             .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
@@ -108,7 +108,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task DeleteAllLinkAsync(string fileId)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var link = await filesDbContext.FilesLink.Where(r => r.TenantId == TenantID && (r.SourceId == fileId || r.LinkedId == fileId)).ToListAsync();
 
