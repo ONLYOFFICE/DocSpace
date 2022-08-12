@@ -53,6 +53,10 @@ const GridComponent = ({
       {({ onRowsRendered, registerChild }) => (
         <WindowScroller scrollElement={scroll}>
           {({ height, isScrolling, onChildScroll, scrollTop }) => {
+            if (height === undefined) {
+              height = scroll.getBoundingClientRect().height;
+            }
+
             const width =
               document.getElementById("tileContainer")?.getBoundingClientRect()
                 .width ?? 0;
