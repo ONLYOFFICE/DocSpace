@@ -204,6 +204,8 @@ const Table = ({
         hasMoreFiles={hasMoreFiles}
         itemCount={filterTotal}
         useReactWindow
+        infoPanelVisible={infoPanelVisible}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
       >
         {filesList.map((item, index) => {
           return index === 0 && item.isRoom ? (

@@ -5,6 +5,7 @@ import InfiniteLoaderComponent from "../infinite-loader";
 const TableBody = (props) => {
   const {
     columnStorageName,
+    columnInfoPanelStorageName,
     fetchMoreFiles,
     children,
     filesLength,
@@ -13,6 +14,7 @@ const TableBody = (props) => {
     itemHeight,
     useReactWindow,
     onScroll,
+    infoPanelVisible,
   } = props;
 
   return useReactWindow ? (
@@ -28,8 +30,10 @@ const TableBody = (props) => {
         itemCount={itemCount}
         loadMoreItems={fetchMoreFiles}
         columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
         itemSize={itemHeight}
         onScroll={onScroll}
+        infoPanelVisible={infoPanelVisible}
       >
         {children}
       </InfiniteLoaderComponent>
@@ -42,6 +46,7 @@ const TableBody = (props) => {
 TableBody.defaultProps = {
   itemHeight: 41,
   useReactWindow: false,
+  infoPanelVisible: false,
 };
 
 export default TableBody;

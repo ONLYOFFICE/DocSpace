@@ -12,9 +12,11 @@ const ListComponent = ({
   loadMoreItems,
   itemSize,
   columnStorageName,
+  columnInfoPanelStorageName,
   children,
   className,
   scroll,
+  infoPanelVisible,
 }) => {
   const renderRow = ({ key, index, style }) => {
     const isLoaded = isItemLoaded({ index: index + 2 });
@@ -33,7 +35,9 @@ const ListComponent = ({
   );
 
   const renderTable = ({ index, style, key }) => {
-    const storageSize = localStorage.getItem(columnStorageName);
+    const storageSize = infoPanelVisible
+      ? localStorage.getItem(columnInfoPanelStorageName)
+      : localStorage.getItem(columnStorageName);
 
     const isLoaded = isItemLoaded({ index: index + 2 });
     if (!isLoaded) return getLoader(style, key);
