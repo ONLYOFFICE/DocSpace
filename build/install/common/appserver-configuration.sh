@@ -184,14 +184,12 @@ restart_services() {
 	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
-	for SVC in nginx ${MYSQL_PACKAGE} elasticsearch ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
-	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
-	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
-	${PRODUCT}-storage-migration ${PRODUCT}-telegram-service ${PRODUCT}-webhooks-service ${PRODUCT}-clear-events \
-	${PRODUCT}-backup-background ${PRODUCT}-migration
+	for SVC in api urlshortener socket studio-notify notify people-server files \
+	files-services studio backup telegram-service webhooks-service \
+	clear-events backup-background migration ssoauth
 	do
-		systemctl enable $SVC >/dev/null 2>&1
-		systemctl restart $SVC
+		systemctl enable ${PRODUCT}-$SVC >/dev/null 2>&1
+		systemctl restart ${PRODUCT}-$SVC
 	done
 	echo "OK"
 }
@@ -251,9 +249,6 @@ establish_mysql_conn(){
 	#Enable database migration
 	$JSON_USERCONF "this.migration={'enabled': \"true\"}" >/dev/null 2>&1
 
-	#Fixing appserver-backup startup error \ Adding backup_backup and backup_schedule tables
-	$MYSQL -D "$DB_NAME" -e 'CREATE TABLE IF NOT EXISTS `backup_backup` ( `id` char(38) NOT NULL, `tenant_id` int(11) NOT NULL, `is_scheduled` int(1) NOT NULL, `name` varchar(255) NOT NULL, `storage_type` int(11) NOT NULL, `storage_base_path` varchar(255) DEFAULT NULL, `storage_path` varchar(255) NOT NULL, `created_on` datetime NOT NULL, `expires_on` datetime NOT NULL DEFAULT "0001-01-01 00:00:00", `storage_params` TEXT NULL, `hash` char(64) NOT NULL, PRIMARY KEY (`id`), KEY `tenant_id` (`tenant_id`), KEY `expires_on` (`expires_on`), KEY `is_scheduled` (`is_scheduled`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >/dev/null 2>&1
-	$MYSQL -D "$DB_NAME" -e 'CREATE TABLE IF NOT EXISTS `backup_schedule` ( `tenant_id` int(11) NOT NULL, `backup_mail` int(11) NOT NULL DEFAULT "0", `cron` varchar(255) NOT NULL, `backups_stored` int(11) NOT NULL, `storage_type` int(11) NOT NULL, `storage_base_path` varchar(255) DEFAULT NULL, `last_backup_time` datetime NOT NULL, `storage_params` TEXT NULL, PRIMARY KEY (`tenant_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >/dev/null 2>&1
 	echo "OK"
 }
 
@@ -358,7 +353,8 @@ change_mysql_config(){
 	fi
 
     systemctl daemon-reload >/dev/null 2>&1
-	systemctl restart ${MYSQL_PACKAGE} >/dev/null 2>&1
+	systemctl enable ${MYSQL_PACKAGE} >/dev/null 2>&1
+	systemctl restart ${MYSQL_PACKAGE}
 }
 
 setup_nginx(){
@@ -403,6 +399,8 @@ setup_nginx(){
 	fi
     chown nginx:nginx /etc/nginx/* -R
     sudo sed -e 's/#//' -i $NGINX_CONF/onlyoffice.conf
+	systemctl enable nginx >/dev/null 2>&1
+	systemctl restart nginx
 	echo "OK"
 }
 
@@ -502,6 +500,8 @@ setup_elasticsearch() {
 
 	change_elasticsearch_config
 	
+	systemctl enable elasticsearch >/dev/null 2>&1
+	systemctl restart elasticsearch
 	echo "OK"
 }
 
