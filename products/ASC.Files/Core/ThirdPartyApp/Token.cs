@@ -118,7 +118,6 @@ public class TokenHelper
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var oAuth20Token = filesDbContext.ThirdpartyApp
-            .AsQueryable()
             .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.UserId == userId)
             .Where(r => r.App == app)
@@ -137,7 +136,6 @@ public class TokenHelper
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var apps = filesDbContext.ThirdpartyApp
-            .AsQueryable()
             .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.UserId == (userId ?? _authContext.CurrentAccount.ID))
             .Where(r => r.App == app);

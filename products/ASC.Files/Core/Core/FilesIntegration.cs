@@ -44,14 +44,14 @@ public class FilesIntegration
         return folderDao.GetFolderIDAsync(module, bunch, data, true);
     }
 
-    public Task<IEnumerable<T>> RegisterBunchFoldersAsync<T>(string module, string bunch, IEnumerable<string> data)
+    public IAsyncEnumerable<T> RegisterBunchFoldersAsync<T>(string module, string bunch, IEnumerable<string> data)
     {
         ArgumentNullException.ThrowIfNull(data);
 
         data = data.ToList();
         if (!data.Any())
         {
-            return Task.FromResult<IEnumerable<T>>(new List<T>());
+            return AsyncEnumerable.Empty<T>();
         }
 
         var folderDao = _daoFactory.GetFolderDao<T>();
