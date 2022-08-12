@@ -37,7 +37,9 @@ public class SettingsController : ApiControllerBase
     public SettingsController(
         FileStorageService<string> fileStorageServiceString,
         FilesSettingsHelper filesSettingsHelper,
-        ProductEntryPoint productEntryPoint)
+        ProductEntryPoint productEntryPoint,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageServiceString = fileStorageServiceString;
         _filesSettingsHelper = filesSettingsHelper;

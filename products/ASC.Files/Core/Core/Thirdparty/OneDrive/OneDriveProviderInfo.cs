@@ -236,7 +236,7 @@ public class OneDriveProviderInfoHelper
         var file = _cacheItem.Get<Item>("onedrive-" + id + "-" + itemId);
         if (file == null)
         {
-            file = await storage.GetItemAsync(itemId).ConfigureAwait(false);
+            file = await storage.GetItemAsync(itemId);
             if (file != null)
             {
                 _cacheItem.Insert("onedrive-" + id + "-" + itemId, file, DateTime.UtcNow.Add(_cacheExpiration));
@@ -252,7 +252,7 @@ public class OneDriveProviderInfoHelper
 
         if (items == null)
         {
-            items = await storage.GetItemsAsync(onedriveFolderId).ConfigureAwait(false);
+            items = await storage.GetItemsAsync(onedriveFolderId);
             _cacheChildItems.Insert("onedrivei-" + id + "-" + onedriveFolderId, items, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
@@ -293,7 +293,7 @@ public class OneDriveProviderInfoHelper
 
     internal async Task<Stream> GetThumbnailAsync(OneDriveStorage storage, string onedriveId, int width, int height)
     {
-        return await storage.GetThumbnailAsync(onedriveId, width, height).ConfigureAwait(false);
+        return await storage.GetThumbnailAsync(onedriveId, width, height);
     }
 }
 public static class OneDriveProviderInfoExtention
