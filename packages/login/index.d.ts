@@ -19,6 +19,7 @@ declare global {
     initialI18nStoreASC: IInitialI18nStoreASC;
     initialLanguage: string;
     i18n: WindowI18nType;
+    [key: string]: object;
   }
 
   interface IPortalSettings {
@@ -44,20 +45,20 @@ declare global {
     version: string;
   }
 
-  interface IBuildInfo extends Object {
+  interface IBuildInfo {
     communityServer: string;
     documentServer: string;
     mailServer: string;
   }
 
-  interface IProvider extends Object {
+  interface IProvider {
     linked: boolean;
     provider: string;
     url: string;
   }
   type ProvidersType = IProvider[];
 
-  interface ICapabilities extends Object {
+  interface ICapabilities {
     ldapEnabled: boolean;
     providers: string[];
     ssoLabel: string;
