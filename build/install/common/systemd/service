@@ -1,5 +1,5 @@
 [Unit]
-Description=AppServer-${SERVICE_NAME}
+Description=DocSpace-${SERVICE_NAME}
 After=network.target syslog.target
 
 [Service]

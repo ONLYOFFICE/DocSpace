@@ -2,7 +2,7 @@
 
 set -e
 
-PRODUCT="appserver"
+PRODUCT="docspace"
 ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/${PRODUCT}"
@@ -172,7 +172,7 @@ install_json() {
 	
 		set_core_machinekey
 		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", \
-		'products': { 'folder': '/var/www/appserver/products', 'subfolder': 'server'} }" \
+		'products': { 'folder': '/var/www/${PRODUCT}/products', 'subfolder': 'server'} }" \
 		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
 		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" >/dev/null 2>&1
 	fi

@@ -1,8 +1,8 @@
-%global         product appserver
+%global         product docspace
 %global         buildpath %{_var}/www/%{product}
-%global         sourcename AppServer-%GIT_BRANCH
+%global         sourcename DocSpace-%GIT_BRANCH
 
-Name:           onlyoffice-appserver
+Name:           onlyoffice-docspace
 Summary:        Business productivity tools.
 Group:          Applications/Internet
 Version:        %version

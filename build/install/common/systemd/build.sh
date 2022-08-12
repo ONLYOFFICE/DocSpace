@@ -31,7 +31,7 @@ while [ "$1" != "" ]; do
   shift
 done
 
-PRODUCT="appserver"
+PRODUCT="docspace"
 BASE_DIR="/var/www/${PRODUCT}"
 PATH_TO_CONF="/etc/onlyoffice/${PRODUCT}"
 STORAGE_ROOT="${PATH_TO_CONF}/data"
