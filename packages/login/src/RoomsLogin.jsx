@@ -176,7 +176,7 @@ const Form = (props) => {
   };
 
   const onSubmit = () => {
-    errorText && setErrorText("");
+    //errorText && setErrorText("");
     let hasError = false;
 
     const userName = identifier.trim();
@@ -185,6 +185,8 @@ const Form = (props) => {
       hasError = true;
       setIdentifierValid(false);
     }
+
+    if (!identifierValid) hasError = true;
 
     if (hasError) return false;
 
@@ -369,11 +371,12 @@ const Form = (props) => {
                   scale={true}
                   isAutoFocussed={true}
                   tabIndex={1}
-                  isDisabled={isLoading || !identifierValid}
+                  isDisabled={isLoading}
                   autoComplete="username"
                   onChange={onChangeLogin}
                   onBlur={onBlurEmail}
                   onValidateInput={onValidateEmail}
+                  onKeyDown={onKeyDown}
                   forwardedRef={inputRef}
                 />
               </FieldContainer>
