@@ -234,7 +234,7 @@ class SelectionPanel extends React.Component {
 
     let requestedTreeFolders, filteredTreeFolders;
 
-    const treeFoldersLength = treeFolders.length;
+    const treeFoldersLength = treeFolders?.length;
 
     if (treeFoldersLength === 0) {
       try {

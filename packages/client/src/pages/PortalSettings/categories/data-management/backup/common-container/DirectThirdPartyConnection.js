@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useReducer } from "react";
 import Button from "@docspace/components/button";
 import SelectFolderInput from "client/SelectFolderInput";
+import SelectFileInput from "client/SelectFileInput";
 import {
   getSettingsThirdParty,
   getThirdPartyCapabilities,
@@ -32,6 +33,8 @@ const DirectThirdPartyConnection = (props) => {
     isReset,
     isSuccessSave,
     withoutBasicSelection,
+    onSelectFile,
+    isFileSelection = false,
   } = props;
 
   useEffect(() => {
@@ -191,7 +194,7 @@ const DirectThirdPartyConnection = (props) => {
     const { label, provider_key, provider_id } = state.selectedAccount;
     setState({ isLoading: true });
     isVisibleConnectionForm && setIsVisibleConnectionForm(false);
-    onSelectFolder("");
+    onSelectFolder && onSelectFolder("");
 
     try {
       await saveSettingsThirdParty(
@@ -226,7 +229,7 @@ const DirectThirdPartyConnection = (props) => {
     const { provider_link } = state.selectedAccount;
 
     const directConnection = provider_link;
-    console.log("selectedAccount", selectedAccount);
+
     if (directConnection) {
       let authModal = window.open(
         "",
@@ -296,27 +299,49 @@ const DirectThirdPartyConnection = (props) => {
         {"Folder name:"}
       </Text>
 
-      <SelectFolderInput
-        id={id}
-        onSelectFolder={onSelectFolder}
-        name={"thirdParty"}
-        onClose={onClose}
-        onClickInput={onClickInput}
-        onSetLoadingData={onSetLoadingData}
-        isDisabled={
-          isLoading ||
-          accounts.length === 0 ||
-          folderList.length === 0 ||
-          isDisabled
-        }
-        isPanelVisible={isPanelVisible}
-        isError={isError}
-        foldersType={isInitialLoading ? "" : "third-party"}
-        foldersList={[folderList]}
-        withoutBasicSelection={withoutBasicSelection}
-        isReset={isReset}
-        isSuccessSave={isSuccessSave}
-      />
+      {isFileSelection ? (
+        <SelectFileInput
+          foldersList={[folderList]}
+          onClose={onClose}
+          onSelectFile={onSelectFile}
+          onClickInput={onClickInput}
+          isPanelVisible={isPanelVisible}
+          foldersType="third-party"
+          searchParam=".gz"
+          filesListTitle={t("SelectFileInGZFormat")}
+          withoutResetFolderTree
+          isArchiveOnly
+          isDisabled={
+            isLoading ||
+            accounts.length === 0 ||
+            folderList.length === 0 ||
+            isDisabled
+          }
+          isError={isError}
+        />
+      ) : (
+        <SelectFolderInput
+          id={id}
+          onSelectFolder={onSelectFolder}
+          name={"thirdParty"}
+          onClose={onClose}
+          onClickInput={onClickInput}
+          onSetLoadingData={onSetLoadingData}
+          isDisabled={
+            isLoading ||
+            accounts.length === 0 ||
+            folderList.length === 0 ||
+            isDisabled
+          }
+          isPanelVisible={isPanelVisible}
+          isError={isError}
+          foldersType={isInitialLoading ? "" : "third-party"}
+          foldersList={[folderList]}
+          withoutBasicSelection={withoutBasicSelection}
+          isReset={isReset}
+          isSuccessSave={isSuccessSave}
+        />
+      )}
 
       {isVisibleConnectionForm && (
         <FormConnection

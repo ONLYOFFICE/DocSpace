@@ -122,7 +122,7 @@ class SelectFileDialog extends React.Component {
 
     if (tree.length === 0) {
       this.setState({ isAvailable: false });
-      onSelectFolder(null);
+      onSelectFolder && onSelectFolder(null);
       return;
     }
 

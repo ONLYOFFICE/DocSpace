@@ -1,7 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import SelectFolderInput from "client/SelectFolderInput";
 import Button from "@docspace/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
 import { BackupStorageType } from "@docspace/common/constants";
@@ -87,9 +86,6 @@ class ThirdPartyModule extends React.Component {
     });
   };
 
-  onCopyingDirectly = () => {
-    console.log("copy");
-  };
   onSelectAccount = (options) => {
     const key = options.key;
 
@@ -99,13 +95,7 @@ class ThirdPartyModule extends React.Component {
   };
 
   render() {
-    const {
-      isMaxProgress,
-      t,
-      commonThirdPartyList,
-      buttonSize,
-      isDocSpace,
-    } = this.props;
+    const { isMaxProgress, t, buttonSize } = this.props;
     const {
       isPanelVisible,
       isLoadingData,
@@ -116,42 +106,43 @@ class ThirdPartyModule extends React.Component {
 
     const isModuleDisabled = !isMaxProgress || isStartCopy || isLoadingData;
 
-    return !isDocSpace ? (
-      <>
-        <div className="manual-backup_folder-input">
-          <SelectFolderInput
-            onSelectFolder={this.onSelectFolder}
-            name={"thirdParty"}
-            onClose={this.onClose}
-            onClickInput={this.onClickInput}
-            onSetLoadingData={this.onSetLoadingData}
-            isDisabled={isModuleDisabled}
-            isPanelVisible={isPanelVisible}
-            isError={isError}
-            foldersType="third-party"
-            foldersList={commonThirdPartyList}
-            withoutBasicSelection
-          />
-        </div>
-        <div className="manual-backup_buttons">
-          <Button
-            label={t("Common:Duplicate")}
-            onClick={this.onMakeCopy}
-            primary
-            isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
-            size={buttonSize}
-          />
-          {!isMaxProgress && (
-            <Button
-              label={t("Common:CopyOperation") + "..."}
-              isDisabled={true}
-              size={buttonSize}
-              style={{ marginLeft: "8px" }}
-            />
-          )}
-        </div>
-      </>
-    ) : (
+    return (
+      // !isDocSpace ? (
+      //   <>
+      //     <div className="manual-backup_folder-input">
+      //       <SelectFolderInput
+      //         onSelectFolder={this.onSelectFolder}
+      //         name={"thirdParty"}
+      //         onClose={this.onClose}
+      //         onClickInput={this.onClickInput}
+      //         onSetLoadingData={this.onSetLoadingData}
+      //         isDisabled={isModuleDisabled}
+      //         isPanelVisible={isPanelVisible}
+      //         isError={isError}
+      //         foldersType="third-party"
+      //         foldersList={commonThirdPartyList}
+      //         withoutBasicSelection
+      //       />
+      //     </div>
+      //     <div className="manual-backup_buttons">
+      //       <Button
+      //         label={t("Common:Duplicate")}
+      //         onClick={this.onMakeCopy}
+      //         primary
+      //         isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
+      //         size={buttonSize}
+      //       />
+      //       {!isMaxProgress && (
+      //         <Button
+      //           label={t("Common:CopyOperation") + "..."}
+      //           isDisabled={true}
+      //           size={buttonSize}
+      //           style={{ marginLeft: "8px" }}
+      //         />
+      //       )}
+      //     </div>
+      //   </>
+      // ) : (
       <div className="manual-backup_third-party-module">
         <DirectThirdPartyConnection
           t={t}
@@ -176,14 +167,10 @@ class ThirdPartyModule extends React.Component {
     );
   }
 }
-export default inject(({ backup, settingsStore }) => {
-  const { commonThirdPartyList, openConnectWindow, getOAuthToken } = backup;
-  //  const { openConnectWindow } = settingsStore.thirdPartyStore;
-  const isDocSpace = true;
+export default inject(({ backup }) => {
+  const { commonThirdPartyList } = backup;
+
   return {
     commonThirdPartyList,
-    isDocSpace,
-    openConnectWindow,
-    getOAuthToken,
   };
 })(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));
