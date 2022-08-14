@@ -1,16 +1,37 @@
-﻿global using ASC.Common.Logging;
+﻿global using System.Data;
+global using System.Data.Common;
+global using System.Xml.Linq;
+
+global using ASC.Api.Core;
+global using ASC.Api.Core.Extensions;
+global using ASC.Common;
+global using ASC.Common.Logging;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.Hosting;
+global using ASC.Core.Data;
+global using ASC.Core.Tenants;
+global using ASC.Core.Users;
+global using ASC.Data.Backup;
 global using ASC.Data.Backup.EF.Context;
+global using ASC.Data.Backup.Exceptions;
+global using ASC.Data.Backup.Extensions;
+global using ASC.Data.Backup.Tasks;
+global using ASC.Data.Backup.Tasks.Data;
+global using ASC.Data.Backup.Tasks.Modules;
+global using ASC.Data.Storage;
+global using ASC.Data.Storage.DiscStorage;
+global using ASC.Data.Storage.S3;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Events;
 global using ASC.EventBus.Extensions.Logger;
 global using ASC.Feed.Context;
 global using ASC.Files.Core.EF;
 global using ASC.MessagingSystem.EF.Context;
+global using ASC.Migration.PersonalToDocspace;
+global using ASC.Migration.PersonalToDocspace.Creator;
+global using ASC.Migration.PersonalToDocspace.Runner;
 global using ASC.Webhooks.Core.EF.Context;
 
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-
-global using Migration.Core.Utils;
-
-global using DbContextActivator = Migration.Core.Utils.DbContextActivator;

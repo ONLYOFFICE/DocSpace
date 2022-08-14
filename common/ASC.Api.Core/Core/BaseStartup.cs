@@ -163,7 +163,7 @@ public abstract class BaseStartup
         }
     }
 
-    private IEnumerable<Assembly> GetAutoMapperProfileAssemblies()
+    public static IEnumerable<Assembly> GetAutoMapperProfileAssemblies()
     {
         return AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name.StartsWith("ASC."));
     }

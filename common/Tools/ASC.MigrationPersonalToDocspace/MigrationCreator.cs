@@ -24,27 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Data;
-using System.Data.Common;
-using System.Xml.Linq;
-
-using ASC.Common;
-using ASC.Core.Data;
-using ASC.Core.Users;
-using ASC.Data.Backup;
-using ASC.Data.Backup.Exceptions;
-using ASC.Data.Backup.Extensions;
-using ASC.Data.Backup.Tasks;
-using ASC.Data.Backup.Tasks.Data;
-using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Storage;
-using ASC.Data.Storage.DiscStorage;
-using ASC.Data.Storage.S3;
-
-using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Migration.PersonalToDocspace.Creator;
 
 public class MigrationCreator
@@ -52,6 +31,9 @@ public class MigrationCreator
     private readonly IDbContextFactory<UserDbContext> _userDbContext;
     private readonly IDbContextFactory<BackupsContext> _backupsContext;
     private readonly IDbContextFactory<FilesDbContext> _filesDbContext;
+    private readonly IDbContextFactory<TenantDbContext> _tenantDbContext;
+    private readonly IHostEnvironment _hostEnvironment;
+    private readonly IConfiguration _configuration;
     private readonly TempStream _tempStream;
     private readonly DbFactory _dbFactory;
     private readonly StorageFactory _storageFactory;
@@ -59,6 +41,7 @@ public class MigrationCreator
     private readonly List<IModuleSpecifics> _modules;
     private readonly string _pathToSave;
     private readonly string _configPath;
+    private readonly string _userName;
     private readonly int _tenant;
     private readonly int _limit = 1000;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
@@ -70,45 +53,68 @@ public class MigrationCreator
         ModuleName.WebStudio
     };
 
-    public MigrationCreator(IServiceProvider serviceProvider, string pathToSave, int tenant)
+    public MigrationCreator(IServiceProvider serviceProvider, int tenant, string userName)
     {
         _userDbContext = serviceProvider.GetService<IDbContextFactory<UserDbContext>>();
         _backupsContext = serviceProvider.GetService<IDbContextFactory<BackupsContext>>();
         _filesDbContext = serviceProvider.GetService<IDbContextFactory<FilesDbContext>>();
+        _tenantDbContext = serviceProvider.GetService<IDbContextFactory<TenantDbContext>>();
         _tempStream = serviceProvider.GetService<TempStream>();
         _dbFactory = serviceProvider.GetService<DbFactory>();
         _storageFactory = serviceProvider.GetService<StorageFactory>();
         _storageFactoryConfig = serviceProvider.GetService<StorageFactoryConfig>();
+        _hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
+        _configuration = serviceProvider.GetService<IConfiguration>();
 
         var moduleProvider = serviceProvider.GetService<ModuleProvider>();
         _modules = moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
 
-        _pathToSave = pathToSave;
+        _pathToSave = "";
+        _userName = userName;
         _configPath = null;
         _tenant = tenant;
+
+        CheckExistDataStorage();
     }
 
-    public void Create()
+    private void CheckExistDataStorage()
     {
-        var users = GetUsers();
-
-        foreach (var user in users)
+        var store = _storageFactory.GetStorage(_configPath, _tenant.ToString(), "files");
+        if (store is DiscDataStore)
         {
-            var path = Path.Combine(_pathToSave, user.UserName + ".tar.gz");
-            using (var writer = new ZipWriteOperator(_tempStream, path))
+            var path = Path.Combine(_hostEnvironment.ContentRootPath, _configuration[Data.Storage.Constants.StorageRootParam]);
+            if (!Directory.Exists(path))
             {
-                DoMigrationDb(user.Id, user.UserName, writer);
-                DoMigrationStorage(user.Id, writer);
+                throw new Exception("wrong $STORAGE_ROOT, change storage.json or $STORAGE_ROOT");
             }
         }
     }
 
-    private List<User> GetUsers()
+    public void Create()
     {
-        return _userDbContext.CreateDbContext().Users.Where(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active).ToList();
+        var id = GetId();
+
+        var path = Path.Combine(_pathToSave, _userName + ".tar.gz");
+        using (var writer = new ZipWriteOperator(_tempStream, path))
+        {
+            DoMigrationDb(id, writer);
+            DoMigrationStorage(id, writer);
+        }
     }
 
-    private void DoMigrationDb(Guid id, string userName, IDataWriteOperator writer)
+    private Guid GetId()
+    {
+        try
+        {
+            return _userDbContext.CreateDbContext().Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName).Id;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("username was not found");
+        }
+    }
+
+    private void DoMigrationDb(Guid id, IDataWriteOperator writer)
     {
         foreach (var module in _modules)
         {
@@ -149,7 +155,7 @@ public class MigrationCreator
 
                         if(data.TableName == "tenants_tenants")
                         {
-                            data.Rows[0]["alias"] = userName;
+                            ChangeAlias(data);
                         }
 
                         using (var file = _tempStream.Create())
@@ -164,6 +170,25 @@ public class MigrationCreator
             }
         }
         
+    }
+
+    private void ChangeAlias(DataTable data)
+    {
+        var aliases = _tenantDbContext.CreateDbContext().Tenants.Select(t => t.Alias);
+        var newAlias = _userName;
+        if (aliases.Contains(_userName))
+        {
+            while (true)
+            {
+                Console.WriteLine($"\"{newAlias}\" is busy, write another alias");
+                newAlias = Console.ReadLine();
+                if (!aliases.Contains(newAlias))
+                {
+                    break;
+                }
+            }
+        }
+        data.Rows[0]["alias"] = newAlias;
     }
 
     private void DoMigrationStorage(Guid id, IDataWriteOperator writer)
@@ -202,11 +227,6 @@ public class MigrationCreator
     {
         var files = GetFilesToProcess(id).ToList();
 
-        using var backupRecordContext = _backupsContext.CreateDbContext();
-        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
-
-        files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
-
         return files.GroupBy(file => file.Module).ToList();
     }
 
@@ -231,11 +251,11 @@ public class MigrationCreator
                      .Select(path => new BackupFileInfo(string.Empty, module, path, _tenant)));
         }
         using var filesRecordContext = _filesDbContext.CreateDbContext();
-        files = files.Where(f => IsFileByUser(id, f, filesRecordContext)).ToList();
+        files = files.Where(f => UserIsFileOwner(id, f, filesRecordContext)).ToList();
         return files.Distinct();
     }
 
-    private bool IsFileByUser(Guid id, BackupFileInfo fileInfo, FilesDbContext filesDbContext)
+    private bool UserIsFileOwner(Guid id, BackupFileInfo fileInfo, FilesDbContext filesDbContext)
     {
         var stringId = id.ToString();
         return filesDbContext.Files.Any(

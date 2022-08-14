@@ -104,6 +104,10 @@ public class RestoreDbModuleTask : PortalTaskBase
 
     private void RestoreTable(DbConnection connection, TableInfo tableInfo, ref int transactionsCommited, ref int rowsInserted)
     {
+        if (tableInfo.Name == "files_file")
+        {
+
+        }
         SetColumns(connection, tableInfo);
 
         using var stream = _reader.GetEntry(KeyHelper.GetTableZipKey(_module, tableInfo.Name));

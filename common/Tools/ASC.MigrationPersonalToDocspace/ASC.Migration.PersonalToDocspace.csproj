@@ -28,24 +28,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommandLineParser" Version="2.9.1" />
-		<PackageReference Include="Microsoft.Build" Version="17.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
+	  <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
 	  <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
 	  <ProjectReference Include="..\..\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
 	  <ProjectReference Include="..\ASC.Migration.Core\ASC.Migration.Core.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="ASC.Common">
-	    <HintPath>..\common\ASC.Common\bin\Debug\ASC.Common.dll</HintPath>
-	  </Reference>
 	</ItemGroup>
 
 </Project>

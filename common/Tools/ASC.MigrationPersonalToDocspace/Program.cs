@@ -24,18 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Api.Core.Extensions;
-using ASC.Common;
-using ASC.Common.Mapping;
-using ASC.Core.Data;
-using ASC.Data.Backup.Tasks;
-using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Storage;
-using ASC.Data.Storage.DiscStorage;
-using ASC.Data.Storage.S3;
-using ASC.Migration.PersonalToDocspace.Creator;
+using Autofac.Extensions.DependencyInjection;
 
-Thread.Sleep(4000);
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -44,11 +34,19 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args);
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
+{
+    config.AddJsonFile($"appsettings.json", true)
+        .AddJsonFile($"storage.json", true)
+        .AddCommandLine(args);
+});
+
+var config = builder.Configuration;
 
 builder.WebHost.ConfigureServices((hostContext, services) =>
 {
-    var diHelper = new DIHelper();
     services.AddScoped<EFLoggerFactory>();
     services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     services.AddHttpClient();
@@ -66,7 +64,12 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
     services.AddBaseDbContextPool<FeedDbContext>();
     services.AddBaseDbContextPool<MessagesContext>();
     services.AddBaseDbContextPool<WebhooksDbContext>();
-    services.AddAutoMapper(typeof(MappingProfile));
+    services.AddAutoMapper(BaseStartup.GetAutoMapperProfileAssemblies());
+    services.AddMemoryCache();
+    services.AddSingleton<IEventBus, MockEventBusRabbitMQ>();
+    services.AddCacheNotify(config);
+
+    var diHelper = new DIHelper();
     diHelper.Configure(services);
 
     diHelper.TryAdd<TempStream>();
@@ -80,7 +83,11 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
 });
 
 var app = builder.Build();
-var config = builder.Configuration;
 
-var migrationCreator = new MigrationCreator(app.Services, string.IsNullOrEmpty(config["pathToSave"]) ? "" : config["pathToSave"], Int32.Parse(config["tenant"]));
+var migrationCreator = new MigrationCreator(app.Services, Int32.Parse(args[0]), args[1]);
 migrationCreator.Create();
+
+var migrationRunner = new MigrationRunner(app.Services, args[1] + ".tar.gz");
+migrationRunner.Run();
+
+Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Contains(".tar")).ToList().ForEach(File.Delete);
