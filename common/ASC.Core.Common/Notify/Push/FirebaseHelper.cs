@@ -60,10 +60,17 @@ public class FirebaseHelper
         var defaultInstance = FirebaseApp.DefaultInstance;
         if (defaultInstance == null)
         {
-            FirebaseApp.Create(new AppOptions()
+            try
             {
-                Credential = GoogleCredential.FromJson(credentials)
-            });
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromJson(credentials)
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.ErrorUnexpected(e);
+            }
         }
     }
 

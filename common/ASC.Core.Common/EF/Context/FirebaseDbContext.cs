@@ -25,42 +25,20 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Core.Common.EF.Context;
-public class MySqlFirebaseDbContext : FirebaseDbContext { }
-public class PostgreSqlFirebaseDbContext : FirebaseDbContext { }
-public class FirebaseDbContext : BaseDbContext
+public class FirebaseDbContext : DbContext
 {
+
     public DbSet<FireBaseUser> Users { get; set; }
 
-    public FirebaseDbContext() { }
-    public FirebaseDbContext(DbContextOptions<FirebaseDbContext> options)
-        : base(options)
+    public FirebaseDbContext(DbContextOptions<FirebaseDbContext> options) : base(options)
     {
-    }
 
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlFirebaseDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlFirebaseDbContext() } ,
-            };
-        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddFireBaseUsers();
-    }
-}
-
-public static class FirebaseDbContextExtension
-{
-    public static DIHelper AddFirebaseDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<FirebaseDbContext>();
     }
 }

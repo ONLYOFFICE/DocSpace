@@ -36,18 +36,17 @@ namespace ASC.Core.Common.Notify.Push;
 [Scope]
 public class FirebaseDao
 {
-    public FirebaseDbContext FirebaseDbContext { get; set; }
-    public FirebaseDao() { }
+    private readonly IDbContextFactory<FirebaseDbContext> _dbContextFactory;
 
-    public FirebaseDao(DbContextManager<FirebaseDbContext> dbContextManager)
+    public FirebaseDao(IDbContextFactory<FirebaseDbContext> dbContextFactory)
     {
-        FirebaseDbContext = dbContextManager.Value;
+        _dbContextFactory = dbContextFactory;
     }
 
     public FireBaseUser RegisterUserDevice(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
     {
-
-        var count = FirebaseDbContext.Users
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        var count = dbContext.Users
             .AsNoTracking()
             .Where(r => r.UserId == userId)
             .Where(r => r.TenantId == tenantId)
@@ -66,8 +65,8 @@ public class FirebaseDao
 
         if (count == 0)
         {
-            FirebaseDbContext.AddOrUpdate(r => r.Users, user);
-            FirebaseDbContext.SaveChanges();
+            dbContext.AddOrUpdate(r => r.Users, user);
+            dbContext.SaveChanges();
         }
 
         return user;
@@ -75,7 +74,8 @@ public class FirebaseDao
 
     public List<FireBaseUser> GetUserDeviceTokens(Guid userId, int tenantId, string application)
     {
-        return FirebaseDbContext.Users
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        return dbContext.Users
             .AsNoTracking()
             .Where(r => r.UserId == userId)
             .Where(r => r.TenantId == tenantId)
@@ -85,6 +85,7 @@ public class FirebaseDao
 
     public FireBaseUser UpdateUser(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
     {
+        using var dbContext = _dbContextFactory.CreateDbContext();
         var user = new FireBaseUser
         {
             UserId = userId,
@@ -94,8 +95,8 @@ public class FirebaseDao
             Application = application
         };
 
-        FirebaseDbContext.Update(user);
-        FirebaseDbContext.SaveChanges();
+        dbContext.Update(user);
+        dbContext.SaveChanges();
      
         return user;
     }

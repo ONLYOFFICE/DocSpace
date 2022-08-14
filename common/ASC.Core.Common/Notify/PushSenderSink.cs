@@ -95,7 +95,7 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
         var tenant = _tenantManager.GetCurrentTenant(false);
         if (tenant == null)
         {
-            _tenantManager.SetCurrentTenant(Tenant.DefaultTenant);
+            tenantManager.SetCurrentTenant(Tenant.DefaultTenant);
             tenant = _tenantManager.GetCurrentTenant(false);
         }      
 
