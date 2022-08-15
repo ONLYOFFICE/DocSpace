@@ -13,6 +13,8 @@ import ComboBox from "@docspace/components/combobox";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import ConnectDialog from "../../../../../../components/dialogs/ConnectDialog";
+import { ContextMenuButton } from "@docspace/components";
+import DeleteThirdPartyDialog from "../../../../../../components/dialogs/DeleteThirdPartyDialog";
 
 let accounts = [],
   connectedAccount,
@@ -37,6 +39,8 @@ const DirectThirdPartyConnection = (props) => {
     isFileSelection = false,
     connectDialogVisible,
     setConnectDialogVisible,
+    setDeleteThirdPartyDialogVisible,
+    deleteThirdPartyDialogVisible,
   } = props;
 
   useEffect(() => {
@@ -256,6 +260,31 @@ const DirectThirdPartyConnection = (props) => {
     }
   };
 
+  const onDisconnect = () => {
+    console.log("onDisconnect");
+    setDeleteThirdPartyDialogVisible(true);
+  };
+  const getContextOptions = () => {
+    return [
+      {
+        key: "connection-settings",
+        label: selectedAccount.connected
+          ? t("Common:Reconnect")
+          : t("Common:Connect"),
+        onClick: selectedAccount.connected ? onReconnect : onConnect,
+        disabled: false,
+        icon: "/static/images/share.react.svg",
+      },
+      {
+        key: "Disconnect-settings",
+        label: t("Common:Disconnect"),
+        onClick: onDisconnect,
+        disabled: selectedAccount.connected ? false : true,
+        icon: "/static/images/invitation.link.react.svg",
+      },
+    ];
+  };
+
   const {
     selectedAccount,
     isLoading,
@@ -285,31 +314,17 @@ const DirectThirdPartyConnection = (props) => {
           }
         />
 
-        {selectedAccount.connected ? (
-          <Button
-            label={t("Reconnect")}
-            onClick={onReconnect}
-            size={"small"}
-            isDisabled={
-              isDisabled ||
-              isInitialLoading ||
-              isLoading ||
-              accounts.length === 0
-            }
-          />
-        ) : (
-          <Button
-            isDisabled={
-              isDisabled ||
-              isInitialLoading ||
-              isLoading ||
-              accounts.length === 0
-            }
-            label={t("Common:Connect")}
-            onClick={onConnect}
-            size={"small"}
-          />
-        )}
+        <ContextMenuButton
+          zIndex={402}
+          className="backup_third-party-context"
+          iconName="images/vertical-dots.react.svg"
+          size={15}
+          getData={getContextOptions}
+          isDisabled={
+            isDisabled || isInitialLoading || isLoading || accounts.length === 0
+          }
+          isNeedBorder
+        />
       </div>
       <Text className="backup_third-party-text" fontWeight={"600"}>
         {"Folder name:"}
@@ -366,13 +381,27 @@ const DirectThirdPartyConnection = (props) => {
           isConnectionViaBackupModule
         />
       )}
+
+      {deleteThirdPartyDialogVisible && (
+        <DeleteThirdPartyDialog
+          updateInfo={updateAccountsInfo}
+          key="thirdparty-delete-dialog"
+          item={selectedAccount}
+          isConnectionViaBackupModule
+        />
+      )}
     </StyledBackup>
   );
 };
 
 export default inject(({ backup, dialogsStore }) => {
   const { commonThirdPartyList, openConnectWindow, getOAuthToken } = backup;
-  const { connectDialogVisible, setConnectDialogVisible } = dialogsStore;
+  const {
+    connectDialogVisible,
+    setConnectDialogVisible,
+    setDeleteThirdPartyDialogVisible,
+    deleteThirdPartyDialogVisible,
+  } = dialogsStore;
 
   return {
     commonThirdPartyList,
@@ -380,5 +409,7 @@ export default inject(({ backup, dialogsStore }) => {
     getOAuthToken,
     setConnectDialogVisible,
     connectDialogVisible,
+    setDeleteThirdPartyDialogVisible,
+    deleteThirdPartyDialogVisible,
   };
 })(observer(DirectThirdPartyConnection));

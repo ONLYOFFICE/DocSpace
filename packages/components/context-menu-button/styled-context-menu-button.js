@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 const StyledOuter = styled.div`
@@ -6,6 +6,15 @@ const StyledOuter = styled.div`
   position: relative;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  ${(props) =>
+    props.isNeedBorder &&
+    css`
+      border: ${(props) => props.theme.client.settings.backup.contextBorder};
+      padding-left: 2px;
+      padding-right: 13px;
+      padding-top: 7px;
+    `}
 `;
 StyledOuter.defaultProps = { theme: Base };
 
