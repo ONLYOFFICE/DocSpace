@@ -1,26 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
-const StyledIconEditorWrapper = styled.div`
-  .use_modal-buttons_wrapper {
-    display: none;
+import Dropzone from "./Dropzone";
+
+const StyledIconEditor = styled.div`
+  .icon-editor {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: start;
+    gap: 16px;
   }
 `;
 
-const StyledIconEditor = styled(AvatarEditor)`
-  margin: 0;
-`;
+import IconCropper from "./IconCropper";
+import PreviewTile from "./PreviewTile";
 
-import AvatarEditor from "@docspace/components/avatar-editor";
+const IconEditor = ({ t, isEdit, title, tags, icon, onChangeIcon }) => {
+  const [previewIcon, setPreviewIcon] = useState(null);
 
-const IconEditor = () => {
+  const uploadedFile = icon.uploadedFile;
+  const setUploadedFile = (uploadedFile) =>
+    onChangeIcon({ ...icon, uploadedFile });
+
   return (
-    <StyledIconEditorWrapper>
-      <StyledIconEditor
-        className="icon-editor"
-        useModalDialog={false}
-      ></StyledIconEditor>
-    </StyledIconEditorWrapper>
+    <StyledIconEditor>
+      {uploadedFile && (
+        <div className="icon-editor">
+          <IconCropper
+            t={t}
+            icon={icon}
+            onChangeIcon={onChangeIcon}
+            uploadedFile={uploadedFile}
+            setUploadedFile={setUploadedFile}
+            setPreviewIcon={setPreviewIcon}
+          />
+
+          <PreviewTile
+            title={title || t("Files:NewRoom")}
+            previewIcon={previewIcon}
+            tags={tags.map((tag) => tag.name)}
+          />
+        </div>
+      )}
+      <Dropzone setUploadedFile={setUploadedFile} />
+    </StyledIconEditor>
   );
 };
 
