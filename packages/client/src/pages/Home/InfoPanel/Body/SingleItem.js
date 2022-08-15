@@ -14,7 +14,7 @@ import {
   StyledTitle,
 } from "./styles/styles.js";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
-import { getCookie } from "@docspace/common/utils/index.js";
+import { getCookie } from "@docspace/common/utils/index";
 
 const SingleItem = (props) => {
   const {

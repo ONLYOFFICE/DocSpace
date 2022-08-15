@@ -9,6 +9,7 @@ import FieldContainer from "@docspace/components/field-container";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { runInAction } from "mobx";
+import { getOAuthToken } from "@docspace/common/utils";
 
 const PureConnectDialogContainer = (props) => {
   const {
@@ -23,7 +24,6 @@ const PureConnectDialogContainer = (props) => {
     providers,
     selectedFolderId,
     selectedFolderFolders,
-    getOAuthToken,
     saveThirdParty,
     openConnectWindow,
     setConnectDialogVisible,
@@ -352,11 +352,7 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
-    const {
-      getOAuthToken,
-      personal,
-      folderFormValidation,
-    } = auth.settingsStore;
+    const { personal, folderFormValidation } = auth.settingsStore;
 
     const {
       treeFolders,
@@ -382,7 +378,6 @@ export default inject(
       item,
       folderFormValidation,
 
-      getOAuthToken,
       getSubfolders,
       saveThirdParty,
       openConnectWindow,

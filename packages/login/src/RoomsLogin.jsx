@@ -18,6 +18,8 @@ import { checkPwd } from "@docspace/common/desktop";
 import {
   createPasswordHash,
   getProviderTranslation,
+  getOAuthToken,
+  getLoginLink,
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
@@ -202,8 +204,6 @@ const Form = (props) => {
   const onSocialButtonClick = useCallback((e) => {
     const providerName = e.target.dataset.providername;
     const url = e.target.dataset.url;
-
-    const { getOAuthToken, getLoginLink } = props;
 
     try {
       const tokenGetterWin = isDesktop
@@ -481,8 +481,6 @@ const Login = inject(({ auth }) => {
     enabledJoin,
     defaultPage,
     isDesktopClient: isDesktop,
-    getOAuthToken,
-    getLoginLink,
     setRoomsMode,
   } = settingsStore;
 
@@ -495,8 +493,6 @@ const Login = inject(({ auth }) => {
     defaultPage,
     isDesktop,
     thirdPartyLogin,
-    getOAuthToken,
-    getLoginLink,
     setProviders,
     providers,
     setRoomsMode,

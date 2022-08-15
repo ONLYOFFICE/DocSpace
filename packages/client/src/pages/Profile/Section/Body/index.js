@@ -10,7 +10,12 @@ import Link from "@docspace/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import toastr from "client/toastr";
 import React from "react";
-import { combineUrl, getProviderTranslation } from "@docspace/common/utils";
+import {
+  combineUrl,
+  getProviderTranslation,
+  getOAuthToken,
+  getLoginLink,
+} from "@docspace/common/utils";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";
@@ -249,7 +254,6 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   linkAccount = (providerName, link, e) => {
-    const { getOAuthToken, getLoginLink } = this.props;
     e.preventDefault();
 
     try {
@@ -585,13 +589,7 @@ export default withRouter(
     const { isAdmin, userStore, settingsStore, tfaStore, logout } = auth;
     const { user: viewer, changeTheme } = userStore;
 
-    const {
-      isTabletView,
-      getOAuthToken,
-      getLoginLink,
-      theme,
-      setTheme,
-    } = settingsStore;
+    const { isTabletView, theme, setTheme } = settingsStore;
     const {
       targetUserStore,
       avatarEditorStore,
@@ -626,8 +624,6 @@ export default withRouter(
       setAvatarMax,
       providers,
       setProviders,
-      getOAuthToken,
-      getLoginLink,
       getBackupCodes,
       getNewBackupCodes,
       resetTfaApp,

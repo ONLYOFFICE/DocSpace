@@ -24,6 +24,8 @@ import Section from "@docspace/common/components/Section";
 import {
   createPasswordHash,
   getProviderTranslation,
+  getOAuthToken,
+  getLoginLink,
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import withLoader from "../withLoader";
@@ -414,8 +416,6 @@ const Confirm = (props) => {
     const providerName = e.target.dataset.providername;
     const url = e.target.dataset.url;
 
-    const { getOAuthToken, getLoginLink } = props;
-
     try {
       const tokenGetterWin = isDesktop
         ? (window.location.href = url)
@@ -783,8 +783,6 @@ export default inject(({ auth }) => {
     defaultPage,
     getSettings,
     getPortalPasswordSettings,
-    getOAuthToken,
-    getLoginLink,
   } = settingsStore;
 
   return {
@@ -798,8 +796,6 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
     thirdPartyLogin,
-    getOAuthToken,
-    getLoginLink,
     setProviders,
     providers,
   };

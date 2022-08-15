@@ -47,8 +47,6 @@ const template: Template = (
     <script>
       console.log("It's Login INIT");
     </script>
-
-
 `;
 
   const page = `

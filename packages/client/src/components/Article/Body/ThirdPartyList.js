@@ -6,7 +6,7 @@ import { isMobile } from "@docspace/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
-import { combineUrl } from "@docspace/common/utils";
+import { combineUrl, getOAuthToken } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
@@ -109,7 +109,6 @@ const PureThirdPartyListContainer = ({
   setConnectDialogVisible,
   setSelectedNode,
   setSelectedFolder,
-  getOAuthToken,
   openConnectWindow,
   setThirdPartyDialogVisible,
   history,
@@ -280,7 +279,7 @@ export default inject(
       openConnectWindow,
     } = settingsStore.thirdPartyStore;
 
-    const { getOAuthToken, toggleArticleOpen } = auth.settingsStore;
+    const { toggleArticleOpen } = auth.settingsStore;
 
     const {
       setConnectItem,
@@ -300,7 +299,6 @@ export default inject(
       setSelectedNode,
       setConnectItem,
       setConnectDialogVisible,
-      getOAuthToken,
       openConnectWindow,
       setThirdPartyDialogVisible,
 

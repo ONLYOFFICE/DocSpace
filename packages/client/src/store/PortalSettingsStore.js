@@ -309,34 +309,6 @@ class SettingsStore {
     this.updateEncryptionKeys(encryptionKeys);
   };
 
-  getOAuthToken = (tokenGetterWin) => {
-    return new Promise((resolve, reject) => {
-      localStorage.removeItem("code");
-      let interval = null;
-      interval = setInterval(() => {
-        try {
-          const code = localStorage.getItem("code");
-
-          if (code) {
-            localStorage.removeItem("code");
-            clearInterval(interval);
-            resolve(code);
-          } else if (tokenGetterWin && tokenGetterWin.closed) {
-            clearInterval(interval);
-            reject();
-          }
-        } catch (e) {
-          clearInterval(interval);
-          reject(e);
-        }
-      }, 500);
-    });
-  };
-
-  getLoginLink = (token, code) => {
-    return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
-  };
-
   setModuleInfo = (homepage, productId) => {
     if (this.homepage === homepage || this.currentProductId === productId)
       return;
