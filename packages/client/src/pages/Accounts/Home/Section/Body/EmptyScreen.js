@@ -11,10 +11,9 @@ import Grid from "@docspace/components/grid";
 const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   const { t } = useTranslation(["People", "Common"]);
 
-  const title = isEmptyGroup ? t("EmptyGroupTitle") : t("NotFoundTitle");
-  const description = isEmptyGroup
-    ? t("EmptyGroupDescription")
-    : t("NotFoundDescription");
+  const title = "TODO: No users found";
+  const description =
+    "TODO: No people matching you filter can be displayed. Please select other filter options or clear filter to view all the people in this section";
 
   const onResetFilter = () => {
     setIsLoading(true);
@@ -24,7 +23,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   return (
     <>
       <EmptyScreenContainer
-        imageSrc="images/empty_screen_filter.png"
+        imageSrc="/static/images/empty_screen_persons.png"
         imageAlt="Empty Screen Filter image"
         headerText={title}
         descriptionText={description}
@@ -34,17 +33,17 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
             gridColumnGap="8px"
             columnsProp={["12px 1fr"]}
           >
-            {isEmptyGroup ? null : (
+            {
               <>
                 <Box>
                   <IconButton
                     className="empty-folder_container-icon"
                     size="12"
                     onClick={onResetFilter}
-                    iconName="CrossIcon"
+                    iconName="/static/images/clear.empty.filter.svg"
                     isFill
                   />
-                </Box>{" "}
+                </Box>
                 <Box marginProp="-4px 0 0 0">
                   <Link
                     type="action"
@@ -52,11 +51,11 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
                     fontWeight="600"
                     onClick={onResetFilter}
                   >
-                    {t("Common:ClearButton")}
+                    TODO: Clear search
                   </Link>
-                </Box>{" "}
+                </Box>
               </>
-            )}
+            }
           </Grid>
         }
       />
