@@ -106,7 +106,7 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
         var productID = message.Arguments.FirstOrDefault(x => x.Tag.Equals("__ProductID"));
         var originalUrl = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentURL"));
 
-        var folderId = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderId"));
+        var folderId = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderID"));
         var rootFolderId = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderParentId"));
         var rootFolderType = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderRootFolderType"));
 

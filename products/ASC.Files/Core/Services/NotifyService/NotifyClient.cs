@@ -144,6 +144,21 @@ public class NotifyClient
                       ? _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, fileEntry.Title, fileEntry.Id)
                       : await _pathProvider.GetFolderUrlAsync((Folder<T>)fileEntry);
 
+        Folder<T> folder;
+
+        var fileExtension = "";
+
+        if (fileEntry.FileEntryType == FileEntryType.File)
+        {
+            var file = (File<T>)fileEntry;
+            fileExtension = file.ConvertedExtension;
+            folder = await folderDao.GetFolderAsync(file.ParentId);
+        }
+        else
+        {
+            folder = (Folder<T>)fileEntry;
+        }
+
         var recipientsProvider = _notifySource.GetRecipientsProvider();
 
         var action = fileEntry.FileEntryType == FileEntryType.File
@@ -170,8 +185,12 @@ public class NotifyClient
                 true,
                 new TagValue(NotifyConstants.TagDocumentTitle, fileEntry.Title),
                 new TagValue(NotifyConstants.TagDocumentUrl, _baseCommonLinkUtility.GetFullAbsolutePath(url)),
+                new TagValue(NotifyConstants.TagDocumentExtension, fileExtension),
                 new TagValue(NotifyConstants.TagAccessRights, aceString),
                 new TagValue(NotifyConstants.TagMessage, message.HtmlEncode()),
+                new TagValue(NotifyConstants.TagFolderID, folder.Id),
+                new TagValue(NotifyConstants.TagFolderParentId, folder.RootId),
+                new TagValue(NotifyConstants.TagFolderRootFolderType, folder.RootFolderType),
                 TagValues.Image(_studioNotifyHelper, 0, "privacy.png"),
                 new AdditionalSenderTag("push.sender")
                 );
@@ -203,6 +222,7 @@ public class NotifyClient
                 new TagValue(NotifyConstants.TagDocumentTitle, file.Title),
                 new TagValue(NotifyConstants.TagDocumentUrl, _baseCommonLinkUtility.GetFullAbsolutePath(documentUrl)),
                 new TagValue(NotifyConstants.TagMessage, message.HtmlEncode()),
+                new TagValue(NotifyConstants.TagFolderID, ((File<T>)file).ParentId),
                 new AdditionalSenderTag("push.sender")
                 );
         }

@@ -34,7 +34,7 @@ public class PushSender : INotifySender
 
     public PushSender(ILoggerProvider options, IServiceProvider serviceProvider)
     {
-        _logger = options.CreateLogger("ASC");
+        _logger = options.CreateLogger("ASC.Notify");
         _serviceProvider = serviceProvider;
     }
 

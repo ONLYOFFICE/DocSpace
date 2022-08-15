@@ -76,8 +76,6 @@ public class FirebaseHelper
 
     public void SendMessage(NotifyMessage msg)
     {
-        var data = new Dictionary<string, string>();
-
         var tenant = _tenantManager.GetCurrentTenant(false);
 
         if (tenant == null)
@@ -88,7 +86,10 @@ public class FirebaseHelper
 
         Guid productID;
 
-        if (!Guid.TryParse(msg.ProductID, out productID)) return;
+        if (!Guid.TryParse(msg.ProductID, out productID))
+        {
+            return;
+        }
 
         var fireBaseUser = new List<FireBaseUser>();
 
@@ -117,7 +118,7 @@ public class FirebaseHelper
                         Body = msg.Content
                     }
                 };
-                var result = FirebaseMessaging.DefaultInstance.SendAsync(m).Result;
+                FirebaseMessaging.DefaultInstance.SendAsync(m);
             }
         }
     }
