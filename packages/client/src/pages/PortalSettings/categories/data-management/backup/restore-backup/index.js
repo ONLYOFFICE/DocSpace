@@ -253,15 +253,6 @@ class RestoreBackup extends React.Component {
       return;
     }
 
-    console.log(
-      "backupId",
-      backupId,
-      "storageType",
-      storageType,
-      "storageParams",
-      storageParams
-    );
-    // return;
     startRestore(backupId, storageType, storageParams, isNotify)
       .then(() => {
         socketHelper.emit({

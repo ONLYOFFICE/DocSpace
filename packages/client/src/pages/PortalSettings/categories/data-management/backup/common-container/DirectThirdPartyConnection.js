@@ -15,6 +15,7 @@ import { inject, observer } from "mobx-react";
 import ConnectDialog from "../../../../../../components/dialogs/ConnectDialog";
 import { ContextMenuButton } from "@docspace/components";
 import DeleteThirdPartyDialog from "../../../../../../components/dialogs/DeleteThirdPartyDialog";
+import { withTranslation } from "react-i18next";
 
 let accounts = [],
   connectedAccount,
@@ -261,7 +262,6 @@ const DirectThirdPartyConnection = (props) => {
   };
 
   const onDisconnect = () => {
-    console.log("onDisconnect");
     setDeleteThirdPartyDialogVisible(true);
   };
   const getContextOptions = () => {
@@ -293,7 +293,6 @@ const DirectThirdPartyConnection = (props) => {
     isUpdatingInfo,
   } = state;
 
-  console.log("render direct");
   return (
     <StyledBackup>
       <div className="backup_connection">
@@ -327,7 +326,7 @@ const DirectThirdPartyConnection = (props) => {
         />
       </div>
       <Text className="backup_third-party-text" fontWeight={"600"}>
-        {"Folder name:"}
+        {isFileSelection ? t("FileName") + ":" : t("FolderName") + ":"}
       </Text>
 
       {isFileSelection ? (
@@ -412,4 +411,6 @@ export default inject(({ backup, dialogsStore }) => {
     setDeleteThirdPartyDialogVisible,
     deleteThirdPartyDialogVisible,
   };
-})(observer(DirectThirdPartyConnection));
+})(
+  withTranslation(["Settings", "Common"])(observer(DirectThirdPartyConnection))
+);
