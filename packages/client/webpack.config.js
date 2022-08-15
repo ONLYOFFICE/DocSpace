@@ -68,7 +68,7 @@ const config = {
     },
   },
   resolve: {
-    extensions: [".jsx", ".js", ".json"],
+    extensions: [".jsx", ".js", ".tsx", ".ts", ".json"],
     fallback: {
       crypto: false,
     },
@@ -154,7 +154,7 @@ const config = {
         ],
       },
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         exclude: /node_modules/,
         use: [
           {

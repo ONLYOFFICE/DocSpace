@@ -1,10 +1,10 @@
-import { LANGUAGE } from "../constants";
+import { LANGUAGE, AppServerConfig } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import TopLoaderService from "@docspace/components/top-loading-indicator";
 
 import { Encoder } from "./encoder";
-
+const { proxyURL } = AppServerConfig;
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
@@ -373,4 +373,32 @@ export function assign(obj, keyPath, value) {
     obj = obj[key];
   }
   obj[keyPath[lastKeyIndex]] = value;
+}
+
+export function getOAuthToken(tokenGetterWin) {
+  return new Promise((resolve, reject) => {
+    localStorage.removeItem("code");
+    let interval = null;
+    interval = setInterval(() => {
+      try {
+        const code = localStorage.getItem("code");
+
+        if (code) {
+          localStorage.removeItem("code");
+          clearInterval(interval);
+          resolve(code);
+        } else if (tokenGetterWin && tokenGetterWin.closed) {
+          clearInterval(interval);
+          reject();
+        }
+      } catch (e) {
+        clearInterval(interval);
+        reject(e);
+      }
+    }, 500);
+  });
+}
+
+export function getLoginLink(token, code) {
+  return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
 }
