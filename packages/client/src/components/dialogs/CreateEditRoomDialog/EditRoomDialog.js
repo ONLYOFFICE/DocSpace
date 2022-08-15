@@ -22,11 +22,6 @@ const EditRoomDialog = ({
 
   const [roomParams, setRoomParams] = useState({
     ...fetchedRoomParams,
-    // cant fetch
-    isPrivate: false,
-    storageLocation: undefined,
-    rememberStorageLocation: false,
-    thirdpartyFolderName: "",
   });
 
   const setRoomTags = (newTags) =>
@@ -40,9 +35,9 @@ const EditRoomDialog = ({
       type: newRoomType,
     }));
 
-  const onEditRoom = () => {
-    onSave(roomParams);
-  };
+  const onEditRoom = () => onSave(roomParams);
+
+  console.log(roomParams);
 
   return (
     <ModalDialog
