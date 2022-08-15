@@ -26,6 +26,7 @@ const CreateRoomDialog = ({
   onClose,
   onCreate,
 
+  providers,
   fetchedTags,
   isLoading,
   folderFormValidation,
@@ -37,10 +38,18 @@ const CreateRoomDialog = ({
     type: undefined,
     tags: [],
     isPrivate: false,
-    storageLocation: undefined,
-    rememberStorageLocation: false,
-    thirdpartyFolderName: "",
-    icon: "",
+    isThirdparty: false,
+    storageLocation: null,
+    rememberThirdpartyStorage: false,
+    icon: {
+      uploadedFile: null,
+      tmpFile: "",
+      x: 0.5,
+      y: 0.5,
+      width: 216,
+      height: 216,
+      zoom: 1,
+    },
   });
 
   const setRoomTags = (newTags) =>
@@ -57,9 +66,7 @@ const CreateRoomDialog = ({
     }));
   };
 
-  const onCreateRoom = () => {
-    onCreate(roomParams);
-  };
+  const onCreateRoom = () => onCreate(roomParams);
 
   const isChooseRoomType = roomParams.type === undefined;
   const goBack = () => {
@@ -68,9 +75,8 @@ const CreateRoomDialog = ({
       type: undefined,
       tags: [],
       isPrivate: false,
+      isThirdparty: false,
       storageLocation: undefined,
-      rememberStorageLocation: false,
-      thirdpartyFolderName: "",
       icon: "",
     });
   };
@@ -111,6 +117,7 @@ const CreateRoomDialog = ({
             setRoomParams={setRoomParams}
             setRoomType={setRoomType}
             setIsScrollLocked={setIsScrollLocked}
+            providers={providers}
           />
         )}
       </ModalDialog.Body>
