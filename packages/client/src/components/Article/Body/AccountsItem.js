@@ -13,6 +13,7 @@ const iconUrl = "/static/images/catalog.accounts.react.svg";
 const PureAccountsItem = ({
   showText,
   setSelectedFolder,
+  selectedTreeNode,
   setSelectedNode,
   history,
   t,
@@ -27,6 +28,10 @@ const PureAccountsItem = ({
     );
   }, [setSelectedFolder, setSelectedNode, history]);
 
+  console.log(selectedTreeNode);
+
+  const isActive = selectedTreeNode[0] === "accounts";
+
   return (
     <CatalogItem
       id="accounts"
@@ -35,6 +40,7 @@ const PureAccountsItem = ({
       icon={iconUrl}
       showText={showText}
       onClick={onClick}
+      isActive={isActive}
     />
   );
 };
@@ -45,10 +51,11 @@ const AccountsItem = withTranslation(["FilesSettings", "Common"])(
 
 export default inject(({ auth, treeFoldersStore, selectedFolderStore }) => {
   const { setSelectedFolder } = selectedFolderStore;
-  const { setSelectedNode } = treeFoldersStore;
+  const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
   return {
     showText: auth.settingsStore.showText,
     setSelectedFolder,
+    selectedTreeNode,
     setSelectedNode,
   };
 })(observer(AccountsItem));
