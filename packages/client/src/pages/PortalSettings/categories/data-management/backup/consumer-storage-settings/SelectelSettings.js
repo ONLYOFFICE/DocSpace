@@ -2,8 +2,8 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import TextInput from "@docspace/components/text-input";
 
-const publicInput = "public_container";
-const privateInput = "private_container";
+const public_container = "public_container";
+const private_container = "private_container";
 const filePath = "filePath";
 class SelectelSettings extends React.Component {
   static formNames = () => {
@@ -21,7 +21,11 @@ class SelectelSettings extends React.Component {
 
     const filePathField = isNeedFilePath ? [filePath] : [];
     setIsThirdStorageChanged(false);
-    setRequiredFormSettings([publicInput, privateInput, ...filePathField]);
+    setRequiredFormSettings([
+      public_container,
+      private_container,
+      ...filePathField,
+    ]);
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
 
@@ -53,7 +57,7 @@ class SelectelSettings extends React.Component {
     return (
       <>
         <TextInput
-          name={privateInput}
+          name={private_container}
           className="backup_text-input"
           scale={true}
           value={formSettings[private_container]}
@@ -64,7 +68,7 @@ class SelectelSettings extends React.Component {
           tabIndex={1}
         />
         <TextInput
-          name={publicInput}
+          name={public_container}
           className="backup_text-input"
           scale={true}
           value={formSettings[public_container]}

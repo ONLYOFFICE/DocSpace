@@ -1,9 +1,13 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
+import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import { getOptions } from "../../common-container/GetThirdPartyStoragesOptions";
+import { ThirdPartyStorages } from "@docspace/common/constants";
+import { ComboBox } from "@docspace/components";
+
 class ThirdPartyStoragesModule extends React.PureComponent {
   constructor(props) {
     super(props);

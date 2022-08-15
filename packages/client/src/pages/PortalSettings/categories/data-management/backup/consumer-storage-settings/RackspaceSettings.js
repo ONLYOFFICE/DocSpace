@@ -2,9 +2,9 @@ import React from "react";
 import TextInput from "@docspace/components/text-input";
 import { inject, observer } from "mobx-react";
 
-const regionInput = "region";
-const publicInput = "public_container";
-const privateInput = "private_container";
+const region = "region";
+const public_container = "public_container";
+const private_container = "private_container";
 const filePath = "filePath";
 class RackspaceSettings extends React.Component {
   static formNames = () => {
@@ -23,9 +23,9 @@ class RackspaceSettings extends React.Component {
     setIsThirdStorageChanged(false);
     const filePathField = isNeedFilePath ? [filePath] : [];
     setRequiredFormSettings([
-      regionInput,
-      publicInput,
-      privateInput,
+      region,
+      public_container,
+      private_container,
       ...filePathField,
     ]);
 
@@ -61,7 +61,7 @@ class RackspaceSettings extends React.Component {
     return (
       <>
         <TextInput
-          name={privateInput}
+          name={private_container}
           className="backup_text-input"
           scale
           value={formSettings[private_container]}
@@ -72,7 +72,7 @@ class RackspaceSettings extends React.Component {
           tabIndex={1}
         />
         <TextInput
-          name={publicInput}
+          name={public_container}
           className="backup_text-input"
           scale
           value={formSettings[public_container]}
@@ -83,7 +83,7 @@ class RackspaceSettings extends React.Component {
           tabIndex={2}
         />
         <TextInput
-          name={regionInput}
+          name={region}
           className="backup_text-input"
           scale
           value={formSettings[region]}
