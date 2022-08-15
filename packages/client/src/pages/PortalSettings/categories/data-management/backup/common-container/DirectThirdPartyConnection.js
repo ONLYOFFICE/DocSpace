@@ -40,7 +40,7 @@ const DirectThirdPartyConnection = (props) => {
   } = props;
 
   useEffect(() => {
-    updateAccountsInfo();
+    updateAccountsInfo(true);
   }, []);
 
   const initialState = {
@@ -56,10 +56,11 @@ const DirectThirdPartyConnection = (props) => {
     initialState
   );
 
-  const updateAccountsInfo = async () => {
-    !state.isLoading &&
-      !state.isUpdatingInfo &&
+  const updateAccountsInfo = async (isMount = false) => {
+    if (!isMount && !state.isLoading && !state.isUpdatingInfo) {
+      onSelectFolder && onSelectFolder("");
       setState({ isLoading: true, isUpdatingInfo: true });
+    }
 
     try {
       [connectedAccount, capabilities] = await Promise.all([
@@ -263,7 +264,7 @@ const DirectThirdPartyConnection = (props) => {
     isUpdatingInfo,
   } = state;
 
-  console.log("isLoading", isLoading, "isInitialLoading", isInitialLoading);
+  console.log("render direct");
   return (
     <StyledBackup>
       <div className="backup_connection">

@@ -513,7 +513,7 @@ class BackupStore {
 
     for (let key of this.requiredFormSettings) {
       const elem = this.formSettings[key];
-      console.log("elem", elem, this.formSettings, key);
+
       errors[key] = !elem.trim();
       // console.log("elem.trim()", elem.trim(), "firstError", firstError);
       if (!elem.trim() && !firstError) {
@@ -531,9 +531,7 @@ class BackupStore {
   setCompletedFormFields = (values, module) => {
     let formSettingsTemp = {};
 
-    console.log("this.defaultStorageId", this.defaultStorageId);
     if (module && module === this.defaultStorageId) {
-      console.log("this.defaultFormSettings", this.defaultFormSettings);
       this.setFormSettings({ ...this.defaultFormSettings });
       return;
     }
@@ -542,7 +540,6 @@ class BackupStore {
       formSettingsTemp[key] = value;
     }
 
-    console.log("setCompletedFormFields", formSettingsTemp);
     this.setFormSettings({ ...formSettingsTemp });
     this.setErrorsFormFields({});
   };

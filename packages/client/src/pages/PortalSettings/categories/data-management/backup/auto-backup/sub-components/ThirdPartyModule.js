@@ -9,7 +9,7 @@ import DirectThirdPartyConnection from "../../common-container/DirectThirdPartyC
 class ThirdPartyModule extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { setSelectedFolder, isResourcesDefault, isDocSpace } = props;
+    const { setSelectedFolder, isResourcesDefault } = props;
 
     this.state = {
       isPanelVisible: false,
@@ -30,6 +30,7 @@ class ThirdPartyModule extends React.PureComponent {
   };
   onSelectFolder = (id) => {
     const { setSelectedFolder } = this.props;
+
     setSelectedFolder(`${id}`);
   };
 
