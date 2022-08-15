@@ -138,14 +138,14 @@ const PureConnectDialogContainer = (props) => {
         provider_id
       )
         .catch((err) => {
+          setIsLoading(false);
           onClose();
           toastr.error(err);
-          setIsLoading(false);
         })
         .finally(() => {
-          onClose();
-          updateInfo && updateInfo();
           setIsLoading(false);
+          updateInfo && updateInfo();
+          onClose();
         });
 
       return;

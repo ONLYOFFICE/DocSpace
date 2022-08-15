@@ -43,12 +43,12 @@ const DirectThirdPartyConnection = (props) => {
     updateAccountsInfo();
   }, []);
 
-  const [isVisibleConnectionForm, setIsVisibleConnectionForm] = useState(false);
   const initialState = {
     selectedAccount: {},
     folderList: [],
     isLoading: false,
     isInitialLoading: true,
+    isUpdatingInfo: false,
   };
 
   const [state, setState] = useReducer(
@@ -57,6 +57,10 @@ const DirectThirdPartyConnection = (props) => {
   );
 
   const updateAccountsInfo = async () => {
+    !state.isLoading &&
+      !state.isUpdatingInfo &&
+      setState({ isLoading: true, isUpdatingInfo: true });
+
     try {
       [connectedAccount, capabilities] = await Promise.all([
         getConnectedAccounts(),
@@ -142,6 +146,7 @@ const DirectThirdPartyConnection = (props) => {
 
       setState({
         isLoading: false,
+        isUpdatingInfo: false,
         isInitialLoading: false,
         selectedAccount:
           Object.keys(selectedAccount).length !== 0
@@ -150,7 +155,11 @@ const DirectThirdPartyConnection = (props) => {
         folderList: account ? account : [],
       });
     } catch (e) {
-      setState({ isLoading: false, isInitialLoading: false });
+      setState({
+        isLoading: false,
+        isInitialLoading: false,
+        isUpdatingInfo: false,
+      });
       if (!e) return;
       toastr.error(e);
     }
@@ -195,7 +204,7 @@ const DirectThirdPartyConnection = (props) => {
     passwordValue = ""
   ) => {
     const { label, provider_key, provider_id } = state.selectedAccount;
-    setState({ isLoading: true });
+    setState({ isLoading: true, isUpdatingInfo: true });
     connectDialogVisible && setConnectDialogVisible(false);
     onSelectFolder && onSelectFolder("");
 
@@ -213,7 +222,7 @@ const DirectThirdPartyConnection = (props) => {
 
       updateAccountsInfo();
     } catch (e) {
-      setState({ isLoading: false });
+      setState({ isLoading: false, isUpdatingInfo: false });
       toastr.error(e);
     }
   };
@@ -246,8 +255,15 @@ const DirectThirdPartyConnection = (props) => {
     }
   };
 
-  const { selectedAccount, isLoading, folderList, isInitialLoading } = state;
+  const {
+    selectedAccount,
+    isLoading,
+    folderList,
+    isInitialLoading,
+    isUpdatingInfo,
+  } = state;
 
+  console.log("isLoading", isLoading, "isInitialLoading", isInitialLoading);
   return (
     <StyledBackup>
       <div className="backup_connection">
@@ -334,7 +350,7 @@ const DirectThirdPartyConnection = (props) => {
           }
           isPanelVisible={isPanelVisible}
           isError={isError}
-          foldersType={isInitialLoading ? "" : "third-party"}
+          foldersType={isInitialLoading || isUpdatingInfo ? "" : "third-party"}
           foldersList={[folderList]}
           withoutBasicSelection={withoutBasicSelection}
           isReset={isReset}

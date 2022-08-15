@@ -74,7 +74,14 @@ class SelectFolderInput extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { isSuccessSave, isReset, id, foldersType } = this.props;
+    const {
+      isSuccessSave,
+      isReset,
+      id,
+      foldersType,
+      isUpdatingInfo,
+      folderList,
+    } = this.props;
     const { newFolderPath, baseFolderPath } = this.state;
 
     if (!isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
@@ -94,7 +101,7 @@ class SelectFolderInput extends React.PureComponent {
       });
     }
 
-    if (foldersType !== prevProps.foldersType) {
+    if (foldersType !== "" && foldersType !== prevProps.foldersType) {
       this.setBaseInfo();
     }
   }
@@ -201,14 +208,14 @@ class SelectFolderInput extends React.PureComponent {
     } = this.props;
 
     const passedId = newId ? newId : baseId;
-    console.log(
-      "newId",
-      newId,
-      "baseId",
-      baseId,
-      "resultingFolderTree",
-      resultingFolderTree
-    );
+    // console.log(
+    //   "newId",
+    //   newId,
+    //   "baseId",
+    //   baseId,
+    //   "resultingFolderTree",
+    //   resultingFolderTree
+    // );
     return (
       <StyledComponent maxWidth={maxInputWidth}>
         <SimpleFileInput
