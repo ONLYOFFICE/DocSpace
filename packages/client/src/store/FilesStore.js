@@ -529,9 +529,7 @@ class FilesStore {
   };
 
   setHotkeyCaret = (hotkeyCaret) => {
-    if (hotkeyCaret) {
-      this.hotkeyCaret = hotkeyCaret;
-    } else if (this.hotkeyCaret) {
+    if (hotkeyCaret || this.hotkeyCaret) {
       this.hotkeyCaret = hotkeyCaret;
     }
   };

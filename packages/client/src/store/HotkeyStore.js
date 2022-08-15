@@ -14,6 +14,8 @@ class HotkeyStore {
   treeFoldersStore;
   uploadDataStore;
 
+  elemOffset = 0;
+
   constructor(
     filesStore,
     dialogsStore,
@@ -50,7 +52,7 @@ class HotkeyStore {
       e.preventDefault();
     }
 
-    const { selection: s, hotkeyCaret, viewAs, filesList } = this.filesStore;
+    const { selection: s, hotkeyCaret, filesList } = this.filesStore;
     const selection = s.length ? s : filesList;
 
     if (!hotkeyCaret) {
@@ -59,11 +61,43 @@ class HotkeyStore {
     }
 
     if (!hotkeyCaret && selection.length) {
-      this.filesStore.setHotkeyCaret(selection[0]);
+      this.setCaret(selection[0]);
       this.filesStore.setHotkeyCaretStart(selection[0]);
     }
 
     if (!hotkeyCaret || isDefaultKeys) return;
+
+    const { offsetTop, item } = this.getItemOffset();
+    const scroll = document.getElementsByClassName("section-scroll")[0];
+    const scrollRect = scroll.getBoundingClientRect();
+
+    if (item && item[0]) {
+      const el = item[0];
+      const rect = el.getBoundingClientRect();
+
+      if (
+        scrollRect.top + scrollRect.height - rect.height > rect.top &&
+        scrollRect.top < rect.top + el.offsetHeight
+      ) {
+        //console.log("element is visible");
+      } else {
+        scroll.scrollTo(0, offsetTop - scrollRect.height / 2);
+        //console.log("element is not visible");
+      }
+    } else {
+      scroll.scrollTo(0, this.elemOffset - scrollRect.height / 2);
+    }
+  };
+
+  setCaret = (caret) => {
+    this.filesStore.setHotkeyCaret(caret);
+    const { offsetTop } = this.getItemOffset();
+
+    if (offsetTop) this.elemOffset = offsetTop;
+  };
+
+  getItemOffset = () => {
+    const { hotkeyCaret, viewAs } = this.filesStore;
 
     let item = document.getElementsByClassName(
       `${hotkeyCaret.id}_${hotkeyCaret.fileExst}`
@@ -75,42 +109,38 @@ class HotkeyStore {
 
     if (item && item[0]) {
       const el = item[0];
-      const rect = el.getBoundingClientRect();
-      const scroll = document.getElementsByClassName("section-scroll")[0];
-      const scrollRect = scroll.getBoundingClientRect();
 
-      if (
-        scrollRect.top + scrollRect.height - rect.height > rect.top &&
-        scrollRect.top < rect.top + el.offsetHeight
-      ) {
-        //console.log("element is visible");
-      } else {
-        const offset = el.closest(".window-item")?.offsetTop;
-        const offsetTop = offset
-          ? offset
-          : viewAs === "tile"
-          ? el.parentElement.parentElement.offsetTop
-          : el.offsetTop;
+      const offset = el.closest(".window-item")?.offsetTop;
 
-        scroll.scrollTo(0, offsetTop - scrollRect.height / 2);
-        //console.log("element is not visible");
-      }
+      const offsetTop = offset
+        ? offset
+        : viewAs === "tile"
+        ? el.parentElement.parentElement.offsetTop
+        : el.offsetTop;
+
+      return { offsetTop, item };
     }
+
+    return { offsetTop: null, item: null };
   };
 
   selectFirstFile = () => {
     const { filesList } = this.filesStore;
 
     if (filesList.length) {
+      // scroll to first element
+      const scroll = document.querySelector("#sectionScroll > .scroll-body");
+      scroll.scrollTo(0, 0);
+
       this.filesStore.setSelection([filesList[0]]);
-      this.filesStore.setHotkeyCaret(filesList[0]);
+      this.setCaret(filesList[0]);
       this.filesStore.setHotkeyCaretStart(filesList[0]);
     }
   };
 
   setSelectionWithCaret = (selection) => {
     this.filesStore.setSelection(selection);
-    this.filesStore.setHotkeyCaret(selection[0]);
+    this.setCaret(selection[0]);
     this.filesStore.setHotkeyCaretStart(selection[0]);
   };
 
@@ -119,7 +149,6 @@ class HotkeyStore {
       selection,
       setSelection,
       hotkeyCaret,
-      setHotkeyCaret,
       setHotkeyCaretStart,
     } = this.filesStore;
 
@@ -135,7 +164,7 @@ class HotkeyStore {
       setHotkeyCaretStart(hotkeyCaret);
     } else {
       if (selection.length) {
-        setHotkeyCaret(selection[0]);
+        this.setCaret(selection[0]);
         setHotkeyCaretStart(selection[0]);
       } else this.selectFirstFile();
     }
@@ -204,7 +233,6 @@ class HotkeyStore {
       setHotkeyCaretStart,
       hotkeyCaret,
       viewAs,
-      setHotkeyCaret,
       deselectFile,
     } = this.filesStore;
 
@@ -220,14 +248,14 @@ class HotkeyStore {
         ...this.selectionsDown,
         ...[hotkeyCaretStart ? hotkeyCaretStart : hotkeyCaret],
       ]);
-      setHotkeyCaret(this.nextForTileDown);
+      this.setCaret(this.nextForTileDown);
     } else if (this.nextFile) {
       if (selection.findIndex((f) => f.id === this.nextFile.id) !== -1) {
         deselectFile(hotkeyCaret);
       } else {
         setSelection([...selection, ...[this.nextFile]]);
       }
-      setHotkeyCaret(this.nextFile);
+      this.setCaret(this.nextFile);
     }
   };
 
@@ -239,7 +267,6 @@ class HotkeyStore {
       setHotkeyCaretStart,
       hotkeyCaret,
       viewAs,
-      setHotkeyCaret,
       deselectFile,
     } = this.filesStore;
 
@@ -255,7 +282,7 @@ class HotkeyStore {
         ...this.selectionsUp,
         ...[hotkeyCaretStart ? hotkeyCaretStart : hotkeyCaret],
       ]);
-      setHotkeyCaret(this.prevForTileUp);
+      this.setCaret(this.prevForTileUp);
     } else if (this.prevFile) {
       if (selection.findIndex((f) => f.id === this.prevFile.id) !== -1) {
         deselectFile(hotkeyCaret);
@@ -263,7 +290,7 @@ class HotkeyStore {
         setSelection([...[this.prevFile], ...selection]);
       }
 
-      setHotkeyCaret(this.prevFile);
+      this.setCaret(this.prevFile);
     }
   };
 
@@ -273,7 +300,6 @@ class HotkeyStore {
       setSelection,
       hotkeyCaret,
       viewAs,
-      setHotkeyCaret,
       deselectFile,
       hotkeyCaretStart,
       filesList,
@@ -314,7 +340,7 @@ class HotkeyStore {
 
     if (viewAs === "tile") {
       setSelection(nextForTileRight);
-      setHotkeyCaret(nextFile);
+      this.setCaret(nextFile);
     } else if (nextFile) {
       if (selection.findIndex((f) => f.id === nextFile.id) !== -1) {
         deselectFile(hotkeyCaret);
@@ -322,7 +348,7 @@ class HotkeyStore {
         setSelection([...selection, ...[nextFile]]);
       }
 
-      setHotkeyCaret(nextFile);
+      this.setCaret(nextFile);
     }
   };
 
@@ -332,7 +358,6 @@ class HotkeyStore {
       setSelection,
       hotkeyCaret,
       viewAs,
-      setHotkeyCaret,
       deselectFile,
       filesList,
       hotkeyCaretStart,
@@ -373,7 +398,7 @@ class HotkeyStore {
 
     if (viewAs === "tile") {
       setSelection(prevForTileLeft);
-      setHotkeyCaret(prevFile);
+      this.setCaret(prevFile);
     } else if (prevFile) {
       if (selection.findIndex((f) => f.id === prevFile.id) !== -1) {
         deselectFile(hotkeyCaret);
@@ -381,30 +406,30 @@ class HotkeyStore {
         setSelection([...[prevFile], ...selection]);
       }
 
-      setHotkeyCaret(prevFile);
+      this.setCaret(prevFile);
     }
   };
 
   moveCaretBottom = () => {
-    const { viewAs, setHotkeyCaret } = this.filesStore;
+    const { viewAs } = this.filesStore;
 
-    if (viewAs === "tile") setHotkeyCaret(this.nextForTileDown);
-    else if (this.nextFile) setHotkeyCaret(this.nextFile);
+    if (viewAs === "tile") this.setCaret(this.nextForTileDown);
+    else if (this.nextFile) this.setCaret(this.nextFile);
   };
 
   moveCaretUpper = () => {
-    const { viewAs, setHotkeyCaret } = this.filesStore;
+    const { viewAs } = this.filesStore;
 
-    if (viewAs === "tile") setHotkeyCaret(this.prevForTileUp);
-    else if (this.prevFile) setHotkeyCaret(this.prevFile);
+    if (viewAs === "tile") this.setCaret(this.prevForTileUp);
+    else if (this.prevFile) this.setCaret(this.prevFile);
   };
 
   moveCaretLeft = () => {
-    if (this.prevFile) this.filesStore.setHotkeyCaret(this.prevFile);
+    if (this.prevFile) this.setCaret(this.prevFile);
   };
 
   moveCaretRight = () => {
-    if (this.nextFile) this.filesStore.setHotkeyCaret(this.nextFile);
+    if (this.nextFile) this.setCaret(this.nextFile);
   };
 
   openItem = () => {
@@ -418,14 +443,13 @@ class HotkeyStore {
     const {
       filesList,
       hotkeyCaret,
-      setHotkeyCaret,
       setHotkeyCaretStart,
       setSelected,
     } = this.filesStore;
 
     setSelected("all");
     if (!hotkeyCaret) {
-      setHotkeyCaret(filesList[0]);
+      this.setCaret(filesList[0]);
       setHotkeyCaretStart(filesList[0]);
     }
   };
