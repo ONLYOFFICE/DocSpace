@@ -138,17 +138,16 @@ const DirectThirdPartyConnection = (props) => {
         index++;
       };
 
-      //TODO: need to use connectedCloudsTypeTitleTranslation for title
-      setAccount("GoogleDrive", "Google Drive");
-      setAccount("Box", "Box");
-      setAccount("DropboxV2", "DropboxV2");
-      setAccount("SharePoint", "SharePoint");
-      setAccount("OneDrive", "OneDrive");
+      setAccount("GoogleDrive", t("Translations:TypeTitleGoogle"));
+      setAccount("Box", t("Translations:TypeTitleBoxNet"));
+      setAccount("DropboxV2", t("Translations:TypeTitleDropBox"));
+      setAccount("SharePoint", t("Translations:TypeTitleSharePoint"));
+      setAccount("OneDrive", t("Translations:TypeTitleSkyDrive"));
       setAccount("WebDav", "Nextcloud");
       setAccount("WebDav", "ownCloud");
-      setAccount("kDrive", "kDrive");
-      setAccount("Yandex", "Yandex.Disk");
-      setAccount("WebDav", "WebDAV");
+      setAccount("kDrive", t("Translations:TypeTitlekDrive"));
+      setAccount("Yandex", t("Translations:TypeTitleYandex"));
+      setAccount("WebDav", t("Translations:TypeTitleWebDav"));
 
       setState({
         isLoading: false,
@@ -412,5 +411,7 @@ export default inject(({ backup, dialogsStore }) => {
     deleteThirdPartyDialogVisible,
   };
 })(
-  withTranslation(["Settings", "Common"])(observer(DirectThirdPartyConnection))
+  withTranslation(["Settings", "Common", "Translations"])(
+    observer(DirectThirdPartyConnection)
+  )
 );
