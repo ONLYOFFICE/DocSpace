@@ -60,7 +60,7 @@ class PluginStore {
 
     if (!pluginItems) return;
 
-    Array.from(itemsMap, ([key, value]) => {
+    Array.from(pluginItems, ([key, value]) => {
       switch (key) {
         case PluginType.CONTEXT_MENU:
           value.map((key) => this.deleteContextMenuItem(key));
