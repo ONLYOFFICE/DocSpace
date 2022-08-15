@@ -2200,8 +2200,8 @@ const Base = {
     fill: white,
 
     alert: {
-      fill: "#F58D31",
-      path: white,
+      fill: "",
+      path: "",
     },
   },
 
