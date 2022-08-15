@@ -142,7 +142,7 @@ const InfiniteGrid = (props) => {
     addItemToList(listKey, otherClassName);
   }
 
-  //console.log("InfiniteGrid render", list);
+  // console.log("InfiniteGrid render", list);
 
   return (
     <InfiniteLoaderComponent
@@ -150,7 +150,7 @@ const InfiniteGrid = (props) => {
       countTilesInRow={countTilesInRow}
       filesLength={filesLength}
       hasMoreFiles={hasMoreFiles}
-      itemCount={filterTotal / countTilesInRow} //TODO: - count headers
+      itemCount={hasMoreFiles ? list.length + 1 : list.length}
       loadMoreItems={fetchMoreFiles}
       className={`TileList ${className}`}
       selectedFolderId={selectedFolderId}

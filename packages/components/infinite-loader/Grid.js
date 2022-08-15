@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { InfiniteLoader, WindowScroller } from "react-virtualized";
 import { StyledList } from "./StyledInfiniteLoader";
 
@@ -13,6 +13,12 @@ const GridComponent = ({
   className,
   scroll,
 }) => {
+  const loaderRef = React.createRef();
+
+  useEffect(() => {
+    setTimeout(() => loaderRef?.current?.resetLoadMoreRowsCache(true), 0);
+  }, [loaderRef]);
+
   const isItemLoaded = useCallback(
     ({ index }) => {
       return !hasMoreFiles || (index + 1) * countTilesInRow < filesLength;
@@ -49,6 +55,7 @@ const GridComponent = ({
       isRowLoaded={isItemLoaded}
       rowCount={itemCount}
       loadMoreRows={loadMoreItems}
+      ref={loaderRef}
     >
       {({ onRowsRendered, registerChild }) => (
         <WindowScroller scrollElement={scroll}>
