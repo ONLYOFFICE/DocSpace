@@ -15,11 +15,6 @@
   "ViewOnlyRoomDescription": "Предоставляйте доступ к любым готовым документам, отчетам, документации и другим файлам для просмотра",
   "CustomRoomDescription": "Примените собственные настройки, чтобы использовать эту комнату для любых пользовательских целей",
 
-  "FillingFormsRoomSecondaryInfo": "НЕТ ТЕКСТА",
-  "CollaborationRoomSecondaryInfo": "В данной комнате участники смогут совместно редактировать документы. Это комната может быть полезна для быстрой подготовки документов.",
-  "ReviewRoomSecondaryInfo": "В комнате для рецензирования участники смогут обсуждать, комментировать и рецензировать документы. С учетом рецензий можно создать/дополнить документ в комнате.",
-  "ViewOnlyRoomSecondaryInfo": "В эту комнату вы можете добавлять любые файлы, которые необходимо предоставить пользователям для ознакомления.",
-
   "NamePlaceholder": "Введите имя",
 
   "TagsPlaceholder": "Добавьте тэг",
@@ -27,12 +22,15 @@
 
   "MakeRoomPrivateTitle": "Сделайте комнату приватной",
   "MakeRoomPrivateDescription": "Все файлы в этой комнате будут зашифрованы",
-  "MakeRoomPrivateSecondaryInfo": "NO TEXT",
+  "MakeRoomPrivateLimitationsWarningDescription": "С данной функцией Вы можете пригласить только уже существующих пользователей на портале. После создания комнаты изменить список пользобателей будет нельзя.",
 
-  "StorageLocationTitle": "Место хранения",
-  "StorageLocationDescription": "Используйте сторонние сервисы в качестве хранилища данных для этой комнаты",
-  "StorageLocationSecondaryInfo": "NO TEXT",
-  "StorageLocationRememberChoice": "Запомнить этот выбор для новых комнат",
+  "ThirdPartyStorageTitle": "Место хранения",
+  "ThirdPartyStorageDescription": "Используйте сторонние сервисы в качестве хранилища данных для этой комнаты. В подключенном хранилище будет создана новая папка для хранения данных этой комнаты",
+  "ThirdPartyStorageComboBoxPlaceholder": "Выберите хранилище",
+  "ThirdPartyStorageNoStorageAlert": "В Настройках портала не подключено ни одного хранилища. Перейдите в раздел Интеграций, чтобы включить возможность хранения данных на стороннем сервисе ",
+  "ThirdPartyStorageNoStorageAlertLink": "Сторонние сервисы",
+  "ThirdPartyStorageRememberChoice": "Запомнить этот выбор для новых комнат",
+  "ThirdPartyStoragePermanentSettingDescription": "Файлы хранятся в стороннем хранилище {{thirdpartyTitle}} в папке \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
 
   "FolderNameTitle": "Имя папки",
   "FolderNameDescription": "В подключенном хранилище будет создана новая папка для хранения данных этой комнаты"
