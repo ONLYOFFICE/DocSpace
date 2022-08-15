@@ -40,6 +40,7 @@
   "ClearBackupList": "Delete all backups",
   "CompanyNameForCanvasLogo": "Company name",
   "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
+  "PortalDeletionEmailSended": "A link to confirm the operation has been sent to {{ownerEmail}} (the email address of the portal owner).",
   "CustomDomains": "Custom domains",
   "CustomTitles": "Custom titles",
   "CustomTitlesFrom": "From",
