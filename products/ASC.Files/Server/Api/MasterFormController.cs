@@ -29,14 +29,21 @@ namespace ASC.Files.Api;
 [ConstraintRoute("int")]
 public class MasterFormControllerInternal : MasterFormController<int>
 {
-    public MasterFormControllerInternal(FileStorageService<int> fileStorageServiceString) : base(fileStorageServiceString)
+    public MasterFormControllerInternal(
+        FileStorageService<int> fileStorageServiceString,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageServiceString, folderDtoHelper, fileDtoHelper)
     {
     }
 }
 
 public class MasterFormControllerThirdparty : MasterFormController<string>
 {
-    public MasterFormControllerThirdparty(FileStorageService<string> fileStorageServiceString) : base(fileStorageServiceString)
+    public MasterFormControllerThirdparty(
+        FileStorageService<string> fileStorageServiceString,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(fileStorageServiceString, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -45,7 +52,9 @@ public abstract class MasterFormController<T> : ApiControllerBase
 {
     private readonly FileStorageService<T> _fileStorageService;
 
-    public MasterFormController(FileStorageService<T> fileStorageServiceString)
+    public MasterFormController(FileStorageService<T> fileStorageServiceString,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageServiceString;
     }

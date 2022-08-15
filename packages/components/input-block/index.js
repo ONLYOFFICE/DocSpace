@@ -17,7 +17,9 @@ class InputBlock extends React.Component {
     super(props);
   }
   onIconClick = (e) => {
-    if (typeof this.props.onIconClick === "function" && !this.props.isDisabled)
+    if (
+      typeof this.props.onIconClick === "function" /*&& !this.props.isDisabled*/
+    )
       this.props.onIconClick(e);
   };
   onChange = (e) => {
@@ -126,7 +128,7 @@ class InputBlock extends React.Component {
           <div className="append">
             <StyledIconBlock
               className="input-block-icon"
-              isDisabled={isDisabled}
+              //isDisabled={isDisabled}
               onClick={this.onIconClick}
               isClickable={typeof onIconClick === "function"}
             >
@@ -134,7 +136,7 @@ class InputBlock extends React.Component {
                 size={iconButtonSize}
                 iconName={iconName}
                 isFill={isIconFill}
-                isDisabled={isDisabled}
+                //isDisabled={isDisabled}
                 isClickable={typeof onIconClick === "function"}
               />
             </StyledIconBlock>

@@ -62,7 +62,7 @@ public class GroupFullDtoHelper
         _employeeWraperHelper = employeeWraperHelper;
     }
 
-    public GroupDto Get(GroupInfo group, bool includeMembers)
+    public async Task<GroupDto> Get(GroupInfo group, bool includeMembers)
     {
         var result = new GroupDto
         {
@@ -70,12 +70,17 @@ public class GroupFullDtoHelper
             Category = group.CategoryID,
             Parent = group.Parent != null ? group.Parent.ID : Guid.Empty,
             Name = group.Name,
-            Manager = _employeeWraperHelper.Get(_userManager.GetUsers(_userManager.GetDepartmentManager(group.ID)))
+            Manager = await _employeeWraperHelper.Get(_userManager.GetUsers(_userManager.GetDepartmentManager(group.ID)))
         };
 
         if (includeMembers)
         {
-            result.Members = new List<EmployeeDto>(_userManager.GetUsersByGroup(group.ID).Select(_employeeWraperHelper.Get));
+            result.Members = new List<EmployeeDto>();
+
+            foreach (var m in _userManager.GetUsersByGroup(group.ID))
+            {
+                result.Members.Add(await _employeeWraperHelper.Get(m));
+            }
         }
 
         return result;
