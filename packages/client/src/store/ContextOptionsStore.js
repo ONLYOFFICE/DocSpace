@@ -532,7 +532,7 @@ class ContextOptionsStore {
         key: "edit-room",
         label: "Edit room",
         icon: "images/settings.react.svg",
-        onClick: () => this.onClickEditRoom(),
+        onClick: () => this.onClickEditRoom(item),
         disabled: false,
       },
       {
@@ -726,10 +726,20 @@ class ContextOptionsStore {
     if (pluginOptions) {
       pluginOptions.forEach((option) => {
         if (contextOptions.includes(option.key)) {
-          options.splice(option.value.position, 0, {
-            key: option.key,
-            ...option.value,
-          });
+          const value = option.value;
+          if (!value.onClick) {
+            options.splice(value.position, 0, {
+              key: option.key,
+              ...value,
+            });
+          } else {
+            options.splice(value.position, 0, {
+              key: option.key,
+              label: value.label,
+              icon: value.icon,
+              onClick: () => value.onClick(item),
+            });
+          }
         }
       });
     }
