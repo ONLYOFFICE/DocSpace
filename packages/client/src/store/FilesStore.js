@@ -1599,6 +1599,14 @@ class FilesStore {
     return api.rooms.removeTagsFromRoom(id, tagArray);
   }
 
+  uploadRoomLogo(formData) {
+    return api.rooms.uploadRoomLogo(formData);
+  }
+
+  addLogoToRoom(id, icon) {
+    return api.rooms.addLogoToRoom(id, icon);
+  }
+
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);
     if (fileIndex !== -1) this.files[fileIndex] = file;
