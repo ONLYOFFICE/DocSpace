@@ -11,7 +11,11 @@ const CreateRoomEvent = ({
   createRoomInThirdpary,
   createTag,
   addTagsToRoom,
+  uploadRoomLogo,
+  addLogoToRoom,
   fetchTags,
+
+  providers,
 
   currrentFolderId,
   updateCurrentFolder,
@@ -20,31 +24,47 @@ const CreateRoomEvent = ({
     "CreateEditRoomDialog",
     "Common",
     "Files",
-    "Home",
+    "ToastHeaders",
   ]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log(providers);
+
   const onCreate = async (roomParams) => {
     console.log(roomParams);
-    const createRoomParams = {
+
+    const createRoomData = {
       roomType: roomParams.type,
-      title: roomParams.title || t("Home:NewRoom"),
+      title: roomParams.title || t("Files:NewRoom"),
     };
 
-    const tags = roomParams.tags.map((tag) => tag.name);
-    const newTags = roomParams.tags.filter((t) => t.isNew).map((t) => t.name);
-    console.log(tags, newTags);
+    const addTagsData = roomParams.tags.map((tag) => tag.name);
+
+    const createTagsData = roomParams.tags
+      .filter((t) => t.isNew)
+      .map((t) => t.name);
+
+    const uploadLogoData = new FormData();
+    uploadLogoData.append(0, roomParams.icon.uploadedFile);
 
     try {
       setIsLoading(true);
-      const room = await createRoom(createRoomParams);
-      console.log(room);
-      for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
-      await addTagsToRoom(room.id, tags);
+
+      const room = await createRoom(createRoomData);
+
+      for (let i = 0; i < createTagsData.length; i++)
+        await createTag(createTagsData[i]);
+
+      await addTagsToRoom(room.id, addTagsData);
+
+      if (roomParams.icon.uploadedFile)
+        await uploadRoomLogo(uploadLogoData).then((response) => {
+          const { x, y, width, height } = roomParams.icon;
+          addLogoToRoom({ tmpFile: response.data, x, y, width, height });
+        });
+
       await updateCurrentFolder(null, currrentFolderId);
-      // let thirpartyFolderId = "sbox-1-|ПАПКА ОТ ДОКСПЕЙС";
-      // createRoomInThirdpary(thirpartyFolderId, createRoomParams);
     } catch (err) {
       console.log(err);
     } finally {
@@ -66,17 +86,32 @@ const CreateRoomEvent = ({
       onCreate={onCreate}
       fetchedTags={fetchedTags}
       isLoading={isLoading}
+      providers={providers}
     />
   );
 };
 
 export default inject(
-  ({ filesStore, tagsStore, filesActionsStore, selectedFolderStore }) => {
-    const { createRoom, createRoomInThirdpary, addTagsToRoom } = filesStore;
+  ({
+    filesStore,
+    tagsStore,
+    filesActionsStore,
+    selectedFolderStore,
+    settingsStore,
+  }) => {
+    const {
+      createRoom,
+      createRoomInThirdpary,
+      addTagsToRoom,
+      uploadRoomLogo,
+      addLogoToRoom,
+    } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
     const { id: currrentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
+
+    const { providers } = settingsStore.thirdPartyStore;
 
     return {
       createRoom,
@@ -84,6 +119,11 @@ export default inject(
       createTag,
       fetchTags,
       addTagsToRoom,
+      uploadRoomLogo,
+      addLogoToRoom,
+
+      providers,
+
       currrentFolderId,
       updateCurrentFolder,
     };
