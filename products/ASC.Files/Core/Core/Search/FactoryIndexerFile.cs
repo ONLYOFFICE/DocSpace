@@ -172,7 +172,6 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         }
 
         IQueryable<DbFile> GetBaseQuery(FilesDbContext filesDbContext, DateTime lastIndexed) => filesDbContext.Files
-            .AsQueryable()
             .Where(r => r.ModifiedOn >= lastIndexed)
             .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
             .Where(r => r.DbTenant.Status == TenantStatus.Active)

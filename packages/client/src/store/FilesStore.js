@@ -344,13 +344,6 @@ class FilesStore {
     };
   }
 
-  reset = () => {
-    this.isLoaded = false;
-    this.isLoading = false;
-    this.firstLoad = false;
-    this.isInit = false;
-  };
-
   initFiles = () => {
     if (this.isInit) return;
 

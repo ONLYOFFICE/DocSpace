@@ -31,7 +31,7 @@ saml.setSchemaValidator(validator);
 const ServiceProvider = saml.ServiceProvider;
 const IdentityProvider = saml.IdentityProvider;
 
-const templDir = path.join(process.cwd(),"../ASC.SsoAuth", "/app/templates/");
+const templDir = path.join(process.cwd(),"../../common/ASC.SsoAuth", "/app/templates/");
 
 module.exports = function (logger) {
   function removeCertHead(cert) {

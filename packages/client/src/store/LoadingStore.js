@@ -30,14 +30,6 @@ class LoadingStore {
   setLoadedProfile = (profileLoaded) => {
     this.profileLoaded = profileLoaded;
   };
-
-  reset = () => {
-    this.isLoading = false;
-    this.isLoaded = false;
-    this.isRefresh = false;
-    this.firstLoad = true;
-    this.profileLoaded = true;
-  };
 }
 
 export default LoadingStore;

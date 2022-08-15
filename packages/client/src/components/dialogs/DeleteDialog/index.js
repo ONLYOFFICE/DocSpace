@@ -59,8 +59,8 @@ const DeleteDialogComponent = (props) => {
       deleteOperation: t("Translations:DeleteOperation"),
       deleteFromTrash: t("Translations:DeleteFromTrash"),
       deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-      FileRemoved: t("Files:FileRemoved"),
-      FolderRemoved: t("Files:FolderRemoved"),
+      FileRemoved: t("Home:FileRemoved"),
+      FolderRemoved: t("Home:FolderRemoved"),
     };
 
     if (!selection.length) return;
@@ -156,7 +156,6 @@ const DeleteDialog = withTranslation([
   "DeleteDialog",
   "Common",
   "Translations",
-  "Files",
 ])(DeleteDialogComponent);
 
 export default inject(

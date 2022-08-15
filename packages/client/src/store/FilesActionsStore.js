@@ -1344,8 +1344,8 @@ class FilesActionStore {
                   deleteOperation: t("Translations:DeleteOperation"),
                   deleteFromTrash: t("Translations:DeleteFromTrash"),
                   deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-                  FileRemoved: t("Files:FileRemoved"),
-                  FolderRemoved: t("Files:FolderRemoved"),
+                  FileRemoved: t("Home:FileRemoved"),
+                  FolderRemoved: t("Home:FolderRemoved"),
                 };
 
                 this.deleteAction(translations).catch((err) =>

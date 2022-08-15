@@ -175,5 +175,6 @@
   "PaymentsTitle": "Платежи",
   "AboutCompanyTitle": "О программе",
   "LogoutButton": "Выйти",
-  "HelpCenter": "Справочный центр"
+  "HelpCenter": "Справочный центр",
+  "SelectFile": "Выбрать файл"
 }
