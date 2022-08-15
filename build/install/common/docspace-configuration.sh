@@ -6,6 +6,7 @@ PRODUCT="docspace"
 ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/${PRODUCT}"
+PRODUCT_DIR="/var/www/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_DIR="/etc/nginx"
 NGINX_CONF="${NGINX_DIR}/conf.d"
@@ -172,7 +173,7 @@ install_json() {
 	
 		set_core_machinekey
 		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", \
-		'products': { 'folder': '/var/www/${PRODUCT}/products', 'subfolder': 'server'} }" \
+		'products': { 'folder': '$PRODUCT_DIR/products', 'subfolder': 'server'} }" \
 		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
 		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" >/dev/null 2>&1
 	fi
@@ -181,7 +182,7 @@ install_json() {
 restart_services() {
 	echo -n "Restarting services... "
 
-	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
+	sed -e "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" -e "s/environment=.*/environment=$ENVIRONMENT/" -i $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
 	for SVC in migration-runner api urlshortener socket studio-notify notify \

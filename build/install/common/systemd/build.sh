@@ -37,6 +37,7 @@ PATH_TO_CONF="/etc/onlyoffice/${PRODUCT}"
 STORAGE_ROOT="${PATH_TO_CONF}/data"
 LOG_DIR="/var/log/onlyoffice/${PRODUCT}"
 DOTNET_RUN="/usr/share/dotnet/dotnet"
+NODE_RUN="/usr/bin/node"
 APP_URLS="http://0.0.0.0"
 ENVIRONMENT=" --ENVIRONMENT=production"
 CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server"
@@ -156,10 +157,13 @@ reassign_values (){
   esac
   SERVICE_NAME="$1"
   if [[ "${EXEC_FILE}" == *".js" ]]; then
-	EXEC_START="${WORK_DIR}${EXEC_FILE}"
+  	SERVICE_TYPE="simple"
+	EXEC_START="${NODE_RUN} ${WORK_DIR}${EXEC_FILE} --app.port=${SERVICE_PORT} --app.appsettings=${PATH_TO_CONF} --app.environment=${ENVIRONMENT}"
   elif [[ "${SERVICE_NAME}" = "migration-runner" ]]; then
+    SERVICE_TYPE="simple"
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE}"
   else
+  	SERVICE_TYPE="notify"	
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
 	--'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
   fi
@@ -167,7 +171,7 @@ reassign_values (){
 
 write_to_file () {
   sed -i -e 's#${SERVICE_NAME}#'$SERVICE_NAME'#g' -e 's#${WORK_DIR}#'$WORK_DIR'#g' -e \
-  "s#\${EXEC_START}#$EXEC_START#g" $BUILD_PATH/${PRODUCT}-${SERVICE_NAME[$i]}.service
+  "s#\${EXEC_START}#$EXEC_START#g" -e "s#\${SERVICE_TYPE}#$SERVICE_TYPE#g" $BUILD_PATH/${PRODUCT}-${SERVICE_NAME[$i]}.service
 }
 
 mkdir -p $BUILD_PATH

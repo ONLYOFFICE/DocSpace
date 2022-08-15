@@ -3,7 +3,7 @@ Description=DocSpace-${SERVICE_NAME}
 After=network.target syslog.target
 
 [Service]
-Type=notify
+Type=${SERVICE_TYPE}
 User=onlyoffice
 Group=onlyoffice
 WorkingDirectory=${WORK_DIR}
