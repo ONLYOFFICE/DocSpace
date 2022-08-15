@@ -167,3 +167,28 @@ export function getTags() {
     return res;
   });
 }
+
+export function uploadRoomLogo(data) {
+  const options = {
+    method: "post",
+    url: `/files/logos`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    console.log(res);
+    return res;
+  });
+}
+
+export function addLogoToRoom(id, data) {
+  const options = {
+    method: "post",
+    url: `/files/rooms/${id}/logo`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
