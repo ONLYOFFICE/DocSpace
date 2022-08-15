@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, createRef } from "react";
 import { InfiniteLoader, WindowScroller } from "react-virtualized";
 import Loaders from "@docspace/common/components/Loaders";
 import { StyledList } from "./StyledInfiniteLoader";
@@ -17,12 +17,13 @@ const ListComponent = ({
   className,
   scroll,
   infoPanelVisible,
+  selectedFolderId,
 }) => {
-  const loaderRef = React.createRef();
+  const loaderRef = createRef();
 
   useEffect(() => {
     setTimeout(() => loaderRef?.current?.resetLoadMoreRowsCache(true), 0);
-  }, [loaderRef]);
+  }, [loaderRef, selectedFolderId]);
 
   const renderRow = ({ key, index, style }) => {
     const isLoaded = isItemLoaded({ index: index + 2 });

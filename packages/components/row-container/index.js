@@ -19,6 +19,7 @@ class RowContainer extends React.PureComponent {
       itemCount,
       fetchMoreFiles,
       hasMoreFiles,
+      selectedFolderId,
     } = this.props;
 
     return (
@@ -39,6 +40,7 @@ class RowContainer extends React.PureComponent {
             loadMoreItems={fetchMoreFiles}
             itemSize={itemHeight}
             onScroll={onScroll}
+            selectedFolderId={selectedFolderId}
           >
             {children}
           </InfiniteLoaderComponent>

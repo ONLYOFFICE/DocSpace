@@ -122,6 +122,7 @@ const Table = ({
   hasMoreFiles,
   filterTotal,
   isRooms,
+  selectedFolderId,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
 
@@ -206,6 +207,7 @@ const Table = ({
         useReactWindow
         infoPanelVisible={infoPanelVisible}
         columnInfoPanelStorageName={columnInfoPanelStorageName}
+        selectedFolderId={selectedFolderId}
       >
         {filesList.map((item, index) => {
           return index === 0 && item.isRoom ? (
@@ -246,39 +248,42 @@ const Table = ({
   );
 };
 
-export default inject(({ filesStore, treeFoldersStore, auth }) => {
-  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+export default inject(
+  ({ filesStore, treeFoldersStore, auth, selectedFolderStore }) => {
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+    const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-  const isRooms =
-    isRoomsFolder ||
-    isArchiveFolder ||
-    window.location.href.includes("/rooms?");
+    const isRooms =
+      isRoomsFolder ||
+      isArchiveFolder ||
+      window.location.href.includes("/rooms?");
 
-  const {
-    filesList,
-    viewAs,
-    setViewAs,
-    setFirsElemChecked,
-    setHeaderBorder,
-    fetchMoreFiles,
-    hasMoreFiles,
-    filterTotal,
-  } = filesStore;
+    const {
+      filesList,
+      viewAs,
+      setViewAs,
+      setFirsElemChecked,
+      setHeaderBorder,
+      fetchMoreFiles,
+      hasMoreFiles,
+      filterTotal,
+    } = filesStore;
 
-  return {
-    filesList,
-    viewAs,
-    setViewAs,
-    setFirsElemChecked,
-    setHeaderBorder,
-    theme: auth.settingsStore.theme,
-    userId: auth.userStore.user.id,
-    infoPanelVisible,
-    fetchMoreFiles,
-    hasMoreFiles,
-    filterTotal,
-    isRooms,
-  };
-})(observer(Table));
+    return {
+      filesList,
+      viewAs,
+      setViewAs,
+      setFirsElemChecked,
+      setHeaderBorder,
+      theme: auth.settingsStore.theme,
+      userId: auth.userStore.user.id,
+      infoPanelVisible,
+      fetchMoreFiles,
+      hasMoreFiles,
+      filterTotal,
+      isRooms,
+      selectedFolderId: selectedFolderStore.id,
+    };
+  }
+)(observer(Table));

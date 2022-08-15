@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, createRef } from "react";
 import { InfiniteLoader, WindowScroller } from "react-virtualized";
 import { StyledList } from "./StyledInfiniteLoader";
 
@@ -12,12 +12,13 @@ const GridComponent = ({
   children,
   className,
   scroll,
+  selectedFolderId,
 }) => {
-  const loaderRef = React.createRef();
+  const loaderRef = createRef();
 
   useEffect(() => {
     setTimeout(() => loaderRef?.current?.resetLoadMoreRowsCache(true), 0);
-  }, [loaderRef]);
+  }, [loaderRef, selectedFolderId]);
 
   const isItemLoaded = useCallback(
     ({ index }) => {
