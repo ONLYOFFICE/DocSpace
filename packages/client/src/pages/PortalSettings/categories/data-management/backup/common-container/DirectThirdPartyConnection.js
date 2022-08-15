@@ -272,14 +272,14 @@ const DirectThirdPartyConnection = (props) => {
           : t("Common:Connect"),
         onClick: selectedAccount.connected ? onReconnect : onConnect,
         disabled: false,
-        icon: "/static/images/share.react.svg",
+        icon: "/static/images/refresh.react.svg",
       },
       {
         key: "Disconnect-settings",
         label: t("Common:Disconnect"),
         onClick: onDisconnect,
         disabled: selectedAccount.connected ? false : true,
-        icon: "/static/images/invitation.link.react.svg",
+        icon: "/static/images/access.none.react.svg",
       },
     ];
   };
