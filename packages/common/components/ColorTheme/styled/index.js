@@ -39,3 +39,5 @@ export { default as ComboButtonTheme } from "./comboButton";
 export { default as LinkForgotPasswordTheme } from "./linkForgotPassword";
 
 export { default as LoadingButtonTheme } from "./loadingButton";
+
+export { default as FloatingButtonTheme } from "./floatingButton";

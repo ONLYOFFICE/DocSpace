@@ -47,8 +47,6 @@ const StyledCircleWrap = styled.div`
   z-index: 500;
   width: 48px;
   height: 48px;
-  background: ${(props) =>
-    props.color ? props.color : props.theme.floatingButton.backgroundColor};
   border-radius: 50%;
   cursor: pointer;
   box-shadow: ${(props) => props.theme.floatingButton.boxShadow};
@@ -129,8 +127,6 @@ const StyledFloatingButton = styled.div`
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: ${(props) =>
-    props.color ? props.color : props.theme.floatingButton.backgroundColor};
   text-align: center;
   margin: 5px;
   position: absolute;

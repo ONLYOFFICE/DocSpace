@@ -23,6 +23,7 @@ import {
   ComboButtonTheme,
   LinkForgotPasswordTheme,
   LoadingButtonTheme,
+  FloatingButtonTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -91,6 +92,9 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.LoadingButton: {
       return <LoadingButtonTheme ref={ref} {...props} />;
+    }
+    case ThemeType.FloatingButton: {
+      return <FloatingButtonTheme ref={ref} {...props} />;
     }
   }
 });
