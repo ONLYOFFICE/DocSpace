@@ -15,6 +15,10 @@ export const StyledPage = styled.div`
   @media ${mobile} {
     margin-top: 72px;
   }
+
+  .subtitle {
+    margin-bottom: 32px;
+  }
 `;
 
 export const StyledHeader = styled.div`
