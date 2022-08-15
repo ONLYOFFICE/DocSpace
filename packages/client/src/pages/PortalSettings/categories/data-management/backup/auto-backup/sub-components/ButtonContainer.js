@@ -16,7 +16,6 @@ const ButtonContainer = ({
   const prevChange = useRef();
 
   useEffect(() => {
-    //console.log("isChanged", isChanged, prevChange);
     if (!isChanged && isChanged !== prevChange.current) {
       setSavingProcess(false);
       setResetProcess(false);

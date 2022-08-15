@@ -252,7 +252,7 @@ class AmazonSettings extends React.Component {
       theme,
     } = this.props;
     const { region } = this.state;
-    console.log("formSettings", formSettings);
+
     const renderTooltip = (helpInfo) => {
       return (
         <>

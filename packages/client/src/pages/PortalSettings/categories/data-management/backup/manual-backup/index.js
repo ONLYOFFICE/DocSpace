@@ -178,8 +178,7 @@ class ManualBackup extends React.Component {
         `${selectedStorage}`
       );
     }
-    console.log("storageParams", storageParams);
-    //return;
+
     try {
       await startBackup(moduleType, storageParams);
       setDownloadingProgress(1);
