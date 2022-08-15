@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
-import toastr from "@docspace/components/toast/toastr";
+import toastr from "SRC_DIR/helpers/toastr";
 import { MainContainer } from "./StyledDeleteData";
 import { setDocumentTitle } from "../../../../helpers/utils";
 import api from "@docspace/common/api";
@@ -20,7 +20,9 @@ const PortalDeletion = (props) => {
   const onDeleteClick = async () => {
     try {
       await api.portal.sendDeletePortalEmail();
-      toastr.success(t("ConfirmEmailSended", { ownerName: owner.displayName }));
+      toastr.success(
+        t("PortalDeletionEmailSended", { ownerEmail: owner.email })
+      );
     } catch (error) {
       toastr.error(error);
     }
