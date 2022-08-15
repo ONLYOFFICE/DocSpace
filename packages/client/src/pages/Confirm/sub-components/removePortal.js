@@ -7,12 +7,17 @@ import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
 import { deletePortal } from "@docspace/common/api/portal";
-import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
+import {
+  StyledPage,
+  StyledBody,
+  StyledHeader,
+  ButtonsWrapper,
+} from "./StyledConfirm";
 
 import withLoader from "../withLoader";
 
 const RemovePortal = (props) => {
-  const { t, greetingTitle, linkData } = props;
+  const { t, greetingTitle, linkData, history } = props;
 
   const onDeleteClick = async () => {
     try {
@@ -20,6 +25,10 @@ const RemovePortal = (props) => {
     } catch (e) {
       toastr.error(e);
     }
+  };
+
+  const onCancelClick = () => {
+    history.push("/");
   };
 
   return (
@@ -31,15 +40,24 @@ const RemovePortal = (props) => {
           </Text>
         </StyledHeader>
 
-        <Text>{t("PortalRemoveTitle")}</Text>
-        <Button
-          className="confirm-button"
-          primary
-          size="medium"
-          label={t("Common:Delete")}
-          tabIndex={1}
-          onClick={onDeleteClick}
-        />
+        <Text className="subtitle">{t("PortalRemoveTitle")}</Text>
+        <ButtonsWrapper>
+          <Button
+            primary
+            scale
+            size="medium"
+            label={t("Common:Delete")}
+            tabIndex={1}
+            onClick={onDeleteClick}
+          />
+          <Button
+            scale
+            size="medium"
+            label={t("Common:Cancel")}
+            tabIndex={1}
+            onClick={onCancelClick}
+          />
+        </ButtonsWrapper>
       </StyledBody>
     </StyledPage>
   );
