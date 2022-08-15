@@ -11,8 +11,8 @@ import { StyledBackup } from "../StyledBackup";
 import Text from "@docspace/components/text";
 import ComboBox from "@docspace/components/combobox";
 import toastr from "@docspace/components/toast/toastr";
-import FormConnection from "./FormConnection";
 import { inject, observer } from "mobx-react";
+import ConnectDialog from "../../../../../../components/dialogs/ConnectDialog";
 
 let accounts = [],
   connectedAccount,
@@ -35,6 +35,8 @@ const DirectThirdPartyConnection = (props) => {
     withoutBasicSelection,
     onSelectFile,
     isFileSelection = false,
+    connectDialogVisible,
+    setConnectDialogVisible,
   } = props;
 
   useEffect(() => {
@@ -108,6 +110,7 @@ const DirectThirdPartyConnection = (props) => {
         accounts.push({
           key: index.toString(),
           label: serviceTitle,
+          title: serviceTitle,
           provider_key: capabilities[accountIndex][0],
           ...(capabilities[accountIndex][1] && {
             provider_link: capabilities[accountIndex][1],
@@ -177,7 +180,7 @@ const DirectThirdPartyConnection = (props) => {
           console.error(e);
         });
     } else {
-      setIsVisibleConnectionForm(true);
+      setConnectDialogVisible(true);
     }
   };
 
@@ -193,7 +196,7 @@ const DirectThirdPartyConnection = (props) => {
   ) => {
     const { label, provider_key, provider_id } = state.selectedAccount;
     setState({ isLoading: true });
-    isVisibleConnectionForm && setIsVisibleConnectionForm(false);
+    connectDialogVisible && setConnectDialogVisible(false);
     onSelectFolder && onSelectFolder("");
 
     try {
@@ -213,10 +216,6 @@ const DirectThirdPartyConnection = (props) => {
       setState({ isLoading: false });
       toastr.error(e);
     }
-  };
-
-  const onCloseConnectionForm = () => {
-    setIsVisibleConnectionForm(false);
   };
 
   const onSelectAccount = (options) => {
@@ -243,7 +242,7 @@ const DirectThirdPartyConnection = (props) => {
         })
       );
     } else {
-      setIsVisibleConnectionForm(true);
+      setConnectDialogVisible(true);
     }
   };
 
@@ -343,25 +342,26 @@ const DirectThirdPartyConnection = (props) => {
         />
       )}
 
-      {isVisibleConnectionForm && (
-        <FormConnection
-          t={t}
-          saveSettings={saveSettings}
-          item={selectedAccount}
-          visible={isVisibleConnectionForm}
-          onClose={onCloseConnectionForm}
+      {connectDialogVisible && (
+        <ConnectDialog
+          passedItem={selectedAccount}
+          updateInfo={updateAccountsInfo}
+          isConnectionViaBackupModule
         />
       )}
     </StyledBackup>
   );
 };
 
-export default inject(({ backup }) => {
+export default inject(({ backup, dialogsStore }) => {
   const { commonThirdPartyList, openConnectWindow, getOAuthToken } = backup;
+  const { connectDialogVisible, setConnectDialogVisible } = dialogsStore;
 
   return {
     commonThirdPartyList,
     openConnectWindow,
     getOAuthToken,
+    setConnectDialogVisible,
+    connectDialogVisible,
   };
 })(observer(DirectThirdPartyConnection));

@@ -9,6 +9,7 @@ import FieldContainer from "@docspace/components/field-container";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { runInAction } from "mobx";
+import { saveSettingsThirdParty } from "@docspace/common/api/files";
 
 const PureConnectDialogContainer = (props) => {
   const {
@@ -30,6 +31,8 @@ const PureConnectDialogContainer = (props) => {
     personal,
     getSubfolders,
     folderFormValidation,
+    updateInfo,
+    isConnectionViaBackupModule,
   } = props;
   const {
     corporate,
@@ -122,6 +125,32 @@ const PureConnectDialogContainer = (props) => {
     }
 
     setIsLoading(true);
+
+    if (isConnectionViaBackupModule) {
+      saveSettingsThirdParty(
+        urlValue,
+        loginValue,
+        passwordValue,
+        oAuthToken,
+        false,
+        customerTitle,
+        provider_key,
+        provider_id
+      )
+        .catch((err) => {
+          onClose();
+          toastr.error(err);
+          setIsLoading(false);
+        })
+        .finally(() => {
+          onClose();
+          updateInfo && updateInfo();
+          setIsLoading(false);
+        });
+
+      return;
+    }
+
     saveThirdParty(
       urlValue,
       loginValue,
@@ -279,24 +308,26 @@ const PureConnectDialogContainer = (props) => {
             </FieldContainer>
           </>
         )}
-
-        <FieldContainer
-          labelText={t("ConnectFolderTitle")}
-          isRequired
-          isVertical
-          hasError={!isTitleValid}
-          errorMessage={t("Common:RequiredField")}
-        >
-          <TextInput
+        {!isConnectionViaBackupModule && (
+          <FieldContainer
+            labelText={t("ConnectFolderTitle")}
+            isRequired
+            isVertical
             hasError={!isTitleValid}
-            isDisabled={isLoading}
-            tabIndex={4}
-            scale
-            value={`${customerTitle}`}
-            onChange={onChangeFolderName}
-          />
-        </FieldContainer>
-        {!personal && (
+            errorMessage={t("Common:RequiredField")}
+          >
+            <TextInput
+              hasError={!isTitleValid}
+              isDisabled={isLoading}
+              tabIndex={4}
+              scale
+              value={`${customerTitle}`}
+              onChange={onChangeFolderName}
+            />
+          </FieldContainer>
+        )}
+
+        {!personal && !isConnectionViaBackupModule && (
           <Checkbox
             label={t("ConnectMakeShared")}
             isChecked={isCorporate}
@@ -338,14 +369,17 @@ const ConnectDialog = withTranslation([
 ])(PureConnectDialogContainer);
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    settingsStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-  }) => {
+  (
+    {
+      auth,
+      filesStore,
+      settingsStore,
+      treeFoldersStore,
+      selectedFolderStore,
+      dialogsStore,
+    },
+    { passedItem, isConnectionViaBackupModule }
+  ) => {
     const {
       providers,
       saveThirdParty,
@@ -368,8 +402,10 @@ export default inject(
     const {
       connectDialogVisible: visible,
       setConnectDialogVisible,
-      connectItem: item,
+      connectItem,
     } = dialogsStore;
+
+    const item = isConnectionViaBackupModule ? passedItem : connectItem;
 
     return {
       selectedFolderId: id,
