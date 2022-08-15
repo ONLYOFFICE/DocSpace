@@ -1,12 +1,11 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
 
-import Label from "@docspace/components/label";
-import TextInput from "@docspace/components/text-input";
 import TagList from "./TagList";
 import DropDownItem from "@docspace/components/drop-down-item";
 import { StyledDropDown, StyledDropDownWrapper } from "../StyledDropdown";
 import { isMobile } from "@docspace/components/utils/device";
+import InputParam from "../Params/InputParam";
 
 const StyledTagInput = styled.div`
   .set_room_params-tag_input {
@@ -112,24 +111,14 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
 
   return (
     <StyledTagInput className="set_room_params-input set_room_params-tag_input">
-      <div className="set_room_params-tag_input-label_wrapper">
-        <Label
-          className="set_room_params-tag_input-label_wrapper-label"
-          display="display"
-          htmlFor="tags-input"
-          text={`${t("Common:Tags")}:`}
-          title="Fill the first name field"
-        />
-      </div>
-      <TextInput
-        id="tags-input"
+      <InputParam
+        id={"tags-input"}
+        title={`${t("Common:Tags")}:`}
+        placeholder={t("TagsPlaceholder")}
         value={tagInput}
         onChange={onTagInputChange}
         onFocus={openDropdown}
         onBlur={closeDropdown}
-        scale
-        placeholder={t("TagsPlaceholder")}
-        tabIndex={2}
       />
 
       <StyledDropDownWrapper
@@ -150,6 +139,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
           </StyledDropDown>
         )}
       </StyledDropDownWrapper>
+
       <TagList t={t} tagHandler={tagHandler} />
     </StyledTagInput>
   );

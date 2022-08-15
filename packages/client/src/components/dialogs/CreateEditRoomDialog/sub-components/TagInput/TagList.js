@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledTagList = styled.div`
-  margin-top: 2px;
+  margin-top: 12px;
   display: flex;
   flex-direction: row;
   gap: 4px;
