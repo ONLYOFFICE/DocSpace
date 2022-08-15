@@ -28,8 +28,6 @@ const PureAccountsItem = ({
     );
   }, [setSelectedFolder, setSelectedNode, history]);
 
-  console.log(selectedTreeNode);
-
   const isActive = selectedTreeNode[0] === "accounts";
 
   return (
