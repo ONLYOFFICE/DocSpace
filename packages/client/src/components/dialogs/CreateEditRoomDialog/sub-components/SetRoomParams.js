@@ -94,15 +94,15 @@ const SetRoomParams = ({
         setIsScrollLocked={setIsScrollLocked}
       />
 
-      {!isEdit && (
+      {/* {!isEdit && (
         <IsPrivateParam
           t={t}
           isPrivate={roomParams.isPrivate}
           onChangeIsPrivate={onChangeIsPrivate}
         />
-      )}
+      )} */}
 
-      {!isEdit && (
+      {/* {!isEdit && (
         <ThirdPartyStorage
           t={t}
           providers={providers}
@@ -115,45 +115,15 @@ const SetRoomParams = ({
           onChangeRememberThirdpartyStorage={onChangeRememberThirdpartyStorage}
           setIsScrollLocked={setIsScrollLocked}
         />
-      )}
-
-      {/* {!isEdit && roomParams.isThirdparty && (
-        <StyledParam folderName>
-          <div className="set_room_params-info">
-            <div className="set_room_params-info-title">
-              <Text className="set_room_params-info-title-text">
-                {`${t("FolderNameTitle")}:`}
-              </Text>
-            </div>
-            <div className="set_room_params-info-description">
-              {t("FolderNameDescription")}
-            </div>
-          </div>
-
-          <div className="set_room_params-input">
-            <TextInput
-              id="room-folder-title"
-              scale
-              value={roomParams.thirdpartyFolderName}
-              onChange={onChangeThidpartyFolderName}
-              placeholder={`${
-                roomParams.storageLocation
-                  ? roomParams.storageLocation.title + " - "
-                  : ""
-              }${t("Files:NewRoom")}`}
-              tabIndex={1}
-            />
-          </div>
-        </StyledParam>
       )} */}
 
-      <IconEditor
+      {/* <IconEditor
         t={t}
         title={roomParams.title}
         tags={roomParams.tags}
         icon={roomParams.icon}
         onChangeIcon={onChangeIcon}
-      />
+      /> */}
     </StyledSetRoomParams>
   );
 };
