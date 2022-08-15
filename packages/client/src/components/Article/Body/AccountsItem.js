@@ -21,7 +21,7 @@ const PureAccountsItem = ({
   const onClick = React.useCallback(() => {
     setSelectedFolder(null);
 
-    setSelectedNode(["accounts"]);
+    setSelectedNode(["accounts", "filter"]);
 
     history.push(
       combineUrl(AppServerConfig.proxyURL, config.homepage, "/accounts")

@@ -44,8 +44,8 @@ const PureHome = ({
   //console.log("People Home render");
 
   useEffect(() => {
-    setSelectedNode(["accounts"]);
     if (pathname.indexOf("/accounts/filter") > -1) {
+      setSelectedNode(["accounts", "filter"]);
       setIsLoading(true);
       setIsRefresh(true);
       const newFilter = Filter.getFilter(location);
