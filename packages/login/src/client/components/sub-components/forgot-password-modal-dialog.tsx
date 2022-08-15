@@ -11,8 +11,23 @@ import ModalDialogContainer from "./modal-dialog-container";
 import { sendInstructionsToChangePassword } from "@docspace/common/api/people";
 import { useTranslation } from "react-i18next";
 
-const ForgotPasswordModalDialog = (props) => {
-  const [email, setEmail] = useState(props.email);
+interface IForgotPasswordDialogProps {
+  isVisible: boolean;
+  userEmail?: string;
+  onDialogClose: VoidFunction;
+}
+
+interface IEmailValid {
+  value: string;
+  isValid: boolean;
+  errors: string[]; // TODO: check type
+}
+const ForgotPasswordModalDialog: React.FC<IForgotPasswordDialogProps> = ({
+  isVisible,
+  userEmail,
+  onDialogClose,
+}) => {
+  const [email, setEmail] = useState(userEmail);
   const [emailError, setEmailError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -20,11 +35,7 @@ const ForgotPasswordModalDialog = (props) => {
 
   const { t } = useTranslation("Login");
 
-  const { visible, onDialogClose } = props;
-
-  useEffect(() => {}, []);
-
-  const onChangeEmail = (event) => {
+  const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     //console.log("onChangeEmail", event.target.value);
     setEmail(event.target.value);
     setEmailError(false);
@@ -32,21 +43,21 @@ const ForgotPasswordModalDialog = (props) => {
   };
 
   const onSendPasswordInstructions = () => {
-    if (!email.trim() || emailError) {
+    if (!email || !email.trim() || emailError) {
       setEmailError(true);
       setIsShowError(true);
     } else {
       setIsLoading(true);
       sendInstructionsToChangePassword(email)
         .then(
-          (res) => toastr.success(res),
-          (message) => toastr.error(message)
+          (res: string) => toastr.success(res),
+          (message: string) => toastr.error(message)
         )
         .finally(onDialogClose());
     }
   };
 
-  const onKeyDown = (e) => {
+  const onKeyDown = (e: KeyboardEvent) => {
     //console.log("onKeyDown", e.key);
     if (e.key === "Enter") {
       onSendPasswordInstructions();
@@ -54,7 +65,7 @@ const ForgotPasswordModalDialog = (props) => {
     }
   };
 
-  const onValidateEmail = (res) => {
+  const onValidateEmail = (res: IEmailValid) => {
     setEmailError(!res.isValid);
     setErrorText(res.errors[0]);
   };
@@ -66,7 +77,7 @@ const ForgotPasswordModalDialog = (props) => {
   return (
     <ModalDialogContainer
       displayType="modal"
-      visible={visible}
+      visible={isVisible}
       modalBodyPadding="12px 0 0 0"
       asideBodyPadding="16px 0 0 0"
       onClose={onDialogClose}
@@ -148,8 +159,8 @@ const ForgotPasswordModalDialog = (props) => {
 };
 
 ForgotPasswordModalDialog.propTypes = {
-  email: PropTypes.string,
-  visible: PropTypes.bool.isRequired,
+  userEmail: PropTypes.string,
+  isVisible: PropTypes.bool.isRequired,
   onDialogClose: PropTypes.func.isRequired,
 };
 
