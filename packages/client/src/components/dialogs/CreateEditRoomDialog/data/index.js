@@ -41,30 +41,3 @@ export const roomTypes = [
     withSecondaryInfo: false,
   },
 ];
-
-export const thirparties = [
-  {
-    id: 1,
-    title: "Onlyoffice DocSpace",
-  },
-  {
-    id: 2,
-    title: "DropBox",
-  },
-  {
-    id: 3,
-    title: "Google Drive",
-  },
-  {
-    id: 4,
-    title: "OneDrive",
-  },
-  {
-    id: 5,
-    title: "Nextcloud",
-  },
-  {
-    id: 6,
-    title: "Yandex Disk",
-  },
-];
