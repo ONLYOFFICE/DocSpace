@@ -28,17 +28,17 @@ namespace ASC.Web.Core.Users;
 
 public static class UserPhotoThumbnailManager
 {
-    public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, int x, int y, int width, int height, Guid userId)
+    public static async Task<List<ThumbnailItem>> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, int x, int y, int width, int height, Guid userId)
     {
-        return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(x, y, width, height), userId);
+        return await SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(x, y, width, height), userId);
     }
 
-    public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, Point point, Size size, Guid userId)
+    public static async Task<List<ThumbnailItem>> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, Point point, Size size, Guid userId)
     {
-        return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(point, size), userId);
+        return await SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(point, size), userId);
     }
 
-    public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
+    public static async Task<List<ThumbnailItem>> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
     {
         if (thumbnailSettings.Size.IsEmpty)
         {
@@ -56,7 +56,7 @@ public static class UserPhotoThumbnailManager
             return null;
         }
 
-        foreach (var thumbnail in thumbnailsData.ThumbnailList())
+        foreach (var thumbnail in await thumbnailsData.ThumbnailList())
         {
             thumbnail.Image = GetImage(img, thumbnail.Size, thumbnailSettings);
 
@@ -67,7 +67,7 @@ public static class UserPhotoThumbnailManager
 
         settingsManager.SaveForUser(thumbnailSettings, userId);
 
-        return thumbnailsData.ThumbnailList();
+        return await thumbnailsData.ThumbnailList();
     }
 
     public static Image GetImage(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings)
@@ -82,12 +82,12 @@ public static class UserPhotoThumbnailManager
                                  width,
                                  height);
 
-            var result = mainImg.Clone(x => x.BackgroundColor(Color.White).Crop(rect).Resize(new ResizeOptions
+        var result = mainImg.Clone(x => x.BackgroundColor(Color.White).Crop(rect).Resize(new ResizeOptions
         {
             Size = size
         }));
 
-            return result;
+        return result;
     }
 
     public static void CheckImgFormat(byte[] data)
@@ -216,39 +216,34 @@ public class ThumbnailsData
         return img;
     }
 
-    public string MainImgUrl()
-    {
-        return _userPhotoManager.GetPhotoAbsoluteWebPath(_userId);
-    }
-
-    public List<ThumbnailItem> ThumbnailList()
+    public async Task<List<ThumbnailItem>> ThumbnailList()
     {
         return new List<ThumbnailItem>
                 {
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.RetinaFotoSize,
-                            ImgUrl = _userPhotoManager.GetRetinaPhotoURL(_userId)
+                            ImgUrl = await _userPhotoManager.GetRetinaPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.MaxFotoSize,
-                            ImgUrl = _userPhotoManager.GetMaxPhotoURL(_userId)
+                            ImgUrl = await _userPhotoManager.GetMaxPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.BigFotoSize,
-                            ImgUrl = _userPhotoManager.GetBigPhotoURL(_userId)
+                            ImgUrl = await _userPhotoManager.GetBigPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.MediumFotoSize,
-                            ImgUrl = _userPhotoManager.GetMediumPhotoURL(_userId)
+                            ImgUrl = await _userPhotoManager.GetMediumPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.SmallFotoSize,
-                            ImgUrl = _userPhotoManager.GetSmallPhotoURL(_userId)
+                            ImgUrl = await _userPhotoManager.GetSmallPhotoURL(_userId)
                         }
             };
     }

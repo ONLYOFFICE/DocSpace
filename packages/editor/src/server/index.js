@@ -13,7 +13,6 @@ import winston from "./lib/logger.js";
 import { getAssets, initDocEditor } from "./lib/helpers";
 import renderApp from "./lib/helpers/render-app";
 
-//const sheet = new ServerStyleSheet();
 const fallbackLng = "en";
 
 let port = PORT;
@@ -152,12 +151,11 @@ if (IS_DEVELOPMENT) {
       winston.error(initialEditorState.error.errorMessage);
     }
 
-    const appComponent = renderApp(i18n, initialEditorState);
-    const styleTags = sheet.getStyleTags();
+    const { component, styleTags } = renderApp(i18n, initialEditorState);
 
     const htmlString = template(
       initialEditorState,
-      appComponent,
+      component,
       styleTags,
       initialI18nStoreASC,
       userLng,
