@@ -59,7 +59,6 @@ const getGroup = (filterValues) => {
 const SectionFilterContent = ({
   t,
   isLoaded,
-  sectionWidth,
   tReady,
   viewAs,
   setIsLoading,
@@ -67,8 +66,8 @@ const SectionFilterContent = ({
   filter,
   groups,
   customNames,
-  isAdmin,
 }) => {
+  // TODO:
   const onFilter = (data) => {
     const employeeStatus = getEmployeeStatus(data);
     const activationStatus = getActivationStatus(data);
@@ -86,7 +85,7 @@ const SectionFilterContent = ({
     setIsLoading(true);
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
-
+  // TODO:
   const onSort = (sortId, sortDirection) => {
     const sortBy = sortId;
     const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
@@ -100,7 +99,7 @@ const SectionFilterContent = ({
 
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
-
+  // TODO: change fetchPeople
   const onSearch = (data = "") => {
     const newFilter = filter.clone();
     newFilter.page = 0;
@@ -110,33 +109,35 @@ const SectionFilterContent = ({
 
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
-
+  // TODO: change keys
   const getData = async () => {
-    const { guestCaption, userCaption, groupCaption } = customNames;
+    const { userCaption } = customNames;
 
-    const options = !isAdmin
-      ? []
-      : [
-          {
-            key: "filter-status",
-            group: "filter-status",
-            label: t("UserStatus"),
-            isHeader: true,
-          },
-          {
-            key: "1",
-            group: "filter-status",
-            label: t("Common:Active"),
-          },
-          {
-            key: "2",
-            group: "filter-status",
-            label: t("PeopleTranslations:DisabledEmployeeStatus"),
-          },
-        ];
+    const statusItems = [
+      {
+        key: "filter-status",
+        group: "filter-status",
+        label: t("UserStatus"),
+        isHeader: true,
+      },
+      {
+        key: "1",
+        group: "filter-status",
+        label: t("Common:Active"),
+      },
+      {
+        key: "3",
+        group: "filter-status",
+        label: t("PeopleTranslations:PendingTitle"),
+      },
+      {
+        key: "2",
+        group: "filter-status",
+        label: t("PeopleTranslations:DisabledEmployeeStatus"),
+      },
+    ];
 
-    const filterOptions = [
-      ...options,
+    const typeItems = [
       {
         key: "filter-type",
         group: "filter-type",
@@ -145,50 +146,72 @@ const SectionFilterContent = ({
       },
       { key: "admin", group: "filter-type", label: t("Administrator") },
       {
+        key: "manager",
+        group: "filter-type",
+        label: "TODO:Manager",
+      },
+      {
         key: "user",
         group: "filter-type",
         label: userCaption,
       },
+    ];
+
+    const roleItems = [
       {
-        key: "guest",
-        group: "filter-type",
-        label: guestCaption,
+        key: "filter-role",
+        group: "filter-role",
+        label: "TODO: Role in room",
+        isHeader: true,
       },
+      { key: "1", group: "filter-role", label: "TODO: Room manager" },
+      { key: "2", group: "filter-role", label: "TODO: Co-worker" },
+      { key: "3", group: "filter-role", label: "TODO: Editor" },
+      { key: "4", group: "filter-role", label: "TODO: Form filler" },
+      { key: "5", group: "filter-role", label: "TODO: Reviewer" },
+      { key: "6", group: "filter-role", label: "TODO: Commentator" },
+      { key: "7", group: "filter-role", label: "TODO: Viewer" },
+    ];
+
+    const accountItems = [
       {
-        key: "filter-email",
-        group: "filter-email",
-        label: t("Common:Email"),
+        key: "filter-account",
+        group: "filter-account",
+        label: "TODO: Account",
+        isHeader: true,
+      },
+      { key: "paid", group: "filter-account", label: "TODO: Paid" },
+      { key: "free", group: "filter-account", label: "TODO: Free" },
+    ];
+
+    const roomItems = [
+      {
+        key: "filter-status",
+        group: "filter-status",
+        label: t("UserStatus"),
         isHeader: true,
       },
       {
         key: "1",
-        group: "filter-email",
+        group: "filter-status",
         label: t("Common:Active"),
-      },
-      {
-        key: "2",
-        group: "filter-email",
-        label: t("PeopleTranslations:PendingTitle"),
-      },
-
-      {
-        key: "filter-other",
-        group: "filter-other",
-        label: t("Common:Department"),
-        isHeader: true,
-      },
-      {
-        key: "group",
-        group: "filter-other",
-        label: t("GroupSelector:AddDepartmentsButtonLabel"),
         isSelector: true,
+        selectorType: "room",
       },
     ];
 
+    const filterOptions = [];
+
+    filterOptions.push(statusItems);
+    filterOptions.push(typeItems);
+    filterOptions.push(roleItems);
+    filterOptions.push(accountItems);
+    filterOptions.push(roomItems);
+
     return filterOptions;
   };
-
-  const getSortData = () => {
+  //TODO:
+  const getSortData = React.useCallback(() => {
     return [
       {
         key: "firstname",
@@ -197,19 +220,19 @@ const SectionFilterContent = ({
       },
       { key: "lastname", label: t("Common:ByLastNameSorting"), default: true },
     ];
-  };
-
+  }, [t]);
+  //TODO:
   const getSelectedInputValue = React.useCallback(() => {
     return filter.search;
   }, [filter.search]);
-
+  //TODO:
   const getSelectedSortData = React.useCallback(() => {
     return {
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
       sortId: filter.sortBy,
     };
   }, [filter.sortOrder, filter.sortBy]);
-
+  //TODO:
   const getSelectedFilterData = async () => {
     const { guestCaption, userCaption, groupCaption } = customNames;
     const filterValues = [];
@@ -274,7 +297,7 @@ const SectionFilterContent = ({
 
     return filterValues;
   };
-
+  //TODO:
   const removeSelectedItem = ({ key, group }) => {
     const newFilter = filter.clone();
     newFilter.page = 0;
