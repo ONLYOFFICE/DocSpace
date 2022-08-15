@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 
-import { thirparties } from "../../data";
 import { StyledDropDown, StyledDropDownWrapper } from "../StyledDropdown";
 
 import { isHugeMobile } from "@docspace/components/utils/device";
@@ -12,6 +11,7 @@ import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import DropDownItem from "@docspace/components/drop-down-item";
 import Checkbox from "@docspace/components/checkbox";
+import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 
 const StyledStorageLocation = styled.div`
   display: flex;
@@ -41,7 +41,6 @@ const StyledStorageLocation = styled.div`
         font-weight: 400;
         font-size: 13px;
         line-height: 20px;
-        color: ${(props) => (props.isGrayLabel ? "#a3a9ae" : "#333333")};
       }
 
       &-expander {
@@ -77,14 +76,23 @@ const StyledStorageLocation = styled.div`
 
 const ThirpartyComboBox = ({
   t,
-  roomParams,
-  setRoomParams,
+  providers,
+  storageLocation,
+  setChangeStorageLocation,
   setIsScrollLocked,
 }) => {
   const dropdownRef = useRef(null);
-  const [isGrayLabel, setIsGrayLabel] = useState(true);
+
+  const thirdparties = providers.map((provider, i) => ({
+    id: i,
+    title: connectedCloudsTypeTitleTranslation(provider.provider_key, t),
+  }));
+
+  console.log(thirdparties);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownDirection, setDropdownDirection] = useState("bottom");
+
   const toggleIsOpen = () => {
     if (isOpen) setIsScrollLocked(false);
     else {
@@ -94,27 +102,18 @@ const ThirpartyComboBox = ({
     setIsOpen(!isOpen);
   };
 
-  const [dropdownDirection, setDropdownDirection] = useState("bottom");
-
   const setStorageLocaiton = (thirparty) => {
-    setIsGrayLabel(false);
-    setRoomParams({ ...roomParams, storageLocation: thirparty });
+    setChangeStorageLocation(thirparty);
     setIsOpen(false);
     setIsScrollLocked(false);
   };
-
-  const setRememberStorageLocation = () =>
-    setRoomParams({
-      ...roomParams,
-      rememberStorageLocation: !roomParams.rememberStorageLocation,
-    });
 
   const calculateDropdownDirection = () => {
     const { top: offsetTop } = DomHelpers.getOffset(dropdownRef.current);
     const offsetBottom = window.innerHeight - offsetTop;
 
-    const neededHeightDesktop = Math.min(thirparties.length * 32 + 16, 404);
-    const neededHeightMobile = Math.min(thirparties.length * 32 + 16, 180);
+    const neededHeightDesktop = Math.min(thirdparties.length * 32 + 16, 404);
+    const neededHeightMobile = Math.min(thirdparties.length * 32 + 16, 180);
     const neededheight = isHugeMobile()
       ? neededHeightMobile
       : neededHeightDesktop;
@@ -123,14 +122,15 @@ const ThirpartyComboBox = ({
   };
 
   return (
-    <StyledStorageLocation isGrayLabel={isGrayLabel} isOpen={isOpen}>
+    <StyledStorageLocation isOpen={isOpen}>
       <div className="set_room_params-thirdparty">
         <div
           className="set_room_params-thirdparty-combobox"
           onClick={toggleIsOpen}
         >
           <Text className="set_room_params-thirdparty-combobox-text" noSelect>
-            {roomParams.storageLocation?.title || "Select"}
+            {storageLocation?.title ||
+              t("ThirdPartyStorageComboBoxPlaceholder")}
           </Text>
           <ReactSVG
             className="set_room_params-thirdparty-combobox-expander"
@@ -158,7 +158,7 @@ const ThirpartyComboBox = ({
           directionY={dropdownDirection}
           marginTop={dropdownDirection === "bottom" ? "4px" : "-36px"}
         >
-          {thirparties.map((thirdparty) => (
+          {thirdparties.map((thirdparty) => (
             <DropDownItem
               className="dropdown-item"
               label={thirdparty.title}
@@ -170,13 +170,6 @@ const ThirpartyComboBox = ({
           ))}
         </StyledDropDown>
       </StyledDropDownWrapper>
-
-      <Checkbox
-        className="set_room_params-thirdparty-checkbox"
-        label={t("StorageLocationRememberChoice")}
-        isChecked={roomParams.rememberStorageLocation}
-        onChange={setRememberStorageLocation}
-      />
     </StyledStorageLocation>
   );
 };
