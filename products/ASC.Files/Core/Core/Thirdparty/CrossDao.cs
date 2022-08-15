@@ -42,7 +42,7 @@ internal class CrossDao //Additional SharpBox
         _serviceProvider = serviceProvider;
         _setupInfo = setupInfo;
         _fileConverter = fileConverter;
-            _thumbnailSettings = thumbnailSettings;
+        _thumbnailSettings = thumbnailSettings;
     }
 
     public async Task<File<TTo>> PerformCrossDaoFileCopyAsync<TFrom, TTo>(
@@ -62,9 +62,9 @@ internal class CrossDao //Additional SharpBox
         var securityDao = _serviceProvider.GetService<ISecurityDao<TFrom>>();
         var tagDao = _serviceProvider.GetService<ITagDao<TFrom>>();
 
-        var fromFileShareRecords = (await securityDao.GetPureShareRecordsAsync(fromFile)).Where(x => x.EntryType == FileEntryType.File);
-        var fromFileNewTags = await tagDao.GetNewTagsAsync(Guid.Empty, fromFile).ToListAsync();
-        var fromFileLockTag = (await tagDao.GetTagsAsync(fromFile.Id, FileEntryType.File, TagType.Locked).ToListAsync()).FirstOrDefault();
+        var fromFileShareRecords = securityDao.GetPureShareRecordsAsync(fromFile);
+        var fromFileNewTags = tagDao.GetNewTagsAsync(Guid.Empty, fromFile);
+        var fromFileLockTag = await tagDao.GetTagsAsync(fromFile.Id, FileEntryType.File, TagType.Locked).FirstOrDefaultAsync();
         var fromFileFavoriteTag = await tagDao.GetTagsAsync(fromFile.Id, FileEntryType.File, TagType.Favorite).ToListAsync();
         var fromFileTemplateTag = await tagDao.GetTagsAsync(fromFile.Id, FileEntryType.File, TagType.Template).ToListAsync();
 
@@ -87,29 +87,26 @@ internal class CrossDao //Additional SharpBox
 
         if (fromFile.ThumbnailStatus == Thumbnail.Created)
         {
-                foreach (var size in _thumbnailSettings.Sizes)
+            foreach (var size in _thumbnailSettings.Sizes)
             {
-                    using (var thumbnail = await fromFileDao.GetThumbnailAsync(fromFile, size.Width, size.Height))
-                    {
-                        await toFileDao.SaveThumbnailAsync(toFile, thumbnail, size.Width, size.Height);
-                    }
+                using (var thumbnail = await fromFileDao.GetThumbnailAsync(fromFile, size.Width, size.Height))
+                {
+                    await toFileDao.SaveThumbnailAsync(toFile, thumbnail, size.Width, size.Height);
                 }
+            }
 
             toFile.ThumbnailStatus = Thumbnail.Created;
         }
 
         if (deleteSourceFile)
         {
-            if (fromFileShareRecords.Any())
+            await foreach (var record in fromFileShareRecords.Where(x => x.EntryType == FileEntryType.File))
             {
-                foreach (var record in fromFileShareRecords)
-                {
-                    record.EntryId = toFile.Id;
-                    await securityDao.SetShareAsync(record);
-                }
+                record.EntryId = toFile.Id;
+                await securityDao.SetShareAsync(record);
             }
 
-            var fromFileTags = fromFileNewTags;
+            var fromFileTags = await fromFileNewTags.ToListAsync();
             if (fromFileLockTag != null)
             {
                 fromFileTags.Add(fromFileLockTag);
@@ -156,7 +153,7 @@ internal class CrossDao //Additional SharpBox
                              : await toFolderDao.SaveFolderAsync(toFolder1);
 
         var foldersToCopy = await fromFolderDao.GetFoldersAsync(fromConverter(fromFolderId)).ToListAsync();
-        var fileIdsToCopy = await fromFileDao.GetFilesAsync(fromConverter(fromFolderId));
+        var fileIdsToCopy = await fromFileDao.GetFilesAsync(fromConverter(fromFolderId)).ToListAsync();
         Exception copyException = null;
         //Copy files first
         foreach (var fileId in fileIdsToCopy)
@@ -199,16 +196,12 @@ internal class CrossDao //Additional SharpBox
         if (deleteSourceFolder)
         {
             var securityDao = _serviceProvider.GetService<ISecurityDao<TFrom>>();
-            var fromFileShareRecords = (await securityDao.GetPureShareRecordsAsync(fromFolder))
-                .Where(x => x.EntryType == FileEntryType.Folder);
+            var fromFileShareRecords = securityDao.GetPureShareRecordsAsync(fromFolder);
 
-            if (fromFileShareRecords.Any())
+            await foreach (var record in fromFileShareRecords.Where(x => x.EntryType == FileEntryType.Folder))
             {
-                foreach (var record in fromFileShareRecords)
-                {
-                    record.EntryId = toFolderId;
-                    await securityDao.SetShareAsync(record);
-                }
+                record.EntryId = toFolderId;
+                await securityDao.SetShareAsync(record);
             }
 
             var tagDao = _serviceProvider.GetService<ITagDao<TFrom>>();

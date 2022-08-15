@@ -481,6 +481,54 @@ export function toggleTipsSubscription() {
   return request(options);
 }
 
+export function getCurrentSsoSettings() {
+  const options = {
+    method: "get",
+    url: "/settings/ssov2",
+  };
+
+  return request(options);
+}
+
+export function submitSsoForm(data) {
+  const options = {
+    method: "post",
+    url: "/settings/ssov2",
+    data,
+  };
+
+  return request(options);
+}
+
+export function resetSsoForm() {
+  const options = {
+    method: "delete",
+    url: "/settings/ssov2",
+  };
+
+  return request(options);
+}
+
+export function loadXmlMetadata(data) {
+  return axios.post("/sso/loadmetadata", data);
+}
+
+export function uploadXmlMetadata(data) {
+  return axios.post("/sso/uploadmetadata", data);
+}
+
+export function validateCerts(data) {
+  return axios.post("/sso/validatecerts", data);
+}
+
+export function generateCerts() {
+  return axios.get("/sso/generatecert");
+}
+
+export function getMetadata() {
+  return axios.get("/sso/metadata");
+}
+
 export function getOforms(url) {
   return axios.get(url);
 }

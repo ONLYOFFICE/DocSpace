@@ -1,68 +1,94 @@
-import React from "react";
-import { inject, observer } from "mobx-react";
-
+import React, { useEffect, useState } from "react";
+import Submenu from "@docspace/components/submenu";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import withLoading from "SRC_DIR/HOCs/withLoading";
-
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
+import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
+import { isMobile } from "react-device-detect";
+import PortalIntegration from "./portalIntegration";
 
-import Submenu from "@docspace/components/submenu";
-
-import ThirdPartyServices from "./thirdPartyServicesSettings";
+import SSO from "./SingleSignOn";
+import ThirdParty from "./ThirdPartyServicesSettings";
 import PortalPlugins from "./PortalPlugins";
 
-// const ThirdPartyServices = lazy(() => import("./thirdPartyServicesSettings"));
+import AppLoader from "@docspace/common/components/AppLoader";
+import SSOLoader from "./sub-components/ssoLoader";
 
-const PROXY_BASE_URL = combineUrl(
-  AppServerConfig.proxyURL,
-  "/portal-settings/integration"
-);
+const IntegrationWrapper = (props) => {
+  const { t, tReady, history, loadBaseInfo } = props;
+  const [currentTab, setCurrentTab] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-const Integration = ({ t, history }) => {
-  const [currentTab, setCurrentTab] = React.useState(0);
+  const integrationData = {
+    id: "portal-integration",
+    name: "Portal Integration",
+    content: <PortalIntegration />,
+  };
 
-  React.useEffect(() => {
-    const path = location.pathname;
-    const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) {
-      setCurrentTab(currentTab);
-    }
-  }, []);
+  const pluginData = {
+    id: "plugins",
+    name: "Plugins",
+    content: <PortalPlugins />,
+  };
 
   const data = [
     {
-      id: "third-party-services",
-      name: "Third party services",
-      content: <ThirdPartyServices />,
+      id: "single-sign-on",
+      name: t("SingleSignOn"),
+      content: <SSO />,
     },
     {
-      id: "plugins",
-      name: "Plugins",
-      content: <PortalPlugins />,
+      id: "third-party-services",
+      name: t("ThirdPartyTitle"),
+      content: <ThirdParty />,
     },
   ];
 
-  const onSelect = (e) => {
-    history.push(combineUrl(PROXY_BASE_URL, `/${e.id}`));
+  if (!isMobile) {
+    data.push(integrationData);
+    data.push(pluginData);
+  }
+
+  const load = async () => {
+    await loadBaseInfo();
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    if (currentTab !== -1) setCurrentTab(currentTab);
+    setIsLoading(true);
   };
 
-  return (
-    <Submenu
-      data={data}
-      startSelect={currentTab}
-      onSelect={(e) => onSelect(e)}
-      isLoading={false}
-    />
-  );
+  useEffect(() => {
+    load();
+  }, []);
+
+  const onSelect = (e) => {
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/portal-settings/integration/${e.id}`
+      )
+    );
+  };
+
+  if (!isLoading && !tReady)
+    return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
+
+  return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
-export default inject(({ common }) => {
-  const { isLoaded, setIsLoadedSubmenu } = common;
+export default inject(({ setup }) => {
+  const { initSettings } = setup;
+
   return {
-    isLoaded,
-    setIsLoadedSubmenu,
+    loadBaseInfo: async () => {
+      await initSettings();
+    },
   };
-})(withLoading(withRouter(withTranslation("Settings")(observer(Integration)))));
+})(
+  withTranslation(["Settings", "SingleSignOn"])(
+    withRouter(observer(IntegrationWrapper))
+  )
+);

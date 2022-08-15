@@ -6,15 +6,6 @@ services:
     restart: always
     expose:
       - "6379"
-   
-   onlyoffice-rebbitmq:
-    image: rabbitmq:3
-    container_name: onlyoffice-rebbitmq
-    restart: always
-    expose:
-      - "5672"
-      - "80"
-
 networks:
   default:
     external:
