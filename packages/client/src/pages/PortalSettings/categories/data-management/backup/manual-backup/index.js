@@ -292,7 +292,7 @@ class ManualBackup extends React.Component {
         </StyledModules>
         <StyledModules>
           <RadioButton
-            label={t("DocumentsModule")}
+            label={organizationName}
             name={"isCheckedDocuments"}
             key={1}
             isChecked={isCheckedDocuments}

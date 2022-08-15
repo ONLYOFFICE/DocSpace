@@ -295,7 +295,7 @@ class RestoreBackup extends React.Component {
       t,
       history,
       downloadingProgress,
-
+      organizationName,
       buttonSize,
       theme,
     } = this.props;
@@ -340,7 +340,7 @@ class RestoreBackup extends React.Component {
           </Text>
         </div>
         <RadioButton
-          label={t("DocumentsModule")}
+          label={organizationName}
           name={"isCheckedDocuments"}
           key={1}
           isChecked={isCheckedDocuments}
@@ -479,7 +479,7 @@ class RestoreBackup extends React.Component {
 
 export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
-  const { socketHelper, theme, isTabletView } = settingsStore;
+  const { socketHelper, theme, isTabletView, organizationName } = settingsStore;
   const {
     downloadingProgress,
     getProgress,
@@ -505,5 +505,6 @@ export default inject(({ auth, backup }) => {
 
     getProgress,
     getStorageParams,
+    organizationName,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));

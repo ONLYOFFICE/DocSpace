@@ -386,10 +386,11 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedDocuments,
       //commonThirdPartyList,
       buttonSize,
-      organizationName,
+
       theme,
       renderTooltip,
       selectedEnableSchedule,
+      organizationName,
     } = this.props;
 
     const {
@@ -457,7 +458,7 @@ class AutomaticBackup extends React.PureComponent {
             <StyledModules>
               <RadioButton
                 {...commonRadioButtonProps}
-                label={t("DocumentsModule")}
+                label={organizationName}
                 name={`${DocumentModuleType}`}
                 key={0}
                 isChecked={isCheckedDocuments}
