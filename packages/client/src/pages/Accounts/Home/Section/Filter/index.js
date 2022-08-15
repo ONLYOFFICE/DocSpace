@@ -1,14 +1,16 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
+import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
 import result from "lodash/result";
-import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+
 import FilterInput from "@docspace/common/components/FilterInput";
 import Loaders from "@docspace/common/components/Loaders";
 import { withLayoutSize } from "@docspace/common/utils";
-import { isMobileOnly } from "react-device-detect";
-import { inject, observer } from "mobx-react";
-import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
+
+import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 
 const getEmployeeStatus = (filterValues) => {
   const employeeStatus = result(

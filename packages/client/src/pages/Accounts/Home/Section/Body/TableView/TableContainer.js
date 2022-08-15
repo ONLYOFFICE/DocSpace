@@ -1,11 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import TableContainer from "@docspace/components/table-container";
 import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
+
+import TableContainer from "@docspace/components/table-container";
+import TableBody from "@docspace/components/table-container/TableBody";
+
+import EmptyScreen from "../EmptyScreen";
+
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
-import TableBody from "@docspace/components/table-container/TableBody";
-import EmptyScreen from "../EmptyScreen";
-import { isMobile } from "react-device-detect";
 
 const Table = ({ peopleList, sectionWidth, viewAs, setViewAs, theme }) => {
   const ref = useRef(null);

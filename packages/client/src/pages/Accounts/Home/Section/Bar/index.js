@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ADS_TIMEOUT } from "../../../../helpers/constants";
+import difference from "lodash/difference";
+
 import SnackBar from "@docspace/components/snackbar";
 import { Consumer } from "@docspace/components/utils/context";
-import difference from "lodash/difference";
 import { getBannerAttribute } from "@docspace/components/utils/banner";
+
+import { ADS_TIMEOUT } from "SRC_DIR/helpers/constants";
 
 const bannerHOC = (props) => {
   const { firstLoad, setMaintenanceExist } = props;

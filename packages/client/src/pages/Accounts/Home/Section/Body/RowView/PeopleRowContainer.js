@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import RowContainer from "@docspace/components/row-container";
-import SimpleUserRow from "./SimpleUserRow";
-import EmptyScreen from "../EmptyScreen";
 import { isMobile } from "react-device-detect";
+
+import RowContainer from "@docspace/components/row-container";
+
+import EmptyScreen from "../EmptyScreen";
+
+import SimpleUserRow from "./SimpleUserRow";
 
 const PeopleRowContainer = ({
   peopleList,

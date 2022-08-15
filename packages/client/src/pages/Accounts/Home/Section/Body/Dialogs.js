@@ -1,5 +1,8 @@
-import { inject, observer } from "mobx-react";
 import React from "react";
+import { inject, observer } from "mobx-react";
+
+import { EmployeeType, EmployeeStatus } from "@docspace/common/constants";
+
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
@@ -10,8 +13,7 @@ import {
   SendInviteDialog,
   DeleteUsersDialog,
   InviteDialog,
-} from "../../../../components/dialogs";
-import { EmployeeType, EmployeeStatus } from "@docspace/common/constants";
+} from "SRC_DIR/components/dialogs";
 
 const Dialogs = ({
   changeEmail,

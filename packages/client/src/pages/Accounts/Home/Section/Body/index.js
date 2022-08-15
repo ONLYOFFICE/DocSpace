@@ -1,11 +1,15 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import Loaders from "@docspace/common/components/Loaders";
 import { withTranslation } from "react-i18next";
-import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
+
+import Loaders from "@docspace/common/components/Loaders";
+
+import { Consumer } from "@docspace/components/utils/context";
+
+import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
+
 import PeopleRowContainer from "./RowView/PeopleRowContainer";
 import TableView from "./TableView/TableContainer";
-import { Consumer } from "@docspace/components/utils/context";
 
 class SectionBodyContent extends React.Component {
   render() {

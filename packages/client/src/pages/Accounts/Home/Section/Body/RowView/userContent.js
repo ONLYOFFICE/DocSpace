@@ -6,7 +6,8 @@ import RowContent from "@docspace/components/row-content";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
-import Badges from "../../../../../components/PeopleBadges";
+
+import Badges from "SRC_DIR/components/PeopleBadges";
 
 const UserContent = ({
   item,

@@ -1,9 +1,11 @@
 import React, { useCallback, useMemo } from "react";
-import { isMobile } from "react-device-detect";
-import Paging from "@docspace/components/paging";
-import { withTranslation } from "react-i18next";
-import Loaders from "@docspace/common/components/Loaders";
 import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
+import { withTranslation } from "react-i18next";
+
+import Loaders from "@docspace/common/components/Loaders";
+
+import Paging from "@docspace/components/paging";
 
 const PureSectionPagingContent = ({
   fetchPeople,

@@ -1,20 +1,12 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 import IconButton from "@docspace/components/icon-button";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import Grid from "@docspace/components/grid";
-import { useTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
-import { ArticleMainButtonContent } from "../../../../components/Article";
-import { Consumer } from "@docspace/components/utils/context";
-
-import { isMobile } from "react-device-detect";
-import {
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-} from "@docspace/components/utils/device";
 
 const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   const { t } = useTranslation(["People", "Common"]);

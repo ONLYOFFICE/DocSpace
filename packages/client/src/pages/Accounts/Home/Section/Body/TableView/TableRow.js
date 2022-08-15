@@ -1,14 +1,16 @@
 import React from "react";
+import styled from "styled-components";
 import { withRouter } from "react-router";
+
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
-import withContextOptions from "../../../../../HOCs/withPeopleContextOptions";
-import withContent from "../../../../../HOCs/withPeopleContent";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
-import styled from "styled-components";
-import Badges from "../../../../../components/PeopleBadges";
 import Checkbox from "@docspace/components/checkbox";
+
+import withContextOptions from "SRC_DIR/HOCs/withPeopleContextOptions";
+import withContent from "SRC_DIR/HOCs/withPeopleContent";
+import Badges from "SRC_DIR/components/PeopleBadges";
 
 const StyledPeopleRow = styled(TableRow)`
   .table-container_cell {

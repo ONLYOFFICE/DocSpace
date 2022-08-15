@@ -1,9 +1,12 @@
 import React from "react";
-import Row from "@docspace/components/row";
-import UserContent from "./userContent";
 import { withRouter } from "react-router";
-import withContextOptions from "../../../../../HOCs/withPeopleContextOptions";
-import withContent from "../../../../../HOCs/withPeopleContent";
+
+import Row from "@docspace/components/row";
+
+import withContextOptions from "SRC_DIR/HOCs/withPeopleContextOptions";
+import withContent from "SRC_DIR/HOCs/withPeopleContent";
+
+import UserContent from "./userContent";
 
 const SimpleUserRow = (props) => {
   const {

@@ -1,23 +1,26 @@
 import React, { useCallback, useMemo } from "react";
+import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
+
+import Headline from "@docspace/common/components/Headline";
+import Loaders from "@docspace/common/components/Loaders";
+import { AppServerConfig } from "@docspace/common/constants";
+import { combineUrl } from "@docspace/common/utils";
 
 import DropDownItem from "@docspace/components/drop-down-item";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import { tablet, mobile } from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
-
-import Headline from "@docspace/common/components/Headline";
-// import toastr from "client/toastr";
-import Loaders from "@docspace/common/components/Loaders";
-import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
-import { AppServerConfig } from "@docspace/common/constants";
-import { withTranslation } from "react-i18next";
-import { isMobile, isMobileOnly } from "react-device-detect";
-import { inject, observer } from "mobx-react";
-import config from "PACKAGE_FILE";
-import { combineUrl } from "@docspace/common/utils";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
+
+// import toastr from "client/toastr";
+
+import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
+
+import config from "PACKAGE_FILE";
 
 const StyledContainer = styled.div`
   .group-button-menu-container {
