@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import throttle from "lodash/throttle";
 
-import AvatarEditor from "react-avatar-editor";
+// import AvatarEditor from "react-avatar-editor";
 import Slider from "@docspace/components/slider";
 import IconButton from "@docspace/components/icon-button";
 
