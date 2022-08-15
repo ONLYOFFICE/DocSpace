@@ -21,4 +21,5 @@ export const ThemeType = {
   LinkForgotPassword: "linkForgotPassword",
   LoadingButton: "loadingButton",
   FloatingButton: "floatingButton",
+  InfoPanelToggle: "infoPanelToggle",
 };

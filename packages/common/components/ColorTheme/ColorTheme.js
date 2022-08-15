@@ -24,6 +24,7 @@ import {
   LinkForgotPasswordTheme,
   LoadingButtonTheme,
   FloatingButtonTheme,
+  InfoPanelToggleTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -95,6 +96,9 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.FloatingButton: {
       return <FloatingButtonTheme ref={ref} {...props} />;
+    }
+    case ThemeType.InfoPanelToggle: {
+      return <InfoPanelToggleTheme ref={ref} {...props} />;
     }
   }
 });
