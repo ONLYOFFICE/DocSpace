@@ -1,9 +1,15 @@
 import React, { useEffect } from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
+
 import Filter from "@docspace/common/api/people/filter";
+
 import Section from "@docspace/common/components/Section";
-import { showLoader, hideLoader, isAdmin } from "@docspace/common/utils";
+
+import { showLoader, hideLoader } from "@docspace/common/utils";
 
 import {
   SectionHeaderContent,
@@ -12,13 +18,10 @@ import {
   SectionPagingContent,
   Bar,
 } from "./Section";
-import { inject, observer } from "mobx-react";
-import { isMobile } from "react-device-detect";
-import { withTranslation } from "react-i18next";
+
 import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
 
 const PureHome = ({
-  isAdmin,
   isLoading,
   history,
   getUsersList,
@@ -26,19 +29,22 @@ const PureHome = ({
   setIsRefresh,
   selectedGroup,
   tReady,
-  showCatalog,
+
   firstLoad,
   setFirstLoad,
   viewAs,
   checkedMaintenance,
   snackbarExist,
   setMaintenanceExist,
+
+  setSelectedNode,
 }) => {
   const { location } = history;
   const { pathname } = location;
   //console.log("People Home render");
 
   useEffect(() => {
+    setSelectedNode(["accounts"]);
     if (pathname.indexOf("/accounts/filter") > -1) {
       setIsLoading(true);
       setIsRefresh(true);
@@ -50,7 +56,8 @@ const PureHome = ({
         setIsRefresh(false);
       });
     }
-  }, [pathname, location]);
+  }, [pathname, location, setSelectedNode]);
+
   useEffect(() => {
     if (isMobile) {
       const customScrollElm = document.querySelector(
@@ -103,12 +110,13 @@ PureHome.propTypes = {
 
 const Home = withTranslation("People")(PureHome);
 
-export default inject(({ auth, peopleStore }) => {
+export default inject(({ auth, peopleStore, treeFoldersStore }) => {
   const { settingsStore } = auth;
   const { showCatalog } = settingsStore;
   const { usersStore, selectedGroupStore, loadingStore, viewAs } = peopleStore;
   const { getUsersList } = usersStore;
   const { selectedGroup } = selectedGroupStore;
+  const { setSelectedNode } = treeFoldersStore;
   const {
     isLoading,
     setIsLoading,
@@ -128,6 +136,7 @@ export default inject(({ auth, peopleStore }) => {
     firstLoad,
     setFirstLoad,
     viewAs,
+    setSelectedNode,
     checkedMaintenance: auth.settingsStore.checkedMaintenance,
     setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
     snackbarExist: auth.settingsStore.snackbarExist,
