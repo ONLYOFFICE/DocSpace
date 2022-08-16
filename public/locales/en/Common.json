@@ -114,6 +114,7 @@
   "Owner": "Owner",
   "PageOfTotalPage": "{{page}} of {{totalPage}}",
   "Pages": "Pages",
+  "Paid": "Paid",
   "Password": "Password",
   "PasswordLimitDigits": "digits",
   "PasswordLimitLength": "from {{fromNumber}} to {{toNumber}} characters",
