@@ -19,7 +19,7 @@ const StyledBody = styled.div`
     align-items: center;
     justify-content: center;
     background: #f3f4f4;
-
+    margin-top: 24px;
     p:first-child {
       margin-right: 8px;
     }

@@ -1174,6 +1174,10 @@ const Dark = {
         height: "8px",
       },
 
+      trackNumber: {
+        color: "#A3A9AE",
+      },
+
       fillLower: {
         background: "#242424",
         focusBackground: "#242424",

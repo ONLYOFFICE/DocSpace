@@ -1177,6 +1177,10 @@ const Base = {
         height: "8px",
       },
 
+      trackNumber: {
+        color: "#A3A9AE",
+      },
+
       fillLower: {
         background: grayLightMid,
         focusBackground: grayLightMid,

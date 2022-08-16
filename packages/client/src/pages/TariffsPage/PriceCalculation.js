@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useTranslation, Trans } from "react-i18next";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 
@@ -24,9 +23,10 @@ const StyledBody = styled.div`
   }
 `;
 
-const step = "1",
+const step = 1,
   minUsersCount = 1,
-  maxUsersCount = 1000;
+  maxUsersCount = 1000,
+  maxSliderNumber = 999;
 
 const PriceCalculation = ({ t, price }) => {
   const [usersCount, setUsersCount] = useState(minUsersCount);
@@ -36,12 +36,46 @@ const PriceCalculation = ({ t, price }) => {
     count > minUsersCount ? setUsersCount(count) : setUsersCount(minUsersCount);
   };
 
-  const onPlusClick = () => {
-    usersCount < maxUsersCount && setUsersCount(usersCount + 1);
-  };
+  const onClickOperations = (e) => {
+    const operation = e.currentTarget.dataset.operation;
 
-  const onMinusClick = () => {
-    usersCount > minUsersCount && setUsersCount(usersCount - 1);
+    let value = +usersCount;
+
+    if (operation === "plus") {
+      if (usersCount < maxUsersCount) {
+        value += step;
+      }
+    }
+    if (operation === "minus") {
+      if (usersCount >= maxUsersCount) {
+        value = maxSliderNumber;
+      } else {
+        if (usersCount > minUsersCount) {
+          value -= step;
+        }
+      }
+    }
+
+    value !== +usersCount && setUsersCount(value);
+  };
+  const onChangeNumber = (e) => {
+    const { target } = e;
+    let value = target.value;
+
+    if (usersCount >= maxUsersCount) {
+      value = value.slice(0, -1);
+    }
+
+    const numberValue = +value;
+
+    if (isNaN(numberValue)) return;
+
+    if (numberValue === 0) {
+      setUsersCount(minUsersCount);
+      return;
+    }
+
+    setUsersCount(numberValue);
   };
 
   return (
@@ -51,11 +85,12 @@ const PriceCalculation = ({ t, price }) => {
       </Text>
       <SelectUsersCountContainer
         maxUsersCount={maxUsersCount}
+        maxSliderNumber={maxSliderNumber}
         step={step}
         usersCount={usersCount}
-        onMinusClick={onMinusClick}
-        onPlusClick={onPlusClick}
+        onClickOperations={onClickOperations}
         onSliderChange={onSliderChange}
+        onChangeNumber={onChangeNumber}
       />
       <TotalTariffContainer t={t} usersCount={usersCount} price={price} />
     </StyledBody>

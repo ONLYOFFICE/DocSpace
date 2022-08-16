@@ -13,6 +13,7 @@ import PriceCalculation from "./PriceCalculation";
 import BenefitsContainer from "./BenefitsContainer";
 import { smallTablet } from "@docspace/components/utils/device";
 import ContactContainer from "./ContactContainer";
+import toastr from "@docspace/components/toast/toastr";
 
 const StyledBody = styled.div`
   max-width: 660px;
@@ -54,7 +55,7 @@ const TariffsPageWrapper = ({
   useEffect(() => {
     (async () => {
       try {
-        await Promise.all([setQuota(), setTariffsInfo()]);
+        await Promise.all([setQuota()]);
       } catch (error) {
         toastr.error(error);
       }
