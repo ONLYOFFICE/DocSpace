@@ -12,7 +12,7 @@ export { default as SubmenuItemLabelTheme } from "./submenuItemLabel";
 
 export { default as ToggleButtonTheme } from "./toggleButton";
 
-export { default as TabContainerTheme } from "./tabContainer";
+export { default as TabsContainerTheme } from "./tabsContainer";
 
 export { default as IconButtonTheme } from "./iconButton";
 

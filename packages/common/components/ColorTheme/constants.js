@@ -6,7 +6,7 @@ export const ThemeType = {
   SubmenuText: "submenuText",
   SubmenuItemLabel: "submenuItemLabel",
   ToggleButton: "toggleButton",
-  TabContainer: "tabContainer",
+  TabsContainer: "tabsContainer",
   IconButton: "iconButton",
   IconButtonPin: "iconButtonPin",
   MainButtonMobile: "mainButtonMobile",

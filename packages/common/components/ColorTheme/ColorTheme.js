@@ -9,7 +9,7 @@ import {
   SubmenuTextTheme,
   SubmenuItemLabelTheme,
   ToggleButtonTheme,
-  TabContainerTheme,
+  TabsContainerTheme,
   IconButtonTheme,
   IconButtonPinTheme,
   MainButtonMobileTheme,
@@ -53,8 +53,8 @@ const ColorTheme = forwardRef((props, ref) => {
     case ThemeType.ToggleButton: {
       return <ToggleButtonTheme ref={ref} {...props} />;
     }
-    case ThemeType.TabContainer: {
-      return <TabContainerTheme ref={ref} {...props} />;
+    case ThemeType.TabsContainer: {
+      return <TabsContainerTheme ref={ref} {...props} />;
     }
     case ThemeType.IconButton: {
       return <IconButtonTheme ref={ref} {...props} />;
