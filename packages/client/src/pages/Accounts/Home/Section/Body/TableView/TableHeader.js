@@ -3,11 +3,12 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import TableHeader from "@docspace/components/table-container/TableHeader";
-import DropDownItem from "@docspace/components/drop-down-item";
 
 const TABLE_VERSION = "2";
 const TABLE_COLUMNS = `peopleTableColumns_ver-${TABLE_VERSION}`;
 const COLUMNS_SIZE = `peopleColumnsSize_ver-${TABLE_VERSION}`;
+const INFO_PANEL_TABLE_COLUMNS = `infoPanelPeopleTableColumns_ver-${TABLE_VERSION}`;
+const INFO_PANEL_COLUMNS_SIZE = `infoPanelPeopleColumnsSize_ver-${TABLE_VERSION}`;
 
 class PeopleTableHeader extends React.Component {
   constructor(props) {
@@ -29,29 +30,22 @@ class PeopleTableHeader extends React.Component {
         onIconClick: this.onIconClick,
       },
       {
-        key: "Department",
-        title: t("Common:Department"),
+        key: "Type",
+        title: "TODO: Type",
         enable: true,
         resizable: true,
         onChange: this.onColumnChange,
       },
       {
-        key: "Role",
-        title: t("Common:Role"),
+        key: "Room",
+        title: "TODO: Room",
         enable: true,
-        resizable: true,
-        onChange: this.onColumnChange,
-      },
-      {
-        key: "Phone",
-        title: t("Common:Phone"),
-        enable: false,
         resizable: true,
         onChange: this.onColumnChange,
       },
       {
         key: "Mail",
-        title: t("Common:Mail"),
+        title: "TODO: Email",
         enable: true,
         resizable: true,
         onChange: this.onColumnChange,

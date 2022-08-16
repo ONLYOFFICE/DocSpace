@@ -7,10 +7,13 @@ import TableCell from "@docspace/components/table-container/TableCell";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
+import ComboBox from "@docspace/components/combobox";
+import DropDownItem from "@docspace/components/drop-down-item";
 
 import withContextOptions from "SRC_DIR/HOCs/withPeopleContextOptions";
 import withContent from "SRC_DIR/HOCs/withPeopleContent";
-import Badges from "SRC_DIR/components/PeopleBadges";
+
+import Badges from "../Badges";
 
 const StyledPeopleRow = styled(TableRow)`
   .table-container_cell {
@@ -40,7 +43,56 @@ const StyledPeopleRow = styled(TableRow)`
   .table-container_row-context-menu-wrapper {
     padding-right: 0px;
   }
+
+  .type-combobox {
+    width: auto;
+
+    .combo-button {
+      padding-left: 0;
+
+      .combo-button-label {
+        color: ${(props) => props.sideInfoColor};
+      }
+
+      .combo-buttons_arrow-icon {
+        margin-top: 7px;
+
+        svg {
+          path {
+            fill: ${(props) => props.sideInfoColor};
+          }
+        }
+      }
+    }
+  }
+
+  .room-combobox {
+    width: auto;
+
+    .combo-button {
+      padding-left: 0;
+
+      .combo-button-label {
+        color: ${(props) => props.sideInfoColor};
+      }
+
+      .combo-buttons_arrow-icon {
+        display: none;
+      }
+    }
+  }
 `;
+
+const fakeRooms = [
+  {
+    name: "Room 1",
+    role: "Viewer",
+  },
+  {
+    name: "Room 2",
+    role: "Co-worker",
+  },
+];
 
 const PeopleTableRow = (props) => {
   const {
@@ -49,29 +101,75 @@ const PeopleTableRow = (props) => {
     element,
     checkedProps,
     onContentRowSelect,
-    groups,
     onEmailClick,
     onUserNameClick,
     isAdmin,
     theme,
   } = props;
-  const { displayName, email, statusType, userName, position } = item;
+  const { displayName, email, statusType, userName, position, role } = item;
 
-  const nameColor =
-    statusType === "pending"
-      ? theme.peopleTableRow.pendingNameColor
-      : theme.peopleTableRow.nameColor;
-  const sideInfoColor =
-    statusType === "pending"
-      ? theme.peopleTableRow.pendingSideInfoColor
-      : theme.peopleTableRow.sideInfoColor;
+  const isPending = statusType === "pending" || statusType === "disabled";
+
+  const nameColor = isPending
+    ? theme.peopleTableRow.pendingNameColor
+    : theme.peopleTableRow.nameColor;
+  const sideInfoColor = theme.peopleTableRow.sideInfoColor;
 
   const onChange = (e) => {
     onContentRowSelect && onContentRowSelect(e.target.checked, item);
   };
 
+  const getTypesOptions = React.useCallback(() => {
+    const options = [
+      {
+        key: "admin",
+        title: "TODO: Administrator",
+        label: "TODO: Administrator",
+        action: "administrator",
+      },
+      {
+        key: "manager",
+        title: "TODO: Manager",
+        label: "TODO: Manager",
+        action: "manager",
+      },
+      {
+        key: "user",
+        title: "TODO: User",
+        label: "TODO: User",
+        action: "user",
+      },
+    ];
+
+    return options;
+  }, []);
+
+  // TODO: update after backend update
+  const onTypeChange = React.useCallback(({ action }) => {}, []);
+
+  const getRoomsOptions = React.useCallback(() => {
+    const options = [];
+
+    fakeRooms.forEach((room) => {
+      options.push(
+        <DropDownItem key={room.name} noHover={true}>
+          {room.name} &nbsp;
+          <Text fontSize="13px" fontWeight={600} color={sideInfoColor} truncate>
+            ({room.role})
+          </Text>
+        </DropDownItem>
+      );
+    });
+
+    return <>{options.map((option) => option)}</>;
+  }, []);
+
   return (
-    <StyledPeopleRow key={item.id} {...contextOptionsProps}>
+    <StyledPeopleRow
+      key={item.id}
+      sideInfoColor={sideInfoColor}
+      {...contextOptionsProps}
+    >
       <TableCell>
         <TableCell
           hasAccess={isAdmin}
@@ -101,38 +199,75 @@ const PeopleTableRow = (props) => {
         </Link>
         <Badges statusType={statusType} />
       </TableCell>
-      <TableCell>{groups}</TableCell>
       <TableCell>
-        <Text
-          type="page"
-          title={position}
-          fontSize="12px"
-          fontWeight={400}
-          color={sideInfoColor}
-          truncate
-        >
-          {position}
-        </Text>
+        {role === "owner" ? (
+          <Text
+            type="page"
+            title={position}
+            fontSize="13px"
+            fontWeight={600}
+            color={sideInfoColor}
+            truncate
+          >
+            TODO: Owner
+          </Text>
+        ) : (
+          <ComboBox
+            className="type-combobox"
+            selectedOption={getTypesOptions().find(
+              (option) => option.key === role
+            )}
+            options={getTypesOptions()}
+            onSelect={onTypeChange}
+            noBorder
+            displaySelectedOption
+            scaled
+          />
+        )}
       </TableCell>
       <TableCell>
-        <Text
-          style={{ display: "none" }} //TODO:
-          type="page"
-          //title={userRole}
-          fontSize="12px"
-          fontWeight={400}
-          color={sideInfoColor}
-          truncate
-        >
-          Phone
-        </Text>
+        {isPending && statusType !== "disabled" ? (
+          <Text
+            type="page"
+            title={position}
+            fontSize="13px"
+            fontWeight={600}
+            color={sideInfoColor}
+            truncate
+          >
+            —
+          </Text>
+        ) : role === "owner" ? (
+          <Link
+            type="action"
+            title={email}
+            fontSize="13px"
+            fontWeight={600}
+            color={sideInfoColor}
+            isTextOverflow
+            isHovered
+          >
+            {fakeRooms[0].name} ({fakeRooms[0].role})
+          </Link>
+        ) : (
+          <ComboBox
+            className="room-combobox"
+            selectedOption={{ key: "length", label: `${fakeRooms.length}` }}
+            options={[]}
+            onSelect={onTypeChange}
+            advancedOptions={getRoomsOptions()}
+            noBorder
+            displaySelectedOption
+            scaled
+          />
+        )}
       </TableCell>
       <TableCell>
         <Link
           type="page"
           title={email}
-          fontSize="12px"
-          fontWeight={400}
+          fontSize="13px"
+          fontWeight={600}
           color={sideInfoColor}
           onClick={onEmailClick}
           isTextOverflow
