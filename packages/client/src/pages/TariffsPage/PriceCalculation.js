@@ -11,7 +11,6 @@ const StyledBody = styled.div`
   border-radius: 12px;
   border: 1px solid #d0d5da;
   max-width: 320px;
- 
 
   @media ${smallTablet} {
     max-width: 600px;
@@ -99,6 +98,8 @@ const PriceCalculation = ({ t, price, rights, theme }) => {
         isDisabled={isDisabled}
       />
       <TotalTariffContainer
+        maxUsersCount={maxUsersCount}
+        maxSliderNumber={maxSliderNumber}
         t={t}
         usersCount={usersCount}
         price={price}
@@ -112,7 +113,7 @@ export default inject(({ auth, payments }) => {
   const { tariffsInfo } = payments;
   const { theme } = auth.settingsStore;
   //const rights = "2";
-  const rights = "3";
-  //const rights = "1";
+  //const rights = "3";
+  const rights = "1";
   return { tariffsInfo, rights, theme };
 })(observer(PriceCalculation));

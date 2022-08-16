@@ -31,12 +31,18 @@ const StyledBody = styled.div`
   .total-tariff_price {
     display: flex;
     justify-content: center;
+    height: 65px;
+
+    .total-tariff_description {
+      margin-top: 16px;
+    }
     .total-tariff_price-text {
-      margin-bottom: 10px;
+      margin-bottom: 0px;
       border-bottom: 1px solid #eceef1;
     }
     .total-tariff_month-text {
       margin: auto 0;
+      margin-bottom: 13px;
     }
   }
 
@@ -45,12 +51,21 @@ const StyledBody = styled.div`
   }
 `;
 
-const TotalTariffContainer = ({ t, usersCount, price, isDisabled, theme }) => {
+const TotalTariffContainer = ({
+  t,
+  usersCount,
+  maxUsersCount,
+  maxSliderNumber,
+  price,
+  isDisabled,
+  theme,
+}) => {
   useEffect(() => {}, []);
 
   const totalPrice = price * usersCount;
 
   const color = isDisabled ? { color: theme.text.disableColor } : {};
+  const isNeedRequest = usersCount >= maxUsersCount;
 
   return (
     <StyledBody>
@@ -69,29 +84,45 @@ const TotalTariffContainer = ({ t, usersCount, price, isDisabled, theme }) => {
         </Text>
       </div>
       <div className="total-tariff_price">
-        <Text
-          fontSize="48px"
-          isBold
-          textAlign={"center"}
-          className="total-tariff_price-text"
-          noSelect
-          {...color}
-        >
-          {totalPrice}
-        </Text>
-        <Text
-          fontSize="16px"
-          isBold
-          textAlign={"center"}
-          className="total-tariff_month-text"
-          noSelect
-          {...color}
-        >
-          {"/month"}
-        </Text>
+        {isNeedRequest ? (
+          <Text
+            noSelect
+            fontSize={"14"}
+            textAlign="center"
+            fontWeight={600}
+            className="total-tariff_description"
+          >
+            <Trans t={t} i18nKey="BusinessRequestDescription" ns="Payments">
+              {{ peopleNumber: maxSliderNumber }}
+            </Trans>
+          </Text>
+        ) : (
+          <>
+            <Text
+              fontSize="48px"
+              isBold
+              textAlign={"center"}
+              className="total-tariff_price-text"
+              noSelect
+              {...color}
+            >
+              {totalPrice}
+            </Text>
+            <Text
+              fontSize="16px"
+              isBold
+              textAlign={"center"}
+              className="total-tariff_month-text"
+              noSelect
+              {...color}
+            >
+              {"/month"}
+            </Text>
+          </>
+        )}
       </div>
       <Button
-        label={t("UpgradeNow")}
+        label={isNeedRequest ? t("SendRequest") : t("UpgradeNow")}
         size={"medium"}
         primary
         isDisabled={isDisabled}
