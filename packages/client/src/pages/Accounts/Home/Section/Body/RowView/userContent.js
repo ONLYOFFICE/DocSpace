@@ -1,10 +1,36 @@
 import React from "react";
+import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
+import { isTablet } from "react-device-detect";
 
 import RowContent from "@docspace/components/row-content";
 import Link from "@docspace/components/link";
 
 import Badges from "../Badges";
+
+const StyledRowContent = styled(RowContent)`
+  ${(props) =>
+    ((props.sectionWidth <= 1024 && props.sectionWidth > 500) || isTablet) &&
+    css`
+      .row-main-container-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        max-width: inherit;
+      }
+
+      .badges {
+        flex-direction: row-reverse;
+        margin-top: 9px;
+        margin-right: 12px;
+
+        .paid-badge {
+          margin-left: 8px;
+          margin-right: 0px;
+        }
+      }
+    `}
+`;
 
 const UserContent = ({
   item,
@@ -26,7 +52,7 @@ const UserContent = ({
       : theme.peopleTableRow.sideInfoColor;
 
   return (
-    <RowContent
+    <StyledRowContent
       sideColor={sideInfoColor}
       sectionWidth={sectionWidth}
       nameColor={nameColor}
@@ -45,7 +71,9 @@ const UserContent = ({
       >
         {displayName}
       </Link>
+
       <Badges statusType={statusType} />
+
       <Link
         containerMinWidth="140px"
         containerWidth="17%"
@@ -70,7 +98,7 @@ const UserContent = ({
       >
         {email}
       </Link>
-    </RowContent>
+    </StyledRowContent>
   );
 };
 
