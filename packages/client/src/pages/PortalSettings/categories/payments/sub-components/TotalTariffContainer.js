@@ -32,14 +32,16 @@ const StyledBody = styled.div`
     display: flex;
     justify-content: center;
     min-height: 65px;
-
+    margin-top: 16px;
+    margin-bottom: 16px;
+    .total-tariff_description,
+    .total-tariff_price-text {
+      margin-bottom: 0px;
+    }
     .total-tariff_description {
       margin-top: 16px;
     }
-    .total-tariff_price-text {
-      margin-bottom: 0px;
-      border-bottom: 1px solid #eceef1;
-    }
+
     .total-tariff_month-text {
       margin: auto 0;
       margin-bottom: 13px;
