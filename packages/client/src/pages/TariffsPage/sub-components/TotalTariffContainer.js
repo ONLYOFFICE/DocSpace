@@ -31,7 +31,7 @@ const StyledBody = styled.div`
   .total-tariff_price {
     display: flex;
     justify-content: center;
-    height: 65px;
+    min-height: 65px;
 
     .total-tariff_description {
       margin-top: 16px;
