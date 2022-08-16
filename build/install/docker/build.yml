@@ -138,7 +138,7 @@ services:
     build:
       context:  ./
       dockerfile: "${DOCKERFILE}"
-      target: web
+      target: proxy
     image: "${REPO}/${STATUS}appserver-proxy:${DOCKER_TAG}"
 
   onlyoffice-migration-runner:
