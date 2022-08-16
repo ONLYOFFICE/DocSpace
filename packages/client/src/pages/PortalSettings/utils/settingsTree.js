@@ -147,12 +147,28 @@ export const settingsTree = [
   {
     key: "4",
     icon: "/images/data-management.react.svg",
+    link: "payments",
+    tKey: "Payments",
+    isHeader: true,
+    children: [
+      {
+        key: "4-0",
+        icon: "",
+        link: "portal-payments",
+        tKey: "Payments",
+        isCategory: true,
+      },
+    ],
+  },
+  {
+    key: "5",
+    icon: "/images/data-management.react.svg",
     link: "datamanagement",
     tKey: "ManagementCategoryDataManagement",
     isHeader: true,
     children: [
       {
-        key: "4-0",
+        key: "5-0",
         icon: "",
         link: "backup",
         tKey: "Backup",

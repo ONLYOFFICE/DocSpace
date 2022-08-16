@@ -19,5 +19,6 @@
   "BusinessSuggestion": "Customize your Business plan",
   "BusinessFinalDateInfo": "Subscription will be automatically renewed on {{finalDate}} with updated pricing and specifications. You can cancel it or change your billing info on your Stripe customer portal",
   "BusinessRequestDescription": "The pricing plans with more {{peopleNumber}} managers are available upon request only",
-  "SendRequest": "Send request"
+  "SendRequest": "Send request",
+  "Payments": "Plans & payments"
 }

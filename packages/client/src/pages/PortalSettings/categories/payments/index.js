@@ -37,7 +37,7 @@ const StyledBody = styled.div`
     }
   }
 `;
-const TariffsPageWrapper = ({
+const PaymentsPage = ({
   setQuota,
   quota,
   setTariffsInfo,
@@ -107,19 +107,10 @@ const TariffsPageWrapper = ({
   );
 };
 
-TariffsPageWrapper.propTypes = {
+PaymentsPage.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-const TariffsPage = (props) => {
-  return (
-    <Section>
-      <Section.SectionBody>
-        <TariffsPageWrapper {...props} />
-      </Section.SectionBody>
-    </Section>
-  );
-};
 export default inject(({ auth, payments }) => {
   const { setQuota, quota } = auth;
   const { organizationName } = auth.settingsStore;
@@ -139,4 +130,4 @@ export default inject(({ auth, payments }) => {
     price,
     finalDate,
   };
-})(withRouter(observer(TariffsPage)));
+})(withRouter(observer(PaymentsPage)));

@@ -51,6 +51,8 @@ const getTreeItems = (data, path, t) => {
         return t("Migration");
       case "Backup":
         return t("Backup");
+      case "Payments":
+        return t("Payments");
       case "SingleSignOn":
         return t("SingleSignOn");
       default:
@@ -188,6 +190,8 @@ class ArticleBodyContent extends React.Component {
         return t("Migration");
       case "Backup":
         return t("Backup");
+      case "Payments":
+        return t("Payments");
       case "ManagementCategoryDataManagement":
         return t("ManagementCategoryDataManagement");
       default:
