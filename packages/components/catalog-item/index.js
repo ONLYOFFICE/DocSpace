@@ -88,7 +88,7 @@ const CatalogItem = (props) => {
           onMouseUp={onMouseUpAction}
         ></StyledCatalogItemSibling>
 
-        <StyledCatalogItemImg>
+        <StyledCatalogItemImg isActive={isActive}>
           <ReactSVG className="icon" src={icon} />
           {!showText && (
             <>
@@ -108,7 +108,9 @@ const CatalogItem = (props) => {
         </StyledCatalogItemImg>
 
         {showText && (
-          <StyledCatalogItemText noSelect={true}>{text}</StyledCatalogItemText>
+          <StyledCatalogItemText isActive={isActive} noSelect={true}>
+            {text}
+          </StyledCatalogItemText>
         )}
 
         {showBadge && showText && (
