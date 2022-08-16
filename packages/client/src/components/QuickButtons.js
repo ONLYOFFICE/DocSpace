@@ -38,19 +38,25 @@ const QuickButtons = (props) => {
     ? "/static/images/shared.share.react.svg"
     : "/static/images/share.react.svg";
 
-  const colorShare = theme.filesQuickButtons.color;
+  const colorShare = shared
+    ? theme.filesQuickButtons.sharedColor
+    : theme.filesQuickButtons.color;
 
   const iconLock = locked
     ? "/static/images/file.actions.locked.react.svg"
     : "/static/images/locked.react.svg";
 
-  const colorLock = theme.filesQuickButtons.color;
+  const colorLock = locked
+    ? theme.filesQuickButtons.sharedColor
+    : theme.filesQuickButtons.color;
 
   const iconFavorite = isFavorite
     ? "/static/images/file.actions.favorite.react.svg"
     : "/static/images/favorite.react.svg";
 
-  const colorFavorite = theme.filesQuickButtons.color;
+  const colorFavorite = isFavorite
+    ? theme.filesQuickButtons.sharedColor
+    : theme.filesQuickButtons.color;
 
   const tabletViewQuickButton =
     (sectionWidth > 500 && sectionWidth <= 1024) || isTablet;
@@ -72,7 +78,8 @@ const QuickButtons = (props) => {
           size={sizeQuickButton}
           color={colorShare}
           onClick={onClickShare}
-        ></ColorTheme>
+          hoverColor={theme.filesQuickButtons.sharedColor}
+        />
       )}
       {fileExst &&
         accessToEdit &&
@@ -90,7 +97,8 @@ const QuickButtons = (props) => {
             onClick={onClickLock}
             color={colorLock}
             isDisabled={isDisabled}
-          ></ColorTheme>
+            hoverColor={theme.filesQuickButtons.sharedColor}
+          />
         )}
       {fileExst && !isTrashFolder && displayBadges && (
         <ColorTheme
@@ -103,7 +111,8 @@ const QuickButtons = (props) => {
           data-title={title}
           color={colorFavorite}
           onClick={setFavorite}
-        ></ColorTheme>
+          hoverColor={theme.filesQuickButtons.hoverColor}
+        />
       )}
     </div>
   );
