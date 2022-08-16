@@ -42,6 +42,8 @@ const Label = styled.div`
     props.selected
       ? css`
           cursor: default;
+          background-color: ${(props) =>
+            props.theme.tabsContainer.label.backgroundColor};
           .title_style {
             color: ${(props) => props.theme.tabsContainer.label.title.color};
           }
