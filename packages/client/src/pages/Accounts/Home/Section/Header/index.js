@@ -101,28 +101,17 @@ const SectionHeaderContent = (props) => {
     isHeaderVisible,
     isHeaderIndeterminate,
     isHeaderChecked,
-    group,
-    isAdmin,
+
     t,
-    history,
-    customNames,
-    homepage,
-    // deleteGroup,
+
     isLoaded,
     isTabletView,
     setSelected,
-    // resetFilter,
+
     getHeaderMenu,
-    setInvitationDialogVisible,
+
     showText,
   } = props;
-
-  const {
-    userCaption,
-    guestCaption,
-    // groupCaption,
-    groupsCaption,
-  } = customNames;
 
   //console.log("SectionHeaderContent render", props.isTabletView);
 
@@ -172,99 +161,50 @@ const SectionHeaderContent = (props) => {
 
   const headerMenu = getHeaderMenu(t);
 
-  // const onEditGroup = useCallback(
-  //   () =>
-  //     history.push(
-  //       combineUrl(
-  //         AppServerConfig.proxyURL,
-  //         homepage,
-  //         `/group/edit/${group.id}`
-  //       )
-  //     ),
-  //   [history, homepage, group]
-  // );
-
-  // const onDeleteGroup = useCallback(() => {
-  //   deleteGroup(group.id)
-  //     .then(() => toastr.success(t("SuccessfullyRemovedGroup")))
-  //     .then(() => resetFilter());
-  // }, [deleteGroup, group, t]);
-
-  // const getContextOptionsGroup = useCallback(() => {
-  //   return [
-  //     {
-  //       key: "edit-group",
-  //       label: t("Common:EditButton"),
-  //       onClick: onEditGroup,
-  //     },
-  //     {
-  //       key: "delete-group",
-  //       label: t("Common:Delete"),
-  //       onClick: onDeleteGroup,
-  //     },
-  //   ];
-  // }, [t, onEditGroup, onDeleteGroup]);
-
-  const goToEmployeeCreate = useCallback(() => {
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/accounts/create/user")
-    );
-  }, [history, homepage]);
-
-  // const goToGuestCreate = useCallback(() => {
-  //   history.push(
-  //     combineUrl(AppServerConfig.proxyURL, homepage, "/accounts/create/guest")
-  //   );
-  // }, [history, homepage]);
-
-  // const goToGroupCreate = useCallback(() => {
-  //   history.push(
-  //     combineUrl(AppServerConfig.proxyURL, homepage, "/accounts/group/create")
-  //   );
-  // }, [history, homepage]);
-
-  const onInvitationDialogClick = () => setInvitationDialogVisible(true);
-
-  const getContextOptionsPlus = useCallback(() => {
+  const getContextOptions = () => {
     return [
       {
-        key: "new-employee",
-        label: userCaption,
-        onClick: goToEmployeeCreate,
+        id: "main-button_administrator",
+        className: "main-button_drop-down",
+        icon: "/static/images/person.admin.react.svg",
+        label: "TODO: Administrator",
+        onClick: () => console.log("1"),
+        action: "administrator",
+        key: "administrator",
       },
-      // {
-      //   key: "new-guest",
-      //   label: guestCaption,
-      //   onClick: goToGuestCreate,
-      // },
-      // {
-      //   key: "new-group",
-      //   label: groupCaption,
-      //   onClick: goToGroupCreate,
-      // },
-      { key: "separator", isSeparator: true },
       {
-        key: "make-invitation-link",
-        label: t("MakeInvitationLink"),
-        onClick: onInvitationDialogClick,
-      } /* ,
+        id: "main-button_manager",
+        className: "main-button_drop-down",
+        icon: "/static/images/person.manager.react.svg",
+        label: "TODO: Manager",
+        onClick: () => console.log("1"),
+        action: "manager",
+        key: "manager",
+      },
       {
-        key: "send-invitation",
-        label: t("PeopleTranslations:SendInviteAgain"),
-        onClick: onSentInviteAgain
-      } */,
+        id: "main-button_user",
+        className: "main-button_drop-down",
+        icon: "/static/images/person.user.react.svg",
+        label: "TODO: User",
+        onClick: () => console.log("1"),
+        action: "user",
+        key: "user",
+      },
+      {
+        key: "separator",
+        isSeparator: true,
+      },
+      {
+        id: "main-button_invite-again",
+        className: "main-button_drop-down",
+        icon: "/static/images/invite.again.react.svg",
+        label: "TODO: Invite again",
+        onClick: () => console.log("invite"),
+        action: "invite-again",
+        key: "invite-again",
+      },
     ];
-  }, [
-    userCaption,
-    guestCaption,
-    // groupCaption,
-    t,
-    goToEmployeeCreate,
-    // goToGuestCreate,
-    // goToGroupCreate,
-    /* , onSentInviteAgain */
-    ,
-  ]);
+  };
 
   return (
     <Consumer>
@@ -288,51 +228,24 @@ const SectionHeaderContent = (props) => {
             </div>
           ) : (
             <div className="header-container">
-              {group ? (
-                <>
-                  <Headline
-                    className="headline-header"
-                    type="content"
-                    truncate={true}
-                  >
-                    {t("Accounts")}
-                  </Headline>
-                  {/* {isAdmin && (
-                    <ContextMenuButton
-                      className="action-button"
-                      directionX="right"
-                      title={t("Common:Actions")}
-                      iconName="/static/images/vertical-dots.react.svg"
-                      size={17}
-                      getData={getContextOptionsGroup}
-                      isDisabled={false}
-                    />
-                  )} */}
-                </>
-              ) : (
-                <>
-                  <Headline
-                    className="headline-header"
-                    truncate={true}
-                    type="content"
-                  >
-                    {groupsCaption}
-                  </Headline>
-                  {isAdmin && (
-                    <>
-                      <ContextMenuButton
-                        className="action-button"
-                        directionX="right"
-                        title={t("Common:Actions")}
-                        iconName="/static/images/actions.header.touch.react.svg"
-                        size={17}
-                        getData={getContextOptionsPlus}
-                        isDisabled={false}
-                      />
-                    </>
-                  )}
-                </>
-              )}
+              <>
+                <Headline
+                  className="headline-header"
+                  type="content"
+                  truncate={true}
+                >
+                  {t("Accounts")}
+                </Headline>
+                <ContextMenuButton
+                  className="action-button"
+                  directionX="right"
+                  title={t("Common:Actions")}
+                  iconName="images/plus.svg"
+                  size={17}
+                  getData={getContextOptions}
+                  isDisabled={false}
+                />
+              </>
             </div>
           )}
         </StyledContainer>
