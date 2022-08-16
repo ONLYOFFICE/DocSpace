@@ -556,7 +556,7 @@ const Form = (props) => {
                   isHovered={true}
                   onClick={() => setRecoverDialogVisible(true)}
                 >
-                  {t("AccessRecovery")}
+                  {t("RecoverAccess")}
                 </Link>
               </div>
               {confirmedEmail && (
