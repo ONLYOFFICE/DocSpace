@@ -199,19 +199,13 @@ class FilesActionStore {
     setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
   };
 
-  updateFilesAfterDelete = (folderIds) => {
-    const { folders, setFolders, filter, setSelected } = this.filesStore;
+  updateFilesAfterDelete = () => {
+    const { setSelected } = this.filesStore;
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
     setSelected("close");
-
-    if (folderIds) {
-      const newFolders = folders.filter((f) => !folderIds.includes(f.id));
-      setFolders(newFolders);
-      filter.total -= 1;
-    }
 
     this.dialogsStore.setIsFolderActions(false);
     setTimeout(() => clearSecondaryProgressData(), TIMEOUT);

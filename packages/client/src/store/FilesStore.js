@@ -1631,18 +1631,48 @@ class FilesStore {
   };
 
   addFile = (item, isFolder) => {
-    this.filter.total += 1;
+    const filter = this.filter.clone();
+    filter.total += 1;
+    this.setFilter(filter);
+
     isFolder ? this.folders.unshift(item) : this.files.unshift(item);
 
     this.scrollToTop();
   };
 
   removeFiles = (fileIds, folderIds) => {
-    this.filter.total -= fileIds.length + folderIds.length;
+    const newFilter = this.filter.clone();
+    const deleteCount = fileIds.length + folderIds.length;
+    newFilter.startIndex =
+      (newFilter.page + 1) * newFilter.pageCount - deleteCount;
+    newFilter.pageCount = deleteCount;
 
-    if (fileIds) this.files = this.files.filter((x) => !fileIds.includes(x.id));
-    if (folderIds)
-      this.folders = this.folders.filter((x) => !folderIds.includes(x.id));
+    api.files
+      .getFolder(newFilter.folder, newFilter)
+      .then((res) => {
+        const files = fileIds
+          ? this.files.filter((x) => !fileIds.includes(x.id))
+          : [];
+        const folders = folderIds
+          ? this.folders.filter((x) => !folderIds.includes(x.id))
+          : [];
+
+        const newFiles = [...files, ...res.files];
+        const newFolders = [...folders, ...res.folders];
+
+        const filter = this.filter.clone();
+        filter.total = res.total;
+
+        runInAction(() => {
+          this.setFilter(filter);
+          this.setFiles(newFiles);
+          this.setFolders(newFolders);
+        });
+      })
+      .catch(() => {
+        toastr.error(err);
+        console.log("Need page reload");
+      });
   };
 
   updateFile = (fileId, title) => {
@@ -2488,13 +2518,12 @@ class FilesStore {
     this.trashIsEmpty = isEmpty;
   };
 
-  //TODO: filter.total is not updated, need move filter to new filterStore
   get filterTotal() {
     return this.filter.total;
   }
 
   get hasMoreFiles() {
-    return this.filesList.length < this.filter.total;
+    return this.filesList.length < this.filterTotal;
   }
 
   setFilesIsLoading = (filesIsLoading) => {
