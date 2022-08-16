@@ -25,6 +25,8 @@ class AuthStore {
   providers = [];
   isInit = false;
 
+  quota = {};
+
   constructor() {
     this.userStore = new UserStore();
 
@@ -283,6 +285,11 @@ class AuthStore {
     });
 
     return promise;
+  };
+
+  setQuota = async () => {
+    const res = await api.settings.getPortalQuota();
+    if (res) this.quota = res;
   };
 }
 

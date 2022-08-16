@@ -2632,6 +2632,10 @@ const Dark = {
       textColorError: red,
     },
 
+    payments: {
+      linkColor: "#E06A1B",
+    },
+
     paymentsEnterprise: {
       background: black,
 

@@ -1,0 +1,20 @@
+{
+  "AddedManagers": "Managers added",
+  "StorageSpace": "Storage space used",
+  "TariffsPlans": "Tariffs plans",
+  "SuitablePlan": "Choose the plan that suits your team",
+  "PerUserMonth": "per manager/month",
+  "HaveQuestions": "Have questions?",
+  "ContactUs": "For sales questions, contact us at",
+  "ManagersNumber": "Number of managers",
+  "StartPrice": "From {{price}} per manager/month",
+  "RenewSubscription": "Renew subscription to {{organizationName}} Business cloud",
+  "ReActivate": "Re-activate business plan?",
+  "Benefits": "Benefits",
+  "BusinessTitle": "You are using Business plan",
+  "StartupTitle": "You are using free Startup plan",
+  "PriceCalculation": "Calculate your price",
+  "UpgradeNow": "Upgrade now",
+  "StartupSuggestion": "Do more with Business plan",
+  "BusinessSuggestion": "Customize your Business plan"
+}

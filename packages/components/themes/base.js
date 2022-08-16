@@ -2622,6 +2622,10 @@ const Base = {
       textColorError: red,
     },
 
+    payments: {
+      linkColor: link,
+    },
+
     paymentsEnterprise: {
       background: grayLight,
 

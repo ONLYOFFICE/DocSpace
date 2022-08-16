@@ -60,7 +60,7 @@ import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 //   "/preparation-portal"
 // );
 
-const Payments = React.lazy(() => import("./pages/Payments"));
+const Payments = React.lazy(() => import("./pages/TariffsPage"));
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
 const Files = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
