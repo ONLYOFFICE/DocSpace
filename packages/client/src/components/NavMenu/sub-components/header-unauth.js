@@ -83,8 +83,6 @@ const HeaderUnAuth = ({
         ) : (
           <></>
         )}
-
-        <div>{enableAdmMess && !wizardToken && <RecoverAccess t={t} />}</div>
       </Box>
     </Header>
   );
