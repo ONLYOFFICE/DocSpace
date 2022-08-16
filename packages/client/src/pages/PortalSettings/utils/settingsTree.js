@@ -146,7 +146,7 @@ export const settingsTree = [
   },
   {
     key: "4",
-    icon: "/images/data-management.react.svg",
+    icon: "/images/payment.react.svg",
     link: "payments",
     tKey: "Payments",
     isHeader: true,
