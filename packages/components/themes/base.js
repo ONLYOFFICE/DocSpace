@@ -1861,7 +1861,7 @@ const Base = {
         height: "16px",
 
         fill: "#657077",
-
+        isActiveFill: "#4781D1",
         tablet: {
           width: "20px",
           height: "20px",
@@ -1873,6 +1873,7 @@ const Base = {
       marginLeft: "8px",
       lineHeight: "20px",
       color: cyanBlueDarkShade,
+      isActiveColor: "#4781D1",
       fontSize: "13px",
       fontWeight: 600,
       tablet: {
@@ -2127,6 +2128,7 @@ const Base = {
 
       editingIconColor: "#3b72a7",
       shareHoverColor: "#3b72a7",
+      pinColor: "#3b72a7",
     },
 
     tableView: {

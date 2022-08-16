@@ -1615,7 +1615,6 @@ const Dark = {
     fillColorOff: "#292929",
 
     disableFillColor: black,
-    disableFillColorOff: "#646464",
 
     borderColor: "#474747",
     borderColorOff: "#474747",
@@ -1623,11 +1622,11 @@ const Dark = {
     disableBorderColor: "#474747",
     disableBorderColorOff: "#646464",
 
-    fillCircleColor: "#292929",
+    fillCircleColor: "#FFFFFF",
     fillCircleColorOff: grayMaxLight,
 
-    disableFillCircleColor: "#646464",
-    disableFillCircleColorOff: black,
+    disableFillCircleColor: "#333333",
+    disableFillCircleColorOff: "#797979",
   },
 
   contextMenuButton: {
@@ -1861,7 +1860,7 @@ const Dark = {
         height: "16px",
 
         fill: "#a9a9a9",
-
+        isActiveFill: "#FFFFFF",
         tablet: {
           width: "20px",
           height: "20px",
@@ -1873,6 +1872,7 @@ const Dark = {
       marginLeft: "8px",
       lineHeight: "20px",
       color: "#a9a9a9",
+      isActiveColor: "#FFFFFF",
       fontSize: "13px",
       fontWeight: 600,
       tablet: {
@@ -2128,6 +2128,7 @@ const Dark = {
 
       editingIconColor: "#eeeeee",
       shareHoverColor: "#eeeeee",
+      pinColor: "#FFFFFF",
     },
 
     tableView: {
@@ -2746,7 +2747,7 @@ const Dark = {
   submenu: {
     lineColor: "#474747",
     backgroundColor: "#333",
-    textColor: "#E06A1B",
+    textColor: "#FFFFFF",
     bottomLineColor: "#E06A1B",
   },
 
