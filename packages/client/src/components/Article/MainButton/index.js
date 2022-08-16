@@ -181,7 +181,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_administrator",
             className: "main-button_drop-down",
             icon: "/static/images/person.admin.react.svg",
-            label: "TODO: Administrator",
+            label: t("People:Administrator"),
             onClick: onInvite,
             action: "administrator",
             key: "administrator",
@@ -190,7 +190,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_manager",
             className: "main-button_drop-down",
             icon: "/static/images/person.manager.react.svg",
-            label: "TODO: Manager",
+            label: t("People:Manager"),
             onClick: onInvite,
             action: "manager",
             key: "manager",
@@ -199,7 +199,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_user",
             className: "main-button_drop-down",
             icon: "/static/images/person.user.react.svg",
-            label: "TODO: User",
+            label: t("Common:User"),
             onClick: onInvite,
             action: "user",
             key: "user",
@@ -262,7 +262,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_invite-again",
             className: "main-button_drop-down",
             icon: "/static/images/invite.again.react.svg",
-            label: "TODO: Invite again",
+            label: t("People:LblInviteAgain"),
             onClick: onInviteAgain,
             action: "invite-again",
             key: "invite-again",
@@ -310,7 +310,9 @@ const ArticleMainButtonContent = (props) => {
   ]);
 
   const canInvite = isAccountsPage && selectedTreeNode[1] === "filter";
-  const mainButtonText = isAccountsPage ? "TODO: Invite" : t("Common:Actions");
+  const mainButtonText = isAccountsPage
+    ? t("Common:Invite")
+    : t("Common:Actions");
 
   return (
     <>
@@ -424,7 +426,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Article", "UploadPanel", "Common", "Files"])(
+  withTranslation(["Article", "UploadPanel", "Common", "Files", "People"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
       <Loaders.ArticleButton />
     )
