@@ -14,6 +14,8 @@ import SocialButton from "@docspace/components/social-button";
 import FacebookButton from "@docspace/components/facebook-button";
 import Section from "@docspace/common/components/Section";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
+import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dialog";
+import MoreLoginModal from "./sub-components/more-login";
 import Register from "./sub-components/register-container";
 import {
   getAuthProviders,
@@ -33,7 +35,6 @@ import {
   withTranslation,
 } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
-import MoreLoginModal from "./sub-components/more-login";
 import {
   ButtonsWrapper,
   LoginContainer,
@@ -73,6 +74,8 @@ const Form = (props) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
+
+  const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
   const { t } = useTranslation("Login");
 
@@ -532,8 +535,8 @@ const Form = (props) => {
               />
 
               {/*Uncomment when add api*/}
-              {/*<div className="login-code-link">
-                <Link
+              <div className="login-or-access">
+                {/*<Link
                   fontWeight="600"
                   fontSize="13px"
                   color="#316DAA"
@@ -542,9 +545,20 @@ const Form = (props) => {
                   onClick={onLoginWithCodeClick}
                 >
                   {t("SignInWithCode")}
-                </Link>
-              </div>*/}
+                </Link>*/}
 
+                <Text color="#A3A9AE">{t("Or")}</Text>
+                <Link
+                  fontWeight="600"
+                  fontSize="13px"
+                  color="#316DAA"
+                  type="action"
+                  isHovered={true}
+                  onClick={() => setRecoverDialogVisible(true)}
+                >
+                  {t("AccessRecovery")}
+                </Link>
+              </div>
               {confirmedEmail && (
                 <Text isBold={true} fontSize="16px">
                   {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
@@ -562,6 +576,12 @@ const Form = (props) => {
             onSocialLoginClick={onSocialButtonClick}
             ssoLabel={ssoLabel}
             ssoUrl={ssoUrl}
+          />
+
+          <RecoverAccessModalDialog
+            t={t}
+            visible={recoverDialogVisible}
+            onClose={() => setRecoverDialogVisible(false)}
           />
         </>
       )}

@@ -176,8 +176,11 @@ export const LoginContainer = styled.div`
       margin: 0 8px;
     }
 
-    .login-code-link {
-      text-align: center;
+    .login-or-access {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
       margin-top: 24px;
     }
   }
