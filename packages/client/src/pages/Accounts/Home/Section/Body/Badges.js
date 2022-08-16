@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import SendClockIcon from "../../public/images/send.clock.react.svg";
-import CatalogSpamIcon from "../../public/images/catalog.spam.react.svg";
+
+import SendClockIcon from "PUBLIC_DIR/images/send.clock.react.svg";
+import CatalogSpamIcon from "PUBLIC_DIR/images/catalog.spam.react.svg";
 
 const StyledSendClockIcon = styled(SendClockIcon)`
   ${commonIconsStyles}
