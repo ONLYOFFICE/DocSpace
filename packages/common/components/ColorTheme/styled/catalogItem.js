@@ -6,30 +6,40 @@ import {
   StyledCatalogItemText,
 } from "@docspace/components/catalog-item/styled-catalog-item";
 
-const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
-  ${StyledCatalogItemText} {
-    color: ${isActive && currentColorScheme.accentColor};
+import Base from "@docspace/components/themes/base";
 
-    &:hover {
-      color: ${isActive && currentColorScheme.accentColor};
-    }
-  }
+const getDefaultStyles = ({ currentColorScheme, isActive, theme }) =>
+  currentColorScheme &&
+  css`
+    ${StyledCatalogItemText} {
+      color: ${isActive && theme.isBase && currentColorScheme.accentColor};
 
-  ${StyledCatalogItemImg} {
-    svg {
-      path {
-        fill: ${isActive && currentColorScheme.accentColor} !important;
+      &:hover {
+        color: ${isActive && theme.isBase && currentColorScheme.accentColor};
       }
     }
 
-    &:hover {
+    ${StyledCatalogItemImg} {
       svg {
         path {
-          fill: ${isActive && currentColorScheme.accentColor} !important;
+          fill: ${isActive &&
+          theme.isBase &&
+          currentColorScheme.accentColor} !important;
+        }
+      }
+
+      &:hover {
+        svg {
+          path {
+            fill: ${isActive &&
+            theme.isBase &&
+            currentColorScheme.accentColor} !important;
+          }
         }
       }
     }
-  }
-`;
+  `;
+
+StyledCatalogItemContainer.defaultProps = { theme: Base };
 
 export default styled(StyledCatalogItemContainer)(getDefaultStyles);
