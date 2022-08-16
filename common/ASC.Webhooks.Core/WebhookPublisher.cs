@@ -32,18 +32,21 @@ public class WebhookPublisher : IWebhookPublisher
     private readonly DbWorker _dbWorker;
     private readonly TenantManager _tenantManager;
     private readonly ICacheNotify<WebhookRequest> _webhookNotify;
+    private readonly AuthContext _authContext;
 
     public WebhookPublisher(
         DbWorker dbWorker,
         TenantManager tenantManager,
-        ICacheNotify<WebhookRequest> webhookNotify)
+        ICacheNotify<WebhookRequest> webhookNotify,
+        AuthContext authContext)
     {
         _dbWorker = dbWorker;
         _tenantManager = tenantManager;
         _webhookNotify = webhookNotify;
+        _authContext = authContext;
     }
 
-    public void Publish(string eventName, string requestHeaders, string requestPayload)
+    public void Publish(string method, string route, string requestHeaders, string requestPayload)
     {
         if (string.IsNullOrEmpty(requestPayload))
         {
@@ -57,9 +60,10 @@ public class WebhookPublisher : IWebhookPublisher
         {
             var webhooksLog = new WebhooksLog
             {
-                Uid = Guid.NewGuid().ToString(),
+                Uid = _authContext.CurrentAccount.ID.ToString(),
                 TenantId = tenantId,
-                Event = eventName,
+                Method = method,
+                Route = route,
                 CreationTime = DateTime.UtcNow,
                 RequestHeaders = requestHeaders,
                 RequestPayload = requestPayload,

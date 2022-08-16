@@ -75,9 +75,8 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
                 var (method, routePattern) = GetData(context.HttpContext);
 
                 var resultContent = Encoding.UTF8.GetString(_stream.ToArray());
-                var eventName = $"method: {method}, route: {routePattern}";
 
-                _webhookPublisher.Publish(eventName, JsonSerializer.Serialize(context.HttpContext.Request.Headers.ToDictionary(r => r.Key, v => v.Value)), resultContent);
+                _webhookPublisher.Publish(method, routePattern, JsonSerializer.Serialize(context.HttpContext.Request.Headers.ToDictionary(r => r.Key, v => v.Value)), resultContent);
             }
             catch (Exception e)
             {

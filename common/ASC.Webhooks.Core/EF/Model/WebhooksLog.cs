@@ -30,8 +30,9 @@ public partial class WebhooksLog
 {
     public int ConfigId { get; set; }
     public DateTime CreationTime { get; set; }
-    public string Event { get; set; }
     public int Id { get; set; }
+    public string Method { get; set; }
+    public string Route { get; set; }
     public string RequestHeaders { get; set; }
     public string RequestPayload { get; set; }
     public string ResponseHeaders { get; set; }
@@ -83,7 +84,9 @@ public static class WebhooksPayloadExtension
             entity.Property(e => e.RequestPayload)
                 .IsRequired()
                 .HasColumnName("request_payload")
-                .HasColumnType("json");
+                .HasColumnType("text")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.RequestHeaders)
                 .HasColumnName("request_headers")
@@ -91,15 +94,22 @@ public static class WebhooksPayloadExtension
 
             entity.Property(e => e.ResponsePayload)
                 .HasColumnName("response_payload")
-                .HasColumnType("json");
+                .HasColumnType("text")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.ResponseHeaders)
                 .HasColumnName("response_headers")
                 .HasColumnType("json");
 
-            entity.Property(e => e.Event)
+            entity.Property(e => e.Method)
                 .HasColumnType("varchar")
-                .HasColumnName("event")
+                .HasColumnName("method")
+                .HasMaxLength(100);
+
+            entity.Property(e => e.Route)
+                .HasColumnType("varchar")
+                .HasColumnName("route")
                 .HasMaxLength(100);
 
             entity.Property(e => e.CreationTime)
@@ -142,24 +152,27 @@ public static class WebhooksPayloadExtension
 
             entity.Property(e => e.RequestPayload)
                 .IsRequired()
-                .HasColumnName("request_payload")
-                .HasColumnType("json");
+                .HasColumnName("request_payload");
 
             entity.Property(e => e.RequestHeaders)
                 .HasColumnName("request_headers")
                 .HasColumnType("json");
 
             entity.Property(e => e.ResponsePayload)
-                .HasColumnName("response_payload")
-                .HasColumnType("json");
+                .HasColumnName("response_payload");
 
             entity.Property(e => e.ResponseHeaders)
                 .HasColumnName("response_headers")
                 .HasColumnType("json");
 
-            entity.Property(e => e.Event)
+            entity.Property(e => e.Method)
                 .HasColumnType("varchar")
-                .HasColumnName("event")
+                .HasColumnName("method")
+                .HasMaxLength(100);
+
+            entity.Property(e => e.Route)
+                .HasColumnType("varchar")
+                .HasColumnName("route")
                 .HasMaxLength(100);
 
             entity.Property(e => e.CreationTime)
