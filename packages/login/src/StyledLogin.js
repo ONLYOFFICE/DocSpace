@@ -160,7 +160,6 @@ export const LoginContainer = styled.div`
 
     .login-button {
       margin-top: 8px;
-      margin-bottom: 24px;
     }
 
     .login-button-dialog {
@@ -179,6 +178,7 @@ export const LoginContainer = styled.div`
 
     .login-link {
       text-align: center;
+      margin-top: 24px;
     }
   }
 
