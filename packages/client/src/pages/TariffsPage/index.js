@@ -45,6 +45,7 @@ const TariffsPageWrapper = ({
   organizationName,
   isStartup,
   price,
+  finalDate,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -76,6 +77,15 @@ const TariffsPageWrapper = ({
       >
         {isStartup ? t("StartupSuggestion") : t("BusinessSuggestion")}
       </Text>
+
+      {!isStartup && (
+        <Text noSelect fontSize={"14"} className="payments-info_managers-price">
+          <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
+            {{ finalDate: finalDate }}
+          </Trans>
+        </Text>
+      )}
+
       <Text
         noSelect
         fontWeight={600}
@@ -86,10 +96,12 @@ const TariffsPageWrapper = ({
           {{ price: price }}
         </Trans>
       </Text>
+
       <div className="payments-info">
         <PriceCalculation t={t} price={price} />
         <BenefitsContainer t={t} />
       </div>
+
       <ContactContainer t={t} />
     </StyledBody>
   );
@@ -113,8 +125,9 @@ export default inject(({ auth, payments }) => {
   const { organizationName } = auth.settingsStore;
   const { setTariffsInfo, tariffsInfo } = payments;
 
-  const isStartup = true;
+  const isStartup = false;
   const price = "30";
+  const finalDate = "17 February 2022";
 
   return {
     setQuota,
@@ -124,5 +137,6 @@ export default inject(({ auth, payments }) => {
     tariffsInfo,
     isStartup,
     price,
+    finalDate,
   };
 })(withRouter(observer(TariffsPage)));

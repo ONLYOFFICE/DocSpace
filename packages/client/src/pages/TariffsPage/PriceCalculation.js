@@ -11,6 +11,7 @@ const StyledBody = styled.div`
   border-radius: 12px;
   border: 1px solid #d0d5da;
   max-width: 320px;
+ 
 
   @media ${smallTablet} {
     max-width: 600px;
@@ -28,7 +29,7 @@ const step = 1,
   maxUsersCount = 1000,
   maxSliderNumber = 999;
 
-const PriceCalculation = ({ t, price }) => {
+const PriceCalculation = ({ t, price, rights, theme }) => {
   const [usersCount, setUsersCount] = useState(minUsersCount);
 
   const onSliderChange = (e) => {
@@ -78,9 +79,13 @@ const PriceCalculation = ({ t, price }) => {
     setUsersCount(numberValue);
   };
 
+  const isDisabled = rights === "3" || rights === "2" ? true : false;
+
+  const color = isDisabled ? { color: theme.text.disableColor } : {};
+
   return (
-    <StyledBody>
-      <Text fontSize="16px" fontWeight={600} noSelect>
+    <StyledBody rights={rights}>
+      <Text fontSize="16px" fontWeight={600} noSelect {...color}>
         {t("PriceCalculation")}
       </Text>
       <SelectUsersCountContainer
@@ -91,14 +96,23 @@ const PriceCalculation = ({ t, price }) => {
         onClickOperations={onClickOperations}
         onSliderChange={onSliderChange}
         onChangeNumber={onChangeNumber}
+        isDisabled={isDisabled}
       />
-      <TotalTariffContainer t={t} usersCount={usersCount} price={price} />
+      <TotalTariffContainer
+        t={t}
+        usersCount={usersCount}
+        price={price}
+        isDisabled={isDisabled}
+      />
     </StyledBody>
   );
 };
 
 export default inject(({ auth, payments }) => {
   const { tariffsInfo } = payments;
-
-  return { tariffsInfo };
+  const { theme } = auth.settingsStore;
+  //const rights = "2";
+  const rights = "3";
+  //const rights = "1";
+  return { tariffsInfo, rights, theme };
 })(observer(PriceCalculation));

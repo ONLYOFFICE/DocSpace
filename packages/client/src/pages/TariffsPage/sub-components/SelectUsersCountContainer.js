@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Slider from "@docspace/components/slider";
@@ -45,6 +45,11 @@ const StyledBody = styled.div`
     text-align: center;
     margin-left: 20px;
     margin-right: 20px;
+    ${(props) =>
+      props.isDisabled &&
+      css`
+        color: ${props.theme.text.disableColor};
+      `}
   }
 
   .tariff-users {
@@ -52,9 +57,19 @@ const StyledBody = styled.div`
     align-items: center;
     margin: 0 auto;
     width: max-content;
+    .tariff-score {
+      path {
+        ${(props) =>
+          props.isDisabled &&
+          css`
+            fill: ${props.theme.text.disableColor};
+          `}
+      }
+    }
+
     .tariff-score,
     .circle {
-      cursor: pointer;
+      cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
     }
     .circle {
       background: #f3f4f4;
@@ -91,51 +106,51 @@ const SelectUsersCountContainer = ({
   onClickOperations,
   onChangeNumber,
   theme,
+  isDisabled,
 }) => {
   const { t } = useTranslation("Payments");
 
   const value =
     usersCount >= maxUsersCount ? maxSliderNumber + "+" : usersCount + "";
 
-  console.log("usersCount", usersCount, "value", value);
+  const onClickProp = isDisabled ? {} : { onClick: onClickOperations };
+  const onChangeSlideProp = isDisabled ? {} : { onChange: onSliderChange };
+  const onchangeNumberProp = isDisabled ? {} : { onChange: onChangeNumber };
+
+  const color = isDisabled ? { color: theme.text.disableColor } : {};
+
   return (
-    <StyledBody theme={theme}>
-      <Text noSelect fontWeight={600} className="tariff-users_text">
+    <StyledBody theme={theme} isDisabled={isDisabled}>
+      <Text noSelect fontWeight={600} className="tariff-users_text" {...color}>
         {t("ManagersNumber")}
       </Text>
       <div className="tariff-users">
-        <div
-          className="circle"
-          onClick={onClickOperations}
-          data-operation={"minus"}
-        >
-          <MinusIcon onClick={onClickOperations} className="tariff-score" />
+        <div className="circle" {...onClickProp} data-operation={"minus"}>
+          <MinusIcon {...onClickProp} className="tariff-score" />
         </div>
 
         <TextInput
+          isReadOnly={isDisabled}
           withBorder={false}
           className="payments-operations_input"
           value={value}
-          onChange={onChangeNumber}
+          {...onchangeNumberProp}
         />
-        <div
-          className="circle"
-          onClick={onClickOperations}
-          data-operation={"plus"}
-        >
-          <PlusIcon onClick={onClickOperations} className="tariff-score" />
+        <div className="circle" {...onClickProp} data-operation={"plus"}>
+          <PlusIcon {...onClickProp} className="tariff-score" />
         </div>
       </div>
 
       <Slider
+        isDisabled={isDisabled}
+        isReadOnly={isDisabled}
         type="range"
         min={min}
         max={maxUsersCount.toString()}
         step={step}
         withPouring
         value={usersCount}
-        onChange={onSliderChange}
-        colorPouring={"#20D21F"}
+        {...onChangeSlideProp}
       />
       <div className="slider-track">
         <Text className="slider-track-value_min">{min}</Text>

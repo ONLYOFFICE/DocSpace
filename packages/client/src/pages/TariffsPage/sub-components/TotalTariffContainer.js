@@ -45,15 +45,17 @@ const StyledBody = styled.div`
   }
 `;
 
-const TotalTariffContainer = ({ t, usersCount, price }) => {
+const TotalTariffContainer = ({ t, usersCount, price, isDisabled, theme }) => {
   useEffect(() => {}, []);
 
   const totalPrice = price * usersCount;
 
+  const color = isDisabled ? { color: theme.text.disableColor } : {};
+
   return (
     <StyledBody>
       <div className="total-tariff_user">
-        <Text fontSize="16px" textAlign="center" isBold noSelect>
+        <Text fontSize="16px" textAlign="center" isBold noSelect {...color}>
           {price}
         </Text>
         <Text
@@ -73,6 +75,7 @@ const TotalTariffContainer = ({ t, usersCount, price }) => {
           textAlign={"center"}
           className="total-tariff_price-text"
           noSelect
+          {...color}
         >
           {totalPrice}
         </Text>
@@ -82,15 +85,22 @@ const TotalTariffContainer = ({ t, usersCount, price }) => {
           textAlign={"center"}
           className="total-tariff_month-text"
           noSelect
+          {...color}
         >
           {"/month"}
         </Text>
       </div>
-      <Button label={t("UpgradeNow")} size={"medium"} primary />
+      <Button
+        label={t("UpgradeNow")}
+        size={"medium"}
+        primary
+        isDisabled={isDisabled}
+      />
     </StyledBody>
   );
 };
 
-export default inject(({}) => {
-  return {};
+export default inject(({ auth }) => {
+  const { theme } = auth.settingsStore;
+  return { theme };
 })(observer(TotalTariffContainer));
