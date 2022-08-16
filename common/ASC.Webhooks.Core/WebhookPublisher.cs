@@ -43,8 +43,13 @@ public class WebhookPublisher : IWebhookPublisher
         _webhookNotify = webhookNotify;
     }
 
-    public void Publish(string eventName, string requestPayload)
+    public void Publish(string eventName, string requestHeaders, string requestPayload)
     {
+        if (string.IsNullOrEmpty(requestPayload))
+        {
+            return;
+        }
+
         var tenantId = _tenantManager.GetCurrentTenant().Id;
         var webhookConfigs = _dbWorker.GetWebhookConfigs(tenantId);
 
@@ -56,15 +61,17 @@ public class WebhookPublisher : IWebhookPublisher
                 TenantId = tenantId,
                 Event = eventName,
                 CreationTime = DateTime.UtcNow,
+                RequestHeaders = requestHeaders,
                 RequestPayload = requestPayload,
                 Status = ProcessStatus.InProcess,
                 ConfigId = config.ConfigId
             };
-            var DbId = _dbWorker.WriteToJournal(webhooksLog);
 
-            var request = new WebhookRequest()
+            var id = _dbWorker.WriteToJournal(webhooksLog);
+
+            var request = new WebhookRequest
             {
-                Id = DbId
+                Id = id
             };
 
             _webhookNotify.Publish(request, CacheNotifyAction.Update);

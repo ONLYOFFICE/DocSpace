@@ -31,14 +31,12 @@ public class WebhookSender
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly ILogger _log;
-    public int? RepeatCount { get; init; }
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public WebhookSender(ILoggerProvider options, IServiceScopeFactory scopeFactory, Settings settings, IHttpClientFactory clientFactory)
+    public WebhookSender(ILoggerProvider options, IServiceScopeFactory scopeFactory, IHttpClientFactory clientFactory)
     {
         _log = options.CreateLogger("ASC.Webhooks.Core");
         _scopeFactory = scopeFactory;
-        RepeatCount = settings.RepeatCount;
         _clientFactory = clientFactory;
     }
 
@@ -48,81 +46,53 @@ public class WebhookSender
         var dbWorker = scope.ServiceProvider.GetRequiredService<DbWorker>();
 
         var entry = dbWorker.ReadFromJournal(webhookRequest.Id);
-        var id = entry.Id;
-        var requestURI = entry.Uri;
-        var secretKey = entry.SecretKey;
         var data = entry.Payload;
 
-        var response = new HttpResponseMessage();
-        var request = new HttpRequestMessage();
+        var status = ProcessStatus.InProcess;
+        string responsePayload = null;
+        string responseHeaders = null;
 
-        for (var i = 0; i < RepeatCount; i++)
+        try
         {
-            try
+            var httpClient = _clientFactory.CreateClient("webhook");
+            var request = new HttpRequestMessage(HttpMethod.Post, entry.Uri)
             {
-                request = new HttpRequestMessage(HttpMethod.Post, requestURI);
-                request.Headers.Add("Accept", "*/*");
-                request.Headers.Add("Secret", "SHA256=" + GetSecretHash(secretKey, data));
+                Content = new StringContent(data, Encoding.UTF8, "application/json")
+            };
 
-                request.Content = new StringContent(
-                    data,
-                    Encoding.UTF8,
-                    "application/json");
+            request.Headers.Add("Accept", "*/*");
+            request.Headers.Add("Secret", "SHA256=" + GetSecretHash(entry.SecretKey, data));
+            var response = await httpClient.SendAsync(request, cancellationToken);
 
-                var httpClient = _clientFactory.CreateClient();
-                response = await httpClient.SendAsync(request, cancellationToken);
+            status = ProcessStatus.Success;
+            responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value));
+            responsePayload = await response.Content.ReadAsStringAsync();
 
-                if (response.IsSuccessStatusCode)
-                {
-                    UpdateDb(dbWorker, id, response, request, ProcessStatus.Success);
-                    _log.DebugResponse(response);
-                    break;
-                }
-                else if (i == RepeatCount - 1)
-                {
-                    UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
-                    _log.DebugResponse(response);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (i == RepeatCount - 1)
-                {
-                    UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
-                }
-
-                _log.ErrorWithException(ex);
-                continue;
-            }
+            _log.DebugResponse(response);
         }
+        catch (HttpRequestException e)
+        {
+            status = ProcessStatus.Failed;
+            responsePayload = e.Message;
+
+            _log.ErrorWithException(e);
+        }
+        catch (Exception e)
+        {
+            _log.ErrorWithException(e);
+        }
+
+        await dbWorker.UpdateWebhookJournal(entry.Id, status, responsePayload, responseHeaders);
     }
 
     private string GetSecretHash(string secretKey, string body)
     {
-        string computedSignature;
         var secretBytes = Encoding.UTF8.GetBytes(secretKey);
 
         using (var hasher = new HMACSHA256(secretBytes))
         {
             var data = Encoding.UTF8.GetBytes(body);
-            computedSignature = BitConverter.ToString(hasher.ComputeHash(data));
+            return BitConverter.ToString(hasher.ComputeHash(data));
         }
-
-        return computedSignature;
-    }
-
-    private void UpdateDb(DbWorker dbWorker, int id, HttpResponseMessage response, HttpRequestMessage request, ProcessStatus status)
-    {
-        var responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value));
-        var requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key, v => v.Value));
-        string responsePayload;
-
-        using (var streamReader = new StreamReader(response.Content.ReadAsStream()))
-        {
-            var responseContent = streamReader.ReadToEnd();
-            responsePayload = JsonSerializer.Serialize(responseContent);
-        }
-
-        dbWorker.UpdateWebhookJournal(id, status, responsePayload, responseHeaders, requestHeaders);
     }
 }

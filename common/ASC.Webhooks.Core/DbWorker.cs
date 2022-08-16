@@ -124,16 +124,17 @@ public class DbWorker
         webhooksDbContext.SaveChanges();
     }
 
-    public void UpdateWebhookJournal(int id, ProcessStatus status, string responsePayload, string responseHeaders, string requestHeaders)
+    public async Task UpdateWebhookJournal(int id, ProcessStatus status, string responsePayload, string responseHeaders)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
-        var webhook = webhooksDbContext.WebhooksLogs.Where(t => t.Id == id).FirstOrDefault();
+
+        var webhook = await webhooksDbContext.WebhooksLogs.Where(t => t.Id == id).FirstOrDefaultAsync();
         webhook.Status = status;
         webhook.ResponsePayload = responsePayload;
         webhook.ResponseHeaders = responseHeaders;
-        webhook.RequestHeaders = requestHeaders;
+
         webhooksDbContext.WebhooksLogs.Update(webhook);
-        webhooksDbContext.SaveChanges();
+        await webhooksDbContext.SaveChangesAsync();
     }
 
     public int WriteToJournal(WebhooksLog webhook)

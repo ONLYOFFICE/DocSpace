@@ -30,25 +30,35 @@ namespace ASC.Webhooks.Service.Services;
 public class WorkerService : BackgroundService
 {
     private readonly ILogger<WorkerService> _logger;
-    private readonly ConcurrentQueue<WebhookRequest> _queue;
     private readonly int? _threadCount = 10;
     private readonly WebhookSender _webhookSender;
     private readonly TimeSpan _waitingPeriod;
+    private readonly ConcurrentQueue<WebhookRequest> _queue;
+    private readonly ICacheNotify<WebhookRequest> _webhookNotify;
 
-    public WorkerService(WebhookSender webhookSender,
+    public WorkerService(
+        ICacheNotify<WebhookRequest> webhookNotify,
+        WebhookSender webhookSender,
         ILogger<WorkerService> logger,
-        BuildQueueService buildQueueService,
         Settings settings)
     {
+        _webhookNotify = webhookNotify;
+        _queue = new ConcurrentQueue<WebhookRequest>();
         _logger = logger;
         _webhookSender = webhookSender;
-        _queue = buildQueueService.Queue;
         _threadCount = settings.ThreadCount;
         _waitingPeriod = TimeSpan.FromSeconds(5);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _webhookNotify.Subscribe(_queue.Enqueue, CacheNotifyAction.Update);
+
+        stoppingToken.Register(() =>
+        {
+            _webhookNotify.Unsubscribe(CacheNotifyAction.Update);
+        });
+
         while (!stoppingToken.IsCancellationRequested)
         {
             var queueSize = _queue.Count;
@@ -82,13 +92,13 @@ public class WorkerService : BackgroundService
 
                 if (counter >= _threadCount)
                 {
-                    Task.WaitAll(tasks.ToArray());
+                    await Task.WhenAll(tasks);
                     tasks.Clear();
                     counter = 0;
                 }
             }
 
-            Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks);
             _logger.DebugProcedureFinish();
         }
     }
