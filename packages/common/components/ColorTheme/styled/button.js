@@ -5,7 +5,8 @@ const activeCss = css`
   border-color: ${(props) => props.currentColorScheme.buttonsMain};
   background: ${(props) =>
     !!props.primary && props.currentColorScheme.buttonsMain};
-  // filter: ${(props) => !!props.primary && "brightness(60%)"};
+  filter: ${(props) => !!props.primary && "brightness(90%)"};
+  opacity: ${(props) => !!props.primary && "1"};
 `;
 
 const hoverCss = css`
@@ -24,7 +25,7 @@ const getDefaultStyles = ({
   isHovered,
   disableHover,
 }) =>
-  currentColorScheme.buttonsMain &&
+  currentColorScheme &&
   css`
     background: ${!!primary && currentColorScheme.buttonsMain};
     opacity: ${!!primary && isDisabled && "0.6"};
