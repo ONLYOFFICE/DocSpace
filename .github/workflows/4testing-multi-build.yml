@@ -36,7 +36,7 @@ jobs:
           DOCKER_TAG="test" \
           DOCKERFILE="Dockerfile.app" \
           docker buildx bake -f build.yml \
-          --set *.args.GIT_BRANCH="develop" \
+          --set *.args.GIT_BRANCH="feature/github-action-build-docker" \
           --set *.platform=linux/amd64,linux/arm64 \
           --push
         shell: bash
