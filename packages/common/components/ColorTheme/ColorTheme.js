@@ -11,6 +11,7 @@ import {
   ToggleButtonTheme,
   TabContainerTheme,
   IconButtonTheme,
+  IconButtonPinTheme,
   MainButtonMobileTheme,
   IndicatorFilterButtonTheme,
   FilterBlockItemTagTheme,
@@ -57,6 +58,9 @@ const ColorTheme = forwardRef((props, ref) => {
     }
     case ThemeType.IconButton: {
       return <IconButtonTheme ref={ref} {...props} />;
+    }
+    case ThemeType.IconButtonPin: {
+      return <IconButtonPinTheme ref={ref} {...props} />;
     }
     case ThemeType.MainButtonMobile: {
       return <MainButtonMobileTheme ref={ref} {...props} />;
