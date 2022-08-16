@@ -13,34 +13,6 @@ export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
 `;
 
-const StyledEditIcon = styled(IconButton)`
-  ${commonIconsStyles}
-
-  svg {
-    path {
-      fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
-    }
-  }
-`;
-
-const StyledPinIcon = styled(IconButton)`
-  ${commonIconsStyles}
-
-  svg {
-    path {
-      fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
-    }
-  }
-
-  :hover {
-    svg {
-      path {
-        fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
-      }
-    }
-  }
-`;
-
 const StyledWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -181,8 +153,9 @@ const Badges = ({
           className="badge icons-group is-editing tablet-badge tablet-edit"
           size={sizeBadge}
           onClick={onFilesClick}
+          hoverColor={theme.filesBadges.hoverIconColor}
           title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
-        ></ColorTheme>
+        />
       )}
       {canConvert && !isTrashFolder && (
         <ColorTheme
@@ -191,7 +164,8 @@ const Badges = ({
           iconName={iconRefresh}
           className="badge tablet-badge icons-group can-convert"
           size={sizeBadge}
-        ></ColorTheme>
+          hoverColor={theme.filesBadges.hoverIconColor}
+        />
       )}
       {version > 1 && (
         <BadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
@@ -221,14 +195,13 @@ const Badges = ({
     <>
       {isRoom && pinned && (
         <ColorTheme
-          type={ThemeType.IconButton}
-          isPin={isRoom && pinned}
+          type={ThemeType.IconButtonPin}
           onClick={onUnpinClick}
           className="badge icons-group is-pinned tablet-badge tablet-pinned"
           iconName={iconPin}
           size={sizeBadge}
           {...unpinIconProps}
-        ></ColorTheme>
+        />
       )}
       {showNew && (
         <Badge
