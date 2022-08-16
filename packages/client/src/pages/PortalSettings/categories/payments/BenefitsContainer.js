@@ -59,12 +59,6 @@ const BenefitsContainer = ({ t, availableTariffs }) => {
 export default inject(({ auth, payments }) => {
   const { tariffsInfo } = payments;
 
-  const availableTariffs = [
-    "Unlimited number of users",
-    "Unlimited number of active rooms",
-    "100 GB per manager add space on request",
-    "Automatic backup & recovery",
-    "Tracking user logins & actions",
-  ];
+  const availableTariffs = ["first", "second", "third", "forth", "five"];
   return { tariffsInfo, availableTariffs };
 })(observer(BenefitsContainer));
