@@ -10,6 +10,7 @@
   "LblSendMessage": "Send message",
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",
+  "Manager": "Manager",
   "MakeInvitationLink": "Create invitation link",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
   "NotFoundDescription": "Try a different filter or clear it to view all people in the section.",
