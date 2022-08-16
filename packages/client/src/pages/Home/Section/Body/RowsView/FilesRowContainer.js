@@ -95,6 +95,7 @@ const FilesRowContainer = ({
       draggable
       useReactWindow
       selectedFolderId={selectedFolderId}
+      itemHeight={58}
     >
       {filesList.map((item, index) => (
         <SimpleFilesRow
