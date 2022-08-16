@@ -1,13 +1,21 @@
 import styled, { css } from "styled-components";
-
 import StyledText from "@docspace/components/text/styled-text";
+import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({ currentColorScheme, isActive }) => css`
-  color: ${isActive && currentColorScheme.accentColor};
+const getDefaultStyles = ({ currentColorScheme, isActive, theme }) =>
+  currentColorScheme &&
+  css`
+    color: ${isActive &&
+    theme.isBase &&
+    currentColorScheme.accentColor} !important;
 
-  &:hover {
-    color: ${isActive && currentColorScheme.accentColor};
-  }
-`;
+    &:hover {
+      color: ${isActive &&
+      theme.isBase &&
+      currentColorScheme.accentColor} !important;
+    }
+  `;
+
+StyledText.defaultProps = { theme: Base };
 
 export default styled(StyledText)(getDefaultStyles);
