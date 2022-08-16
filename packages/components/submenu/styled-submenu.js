@@ -84,10 +84,10 @@ export const StyledSubmenuItemText = styled.div`
   width: 100%;
   display: flex;
 
-  /* .item-text {
+  .item-text {
     color: ${(props) =>
-    props.isActive ? props.theme.submenu.textColor : "#657077"};
-  } */
+      props.isActive ? props.theme.submenu.textColor : "#657077"};
+  }
 `;
 
 StyledSubmenuItemText.defaultProps = { theme: Base };
@@ -99,8 +99,8 @@ export const StyledSubmenuItemLabel = styled.div`
   height: 4px;
   bottom: 0px;
   border-radius: 4px 4px 0 0;
-  /* background-color: ${(props) =>
-    props.isActive ? props.theme.submenu.bottomLineColor : "none"}; */
+  background-color: ${(props) =>
+    props.isActive ? props.theme.submenu.bottomLineColor : ""};
 `;
 
 StyledSubmenuItemLabel.defaultProps = { theme: Base };
