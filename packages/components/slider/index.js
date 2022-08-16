@@ -13,6 +13,8 @@ const Slider = ({
   value,
   withPouring,
   style,
+  isReadOnly = false,
+  isDisabled = false,
 }) => {
   const [size, setSize] = useState("0%");
 
@@ -22,6 +24,7 @@ const Slider = ({
 
   return (
     <StyledSlider
+      isDisabled={isDisabled}
       style={style}
       id={id}
       type={type}
@@ -33,6 +36,7 @@ const Slider = ({
       size={value && withPouring ? size : "0%"}
       withPouring={withPouring}
       onChange={onChange}
+      isReadOnly={isReadOnly}
     />
   );
 };
@@ -47,6 +51,8 @@ Slider.propTypes = {
   step: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   value: PropTypes.number,
   withPouring: PropTypes.bool,
+  isReadOnly: PropTypes.bool,
+  isDisabled: PropTypes.bool,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

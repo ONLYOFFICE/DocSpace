@@ -1136,6 +1136,7 @@ const Base = {
         width: "24px",
         height: "24px",
         background: blueMain,
+        disabledBackground: "#A6DCF2",
         border: `6px solid ${white}`,
         borderRadius: "30px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
