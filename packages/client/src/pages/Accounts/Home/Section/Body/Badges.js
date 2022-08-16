@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { withTranslation } from "react-i18next";
 
 import Badge from "@docspace/components/badge";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
@@ -32,13 +33,13 @@ const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
   }
 `;
 
-const Badges = ({ statusType, isPaid = true }) => {
+const Badges = ({ t, statusType, isPaid = true }) => {
   return (
     <StyledBadgesContainer className="badges additional-badges">
       {isPaid && (
         <StyledPaidBadge
           className="paid-badge"
-          label={"Paid"}
+          label={t("Paid")}
           color={"#FFFFFF"}
           backgroundColor={"#EDC409"}
           fontSize={"9px"}
@@ -53,4 +54,4 @@ const Badges = ({ statusType, isPaid = true }) => {
   );
 };
 
-export default Badges;
+export default withTranslation(["Common"])(Badges);
