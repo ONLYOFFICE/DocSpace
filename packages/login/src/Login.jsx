@@ -532,7 +532,7 @@ const Form = (props) => {
               />
 
               {/*Uncomment when add api*/}
-              {/*<div className="login-link">
+              {/*<div className="login-code-link">
                 <Link
                   fontWeight="600"
                   fontSize="13px"

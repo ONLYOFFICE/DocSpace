@@ -176,7 +176,7 @@ export const LoginContainer = styled.div`
       margin: 0 8px;
     }
 
-    .login-link {
+    .login-code-link {
       text-align: center;
       margin-top: 24px;
     }
