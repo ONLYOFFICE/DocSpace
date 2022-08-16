@@ -343,7 +343,7 @@ const StyledTableCell = styled.div`
 StyledTableCell.defaultProps = { theme: Base };
 
 const StyledTableSettings = styled.div`
-  margin: 14px 0 0px 8px;
+  margin: 14px 0 0px 2px;
   display: inline-block;
   position: relative;
   cursor: pointer;
