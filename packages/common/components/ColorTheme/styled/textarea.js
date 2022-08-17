@@ -2,15 +2,17 @@ import styled, { css } from "styled-components";
 import { StyledScrollbar } from "@docspace/components/textarea/styled-textarea";
 import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({ currentColorScheme, hasError, theme }) => css`
-  :focus-within {
-    border-color: ${hasError
-      ? theme.textArea.focusErrorBorderColor
-      : theme.isBase === true
-      ? currentColorScheme.accentColor
-      : theme.textArea.focusBorderColor};
-  }
-`;
+const getDefaultStyles = ({ currentColorScheme, hasError, theme }) =>
+  currentColorScheme &&
+  css`
+    :focus-within {
+      border-color: ${hasError
+        ? theme.textArea.focusErrorBorderColor
+        : theme.isBase
+        ? currentColorScheme.accentColor
+        : theme.textArea.focusBorderColor};
+    }
+  `;
 
 StyledScrollbar.defaultProps = {
   theme: Base,

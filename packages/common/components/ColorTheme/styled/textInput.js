@@ -8,16 +8,18 @@ const getDefaultStyles = ({
   hasWarning,
   isDisabled,
   theme,
-}) => css`
-  :focus {
-    border-color: ${(hasError && theme.input.focusErrorBorderColor) ||
-    (hasWarning && theme.input.focusWarningBorderColor) ||
-    (isDisabled && theme.input.focusDisabledBorderColor) ||
-    (theme.isBase === true
-      ? currentColorScheme.accentColor
-      : theme.input.focusBorderColor)};
-  }
-`;
+}) =>
+  currentColorScheme &&
+  css`
+    :focus {
+      border-color: ${(hasError && theme.input.focusErrorBorderColor) ||
+      (hasWarning && theme.input.focusWarningBorderColor) ||
+      (isDisabled && theme.input.focusDisabledBorderColor) ||
+      (theme.isBase
+        ? currentColorScheme.accentColor
+        : theme.input.focusBorderColor)};
+    }
+  `;
 
 StyledTextInput.defaultProps = { theme: Base };
 
