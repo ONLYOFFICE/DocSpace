@@ -45,11 +45,17 @@ const StyledPeopleRow = styled(TableRow)`
     padding-right: 0px;
   }
 
-  .type-combobox {
-    width: auto;
+  .table-cell_type,
+  .table-cell_room {
+    margin-left: -8px;
+  }
 
+  .type-combobox,
+  .room-combobox {
+    padding-left: 8px;
     .combo-button {
-      padding-left: 0;
+      padding-left: 8px;
+      margin-left: -8px;
 
       .combo-button-label {
         font-size: 12px;
@@ -58,8 +64,6 @@ const StyledPeopleRow = styled(TableRow)`
       }
 
       .combo-buttons_arrow-icon {
-        margin-top: 7px;
-
         svg {
           path {
             fill: ${(props) => props.sideInfoColor};
@@ -70,20 +74,8 @@ const StyledPeopleRow = styled(TableRow)`
   }
 
   .room-combobox {
-    width: auto;
-
-    .combo-button {
-      padding-left: 0;
-
-      .combo-button-label {
-        font-size: 12px;
-        font-weight: 400;
-        color: ${(props) => props.sideInfoColor};
-      }
-
-      .combo-buttons_arrow-icon {
-        display: none;
-      }
+    .combo-buttons_arrow-icon {
+      display: none;
     }
   }
 `;
@@ -205,7 +197,7 @@ const PeopleTableRow = (props) => {
         </Link>
         <Badges statusType={statusType} />
       </TableCell>
-      <TableCell>
+      <TableCell className={"table-cell_type"}>
         {role === "owner" ? (
           <Text
             type="page"
@@ -214,6 +206,7 @@ const PeopleTableRow = (props) => {
             fontWeight={400}
             color={sideInfoColor}
             truncate
+            style={{ paddingLeft: "8px" }}
           >
             {t("Common:Owner")}
           </Text>
@@ -225,13 +218,14 @@ const PeopleTableRow = (props) => {
             )}
             options={getTypesOptions()}
             onSelect={onTypeChange}
-            noBorder
+            scaled={false}
+            size="content"
             displaySelectedOption
-            scaled
+            modernView
           />
         )}
       </TableCell>
-      <TableCell>
+      <TableCell className="table-cell_room">
         {isPending && statusType !== "disabled" ? (
           <Text
             type="page"
@@ -240,21 +234,22 @@ const PeopleTableRow = (props) => {
             fontWeight={400}
             color={sideInfoColor}
             truncate
+            style={{ paddingLeft: "8px" }}
           >
             —
           </Text>
         ) : role === "owner" ? (
-          <Link
-            type="action"
-            title={email}
+          <Text
+            type="page"
+            title={position}
             fontSize="12px"
             fontWeight={400}
             color={sideInfoColor}
-            isTextOverflow
-            isHovered
+            truncate
+            style={{ paddingLeft: "8px" }}
           >
             {fakeRooms[0].name} ({fakeRooms[0].role})
-          </Link>
+          </Text>
         ) : (
           <ComboBox
             className="room-combobox"
@@ -262,9 +257,10 @@ const PeopleTableRow = (props) => {
             options={[]}
             onSelect={onTypeChange}
             advancedOptions={getRoomsOptions()}
-            noBorder
+            scaled={false}
+            size="content"
             displaySelectedOption
-            scaled
+            modernView
           />
         )}
       </TableCell>
