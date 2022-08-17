@@ -13,7 +13,7 @@ import FieldContainer from "@docspace/components/field-container";
 import SocialButton from "@docspace/components/social-button";
 import FacebookButton from "@docspace/components/facebook-button";
 import Section from "@docspace/common/components/Section";
-import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
+import ForgotPasswordModalDialog from "./client/components/sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
 import {
   getAuthProviders,

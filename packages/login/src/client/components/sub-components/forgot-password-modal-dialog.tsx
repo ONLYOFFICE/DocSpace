@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-
 import Button from "@docspace/components/button";
 import EmailInput from "@docspace/components/email-input";
 import Text from "@docspace/components/text";
@@ -17,11 +16,6 @@ interface IForgotPasswordDialogProps {
   onDialogClose: VoidFunction;
 }
 
-interface IEmailValid {
-  value: string;
-  isValid: boolean;
-  errors: string[]; // TODO: check type
-}
 const ForgotPasswordModalDialog: React.FC<IForgotPasswordDialogProps> = ({
   isVisible,
   userEmail,

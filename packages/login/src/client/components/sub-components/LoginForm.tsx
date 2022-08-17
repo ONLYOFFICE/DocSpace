@@ -1,0 +1,270 @@
+import React, { useState, useRef } from "react";
+import FieldContainer from "@docspace/components/field-container";
+import EmailInput from "@docspace/components/email-input";
+import PasswordInput from "@docspace/components/password-input";
+import Checkbox from "@docspace/components/checkbox";
+import HelpButton from "@docspace/components/help-button";
+import Text from "@docspace/components/text";
+import Link from "@docspace/components/link";
+import { useTranslation } from "react-i18next";
+import ForgotPasswordModalDialog from "./forgot-password-modal-dialog";
+import Button from "@docspace/components/button";
+import { createPasswordHash } from "@docspace/common/utils";
+import { checkPwd } from "@docspace/common/desktop";
+import { login } from "@docspace/common/utils/login";
+
+interface ILoginFormProps {
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+  hashSettings: PasswordHashType;
+  isDesktop: boolean;
+}
+
+const settings = {
+  minLength: 6,
+  upperCase: false,
+  digits: false,
+  specSymbols: false,
+};
+
+const LoginForm: React.FC<ILoginFormProps> = ({
+  isLoading,
+  hashSettings,
+  isDesktop,
+  setIsLoading,
+}) => {
+  const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  const [identifier, setIdentifier] = useState("");
+  const [passwordValid, setPasswordValid] = useState(true);
+  const [identifierValid, setIdentifierValid] = useState(true);
+  const [password, setPassword] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const { t } = useTranslation(["Login", "Common"]);
+
+  const onChangeLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //console.log("onChangeLogin", e.target.value);
+    setIdentifier(e.target.value);
+    setIsEmailErrorShow(false);
+    onClearErrors();
+  };
+
+  const onClearErrors = () => {
+    !passwordValid && setPasswordValid(true);
+  };
+
+  const onSubmit = () => {
+    //errorText && setErrorText("");
+    let hasError = false;
+
+    const user = identifier.trim();
+
+    if (!user) {
+      hasError = true;
+      setIdentifierValid(false);
+      setIsEmailErrorShow(true);
+    }
+
+    const pass = password.trim();
+
+    if (!pass) {
+      hasError = true;
+      setPasswordValid(false);
+    }
+
+    if (!identifierValid) hasError = true;
+
+    if (hasError) return false;
+
+    setIsLoading(true);
+    const hash = createPasswordHash(pass, hashSettings);
+
+    isDesktop && checkPwd();
+    const session = !isChecked;
+    login(user, hash, session)
+      .then((url: string) => {
+        const redirectPath = localStorage.getItem("redirectPath");
+
+        if (redirectPath) {
+          localStorage.removeItem("redirectPath");
+          console.log("here");
+          window.location.href = redirectPath;
+          return;
+        }
+
+        window.location.replace(url); //TODO: save { user, hash } for tfa
+        //history.push(url, { user, hash });
+      })
+      .catch((error) => {
+        setIsEmailErrorShow(true);
+        setErrorText(error);
+        setPasswordValid(!error);
+        setIsLoading(false);
+        focusInput();
+      });
+  };
+
+  const onBlurEmail = () => {
+    !identifierValid && setIsEmailErrorShow(true);
+  };
+
+  const onValidateEmail = (res: IEmailValid) => {
+    setIdentifierValid(res.isValid);
+    setErrorText(res.errors[0]);
+  };
+
+  const focusInput = () => {
+    if (inputRef && inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    onClearErrors();
+  };
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      onClearErrors();
+      !isDisabled && onSubmit();
+      e.preventDefault();
+    }
+  };
+
+  const onChangeCheckbox = () => setIsChecked(!isChecked);
+
+  const onClick = () => {
+    setIsDialogVisible(true);
+    setIsDisabled(true);
+  };
+
+  const onDialogClose = () => {
+    setIsDialogVisible(false);
+    setIsDisabled(false);
+    setIsLoading(false);
+  };
+
+  return (
+    <form className="auth-form-container">
+      <FieldContainer
+        isVertical={true}
+        labelVisible={false}
+        hasError={isEmailErrorShow}
+        errorMessage={
+          errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
+        } //TODO: Add wrong login server error
+      >
+        <EmailInput
+          id="login"
+          name="login"
+          type="email"
+          hasError={isEmailErrorShow}
+          value={identifier}
+          placeholder={t("RegistrationEmailWatermark")}
+          size="large"
+          scale={true}
+          isAutoFocussed={true}
+          tabIndex={1}
+          isDisabled={isLoading}
+          autoComplete="username"
+          onChange={onChangeLogin}
+          onBlur={onBlurEmail}
+          onValidateInput={onValidateEmail}
+          forwardedRef={inputRef}
+        />
+      </FieldContainer>
+      <FieldContainer
+        isVertical={true}
+        labelVisible={false}
+        hasError={!passwordValid}
+        errorMessage={!password.trim() ? t("Common:RequiredField") : ""} //TODO: Add wrong password server error
+      >
+        <PasswordInput
+          simpleView={true}
+          passwordSettings={settings}
+          id="password"
+          inputName="password"
+          placeholder={t("Common:Password")}
+          type="password"
+          hasError={!passwordValid}
+          inputValue={password}
+          size="large"
+          scale={true}
+          tabIndex={1}
+          isDisabled={isLoading}
+          autoComplete="current-password"
+          onChange={onChangePassword}
+          onKeyDown={onKeyDown}
+        />
+      </FieldContainer>
+
+      <div className="login-forgot-wrapper">
+        <div className="login-checkbox-wrapper">
+          <div className="remember-wrapper">
+            <Checkbox
+              className="login-checkbox"
+              isChecked={isChecked}
+              onChange={onChangeCheckbox}
+              label={t("Remember")}
+              helpButton={
+                <HelpButton
+                  helpButtonHeaderContent={t("CookieSettingsTitle")}
+                  tooltipContent={
+                    <Text fontSize="12px">{t("RememberHelper")}</Text>
+                  }
+                />
+              }
+            />
+          </div>
+
+          <Link
+            fontSize="13px"
+            color="#316DAA"
+            className="login-link"
+            type="page"
+            isHovered={false}
+            onClick={onClick}
+          >
+            {t("ForgotPassword")}
+          </Link>
+        </div>
+      </div>
+
+      {isDialogVisible && (
+        <ForgotPasswordModalDialog
+          isVisible={isDialogVisible}
+          userEmail={identifier}
+          onDialogClose={onDialogClose}
+        />
+      )}
+      <Button
+        id="submit"
+        className="login-button"
+        primary
+        size="normal"
+        scale={true}
+        label={
+          isLoading ? t("Common:LoadingProcessing") : t("Common:LoginButton")
+        }
+        tabIndex={1}
+        isDisabled={isLoading}
+        isLoading={isLoading}
+        onClick={onSubmit}
+      />
+
+      {true && (
+        <Text isBold={true} fontSize="16px">
+          {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+        </Text>
+      )}
+    </form>
+  );
+};
+
+export default LoginForm;

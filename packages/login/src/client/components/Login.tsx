@@ -15,6 +15,9 @@ import {
   getLoginLink,
 } from "@docspace/common/utils";
 import { providersData, AppServerConfig } from "@docspace/common/constants";
+import Link from "@docspace/components/link";
+import Toast from "@docspace/components/toast";
+import LoginForm from "./sub-components/LoginForm";
 
 const { proxyURL } = AppServerConfig;
 const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
@@ -24,9 +27,9 @@ interface ILoginProps {
   buildInfo: IBuildInfo;
   providers: ProvidersType;
   capabilities: ICapabilities;
-  isDesktopEditor?: boolean;
+  isDesktopEditor: boolean;
 }
-const App: React.FC<ILoginProps> = ({
+const Login: React.FC<ILoginProps> = ({
   portalSettings,
   buildInfo,
   providers,
@@ -35,6 +38,7 @@ const App: React.FC<ILoginProps> = ({
   ...rest
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [moreAuthVisible, setMoreAuthVisible] = useState(false);
 
   const { enabledJoin } = portalSettings;
   const { ssoLabel, ssoUrl } = capabilities;
@@ -45,15 +49,15 @@ const App: React.FC<ILoginProps> = ({
     if (ssoUrl) return true;
     else return false;
   };
-
   const ssoButton = () => {
+    const onClick = () => (window.location.href = ssoUrl);
     return (
       <div className="buttonWrapper">
         <SocialButton
           iconName="/static/images/sso.react.svg"
           className="socialButton"
           label={ssoLabel || getProviderTranslation("sso", t)}
-          onClick={() => (window.location.href = ssoUrl)}
+          onClick={onClick}
           isDisabled={isLoading}
         />
       </div>
@@ -136,6 +140,10 @@ const App: React.FC<ILoginProps> = ({
     return providerButtons;
   };
 
+  const moreAuthOpen = () => {
+    setMoreAuthVisible(true);
+  };
+
   return (
     <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktopEditor}>
       <LoginContainer>
@@ -167,9 +175,23 @@ const App: React.FC<ILoginProps> = ({
             )}
           </>
         )}
+        {(oauthDataExists() || ssoExists()) && (
+          <div className="line">
+            <Text color="#A3A9AE" className="or-label">
+              {t("Or")}
+            </Text>
+          </div>
+        )}
+        <LoginForm
+          isDesktop={isDesktopEditor}
+          isLoading={isLoading}
+          hashSettings={portalSettings.passwordHash}
+          setIsLoading={setIsLoading}
+        />
+        <Toast />
       </LoginContainer>
     </LoginFormWrapper>
   );
 };
 
-export default App;
+export default Login;
