@@ -392,8 +392,10 @@ const DirectThirdPartyConnection = (props) => {
   );
 };
 
-export default inject(({ backup, dialogsStore }) => {
-  const { commonThirdPartyList, openConnectWindow, getOAuthToken } = backup;
+export default inject(({ auth, backup, dialogsStore, settingsStore }) => {
+  const { commonThirdPartyList } = backup;
+  const { openConnectWindow } = settingsStore.thirdPartyStore;
+  const { getOAuthToken } = auth.settingsStore;
   const {
     connectDialogVisible,
     setConnectDialogVisible,

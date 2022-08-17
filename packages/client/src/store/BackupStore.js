@@ -595,40 +595,6 @@ class BackupStore {
 
     return newWindow;
   };
-  openConnectWindow = (serviceName, modal) => {
-    const service = this.convertServiceName(serviceName);
-    console.log("service", service);
-    return api.files.openConnectWindow(service).then((link) => {
-      console.log("link", link);
-      return this.oAuthPopup(link, modal);
-    });
-  };
-
-  getOAuthToken = (tokenGetterWin) => {
-    return new Promise((resolve, reject) => {
-      localStorage.removeItem("code");
-      let interval = null;
-      interval = setInterval(() => {
-        try {
-          const code = localStorage.getItem("code");
-          console.log("code", code);
-          if (code) {
-            localStorage.removeItem("code");
-            clearInterval(interval);
-            resolve(code);
-            console.log("code", code);
-          } else if (tokenGetterWin && tokenGetterWin.closed) {
-            clearInterval(interval);
-            reject();
-          }
-        } catch (e) {
-          clearInterval(interval);
-          reject(e);
-          console.log("code catch", code);
-        }
-      }, 500);
-    });
-  };
 }
 
 export default BackupStore;
