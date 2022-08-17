@@ -5,9 +5,9 @@ import { StyledCard, StyledItem, StyledHeaderItem } from "./StyledInfiniteGrid";
 import Loaders from "@docspace/common/components/Loaders";
 import uniqueid from "lodash/uniqueId";
 
-const HeaderItem = ({ children, ...rest }) => {
+const HeaderItem = ({ children, className, ...rest }) => {
   return (
-    <StyledHeaderItem className="header-item" {...rest}>
+    <StyledHeaderItem className={`${className} header-item`} {...rest}>
       {children}
     </StyledHeaderItem>
   );
@@ -95,7 +95,10 @@ const InfiniteGrid = (props) => {
         }
 
         list.push(
-          <HeaderItem key={`${isFolder ? "folders" : "files"}_header`}>
+          <HeaderItem
+            className={list.length ? "files_header" : "folder_header"}
+            key="header_item"
+          >
             {child}
           </HeaderItem>
         );

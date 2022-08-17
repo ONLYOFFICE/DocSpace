@@ -24,6 +24,10 @@ const StyledItem = styled.div`
   gap: 14px 16px;
   width: 100%;
 
+  @media ${tablet} {
+    gap: 14px;
+  }
+
   ${paddingCss};
 `;
 

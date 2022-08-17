@@ -126,6 +126,7 @@ const ListComponent = ({
                 scrollTop={scrollTop}
                 overscanRowCount={3}
                 onScroll={onScroll}
+                viewAs={viewAs}
               />
             );
           }}

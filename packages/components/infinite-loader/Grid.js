@@ -39,6 +39,7 @@ const GridComponent = ({
     const itemClassNames = children[index]?.props?.className;
     const isFile = itemClassNames?.includes("isFile");
     const isFolder = itemClassNames?.includes("isFolder");
+    const isFolderHeader = itemClassNames?.includes("folder_header");
 
     const horizontalGap = 16;
     const verticalGap = 14;
@@ -46,7 +47,7 @@ const GridComponent = ({
 
     const folderHeight = 64 + verticalGap;
     const fileHeight = 220 + horizontalGap;
-    const titleHeight = 20 + headerMargin;
+    const titleHeight = 20 + headerMargin + (isFolderHeader ? 0 : 11);
 
     return isFolder ? folderHeight : isFile ? fileHeight : titleHeight;
   };
