@@ -41,7 +41,6 @@ const DeleteThirdPartyDialog = (props) => {
 
   const onDeleteThirdParty = () => {
     if (isConnectionViaBackupModule) {
-      console.log("removeItem.provider_id", removeItem.provider_id);
       deleteThirdParty(+removeItem.provider_id)
         .catch((err) => toastr.error(err))
         .finally(() => {
@@ -137,7 +136,7 @@ export default inject(
       myFolderId,
       commonFolderId,
     } = treeFoldersStore;
-    console.log("delete third part dialog", visible);
+
     const {
       deleteThirdPartyDialogVisible: visible,
       setDeleteThirdPartyDialogVisible,

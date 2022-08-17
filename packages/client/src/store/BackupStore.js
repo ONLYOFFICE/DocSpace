@@ -183,7 +183,6 @@ class BackupStore {
 
       let defaultFormSettings = {};
       for (let variable in storageParams) {
-        console.log("variable", variable, "storageParams", storageParams);
         if (variable === "module") continue;
         defaultFormSettings[variable] = storageParams[variable];
       }
@@ -319,8 +318,6 @@ class BackupStore {
   };
 
   setStorageId = (selectedStorage) => {
-    console.log("setStorageId", selectedStorage);
-
     this.selectedStorageId = selectedStorage;
   };
 
@@ -445,7 +442,6 @@ class BackupStore {
 
   setFormSettings = (obj) => {
     this.formSettings = obj;
-    console.log(" this.formSettings", this.formSettings);
   };
 
   addValueInFormSettings = (name, value) => {
@@ -454,7 +450,6 @@ class BackupStore {
 
   deleteValueFormSetting = (key) => {
     delete this.formSettings[key];
-    console.log(" this.formSettings", this.defaultFormSettings);
   };
   getStorageParams = (
     isCheckedThirdPartyStorage,
@@ -515,7 +510,7 @@ class BackupStore {
       const elem = this.formSettings[key];
 
       errors[key] = !elem.trim();
-      // console.log("elem.trim()", elem.trim(), "firstError", firstError);
+
       if (!elem.trim() && !firstError) {
         firstError = true;
       }

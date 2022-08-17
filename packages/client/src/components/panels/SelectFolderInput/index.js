@@ -218,7 +218,7 @@ class SelectFolderInput extends React.PureComponent {
     } = this.props;
 
     const passedId = newId ? newId : baseId;
-    console.log("render folder-input");
+
     return (
       <StyledComponent maxWidth={maxInputWidth}>
         <SimpleFileInput
