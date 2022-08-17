@@ -2,8 +2,9 @@ import { LANGUAGE, AppServerConfig } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import TopLoaderService from "@docspace/components/top-loading-indicator";
-
 import { Encoder } from "./encoder";
+import FilesFilter from "../api/files/filter";
+
 const { proxyURL } = AppServerConfig;
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
@@ -326,7 +327,6 @@ export function convertLanguage(key) {
   return key;
 }
 
-import FilesFilter from "../api/files/filter";
 export function getFolderOptions(folderId, filter) {
   if (folderId && typeof folderId === "string") {
     folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
