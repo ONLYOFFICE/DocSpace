@@ -107,6 +107,7 @@ class ComboBox extends React.Component {
       isExternalLink,
       isPersonal,
       offsetLeft,
+      modernView,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -153,6 +154,7 @@ class ComboBox extends React.Component {
           size={size}
           scaled={scaled}
           comboIcon={comboIcon}
+          modernView={modernView}
           fillIcon={fillIcon}
         />
         {displayType !== "toggle" && (
@@ -266,6 +268,9 @@ ComboBox.propTypes = {
   isPersonal: PropTypes.bool,
 
   offsetLeft: PropTypes.number,
+
+  /**Tell when combo-box should displaying at modern view */
+  modernView: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -284,6 +289,7 @@ ComboBox.defaultProps = {
   fixedDirection: false,
   disableItemClick: false,
   isExternalLink: false,
+  modernView: false,
 };
 
 export default ComboBox;
