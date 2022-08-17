@@ -355,12 +355,11 @@ const MainButtonMobile = (props) => {
         className={className}
         style={{ zIndex: `${isOpen ? "211" : "201"}`, ...style }}
       >
-        <ColorTheme
+        <StyledFloatingButton
           icon={isOpen ? "minus" : "plus"}
           isOpen={isOpen}
           onClick={onMainButtonClick}
           percent={percent}
-          type={ThemeType.MainButtonMobile}
         />
 
         <StyledDropDown
