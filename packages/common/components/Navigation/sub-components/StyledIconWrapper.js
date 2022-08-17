@@ -8,6 +8,10 @@ const StyledIconWrapper = styled.div`
   justify-content: center;
 
   svg {
+    path {
+      fill: ${(props) => props.theme.navigation.icon.fill};
+    }
+
     circle {
       stroke: ${(props) => props.theme.navigation.icon.fill};
     }

@@ -1,7 +1,9 @@
 import styled, { css } from "styled-components";
 import StyledIconWrapper from "@docspace/common/components/Navigation/sub-components/StyledIconWrapper";
 
-const getDefaultStyles = ({ currentColorScheme }) => css`
+const getDefaultStyles = ({ currentColorScheme }) =>
+  currentColorScheme &&
+  css`
   svg {
     path:nth-child(2) {
         fill: ${currentColorScheme.accentColor};
