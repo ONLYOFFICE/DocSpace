@@ -135,6 +135,13 @@ const StyledFilterBlockItemSelectorText = styled(Text)`
 
 StyledFilterBlockItemSelectorText.defaultProps = { theme: Base };
 
+const selectedItemTag = css`
+  background: ${(props) =>
+    props.theme.filterInput.filter.selectedItem.background};
+  border-color: ${(props) =>
+    props.theme.filterInput.filter.selectedItem.border};
+`;
+
 const StyledFilterBlockItemTag = styled.div`
   height: 30px;
   max-height: 30px;
@@ -153,6 +160,8 @@ const StyledFilterBlockItemTag = styled.div`
   margin: 0 6px 12px 0;
 
   cursor: pointer;
+
+  ${(props) => props.isSelected && selectedItemTag}
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
