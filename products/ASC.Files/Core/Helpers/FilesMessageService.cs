@@ -33,23 +33,28 @@ public class FilesMessageService
     private readonly MessageTarget _messageTarget;
     private readonly MessageService _messageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IDaoFactory _daoFactory;
+    private const string RoomTargetMark = "room";
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
-        MessageService messageService)
+        MessageService messageService,
+        IDaoFactory daoFactory)
     {
         _logger = options.CreateLogger("ASC.Messaging");
         _messageTarget = messageTarget;
         _messageService = messageService;
+        _daoFactory = daoFactory;
     }
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
         MessageService messageService,
-        IHttpContextAccessor httpContextAccessor)
-        : this(options, messageTarget, messageService)
+        IHttpContextAccessor httpContextAccessor,
+        IDaoFactory daoFactory)
+        : this(options, messageTarget, messageService, daoFactory)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -66,7 +71,7 @@ public class FilesMessageService
             return;
         }
 
-        SendHeadersMessage(headers, action, _messageTarget.Create(entry.Id), description);
+        SendHeadersMessage(headers, action, CreateMessageTargetAsync(entry).Result, description);
     }
 
     public void Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
@@ -76,7 +81,7 @@ public class FilesMessageService
             return;
         }
 
-        SendHeadersMessage(headers, action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
+        SendHeadersMessage(headers, action, CreateMessageTargetAsync(entry1, entry2).Result, description);
     }
 
     private void SendHeadersMessage(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
@@ -105,7 +110,7 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(action, _messageTarget.Create(entry.Id), description);
+        _messageService.Send(action, CreateMessageTargetAsync(entry).Result, description);
     }
 
     public void Send<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
@@ -121,7 +126,7 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(action, _messageTarget.Create(entry.Id), d1, d2);
+        _messageService.Send(action, CreateMessageTargetAsync(entry).Result, d1, d2);
     }
 
     public void Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
@@ -131,6 +136,41 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(initiator, action, _messageTarget.Create(entry.Id), description);
+        _messageService.Send(initiator, action, CreateMessageTargetAsync(entry).Result, description);
+    }
+
+    private async Task<MessageTarget> CreateMessageTargetAsync<T>(FileEntry<T> entry)
+    {
+        var messageEntries = await CreateMessageEntries(entry);
+
+        return _messageTarget.CreateFromGroupValues(messageEntries);
+    }
+
+    private async Task<MessageTarget> CreateMessageTargetAsync<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2)
+    {
+        var messageEntries1 = await CreateMessageEntries(entry1);
+        var messageEntries2 = await CreateMessageEntries(entry2);
+
+        var entries = messageEntries1.Concat(messageEntries2);
+
+        return _messageTarget.CreateFromGroupValues(entries);
+    }
+
+    private async Task<IEnumerable<string>> CreateMessageEntries<T>(FileEntry<T> entry)
+    {
+        if (entry.RootFolderType != FolderType.VirtualRooms && entry.RootFolderType != FolderType.Archive)
+        {
+            return new[] { entry.Id.ToString() };
+        }
+
+        if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType))
+        {
+            return new[] { $"{RoomTargetMark}:{folder.Id}" };
+        }
+
+        var folderDao = _daoFactory.GetFolderDao<T>();
+        var parentRoom = await folderDao.GetParentFoldersAsync(entry.ParentId).FirstOrDefaultAsync(f => DocSpaceHelper.IsRoom(f.FolderType));
+
+        return new[] { $"{RoomTargetMark}:{parentRoom.Id}", entry.Id.ToString() };
     }
 }
