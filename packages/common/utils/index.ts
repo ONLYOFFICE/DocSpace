@@ -402,3 +402,7 @@ export function getOAuthToken(tokenGetterWin) {
 export function getLoginLink(token, code) {
   return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
 }
+
+export function checkIsSSR() {
+  return typeof window === "undefined";
+}
