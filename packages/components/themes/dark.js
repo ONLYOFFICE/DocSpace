@@ -132,9 +132,9 @@ const Dark = {
       baseHover: "#FAFAFA",
       baseActive: "#858585",
       baseDisabled: "#545454",
-      primary: black,
-      primaryHover: black,
-      primaryActive: "#292929",
+      primary: "#FFFFFF",
+      primaryHover: "#FFFFFF",
+      primaryActive: "#FFFFFF",
       primaryDisabled: black,
     },
 
