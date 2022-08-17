@@ -75,6 +75,19 @@ public class AuditEventsRepository
         return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(query.ToList());
     }
 
+    public IAsyncEnumerable<AuditEventDto> GetAsync(string target, int startIndex = 0, int limit = 0)
+    {
+        var messagesContext = _dbContextFactory.CreateDbContext();
+        var q = BuildAuditBaseQuery(messagesContext, startIndex, limit);
+
+        if (!string.IsNullOrEmpty(target))
+        {
+            q = q.Where(a => a.Event.Target.Contains(target));
+        }
+
+        return q.ToAsyncEnumerable().Select(_mapper.Map<AuditEventQuery, AuditEventDto>);
+    }
+
     public IEnumerable<AuditEventDto> GetByFilter(
         Guid? userId = null,
         ProductType? productType = null,
@@ -88,29 +101,9 @@ public class AuditEventsRepository
         int startIndex = 0,
         int limit = 0)
     {
-        var tenant = _tenantManager.GetCurrentTenant().Id;
-        using var auditTrailContext = _dbContextFactory.CreateDbContext();
-        var query =
-          (from q in auditTrailContext.AuditEvents
-           from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
-           where q.TenantId == tenant
-           orderby q.Date descending
-           select new AuditEventQuery
-           {
-               Event = q,
-               FirstName = p.FirstName,
-               LastName = p.LastName,
-               UserName = p.UserName
-           });
+        using var context = _dbContextFactory.CreateDbContext();
 
-        if (startIndex > 0)
-        {
-            query = query.Skip(startIndex);
-        }
-        if (limit > 0)
-        {
-            query = query.Take(limit);
-        }
+        var query = BuildAuditBaseQuery(context, startIndex, limit);
 
         if (userId.HasValue && userId.Value != Guid.Empty)
         {
@@ -228,6 +221,34 @@ public class AuditEventsRepository
         }
 
         return query.Count();
+    }
+
+    private IQueryable<AuditEventQuery> BuildAuditBaseQuery(MessagesContext context, int startIndex, int limit)
+    {
+        var tenant = _tenantManager.GetCurrentTenant().Id;
+        var query =
+          (from q in context.AuditEvents.AsNoTracking()
+           from p in context.Users.AsNoTracking().Where(p => q.UserId == p.Id).DefaultIfEmpty()
+           where q.TenantId == tenant
+           orderby q.Date descending
+           select new AuditEventQuery
+           {
+               Event = q,
+               FirstName = p.FirstName,
+               LastName = p.LastName,
+               UserName = p.UserName
+           });
+
+        if (startIndex > 0)
+        {
+            query = query.Skip(startIndex);
+        }
+        if (limit > 0)
+        {
+            query = query.Take(limit);
+        }
+
+        return query;
     }
 }
 
