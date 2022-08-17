@@ -4,13 +4,13 @@ import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
 import FieldContainer from "@docspace/components/field-container";
 import Text from "@docspace/components/text";
-import Loader from "@docspace/components/loader";
 import Button from "@docspace/components/button";
 
 import TextInput from "@docspace/components/text-input";
 
 import { inject, observer } from "mobx-react";
 import { Base } from "@docspace/components/themes";
+import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -303,7 +303,7 @@ const WhiteLabel = (props) => {
   };
 
   return !isLoadedData ? (
-    <Loader className="pageLoader" type="rombs" size="40px" />
+    <LoaderWhiteLabel />
   ) : (
     <StyledComponent>
       <div className="settings-block">
