@@ -28,7 +28,6 @@ import {
 } from "./styled";
 import { ThemeType } from "./constants";
 
-// TODO: default
 const ColorTheme = forwardRef((props, ref) => {
   switch (props.type) {
     case ThemeType.Button: {
