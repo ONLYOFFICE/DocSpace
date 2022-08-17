@@ -161,33 +161,42 @@ const SectionHeaderContent = (props) => {
 
   const headerMenu = getHeaderMenu(t);
 
+  const onInvite = React.useCallback((e) => {
+    const type = e.target.dataset.action;
+    console.log("invite ", type);
+  }, []);
+
+  const onInviteAgain = React.useCallback(() => {
+    console.log("invite again");
+  }, []);
+
   const getContextOptions = () => {
     return [
       {
         id: "main-button_administrator",
         className: "main-button_drop-down",
         icon: "/static/images/person.admin.react.svg",
-        label: "TODO: Administrator",
-        onClick: () => console.log("1"),
-        action: "administrator",
+        label: t("Administrator"),
+        onClick: onInvite,
+        "data-action": "administrator",
         key: "administrator",
       },
       {
         id: "main-button_manager",
         className: "main-button_drop-down",
         icon: "/static/images/person.manager.react.svg",
-        label: "TODO: Manager",
-        onClick: () => console.log("1"),
-        action: "manager",
+        label: t("Manager"),
+        onClick: onInvite,
+        "data-action": "manager",
         key: "manager",
       },
       {
         id: "main-button_user",
         className: "main-button_drop-down",
         icon: "/static/images/person.user.react.svg",
-        label: "TODO: User",
-        onClick: () => console.log("1"),
-        action: "user",
+        label: t("Common:User"),
+        onClick: onInvite,
+        "data-action": "user",
         key: "user",
       },
       {
@@ -198,9 +207,9 @@ const SectionHeaderContent = (props) => {
         id: "main-button_invite-again",
         className: "main-button_drop-down",
         icon: "/static/images/invite.again.react.svg",
-        label: "TODO: Invite again",
-        onClick: () => console.log("invite"),
-        action: "invite-again",
+        label: t("LblInviteAgain"),
+        onClick: onInviteAgain,
+        "data-action": "invite-again",
         key: "invite-again",
       },
     ];
