@@ -5,7 +5,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import withLoading from "SRC_DIR/HOCs/withLoading";
-import globalColors from "@docspace/components/utils/globalColors";
+
 import styled, { css } from "styled-components";
 import TabContainer from "@docspace/components/tabs-container";
 import Preview from "./settingsAppearance/preview";
@@ -30,6 +30,7 @@ const Appearance = (props) => {
     selectedThemeId,
     sendAppearanceTheme,
     getAppearanceTheme,
+    currentColorScheme,
     t,
   } = props;
 
@@ -75,6 +76,9 @@ const Appearance = (props) => {
   const [isEditDialog, setIsEditDialog] = useState(false);
   const [isAddThemeDialog, setIsAddThemeDialog] = useState(false);
 
+  const [selectAccentColor, setSelectAccentColor] = useState(
+    currentColorScheme.accentColor
+  );
   const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
 
   const [changeTheme, setChangeTheme] = useState([]);
@@ -89,18 +93,24 @@ const Appearance = (props) => {
         key: "0",
         title: "Light theme",
         content: (
-          <Preview previewTheme={previewTheme} selectedColor={selectThemeId} />
+          <Preview
+            previewTheme={previewTheme}
+            selectAccentColor={selectAccentColor}
+          />
         ),
       },
       {
         key: "1",
         title: "Dark theme",
         content: (
-          <Preview previewTheme={previewTheme} selectedColor={selectThemeId} />
+          <Preview
+            previewTheme={previewTheme}
+            selectAccentColor={selectAccentColor}
+          />
         ),
       },
     ],
-    [selectThemeId, previewTheme]
+    [selectAccentColor, previewTheme]
   );
 
   useEffect(() => {
@@ -140,28 +150,20 @@ const Appearance = (props) => {
     }
   };
 
-  const onColorSelection = (e) => {
-    if (!e.target.id) return;
-
-    const colorNumber = +e.target.id;
-    // setSelectedColor(colorNumber);
-    setSelectThemeId(colorNumber);
-
+  const onColorSelection = (item) => {
+    setSelectAccentColor(item.accentColor);
+    setSelectThemeId(item.id);
     //TODO: find id and give item
     //TODO: if changeTheme array = 0, then appearanceTheme, else changeTheme array
     // const theme = changeTheme?.find((item) => item.id === colorNumber);
-
     // If theme has already been edited before
     // if (theme) {
     //   theme.isSelected = true;
-
     //   setSelectThemeId(theme);
     // } else {
     //    If theme not has already been edited before
     //   const theme = appearanceTheme.find((item) => item.id === colorNumber);
-
     //   theme.isSelected = true;
-
     //   setSelectThemeId(theme);
     // }
   };
@@ -383,7 +385,7 @@ const Appearance = (props) => {
                 id={item.id}
                 style={{ background: item.accentColor }}
                 className="box"
-                onClick={onColorSelection}
+                onClick={() => onColorSelection(item)}
               >
                 {onShowCheck(item.id)}
               </div>
@@ -434,6 +436,7 @@ export default inject(({ auth }) => {
     selectedThemeId,
     sendAppearanceTheme,
     getAppearanceTheme,
+    currentColorScheme,
   } = settingsStore;
 
   return {
@@ -441,5 +444,6 @@ export default inject(({ auth }) => {
     selectedThemeId,
     sendAppearanceTheme,
     getAppearanceTheme,
+    currentColorScheme,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(Appearance))));

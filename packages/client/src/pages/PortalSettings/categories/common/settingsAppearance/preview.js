@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
-import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { withTranslation } from "react-i18next";
 import Badge from "@docspace/components/badge";
 import { inject, observer } from "mobx-react";
 import Loaders from "@docspace/common/components/Loaders";
 import MainButton from "@docspace/components/main-button";
 import ContextMenuButton from "@docspace/components/context-menu-button";
-import globalColors from "@docspace/components/utils/globalColors";
+
 import { Base } from "@docspace/components/themes";
 const StyledComponent = styled.div`
   display: flex;
@@ -74,13 +72,13 @@ const StyledComponent = styled.div`
 
   .color,
   .color-badge > div {
-    background: ${(props) => globalColors[`colorSchemeDefault_${props.color}`]};
+    background: ${(props) => props.color};
   }
 
   .color-loaders rect {
     fill: ${(props) =>
       props.previewTheme === "Light theme"
-        ? `${globalColors[`colorSchemeDefault_${props.color}`]} !important`
+        ? `${props.color} !important`
         : `#FFFFFF !important`};
   }
 
@@ -205,7 +203,7 @@ const StyledComponent = styled.div`
     path {
       fill: ${(props) =>
         props.previewTheme === "Light theme"
-          ? `${globalColors[`colorSchemeDefault_${props.color}`]} !important`
+          ? `${props.color} !important`
           : `#FFFFFF !important`};
     }
   }
@@ -217,13 +215,13 @@ const StyledComponent = styled.div`
 
 StyledComponent.defaultProps = { theme: Base };
 const Preview = (props) => {
-  const { selectedColor, previewTheme } = props;
+  const { selectAccentColor, previewTheme } = props;
 
   const [color, setColor] = useState();
 
   useEffect(() => {
-    setColor(selectedColor);
-  }, [selectedColor]);
+    setColor(selectAccentColor);
+  }, [selectAccentColor]);
 
   return (
     <StyledComponent color={color} previewTheme={previewTheme}>
