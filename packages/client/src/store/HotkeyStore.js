@@ -92,9 +92,10 @@ class HotkeyStore {
   };
 
   setCaret = (caret) => {
-    const id = caret.isFolder ? `folder_${caret.id}` : `file_${caret.id}`;
-    const elem = document.getElementById(id);
-    if (!elem) return;
+    //TODO: inf-scroll
+    // const id = caret.isFolder ? `folder_${caret.id}` : `file_${caret.id}`;
+    // const elem = document.getElementById(id);
+    // if (!elem) return;
 
     this.filesStore.setHotkeyCaret(caret);
     this.scrollToCaret();
