@@ -3,6 +3,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 import toastr from "client/toastr";
+import throttle from "lodash/throttle";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
@@ -91,9 +92,12 @@ const withHotkeys = (Component) => {
     };
 
     useEffect(() => {
-      window.addEventListener("keydown", onKeyDown);
+      const throttledKeyDownEvent = throttle(onKeyDown, 300);
 
-      return () => window.removeEventListener("keypress", onKeyDown);
+      window.addEventListener("keydown", throttledKeyDownEvent);
+
+      return () =>
+        window.removeEventListener("keypress", throttledKeyDownEvent);
     });
 
     //Select/deselect item
