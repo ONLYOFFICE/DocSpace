@@ -33,7 +33,7 @@ const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
   }
 `;
 
-const Badges = ({ t, statusType, isPaid = true }) => {
+const Badges = ({ t, statusType, isPaid = false }) => {
   return (
     <StyledBadgesContainer className="badges additional-badges">
       {isPaid && (
