@@ -28,15 +28,18 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class WebhooksController : BaseSettingsController
 {
+    private readonly PermissionContext _permissionContext;
     private readonly DbWorker _webhookDbWorker;
 
     public WebhooksController(
+        PermissionContext permissionContext,
         ApiContext apiContext,
         WebItemManager webItemManager,
         IMemoryCache memoryCache,
         DbWorker dbWorker,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
+        _permissionContext = permissionContext;
         _webhookDbWorker = dbWorker;
     }
 
@@ -44,65 +47,59 @@ public class WebhooksController : BaseSettingsController
     /// Add new config for webhooks
     /// </summary>
     [HttpPost("webhook")]
-    public void CreateWebhook(WebhooksConfig model)
+    public async Task<WebhooksConfigDto> CreateWebhook(WebhooksConfigRequestsDto model)
     {
-        if (model.Uri == null)
-        {
-            throw new ArgumentNullException("Uri");
-        }
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (model.SecretKey == null)
-        {
-            throw new ArgumentNullException("SecretKey");
-        }
+        ArgumentNullException.ThrowIfNull(model.Uri);
+        ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        _webhookDbWorker.AddWebhookConfig(model);
+        await _webhookDbWorker.AddWebhookConfig(model.Uri, model.SecretKey);
+
+        return new WebhooksConfigDto
+        {
+            Uri = model.Uri
+        };
     }
 
     /// <summary>
     /// Update config for webhooks
     /// </summary>
     [HttpPut("webhook")]
-    public void UpdateWebhook(WebhooksConfig model)
+    public async Task<WebhooksConfigDto> UpdateWebhook(WebhooksConfigRequestsDto model)
     {
-        if (model.Uri == null)
-        {
-            throw new ArgumentNullException("Uri");
-        }
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (model.SecretKey == null)
-        {
-            throw new ArgumentNullException("SecretKey");
-        }
+        ArgumentNullException.ThrowIfNull(model.Uri);
+        ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        _webhookDbWorker.UpdateWebhookConfig(model);
+        await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Uri, model.SecretKey);
+
+        return new WebhooksConfigDto
+        {
+            Uri = model.Uri
+        };
     }
 
     /// <summary>
     /// Remove config for webhooks
     /// </summary>
     [HttpDelete("webhook")]
-    public void RemoveWebhook(WebhooksConfig model)
+    public async Task RemoveWebhook(int id)
     {
-        if (model.Uri == null)
-        {
-            throw new ArgumentNullException("Uri");
-        }
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (model.SecretKey == null)
-        {
-            throw new ArgumentNullException("SecretKey");
-        }
-
-        _webhookDbWorker.RemoveWebhookConfig(model);
+        await _webhookDbWorker.RemoveWebhookConfig(id);
     }
 
     /// <summary>
     /// Read Webhooks history for actual tenant
     /// </summary>
     [HttpGet("webhooks")]
-    public List<WebhooksLog> TenantWebhooks()
+    public IAsyncEnumerable<WebhooksLog> TenantWebhooks()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         return _webhookDbWorker.GetTenantWebhooks();
     }
 }

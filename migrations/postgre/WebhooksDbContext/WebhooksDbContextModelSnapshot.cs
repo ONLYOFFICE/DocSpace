@@ -107,6 +107,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Uid")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar")
                         .HasColumnName("uid");

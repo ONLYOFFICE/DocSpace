@@ -13,6 +13,26 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                 table: "webhooks_logs",
                 newName: "route");
 
+            migrationBuilder.UpdateData(
+                table: "webhooks_logs",
+                keyColumn: "uid",
+                keyValue: null,
+                column: "uid",
+                value: "");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "uid",
+                table: "webhooks_logs",
+                type: "varchar(36)",
+                nullable: false,
+                collation: "utf8_general_ci",
+                oldClrType: typeof(string),
+                oldType: "varchar(50)",
+                oldMaxLength: 50,
+                oldNullable: true)
+                .Annotation("MySql:CharSet", "utf8")
+                .OldAnnotation("MySql:CharSet", "utf8");
+
             migrationBuilder.AlterColumn<string>(
                 name: "response_payload",
                 table: "webhooks_logs",
@@ -55,6 +75,18 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                 name: "route",
                 table: "webhooks_logs",
                 newName: "event");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "uid",
+                table: "webhooks_logs",
+                type: "varchar(50)",
+                maxLength: 50,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "varchar(36)",
+                oldCollation: "utf8_general_ci")
+                .Annotation("MySql:CharSet", "utf8")
+                .OldAnnotation("MySql:CharSet", "utf8");
 
             migrationBuilder.AlterColumn<string>(
                 name: "response_payload",

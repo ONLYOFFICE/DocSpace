@@ -72,7 +72,7 @@ public class WorkerService : BackgroundService
                 continue;
             }
 
-            var tasks = new List<Task>();
+            var tasks = new List<Task>(queueSize);
             var counter = 0;
 
             for (var i = 0; i < queueSize; i++)

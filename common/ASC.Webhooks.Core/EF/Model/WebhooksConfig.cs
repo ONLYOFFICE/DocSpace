@@ -25,12 +25,18 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Webhooks.Core.EF.Model;
-public partial class WebhooksConfig
+
+public class WebhooksConfig : BaseEntity
 {
     public int ConfigId { get; set; }
     public string SecretKey { get; set; }
     public int TenantId { get; set; }
     public string Uri { get; set; }
+
+    public override object[] GetKeys()
+    {
+        return new object[] { ConfigId };
+    }
 }
 
 public static class WebhooksConfigExtension

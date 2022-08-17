@@ -5,44 +5,47 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.WebhooksDb
+namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
-    [Migration("20220816111541_WebhooksDbContext_Upgrade1")]
+    [Migration("20220816154718_WebhooksDbContext_Upgrade1")]
     partial class WebhooksDbContext_Upgrade1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "6.0.7")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
                     b.Property<int>("ConfigId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("config_id");
+                        .HasColumnName("config_id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("secret_key")
                         .HasDefaultValueSql("''");
 
-                    b.Property<uint>("TenantId")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int unsigned")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Uri")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("uri")
                         .HasDefaultValueSql("''");
 
@@ -50,8 +53,6 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                         .HasName("PRIMARY");
 
                     b.ToTable("webhooks_config", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksLog", b =>
@@ -59,7 +60,8 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("ConfigId")
                         .HasColumnType("int")
@@ -71,7 +73,7 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
 
                     b.Property<string>("Method")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("varchar")
                         .HasColumnName("method");
 
                     b.Property<string>("RequestHeaders")
@@ -81,9 +83,7 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                     b.Property<string>("RequestPayload")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("request_payload")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnName("request_payload");
 
                     b.Property<string>("ResponseHeaders")
                         .HasColumnType("json")
@@ -91,36 +91,33 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
 
                     b.Property<string>("ResponsePayload")
                         .HasColumnType("text")
-                        .HasColumnName("response_payload")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnName("response_payload");
 
                     b.Property<string>("Route")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("varchar")
                         .HasColumnName("route");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar")
                         .HasColumnName("status");
 
-                    b.Property<uint>("TenantId")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int unsigned")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Uid")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar")
                         .HasColumnName("uid");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
                     b.ToTable("webhooks_logs", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

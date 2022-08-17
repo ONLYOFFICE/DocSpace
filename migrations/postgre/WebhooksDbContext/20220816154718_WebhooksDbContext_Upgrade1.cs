@@ -14,6 +14,18 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                 newName: "route");
 
             migrationBuilder.AlterColumn<string>(
+                name: "uid",
+                table: "webhooks_logs",
+                type: "varchar",
+                maxLength: 50,
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "varchar",
+                oldMaxLength: 50,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
                 name: "response_payload",
                 table: "webhooks_logs",
                 type: "text",
@@ -48,6 +60,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                 name: "route",
                 table: "webhooks_logs",
                 newName: "event");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "uid",
+                table: "webhooks_logs",
+                type: "varchar",
+                maxLength: 50,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "varchar",
+                oldMaxLength: 50);
 
             migrationBuilder.AlterColumn<string>(
                 name: "response_payload",

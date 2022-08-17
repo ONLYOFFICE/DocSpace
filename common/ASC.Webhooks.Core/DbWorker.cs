@@ -31,59 +31,101 @@ public class DbWorker
 {
     private readonly IDbContextFactory<WebhooksDbContext> _dbContextFactory;
     private readonly TenantManager _tenantManager;
-    public DbWorker(IDbContextFactory<WebhooksDbContext> dbContextFactory, TenantManager tenantManager)
+    private readonly AuthContext _authContext;
+
+    private int Tenant
+    {
+        get
+        {
+            return _tenantManager.GetCurrentTenant().Id;
+        }
+    }
+
+    public DbWorker(IDbContextFactory<WebhooksDbContext> dbContextFactory, TenantManager tenantManager, AuthContext authContext)
     {
         _dbContextFactory = dbContextFactory;
         _tenantManager = tenantManager;
+        _authContext = authContext;
     }
-    public void AddWebhookConfig(WebhooksConfig webhooksConfig)
-    {
-        webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().Id;
 
+    public async Task AddWebhookConfig(string uri, string secretKey)
+    {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var addObj = webhooksDbContext.WebhooksConfigs.Where(it =>
-        it.SecretKey == webhooksConfig.SecretKey &&
-        it.TenantId == webhooksConfig.TenantId &&
-        it.Uri == webhooksConfig.Uri).FirstOrDefault();
+        await webhooksDbContext.AddOrUpdateAsync(r => r.WebhooksConfigs, new WebhooksConfig { TenantId = Tenant, Uri = uri, SecretKey = secretKey });
+        await webhooksDbContext.SaveChangesAsync();
+    }
 
-        if (addObj != null)
+    public async IAsyncEnumerable<WebhooksLog> GetTenantWebhooks()
+    {
+        using var webhooksDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = webhooksDbContext.WebhooksLogs
+            .Where(it => it.TenantId == Tenant)
+            .Select(t => new WebhooksLog
+            {
+                Uid = t.Uid,
+                CreationTime = t.CreationTime,
+                RequestPayload = t.RequestPayload,
+                RequestHeaders = t.RequestHeaders,
+                ResponsePayload = t.ResponsePayload,
+                ResponseHeaders = t.ResponseHeaders,
+                Status = t.Status
+            })
+            .AsAsyncEnumerable();
+
+        await foreach (var webhook in q)
         {
-            return;
+            yield return webhook;
         }
-
-        webhooksDbContext.WebhooksConfigs.Add(webhooksConfig);
-        webhooksDbContext.SaveChanges();
     }
 
-    public int ConfigsNumber()
+    public IAsyncEnumerable<WebhooksConfig> GetWebhookConfigs()
+    {
+        var webhooksDbContext = _dbContextFactory.CreateDbContext();
+
+        return webhooksDbContext.WebhooksConfigs
+            .Where(t => t.TenantId == Tenant)
+            .AsAsyncEnumerable();
+    }
+
+    public async Task UpdateWebhookConfig(int id, string uri, string key)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
-        return webhooksDbContext.WebhooksConfigs.Count();
+
+        var updateObj = await webhooksDbContext.WebhooksConfigs
+            .Where(it => it.TenantId == Tenant && it.ConfigId == id)
+            .FirstOrDefaultAsync();
+
+        if (updateObj != null)
+        {
+            if (!string.IsNullOrEmpty(uri))
+            {
+                updateObj.Uri = uri;
+            }
+
+            if (!string.IsNullOrEmpty(key))
+            {
+                updateObj.SecretKey = key;
+            }
+
+            webhooksDbContext.WebhooksConfigs.Update(updateObj);
+            await webhooksDbContext.SaveChangesAsync();
+        }
     }
 
-    public List<WebhooksLog> GetTenantWebhooks()
+    public async Task RemoveWebhookConfig(int id)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
 
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
-        return webhooksDbContext.WebhooksLogs.Where(it => it.TenantId == tenant)
-                .Select(t => new WebhooksLog
-                {
-                    Uid = t.Uid,
-                    CreationTime = t.CreationTime,
-                    RequestPayload = t.RequestPayload,
-                    RequestHeaders = t.RequestHeaders,
-                    ResponsePayload = t.ResponsePayload,
-                    ResponseHeaders = t.ResponseHeaders,
-                    Status = t.Status
-                }).ToList();
-    }
 
-    public List<WebhooksConfig> GetWebhookConfigs(int tenant)
-    {
-        using var webhooksDbContext = _dbContextFactory.CreateDbContext();
-        return webhooksDbContext.WebhooksConfigs.Where(t => t.TenantId == tenant).ToList();
+        var removeObj = await webhooksDbContext.WebhooksConfigs
+            .Where(it => it.TenantId == tenant && it.ConfigId == id)
+            .FirstOrDefaultAsync();
+
+        webhooksDbContext.WebhooksConfigs.Remove(removeObj);
+        await webhooksDbContext.SaveChangesAsync();
     }
 
     public WebhookEntry ReadFromJournal(int id)
@@ -93,55 +135,34 @@ public class DbWorker
             .Where(it => it.Id == id)
             .Join(webhooksDbContext.WebhooksConfigs, t => t.ConfigId, t => t.ConfigId, (payload, config) => new { payload, config })
             .Select(t => new WebhookEntry { Id = t.payload.Id, Payload = t.payload.RequestPayload, SecretKey = t.config.SecretKey, Uri = t.config.Uri })
-            .OrderBy(t => t.Id).FirstOrDefault();
+            .OrderBy(t => t.Id)
+            .FirstOrDefault();
     }
 
-    public void RemoveWebhookConfig(WebhooksConfig webhooksConfig)
+    public async Task<int> WriteToJournal(WebhooksLog webhook)
     {
-        webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().Id;
+        webhook.TenantId = _tenantManager.GetCurrentTenant().Id;
+        webhook.Uid = _authContext.CurrentAccount.ID;
 
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
-        var removeObj = webhooksDbContext.WebhooksConfigs.Where(it =>
-        it.SecretKey == webhooksConfig.SecretKey &&
-        it.TenantId == webhooksConfig.TenantId &&
-        it.Uri == webhooksConfig.Uri).FirstOrDefault();
 
-        webhooksDbContext.WebhooksConfigs.Remove(removeObj);
-        webhooksDbContext.SaveChanges();
+        var entity = await webhooksDbContext.WebhooksLogs.AddAsync(webhook);
+        await webhooksDbContext.SaveChangesAsync();
+
+        return entity.Entity.Id;
     }
 
-    public void UpdateWebhookConfig(WebhooksConfig webhooksConfig)
-    {
-        webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().Id;
-
-        using var webhooksDbContext = _dbContextFactory.CreateDbContext();
-        var updateObj = webhooksDbContext.WebhooksConfigs.Where(it =>
-        it.SecretKey == webhooksConfig.SecretKey &&
-        it.TenantId == webhooksConfig.TenantId &&
-        it.Uri == webhooksConfig.Uri).FirstOrDefault();
-
-        webhooksDbContext.WebhooksConfigs.Update(updateObj);
-        webhooksDbContext.SaveChanges();
-    }
-
-    public async Task UpdateWebhookJournal(int id, ProcessStatus status, string responsePayload, string responseHeaders)
+    public async Task UpdateWebhookJournal(int id, ProcessStatus status, string requestHeaders, string responsePayload, string responseHeaders)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         var webhook = await webhooksDbContext.WebhooksLogs.Where(t => t.Id == id).FirstOrDefaultAsync();
         webhook.Status = status;
+        webhook.RequestHeaders = requestHeaders;
         webhook.ResponsePayload = responsePayload;
         webhook.ResponseHeaders = responseHeaders;
 
         webhooksDbContext.WebhooksLogs.Update(webhook);
         await webhooksDbContext.SaveChangesAsync();
-    }
-
-    public int WriteToJournal(WebhooksLog webhook)
-    {
-        using var webhooksDbContext = _dbContextFactory.CreateDbContext();
-        var entity = webhooksDbContext.WebhooksLogs.Add(webhook);
-        webhooksDbContext.SaveChanges();
-        return entity.Entity.Id;
     }
 }

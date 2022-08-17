@@ -39,7 +39,7 @@ public partial class WebhooksLog
     public string ResponsePayload { get; set; }
     public ProcessStatus Status { get; set; }
     public int TenantId { get; set; }
-    public string Uid { get; set; }
+    public Guid Uid { get; set; }
 }
 
 public static class WebhooksPayloadExtension
@@ -73,9 +73,10 @@ public static class WebhooksPayloadExtension
                 .HasColumnName("config_id");
 
             entity.Property(e => e.Uid)
-                .HasColumnType("varchar")
                 .HasColumnName("uid")
-                .HasMaxLength(50);
+                .HasColumnType("varchar(38)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.TenantId)
                 .HasColumnName("tenant_id")

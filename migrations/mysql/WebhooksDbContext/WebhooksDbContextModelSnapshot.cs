@@ -109,9 +109,11 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Uid")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("uid");
+                        .IsRequired()
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("uid")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");

@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,58 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Webhooks.Core;
+namespace ASC.Web.Api.ApiModels.RequestsDto;
 
-[Scope]
-public class WebhookPublisher : IWebhookPublisher
+public class WebhooksConfigRequestsDto
 {
-    private readonly DbWorker _dbWorker;
-    private readonly ICacheNotify<WebhookRequest> _webhookNotify;
-
-    public WebhookPublisher(
-        DbWorker dbWorker,
-        ICacheNotify<WebhookRequest> webhookNotify)
-    {
-        _dbWorker = dbWorker;
-        _webhookNotify = webhookNotify;
-    }
-
-    public async Task Publish(string method, string route, string requestPayload)
-    {
-        if (string.IsNullOrEmpty(requestPayload))
-        {
-            return;
-        }
-
-        var webhookConfigs = _dbWorker.GetWebhookConfigs();
-
-        await foreach (var config in webhookConfigs)
-        {
-            var webhooksLog = new WebhooksLog
-            {
-                Method = method,
-                Route = route,
-                CreationTime = DateTime.UtcNow,
-                RequestPayload = requestPayload,
-                Status = ProcessStatus.InProcess,
-                ConfigId = config.ConfigId
-            };
-
-            var id = await _dbWorker.WriteToJournal(webhooksLog);
-
-            var request = new WebhookRequest
-            {
-                Id = id
-            };
-
-            _webhookNotify.Publish(request, CacheNotifyAction.Update);
-        }
-    }
-}
-
-public enum ProcessStatus
-{
-    InProcess,
-    Success,
-    Failed
+    public int Id { get; set; }
+    public string Uri { get; set; }
+    public string SecretKey { get; set; }
 }

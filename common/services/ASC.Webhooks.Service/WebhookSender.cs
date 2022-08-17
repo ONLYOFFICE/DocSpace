@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Text.Json.Serialization;
+
 namespace ASC.Webhooks.Service;
 
 [Singletone]
@@ -32,12 +34,19 @@ public class WebhookSender
     private readonly IHttpClientFactory _clientFactory;
     private readonly ILogger _log;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     public WebhookSender(ILoggerProvider options, IServiceScopeFactory scopeFactory, IHttpClientFactory clientFactory)
     {
         _log = options.CreateLogger("ASC.Webhooks.Core");
         _scopeFactory = scopeFactory;
         _clientFactory = clientFactory;
+        _jsonSerializerOptions = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            IgnoreReadOnlyProperties = true,
+            WriteIndented = true
+        };
     }
 
     public async Task Send(WebhookRequest webhookRequest, CancellationToken cancellationToken)
@@ -51,6 +60,7 @@ public class WebhookSender
         var status = ProcessStatus.InProcess;
         string responsePayload = null;
         string responseHeaders = null;
+        string requestHeaders = null;
 
         try
         {
@@ -62,10 +72,12 @@ public class WebhookSender
 
             request.Headers.Add("Accept", "*/*");
             request.Headers.Add("Secret", "SHA256=" + GetSecretHash(entry.SecretKey, data));
+            requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key, v => v.Value), _jsonSerializerOptions);
+
             var response = await httpClient.SendAsync(request, cancellationToken);
 
             status = ProcessStatus.Success;
-            responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value));
+            responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value), _jsonSerializerOptions);
             responsePayload = await response.Content.ReadAsStringAsync();
 
             _log.DebugResponse(response);
@@ -82,7 +94,7 @@ public class WebhookSender
             _log.ErrorWithException(e);
         }
 
-        await dbWorker.UpdateWebhookJournal(entry.Id, status, responsePayload, responseHeaders);
+        await dbWorker.UpdateWebhookJournal(entry.Id, status, requestHeaders, responsePayload, responseHeaders);
     }
 
     private string GetSecretHash(string secretKey, string body)

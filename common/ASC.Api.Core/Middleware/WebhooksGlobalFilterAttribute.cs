@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using JsonSerializer = System.Text.Json.JsonSerializer;
-
 namespace ASC.Api.Core.Middleware;
 
 [Scope]
@@ -76,7 +74,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
 
                 var resultContent = Encoding.UTF8.GetString(_stream.ToArray());
 
-                _webhookPublisher.Publish(method, routePattern, JsonSerializer.Serialize(context.HttpContext.Request.Headers.ToDictionary(r => r.Key, v => v.Value)), resultContent);
+                await _webhookPublisher.Publish(method, routePattern, resultContent);
             }
             catch (Exception e)
             {
