@@ -139,8 +139,9 @@ public abstract class BaseStartup
             config.Filters.Add(new TypeFilterAttribute(typeof(ProductSecurityFilter)));
             config.Filters.Add(new CustomResponseFilterAttribute());
             config.Filters.Add(new CustomExceptionFilterAttribute());
-            config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
             config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
+            config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
+
 
             config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
             config.OutputFormatters.Add(new XmlOutputFormatter());

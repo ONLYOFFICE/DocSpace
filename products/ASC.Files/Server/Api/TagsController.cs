@@ -29,14 +29,24 @@ namespace ASC.Files.Api;
 [ConstraintRoute("int")]
 public class TagsControllerInternal : TagsController<int>
 {
-    public TagsControllerInternal(FileStorageService<int> fileStorageServiceString, EntryManager entryManager, FileDtoHelper fileDtoHelper) : base(fileStorageServiceString, entryManager, fileDtoHelper)
+    public TagsControllerInternal(
+        FileStorageService<int> fileStorageServiceString,
+        EntryManager entryManager,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageServiceString, entryManager, folderDtoHelper, fileDtoHelper)
     {
     }
 }
 
 public class TagsControllerThirdparty : TagsController<string>
 {
-    public TagsControllerThirdparty(FileStorageService<string> fileStorageServiceString, EntryManager entryManager, FileDtoHelper fileDtoHelper) : base(fileStorageServiceString, entryManager, fileDtoHelper)
+    public TagsControllerThirdparty(
+        FileStorageService<string> fileStorageServiceString,
+        EntryManager entryManager,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageServiceString, entryManager, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -45,12 +55,12 @@ public abstract class TagsController<T> : ApiControllerBase
 {
     private readonly FileStorageService<T> _fileStorageServiceString;
     private readonly EntryManager _entryManager;
-    private readonly FileDtoHelper _fileDtoHelper;
 
     public TagsController(
         FileStorageService<T> fileStorageServiceString,
         EntryManager entryManager,
-        FileDtoHelper fileDtoHelper)
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageServiceString = fileStorageServiceString;
         _entryManager = entryManager;
@@ -80,7 +90,9 @@ public class TagsControllerCommon : ApiControllerBase
 
     public TagsControllerCommon(
         FileStorageService<int> fileStorageService,
-        FileStorageService<string> fileStorageServiceThirdparty)
+        FileStorageService<string> fileStorageServiceThirdparty,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
         _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
