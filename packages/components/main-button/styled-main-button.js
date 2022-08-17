@@ -18,7 +18,10 @@ const arrowDropdown = css`
 
   border-left: ${(props) => props.theme.mainButton.arrowDropdown.borderLeft};
   border-right: ${(props) => props.theme.mainButton.arrowDropdown.borderRight};
-  border-top: ${(props) => props.theme.mainButton.arrowDropdown.borderTop};
+  border-top: ${(props) =>
+    !props.isDisabled
+      ? props.theme.mainButton.arrowDropdown.borderTop
+      : props.theme.mainButton.arrowDropdown.borderTopDisabled};
 
   height: ${(props) => props.theme.mainButton.arrowDropdown.height};
   margin-top: ${(props) => props.theme.mainButton.arrowDropdown.marginTop};
@@ -101,7 +104,10 @@ const StyledMainButton = styled.div`
   .main-button_text {
     font-size: ${(props) => props.theme.mainButton.fontSize};
     font-weight: ${(props) => props.theme.mainButton.fontWeight};
-    color: ${(props) => props.theme.mainButton.textColor};
+    color: ${(props) =>
+      !props.isDisabled
+        ? props.theme.mainButton.textColor
+        : props.theme.mainButton.textColorDisabled};
   }
 `;
 StyledMainButton.defaultProps = { theme: Base };
