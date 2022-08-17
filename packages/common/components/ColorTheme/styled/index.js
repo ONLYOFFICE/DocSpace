@@ -18,8 +18,6 @@ export { default as IconButtonTheme } from "./iconButton";
 
 export { default as IconButtonPinTheme } from "./iconButtonPin";
 
-export { default as MainButtonMobileTheme } from "./mainButtonMobile";
-
 export { default as IndicatorFilterButtonTheme } from "./indicatorFilterButton";
 
 export { default as FilterBlockItemTagTheme } from "./filterBlockItemTag";

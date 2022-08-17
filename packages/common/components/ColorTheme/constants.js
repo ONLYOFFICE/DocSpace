@@ -9,7 +9,6 @@ export const ThemeType = {
   TabsContainer: "tabsContainer",
   IconButton: "iconButton",
   IconButtonPin: "iconButtonPin",
-  MainButtonMobile: "mainButtonMobile",
   IndicatorFilterButton: "indicatorFilterButton",
   FilterBlockItemTag: "filterBlockItemTag",
   IconWrapper: "iconWrapper",
