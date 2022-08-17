@@ -6,17 +6,15 @@ import { inject, observer } from "mobx-react";
 
 const StyledCurrentTariffContainer = styled.div`
   display: flex;
-  height: 40px;
+  min-height: 40px;
   background: #f8f9f9;
-
   margin-bottom: 24px;
-  grid-template-columns: repeat(auto, minmax(150px, auto));
-
   white-space: nowrap;
-  grid-gap: 20px;
-
+  flex-wrap: wrap;
+  margin-top: 16px;
   p {
     padding: 12px 16px;
+    margin-bottom: 0;
   }
 `;
 
@@ -39,18 +37,22 @@ const CurrentTariffContainer = ({ quota, style }) => {
 
   return (
     <StyledCurrentTariffContainer style={style} className="current-tariff">
-      <Text isBold noSelect>
-        {t("AddedManagers")}:{" "}
-        <Text as="span" isBold>
-          {usersCount}/{maxUsersCount}
+      <div>
+        <Text isBold noSelect>
+          {t("AddedManagers")}:{" "}
+          <Text as="span" isBold>
+            {usersCount}/{maxUsersCount}
+          </Text>
         </Text>
-      </Text>
-      <Text isBold noSelect>
-        {t("StorageSpace")}:{" "}
-        <Text as="span" isBold>
-          {usedSizeConverted}/{storageSizeConverted}
+      </div>
+      <div>
+        <Text isBold noSelect>
+          {t("StorageSpace")}:{" "}
+          <Text as="span" isBold>
+            {usedSizeConverted}/{storageSizeConverted}
+          </Text>
         </Text>
-      </Text>
+      </div>
     </StyledCurrentTariffContainer>
   );
 };

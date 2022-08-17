@@ -17,9 +17,7 @@ import toastr from "@docspace/components/toast/toastr";
 
 const StyledBody = styled.div`
   max-width: 660px;
-  p {
-    margin-bottom: 16px;
-  }
+
   .payments-info_suggestion {
     margin-bottom: 12px;
   }
