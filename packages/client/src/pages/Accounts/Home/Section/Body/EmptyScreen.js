@@ -11,9 +11,8 @@ import Grid from "@docspace/components/grid";
 const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   const { t } = useTranslation(["People", "Common"]);
 
-  const title = "TODO: No users found";
-  const description =
-    "TODO: No people matching you filter can be displayed. Please select other filter options or clear filter to view all the people in this section";
+  const title = t("NotFoundUsers");
+  const description = t("NotFoundUsersDescription");
 
   const onResetFilter = () => {
     setIsLoading(true);
@@ -51,7 +50,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
                     fontWeight="600"
                     onClick={onResetFilter}
                   >
-                    TODO: Clear search
+                    {t("Common:ClearFilter")}
                   </Link>
                 </Box>
               </>
