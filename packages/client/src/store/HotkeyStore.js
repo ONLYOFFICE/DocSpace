@@ -33,6 +33,29 @@ class HotkeyStore {
     this.uploadDataStore = uploadDataStore;
   }
 
+  scrollToCaret = () => {
+    const { offsetTop, item } = this.getItemOffset();
+    const scroll = document.getElementsByClassName("section-scroll")[0];
+    const scrollRect = scroll.getBoundingClientRect();
+
+    if (item && item[0]) {
+      const el = item[0];
+      const rect = el.getBoundingClientRect();
+
+      if (
+        scrollRect.top + scrollRect.height - rect.height > rect.top &&
+        scrollRect.top < rect.top + el.offsetHeight
+      ) {
+        //console.log("element is visible");
+      } else {
+        scroll.scrollTo(0, offsetTop - scrollRect.height / 2);
+        //console.log("element is not visible");
+      }
+    } else {
+      scroll.scrollTo(0, this.elemOffset - scrollRect.height / 2);
+    }
+  };
+
   activateHotkeys = (e) => {
     if (
       this.dialogsStore.someDialogIsOpen ||
@@ -65,34 +88,18 @@ class HotkeyStore {
       this.filesStore.setHotkeyCaretStart(selection[0]);
     }
 
-    if (!hotkeyCaret || isDefaultKeys) return;
-
-    const { offsetTop, item } = this.getItemOffset();
-    const scroll = document.getElementsByClassName("section-scroll")[0];
-    const scrollRect = scroll.getBoundingClientRect();
-
-    if (item && item[0]) {
-      const el = item[0];
-      const rect = el.getBoundingClientRect();
-
-      if (
-        scrollRect.top + scrollRect.height - rect.height > rect.top &&
-        scrollRect.top < rect.top + el.offsetHeight
-      ) {
-        //console.log("element is visible");
-      } else {
-        scroll.scrollTo(0, offsetTop - scrollRect.height / 2);
-        //console.log("element is not visible");
-      }
-    } else {
-      scroll.scrollTo(0, this.elemOffset - scrollRect.height / 2);
-    }
+    if (!hotkeyCaret || isDefaultKeys) return e;
   };
 
   setCaret = (caret) => {
-    this.filesStore.setHotkeyCaret(caret);
-    const { offsetTop } = this.getItemOffset();
+    const id = caret.isFolder ? `folder_${caret.id}` : `file_${caret.id}`;
+    const elem = document.getElementById(id);
+    if (!elem) return;
 
+    this.filesStore.setHotkeyCaret(caret);
+    this.scrollToCaret();
+
+    const { offsetTop } = this.getItemOffset();
     if (offsetTop) this.elemOffset = offsetTop;
   };
 
