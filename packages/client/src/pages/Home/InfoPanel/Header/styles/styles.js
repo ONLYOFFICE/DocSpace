@@ -38,6 +38,10 @@ const StyledInfoPanelToggleWrapper = styled.div`
     border-radius: 50%;
     background-color: ${(props) =>
       props.theme.infoPanel.sectionHeaderToggleBgActive};
+
+    path {
+      fill: ${(props) => props.theme.infoPanel.sectionHeaderToggleIconActive};
+    }
   }
 `;
 
