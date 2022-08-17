@@ -248,7 +248,8 @@ const Dark = {
     lineHeight: "22px",
     fontSize: "15px",
     fontWeight: 700,
-    textColor: black,
+    textColor: "#FFFFFF",
+    textColorDisabled: black,
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -274,7 +275,8 @@ const Dark = {
     arrowDropdown: {
       borderLeft: "4px solid transparent",
       borderRight: "4px solid transparent",
-      borderTop: `4px solid ${black}`,
+      borderTop: `4px solid ${white}`,
+      borderTopDisabled: `4px solid ${black}`,
       right: "10px",
       top: "50%",
       width: "0",

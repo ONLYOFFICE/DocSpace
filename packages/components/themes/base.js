@@ -248,6 +248,7 @@ const Base = {
     fontSize: "15px",
     fontWeight: 700,
     textColor: white,
+    textColorDisabled: white,
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -274,6 +275,7 @@ const Base = {
       borderLeft: "4px solid transparent",
       borderRight: "4px solid transparent",
       borderTop: "4px solid white",
+      borderTopDisabled: `4px solid white`,
       right: "10px",
       top: "50%",
       width: "0",
