@@ -5,6 +5,7 @@ const StyledIndicator = styled.div`
   border-radius: 50%;
   width: 8px;
   height: 8px;
+  background: ${(props) => props.theme.filterInput.filter.indicatorColor};
   position: absolute;
   top: 25px;
   left: 25px;
