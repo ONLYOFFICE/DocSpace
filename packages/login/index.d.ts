@@ -22,6 +22,18 @@ declare global {
     [key: string]: object;
   }
 
+  type PasswordHashType = {
+    iterations: number;
+    salt: string;
+    size: number;
+  };
+
+  interface IEmailValid {
+    value: string;
+    isValid: boolean;
+    errors: string[]; // TODO: check type
+  }
+
   interface IPortalSettings {
     culture: string;
     debugInfo: boolean;
@@ -30,11 +42,7 @@ declare global {
     enabledJoin: boolean;
     greetingSettings: string;
     ownerId: string;
-    passwordHash: {
-      iterations: number;
-      salt: string;
-      size: number;
-    };
+    passwordHash: PasswordHashType;
     personal: boolean;
     tenantAlias: string;
     tenantStatus: number;
