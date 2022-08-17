@@ -31,7 +31,7 @@ const hoverCss = css`
   background: ${(props) =>
     props.primary && props.currentColorScheme.buttonsMain};
 
-  opacity: ${(props) => props.primary && "0.85"};
+  opacity: ${(props) => props.primary && !props.isDisabled && "0.85"};
 `;
 
 const getDefaultStyles = ({
