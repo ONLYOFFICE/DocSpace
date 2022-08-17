@@ -37,8 +37,6 @@ class ComboButton extends React.Component {
       modernView,
     } = this.props;
 
-    console.log(modernView);
-
     const defaultOption = selectedOption.default;
     const isSelected = selectedOption.key !== 0;
 
