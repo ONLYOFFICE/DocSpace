@@ -1,19 +1,37 @@
 import styled, { css } from "styled-components";
 import StyledButton from "@docspace/components/button/styled-button";
+import Base from "@docspace/components/themes/base";
 
 const activeCss = css`
-  border-color: ${(props) => props.currentColorScheme.buttonsMain};
+  border-color: ${(props) =>
+    props.theme.isBase
+      ? props.currentColorScheme.buttonsMain
+      : props.primary
+      ? props.currentColorScheme.buttonsMain
+      : props.theme.button.border.baseActive};
+
   background: ${(props) =>
-    !!props.primary && props.currentColorScheme.buttonsMain};
-  filter: ${(props) => !!props.primary && "brightness(90%)"};
-  opacity: ${(props) => !!props.primary && "1"};
+    props.primary && props.currentColorScheme.buttonsMain};
+
+  opacity: ${(props) => !props.isDisabled && "1"};
+
+  filter: ${(props) =>
+    props.primary &&
+    (props.theme.isBase ? "brightness(90%)" : "brightness(82%)")};
 `;
 
 const hoverCss = css`
-  border-color: ${(props) => props.currentColorScheme.buttonsMain};
+  border-color: ${(props) =>
+    props.theme.isBase
+      ? props.currentColorScheme.buttonsMain
+      : props.primary
+      ? props.currentColorScheme.buttonsMain
+      : props.theme.button.border.baseHover};
+
   background: ${(props) =>
-    !!props.primary && props.currentColorScheme.buttonsMain};
-  opacity: ${(props) => !!props.primary && "0.85"};
+    props.primary && props.currentColorScheme.buttonsMain};
+
+  opacity: ${(props) => props.primary && "0.85"};
 `;
 
 const getDefaultStyles = ({
@@ -24,12 +42,13 @@ const getDefaultStyles = ({
   isClicked,
   isHovered,
   disableHover,
+  theme,
 }) =>
   currentColorScheme &&
   css`
-    background: ${!!primary && currentColorScheme.buttonsMain};
-    opacity: ${!!primary && isDisabled && "0.6"};
-    border-color: ${!!primary && currentColorScheme.buttonsMain};
+    background: ${primary && currentColorScheme.buttonsMain};
+    opacity: ${primary && isDisabled && "0.6"};
+    border-color: ${primary && currentColorScheme.buttonsMain};
 
     ${!isDisabled &&
     !isLoading &&
@@ -52,5 +71,7 @@ const getDefaultStyles = ({
           }
         `)}
   `;
+
+StyledButton.defaultProps = { theme: Base };
 
 export default styled(StyledButton)(getDefaultStyles);
