@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
 
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
@@ -51,6 +52,8 @@ const StyledPeopleRow = styled(TableRow)`
       padding-left: 0;
 
       .combo-button-label {
+        font-size: 12px;
+        font-weight: 400;
         color: ${(props) => props.sideInfoColor};
       }
 
@@ -73,6 +76,8 @@ const StyledPeopleRow = styled(TableRow)`
       padding-left: 0;
 
       .combo-button-label {
+        font-size: 12px;
+        font-weight: 400;
         color: ${(props) => props.sideInfoColor};
       }
 
@@ -96,6 +101,7 @@ const fakeRooms = [
 
 const PeopleTableRow = (props) => {
   const {
+    t,
     item,
     contextOptionsProps,
     element,
@@ -123,26 +129,26 @@ const PeopleTableRow = (props) => {
     const options = [
       {
         key: "admin",
-        title: "TODO: Administrator",
-        label: "TODO: Administrator",
+        title: t("Administrator"),
+        label: t("Administrator"),
         action: "administrator",
       },
       {
         key: "manager",
-        title: "TODO: Manager",
-        label: "TODO: Manager",
+        title: t("Manager"),
+        label: t("Manager"),
         action: "manager",
       },
       {
         key: "user",
-        title: "TODO: User",
-        label: "TODO: User",
+        title: t("Common:User"),
+        label: t("Common:User"),
         action: "user",
       },
     ];
 
     return options;
-  }, []);
+  }, [t]);
 
   // TODO: update after backend update
   const onTypeChange = React.useCallback(({ action }) => {}, []);
@@ -204,12 +210,12 @@ const PeopleTableRow = (props) => {
           <Text
             type="page"
             title={position}
-            fontSize="13px"
-            fontWeight={600}
+            fontSize="12px"
+            fontWeight={400}
             color={sideInfoColor}
             truncate
           >
-            TODO: Owner
+            {t("Common:Owner")}
           </Text>
         ) : (
           <ComboBox
@@ -230,8 +236,8 @@ const PeopleTableRow = (props) => {
           <Text
             type="page"
             title={position}
-            fontSize="13px"
-            fontWeight={600}
+            fontSize="12px"
+            fontWeight={400}
             color={sideInfoColor}
             truncate
           >
@@ -241,8 +247,8 @@ const PeopleTableRow = (props) => {
           <Link
             type="action"
             title={email}
-            fontSize="13px"
-            fontWeight={600}
+            fontSize="12px"
+            fontWeight={400}
             color={sideInfoColor}
             isTextOverflow
             isHovered
@@ -266,8 +272,8 @@ const PeopleTableRow = (props) => {
         <Link
           type="page"
           title={email}
-          fontSize="13px"
-          fontWeight={600}
+          fontSize="12px"
+          fontWeight={400}
           color={sideInfoColor}
           onClick={onEmailClick}
           isTextOverflow
@@ -279,4 +285,6 @@ const PeopleTableRow = (props) => {
   );
 };
 
-export default withRouter(withContextOptions(withContent(PeopleTableRow)));
+export default withTranslation(["People", "Common"])(
+  withRouter(withContextOptions(withContent(PeopleTableRow)))
+);

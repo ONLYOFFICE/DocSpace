@@ -2,6 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { isTablet } from "react-device-detect";
+import { withTranslation } from "react-i18next";
 
 import RowContent from "@docspace/components/row-content";
 import Link from "@docspace/components/link";
@@ -37,10 +38,10 @@ const UserContent = ({
   sectionWidth,
 
   onUserNameClick,
-
+  t,
   theme,
 }) => {
-  const { userName, displayName, email, statusType } = item;
+  const { userName, displayName, email, statusType, role } = item;
 
   const nameColor =
     statusType === "pending"
@@ -50,6 +51,13 @@ const UserContent = ({
     statusType === "pending"
       ? theme.peopleTableRow.pendingSideInfoColor
       : theme.peopleTableRow.sideInfoColor;
+
+  const roleLabel =
+    role === "owner"
+      ? t("Common:Owner")
+      : role === "admin"
+      ? t("Administrator")
+      : t("Common:User");
 
   return (
     <StyledRowContent
@@ -84,7 +92,7 @@ const UserContent = ({
         color={sideInfoColor}
         isTextOverflow={true}
       >
-        TODO: Type
+        {roleLabel}
       </Link>
       <Link
         containerMinWidth="140px"
@@ -102,4 +110,4 @@ const UserContent = ({
   );
 };
 
-export default withRouter(UserContent);
+export default withTranslation(["People", "Common"])(withRouter(UserContent));
