@@ -233,11 +233,75 @@ public class TariffService : ITariffService
             || !_billingClient.Configured)
             return false;
 
-        var productIds = _quotaService.GetTenantQuotas()
-                                   .Where(q =>
-                                        !string.IsNullOrEmpty(q.ProductId)
-                                        && quantity.ContainsKey(q.Name))
-                                   .Select(q => q.ProductId);
+        var allQuotas = _quotaService.GetTenantQuotas();
+        var newQuotas = quantity.Keys.Select(name => allQuotas.FirstOrDefault(q => q.Name == name));
+
+        var tariff = GetTariff(tenantId);
+
+        // update the quantity of present quotas
+        TenantQuota updatedQuota = null;
+        foreach (var tariffRow in tariff.Quotas)
+        {
+            var quotaId = tariffRow.Item1;
+            var qty = tariffRow.Item2;
+
+            var quota = (TenantQuota)_quotaService.GetTenantQuota(quotaId).Clone();
+
+            var mustUpdateQuota = newQuotas.FirstOrDefault(q => q.Tenant == quota.Tenant);
+            if (mustUpdateQuota != null)
+            {
+                qty = quantity[mustUpdateQuota.Name];
+            }
+
+            if (quota.MaxTotalSize != long.MaxValue) quota.MaxTotalSize *= qty;
+            if (quota.ActiveUsers != int.MaxValue) quota.ActiveUsers *= qty;
+            if (quota.CountAdmin != int.MaxValue) quota.CountAdmin *= qty;
+            if (quota.CountRoom != int.MaxValue) quota.CountRoom *= qty;
+
+            if (updatedQuota == null)
+            {
+                updatedQuota = quota;
+            }
+            else
+            {
+                updatedQuota = updatedQuota.Concat(quota);
+            }
+        }
+
+        // add new quotas
+        var addedQuotas = newQuotas.Where(q => !tariff.Quotas.Any(t => t.Item1 == q.Tenant));
+        foreach (var addedQuota in addedQuotas)
+        {
+            var qty = quantity[addedQuota.Name];
+
+            var quota = (TenantQuota)addedQuota.Clone();
+
+            if (quota.MaxTotalSize != long.MaxValue) quota.MaxTotalSize *= qty;
+            if (quota.ActiveUsers != int.MaxValue) quota.ActiveUsers *= qty;
+            if (quota.CountAdmin != int.MaxValue) quota.CountAdmin *= qty;
+            if (quota.CountRoom != int.MaxValue) quota.CountRoom *= qty;
+
+            if (updatedQuota == null)
+            {
+                updatedQuota = quota;
+            }
+            else
+            {
+                updatedQuota = updatedQuota.Concat(quota);
+            }
+        }
+
+        // check new values
+        if (updatedQuota.MaxTotalSize != long.MaxValue
+            && false) throw new Exception("The used storage size should not exceed " + updatedQuota.MaxTotalSize);
+        if (updatedQuota.ActiveUsers != int.MaxValue
+            && false) throw new Exception("The number of active users should not exceed " + updatedQuota.ActiveUsers);
+        if (updatedQuota.CountAdmin != int.MaxValue
+            && false) throw new Exception("The number of managers should not exceed " + updatedQuota.CountAdmin);
+        if (updatedQuota.CountRoom != int.MaxValue
+            && false) throw new Exception("The number of rooms should not exceed " + updatedQuota.CountRoom);
+
+        var productIds = newQuotas.Select(q => q.ProductId);
 
         try
         {
