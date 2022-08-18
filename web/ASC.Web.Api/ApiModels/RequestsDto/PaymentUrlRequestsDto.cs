@@ -29,6 +29,5 @@ namespace ASC.Web.Api.Models;
 public class PaymentUrlRequestsDto
 {
     public Dictionary<string, int> Quantity { get; set; }
-    public string Currency { get; set; }
     public string BackUrl { get; set; }
 }
