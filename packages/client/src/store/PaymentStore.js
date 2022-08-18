@@ -68,7 +68,7 @@ class PaymentStore {
   getPaymentPrices = async () => {
     const res = await api.portal.getPaymentPrices();
     if (res) {
-      this.pricePerManager = res.admin.USD;
+      this.pricePerManager = res.admin;
     }
   };
 }

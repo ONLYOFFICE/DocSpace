@@ -15,6 +15,7 @@ import { smallTablet } from "@docspace/components/utils/device";
 import ContactContainer from "./ContactContainer";
 import toastr from "@docspace/components/toast/toastr";
 import moment from "moment";
+import { HelpButton } from "@docspace/components";
 
 const StyledBody = styled.div`
   max-width: 660px;
@@ -22,9 +23,7 @@ const StyledBody = styled.div`
   .payment-info_suggestion {
     margin-bottom: 12px;
   }
-  .payment-info_managers-price {
-    margin-bottom: 20px;
-  }
+
   .payment-info {
     display: grid;
     grid-template-columns: repeat(2, minmax(100px, 320px));
@@ -33,6 +32,17 @@ const StyledBody = styled.div`
     @media ${smallTablet} {
       grid-template-columns: 1fr;
       grid-template-rows: 1fr 1fr;
+    }
+  }
+  .payment-info_wrapper {
+    display: flex;
+    margin-bottom: 20px;
+    margin-top: 12px;
+    div {
+      margin: auto 0;
+    }
+    .payment-info_managers-price {
+      margin-right: 8px;
     }
   }
 `;
@@ -73,6 +83,27 @@ const PaymentsPage = ({
     })();
   }, []);
 
+  const renderTooltip = () => {
+    return (
+      <>
+        <HelpButton
+          iconName={"/static/images/help.react.svg"}
+          tooltipContent={
+            <>
+              <Text isBold>{t("ManagerTypesDescription")}</Text>
+              <br />
+              <Text isBold>{t("Administrator")}</Text>
+              <Text>{t("AdministratorDescription")}</Text>
+              <br />
+              <Text isBold>{t("RoomManager")}</Text>
+              <Text>{t("RoomManagerDescription")}</Text>
+            </>
+          }
+        />
+      </>
+    );
+  };
+
   return (
     <StyledBody>
       <Text noSelect fontSize="16px" isBold>
@@ -91,16 +122,20 @@ const PaymentsPage = ({
         </Text>
       )}
 
-      <Text
-        noSelect
-        fontWeight={600}
-        fontSize={"14"}
-        className="payment-info_managers-price"
-      >
-        <Trans t={t} i18nKey="StartPrice" ns="Payments">
-          {{ price: pricePerManager }}
-        </Trans>
-      </Text>
+      <div className="payment-info_wrapper">
+        <Text
+          noSelect
+          fontWeight={600}
+          fontSize={"14"}
+          className="payment-info_managers-price"
+        >
+          <Trans t={t} i18nKey="StartPrice" ns="Payments">
+            {{ price: pricePerManager }}
+          </Trans>
+        </Text>
+
+        {renderTooltip()}
+      </div>
 
       <div className="payment-info">
         <PriceCalculation t={t} />

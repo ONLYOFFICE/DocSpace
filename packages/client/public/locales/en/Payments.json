@@ -25,5 +25,10 @@
   "BusinessSuggestion": "Customize your Business plan",
   "BusinessFinalDateInfo": "Subscription will be automatically renewed on {{finalDate}} with updated pricing and specifications. You can cancel it or change your billing info on your Stripe customer portal.",
   "BusinessRequestDescription": "The pricing plans with more {{peopleNumber}} managers are available upon request only",
-  "SendRequest": "Send request"
+  "SendRequest": "Send request",
+  "ManagerTypesDescription": "Manager account types and their privileges",
+  "Administrator": "Administrator",
+  "RoomManager": "Room manager",
+  "AdministratorDescription": "DocSpace configuration, room creation and administration, ability to invite and manage users in DocSpace and in virtual rooms, ability to manage access rights.",
+  "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several managers can be assigned to the room."
 }
