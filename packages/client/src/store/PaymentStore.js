@@ -52,7 +52,7 @@ class PaymentStore {
     const response = await setLicense(confirmKey, data);
 
     this.acceptPaymentsLicense();
-    console.log("res", res);
+    this.getSettingsPayment();
 
     return response;
   };
