@@ -6,6 +6,7 @@ import { providersData } from "@docspace/common/constants";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { getProviderTranslation } from "@docspace/common/utils";
+import { useTranslation } from "react-i18next";
 
 const ProviderRow = styled.div`
   width: 100%;
@@ -46,9 +47,17 @@ const Modal = styled(ModalDialog)`
   }
 `;
 
-const MoreLoginModal = (props) => {
+interface IMoreLoginNodalProps {
+  visible: boolean;
+  onClose: VoidFunction;
+  providers: ProvidersType;
+  onSocialLoginClick: (e: React.SyntheticEvent<EventTarget>) => void;
+  ssoLabel: string;
+  ssoUrl: string;
+}
+
+const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
   const {
-    t,
     visible,
     onClose,
     providers,
@@ -56,6 +65,8 @@ const MoreLoginModal = (props) => {
     ssoLabel,
     ssoUrl,
   } = props;
+
+  const { t } = useTranslation(["Login", "Common"]);
 
   return (
     <Modal
