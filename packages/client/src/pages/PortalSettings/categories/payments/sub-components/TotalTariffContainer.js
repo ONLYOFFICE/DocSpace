@@ -58,13 +58,13 @@ const TotalTariffContainer = ({
   usersCount,
   maxUsersCount,
   maxSliderNumber,
-  price,
+  pricePerManager,
   isDisabled,
   theme,
 }) => {
   useEffect(() => {}, []);
 
-  const totalPrice = price * usersCount;
+  const totalPrice = pricePerManager * usersCount;
 
   const color = isDisabled ? { color: theme.text.disableColor } : {};
   const isNeedRequest = usersCount >= maxUsersCount;
@@ -73,7 +73,7 @@ const TotalTariffContainer = ({
     <StyledBody>
       <div className="total-tariff_user">
         <Text fontSize="16px" textAlign="center" isBold noSelect {...color}>
-          {price}
+          {pricePerManager}
         </Text>
         <Text
           fontSize="11px"
@@ -133,7 +133,8 @@ const TotalTariffContainer = ({
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, payments }) => {
   const { theme } = auth.settingsStore;
-  return { theme };
+  const { pricePerManager } = payments;
+  return { theme, pricePerManager };
 })(observer(TotalTariffContainer));

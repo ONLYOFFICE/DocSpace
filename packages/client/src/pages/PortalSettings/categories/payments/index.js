@@ -37,13 +37,10 @@ const StyledBody = styled.div`
 `;
 const PaymentsPage = ({
   setQuota,
-  quota,
-  setTariffsInfo,
-  tariffsInfo,
-  organizationName,
   isStartup,
-  price,
   finalDate,
+  getPaymentPrices,
+  pricePerManager,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -54,7 +51,7 @@ const PaymentsPage = ({
   useEffect(() => {
     (async () => {
       try {
-        await Promise.all([setQuota()]);
+        await Promise.all([setQuota(), getPaymentPrices()]);
       } catch (error) {
         toastr.error(error);
       }
@@ -91,12 +88,12 @@ const PaymentsPage = ({
         className="payments-info_managers-price"
       >
         <Trans t={t} i18nKey="StartPrice" ns="Payments">
-          {{ price: price }}
+          {{ price: pricePerManager }}
         </Trans>
       </Text>
 
       <div className="payments-info">
-        <PriceCalculation t={t} price={price} />
+        <PriceCalculation t={t} />
         <BenefitsContainer t={t} />
       </div>
 
@@ -112,20 +109,26 @@ PaymentsPage.propTypes = {
 export default inject(({ auth, payments }) => {
   const { setQuota, quota } = auth;
   const { organizationName } = auth.settingsStore;
-  const { setTariffsInfo, tariffsInfo } = payments;
+  const {
+    setTariffsInfo,
+    tariffsInfo,
+    pricePerManager,
+    getPaymentPrices,
+  } = payments;
 
   const isStartup = false;
-  const price = "30";
+
   const finalDate = "17 February 2022";
 
   return {
     setQuota,
+    getPaymentPrices,
     quota,
     organizationName,
     setTariffsInfo,
     tariffsInfo,
     isStartup,
-    price,
+    pricePerManager,
     finalDate,
   };
 })(withRouter(observer(PaymentsPage)));

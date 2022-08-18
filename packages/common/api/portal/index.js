@@ -165,3 +165,7 @@ export function setPortalRename(alias) {
     data: { alias },
   });
 }
+
+export function getPaymentPrices() {
+  return request({ method: "get", url: "/portal/payment/prices" });
+}

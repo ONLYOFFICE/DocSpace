@@ -4,6 +4,7 @@ import {
   acceptLicense,
 } from "@docspace/common/api/settings";
 import { makeAutoObservable } from "mobx";
+import api from "@docspace/common/api";
 
 class PaymentStore {
   salesEmail = "sales@onlyoffice.com";
@@ -15,6 +16,8 @@ class PaymentStore {
     expiresDate: new Date(),
     trialMode: true,
   };
+
+  pricePerManager = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -49,7 +52,7 @@ class PaymentStore {
     const response = await setLicense(confirmKey, data);
 
     this.acceptPaymentsLicense();
-    this.getSettingsPayment();
+    console.log("res", res);
 
     return response;
   };
@@ -58,6 +61,15 @@ class PaymentStore {
     const response = await acceptLicense().then((res) => console.log(res));
 
     return response;
+  };
+
+  // ------------ For docspace -----------
+
+  getPaymentPrices = async () => {
+    const res = await api.portal.getPaymentPrices();
+    if (res) {
+      this.pricePerManager = res.admin.USD;
+    }
   };
 }
 
