@@ -53,6 +53,11 @@ const Form = () => {
 
   return (
     <LoginContainer>
+      <ReactSVG
+        src="/static/images/docspace.big.react.svg"
+        className="logo-wrapper"
+      />
+
       <Text
         fontSize="23px"
         fontWeight={700}
