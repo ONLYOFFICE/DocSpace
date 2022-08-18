@@ -18,30 +18,50 @@ const StyledCurrentTariffContainer = styled.div`
   }
 `;
 
-const CurrentTariffContainer = ({ quota, style }) => {
+const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
   const { t } = useTranslation("Payments");
 
-  const { usersCount, maxUsersCount, storageSize, usedSize } = quota;
+  const { usedSize } = quota;
+  const { maxTotalSize, countRoom } = portalQuota;
 
+  const addedRooms = 1;
+  const maxManagers = 50;
+  const addedManagers = 5;
   const convertedBytes = (bytes) => {
-    const sizes = ["Bytes", "Kb", "Mb", "Gb", "Tb"]; //TODO: need to specify about translation
+    const sizeNames = [
+      t("Bytes"),
+      t("Kilobyte"),
+      t("Megabyte"),
+      t("Gigabyte"),
+      t("Terabyte"),
+    ];
     if (bytes == 0) return "0 B";
 
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
 
-    return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + " " + sizes[i];
+    return (
+      parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + " " + sizeNames[i]
+    );
   };
 
-  const storageSizeConverted = convertedBytes(storageSize);
+  const storageSizeConverted = convertedBytes(maxTotalSize);
   const usedSizeConverted = convertedBytes(usedSize);
 
   return (
     <StyledCurrentTariffContainer style={style} className="current-tariff">
       <div>
         <Text isBold noSelect>
+          {t("Room")}:{" "}
+          <Text as="span" isBold>
+            {countRoom > 10000 ? addedRooms : addedRooms + "/" + countRoom}
+          </Text>
+        </Text>
+      </div>
+      <div>
+        <Text isBold noSelect>
           {t("AddedManagers")}:{" "}
           <Text as="span" isBold>
-            {usersCount}/{maxUsersCount}
+            {addedManagers}/{maxManagers}
           </Text>
         </Text>
       </div>
@@ -58,7 +78,7 @@ const CurrentTariffContainer = ({ quota, style }) => {
 };
 
 export default inject(({ auth }) => {
-  const { quota } = auth;
+  const { quota, portalQuota } = auth;
 
-  return { quota };
+  return { quota, portalQuota };
 })(observer(CurrentTariffContainer));

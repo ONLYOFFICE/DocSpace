@@ -41,6 +41,7 @@ const PaymentsPage = ({
   finalDate,
   getPaymentPrices,
   pricePerManager,
+  setPortalQuota,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -51,7 +52,7 @@ const PaymentsPage = ({
   useEffect(() => {
     (async () => {
       try {
-        await Promise.all([setQuota(), getPaymentPrices()]);
+        await Promise.all([setQuota(), setPortalQuota(), getPaymentPrices()]);
       } catch (error) {
         toastr.error(error);
       }
@@ -107,7 +108,7 @@ PaymentsPage.propTypes = {
 };
 
 export default inject(({ auth, payments }) => {
-  const { setQuota, quota } = auth;
+  const { setQuota, setPortalQuota } = auth;
   const { organizationName } = auth.settingsStore;
   const {
     setTariffsInfo,
@@ -122,8 +123,9 @@ export default inject(({ auth, payments }) => {
 
   return {
     setQuota,
+    setPortalQuota,
     getPaymentPrices,
-    quota,
+
     organizationName,
     setTariffsInfo,
     tariffsInfo,

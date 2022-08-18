@@ -1,5 +1,11 @@
 {
   "AddedManagers": "Managers added",
+  "Room": "Room",
+  "Gigabyte": "GB",
+  "Megabyte": "MB",
+  "Kilobyte": "KB",
+  "Terabyte": "TB",
+  "Bytes": "bytes",
   "StorageSpace": "Storage space used",
   "TariffsPlans": "Tariffs plans",
   "SuitablePlan": "Choose the plan that suits your team",

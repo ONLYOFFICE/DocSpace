@@ -26,6 +26,7 @@ class AuthStore {
   isInit = false;
 
   quota = {};
+  portalQuota = {};
 
   constructor() {
     this.userStore = new UserStore();
@@ -290,6 +291,11 @@ class AuthStore {
   setQuota = async () => {
     const res = await api.settings.getPortalQuota();
     if (res) this.quota = res;
+  };
+
+  setPortalQuota = async () => {
+    const res = await api.portal.getPortalQuota();
+    if (res) this.portalQuota = res;
   };
 }
 

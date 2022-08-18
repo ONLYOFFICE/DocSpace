@@ -169,3 +169,7 @@ export function setPortalRename(alias) {
 export function getPaymentPrices() {
   return request({ method: "get", url: "/portal/payment/prices" });
 }
+
+export function getPortalQuota() {
+  return request({ method: "get", url: "/portal/quota" });
+}
