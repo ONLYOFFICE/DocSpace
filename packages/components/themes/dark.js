@@ -2486,7 +2486,7 @@ const Dark = {
     iconColor: "#858585",
     hoverIconColor: "#eeeeee",
 
-    color: black,
+    color: "#FFFFFF",
     backgroundColor: "#858585",
 
     badgeColor: black,
