@@ -141,7 +141,7 @@ public class PhotoController : PeopleControllerBase
 
         if (inDto.Files != await _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
-            UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrl(inDto.Files, user);
         }
 
         _userManager.SaveUserInfo(user, syncCardDav: true);
