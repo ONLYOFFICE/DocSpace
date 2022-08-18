@@ -30,5 +30,7 @@
   "Administrator": "Administrator",
   "RoomManager": "Room manager",
   "AdministratorDescription": "DocSpace configuration, room creation and administration, ability to invite and manage users in DocSpace and in virtual rooms, ability to manage access rights.",
-  "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several managers can be assigned to the room."
+  "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several managers can be assigned to the room.",
+  "Payer": "Payer",
+  "StripeCustomerPortal": "go to the Stripe customer portal"
 }

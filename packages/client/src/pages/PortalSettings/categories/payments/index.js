@@ -16,6 +16,7 @@ import ContactContainer from "./ContactContainer";
 import toastr from "@docspace/components/toast/toastr";
 import moment from "moment";
 import { HelpButton } from "@docspace/components";
+import PayerInformationContainer from "./PayerInformationContainer";
 
 const StyledBody = styled.div`
   max-width: 660px;
@@ -109,6 +110,7 @@ const PaymentsPage = ({
       <Text noSelect fontSize="16px" isBold>
         {isStartup ? t("StartupTitle") : t("BusinessTitle")}
       </Text>
+      <PayerInformationContainer />
       <CurrentTariffContainer />
       <Text noSelect fontSize="16px" isBold className="payment-info_suggestion">
         {isStartup ? t("StartupSuggestion") : t("BusinessSuggestion")}

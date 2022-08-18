@@ -71,6 +71,10 @@ class PaymentStore {
       this.pricePerManager = res.admin;
     }
   };
+
+  getPaymentAccount = async () => {
+    return await api.portal.getPaymentAccount();
+  };
 }
 
 export default PaymentStore;
