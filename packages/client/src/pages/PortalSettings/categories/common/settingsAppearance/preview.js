@@ -17,7 +17,7 @@ const StyledComponent = styled.div`
     padding: 21px 0px 17px;
     height: 100%;
     background: ${(props) =>
-      props.previewTheme === "Light theme" ? "#f8f9f9" : "#292929"};
+      props.themePreview === "Light" ? "#f8f9f9" : "#292929"};
     border-width: 1px;
     border-style: solid;
     border-radius: 16px 0px 0px 16px;
@@ -30,7 +30,7 @@ const StyledComponent = styled.div`
     border-left-style: none;
     border-radius: 0px 16px 16px 0px;
     background: ${(props) =>
-      props.previewTheme === "Light theme" ? "#FFFFFF" : "#333333"};
+      props.themePreview === "Light" ? "#FFFFFF" : "#333333"};
   }
 
   .section-header {
@@ -68,17 +68,24 @@ const StyledComponent = styled.div`
 
   .main-button-preview {
     cursor: auto;
+    background-color: ${(props) => props.colorPreview};
   }
 
-  .color,
   .color-badge > div {
-    background: ${(props) => props.color};
+    background-color: ${(props) =>
+      props.themePreview === "Dark" && props.selectThemeId === 7
+        ? "#FFFFFF"
+        : props.colorPreview} !important;
+  }
+
+  .color-badge > p {
+    color: ${(props) => props.color} !important;
   }
 
   .color-loaders rect {
     fill: ${(props) =>
-      props.previewTheme === "Light theme"
-        ? `${props.color} !important`
+      props.themePreview === "Light"
+        ? `${props.colorPreview} !important`
         : `#FFFFFF !important`};
   }
 
@@ -95,7 +102,7 @@ const StyledComponent = styled.div`
 
   .loaders-theme {
     background-color: ${(props) =>
-      props.previewTheme === "Light theme" ? "#FFF" : "#858585"};
+      props.themePreview === "Light" ? "#FFF" : "#858585"};
     border-radius: 3px;
   }
 
@@ -128,7 +135,7 @@ const StyledComponent = styled.div`
 
   .select {
     background: ${(props) =>
-      props.previewTheme === "Light theme" ? "#f0f0f0" : "#333333"};
+      props.themePreview === "Light" ? "#f0f0f0" : "#333333"};
   }
 
   .section-tile {
@@ -137,7 +144,7 @@ const StyledComponent = styled.div`
 
   .border-color {
     border-color: ${(props) =>
-      props.previewTheme === "Light theme" ? "#d0d5da" : "#474747"};
+      props.themePreview === "Light" ? "#d0d5da" : "#474747"};
   }
 
   .tile {
@@ -149,7 +156,7 @@ const StyledComponent = styled.div`
 
   .background {
     background: ${(props) =>
-      props.previewTheme === "Light theme" ? "#FFF" : "#292929"};
+      props.themePreview === "Light" ? "#FFF" : "#292929"};
   }
 
   .tile-name {
@@ -202,8 +209,8 @@ const StyledComponent = styled.div`
 
     path {
       fill: ${(props) =>
-        props.previewTheme === "Light theme"
-          ? `${props.color} !important`
+        props.themePreview === "Light"
+          ? `${props.colorPreview} !important`
           : `#FFFFFF !important`};
     }
   }
@@ -215,16 +222,20 @@ const StyledComponent = styled.div`
 
 StyledComponent.defaultProps = { theme: Base };
 const Preview = (props) => {
-  const { selectAccentColor, previewTheme } = props;
+  const { selectAccentColor, themePreview, selectThemeId } = props;
 
-  const [color, setColor] = useState();
+  const [colorPreview, setColorPreview] = useState(selectAccentColor);
 
   useEffect(() => {
-    setColor(selectAccentColor);
+    setColorPreview(selectAccentColor);
   }, [selectAccentColor]);
 
   return (
-    <StyledComponent color={color} previewTheme={previewTheme}>
+    <StyledComponent
+      colorPreview={colorPreview}
+      themePreview={themePreview}
+      selectThemeId={selectThemeId}
+    >
       <div className="menu border-color">
         <div className="header">
           <Loaders.Rectangle
@@ -235,7 +246,7 @@ const Preview = (props) => {
         </div>
 
         <div className="main-button-container">
-          <MainButton text="Actions" className="main-button-preview color" />
+          <MainButton text="Actions" className="main-button-preview" />
         </div>
 
         <div className="menu-section">
@@ -278,6 +289,11 @@ const Preview = (props) => {
             />
             <Badge
               className="menu-badge color-badge"
+              color={
+                themePreview === "Dark" && props.selectThemeId === 7
+                  ? "#444444"
+                  : "#FFFFFF"
+              }
               label={21}
               fontSize="11px"
               fontWeight={800}
@@ -372,6 +388,11 @@ const Preview = (props) => {
               <div className="action-button">
                 <Badge
                   className="section-badge color-badge"
+                  color={
+                    themePreview === "Dark" && props.selectThemeId === 7
+                      ? "#444444"
+                      : "#FFFFFF"
+                  }
                   label={3}
                   fontSize="11px"
                   fontWeight={800}

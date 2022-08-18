@@ -96,6 +96,8 @@ const Appearance = (props) => {
           <Preview
             previewTheme={previewTheme}
             selectAccentColor={selectAccentColor}
+            selectThemeId={selectThemeId}
+            themePreview="Light"
           />
         ),
       },
@@ -106,11 +108,13 @@ const Appearance = (props) => {
           <Preview
             previewTheme={previewTheme}
             selectAccentColor={selectAccentColor}
+            selectThemeId={selectThemeId}
+            themePreview="Dark"
           />
         ),
       },
     ],
-    [selectAccentColor, previewTheme]
+    [selectAccentColor, previewTheme, selectThemeId]
   );
 
   useEffect(() => {
@@ -179,7 +183,7 @@ const Appearance = (props) => {
   const onSaveSelectedColor = () => {
     sendAppearanceTheme({ selected: selectThemeId })
       .then(() => {
-        toastr.success(t("SuccessfullySaveSettingsMessage"));
+        toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
         getAppearanceTheme();
       })
       .catch((error) => {
