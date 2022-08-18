@@ -26,6 +26,7 @@
 
 namespace ASC.Geolocation;
 
+[Scope]
 public class GeolocationHelper
 {
     private readonly IDbContextFactory<CustomDbContext> _dbContextFactory;

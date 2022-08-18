@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Geolocation;
+
 namespace ASC.Web.Api.Controllers;
 
 [Scope]
@@ -60,6 +62,7 @@ public class PortalController : ControllerBase
     private readonly MessageService _messageService;
     private readonly MessageTarget _messageTarget;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly GeolocationHelper _geolocationHelper;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -88,7 +91,8 @@ public class PortalController : ControllerBase
         IHttpContextAccessor httpContextAccessor,
         MessageService messageService,
         MessageTarget messageTarget,
-        DisplayUserSettingsHelper displayUserSettingsHelper
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        GeolocationHelper geolocationHelper
         )
     {
         _log = logger;
@@ -118,6 +122,7 @@ public class PortalController : ControllerBase
         _messageService = messageService;
         _messageTarget = messageTarget;
         _displayUserSettingsHelper = displayUserSettingsHelper;
+        _geolocationHelper = geolocationHelper;
     }
 
     [HttpGet("")]
@@ -205,7 +210,9 @@ public class PortalController : ControllerBase
             return null;
         }
 
-        return _paymentManager.GetShoppingUri(inDto.Currency,
+        var currency = GetCurrencyFromRequest();
+
+        return _paymentManager.GetShoppingUri(currency,
             Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
             _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email,
             inDto.Quantity,
@@ -239,7 +246,27 @@ public class PortalController : ControllerBase
     [HttpGet("payment/prices")]
     public object GetPrices()
     {
-        return _tenantManager.GetProductPriceInfo();
+        var currency = GetCurrencyFromRequest();
+        var result = _tenantManager.GetProductPriceInfo()
+            .ToDictionary(pr => pr.Key, pr => pr.Value.ContainsKey(currency) ? pr.Value[currency] : 0);
+        return result;
+    }
+
+    private string GetCurrencyFromRequest()
+    {
+        var regionInfo = new RegionInfo("US");
+        var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext(_httpContextAccessor.HttpContext);
+        if (!string.IsNullOrEmpty(geoinfo.Key))
+        {
+            try
+            {
+                regionInfo = new RegionInfo(geoinfo.Key);
+            }
+            catch (Exception)
+            {
+            }
+        }
+        return regionInfo.ISOCurrencySymbol;
     }
 
     [HttpGet("tariff")]
