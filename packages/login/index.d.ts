@@ -12,6 +12,7 @@ type WindowI18nType = {
     };
   };
 };
+
 declare global {
   interface Window {
     authCallback?: (profile: object) => {};
@@ -21,6 +22,11 @@ declare global {
     i18n: WindowI18nType;
     [key: string]: object;
   }
+
+  type MatchType = {
+    confirmedEmail?: string;
+    error?: string;
+  };
 
   type PasswordHashType = {
     iterations: number;
@@ -77,6 +83,7 @@ declare global {
     buildInfo: IBuildInfo;
     providers: ProvidersType;
     capabilities: ICapabilities;
+    match: MatchType;
   }
 
   interface DevRequest {

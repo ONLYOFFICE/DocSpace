@@ -1,5 +1,5 @@
 import api from "../api";
-
+import { setWithCredentialsStatus } from "../api/client";
 export async function login(user: string, hash: string, session = true) {
   try {
     const response = await api.user.login(user, hash, session);
@@ -12,13 +12,31 @@ export async function login(user: string, hash: string, session = true) {
       return url;
     }
 
-    api.client.setWithCredentialsStatus(true);
+    setWithCredentialsStatus(true);
 
     // this.reset();
 
     // this.init();
     // const defaultPage = window["AscDesktopEditor"] !== undefined || IS_PERSONAL ? combineUrl(proxyURL, "/products/files/") : "/"
     // return this.settingsStore.defaultPage;
+    return Promise.resolve(response);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+export async function thirdPartyLogin(SerializedProfile) {
+  try {
+    const response = await api.user.thirdPartyLogin(SerializedProfile);
+
+    if (!response || !response.token) throw new Error("Empty API response");
+
+    setWithCredentialsStatus(true);
+
+    // this.reset();
+
+    // this.init();
+
     return Promise.resolve(response);
   } catch (e) {
     return Promise.reject(e);
