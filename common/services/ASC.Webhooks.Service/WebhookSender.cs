@@ -44,8 +44,7 @@ public class WebhookSender
         _jsonSerializerOptions = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            IgnoreReadOnlyProperties = true,
-            WriteIndented = true
+            IgnoreReadOnlyProperties = true
         };
     }
 

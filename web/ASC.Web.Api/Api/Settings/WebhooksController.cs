@@ -30,6 +30,7 @@ public class WebhooksController : BaseSettingsController
 {
     private readonly PermissionContext _permissionContext;
     private readonly DbWorker _webhookDbWorker;
+    private readonly IMapper _mapper;
 
     public WebhooksController(
         PermissionContext permissionContext,
@@ -37,10 +38,26 @@ public class WebhooksController : BaseSettingsController
         WebItemManager webItemManager,
         IMemoryCache memoryCache,
         DbWorker dbWorker,
-        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper)
+        : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _webhookDbWorker = dbWorker;
+        _mapper = mapper;
+    }
+    /// <summary>
+    /// Read Webhooks history for actual tenant
+    /// </summary>
+    [HttpGet("webhooks")]
+    public async IAsyncEnumerable<WebhooksConfigDto> GetTenantWebhooks()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        await foreach (var w in _webhookDbWorker.GetTenantWebhooks())
+        {
+            yield return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(w);
+        }
     }
 
     /// <summary>
@@ -56,11 +73,7 @@ public class WebhooksController : BaseSettingsController
 
         var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.SecretKey);
 
-        return new WebhooksConfigDto
-        {
-            Uri = webhook.Uri,
-            Enabled = webhook.Enabled
-        };
+        return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
     /// <summary>
@@ -76,11 +89,7 @@ public class WebhooksController : BaseSettingsController
 
         var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Uri, model.SecretKey, model.Enabled);
 
-        return new WebhooksConfigDto
-        {
-            Uri = webhook.Uri,
-            Enabled = webhook.Enabled
-        };
+        return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
     /// <summary>
@@ -93,21 +102,14 @@ public class WebhooksController : BaseSettingsController
 
         var webhook = await _webhookDbWorker.RemoveWebhookConfig(id);
 
-        return new WebhooksConfigDto
-        {
-            Uri = webhook.Uri,
-            Enabled = webhook.Enabled
-        };
+        return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
-    /// <summary>
-    /// Read Webhooks history for actual tenant
-    /// </summary>
-    [HttpGet("webhooks")]
-    public IAsyncEnumerable<WebhooksLog> TenantWebhooks()
+    [HttpGet("webhooks/log")]
+    public IAsyncEnumerable<WebhooksLog> GetJournal()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _webhookDbWorker.GetTenantWebhooks();
+        return _webhookDbWorker.ReadJournal();
     }
 }

@@ -59,11 +59,11 @@ public class DbWorker
         return toAdd;
     }
 
-    public async IAsyncEnumerable<WebhooksLog> GetTenantWebhooks()
+    public async IAsyncEnumerable<WebhooksConfig> GetTenantWebhooks()
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var q = webhooksDbContext.WebhooksLogs
+        var q = webhooksDbContext.WebhooksConfigs
             .AsNoTracking()
             .Where(it => it.TenantId == Tenant)
             .AsAsyncEnumerable();
@@ -129,6 +129,16 @@ public class DbWorker
         await webhooksDbContext.SaveChangesAsync();
 
         return removeObj;
+    }
+
+    public IAsyncEnumerable<WebhooksLog> ReadJournal()
+    {
+        var webhooksDbContext = _dbContextFactory.CreateDbContext();
+
+        return webhooksDbContext.WebhooksLogs
+            .AsNoTracking()
+            .OrderBy(t => t.Id)
+            .AsAsyncEnumerable();
     }
 
     public async Task<WebhookEntry> ReadFromJournal(int id)
