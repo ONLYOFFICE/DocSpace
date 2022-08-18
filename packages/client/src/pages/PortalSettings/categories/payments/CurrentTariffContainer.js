@@ -51,7 +51,7 @@ const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
     <StyledCurrentTariffContainer style={style} className="current-tariff">
       <div>
         <Text isBold noSelect>
-          {t("Room")}:{" "}
+          {t("Room")}:
           <Text as="span" isBold>
             {countRoom > 10000 ? addedRooms : addedRooms + "/" + countRoom}
           </Text>
@@ -59,7 +59,7 @@ const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
       </div>
       <div>
         <Text isBold noSelect>
-          {t("AddedManagers")}:{" "}
+          {t("AddedManagers")}:
           <Text as="span" isBold>
             {addedManagers}/{maxManagers}
           </Text>
@@ -67,7 +67,7 @@ const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
       </div>
       <div>
         <Text isBold noSelect>
-          {t("StorageSpace")}:{" "}
+          {t("StorageSpace")}:
           <Text as="span" isBold>
             {usedSizeConverted}/{storageSizeConverted}
           </Text>
