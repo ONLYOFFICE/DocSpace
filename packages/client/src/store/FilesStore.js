@@ -1640,7 +1640,7 @@ class FilesStore {
     this.scrollToTop();
   };
 
-  removeFiles = (fileIds, folderIds) => {
+  removeFiles = (fileIds, folderIds, showToast) => {
     const newFilter = this.filter.clone();
     const deleteCount = fileIds.length + folderIds.length;
     newFilter.startIndex =
@@ -1668,6 +1668,8 @@ class FilesStore {
           this.setFiles(newFiles);
           this.setFolders(newFolders);
         });
+
+        showToast && showToast();
       })
       .catch(() => {
         toastr.error(err);

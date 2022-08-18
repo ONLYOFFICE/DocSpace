@@ -283,7 +283,22 @@ class FilesActionStore {
 
             //this.updateCurrentFolder(fileIds, folderIds, false);
             this.updateFilesAfterDelete(folderIds);
-            this.filesStore.removeFiles(fileIds, folderIds);
+
+            const showToast = () => {
+              if (isRecycleBinFolder) {
+                return toastr.success(translations.deleteFromTrash);
+              }
+
+              if (selection.length > 1 || isThirdPartyFile) {
+                return toastr.success(translations.deleteSelectedElem);
+              }
+              if (selection[0].fileExst) {
+                return toastr.success(translations.FileRemoved);
+              }
+              return toastr.success(translations.FolderRemoved);
+            };
+
+            this.filesStore.removeFiles(fileIds, folderIds, showToast);
 
             if (currentFolderId) {
               const { socketHelper } = this.authStore.settingsStore;
@@ -293,18 +308,6 @@ class FilesActionStore {
                 data: currentFolderId,
               });
             }
-
-            if (isRecycleBinFolder) {
-              return toastr.success(translations.deleteFromTrash);
-            }
-
-            if (selection.length > 1 || isThirdPartyFile) {
-              return toastr.success(translations.deleteSelectedElem);
-            }
-            if (selection[0].fileExst) {
-              return toastr.success(translations.FileRemoved);
-            }
-            return toastr.success(translations.FolderRemoved);
           })
           .finally(() => {
             clearActiveOperations(fileIds, folderIds);
@@ -611,16 +614,17 @@ class FilesActionStore {
     if (isFile) {
       addActiveItems([itemId]);
       this.isMediaOpen();
-      return deleteFile(itemId)
-        .then(async (res) => {
-          if (res[0]?.error) return Promise.reject(res[0].error);
-          const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(data, pbData);
-          //this.updateCurrentFolder([itemId]);
-          this.updateFilesAfterDelete();
-          this.filesStore.removeFiles([itemId]);
-        })
-        .then(() => toastr.success(translations.successRemoveFile));
+      return deleteFile(itemId).then(async (res) => {
+        if (res[0]?.error) return Promise.reject(res[0].error);
+        const data = res[0] ? res[0] : null;
+        await this.uploadDataStore.loopFilesOperations(data, pbData);
+        //this.updateCurrentFolder([itemId]);
+        this.updateFilesAfterDelete();
+
+        this.filesStore.removeFiles([itemId], null, () =>
+          toastr.success(translations.successRemoveFile)
+        );
+      });
     } else if (isRoom) {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
@@ -637,17 +641,17 @@ class FilesActionStore {
         .then(() => toastr.success(translations?.successRemoveRoom));
     } else {
       addActiveItems(null, [itemId]);
-      return deleteFolder(itemId)
-        .then(async (res) => {
-          if (res[0]?.error) return Promise.reject(res[0].error);
-          const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(data, pbData);
-          //this.updateCurrentFolder(null, [itemId]);
-          this.updateFilesAfterDelete([itemId]);
-          this.filesStore.removeFiles([itemId]);
-          getIsEmptyTrash();
-        })
-        .then(() => toastr.success(translations.successRemoveFolder));
+      return deleteFolder(itemId).then(async (res) => {
+        if (res[0]?.error) return Promise.reject(res[0].error);
+        const data = res[0] ? res[0] : null;
+        await this.uploadDataStore.loopFilesOperations(data, pbData);
+        //this.updateCurrentFolder(null, [itemId]);
+        this.updateFilesAfterDelete([itemId]);
+        this.filesStore.removeFiles([itemId], null, () =>
+          toastr.success(translations.successRemoveFolder)
+        );
+        getIsEmptyTrash();
+      });
     }
   };
 
