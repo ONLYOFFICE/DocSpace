@@ -147,16 +147,13 @@ public class DbWorker
             .AsAsyncEnumerable();
     }
 
-    public async Task<WebhookEntry> ReadJournal(int id)
+    public async Task<WebhooksLog> ReadJournal(int id)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         return await webhooksDbContext.WebhooksLogs
             .AsNoTracking()
             .Where(it => it.Id == id)
-            .Join(webhooksDbContext.WebhooksConfigs, t => t.ConfigId, t => t.Id, (payload, config) => new { payload, config })
-            .Select(t => new WebhookEntry { Id = t.payload.Id, Name = t.config.Name, Payload = t.payload.RequestPayload, SecretKey = t.config.SecretKey, Uri = t.config.Uri })
-            .OrderBy(t => t.Id)
             .FirstOrDefaultAsync();
     }
 

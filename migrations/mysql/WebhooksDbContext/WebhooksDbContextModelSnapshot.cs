@@ -59,6 +59,9 @@ namespace ASC.Migrations.MySql.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("tenant_id");
+
                     b.ToTable("webhooks_config", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
@@ -132,9 +135,25 @@ namespace ASC.Migrations.MySql.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("ConfigId");
+
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("tenant_id");
+
                     b.ToTable("webhooks_logs", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
+                });
+
+            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksLog", b =>
+                {
+                    b.HasOne("ASC.Webhooks.Core.EF.Model.WebhooksConfig", "Config")
+                        .WithMany()
+                        .HasForeignKey("ConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Config");
                 });
 #pragma warning restore 612, 618
         }

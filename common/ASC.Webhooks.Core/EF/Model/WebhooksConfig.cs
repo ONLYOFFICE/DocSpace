@@ -57,6 +57,9 @@ public static class WebhooksConfigExtension
             entity.HasKey(e => new { e.Id })
                 .HasName("PRIMARY");
 
+            entity.HasIndex(e => e.TenantId)
+                .HasDatabaseName("tenant_id");
+
             entity.ToTable("webhooks_config")
                 .HasCharSet("utf8");
 
@@ -98,6 +101,9 @@ public static class WebhooksConfigExtension
                 .HasName("PRIMARY");
 
             entity.ToTable("webhooks_config");
+
+            entity.HasIndex(e => e.TenantId)
+                    .HasDatabaseName("tenant_id");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int")

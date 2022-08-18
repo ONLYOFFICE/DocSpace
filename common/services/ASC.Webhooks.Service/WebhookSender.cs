@@ -54,7 +54,6 @@ public class WebhookSender
         var dbWorker = scope.ServiceProvider.GetRequiredService<DbWorker>();
 
         var entry = await dbWorker.ReadJournal(webhookRequest.Id);
-        var data = entry.Payload;
 
         var status = 0;
         string responsePayload = null;
@@ -65,13 +64,13 @@ public class WebhookSender
         try
         {
             var httpClient = _clientFactory.CreateClient("webhook");
-            var request = new HttpRequestMessage(HttpMethod.Post, entry.Uri)
+            var request = new HttpRequestMessage(HttpMethod.Post, entry.Config.Uri)
             {
-                Content = new StringContent(data, Encoding.UTF8, "application/json")
+                Content = new StringContent(entry.RequestPayload, Encoding.UTF8, "application/json")
             };
 
             request.Headers.Add("Accept", "*/*");
-            request.Headers.Add("Secret", "SHA256=" + GetSecretHash(entry.SecretKey, data));
+            request.Headers.Add("Secret", "SHA256=" + GetSecretHash(entry.Config.SecretKey, entry.RequestPayload));
             requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key, v => v.Value), _jsonSerializerOptions);
 
             var response = await httpClient.SendAsync(request, cancellationToken);

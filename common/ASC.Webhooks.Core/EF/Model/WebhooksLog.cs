@@ -41,12 +41,16 @@ public class WebhooksLog
     public int TenantId { get; set; }
     public Guid Uid { get; set; }
     public DateTime? Delivery { get; set; }
+
+    public WebhooksConfig Config { get; set; }
 }
 
 public static class WebhooksPayloadExtension
 {
     public static ModelBuilderWrapper AddWebhooksLog(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Config).AutoInclude();
+
         modelBuilder
             .Add(MySqlAddWebhooksLog, Provider.MySql)
             .Add(PgSqlAddWebhooksLog, Provider.PostgreSql);
@@ -63,6 +67,9 @@ public static class WebhooksPayloadExtension
 
             entity.ToTable("webhooks_logs")
                 .HasCharSet("utf8");
+
+            entity.HasIndex(e => e.TenantId)
+                .HasDatabaseName("tenant_id");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int")
@@ -136,6 +143,9 @@ public static class WebhooksPayloadExtension
                 .HasName("PRIMARY");
 
             entity.ToTable("webhooks_logs");
+
+            entity.HasIndex(e => e.TenantId)
+                .HasDatabaseName("tenant_id");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int")

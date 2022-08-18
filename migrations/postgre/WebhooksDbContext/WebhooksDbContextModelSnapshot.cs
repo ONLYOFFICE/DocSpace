@@ -62,6 +62,9 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("tenant_id");
+
                     b.ToTable("webhooks_config", (string)null);
                 });
 
@@ -129,7 +132,23 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("ConfigId");
+
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("tenant_id");
+
                     b.ToTable("webhooks_logs", (string)null);
+                });
+
+            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksLog", b =>
+                {
+                    b.HasOne("ASC.Webhooks.Core.EF.Model.WebhooksConfig", "Config")
+                        .WithMany()
+                        .HasForeignKey("ConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Config");
                 });
 #pragma warning restore 612, 618
         }

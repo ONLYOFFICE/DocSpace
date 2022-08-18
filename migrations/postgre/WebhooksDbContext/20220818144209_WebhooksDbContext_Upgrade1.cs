@@ -55,10 +55,49 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                 maxLength: 50,
                 nullable: false,
                 defaultValue: "");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_webhooks_logs_config_id",
+                table: "webhooks_logs",
+                column: "config_id");
+
+            migrationBuilder.CreateIndex(
+                name: "tenant_id",
+                table: "webhooks_logs",
+                column: "tenant_id");
+
+            migrationBuilder.CreateIndex(
+                name: "tenant_id",
+                table: "webhooks_config",
+                column: "tenant_id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_webhooks_logs_webhooks_config_config_id",
+                table: "webhooks_logs",
+                column: "config_id",
+                principalTable: "webhooks_config",
+                principalColumn: "id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_webhooks_logs_webhooks_config_config_id",
+                table: "webhooks_logs");
+
+            migrationBuilder.DropIndex(
+                name: "IX_webhooks_logs_config_id",
+                table: "webhooks_logs");
+
+            migrationBuilder.DropIndex(
+                name: "tenant_id",
+                table: "webhooks_logs");
+
+            migrationBuilder.DropIndex(
+                name: "tenant_id",
+                table: "webhooks_config");
+
             migrationBuilder.DropColumn(
                 name: "delivery",
                 table: "webhooks_logs");

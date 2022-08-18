@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
-    [Migration("20220818131736_WebhooksDbContext_Upgrade1")]
+    [Migration("20220818144209_WebhooksDbContext_Upgrade1")]
     partial class WebhooksDbContext_Upgrade1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,9 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
+
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("tenant_id");
 
                     b.ToTable("webhooks_config", (string)null);
                 });
@@ -131,7 +134,23 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("ConfigId");
+
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("tenant_id");
+
                     b.ToTable("webhooks_logs", (string)null);
+                });
+
+            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksLog", b =>
+                {
+                    b.HasOne("ASC.Webhooks.Core.EF.Model.WebhooksConfig", "Config")
+                        .WithMany()
+                        .HasForeignKey("ConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Config");
                 });
 #pragma warning restore 612, 618
         }

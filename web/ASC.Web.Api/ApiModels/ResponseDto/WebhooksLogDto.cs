@@ -28,9 +28,9 @@ namespace ASC.Web.Api.ApiModels.ResponseDto;
 
 public class WebhooksLogDto : IMapFrom<WebhooksLog>
 {
-    public string ConfigId { get; set; }
-    public DateTime CreationTime { get; set; }
     public int Id { get; set; }
+    public string ConfigName { get; set; }
+    public DateTime CreationTime { get; set; }
     public string Method { get; set; }
     public string Route { get; set; }
     public string RequestHeaders { get; set; }
