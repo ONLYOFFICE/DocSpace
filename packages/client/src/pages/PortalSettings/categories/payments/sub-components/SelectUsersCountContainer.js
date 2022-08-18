@@ -39,7 +39,7 @@ const StyledBody = styled.div`
     }
   }
 
-  .payments-operations_input {
+  .payment-operations_input {
     width: 111px;
     font-size: 44px;
     text-align: center;
@@ -52,12 +52,12 @@ const StyledBody = styled.div`
       `}
   }
 
-  .tariff-users {
+  .payment-users {
     display: flex;
     align-items: center;
     margin: 0 auto;
     width: max-content;
-    .tariff-score {
+    .payment-score {
       path {
         ${(props) =>
           props.isDisabled &&
@@ -67,7 +67,7 @@ const StyledBody = styled.div`
       }
     }
 
-    .tariff-score,
+    .payment-score,
     .circle {
       cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
     }
@@ -83,14 +83,14 @@ const StyledBody = styled.div`
       align-items: center;
     }
   }
-  .tariff-users_count {
+  .payment-users_count {
     margin-left: 20px;
     margin-right: 20px;
     text-align: center;
     width: 102px;
   }
 
-  .tariff-users_text {
+  .payment-users_text {
     margin-bottom: 12px;
     text-align: center;
   }
@@ -121,23 +121,23 @@ const SelectUsersCountContainer = ({
 
   return (
     <StyledBody theme={theme} isDisabled={isDisabled}>
-      <Text noSelect fontWeight={600} className="tariff-users_text" {...color}>
+      <Text noSelect fontWeight={600} className="payment-users_text" {...color}>
         {t("ManagersNumber")}
       </Text>
-      <div className="tariff-users">
+      <div className="payment-users">
         <div className="circle" {...onClickProp} data-operation={"minus"}>
-          <MinusIcon {...onClickProp} className="tariff-score" />
+          <MinusIcon {...onClickProp} className="payment-score" />
         </div>
 
         <TextInput
           isReadOnly={isDisabled}
           withBorder={false}
-          className="payments-operations_input"
+          className="payment-operations_input"
           value={value}
           {...onchangeNumberProp}
         />
         <div className="circle" {...onClickProp} data-operation={"plus"}>
-          <PlusIcon {...onClickProp} className="tariff-score" />
+          <PlusIcon {...onClickProp} className="payment-score" />
         </div>
       </div>
 

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useTranslation, Trans } from "react-i18next";
+import { Trans } from "react-i18next";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
@@ -14,7 +14,7 @@ const StyledBody = styled.div`
     max-width: 520px;
   }
 
-  .total-tariff_user {
+  .payment_price_user {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,21 +28,21 @@ const StyledBody = styled.div`
       margin-top: 5px;
     }
   }
-  .total-tariff_price {
+  .payment_price_total-price {
     display: flex;
     justify-content: center;
     min-height: 65px;
     margin-top: 16px;
     margin-bottom: 16px;
-    .total-tariff_description,
-    .total-tariff_price-text {
+    .payment_price_description,
+    .payment_price_price-text {
       margin-bottom: 0px;
     }
-    .total-tariff_description {
+    .payment_price_description {
       margin-top: 16px;
     }
 
-    .total-tariff_month-text {
+    .payment_price_month-text {
       margin: auto 0;
       margin-bottom: 13px;
     }
@@ -71,7 +71,7 @@ const TotalTariffContainer = ({
 
   return (
     <StyledBody>
-      <div className="total-tariff_user">
+      <div className="payment_price_user">
         <Text fontSize="16px" textAlign="center" isBold noSelect {...color}>
           {pricePerManager}
         </Text>
@@ -85,7 +85,7 @@ const TotalTariffContainer = ({
           {t("PerUserMonth")}
         </Text>
       </div>
-      <div className="total-tariff_price">
+      <div className="payment_price_total-price">
         {isNeedRequest ? (
           <Text
             noSelect
@@ -104,7 +104,7 @@ const TotalTariffContainer = ({
               fontSize="48px"
               isBold
               textAlign={"center"}
-              className="total-tariff_price-text"
+              className="payment_price_price-text"
               noSelect
               {...color}
             >
@@ -114,7 +114,7 @@ const TotalTariffContainer = ({
               fontSize="16px"
               isBold
               textAlign={"center"}
-              className="total-tariff_month-text"
+              className="payment_price_month-text"
               noSelect
               {...color}
             >

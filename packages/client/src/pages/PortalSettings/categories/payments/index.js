@@ -18,13 +18,13 @@ import toastr from "@docspace/components/toast/toastr";
 const StyledBody = styled.div`
   max-width: 660px;
 
-  .payments-info_suggestion {
+  .payment-info_suggestion {
     margin-bottom: 12px;
   }
-  .payments-info_managers-price {
+  .payment-info_managers-price {
     margin-bottom: 20px;
   }
-  .payments-info {
+  .payment-info {
     display: grid;
     grid-template-columns: repeat(2, minmax(100px, 320px));
     grid-gap: 20px;
@@ -43,10 +43,10 @@ const PaymentsPage = ({
   pricePerManager,
   setPortalQuota,
 }) => {
-  const { t, ready } = useTranslation("Payments");
+  const { t, ready } = useTranslation(["Payments", "Settings"]);
 
   useEffect(() => {
-    setDocumentTitle(t("TariffsPlans")); //TODO: need to specify
+    setDocumentTitle(t("Settings:Payments")); //TODO: need to specify
   }, [ready]);
 
   useEffect(() => {
@@ -65,17 +65,12 @@ const PaymentsPage = ({
         {isStartup ? t("StartupTitle") : t("BusinessTitle")}
       </Text>
       <CurrentTariffContainer />
-      <Text
-        noSelect
-        fontSize="16px"
-        isBold
-        className="payments-info_suggestion"
-      >
+      <Text noSelect fontSize="16px" isBold className="payment-info_suggestion">
         {isStartup ? t("StartupSuggestion") : t("BusinessSuggestion")}
       </Text>
 
       {!isStartup && (
-        <Text noSelect fontSize={"14"} className="payments-info_managers-price">
+        <Text noSelect fontSize={"14"} className="payment-info_managers-price">
           <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
             {{ finalDate: finalDate }}
           </Trans>
@@ -86,14 +81,14 @@ const PaymentsPage = ({
         noSelect
         fontWeight={600}
         fontSize={"14"}
-        className="payments-info_managers-price"
+        className="payment-info_managers-price"
       >
         <Trans t={t} i18nKey="StartPrice" ns="Payments">
           {{ price: pricePerManager }}
         </Trans>
       </Text>
 
-      <div className="payments-info">
+      <div className="payment-info">
         <PriceCalculation t={t} />
         <BenefitsContainer t={t} />
       </div>

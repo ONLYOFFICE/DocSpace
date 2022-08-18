@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { useTranslation, Trans } from "react-i18next";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 import { smallTablet } from "@docspace/components/utils/device";
@@ -21,10 +20,10 @@ const StyledBody = styled.div`
   p {
     margin-bottom: 24px;
   }
-  .tariff-benefits_text {
+  .payment-benefits_text {
     margin-bottom: 20px;
   }
-  .tariff-benefits {
+  .payment-benefits {
     display: flex;
     margin-bottom: 16px;
     align-items: baseline;
@@ -40,14 +39,14 @@ const BenefitsContainer = ({ t, availableTariffs }) => {
       <Text
         fontSize={"16px"}
         fontWeight={"600"}
-        className="tariff-benefits_text"
+        className="payment-benefits_text"
         noSelect
       >
         {t("Benefits")}
       </Text>
       {availableTariffs.map((item, index) => {
         return (
-          <div className="tariff-benefits" key={index}>
+          <div className="payment-benefits" key={index}>
             <Text noSelect>{"*" + item}</Text>
           </div>
         );
@@ -56,7 +55,7 @@ const BenefitsContainer = ({ t, availableTariffs }) => {
   );
 };
 
-export default inject(({ auth, payments }) => {
+export default inject(({ payments }) => {
   const { tariffsInfo } = payments;
 
   const availableTariffs = ["first", "second", "third", "forth", "five"];
