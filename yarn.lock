@@ -2039,6 +2039,7 @@ __metadata:
     html-webpack-plugin: 5.3.2
     json-loader: ^0.5.7
     playwright: ^1.18.1
+    react-avatar-editor: ^13.0.0
     react-hotkeys-hook: ^3.4.4
     react-markdown: ^7.0.1
     react-smartbanner: ^5.1.4
@@ -10511,7 +10512,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "docspace@workspace:."
   dependencies:
-    react-avatar-editor: ^13.0.0
     shx: ^0.3.3
     terser: ^5.8.0
   languageName: unknown
