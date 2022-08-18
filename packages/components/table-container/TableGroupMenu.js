@@ -21,6 +21,7 @@ const TableGroupMenu = (props) => {
     checkboxMargin,
     isInfoPanelVisible,
     toggleInfoPanel,
+    withoutInfoPanelToggler,
     ...rest
   } = props;
   const onCheckboxChange = (e) => {
@@ -58,17 +59,19 @@ const TableGroupMenu = (props) => {
             <GroupMenuItem key={index} item={item} />
           ))}
         </StyledScrollbar>
-        <StyledInfoPanelToggleWrapper isInfoPanelVisible={isInfoPanelVisible}>
-          <div className="info-panel-toggle-bg">
-            <IconButton
-              className="info-panel-toggle"
-              iconName="images/panel.react.svg"
-              size="16"
-              isFill={true}
-              onClick={toggleInfoPanel}
-            />
-          </div>
-        </StyledInfoPanelToggleWrapper>
+        {!withoutInfoPanelToggler && (
+          <StyledInfoPanelToggleWrapper isInfoPanelVisible={isInfoPanelVisible}>
+            <div className="info-panel-toggle-bg">
+              <IconButton
+                className="info-panel-toggle"
+                iconName="images/panel.react.svg"
+                size="16"
+                isFill={true}
+                onClick={toggleInfoPanel}
+              />
+            </div>
+          </StyledInfoPanelToggleWrapper>
+        )}
       </StyledTableGroupMenu>
     </>
   );
@@ -81,5 +84,6 @@ TableGroupMenu.propTypes = {
   onClick: PropTypes.func,
   onChange: PropTypes.func,
   checkboxMargin: PropTypes.string,
+  withoutInfoPanelToggler: PropTypes.bool,
 };
 export default TableGroupMenu;

@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 import styled from "styled-components";
 import Button from "../button";
+import DropDown from "../drop-down";
+import DropDownItem from "../drop-down-item";
 import { mobile, tablet, hugeMobile } from "../utils/device";
 import { Base } from "../themes";
 import { isChrome, browserVersion } from "react-device-detect";
@@ -114,21 +116,59 @@ const StyledButton = styled(Button)`
 StyledButton.defaultProps = { theme: Base };
 
 const GroupMenuItem = ({ item }) => {
-  const { label, disabled, onClick, iconUrl, title } = item;
+  const buttonRef = React.useRef(null);
+
+  const [open, setOpen] = React.useState(false);
+
+  const onClickOutside = () => {
+    setOpen(false);
+  };
+
+  const onClickAction = (e) => {
+    onClick && onClick(e);
+
+    if (withDropDown) {
+      setOpen(true);
+    }
+  };
+
+  const {
+    label,
+    disabled,
+    onClick,
+    iconUrl,
+    title,
+    withDropDown,
+    options,
+  } = item;
   return (
     <>
       {disabled ? (
         <></>
       ) : (
-        <StyledButton
-          label={label}
-          title={title || label}
-          isDisabled={disabled}
-          onClick={onClick}
-          icon={
-            <ReactSVG src={iconUrl} className="combo-button_selected-icon" />
-          }
-        />
+        <>
+          <StyledButton
+            label={label}
+            title={title || label}
+            isDisabled={disabled}
+            onClick={onClickAction}
+            icon={
+              <ReactSVG src={iconUrl} className="combo-button_selected-icon" />
+            }
+            ref={buttonRef}
+          />
+          {withDropDown && (
+            <DropDown
+              open={open}
+              clickOutsideAction={onClickOutside}
+              forwardedRef={buttonRef}
+            >
+              {options.map((option) => (
+                <DropDownItem {...option} />
+              ))}
+            </DropDown>
+          )}
+        </>
       )}
     </>
   );
