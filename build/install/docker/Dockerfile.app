@@ -35,7 +35,7 @@ RUN apt-get -y update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN echo ${GIT_BRANCH}  && \
-    git clone --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
+    git clone --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/DocSpace.git ${SRC_PATH}
 
 RUN cd ${SRC_PATH} && \
     # mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
