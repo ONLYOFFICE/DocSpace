@@ -17,8 +17,8 @@ const GridComponent = ({
   const loaderRef = createRef();
 
   useEffect(() => {
-    setTimeout(() => loaderRef?.current?.resetLoadMoreRowsCache(true), 0);
-  }, [loaderRef, selectedFolderId]);
+    setTimeout(() => loaderRef?.current?.resetLoadMoreRowsCache(true), 1000);
+  }, [loaderRef, selectedFolderId, filesLength]);
 
   const isItemLoaded = useCallback(
     ({ index }) => {
