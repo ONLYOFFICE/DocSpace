@@ -14,6 +14,7 @@ import BenefitsContainer from "./BenefitsContainer";
 import { smallTablet } from "@docspace/components/utils/device";
 import ContactContainer from "./ContactContainer";
 import toastr from "@docspace/components/toast/toastr";
+import moment from "moment";
 
 const StyledBody = styled.div`
   max-width: 660px;
@@ -35,24 +36,37 @@ const StyledBody = styled.div`
     }
   }
 `;
+
+let dueDate;
 const PaymentsPage = ({
   setQuota,
   isStartup,
-  finalDate,
   getPaymentPrices,
   pricePerManager,
   setPortalQuota,
+  setPortalTariff,
+  language,
+  portalTariff,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
   useEffect(() => {
-    setDocumentTitle(t("Settings:Payments")); //TODO: need to specify
+    setDocumentTitle(t("Settings:Payments"));
   }, [ready]);
 
   useEffect(() => {
     (async () => {
+      moment.locale(language);
+
       try {
-        await Promise.all([setQuota(), setPortalQuota(), getPaymentPrices()]);
+        await Promise.all([
+          setPortalTariff(),
+          setQuota(),
+          setPortalQuota(),
+          getPaymentPrices(),
+        ]);
+
+        if (portalTariff) dueDate = moment(portalTariff.dueDate).format("LL");
       } catch (error) {
         toastr.error(error);
       }
@@ -72,7 +86,7 @@ const PaymentsPage = ({
       {!isStartup && (
         <Text noSelect fontSize={"14"} className="payment-info_managers-price">
           <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
-            {{ finalDate: finalDate }}
+            {{ finalDate: dueDate }}
           </Trans>
         </Text>
       )}
@@ -103,7 +117,13 @@ PaymentsPage.propTypes = {
 };
 
 export default inject(({ auth, payments }) => {
-  const { setQuota, setPortalQuota } = auth;
+  const {
+    setQuota,
+    setPortalQuota,
+    setPortalTariff,
+    language,
+    portalTariff,
+  } = auth;
   const { organizationName } = auth.settingsStore;
   const {
     setTariffsInfo,
@@ -114,18 +134,17 @@ export default inject(({ auth, payments }) => {
 
   const isStartup = false;
 
-  const finalDate = "17 February 2022";
-
   return {
     setQuota,
     setPortalQuota,
+    setPortalTariff,
+    portalTariff,
     getPaymentPrices,
-
+    language,
     organizationName,
     setTariffsInfo,
     tariffsInfo,
     isStartup,
     pricePerManager,
-    finalDate,
   };
 })(withRouter(observer(PaymentsPage)));
