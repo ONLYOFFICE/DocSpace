@@ -9,11 +9,16 @@ import { isChrome, browserVersion } from "react-device-detect";
 
 const StyledButton = styled(Button)`
   border: none;
-  padding: 5px 10px 0 10px;
-  height: 50px;
+  padding: 0 10px;
+  height: 100%;
   min-width: fit-content;
 
   background-color: ${(props) => props.theme.button.backgroundColor.base};
+
+  .combo-button_selected-icon {
+    display: flex;
+    align-items: center;
+  }
 
   :hover {
     background-color: ${(props) =>
@@ -92,7 +97,6 @@ const StyledButton = styled(Button)`
     display: flex;
     justify-content: center;
     flex-direction: column;
-    height: 60px;
     padding: 0px 12px;
     .btnIcon {
       padding: 0;
@@ -102,7 +106,6 @@ const StyledButton = styled(Button)`
 
   @media ${mobile}, ${hugeMobile} {
     padding: 0 16px;
-    height: 50px;
     font-size: 0;
     line-height: 0;
   }
