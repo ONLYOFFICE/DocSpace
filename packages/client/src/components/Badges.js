@@ -123,7 +123,6 @@ const Badges = ({
 
   const commonBadgeProps = {
     borderRadius: "11px",
-    color: theme.filesBadges.color,
     fontSize: fontSizeBadge,
     fontWeight: 800,
     maxWidth: "50px",
@@ -176,6 +175,7 @@ const Badges = ({
             label={t("VersionBadge", { version: countVersions })}
             onClick={onShowVersionHistory}
             noHover={true}
+            isVersionBadge={true}
           />
         </BadgeWrapper>
       )}
@@ -184,7 +184,6 @@ const Badges = ({
           <Badge
             {...commonBadgeProps}
             className="badge-version badge-new-version tablet-badge icons-group"
-            backgroundColor={theme.filesBadges.badgeBackgroundColor}
             label={t("New")}
             onClick={onBadgeClick}
           />
@@ -207,7 +206,6 @@ const Badges = ({
         <Badge
           {...commonBadgeProps}
           className="new-items tablet-badge"
-          backgroundColor={theme.filesBadges.badgeBackgroundColor}
           label={contentNewItems}
           onClick={onBadgeClick}
         />
