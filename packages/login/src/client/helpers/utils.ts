@@ -1,6 +1,6 @@
 import pkg from "../../../package.json";
-
-export const initI18n = (initialI18nStoreASC: IInitialI18nStoreASC): void => {
+import { thirdPartyLogin } from "@docspace/common/utils/loginUtils";
+export function initI18n(initialI18nStoreASC: IInitialI18nStoreASC): void {
   if (!initialI18nStoreASC || window.i18n) return;
 
   const { homepage } = pkg;
@@ -26,4 +26,26 @@ export const initI18n = (initialI18nStoreASC: IInitialI18nStoreASC): void => {
       }
     }
   }
-};
+}
+
+export async function oAuthLogin(profile) {
+  let isSuccess = false;
+  try {
+    await thirdPartyLogin(profile);
+    isSuccess = true;
+    const redirectPath = localStorage.getItem("redirectPath");
+
+    if (redirectPath) {
+      localStorage.removeItem("redirectPath");
+      window.location.href = redirectPath;
+    }
+  } catch (e) {
+    isSuccess = false;
+    return isSuccess;
+  }
+
+  localStorage.removeItem("profile");
+  localStorage.removeItem("code");
+
+  return isSuccess;
+}

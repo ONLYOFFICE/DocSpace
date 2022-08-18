@@ -28,6 +28,7 @@ interface ILoginProps {
   providers: ProvidersType;
   capabilities: ICapabilities;
   isDesktopEditor: boolean;
+  match: MatchType;
 }
 const Login: React.FC<ILoginProps> = ({
   portalSettings,
@@ -35,6 +36,7 @@ const Login: React.FC<ILoginProps> = ({
   providers,
   capabilities,
   isDesktopEditor,
+  match,
   ...rest
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -187,6 +189,7 @@ const Login: React.FC<ILoginProps> = ({
           isLoading={isLoading}
           hashSettings={portalSettings.passwordHash}
           setIsLoading={setIsLoading}
+          match={match}
         />
         <Toast />
       </LoginContainer>

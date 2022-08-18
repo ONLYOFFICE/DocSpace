@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import FieldContainer from "@docspace/components/field-container";
 import EmailInput from "@docspace/components/email-input";
 import PasswordInput from "@docspace/components/password-input";
@@ -11,13 +11,15 @@ import ForgotPasswordModalDialog from "./forgot-password-modal-dialog";
 import Button from "@docspace/components/button";
 import { createPasswordHash } from "@docspace/common/utils";
 import { checkPwd } from "@docspace/common/desktop";
-import { login } from "@docspace/common/utils/login";
+import { login } from "@docspace/common/utils/loginUtils";
+import { oAuthLogin } from "../../helpers/utils";
 
 interface ILoginFormProps {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   hashSettings: PasswordHashType;
   isDesktop: boolean;
+  match: MatchType;
 }
 
 const settings = {
@@ -31,6 +33,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   isLoading,
   hashSettings,
   isDesktop,
+  match,
   setIsLoading,
 }) => {
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
@@ -46,6 +49,8 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { t } = useTranslation(["Login", "Common"]);
+
+  const { error, confirmedEmail } = match;
 
   const onChangeLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
     //console.log("onChangeLogin", e.target.value);
@@ -258,7 +263,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         onClick={onSubmit}
       />
 
-      {true && (
+      {confirmedEmail && (
         <Text isBold={true} fontSize="16px">
           {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
         </Text>

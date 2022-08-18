@@ -46,7 +46,7 @@ app.use(logger("dev", { stream: stream }));
 
 if (IS_DEVELOPMENT) {
   app.get("/login", async (req: ILoginRequest, res: Response) => {
-    const { i18n, cookies, headers } = req;
+    const { i18n, cookies, headers, query } = req;
     initSSR(headers);
 
     let currentLanguage = "en";
@@ -81,6 +81,8 @@ if (IS_DEVELOPMENT) {
     try {
       assets = await getAssets();
       initialState = await getInitialState();
+
+      initialState.match = query;
 
       const { component, styleTags } = renderApp(i18n, initialState);
 
