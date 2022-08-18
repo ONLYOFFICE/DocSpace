@@ -16,6 +16,9 @@ import {
 
 import withLoader from "../withLoader";
 
+import FormWrapper from "@docspace/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
+
 const DeactivatePortal = (props) => {
   const { t, greetingTitle, linkData, history } = props;
 
@@ -35,29 +38,32 @@ const DeactivatePortal = (props) => {
     <StyledPage>
       <StyledBody>
         <StyledHeader>
+          <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
         </StyledHeader>
 
-        <Text className="subtitle">{t("PortalDeactivateTitle")}</Text>
-        <ButtonsWrapper>
-          <Button
-            scale
-            primary
-            size="medium"
-            label={t("Settings:Deactivate")}
-            tabIndex={1}
-            onClick={onDeleteClick}
-          />
-          <Button
-            scale
-            size="medium"
-            label={t("Common:Cancel")}
-            tabIndex={1}
-            onClick={onCancelClick}
-          />
-        </ButtonsWrapper>
+        <FormWrapper>
+          <Text className="subtitle">{t("PortalDeactivateTitle")}</Text>
+          <ButtonsWrapper>
+            <Button
+              scale
+              primary
+              size="medium"
+              label={t("Settings:Deactivate")}
+              tabIndex={1}
+              onClick={onDeleteClick}
+            />
+            <Button
+              scale
+              size="medium"
+              label={t("Common:Cancel")}
+              tabIndex={1}
+              onClick={onCancelClick}
+            />
+          </ButtonsWrapper>
+        </FormWrapper>
       </StyledBody>
     </StyledPage>
   );
