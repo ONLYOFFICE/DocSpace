@@ -21,16 +21,22 @@ namespace ASC.Migrations.MySql.Migrations
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
-                    b.Property<int>("ConfigId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("config_id");
+                        .HasColumnName("id");
 
                     b.Property<bool>("Enabled")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("enabled")
                         .HasDefaultValueSql("'1'");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("name");
 
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
@@ -50,7 +56,7 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("uri")
                         .HasDefaultValueSql("''");
 
-                    b.HasKey("ConfigId")
+                    b.HasKey("Id")
                         .HasName("PRIMARY");
 
                     b.ToTable("webhooks_config", (string)null);

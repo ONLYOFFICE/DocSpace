@@ -24,13 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.ApiModels.RequestsDto;
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-public class WebhooksConfigRequestsDto
+public class WebhooksLogDto : IMapFrom<WebhooksLog>
 {
+    public string ConfigId { get; set; }
+    public DateTime CreationTime { get; set; }
     public int Id { get; set; }
-    public string Name { get; set; }
-    public string Uri { get; set; }
-    public string SecretKey { get; set; }
-    public bool? Enabled { get; set; }
+    public string Method { get; set; }
+    public string Route { get; set; }
+    public string RequestHeaders { get; set; }
+    public string RequestPayload { get; set; }
+    public string ResponseHeaders { get; set; }
+    public string ResponsePayload { get; set; }
+    public int Status { get; set; }
+    public DateTime? Delivery { get; set; }
 }

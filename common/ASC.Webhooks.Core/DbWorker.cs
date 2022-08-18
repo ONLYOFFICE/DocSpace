@@ -48,12 +48,12 @@ public class DbWorker
         _authContext = authContext;
     }
 
-    public async Task<WebhooksConfig> AddWebhookConfig(string uri, string secretKey)
+    public async Task<WebhooksConfig> AddWebhookConfig(string name, string uri, string secretKey)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var toAdd = new WebhooksConfig { TenantId = Tenant, Uri = uri, SecretKey = secretKey };
-        await webhooksDbContext.AddOrUpdateAsync(r => r.WebhooksConfigs, toAdd);
+        var toAdd = new WebhooksConfig { TenantId = Tenant, Uri = uri, SecretKey = secretKey, Name = name };
+        toAdd = await webhooksDbContext.AddOrUpdateAsync(r => r.WebhooksConfigs, toAdd);
         await webhooksDbContext.SaveChangesAsync();
 
         return toAdd;
@@ -83,12 +83,12 @@ public class DbWorker
             .AsAsyncEnumerable();
     }
 
-    public async Task<WebhooksConfig> UpdateWebhookConfig(int id, string uri, string key, bool? enabled)
+    public async Task<WebhooksConfig> UpdateWebhookConfig(int id, string name, string uri, string key, bool? enabled)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         var updateObj = await webhooksDbContext.WebhooksConfigs
-            .Where(it => it.TenantId == Tenant && it.ConfigId == id)
+            .Where(it => it.TenantId == Tenant && it.Id == id)
             .FirstOrDefaultAsync();
 
         if (updateObj != null)
@@ -96,6 +96,11 @@ public class DbWorker
             if (!string.IsNullOrEmpty(uri))
             {
                 updateObj.Uri = uri;
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                updateObj.Name = name;
             }
 
             if (!string.IsNullOrEmpty(key))
@@ -122,7 +127,7 @@ public class DbWorker
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         var removeObj = await webhooksDbContext.WebhooksConfigs
-            .Where(it => it.TenantId == tenant && it.ConfigId == id)
+            .Where(it => it.TenantId == tenant && it.Id == id)
             .FirstOrDefaultAsync();
 
         webhooksDbContext.WebhooksConfigs.Remove(removeObj);
@@ -137,19 +142,20 @@ public class DbWorker
 
         return webhooksDbContext.WebhooksLogs
             .AsNoTracking()
+            .Where(r => r.TenantId == Tenant)
             .OrderBy(t => t.Id)
             .AsAsyncEnumerable();
     }
 
-    public async Task<WebhookEntry> ReadFromJournal(int id)
+    public async Task<WebhookEntry> ReadJournal(int id)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         return await webhooksDbContext.WebhooksLogs
             .AsNoTracking()
             .Where(it => it.Id == id)
-            .Join(webhooksDbContext.WebhooksConfigs, t => t.ConfigId, t => t.ConfigId, (payload, config) => new { payload, config })
-            .Select(t => new WebhookEntry { Id = t.payload.Id, Payload = t.payload.RequestPayload, SecretKey = t.config.SecretKey, Uri = t.config.Uri })
+            .Join(webhooksDbContext.WebhooksConfigs, t => t.ConfigId, t => t.Id, (payload, config) => new { payload, config })
+            .Select(t => new WebhookEntry { Id = t.payload.Id, Name = t.config.Name, Payload = t.payload.RequestPayload, SecretKey = t.config.SecretKey, Uri = t.config.Uri })
             .OrderBy(t => t.Id)
             .FirstOrDefaultAsync();
     }

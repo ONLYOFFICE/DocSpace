@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
-    [Migration("20220817163336_WebhooksDbContext_Upgrade1")]
+    [Migration("20220818131736_WebhooksDbContext_Upgrade1")]
     partial class WebhooksDbContext_Upgrade1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,10 +25,10 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
-                    b.Property<int>("ConfigId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("config_id")
+                        .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<bool>("Enabled")
@@ -36,6 +36,12 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                         .HasColumnType("boolean")
                         .HasColumnName("enabled")
                         .HasDefaultValueSql("true");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
 
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
@@ -55,7 +61,7 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                         .HasColumnName("uri")
                         .HasDefaultValueSql("''");
 
-                    b.HasKey("ConfigId")
+                    b.HasKey("Id")
                         .HasName("PRIMARY");
 
                     b.ToTable("webhooks_config", (string)null);

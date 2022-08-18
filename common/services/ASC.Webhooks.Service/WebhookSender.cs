@@ -53,7 +53,7 @@ public class WebhookSender
         using var scope = _scopeFactory.CreateScope();
         var dbWorker = scope.ServiceProvider.GetRequiredService<DbWorker>();
 
-        var entry = await dbWorker.ReadFromJournal(webhookRequest.Id);
+        var entry = await dbWorker.ReadJournal(webhookRequest.Id);
         var data = entry.Payload;
 
         var status = 0;

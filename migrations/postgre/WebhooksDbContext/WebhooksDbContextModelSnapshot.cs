@@ -23,10 +23,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
-                    b.Property<int>("ConfigId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("config_id")
+                        .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<bool>("Enabled")
@@ -34,6 +34,12 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("enabled")
                         .HasDefaultValueSql("true");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
 
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
@@ -53,7 +59,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("uri")
                         .HasDefaultValueSql("''");
 
-                    b.HasKey("ConfigId")
+                    b.HasKey("Id")
                         .HasName("PRIMARY");
 
                     b.ToTable("webhooks_config", (string)null);

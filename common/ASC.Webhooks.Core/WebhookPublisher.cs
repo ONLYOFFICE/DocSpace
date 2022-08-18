@@ -57,7 +57,7 @@ public class WebhookPublisher : IWebhookPublisher
                 Route = route,
                 CreationTime = DateTime.UtcNow,
                 RequestPayload = requestPayload,
-                ConfigId = config.ConfigId
+                ConfigId = config.Id
             };
 
             var webhook = await _dbWorker.WriteToJournal(webhooksLog);

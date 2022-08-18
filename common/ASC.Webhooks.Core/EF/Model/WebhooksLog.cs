@@ -26,7 +26,7 @@
 
 namespace ASC.Webhooks.Core.EF.Model;
 
-public partial class WebhooksLog
+public class WebhooksLog
 {
     public int ConfigId { get; set; }
     public DateTime CreationTime { get; set; }

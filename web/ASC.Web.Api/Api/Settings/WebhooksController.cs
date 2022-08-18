@@ -71,7 +71,7 @@ public class WebhooksController : BaseSettingsController
         ArgumentNullException.ThrowIfNull(model.Uri);
         ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.SecretKey);
+        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Name, model.Uri, model.SecretKey);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -87,7 +87,7 @@ public class WebhooksController : BaseSettingsController
         ArgumentNullException.ThrowIfNull(model.Uri);
         ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Uri, model.SecretKey, model.Enabled);
+        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Name, model.Uri, model.SecretKey, model.Enabled);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -106,10 +106,13 @@ public class WebhooksController : BaseSettingsController
     }
 
     [HttpGet("webhooks/log")]
-    public IAsyncEnumerable<WebhooksLog> GetJournal()
+    public async IAsyncEnumerable<WebhooksLogDto> GetJournal()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _webhookDbWorker.ReadJournal();
+        await foreach (var j in _webhookDbWorker.ReadJournal())
+        {
+            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
+        }
     }
 }

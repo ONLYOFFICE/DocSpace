@@ -3,31 +3,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.WebhooksDb
+namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 {
     public partial class WebhooksDbContext_Upgrade1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.UpdateData(
-                table: "webhooks_logs",
-                keyColumn: "uid",
-                keyValue: null,
-                column: "uid",
-                value: "");
+            migrationBuilder.RenameColumn(
+                name: "config_id",
+                table: "webhooks_config",
+                newName: "id");
 
             migrationBuilder.AlterColumn<string>(
                 name: "uid",
                 table: "webhooks_logs",
-                type: "varchar(36)",
+                type: "varchar",
+                maxLength: 50,
                 nullable: false,
-                collation: "utf8_general_ci",
+                defaultValue: "",
                 oldClrType: typeof(string),
-                oldType: "varchar(50)",
+                oldType: "varchar",
                 oldMaxLength: 50,
-                oldNullable: true)
-                .Annotation("MySql:CharSet", "utf8")
-                .OldAnnotation("MySql:CharSet", "utf8");
+                oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
                 name: "status",
@@ -35,9 +32,8 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                 type: "int",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "varchar(50)",
-                oldMaxLength: 50)
-                .OldAnnotation("MySql:CharSet", "utf8");
+                oldType: "varchar",
+                oldMaxLength: 50);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "delivery",
@@ -48,9 +44,17 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
             migrationBuilder.AddColumn<bool>(
                 name: "enabled",
                 table: "webhooks_config",
-                type: "tinyint(1)",
+                type: "boolean",
                 nullable: false,
-                defaultValueSql: "'1'");
+                defaultValueSql: "true");
+
+            migrationBuilder.AddColumn<string>(
+                name: "name",
+                table: "webhooks_config",
+                type: "character varying(50)",
+                maxLength: 50,
+                nullable: false,
+                defaultValue: "");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -63,27 +67,33 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                 name: "enabled",
                 table: "webhooks_config");
 
+            migrationBuilder.DropColumn(
+                name: "name",
+                table: "webhooks_config");
+
+            migrationBuilder.RenameColumn(
+                name: "id",
+                table: "webhooks_config",
+                newName: "config_id");
+
             migrationBuilder.AlterColumn<string>(
                 name: "uid",
                 table: "webhooks_logs",
-                type: "varchar(50)",
+                type: "varchar",
                 maxLength: 50,
                 nullable: true,
                 oldClrType: typeof(string),
-                oldType: "varchar(36)",
-                oldCollation: "utf8_general_ci")
-                .Annotation("MySql:CharSet", "utf8")
-                .OldAnnotation("MySql:CharSet", "utf8");
+                oldType: "varchar",
+                oldMaxLength: 50);
 
             migrationBuilder.AlterColumn<string>(
                 name: "status",
                 table: "webhooks_logs",
-                type: "varchar(50)",
+                type: "varchar",
                 maxLength: 50,
                 nullable: false,
                 oldClrType: typeof(int),
-                oldType: "int")
-                .Annotation("MySql:CharSet", "utf8");
+                oldType: "int");
         }
     }
 }
