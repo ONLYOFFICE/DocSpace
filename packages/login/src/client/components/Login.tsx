@@ -18,17 +18,13 @@ import { providersData, AppServerConfig } from "@docspace/common/constants";
 import Link from "@docspace/components/link";
 import Toast from "@docspace/components/toast";
 import LoginForm from "./sub-components/LoginForm";
+import MoreLoginModal from "./sub-components/more-login";
 
 const { proxyURL } = AppServerConfig;
 const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
 
-interface ILoginProps {
-  portalSettings: IPortalSettings;
-  buildInfo: IBuildInfo;
-  providers: ProvidersType;
-  capabilities: ICapabilities;
+interface ILoginProps extends IInitialState {
   isDesktopEditor: boolean;
-  match: MatchType;
 }
 const Login: React.FC<ILoginProps> = ({
   portalSettings,
@@ -146,6 +142,10 @@ const Login: React.FC<ILoginProps> = ({
     setMoreAuthVisible(true);
   };
 
+  const moreAuthClose = () => {
+    setMoreAuthVisible(false);
+  };
+
   return (
     <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktopEditor}>
       <LoginContainer>
@@ -192,6 +192,14 @@ const Login: React.FC<ILoginProps> = ({
           match={match}
         />
         <Toast />
+        <MoreLoginModal
+          visible={moreAuthVisible}
+          onClose={moreAuthClose}
+          providers={providers}
+          onSocialLoginClick={onSocialButtonClick}
+          ssoLabel={ssoLabel}
+          ssoUrl={ssoUrl}
+        />
       </LoginContainer>
     </LoginFormWrapper>
   );

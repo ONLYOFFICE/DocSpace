@@ -13,7 +13,7 @@ import { createPasswordHash } from "@docspace/common/utils";
 import { checkPwd } from "@docspace/common/desktop";
 import { login } from "@docspace/common/utils/loginUtils";
 import { oAuthLogin } from "../../helpers/utils";
-
+import toastr from "@docspace/components/toast/toastr";
 interface ILoginFormProps {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
@@ -51,6 +51,23 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const { t } = useTranslation(["Login", "Common"]);
 
   const { error, confirmedEmail } = match;
+
+  useEffect(() => {
+    const profile = localStorage.getItem("profile");
+    if (!profile) return;
+
+    authCallback(profile);
+  }, []);
+
+  const authCallback = async (profile: string) => {
+    const result = await oAuthLogin(profile);
+    if (!result) {
+      toastr.error(
+        t("Common:ProviderNotConnected"),
+        t("Common:ProviderLoginError")
+      );
+    }
+  };
 
   const onChangeLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
     //console.log("onChangeLogin", e.target.value);

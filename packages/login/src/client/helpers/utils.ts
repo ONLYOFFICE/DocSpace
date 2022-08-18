@@ -28,7 +28,7 @@ export function initI18n(initialI18nStoreASC: IInitialI18nStoreASC): void {
   }
 }
 
-export async function oAuthLogin(profile) {
+export async function oAuthLogin(profile: string) {
   let isSuccess = false;
   try {
     await thirdPartyLogin(profile);
