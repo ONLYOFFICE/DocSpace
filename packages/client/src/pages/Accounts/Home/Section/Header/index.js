@@ -15,6 +15,8 @@ import ContextMenuButton from "@docspace/components/context-menu-button";
 import { tablet, mobile } from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
+import IconButton from "@docspace/components/icon-button";
+import Base from "@docspace/components/themes";
 
 // import toastr from "client/toastr";
 
@@ -23,78 +25,147 @@ import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 import config from "PACKAGE_FILE";
 
 const StyledContainer = styled.div`
+  width: 100%;
+  height: 69px;
+
+  @media ${tablet} {
+    height: 61px;
+  }
+
+  ${isMobile &&
+  css`
+    height: 61px;
+  `}
+
+  @media ${mobile} {
+    height: 53px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    height: 53px;
+  `}
+
   .group-button-menu-container {
-    margin: 0 -20px;
+    margin: 0 0 0 -20px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-    width: calc(100vw - 256px);
+    width: calc(100% + 40px);
+    height: 68px;
 
     @media ${tablet} {
-      width: ${(props) =>
-        props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
-
-      margin: 0 -16px;
+      height: 60px;
+      margin: 0 0 0 -16px;
+      width: calc(100% + 32px);
     }
 
     ${isMobile &&
     css`
-      width: ${(props) =>
-        props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
-
-      margin: 0 -16px;
+      height: 60px;
+      margin: 0 0 0 -16px;
+      width: calc(100% + 32px);
     `}
 
     @media ${mobile} {
-      width: 100vw;
-
-      margin: 0 -16px;
+      height: 52px;
+      margin: 0 0 0 -16px;
+      width: calc(100% + 32px);
     }
 
     ${isMobileOnly &&
     css`
-      width: 100vw !important;
-
-      margin: 0 -16px;
+      height: 52px;
+      margin: 0 0 0 -16px;
+      width: calc(100% + 32px);
     `}
   }
 
   .header-container {
     position: relative;
-    ${(props) =>
-      props.isLoaded &&
-      css`
-        display: grid;
-        grid-template-columns: auto auto 1fr;
 
-        @media ${tablet} {
-          grid-template-columns: 1fr auto;
-        }
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    align-items: center;
+
+    grid-template-columns: auto auto 1fr;
+
+    @media ${tablet} {
+      grid-template-columns: 1fr auto;
+    }
+
+    ${isMobile &&
+    css`
+      grid-template-columns: 1fr auto;
+    `}
+
+    .headline-header {
+      line-height: 24px;
+
+      @media ${tablet} {
+        line-height: 28px;
+      }
+
+      ${isMobile &&
+      css`
+        line-height: 28px;
       `}
 
-    margin-bottom: 3px;
-    align-items: center;
-    max-width: calc(100vw - 32px);
+      @media ${mobile} {
+        line-height: 24px;
+      }
+
+      ${isMobile &&
+      css`
+        line-height: 24px;
+      `}
+    }
 
     .action-button {
       margin-left: 16px;
 
       @media ${tablet} {
-        margin-left: auto;
-
-        & > div:first-child {
-          padding: 8px 16px 8px 16px;
-          margin-right: -16px;
-        }
+        display: none;
       }
+
+      ${isMobile &&
+      css`
+        display: none;
+      `}
     }
 
-    .headline-header {
-      @media ${tablet} {
-        padding: 4px 0;
+    .header-container_info-toggler {
+      width: 32px;
+      height: 32px;
+
+      border-radius: 100%;
+      margin-left: auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background-color: ${(props) =>
+        props.isInfoPanelVisible
+          ? props.theme.infoPanel.sectionHeaderToggleBgActive
+          : props.theme.infoPanel.sectionHeaderToggleBg};
+
+      .info-panel-toggle {
+        margin-bottom: 1px;
+      }
+
+      path {
+        fill: ${(props) =>
+          props.isInfoPanelVisible
+            ? props.theme.infoPanel.sectionHeaderToggleIconActive
+            : props.theme.infoPanel.sectionHeaderToggleIcon};
       }
     }
   }
 `;
+
+StyledContainer.defaultProps = { theme: Base };
 
 const SectionHeaderContent = (props) => {
   const {
@@ -247,7 +318,7 @@ const SectionHeaderContent = (props) => {
                 </Headline>
                 <ContextMenuButton
                   className="action-button"
-                  directionX="right"
+                  directionX="left"
                   title={t("Common:Actions")}
                   iconName="images/plus.svg"
                   size={17}
@@ -255,6 +326,15 @@ const SectionHeaderContent = (props) => {
                   isDisabled={false}
                 />
               </>
+              <div className="header-container_info-toggler">
+                <IconButton
+                  className="info-panel-toggle"
+                  iconName="images/panel.react.svg"
+                  size="16"
+                  isFill={true}
+                  onClick={() => {}}
+                />
+              </div>
             </div>
           )}
         </StyledContainer>
