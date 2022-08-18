@@ -454,6 +454,4 @@ const Preview = (props) => {
   );
 };
 
-export default inject(({ auth, setup, common }) => {})(
-  withTranslation(["Settings", "Common"])(observer(Preview))
-);
+export default Preview;

@@ -91,7 +91,7 @@ const Appearance = (props) => {
     () => [
       {
         key: "0",
-        title: "Light theme",
+        title: t("Profile:LightTheme"),
         content: (
           <Preview
             previewTheme={previewTheme}
@@ -101,7 +101,7 @@ const Appearance = (props) => {
       },
       {
         key: "1",
-        title: "Dark theme",
+        title: t("Profile:DarkTheme"),
         content: (
           <Preview
             previewTheme={previewTheme}
@@ -369,13 +369,13 @@ const Appearance = (props) => {
   );
 
   return viewMobile ? (
-    <BreakpointWarning content={"the Appearance settings"} />
+    <BreakpointWarning content={t("Settings:TheAppearanceSettings")} />
   ) : (
     <StyledComponent>
-      <div className="header">Color</div>
+      <div className="header">{t("Common:Color")}</div>
 
       <div className="theme-standard">
-        <div className="theme-name">Standard</div>
+        <div className="theme-name">{t("Common:Standard")}</div>
 
         <div className="theme-container">
           {appearanceTheme.map((item, index) => {
@@ -414,7 +414,7 @@ const Appearance = (props) => {
         showSaveButtonDialog={showSaveButtonDialog}
         onSaveColorSchemeDialog={onSaveColorSchemeDialog}
       />
-      <div className="header preview-header">Preview</div>
+      <div className="header preview-header">{t("Common:Preview")}</div>
       <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />
 
       <div className="buttons-container">
@@ -446,4 +446,8 @@ export default inject(({ auth }) => {
     getAppearanceTheme,
     currentColorScheme,
   };
-})(withTranslation(["Settings", "Common"])(withRouter(observer(Appearance))));
+})(
+  withTranslation(["Profile", "Common", "Settings"])(
+    withRouter(observer(Appearance))
+  )
+);
