@@ -15,8 +15,7 @@ import ContextMenuButton from "@docspace/components/context-menu-button";
 import { tablet, mobile } from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
-import IconButton from "@docspace/components/icon-button";
-import Base from "@docspace/components/themes";
+import { Base } from "@docspace/components/themes";
 
 // import toastr from "client/toastr";
 
@@ -134,34 +133,6 @@ const StyledContainer = styled.div`
         display: none;
       `}
     }
-
-    .header-container_info-toggler {
-      width: 32px;
-      height: 32px;
-
-      border-radius: 100%;
-      margin-left: auto;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      background-color: ${(props) =>
-        props.isInfoPanelVisible
-          ? props.theme.infoPanel.sectionHeaderToggleBgActive
-          : props.theme.infoPanel.sectionHeaderToggleBg};
-
-      .info-panel-toggle {
-        margin-bottom: 1px;
-      }
-
-      path {
-        fill: ${(props) =>
-          props.isInfoPanelVisible
-            ? props.theme.infoPanel.sectionHeaderToggleIconActive
-            : props.theme.infoPanel.sectionHeaderToggleIcon};
-      }
-    }
   }
 `;
 
@@ -182,6 +153,8 @@ const SectionHeaderContent = (props) => {
     getHeaderMenu,
 
     showText,
+    cbMenuItems,
+    getCheckboxItemLabel,
   } = props;
 
   //console.log("SectionHeaderContent render", props.isTabletView);
@@ -189,6 +162,7 @@ const SectionHeaderContent = (props) => {
   const onChange = (checked) => {
     setSelected(checked ? "all" : "none");
   };
+
   const onSelect = useCallback(
     (e) => {
       const key = e.currentTarget.dataset.key;
@@ -204,31 +178,25 @@ const SectionHeaderContent = (props) => {
     [onSelect]
   );
 
-  let menuItems = useMemo(
-    () => (
+  const getMenuItems = () => {
+    const checkboxOptions = (
       <>
-        <DropDownItem
-          key="active"
-          label={t("Common:Active")}
-          data-key={"active"}
-          onClick={onSelect}
-        />
-        <DropDownItem
-          key="disabled"
-          label={t("PeopleTranslations:DisabledEmployeeStatus")}
-          data-key={"disabled"}
-          onClick={onSelect}
-        />
-        <DropDownItem
-          key="invited"
-          label={t("LblInvited")}
-          data-key={"invited"}
-          onClick={onSelect}
-        />
+        {cbMenuItems.map((key) => {
+          const label = getCheckboxItemLabel(t, key);
+          return (
+            <DropDownItem
+              key={key}
+              label={label}
+              data-key={key}
+              onClick={onSelect}
+            />
+          );
+        })}
       </>
-    ),
-    [t, onSelectorSelect]
-  );
+    );
+
+    return checkboxOptions;
+  };
 
   const headerMenu = getHeaderMenu(t);
 
@@ -299,11 +267,12 @@ const SectionHeaderContent = (props) => {
           {isHeaderVisible ? (
             <div className="group-button-menu-container">
               <TableGroupMenu
-                checkboxOptions={menuItems}
+                checkboxOptions={getMenuItems()}
                 onChange={onChange}
                 isChecked={isHeaderChecked}
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
+                withoutInfoPanelToggler={true}
               />
             </div>
           ) : (
@@ -326,15 +295,6 @@ const SectionHeaderContent = (props) => {
                   isDisabled={false}
                 />
               </>
-              <div className="header-container_info-toggler">
-                <IconButton
-                  className="info-panel-toggle"
-                  iconName="images/panel.react.svg"
-                  size="16"
-                  isFill={true}
-                  onClick={() => {}}
-                />
-              </div>
             </div>
           )}
         </StyledContainer>
@@ -370,6 +330,8 @@ export default withRouter(
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
+      cbMenuItems,
+      getCheckboxItemLabel,
     } = headerMenuStore;
     const { deleteGroup } = groupsStore;
     const { group } = selectedGroupStore;
@@ -397,9 +359,17 @@ export default withRouter(
       getHeaderMenu,
       setInvitationDialogVisible,
       showText,
+      cbMenuItems,
+      getCheckboxItemLabel,
     };
   })(
-    withTranslation(["People", "Common", "PeopleTranslations"])(
+    withTranslation([
+      "People",
+      "Common",
+      "PeopleTranslations",
+      "Files",
+      "ChangeUserTypeDialog",
+    ])(
       withPeopleLoader(observer(SectionHeaderContent))(
         <Loaders.SectionHeader />
       )

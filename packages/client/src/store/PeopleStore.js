@@ -78,21 +78,21 @@ class PeopleStore {
     return getUsersList(newFilter);
   };
 
+  onInvite = (e) => {
+    console.log(e.target.dataset.action);
+  };
+
   getHeaderMenu = (t) => {
-    const { userCaption, guestCaption } = authStore.settingsStore.customNames;
     const {
       hasUsersToMakeEmployees,
-      hasUsersToMakeGuests,
       hasUsersToActivate,
       hasUsersToDisable,
       hasUsersToInvite,
-      hasAnybodySelected,
       hasUsersToRemove,
+      getUsersToRemoveIds,
       selection,
     } = this.selectionStore;
     const {
-      setEmployeeDialogVisible,
-      setGuestDialogVisible,
       setActiveDialogVisible,
       setDisableDialogVisible,
       setSendInviteDialogVisible,
@@ -101,50 +101,60 @@ class PeopleStore {
 
     const headerMenu = [
       {
-        label: t("ChangeToUser", {
-          userCaption,
-        }),
+        label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
         disabled: !hasUsersToMakeEmployees,
-        onClick: () => setEmployeeDialogVisible(true),
         iconUrl: "/static/images/change.to.employee.react.svg",
+        withDropDown: true,
+        options: [
+          {
+            id: "group-menu_administrator",
+            className: "group-menu_drop-down",
+            label: t("Administrator"),
+            onClick: this.onInvite,
+            "data-action": "administrator",
+            key: "administrator",
+          },
+          {
+            id: "group-menu_manager",
+            className: "group-menu_drop-down",
+            label: t("Manager"),
+            onClick: this.onInvite,
+            "data-action": "manager",
+            key: "manager",
+          },
+          {
+            id: "group-menu_user",
+            className: "group-menu_drop-down",
+            label: t("Common:User"),
+            onClick: this.onInvite,
+            "data-action": "user",
+            key: "user",
+          },
+        ],
       },
       {
-        label: t("ChangeToGuest", {
-          guestCaption,
-        }),
-        disabled: !hasUsersToMakeGuests,
-        onClick: () => setGuestDialogVisible(true),
-        iconUrl: "/static/images/change.to.guest.react.svg",
+        label: t("PeopleTranslations:Details"),
+        disabled: getUsersToRemoveIds.length === selection.length,
+        onClick: () => console.log("details"),
+        iconUrl: "images/info.react.svg",
       },
       {
-        label: t("LblSetActive"),
-        disabled: !hasUsersToActivate,
-        onClick: () => setActiveDialogVisible(true),
-        iconUrl: "/static/images/enable.react.svg",
-      },
-      {
-        label: t("LblSetDisabled"),
-        disabled: !hasUsersToDisable,
-        onClick: () => setDisableDialogVisible(true),
-        iconUrl: "/static/images/disable.react.svg",
-      },
-      {
-        label: t("LblInviteAgain"),
+        label: t("Common:Invite"),
         disabled: !hasUsersToInvite,
         onClick: () => setSendInviteDialogVisible(true),
         iconUrl: "/static/images/invite.again.react.svg",
       },
       {
-        label: t("LblSendEmail"),
-        disabled: !hasAnybodySelected,
-        onClick: () => {
-          let str = "";
-          for (let item of selection) {
-            str += `${item.email},`;
-          }
-          window.open(`mailto: ${str}`, "_self");
-        },
-        iconUrl: "/static/images/send.react.svg",
+        label: t("Common:Enable"),
+        disabled: !hasUsersToActivate,
+        onClick: () => setActiveDialogVisible(true),
+        iconUrl: "images/enable.react.svg",
+      },
+      {
+        label: t("PeopleTranslations:DisableUserButton"),
+        disabled: !hasUsersToDisable,
+        onClick: () => setDisableDialogVisible(true),
+        iconUrl: "images/disable.react.svg",
       },
       {
         label: t("Common:Delete"),

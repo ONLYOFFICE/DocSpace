@@ -71,15 +71,16 @@ class SelectionStore {
 
   getUserChecked = (user, selected) => {
     const status = getUserStatus(user);
+
     switch (selected) {
       case "all":
         return true;
       case "active":
-        return status === "normal";
+        return status === "active";
+      case "pending":
+        return status === "pending";
       case "disabled":
         return status === "disabled";
-      case "invited":
-        return status === "pending";
       default:
         return false;
     }
@@ -113,12 +114,12 @@ class SelectionStore {
       return (
         !x.isAdmin &&
         !x.isOwner &&
-        x.isVisitor &&
         x.status !== EmployeeStatus.Disabled &&
         x.id !== authStore.userStore.user.id
       );
     });
-    return !!users.length;
+
+    return users.length > 0;
   }
 
   get getUsersToMakeEmployeesIds() {
