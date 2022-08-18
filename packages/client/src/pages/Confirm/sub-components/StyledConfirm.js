@@ -13,7 +13,16 @@ export const StyledPage = styled.div`
   }
 
   @media ${mobile} {
-    margin-top: 72px;
+    margin-top: 32px;
+  }
+
+  .subtitle {
+    margin-bottom: 32px;
+  }
+
+  .password-form {
+    width: 100%;
+    margin-bottom: 8px;
   }
 
   .subtitle {
@@ -22,23 +31,27 @@ export const StyledPage = styled.div`
 `;
 
 export const StyledHeader = styled.div`
-  text-align: left;
-
   .title {
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+    text-align: center;
   }
 
   .subtitle {
     margin-bottom: 32px;
   }
+
+  .docspace-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 64px;
+  }
 `;
 
 export const StyledBody = styled.div`
-  width: 320px;
-
-  @media ${tablet} {
-    justify-content: center;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   @media ${mobile} {
     width: 100%;
@@ -52,37 +65,27 @@ export const StyledBody = styled.div`
     width: 100%;
   }
 
-  .confirm-button {
-    width: 100%;
-    margin-top: 8px;
-  }
-
   .password-change-form {
     margin-top: 32px;
     margin-bottom: 16px;
   }
 
-  .confirm-subtitle {
-    margin-bottom: 8px;
-  }
-
-  .info-delete {
+  .phone-input {
     margin-bottom: 24px;
   }
 
-  .phone-input {
-    margin-top: 32px;
-    margin-bottom: 16px;
+  .delete-profile-confirm {
+    margin-bottom: 8px;
+  }
+
+  .phone-title {
+    margin-bottom: 8px;
   }
 `;
 
 export const ButtonsWrapper = styled.div`
   display: flex;
-  flex: 1fr 1fr;
   flex-direction: row;
   gap: 16px;
-
-  .button {
-    width: 100%;
-  }
+  width: 100%;
 `;
