@@ -19,6 +19,7 @@ const RemovePortal = lazy(() => import("./sub-components/removePortal"));
 const DeactivatePortal = lazy(() =>
   import("./sub-components/deactivatePortal")
 );
+const ContinuePortal = lazy(() => import("./sub-components/continuePortal"));
 
 const Confirm = ({ match }) => {
   //console.log("Confirm render");
@@ -81,6 +82,11 @@ const Confirm = ({ match }) => {
           exact
           path={`${path}/PortalSuspend`}
           component={DeactivatePortal}
+        />
+        <ConfirmRoute
+          exact
+          path={`${path}/PortalContinue`}
+          component={ContinuePortal}
         />
 
         {/* <Route component={Error404} /> */}
