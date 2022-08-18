@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Text from "@docspace/components/text";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { Link } from "@docspace/components";
+import { HelpButton, Link } from "@docspace/components";
 import toastr from "client/toastr";
 
 const StyledContainer = styled.div`
@@ -12,8 +12,9 @@ const StyledContainer = styled.div`
   min-height: 72px;
   padding: 16px;
   box-sizing: border-box;
+  margin-top: 16px;
 
-  div:first-child {
+  .payer-info_avatar {
     margin-right: 16px;
   }
   .payer-info_wrapper {
@@ -22,6 +23,16 @@ const StyledContainer = styled.div`
     grid-template-columns: 1fr;
     grid-template-rows: max-content max-content;
     grid-gap: 6px;
+
+    .payer-info_description {
+      display: flex;
+      p {
+        margin-right: 8px;
+      }
+      div {
+        margin: auto 0;
+      }
+    }
     .payer-info_account-link {
       cursor: pointer;
       text-decoration: underline;
@@ -54,19 +65,36 @@ const PayerInformationContainer = ({
 
   const isLinkAvailable = rights === "3" ? false : true;
 
+  const renderTooltip = () => {
+    return (
+      <>
+        <HelpButton
+          iconName={"/static/images/help.react.svg"}
+          tooltipContent={
+            <>
+              <Text isBold>{t("Payer")}</Text>
+              <Text>{t("PayerDescription")}</Text>
+            </>
+          }
+        />
+      </>
+    );
+  };
   return (
     <StyledContainer style={style} className="current-tariff" theme={theme}>
-      <div>
+      <div className="payer-info_avatar">
         <Text isBold noSelect>
           {"AvatarPlace"}:
         </Text>
       </div>
 
       <div className="payer-info_wrapper">
-        <Text fontWeight={600} noSelect>
-          {payerName}
-        </Text>
-
+        <div className="payer-info_description">
+          <Text fontWeight={600} noSelect>
+            {payerName}
+          </Text>
+          {renderTooltip()}
+        </div>
         {isLinkAvailable ? (
           <Text
             fontWeight={600}
