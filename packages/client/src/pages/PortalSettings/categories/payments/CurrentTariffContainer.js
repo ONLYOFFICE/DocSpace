@@ -35,7 +35,7 @@ const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
       t("Gigabyte"),
       t("Terabyte"),
     ];
-    if (bytes == 0) return "0 B";
+    if (bytes == 0) return `${"0" + " " + t("Bytes")}`;
 
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
 
