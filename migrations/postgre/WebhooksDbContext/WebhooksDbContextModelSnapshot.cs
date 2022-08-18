@@ -29,6 +29,12 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("config_id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<bool>("Enabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("enabled")
+                        .HasDefaultValueSql("true");
+
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
@@ -69,6 +75,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("creation_time");
 
+                    b.Property<DateTime?>("Delivery")
+                        .HasColumnType("datetime")
+                        .HasColumnName("delivery");
+
                     b.Property<string>("Method")
                         .HasMaxLength(100)
                         .HasColumnType("varchar")
@@ -96,10 +106,8 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("route");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar")
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
                         .HasColumnName("status");
 
                     b.Property<int>("TenantId")

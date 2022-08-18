@@ -54,13 +54,14 @@ public class WebhookSender
         using var scope = _scopeFactory.CreateScope();
         var dbWorker = scope.ServiceProvider.GetRequiredService<DbWorker>();
 
-        var entry = dbWorker.ReadFromJournal(webhookRequest.Id);
+        var entry = await dbWorker.ReadFromJournal(webhookRequest.Id);
         var data = entry.Payload;
 
-        var status = ProcessStatus.InProcess;
+        var status = 0;
         string responsePayload = null;
         string responseHeaders = null;
         string requestHeaders = null;
+        var delivery = DateTime.MinValue;
 
         try
         {
@@ -76,16 +77,21 @@ public class WebhookSender
 
             var response = await httpClient.SendAsync(request, cancellationToken);
 
-            status = ProcessStatus.Success;
+            status = (int)response.StatusCode;
             responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value), _jsonSerializerOptions);
             responsePayload = await response.Content.ReadAsStringAsync();
+            delivery = DateTime.UtcNow;
 
             _log.DebugResponse(response);
         }
         catch (HttpRequestException e)
         {
-            status = ProcessStatus.Failed;
+            if (e.StatusCode.HasValue)
+            {
+                status = (int)e.StatusCode.Value;
+            }
             responsePayload = e.Message;
+            delivery = DateTime.UtcNow;
 
             _log.ErrorWithException(e);
         }
@@ -94,7 +100,10 @@ public class WebhookSender
             _log.ErrorWithException(e);
         }
 
-        await dbWorker.UpdateWebhookJournal(entry.Id, status, requestHeaders, responsePayload, responseHeaders);
+        if (delivery != DateTime.MinValue)
+        {
+            await dbWorker.UpdateWebhookJournal(entry.Id, status, delivery, requestHeaders, responsePayload, responseHeaders);
+        }
     }
 
     private string GetSecretHash(string secretKey, string body)

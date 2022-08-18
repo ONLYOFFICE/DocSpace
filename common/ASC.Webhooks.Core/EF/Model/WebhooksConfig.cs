@@ -32,6 +32,7 @@ public class WebhooksConfig : BaseEntity
     public string SecretKey { get; set; }
     public int TenantId { get; set; }
     public string Uri { get; set; }
+    public bool Enabled { get; set; }
 
     public override object[] GetKeys()
     {
@@ -75,6 +76,11 @@ public static class WebhooksConfigExtension
                 .HasMaxLength(50)
                 .HasColumnName("secret_key")
                 .HasDefaultValueSql("''");
+
+            entity.Property(e => e.Enabled)
+                .HasColumnName("enabled")
+                .HasDefaultValueSql("'1'")
+                .HasColumnType("tinyint(1)");
         });
     }
 
@@ -104,6 +110,10 @@ public static class WebhooksConfigExtension
                 .HasMaxLength(50)
                 .HasColumnName("secret_key")
                 .HasDefaultValueSql("''");
+
+            entity.Property(e => e.Enabled)
+                .HasColumnName("enabled")
+                .HasDefaultValueSql("true");
         });
     }
 }

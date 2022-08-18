@@ -49,7 +49,7 @@ public class WebhookPublisher : IWebhookPublisher
 
         var webhookConfigs = _dbWorker.GetWebhookConfigs();
 
-        await foreach (var config in webhookConfigs)
+        await foreach (var config in webhookConfigs.Where(r => r.Enabled))
         {
             var webhooksLog = new WebhooksLog
             {
@@ -57,25 +57,17 @@ public class WebhookPublisher : IWebhookPublisher
                 Route = route,
                 CreationTime = DateTime.UtcNow,
                 RequestPayload = requestPayload,
-                Status = ProcessStatus.InProcess,
                 ConfigId = config.ConfigId
             };
 
-            var id = await _dbWorker.WriteToJournal(webhooksLog);
+            var webhook = await _dbWorker.WriteToJournal(webhooksLog);
 
             var request = new WebhookRequest
             {
-                Id = id
+                Id = webhook.Id
             };
 
             _webhookNotify.Publish(request, CacheNotifyAction.Update);
         }
     }
-}
-
-public enum ProcessStatus
-{
-    InProcess,
-    Success,
-    Failed
 }

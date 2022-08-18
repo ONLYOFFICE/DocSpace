@@ -54,11 +54,12 @@ public class WebhooksController : BaseSettingsController
         ArgumentNullException.ThrowIfNull(model.Uri);
         ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        await _webhookDbWorker.AddWebhookConfig(model.Uri, model.SecretKey);
+        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.SecretKey);
 
         return new WebhooksConfigDto
         {
-            Uri = model.Uri
+            Uri = webhook.Uri,
+            Enabled = webhook.Enabled
         };
     }
 
@@ -73,11 +74,12 @@ public class WebhooksController : BaseSettingsController
         ArgumentNullException.ThrowIfNull(model.Uri);
         ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Uri, model.SecretKey);
+        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Uri, model.SecretKey, model.Enabled);
 
         return new WebhooksConfigDto
         {
-            Uri = model.Uri
+            Uri = webhook.Uri,
+            Enabled = webhook.Enabled
         };
     }
 
@@ -85,11 +87,17 @@ public class WebhooksController : BaseSettingsController
     /// Remove config for webhooks
     /// </summary>
     [HttpDelete("webhook")]
-    public async Task RemoveWebhook(int id)
+    public async Task<WebhooksConfigDto> RemoveWebhook(int id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        await _webhookDbWorker.RemoveWebhookConfig(id);
+        var webhook = await _webhookDbWorker.RemoveWebhookConfig(id);
+
+        return new WebhooksConfigDto
+        {
+            Uri = webhook.Uri,
+            Enabled = webhook.Enabled
+        };
     }
 
     /// <summary>

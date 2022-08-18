@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -8,11 +9,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "event",
-                table: "webhooks_logs",
-                newName: "route");
-
             migrationBuilder.AlterColumn<string>(
                 name: "uid",
                 table: "webhooks_logs",
@@ -25,41 +21,38 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                 oldMaxLength: 50,
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<string>(
-                name: "response_payload",
+            migrationBuilder.AlterColumn<int>(
+                name: "status",
                 table: "webhooks_logs",
-                type: "text",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "json",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "request_payload",
-                table: "webhooks_logs",
-                type: "text",
+                type: "int",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "json");
+                oldType: "varchar",
+                oldMaxLength: 50);
 
-            migrationBuilder.AddColumn<string>(
-                name: "method",
+            migrationBuilder.AddColumn<DateTime>(
+                name: "delivery",
                 table: "webhooks_logs",
-                type: "varchar",
-                maxLength: 100,
+                type: "datetime",
                 nullable: true);
+
+            migrationBuilder.AddColumn<bool>(
+                name: "enabled",
+                table: "webhooks_config",
+                type: "boolean",
+                nullable: false,
+                defaultValueSql: "true");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "method",
+                name: "delivery",
                 table: "webhooks_logs");
 
-            migrationBuilder.RenameColumn(
-                name: "route",
-                table: "webhooks_logs",
-                newName: "event");
+            migrationBuilder.DropColumn(
+                name: "enabled",
+                table: "webhooks_config");
 
             migrationBuilder.AlterColumn<string>(
                 name: "uid",
@@ -72,21 +65,13 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                 oldMaxLength: 50);
 
             migrationBuilder.AlterColumn<string>(
-                name: "response_payload",
+                name: "status",
                 table: "webhooks_logs",
-                type: "json",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "request_payload",
-                table: "webhooks_logs",
-                type: "json",
+                type: "varchar",
+                maxLength: 50,
                 nullable: false,
-                oldClrType: typeof(string),
-                oldType: "text");
+                oldClrType: typeof(int),
+                oldType: "int");
         }
     }
 }

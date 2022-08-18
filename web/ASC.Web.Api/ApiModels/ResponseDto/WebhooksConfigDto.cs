@@ -29,4 +29,5 @@ namespace ASC.Web.Api.ApiModels.ResponseDto;
 public class WebhooksConfigDto
 {
     public string Uri { get; set; }
+    public bool Enabled { get; set; }
 }

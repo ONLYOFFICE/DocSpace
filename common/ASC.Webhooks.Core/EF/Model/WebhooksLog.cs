@@ -37,9 +37,10 @@ public partial class WebhooksLog
     public string RequestPayload { get; set; }
     public string ResponseHeaders { get; set; }
     public string ResponsePayload { get; set; }
-    public ProcessStatus Status { get; set; }
+    public int Status { get; set; }
     public int TenantId { get; set; }
     public Guid Uid { get; set; }
+    public DateTime? Delivery { get; set; }
 }
 
 public static class WebhooksPayloadExtension
@@ -74,7 +75,7 @@ public static class WebhooksPayloadExtension
 
             entity.Property(e => e.Uid)
                 .HasColumnName("uid")
-                .HasColumnType("varchar(38)")
+                .HasColumnType("varchar(36)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
@@ -117,10 +118,13 @@ public static class WebhooksPayloadExtension
                 .HasColumnType("datetime")
                 .HasColumnName("creation_time");
 
+            entity.Property(e => e.Delivery)
+                .HasColumnType("datetime")
+                .HasColumnName("delivery");
+
             entity.Property(e => e.Status)
-                .HasColumnType("varchar")
-                .HasColumnName("status")
-                .HasMaxLength(50);
+                .HasColumnType("int")
+                .HasColumnName("status");
         });
     }
 
@@ -180,10 +184,13 @@ public static class WebhooksPayloadExtension
                 .HasColumnType("datetime")
                 .HasColumnName("creation_time");
 
+            entity.Property(e => e.Delivery)
+                .HasColumnType("datetime")
+                .HasColumnName("delivery");
+
             entity.Property(e => e.Status)
-                .HasColumnType("varchar")
-                .HasColumnName("status")
-                .HasMaxLength(50);
+                .HasColumnType("int")
+                .HasColumnName("status");
         });
     }
 }

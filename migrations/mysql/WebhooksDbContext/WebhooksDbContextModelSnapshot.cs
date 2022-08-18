@@ -26,6 +26,12 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("int")
                         .HasColumnName("config_id");
 
+                    b.Property<bool>("Enabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("enabled")
+                        .HasDefaultValueSql("'1'");
+
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
@@ -67,6 +73,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("creation_time");
 
+                    b.Property<DateTime?>("Delivery")
+                        .HasColumnType("datetime")
+                        .HasColumnName("delivery");
+
                     b.Property<string>("Method")
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
@@ -98,10 +108,8 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("route");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
                         .HasColumnName("status");
 
                     b.Property<uint>("TenantId")
