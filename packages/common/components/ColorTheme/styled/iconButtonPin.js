@@ -3,20 +3,20 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import StyledPinIcon from "@docspace/client/src/components/StyledPinIcon";
 import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({ currentColorScheme, theme }) =>
-  currentColorScheme &&
+const getDefaultStyles = ({ $currentColorScheme, theme }) =>
+  $currentColorScheme &&
   css`
     ${commonIconsStyles}
     svg {
       path {
-        fill: ${theme.isBase && currentColorScheme.accentColor};
+        fill: ${theme.isBase && $currentColorScheme.accentColor};
       }
     }
 
     &:hover {
       svg {
         path {
-          fill: ${theme.isBase && currentColorScheme.accentColor};
+          fill: ${theme.isBase && $currentColorScheme.accentColor};
         }
       }
     }

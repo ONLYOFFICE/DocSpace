@@ -4,17 +4,17 @@ import {
   ToggleButtonContainer,
 } from "@docspace/components/toggle-button/styled-toggle-button";
 
-const getDefaultStyles = ({ currentColorScheme, isDisabled, isChecked }) =>
-  currentColorScheme &&
+const getDefaultStyles = ({ $currentColorScheme, isDisabled, isChecked }) =>
+  $currentColorScheme &&
   css`
     ${ToggleButtonContainer} {
       svg {
         rect {
-          fill: ${isChecked && currentColorScheme.accentColor};
+          fill: ${isChecked && $currentColorScheme.accentColor};
           opacity: ${isDisabled && "0.6"};
 
           &:hover {
-            fill: ${isChecked && currentColorScheme.accentColor};
+            fill: ${isChecked && $currentColorScheme.accentColor};
             opacity: ${isDisabled && "0.6"};
           }
         }

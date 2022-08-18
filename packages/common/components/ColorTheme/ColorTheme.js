@@ -28,76 +28,214 @@ import {
 } from "./styled";
 import { ThemeType } from "./constants";
 
-const ColorTheme = forwardRef((props, ref) => {
+const ColorTheme = forwardRef(({ currentColorScheme, ...props }, ref) => {
   switch (props.type) {
     case ThemeType.Button: {
-      return <ButtonTheme ref={ref} {...props} />;
+      return (
+        <ButtonTheme
+          $currentColorScheme={currentColorScheme}
+          {...props}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.MainButton: {
-      return <MainButtonTheme ref={ref} {...props} />;
+      return (
+        <MainButtonTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.CatalogItem: {
-      return <CatalogItemTheme ref={ref} {...props} />;
+      return (
+        <CatalogItemTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.Badge: {
-      return <BadgeTheme ref={ref} {...props} />;
+      return (
+        <BadgeTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.SubmenuText: {
-      return <SubmenuTextTheme ref={ref} {...props} />;
+      return (
+        <SubmenuTextTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.SubmenuItemLabel: {
-      return <SubmenuItemLabelTheme ref={ref} {...props} />;
+      return (
+        <SubmenuItemLabelTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.ToggleButton: {
-      return <ToggleButtonTheme ref={ref} {...props} />;
+      return (
+        <ToggleButtonTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.TabsContainer: {
-      return <TabsContainerTheme ref={ref} {...props} />;
+      return (
+        <TabsContainerTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.IconButton: {
-      return <IconButtonTheme ref={ref} {...props} />;
+      return (
+        <IconButtonTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.IconButtonPin: {
-      return <IconButtonPinTheme ref={ref} {...props} />;
+      return (
+        <IconButtonPinTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.IndicatorFilterButton: {
-      return <IndicatorFilterButtonTheme ref={ref} {...props} />;
+      return (
+        <IndicatorFilterButtonTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.FilterBlockItemTag: {
-      return <FilterBlockItemTagTheme ref={ref} {...props} />;
+      return (
+        <FilterBlockItemTagTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.IconWrapper: {
-      return <IconWrapperTheme ref={ref} {...props} />;
+      return (
+        <IconWrapperTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.Calendar: {
-      return <CalendarTheme ref={ref} {...props} />;
+      return (
+        <CalendarTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.VersionBadge: {
-      return <VersionBadgeTheme ref={ref} {...props} />;
+      return (
+        <VersionBadgeTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.Textarea: {
-      return <TextareaTheme ref={ref} {...props} />;
+      return (
+        <TextareaTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.InputBlock: {
-      return <InputBlockTheme ref={ref} {...props} />;
+      return (
+        <InputBlockTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.TextInput: {
-      return <TextInputTheme ref={ref} {...props} />;
+      return (
+        <TextInputTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.ComboButton: {
-      return <ComboButtonTheme ref={ref} {...props} />;
+      return (
+        <ComboButtonTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.LinkForgotPassword: {
-      return <LinkForgotPasswordTheme ref={ref} {...props} />;
+      return (
+        <LinkForgotPasswordTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.LoadingButton: {
-      return <LoadingButtonTheme ref={ref} {...props} />;
+      return (
+        <LoadingButtonTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.FloatingButton: {
-      return <FloatingButtonTheme ref={ref} {...props} />;
+      return (
+        <FloatingButtonTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
     case ThemeType.InfoPanelToggle: {
-      return <InfoPanelToggleTheme ref={ref} {...props} />;
+      return (
+        <InfoPanelToggleTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
     }
   }
 });

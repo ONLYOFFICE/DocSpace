@@ -5,13 +5,13 @@ import Base from "@docspace/components/themes/base";
 const activeCss = css`
   border-color: ${(props) =>
     props.theme.isBase
-      ? props.currentColorScheme.buttonsMain
+      ? props.$currentColorScheme.buttonsMain
       : props.primary
-      ? props.currentColorScheme.buttonsMain
+      ? props.$currentColorScheme.buttonsMain
       : props.theme.button.border.baseActive};
 
   background: ${(props) =>
-    props.primary && props.currentColorScheme.buttonsMain};
+    props.primary && props.$currentColorScheme.buttonsMain};
 
   opacity: ${(props) => !props.isDisabled && "1"};
 
@@ -23,20 +23,20 @@ const activeCss = css`
 const hoverCss = css`
   border-color: ${(props) =>
     props.theme.isBase
-      ? props.currentColorScheme.buttonsMain
+      ? props.$currentColorScheme.buttonsMain
       : props.primary
-      ? props.currentColorScheme.buttonsMain
+      ? props.$currentColorScheme.buttonsMain
       : props.theme.button.border.baseHover};
 
   background: ${(props) =>
-    props.primary && props.currentColorScheme.buttonsMain};
+    props.primary && props.$currentColorScheme.buttonsMain};
 
   opacity: ${(props) => props.primary && !props.isDisabled && "0.85"};
 `;
 
 const getDefaultStyles = ({
   primary,
-  currentColorScheme,
+  $currentColorScheme,
   isDisabled,
   isLoading,
   isClicked,
@@ -44,11 +44,11 @@ const getDefaultStyles = ({
   disableHover,
   theme,
 }) =>
-  currentColorScheme &&
+  $currentColorScheme &&
   css`
-    background: ${primary && currentColorScheme.buttonsMain};
+    background: ${primary && $currentColorScheme.buttonsMain};
     opacity: ${primary && isDisabled && "0.6"};
-    border-color: ${primary && currentColorScheme.buttonsMain};
+    border-color: ${primary && $currentColorScheme.buttonsMain};
 
     ${!isDisabled &&
     !isLoading &&

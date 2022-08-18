@@ -8,14 +8,14 @@ import {
 
 import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({ currentColorScheme, isActive, theme }) =>
-  currentColorScheme &&
+const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
+  $currentColorScheme &&
   css`
     ${StyledCatalogItemText} {
-      color: ${isActive && theme.isBase && currentColorScheme.accentColor};
+      color: ${isActive && theme.isBase && $currentColorScheme.accentColor};
 
       &:hover {
-        color: ${isActive && theme.isBase && currentColorScheme.accentColor};
+        color: ${isActive && theme.isBase && $currentColorScheme.accentColor};
       }
     }
 
@@ -24,7 +24,7 @@ const getDefaultStyles = ({ currentColorScheme, isActive, theme }) =>
         path {
           fill: ${isActive &&
           theme.isBase &&
-          currentColorScheme.accentColor} !important;
+          $currentColorScheme.accentColor} !important;
         }
       }
 
@@ -33,7 +33,7 @@ const getDefaultStyles = ({ currentColorScheme, isActive, theme }) =>
           path {
             fill: ${isActive &&
             theme.isBase &&
-            currentColorScheme.accentColor} !important;
+            $currentColorScheme.accentColor} !important;
           }
         }
       }

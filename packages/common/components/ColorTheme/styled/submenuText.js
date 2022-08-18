@@ -2,17 +2,17 @@ import styled, { css } from "styled-components";
 import StyledText from "@docspace/components/text/styled-text";
 import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({ currentColorScheme, isActive, theme }) =>
-  currentColorScheme &&
+const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
+  $currentColorScheme &&
   css`
     color: ${isActive &&
     theme.isBase &&
-    currentColorScheme.accentColor} !important;
+    $currentColorScheme.accentColor} !important;
 
     &:hover {
       color: ${isActive &&
       theme.isBase &&
-      currentColorScheme.accentColor} !important;
+      $currentColorScheme.accentColor} !important;
     }
   `;
 

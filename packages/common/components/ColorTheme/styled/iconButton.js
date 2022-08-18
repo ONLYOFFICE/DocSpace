@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import IconButton from "@docspace/components/icon-button";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
+import Base from "@docspace/components/themes/base";
 
 const StyledEditIcon = styled(IconButton)`
   ${commonIconsStyles}
@@ -13,26 +14,28 @@ const StyledEditIcon = styled(IconButton)`
 `;
 
 const getDefaultStyles = ({
-  currentColorScheme,
+  $currentColorScheme,
   shared,
   locked,
   isFavorite,
   isEditing,
+  theme,
 }) =>
-  currentColorScheme
+  $currentColorScheme
     ? css`
         ${commonIconsStyles}
         svg {
           path {
             fill: ${(shared || locked || isFavorite || isEditing) &&
-            currentColorScheme.accentColor};
+            theme.isBase &&
+            $currentColorScheme.accentColor};
           }
         }
 
         &:hover {
           svg {
             path {
-              fill: ${currentColorScheme.accentColor};
+              fill: ${theme.isBase && $currentColorScheme.accentColor};
             }
           }
         }
@@ -46,5 +49,7 @@ const getDefaultStyles = ({
           ${commonIconsStyles}
         }
       `;
+
+IconButton.defaultProps = { theme: Base };
 
 export default styled(IconButton)(getDefaultStyles);
