@@ -1,12 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import {
-  isIOS,
-  isFirefox,
-  isSafari,
-  isMobile,
-  isMobileOnly,
-} from "react-device-detect";
+import { isIOS, isFirefox, isMobileOnly } from "react-device-detect";
 
 const StyledMain = styled.main`
   height: ${isIOS && !isFirefox ? "calc(var(--vh, 1vh) * 100)" : "100vh"};
@@ -41,6 +35,7 @@ const Main = React.memo((props) => {
   // }, []);
 
   //console.log("Main render");
+
   return <StyledMain className="main" {...props} />;
 });
 
