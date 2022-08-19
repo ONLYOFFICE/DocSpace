@@ -58,8 +58,8 @@ const CreateRoomDialog = ({
   const tagHandler = new TagHandler(roomParams.tags, setRoomTags, fetchedTags);
 
   const setRoomType = (newRoomType) => {
-    const [roomByType] = roomTypes.filter((room) => room.type === newRoomType);
-    tagHandler.refreshDefaultTag(t(roomByType.defaultTag));
+    // const [roomByType] = roomTypes.filter((room) => room.type === newRoomType);
+    // tagHandler.refreshDefaultTag(t(roomByType.defaultTag));
     setRoomParams((prev) => ({
       ...prev,
       type: newRoomType,
@@ -89,6 +89,7 @@ const CreateRoomDialog = ({
       onClose={onClose}
       isScrollLocked={isScrollLocked}
       withFooterBorder
+      isRoomTypeDropdownOpen={isRoomTypeDropdownOpen}
     >
       <ModalDialog.Header>
         {isChooseRoomType ? (

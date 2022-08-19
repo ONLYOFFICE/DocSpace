@@ -16,7 +16,15 @@ const StyledIconEditor = styled.div`
 import IconCropper from "./IconCropper";
 import PreviewTile from "./PreviewTile";
 
-const IconEditor = ({ t, isEdit, title, tags, icon, onChangeIcon }) => {
+const IconEditor = ({
+  t,
+  isEdit,
+  title,
+  tags,
+  currentRoomTypeData,
+  icon,
+  onChangeIcon,
+}) => {
   const [previewIcon, setPreviewIcon] = useState(null);
 
   const uploadedFile = icon.uploadedFile;
@@ -37,9 +45,11 @@ const IconEditor = ({ t, isEdit, title, tags, icon, onChangeIcon }) => {
           />
 
           <PreviewTile
+            t={t}
             title={title || t("Files:NewRoom")}
             previewIcon={previewIcon}
             tags={tags.map((tag) => tag.name)}
+            defaultTagLabel={t(currentRoomTypeData.defaultTag)}
           />
         </div>
       )}

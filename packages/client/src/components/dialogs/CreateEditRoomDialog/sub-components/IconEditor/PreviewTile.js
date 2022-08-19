@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { smallTablet } from "@docspace/components/utils/device";
 
 import Tags from "@docspace/common/components/Tags";
+import Tag from "@docspace/components/tag";
 
 const StyledPreviewTile = styled.div`
   background: #ffffff;
@@ -52,7 +53,7 @@ const StyledPreviewTile = styled.div`
   }
 `;
 
-const PreviewTile = ({ title, previewIcon, tags }) => {
+const PreviewTile = ({ t, title, previewIcon, tags, defaultTagLabel }) => {
   return (
     <StyledPreviewTile>
       <div className="tile-header">
@@ -62,7 +63,16 @@ const PreviewTile = ({ title, previewIcon, tags }) => {
         <div className="tile-header-title">{title}</div>
       </div>
       <div className="tile-tags">
-        <Tags columnCount={3} tags={tags} />
+        {tags.length ? (
+          <Tags columnCount={3} tags={tags} />
+        ) : (
+          <Tag
+            className="set_room_params-tag_input-tag"
+            tag="script"
+            label={defaultTagLabel}
+            isDisabled
+          />
+        )}
       </div>
     </StyledPreviewTile>
   );
