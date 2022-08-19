@@ -69,6 +69,7 @@ const FilesRowContainer = ({
   hasMoreFiles,
   isRooms,
   selectedFolderId,
+  withPaging,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -93,7 +94,7 @@ const FilesRowContainer = ({
       fetchMoreFiles={fetchMoreFiles}
       hasMoreFiles={hasMoreFiles}
       draggable
-      useReactWindow
+      useReactWindow={!withPaging}
       selectedFolderId={selectedFolderId}
       itemHeight={58}
     >
@@ -119,6 +120,7 @@ export default inject(
       filterTotal,
       fetchMoreFiles,
       hasMoreFiles,
+      withPaging,
     } = filesStore;
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
@@ -135,6 +137,7 @@ export default inject(
       hasMoreFiles,
       isRooms,
       selectedFolderId: selectedFolderStore.id,
+      withPaging,
     };
   }
 )(observer(FilesRowContainer));

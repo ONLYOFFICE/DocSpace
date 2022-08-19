@@ -305,7 +305,6 @@ TileContainer.propTypes = {
 };
 
 TileContainer.defaultProps = {
-  useReactWindow: true,
   id: "tileContainer",
 };
 

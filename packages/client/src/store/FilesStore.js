@@ -92,6 +92,7 @@ class FilesStore {
   isHidePagination = false;
   trashIsEmpty = false;
   filesIsLoading = false;
+  withPaging = false;
 
   constructor(
     authStore,
@@ -131,9 +132,9 @@ class FilesStore {
 
             const newFiles = [file, ...this.files];
 
-            // if (newFiles.length > this.filter.pageCount) {
-            //   newFiles.pop(); // Remove last
-            // }
+            if (newFiles.length > this.filter.pageCount && this.withPaging) {
+              newFiles.pop(); // Remove last
+            }
 
             this.setFiles(newFiles);
           }
@@ -179,7 +180,10 @@ class FilesStore {
                 return index !== foundIndex;
               })
             );
-            this.filter.total -= 1;
+
+            const newFilter = this.filter.clone();
+            newFilter.total -= 1;
+            this.setFilter(newFilter);
 
             // Hide pagination when deleting files
             runInAction(() => {
@@ -294,11 +298,6 @@ class FilesStore {
   };
 
   setViewAs = async (viewAs) => {
-    // this.setIsLoading(true);
-    // await this.fetchFiles(this.selectedFolderStore.id, null, true);
-
-    // this.setIsLoading(false);
-
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
   };
@@ -590,6 +589,7 @@ class FilesStore {
   };
 
   setFilter = (filter) => {
+    if (!this.withPaging) filter.pageCount = 100;
     this.filter = filter;
   };
 
@@ -681,7 +681,7 @@ class FilesStore {
       filterData.sortOrder = splitFilter[2];
     }
 
-    filterData.page = 0;
+    if (!this.withPaging) filterData.page = 0;
 
     setSelectedNode([folderId + ""]);
 
@@ -1623,6 +1623,8 @@ class FilesStore {
   };
 
   scrollToTop = () => {
+    if (this.withPaging) return;
+
     const scrollElm = isMobileOnly
       ? document.querySelector("#customScrollBar > .scroll-body")
       : document.querySelector("#sectionScroll > .scroll-body");

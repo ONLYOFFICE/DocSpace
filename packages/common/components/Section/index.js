@@ -224,6 +224,7 @@ class Section extends React.Component {
       isInfoPanelAvailable,
       settingsStudio,
       clearUploadedFilesHistory,
+      withPaging,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -362,6 +363,7 @@ class Section extends React.Component {
                           viewAs={viewAs}
                           isHomepage={isHomepage}
                           settingsStudio={settingsStudio}
+                          withPaging={withPaging}
                         >
                           {isMobile && (
                             <StyledMainBar
@@ -546,6 +548,7 @@ Section.propTypes = {
   isHomepage: PropTypes.bool,
   isInfoPanelAvailable: PropTypes.bool,
   settingsStudio: PropTypes.bool,
+  withPaging: PropTypes.bool,
 };
 
 Section.defaultProps = {
@@ -553,6 +556,7 @@ Section.defaultProps = {
   withBodyAutoFocus: false,
   isInfoPanelAvailable: true,
   settingsStudio: false,
+  withPaging: true,
 };
 
 Section.InfoPanelHeader = InfoPanelHeader;

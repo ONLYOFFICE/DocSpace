@@ -2,7 +2,7 @@ import { getObjectByLocation, toUrlParams } from "../../utils";
 import queryString from "query-string";
 
 const DEFAULT_PAGE = 0;
-const DEFAULT_PAGE_COUNT = 100;
+const DEFAULT_PAGE_COUNT = 25;
 const DEFAULT_TOTAL = 0;
 const DEFAULT_SORT_BY = "DateAndTime";
 const DEFAULT_SORT_ORDER = "descending";

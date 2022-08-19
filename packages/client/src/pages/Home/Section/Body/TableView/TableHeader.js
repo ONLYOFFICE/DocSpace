@@ -300,6 +300,7 @@ class FilesTableHeader extends React.Component {
       columnInfoPanelStorageName,
       filesColumnInfoPanelStorageName,
       roomsColumnInfoPanelStorageName,
+      withPaging,
     } = this.props;
 
     // const { sortBy, sortOrder } = filter;
@@ -339,7 +340,7 @@ class FilesTableHeader extends React.Component {
         resetColumnsSize={resetColumnsSize || needReset}
         sortingVisible={sortingVisible}
         infoPanelVisible={infoPanelVisible}
-        useReactWindow
+        useReactWindow={!withPaging}
       />
     );
   }
@@ -357,7 +358,7 @@ export default inject(
       canShare,
       firstElemChecked,
       headerBorder,
-
+      withPaging,
       roomsFilter,
       fetchRooms,
     } = filesStore;
@@ -385,6 +386,7 @@ export default inject(
       headerBorder,
 
       infoPanelVisible,
+      withPaging,
     };
   }
 )(

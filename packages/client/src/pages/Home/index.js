@@ -493,6 +493,7 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreAlert,
 
       dragging,
+      tReady,
       personal,
       checkedMaintenance,
       setMaintenanceExist,
@@ -501,6 +502,7 @@ class PureHome extends React.Component {
       showTitle,
       showFilter,
       frameConfig,
+      withPaging,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -512,6 +514,7 @@ class PureHome extends React.Component {
         <MediaViewer />
         <DragTooltip />
         <Section
+          withPaging={withPaging}
           dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -579,6 +582,12 @@ class PureHome extends React.Component {
           <Section.InfoPanelBody>
             <InfoPanelBodyContent />
           </Section.InfoPanelBody>
+
+          {withPaging && (
+            <Section.SectionPaging>
+              <SectionPagingContent tReady={tReady} />
+            </Section.SectionPaging>
+          )}
         </Section>
       </>
     );
@@ -629,6 +638,7 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
+      withPaging,
     } = filesStore;
 
     const {
@@ -765,6 +775,7 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
+      withPaging,
     };
   }
 )(withRouter(observer(Home)));

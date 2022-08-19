@@ -123,6 +123,7 @@ const Table = ({
   filterTotal,
   isRooms,
   selectedFolderId,
+  withPaging,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
 
@@ -184,7 +185,7 @@ const Table = ({
     : `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
 
   return (
-    <StyledTableContainer useReactWindow forwardedRef={ref}>
+    <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
       <TableHeader
         sectionWidth={sectionWidth}
         containerRef={ref}
@@ -204,7 +205,7 @@ const Table = ({
         filesLength={filesList.length}
         hasMoreFiles={hasMoreFiles}
         itemCount={filterTotal}
-        useReactWindow
+        useReactWindow={!withPaging}
         infoPanelVisible={infoPanelVisible}
         columnInfoPanelStorageName={columnInfoPanelStorageName}
         selectedFolderId={selectedFolderId}
@@ -268,6 +269,7 @@ export default inject(
       fetchMoreFiles,
       hasMoreFiles,
       filterTotal,
+      withPaging,
     } = filesStore;
 
     return {
@@ -284,6 +286,7 @@ export default inject(
       filterTotal,
       isRooms,
       selectedFolderId: selectedFolderStore.id,
+      withPaging,
     };
   }
 )(observer(Table));

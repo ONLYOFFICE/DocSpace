@@ -281,9 +281,6 @@ class FilesActionStore {
             };
             await this.uploadDataStore.loopFilesOperations(data, pbData);
 
-            //this.updateCurrentFolder(fileIds, folderIds, false);
-            this.updateFilesAfterDelete(folderIds);
-
             const showToast = () => {
               if (isRecycleBinFolder) {
                 return toastr.success(translations.deleteFromTrash);
@@ -298,7 +295,13 @@ class FilesActionStore {
               return toastr.success(translations.FolderRemoved);
             };
 
-            this.filesStore.removeFiles(fileIds, folderIds, showToast);
+            if (this.filesStore.withPaging) {
+              this.updateCurrentFolder(fileIds, folderIds, false);
+              showToast();
+            } else {
+              this.updateFilesAfterDelete(folderIds);
+              this.filesStore.removeFiles(fileIds, folderIds, showToast);
+            }
 
             if (currentFolderId) {
               const { socketHelper } = this.authStore.settingsStore;
@@ -618,12 +621,16 @@ class FilesActionStore {
         if (res[0]?.error) return Promise.reject(res[0].error);
         const data = res[0] ? res[0] : null;
         await this.uploadDataStore.loopFilesOperations(data, pbData);
-        //this.updateCurrentFolder([itemId]);
-        this.updateFilesAfterDelete();
 
-        this.filesStore.removeFiles([itemId], null, () =>
-          toastr.success(translations.successRemoveFile)
-        );
+        if (this.filesStore.withPaging) {
+          this.updateCurrentFolder([itemId]);
+          toastr.success(translations.successRemoveFile);
+        } else {
+          this.updateFilesAfterDelete();
+          this.filesStore.removeFiles([itemId], null, () =>
+            toastr.success(translations.successRemoveFile)
+          );
+        }
       });
     } else if (isRoom) {
       const items = Array.isArray(itemId) ? itemId : [itemId];
@@ -645,11 +652,17 @@ class FilesActionStore {
         if (res[0]?.error) return Promise.reject(res[0].error);
         const data = res[0] ? res[0] : null;
         await this.uploadDataStore.loopFilesOperations(data, pbData);
-        //this.updateCurrentFolder(null, [itemId]);
-        this.updateFilesAfterDelete([itemId]);
-        this.filesStore.removeFiles([itemId], null, () =>
-          toastr.success(translations.successRemoveFolder)
-        );
+
+        if (this.filesStore.withPaging) {
+          this.updateCurrentFolder(null, [itemId]);
+          toastr.success(translations.successRemoveFolder);
+        } else {
+          this.updateFilesAfterDelete([itemId]);
+          this.filesStore.removeFiles([itemId], null, () =>
+            toastr.success(translations.successRemoveFolder)
+          );
+        }
+
         getIsEmptyTrash();
       });
     }
