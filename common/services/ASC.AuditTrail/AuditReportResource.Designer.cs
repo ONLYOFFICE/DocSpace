@@ -88,6 +88,15 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Room {0}. Added Tags: [{1}].
+        /// </summary>
+        public static string AddedRoomTags {
+            get {
+                return ResourceManager.GetString("AddedRoomTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Administrator Added: {0}.
         /// </summary>
         public static string AdministratorAdded {
@@ -1132,6 +1141,15 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Room {0}. Deleted Tags: [{1}].
+        /// </summary>
+        public static string DeletedRoomTags {
+            get {
+                return ResourceManager.GetString("DeletedRoomTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Detach.
         /// </summary>
         public static string DetachActionType {
@@ -1366,7 +1384,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File Created: {0}.
+        ///   Looks up a localized string similar to File {0}. Created in {1}.
         /// </summary>
         public static string FileCreated {
             get {
@@ -1582,7 +1600,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Folder Created: {0}.
+        ///   Looks up a localized string similar to Folder {0}. Created in {1}.
         /// </summary>
         public static string FolderCreated {
             get {
@@ -1605,6 +1623,15 @@ namespace ASC.AuditTrail {
         public static string FolderMoved {
             get {
                 return ResourceManager.GetString("FolderMoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folders [{0}]. Moved From Folder {1} To Folder: {2}.
+        /// </summary>
+        public static string FolderMovedFrom {
+            get {
+                return ResourceManager.GetString("FolderMovedFrom", resourceCulture);
             }
         }
         
@@ -3306,6 +3333,78 @@ namespace ASC.AuditTrail {
         public static string ReportTemplateUpdated {
             get {
                 return ResourceManager.GetString("ReportTemplateUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room Archived: {0}.
+        /// </summary>
+        public static string RoomArchived {
+            get {
+                return ResourceManager.GetString("RoomArchived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room Created: {0}.
+        /// </summary>
+        public static string RoomCreated {
+            get {
+                return ResourceManager.GetString("RoomCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room Deleted: {0}.
+        /// </summary>
+        public static string RoomDeleted {
+            get {
+                return ResourceManager.GetString("RoomDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room {0}. Logo Added.
+        /// </summary>
+        public static string RoomLogoCreated {
+            get {
+                return ResourceManager.GetString("RoomLogoCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room {0}. Logo Deleted.
+        /// </summary>
+        public static string RoomLogoDeleted {
+            get {
+                return ResourceManager.GetString("RoomLogoDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room Renamed: {0}.
+        /// </summary>
+        public static string RoomRenamed {
+            get {
+                return ResourceManager.GetString("RoomRenamed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room Unarchived: {0}.
+        /// </summary>
+        public static string RoomUnarchived {
+            get {
+                return ResourceManager.GetString("RoomUnarchived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room {0}. Access Updated for {1}: {2}.
+        /// </summary>
+        public static string RoomUpdateAccess {
+            get {
+                return ResourceManager.GetString("RoomUpdateAccess", resourceCulture);
             }
         }
         
