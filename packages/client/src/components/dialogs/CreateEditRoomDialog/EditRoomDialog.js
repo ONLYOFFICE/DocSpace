@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import TagHandler from "./handlers/tagHandler";
+import SetRoomParams from "./sub-components/SetRoomParams";
 
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
-
-import TagHandler from "./handlers/tagHandler";
-import { roomTypes } from "./data";
-
-import SetRoomParams from "./sub-components/SetRoomParams";
 
 const EditRoomDialog = ({
   t,
@@ -20,9 +18,7 @@ const EditRoomDialog = ({
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
 
-  const [roomParams, setRoomParams] = useState({
-    ...fetchedRoomParams,
-  });
+  const [roomParams, setRoomParams] = useState({ ...fetchedRoomParams });
 
   const setRoomTags = (newTags) =>
     setRoomParams({ ...roomParams, tags: newTags });
@@ -36,6 +32,22 @@ const EditRoomDialog = ({
     }));
 
   const onEditRoom = () => onSave(roomParams);
+
+  useEffect(async () => {
+    console.log(fetchedRoomParams.uploadedFileSrc);
+    if (fetchedRoomParams.uploadedFileSrc)
+      await fetch(
+        "http://192.168.0.100:8092/storage/room_logos/root/sbox9DOCSPACE%20CUSTOM%20ROOM%209_orig_887-339.jpeg"
+      ).then((res) => {
+        const buf = res.arrayBuffer();
+        const file = new File([buf], "fetchedImage", { type: "image/png" });
+        console.log(file);
+        setRoomParams({
+          ...roomParams,
+          icon: { ...roomParams.icon, uploadedFile: file },
+        });
+      });
+  }, []);
 
   console.log(roomParams);
 
