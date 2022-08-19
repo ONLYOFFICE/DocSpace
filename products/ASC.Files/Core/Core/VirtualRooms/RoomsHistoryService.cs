@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Core.VirtualRooms;
 
-[Scope]
+[Scope(Additional = typeof(RoomsHistoryServiceExtension))]
 public class RoomsHistoryService<T>
 {
     private readonly IDaoFactory _daoFacotory;
@@ -46,6 +46,8 @@ public class RoomsHistoryService<T>
 
     public async IAsyncEnumerable<RoomEventDto> GetHistoryAsync(T id, int startIndex, int count, OrderBy orderBy)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         var room = await FolderDao.GetFolderAsync(id);
 
         if (room == null && !DocSpaceHelper.IsRoom(room.FolderType))
@@ -58,7 +60,7 @@ public class RoomsHistoryService<T>
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
         }
 
-        var auditEvents = _auditEventsRepository.GetAsync($"room:{id}", startIndex, count);
+        var auditEvents = _auditEventsRepository.GetAsync($"{FilesMessageService.RoomTargetMark}{id}", startIndex, count);
 
         orderBy ??= new OrderBy(SortedByType.DateAndTime, false);
 
@@ -73,5 +75,13 @@ public class RoomsHistoryService<T>
         {
             yield return _mapper.Map<AuditEventDto, RoomEventDto>(auditEvent);
         }
+    }
+}
+
+public static class RoomsHistoryServiceExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<RoomEventMappingAction>();
     }
 }
