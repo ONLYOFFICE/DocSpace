@@ -89,7 +89,6 @@ const CreateRoomDialog = ({
       onClose={onClose}
       isScrollLocked={isScrollLocked}
       withFooterBorder
-      isRoomTypeDropdownOpen={isRoomTypeDropdownOpen}
     >
       <ModalDialog.Header>
         {isChooseRoomType ? (
