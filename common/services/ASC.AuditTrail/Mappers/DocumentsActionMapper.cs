@@ -39,7 +39,9 @@ internal class DocumentsActionMapper : IProductActionMapper
         {
             new FilesActionMapper(),
             new FoldersActionMapper(),
-            new SettingsActionMapper()
+            new SettingsActionMapper(),
+            new RoomsActionMapper(),
+            new TagsActionMapper()
         };
     }
 }
@@ -139,7 +141,7 @@ internal class SettingsActionMapper : IModuleActionMapper
             {
                 EntryType.Folder, new Dictionary<ActionType, MessageAction>()
                 {
-                    { ActionType.Create,  MessageAction.ThirdPartyCreated  },
+                    { ActionType.Create,  MessageAction.ThirdPartyCreated },
                     { ActionType.Update, MessageAction.ThirdPartyUpdated },
                     { ActionType.Delete, MessageAction.ThirdPartyDeleted },
                 }
@@ -152,6 +154,52 @@ internal class SettingsActionMapper : IModuleActionMapper
                     MessageAction.DocumentsExternalShareSettingsUpdated
                 }
             },
+        };
+    }
+}
+
+internal class RoomsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
+
+    public RoomsActionMapper()
+    {
+        Module = ModuleType.Rooms;
+        Actions = new MessageMapsDictionary(ProductType.Documents, Module)
+        {
+            {
+                EntryType.Room, new Dictionary<ActionType, MessageAction[]>()
+                {
+                    { ActionType.Create, new[] { MessageAction.RoomCreated } },
+                    { ActionType.Update, new[] { MessageAction.RoomRenamed, MessageAction.RoomLogoCreated, MessageAction.RoomLogoDeleted, MessageAction.AddedRoomTags, MessageAction.DeletedRoomTags } },
+                    { ActionType.Move, new[] { MessageAction.RoomArchived, MessageAction.RoomUnarchived } },
+                    { ActionType.Delete, new[] { MessageAction.RoomDeleted } },
+                    { ActionType.UpdateAccess, new[] { MessageAction.RoomUpdateAccess, MessageAction.GuestCreatedAndAddedToRoom, MessageAction.UserCreatedAndAddedToRoom, MessageAction.RoomInviteLinkUsed } }
+                }
+            }
+        };
+    }
+}
+
+internal class TagsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
+
+    public TagsActionMapper()
+    {
+        Module = ModuleType.Tags;
+        Actions = new MessageMapsDictionary(ProductType.Documents, Module)
+        {
+            {
+                EntryType.Tag, new Dictionary<ActionType, MessageAction>()
+                {
+                    { ActionType.Create, MessageAction.TagCreated },
+                    { ActionType.Delete, MessageAction.TagsDeleted }
+                }
+            }
         };
     }
 }
