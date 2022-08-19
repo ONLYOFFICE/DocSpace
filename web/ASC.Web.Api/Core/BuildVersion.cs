@@ -31,6 +31,8 @@ public class BuildVersion
 {
     public string DocSpace { get; set; }
 
+    public string CommunityServer { get; set; } //old
+
     public string DocumentServer { get; set; }
 
     public string MailServer { get; set; }
@@ -55,6 +57,8 @@ public class BuildVersion
 
     public async Task<BuildVersion> GetCurrentBuildVersionAsync()
     {
+        CommunityServer = "12.0.0";
+
         DocSpace = GetDocSpaceVersion();
         DocumentServer = await GetDocumentVersionAsync();
         MailServer = GetMailServerVersion();
