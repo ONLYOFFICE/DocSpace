@@ -29,5 +29,7 @@ public enum ModuleType
     Reports,
     ProjectsSettings,
     General,
-    Products
+    Products,
+    Rooms,
+    Tags
 }
