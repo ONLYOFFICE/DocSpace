@@ -6,7 +6,7 @@ import {
 import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ $currentColorScheme, color, icon, theme }) =>
-  currentColorScheme &&
+  $currentColorScheme &&
   css`
     background: ${
       color

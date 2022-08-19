@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import StyledText from "@docspace/components/link/styled-link";
 
-const getDefaultStyles = ({ $currentColorScheme, noHover, type }) =>
+const getDefaultStyles = ({ $currentColorScheme, noHover }) =>
   $currentColorScheme &&
   css`
     color: ${$currentColorScheme.accentColor};
