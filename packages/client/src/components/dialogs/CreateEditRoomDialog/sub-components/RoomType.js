@@ -10,6 +10,9 @@ import SecondaryInfoButton from "./SecondaryInfoButton";
 
 const StyledRoomType = styled.div`
   cursor: pointer;
+  user-select: none;
+  outline: 0;
+
   padding: 16px;
   width: 100%;
   box-sizing: border-box;
@@ -24,6 +27,9 @@ const StyledRoomType = styled.div`
   }
 
   .choose_room-info_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     .choose_room-title {
       display: flex;
       flex-direction: row;
