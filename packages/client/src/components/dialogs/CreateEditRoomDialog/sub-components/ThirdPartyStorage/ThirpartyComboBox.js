@@ -10,7 +10,6 @@ import DomHelpers from "@docspace/components/utils/domHelpers";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import DropDownItem from "@docspace/components/drop-down-item";
-import Checkbox from "@docspace/components/checkbox";
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 
 const StyledStorageLocation = styled.div`
@@ -87,8 +86,6 @@ const ThirpartyComboBox = ({
     id: i,
     title: connectedCloudsTypeTitleTranslation(provider.provider_key, t),
   }));
-
-  console.log(thirdparties);
 
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownDirection, setDropdownDirection] = useState("bottom");
