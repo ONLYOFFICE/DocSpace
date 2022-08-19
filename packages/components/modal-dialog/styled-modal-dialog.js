@@ -101,17 +101,15 @@ const StyledBody = styled(Box)`
   padding-bottom: ${(props) =>
     props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
 
-  #modal-scroll {
-    .scroll-body {
-      margin-right: ${isMobile ? 0 : "-17px"} !important;
-      padding-right: 16px !important;
-      ${(props) =>
-        props.isScrollLocked &&
-        css`
-          margin-right: 0 !important;
-          overflow: hidden !important;
-        `}
-    }
+  #modal-scroll > .scroll-body {
+    ${isMobile && "margin-right: 0 !important"}
+    padding-right: 16px !important;
+    ${(props) =>
+      props.isScrollLocked &&
+      css`
+        margin-right: 0 !important;
+        overflow: hidden !important;
+      `}
   }
 
   ${(props) =>

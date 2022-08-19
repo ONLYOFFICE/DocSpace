@@ -89,6 +89,7 @@ const Modal = ({
                 {header && (
                   <StyledHeader
                     id="modal-header-swipe"
+                    className={`modal-header ${header.props.className}`}
                     currentDisplayType={currentDisplayType}
                     {...header.props}
                   >
@@ -104,6 +105,7 @@ const Modal = ({
                 )}
                 {body && (
                   <StyledBody
+                    className={`modal-body ${body.props.className}`}
                     withBodyScroll={withBodyScroll}
                     isScrollLocked={isScrollLocked}
                     hasFooter={1 && footer}
@@ -125,6 +127,7 @@ const Modal = ({
                 )}
                 {footer && (
                   <StyledFooter
+                    className={`modal-footer ${footer.props.className}`}
                     withFooterBorder={withFooterBorder}
                     currentDisplayType={currentDisplayType}
                     {...footer.props}
