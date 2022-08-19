@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using System.IdentityModel.Tokens.Jwt;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Net.Http.Headers;
 
@@ -106,7 +107,6 @@ public abstract class BaseStartup
         services.AddSingleton(jsonOptions);
 
         DIHelper.AddControllers();
-        DIHelper.TryAdd<DisposeMiddleware>();
         DIHelper.TryAdd<CultureMiddleware>();
         DIHelper.TryAdd<IpSecurityFilter>();
         DIHelper.TryAdd<PaymentFilter>();
@@ -191,10 +191,10 @@ public abstract class BaseStartup
                         return Task.CompletedTask;
                     }
                 };
-            })          
+            })
           .AddPolicyScheme("MultiAuthSchemes", JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                
+
                 options.ForwardDefaultSelector = context =>
                 {
                     var authorizationHeader = context.Request.Headers[HeaderNames.Authorization].FirstOrDefault();
@@ -202,7 +202,7 @@ public abstract class BaseStartup
                     if (String.IsNullOrEmpty(authorizationHeader)) return CookieAuthenticationDefaults.AuthenticationScheme;
 
                     if (authorizationHeader.StartsWith("Basic ")) return "Basic";
-                                        
+
                     if (authorizationHeader.StartsWith("Bearer "))
                     {
                         var token = authorizationHeader.Substring("Bearer ".Length).Trim();
@@ -249,8 +249,6 @@ public abstract class BaseStartup
         app.UseAuthorization();
 
         app.UseCultureMiddleware();
-
-        app.UseDisposeMiddleware();
 
         app.UseEndpoints(endpoints =>
         {
