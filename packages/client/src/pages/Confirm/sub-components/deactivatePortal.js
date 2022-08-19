@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Section from "@docspace/common/components/Section";
 import Text from "@docspace/components/text";
@@ -21,10 +21,13 @@ import DocspaceLogo from "../../../DocspaceLogo";
 
 const DeactivatePortal = (props) => {
   const { t, greetingTitle, linkData, history } = props;
+  const [isDeactivate, setIsDeactivate] = useState(false);
 
-  const onDeleteClick = async () => {
+  const onDeactivateClick = async () => {
     try {
       await suspendPortal(linkData.confirmHeader);
+      setIsDeactivate(true);
+      setTimeout(() => (location.href = "https://onlyoffice.com"), 10000);
     } catch (e) {
       toastr.error(e);
     }
@@ -45,24 +48,36 @@ const DeactivatePortal = (props) => {
         </StyledHeader>
 
         <FormWrapper>
-          <Text className="subtitle">{t("PortalDeactivateTitle")}</Text>
-          <ButtonsWrapper>
-            <Button
-              scale
-              primary
-              size="medium"
-              label={t("Settings:Deactivate")}
-              tabIndex={1}
-              onClick={onDeleteClick}
-            />
-            <Button
-              scale
-              size="medium"
-              label={t("Common:Cancel")}
-              tabIndex={1}
-              onClick={onCancelClick}
-            />
-          </ButtonsWrapper>
+          {isDeactivate ? (
+            <Trans t={t} i18nKey="PortalDeactivateTitle" ns="Confirm">
+              Your account has been successfully deactivated. In 10 seconds you
+              will be redirected to the
+              <Link isHovered href="//onlyoffice.com">
+                site
+              </Link>
+            </Trans>
+          ) : (
+            <>
+              <Text className="subtitle">{t("PortalDeactivateTitle")}</Text>
+              <ButtonsWrapper>
+                <Button
+                  scale
+                  primary
+                  size="medium"
+                  label={t("Settings:Deactivate")}
+                  tabIndex={1}
+                  onClick={onDeactivateClick}
+                />
+                <Button
+                  scale
+                  size="medium"
+                  label={t("Common:Cancel")}
+                  tabIndex={1}
+                  onClick={onCancelClick}
+                />
+              </ButtonsWrapper>
+            </>
+          )}
         </FormWrapper>
       </StyledBody>
     </StyledPage>
