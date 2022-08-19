@@ -142,7 +142,7 @@ public class ChunkedUploaderHandlerService
                     if (resumedSession.BytesUploaded == resumedSession.BytesTotal)
                     {
                         await WriteSuccess(context, ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
-                        _filesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
+                        await _filesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
 
                         await _socketManager.CreateFileAsync(resumedSession.File);
                     }

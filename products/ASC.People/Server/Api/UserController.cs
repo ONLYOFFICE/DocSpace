@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Caching;
-
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -67,6 +65,7 @@ public class UserController : PeopleControllerBase
     private readonly FileSecurity _fileSecurity;
     private readonly IDaoFactory _daoFactory;
     private readonly EmailValidationKeyProvider _validationKeyProvider;
+    private readonly FilesMessageService _filesMessageService;
 
     public UserController(
         ICache cache,
@@ -106,7 +105,8 @@ public class UserController : PeopleControllerBase
         SettingsManager settingsManager,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory,
-        EmailValidationKeyProvider validationKeyProvider)
+        EmailValidationKeyProvider validationKeyProvider,
+        FilesMessageService filesMessageService)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -141,6 +141,7 @@ public class UserController : PeopleControllerBase
         _fileSecurity = fileSecurity;
         _daoFactory = daoFactory;
         _validationKeyProvider = validationKeyProvider;
+        _filesMessageService = filesMessageService;
     }
 
     [HttpPost("active")]
@@ -208,6 +209,9 @@ public class UserController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
+        Folder<int> folderInt = null;
+        Folder<string> folderString = null;
+
         var success = int.TryParse(inDto.RoomId, out var id);
 
         if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
@@ -226,9 +230,9 @@ public class UserController : PeopleControllerBase
             if (success)
             {
                 var folderDao = _daoFactory.GetFolderDao<int>();
-                var folder = await folderDao.GetFolderAsync(id);
+                folderInt = await folderDao.GetFolderAsync(id);
 
-                if (folder == null)
+                if (folderInt == null)
                 {
                     throw new ItemNotFoundException("Virtual room not found");
                 }
@@ -236,9 +240,9 @@ public class UserController : PeopleControllerBase
             else
             {
                 var folderDao = _daoFactory.GetFolderDao<string>();
-                var folder = await folderDao.GetFolderAsync(inDto.RoomId);
+                folderString = await folderDao.GetFolderAsync(inDto.RoomId);
 
-                if (folder == null)
+                if (folderString == null)
                 {
                     throw new ItemNotFoundException("Virtual room not found");
                 }
@@ -295,17 +299,23 @@ public class UserController : PeopleControllerBase
         {
             if (success)
             {
-                _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
-                    .GetAwaiter().GetResult();
+                await _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess);
             }
             else
             {
-                _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
-                    .GetAwaiter().GetResult();
+                await _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess);
             }
 
             var messageAction = inDto.IsVisitor ? MessageAction.GuestCreatedAndAddedToRoom : MessageAction.UserCreatedAndAddedToRoom;
-            _messageService.Send(messageAction, _messageTarget.Create(new[] { user.Id.ToString(), inDto.RoomId }), user.DisplayUserName(false, _displayUserSettingsHelper));
+            
+            if (folderInt != null)
+            {
+                await _filesMessageService.Send(folderInt, HttpContext.Request.Headers, messageAction, folderInt.Title, user.DisplayUserName(false, _displayUserSettingsHelper));
+            }
+            else
+            {
+                await _filesMessageService.Send(folderString, HttpContext.Request.Headers, messageAction, folderInt.Title, user.DisplayUserName(false, _displayUserSettingsHelper));
+            }
         }
         else
         {
