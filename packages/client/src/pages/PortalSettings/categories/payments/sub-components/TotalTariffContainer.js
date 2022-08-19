@@ -61,6 +61,8 @@ const TotalTariffContainer = ({
   pricePerManager,
   isDisabled,
   theme,
+  onClick,
+  isLoading,
 }) => {
   useEffect(() => {}, []);
 
@@ -127,7 +129,9 @@ const TotalTariffContainer = ({
         label={isNeedRequest ? t("SendRequest") : t("UpgradeNow")}
         size={"medium"}
         primary
-        isDisabled={isDisabled}
+        isDisabled={isLoading || isDisabled}
+        onClick={onClick}
+        isLoading={isLoading}
       />
     </StyledBody>
   );
@@ -135,6 +139,6 @@ const TotalTariffContainer = ({
 
 export default inject(({ auth, payments }) => {
   const { theme } = auth.settingsStore;
-  const { pricePerManager } = payments;
-  return { theme, pricePerManager };
+  const { pricePerManager, isLoading } = payments;
+  return { theme, pricePerManager, isLoading };
 })(observer(TotalTariffContainer));

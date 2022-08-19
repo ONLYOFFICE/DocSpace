@@ -181,3 +181,23 @@ export function getPortalTariff() {
 export function getPaymentAccount() {
   return request({ method: "get", url: "/portal/payment/account" });
 }
+
+export function getPaymentLink(adminCount, currency) {
+  return request({
+    method: "put",
+    url: `/portal/payment/url`,
+    data: {
+      quantity: { admin: adminCount }
+    },
+  });
+}
+
+export function updatePayment(adminCount) {
+  return request({
+    method: "put",
+    url: `/portal/payment/url`,
+    data: {
+      quantity: { admin: adminCount },
+    },
+  });
+}

@@ -5,6 +5,7 @@ import {
 } from "@docspace/common/api/settings";
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
+import toastr from "client/toastr";
 
 class PaymentStore {
   salesEmail = "sales@onlyoffice.com";
@@ -18,6 +19,8 @@ class PaymentStore {
   };
 
   pricePerManager = null;
+  paymentLink = null;
+  isLoading = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -74,6 +77,29 @@ class PaymentStore {
 
   getPaymentAccount = async () => {
     return await api.portal.getPaymentAccount();
+  };
+
+  setPaymentLink = async (link) => {
+    this.paymentLink = link;
+    // try {
+    //   const res = await api.portal.getPaymentLink(adminCount, currency);
+    //   console.log("getPaymentLink", res);
+    //   if (res) this.paymentLink = res;
+    // } catch (e) {
+    //   toastr.error(e);
+    // }
+  };
+  updatePayment = async (adminCount, currency) => {
+    try {
+      const res = await api.portal.updatePayment(adminCount, currency);
+      console.log("updatePayment", res);
+    } catch (e) {
+      toastr.error(e);
+    }
+  };
+
+  setIsLoading = (isLoading) => {
+    this.isLoading = isLoading;
   };
 }
 
