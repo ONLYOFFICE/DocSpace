@@ -2,10 +2,12 @@ import React from "react";
 
 import { withTranslation } from "react-i18next";
 
-import StyledBreakpointWarning from "./StyledBreakpointWarning";
-
-const BreakpointWarning = ({ t, content }) => {
-  return (
+import StyledBreakpointWarning from "./sub-components/StyledBreakpointWarning";
+import Loader from "./sub-components/loader";
+const BreakpointWarning = ({ t, content, isLoading }) => {
+  return isLoading ? (
+    <Loader />
+  ) : (
     <StyledBreakpointWarning>
       <img src="/static/images/breakpoint-warning.svg" />
 
