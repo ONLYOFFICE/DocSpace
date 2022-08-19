@@ -14,7 +14,6 @@ const StyledComponent = styled.div`
   .hex-color-picker .react-colorful {
     width: auto;
     height: 239px;
-
     padding-bottom: 16px;
   }
 
@@ -87,10 +86,6 @@ const StyledComponent = styled.div`
         order: 3;
       }
     `}
-  }
-
-  //TODO:mobile horizontal orientation
-  @media (min-width: 428px) {
   }
 `;
 

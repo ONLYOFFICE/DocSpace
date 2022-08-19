@@ -4,9 +4,7 @@ import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
-import withLoading from "SRC_DIR/HOCs/withLoading";
 
-import styled, { css } from "styled-components";
 import TabContainer from "@docspace/components/tabs-container";
 import Preview from "./settingsAppearance/preview";
 
@@ -18,11 +16,11 @@ import DropDownContainer from "@docspace/components/drop-down";
 import HexColorPickerComponent from "./sub-components/hexColorPicker";
 import { isMobileOnly } from "react-device-detect";
 
-import Loaders from "@docspace/common/components/Loaders";
+import Loader from "./sub-components/loaderAppearance";
 
 import { StyledComponent } from "./settingsAppearance/StyledApperance.js";
 
-import BreakpointWarning from "../../../../BreakpointWarning/index";
+import BreakpointWarning from "../../../../components/BreakpointWarning/index";
 
 const Appearance = (props) => {
   const {
@@ -31,10 +29,10 @@ const Appearance = (props) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
+
+    tReady,
     t,
   } = props;
-
-  // const [selectedColor, setSelectedColor] = useState(selectedThemeId);
 
   const [previewTheme, setPreviewTheme] = useState("Light theme");
 
@@ -81,8 +79,6 @@ const Appearance = (props) => {
   );
   const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
 
-  const [changeTheme, setChangeTheme] = useState([]);
-
   const checkImg = (
     <img className="check-img" src="/static/images/check.white.svg" />
   );
@@ -114,7 +110,7 @@ const Appearance = (props) => {
         ),
       },
     ],
-    [selectAccentColor, previewTheme, selectThemeId]
+    [selectAccentColor, previewTheme, selectThemeId, tReady]
   );
 
   useEffect(() => {
@@ -157,19 +153,6 @@ const Appearance = (props) => {
   const onColorSelection = (item) => {
     setSelectAccentColor(item.accentColor);
     setSelectThemeId(item.id);
-    //TODO: find id and give item
-    //TODO: if changeTheme array = 0, then appearanceTheme, else changeTheme array
-    // const theme = changeTheme?.find((item) => item.id === colorNumber);
-    // If theme has already been edited before
-    // if (theme) {
-    //   theme.isSelected = true;
-    //   setSelectThemeId(theme);
-    // } else {
-    //    If theme not has already been edited before
-    //   const theme = appearanceTheme.find((item) => item.id === colorNumber);
-    //   theme.isSelected = true;
-    //   setSelectThemeId(theme);
-    // }
   };
 
   const onShowCheck = (colorNumber) => {
@@ -194,8 +177,6 @@ const Appearance = (props) => {
   const onClickEdit = () => {
     appearanceTheme.map((item) => {
       if (item.id === selectThemeId) {
-        // TODO: give store Accent color and Buttons main to id
-
         setCurrentColorAccent(item.accentColor);
         setCurrentColorButtons(item.buttonsMain);
       }
@@ -205,7 +186,6 @@ const Appearance = (props) => {
 
     setHeaderColorSchemeDialog("Edit color scheme");
 
-    //TODO: if position <=7 then default theme and show button RestoreToDefault
     setShowRestoreToDefaultButtonDialog(true);
 
     setShowColorSchemeDialog(true);
@@ -276,19 +256,12 @@ const Appearance = (props) => {
   }, [appliedColorButtons]);
 
   const onSaveColorSchemeDialog = () => {
-    // selectTheme.theme.accentColor = currentColorAccent;
-    // selectTheme.theme.buttonsMain = currentColorButtons;
-
     const theme = {
       id: selectTheme.id,
       accentColor: currentColorAccent,
       buttonsMain: currentColorButtons,
       textColor: "#FFFFFF",
     };
-
-    //setChangeTheme([...changeTheme, theme]);
-
-    // onCloseColorSchemeDialog();
   };
 
   const nodeHexColorPickerButtons = viewMobile ? (
@@ -373,7 +346,12 @@ const Appearance = (props) => {
   );
 
   return viewMobile ? (
-    <BreakpointWarning content={t("Settings:TheAppearanceSettings")} />
+    <BreakpointWarning
+      isLoading={!tReady}
+      content={t("Settings:TheAppearanceSettings")}
+    />
+  ) : !tReady ? (
+    <Loader />
   ) : (
     <StyledComponent>
       <div className="header">{t("Common:Color")}</div>

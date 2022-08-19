@@ -1,7 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import styled from "styled-components";
-import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 
 const StyledComponent = styled(ModalDialog)`
