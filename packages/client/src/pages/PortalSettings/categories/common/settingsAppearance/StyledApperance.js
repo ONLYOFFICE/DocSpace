@@ -3,6 +3,7 @@ import { Base } from "@docspace/components/themes";
 
 const StyledComponent = styled.div`
   padding-top: 5px;
+  width: 100%;
 
   .header {
     font-weight: 700;
