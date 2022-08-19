@@ -10,7 +10,7 @@ import {
 import PermanentSetting from "./PermanentSetting";
 
 const StyledPermanentSettings = styled.div`
-  display: flex;
+  display: ${(props) => (props.displayNone ? "none" : "flex")};
   flex-direction: row;
   gap: 8px;
   margin-top: -12px;
@@ -23,16 +23,6 @@ const PermanentSettings = ({
   storageLocation,
   isPrivate,
 }) => {
-  const thirdpartyTitle = isThirdparty
-    ? getProviderTypeTitle(storageLocation.providerKey, t)
-    : "";
-
-  const thirdpartyIcon = isThirdparty
-    ? getProviderTypeIcon(storageLocation.providerKey)
-    : "";
-
-  const thirdpartyFolderName = isThirdparty ? storageLocation.title : "";
-
   const createThirdpartyPath = () => {
     const path = storageLocation.parentId.split("|");
     path.shift();
@@ -41,10 +31,13 @@ const PermanentSettings = ({
     return `(${path.join("/")})`;
   };
 
+  const thirdpartyTitle = getProviderTypeTitle(storageLocation?.providerKey, t);
+  const thirdpartyIcon = getProviderTypeIcon(storageLocation?.providerKey);
+  const thirdpartyFolderName = isThirdparty ? storageLocation?.title : "";
   const thirdpartyPath = isThirdparty ? createThirdpartyPath() : "";
 
   return (
-    <StyledPermanentSettings>
+    <StyledPermanentSettings displayNone={!(isPrivate || isThirdparty)}>
       {isThirdparty && (
         <PermanentSetting
           type="storageLocation"
