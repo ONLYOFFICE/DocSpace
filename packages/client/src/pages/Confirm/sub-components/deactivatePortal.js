@@ -5,6 +5,7 @@ import { inject, observer } from "mobx-react";
 import Section from "@docspace/common/components/Section";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
+import Link from "@docspace/components/link";
 import toastr from "@docspace/components/toast/toastr";
 import { suspendPortal } from "@docspace/common/api/portal";
 import {
@@ -49,7 +50,7 @@ const DeactivatePortal = (props) => {
 
         <FormWrapper>
           {isDeactivate ? (
-            <Trans t={t} i18nKey="PortalDeactivateTitle" ns="Confirm">
+            <Trans t={t} i18nKey="SuccessDeactivate" ns="Confirm">
               Your account has been successfully deactivated. In 10 seconds you
               will be redirected to the
               <Link isHovered href="//onlyoffice.com">
