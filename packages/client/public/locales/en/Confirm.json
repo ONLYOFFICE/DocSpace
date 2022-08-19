@@ -27,5 +27,7 @@
   "SetAppDescription": "Two-factor authentication is enabled. Configure your authenticator app to continue work on the portal. You can use Google Authenticator for <1>Android</1> and <4>iOS</4> or Authenticator for <8>Windows Phone</8>.",
   "SetAppInstallDescription": "To connect the app, scan the QR code or manually enter your secret key <1>{{ secretKey }}</1>, and then enter a 6-digit code from your app in the field below.",
   "SetAppTitle": "Configure your authenticator application",
+  "SuccessDeactivate": "Your account has been successfully deactivated. In 10 seconds you will be redirected to the <1>site</1>",
+  "SuccessReactivate": "Your account has been successfully reactivated. In 10 seconds you will be redirected to the <1>portal</1>",
   "WelcomeUser": "Welcome to join our portal! To get started register, or log in via social networking."
 }
