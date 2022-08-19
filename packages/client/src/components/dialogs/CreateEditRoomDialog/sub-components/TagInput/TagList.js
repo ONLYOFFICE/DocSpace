@@ -21,7 +21,7 @@ const StyledTagList = styled.div`
   }
 `;
 
-const TagList = ({ t, tagHandler }) => {
+const TagList = ({ defaultTagLabel, tagHandler }) => {
   const { tags } = tagHandler;
 
   return (
@@ -43,7 +43,7 @@ const TagList = ({ t, tagHandler }) => {
         <Tag
           className="set_room_params-tag_input-tag"
           tag="script"
-          label={t("Common:NoTags")}
+          label={defaultTagLabel}
           isDisabled
         />
       )}

@@ -1,11 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import TagList from "./TagList";
-import DropDownItem from "@docspace/components/drop-down-item";
-import { StyledDropDown, StyledDropDownWrapper } from "../StyledDropdown";
-import { isMobile } from "@docspace/components/utils/device";
+
 import InputParam from "../Params/InputParam";
+import TagDropdown from "./TagDropdown";
 
 const StyledTagInput = styled.div`
   .set_room_params-tag_input {
@@ -25,89 +24,26 @@ const StyledTagInput = styled.div`
   }
 `;
 
-const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
+const TagInput = ({
+  t,
+  tagHandler,
+  currentRoomTypeData,
+  setIsScrollLocked,
+}) => {
   const [tagInput, setTagInput] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-
-  const chosenTags = tagHandler.tags.map((tag) => tag.name);
-  const fetchedTags = tagHandler.fetchedTags;
-  const filteredFetchedTags = fetchedTags.filter((tag) =>
-    tag.toLowerCase().includes(tagInput.toLowerCase())
-  );
-  const tagsForDropdown = filteredFetchedTags.filter(
-    (tag) => !chosenTags.includes(tag)
-  );
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const onTagInputChange = (e) => setTagInput(e.target.value);
-  const preventDefault = (e) => e.preventDefault();
 
   const openDropdown = () => {
     setIsScrollLocked(true);
-    setIsOpen(true);
+    setIsDropdownOpen(true);
   };
+
   const closeDropdown = () => {
     setIsScrollLocked(false);
-    setIsOpen(false);
+    setIsDropdownOpen(false);
   };
-
-  const tagsInputElement = document.getElementById("tags-input");
-
-  const onClickOutside = () => {
-    tagsInputElement.blur();
-  };
-
-  const addNewTag = () => {
-    tagHandler.addNewTag(tagInput);
-    setTagInput("");
-    tagsInputElement.blur();
-  };
-
-  const addFetchedTag = (name) => {
-    tagHandler.addTag(name);
-    setTagInput("");
-    tagsInputElement.blur();
-  };
-
-  const dropdownRef = useRef(null);
-
-  let dropdownItems = tagsForDropdown.map((tag, i) => (
-    <DropDownItem
-      className="dropdown-item"
-      height={32}
-      heightTablet={32}
-      key={i}
-      label={tag}
-      onClick={() => addFetchedTag(tag)}
-    />
-  ));
-
-  if (
-    tagInput &&
-    ![...tagsForDropdown, ...chosenTags].find((tag) => tagInput === tag)
-  ) {
-    const dropdownItemNewTag = (
-      <DropDownItem
-        key={-2}
-        className="dropdown-item"
-        onMouseDown={preventDefault}
-        onClick={addNewTag}
-        label={`${t("CreateTagOption")} “${tagInput}”`}
-        height={32}
-        heightTablet={32}
-      />
-    );
-    //dropdownItems = [dropdownItemNewTag, ...dropdownItems];
-
-    if (tagsForDropdown.length > 0) {
-      dropdownItems = [
-        dropdownItemNewTag,
-        <DropDownItem height={7} heightTablet={7} key={-1} isSeparator />,
-        ...dropdownItems,
-      ];
-    } else {
-      dropdownItems = [dropdownItemNewTag, ...dropdownItems];
-    }
-  }
 
   return (
     <StyledTagInput className="set_room_params-input set_room_params-tag_input">
@@ -121,26 +57,18 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked }) => {
         onBlur={closeDropdown}
       />
 
-      <StyledDropDownWrapper
-        className="dropdown-content-wrapper"
-        ref={dropdownRef}
-        onMouseDown={preventDefault}
-      >
-        {dropdownItems.length > 0 && (
-          <StyledDropDown
-            className="dropdown-content"
-            open={isOpen}
-            forwardedRef={dropdownRef}
-            clickOutsideAction={onClickOutside}
-            maxHeight={isMobile() ? 158 : 382}
-            showDisabledItems={false}
-          >
-            {dropdownItems}
-          </StyledDropDown>
-        )}
-      </StyledDropDownWrapper>
+      <TagDropdown
+        open={isDropdownOpen}
+        tagHandler={tagHandler}
+        tagInputValue={tagInput}
+        setTagInputValue={setTagInput}
+        createTagLabel={t("CreateTagOption")}
+      />
 
-      <TagList t={t} tagHandler={tagHandler} />
+      <TagList
+        tagHandler={tagHandler}
+        defaultTagLabel={t(currentRoomTypeData.defaultTag)}
+      />
     </StyledTagInput>
   );
 };
