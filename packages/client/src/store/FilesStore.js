@@ -297,7 +297,7 @@ class FilesStore {
     this.isLoaded = isLoaded;
   };
 
-  setViewAs = async (viewAs) => {
+  setViewAs = (viewAs) => {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
   };
