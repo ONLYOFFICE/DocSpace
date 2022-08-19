@@ -109,9 +109,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     isDesktop && checkPwd();
     const session = !isChecked;
     login(user, hash, session)
-      .then((url: string) => {
+      .then((res: string | object) => {
         const redirectPath = localStorage.getItem("redirectPath");
-
+        console.log(res);
         if (redirectPath) {
           localStorage.removeItem("redirectPath");
           console.log("here");
@@ -119,8 +119,8 @@ const LoginForm: React.FC<ILoginFormProps> = ({
           return;
         }
 
-        window.location.replace(url); //TODO: save { user, hash } for tfa
-        //history.push(url, { user, hash });
+        if (typeof res === "string") window.location.replace(res);
+        else window.location.replace("/"); //TODO: save { user, hash } for tfa
       })
       .catch((error) => {
         setIsEmailErrorShow(true);
