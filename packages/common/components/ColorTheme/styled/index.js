@@ -43,3 +43,5 @@ export { default as LoadingButtonTheme } from "./loadingButton";
 export { default as FloatingButtonTheme } from "./floatingButton";
 
 export { default as InfoPanelToggleTheme } from "./infoPanelToggle";
+
+export { default as LinkTheme } from "./link";

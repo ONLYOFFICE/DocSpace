@@ -22,4 +22,5 @@ export const ThemeType = {
   LoadingButton: "loadingButton",
   FloatingButton: "floatingButton",
   InfoPanelToggle: "infoPanelToggle",
+  Link: "link",
 };

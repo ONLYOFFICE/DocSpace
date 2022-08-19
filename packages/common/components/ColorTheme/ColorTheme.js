@@ -25,6 +25,7 @@ import {
   LoadingButtonTheme,
   FloatingButtonTheme,
   InfoPanelToggleTheme,
+  LinkTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -231,6 +232,15 @@ const ColorTheme = forwardRef(({ currentColorScheme, ...props }, ref) => {
     case ThemeType.InfoPanelToggle: {
       return (
         <InfoPanelToggleTheme
+          {...props}
+          $currentColorScheme={currentColorScheme}
+          ref={ref}
+        />
+      );
+    }
+    case ThemeType.Link: {
+      return (
+        <LinkTheme
           {...props}
           $currentColorScheme={currentColorScheme}
           ref={ref}
