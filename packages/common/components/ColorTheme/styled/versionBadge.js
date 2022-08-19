@@ -1,16 +1,16 @@
 import styled, { css } from "styled-components";
 import { StyledVersionSvg } from "@docspace/client/src/pages/VersionHistory/Section/Body/StyledVersionHistory";
-const getDefaultStyles = ({ $currentColorScheme, isVersion, theme, index }) =>
+const getDefaultStyles = ({ $currentColorScheme, $isVersion, theme, index }) =>
   $currentColorScheme &&
   css`
     path {
-      fill: ${!isVersion
+      fill: ${!$isVersion
         ? theme.filesVersionHistory.badge.defaultFill
         : index === 0
         ? theme.filesVersionHistory.badge.fill
         : $currentColorScheme.accentColor};
 
-      stroke: ${!isVersion
+      stroke: ${!$isVersion
         ? theme.filesVersionHistory.badge.stroke
         : index === 0
         ? theme.filesVersionHistory.badge.fill
