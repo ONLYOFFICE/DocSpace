@@ -67,6 +67,7 @@ const SetRoomParams = ({
           t={t}
           currentRoom={currentRoomTypeData}
           setRoomType={setRoomType}
+          setIsScrollLocked={setIsScrollLocked}
         />
       )}
 
@@ -91,6 +92,7 @@ const SetRoomParams = ({
       <TagInput
         t={t}
         tagHandler={tagHandler}
+        currentRoomTypeData={currentRoomTypeData}
         setIsScrollLocked={setIsScrollLocked}
       />
 
@@ -102,7 +104,7 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {/* {!isEdit && (
+      {!isEdit && (
         <ThirdPartyStorage
           t={t}
           providers={providers}
@@ -115,15 +117,16 @@ const SetRoomParams = ({
           onChangeRememberThirdpartyStorage={onChangeRememberThirdpartyStorage}
           setIsScrollLocked={setIsScrollLocked}
         />
-      )} */}
+      )}
 
-      {/* <IconEditor
+      <IconEditor
         t={t}
         title={roomParams.title}
         tags={roomParams.tags}
+        currentRoomTypeData={currentRoomTypeData}
         icon={roomParams.icon}
         onChangeIcon={onChangeIcon}
-      /> */}
+      />
     </StyledSetRoomParams>
   );
 };
