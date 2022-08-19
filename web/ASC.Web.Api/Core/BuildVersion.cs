@@ -29,7 +29,7 @@ namespace ASC.Api.Settings;
 [Scope]
 public class BuildVersion
 {
-    public string CommunityServer { get; set; }
+    public string DocSpace { get; set; }
 
     public string DocumentServer { get; set; }
 
@@ -55,7 +55,7 @@ public class BuildVersion
 
     public async Task<BuildVersion> GetCurrentBuildVersionAsync()
     {
-        CommunityServer = GetCommunityVersion();
+        DocSpace = GetDocSpaceVersion();
         DocumentServer = await GetDocumentVersionAsync();
         MailServer = GetMailServerVersion();
         XmppServer = GetXmppServerVersion();
@@ -63,9 +63,9 @@ public class BuildVersion
         return this;
     }
 
-    private string GetCommunityVersion()
+    private string GetDocSpaceVersion()
     {
-        return _configuration["version:number"] ?? "8.5.0";
+        return _configuration["version:number"] ?? "1.0.0";
     }
 
     private Task<string> GetDocumentVersionAsync()
