@@ -24,20 +24,35 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.AuditTrail.Types;
+
+using ActionType = ASC.AuditTrail.Types.ActionType;
 using Profile = AutoMapper.Profile;
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class RoomEventDto : IMapFrom<AuditEventDto>
 {
-    public Guid UserId { get; set; }
+    public int Id { get; set; }
     public ApiDateTime Date { get; set; }
     public string UserName { get; set; }
+    public Guid UserId { get; set; }
     public string ActionText { get; set; }
+    public int Action { get; set; }
+    public string IP { get; set; }
+    public string Browser { get; set; }
+    public string Platform { get; set; }
+    public string Page { get; set; }
+    public ActionType ActionType { get; set; }
+    public ProductType ProductType { get; set; }
+    public ModuleType ModuleType { get; set; }
+    public IEnumerable<string> Targets { get; set; }
+    public IEnumerable<EntryType> Entries { get; set; }
 
     public void Mapping(Profile profile)
     {
         profile.CreateMap<AuditEventDto, RoomEventDto>()
-            .ForMember(dest => dest.Date, opt => opt.MapFrom((src, dest, _) => dest.Date = new ApiDateTime(src.Date, TimeSpan.Zero)));
+            .ForMember(dest => dest.Date, opt => opt.MapFrom((src, dest, _) => dest.Date = new ApiDateTime(src.Date, TimeSpan.Zero)))
+            .AfterMap<RoomEventMappingAction>();
     }
 }
