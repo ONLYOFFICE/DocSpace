@@ -23,10 +23,7 @@ const EditRoomEvent = ({
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
-  const [fetchedImage, setFetchedImage] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  console.log(item);
 
   const roomId = item.id;
   const startTags = Object.values(item.tags);
@@ -44,7 +41,7 @@ const EditRoomEvent = ({
     },
     isPrivate: false,
     icon: {
-      uploadedFile: undefined, //fetchedImage,
+      uploadedFileSrc: item.icon,
       tmpFile: "",
       x: 0.5,
       y: 0.5,
@@ -82,7 +79,6 @@ const EditRoomEvent = ({
       if (roomParams.icon.uploadedFile)
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const { x, y, width, height } = roomParams.icon;
-          console.log(x, y, width, height);
           addLogoToRoom({ tmpFile: response.data, x, y, width, height });
         });
 
@@ -98,15 +94,9 @@ const EditRoomEvent = ({
   useEffect(async () => {
     const tags = await fetchTags();
     setFetchedTags(tags);
-
-    await fetch(
-      "https://wow.zamimg.com/modelviewer/tbc/webthumbs/outfit/94/70494.webp"
-    ).then((res) => {
-      const buf = res.arrayBuffer();
-      const file = new File([buf], "fetchedImage", { type: "image/png" });
-      setFetchedImage(file[0]);
-    });
   }, []);
+
+  console.log(item);
 
   return (
     <EditRoomDialog

@@ -29,8 +29,6 @@ const CreateRoomEvent = ({
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(providers);
-
   const onCreate = async (roomParams) => {
     console.log(roomParams);
 
