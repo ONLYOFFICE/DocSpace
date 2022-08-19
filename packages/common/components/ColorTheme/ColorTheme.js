@@ -35,8 +35,8 @@ const ColorTheme = forwardRef(
       case ThemeType.Button: {
         return (
           <ButtonTheme
-            $currentColorScheme={currentColorScheme}
             {...props}
+            $currentColorScheme={currentColorScheme}
             ref={ref}
           />
         );

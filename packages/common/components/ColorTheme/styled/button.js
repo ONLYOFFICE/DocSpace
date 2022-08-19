@@ -42,7 +42,6 @@ const getDefaultStyles = ({
   isClicked,
   isHovered,
   disableHover,
-  theme,
 }) =>
   $currentColorScheme &&
   css`
