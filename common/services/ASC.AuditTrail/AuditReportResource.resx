@@ -1290,6 +1290,12 @@
   <data name="SystemAccount" xml:space="preserve">
     <value>System Account</value>
   </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Tag Created: {0}</value>
+  </data>
+  <data name="TagDeleted" xml:space="preserve">
+    <value>Tag Deleted: {0}</value>
+  </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>Target ID</value>
   </data>

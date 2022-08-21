@@ -3580,6 +3580,24 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tag Created: {0}.
+        /// </summary>
+        public static string TagCreated {
+            get {
+                return ResourceManager.GetString("TagCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag Deleted: {0}.
+        /// </summary>
+        public static string TagDeleted {
+            get {
+                return ResourceManager.GetString("TagDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target ID.
         /// </summary>
         public static string TargetIdCol {
