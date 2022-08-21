@@ -574,13 +574,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         var startIndex = Convert.ToInt32(_apiContext.StartIndex);
         var count = Convert.ToInt32(_apiContext.Count);
 
-        OrderBy orderBy = null;
-        if (SortedByTypeExtensions.TryParse(_apiContext.SortBy, true, out var sortBy))
-        {
-            orderBy = new OrderBy(sortBy, !_apiContext.SortDescending);
-        }
-
-        var histories = _roomsHistoryService.GetHistoryAsync(id, startIndex, count, orderBy);
+        var histories = _roomsHistoryService.GetHistoryAsync(id, startIndex, count);
 
         await foreach (var hisotry in histories)
         {
