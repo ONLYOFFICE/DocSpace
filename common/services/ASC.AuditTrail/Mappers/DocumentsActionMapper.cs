@@ -173,7 +173,7 @@ internal class RoomsActionMapper : IModuleActionMapper
                 EntryType.Room, new Dictionary<ActionType, MessageAction[]>()
                 {
                     { ActionType.Create, new[] { MessageAction.RoomCreated } },
-                    { ActionType.Update, new[] { MessageAction.RoomRenamed, MessageAction.RoomLogoCreated, MessageAction.RoomLogoDeleted, MessageAction.AddedRoomTags, MessageAction.DeletedRoomTags } },
+                    { ActionType.Update, new[] { MessageAction.RoomRenamed, MessageAction.RoomLogoCreated, MessageAction.RoomLogoDeleted, MessageAction.AddedRoomTag, MessageAction.DeletedRoomTag } },
                     { ActionType.Move, new[] { MessageAction.RoomArchived, MessageAction.RoomUnarchived } },
                     { ActionType.Delete, new[] { MessageAction.RoomDeleted } },
                     { ActionType.UpdateAccess, new[] { MessageAction.RoomUpdateAccess, MessageAction.GuestCreatedAndAddedToRoom, MessageAction.UserCreatedAndAddedToRoom, MessageAction.RoomInviteLinkUsed } }
@@ -197,7 +197,7 @@ internal class TagsActionMapper : IModuleActionMapper
                 EntryType.Tag, new Dictionary<ActionType, MessageAction>()
                 {
                     { ActionType.Create, MessageAction.TagCreated },
-                    { ActionType.Delete, MessageAction.TagsDeleted }
+                    { ActionType.Delete, MessageAction.TagDeleted }
                 }
             }
         };
