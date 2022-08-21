@@ -44,13 +44,13 @@ public class RoomsHistoryService<T>
 
     private IFolderDao<T> FolderDao => _daoFacotory.GetFolderDao<T>();
 
-    public async IAsyncEnumerable<RoomEventDto> GetHistoryAsync(T id, int startIndex, int count, OrderBy orderBy)
+    public async IAsyncEnumerable<RoomEventDto> GetHistoryAsync(T id, int startIndex, int count)
     {
         ArgumentNullException.ThrowIfNull(id);
 
         var room = await FolderDao.GetFolderAsync(id);
 
-        if (room == null && !DocSpaceHelper.IsRoom(room.FolderType))
+        if (room == null || !DocSpaceHelper.IsRoom(room.FolderType))
         {
             throw new ItemNotFoundException("room not found");
         }
@@ -61,15 +61,6 @@ public class RoomsHistoryService<T>
         }
 
         var auditEvents = _auditEventsRepository.GetAsync($"{FilesMessageService.RoomTargetMark}{id}", startIndex, count);
-
-        orderBy ??= new OrderBy(SortedByType.DateAndTime, false);
-
-        auditEvents = orderBy.SortedBy switch
-        {
-            SortedByType.Author => orderBy.IsAsc ? auditEvents.OrderBy(r => r.UserId) : auditEvents.OrderByDescending(r => r.UserId),
-            SortedByType.DateAndTime => orderBy.IsAsc ? auditEvents.OrderBy(r => r.Date) : auditEvents.OrderByDescending(r => r.Date),
-            _ => auditEvents.OrderByDescending(r => r.Date)
-        };
 
         await foreach (var auditEvent in auditEvents)
         {
