@@ -88,6 +88,15 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tag: {0}. Added To Room: {1}.
+        /// </summary>
+        public static string AddedRoomTag {
+            get {
+                return ResourceManager.GetString("AddedRoomTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Room {0}. Added Tags: [{1}].
         /// </summary>
         public static string AddedRoomTags {
@@ -1141,6 +1150,15 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tag: {0}. Deleted From Room: {1}.
+        /// </summary>
+        public static string DeletedRoomTag {
+            get {
+                return ResourceManager.GetString("DeletedRoomTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Room {0}. Deleted Tags: [{1}].
         /// </summary>
         public static string DeletedRoomTags {
@@ -1384,7 +1402,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File {0}. Created in {1}.
+        ///   Looks up a localized string similar to File {0}. Created In {1}.
         /// </summary>
         public static string FileCreated {
             get {
@@ -1600,7 +1618,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Folder {0}. Created in {1}.
+        ///   Looks up a localized string similar to Folder {0}. Created In {1}.
         /// </summary>
         public static string FolderCreated {
             get {
@@ -1776,6 +1794,15 @@ namespace ASC.AuditTrail {
         public static string GuestCreated {
             get {
                 return ResourceManager.GetString("GuestCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guest Created: {0}. Added To Room: {1}.
+        /// </summary>
+        public static string GuestCreatedAndAddedToRoom {
+            get {
+                return ResourceManager.GetString("GuestCreatedAndAddedToRoom", resourceCulture);
             }
         }
         
@@ -3927,6 +3954,15 @@ namespace ASC.AuditTrail {
         public static string UserCreated {
             get {
                 return ResourceManager.GetString("UserCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Created: {0}. Added To Room: {1}.
+        /// </summary>
+        public static string UserCreatedAndAddedToRoom {
+            get {
+                return ResourceManager.GetString("UserCreatedAndAddedToRoom", resourceCulture);
             }
         }
         

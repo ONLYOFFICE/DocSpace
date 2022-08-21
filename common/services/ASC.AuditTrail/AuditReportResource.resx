@@ -126,6 +126,9 @@
   <data name="ActionTypeCol" xml:space="preserve">
     <value>Action Type</value>
   </data>
+  <data name="AddedRoomTag" xml:space="preserve">
+    <value>Tag: {0}. Added To Room: {1}</value>
+  </data>
   <data name="AddedRoomTags" xml:space="preserve">
     <value>Room {0}. Added Tags: [{1}]</value>
   </data>
@@ -477,6 +480,9 @@
   <data name="DeleteActionType" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="DeletedRoomTag" xml:space="preserve">
+    <value>Tag: {0}. Deleted From Room: {1}</value>
+  </data>
   <data name="DeletedRoomTags" xml:space="preserve">
     <value>Room {0}. Deleted Tags: [{1}]</value>
   </data>
@@ -559,7 +565,7 @@
     <value>Files [{0}]. Copied With Overwriting From Folder "{1}" To Folder: "{2}"</value>
   </data>
   <data name="FileCreated" xml:space="preserve">
-    <value>File {0}. Created in {1}</value>
+    <value>File {0}. Created In {1}</value>
   </data>
   <data name="FileCreatedVersion" xml:space="preserve">
     <value>Files [{0}]. Revision: {1}. Version Created</value>
@@ -631,7 +637,7 @@
     <value>Folders [{0}]. Copied With Overwriting To Folder: {1}</value>
   </data>
   <data name="FolderCreated" xml:space="preserve">
-    <value>Folder {0}. Created in {1}</value>
+    <value>Folder {0}. Created In {1}</value>
   </data>
   <data name="FolderDeleted" xml:space="preserve">
     <value>Folder Deleted: {0}</value>
@@ -689,6 +695,9 @@
   </data>
   <data name="GuestCreated" xml:space="preserve">
     <value>Guest Created: {0}</value>
+  </data>
+  <data name="GuestCreatedAndAddedToRoom" xml:space="preserve">
+    <value>Guest Created: {0}. Added To Room: {1}</value>
   </data>
   <data name="GuestCreatedViaInvite" xml:space="preserve">
     <value>Guest Created Via Invite: {0}</value>
@@ -1406,6 +1415,9 @@
   </data>
   <data name="UserCreated" xml:space="preserve">
     <value>User Created: {0}</value>
+  </data>
+  <data name="UserCreatedAndAddedToRoom" xml:space="preserve">
+    <value>User Created: {0}. Added To Room: {1}</value>
   </data>
   <data name="UserCreatedViaInvite" xml:space="preserve">
     <value>User Created Via Invite: {0}</value>
