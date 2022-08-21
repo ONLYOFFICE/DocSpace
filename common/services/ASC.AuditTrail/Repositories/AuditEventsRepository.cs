@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Notify;
+
 namespace ASC.AuditTrail.Repositories;
 
 [Scope(Additional = typeof(AuditEventsRepositoryExtensions))]
@@ -78,14 +80,36 @@ public class AuditEventsRepository
     public IAsyncEnumerable<AuditEventDto> GetAsync(string target, int startIndex = 0, int limit = 0)
     {
         var messagesContext = _dbContextFactory.CreateDbContext();
-        var q = BuildAuditBaseQuery(messagesContext, startIndex, limit);
+        var tenant = _tenantManager.GetCurrentTenant().Id;
+        var query =
+          (from q in messagesContext.AuditEvents.AsNoTracking().ToAsyncEnumerable()
+           from p in messagesContext.Users.AsNoTracking().ToAsyncEnumerable().Where(p => q.UserId == p.Id).DefaultIfEmpty()
+           where q.TenantId == tenant
+           orderby q.Date descending
+           select new AuditEventQuery
+           {
+               Event = q,
+               FirstName = p.FirstName,
+               LastName = p.LastName,
+               UserName = p.UserName
+           });
 
         if (!string.IsNullOrEmpty(target))
         {
-            q = q.Where(a => a.Event.Target.Contains(target));
+            query = query.Where(a => a.Event.Target.Contains(target));
         }
 
-        return q.ToAsyncEnumerable().Select(_mapper.Map<AuditEventQuery, AuditEventDto>);
+        if (startIndex > 0)
+        {
+            query = query.Skip(startIndex);
+        }
+
+        if (limit > 0)
+        {
+            query = query.Take(limit);
+        }
+
+        return query.Select(_mapper.Map<AuditEventQuery, AuditEventDto>);
     }
 
     public IEnumerable<AuditEventDto> GetByFilter(
@@ -101,9 +125,29 @@ public class AuditEventsRepository
         int startIndex = 0,
         int limit = 0)
     {
-        using var context = _dbContextFactory.CreateDbContext();
+        var tenant = _tenantManager.GetCurrentTenant().Id;
+        using var auditTrailContext = _dbContextFactory.CreateDbContext();
+        var query =
+          (from q in auditTrailContext.AuditEvents
+           from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+           where q.TenantId == tenant
+           orderby q.Date descending
+           select new AuditEventQuery
+           {
+               Event = q,
+               FirstName = p.FirstName,
+               LastName = p.LastName,
+               UserName = p.UserName
+           });
 
-        var query = BuildAuditBaseQuery(context, startIndex, limit);
+        if (startIndex > 0)
+        {
+            query = query.Skip(startIndex);
+        }
+        if (limit > 0)
+        {
+            query = query.Take(limit);
+        }
 
         if (userId.HasValue && userId.Value != Guid.Empty)
         {
@@ -221,34 +265,6 @@ public class AuditEventsRepository
         }
 
         return query.Count();
-    }
-
-    private IQueryable<AuditEventQuery> BuildAuditBaseQuery(MessagesContext context, int startIndex, int limit)
-    {
-        var tenant = _tenantManager.GetCurrentTenant().Id;
-        var query =
-          (from q in context.AuditEvents.AsNoTracking()
-           from p in context.Users.AsNoTracking().Where(p => q.UserId == p.Id).DefaultIfEmpty()
-           where q.TenantId == tenant
-           orderby q.Date descending
-           select new AuditEventQuery
-           {
-               Event = q,
-               FirstName = p.FirstName,
-               LastName = p.LastName,
-               UserName = p.UserName
-           });
-
-        if (startIndex > 0)
-        {
-            query = query.Skip(startIndex);
-        }
-        if (limit > 0)
-        {
-            query = query.Take(limit);
-        }
-
-        return query;
     }
 }
 
