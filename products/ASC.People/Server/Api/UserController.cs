@@ -310,11 +310,11 @@ public class UserController : PeopleControllerBase
             
             if (folderInt != null)
             {
-                await _filesMessageService.Send(folderInt, HttpContext.Request.Headers, messageAction, folderInt.Title, user.DisplayUserName(false, _displayUserSettingsHelper));
+                await _filesMessageService.Send(folderInt, HttpContext.Request.Headers, messageAction, user.DisplayUserName(false, _displayUserSettingsHelper), folderInt.Title);
             }
             else
             {
-                await _filesMessageService.Send(folderString, HttpContext.Request.Headers, messageAction, folderInt.Title, user.DisplayUserName(false, _displayUserSettingsHelper));
+                await _filesMessageService.Send(folderString, HttpContext.Request.Headers, messageAction, user.DisplayUserName(false, _displayUserSettingsHelper), folderInt.Title);
             }
         }
         else
