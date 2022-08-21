@@ -471,9 +471,9 @@ public enum MessageAction
     RoomUpdateAccess = 5075,
 
     TagCreated = 5076,
-    TagsDeleted = 5077,
-    AddedRoomTags = 5078,
-    DeletedRoomTags = 5079,
+    TagDeleted = 5077,
+    AddedRoomTag = 5078,
+    DeletedRoomTag = 5079,
 
     RoomLogoCreated = 5080,
     RoomLogoDeleted = 5081,
