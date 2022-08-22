@@ -150,6 +150,7 @@ class Section extends React.Component {
     this.intervalHandler = null;
 
     this.scroll = null;
+    this.selectoRef = React.createRef(null);
   }
 
   componentDidUpdate(prevProps) {
@@ -364,6 +365,7 @@ class Section extends React.Component {
                           isHomepage={isHomepage}
                           settingsStudio={settingsStudio}
                           withPaging={withPaging}
+                          selectoRef={this.selectoRef}
                         >
                           {isMobile && (
                             <StyledMainBar
@@ -503,8 +505,9 @@ class Section extends React.Component {
         {!isMobile && uploadFiles && !dragging && (
           <StyledSelectoWrapper>
             <Selecto
-              boundContainer={".section-wrapper"}
-              dragContainer={".section-body"}
+              ref={this.selectoRef}
+              boundContainer=".section-wrapper-content"
+              dragContainer=".section-wrapper"
               selectableTargets={[".files-item"]}
               hitRate={0}
               selectByClick={false}
