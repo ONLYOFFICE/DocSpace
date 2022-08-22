@@ -9,12 +9,23 @@ const StyledCurrentTariffContainer = styled.div`
   min-height: 40px;
   background: #f8f9f9;
   margin-bottom: 24px;
-  white-space: nowrap;
+  //white-space: nowrap;
   flex-wrap: wrap;
   margin-top: 16px;
-  p {
-    padding: 12px 16px;
+  padding: 12px 16px;
+  div {
+    margin-right: 24px;
+    margin-bottom: 12px;
+  }
+  div:last-child {
+    margin-right: 0;
     margin-bottom: 0;
+  }
+  p {
+    margin-bottom: 0;
+    .current-tariff_count {
+      margin-left: 5px;
+    }
   }
 `;
 
@@ -52,7 +63,7 @@ const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
       <div>
         <Text isBold noSelect>
           {t("Room")}:
-          <Text as="span" isBold>
+          <Text className="current-tariff_count" as="span" isBold>
             {countRoom > 10000 ? addedRooms : addedRooms + "/" + countRoom}
           </Text>
         </Text>
@@ -60,7 +71,7 @@ const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
       <div>
         <Text isBold noSelect>
           {t("AddedManagers")}:
-          <Text as="span" isBold>
+          <Text className="current-tariff_count" as="span" isBold>
             {addedManagers}/{maxManagers}
           </Text>
         </Text>
@@ -68,7 +79,7 @@ const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
       <div>
         <Text isBold noSelect>
           {t("StorageSpace")}:
-          <Text as="span" isBold>
+          <Text className="current-tariff_count" as="span" isBold>
             {usedSizeConverted}/{storageSizeConverted}
           </Text>
         </Text>
