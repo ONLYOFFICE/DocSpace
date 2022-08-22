@@ -14,6 +14,9 @@ import { checkPwd } from "@docspace/common/desktop";
 import { login } from "@docspace/common/utils/loginUtils";
 import { oAuthLogin } from "../../helpers/utils";
 import toastr from "@docspace/components/toast/toastr";
+
+const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
+
 interface ILoginFormProps {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
@@ -57,6 +60,17 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     if (!profile) return;
 
     authCallback(profile);
+  }, []);
+
+  useEffect(() => {
+    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
+
+    error && setErrorText(error);
+    confirmedEmail && setIdentifier(confirmedEmail);
+
+    focusInput();
+
+    window.authCallback = authCallback;
   }, []);
 
   const authCallback = async (profile: string) => {
@@ -111,10 +125,8 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     login(user, hash, session)
       .then((res: string | object) => {
         const redirectPath = localStorage.getItem("redirectPath");
-        console.log(res);
         if (redirectPath) {
           localStorage.removeItem("redirectPath");
-          console.log("here");
           window.location.href = redirectPath;
           return;
         }

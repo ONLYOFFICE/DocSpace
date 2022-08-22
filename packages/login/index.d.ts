@@ -15,7 +15,7 @@ type WindowI18nType = {
 
 declare global {
   interface Window {
-    authCallback?: (profile: object) => {};
+    authCallback?: (profile: string) => {};
     __ASC_INITIAL_LOGIN_STATE__: IInitialState;
     initialI18nStoreASC: IInitialI18nStoreASC;
     initialLanguage: string;
