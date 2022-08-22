@@ -203,7 +203,8 @@ class SectionBody extends React.Component {
   }
 
   onScroll = (e) => {
-    this.props.selectoRef.current.checkScroll();
+    this.props.selectoRef.current &&
+      this.props.selectoRef.current.checkScroll();
     return e;
   };
 

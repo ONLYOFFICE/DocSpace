@@ -502,7 +502,7 @@ class Section extends React.Component {
     return (
       <>
         {renderSection()}
-        {!isMobile && uploadFiles && !dragging && (
+        {!isMobile && uploadFiles && !dragging && withPaging && (
           <StyledSelectoWrapper>
             <Selecto
               ref={this.selectoRef}
