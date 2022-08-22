@@ -136,15 +136,41 @@ public class DbWorker
         return removeObj;
     }
 
-    public IAsyncEnumerable<WebhooksLog> ReadJournal()
+    public IAsyncEnumerable<WebhooksLog> ReadJournal(int startIndex, int limit, DateTime? delivery, string hookname, string route)
     {
         var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        return webhooksDbContext.WebhooksLogs
+        var q = webhooksDbContext.WebhooksLogs
             .AsNoTracking()
-            .Where(r => r.TenantId == Tenant)
-            .OrderBy(t => t.Id)
-            .AsAsyncEnumerable();
+            .Where(r => r.TenantId == Tenant);
+
+        if (delivery.HasValue)
+        {
+            var date = delivery.Value;
+            q = q.Where(r => r.Delivery == date);
+        }
+
+        if (!string.IsNullOrEmpty(hookname))
+        {
+            q = q.Where(r => r.Config.Name == hookname);
+        }
+
+        if (!string.IsNullOrEmpty(route))
+        {
+            q = q.Where(r => r.Route == route);
+        }
+
+        if (startIndex != 0)
+        {
+            q = q.Skip(startIndex);
+        }
+
+        if (limit != 0)
+        {
+            q = q.Take(limit);
+        }
+
+        return q.OrderByDescending(t => t.Id).AsAsyncEnumerable();
     }
 
     public async Task<WebhooksLog> ReadJournal(int id)

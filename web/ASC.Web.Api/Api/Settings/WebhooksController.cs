@@ -28,11 +28,13 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class WebhooksController : BaseSettingsController
 {
+    private readonly ApiContext _context;
     private readonly PermissionContext _permissionContext;
     private readonly DbWorker _webhookDbWorker;
     private readonly IMapper _mapper;
 
     public WebhooksController(
+        ApiContext context,
         PermissionContext permissionContext,
         ApiContext apiContext,
         WebItemManager webItemManager,
@@ -42,6 +44,7 @@ public class WebhooksController : BaseSettingsController
         IMapper mapper)
         : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
+        _context = context;
         _permissionContext = permissionContext;
         _webhookDbWorker = dbWorker;
         _mapper = mapper;
@@ -106,11 +109,13 @@ public class WebhooksController : BaseSettingsController
     }
 
     [HttpGet("webhooks/log")]
-    public async IAsyncEnumerable<WebhooksLogDto> GetJournal()
+    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(DateTime? delivery, string hookname, string route)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        var startIndex = Convert.ToInt32(_context.StartIndex);
+        var count = Convert.ToInt32(_context.Count);
 
-        await foreach (var j in _webhookDbWorker.ReadJournal())
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, delivery, hookname, route))
         {
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
         }
