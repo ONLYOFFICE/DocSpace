@@ -136,7 +136,9 @@ const Article = ({
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
-          {isFreeTariff && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
+          {isFreeTariff && showText && (
+            <ArticlePaymentAlert isFreeTariff={isFreeTariff} />
+          )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (

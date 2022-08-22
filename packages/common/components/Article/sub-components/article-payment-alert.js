@@ -9,6 +9,8 @@ import styled from "styled-components";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
+import Loaders from "../../Loaders";
+
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   margin: auto 0;
   path {
@@ -19,7 +21,7 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
 
 const ArticlePaymentAlert = ({ pricePerManager, isFreeTariff, theme }) => {
-  const { t } = useTranslation("Payments");
+  const { t, ready } = useTranslation("Payments");
 
   const onClick = () => {
     const paymentPageUrl = combineUrl(
@@ -29,7 +31,9 @@ const ArticlePaymentAlert = ({ pricePerManager, isFreeTariff, theme }) => {
     history.push(paymentPageUrl);
   };
 
-  return (
+  return !ready ? (
+    <Loaders.Rectangle width="210px" height="88px" />
+  ) : (
     <StyledArticlePaymentAlert
       onClick={onClick}
       isFreeTariff={isFreeTariff}
