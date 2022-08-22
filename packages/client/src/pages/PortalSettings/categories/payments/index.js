@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
@@ -63,6 +63,8 @@ const PaymentsPage = ({
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
   useEffect(() => {
     setDocumentTitle(t("Settings:Payments"));
   }, [ready]);
@@ -70,7 +72,6 @@ const PaymentsPage = ({
   useEffect(() => {
     (async () => {
       moment.locale(language);
-      setIsLoading(true);
 
       try {
         await Promise.all([
@@ -85,7 +86,7 @@ const PaymentsPage = ({
         toastr.error(error);
       }
 
-      setIsLoading(false);
+      setIsInitialLoading(false);
     })();
   }, []);
 
@@ -110,7 +111,7 @@ const PaymentsPage = ({
     );
   };
 
-  return isLoading ? (
+  return isInitialLoading ? (
     <Loaders.PaymentsLoader />
   ) : (
     <StyledBody>
