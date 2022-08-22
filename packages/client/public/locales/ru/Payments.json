@@ -7,7 +7,7 @@
   "BusinessTitle": "Вы используете Business план",
   "BusinessSuggestion": "Настройте свой Business план",
   "BusinessFinalDateInfo": "Подписка будет автоматически продлена {{finalDate}} с обновленными ценами и техническими характеристиками. Вы можете отменить его или изменить свою платежную информацию на клиентский портал Stripe.",
-  "BusinessRequestDescription": "Тарифные планы с более чем {{peopleNumber} менеджерами доступны только по запросу",
+  "BusinessRequestDescription": "Тарифные планы с более чем {{peopleNumber}} менеджерами доступны только по запросу",
   "Bytes": "байт",
   "ContactUs": "По вопросам продаж обращайтесь к нам по адресу",
   "FreeStartupPlan": "Бесплатный  Startup план",
