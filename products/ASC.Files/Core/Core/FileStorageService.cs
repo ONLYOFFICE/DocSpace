@@ -238,8 +238,21 @@ public class FileStorageService<T> //: IFileStorageService
         }));
     }
 
-    public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, FilterType filterType, bool subjectGroup, string subject, string searchText,
-        bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null, bool withoutMe = false)
+    public async Task<DataWrapper<T>> GetFolderItemsAsync(
+        T parentId,
+        int from,
+        int count,
+        FilterType filterType,
+        bool subjectGroup,
+        string subject,
+        string searchText,
+        bool searchInContent,
+        bool withSubfolders,
+        OrderBy orderBy,
+        SearchArea searchArea = SearchArea.Active,
+        bool withoutTags = false,
+        IEnumerable<string> tagNames = null,
+        bool withoutMe = false)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
