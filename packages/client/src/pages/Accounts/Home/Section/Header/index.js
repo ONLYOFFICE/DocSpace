@@ -12,10 +12,17 @@ import { combineUrl } from "@docspace/common/utils";
 
 import DropDownItem from "@docspace/components/drop-down-item";
 import ContextMenuButton from "@docspace/components/context-menu-button";
-import { tablet, mobile } from "@docspace/components/utils/device";
+import {
+  tablet,
+  mobile,
+  isTablet,
+  isMobile as isMobileUtils,
+  isDesktop,
+} from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
 import { Base } from "@docspace/components/themes";
+import IconButton from "@docspace/components/icon-button";
 
 // import toastr from "client/toastr";
 
@@ -138,6 +145,35 @@ const StyledContainer = styled.div`
 
 StyledContainer.defaultProps = { theme: Base };
 
+const StyledInfoPanelToggleWrapper = styled.div`
+  display: flex;
+
+  margin-left: auto;
+
+  @media ${tablet} {
+    display: none;
+  }
+
+  ${isMobile &&
+  css`
+    display: none;
+  `}
+
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 2px;
+
+  .info-panel-toggle-bg {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+`;
+
 const SectionHeaderContent = (props) => {
   const {
     isHeaderVisible,
@@ -155,6 +191,9 @@ const SectionHeaderContent = (props) => {
     showText,
     cbMenuItems,
     getCheckboxItemLabel,
+
+    setInfoPanelVisible,
+    isInfoPanelVisible,
   } = props;
 
   //console.log("SectionHeaderContent render", props.isTabletView);
@@ -294,6 +333,26 @@ const SectionHeaderContent = (props) => {
                   getData={getContextOptions}
                   isDisabled={false}
                 />
+                {!isInfoPanelVisible && (
+                  <StyledInfoPanelToggleWrapper>
+                    {!(
+                      isTablet() ||
+                      isMobile ||
+                      isMobileUtils() ||
+                      !isDesktop()
+                    ) && (
+                      <div className="info-panel-toggle-bg">
+                        <IconButton
+                          className="info-panel-toggle"
+                          iconName="images/panel.react.svg"
+                          size="16"
+                          isFill={true}
+                          onClick={setInfoPanelVisible}
+                        />
+                      </div>
+                    )}
+                  </StyledInfoPanelToggleWrapper>
+                )}
               </>
             </div>
           )}
@@ -307,6 +366,10 @@ export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { settingsStore, isLoaded, isAdmin } = auth;
     const { customNames, isTabletView, showText } = settingsStore;
+    const {
+      setVisible: setInfoPanelVisible,
+      isVisible: isInfoPanelVisible,
+    } = auth.infoPanelStore;
 
     const {
       resetFilter,
@@ -361,6 +424,8 @@ export default withRouter(
       showText,
       cbMenuItems,
       getCheckboxItemLabel,
+      setInfoPanelVisible,
+      isInfoPanelVisible,
     };
   })(
     withTranslation([

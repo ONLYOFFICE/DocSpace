@@ -11,6 +11,8 @@ import Section from "@docspace/common/components/Section";
 
 import { showLoader, hideLoader } from "@docspace/common/utils";
 
+import { InfoPanelHeaderContent, InfoPanelBodyContent } from "./InfoPanel";
+
 import {
   SectionHeaderContent,
   SectionBodyContent,
@@ -94,6 +96,12 @@ const PureHome = ({
         <Section.SectionBody>
           <SectionBodyContent />
         </Section.SectionBody>
+        <Section.InfoPanelHeader>
+          <InfoPanelHeaderContent />
+        </Section.InfoPanelHeader>
+        <Section.InfoPanelBody>
+          <InfoPanelBodyContent />
+        </Section.InfoPanelBody>
         <Section.SectionPaging>
           <SectionPagingContent tReady={tReady} />
         </Section.SectionPaging>

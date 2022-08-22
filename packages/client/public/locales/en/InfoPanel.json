@@ -1,4 +1,6 @@
 {
+  "AccountsEmptyScreenText": "See users details here",
+  "Data": "Data",
   "EmptyScreenText": "See file and folder details here",
   "FileExtension": "File extension",
   "ItemsSelected": "Items selected",

@@ -28,10 +28,11 @@ class PeopleStore {
   inviteLinksStore = null;
   dialogStore = null;
   loadingStore = null;
+  infoPanelStore = null;
   isInit = false;
   viewAs = isMobile ? "row" : "table";
 
-  constructor() {
+  constructor(infoPanelStore) {
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this);
     this.targetUserStore = new TargetUserStore(this);
@@ -44,6 +45,7 @@ class PeopleStore {
     this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
     this.loadingStore = new LoadingStore();
+    this.infoPanelStore = infoPanelStore;
 
     makeAutoObservable(this);
   }
@@ -99,6 +101,8 @@ class PeopleStore {
       setDeleteDialogVisible,
     } = this.dialogStore;
 
+    const { setVisible, isVisible } = this.infoPanelStore;
+
     const headerMenu = [
       {
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
@@ -134,8 +138,8 @@ class PeopleStore {
       },
       {
         label: t("PeopleTranslations:Details"),
-        disabled: getUsersToRemoveIds.length === selection.length,
-        onClick: () => console.log("details"),
+        disabled: isVisible,
+        onClick: setVisible,
         iconUrl: "images/info.react.svg",
       },
       {

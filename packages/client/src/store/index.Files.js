@@ -19,7 +19,7 @@ import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
 
-const peopleStore = new PeopleStore();
+const peopleStore = new PeopleStore(store.auth.infoPanelStore);
 
 const tagsStore = new TagsStore();
 
