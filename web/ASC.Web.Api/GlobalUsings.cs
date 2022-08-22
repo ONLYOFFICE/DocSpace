@@ -62,6 +62,7 @@ global using ASC.Common.Radicale.Core;
 global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
 global using ASC.Common.Utils;
+global using ASC.Common.Web;
 global using ASC.Core;
 global using ASC.Core.Billing;
 global using ASC.Core.Common.Configuration;
