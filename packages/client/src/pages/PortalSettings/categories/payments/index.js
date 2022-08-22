@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
 import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
-import Loader from "@docspace/components/loader";
+import Loaders from "@docspace/common/components/Loaders";
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -58,6 +58,8 @@ const PaymentsPage = ({
   setPortalTariff,
   language,
   portalTariff,
+  setIsLoading,
+  isLoading,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -68,6 +70,7 @@ const PaymentsPage = ({
   useEffect(() => {
     (async () => {
       moment.locale(language);
+      setIsLoading(true);
 
       try {
         await Promise.all([
@@ -81,6 +84,8 @@ const PaymentsPage = ({
       } catch (error) {
         toastr.error(error);
       }
+
+      setIsLoading(false);
     })();
   }, []);
 
@@ -105,7 +110,9 @@ const PaymentsPage = ({
     );
   };
 
-  return (
+  return isLoading ? (
+    <Loaders.PaymentsLoader />
+  ) : (
     <StyledBody>
       <Text noSelect fontSize="16px" isBold>
         {isStartup ? t("StartupTitle") : t("BusinessTitle")}
@@ -167,12 +174,16 @@ export default inject(({ auth, payments }) => {
     tariffsInfo,
     pricePerManager,
     getPaymentPrices,
+    setIsLoading,
+    isLoading,
   } = payments;
 
   const isStartup = false;
 
   return {
     setQuota,
+    setIsLoading,
+    isLoading,
     setPortalQuota,
     setPortalTariff,
     portalTariff,
