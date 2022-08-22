@@ -63,12 +63,24 @@ const CreateRoomEvent = ({
 
       await addTagsToRoom(room.id, addTagsData);
 
-      if (roomParams.icon.uploadedFile)
-        await uploadRoomLogo(uploadLogoData).then((response) => {
-          const { x, y, width, height } = roomParams.icon;
-          addLogoToRoom({ tmpFile: response.data, x, y, width, height });
-        });
+      if (roomParams.icon.uploadedFile) {
+        const response = await uploadRoomLogo(uploadLogoData);
 
+        var img = new Image();
+        img.onload = function () {
+          const { x, y, width, height } = roomParams.icon;
+          const newX = Math.round(x * img.width - width / 2);
+          const newY = Math.round(y * img.height - height / 2);
+          addLogoToRoom(roomId, {
+            tmpFile: response.data,
+            x: newX,
+            y: newY,
+            width,
+            height,
+          });
+        };
+        img.src = response.data;
+      }
       await updateCurrentFolder(null, currrentFolderId);
     } catch (err) {
       console.log(err);
