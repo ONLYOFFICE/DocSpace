@@ -528,11 +528,14 @@ class HotkeyStore {
 
   get caretIndex() {
     const { filesList, hotkeyCaret, selection } = this.filesStore;
-    const id =
+    const item =
       selection.length && selection.length === 1 && !hotkeyCaret
-        ? selection[0].id
-        : hotkeyCaret?.id;
-    const caretIndex = filesList.findIndex((f) => f.id === id);
+        ? selection[0]
+        : hotkeyCaret;
+
+    const caretIndex = filesList.findIndex(
+      (f) => f.id === item?.id && f.isFolder === item?.isFolder
+    );
 
     if (caretIndex !== -1) return caretIndex;
     else return null;
