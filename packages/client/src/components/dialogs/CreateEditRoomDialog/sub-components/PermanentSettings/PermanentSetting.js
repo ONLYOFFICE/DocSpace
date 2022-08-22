@@ -27,17 +27,16 @@ const StyledPermanentSetting = styled.div`
     gap: 8px;
 
     &-icon {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin: -2px;
 
       svg {
         max-width: 100%;
         max-height: 100%;
-        width: 16px;
-        height: 16px;
 
         ${(props) =>
           props.type === "privacy" &&
@@ -58,6 +57,7 @@ const StyledPermanentSetting = styled.div`
 
   .permanent_setting-help_button {
     margin-left: auto;
+    white-space: pre-line;
   }
 
   .permanent_setting-secondary-info {
@@ -65,6 +65,7 @@ const StyledPermanentSetting = styled.div`
     font-size: 12px;
     line-height: 16px;
     color: #555f65;
+    white-space: pre-line;
   }
 `;
 
