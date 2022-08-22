@@ -42,11 +42,12 @@ const DirectThirdPartyConnection = (props) => {
     setConnectDialogVisible,
     setDeleteThirdPartyDialogVisible,
     deleteThirdPartyDialogVisible,
+    tReady,
   } = props;
 
   useEffect(() => {
-    updateAccountsInfo(true);
-  }, []);
+    tReady && updateAccountsInfo(true);
+  }, [tReady]);
 
   const initialState = {
     selectedAccount: {},
@@ -308,7 +309,11 @@ const DirectThirdPartyConnection = (props) => {
           dropDownMaxHeight={300}
           tabIndex={1}
           isDisabled={
-            isDisabled || isInitialLoading || isLoading || accounts.length === 0
+            !tReady ||
+            isDisabled ||
+            isInitialLoading ||
+            isLoading ||
+            accounts.length === 0
           }
         />
 
