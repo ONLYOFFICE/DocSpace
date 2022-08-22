@@ -5,5 +5,6 @@
   "ErrorEmptyResponse": "Empty response",
   "ErrorInvalidHeader": "Incorrect email or expired link",
   "ErrorInvalidText": "In 10 seconds you will be redirected to the <1>login page</1>",
-  "ErrorOfflineText": "No internet connection found."
+  "ErrorOfflineText": "No internet connection found.",
+  "ErrorUnavailableText": "Portal unavailable"
 }
