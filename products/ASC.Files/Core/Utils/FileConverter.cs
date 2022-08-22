@@ -633,7 +633,7 @@ public class FileConverter
             throw new Exception(errorString);
         }
 
-        await _filesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
+        await _filesMessageService.SendAsync(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
 
         var linkDao = _daoFactory.GetLinkDao();
         await linkDao.DeleteAllLinkAsync(file.Id.ToString());

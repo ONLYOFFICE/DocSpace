@@ -1225,7 +1225,7 @@ public class EntryManager
                     folderId = await folderSourceDao.SaveFolderAsync(folder);
 
                     folder = await folderSourceDao.GetFolderAsync(folderId);
-                    await _filesMessageService.Send(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
+                    await _filesMessageService.SendAsync(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
                 }
 
                 folderId = folder.Id;
@@ -1250,7 +1250,7 @@ public class EntryManager
                 submitFile = await fileSourceDao.SaveFileAsync(submitFile, stream);
             }
 
-            await _filesMessageService.Send(submitFile, MessageInitiator.DocsService, MessageAction.FileCreated, submitFile.Title);
+            await _filesMessageService.SendAsync(submitFile, MessageInitiator.DocsService, MessageAction.FileCreated, submitFile.Title);
 
             await _fileMarker.MarkAsNewAsync(submitFile);
 

@@ -65,7 +65,7 @@ public class FilesMessageService
         SendHeadersMessage(headers, action, null, description);
     }
 
-    public async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
         if (entry == null)
         {
@@ -75,7 +75,7 @@ public class FilesMessageService
         SendHeadersMessage(headers, action, await CreateMessageTargetAsync(entry), description);
     }
 
-    public async Task Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
         if (entry1 == null || entry2 == null)
         {
@@ -97,7 +97,7 @@ public class FilesMessageService
         _messageService.Send(headers, action, target, description);
     }
 
-    public async Task Send<T>(FileEntry<T> entry, MessageAction action, string description)
+    public async Task SendAsync<T>(FileEntry<T> entry, MessageAction action, string description)
     {
         if (entry == null)
         {
@@ -114,7 +114,7 @@ public class FilesMessageService
         _messageService.Send(action, await CreateMessageTargetAsync(entry), description);
     }
 
-    public async Task Send<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
+    public async Task SendAsync<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
     {
         if (entry == null)
         {
@@ -130,7 +130,7 @@ public class FilesMessageService
         _messageService.Send(action, await CreateMessageTargetAsync(entry), d1, d2);
     }
 
-    public async Task Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
     {
         if (entry == null)
         {

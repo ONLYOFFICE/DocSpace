@@ -94,7 +94,7 @@ public class RoomLogoManager
 
         if (EnableAudit)
         {
-            await _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated);
+            await _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoCreated);
         }
 
         return room;
@@ -116,7 +116,7 @@ public class RoomLogoManager
 
             if (EnableAudit)
             {
-                await _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted);
+                await _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoDeleted);
             }
 
             _cache.Remove(_cachePattern);

@@ -445,7 +445,7 @@ public class DocumentServiceTrackerHelper
         {
             if (user != null)
             {
-                await _filesMessageService.Send(file, MessageInitiator.DocsService, MessageAction.UserFileUpdated, user.DisplayUserName(false, _displayUserSettingsHelper), file.Title);
+                await _filesMessageService.SendAsync(file, MessageInitiator.DocsService, MessageAction.UserFileUpdated, user.DisplayUserName(false, _displayUserSettingsHelper), file.Title);
             }
 
             if (!forcesave)

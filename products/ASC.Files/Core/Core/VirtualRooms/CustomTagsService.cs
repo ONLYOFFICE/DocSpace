@@ -131,7 +131,7 @@ public class CustomTagsService<T>
 
         foreach (var tag in savedTags)
         {
-            await _filesMessageService.Send(folder, Headers, MessageAction.AddedRoomTag, tag.Name, folder.Title);
+            await _filesMessageService.SendAsync(folder, Headers, MessageAction.AddedRoomTag, tag.Name, folder.Title);
         }
 
         return folder;
@@ -159,7 +159,7 @@ public class CustomTagsService<T>
 
         foreach (var tag in tagsInfos)
         {
-            await _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTag, tag.Name, folder.Title);
+            await _filesMessageService.SendAsync(folder, Headers, MessageAction.DeletedRoomTag, tag.Name, folder.Title);
         }
 
         return folder;
