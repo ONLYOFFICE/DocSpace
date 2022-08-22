@@ -12,7 +12,7 @@ const InfiniteLoaderComponent = (props) => {
     ? document.querySelector("#customScrollBar > .scroll-body")
     : document.querySelector("#sectionScroll > .scroll-body");
 
-  if (viewAs === "row") scroll.style.paddingRight = 0;
+  if (viewAs === "row" && scroll) scroll.style.paddingRight = 0;
   else scroll.style.paddingRight = isMobile() ? "8px" : "17px";
 
   return viewAs === "tile" ? (
