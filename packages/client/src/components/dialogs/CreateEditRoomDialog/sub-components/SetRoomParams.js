@@ -127,7 +127,7 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {!isEdit && (
+      {/* {!isEdit && (
         <ThirdPartyStorage
           t={t}
           connectItems={connectItems}
@@ -147,7 +147,7 @@ const SetRoomParams = ({
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
         />
-      )}
+      )} */}
 
       <IconEditor
         t={t}
