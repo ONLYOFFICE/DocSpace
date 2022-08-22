@@ -102,9 +102,21 @@ const PeopleTableRow = (props) => {
     onEmailClick,
     onUserNameClick,
     isAdmin,
+    isOwner,
     theme,
+    changeUserType,
+    userId,
   } = props;
-  const { displayName, email, statusType, userName, position, role } = item;
+
+  const {
+    displayName,
+    email,
+    statusType,
+    userName,
+    position,
+    role,
+    rooms,
+  } = item;
 
   const isPending = statusType === "pending" || statusType === "disabled";
 
@@ -118,32 +130,43 @@ const PeopleTableRow = (props) => {
   };
 
   const getTypesOptions = React.useCallback(() => {
-    const options = [
-      {
-        key: "admin",
-        title: t("Administrator"),
-        label: t("Administrator"),
-        action: "administrator",
-      },
-      {
-        key: "manager",
-        title: t("Manager"),
-        label: t("Manager"),
-        action: "manager",
-      },
-      {
-        key: "user",
-        title: t("Common:User"),
-        label: t("Common:User"),
-        action: "user",
-      },
-    ];
+    const options = [];
+
+    const adminOption = {
+      key: "admin",
+      title: t("Administrator"),
+      label: t("Administrator"),
+      action: "admin",
+    };
+    const managerOption = {
+      key: "manager",
+      title: t("Manager"),
+      label: t("Manager"),
+      action: "manager",
+    };
+    const userOption = {
+      key: "user",
+      title: t("Common:User"),
+      label: t("Common:User"),
+      action: "user",
+    };
+
+    isOwner && options.push(adminOption);
+
+    isAdmin && options.push(managerOption);
+
+    options.push(userOption);
 
     return options;
-  }, [t]);
+  }, [t, isAdmin, isOwner]);
 
   // TODO: update after backend update
-  const onTypeChange = React.useCallback(({ action }) => {}, []);
+  const onTypeChange = React.useCallback(
+    ({ action }) => {
+      changeUserType(action, [item]);
+    },
+    [item, changeUserType]
+  );
 
   const getRoomsOptions = React.useCallback(() => {
     const options = [];
@@ -161,6 +184,21 @@ const PeopleTableRow = (props) => {
 
     return <>{options.map((option) => option)}</>;
   }, []);
+
+  const getRoomTypeLabel = React.useCallback((role) => {
+    switch (role) {
+      case "owner":
+        return t("Common:Owner");
+      case "admin":
+        return t("Administrator");
+      case "manager":
+        return t("Manager");
+      case "user":
+        return t("Common:User");
+    }
+  }, []);
+
+  const typeLabel = getRoomTypeLabel(role);
 
   return (
     <StyledPeopleRow
@@ -198,19 +236,10 @@ const PeopleTableRow = (props) => {
         <Badges statusType={statusType} />
       </TableCell>
       <TableCell className={"table-cell_type"}>
-        {role === "owner" ? (
-          <Text
-            type="page"
-            title={position}
-            fontSize="12px"
-            fontWeight={400}
-            color={sideInfoColor}
-            truncate
-            style={{ paddingLeft: "8px" }}
-          >
-            {t("Common:Owner")}
-          </Text>
-        ) : (
+        {((isOwner && role !== "owner") ||
+          (isAdmin && !isOwner && role !== "admin")) &&
+        statusType !== "disabled" &&
+        userId !== item.id ? (
           <ComboBox
             className="type-combobox"
             selectedOption={getTypesOptions().find(
@@ -223,10 +252,7 @@ const PeopleTableRow = (props) => {
             displaySelectedOption
             modernView
           />
-        )}
-      </TableCell>
-      <TableCell className="table-cell_room">
-        {isPending && statusType !== "disabled" ? (
+        ) : (
           <Text
             type="page"
             title={position}
@@ -234,11 +260,28 @@ const PeopleTableRow = (props) => {
             fontWeight={400}
             color={sideInfoColor}
             truncate
+            noSelect
+            style={{ paddingLeft: "8px" }}
+          >
+            {typeLabel}
+          </Text>
+        )}
+      </TableCell>
+      <TableCell className="table-cell_room">
+        {!rooms?.length ? (
+          <Text
+            type="page"
+            title={position}
+            fontSize="12px"
+            fontWeight={400}
+            color={sideInfoColor}
+            truncate
+            noSelect
             style={{ paddingLeft: "8px" }}
           >
             —
           </Text>
-        ) : role === "owner" ? (
+        ) : rooms?.length === 1 ? (
           <Text
             type="page"
             title={position}
@@ -248,7 +291,7 @@ const PeopleTableRow = (props) => {
             truncate
             style={{ paddingLeft: "8px" }}
           >
-            {fakeRooms[0].name} ({fakeRooms[0].role})
+            {rooms[0].name} ({rooms[0].role})
           </Text>
         ) : (
           <ComboBox
@@ -281,6 +324,6 @@ const PeopleTableRow = (props) => {
   );
 };
 
-export default withTranslation(["People", "Common"])(
+export default withTranslation(["People", "Common", "Settings"])(
   withRouter(withContextOptions(withContent(PeopleTableRow)))
 );

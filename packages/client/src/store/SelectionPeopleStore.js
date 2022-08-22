@@ -110,12 +110,17 @@ class SelectionStore {
   }
 
   get hasUsersToMakeEmployees() {
+    const isOwner = authStore.userStore.user.isOwner;
     const users = this.selection.filter((x) => {
       return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
+        (!x.isOwner &&
+          !x.isAdmin &&
+          x.status !== EmployeeStatus.Disabled &&
+          x.id !== authStore.userStore.user.id) ||
+        (x.isAdmin &&
+          isOwner &&
+          x.status !== EmployeeStatus.Disabled &&
+          x.id !== authStore.userStore.user.id)
       );
     });
 
@@ -125,9 +130,7 @@ class SelectionStore {
   get getUsersToMakeEmployeesIds() {
     const users = this.selection.filter((x) => {
       return (
-        !x.isAdmin &&
         !x.isOwner &&
-        x.isVisitor &&
         x.status !== EmployeeStatus.Disabled &&
         x.id !== authStore.userStore.user.id
       );

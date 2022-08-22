@@ -15,6 +15,8 @@ import LoadingStore from "./LoadingStore";
 import { isMobile } from "react-device-detect";
 const { auth: authStore } = store;
 
+const fullAccessId = "00000000-0000-0000-0000-000000000000";
+
 class PeopleStore {
   groupsStore = null;
   usersStore = null;
@@ -29,10 +31,11 @@ class PeopleStore {
   dialogStore = null;
   loadingStore = null;
   infoPanelStore = null;
+  setupStore = null;
   isInit = false;
   viewAs = isMobile ? "row" : "table";
 
-  constructor(infoPanelStore) {
+  constructor(infoPanelStore, setupStore) {
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this);
     this.targetUserStore = new TargetUserStore(this);
@@ -46,6 +49,7 @@ class PeopleStore {
     this.dialogStore = new DialogStore();
     this.loadingStore = new LoadingStore();
     this.infoPanelStore = infoPanelStore;
+    this.setupStore = setupStore;
 
     makeAutoObservable(this);
   }
@@ -81,7 +85,38 @@ class PeopleStore {
   };
 
   onInvite = (e) => {
-    console.log(e.target.dataset.action);
+    const action = e.target.dataset.action;
+
+    const { getUsersToMakeEmployeesIds } = this.selectionStore;
+
+    this.changeType(action, getUsersToMakeEmployeesIds);
+  };
+
+  changeType = (type, users) => {
+    const { changeAdmins } = this.setupStore;
+    const { getUsersList } = this.usersStore;
+    const { filter } = this.filterStore;
+    const { clearSelection } = this.selectionStore;
+
+    const userIDs = users.map((user) => {
+      return user?.id ? user.id : user;
+    });
+
+    if (type === "admin") {
+      changeAdmins(userIDs, fullAccessId, true).then((res) => {
+        getUsersList(filter);
+        clearSelection();
+        toastr.success(t("AdministratorsAddedSuccessfully"));
+      });
+    }
+
+    if (type === "user") {
+      changeAdmins(userIDs, fullAccessId, false).then((res) => {
+        getUsersList(filter);
+        clearSelection();
+        toastr.success(t("AdministratorsAddedSuccessfully"));
+      });
+    }
   };
 
   getHeaderMenu = (t) => {
@@ -101,40 +136,53 @@ class PeopleStore {
       setDeleteDialogVisible,
     } = this.dialogStore;
 
+    const { isAdmin, isOwner } = authStore.userStore.user;
+
     const { setVisible, isVisible } = this.infoPanelStore;
+
+    const options = [];
+
+    const adminOption = {
+      id: "group-menu_administrator",
+      className: "group-menu_drop-down",
+      label: t("Administrator"),
+      title: t("Administrator"),
+      onClick: this.onInvite,
+      "data-action": "admin",
+      key: "administrator",
+    };
+    const managerOption = {
+      id: "group-menu_manager",
+      className: "group-menu_drop-down",
+      label: t("Manager"),
+      title: t("Manager"),
+      onClick: this.onInvite,
+      "data-action": "manager",
+      key: "manager",
+    };
+    const userOption = {
+      id: "group-menu_user",
+      className: "group-menu_drop-down",
+      label: t("Common:User"),
+      title: t("Common:User"),
+      onClick: this.onInvite,
+      "data-action": "user",
+      key: "user",
+    };
+
+    isOwner && options.push(adminOption);
+
+    isAdmin && options.push(managerOption);
+
+    options.push(userOption);
 
     const headerMenu = [
       {
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
-        disabled: !hasUsersToMakeEmployees,
+        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
         iconUrl: "/static/images/change.to.employee.react.svg",
         withDropDown: true,
-        options: [
-          {
-            id: "group-menu_administrator",
-            className: "group-menu_drop-down",
-            label: t("Administrator"),
-            onClick: this.onInvite,
-            "data-action": "administrator",
-            key: "administrator",
-          },
-          {
-            id: "group-menu_manager",
-            className: "group-menu_drop-down",
-            label: t("Manager"),
-            onClick: this.onInvite,
-            "data-action": "manager",
-            key: "manager",
-          },
-          {
-            id: "group-menu_user",
-            className: "group-menu_drop-down",
-            label: t("Common:User"),
-            onClick: this.onInvite,
-            "data-action": "user",
-            key: "user",
-          },
-        ],
+        options: options,
       },
       {
         label: t("PeopleTranslations:Details"),
