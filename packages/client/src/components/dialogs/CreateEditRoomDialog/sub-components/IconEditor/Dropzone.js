@@ -4,6 +4,7 @@ import { useDropzone } from "react-dropzone";
 
 const StyledDropzone = styled.div`
   cursor: pointer;
+  box-sizing: border-box;
   width: 100%;
   height: 150px;
   border: 2px dashed #eceef1;
