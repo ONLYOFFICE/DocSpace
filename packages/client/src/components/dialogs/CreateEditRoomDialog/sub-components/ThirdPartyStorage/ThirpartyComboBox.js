@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 
@@ -75,20 +75,29 @@ const StyledStorageLocation = styled.div`
 
 const ThirpartyComboBox = ({
   t,
-  providers,
+  connectItems,
+  setConnectDialogVisible,
+  setRoomCreation,
+  saveThirdpartyResponse,
+  openConnectWindow,
+  setConnectItem,
+  getOAuthToken,
   storageLocation,
-  setChangeStorageLocation,
+  onChangeProvider,
+  onChangeIsConnected,
   setIsScrollLocked,
+  setIsOauthWindowOpen,
 }) => {
   const dropdownRef = useRef(null);
 
-  const thirdparties = providers.map((provider, i) => ({
-    id: i,
-    title: connectedCloudsTypeTitleTranslation(provider.provider_key, t),
+  const thirdparties = connectItems.map((item) => ({
+    ...item,
+    title: connectedCloudsTypeTitleTranslation(item.providerName, t),
   }));
 
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownDirection, setDropdownDirection] = useState("bottom");
+  const [connectResponse, setConnectResponse] = useState(null);
 
   const toggleIsOpen = () => {
     if (isOpen) setIsScrollLocked(false);
@@ -100,7 +109,7 @@ const ThirpartyComboBox = ({
   };
 
   const setStorageLocaiton = (thirparty) => {
-    setChangeStorageLocation(thirparty);
+    onChangeProvider(thirparty);
     setIsOpen(false);
     setIsScrollLocked(false);
   };
@@ -118,6 +127,55 @@ const ThirpartyComboBox = ({
     setDropdownDirection(neededheight > offsetBottom ? "top" : "bottom");
   };
 
+  const onShowService = async () => {
+    setRoomCreation(true);
+
+    const item = {
+      title: connectedCloudsTypeTitleTranslation(
+        storageLocation.provider.providerName,
+        t
+      ),
+      customer_title: "NOTITLE",
+      provider_key: storageLocation.provider.providerName,
+      link: storageLocation.provider.oauthHref,
+    };
+
+    if (storageLocation.provider.isOauth) {
+      setIsOauthWindowOpen(true);
+      let authModal = window.open(
+        "",
+        "Authorization",
+        "height=600, width=1020"
+      );
+      await openConnectWindow(storageLocation.provider.providerName, authModal)
+        .then(getOAuthToken)
+        .then((token) => {
+          authModal.close();
+          setConnectItem({
+            ...item,
+            token,
+          });
+          setConnectDialogVisible(true);
+        })
+        .catch((e) => {
+          if (!e) return;
+          console.error(e);
+        })
+        .finally(() => {
+          setIsOauthWindowOpen(false);
+        });
+    } else {
+      setConnectItem(item);
+      setConnectDialogVisible(true);
+    }
+    onChangeIsConnected(true);
+  };
+
+  useEffect(() => {
+    // if ()
+    console.log(saveThirdpartyResponse);
+  }, [saveThirdpartyResponse]);
+
   return (
     <StyledStorageLocation isOpen={isOpen}>
       <div className="set_room_params-thirdparty">
@@ -126,7 +184,7 @@ const ThirpartyComboBox = ({
           onClick={toggleIsOpen}
         >
           <Text className="set_room_params-thirdparty-combobox-text" noSelect>
-            {storageLocation?.title ||
+            {storageLocation?.provider?.title ||
               t("ThirdPartyStorageComboBoxPlaceholder")}
           </Text>
           <ReactSVG
@@ -139,6 +197,7 @@ const ThirpartyComboBox = ({
           className="set_room_params-thirdparty-connect"
           size="small"
           label={t("Common:Connect")}
+          onClick={onShowService}
         />
       </div>
 
