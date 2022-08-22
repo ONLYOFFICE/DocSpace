@@ -3,17 +3,19 @@ using System;
 using ASC.Webhooks.Core.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
-    partial class WebhooksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220818144209_WebhooksDbContext_Upgrade1")]
+    partial class WebhooksDbContext_Upgrade1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
