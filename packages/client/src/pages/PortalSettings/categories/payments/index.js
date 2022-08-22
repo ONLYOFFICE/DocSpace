@@ -58,8 +58,7 @@ const PaymentsPage = ({
   setPortalTariff,
   language,
   portalTariff,
-  setIsLoading,
-  isLoading,
+  portalQuota,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -73,13 +72,15 @@ const PaymentsPage = ({
     (async () => {
       moment.locale(language);
 
+      const requests = [];
+
+      requests.push(setPortalTariff(), setQuota());
+
+      if (Object.keys(portalQuota).length === 0) setPortalQuota();
+      if (!pricePerManager) getPaymentPrices();
+
       try {
-        await Promise.all([
-          setPortalTariff(),
-          setQuota(),
-          setPortalQuota(),
-          getPaymentPrices(),
-        ]);
+        await Promise.all(requests);
 
         if (portalTariff) dueDate = moment(portalTariff.dueDate).format("LL");
       } catch (error) {
@@ -168,23 +169,19 @@ export default inject(({ auth, payments }) => {
     setPortalTariff,
     language,
     portalTariff,
-  } = auth;
-  const { organizationName } = auth.settingsStore;
-  const {
-    setTariffsInfo,
-    tariffsInfo,
-    pricePerManager,
     getPaymentPrices,
-    setIsLoading,
-    isLoading,
-  } = payments;
+    pricePerManager,
+    portalQuota,
+  } = auth;
+
+  const { organizationName } = auth.settingsStore;
+  const { setTariffsInfo, tariffsInfo } = payments;
 
   const isStartup = false;
 
   return {
     setQuota,
-    setIsLoading,
-    isLoading,
+
     setPortalQuota,
     setPortalTariff,
     portalTariff,
@@ -195,5 +192,6 @@ export default inject(({ auth, payments }) => {
     tariffsInfo,
     isStartup,
     pricePerManager,
+    portalQuota,
   };
 })(withRouter(observer(PaymentsPage)));

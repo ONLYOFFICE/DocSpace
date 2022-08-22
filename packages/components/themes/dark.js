@@ -1838,6 +1838,13 @@ const Dark = {
       borderTop: "1px solid #474747",
       background: "#3D3D3D",
     },
+
+    paymentAlert: {
+      color: "#ed7309",
+      warningColor: "#F21C0E",
+      border: "1px solid #ed7309",
+      warningBorder: "1px solid #F21C0E",
+    },
   },
 
   catalogItem: {

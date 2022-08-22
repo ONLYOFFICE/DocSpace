@@ -336,6 +336,20 @@ const StyledProfileWrapper = styled.div`
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
   `}
 `;
+const StyledArticlePaymentAlert = styled.div`
+  border: ${(props) => props.theme.catalog.paymentAlert.border};
+  border-radius: 6px;
+  margin: 32px 0px;
+  padding: 12px;
+  cursor: pointer;
+  display: grid;
+
+  grid-template-columns: 1fr 16px;
+
+  .article-payment_border {
+    color: ${(props) => props.theme.catalog.paymentAlert.color};
+  }
+`;
 
 export {
   StyledArticle,
@@ -349,4 +363,5 @@ export {
   StyledArticleProfile,
   StyledUserName,
   StyledProfileWrapper,
+  StyledArticlePaymentAlert,
 };

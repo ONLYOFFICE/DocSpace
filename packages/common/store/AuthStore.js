@@ -28,6 +28,7 @@ class AuthStore {
   quota = {};
   portalQuota = {};
   portalTariff = {};
+  pricePerManager = null;
 
   constructor() {
     this.userStore = new UserStore();
@@ -50,7 +51,11 @@ class AuthStore {
     }
 
     const requests = [];
-    requests.push(this.settingsStore.init());
+    requests.push(
+      this.settingsStore.init(),
+      this.setPortalQuota(),
+      this.getPaymentPrices()
+    );
 
     if (this.isAuthenticated) {
       !this.settingsStore.passwordSettings &&
@@ -298,6 +303,17 @@ class AuthStore {
     const res = await api.portal.getPortalQuota();
     if (res) this.portalQuota = res;
   };
+
+  getPaymentPrices = async () => {
+    const res = await api.portal.getPaymentPrices();
+    if (res) {
+      this.pricePerManager = res.admin;
+    }
+  };
+
+  get isFreeTariff() {
+    return this.portalQuota.trial || this.portalQuota.free;
+  }
 
   setPortalTariff = async () => {
     const res = await api.portal.getPortalTariff();

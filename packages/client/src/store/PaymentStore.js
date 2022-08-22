@@ -18,7 +18,6 @@ class PaymentStore {
     trialMode: true,
   };
 
-  pricePerManager = null;
   paymentLink = null;
   isLoading = false;
 
@@ -67,13 +66,6 @@ class PaymentStore {
   };
 
   // ------------ For docspace -----------
-
-  getPaymentPrices = async () => {
-    const res = await api.portal.getPaymentPrices();
-    if (res) {
-      this.pricePerManager = res.admin;
-    }
-  };
 
   getPaymentAccount = async () => {
     return await api.portal.getPaymentAccount();

@@ -1838,6 +1838,13 @@ const Base = {
       borderTop: "1px solid #eceef1",
       background: "#f3f4f4",
     },
+
+    paymentAlert: {
+      color: "#ed7309",
+      warningColor: "#F21C0E",
+      border: "1px solid #ed7309",
+      warningBorder: "1px solid #F21C0E",
+    },
   },
 
   catalogItem: {

@@ -138,7 +138,8 @@ const TotalTariffContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
+  const { pricePerManager } = auth;
   const { theme } = auth.settingsStore;
-  const { pricePerManager, isLoading } = payments;
+  const { isLoading } = payments;
   return { theme, pricePerManager, isLoading };
 })(observer(TotalTariffContainer));
