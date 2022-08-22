@@ -33,7 +33,6 @@ public class ThirdpartyController : ApiControllerBase
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly FileStorageService<int> _fileStorageService;
     private readonly FileStorageService<string> _fileStorageServiceThirdparty;
-    private readonly FolderDtoHelper _folderDtoHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly SecurityContext _securityContext;
     private readonly ThirdpartyConfiguration _thirdpartyConfiguration;
@@ -49,7 +48,6 @@ public class ThirdpartyController : ApiControllerBase
         FilesSettingsHelper filesSettingsHelper,
         FileStorageService<int> fileStorageService,
         FileStorageService<string> fileStorageServiceThirdparty,
-        FolderDtoHelper folderDtoHelper,
         GlobalFolderHelper globalFolderHelper,
         SecurityContext securityContext,
         ThirdpartyConfiguration thirdpartyConfiguration,
@@ -57,14 +55,15 @@ public class ThirdpartyController : ApiControllerBase
         WordpressHelper wordpressHelper,
         WordpressToken wordpressToken,
         RequestHelper requestHelper,
-        FileSecurityCommon fileSecurityCommon)
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper,
+        FileSecurityCommon fileSecurityCommon) : base(folderDtoHelper, fileDtoHelper)
     {
         _coreBaseSettings = coreBaseSettings;
         _entryManager = entryManager;
         _filesSettingsHelper = filesSettingsHelper;
         _fileStorageService = fileStorageService;
         _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
-        _folderDtoHelper = folderDtoHelper;
         _globalFolderHelper = globalFolderHelper;
         _securityContext = securityContext;
         _thirdpartyConfiguration = thirdpartyConfiguration;
@@ -171,17 +170,15 @@ public class ThirdpartyController : ApiControllerBase
     /// <short>Get third party folder</short>
     /// <returns>Connected providers folder</returns>
     [HttpGet("thirdparty/common")]
-    public async Task<IEnumerable<FolderDto<string>>> GetCommonThirdPartyFoldersAsync()
+    public async IAsyncEnumerable<FolderDto<string>> GetCommonThirdPartyFoldersAsync()
     {
         var parent = await _fileStorageService.GetFolderAsync(await _globalFolderHelper.FolderCommonAsync);
-        var thirdpartyFolders = await _entryManager.GetThirpartyFoldersAsync(parent);
-        var result = new List<FolderDto<string>>();
+        var thirdpartyFolders = _entryManager.GetThirpartyFoldersAsync(parent);
 
-        foreach (var r in thirdpartyFolders)
+        await foreach (var r in thirdpartyFolders)
         {
-            result.Add(await _folderDtoHelper.GetAsync(r));
+            yield return await _folderDtoHelper.GetAsync(r);
         }
-        return result;
     }
 
     /// <summary>
@@ -191,9 +188,9 @@ public class ThirdpartyController : ApiControllerBase
     /// <short>Get third party list</short>
     /// <returns>Connected providers</returns>
     [HttpGet("thirdparty")]
-    public async Task<IEnumerable<ThirdPartyParams>> GetThirdPartyAccountsAsync()
+    public IAsyncEnumerable<ThirdPartyParams> GetThirdPartyAccountsAsync()
     {
-        return await _fileStorageServiceThirdparty.GetThirdPartyAsync();
+        return _fileStorageServiceThirdparty.GetThirdPartyAsync();
     }
 
     /// <summary>

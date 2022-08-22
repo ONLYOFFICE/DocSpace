@@ -57,13 +57,13 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     public async Task InvalidateCacheAsync(string fileId)
     {
         var onedriveFileId = MakeOneDriveId(fileId);
-        await ProviderInfo.CacheResetAsync(onedriveFileId).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(onedriveFileId);
 
-        var onedriveFile = await GetOneDriveItemAsync(fileId).ConfigureAwait(false);
+        var onedriveFile = await GetOneDriveItemAsync(fileId);
         var parentId = GetParentFolderId(onedriveFile);
         if (parentId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentId);
         }
     }
 
@@ -74,38 +74,38 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
     public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
     {
-        return ToFile(await GetOneDriveItemAsync(fileId).ConfigureAwait(false));
+        return ToFile(await GetOneDriveItemAsync(fileId));
     }
 
     public async Task<File<string>> GetFileAsync(string parentId, string title)
     {
-        var items = await GetOneDriveItemsAsync(parentId, false).ConfigureAwait(false);
+        var items = await GetOneDriveItemsAsync(parentId, false);
 
         return ToFile(items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase) && item.File != null));
     }
 
     public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
     {
-        return ToFile(await GetOneDriveItemAsync(fileId).ConfigureAwait(false));
+        return ToFile(await GetOneDriveItemAsync(fileId));
     }
 
-    public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
+    public async IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
     {
-        return GetFileAsync(fileId).ToAsyncEnumerable();
+        var file = await GetFileAsync(fileId);
+        yield return file;
     }
 
-    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
     {
-        var list = new List<File<string>>();
-
         if (fileIds == null || !fileIds.Any())
         {
-            return AsyncEnumerable.Empty<File<string>>();
+            yield break;
         }
 
-        var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetOneDriveItemAsync(e).ConfigureAwait(false)));
-
-        return result;
+        foreach (var fileId in fileIds)
+        {
+            yield return ToFile(await GetOneDriveItemAsync(fileId));
+        }
     }
 
     public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
@@ -170,11 +170,14 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     }
 
 
-    public async Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
-        var items = await GetOneDriveItemsAsync(parentId, false).ConfigureAwait(false);
+        var items = await GetOneDriveItemsAsync(parentId, false);
 
-        return items.Select(entry => MakeId(entry.Id)).ToList();
+        foreach (var entry in items)
+        {
+            yield return MakeId(entry.Id);
+        }
     }
 
 
@@ -186,7 +189,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         }
 
         //Get only files
-        var items = await GetOneDriveItemsAsync(parentId, false).ConfigureAwait(false);
+        var items = await GetOneDriveItemsAsync(parentId, false);
         var files = items.Select(ToFile);
 
         //Filter
@@ -266,9 +269,9 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
         var onedriveFileId = MakeOneDriveId(file.Id);
-        await ProviderInfo.CacheResetAsync(onedriveFileId).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(onedriveFileId);
 
-        var onedriveFile = await GetOneDriveItemAsync(file.Id).ConfigureAwait(false);
+        var onedriveFile = await GetOneDriveItemAsync(file.Id);
         if (onedriveFile == null)
         {
             throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -279,7 +282,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         }
 
         var storage = await ProviderInfo.StorageAsync;
-        var fileStream = await storage.DownloadStreamAsync(onedriveFile, (int)offset).ConfigureAwait(false);
+        var fileStream = await storage.DownloadStreamAsync(onedriveFile, (int)offset);
 
         return fileStream;
     }
@@ -309,30 +312,30 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
         if (file.Id != null)
         {
-            newOneDriveFile = await storage.SaveStreamAsync(MakeOneDriveId(file.Id), fileStream).ConfigureAwait(false);
+            newOneDriveFile = await storage.SaveStreamAsync(MakeOneDriveId(file.Id), fileStream);
             if (!newOneDriveFile.Name.Equals(file.Title))
             {
-                file.Title = await GetAvailableTitleAsync(file.Title, GetParentFolderId(newOneDriveFile), IsExistAsync).ConfigureAwait(false);
-                newOneDriveFile = await storage.RenameItemAsync(newOneDriveFile.Id, file.Title).ConfigureAwait(false);
+                file.Title = await GetAvailableTitleAsync(file.Title, GetParentFolderId(newOneDriveFile), IsExistAsync);
+                newOneDriveFile = await storage.RenameItemAsync(newOneDriveFile.Id, file.Title);
             }
         }
         else if (file.ParentId != null)
         {
             var folderId = MakeOneDriveId(file.ParentId);
-            var folder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
-            file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
-            newOneDriveFile = await storage.CreateFileAsync(fileStream, file.Title, MakeOneDrivePath(folder)).ConfigureAwait(false);
+            var folder = await GetOneDriveItemAsync(folderId);
+            file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
+            newOneDriveFile = await storage.CreateFileAsync(fileStream, file.Title, MakeOneDrivePath(folder));
         }
 
         if (newOneDriveFile != null)
         {
-            await ProviderInfo.CacheResetAsync(newOneDriveFile.Id).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(newOneDriveFile.Id);
         }
 
         var parentId = GetParentFolderId(newOneDriveFile);
         if (parentId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentId);
         }
 
         return ToFile(newOneDriveFile);
@@ -345,7 +348,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
     public async Task DeleteFileAsync(string fileId)
     {
-        var onedriveFile = await GetOneDriveItemAsync(fileId).ConfigureAwait(false);
+        var onedriveFile = await GetOneDriveItemAsync(fileId);
         if (onedriveFile == null)
         {
             return;
@@ -353,27 +356,27 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
         var id = MakeId(onedriveFile.Id);
 
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-            using (var tx = await filesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.Id.StartsWith(id))
-                    .Select(r => r.HashId)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                .Where(r => r.Id.StartsWith(id))
+                .Select(r => r.HashId)
+                .ToListAsync()
+                ;
 
                 var link = await Query(filesDbContext.TagLink)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                .Where(r => hashIDs.Any(h => h == r.EntryId))
+                .ToListAsync()
+                ;
 
                 filesDbContext.TagLink.RemoveRange(link);
-                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await filesDbContext.SaveChangesAsync();
 
                 var tagsToRemove = from ft in filesDbContext.Tag
                                    join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
@@ -383,18 +386,18 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
                 filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
                 var securityToDelete = Query(filesDbContext.Security)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId));
+                .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await filesDbContext.SaveChangesAsync();
 
                 var mappingToDelete = Query(filesDbContext.ThirdpartyIdMapping)
-                    .Where(r => hashIDs.Any(h => h == r.HashId));
+                .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
-                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await filesDbContext.SaveChangesAsync();
 
-                await tx.CommitAsync().ConfigureAwait(false);
+                await tx.CommitAsync();
             }
         });
 
@@ -404,17 +407,17 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             await storage.DeleteItemAsync(onedriveFile);
         }
 
-        await ProviderInfo.CacheResetAsync(onedriveFile.Id).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(onedriveFile.Id);
         var parentFolderId = GetParentFolderId(onedriveFile);
         if (parentFolderId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentFolderId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentFolderId);
         }
     }
 
     public async Task<bool> IsExistAsync(string title, object folderId)
     {
-        var items = await GetOneDriveItemsAsync(folderId.ToString(), false).ConfigureAwait(false);
+        var items = await GetOneDriveItemsAsync(folderId.ToString(), false);
 
         return items.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
     }
@@ -423,12 +426,12 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     {
         if (toFolderId is int tId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
         }
 
         if (toFolderId is string tsId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
         }
 
         throw new NotImplementedException();
@@ -440,20 +443,20 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             fileId, this, _oneDriveDaoSelector.ConvertId,
             toFolderId, _fileDao, r => r,
             true)
-            .ConfigureAwait(false);
+            ;
 
         return moved.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
     {
-        var onedriveFile = await GetOneDriveItemAsync(fileId).ConfigureAwait(false);
+        var onedriveFile = await GetOneDriveItemAsync(fileId);
         if (onedriveFile is ErrorItem errorItem)
         {
             throw new Exception(errorItem.Error);
         }
 
-        var toOneDriveFolder = await GetOneDriveItemAsync(toFolderId).ConfigureAwait(false);
+        var toOneDriveFolder = await GetOneDriveItemAsync(toFolderId);
         if (toOneDriveFolder is ErrorItem errorItem1)
         {
             throw new Exception(errorItem1.Error);
@@ -461,13 +464,13 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
         var fromFolderId = GetParentFolderId(onedriveFile);
 
-        var newTitle = await GetAvailableTitleAsync(onedriveFile.Name, toOneDriveFolder.Id, IsExistAsync).ConfigureAwait(false);
+        var newTitle = await GetAvailableTitleAsync(onedriveFile.Name, toOneDriveFolder.Id, IsExistAsync);
         var storage = await ProviderInfo.StorageAsync;
-        onedriveFile = await storage.MoveItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
+        onedriveFile = await storage.MoveItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
 
-        await ProviderInfo.CacheResetAsync(onedriveFile.Id).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(fromFolderId).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(onedriveFile.Id);
+        await ProviderInfo.CacheResetAsync(fromFolderId);
+        await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id);
 
         return MakeId(onedriveFile.Id);
     }
@@ -476,12 +479,12 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     {
         if (toFolderId is int tId)
         {
-            return await CopyFileAsync(fileId, tId).ConfigureAwait(false) as File<TTo>;
+            return await CopyFileAsync(fileId, tId) as File<TTo>;
         }
 
         if (toFolderId is string tsId)
         {
-            return await CopyFileAsync(fileId, tsId).ConfigureAwait(false) as File<TTo>;
+            return await CopyFileAsync(fileId, tsId) as File<TTo>;
         }
 
         throw new NotImplementedException();
@@ -494,7 +497,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
                 fileId, this, _oneDriveDaoSelector.ConvertId,
                 toFolderId, _fileDao, r => r,
                 false)
-            .ConfigureAwait(false);
+            ;
 
         return moved;
     }
@@ -502,24 +505,24 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
     public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
     {
-        var onedriveFile = await GetOneDriveItemAsync(fileId).ConfigureAwait(false);
+        var onedriveFile = await GetOneDriveItemAsync(fileId);
         if (onedriveFile is ErrorItem errorItem)
         {
             throw new Exception(errorItem.Error);
         }
 
-        var toOneDriveFolder = await GetOneDriveItemAsync(toFolderId).ConfigureAwait(false);
+        var toOneDriveFolder = await GetOneDriveItemAsync(toFolderId);
         if (toOneDriveFolder is ErrorItem errorItem1)
         {
             throw new Exception(errorItem1.Error);
         }
 
-        var newTitle = await GetAvailableTitleAsync(onedriveFile.Name, toOneDriveFolder.Id, IsExistAsync).ConfigureAwait(false);
+        var newTitle = await GetAvailableTitleAsync(onedriveFile.Name, toOneDriveFolder.Id, IsExistAsync);
         var storage = await ProviderInfo.StorageAsync;
-        var newOneDriveFile = await storage.CopyItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
+        var newOneDriveFile = await storage.CopyItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
 
-        await ProviderInfo.CacheResetAsync(newOneDriveFile.Id).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(newOneDriveFile.Id);
+        await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id);
 
         return ToFile(newOneDriveFile);
     }
@@ -527,17 +530,17 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var onedriveFile = await GetOneDriveItemAsync(file.Id).ConfigureAwait(false);
-        newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(onedriveFile), IsExistAsync).ConfigureAwait(false);
+        var onedriveFile = await GetOneDriveItemAsync(file.Id);
+        newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(onedriveFile), IsExistAsync);
 
         var storage = await ProviderInfo.StorageAsync;
-        onedriveFile = await storage.RenameItemAsync(onedriveFile.Id, newTitle).ConfigureAwait(false);
+        onedriveFile = await storage.RenameItemAsync(onedriveFile.Id, newTitle);
 
-        await ProviderInfo.CacheResetAsync(onedriveFile.Id).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(onedriveFile.Id);
         var parentId = GetParentFolderId(onedriveFile);
         if (parentId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentId);
         }
 
         return MakeId(onedriveFile.Id);
@@ -609,16 +612,16 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         Item onedriveFile;
         if (file.Id != null)
         {
-            onedriveFile = await GetOneDriveItemAsync(file.Id).ConfigureAwait(false);
+            onedriveFile = await GetOneDriveItemAsync(file.Id);
         }
         else
         {
-            var folder = await GetOneDriveItemAsync(file.ParentId).ConfigureAwait(false);
+            var folder = await GetOneDriveItemAsync(file.ParentId);
             onedriveFile = new Item { Name = file.Title, ParentReference = new ItemReference { Id = folder.Id } };
         }
 
         var storage = await ProviderInfo.StorageAsync;
-        var onedriveSession = await storage.CreateResumableSessionAsync(onedriveFile, contentLength).ConfigureAwait(false);
+        var onedriveSession = await storage.CreateResumableSessionAsync(onedriveFile, contentLength);
         if (onedriveSession != null)
         {
             uploadSession.Items["OneDriveSession"] = onedriveSession;
@@ -642,7 +645,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
                 uploadSession.BytesTotal = chunkLength;
             }
 
-            uploadSession.File = await SaveFileAsync(uploadSession.File, stream).ConfigureAwait(false);
+            uploadSession.File = await SaveFileAsync(uploadSession.File, stream);
             uploadSession.BytesUploaded = chunkLength;
 
             return uploadSession.File;
@@ -652,20 +655,20 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         {
             var oneDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("OneDriveSession");
             var storage = await ProviderInfo.StorageAsync;
-            await storage.TransferAsync(oneDriveSession, stream, chunkLength).ConfigureAwait(false);
+            await storage.TransferAsync(oneDriveSession, stream, chunkLength);
         }
         else
         {
             var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
             using var fs = new FileStream(tempPath, FileMode.Append);
-            await stream.CopyToAsync(fs).ConfigureAwait(false);
+            await stream.CopyToAsync(fs);
         }
 
         uploadSession.BytesUploaded += chunkLength;
 
         if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
         {
-            uploadSession.File = await FinalizeUploadSessionAsync(uploadSession).ConfigureAwait(false);
+            uploadSession.File = await FinalizeUploadSessionAsync(uploadSession);
         }
         else
         {
@@ -681,19 +684,19 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         {
             var oneDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("OneDriveSession");
 
-            await ProviderInfo.CacheResetAsync(oneDriveSession.FileId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(oneDriveSession.FileId);
             var parentDriveId = oneDriveSession.FolderId;
             if (parentDriveId != null)
             {
-                await ProviderInfo.CacheResetAsync(parentDriveId).ConfigureAwait(false);
+                await ProviderInfo.CacheResetAsync(parentDriveId);
             }
 
-            return ToFile(await GetOneDriveItemAsync(oneDriveSession.FileId).ConfigureAwait(false));
+            return ToFile(await GetOneDriveItemAsync(oneDriveSession.FileId));
         }
 
         using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
 
-        return await SaveFileAsync(uploadSession.File, fs).ConfigureAwait(false);
+        return await SaveFileAsync(uploadSession.File, fs);
     }
 
     public async Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
@@ -705,7 +708,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             if (oneDriveSession.Status != ResumableUploadSessionStatus.Completed)
             {
                 var storage = await ProviderInfo.StorageAsync;
-                await storage.CancelTransferAsync(oneDriveSession).ConfigureAwait(false);
+                await storage.CancelTransferAsync(oneDriveSession);
 
                 oneDriveSession.Status = ResumableUploadSessionStatus.Aborted;
             }

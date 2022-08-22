@@ -144,7 +144,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPost("active")]
-    public EmployeeDto AddMemberAsActivated(MemberRequestDto inDto)
+    public async Task<EmployeeFullDto> AddMemberAsActivated(MemberRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
@@ -194,15 +194,15 @@ public class UserController : PeopleControllerBase
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpPost]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    public async Task<EmployeeDto> AddMember(MemberRequestDto inDto)
+    public async Task<EmployeeFullDto> AddMember(MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
@@ -288,7 +288,7 @@ public class UserController : PeopleControllerBase
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrl(inDto.Files, user);
         }
 
         if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
@@ -313,12 +313,12 @@ public class UserController : PeopleControllerBase
             _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
         }
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpPut("{userid}/password")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
-    public async Task<EmployeeDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
+    public async Task<EmployeeFullDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
         _permissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
@@ -367,11 +367,11 @@ public class UserController : PeopleControllerBase
             _messageService.Send(MessageAction.CookieSettingsUpdated);
         }
 
-        return _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
+        return await _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
     }
 
     [HttpDelete("{userid}")]
-    public EmployeeDto DeleteMember(string userid)
+    public async Task<EmployeeFullDto> DeleteMember(string userid)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
@@ -396,12 +396,12 @@ public class UserController : PeopleControllerBase
 
         _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpDelete("@self")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
-    public async Task<EmployeeDto> DeleteProfile()
+    public async Task<EmployeeFullDto> DeleteProfile()
     {
         _apiContext.AuthByClaim();
 
@@ -444,49 +444,44 @@ public class UserController : PeopleControllerBase
             //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
         }
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpGet("status/{status}/search")]
-    public IEnumerable<EmployeeDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
+    public async IAsyncEnumerable<EmployeeFullDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
     {
         if (_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method not available");
         }
-        try
+
+        var list = _userManager.GetUsers(status).AsEnumerable();
+
+        if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
         {
-            var list = _userManager.GetUsers(status).AsEnumerable();
-
-            if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
-            {
-                var groupId = new Guid(_apiContext.FilterValue);
-                //Filter by group
-                list = list.Where(x => _userManager.IsUserInGroup(x.Id, groupId));
-                _apiContext.SetDataFiltered();
-            }
-
-            list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
-                                   (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.ContactsList != null && x.ContactsList.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
-
-            return list.Select(u => _employeeFullDtoHelper.GetFull(u));
-        }
-        catch (Exception error)
-        {
-            _logger.ErrorGetAdvanced(error);
+            var groupId = new Guid(_apiContext.FilterValue);
+            //Filter by group
+            list = list.Where(x => _userManager.IsUserInGroup(x.Id, groupId));
+            _apiContext.SetDataFiltered();
         }
 
-        return null;
+        list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
+                                (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.ContactsList != null && x.ContactsList.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
+
+        foreach (var item in list)
+        {
+            yield return await _employeeFullDtoHelper.GetFull(item);
+        }
     }
 
     [HttpGet]
-    public IEnumerable<EmployeeDto> GetAll()
+    public IAsyncEnumerable<EmployeeFullDto> GetAll()
     {
         return GetByStatus(EmployeeStatus.Active);
     }
 
     [HttpGet("email")]
-    public EmployeeDto GetByEmail([FromQuery] string email)
+    public async Task<EmployeeFullDto> GetByEmail([FromQuery] string email)
     {
         if (_coreBaseSettings.Personal && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOwner(Tenant))
         {
@@ -499,12 +494,12 @@ public class UserController : PeopleControllerBase
             throw new ItemNotFoundException("User not found");
         }
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     [HttpGet("{username}", Order = 1)]
-    public EmployeeDto GetById(string username)
+    public async Task<EmployeeFullDto> GetById(string username)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -539,11 +534,11 @@ public class UserController : PeopleControllerBase
             return _employeeFullDtoHelper.GetSimple(user);
         }
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpGet("status/{status}")]
-    public IEnumerable<EmployeeDto> GetByStatus(EmployeeStatus status)
+    public IAsyncEnumerable<EmployeeFullDto> GetByStatus(EmployeeStatus status)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -561,11 +556,14 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("filter")]
-    public IEnumerable<EmployeeDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
     {
         var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
 
-        return users.Select(r => _employeeFullDtoHelper.GetFull(r));
+        foreach (var user in users)
+        {
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
     }
 
     [HttpGet("info")]
@@ -578,45 +576,42 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("search")]
-    public IEnumerable<EmployeeDto> GetPeopleSearch([FromQuery] string query)
+    public IAsyncEnumerable<EmployeeDto> GetPeopleSearch([FromQuery] string query)
     {
         return GetSearch(query);
     }
 
     [HttpGet("@search/{query}")]
-    public IEnumerable<EmployeeDto> GetSearch(string query)
+    public async IAsyncEnumerable<EmployeeFullDto> GetSearch(string query)
     {
         if (_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method not available");
         }
 
-        try
+        var groupId = Guid.Empty;
+        if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
         {
-            var groupId = Guid.Empty;
-            if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
-            {
-                groupId = new Guid(_apiContext.FilterValue);
-            }
-
-            var users = _userManager.Search(query, EmployeeStatus.Active, groupId);
-
-            return users.Select(u => _employeeFullDtoHelper.GetFull(u));
-        }
-        catch (Exception error)
-        {
-            _logger.ErrorGetSearch(error);
+            groupId = new Guid(_apiContext.FilterValue);
         }
 
-        return null;
+        var users = _userManager.Search(query, EmployeeStatus.Active, groupId);
+
+        foreach (var user in users)
+        {
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
     }
 
     [HttpGet("simple/filter")]
-    public IEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
     {
         var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
 
-        return users.Select(_employeeDtoHelper.Get);
+        foreach (var user in users)
+        {
+            yield return await _employeeDtoHelper.Get(user);
+        }
     }
 
     [AllowAnonymous]
@@ -632,7 +627,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("delete", Order = -1)]
-    public IEnumerable<EmployeeDto> RemoveUsers(UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> RemoveUsers(UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
@@ -658,11 +653,14 @@ public class UserController : PeopleControllerBase
 
         _messageService.Send(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);
 
-        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
+        foreach (var user in users)
+        {
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
     }
 
     [HttpPut("invite")]
-    public IEnumerable<EmployeeDto> ResendUserInvites(UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto inDto)
     {
         var users = inDto.UserIds
              .Where(userId => !_userManager.IsSystemUser(userId))
@@ -716,7 +714,10 @@ public class UserController : PeopleControllerBase
 
         _messageService.Send(MessageAction.UsersSentActivationInstructions, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
-        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
+        foreach (var user in users)
+        {
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
     }
 
     [HttpGet("theme")]
@@ -739,11 +740,11 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("@self")]
-    public EmployeeDto Self()
+    public async Task<EmployeeFullDto> Self()
     {
         var user = _userManager.GetUser(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
 
-        var result = _employeeFullDtoHelper.GetFull(user);
+        var result = await _employeeFullDtoHelper.GetFull(user);
 
         result.Theme = _settingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
 
@@ -831,11 +832,10 @@ public class UserController : PeopleControllerBase
 
     [HttpPut("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
-    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
-        var retuls = new List<EmployeeDto>();
         foreach (var id in inDto.UserIds.Where(userId => !_userManager.IsSystemUser(userId)))
         {
             _permissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
@@ -847,14 +847,12 @@ public class UserController : PeopleControllerBase
 
             u.ActivationStatus = activationstatus;
             _userManager.SaveUserInfo(u);
-            retuls.Add(_employeeFullDtoHelper.GetFull(u));
+            yield return await _employeeFullDtoHelper.GetFull(u);
         }
-
-        return retuls;
     }
 
     [HttpPut("{userid}/culture")]
-    public EmployeeDto UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
+    public async Task<EmployeeFullDto> UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -888,11 +886,11 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpPut("{userid}", Order = 1)]
-    public async Task<EmployeeDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
+    public async Task<EmployeeFullDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -953,9 +951,9 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
         UpdateDepartments(inDto.Department, user);
 
-        if (inDto.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
+        if (inDto.Files != await _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
-            UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrl(inDto.Files, user);
         }
         if (inDto.Disable.HasValue)
         {
@@ -999,11 +997,11 @@ public class UserController : PeopleControllerBase
             _messageService.Send(MessageAction.CookieSettingsUpdated);
         }
 
-        return _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpPut("status/{status}")]
-    public async Task<IEnumerable<EmployeeDto>> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -1042,11 +1040,14 @@ public class UserController : PeopleControllerBase
 
         _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
-        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
+        foreach (var user in users)
+        {
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
     }
 
     [HttpPut("type/{type}")]
-    public IEnumerable<EmployeeDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
     {
         var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
@@ -1085,7 +1086,10 @@ public class UserController : PeopleControllerBase
 
         _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
-        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
+        foreach (var user in users)
+        {
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
     }
 
     private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
