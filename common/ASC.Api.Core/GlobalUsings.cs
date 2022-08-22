@@ -124,6 +124,8 @@ global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Primitives;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.IdentityModel.Tokens; 
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
