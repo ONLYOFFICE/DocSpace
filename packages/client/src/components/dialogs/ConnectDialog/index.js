@@ -30,6 +30,8 @@ const PureConnectDialogContainer = (props) => {
     personal,
     getSubfolders,
     folderFormValidation,
+    roomCreation,
+    setSaveThirdpartyResponse,
   } = props;
   const {
     corporate,
@@ -132,7 +134,9 @@ const PureConnectDialogContainer = (props) => {
       provider_key || key,
       provider_id
     )
-      .then(async () => {
+      .then(async (res) => {
+        setSaveThirdpartyResponse(res);
+
         const folderId = isCorporate ? commonFolderId : myFolderId;
         const subfolders = await getSubfolders(folderId);
         const node = treeFolders.find((x) => x.id === folderId);
@@ -211,7 +215,12 @@ const PureConnectDialogContainer = (props) => {
       </ModalDialog.Header>
       <ModalDialog.Body>
         {isAccount ? (
-          <FieldContainer labelVisible labelText={t("Account")} isVertical>
+          <FieldContainer
+            style={roomCreation ? { margin: "0" } : {}}
+            labelVisible
+            labelText={t("Account")}
+            isVertical
+          >
             <Button
               label={t("Reconnect")}
               size="normal"
@@ -266,6 +275,7 @@ const PureConnectDialogContainer = (props) => {
               isVertical
               hasError={!isPasswordValid}
               errorMessage={t("Common:RequiredField")}
+              style={roomCreation ? { margin: "0" } : {}}
             >
               <PasswordInput
                 hasError={!isPasswordValid}
@@ -280,23 +290,25 @@ const PureConnectDialogContainer = (props) => {
           </>
         )}
 
-        <FieldContainer
-          labelText={t("ConnectFolderTitle")}
-          isRequired
-          isVertical
-          hasError={!isTitleValid}
-          errorMessage={t("Common:RequiredField")}
-        >
-          <TextInput
+        {!roomCreation && (
+          <FieldContainer
+            labelText={t("ConnectFolderTitle")}
+            isRequired
+            isVertical
             hasError={!isTitleValid}
-            isDisabled={isLoading}
-            tabIndex={4}
-            scale
-            value={`${customerTitle}`}
-            onChange={onChangeFolderName}
-          />
-        </FieldContainer>
-        {!personal && (
+            errorMessage={t("Common:RequiredField")}
+          >
+            <TextInput
+              hasError={!isTitleValid}
+              isDisabled={isLoading}
+              tabIndex={4}
+              scale
+              value={`${customerTitle}`}
+              onChange={onChangeFolderName}
+            />
+          </FieldContainer>
+        )}
+        {!personal && !roomCreation && (
           <Checkbox
             label={t("ConnectMakeShared")}
             isChecked={isCorporate}
@@ -369,7 +381,11 @@ export default inject(
       connectDialogVisible: visible,
       setConnectDialogVisible,
       connectItem: item,
+      roomCreation,
+      setSaveThirdpartyResponse,
     } = dialogsStore;
+
+    console.log(roomCreation);
 
     return {
       selectedFolderId: id,
@@ -380,6 +396,8 @@ export default inject(
       providers,
       visible,
       item,
+      roomCreation,
+      setSaveThirdpartyResponse,
       folderFormValidation,
 
       getOAuthToken,
