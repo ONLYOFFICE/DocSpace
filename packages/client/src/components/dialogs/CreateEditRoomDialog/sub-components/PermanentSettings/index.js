@@ -42,7 +42,7 @@ const PermanentSettings = ({
         <PermanentSetting
           type="storageLocation"
           isFull={!isPrivate}
-          icon={thirdpartyIcon}
+          icon={storageLocation.iconSrc}
           title={thirdpartyTitle}
           content={
             <Trans
