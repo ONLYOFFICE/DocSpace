@@ -140,13 +140,17 @@ export default inject(
       thirdPartyStore.ownCloudConnectItem,
       thirdPartyStore.webDavConnectItem,
       thirdPartyStore.sharePointConnectItem,
-    ].map((item) => ({
-      isAvialable: !!item,
-      id: item[0],
-      providerName: item[0],
-      isOauth: item.length > 1,
-      oauthHref: item.length > 1 ? item[1] : "",
-    }));
+    ].map((item) =>
+      item
+        ? {
+            isAvialable: !!item,
+            id: item[0],
+            providerName: item[0],
+            isOauth: item.length > 1,
+            oauthHref: item.length > 1 ? item[1] : "",
+          }
+        : null
+    );
 
     const { getOAuthToken } = auth.settingsStore;
 
