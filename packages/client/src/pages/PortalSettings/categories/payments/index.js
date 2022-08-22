@@ -51,7 +51,6 @@ const StyledBody = styled.div`
 let dueDate;
 const PaymentsPage = ({
   setQuota,
-  isStartup,
   getPaymentPrices,
   pricePerManager,
   setPortalQuota,
@@ -59,6 +58,7 @@ const PaymentsPage = ({
   language,
   portalTariff,
   portalQuota,
+  isFreeTariff,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -117,15 +117,15 @@ const PaymentsPage = ({
   ) : (
     <StyledBody>
       <Text noSelect fontSize="16px" isBold>
-        {isStartup ? t("StartupTitle") : t("BusinessTitle")}
+        {isFreeTariff ? t("StartupTitle") : t("BusinessTitle")}
       </Text>
-      <PayerInformationContainer />
+      {!isFreeTariff && <PayerInformationContainer />}
       <CurrentTariffContainer />
       <Text noSelect fontSize="16px" isBold className="payment-info_suggestion">
-        {isStartup ? t("StartupSuggestion") : t("BusinessSuggestion")}
+        {isFreeTariff ? t("StartupSuggestion") : t("BusinessSuggestion")}
       </Text>
 
-      {!isStartup && (
+      {!isFreeTariff && (
         <Text noSelect fontSize={"14"} className="payment-info_managers-price">
           <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
             {{ finalDate: dueDate }}
@@ -172,16 +172,15 @@ export default inject(({ auth, payments }) => {
     getPaymentPrices,
     pricePerManager,
     portalQuota,
+    isFreeTariff,
   } = auth;
 
   const { organizationName } = auth.settingsStore;
   const { setTariffsInfo, tariffsInfo } = payments;
 
-  const isStartup = false;
-
   return {
     setQuota,
-
+    isFreeTariff,
     setPortalQuota,
     setPortalTariff,
     portalTariff,
@@ -190,7 +189,7 @@ export default inject(({ auth, payments }) => {
     organizationName,
     setTariffsInfo,
     tariffsInfo,
-    isStartup,
+
     pricePerManager,
     portalQuota,
   };

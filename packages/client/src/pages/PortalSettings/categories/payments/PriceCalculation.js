@@ -81,6 +81,7 @@ const PriceCalculation = ({
   const setShoppingLink = (value) => {
     if (isAlreadyPaid || value > maxSliderNumber) {
       timeout && clearTimeout(timeout);
+      setIsLoading(false);
       return;
     }
 
