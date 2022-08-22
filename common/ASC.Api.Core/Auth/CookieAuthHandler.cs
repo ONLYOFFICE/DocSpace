@@ -31,9 +31,9 @@ namespace ASC.Api.Core.Auth;
 [Scope]
 public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    private readonly AuthorizationHelper _authorizationHelper;
     private readonly SecurityContext _securityContext;
     private readonly CookiesManager _cookiesManager;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public CookieAuthHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
@@ -42,31 +42,59 @@ public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptio
         ISystemClock clock)
         : base(options, logger, encoder, clock) { }
 
-    public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
-        ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,
-        AuthorizationHelper authorizationHelper,
+    public CookieAuthHandler(
+        IOptionsMonitor<AuthenticationSchemeOptions> options,
+        ILoggerFactory logger,
+        UrlEncoder encoder,
+        ISystemClock clock,
         SecurityContext securityContext,
-        CookiesManager cookiesManager)
+        CookiesManager cookiesManager,
+        IHttpContextAccessor httpContextAccessor)
         : this(options, logger, encoder, clock)
     {
-        _authorizationHelper = authorizationHelper;
         _securityContext = securityContext;
         _cookiesManager = cookiesManager;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var result = _authorizationHelper.ProcessBasicAuthorization(out _);
-        if (!result)
+        try
         {
-            _securityContext.Logout();
-            _cookiesManager.ClearCookies(CookiesType.AuthKey);
-            _cookiesManager.ClearCookies(CookiesType.SocketIO);
+            var authorization = _httpContextAccessor.HttpContext.Request.Cookies["asc_auth_key"] ?? _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString();
+
+            if (string.IsNullOrEmpty(authorization))
+            {
+                throw new AuthenticationException(nameof(HttpStatusCode.Unauthorized));
+            }
+
+            authorization = authorization.Trim();
+
+            if (0 <= authorization.IndexOf("Bearer", 0))
+            {
+                authorization = authorization.Substring("Bearer ".Length);
+            }
+
+            if (!_securityContext.AuthenticateMe(authorization))
+            {
+                throw new AuthenticationException(nameof(HttpStatusCode.Unauthorized));
+            }
+
+        }
+        catch (Exception)
+        {
+            return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
+        }
+        finally
+        {
+            if (!_securityContext.IsAuthenticated)
+            {
+                _securityContext.Logout();
+                _cookiesManager.ClearCookies(CookiesType.AuthKey);
+                _cookiesManager.ClearCookies(CookiesType.SocketIO);
+            }
         }
 
-        return Task.FromResult(
-                 result ?
-                 AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
-                 AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
+        return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, Scheme.Name)));
     }
 }
