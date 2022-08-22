@@ -1,6 +1,10 @@
 import api from "../api";
 import { setWithCredentialsStatus } from "../api/client";
-export async function login(user: string, hash: string, session = true) {
+export async function login(
+  user: string,
+  hash: string,
+  session = true
+): Promise<string | object> {
   try {
     const response = await api.user.login(user, hash, session);
 
