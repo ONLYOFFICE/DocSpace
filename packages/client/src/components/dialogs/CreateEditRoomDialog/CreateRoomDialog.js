@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
@@ -8,7 +8,6 @@ import TagHandler from "./handlers/tagHandler";
 
 import SetRoomParams from "./sub-components/SetRoomParams";
 import RoomTypeList from "./sub-components/RoomTypeList";
-import { roomTypes } from "./data";
 import IconButton from "@docspace/components/icon-button";
 
 const StyledModalDialog = styled(ModalDialog)`
@@ -18,6 +17,14 @@ const StyledModalDialog = styled(ModalDialog)`
     flex-direction: row;
     gap: 12px;
   }
+
+  ${(props) =>
+    props.isOauthWindowOpen &&
+    css`
+      #modal-dialog {
+        display: none;
+      }
+    `}
 `;
 
 const CreateRoomDialog = ({
@@ -26,12 +33,20 @@ const CreateRoomDialog = ({
   onClose,
   onCreate,
 
-  providers,
+  connectItems,
+  setConnectDialogVisible,
+  setRoomCreation,
+  saveThirdpartyResponse,
+  openConnectWindow,
+  setConnectItem,
+  getOAuthToken,
+
   fetchedTags,
   isLoading,
   folderFormValidation,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
+  const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
 
   const [roomParams, setRoomParams] = useState({
     title: "",
@@ -39,7 +54,11 @@ const CreateRoomDialog = ({
     tags: [],
     isPrivate: false,
     isThirdparty: false,
-    storageLocation: null,
+    storageLocation: {
+      isConnected: false,
+      provider: null,
+      storageFolderPath: "",
+    },
     rememberThirdpartyStorage: false,
     icon: {
       uploadedFile: null,
@@ -89,6 +108,7 @@ const CreateRoomDialog = ({
       onClose={onClose}
       isScrollLocked={isScrollLocked}
       withFooterBorder
+      isOauthWindowOpen={isOauthWindowOpen}
     >
       <ModalDialog.Header>
         {isChooseRoomType ? (
@@ -112,12 +132,19 @@ const CreateRoomDialog = ({
         ) : (
           <SetRoomParams
             t={t}
+            setIsOauthWindowOpen={setIsOauthWindowOpen}
             tagHandler={tagHandler}
             roomParams={roomParams}
             setRoomParams={setRoomParams}
             setRoomType={setRoomType}
             setIsScrollLocked={setIsScrollLocked}
-            providers={providers}
+            connectItems={connectItems}
+            setConnectDialogVisible={setConnectDialogVisible}
+            setRoomCreation={setRoomCreation}
+            saveThirdpartyResponse={saveThirdpartyResponse}
+            openConnectWindow={openConnectWindow}
+            setConnectItem={setConnectItem}
+            getOAuthToken={getOAuthToken}
           />
         )}
       </ModalDialog.Body>

@@ -15,7 +15,14 @@ const CreateRoomEvent = ({
   addLogoToRoom,
   fetchTags,
 
-  providers,
+  connectItems,
+  connectDialogVisible,
+  setConnectDialogVisible,
+  setRoomCreation,
+  saveThirdpartyResponse,
+  openConnectWindow,
+  setConnectItem,
+  getOAuthToken,
 
   currrentFolderId,
   updateCurrentFolder,
@@ -79,23 +86,32 @@ const CreateRoomEvent = ({
   return (
     <CreateRoomDialog
       t={t}
-      visible={visible}
+      visible={visible && !connectDialogVisible}
       onClose={onClose}
       onCreate={onCreate}
       fetchedTags={fetchedTags}
       isLoading={isLoading}
-      providers={providers}
+      connectItems={connectItems}
+      connectDialogVisible={connectDialogVisible}
+      setConnectDialogVisible={setConnectDialogVisible}
+      setRoomCreation={setRoomCreation}
+      saveThirdpartyResponse={saveThirdpartyResponse}
+      openConnectWindow={openConnectWindow}
+      setConnectItem={setConnectItem}
+      getOAuthToken={getOAuthToken}
     />
   );
 };
 
 export default inject(
   ({
+    auth,
     filesStore,
     tagsStore,
     filesActionsStore,
     selectedFolderStore,
     settingsStore,
+    dialogsStore,
   }) => {
     const {
       createRoom,
@@ -109,7 +125,38 @@ export default inject(
     const { id: currrentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
 
-    const { providers } = settingsStore.thirdPartyStore;
+    const thirdPartyStore = settingsStore.thirdPartyStore;
+
+    const { openConnectWindow } = settingsStore.thirdPartyStore;
+
+    const connectItems = [
+      thirdPartyStore.googleConnectItem,
+      thirdPartyStore.boxConnectItem,
+      thirdPartyStore.dropboxConnectItem,
+      thirdPartyStore.oneDriveConnectItem,
+      thirdPartyStore.nextCloudConnectItem,
+      thirdPartyStore.kDriveConnectItem,
+      thirdPartyStore.yandexConnectItem,
+      thirdPartyStore.ownCloudConnectItem,
+      thirdPartyStore.webDavConnectItem,
+      thirdPartyStore.sharePointConnectItem,
+    ].map((item) => ({
+      isAvialable: !!item,
+      id: item[0],
+      providerName: item[0],
+      isOauth: item.length > 1,
+      oauthHref: item.length > 1 ? item[1] : "",
+    }));
+
+    const { getOAuthToken } = auth.settingsStore;
+
+    const {
+      setConnectItem,
+      connectDialogVisible,
+      setConnectDialogVisible,
+      setRoomCreation,
+      saveThirdpartyResponse,
+    } = dialogsStore;
 
     return {
       createRoom,
@@ -120,7 +167,15 @@ export default inject(
       uploadRoomLogo,
       addLogoToRoom,
 
-      providers,
+      setConnectItem,
+      connectDialogVisible,
+      setConnectDialogVisible,
+      setRoomCreation,
+      saveThirdpartyResponse,
+      saveThirdpartyResponse,
+      openConnectWindow,
+      connectItems,
+      getOAuthToken,
 
       currrentFolderId,
       updateCurrentFolder,

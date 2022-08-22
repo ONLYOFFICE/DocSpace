@@ -1,16 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+
+import { roomTypes } from "../data";
 import RoomTypeDropdown from "./RoomTypeDropdown";
 import ThirdPartyStorage from "./ThirdPartyStorage";
-
-import TextInput from "@docspace/components/text-input";
-import Label from "@docspace/components/label";
 import TagInput from "./TagInput";
 import RoomType from "./RoomType";
-import { roomTypes } from "../data";
 import IconEditor from "./IconEditor";
 import PermanentSettings from "./PermanentSettings";
-import ToggleParam from "./Params/ToggleParam";
 import InputParam from "./Params/InputParam";
 import IsPrivateParam from "./IsPrivateParam";
 
@@ -25,14 +22,40 @@ const SetRoomParams = ({
   t,
   roomParams,
   setRoomParams,
+  setIsOauthWindowOpen,
   setRoomType,
   tagHandler,
   setIsScrollLocked,
   isEdit,
-  providers,
+  connectItems,
+  setConnectDialogVisible,
+  setRoomCreation,
+  saveThirdpartyResponse,
+  openConnectWindow,
+  setConnectItem,
+  getOAuthToken,
 }) => {
-  const onChangeName = (e) =>
-    setRoomParams({ ...roomParams, title: e.target.value });
+  const onChangeName = (e) => {
+    let value = e.target.value;
+    value = value.replace("/", "");
+    value = value.replace("\\", "");
+
+    const storageFolderPath = roomParams.storageLocation.storageFolderPath;
+    const pathArr = storageFolderPath.split("/");
+    const folderName = pathArr.pop();
+
+    if (roomParams.title === folderName)
+      setRoomParams({
+        ...roomParams,
+        title: value,
+        storageLocation: {
+          ...roomParams.storageLocation,
+          storageFolderPath:
+            pathArr.join("/") + (!!pathArr.length ? "/" : "") + value,
+        },
+      });
+    else setRoomParams({ ...roomParams, title: value });
+  };
 
   const onChangeIsPrivate = () =>
     setRoomParams({ ...roomParams, isPrivate: !roomParams.isPrivate });
@@ -107,7 +130,13 @@ const SetRoomParams = ({
       {!isEdit && (
         <ThirdPartyStorage
           t={t}
-          providers={providers}
+          connectItems={connectItems}
+          setConnectDialogVisible={setConnectDialogVisible}
+          setRoomCreation={setRoomCreation}
+          saveThirdpartyResponse={saveThirdpartyResponse}
+          openConnectWindow={openConnectWindow}
+          setConnectItem={setConnectItem}
+          getOAuthToken={getOAuthToken}
           roomParams={roomParams}
           isThirdparty={roomParams.isThirdparty}
           onChangeIsThirdparty={onChangeIsThirdparty}
@@ -116,6 +145,7 @@ const SetRoomParams = ({
           rememberThirdpartyStorage={roomParams.rememberThirdpartyStorage}
           onChangeRememberThirdpartyStorage={onChangeRememberThirdpartyStorage}
           setIsScrollLocked={setIsScrollLocked}
+          setIsOauthWindowOpen={setIsOauthWindowOpen}
         />
       )}
 

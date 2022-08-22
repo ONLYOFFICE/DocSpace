@@ -24,10 +24,10 @@ class DialogsStore {
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
-  createRoomDialogVisible = false;
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   isFolderActions = false;
+  roomCreation = false;
 
   removeItem = null;
   connectItem = null;
@@ -40,6 +40,7 @@ class DialogsStore {
   unsubscribe = null;
   convertItem = null;
   formCreationInfo = null;
+  saveThirdpartyResponse = null;
 
   constructor(
     authStore,
@@ -79,10 +80,18 @@ class DialogsStore {
     this.copyPanelVisible = copyPanelVisible;
   };
 
+  setRoomCreation = (roomCreation) => {
+    this.roomCreation = roomCreation;
+  };
+
+  setSaveThirdpartyResponse = (saveThirdpartyResponse) => {
+    this.saveThirdpartyResponse = saveThirdpartyResponse;
+  };
+
   setConnectDialogVisible = (connectDialogVisible) => {
     if (!connectDialogVisible) this.setConnectItem(null);
-
     this.connectDialogVisible = connectDialogVisible;
+    if (!this.connectDialogVisible) this.setRoomCreation(false);
   };
 
   setRemoveItem = (removeItem) => {
@@ -197,10 +206,6 @@ class DialogsStore {
     this.convertDialogVisible = visible;
   };
 
-  setCreateRoomDialogVisible = (visible) => {
-    this.createRoomDialogVisible = visible;
-  };
-
   setConvertPasswordDialogVisible = (visible) => {
     this.convertPasswordDialogVisible = visible;
   };
@@ -251,7 +256,6 @@ class DialogsStore {
       this.newFilesPanelVisible ||
       this.conflictResolveDialogVisible ||
       this.convertDialogVisible ||
-      this.createRoomDialogVisible ||
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
       this.versionHistoryStore.isVisible

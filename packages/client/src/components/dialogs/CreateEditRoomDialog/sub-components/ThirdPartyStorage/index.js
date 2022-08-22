@@ -8,6 +8,7 @@ import ThirpartyComboBox from "./ThirpartyComboBox";
 
 import Toast from "@docspace/components/toast";
 import toastrHelper from "@docspace/client/src/helpers/toastr";
+import FolderInput from "./FolderInput";
 
 const StyledThirdPartyStorage = styled(StyledParam)`
   flex-direction: column;
@@ -16,7 +17,13 @@ const StyledThirdPartyStorage = styled(StyledParam)`
 
 const ThirdPartyStorage = ({
   t,
-  providers,
+  connectItems,
+  setConnectDialogVisible,
+  setRoomCreation,
+  saveThirdpartyResponse,
+  openConnectWindow,
+  setConnectItem,
+  getOAuthToken,
   isThirdparty,
   onChangeIsThirdparty,
   storageLocation,
@@ -24,20 +31,40 @@ const ThirdPartyStorage = ({
   rememberThirdpartyStorage,
   onChangeRememberThirdpartyStorage,
   setIsScrollLocked,
+  setIsOauthWindowOpen,
 }) => {
   const checkForProviders = () => {
-    if (providers.length) onChangeIsThirdparty();
-    else
-      toastrHelper.warning(
-        <div>
-          <div>{t("ThirdPartyStorageNoStorageAlert")}</div>
-          <a href="#">Third-party services</a>
-        </div>,
-        "Alert",
-        5000,
-        true,
-        false
-      );
+    onChangeIsThirdparty();
+    // if (connectItems.length) onChangeIsThirdparty();
+    // else
+    //   toastrHelper.warning(
+    //     <div>
+    //       <div>{t("ThirdPartyStorageNoStorageAlert")}</div>
+    //       <a href="#">Third-party services</a>
+    //     </div>,
+    //     "Alert",
+    //     5000,
+    //     true,
+    //     false
+    //   );
+  };
+
+  const onChangeProvider = (provider) => {
+    setChangeStorageLocation({ ...storageLocation, provider });
+  };
+
+  const onChangeFolderPath = (e) => {
+    setChangeStorageLocation({
+      ...storageLocation,
+      storageFolderPath: e.target.value,
+    });
+  };
+
+  const onChangeIsConnected = (bool) => {
+    setChangeStorageLocation({
+      ...storageLocation,
+      isConnected: bool,
+    });
   };
 
   return (
@@ -63,14 +90,29 @@ const ThirdPartyStorage = ({
       {isThirdparty && (
         <ThirpartyComboBox
           t={t}
-          providers={providers}
+          connectItems={connectItems}
+          setConnectDialogVisible={setConnectDialogVisible}
+          setRoomCreation={setRoomCreation}
+          saveThirdpartyResponse={saveThirdpartyResponse}
+          openConnectWindow={openConnectWindow}
+          setConnectItem={setConnectItem}
+          getOAuthToken={getOAuthToken}
           storageLocation={storageLocation}
-          setChangeStorageLocation={setChangeStorageLocation}
+          onChangeProvider={onChangeProvider}
+          onChangeIsConnected={onChangeIsConnected}
           setIsScrollLocked={setIsScrollLocked}
+          setIsOauthWindowOpen={setIsOauthWindowOpen}
         />
       )}
 
-      {isThirdparty && storageLocation && (
+      {isThirdparty && storageLocation.isConnected && (
+        <FolderInput
+          value={storageLocation.storageFolderPath}
+          onChangeFolderPath={onChangeFolderPath}
+        />
+      )}
+
+      {isThirdparty && storageLocation.isConnected && (
         <Checkbox
           className="thirdparty-checkbox"
           label={t("ThirdPartyStorageRememberChoice")}
