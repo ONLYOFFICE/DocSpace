@@ -11,9 +11,11 @@ const StyledOuter = styled.div`
     props.isNeedBorder &&
     css`
       border: ${(props) => props.theme.client.settings.backup.contextBorder};
-      padding-left: 2px;
-      padding-right: 13px;
-      padding-top: 7px;
+      width: 32px;
+
+      svg {
+        padding: 7px 13px 7px 2px;
+      }
     `}
 `;
 StyledOuter.defaultProps = { theme: Base };
