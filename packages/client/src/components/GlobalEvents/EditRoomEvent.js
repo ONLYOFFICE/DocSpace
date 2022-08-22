@@ -12,16 +12,19 @@ const EditRoomEvent = ({
   addTagsToRoom,
   removeTagsFromRoom,
 
-  uploadRoomLogo,
-  addLogoToRoom,
-
   createTag,
   fetchTags,
+
+  getThirdPartyIcon,
+
+  uploadRoomLogo,
+  addLogoToRoom,
 
   currrentFolderId,
   updateCurrentFolder,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
+
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,6 +41,7 @@ const EditRoomEvent = ({
       title: item.title,
       parentId: item.parentId,
       providerKey: item.providerKey,
+      iconSrc: getThirdPartyIcon(item.providerKey),
     },
     isPrivate: false,
     icon: {
@@ -69,11 +73,8 @@ const EditRoomEvent = ({
       setIsLoading(true);
 
       await editRoom(roomId, editRoomParams);
-
       for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
-
       await addTagsToRoom(roomId, tags);
-
       await removeTagsFromRoom(roomId, removedTags);
 
       if (roomParams.icon.uploadedFile)
@@ -112,7 +113,13 @@ const EditRoomEvent = ({
 };
 
 export default inject(
-  ({ filesStore, tagsStore, filesActionsStore, selectedFolderStore }) => {
+  ({
+    filesStore,
+    tagsStore,
+    filesActionsStore,
+    selectedFolderStore,
+    settingsStore,
+  }) => {
     const {
       editRoom,
       addTagsToRoom,
@@ -120,20 +127,24 @@ export default inject(
       uploadRoomLogo,
       addLogoToRoom,
     } = filesStore;
-    const { createTag, fetchTags } = tagsStore;
 
+    const { createTag, fetchTags } = tagsStore;
     const { id: currrentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
+    const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
+
     return {
       editRoom,
       addTagsToRoom,
       removeTagsFromRoom,
 
-      uploadRoomLogo,
-      addLogoToRoom,
-
       createTag,
       fetchTags,
+
+      getThirdPartyIcon,
+
+      uploadRoomLogo,
+      addLogoToRoom,
 
       currrentFolderId,
       updateCurrentFolder,
