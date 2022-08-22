@@ -131,7 +131,7 @@
   "ProductUserOpportunities": "View profiles and groups",
   "RecoveryFileNotSelected": "Recovery error. Recovery file not selected",
   "RegistrationDate": "Registration date",
-  "RestoreBackup": "Data Restore",
+  "RestoreBackup": "Restore",
   "RestoreBackupDescription": "Use this option to restore your portal from the previously saved backup file.",
   "RestoreBackupHelp": "<strong>Data Restore</strong> option is used to restore your previously saved portal data (from a local server or SaaS portal).",
   "RestoreBackupHelpNote": "Select the storage where the data is saved, enter necessary details and check the <strong>Send notification to portal users</strong> to alert your portal users about the backup/restore operations.",

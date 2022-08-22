@@ -170,7 +170,7 @@ export const settingsTree = [
 
   {
     key: "5",
-    icon: "/images/data-management.react.svg",
+    icon: "/images/restore.react.svg",
     link: "restore",
     tKey: "RestoreBackup",
     isHeader: true,
