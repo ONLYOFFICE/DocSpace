@@ -32,6 +32,7 @@ public class WebhooksController : BaseSettingsController
     private readonly PermissionContext _permissionContext;
     private readonly DbWorker _webhookDbWorker;
     private readonly IMapper _mapper;
+    private readonly WebhookPublisher _webhookPublisher;
 
     public WebhooksController(
         ApiContext context,
@@ -41,18 +42,18 @@ public class WebhooksController : BaseSettingsController
         IMemoryCache memoryCache,
         DbWorker dbWorker,
         IHttpContextAccessor httpContextAccessor,
-        IMapper mapper)
+        IMapper mapper,
+        WebhookPublisher webhookPublisher)
         : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _context = context;
         _permissionContext = permissionContext;
         _webhookDbWorker = dbWorker;
         _mapper = mapper;
+        _webhookPublisher = webhookPublisher;
     }
-    /// <summary>
-    /// Read Webhooks history for actual tenant
-    /// </summary>
-    [HttpGet("webhooks")]
+
+    [HttpGet("webhook")]
     public async IAsyncEnumerable<WebhooksConfigDto> GetTenantWebhooks()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -63,9 +64,6 @@ public class WebhooksController : BaseSettingsController
         }
     }
 
-    /// <summary>
-    /// Add new config for webhooks
-    /// </summary>
     [HttpPost("webhook")]
     public async Task<WebhooksConfigDto> CreateWebhook(WebhooksConfigRequestsDto model)
     {
@@ -79,9 +77,6 @@ public class WebhooksController : BaseSettingsController
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
-    /// <summary>
-    /// Update config for webhooks
-    /// </summary>
     [HttpPut("webhook")]
     public async Task<WebhooksConfigDto> UpdateWebhook(WebhooksConfigRequestsDto model)
     {
@@ -95,9 +90,6 @@ public class WebhooksController : BaseSettingsController
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
-    /// <summary>
-    /// Remove config for webhooks
-    /// </summary>
     [HttpDelete("webhook")]
     public async Task<WebhooksConfigDto> RemoveWebhook(int id)
     {
@@ -118,6 +110,53 @@ public class WebhooksController : BaseSettingsController
         await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, delivery, hookname, route))
         {
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
+        }
+    }
+
+    [HttpPut("webhook/{id}/retry")]
+    public async Task<WebhooksLogDto> RetryWebhook(int id)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (id == 0)
+        {
+            throw new ArgumentException(nameof(id));
+        }
+
+        var item = await _webhookDbWorker.ReadJournal(id);
+
+        if (item == null)
+        {
+            throw new ItemNotFoundException();
+        }
+
+        if (item.Status >= 200 && item.Status <= 299 || item.Status == 0)
+        {
+            throw new HttpException(HttpStatusCode.Forbidden);
+        }
+
+        var result = await _webhookPublisher.PublishAsync(item.Method, item.Route, item.RequestPayload, item.ConfigId);
+
+        return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
+    }
+
+    [HttpPut("webhook/retry")]
+    public async IAsyncEnumerable<WebhooksLogDto> RetryWebhooks(WebhookRetryRequestsDto model)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        foreach (var id in model.Ids)
+        {
+            var item = await _webhookDbWorker.ReadJournal(id);
+
+            if (item == null || item.Status >= 200 && item.Status <= 299 || item.Status == 0)
+            {
+                continue;
+            }
+
+            var result = await _webhookPublisher.PublishAsync(item.Method, item.Route, item.RequestPayload, item.ConfigId);
+
+            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
         }
     }
 }

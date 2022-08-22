@@ -74,7 +74,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
 
                 var resultContent = Encoding.UTF8.GetString(_stream.ToArray());
 
-                await _webhookPublisher.Publish(method, routePattern, resultContent);
+                await _webhookPublisher.PublishAsync(method, routePattern, resultContent);
             }
             catch (Exception e)
             {

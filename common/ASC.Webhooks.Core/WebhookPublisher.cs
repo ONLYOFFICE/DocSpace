@@ -40,7 +40,7 @@ public class WebhookPublisher : IWebhookPublisher
         _webhookNotify = webhookNotify;
     }
 
-    public async Task Publish(string method, string route, string requestPayload)
+    public async Task PublishAsync(string method, string route, string requestPayload)
     {
         if (string.IsNullOrEmpty(requestPayload))
         {
@@ -51,23 +51,35 @@ public class WebhookPublisher : IWebhookPublisher
 
         await foreach (var config in webhookConfigs.Where(r => r.Enabled))
         {
-            var webhooksLog = new WebhooksLog
-            {
-                Method = method,
-                Route = route,
-                CreationTime = DateTime.UtcNow,
-                RequestPayload = requestPayload,
-                ConfigId = config.Id
-            };
-
-            var webhook = await _dbWorker.WriteToJournal(webhooksLog);
-
-            var request = new WebhookRequest
-            {
-                Id = webhook.Id
-            };
-
-            _webhookNotify.Publish(request, CacheNotifyAction.Update);
+            _ = await PublishAsync(method, route, requestPayload, config.Id);
         }
+    }
+
+    public async Task<WebhooksLog> PublishAsync(string method, string route, string requestPayload, int configId)
+    {
+        if (string.IsNullOrEmpty(requestPayload))
+        {
+            return null;
+        }
+
+        var webhooksLog = new WebhooksLog
+        {
+            Method = method,
+            Route = route,
+            CreationTime = DateTime.UtcNow,
+            RequestPayload = requestPayload,
+            ConfigId = configId
+        };
+
+        var webhook = await _dbWorker.WriteToJournal(webhooksLog);
+
+        var request = new WebhookRequest
+        {
+            Id = webhook.Id
+        };
+
+        _webhookNotify.Publish(request, CacheNotifyAction.Update);
+
+        return webhook;
     }
 }
