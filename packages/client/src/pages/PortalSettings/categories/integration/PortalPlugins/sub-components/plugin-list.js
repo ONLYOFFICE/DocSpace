@@ -11,7 +11,7 @@ import Text from "@docspace/components/text";
 import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
-import { activatePlugin } from "SRC_DIR/helpers/plugins";
+import { activatePlugin, deletePlugin } from "SRC_DIR/helpers/plugins";
 
 const StyledHeader = styled.div`
   display: ${isMobile ? "none" : "flex"};
@@ -50,7 +50,7 @@ const StyledRow = styled(Row)`
   }
 `;
 
-const PluginList = ({ plugins, onActivate, theme }) => {
+const PluginList = ({ plugins, onActivate, onDelete, theme }) => {
   const onActivateAction = React.useCallback(
     (e) => {
       const { dataset } = (e.originalEvent || e).currentTarget;
@@ -59,6 +59,16 @@ const PluginList = ({ plugins, onActivate, theme }) => {
       onActivate(dataset.id, dataset.status);
     },
     [onActivate]
+  );
+
+  const onDeleteAction = React.useCallback(
+    (e) => {
+      const { dataset } = (e.originalEvent || e).currentTarget;
+
+      deletePlugin(dataset.id);
+      onDelete(dataset.id);
+    },
+    [onDelete]
   );
 
   const getContextOptions = React.useCallback(
@@ -79,9 +89,16 @@ const PluginList = ({ plugins, onActivate, theme }) => {
             onClick: onActivateAction,
           };
 
-      return [activateItem];
+      const deleteItem = {
+        key: "delete",
+        "data-id": plugin.id,
+        label: "Delete",
+        onClick: onDeleteAction,
+      };
+
+      return [activateItem, deleteItem];
     },
-    [onActivateAction]
+    [onActivateAction, onDeleteAction]
   );
 
   return (

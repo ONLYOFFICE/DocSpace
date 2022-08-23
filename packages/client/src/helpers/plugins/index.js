@@ -44,6 +44,11 @@ export const activatePlugin = async (id, status) => {
   return plugin;
 };
 
+export const deletePlugin = async (id) => {
+  window.PluginStore.uninstallPlugin(id);
+  await api.deletePlugin(id);
+};
+
 export const getContextMenuKeysByType = (type) => {
   const itemsMap = Array.from(window.PluginStore.getContextMenuItems());
   const keys = [];

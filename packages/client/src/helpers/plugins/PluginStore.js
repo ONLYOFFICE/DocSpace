@@ -22,6 +22,7 @@ class PluginStore {
   }
 
   uninstallPlugin(id) {
+    this.deactivatePlugin(id);
     this.plugins.delete(+id);
   }
 

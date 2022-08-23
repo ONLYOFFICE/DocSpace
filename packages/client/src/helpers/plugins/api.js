@@ -1,12 +1,14 @@
 const getPlugins = async () => {
-  const plugins = await (await fetch("http://localhost:3000/plugins")).json();
+  const plugins = await (
+    await fetch("http://localhost:3000/api/2.0/plugins")
+  ).json();
 
   return plugins;
 };
 
 const activatePlugin = async (id) => {
   const plugin = await (
-    await fetch(`http://localhost:3000/plugins/activate/${id}`, {
+    await fetch(`http://localhost:3000/api/2.0/plugins/activate/${id}`, {
       method: "PUT",
     })
   ).json();
@@ -16,7 +18,7 @@ const activatePlugin = async (id) => {
 
 const uploadPlugin = async (formData) => {
   const plugin = await (
-    await fetch("http://localhost:3000/plugins/upload", {
+    await fetch("http://localhost:3000/api/2.0/plugins/upload", {
       method: "POST",
       body: formData,
     })
@@ -25,4 +27,11 @@ const uploadPlugin = async (formData) => {
   return plugin;
 };
 
-export default { getPlugins, activatePlugin, uploadPlugin };
+const deletePlugin = async (id) => {
+  await fetch(`http://localhost:3000/api/2.0/plugins/delete/${id}`, {
+    method: "DELETE",
+    body: {},
+  });
+};
+
+export default { getPlugins, activatePlugin, uploadPlugin, deletePlugin };

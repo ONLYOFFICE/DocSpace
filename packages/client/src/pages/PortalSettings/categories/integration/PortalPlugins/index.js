@@ -47,6 +47,21 @@ const PortalPlugins = ({ t, setDocumentTitle, theme }) => {
     [plugins]
   );
 
+  const onDelete = React.useCallback(
+    (id) => {
+      setPlugins((val) => {
+        const newPlugins = val.filter((plugin) => +plugin.id !== +id);
+
+        console.log(newPlugins);
+
+        if (newPlugins.length === 0) return [];
+
+        return [...newPlugins];
+      });
+    },
+    [plugins]
+  );
+
   const addPlugin = React.useCallback((plugin) => {
     setPlugins((value) => {
       if (value) return [...value, plugin];
@@ -69,7 +84,12 @@ const PortalPlugins = ({ t, setDocumentTitle, theme }) => {
     <StyledContainer>
       <UploadButton t={t} addPlugin={addPlugin} />
       {plugins && (
-        <PluginList plugins={plugins} onActivate={onActivate} theme={theme} />
+        <PluginList
+          plugins={plugins}
+          onActivate={onActivate}
+          onDelete={onDelete}
+          theme={theme}
+        />
       )}
     </StyledContainer>
   );
