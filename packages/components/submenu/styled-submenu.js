@@ -77,7 +77,7 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
   flex-direction: column;
   padding-top: 4px;
   line-height: 20px;
-  margin-right: 20px;
+  margin-right: 17px;
 `;
 
 export const StyledSubmenuItemText = styled.div`
@@ -87,6 +87,7 @@ export const StyledSubmenuItemText = styled.div`
   .item-text {
     color: ${(props) =>
       props.isActive ? props.theme.submenu.textColor : "#657077"};
+    font-weight: 600;
   }
 `;
 
