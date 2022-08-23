@@ -244,6 +244,7 @@ internal class ProviderAccountDao : IProviderDao
 
         forUpdate.RoomType = roomType;
         forUpdate.FolderId = folderId;
+        forUpdate.FolderType = FolderType.VirtualRooms;
 
         await filesDbContext.SaveChangesAsync();
 
