@@ -26,25 +26,31 @@
 
 namespace ASC.Webhooks.Core.EF.Model;
 
-public partial class WebhooksLog
+public class WebhooksLog
 {
     public int ConfigId { get; set; }
     public DateTime CreationTime { get; set; }
-    public string Event { get; set; }
     public int Id { get; set; }
+    public string Method { get; set; }
+    public string Route { get; set; }
     public string RequestHeaders { get; set; }
     public string RequestPayload { get; set; }
     public string ResponseHeaders { get; set; }
     public string ResponsePayload { get; set; }
-    public ProcessStatus Status { get; set; }
+    public int Status { get; set; }
     public int TenantId { get; set; }
-    public string Uid { get; set; }
+    public Guid Uid { get; set; }
+    public DateTime? Delivery { get; set; }
+
+    public WebhooksConfig Config { get; set; }
 }
 
 public static class WebhooksPayloadExtension
 {
     public static ModelBuilderWrapper AddWebhooksLog(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Config).AutoInclude();
+
         modelBuilder
             .Add(MySqlAddWebhooksLog, Provider.MySql)
             .Add(PgSqlAddWebhooksLog, Provider.PostgreSql);
@@ -62,6 +68,9 @@ public static class WebhooksPayloadExtension
             entity.ToTable("webhooks_logs")
                 .HasCharSet("utf8");
 
+            entity.HasIndex(e => e.TenantId)
+                .HasDatabaseName("tenant_id");
+
             entity.Property(e => e.Id)
                 .HasColumnType("int")
                 .HasColumnName("id")
@@ -72,9 +81,10 @@ public static class WebhooksPayloadExtension
                 .HasColumnName("config_id");
 
             entity.Property(e => e.Uid)
-                .HasColumnType("varchar")
                 .HasColumnName("uid")
-                .HasMaxLength(50);
+                .HasColumnType("varchar(36)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.TenantId)
                 .HasColumnName("tenant_id")
@@ -83,7 +93,9 @@ public static class WebhooksPayloadExtension
             entity.Property(e => e.RequestPayload)
                 .IsRequired()
                 .HasColumnName("request_payload")
-                .HasColumnType("json");
+                .HasColumnType("text")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.RequestHeaders)
                 .HasColumnName("request_headers")
@@ -91,25 +103,35 @@ public static class WebhooksPayloadExtension
 
             entity.Property(e => e.ResponsePayload)
                 .HasColumnName("response_payload")
-                .HasColumnType("json");
+                .HasColumnType("text")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.ResponseHeaders)
                 .HasColumnName("response_headers")
                 .HasColumnType("json");
 
-            entity.Property(e => e.Event)
+            entity.Property(e => e.Method)
                 .HasColumnType("varchar")
-                .HasColumnName("event")
+                .HasColumnName("method")
+                .HasMaxLength(100);
+
+            entity.Property(e => e.Route)
+                .HasColumnType("varchar")
+                .HasColumnName("route")
                 .HasMaxLength(100);
 
             entity.Property(e => e.CreationTime)
                 .HasColumnType("datetime")
                 .HasColumnName("creation_time");
 
+            entity.Property(e => e.Delivery)
+                .HasColumnType("datetime")
+                .HasColumnName("delivery");
+
             entity.Property(e => e.Status)
-                .HasColumnType("varchar")
-                .HasColumnName("status")
-                .HasMaxLength(50);
+                .HasColumnType("int")
+                .HasColumnName("status");
         });
     }
 
@@ -122,6 +144,9 @@ public static class WebhooksPayloadExtension
 
             entity.ToTable("webhooks_logs");
 
+            entity.HasIndex(e => e.TenantId)
+                .HasDatabaseName("tenant_id");
+
             entity.Property(e => e.Id)
                 .HasColumnType("int")
                 .HasColumnName("id")
@@ -142,34 +167,40 @@ public static class WebhooksPayloadExtension
 
             entity.Property(e => e.RequestPayload)
                 .IsRequired()
-                .HasColumnName("request_payload")
-                .HasColumnType("json");
+                .HasColumnName("request_payload");
 
             entity.Property(e => e.RequestHeaders)
                 .HasColumnName("request_headers")
                 .HasColumnType("json");
 
             entity.Property(e => e.ResponsePayload)
-                .HasColumnName("response_payload")
-                .HasColumnType("json");
+                .HasColumnName("response_payload");
 
             entity.Property(e => e.ResponseHeaders)
                 .HasColumnName("response_headers")
                 .HasColumnType("json");
 
-            entity.Property(e => e.Event)
+            entity.Property(e => e.Method)
                 .HasColumnType("varchar")
-                .HasColumnName("event")
+                .HasColumnName("method")
+                .HasMaxLength(100);
+
+            entity.Property(e => e.Route)
+                .HasColumnType("varchar")
+                .HasColumnName("route")
                 .HasMaxLength(100);
 
             entity.Property(e => e.CreationTime)
                 .HasColumnType("datetime")
                 .HasColumnName("creation_time");
 
+            entity.Property(e => e.Delivery)
+                .HasColumnType("datetime")
+                .HasColumnName("delivery");
+
             entity.Property(e => e.Status)
-                .HasColumnType("varchar")
-                .HasColumnName("status")
-                .HasMaxLength(50);
+                .HasColumnType("int")
+                .HasColumnName("status");
         });
     }
 }
