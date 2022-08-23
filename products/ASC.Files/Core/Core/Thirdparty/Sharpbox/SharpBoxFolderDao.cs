@@ -461,6 +461,11 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
                 //We can't search google folders by title because root can have multiple folders with the same name
                 //var newFolder = SharpBoxProviderInfo.Storage.GetFileSystemObject(newTitle, folder.Parent);
                 newId = MakeId(entry);
+
+                if (DocSpaceHelper.IsRoom(ProviderInfo.FolderType))
+                {
+                    await DaoSelector.UpdateProviderFolderId(ProviderInfo, newId);
+                }
             }
         }
 
