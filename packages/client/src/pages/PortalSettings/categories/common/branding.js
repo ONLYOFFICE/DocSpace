@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 
 import { inject, observer } from "mobx-react";
+import { isDesktop } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import Whitelabel from "./settingsBranding/whitelabel";
 import CompanyInfoSettings from "./settingsBranding/companyInfoSettings";
 import styled from "styled-components";
 import AdditionalResources from "./settingsBranding/additionalResources";
+
+import ForbiddenPage from "../ForbiddenPage";
 
 const StyledComponent = styled.div`
   width: 100%;
@@ -42,6 +45,8 @@ const StyledComponent = styled.div`
 `;
 
 const Branding = (props) => {
+  if (!isDesktop) return <ForbiddenPage />;
+
   return (
     <StyledComponent>
       <Whitelabel />

@@ -7,13 +7,14 @@ import Box from "@docspace/components/box";
 
 import Certificates from "./Certificates";
 import FieldMapping from "./FieldMapping";
-import ForbiddenPage from "./sub-components/ForbiddenPage";
 import HideButton from "./sub-components/HideButton";
 import IdpSettings from "./IdpSettings";
 import ProviderMetadata from "./ProviderMetadata";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
 import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
+
+import ForbiddenPage from "../../ForbiddenPage";
 
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata } = props;
