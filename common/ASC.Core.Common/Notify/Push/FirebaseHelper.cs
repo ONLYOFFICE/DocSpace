@@ -69,12 +69,8 @@ public class FirebaseHelper
 
     public void SendMessage(NotifyMessage msg)
     {
-        var tenant = _tenantManager.GetCurrentTenant(false);
+        _tenantManager.SetCurrentTenant(msg.TenantId);
 
-        if (tenant == null)
-        {
-            _tenantManager.SetCurrentTenant(Tenant.DefaultTenant);
-        }
         var user = _userManager.GetUserByUserName(msg.Reciever);
 
         Guid productID;
