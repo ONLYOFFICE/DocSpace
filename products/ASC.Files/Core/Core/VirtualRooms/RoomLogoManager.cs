@@ -327,6 +327,7 @@ public class RoomLogoManager
 
     private T GetId<T>(Folder<T> room)
     {
-        return room.ProviderEntry && room.RootId.ToString().Contains("sbox") ? room.RootId : room.Id;
+        return room.ProviderEntry && (room.RootId.ToString().Contains("sbox") 
+            || room.RootId.ToString().Contains("spoint")) ? room.RootId : room.Id;
     }
 }
