@@ -47,12 +47,17 @@ const PriceCalculation = ({
   portalQuota,
   paymentLink,
   setIsLoading,
+  updatePayment,
 }) => {
-  const [usersCount, setUsersCount] = useState(minUsersCount);
-  const isAlreadyPaid = !portalQuota.trial && !portalQuota.free;
+  const { trial, free, countAdmin } = portalQuota;
+
+  const isAlreadyPaid = !trial && !free;
+  const initialUsersCount = isAlreadyPaid ? countAdmin : minUsersCount;
+
+  const [usersCount, setUsersCount] = useState(initialUsersCount);
 
   const setStartLink = async () => {
-    const link = await api.portal.getPaymentLink(minUsersCount);
+    const link = await api.portal.getPaymentLink(initialUsersCount);
     setPaymentLink(link);
   };
 
@@ -172,7 +177,7 @@ const PriceCalculation = ({
         setIsLoading(true);
       }, 500);
 
-      await updatePayment();
+      await updatePayment(usersCount);
       toastr.success("the changes will be applied soon");
     } catch (e) {
       toastr.error(e);
@@ -210,6 +215,7 @@ const PriceCalculation = ({
         onSliderChange={onSliderChange}
         onChangeNumber={onChangeNumber}
         isDisabled={isDisabled}
+        isAlreadyPaid={isAlreadyPaid}
       />
       <TotalTariffContainer
         maxUsersCount={maxUsersCount}
@@ -219,13 +225,21 @@ const PriceCalculation = ({
         price={price}
         isDisabled={isDisabled}
         onClick={onUpdateTariff}
+        isAlreadyPaid={isAlreadyPaid}
+        countAdmin={countAdmin}
       />
     </StyledBody>
   );
 };
 
 export default inject(({ auth, payments }) => {
-  const { tariffsInfo, setPaymentLink, paymentLink, setIsLoading } = payments;
+  const {
+    tariffsInfo,
+    setPaymentLink,
+    paymentLink,
+    setIsLoading,
+    updatePayment,
+  } = payments;
   const { theme } = auth.settingsStore;
   const { portalQuota } = auth;
   //const rights = "2";
@@ -239,5 +253,6 @@ export default inject(({ auth, payments }) => {
     portalQuota,
     paymentLink,
     setIsLoading,
+    updatePayment,
   };
 })(observer(PriceCalculation));

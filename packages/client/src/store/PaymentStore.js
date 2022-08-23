@@ -81,9 +81,9 @@ class PaymentStore {
     //   toastr.error(e);
     // }
   };
-  updatePayment = async (adminCount, currency) => {
+  updatePayment = async (adminCount) => {
     try {
-      const res = await api.portal.updatePayment(adminCount, currency);
+      const res = await api.portal.updatePayment(adminCount);
       console.log("updatePayment", res);
     } catch (e) {
       toastr.error(e);

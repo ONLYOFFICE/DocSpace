@@ -187,7 +187,7 @@ export function getPaymentLink(adminCount, currency) {
     method: "put",
     url: `/portal/payment/url`,
     data: {
-      quantity: { admin: adminCount }
+      quantity: { admin: adminCount },
     },
   });
 }
@@ -195,7 +195,7 @@ export function getPaymentLink(adminCount, currency) {
 export function updatePayment(adminCount) {
   return request({
     method: "put",
-    url: `/portal/payment/url`,
+    url: `/portal/payment/update`,
     data: {
       quantity: { admin: adminCount },
     },
