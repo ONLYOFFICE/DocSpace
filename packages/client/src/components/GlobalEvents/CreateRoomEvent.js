@@ -44,6 +44,11 @@ const CreateRoomEvent = ({
       title: roomParams.title || t("Files:NewRoom"),
     };
 
+    const isThirdparty =
+      roomParams.isThirdparty &&
+      roomParams.storageLocation.isConnected &&
+      roomParams.storageLocation.thirdpartyFolderId;
+
     const addTagsData = roomParams.tags.map((tag) => tag.name);
 
     const createTagsData = roomParams.tags
@@ -56,7 +61,12 @@ const CreateRoomEvent = ({
     try {
       setIsLoading(true);
 
-      const room = await createRoom(createRoomData);
+      const room = isThirdparty
+        ? await createRoomInThirdpary(
+            roomParams.storageLocation.thirdpartyFolderId,
+            createRoomData
+          )
+        : await createRoom(createRoomData);
 
       for (let i = 0; i < createTagsData.length; i++)
         await createTag(createTagsData[i]);
@@ -65,8 +75,33 @@ const CreateRoomEvent = ({
 
       if (roomParams.icon.uploadedFile)
         await uploadRoomLogo(uploadLogoData).then((response) => {
-          const { x, y, width, height } = roomParams.icon;
-          addLogoToRoom({ tmpFile: response.data, x, y, width, height });
+          const url = URL.createObjectURL(roomParams.icon.uploadedFile);
+          const img = new Image();
+
+          img.onload = () => {
+            const tmpFile = response.data.split("?")[0];
+            const { x, y, zoom } = roomParams.icon;
+
+            const imgWidth = Math.min(1280, img.width);
+            const imgHeight = Math.round(img.height / (img.width / imgWidth));
+
+            const dimensions = Math.round(imgHeight / zoom);
+
+            const croppedX = Math.round(x * imgWidth - dimensions / 2);
+            const croppedY = Math.round(y * imgHeight - dimensions / 2);
+
+            addLogoToRoom(room.id, {
+              tmpFile,
+              x: croppedX,
+              y: croppedY,
+              width: dimensions,
+              height: dimensions,
+            });
+
+            URL.revokeObjectURL(img.src);
+          };
+
+          img.src = url;
         });
 
       await updateCurrentFolder(null, currrentFolderId);
