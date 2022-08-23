@@ -121,7 +121,13 @@ class PeopleTableHeader extends React.Component {
 
   render() {
     const { columns } = this.state;
-    const { containerRef, filter, sectionWidth, userId } = this.props;
+    const {
+      containerRef,
+      filter,
+      sectionWidth,
+      userId,
+      infoPanelVisible,
+    } = this.props;
     const { sortOrder } = filter;
 
     return (
@@ -131,8 +137,10 @@ class PeopleTableHeader extends React.Component {
         containerRef={containerRef}
         columns={columns}
         columnStorageName={`${COLUMNS_SIZE}=${userId}`}
+        columnInfoPanelStorageName={`${INFO_PANEL_COLUMNS_SIZE}=${userId}`}
         sectionWidth={sectionWidth}
         checkboxMargin="12px"
+        infoPanelVisible={infoPanelVisible}
       />
     );
   }
@@ -145,11 +153,13 @@ export default inject(({ auth, peopleStore }) => {
   const { getUsersList } = usersStore;
   const { setIsLoading } = loadingStore;
 
+  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   return {
     filter,
     fetchPeople: getUsersList,
     setIsLoading,
     userId: auth.userStore.user.id,
+    infoPanelVisible,
   };
 })(
   withTranslation(["People", "Common", "PeopleTranslations"])(

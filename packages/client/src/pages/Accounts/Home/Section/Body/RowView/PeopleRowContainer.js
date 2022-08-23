@@ -14,11 +14,17 @@ const PeopleRowContainer = ({
   viewAs,
   setViewAs,
   theme,
+  infoPanelVisible,
 }) => {
   useEffect(() => {
-    if (viewAs !== "table" && viewAs !== "row") return;
-
-    if (sectionWidth < 1025 || isMobile) {
+    if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
+    // 400 - it is desktop info panel width
+    if (
+      (sectionWidth < 1025 && !infoPanelVisible) ||
+      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+        infoPanelVisible) ||
+      isMobile
+    ) {
       viewAs !== "row" && setViewAs("row");
     } else {
       viewAs !== "table" && setViewAs("table");
@@ -46,10 +52,13 @@ export default inject(({ peopleStore, auth }) => {
   const { theme } = auth.settingsStore;
   const { peopleList } = usersStore;
 
+  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+
   return {
     peopleList,
     viewAs,
     setViewAs,
     theme,
+    infoPanelVisible,
   };
 })(observer(PeopleRowContainer));

@@ -20,12 +20,19 @@ const Table = ({
   isOwner,
   changeType,
   userId,
+  infoPanelVisible,
 }) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    if (!sectionWidth) return;
-    if (sectionWidth < 1025 || isMobile) {
+    if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
+    // 400 - it is desktop info panel width
+    if (
+      (sectionWidth < 1025 && !infoPanelVisible) ||
+      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+        infoPanelVisible) ||
+      isMobile
+    ) {
       viewAs !== "row" && setViewAs("row");
     } else {
       viewAs !== "table" && setViewAs("table");
@@ -59,6 +66,8 @@ export default inject(({ peopleStore, auth }) => {
   const { theme } = auth.settingsStore;
   const { peopleList } = usersStore;
 
+  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+
   const { isAdmin, isOwner, id: userId } = auth.userStore.user;
 
   return {
@@ -70,5 +79,6 @@ export default inject(({ peopleStore, auth }) => {
     isOwner,
     changeType,
     userId,
+    infoPanelVisible,
   };
 })(observer(Table));
