@@ -90,9 +90,10 @@ public class RoomLogoManager
         var fileName = Path.GetFileName(tempFile);
         var data = await GetTempAsync(fileName);
 
-        var resolvedId = room.ProviderEntry && room.RootId.ToString().Contains("sbox") ? room.RootId : room.Id;
+        id = GetId(room);
 
-        await SaveWithProcessAsync(resolvedId, data, -1, new Point(x, y), new Size(width, height));
+        await DeleteLogo(id);
+        await SaveWithProcessAsync(id, data, -1, new Point(x, y), new Size(width, height));
 
         if (EnableAudit)
         {
@@ -116,15 +117,12 @@ public class RoomLogoManager
 
         try
         {
-            await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(id)}*.*", false);
+            await DeleteLogo(id);
 
             if (EnableAudit)
             {
                 _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted);
             }
-
-            _cache.Remove(_cachePattern);
-            _cache.Remove(GetKey(id));
         }
         catch (DirectoryNotFoundException e)
         {
@@ -175,7 +173,7 @@ public class RoomLogoManager
         using var stream = new MemoryStream(data);
         var path = await DataStore.SaveAsync(TempDomainPath, fileName, stream);
 
-        return path.ToString();
+        return path.RemoveQueryParams("auth", "expire").ToString();
     }
 
     public async Task<string> SaveWithProcessAsync<T>(T id, byte[] imageData, long maxFileSize, Point position, Size cropSize)
@@ -298,6 +296,14 @@ public class RoomLogoManager
         {
             _cache.Insert(GetKey(id, new Size(int.Parse(k[0]), int.Parse(k[1]))), v, _cacheLifeTime);
         }
+    }
+
+    private async Task DeleteLogo<T>(T id)
+    {
+        await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(id)}*.*", false);
+
+        _cache.Remove(_cachePattern);
+        _cache.Remove(GetKey(id));
     }
 
     private string ProcessFolderId<T>(T id)
