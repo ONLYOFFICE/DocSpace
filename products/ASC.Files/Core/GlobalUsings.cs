@@ -166,6 +166,8 @@ global using DocuSign.eSign.Model;
 global using Dropbox.Api;
 global using Dropbox.Api.Files;
 
+global using Flurl;
+
 global using Google;
 global using Google.Apis.Auth.OAuth2;
 global using Google.Apis.Auth.OAuth2.Flows;

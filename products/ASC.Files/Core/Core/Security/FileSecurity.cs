@@ -739,6 +739,10 @@ public class FileSecurity : IFileSecurity
             {
                 return true;
             }
+            else if (e.Access != FileShare.Restrict && e.CreateBy == userId && (e.FileEntryType == FileEntryType.File || folder.FolderType != FolderType.COMMON))
+            {
+                return true;
+            }
             else if (action == FilesSecurityActions.Delete && (e.Access == FileShare.RoomManager || e.Access == FileShare.ReadWrite))
             {
                 if (file != null && (file.RootFolderType == FolderType.VirtualRooms || file.RootFolderType == FolderType.Archive))
@@ -750,10 +754,6 @@ public class FileSecurity : IFileSecurity
                 {
                     return true;
                 }
-            }
-            else if (e.Access != FileShare.Restrict && e.CreateBy == userId && (e.FileEntryType == FileEntryType.File || folder.FolderType != FolderType.COMMON))
-            {
-                return true;
             }
 
             if (e.CreateBy == userId)

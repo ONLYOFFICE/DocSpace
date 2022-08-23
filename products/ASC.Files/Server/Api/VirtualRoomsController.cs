@@ -320,16 +320,24 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// Room security info
     /// </returns>
     [HttpPut("rooms/{id}/share")]
-    public Task<IEnumerable<FileShareDto>> SetRoomSecurityAsync(T id, SecurityInfoRequestDto inDto)
+    public async IAsyncEnumerable<FileShareDto> SetRoomSecurityAsync(T id, SecurityInfoRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
+        IAsyncEnumerable<FileShareDto> result;
         if (!string.IsNullOrEmpty(inDto.Key))
         {
-            return SetRoomSecurityByLinkAsync(id, _authContext.CurrentAccount.ID, inDto.Access, inDto.Key);
+            result = SetRoomSecurityByLinkAsync(id, _authContext.CurrentAccount.ID, inDto.Access, inDto.Key);
+        }
+        else
+        {
+            result = _securityControllerHelper.SetFolderSecurityInfoAsync(id, inDto.Share, inDto.Notify, inDto.SharingMessage);
         }
 
-        return _securityControllerHelper.SetFolderSecurityInfoAsync(id, inDto.Share, inDto.Notify, inDto.SharingMessage);
+        await foreach (var r in result)
+        {
+            yield return r;
+        }
     }
 
     /// <summary>
@@ -568,7 +576,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         }
     }
 
-    private async Task<IEnumerable<FileShareDto>> SetRoomSecurityByLinkAsync(T id, Guid userId, FileShare access, string key)
+    private async IAsyncEnumerable<FileShareDto> SetRoomSecurityByLinkAsync(T id, Guid userId, FileShare access, string key)
     {
         var result = _emailValidationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.LinkInvite + ((int)EmployeeType.User + (int)access + id.ToString()), key,
                 _emailValidationKeyProvider.ValidEmailKeyInterval);
@@ -584,7 +592,10 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             Access = access
         };
 
-        return await _securityControllerHelper.SetFolderSecurityInfoAsync(id, new[] { share }, false, null, true);
+        await foreach (var s in _securityControllerHelper.SetFolderSecurityInfoAsync(id, new[] { share }, false, null, true))
+        {
+            yield return s;
+        }
     }
 
     private async Task ErrorIfNotRights(T id, FileShare share)
