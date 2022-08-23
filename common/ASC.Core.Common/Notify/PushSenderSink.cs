@@ -35,7 +35,6 @@ class PushSenderSink : Sink
 {
     private static readonly string _senderName = Constants.NotifyPushSenderSysName;
     private readonly INotifySender _sender;
-    private bool _configured = true;
 
     public PushSenderSink(INotifySender sender, IServiceProvider serviceProvider)
     {
@@ -163,7 +162,6 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
             Sender = Constants.NotifyPushSenderSysName,
             CreationDate = DateTime.UtcNow,
             ProductID = fromTag != null && fromTag.Value != null ? productID.Value.ToString() : null,
-            ObjectID = msg.ObjectID,
             Data = jsonNotifyData
         };
 

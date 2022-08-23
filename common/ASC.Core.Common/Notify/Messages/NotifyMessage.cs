@@ -69,9 +69,6 @@ public class NotifyMessage : IMapFrom<NotifyQueue>
     public string ProductID { get; set; }
 
     [ProtoMember(14)]
-    public string ObjectID { get; set; }
-
-    [ProtoMember(15)]
     public string Data { get; set; }
 
     public void Mapping(Profile profile)
