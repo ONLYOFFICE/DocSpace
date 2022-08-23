@@ -1,18 +1,42 @@
 import React, { useState, useEffect, useCallback } from "react";
-
-import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
+import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
+
 import FieldContainer from "@docspace/components/field-container";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 
 import TextInput from "@docspace/components/text-input";
+import HelpButton from "@docspace/components/help-button";
+import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 
-import { inject, observer } from "mobx-react";
 import { Base } from "@docspace/components/themes";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
 const StyledComponent = styled.div`
+  .subtitle {
+    margin-top: 5px;
+    margin-bottom: 20px;
+  }
+
+  .wl-subtitle {
+    margin-top: 8px;
+    margin-bottom: 20px;
+  }
+
+  .wl-helper {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .use-as-logo {
+    margin-top: 12px;
+    margin-bottom: 24px;
+  }
+
   .margin-top {
     margin-top: 20px;
   }
@@ -21,12 +45,8 @@ const StyledComponent = styled.div`
     margin-left: 20px;
   }
 
-  .field-container {
-    margin-top: 45px;
-  }
-
-  .input-width {
-    max-width: 500px;
+  .input {
+    max-width: 350px;
   }
 
   .border-img {
@@ -306,23 +326,34 @@ const WhiteLabel = (props) => {
     <LoaderWhiteLabel />
   ) : (
     <StyledComponent>
-      <div className="settings-block">
-        <Text fontSize="16px">{t("LogoSettings")}</Text>
-        <Text className="margin-top" fontSize="14px">
-          <Trans t={t} i18nKey="LogoUploadRecommendation" ns="Settings">
-            We recommended that you use images in <strong>PNG</strong> format
-            with transparent background
-          </Trans>
-        </Text>
+      <Text className="subtitle" color="#657077">
+        {t("BrandingSubtitle")}
+      </Text>
 
+      <Text fontSize="16px" fontWeight="700">
+        {t("WhiteLabel")}
+      </Text>
+      <Text className="wl-subtitle" fontSize="12px">
+        {t("WhiteLabelSubtitle")}
+      </Text>
+
+      <div className="wl-helper">
+        <Text>{t("WhiteLabelHelper")}</Text>
+        <HelpButton
+          tooltipContent={t("WhiteLabelTooltip")}
+          place="right"
+          offsetRight={0}
+        />
+      </div>
+
+      <div className="settings-block">
         <FieldContainer
           id="fieldContainerCompanyName"
-          className="field-container"
           labelText={`${t("CompanyNameForCanvasLogo")}:`}
           isVertical={true}
         >
           <TextInput
-            className="input-width"
+            className="input"
             value={logoTextWhiteLabel}
             onChange={onChangeCompanyName}
             isDisabled={!isPortalPaid}
@@ -334,7 +365,7 @@ const WhiteLabel = (props) => {
           {isPortalPaid && (
             <Button
               id="btnUseAsLogo"
-              className="margin-top"
+              className="use-as-logo"
               size="small"
               label={t("UseAsLogoButton")}
               onClick={onUseTextAsLogo}
@@ -589,25 +620,14 @@ const WhiteLabel = (props) => {
           )}
         </FieldContainer>
 
-        <Button
-          id="btnSaveGreetingSetting"
-          className="margin-top"
-          primary={true}
-          size="small"
-          label={t("Common:SaveButton")}
-          isLoading={false}
-          isDisabled={false}
-          onClick={onSave}
-        />
-
-        <Button
-          id="btnRestoreToDefault"
-          className="margin-top margin-left"
-          size="small"
-          label={t("RestoreDefaultButton")}
-          isLoading={false}
-          isDisabled={false}
-          onClick={onRestoreLogo}
+        <SaveCancelButtons
+          id="buttonsCompanyInfoSettings"
+          className="save-cancel-buttons"
+          onSaveClick={onSave}
+          onCancelClick={onRestoreLogo}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("RestoreDefaultButton")}
+          displaySettings={true}
         />
       </div>
     </StyledComponent>
