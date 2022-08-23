@@ -13,6 +13,7 @@ import store from "client/store";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
 import { isMobile } from "react-device-detect";
+import toastr from "client/toastr";
 const { auth: authStore } = store;
 
 const fullAccessId = "00000000-0000-0000-0000-000000000000";
@@ -84,7 +85,7 @@ class PeopleStore {
     return getUsersList(newFilter);
   };
 
-  onInvite = (e) => {
+  onChangeType = (e) => {
     const action = e.target.dataset.action;
 
     const { getUsersToMakeEmployeesIds } = this.selectionStore;
@@ -92,7 +93,7 @@ class PeopleStore {
     this.changeType(action, getUsersToMakeEmployeesIds);
   };
 
-  changeType = (type, users) => {
+  changeType = (type, users, t, needClearSelection = true) => {
     const { changeAdmins } = this.setupStore;
     const { getUsersList } = this.usersStore;
     const { filter } = this.filterStore;
@@ -105,16 +106,16 @@ class PeopleStore {
     if (type === "admin") {
       changeAdmins(userIDs, fullAccessId, true).then((res) => {
         getUsersList(filter);
-        clearSelection();
-        toastr.success(t("AdministratorsAddedSuccessfully"));
+        needClearSelection && clearSelection();
+        toastr.success(t("Settings:AdministratorsAddedSuccessfully"));
       });
     }
 
     if (type === "user") {
       changeAdmins(userIDs, fullAccessId, false).then((res) => {
         getUsersList(filter);
-        clearSelection();
-        toastr.success(t("AdministratorsAddedSuccessfully"));
+        needClearSelection && clearSelection();
+        toastr.success(t("Settings:AdministratorsRemovedSuccessfully"));
       });
     }
   };
@@ -147,7 +148,7 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Administrator"),
       title: t("Administrator"),
-      onClick: this.onInvite,
+      onClick: this.onChangeType,
       "data-action": "admin",
       key: "administrator",
     };
@@ -156,7 +157,7 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Manager"),
       title: t("Manager"),
-      onClick: this.onInvite,
+      onClick: this.onChangeType,
       "data-action": "manager",
       key: "manager",
     };
@@ -165,7 +166,7 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Common:User"),
       title: t("Common:User"),
-      onClick: this.onInvite,
+      onClick: this.onChangeType,
       "data-action": "user",
       key: "user",
     };

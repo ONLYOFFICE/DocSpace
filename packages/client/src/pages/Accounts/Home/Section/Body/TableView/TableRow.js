@@ -163,9 +163,9 @@ const PeopleTableRow = (props) => {
   // TODO: update after backend update
   const onTypeChange = React.useCallback(
     ({ action }) => {
-      changeUserType(action, [item]);
+      changeUserType(action, [item], t, true);
     },
-    [item, changeUserType]
+    [item, changeUserType, t]
   );
 
   const getRoomsOptions = React.useCallback(() => {
@@ -231,7 +231,7 @@ const PeopleTableRow = (props) => {
           onClick={onUserNameClick}
           className="table-cell_username"
         >
-          {displayName}
+          {statusType === "pending" ? email : displayName}
         </Link>
         <Badges statusType={statusType} />
       </TableCell>

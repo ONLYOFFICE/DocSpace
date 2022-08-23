@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Text from "@docspace/components/text";
+import ComboBox from "@docspace/components/combobox";
 
 import {
   StyledInfoHeaderContainer,
@@ -8,11 +9,20 @@ import {
 } from "./StyledBody";
 import { Avatar } from "@docspace/components";
 import { getUserStatus } from "SRC_DIR/helpers/people-helpers";
+import Badges from "../../Section/Body/Badges";
 
-const SingleItem = ({ t, selection }) => {
+const SingleItem = ({
+  t,
+  selection,
+  isOwner,
+  isAdmin,
+  changeUserType,
+  userId,
+}) => {
   const [statusLabel, setStatusLabel] = React.useState("");
 
   const user = selection[0];
+  const { role, statusType } = user;
 
   React.useEffect(() => {
     getStatusLabel();
@@ -31,17 +41,80 @@ const SingleItem = ({ t, selection }) => {
     }
   }, [user]);
 
+  const isPending = statusType === "pending";
+
+  const getRoomTypeLabel = React.useCallback((role) => {
+    switch (role) {
+      case "owner":
+        return t("Common:Owner");
+      case "admin":
+        return t("PeopleTranslations:Administrator");
+      case "manager":
+        return t("PeopleTranslations:Manager");
+      case "user":
+        return t("Common:User");
+    }
+  }, []);
+
+  const getTypesOptions = React.useCallback(() => {
+    const options = [];
+
+    const adminOption = {
+      key: "admin",
+      title: t("PeopleTranslations:Administrator"),
+      label: t("PeopleTranslations:Administrator"),
+      action: "admin",
+    };
+    const managerOption = {
+      key: "manager",
+      title: t("PeopleTranslations:Manager"),
+      label: t("PeopleTranslations:Manager"),
+      action: "manager",
+    };
+    const userOption = {
+      key: "user",
+      title: t("Common:User"),
+      label: t("Common:User"),
+      action: "user",
+    };
+
+    isOwner && options.push(adminOption);
+
+    isAdmin && options.push(managerOption);
+
+    options.push(userOption);
+
+    return options;
+  }, [t, isAdmin, isOwner]);
+
+  const onTypeChange = React.useCallback(
+    ({ action }) => {
+      changeUserType(action, [user], t, false);
+    },
+    [user, changeUserType, t]
+  );
+
+  const typeLabel = getRoomTypeLabel(role);
+
   return (
     <>
-      <StyledInfoHeaderContainer>
-        <Avatar role={user.role} size={"big"} source={user.avatar} />
+      <StyledInfoHeaderContainer isPending={isPending}>
+        <Avatar
+          className="avatar"
+          role={user.role}
+          size={"big"}
+          source={user.avatar}
+        />
         <div className="info-panel__info-text">
           <Text className={"info-text__name"} noSelect title={user.displayName}>
-            {user.displayName}
+            {isPending ? user.email : user.displayName}
           </Text>
-          <Text className={"info-text__email"} noSelect title={user.email}>
-            {user.email}
-          </Text>
+          {!isPending && (
+            <Text className={"info-text__email"} noSelect title={user.email}>
+              {user.email}
+            </Text>
+          )}
+          {isPending && <Badges statusType={user.statusType} />}
         </div>
       </StyledInfoHeaderContainer>
       <StyledInfoDataContainer>
@@ -51,28 +124,69 @@ const SingleItem = ({ t, selection }) => {
           </Text>
         </div>
         <div className="data__body">
-          <Text className={"header__text"} noSelect title={t("Data")}>
+          <Text className={"info_field first-row"} noSelect title={t("Data")}>
             {t("ConnectDialog:Account")}
           </Text>
-          <Text className={"header__text"} noSelect title={statusLabel}>
+          <Text
+            className={"info_data first-row"}
+            fontSize={"13px"}
+            fontWeight={600}
+            noSelect
+            title={statusLabel}
+          >
             {statusLabel}
           </Text>
-          <Text className={"header__text"} noSelect title={t("Common:Type")}>
+          <Text className={"info_field"} noSelect title={t("Common:Type")}>
             {t("Common:Type")}
           </Text>
-          <div>123</div>
+          {((isOwner && role !== "owner") ||
+            (isAdmin && !isOwner && role !== "admin")) &&
+          statusType !== "disabled" &&
+          userId !== user.id ? (
+            <ComboBox
+              className="type-combobox"
+              selectedOption={getTypesOptions().find(
+                (option) => option.key === role
+              )}
+              options={getTypesOptions()}
+              onSelect={onTypeChange}
+              scaled={false}
+              size="content"
+              displaySelectedOption
+              modernView
+            />
+          ) : (
+            <Text
+              type="page"
+              title={typeLabel}
+              fontSize="13px"
+              fontWeight={600}
+              truncate
+              noSelect
+            >
+              {typeLabel}
+            </Text>
+          )}
           <Text
-            className={"header__text"}
+            className={"info_field"}
             noSelect
             title={t("People:UserStatus")}
           >
             {t("People:UserStatus")}
           </Text>
-          <div>123</div>
-          <Text className={"header__text"} noSelect title={t("Common:Room")}>
+          <Text
+            className={"info_data first-row"}
+            fontSize={"13px"}
+            fontWeight={600}
+            noSelect
+            title={statusLabel}
+          >
+            {t("SmartBanner:Price")}
+          </Text>
+          {/* <Text className={"info_field"} noSelect title={t("Common:Room")}>
             {t("Common:Room")}
           </Text>
-          <div>123</div>
+          <div>123</div> */}
         </div>
       </StyledInfoDataContainer>
     </>

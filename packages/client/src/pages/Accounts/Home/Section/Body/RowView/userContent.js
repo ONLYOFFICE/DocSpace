@@ -44,13 +44,10 @@ const UserContent = ({
   const { userName, displayName, email, statusType, role } = item;
 
   const nameColor =
-    statusType === "pending"
+    statusType === "pending" || statusType === "disabled"
       ? theme.peopleTableRow.pendingNameColor
       : theme.peopleTableRow.nameColor;
-  const sideInfoColor =
-    statusType === "pending"
-      ? theme.peopleTableRow.pendingSideInfoColor
-      : theme.peopleTableRow.sideInfoColor;
+  const sideInfoColor = theme.peopleTableRow.pendingSideInfoColor;
 
   const roleLabel =
     role === "owner"
@@ -77,7 +74,7 @@ const UserContent = ({
         color={nameColor}
         isTextOverflow={true}
       >
-        {displayName}
+        {statusType === "pending" ? email : displayName}
       </Link>
 
       <Badges statusType={statusType} />

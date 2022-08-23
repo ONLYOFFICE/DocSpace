@@ -1,26 +1,26 @@
-import Text from "@docspace/components/text";
 import React from "react";
 import { withTranslation } from "react-i18next";
-import { ReactSVG } from "react-svg";
 
-const SeveralItems = (props) => {
-  const { t, selectedItems, getIcon, getFolderInfo } = props;
-  const itemsIcon = getIcon(24, ".file");
+import Text from "@docspace/components/text";
+import Avatar from "@docspace/components/avatar";
 
+import { StyledTitle } from "./StyledBody";
+
+const SeveralItems = ({ t, count }) => {
   return (
     <>
       <StyledTitle>
-        <ReactSVG className="icon" src={itemsIcon} />
+        <Avatar size={"min"} />
         <Text className="text" fontWeight={600} fontSize="16px">
-          {`${t("ItemsSelected")}: ${selectedItems.length}`}
+          {`${t("SelectedUsers")}: ${count}`}
         </Text>
       </StyledTitle>
 
-      <div className="no-thumbnail-img-wrapper">
+      <div className="no-thumbnail-img-wrapper several-items-image">
         <img
           size="96px"
           className="no-thumbnail-img"
-          src="images/empty_screen.png"
+          src="/static/images/empty_screen-accounts-info-panel.png"
         />
       </div>
     </>

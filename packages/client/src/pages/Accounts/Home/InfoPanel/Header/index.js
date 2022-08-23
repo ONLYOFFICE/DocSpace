@@ -23,7 +23,7 @@ const InfoPanelHeaderContent = ({ t, setIsVisible }) => {
   return (
     <StyledInfoPanelHeader>
       <Text className="header-text" fontSize="21px" fontWeight="700">
-        {t("Common:Info")}
+        {t("Details")}
       </Text>
       <StyledInfoPanelToggleWrapper
         isRootFolder={true}
@@ -49,7 +49,7 @@ export default inject(({ auth }) => {
   const { setIsVisible } = auth.infoPanelStore;
   return { setIsVisible };
 })(
-  withTranslation(["Common"])(
+  withTranslation(["PeopleTranslations"])(
     withLoader(observer(InfoPanelHeaderContent))(
       <Loaders.InfoPanelHeaderLoader />
     )

@@ -20,6 +20,12 @@ const StyledInfoBody = styled.div`
   css`
     padding-left: 16px;
   `}
+
+  .several-items-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 StyledInfoBody.defaultProps = { theme: Base };
@@ -29,18 +35,25 @@ const StyledInfoHeaderContainer = styled.div`
   height: 104px;
   max-height: 104px;
 
-  padding-top: 24px;
-
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: start;
 
+  .avatar {
+    padding-top: 24px;
+  }
+
   .info-panel__info-text {
+    padding-top: 24px;
     padding-left: 16px;
-    padding-bottom: 19px;
 
     display: flex;
-    flex-direction: column;
+    flex-direction: ${(props) => (props.isPending ? "row" : "column")};
+
+    .badges {
+      height: 22px;
+      margin-left: 8px;
+    }
 
     .info-text__name {
       font-weight: 700;
@@ -73,11 +86,34 @@ const StyledInfoDataContainer = styled.div`
 
   .data__body {
     display: grid;
-    grid-template-rows: 24px 24px 24px 24px;
-    grid-template-columns: 72px 1fr;
+    grid-template-rows: 28px 28px 28px 28px;
+    grid-template-columns: 80px 1fr;
 
     grid-gap: 0 24px;
+
+    align-items: center;
+
+    .type-combobox {
+      margin-left: -8px;
+    }
   }
 `;
 
-export { StyledInfoBody, StyledInfoHeaderContainer, StyledInfoDataContainer };
+const StyledTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: start;
+
+  padding: 24px 0;
+
+  .text {
+    padding-left: 8px;
+  }
+`;
+
+export {
+  StyledInfoBody,
+  StyledInfoHeaderContainer,
+  StyledInfoDataContainer,
+  StyledTitle,
+};

@@ -27,6 +27,7 @@ const SimpleUserRow = (props) => {
       {...checkedProps}
       {...contextOptionsProps}
       sectionWidth={sectionWidth}
+      mode={"modern"}
     >
       <UserContent {...props} />
     </Row>

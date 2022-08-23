@@ -11,14 +11,30 @@ import EmptyScreen from "./EmptyScreen";
 import withLoader from "SRC_DIR/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
 
-const InfoPanelBodyContent = ({ t, selection }) => {
+const InfoPanelBodyContent = ({
+  t,
+  selection,
+  isOwner,
+  isAdmin,
+  changeUserType,
+  userId,
+}) => {
   return (
     <StyledInfoBody>
       {selection.length === 0 ? (
         <EmptyScreen t={t} />
       ) : selection.length === 1 ? (
-        <SingleItem t={t} selection={selection} />
-      ) : null}
+        <SingleItem
+          t={t}
+          selection={selection}
+          isOwner={isOwner}
+          isAdmin={isAdmin}
+          changeUserType={changeUserType}
+          userId={userId}
+        />
+      ) : (
+        <SeveralItems count={selection.length} />
+      )}
     </StyledInfoBody>
   );
 };
@@ -27,8 +43,11 @@ InfoPanelBodyContent.defaultProps = { theme: Base };
 
 export default inject(({ auth, peopleStore }) => {
   const { selection } = peopleStore.selectionStore;
+  const { changeType: changeUserType } = peopleStore;
 
-  return { selection };
+  const { isOwner, isAdmin, id: userId } = auth.userStore.user;
+
+  return { selection, isOwner, isAdmin, changeUserType, userId };
 })(
   withRouter(
     withTranslation([
@@ -38,6 +57,7 @@ export default inject(({ auth, peopleStore }) => {
       "People",
       "PeopleTranslations",
       "Settings",
+      "SmartBanner",
     ])(
       withLoader(observer(InfoPanelBodyContent))(
         <Loaders.InfoPanelBodyLoader />
