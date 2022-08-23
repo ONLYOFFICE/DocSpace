@@ -24,13 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.Notify.Push.Dao;
-
-using FirebaseAdmin;
-using FirebaseAdmin.Messaging;
-
-using Google.Apis.Auth.OAuth2;
-
 namespace ASC.Core.Common.Notify.Push;
 
 [Scope]
@@ -107,18 +100,18 @@ public class FirebaseHelper
         {
             if ((bool)fb.IsSubscribed)
             {
-                var m = new FirebaseAdmin.Messaging.Message()
+                var m = new FirebaseAdminMessaging.Message()
                 {
                     Data = new Dictionary<string, string>{
                             { "data", msg.Data }
                         },
                     Token = fb.FirebaseDeviceToken,
-                    Notification = new Notification()
+                    Notification = new FirebaseAdminMessaging.Notification()
                     {
                         Body = msg.Content
                     }
                 };
-                FirebaseMessaging.DefaultInstance.SendAsync(m);
+                FirebaseAdminMessaging.FirebaseMessaging.DefaultInstance.SendAsync(m);
             }
         }
     }

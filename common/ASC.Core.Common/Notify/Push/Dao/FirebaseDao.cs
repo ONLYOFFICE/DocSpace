@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Common.Notify.Push;
 
-
 [Scope]
 public class FirebaseDao
 {
