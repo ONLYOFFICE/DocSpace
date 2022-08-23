@@ -173,7 +173,7 @@ public class RoomLogoManager
         using var stream = new MemoryStream(data);
         var path = await DataStore.SaveAsync(TempDomainPath, fileName, stream);
 
-        return path.RemoveQueryParams("auth", "expire").ToString();
+        return path.ToString();
     }
 
     public async Task<string> SaveWithProcessAsync<T>(T id, byte[] imageData, long maxFileSize, Point position, Size cropSize)
