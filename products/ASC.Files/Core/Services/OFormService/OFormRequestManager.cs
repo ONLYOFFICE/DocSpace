@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using File = System.IO.File;
-
 namespace ASC.Files.Core.Services.OFormService;
 
 [Singletone]
@@ -54,7 +52,7 @@ public class OFormRequestManager
         };
     }
 
-    public async Task<FileStream> Get(int id)
+    public async Task<Stream> Get(int id)
     {
         try
         {
@@ -64,15 +62,8 @@ public class OFormRequestManager
             var file = data.Data.Attributes.File.Data.FirstOrDefault(f => f.Attributes.Ext == _configuration.Ext);
             var filePath = Path.Combine(_tempPath.GetTempPath(), file.Attributes.Name);
 
-            if (!File.Exists(filePath))
-            {
-                using var streamResponse = await httpClient.GetAsync(file.Attributes.Url);
-                using var stream = await streamResponse.Content.ReadAsStreamAsync();
-                using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.ReadWrite, System.IO.FileShare.Read);
-                await stream.CopyToAsync(fileStream);
-            }
-
-            return File.OpenRead(filePath);
+            var streamResponse = await httpClient.GetAsync(file.Attributes.Url);
+            return await streamResponse.Content.ReadAsStreamAsync();
         }
         catch (Exception e)
         {
