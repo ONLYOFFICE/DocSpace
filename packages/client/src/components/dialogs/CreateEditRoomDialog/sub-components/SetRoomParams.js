@@ -56,7 +56,7 @@ const SetRoomParams = ({
     //   });
     // else
 
-    setRoomParams({ ...roomParams, title: value });
+    setRoomParams({ ...roomParams, title: e.target.value });
   };
 
   const onChangeIsPrivate = () =>
