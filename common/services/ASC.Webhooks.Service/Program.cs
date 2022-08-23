@@ -41,11 +41,20 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     diHelper.TryAdd<DbWorker>();
 
-    services.AddHostedService<BuildQueueService>();
-    diHelper.TryAdd<BuildQueueService>();
-
     services.AddHostedService<WorkerService>();
     diHelper.TryAdd<WorkerService>();
+
+    services.AddHttpClient("webhook")
+    .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+    .AddPolicyHandler((s, request) =>
+    {
+        var settings = s.GetRequiredService<Settings>();
+
+        return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+            .WaitAndRetryAsync(settings.RepeatCount.HasValue ? settings.RepeatCount.Value : 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+    });
 });
 
 builder.WebHost.ConfigureDefaultKestrel();
