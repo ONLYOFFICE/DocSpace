@@ -46,7 +46,7 @@ const EditRoomEvent = ({
     },
     isPrivate: false,
     icon: {
-      uploadedFile: item.logo.big,
+      uploadedFile: item.logo.original,
       tmpFile: "",
       x: 0.5,
       y: 0.5,
@@ -55,6 +55,7 @@ const EditRoomEvent = ({
       zoom: 1,
     },
   };
+  // console.log(item);
 
   const onSave = async (roomParams) => {
     console.log(roomParams);
