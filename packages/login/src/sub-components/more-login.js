@@ -16,12 +16,12 @@ const ProviderRow = styled.div`
   justify-content: flex-start;
   align-items: center;
   align-content: center;
-  padding-top: 12px;
+  padding: 8px 0;
 
   svg {
     height: 24px;
     width: 24px;
-    padding-top: 4px;
+    padding-left: 4px;
   }
 
   .provider-name {
@@ -75,7 +75,7 @@ const MoreLoginModal = (props) => {
             <Button
               label={t("Common:LoginButton")}
               className="signin-button"
-              size="normal"
+              size="small"
               onClick={() => (window.location.href = ssoUrl)}
             />
           </ProviderRow>
@@ -94,7 +94,7 @@ const MoreLoginModal = (props) => {
               <Button
                 label={t("Common:LoginButton")}
                 className="signin-button"
-                size="normal"
+                size="small"
                 data-url={item.url}
                 data-providername={item.provider}
                 onClick={onSocialLoginClick}

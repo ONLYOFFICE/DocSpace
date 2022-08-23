@@ -28,8 +28,8 @@ namespace ASC.Webhooks.Core.EF.Context;
 
 public class WebhooksDbContext : DbContext
 {
-    public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
-    public virtual DbSet<WebhooksLog> WebhooksLogs { get; set; }
+    public DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
+    public DbSet<WebhooksLog> WebhooksLogs { get; set; }
 
     public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options) : base(options) { }
 

@@ -12,6 +12,8 @@ import {
   ButtonsWrapper,
 } from "./StyledConfirm";
 import withLoader from "../withLoader";
+import FormWrapper from "@docspace/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
 
 const ChangeOwnerForm = (props) => {
   const { t, greetingTitle } = props;
@@ -20,34 +22,36 @@ const ChangeOwnerForm = (props) => {
     <StyledPage>
       <StyledBody>
         <StyledHeader>
+          <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
+        </StyledHeader>
 
+        <FormWrapper>
           <Text className="subtitle">
             {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
           </Text>
-        </StyledHeader>
-
-        <ButtonsWrapper>
-          <Button
-            className="button"
-            primary
-            size="normal"
-            label={t("Common:SaveButton")}
-            tabIndex={2}
-            isDisabled={false}
-            //onClick={this.onAcceptClick} // call toast with t("ConfirmOwnerPortalSuccessMessage")
-          />
-          <Button
-            className="button"
-            size="normal"
-            label={t("Common:CancelButton")}
-            tabIndex={2}
-            isDisabled={false}
-            //onClick={this.onCancelClick}
-          />
-        </ButtonsWrapper>
+          <ButtonsWrapper>
+            <Button
+              primary
+              scale
+              size="medium"
+              label={t("Common:SaveButton")}
+              tabIndex={2}
+              isDisabled={false}
+              //onClick={this.onAcceptClick} // call toast with t("ConfirmOwnerPortalSuccessMessage")
+            />
+            <Button
+              scale
+              size="medium"
+              label={t("Common:CancelButton")}
+              tabIndex={2}
+              isDisabled={false}
+              //onClick={this.onCancelClick}
+            />
+          </ButtonsWrapper>
+        </FormWrapper>
       </StyledBody>
     </StyledPage>
   );
