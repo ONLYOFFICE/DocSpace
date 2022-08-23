@@ -27,19 +27,18 @@ const IconEditor = ({
 }) => {
   const [previewIcon, setPreviewIcon] = useState(null);
 
-  const uploadedFile = icon.uploadedFile;
   const setUploadedFile = (uploadedFile) =>
     onChangeIcon({ ...icon, uploadedFile });
 
   return (
     <StyledIconEditor>
-      {uploadedFile && (
+      {icon.uploadedFile && (
         <div className="icon-editor">
           <IconCropper
             t={t}
             icon={icon}
             onChangeIcon={onChangeIcon}
-            uploadedFile={uploadedFile}
+            uploadedFile={icon.uploadedFile}
             setUploadedFile={setUploadedFile}
             setPreviewIcon={setPreviewIcon}
           />
