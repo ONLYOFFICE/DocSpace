@@ -29,5 +29,6 @@ namespace ASC.Webhooks.Core;
 [Scope]
 public interface IWebhookPublisher
 {
-    public void Publish(string eventName, string requestPayload);
+    public Task PublishAsync(string method, string route, string requestPayload);
+    public Task<WebhooksLog> PublishAsync(string method, string route, string requestPayload, int configId);
 }
