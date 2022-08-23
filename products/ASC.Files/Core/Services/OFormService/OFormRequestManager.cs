@@ -29,99 +29,55 @@ using File = System.IO.File;
 namespace ASC.Files.Core.Services.OFormService;
 
 [Singletone]
-public class OFormRequestManager : IDisposable
+public class OFormRequestManager
 {
     private readonly OFormSettings _configuration;
+    private readonly ILogger<OFormRequestManager> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly TempPath _tempPath;
-    private readonly SemaphoreSlim _semaphoreSlim;
-    private OFromRequestData _data;
+    private readonly JsonSerializerOptions _options;
 
     public OFormRequestManager(
+        ILogger<OFormRequestManager> logger,
         ConfigurationExtension configuration,
         IHttpClientFactory httpClientFactory,
         TempPath tempPath)
     {
-        _semaphoreSlim = new SemaphoreSlim(1);
         _configuration = configuration.GetSetting<OFormSettings>("files:oform");
+        _logger = logger;
         _httpClientFactory = httpClientFactory;
         _tempPath = tempPath;
-    }
 
-    public async Task Init(CancellationToken cancellationToken)
-    {
-        await _semaphoreSlim.WaitAsync();
-
-        try
+        _options = new JsonSerializerOptions
         {
-            using var httpClient = _httpClientFactory.CreateClient();
-            using var response = await httpClient.GetAsync(_configuration.Url);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                return;
-            }
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            using var combined = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
-            _data = JsonSerializer.Deserialize<OFromRequestData>(await response.Content.ReadAsStringAsync(combined.Token), options);
-        }
-        catch (Exception)
-        {
-
-        }
-        finally
-        {
-            _semaphoreSlim.Release();
-        }
-
+            PropertyNameCaseInsensitive = true
+        };
     }
 
     public async Task<FileStream> Get(int id)
     {
-        await _semaphoreSlim.WaitAsync(TimeSpan.FromSeconds(_configuration.Period));
-
         try
         {
-            if (_data == null) throw new Exception("not found");
-
-            var item = _data.Data.FirstOrDefault(r => r.Id == id);
-            if (item == null) throw new Exception("not found");
-
-            var file = item.Attributes.File.Data.FirstOrDefault(f => f.Attributes.Ext == _configuration.Ext);
-            if (file == null) throw new Exception("not found");
-
+            using var httpClient = _httpClientFactory.CreateClient();
+            using var response = await httpClient.GetAsync($"{_configuration.Url}{id}?populate[file_oform][fields]=url&populate[file_oform][fields]=name&populate[file_oform][fields]=ext&populate[file_oform][filters][url][$endsWith]={_configuration.Ext}");
+            var data = JsonSerializer.Deserialize<OFromRequestData>(await response.Content.ReadAsStringAsync(), _options);
+            var file = data.Data.Attributes.File.Data.FirstOrDefault(f => f.Attributes.Ext == _configuration.Ext);
             var filePath = Path.Combine(_tempPath.GetTempPath(), file.Attributes.Name);
 
             if (!File.Exists(filePath))
             {
-                await DownloadAndSave(file, filePath);
+                using var streamResponse = await httpClient.GetAsync(file.Attributes.Url);
+                using var stream = await streamResponse.Content.ReadAsStreamAsync();
+                using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.ReadWrite, System.IO.FileShare.Read);
+                await stream.CopyToAsync(fileStream);
             }
 
             return File.OpenRead(filePath);
         }
-        finally
+        catch (Exception e)
         {
-            _semaphoreSlim.Release();
+            _logger.ErrorWithException(e);
+            throw;
         }
-    }
-
-    private async Task DownloadAndSave(OFromFileData fileData, string filePath)
-    {
-        using var httpClient = _httpClientFactory.CreateClient();
-        using var response = await httpClient.GetAsync(fileData.Attributes.Url);
-        using var stream = await response.Content.ReadAsStreamAsync();
-        using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.ReadWrite, System.IO.FileShare.Read);
-        await stream.CopyToAsync(fileStream);
-    }
-
-    public void Dispose()
-    {
-        _semaphoreSlim?.Dispose();
     }
 }
