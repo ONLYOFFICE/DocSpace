@@ -12,8 +12,6 @@
   "EmptyFieldErrorMessage": "Поле не заполнено",
   "Encryption": "Шифрование",
   "FirstName": "Имя",
-  "ForbiddenPageDescription": "Для внесения изменений в данный раздел, перейдите в десктопную версию.",
-  "ForbiddenPageHeader": "Раздел недоступен.",
   "GenerateCertificate": "Сгенерировать новый самоподписанный сертификат ",
   "Hide": "Скрыть",
   "HideAdditionalParameters": "Скрыть дополнительные параметры",

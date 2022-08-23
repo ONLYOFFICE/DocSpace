@@ -65,6 +65,8 @@
   "EveryDay": "Every day",
   "EveryMonth": "Every month",
   "EveryWeek": "Every week",
+  "ForbiddenPageDescription": "To make changes to this section, go to the desktop version.",
+  "ForbiddenPageHeader": "Section unavailable.",
   "ForcePathStyle": "Force Path Style",
   "FullAccessTooltip": "Have the same access rights as the portal owner, except the right to:",
   "Group": "Group",
