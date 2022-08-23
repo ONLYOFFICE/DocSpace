@@ -243,10 +243,10 @@ const Dark = {
     hoverBackgroundColor: "#FFAD3D",
     clickBackgroundColor: "#E6842E",
 
-    padding: "5px 10px",
+    padding: "5px 14px 5px 12px",
     borderRadius: "3px",
     lineHeight: "22px",
-    fontSize: "15px",
+    fontSize: "16px",
     fontWeight: 700,
     textColor: "#FFFFFF",
     textColorDisabled: black,
@@ -275,9 +275,9 @@ const Dark = {
     arrowDropdown: {
       borderLeft: "4px solid transparent",
       borderRight: "4px solid transparent",
-      borderTop: `4px solid ${white}`,
-      borderTopDisabled: `4px solid ${black}`,
-      right: "10px",
+      borderTop: `5px solid ${white}`,
+      borderTopDisabled: `5px solid ${black}`,
+      right: "14px",
       top: "50%",
       width: "0",
       height: "0",
@@ -907,7 +907,7 @@ const Dark = {
   tabsContainer: {
     scrollbar: {
       width: "100%",
-      height: "50px",
+      height: "44px",
     },
 
     label: {
@@ -954,8 +954,8 @@ const Dark = {
       margin: "0 0 16px 0",
 
       label: {
-        lineHeight: "13px",
-        height: "15px",
+        lineHeight: "20px",
+        height: "20px",
       },
 
       labelIcon: {
