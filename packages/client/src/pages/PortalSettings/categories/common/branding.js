@@ -13,6 +13,7 @@ import AdditionalResources from "./settingsBranding/additionalResources";
 import ForbiddenPage from "../ForbiddenPage";
 
 const StyledComponent = styled.div`
+  max-width: 700px;
   width: 100%;
   font-weight: 400;
   font-size: 13px;
