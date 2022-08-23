@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 const StyledBreakpointWarning = styled.div`
-  padding: 44px 44px 0 44px;
+  padding: 24px 44px 0 24px;
 
   .description {
     display: flex;
     flex-direction: column;
-    padding-top: 36px;
+    padding-top: 28px;
     white-space: break-spaces;
   }
 
