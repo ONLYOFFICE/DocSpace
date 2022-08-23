@@ -128,7 +128,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             }
             else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH
                 && folder.FolderType != FolderType.FillingFormsRoom && folder.FolderType != FolderType.EditingRoom
-                && folder.FolderType != FolderType.ReviewRoom && folder.FolderType != FolderType.ReadOnlyRoom 
+                && folder.FolderType != FolderType.ReviewRoom && folder.FolderType != FolderType.ReadOnlyRoom
                 && folder.FolderType != FolderType.CustomRoom)
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
@@ -172,7 +172,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                     var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
                     if (immediately && FolderDao.UseRecursiveOperation(folder.Id, default(T)))
                     {
-                        var files = await FileDao.GetFilesAsync(folder.Id);
+                        var files = await FileDao.GetFilesAsync(folder.Id).ToListAsync();
                         await DeleteFilesAsync(files, scope);
 
                         var folders = await FolderDao.GetFoldersAsync(folder.Id).ToListAsync();
@@ -193,7 +193,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                                 {
                                     await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT);
                                 }
-                                
+
                                 filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
                             }
                             else

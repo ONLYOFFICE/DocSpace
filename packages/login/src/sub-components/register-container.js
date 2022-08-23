@@ -19,7 +19,7 @@ const StyledRegister = styled(Box)`
   justify-content: center;
   z-index: 184;
   width: 100%;
-  height: 66px;
+  height: 68px;
   padding: 1.5em;
   bottom: 0;
   right: 0;

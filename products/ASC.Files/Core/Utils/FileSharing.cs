@@ -209,33 +209,27 @@ public class FileSharingAceHelper<T>
         return changed;
     }
 
-    public Task RemoveAceAsync(IAsyncEnumerable<FileEntry<T>> entries)
+    public async Task RemoveAceAsync(FileEntry<T> entry)
     {
-        var fileSecurity = _fileSecurity;
+        if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy
+                || Equals(entry.RootId, _globalFolderHelper.FolderMy)
+                || Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync))
+        {
+            return;
+        }
 
-        return entries.ForEachAwaitAsync(
-            async entry =>
-            {
-                if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy
-                        || Equals(entry.RootId, _globalFolderHelper.FolderMy)
-                        || Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync))
-                {
-                    return;
-                }
+        var entryType = entry.FileEntryType;
+        await _fileSecurity.ShareAsync(entry.Id, entryType, _authContext.CurrentAccount.ID,
+                entry.RootFolderType == FolderType.USER
+                ? _fileSecurity.DefaultMyShare
+                : _fileSecurity.DefaultPrivacyShare);
 
-                var entryType = entry.FileEntryType;
-                await fileSecurity.ShareAsync(entry.Id, entryType, _authContext.CurrentAccount.ID,
-                     entry.RootFolderType == FolderType.USER
-                        ? fileSecurity.DefaultMyShare
-                        : fileSecurity.DefaultPrivacyShare);
+        if (entryType == FileEntryType.File)
+        {
+            await _documentServiceHelper.CheckUsersForDropAsync((File<T>)entry);
+        }
 
-                if (entryType == FileEntryType.File)
-                {
-                    await _documentServiceHelper.CheckUsersForDropAsync((File<T>)entry);
-                }
-
-                await _fileMarker.RemoveMarkAsNewAsync(entry);
-            });
+        await _fileMarker.RemoveMarkAsNewAsync(entry);
     }
 
     private async Task<List<AceWrapper>> FilterForRoomsAsync(FileEntry<T> entry, List<AceWrapper> aceWrappers, bool invite)
@@ -275,7 +269,7 @@ public class FileSharingAceHelper<T>
                 continue;
             }
 
-            if ((ace.Share == FileShare.None || ace.Share == FileShare.Restrict ) && isAdmin)
+            if ((ace.Share == FileShare.None || ace.Share == FileShare.Restrict) && isAdmin)
             {
                 result.Add(ace);
                 continue;
@@ -402,9 +396,7 @@ public class FileSharing
 
         var linkAccess = FileShare.Restrict;
         var result = new List<AceWrapper>();
-
-        var fileSecurity = _fileSecurity;
-        var shares = await fileSecurity.GetSharesAsync(entry);
+        var shares = await _fileSecurity.GetSharesAsync(entry);
 
         var records = shares
             .GroupBy(r => r.Subject)
@@ -448,7 +440,7 @@ public class FileSharing
 
                 if (g.ID == Constants.LostGroupInfo.ID)
                 {
-                    await fileSecurity.RemoveSubjectAsync<T>(r.Subject);
+                    await _fileSecurity.RemoveSubjectAsync<T>(r.Subject);
 
                     continue;
                 }
@@ -535,7 +527,7 @@ public class FileSharing
                     SubjectId = Constants.GroupEveryone.ID,
                     SubjectName = FilesCommonResource.Everyone,
                     SubjectGroup = true,
-                    Share = fileSecurity.DefaultCommonShare,
+                    Share = _fileSecurity.DefaultCommonShare,
                     Owner = false,
                     DisableRemove = true
                 };

@@ -56,44 +56,64 @@ public class ErrorApiResponse : CommonApiResponse
 
 public class SuccessApiResponse : CommonApiResponse
 {
-    public int? Count { get; set; }
-    public long? Total { get; set; }
+    private readonly HttpContext _httpContext;
+
     public object Response { get; set; }
+
+    public int? Count
+    {
+        get
+        {
+
+            if (_httpContext.Items.TryGetValue("Count", out var count))
+            {
+                return (int?)count;
+            }
+
+            if (Response is List<object> list)
+            {
+                return list.Count;
+            }
+
+            if (Response is IEnumerable<object> collection)
+            {
+                return collection.Count();
+            }
+
+            if (Response == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+    }
+
+    public long? Total
+    {
+        get
+        {
+            if (_httpContext.Items.TryGetValue("TotalCount", out var total))
+            {
+                return (long?)total;
+            }
+
+            return null;
+        }
+    }
 
     public SuccessApiResponse()
     {
 
     }
 
-    protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
+    protected internal SuccessApiResponse(HttpContext httpContext, object response) : base((HttpStatusCode)httpContext.Response.StatusCode)
     {
         Status = 0;
+        _httpContext = httpContext;
         Response = response;
-        Total = total;
-
-        if (count.HasValue)
-        {
-            Count = count;
-        }
-        else
-        {
-            if (response is List<object> list)
-            {
-                Count = list.Count;
-            }
-            else if (response is IEnumerable<object> collection)
-            {
-                Count = collection.Count();
-            }
-            else if (response == null)
-            {
-                Count = 0;
-            }
-            else
-            {
-                Count = 1;
-            }
-        }
     }
 }
 

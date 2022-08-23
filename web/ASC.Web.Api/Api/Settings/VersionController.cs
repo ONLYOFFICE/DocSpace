@@ -51,9 +51,9 @@ public class VersionController : BaseSettingsController
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("version/build")]
-    public Task<BuildVersion> GetBuildVersionsAsync()
+    public async Task<BuildVersion> GetBuildVersionsAsync()
     {
-        return _buildVersion.GetCurrentBuildVersionAsync();
+        return await _buildVersion.GetCurrentBuildVersionAsync();
     }
 
     [HttpGet("version")]

@@ -654,7 +654,7 @@ public class LdapUserManager
 
                 var tenant = _tenantManager.GetCurrentTenant();
 
-                new Task(() =>
+                new Task(async () =>
                 {
                     using var scope = _serviceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
@@ -679,7 +679,7 @@ public class LdapUserManager
                             uInfo.Status = EmployeeStatus.Terminated;
                             uInfo.Sid = null;
                             userManager.SaveUserInfo(uInfo);
-                            cookiesManager.ResetUserCookie(uInfo.Id);
+                            await cookiesManager.ResetUserCookie(uInfo.Id);
                         }
                     }
                 }).Start();

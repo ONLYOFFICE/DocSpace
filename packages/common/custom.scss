@@ -62,3 +62,18 @@ body.desktop {
   padding: 30px;
   bottom: 15px;
 }
+
+.with-background-pattern {
+  background-image: url("/static/images/background.pattern.react.svg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+
+  @media (max-width: 1024px) {
+    background-size: cover;
+  }
+
+  @media (max-width: 428px) {
+    background-image: none;
+  }
+}
