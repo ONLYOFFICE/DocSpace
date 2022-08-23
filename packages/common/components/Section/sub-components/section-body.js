@@ -35,7 +35,7 @@ const paddingStyles = css`
 
   @media ${mobile} {
     padding: ${(props) =>
-      props.settingsStudio ? "8px 0 16px 24px" : "19px 0 16px 24px"};
+      props.settingsStudio ? "0px 0 16px 24px" : "19px 0 16px 24px"};
   }
 
   ${isMobile &&
