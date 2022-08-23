@@ -412,6 +412,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
         }
 
+        var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
+
+        if (user.QuotaLimit - await _globalSpace.GetUserUsedSpaceAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+        {
+            throw FileSizeComment.GetPersonalFreeSpaceException(user.QuotaLimit);
+        }
+
         var isNew = false;
         List<int> parentFoldersIds;
         DbFile toInsert = null;

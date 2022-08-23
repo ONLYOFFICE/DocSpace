@@ -74,6 +74,7 @@ public sealed class UserInfo : IDirectRecipient, ICloneable, IMapFrom<User>
     public string SsoNameId { get; set; } // SSO SAML user identificator
     public string SsoSessionId { get; set; } // SSO SAML user session identificator
     public DateTime CreateDate { get; set; }
+    public long QuotaLimit { get; set; }
 
     public override string ToString()
     {
