@@ -90,7 +90,7 @@ public class FirebaseDao
 
         dbContext.Update(user);
         dbContext.SaveChanges();
-     
+
         return user;
     }
 
