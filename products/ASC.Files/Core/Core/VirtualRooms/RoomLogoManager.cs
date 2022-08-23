@@ -90,6 +90,9 @@ public class RoomLogoManager
         var fileName = Path.GetFileName(tempFile);
         var data = await GetTempAsync(fileName);
 
+        id = GetId(room);
+
+        await DeleteLogo(id);
         await SaveWithProcessAsync(id, data, -1, new Point(x, y), new Size(width, height));
 
         if (EnableAudit)
@@ -110,17 +113,16 @@ public class RoomLogoManager
             throw new InvalidOperationException("You don't have permission to edit the room");
         }
 
+        id = GetId(room);
+
         try
         {
-            await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(id)}*.*", false);
+            await DeleteLogo(id);
 
             if (EnableAudit)
             {
                 _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted);
             }
-
-            _cache.Remove(_cachePattern);
-            _cache.Remove(GetKey(id));
         }
         catch (DirectoryNotFoundException e)
         {
@@ -130,8 +132,10 @@ public class RoomLogoManager
         return room;
     }
 
-    public async Task<Logo> GetLogo<T>(T id)
+    public async Task<Logo> GetLogo<T>(Folder<T> room)
     {
+        var id = GetId(room);
+
         return new Logo
         {
             Original = await GetOriginalLogoPath(id),
@@ -169,7 +173,7 @@ public class RoomLogoManager
         using var stream = new MemoryStream(data);
         var path = await DataStore.SaveAsync(TempDomainPath, fileName, stream);
 
-        return path.ToString();
+        return path.RemoveQueryParams("auth", "expire").ToString();
     }
 
     public async Task<string> SaveWithProcessAsync<T>(T id, byte[] imageData, long maxFileSize, Point position, Size cropSize)
@@ -294,6 +298,14 @@ public class RoomLogoManager
         }
     }
 
+    private async Task DeleteLogo<T>(T id)
+    {
+        await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(id)}*.*", false);
+
+        _cache.Remove(_cachePattern);
+        _cache.Remove(GetKey(id));
+    }
+
     private string ProcessFolderId<T>(T id)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
@@ -311,5 +323,11 @@ public class RoomLogoManager
     private string GetKey<T>(T id)
     {
         return $"{TenantId}/{id}/orig";
+    }
+
+    private T GetId<T>(Folder<T> room)
+    {
+        return room.ProviderEntry && (room.RootId.ToString().Contains("sbox") 
+            || room.RootId.ToString().Contains("spoint")) ? room.RootId : room.Id;
     }
 }

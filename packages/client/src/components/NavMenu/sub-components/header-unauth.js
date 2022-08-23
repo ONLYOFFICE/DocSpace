@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Box from "@docspace/components/box";
-import RecoverAccess from "./recover-access-container";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -24,7 +23,10 @@ const Header = styled.header`
       width: 475px;
     }
     @media (max-width: 375px) {
-      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      //padding: 0 16px;
     }
   }
 
@@ -40,10 +42,9 @@ const Header = styled.header`
   }
 
   .header-logo-icon {
-    width: 146px;
-    height: 24px;
-    position: relative;
-    padding: 3px 20px 0 6px;
+    width: 100%;
+    height: 100%;
+    padding: 12px 0;
     cursor: pointer;
   }
 `;
@@ -70,17 +71,10 @@ const HeaderUnAuth = ({
           <div>
             <a className="header-logo-wrapper" href="/">
               <img
-                className="header-logo-min_icon"
-                src={combineUrl(
-                  AppServerConfig.proxyURL,
-                  "/static/images/nav.logo.react.svg"
-                )}
-              />
-              <img
                 className="header-logo-icon"
                 src={combineUrl(
                   AppServerConfig.proxyURL,
-                  "/static/images/nav.logo.opened.react.svg"
+                  "/static/images/logo.docspace.react.svg"
                 )}
               />
             </a>
@@ -88,8 +82,6 @@ const HeaderUnAuth = ({
         ) : (
           <></>
         )}
-
-        <div>{enableAdmMess && !wizardToken && <RecoverAccess t={t} />}</div>
       </Box>
     </Header>
   );

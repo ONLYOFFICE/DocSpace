@@ -77,7 +77,6 @@ public class DistributedTask
         Publication(this);
     }
 
-    [Obsolete("GetProperty<T> is deprecated, please use indexer this[propName] instead.")]
     public T GetProperty<T>(string propName)
     {
         if (!_props.TryGetValue(propName, out var propValue))
@@ -88,8 +87,7 @@ public class DistributedTask
         return JsonSerializer.Deserialize<T>(propValue);
     }
 
-    [Obsolete("SetProperty is deprecated, please use indexer this[propName] = propValue instead.")]
-    public void SetProperty(string propName, object propValue)
+    public void SetProperty<T>(string propName, T propValue)
     {
         _props[propName] = JsonSerializer.Serialize(propValue);
     }

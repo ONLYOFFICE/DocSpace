@@ -144,7 +144,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPost("active")]
-    public async Task<EmployeeDto> AddMemberAsActivated(MemberRequestDto inDto)
+    public async Task<EmployeeFullDto> AddMemberAsActivated(MemberRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
@@ -194,7 +194,7 @@ public class UserController : PeopleControllerBase
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrl(inDto.Files, user);
         }
 
         return await _employeeFullDtoHelper.GetFull(user);
@@ -202,7 +202,7 @@ public class UserController : PeopleControllerBase
 
     [HttpPost]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    public async Task<EmployeeDto> AddMember(MemberRequestDto inDto)
+    public async Task<EmployeeFullDto> AddMember(MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
@@ -288,7 +288,7 @@ public class UserController : PeopleControllerBase
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrl(inDto.Files, user);
         }
 
         if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
@@ -318,7 +318,7 @@ public class UserController : PeopleControllerBase
 
     [HttpPut("{userid}/password")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
-    public async Task<EmployeeDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
+    public async Task<EmployeeFullDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
         _permissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
@@ -371,7 +371,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpDelete("{userid}")]
-    public async Task<EmployeeDto> DeleteMember(string userid)
+    public async Task<EmployeeFullDto> DeleteMember(string userid)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
@@ -401,7 +401,7 @@ public class UserController : PeopleControllerBase
 
     [HttpDelete("@self")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
-    public async Task<EmployeeDto> DeleteProfile()
+    public async Task<EmployeeFullDto> DeleteProfile()
     {
         _apiContext.AuthByClaim();
 
@@ -448,7 +448,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("status/{status}/search")]
-    public async IAsyncEnumerable<EmployeeDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
+    public async IAsyncEnumerable<EmployeeFullDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -475,13 +475,13 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet]
-    public IAsyncEnumerable<EmployeeDto> GetAll()
+    public IAsyncEnumerable<EmployeeFullDto> GetAll()
     {
         return GetByStatus(EmployeeStatus.Active);
     }
 
     [HttpGet("email")]
-    public async Task<EmployeeDto> GetByEmail([FromQuery] string email)
+    public async Task<EmployeeFullDto> GetByEmail([FromQuery] string email)
     {
         if (_coreBaseSettings.Personal && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOwner(Tenant))
         {
@@ -499,7 +499,7 @@ public class UserController : PeopleControllerBase
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     [HttpGet("{username}", Order = 1)]
-    public async Task<EmployeeDto> GetById(string username)
+    public async Task<EmployeeFullDto> GetById(string username)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -538,7 +538,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("status/{status}")]
-    public IAsyncEnumerable<EmployeeDto> GetByStatus(EmployeeStatus status)
+    public IAsyncEnumerable<EmployeeFullDto> GetByStatus(EmployeeStatus status)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -556,7 +556,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("filter")]
-    public async IAsyncEnumerable<EmployeeDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
     {
         var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
 
@@ -582,7 +582,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("@search/{query}")]
-    public async IAsyncEnumerable<EmployeeDto> GetSearch(string query)
+    public async IAsyncEnumerable<EmployeeFullDto> GetSearch(string query)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -627,7 +627,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("delete", Order = -1)]
-    public async IAsyncEnumerable<EmployeeDto> RemoveUsers(UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> RemoveUsers(UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
@@ -660,7 +660,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("invite")]
-    public async IAsyncEnumerable<EmployeeDto> ResendUserInvites(UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto inDto)
     {
         var users = inDto.UserIds
              .Where(userId => !_userManager.IsSystemUser(userId))
@@ -740,7 +740,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("@self")]
-    public async Task<EmployeeDto> Self()
+    public async Task<EmployeeFullDto> Self()
     {
         var user = _userManager.GetUser(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
 
@@ -832,7 +832,7 @@ public class UserController : PeopleControllerBase
 
     [HttpPut("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
-    public async IAsyncEnumerable<EmployeeDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
@@ -852,7 +852,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("{userid}/culture")]
-    public async Task<EmployeeDto> UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
+    public async Task<EmployeeFullDto> UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -890,7 +890,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("{userid}", Order = 1)]
-    public async Task<EmployeeDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
+    public async Task<EmployeeFullDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -953,7 +953,7 @@ public class UserController : PeopleControllerBase
 
         if (inDto.Files != await _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
-            UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrl(inDto.Files, user);
         }
         if (inDto.Disable.HasValue)
         {
@@ -1001,7 +1001,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("status/{status}")]
-    public async IAsyncEnumerable<EmployeeDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -1047,7 +1047,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("type/{type}")]
-    public async IAsyncEnumerable<EmployeeDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
     {
         var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
