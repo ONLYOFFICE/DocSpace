@@ -948,7 +948,7 @@ public class FileSecurity : IFileSecurity
             foldersInt.AddRange(roomsEntries);
             foldersString.AddRange(thirdPartyRoomsEntries);
 
-            if (withSubfolders)
+            if (withSubfolders && filterType != FilterType.FoldersOnly)
             {
                 List<File<int>> files;
                 List<File<string>> thirdPartyFiles;
@@ -980,7 +980,7 @@ public class FileSecurity : IFileSecurity
             foldersInt.AddRange(roomsEntries);
             foldersString.AddRange(thirdPartyRoomsEntries);
 
-            if (withSubfolders)
+            if (withSubfolders && filterType != FilterType.FoldersOnly)
             {
                 List<File<int>> files;
                 List<File<string>> thirdPartyFiles;
@@ -1063,7 +1063,7 @@ public class FileSecurity : IFileSecurity
 
         entries.AddRange(fileEntries);
 
-        if (withSubfolders)
+        if (withSubfolders && filterType != FilterType.FoldersOnly)
         {
             List<File<T>> files;
 
