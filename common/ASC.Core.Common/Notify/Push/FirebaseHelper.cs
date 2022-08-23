@@ -87,11 +87,6 @@ public class FirebaseHelper
             fireBaseUser = _firebaseDao.GetUserDeviceTokens(user.Id, msg.TenantId, PushConstants.PushDocAppName);
         }
 
-        if (productID == new Guid("{1e044602-43b5-4d79-82f3-fd6208a11960}")) //projects product
-        {
-            fireBaseUser = _firebaseDao.GetUserDeviceTokens(user.Id, msg.TenantId, PushConstants.PushProjAppName);
-        }
-
         foreach (var fb in fireBaseUser)
         {
             if(fb.IsSubscribed.HasValue && fb.IsSubscribed.Value == true)

@@ -61,12 +61,8 @@ public static class FireBaseUserExtension
 
             entity.ToTable("firebase_users");
 
-            entity.HasIndex(e => e.UserId)
+            entity.HasIndex(e => new { e.TenantId, e.UserId })
                 .HasDatabaseName("user_id");
-            entity.HasIndex(e => e.TenantId)
-                .HasDatabaseName("tenant_id");
-            entity.HasIndex(e => e.FirebaseDeviceToken)
-                .HasDatabaseName("firebase_device_token");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
@@ -74,16 +70,16 @@ public static class FireBaseUserExtension
 
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id")
-                .HasColumnType("varchar(38)")
+                .HasColumnType("varchar(36)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
-            
+
             entity.Property(e => e.FirebaseDeviceToken)
                 .HasColumnName("firebase_device_token")
                 .HasColumnType("varchar(255)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
-            
+
             entity.Property(e => e.Application)
                 .HasColumnName("application")
                 .HasColumnType("varchar(20)")
@@ -102,12 +98,8 @@ public static class FireBaseUserExtension
 
             entity.ToTable("firebase_users", "onlyoffice");
 
-            entity.HasIndex(e => e.UserId)
+            entity.HasIndex(e => new { e.TenantId, e.UserId })
                 .HasDatabaseName("user_id");
-            entity.HasIndex(e => e.TenantId)
-                .HasDatabaseName("tenant_id");
-            entity.HasIndex(e => e.FirebaseDeviceToken)
-                .HasDatabaseName("firebase_device_token");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
@@ -115,7 +107,7 @@ public static class FireBaseUserExtension
 
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id")
-                .HasMaxLength(38);
+                .HasMaxLength(36);
 
             entity.Property(e => e.FirebaseDeviceToken)
                 .HasColumnName("firebase_device_token")

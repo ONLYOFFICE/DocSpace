@@ -34,5 +34,4 @@ public static class PushConstants
     public const string PushActionTagName = "PushAction";
 
     public const string PushDocAppName = "doc";
-    public const string PushProjAppName = "proj";
 }
