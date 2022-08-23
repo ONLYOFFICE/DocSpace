@@ -27,6 +27,7 @@
 using ASC.Core.Common.Notify.Push.Dao;
 
 using Constants = ASC.Core.Configuration.Constants;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Core.Common.Notify;
 
@@ -77,7 +78,11 @@ class PushSenderSink : Sink
         return tag != null ? (T)tag.Value : default;
     }
 }
-
+public class LowerCaseNamingPolicy : JsonNamingPolicy
+{
+    public override string ConvertName(string name) =>
+        name.ToLower();
+}
 [Scope]
 public class PushSenderSinkMessageCreator : SinkMessageCreator
 {
@@ -140,7 +145,13 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
             };
         }
 
-        var jsonNotifyData = JsonConvert.SerializeObject(notifyData);
+        var serializeOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = new LowerCaseNamingPolicy(),
+            WriteIndented = true
+        };
+
+        var jsonNotifyData = JsonSerializer.Serialize(notifyData, serializeOptions);
 
         var m = new NotifyMessage
         {
