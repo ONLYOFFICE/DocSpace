@@ -180,6 +180,16 @@ public class SettingsController : BaseSettingsController
             {
                 settings.DebugInfo = debugInfo;
             }
+
+            settings.Plugins = new PluginsDto();
+
+            bool pluginsEnabled;
+            if (bool.TryParse(_configuration["plugins:enabled"], out pluginsEnabled))
+            {
+                settings.Plugins.Enabled = pluginsEnabled;
+            }
+
+            settings.Plugins.Allow = _configuration.GetSection("plugins:allow").Get<List<string>>() ?? new List<string>();
         }
         else
         {
