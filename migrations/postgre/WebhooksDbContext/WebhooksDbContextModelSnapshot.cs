@@ -18,16 +18,28 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
-                    b.Property<int>("ConfigId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("config_id")
+                        .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("Enabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("enabled")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
 
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
@@ -47,8 +59,11 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("uri")
                         .HasDefaultValueSql("''");
 
-                    b.HasKey("ConfigId")
+                    b.HasKey("Id")
                         .HasName("PRIMARY");
+
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("tenant_id");
 
                     b.ToTable("webhooks_config", (string)null);
                 });
@@ -69,10 +84,14 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("creation_time");
 
-                    b.Property<string>("Event")
+                    b.Property<DateTime?>("Delivery")
+                        .HasColumnType("datetime")
+                        .HasColumnName("delivery");
+
+                    b.Property<string>("Method")
                         .HasMaxLength(100)
                         .HasColumnType("varchar")
-                        .HasColumnName("event");
+                        .HasColumnName("method");
 
                     b.Property<string>("RequestHeaders")
                         .HasColumnType("json")
@@ -80,7 +99,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
                     b.Property<string>("RequestPayload")
                         .IsRequired()
-                        .HasColumnType("json")
+                        .HasColumnType("text")
                         .HasColumnName("request_payload");
 
                     b.Property<string>("ResponseHeaders")
@@ -88,13 +107,16 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("response_headers");
 
                     b.Property<string>("ResponsePayload")
-                        .HasColumnType("json")
+                        .HasColumnType("text")
                         .HasColumnName("response_payload");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
+                    b.Property<string>("Route")
+                        .HasMaxLength(100)
                         .HasColumnType("varchar")
+                        .HasColumnName("route");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
                         .HasColumnName("status");
 
                     b.Property<int>("TenantId")
@@ -102,6 +124,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Uid")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar")
                         .HasColumnName("uid");
@@ -109,7 +132,23 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("ConfigId");
+
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("tenant_id");
+
                     b.ToTable("webhooks_logs", (string)null);
+                });
+
+            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksLog", b =>
+                {
+                    b.HasOne("ASC.Webhooks.Core.EF.Model.WebhooksConfig", "Config")
+                        .WithMany()
+                        .HasForeignKey("ConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Config");
                 });
 #pragma warning restore 612, 618
         }

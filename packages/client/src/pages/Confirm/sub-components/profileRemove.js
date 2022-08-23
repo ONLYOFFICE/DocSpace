@@ -9,6 +9,8 @@ import { deleteSelf } from "@docspace/common/api/people";
 import toastr from "@docspace/components/toast/toastr";
 import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
 import withLoader from "../withLoader";
+import FormWrapper from "@docspace/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
 
 const ProfileRemoveForm = (props) => {
   const { t, greetingTitle, linkData, logout } = props;
@@ -35,6 +37,7 @@ const ProfileRemoveForm = (props) => {
       <StyledPage>
         <StyledBody>
           <StyledHeader>
+            <DocspaceLogo className="docspace-logo" />
             <Text fontSize="23px" fontWeight="700" className="title">
               {t("DeleteProfileSuccessMessage")}
             </Text>
@@ -51,26 +54,34 @@ const ProfileRemoveForm = (props) => {
     <StyledPage>
       <StyledBody>
         <StyledHeader>
+          <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-          <Text fontSize="16px" fontWeight="600" className="confirm-subtitle">
-            {t("DeleteProfileConfirmation")}
-          </Text>
-          <Text className="info-delete">
-            {t("DeleteProfileConfirmationInfo")}
-          </Text>
         </StyledHeader>
 
-        <Button
-          className="confirm-button"
-          primary
-          size="normal"
-          label={t("DeleteProfileBtn")}
-          tabIndex={1}
-          isDisabled={isLoading}
-          onClick={onDeleteProfile}
-        />
+        <FormWrapper>
+          <div className="subtitle">
+            <Text
+              fontSize="16px"
+              fontWeight="600"
+              className="delete-profile-confirm"
+            >
+              {t("DeleteProfileConfirmation")}
+            </Text>
+            <Text>{t("DeleteProfileConfirmationInfo")}</Text>
+          </div>
+
+          <Button
+            primary
+            scale
+            size="medium"
+            label={t("DeleteProfileBtn")}
+            tabIndex={1}
+            isDisabled={isLoading}
+            onClick={onDeleteProfile}
+          />
+        </FormWrapper>
       </StyledBody>
     </StyledPage>
   );

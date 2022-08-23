@@ -157,49 +157,63 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             .Select(r => r.Id)
             .ToListAsync();
 
-        foreach (var oldID in oldIDs)
-        {
-            var oldHashID = await MappingIDAsync(oldID);
-            var newID = oldID.Replace(oldValue, newValue);
-            var newHashID = await MappingIDAsync(newID);
-
-                var mappingForUpdate = await Query(filesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.HashId == oldHashID)
-                .ToListAsync();
-
-            foreach (var m in mappingForUpdate)
+            foreach (var oldID in oldIDs)
             {
-                m.Id = newID;
-                m.HashId = newHashID;
-            }
+                var oldHashID = await MappingIDAsync(oldID);
+                var newID = oldID.Replace(oldValue, newValue);
+                var newHashID = await MappingIDAsync(newID);
+
+                var mappingForDelete = await Query(filesDbContext.ThirdpartyIdMapping)
+                    .Where(r => r.HashId == oldHashID).ToListAsync();
+
+                var mappingForInsert = mappingForDelete.Select(m => new DbFilesThirdpartyIdMapping
+                {
+                    TenantId = m.TenantId,
+                    Id = newID,
+                    HashId = newHashID
+                });
+
+                filesDbContext.RemoveRange(mappingForDelete);
+                await filesDbContext.AddRangeAsync(mappingForInsert);
+
+                var securityForDelete = await Query(filesDbContext.Security)
+                    .Where(r => r.EntryId == oldHashID).ToListAsync();
+
+                var securityForInsert = securityForDelete.Select(s => new DbFilesSecurity
+                {
+                    TenantId = s.TenantId,
+                    TimeStamp = DateTime.Now,
+                    EntryId = newHashID,
+                    Share = s.Share,
+                    Subject = s.Subject,
+                    EntryType = s.EntryType,
+                    Owner = s.Owner
+                });
+
+                filesDbContext.RemoveRange(securityForDelete);
+                await filesDbContext.AddRangeAsync(securityForInsert);
+
+                var linkForDelete = await Query(filesDbContext.TagLink)
+                    .Where(r => r.EntryId == oldHashID).ToListAsync();
+
+                var linkForInsert = linkForDelete.Select(l => new DbFilesTagLink
+                {
+                    EntryId = newHashID,
+                    Count = l.Count,
+                    CreateBy = l.CreateBy,
+                    CreateOn = l.CreateOn,
+                    EntryType = l.EntryType,
+                    TagId = l.TagId,
+                    TenantId = l.TenantId
+                });
+
+                filesDbContext.RemoveRange(linkForDelete);
+                await filesDbContext.AddRangeAsync(linkForInsert);
 
                 await filesDbContext.SaveChangesAsync();
-
-                var securityForUpdate = await Query(filesDbContext.Security)
-                .Where(r => r.EntryId == oldHashID)
-                .ToListAsync();
-
-            foreach (var s in securityForUpdate)
-            {
-                s.EntryId = newHashID;
-                    s.TimeStamp = DateTime.Now;
             }
 
-                await filesDbContext.SaveChangesAsync();
-
-                var linkForUpdate = await Query(filesDbContext.TagLink)
-                .Where(r => r.EntryId == oldHashID)
-                .ToListAsync();
-
-            foreach (var l in linkForUpdate)
-            {
-                l.EntryId = newHashID;
-            }
-
-                await filesDbContext.SaveChangesAsync();
-        }
-
-        await tx.CommitAsync();
+            await tx.CommitAsync();
         });
     }
 
