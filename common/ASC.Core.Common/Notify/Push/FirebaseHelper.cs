@@ -94,7 +94,7 @@ public class FirebaseHelper
 
         foreach (var fb in fireBaseUser)
         {
-            if ((bool)fb.IsSubscribed)
+            if(fb.IsSubscribed.HasValue && fb.IsSubscribed.Value == true)
             {
                 var m = new FirebaseAdminMessaging.Message()
                 {
