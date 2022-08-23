@@ -9,25 +9,20 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import Login from "./components/Login";
 
-const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
-if (isDesktopEditor) typeof window["AscDesktopEditor"];
-
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
   return { theme: settingsStore.theme };
 })(observer(ThemeProvider));
 
-interface ILoginProps {
-  portalSettings: IPortalSettings;
-  buildInfo: IBuildInfo;
-  providers: ProvidersType;
-  capabilities: ICapabilities;
+interface ILoginProps extends IInitialState {
   initialLanguage: string;
   initialI18nStoreASC: any;
+  isDesktopEditor: boolean;
 }
 const App: React.FC<ILoginProps> = ({
   initialLanguage,
   initialI18nStoreASC,
+  isDesktopEditor,
   ...rest
 }) => {
   useSSR(initialI18nStoreASC, initialLanguage);

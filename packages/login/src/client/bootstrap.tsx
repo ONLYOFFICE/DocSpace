@@ -9,13 +9,17 @@ const propsObj: IInitialState = window.__ASC_INITIAL_LOGIN_STATE__;
 const initialI18nStoreASC: IInitialI18nStoreASC = window.initialI18nStoreASC;
 const initialLanguage = window.initialLanguage;
 
+const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
+if (isDesktopEditor) typeof window["AscDesktopEditor"];
+
 initI18n(initialI18nStoreASC);
 
 hydrate(
-  <React.Suspense fallback={<div></div>}>
+  <React.Suspense fallback={<div />}>
     <App
       initialLanguage={initialLanguage}
       initialI18nStoreASC={initialI18nStoreASC}
+      isDesktopEditor={isDesktopEditor}
       {...propsObj}
     />
   </React.Suspense>,
