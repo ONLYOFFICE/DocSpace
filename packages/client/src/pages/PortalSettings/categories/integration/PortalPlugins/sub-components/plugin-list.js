@@ -50,7 +50,7 @@ const StyledRow = styled(Row)`
   }
 `;
 
-const PluginList = ({ plugins, onActivate, onDelete, theme }) => {
+const PluginList = ({ t, plugins, onActivate, onDelete, theme }) => {
   const onActivateAction = React.useCallback(
     (e) => {
       const { dataset } = (e.originalEvent || e).currentTarget;
@@ -78,21 +78,21 @@ const PluginList = ({ plugins, onActivate, onDelete, theme }) => {
             key: `${index}_disable`,
             "data-id": plugin.id,
             "data-status": !plugin.isActive,
-            label: "Disable",
+            label: t("PeopleTranslations:DisableUserButton"),
             onClick: onActivateAction,
           }
         : {
             key: `${index}_activate`,
             "data-id": plugin.id,
             "data-status": !plugin.isActive,
-            label: "Activate",
+            label: t("Common:Activate"),
             onClick: onActivateAction,
           };
 
       const deleteItem = {
         key: "delete",
         "data-id": plugin.id,
-        label: "Delete",
+        label: t("Common:Delete"),
         onClick: onDeleteAction,
       };
 
@@ -111,7 +111,7 @@ const PluginList = ({ plugins, onActivate, onDelete, theme }) => {
           color={theme.connectedClouds.color}
           noSelect
         >
-          Plugin
+          {t("Common:Plugin")}
         </Text>
         <div></div>
 
@@ -124,7 +124,7 @@ const PluginList = ({ plugins, onActivate, onDelete, theme }) => {
             color={theme.connectedClouds.color}
             noSelect
           >
-            Status
+            {t("People:UserStatus")}
           </Text>
         </div>
       </StyledHeader>

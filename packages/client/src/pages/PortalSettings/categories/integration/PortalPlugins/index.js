@@ -52,8 +52,6 @@ const PortalPlugins = ({ t, setDocumentTitle, theme }) => {
       setPlugins((val) => {
         const newPlugins = val.filter((plugin) => +plugin.id !== +id);
 
-        console.log(newPlugins);
-
         if (newPlugins.length === 0) return [];
 
         return [...newPlugins];
@@ -89,6 +87,7 @@ const PortalPlugins = ({ t, setDocumentTitle, theme }) => {
           onActivate={onActivate}
           onDelete={onDelete}
           theme={theme}
+          t={t}
         />
       )}
     </StyledContainer>
@@ -103,4 +102,12 @@ export default inject(({ auth }) => {
     theme,
     setDocumentTitle,
   };
-})(withTranslation(["Settings", "Common"])(observer(PortalPlugins)));
+})(
+  withTranslation([
+    "Settings",
+    "Common",
+    "PeopleTranslations",
+    "People",
+    "Article",
+  ])(observer(PortalPlugins))
+);

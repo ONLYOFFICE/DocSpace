@@ -47,7 +47,7 @@ const UploadButton = ({ t, addPlugin }) => {
       <Button
         className={"plugins__upload-button"}
         size={"small"}
-        label={"Upload plugin"}
+        label={t("Article:Upload")}
         primary
         onClick={onUploadPluginClick}
       />
