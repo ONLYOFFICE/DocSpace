@@ -30,6 +30,7 @@
   "BackupCreatedSuccess": "The backup copy has been successfully created.",
   "BackupList": "Backup List",
   "BackupListWarningText": "If you delete any items from the list, their corresponding files will also be deleted. This action cannot be undone. To delete all the files use the link:",
+  "BrandingSubtitle": "Use this option to provide on-brand experience to your users. These settings will be effective for all of your portals.",
   "BrowserNoCanvasSupport": "Your browser does not support the HTML5 canvas tag.",
   "ByApp": "By authenticator app",
   "BySms": "By sms",
@@ -133,7 +134,6 @@
   "SendNotificationAboutRestoring": "Send notification about portal restoring to users",
   "ServerSideEncryptionMethod": "Server Side Encryption Method",
   "ServiceUrl": "Service Url",
-  "RecoveryFileNotSelected": "Recovery error. Recovery file not selected",
   "SingleSignOn": "Single Sign-On",
   "SessionLifetime": "Session Lifetime",
   "SessionLifetimeDescription": "Session Lifetime allows to set time (in minutes) before the portal users will need to enter the portal credentials again in order to access the portal.",
@@ -163,7 +163,6 @@
   "ThirdPartyResourceDescription": "Backup can be saved to your third-party account (Dropbox, Box.com, OneDrive or Google Drive). You need to connect your third-party account (Dropbox, Box.com, OneDrive or Google Drive) to the Common documents folder before you will be able to save your backup there.",
   "ThirdPartyStorage": "Third-party storage",
   "ThirdPartyStorageDescription": "Backup can be saved to a third-party storage. Before, you need to connect the corresponding service in the 'Integration' section. Otherwise, the following settings will be inactive.",
-  "ThirdPartyTitleDescription": "With Authorization keys, you can connect third-party services to your portal. Sign in easily with Facebook, Twitter, or LinkedIn; add Dropbox, OneDrive, etc. to work with files stored there from the Documents module.",
   "TimeZone": "Time Zone",
   "TrustedMail": "Trusted mail domain settings",
   "TrustedMailDescription": "Trusted Mail Domain Settings is a way to specify the mail servers used for user self-registration.",
@@ -179,5 +178,8 @@
   "UserAgreement": "I confirm and want to proceed",
   "Users": "Users",
   "WhiteLabel": "White label",
+  "WhiteLabelSubtitle": "Enter your company name, upload the logo, and customize the styling to match your branding.",
+  "WhiteLabelHelper": "Use PNG images with a transparent background",
+  "WhiteLabelTooltip": "The sizes are shown for the Retina displays. For the displays with standard resolutions the logo width and height will be resized accordingly upon upload.",
   "YouHaveUnsavedChanges": "You have unsaved changes"
 }
