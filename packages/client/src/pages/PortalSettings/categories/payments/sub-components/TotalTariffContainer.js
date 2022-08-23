@@ -63,6 +63,8 @@ const TotalTariffContainer = ({
   theme,
   onClick,
   isLoading,
+  isAlreadyPaid,
+  countAdmin,
 }) => {
   useEffect(() => {}, []);
 
@@ -129,7 +131,11 @@ const TotalTariffContainer = ({
         label={isNeedRequest ? t("SendRequest") : t("UpgradeNow")}
         size={"medium"}
         primary
-        isDisabled={isLoading || isDisabled}
+        isDisabled={
+          (!isNeedRequest && isAlreadyPaid && usersCount === countAdmin) ||
+          isLoading ||
+          isDisabled
+        }
         onClick={onClick}
         isLoading={isLoading}
       />

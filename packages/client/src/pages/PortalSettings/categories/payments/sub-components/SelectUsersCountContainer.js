@@ -107,20 +107,27 @@ const SelectUsersCountContainer = ({
   onChangeNumber,
   theme,
   isDisabled,
+  isAlreadyPaid,
+  isLoading,
 }) => {
   const { t } = useTranslation("Payments");
 
   const value =
     usersCount >= maxUsersCount ? maxSliderNumber + "+" : usersCount + "";
 
-  const onClickProp = isDisabled ? {} : { onClick: onClickOperations };
-  const onChangeSlideProp = isDisabled ? {} : { onChange: onSliderChange };
-  const onchangeNumberProp = isDisabled ? {} : { onChange: onChangeNumber };
+  const isUpdatingTariff = isLoading && isAlreadyPaid;
+
+  const onClickProp =
+    isDisabled || isUpdatingTariff ? {} : { onClick: onClickOperations };
+  const onChangeSlideProp =
+    isDisabled || isUpdatingTariff ? {} : { onChange: onSliderChange };
+  const onchangeNumberProp =
+    isDisabled || isUpdatingTariff ? {} : { onChange: onChangeNumber };
 
   const color = isDisabled ? { color: theme.text.disableColor } : {};
 
   return (
-    <StyledBody theme={theme} isDisabled={isDisabled}>
+    <StyledBody theme={theme} isDisabled={isDisabled || isUpdatingTariff}>
       <Text noSelect fontWeight={600} className="payment-users_text" {...color}>
         {t("ManagersNumber")}
       </Text>
@@ -142,8 +149,8 @@ const SelectUsersCountContainer = ({
       </div>
 
       <Slider
-        isDisabled={isDisabled}
-        isReadOnly={isDisabled}
+        isDisabled={isDisabled || isUpdatingTariff}
+        isReadOnly={isDisabled || isUpdatingTariff}
         type="range"
         min={min}
         max={maxUsersCount.toString()}
@@ -160,7 +167,8 @@ const SelectUsersCountContainer = ({
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, payments }) => {
   const { theme } = auth.settingsStore;
-  return { theme };
+  const { isLoading } = payments;
+  return { theme, isLoading };
 })(observer(SelectUsersCountContainer));
