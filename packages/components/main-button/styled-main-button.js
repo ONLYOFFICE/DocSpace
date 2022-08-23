@@ -12,25 +12,6 @@ const clickCss = css`
   cursor: pointer;
 `;
 
-const arrowDropdown = css`
-  position: absolute;
-  content: "";
-
-  border-left: ${(props) => props.theme.mainButton.arrowDropdown.borderLeft};
-  border-right: ${(props) => props.theme.mainButton.arrowDropdown.borderRight};
-  border-top: ${(props) =>
-    !props.isDisabled
-      ? props.theme.mainButton.arrowDropdown.borderTop
-      : props.theme.mainButton.arrowDropdown.borderTopDisabled};
-
-  height: ${(props) => props.theme.mainButton.arrowDropdown.height};
-  margin-top: ${(props) => props.theme.mainButton.arrowDropdown.marginTop};
-
-  right: ${(props) => props.theme.mainButton.arrowDropdown.right};
-  top: ${(props) => props.theme.mainButton.arrowDropdown.top};
-  width: ${(props) => props.theme.mainButton.arrowDropdown.width};
-`;
-
 const notDisableStyles = css`
   &:hover {
     ${hoveredCss}
@@ -73,7 +54,8 @@ const StyledMainButton = styled.div`
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   position: relative;
-  display: block;
+  display: flex;
+  justify-content: space-between;
   vertical-align: middle;
   box-sizing: border-box;
 
@@ -87,10 +69,7 @@ const StyledMainButton = styled.div`
   -moz-border-radius: ${(props) => props.theme.mainButton.borderRadius};
   -webkit-border-radius: ${(props) => props.theme.mainButton.borderRadius};
   line-height: ${(props) => props.theme.mainButton.lineHeight};
-
-  &:after {
-    ${arrowDropdown}
-  }
+  border-radius: 3px;
 
   ${(props) => !props.isDisabled && notDisableStyles}
   ${(props) => !props.isDropdown && notDropdown}
@@ -102,12 +81,18 @@ const StyledMainButton = styled.div`
   }
 
   .main-button_text {
+    display: inline;
     font-size: ${(props) => props.theme.mainButton.fontSize};
     font-weight: ${(props) => props.theme.mainButton.fontWeight};
     color: ${(props) =>
       !props.isDisabled
         ? props.theme.mainButton.textColor
         : props.theme.mainButton.textColorDisabled};
+  }
+
+  .main-button_img {
+    padding-top: 9px;
+    height: 5px;
   }
 `;
 StyledMainButton.defaultProps = { theme: Base };

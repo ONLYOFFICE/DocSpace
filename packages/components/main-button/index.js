@@ -68,6 +68,10 @@ const MainButton = (props) => {
         type={ThemeType.MainButton}
       >
         <Text className="main-button_text">{text}</Text>
+        <img
+          className="main-button_img"
+          src="/static/images/triangle-main-button.svg"
+        />
       </ColorTheme>
 
       {isDropdown ? (
