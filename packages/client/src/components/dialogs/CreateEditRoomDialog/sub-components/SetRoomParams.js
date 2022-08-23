@@ -36,25 +36,27 @@ const SetRoomParams = ({
   getOAuthToken,
 }) => {
   const onChangeName = (e) => {
-    let value = e.target.value;
-    value = value.replace("/", "");
-    value = value.replace("\\", "");
+    // let value = e.target.value;
+    // value = value.replace("/", "");
+    // value = value.replace("\\", "");
 
-    const storageFolderPath = roomParams.storageLocation.storageFolderPath;
-    const pathArr = storageFolderPath.split("/");
-    const folderName = pathArr.pop();
+    // const storageFolderPath = roomParams.storageLocation.storageFolderPath;
+    // const pathArr = storageFolderPath.split("/");
+    // const folderName = pathArr.pop();
 
-    if (roomParams.title === folderName)
-      setRoomParams({
-        ...roomParams,
-        title: value,
-        storageLocation: {
-          ...roomParams.storageLocation,
-          storageFolderPath:
-            pathArr.join("/") + (!!pathArr.length ? "/" : "") + value,
-        },
-      });
-    else setRoomParams({ ...roomParams, title: value });
+    // if (roomParams.title === folderName)
+    //   setRoomParams({
+    //     ...roomParams,
+    //     title: value,
+    //     storageLocation: {
+    //       ...roomParams.storageLocation,
+    //       storageFolderPath:
+    //         pathArr.join("/") + (!!pathArr.length ? "/" : "") + value,
+    //     },
+    //   });
+    // else
+
+    setRoomParams({ ...roomParams, title: value });
   };
 
   const onChangeIsPrivate = () =>
@@ -125,9 +127,9 @@ const SetRoomParams = ({
           isPrivate={roomParams.isPrivate}
           onChangeIsPrivate={onChangeIsPrivate}
         />
-      )} */}
+      )}
 
-      {/* {!isEdit && (
+      {!isEdit && (
         <ThirdPartyStorage
           t={t}
           connectItems={connectItems}
