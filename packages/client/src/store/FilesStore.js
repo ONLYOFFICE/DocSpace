@@ -681,7 +681,10 @@ class FilesStore {
       filterData.sortOrder = splitFilter[2];
     }
 
-    if (!this.withPaging) filterData.page = 0;
+    if (!this.withPaging) {
+      filterData.page = 0;
+      filterData.pageCount = 100;
+    }
 
     setSelectedNode([folderId + ""]);
 
