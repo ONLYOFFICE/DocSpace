@@ -73,7 +73,7 @@ public class FirebaseHelper
 
         if (tenant == null)
         {
-            _tenantManager.SetCurrentTenant(1);
+            _tenantManager.SetCurrentTenant(Tenant.DefaultTenant);
         }
         var user = _userManager.GetUserByUserName(msg.Reciever);
 
