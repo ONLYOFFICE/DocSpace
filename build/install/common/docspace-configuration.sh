@@ -7,6 +7,7 @@ ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/${PRODUCT}"
 PRODUCT_DIR="/var/www/${PRODUCT}"
+LOG_DIR="/var/log/onlyoffice/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_DIR="/etc/nginx"
 NGINX_CONF="${NGINX_DIR}/conf.d"
@@ -176,6 +177,8 @@ install_json() {
 		'products': { 'folder': '$PRODUCT_DIR/products', 'subfolder': 'server'} }" \
 		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
 		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" >/dev/null 2>&1
+
+		$JSON $APP_DIR/appsettings.services.json -e "this.logPath=\"$LOG_DIR\""
 	fi
 }
 
@@ -243,10 +246,10 @@ establish_mysql_conn(){
 
     #Save db settings in .json
 	CONNECTION_STRING="Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false; \
-	SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
+SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
 
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
-	sed "s/Server=.*/$CONNECTION_STRING/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
+	sed "s/Server=.*/$CONNECTION_STRING\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
 
 	change_mysql_config
 
@@ -438,7 +441,7 @@ setup_docs() {
 	local DOCUMENT_SERVER_DB_PASSWORD=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbPass)
 	local DS_CONNECTION_STRING="Host=${DOCUMENT_SERVER_DB_HOST};Port=${DOCUMENT_SERVER_DB_PORT};Database=${DOCUMENT_SERVER_DB_NAME};Username=${DOCUMENT_SERVER_DB_USERNAME};Password=${DOCUMENT_SERVER_DB_PASSWORD};"
 
-	sed "s/Host=.*/$DS_CONNECTION_STRING/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
+	sed "s/Host=.*/$DS_CONNECTION_STRING;\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
 
 	#Enable ds-example autostart
 	sed 's,autostart=false,autostart=true,' -i /etc/supervisord.d/ds-example.ini >/dev/null 2>&1 || sed 's,autostart=false,autostart=true,' -i /etc/supervisor/conf.d/ds-example.conf >/dev/null 2>&1
