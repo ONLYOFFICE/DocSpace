@@ -75,6 +75,10 @@ const StyledStorageLocation = styled.div`
 
 const ThirpartyComboBox = ({
   t,
+  storageLocation,
+
+  setChangeStorageLocation,
+
   connectItems,
   setConnectDialogVisible,
   setRoomCreation,
@@ -82,9 +86,7 @@ const ThirpartyComboBox = ({
   openConnectWindow,
   setConnectItem,
   getOAuthToken,
-  storageLocation,
-  onChangeProvider,
-  onChangeIsConnected,
+
   setIsScrollLocked,
   setIsOauthWindowOpen,
 }) => {
@@ -97,7 +99,6 @@ const ThirpartyComboBox = ({
 
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownDirection, setDropdownDirection] = useState("bottom");
-  const [connectResponse, setConnectResponse] = useState(null);
 
   const toggleIsOpen = () => {
     if (isOpen) setIsScrollLocked(false);
@@ -109,7 +110,10 @@ const ThirpartyComboBox = ({
   };
 
   const setStorageLocaiton = (thirparty) => {
-    onChangeProvider(thirparty);
+    setChangeStorageLocation({
+      ...storageLocation,
+      provider: thirparty,
+    });
     setIsOpen(false);
     setIsScrollLocked(false);
   };
@@ -168,12 +172,23 @@ const ThirpartyComboBox = ({
       setConnectItem(item);
       setConnectDialogVisible(true);
     }
-    onChangeIsConnected(true);
   };
 
   useEffect(() => {
-    // if ()
-    console.log(saveThirdpartyResponse);
+    if (!saveThirdpartyResponse) return;
+
+    if (saveThirdpartyResponse.id) {
+      setChangeStorageLocation({
+        ...storageLocation,
+        isConnected: true,
+        thirdpartyFolderId: saveThirdpartyResponse.id,
+      });
+    } else {
+      setChangeStorageLocation({
+        ...storageLocation,
+        isConnected: false,
+      });
+    }
   }, [saveThirdpartyResponse]);
 
   return (

@@ -34,38 +34,28 @@ const ThirdPartyStorage = ({
   setIsOauthWindowOpen,
 }) => {
   const checkForProviders = () => {
-    onChangeIsThirdparty();
-    // if (connectItems.length) onChangeIsThirdparty();
-    // else
-    //   toastrHelper.warning(
-    //     <div>
-    //       <div>{t("ThirdPartyStorageNoStorageAlert")}</div>
-    //       <a href="#">Third-party services</a>
-    //     </div>,
-    //     "Alert",
-    //     5000,
-    //     true,
-    //     false
-    //   );
+    if (connectItems.length) onChangeIsThirdparty();
+    else
+      toastrHelper.warning(
+        <div>
+          <div>{t("ThirdPartyStorageNoStorageAlert")}</div>
+          <a href="#">Third-party services</a>
+        </div>,
+        "Alert",
+        5000,
+        true,
+        false
+      );
   };
 
-  const onChangeProvider = (provider) => {
+  const onChangeProvider = (provider) =>
     setChangeStorageLocation({ ...storageLocation, provider });
-  };
 
-  const onChangeFolderPath = (e) => {
+  const onChangeFolderPath = (e) =>
     setChangeStorageLocation({
       ...storageLocation,
       storageFolderPath: e.target.value,
     });
-  };
-
-  const onChangeIsConnected = (bool) => {
-    setChangeStorageLocation({
-      ...storageLocation,
-      isConnected: bool,
-    });
-  };
 
   return (
     <StyledThirdPartyStorage>
@@ -99,7 +89,7 @@ const ThirdPartyStorage = ({
           getOAuthToken={getOAuthToken}
           storageLocation={storageLocation}
           onChangeProvider={onChangeProvider}
-          onChangeIsConnected={onChangeIsConnected}
+          setChangeStorageLocation={setChangeStorageLocation}
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
         />

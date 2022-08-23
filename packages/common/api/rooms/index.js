@@ -192,3 +192,14 @@ export function addLogoToRoom(id, data) {
     return res;
   });
 }
+
+export function removeLogoFromRoom(id) {
+  const options = {
+    method: "delete",
+    url: `/files/rooms/${id}/logo`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}

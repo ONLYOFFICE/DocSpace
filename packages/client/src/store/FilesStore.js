@@ -1600,6 +1600,10 @@ class FilesStore {
     return api.rooms.addLogoToRoom(id, icon);
   }
 
+  removeLogoFromRoom(id) {
+    return api.rooms.removeLogoFromRoom(id);
+  }
+
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);
     if (fileIndex !== -1) this.files[fileIndex] = file;
@@ -1840,6 +1844,7 @@ class FilesStore {
         folderId,
         foldersCount,
         id,
+        logo,
         locked,
         parentId,
         pureContentLength,
@@ -1943,6 +1948,7 @@ class FilesStore {
         icon,
         id,
         isFolder,
+        logo,
         locked,
         new: item.new,
         parentId,

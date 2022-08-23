@@ -44,6 +44,11 @@ const CreateRoomEvent = ({
       title: roomParams.title || t("Files:NewRoom"),
     };
 
+    const isThirdparty =
+      roomParams.isThirdparty &&
+      roomParams.storageLocation.isConnected &&
+      roomParams.storageLocation.thirdpartyFolderId;
+
     const addTagsData = roomParams.tags.map((tag) => tag.name);
 
     const createTagsData = roomParams.tags
@@ -56,31 +61,49 @@ const CreateRoomEvent = ({
     try {
       setIsLoading(true);
 
-      const room = await createRoom(createRoomData);
+      const room = isThirdparty
+        ? await createRoomInThirdpary(
+            roomParams.storageLocation.thirdpartyFolderId,
+            createRoomData
+          )
+        : await createRoom(createRoomData);
 
       for (let i = 0; i < createTagsData.length; i++)
         await createTag(createTagsData[i]);
 
       await addTagsToRoom(room.id, addTagsData);
 
-      if (roomParams.icon.uploadedFile) {
-        const response = await uploadRoomLogo(uploadLogoData);
+      if (roomParams.icon.uploadedFile)
+        await uploadRoomLogo(uploadLogoData).then((response) => {
+          const url = URL.createObjectURL(roomParams.icon.uploadedFile);
+          const img = new Image();
 
-        var img = new Image();
-        img.onload = function () {
-          const { x, y, width, height } = roomParams.icon;
-          const newX = Math.round(x * img.width - width / 2);
-          const newY = Math.round(y * img.height - height / 2);
-          addLogoToRoom(roomId, {
-            tmpFile: response.data,
-            x: newX,
-            y: newY,
-            width,
-            height,
-          });
-        };
-        img.src = response.data;
-      }
+          img.onload = () => {
+            const tmpFile = response.data.split("?")[0];
+            const { x, y, zoom } = roomParams.icon;
+
+            const imgWidth = Math.min(1280, img.width);
+            const imgHeight = Math.round(img.height / (img.width / imgWidth));
+
+            const dimensions = Math.round(imgHeight / zoom);
+
+            const croppedX = Math.round(x * imgWidth - dimensions / 2);
+            const croppedY = Math.round(y * imgHeight - dimensions / 2);
+
+            addLogoToRoom(room.id, {
+              tmpFile,
+              x: croppedX,
+              y: croppedY,
+              width: dimensions,
+              height: dimensions,
+            });
+
+            URL.revokeObjectURL(img.src);
+          };
+
+          img.src = url;
+        });
+
       await updateCurrentFolder(null, currrentFolderId);
     } catch (err) {
       console.log(err);
@@ -152,17 +175,18 @@ export default inject(
       thirdPartyStore.ownCloudConnectItem,
       thirdPartyStore.webDavConnectItem,
       thirdPartyStore.sharePointConnectItem,
-    ].map((item) =>
-      item
-        ? {
+    ]
+      .map(
+        (item) =>
+          item && {
             isAvialable: !!item,
             id: item[0],
             providerName: item[0],
             isOauth: item.length > 1,
             oauthHref: item.length > 1 ? item[1] : "",
           }
-        : null
-    );
+      )
+      .filter((item) => !!item);
 
     const { getOAuthToken } = auth.settingsStore;
 
