@@ -18,6 +18,7 @@ const EditRoomEvent = ({
   getThirdPartyIcon,
 
   uploadRoomLogo,
+  removeLogoFromRoom,
   addLogoToRoom,
 
   currrentFolderId,
@@ -45,7 +46,7 @@ const EditRoomEvent = ({
     },
     isPrivate: false,
     icon: {
-      uploadedFileSrc: item.icon,
+      uploadedFile: item.logo.big,
       tmpFile: "",
       x: 0.5,
       y: 0.5,
@@ -77,10 +78,39 @@ const EditRoomEvent = ({
       await addTagsToRoom(roomId, tags);
       await removeTagsFromRoom(roomId, removedTags);
 
+      if (!roomParams.icon.uploadedFileSrc && !roomParams.icon.uploadedFile)
+        await removeLogoFromRoom(roomId);
       if (roomParams.icon.uploadedFile)
         await uploadRoomLogo(uploadLogoData).then((response) => {
-          const { x, y, width, height } = roomParams.icon;
-          addLogoToRoom({ tmpFile: response.data, x, y, width, height });
+          const url = URL.createObjectURL(roomParams.icon.uploadedFile);
+          const img = new Image();
+
+          img.onload = () => {
+            const tmpFile = response.data.split("?")[0];
+            const { x, y, zoom } = roomParams.icon;
+
+            const imgWidth = Math.min(1280, img.width);
+            const imgHeight = Math.round(img.height / (img.width / imgWidth));
+
+            const dimensions = Math.round(imgHeight / zoom);
+
+            const croppedX = Math.round(x * imgWidth - dimensions / 2);
+            const croppedY = Math.round(y * imgHeight - dimensions / 2);
+
+            const data = {
+              tmpFile,
+              x: croppedX,
+              y: croppedY,
+              width: dimensions,
+              height: dimensions,
+            };
+
+            addLogoToRoom(roomId, data);
+
+            URL.revokeObjectURL(img.src);
+          };
+
+          img.src = url;
         });
 
       await updateCurrentFolder(null, currrentFolderId);
@@ -96,8 +126,6 @@ const EditRoomEvent = ({
     const tags = await fetchTags();
     setFetchedTags(tags);
   }, []);
-
-  console.log(item);
 
   return (
     <EditRoomDialog
@@ -126,6 +154,7 @@ export default inject(
       removeTagsFromRoom,
       uploadRoomLogo,
       addLogoToRoom,
+      removeLogoFromRoom,
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
@@ -144,6 +173,7 @@ export default inject(
       getThirdPartyIcon,
 
       uploadRoomLogo,
+      removeLogoFromRoom,
       addLogoToRoom,
 
       currrentFolderId,
