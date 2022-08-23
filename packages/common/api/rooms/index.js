@@ -16,7 +16,6 @@ export function getRooms(filter) {
       res.folders.forEach((room) => (room.isArchive = true));
     }
 
-    console.log(res);
     return res;
   });
 }
