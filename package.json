@@ -4,8 +4,7 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/*",
-      "common/ASC.WebPlugins"
+      "packages/*"
     ]
   },
   "engines": {
