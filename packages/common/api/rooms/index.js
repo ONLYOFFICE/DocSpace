@@ -16,6 +16,7 @@ export function getRooms(filter) {
       res.folders.forEach((room) => (room.isArchive = true));
     }
 
+    console.log(res);
     return res;
   });
 }
@@ -186,6 +187,17 @@ export function addLogoToRoom(id, data) {
     method: "post",
     url: `/files/rooms/${id}/logo`,
     data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function removeLogoFromRoom(id) {
+  const options = {
+    method: "delete",
+    url: `/files/rooms/${id}/logo`,
   };
 
   return request(options).then((res) => {
