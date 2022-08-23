@@ -73,6 +73,7 @@ if (IS_DEVELOPMENT) {
     }
 
     await i18next.changeLanguage(currentLanguage);
+
     let initialI18nStore = {};
     if (i18n) initialI18nStore = i18n.services.resourceStore.data;
 
@@ -84,7 +85,7 @@ if (IS_DEVELOPMENT) {
 
       initialState.match = query;
 
-      const { component, styleTags } = renderApp(i18n, initialState);
+      const { component, styleTags } = renderApp(i18next, initialState);
 
       const htmlString = template(
         initialState,
