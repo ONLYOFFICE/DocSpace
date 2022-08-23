@@ -16,6 +16,28 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
         )}`
       : "";
 
+  // createUser({
+  //   birthday: "2022-08-16T09:23:55.939Z",
+
+  //   comment: "",
+  //   contacts: [],
+  //   department: [],
+  //   email: "justuser@gmail.com",
+  //   firstName: "User",
+  //   groups: [],
+  //   id: "",
+  //   isVisitor: false,
+  //   lastName: "Test",
+  //   location: "",
+  //   notes: "",
+  //   password: "123456789",
+  //   passwordType: "temp",
+  //   sex: "male",
+  //   title: "",
+  //   workFrom: "",
+  //   worksFrom: "",
+  // });
+
   return request({
     method: "get",
     url: `/people${params}`,
