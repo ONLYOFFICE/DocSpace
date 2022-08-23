@@ -59,12 +59,13 @@ const StyledComponent = styled.div`
   }
 
   .main-button-container {
-    margin: 0px 20px 24px;
+    margin: 0px 20px 23px;
   }
 
   .main-button-preview {
     cursor: auto;
     background-color: ${(props) => props.colorPreview};
+    border-radius: 3px;
   }
 
   .color-badge > div {
@@ -106,7 +107,7 @@ const StyledComponent = styled.div`
     display: flex;
     align-items: center;
 
-    padding: 10px 20px 0px;
+    padding: 10px 32px 0px;
 
     &:not(:last-child) {
       padding-bottom: 10px;
@@ -120,7 +121,7 @@ const StyledComponent = styled.div`
 
   .title-section {
     height: 12px;
-    margin: 0px 20px 4px;
+    margin: 0px 32px 4px;
   }
 
   .menu-badge {
@@ -130,6 +131,8 @@ const StyledComponent = styled.div`
   }
 
   .select {
+    padding-top: 9px;
+    padding-bottom: 9px !important;
     background: ${(props) =>
       props.themePreview === "Light" ? "#f0f0f0" : "#333333"};
   }
@@ -147,7 +150,7 @@ const StyledComponent = styled.div`
     border-width: 1px;
     border-style: solid;
     border-radius: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
   }
 
   .background {
@@ -159,7 +162,7 @@ const StyledComponent = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 22px 16px 16px;
+    padding: 16px 16px 14px 16px;
     height: 30px;
   }
 
@@ -173,7 +176,7 @@ const StyledComponent = styled.div`
   }
 
   .action-button {
-    width: 66px;
+    width: 72px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -198,11 +201,12 @@ const StyledComponent = styled.div`
   .section-badge {
     border: none;
     cursor: auto;
-    padding-right: 10px;
+    padding-right: 12px;
+    font-size: 9px;
   }
 
   .pin {
-    padding-right: 4px;
+    padding-right: 14px;
 
     path {
       fill: ${(props) =>

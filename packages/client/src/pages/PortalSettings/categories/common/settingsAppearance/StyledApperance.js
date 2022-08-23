@@ -1,22 +1,21 @@
-import styled, { css } from "styled-components";
-import { Base } from "@docspace/components/themes";
+import styled from "styled-components";
 
 const StyledComponent = styled.div`
-  padding-top: 5px;
+  padding-top: 3px;
   width: 100%;
 
   .header {
     font-weight: 700;
-    font-size: 18px;
-    line-height: 24px;
+    font-size: 16px;
+    line-height: 22px;
   }
 
   .preview-header {
-    padding-bottom: 8px;
+    padding-bottom: 20px;
   }
 
   .theme-standard {
-    padding-top: 16px;
+    padding-top: 21px;
   }
 
   .theme-name {
@@ -26,7 +25,7 @@ const StyledComponent = styled.div`
   }
 
   .theme-container {
-    padding: 16px 0 16px 0;
+    padding: 12px 0 24px 0;
     display: flex;
   }
 
@@ -50,7 +49,7 @@ const StyledComponent = styled.div`
   }
 
   .buttons-container {
-    padding-top: 32px;
+    padding-top: 24px;
   }
 `;
 

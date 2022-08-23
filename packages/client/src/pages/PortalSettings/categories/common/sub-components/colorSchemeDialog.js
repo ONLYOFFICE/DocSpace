@@ -83,9 +83,6 @@ const ColorSchemeDialog = (props) => {
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        {viewMobile && openHexColorPickerAccent && nodeHexColorPickerAccent}
-        {viewMobile && openHexColorPickerButtons && nodeHexColorPickerButtons}
-
         <>
           {showSaveButtonDialog && (
             <Button

@@ -29,7 +29,6 @@ const Appearance = (props) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
-
     tReady,
     t,
   } = props;
@@ -373,14 +372,9 @@ const Appearance = (props) => {
               </div>
             );
           })}
-
-          {/* <div className="add-theme box" onClick={onAddTheme}>
-          <img src="/static/images/plus.theme.svg" />
-        </div> */}
         </div>
       </div>
 
-      {/* <div onClick={onClickEdit}>Edit color scheme</div> */}
       <ColorSchemeDialog
         nodeButtonsColor={nodeButtonsColor}
         nodeAccentColor={nodeAccentColor}
