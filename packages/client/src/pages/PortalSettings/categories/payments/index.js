@@ -69,6 +69,9 @@ const PaymentsPage = ({
   }, [ready]);
 
   useEffect(() => {
+    if (portalTariff) dueDate = moment(portalTariff.dueDate).format("LL");
+  }, [portalTariff]);
+  useEffect(() => {
     (async () => {
       moment.locale(language);
 
@@ -81,8 +84,6 @@ const PaymentsPage = ({
 
       try {
         await Promise.all(requests);
-
-        if (portalTariff) dueDate = moment(portalTariff.dueDate).format("LL");
       } catch (error) {
         toastr.error(error);
       }
