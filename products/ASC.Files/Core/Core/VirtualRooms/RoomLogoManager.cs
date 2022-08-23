@@ -90,7 +90,9 @@ public class RoomLogoManager
         var fileName = Path.GetFileName(tempFile);
         var data = await GetTempAsync(fileName);
 
-        await SaveWithProcessAsync(id, data, -1, new Point(x, y), new Size(width, height));
+        var resolvedId = room.ProviderEntry && room.RootId.ToString().Contains("sbox") ? room.RootId : room.Id;
+
+        await SaveWithProcessAsync(resolvedId, data, -1, new Point(x, y), new Size(width, height));
 
         if (EnableAudit)
         {
@@ -109,6 +111,8 @@ public class RoomLogoManager
         {
             throw new InvalidOperationException("You don't have permission to edit the room");
         }
+
+        id = GetId(room);
 
         try
         {
@@ -130,8 +134,10 @@ public class RoomLogoManager
         return room;
     }
 
-    public async Task<Logo> GetLogo<T>(T id)
+    public async Task<Logo> GetLogo<T>(Folder<T> room)
     {
+        var id = GetId(room);
+
         return new Logo
         {
             Original = await GetOriginalLogoPath(id),
@@ -311,5 +317,10 @@ public class RoomLogoManager
     private string GetKey<T>(T id)
     {
         return $"{TenantId}/{id}/orig";
+    }
+
+    private T GetId<T>(Folder<T> room)
+    {
+        return room.ProviderEntry && room.RootId.ToString().Contains("sbox") ? room.RootId : room.Id;
     }
 }
