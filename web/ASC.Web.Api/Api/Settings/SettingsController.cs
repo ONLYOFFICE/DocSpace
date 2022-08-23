@@ -25,7 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using Constants = ASC.Core.Users.Constants;
-using FireBaseUser = ASC.Core.Common.EF.FireBaseUser;
 
 namespace ASC.Web.Api.Controllers.Settings;
 public class SettingsController : BaseSettingsController
@@ -708,44 +707,5 @@ public class SettingsController : BaseSettingsController
     public void TelegramDisconnect()
     {
         _telegramHelper.Disconnect(_authContext.CurrentAccount.ID, Tenant.Id);
-    }
-
-    /// <summary>
-    /// Saves a documents firebase device token specified in the request.
-    /// </summary>
-    /// <returns>FireBase user</returns>
-    [HttpPost("push/docregisterdevice")]
-    public FireBaseUser DocRegisterPusnNotificationDevice(FirebaseRequestsDto inDto)
-    {
-        return _firebaseHelper.RegisterUserDevice(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
-    }
-
-    /// <summary>
-    /// Saves a projects firebase device token specified in the request.
-    /// </summary>
-    /// <returns>FireBase user</returns>
-    [HttpPost("push/projregisterdevice")]
-    public FireBaseUser ProjRegisterPusnNotificationDevice(FirebaseRequestsDto inDto)
-    {
-        return _firebaseHelper.RegisterUserDevice(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
-    }
-
-    /// <summary>
-    /// Subscribe to documents push notification.
-    /// </summary>
-    /// <returns>FireBase user</returns>
-    [HttpPut("push/docsubscribe")]
-    public FireBaseUser SubscribeDocumentsPushNotification(FirebaseRequestsDto inDto)
-    {
-        return _firebaseHelper.UpdateUser(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
-    }
-    /// <summary>
-    /// Subscribe to projects push notification.
-    /// </summary>
-    /// <returns>FireBase user</returns>
-    [HttpPut("push/projsubscribe")]
-    public FireBaseUser SubscribeProjectsPushNotification(FirebaseRequestsDto inDto)
-    {
-        return _firebaseHelper.UpdateUser(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushProjAppName);
     }
 }
