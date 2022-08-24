@@ -206,14 +206,7 @@ class TileContainer extends React.PureComponent {
         );
       } else if (isRoom) {
         Rooms.push(
-          <div
-            className="tile-item-wrapper folder"
-            key={index}
-            onContextMenu={this.onRowContextClick.bind(
-              this,
-              item.props.contextOptions
-            )}
-          >
+          <div className="tile-item-wrapper room" key={id}>
             {item}
           </div>
         );
@@ -238,7 +231,7 @@ class TileContainer extends React.PureComponent {
           </Heading>
         )}
 
-        {Folders.length > 0 ? (
+        {Rooms.length > 0 ? (
           useReactWindow ? (
             Rooms
           ) : (
