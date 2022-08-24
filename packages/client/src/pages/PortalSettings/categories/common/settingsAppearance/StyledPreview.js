@@ -32,7 +32,8 @@ const StyledComponent = styled.div`
   .line {
     width: 20px;
     height: 1px;
-    background: #eceef1;
+    background: ${(props) =>
+      props.themePreview === "Light" ? "#eceef1" : "#474747"};
     margin: 0 20px 31px 20px;
   }
 
