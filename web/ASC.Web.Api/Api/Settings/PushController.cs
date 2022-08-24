@@ -30,21 +30,16 @@ namespace ASC.Web.Api.Api.Settings;
 
 public class PushController : BaseSettingsController
 {
-    private Tenant Tenant { get { return ApiContext.Tenant; } }
-
-    private readonly AuthContext _authContext;
     private readonly FirebaseHelper _firebaseHelper;
 
     public PushController(
         ApiContext apiContext,
-        AuthContext authContext,
         WebItemManager webItemManager,
         IMemoryCache memoryCache,
         FirebaseHelper firebaseHelper,
         IHttpContextAccessor httpContextAccessor
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _authContext = authContext;
         _firebaseHelper = firebaseHelper;
     }
 
@@ -55,7 +50,7 @@ public class PushController : BaseSettingsController
     [HttpPost("push/docregisterdevice")]
     public FireBaseUser DocRegisterPusnNotificationDevice(FirebaseRequestsDto inDto)
     {
-        return _firebaseHelper.RegisterUserDevice(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
+        return _firebaseHelper.RegisterUserDevice(inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
     }
 
     /// <summary>
@@ -65,7 +60,7 @@ public class PushController : BaseSettingsController
     [HttpPut("push/docsubscribe")]
     public FireBaseUser SubscribeDocumentsPushNotification(FirebaseRequestsDto inDto)
     {
-        return _firebaseHelper.UpdateUser(_authContext.CurrentAccount.ID, Tenant.Id, inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
+        return _firebaseHelper.UpdateUser(inDto.FirebaseDeviceToken, inDto.IsSubscribed, PushConstants.PushDocAppName);
 
     }
 }

@@ -30,18 +30,21 @@ namespace ASC.Core.Common.Notify.Push;
 public class FirebaseHelper
 {
     protected readonly UserManager _userManager;
+    private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
     private readonly ILogger<FirebaseHelper> _logger;
     private readonly IConfiguration _configuration;
     private readonly FirebaseDao _firebaseDao;
 
     public FirebaseHelper(
+        AuthContext authContext,
         UserManager userManager,
         TenantManager tenantManager,
         IConfiguration configuration,
         ILogger<FirebaseHelper> logger,
         FirebaseDao firebaseDao)
     {
+        _authContext = authContext;
         _userManager = userManager;
         _tenantManager = tenantManager;
         _configuration = configuration;
@@ -106,13 +109,19 @@ public class FirebaseHelper
         }
     }
 
-    public FireBaseUser RegisterUserDevice(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
+    public FireBaseUser RegisterUserDevice(string fbDeviceToken, bool isSubscribed, string application)
     {
+        var userId = _authContext.CurrentAccount.ID;
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
+
         return _firebaseDao.RegisterUserDevice(userId, tenantId, fbDeviceToken, isSubscribed, application);
     }
 
-    public FireBaseUser UpdateUser(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
+    public FireBaseUser UpdateUser(string fbDeviceToken, bool isSubscribed, string application)
     {
+        var userId = _authContext.CurrentAccount.ID;
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
+
         return _firebaseDao.UpdateUser(userId, tenantId, fbDeviceToken, isSubscribed, application);
     }
 }
