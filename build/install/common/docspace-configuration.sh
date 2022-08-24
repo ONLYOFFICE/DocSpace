@@ -7,7 +7,6 @@ ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/${PRODUCT}"
 PRODUCT_DIR="/var/www/${PRODUCT}"
-LOG_DIR="/var/log/onlyoffice/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_DIR="/etc/nginx"
 NGINX_CONF="${NGINX_DIR}/conf.d"
@@ -29,6 +28,13 @@ DOCUMENT_SERVER_PORT="8083";
 ELK_SHEME="http"
 ELK_HOST="localhost"
 ELK_PORT="9200"
+
+RABBITMQ_HOST="localhost"
+RABBITMQ_USER="guest"
+RABBITMQ_PWD="guest"
+	
+REDIS_HOST="localhost"
+REDIS_PORT="6379"
 
 JSON="json -I -f"
 JSON_USERCONF="$JSON $USER_CONF -e"
@@ -121,6 +127,41 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+
+		-redish | --redishost )
+			if [ "$2" != "" ]; then
+				REDIS_HOST=$2
+				shift
+			fi
+		;;
+
+		-redisp | --redisport )
+			if [ "$2" != "" ]; then
+				REDIS_PORT=$2
+				shift
+			fi
+		;;
+
+		-rabbith | --rabbitmqhost )
+			if [ "$2" != "" ]; then
+				RABBITMQ_HOST=$2
+				shift
+			fi
+		;;
+
+		-rabbitu | --rabbitmquser )
+			if [ "$2" != "" ]; then
+				RABBITMQ_USER=$2
+				shift
+			fi
+		;;
+
+		-rabbitp | --rabbitmqpassword )
+			if [ "$2" != "" ]; then
+				RABBITMQ_PASSWORD=$2
+				shift
+			fi
+		;;
 		
 		-? | -h | --help )
 			echo "  Usage: bash ${PRODUCT}-configuration.sh [PARAMETER] [[PARAMETER], ...]"
@@ -173,12 +214,7 @@ install_json() {
 		chown onlyoffice:onlyoffice $USER_CONF
 	
 		set_core_machinekey
-		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", \
-		'products': { 'folder': '$PRODUCT_DIR/products', 'subfolder': 'server'} }" \
-		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
-		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" >/dev/null 2>&1
-
-		$JSON $APP_DIR/appsettings.services.json -e "this.logPath=\"$LOG_DIR\"" >/dev/null 2>&1
+		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
 	fi
 }
 
@@ -188,8 +224,6 @@ restart_services() {
 	sed -e "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" -e "s/environment=.*/environment=$ENVIRONMENT/" -i $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
-	systemctl restart ${PRODUCT}-migration-runner || true
-	sleep 5
 	for SVC in api urlshortener socket studio-notify notify \
 	people-server files files-services studio backup telegram-service \
 	webhooks-service clear-events backup-background migration ssoauth doceditor
@@ -257,6 +291,9 @@ SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Si
 
 	#Enable database migration
 	$JSON_USERCONF "this.migration={'enabled': \"true\"}" >/dev/null 2>&1
+	systemctl start ${PRODUCT}-migration-runner || true
+	sleep 5
+	systemctl stop ${PRODUCT}-migration-runner 
 
 	echo "OK"
 }
@@ -435,15 +472,6 @@ setup_docs() {
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
 	'url': {'public': '/ds-vpath/','internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
-	
-	local DOCUMENT_SERVER_DB_HOST=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbHost)
-	local DOCUMENT_SERVER_DB_PORT=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbPort)
-	local DOCUMENT_SERVER_DB_NAME=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbName)
-	local DOCUMENT_SERVER_DB_USERNAME=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbUser)
-	local DOCUMENT_SERVER_DB_PASSWORD=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbPass)
-	local DS_CONNECTION_STRING="Host=${DOCUMENT_SERVER_DB_HOST};Port=${DOCUMENT_SERVER_DB_PORT};Database=${DOCUMENT_SERVER_DB_NAME};Username=${DOCUMENT_SERVER_DB_USERNAME};Password=${DOCUMENT_SERVER_DB_PASSWORD};"
-
-	sed "s/Host=.*/$DS_CONNECTION_STRING;\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
 
 	#Enable ds-example autostart
 	sed 's,autostart=false,autostart=true,' -i /etc/supervisord.d/ds-example.ini >/dev/null 2>&1 || sed 's,autostart=false,autostart=true,' -i /etc/supervisor/conf.d/ds-example.conf >/dev/null 2>&1
@@ -523,6 +551,29 @@ setup_elasticsearch() {
 	echo "OK"
 }
 
+setup_redis() {
+	echo -n "Configuring redis... "
+
+	sed "s_\(\"Host\"\):.*_\1 \"${REDIS_HOST}\",_" -i $APP_DIR/redis.json
+	sed "s_\(\"Port\"\):.*_\1 \"${REDIS_PORT}\"_" -i $APP_DIR/redis.json
+
+	systemctl enable redis* >/dev/null 2>&1
+	systemctl restart redis*
+
+	echo "OK"
+}
+
+setup_rabbitmq() {
+	echo -n "Configuring rabbitmq... "
+
+	$JSON $APP_DIR/rabbitmq.json -e "this.RabbitMQ={'Hostname': \"${RABBITMQ_HOST}\",'UserName': \"${RABBITMQ_USER}\",'Password': \"${RABBITMQ_PASSWORD}\" }" >/dev/null 2>&1
+	
+	systemctl enable rabbitmq-server >/dev/null 2>&1
+	systemctl restart rabbitmq-server
+
+	echo "OK"
+}
+
 if command -v yum >/dev/null 2>&1; then
 	DIST="RedHat"
 	PACKAGE_MANAGER="rpm -q"
@@ -550,6 +601,14 @@ fi
 
 if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
     setup_elasticsearch
+fi
+
+if $PACKAGE_MANAGER redis >/dev/null 2>&1 || $PACKAGE_MANAGER redis-server >/dev/null 2>&1; then
+    setup_redis
+fi
+
+if $PACKAGE_MANAGER rabbitmq-server >/dev/null 2>&1; then
+    setup_rabbitmq
 fi
 
 restart_services
