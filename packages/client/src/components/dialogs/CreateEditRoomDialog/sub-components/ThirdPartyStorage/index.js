@@ -95,21 +95,21 @@ const ThirdPartyStorage = ({
         />
       )}
 
-      {isThirdparty && storageLocation.isConnected && (
+      {/* {isThirdparty && storageLocation.isConnected && (
         <FolderInput
           value={storageLocation.storageFolderPath}
           onChangeFolderPath={onChangeFolderPath}
         />
-      )}
+      )} */}
 
-      {isThirdparty && storageLocation.isConnected && (
+      {/* {isThirdparty && storageLocation.isConnected && (
         <Checkbox
           className="thirdparty-checkbox"
           label={t("ThirdPartyStorageRememberChoice")}
           isChecked={rememberThirdpartyStorage}
           onChange={onChangeRememberThirdpartyStorage}
         />
-      )}
+      )} */}
     </StyledThirdPartyStorage>
   );
 };

@@ -131,7 +131,7 @@ const SetRoomParams = ({
           isPrivate={roomParams.isPrivate}
           onChangeIsPrivate={onChangeIsPrivate}
         />
-      )}
+      )} */}
 
       {!isEdit && (
         <ThirdPartyStorage
@@ -153,7 +153,7 @@ const SetRoomParams = ({
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
         />
-      )} */}
+      )}
 
       <IconEditor
         t={t}
