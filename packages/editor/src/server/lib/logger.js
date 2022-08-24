@@ -2,8 +2,9 @@ import winston from "winston";
 import "winston-daily-rotate-file";
 import path from "path";
 import fs from "fs";
+import config from "../config";
 
-let logPath = process.env.logPath || null;
+let logPath = config.get("logPath");
 
 if (logPath != null) {
   if (!path.isAbsolute(logPath)) {
