@@ -47,14 +47,16 @@ public class FirebaseHelper
         _configuration = configuration;
         _logger = logger;
         _firebaseDao = firebaseDao;
+    }
 
-
-        var credentials = JsonConvert.SerializeObject(new FirebaseApiKey(_configuration)).Replace("\\\\", "\\");
+    public void SendMessage(NotifyMessage msg)
+    {
         var defaultInstance = FirebaseApp.DefaultInstance;
         if (defaultInstance == null)
         {
             try
             {
+                var credentials = JsonConvert.SerializeObject(new FirebaseApiKey(_configuration)).Replace("\\\\", "\\");
                 FirebaseApp.Create(new AppOptions()
                 {
                     Credential = GoogleCredential.FromJson(credentials)
@@ -65,10 +67,7 @@ public class FirebaseHelper
                 _logger.ErrorUnexpected(e);
             }
         }
-    }
 
-    public void SendMessage(NotifyMessage msg)
-    {
         _tenantManager.SetCurrentTenant(msg.TenantId);
 
         var user = _userManager.GetUserByUserName(msg.Reciever);
@@ -89,7 +88,7 @@ public class FirebaseHelper
 
         foreach (var fb in fireBaseUser)
         {
-            if(fb.IsSubscribed.HasValue && fb.IsSubscribed.Value == true)
+            if (fb.IsSubscribed.HasValue && fb.IsSubscribed.Value == true)
             {
                 var m = new FirebaseAdminMessaging.Message()
                 {
