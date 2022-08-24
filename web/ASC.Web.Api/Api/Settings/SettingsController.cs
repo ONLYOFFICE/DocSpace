@@ -180,6 +180,8 @@ public class SettingsController : BaseSettingsController
             {
                 settings.DebugInfo = debugInfo;
             }
+
+            settings.LoginSettings = _settingsManager.Load<LoginSettings>();
         }
         else
         {

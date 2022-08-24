@@ -67,6 +67,7 @@ public class AuthenticationController : ControllerBase
     private readonly CookieStorage _cookieStorage;
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public AuthenticationController(
         UserManager userManager,
@@ -100,7 +101,8 @@ public class AuthenticationController : ControllerBase
         ApiContext apiContext,
         AuthContext authContext,
         CookieStorage cookieStorage,
-        DbLoginEventsManager dbLoginEventsManager)
+        DbLoginEventsManager dbLoginEventsManager,
+        IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -134,6 +136,7 @@ public class AuthenticationController : ControllerBase
         _cookieStorage = cookieStorage;
         _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
+        _httpContextAccessor = httpContextAccessor;
     }
 
 
@@ -354,13 +357,30 @@ public class AuthenticationController : ControllerBase
                 {
                     inDto.PasswordHash.ThrowIfNull(new ArgumentException(@"PasswordHash empty", "PasswordHash"));
                 }
-                int counter;
-                int.TryParse(_cache.Get<string>("loginsec/" + inDto.UserName), out counter);
-                if (++counter > _setupInfo.LoginThreshold && !SetupInfo.IsSecretEmail(inDto.UserName))
+
+                var ip = MessageSettings.GetIP(_httpContextAccessor.HttpContext.Request);
+                bool.TryParse(_cache.Get<string>("loginblock/" + inDto.UserName + ip), out var isBlock);
+
+                if (isBlock && !SetupInfo.IsSecretEmail(inDto.UserName))
                 {
                     throw new BruteForceCredentialException();
                 }
-                _cache.Insert("loginsec/" + inDto.UserName, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+
+                var loginSettings = _settingsManager.Load<LoginSettings>();
+                var attemptsCount = loginSettings.AttemptCount;
+                var blockTime = loginSettings.BlockTime;
+                var checkPeriod = loginSettings.CheckPeriod;
+
+                var loginLog = _cache.Get<List<DateTime>>("loginsec/" + inDto.UserName + ip);
+                LoginSettings.UpdateLogWithNew(loginLog, checkPeriod, DateTime.UtcNow);
+
+                if (loginLog.Count > attemptsCount && !SetupInfo.IsSecretEmail(inDto.UserName))
+                {
+                    _cache.Insert("loginblock/" + inDto.UserName + ip, "true", DateTime.UtcNow.Add(TimeSpan.FromMinutes(blockTime)));
+                    throw new BruteForceCredentialException();
+                }
+
+                _cache.Insert("loginsec/" + inDto.UserName + ip, loginLog, DateTime.UtcNow.Add(TimeSpan.FromMinutes(checkPeriod)));
 
 
                 inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
@@ -385,7 +405,8 @@ public class AuthenticationController : ControllerBase
                     throw new Exception("user not found");
                 }
 
-                _cache.Insert("loginsec/" + inDto.UserName, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+                loginLog.RemoveAt(loginLog.Count - 1);
+                _cache.Insert("loginsec/" + inDto.UserName + ip, loginLog, DateTime.UtcNow.Add(TimeSpan.FromMinutes(checkPeriod)));
             }
             else
             {
