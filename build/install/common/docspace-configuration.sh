@@ -178,7 +178,7 @@ install_json() {
 		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
 		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" >/dev/null 2>&1
 
-		$JSON $APP_DIR/appsettings.services.json -e "this.logPath=\"$LOG_DIR\""
+		$JSON $APP_DIR/appsettings.services.json -e "this.logPath=\"$LOG_DIR\"" >/dev/null 2>&1
 	fi
 }
 
@@ -189,7 +189,7 @@ restart_services() {
 	systemctl daemon-reload
 
 	systemctl restart ${PRODUCT}-migration-runner || true
-
+	sleep 5
 	for SVC in api urlshortener socket studio-notify notify \
 	people-server files files-services studio backup telegram-service \
 	webhooks-service clear-events backup-background migration ssoauth doceditor
