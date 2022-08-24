@@ -132,7 +132,8 @@ const PureConnectDialogContainer = (props) => {
       isCorporate,
       customerTitle,
       provider_key || key,
-      provider_id
+      provider_id,
+      roomCreation
     )
       .then(async (res) => {
         setSaveThirdpartyResponse(res);
