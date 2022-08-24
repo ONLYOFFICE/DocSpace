@@ -30,7 +30,7 @@ const StyledHeader = styled.div`
   .plugins__text-container {
     display: flex;
     margin-left: 6px;
-    width: 70%;
+    width: 30%;
   }
 
   .plugins__separator {
@@ -48,9 +48,24 @@ const StyledRow = styled(Row)`
   .row-main-container-wrapper {
     margin-right: 40px;
   }
+
+  .plugin-version {
+    margin-left: 8px;
+  }
+
+  .plugin-status {
+    margin-left: 30px;
+  }
 `;
 
-const PluginList = ({ t, plugins, onActivate, onDelete, theme }) => {
+const PluginList = ({
+  t,
+  plugins,
+  onActivate,
+  onDelete,
+  withDelete,
+  theme,
+}) => {
   const onActivateAction = React.useCallback(
     (e) => {
       const { dataset } = (e.originalEvent || e).currentTarget;
@@ -73,6 +88,7 @@ const PluginList = ({ t, plugins, onActivate, onDelete, theme }) => {
 
   const getContextOptions = React.useCallback(
     (plugin, index) => {
+      const options = [];
       const activateItem = plugin.isActive
         ? {
             key: `${index}_disable`,
@@ -96,9 +112,13 @@ const PluginList = ({ t, plugins, onActivate, onDelete, theme }) => {
         onClick: onDeleteAction,
       };
 
-      return [activateItem, deleteItem];
+      options.push(activateItem);
+
+      withDelete && options.push(deleteItem);
+
+      return options;
     },
-    [onActivateAction, onDeleteAction]
+    [onActivateAction, onDeleteAction, withDelete]
   );
 
   return (
@@ -113,7 +133,19 @@ const PluginList = ({ t, plugins, onActivate, onDelete, theme }) => {
         >
           {t("Common:Plugin")}
         </Text>
-        <div></div>
+
+        <div className="plugins__text-container">
+          <div className="plugins__separator" />
+          <Text
+            className="plugins__status"
+            fontSize="12px"
+            fontWeight={600}
+            color={theme.connectedClouds.color}
+            noSelect
+          >
+            {t("People:UserStatus")}
+          </Text>
+        </div>
 
         <div className="plugins__text-container">
           <div className="plugins__separator" />
@@ -149,9 +181,21 @@ const PluginList = ({ t, plugins, onActivate, onDelete, theme }) => {
                       noSelect
                       containerWidth="30%"
                     >
-                      {name} {version}
+                      {name}
                     </Text>
                     <div></div>
+                    <Text
+                      className="plugin-version"
+                      as="div"
+                      type="page"
+                      fontSize="13px"
+                      fontWeight={600}
+                      title={plugin.name}
+                      noSelect
+                      containerWidth="30%"
+                    >
+                      {version}
+                    </Text>
 
                     <Text
                       as="div"
@@ -160,7 +204,8 @@ const PluginList = ({ t, plugins, onActivate, onDelete, theme }) => {
                       fontWeight={600}
                       title={plugin.isActive ? "Active" : "Disabled"}
                       noSelect
-                      containerWidth="70%"
+                      containerWidth="40%"
+                      className="plugin-status"
                     >
                       {plugin.isActive ? "Active" : "Disabled"}
                     </Text>

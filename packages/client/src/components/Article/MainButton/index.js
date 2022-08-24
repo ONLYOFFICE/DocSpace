@@ -40,6 +40,7 @@ const ArticleMainButtonContent = (props) => {
     currentFolderId,
     isRoomsFolder,
     isArchiveFolder,
+    enablePlugins,
   } = props;
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -239,16 +240,17 @@ const ArticleMainButtonContent = (props) => {
       menuModel.push(...uploadActions);
       setUploadActions(uploadActions);
     }
+    if (enablePlugins) {
+      const pluginOptions = getMainButtonItems();
 
-    const pluginOptions = getMainButtonItems();
-
-    if (pluginOptions) {
-      pluginOptions.forEach((option) => {
-        menuModel.splice(option.value.position, 0, {
-          key: option.key,
-          ...option.value,
+      if (pluginOptions) {
+        pluginOptions.forEach((option) => {
+          menuModel.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+          });
         });
-      });
+      }
     }
 
     setModel(menuModel);
@@ -258,6 +260,7 @@ const ArticleMainButtonContent = (props) => {
     isPrivacy,
     currentFolderId,
     isRoomsFolder,
+    enablePlugins,
     onCreate,
     onCreateRoom,
     onShowSelectFileDialog,
@@ -346,6 +349,8 @@ export default inject(
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
+    const { enablePlugins } = auth.settingsStore;
+
     const currentFolderId = selectedFolderStore.id;
 
     return {
@@ -372,6 +377,8 @@ export default inject(
       isLoaded,
       firstLoad,
       currentFolderId,
+
+      enablePlugins,
     };
   }
 )(

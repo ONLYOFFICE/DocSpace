@@ -2,7 +2,7 @@ import React from "react";
 
 import Button from "@docspace/components/button";
 
-import api from "SRC_DIR/helpers/plugins/api";
+import api from "@docspace/common/api";
 import { initPlugin } from "SRC_DIR/helpers/plugins";
 
 const UploadButton = ({ t, addPlugin }) => {
@@ -19,7 +19,7 @@ const UploadButton = ({ t, addPlugin }) => {
       }
 
       try {
-        const plugin = await api.uploadPlugin(formData);
+        const plugin = await api.plugins.uploadPlugin(formData);
 
         initPlugin(plugin, addPlugin);
         // addPlugin(plugin);

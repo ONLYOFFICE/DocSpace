@@ -17,7 +17,7 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, history, loadBaseInfo } = props;
+  const { t, tReady, history, loadBaseInfo, enablePlugins } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,7 +48,7 @@ const IntegrationWrapper = (props) => {
 
   if (!isMobile) {
     data.push(integrationData);
-    data.push(pluginData);
+    enablePlugins && data.push(pluginData);
   }
 
   const load = async () => {
@@ -79,13 +79,16 @@ const IntegrationWrapper = (props) => {
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
-export default inject(({ setup }) => {
+export default inject(({ setup, auth }) => {
   const { initSettings } = setup;
+
+  const { enablePlugins } = auth.settingsStore;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
+    enablePlugins,
   };
 })(
   withTranslation(["Settings", "SingleSignOn"])(

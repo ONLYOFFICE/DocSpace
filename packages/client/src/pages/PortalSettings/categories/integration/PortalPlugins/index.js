@@ -25,7 +25,13 @@ const StyledContainer = styled.div`
   }
 `;
 
-const PortalPlugins = ({ t, setDocumentTitle, theme }) => {
+const PortalPlugins = ({
+  t,
+  setDocumentTitle,
+  theme,
+  withDelete,
+  withUpload,
+}) => {
   const [plugins, setPlugins] = React.useState(null);
 
   setDocumentTitle(`Portal plugins`);
@@ -80,7 +86,7 @@ const PortalPlugins = ({ t, setDocumentTitle, theme }) => {
 
   return (
     <StyledContainer>
-      <UploadButton t={t} addPlugin={addPlugin} />
+      {withUpload && <UploadButton t={t} addPlugin={addPlugin} />}
       {plugins && (
         <PluginList
           plugins={plugins}
@@ -88,6 +94,7 @@ const PortalPlugins = ({ t, setDocumentTitle, theme }) => {
           onDelete={onDelete}
           theme={theme}
           t={t}
+          withDelete={withDelete}
         />
       )}
     </StyledContainer>
@@ -96,11 +103,16 @@ const PortalPlugins = ({ t, setDocumentTitle, theme }) => {
 
 export default inject(({ auth }) => {
   const { settingsStore, setDocumentTitle } = auth;
-  const { theme } = settingsStore;
+  const { theme, pluginOptions } = settingsStore;
+
+  const withUpload = pluginOptions.includes("upload");
+  const withDelete = pluginOptions.includes("delete");
 
   return {
     theme,
     setDocumentTitle,
+    withUpload,
+    withDelete,
   };
 })(
   withTranslation([

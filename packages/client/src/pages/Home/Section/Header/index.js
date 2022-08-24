@@ -105,7 +105,7 @@ class SectionHeaderContent extends React.Component {
   uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
-    const { t, isPrivacyFolder, isRoomsFolder } = this.props;
+    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins } = this.props;
 
     const options = isRoomsFolder
       ? [
@@ -178,15 +178,17 @@ class SectionHeaderContent extends React.Component {
       },*/
         ];
 
-    const pluginOptions = getMainButtonItems();
+    if (enablePlugins) {
+      const pluginOptions = getMainButtonItems();
 
-    if (pluginOptions) {
-      pluginOptions.forEach((option) => {
-        options.splice(option.value.position, 0, {
-          key: option.key,
-          ...option.value,
+      if (pluginOptions) {
+        pluginOptions.forEach((option) => {
+          options.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+          });
         });
-      });
+      }
     }
 
     return options;
@@ -591,6 +593,8 @@ export default inject(
       navigationPath,
     } = selectedFolderStore;
 
+    const { enablePlugins } = auth.settingsStore;
+
     const isRoom = !!roomType;
 
     return {
@@ -652,6 +656,8 @@ export default inject(
       setAlreadyFetchingRooms,
 
       categoryType,
+
+      enablePlugins,
     };
   }
 )(

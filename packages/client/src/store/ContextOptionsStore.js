@@ -368,6 +368,9 @@ class ContextOptionsStore {
 
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
+
+    const { enablePlugins } = this.settingsStore;
+
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
 
@@ -721,29 +724,30 @@ class ContextOptionsStore {
 
     const options = this.filterModel(optionsModel, contextOptions);
 
-    const pluginOptions = getContextMenuItems();
+    if (enablePlugins) {
+      const pluginOptions = getContextMenuItems();
 
-    if (pluginOptions) {
-      pluginOptions.forEach((option) => {
-        if (contextOptions.includes(option.key)) {
-          const value = option.value;
-          if (!value.onClick) {
-            options.splice(value.position, 0, {
-              key: option.key,
-              ...value,
-            });
-          } else {
-            options.splice(value.position, 0, {
-              key: option.key,
-              label: value.label,
-              icon: value.icon,
-              onClick: () => value.onClick(item),
-            });
+      if (pluginOptions) {
+        pluginOptions.forEach((option) => {
+          if (contextOptions.includes(option.key)) {
+            const value = option.value;
+            if (!value.onClick) {
+              options.splice(value.position, 0, {
+                key: option.key,
+                ...value,
+              });
+            } else {
+              options.splice(value.position, 0, {
+                key: option.key,
+                label: value.label,
+                icon: value.icon,
+                onClick: () => value.onClick(item),
+              });
+            }
           }
-        }
-      });
+        });
+      }
     }
-
     return options;
   };
 
