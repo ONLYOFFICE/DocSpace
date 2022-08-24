@@ -152,75 +152,75 @@ public class TariffService : ITariffService
             {
                 //Task.Run(() =>
                 //  {
-                      try
-                      {
-                          var client = GetBillingClient();
-                          var currentPayments = client.GetCurrentPayments(GetPortalId(tenantId));
-                          if (currentPayments.Length == 0) throw new BillingNotFoundException("Empty PaymentLast");
+                try
+                {
+                    var client = GetBillingClient();
+                    var currentPayments = client.GetCurrentPayments(GetPortalId(tenantId));
+                    if (currentPayments.Length == 0) throw new BillingNotFoundException("Empty PaymentLast");
 
-                          var asynctariff = Tariff.CreateDefault(true);
-                          string email = null;
+                    var asynctariff = Tariff.CreateDefault(true);
+                    string email = null;
 
-                          foreach (var currentPayment in currentPayments)
-                          {
-                              var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == currentPayment.ProductId.ToString());
-                              if (quota == null)
-                              {
-                                  throw new InvalidOperationException($"Quota with id {currentPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
-                              }
+                    foreach (var currentPayment in currentPayments)
+                    {
+                        var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == currentPayment.ProductId.ToString());
+                        if (quota == null)
+                        {
+                            throw new InvalidOperationException($"Quota with id {currentPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
+                        }
 
-                              var paymentEndDate = 9999 <= currentPayment.EndDate.Year ? DateTime.MaxValue : currentPayment.EndDate;
-                              asynctariff.DueDate = DateTime.Compare(asynctariff.DueDate, paymentEndDate) < 0 ? asynctariff.DueDate : paymentEndDate;
+                        var paymentEndDate = 9999 <= currentPayment.EndDate.Year ? DateTime.MaxValue : currentPayment.EndDate;
+                        asynctariff.DueDate = DateTime.Compare(asynctariff.DueDate, paymentEndDate) < 0 ? asynctariff.DueDate : paymentEndDate;
 
-                              asynctariff.Quotas.Add(new Tuple<int, int>(quota.Tenant, currentPayment.Quantity));
-                              email = currentPayment.PaymentEmail;
-                          }
+                        asynctariff.Quotas.Add(new Tuple<int, int>(quota.Tenant, currentPayment.Quantity));
+                        email = currentPayment.PaymentEmail;
+                    }
 
-                          if (!string.IsNullOrEmpty(email))
-                          {
-                              var customer = _userService.GetUser(tenantId, email);
-                              asynctariff.CustomerId = customer != null && !customer.Removed ? customer.Id : Guid.Empty;
-                          }
+                    if (!string.IsNullOrEmpty(email))
+                    {
+                        var customer = _userService.GetUser(tenantId, email);
+                        asynctariff.CustomerId = customer != null && !customer.Removed ? customer.Id : Guid.Empty;
+                    }
 
-                          if (SaveBillingInfo(tenantId, asynctariff))
-                          {
-                              asynctariff = CalculateTariff(tenantId, asynctariff);
-                              ClearCache(tenantId);
-                              _cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
-                          }
-                      }
-                      catch (BillingNotFoundException)
-                      {
-                          var freeTariff = tariff.Quotas.Exists(tariffRow =>
-                          {
-                              var q = _quotaService.GetTenantQuota(tariffRow.Item1);
-                              return q == null
-                                  || q.Trial
-                                  || q.Free
-                                  || q.NonProfit
-                                  || q.Open
-                                  || q.Custom;
-                          });
+                    if (SaveBillingInfo(tenantId, asynctariff))
+                    {
+                        asynctariff = CalculateTariff(tenantId, asynctariff);
+                        ClearCache(tenantId);
+                        _cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
+                    }
+                }
+                catch (BillingNotFoundException)
+                {
+                    var freeTariff = tariff.Quotas.Exists(tariffRow =>
+                    {
+                        var q = _quotaService.GetTenantQuota(tariffRow.Item1);
+                        return q == null
+                            || q.Trial
+                            || q.Free
+                            || q.NonProfit
+                            || q.Open
+                            || q.Custom;
+                    });
 
-                          if (!freeTariff)
-                          {
-                              var asynctariff = Tariff.CreateDefault();
-                              asynctariff.DueDate = DateTime.Today.AddDays(-1);
-                              asynctariff.State = TariffState.NotPaid;
+                    if (!freeTariff)
+                    {
+                        var asynctariff = Tariff.CreateDefault();
+                        asynctariff.DueDate = DateTime.Today.AddDays(-1);
+                        asynctariff.State = TariffState.NotPaid;
 
-                              if (SaveBillingInfo(tenantId, asynctariff))
-                              {
-                                  asynctariff = CalculateTariff(tenantId, asynctariff);
-                                  ClearCache(tenantId);
-                                  _cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
-                              }
-                          }
-                      }
-                      catch (Exception error)
-                      {
-                          LogError(error, tenantId.ToString());
-                      }
-                  //});
+                        if (SaveBillingInfo(tenantId, asynctariff))
+                        {
+                            asynctariff = CalculateTariff(tenantId, asynctariff);
+                            ClearCache(tenantId);
+                            _cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    LogError(error, tenantId.ToString());
+                }
+                //});
             }
         }
 
@@ -253,19 +253,8 @@ public class TariffService : ITariffService
                 qty = quantity[mustUpdateQuota.Name];
             }
 
-            if (quota.MaxTotalSize != long.MaxValue) quota.MaxTotalSize *= qty;
-            if (quota.ActiveUsers != int.MaxValue) quota.ActiveUsers *= qty;
-            if (quota.CountAdmin != int.MaxValue) quota.CountAdmin *= qty;
-            if (quota.CountRoom != int.MaxValue) quota.CountRoom *= qty;
-
-            if (updatedQuota == null)
-            {
-                updatedQuota = quota;
-            }
-            else
-            {
-                updatedQuota = updatedQuota.Concat(quota);
-            }
+            quota *= qty;
+            updatedQuota += quota;
         }
 
         // add new quotas
@@ -276,19 +265,8 @@ public class TariffService : ITariffService
 
             var quota = (TenantQuota)addedQuota.Clone();
 
-            if (quota.MaxTotalSize != long.MaxValue) quota.MaxTotalSize *= qty;
-            if (quota.ActiveUsers != int.MaxValue) quota.ActiveUsers *= qty;
-            if (quota.CountAdmin != int.MaxValue) quota.CountAdmin *= qty;
-            if (quota.CountRoom != int.MaxValue) quota.CountRoom *= qty;
-
-            if (updatedQuota == null)
-            {
-                updatedQuota = quota;
-            }
-            else
-            {
-                updatedQuota = updatedQuota.Concat(quota);
-            }
+            quota *= qty;
+            updatedQuota += quota;
         }
 
         // check new values

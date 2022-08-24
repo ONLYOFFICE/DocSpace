@@ -41,67 +41,54 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
 
     public int Tenant { get; set; }
     public string Name { get; set; }
-    public long MaxFileSize { get; set; }
-    public long MaxTotalSize
+
+    private List<string> _featuresList;
+
+    public string Features
     {
         get
         {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var totalSize = features.FirstOrDefault(f => f.StartsWith("total_size:"));
-            long maxTotalSize;
-            if (totalSize == null || !long.TryParse(totalSize.Replace("total_size:", ""), out maxTotalSize))
-            {
-                maxTotalSize = Default.MaxTotalSize;
-            }
-
-            return ByteConverter.GetInBytes(maxTotalSize);
+            return string.Join(",", _featuresList);
         }
         set
         {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var maxTotalSize = features.FirstOrDefault(f => f.StartsWith("total_size:"));
-            features.Remove(maxTotalSize);
-            if (value > 0)
+            if (value != null)
             {
-                features.Add("total_size:" + ByteConverter.GetInMBytes(value));
+                _featuresList = value.Split(' ', ',', ';').ToList();
             }
-
-            Features = string.Join(",", features.ToArray());
+            else
+            {
+                _featuresList = new List<string>();
+            }
         }
+    }
+    public decimal Price { get; set; }
+    public string ProductId { get; set; }
+    public bool Visible { get; set; }
+    public long MaxFileSize { get; set; }
+    public long MaxTotalSize
+    {
+        get => ByteConverter.GetInBytes(GetFeature("total_size", () => Default.MaxTotalSize));
+        set => SetFeature("users", ByteConverter.GetInMBytes(value));
     }
 
     public int ActiveUsers
     {
-        get
-        {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var users = features.FirstOrDefault(f => f.StartsWith("users:"));
-            int activeUsers;
-            if (users == null || !int.TryParse(users.Replace("users:", ""), out activeUsers))
-            {
-                activeUsers = Default.ActiveUsers;
-            }
-
-            return activeUsers;
-        }
-        set
-        {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var activeUsers = features.FirstOrDefault(f => f.StartsWith("users:"));
-            features.Remove(activeUsers);
-            if (value > 0)
-            {
-                features.Add("users:" + value);
-            }
-
-            Features = string.Join(",", features.ToArray());
-        }
+        get => GetFeature("users", () => Default.ActiveUsers);
+        set => SetFeature("users", value);
     }
 
-    public string Features { get; set; }
-    public decimal Price { get; set; }
-    public string ProductId { get; set; }
-    public bool Visible { get; set; }
+    public int CountAdmin
+    {
+        get => GetFeature("admin", () => Default.CountAdmin);
+        set => SetFeature("admin", value);
+    }
+
+    public int CountRoom
+    {
+        get => GetFeature("room", () => Default.CountRoom);
+        set => SetFeature("room", value);
+    }
 
     public bool NonProfit
     {
@@ -181,62 +168,6 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("custom", value);
     }
 
-    public int CountAdmin
-    {
-        get
-        {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var admin = features.FirstOrDefault(f => f.StartsWith("admin:"));
-            int countAdmin;
-            if (admin == null || !int.TryParse(admin.Replace("admin:", ""), out countAdmin))
-            {
-                countAdmin = Default.CountAdmin;
-            }
-
-            return countAdmin;
-        }
-        set
-        {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var admin = features.FirstOrDefault(f => f.StartsWith("admin:"));
-            features.Remove(admin);
-            if (value > 0)
-            {
-                features.Add("admin:" + value);
-            }
-
-            Features = string.Join(",", features.ToArray());
-        }
-    }
-
-    public int CountRoom
-    {
-        get
-        {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var room = features.FirstOrDefault(f => f.StartsWith("room:"));
-            int countRoom;
-            if (room == null || !int.TryParse(room.Replace("room:", ""), out countRoom))
-            {
-                countRoom = Default.CountRoom;
-            }
-
-            return countRoom;
-        }
-        set
-        {
-            var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
-            var room = features.FirstOrDefault(f => f.StartsWith("room:"));
-            features.Remove(room);
-            if (value > 0)
-            {
-                features.Add("room:" + value);
-            }
-
-            Features = string.Join(",", features.ToArray());
-        }
-    }
-
     public bool Restore
     {
         get => GetFeature("restore");
@@ -267,9 +198,12 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("thirdparty", value);
     }
 
-    public TenantQuota() { }
+    public TenantQuota()
+    {
+        _featuresList = new List<string>();
+    }
 
-    public TenantQuota(int tenant)
+    public TenantQuota(int tenant) : this()
     {
         Tenant = tenant;
     }
@@ -284,39 +218,121 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         return obj is TenantQuota q && q.Tenant == Tenant;
     }
 
-    public bool GetFeature(string feature)
+    private bool GetFeature(string feature)
     {
-        return !string.IsNullOrEmpty(Features) && Features.Split(' ', ',', ';').Contains(feature);
+        return _featuresList.Contains(feature);
     }
 
-    internal void SetFeature(string feature, bool set)
+    private int GetFeature(string feature, Func<int> @default)
     {
-        var features = (Features == null
-                            ? Array.Empty<string>()
-                            : Features.Split(' ', ',', ';')).ToList();
-        if (set && !features.Contains(feature))
+        var featureValue = GetFeatureValue(feature);
+
+        if (featureValue == null || !int.TryParse(featureValue, out var result))
         {
-            features.Add(feature);
-        }
-        else if (!set && features.Contains(feature))
-        {
-            features.Remove(feature);
+            return @default();
         }
 
-        Features = string.Join(",", features.ToArray());
+        return result;
     }
 
-    public TenantQuota Concat(TenantQuota quota)
+    private long GetFeature(string feature, Func<long> @default)
     {
-        var newQuota = (TenantQuota)this.Clone();
+        var featureValue = GetFeatureValue(feature);
+
+        if (featureValue == null || !long.TryParse(featureValue, out var result))
+        {
+            return @default();
+        }
+
+        return result;
+    }
+
+    private string GetFeatureValue(string feature)
+    {
+        var parsed = _featuresList.FirstOrDefault(f => f.StartsWith($"{feature}:"));
+
+        if (parsed == null)
+        {
+            return null;
+        }
+
+        return parsed.Replace($"{feature}:", "");
+    }
+
+    private void SetFeature(string feature, bool set)
+    {
+        if (set && !_featuresList.Contains(feature))
+        {
+            _featuresList.Add(feature);
+        }
+        else if (!set && _featuresList.Contains(feature))
+        {
+            _featuresList.Remove(feature);
+        }
+    }
+
+    private void SetFeature(string feature, int @value)
+    {
+        SetFeature(feature, @value > 0 ? value.ToString() : null);
+    }
+
+    private void SetFeature(string feature, long @value)
+    {
+        SetFeature(feature, @value > 0 ? value.ToString() : null);
+    }
+
+    internal void SetFeature(string feature, string @value)
+    {
+        var featureValue = _featuresList.FirstOrDefault(f => f.StartsWith($"{feature}:"));
+        _featuresList.Remove(featureValue);
+
+        if (!string.IsNullOrEmpty(@value))
+        {
+            _featuresList.Add($"{feature}:{@value}");
+        }
+    }
+
+    public static TenantQuota operator *(TenantQuota quota, int qty)
+    {
+        if (quota.MaxTotalSize != long.MaxValue)
+        {
+            quota.MaxTotalSize *= qty;
+        }
+
+        if (quota.ActiveUsers != int.MaxValue)
+        {
+            quota.ActiveUsers *= qty;
+        }
+
+        if (quota.CountAdmin != int.MaxValue)
+        {
+            quota.CountAdmin *= qty;
+        }
+
+        if (quota.CountRoom != int.MaxValue)
+        {
+            quota.CountRoom *= qty;
+        }
+
+        return quota;
+    }
+
+    public static TenantQuota operator +(TenantQuota old, TenantQuota quota)
+    {
+        if (old == null)
+        {
+            return quota;
+        }
+
+        var newQuota = (TenantQuota)old.Clone();
         newQuota.Name = "";
         newQuota.MaxFileSize = Math.Max(newQuota.MaxFileSize, quota.MaxFileSize);
         newQuota.Price += quota.Price;
         newQuota.Visible &= quota.Visible;
         newQuota.ProductId = "";
 
-        newQuota.Features = ((newQuota.Features ?? "") + "," + quota.Features).Trim(',');
-        var features = newQuota.Features.Split(' ', ',', ';').ToList();
+        var features = newQuota._featuresList.Concat(quota._featuresList).ToList();
+
         for (var i = 0; i < features.Count - 1; i++)
         {
             for (var j = i + 1; j < features.Count; j++)
@@ -329,12 +345,17 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
                         var pref2 = features[j].Split(':')[0];
                         if (pref1 == pref2)
                         {
-                            int val1;
-                            int val2;
-                            if (int.TryParse(features[i].Replace(pref1 + ":", ""), out val1)
-                                && int.TryParse(features[j].Replace(pref1 + ":", ""), out val2))
+                            if (int.TryParse(features[i].Replace(pref1 + ":", ""), out var val1) &&
+                                int.TryParse(features[j].Replace(pref1 + ":", ""), out var val2))
                             {
-                                features[i] = pref1 + ":" + (val1 + val2);
+                                features[i] = $"{pref1}:{val1 + val2}";
+                                features.RemoveAt(j);
+                                j--;
+                            }
+                            else if (long.TryParse(features[i].Replace(pref1 + ":", ""), out var val3) &&
+                                     long.TryParse(features[j].Replace(pref1 + ":", ""), out var val4))
+                            {
+                                features[i] = $"{pref1}:{val3 + val4}";
                                 features.RemoveAt(j);
                                 j--;
                             }
@@ -348,7 +369,8 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
                 }
             }
         }
-        newQuota.Features = string.Join(",", features.ToArray());
+
+        newQuota._featuresList = features;
 
         return newQuota;
     }

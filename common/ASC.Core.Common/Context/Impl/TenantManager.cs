@@ -280,20 +280,11 @@ public class TenantManager
 
                 var quota = (TenantQuota)QuotaService.GetTenantQuota(tariffRow.Item1).Clone();
                 quota.Price *= qty;
-                if (quota.MaxTotalSize != long.MaxValue) quota.MaxTotalSize *= qty;
-                if (quota.ActiveUsers != int.MaxValue) quota.ActiveUsers *= qty;
-                if (quota.CountAdmin != int.MaxValue) quota.CountAdmin *= qty;
-                if (quota.CountRoom != int.MaxValue) quota.CountRoom *= qty;
 
-                if (currentQuota == null)
-                {
-                    currentQuota = quota;
-                }
-                else
-                {
-                    currentQuota = currentQuota.Concat(quota);
-                }
+                quota *= qty;
+                currentQuota += quota;
             }
+
             return currentQuota;
         }
 
