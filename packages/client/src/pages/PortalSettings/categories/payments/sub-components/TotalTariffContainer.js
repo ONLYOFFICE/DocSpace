@@ -65,10 +65,9 @@ const TotalTariffContainer = ({
   isLoading,
   isAlreadyPaid,
   countAdmin,
+  totalPrice,
 }) => {
   useEffect(() => {}, []);
-
-  const totalPrice = pricePerManager * usersCount;
 
   const color = isDisabled ? { color: theme.text.disableColor } : {};
   const isNeedRequest = usersCount >= maxUsersCount;
@@ -146,6 +145,6 @@ const TotalTariffContainer = ({
 export default inject(({ auth, payments }) => {
   const { pricePerManager } = auth;
   const { theme } = auth.settingsStore;
-  const { isLoading } = payments;
-  return { theme, pricePerManager, isLoading };
+  const { isLoading, totalPrice } = payments;
+  return { theme, pricePerManager, totalPrice, isLoading };
 })(observer(TotalTariffContainer));

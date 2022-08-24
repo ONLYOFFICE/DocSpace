@@ -21,6 +21,7 @@ class PaymentStore {
   paymentLink = null;
   accountLink = null;
   isLoading = false;
+  totalPrice = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -105,6 +106,10 @@ class PaymentStore {
 
   setIsLoading = (isLoading) => {
     this.isLoading = isLoading;
+  };
+
+  setTotalPrice = (price) => {
+    if (price > 0 && price !== this.totalPrice) this.totalPrice = price;
   };
 }
 

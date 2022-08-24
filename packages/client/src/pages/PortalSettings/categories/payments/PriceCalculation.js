@@ -40,7 +40,6 @@ let timeout = null,
 
 const PriceCalculation = ({
   t,
-  price,
   rights,
   theme,
   setPaymentLink,
@@ -48,8 +47,10 @@ const PriceCalculation = ({
   paymentLink,
   setIsLoading,
   updatePayment,
+  setTotalPrice,
+  pricePerManager,
 }) => {
-  const { trial, free, countAdmin } = portalQuota;
+  const { trial, free, countAdmin, price } = portalQuota;
 
   const isAlreadyPaid = !trial && !free;
   const initialUsersCount = isAlreadyPaid ? countAdmin : minUsersCount;
@@ -64,6 +65,7 @@ const PriceCalculation = ({
 
   useEffect(() => {
     setStartLink();
+    setTotalPrice(isAlreadyPaid ? price : minUsersCount * pricePerManager);
     return () => {
       timerId && clearTimeout(timerId);
       timerId = null;
@@ -78,9 +80,11 @@ const PriceCalculation = ({
     if (count > minUsersCount) {
       setShoppingLink(count);
       setUsersCount(count);
+      setTotalPrice(count * pricePerManager);
     } else {
       setShoppingLink(minUsersCount);
       setUsersCount(minUsersCount);
+      setTotalPrice(minUsersCount * pricePerManager);
     }
   };
 
@@ -149,6 +153,7 @@ const PriceCalculation = ({
     if (value !== +usersCount) {
       setShoppingLink(value);
       setUsersCount(value);
+      setTotalPrice(value * pricePerManager);
     }
   };
   const onChangeNumber = (e) => {
@@ -170,6 +175,7 @@ const PriceCalculation = ({
 
     setShoppingLink(numberValue);
     setUsersCount(numberValue);
+    setTotalPrice(numberValue * pricePerManager);
   };
 
   const updateMethod = async () => {
@@ -223,7 +229,6 @@ const PriceCalculation = ({
         maxSliderNumber={maxSliderNumber}
         t={t}
         usersCount={usersCount}
-        price={price}
         isDisabled={isDisabled}
         onClick={onUpdateTariff}
         isAlreadyPaid={isAlreadyPaid}
@@ -240,9 +245,10 @@ export default inject(({ auth, payments }) => {
     paymentLink,
     setIsLoading,
     updatePayment,
+    setTotalPrice,
   } = payments;
   const { theme } = auth.settingsStore;
-  const { portalQuota } = auth;
+  const { portalQuota, pricePerManager } = auth;
   //const rights = "2";
   //const rights = "3";
   const rights = "1";
@@ -255,5 +261,7 @@ export default inject(({ auth, payments }) => {
     paymentLink,
     setIsLoading,
     updatePayment,
+    pricePerManager,
+    setTotalPrice,
   };
 })(observer(PriceCalculation));
