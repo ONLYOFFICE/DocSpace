@@ -209,6 +209,7 @@ const Table = ({
         infoPanelVisible={infoPanelVisible}
         columnInfoPanelStorageName={columnInfoPanelStorageName}
         selectedFolderId={selectedFolderId}
+        itemHeight={isRooms ? 49 : 41}
       >
         {filesList.map((item, index) => {
           return index === 0 && item.isRoom ? (
