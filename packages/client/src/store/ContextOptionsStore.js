@@ -369,7 +369,7 @@ class ContextOptionsStore {
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
 
-    const { enablePlugins } = this.settingsStore;
+    const { enablePlugins } = this.authStore.settingsStore;
 
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
