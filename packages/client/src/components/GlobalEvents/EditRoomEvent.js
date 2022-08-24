@@ -33,6 +33,8 @@ const EditRoomEvent = ({
   const startTags = Object.values(item.tags);
   const startObjTags = startTags.map((tag, i) => ({ id: i, name: tag }));
 
+  // const startuploadedFile =
+
   const fetchedRoomParams = {
     title: item.title,
     type: item.roomType,
@@ -79,8 +81,10 @@ const EditRoomEvent = ({
       await addTagsToRoom(roomId, tags);
       await removeTagsFromRoom(roomId, removedTags);
 
-      if (!roomParams.icon.uploadedFileSrc && !roomParams.icon.uploadedFile)
-        await removeLogoFromRoom(roomId);
+      console.log(roomParams.icon.uploadedFile);
+      if (!roomParams.icon.uploadedFile) await removeLogoFromRoom(roomId);
+
+      // if ()
       if (roomParams.icon.uploadedFile)
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
