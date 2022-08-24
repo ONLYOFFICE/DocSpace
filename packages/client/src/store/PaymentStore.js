@@ -19,6 +19,7 @@ class PaymentStore {
   };
 
   paymentLink = null;
+  accountLink = null;
   isLoading = false;
 
   constructor() {
@@ -67,8 +68,20 @@ class PaymentStore {
 
   // ------------ For docspace -----------
 
-  getPaymentAccount = async () => {
-    return await api.portal.getPaymentAccount();
+  setPaymentAccount = async () => {
+    try {
+      const res = await api.portal.getPaymentAccount();
+
+      if (res) {
+        if (res.indexOf("error") === -1) {
+          this.accountLink = res;
+        } else {
+          toastr.error(res);
+        }
+      }
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 
   setPaymentLink = async (link) => {

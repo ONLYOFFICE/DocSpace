@@ -17,6 +17,7 @@ import toastr from "@docspace/components/toast/toastr";
 import moment from "moment";
 import { HelpButton } from "@docspace/components";
 import PayerInformationContainer from "./PayerInformationContainer";
+import { TariffState } from "@docspace/common/constants";
 
 const StyledBody = styled.div`
   max-width: 660px;
@@ -64,6 +65,7 @@ const PaymentsPage = ({
   isFreeTariff,
   isGracePeriod,
   theme,
+  setPaymentAccount,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -94,10 +96,16 @@ const PaymentsPage = ({
 
       requests.push(setQuota());
 
-      if (Object.keys(portalQuota).length === 0) setPortalQuota();
-      if (!pricePerManager) getPaymentPrices();
+      if (Object.keys(portalQuota).length === 0)
+        requests.push(setPortalQuota());
+      if (!pricePerManager) requests.push(getPaymentPrices());
 
-      if (Object.keys(portalTariff).length === 0) setPortalTariff();
+      if (Object.keys(portalTariff).length === 0) {
+        requests.push(setPortalTariff(), setPaymentAccount());
+      }
+
+      if (portalTariff && portalTariff.state !== TariffState.Trial)
+        requests.push(setPaymentAccount());
 
       try {
         await Promise.all(requests);
@@ -217,7 +225,7 @@ export default inject(({ auth, payments }) => {
   } = auth;
 
   const { organizationName, theme } = auth.settingsStore;
-  const { setTariffsInfo, tariffsInfo } = payments;
+  const { setTariffsInfo, tariffsInfo, setPaymentAccount } = payments;
 
   return {
     setQuota,
@@ -234,5 +242,6 @@ export default inject(({ auth, payments }) => {
     pricePerManager,
     portalQuota,
     theme,
+    setPaymentAccount,
   };
 })(withRouter(observer(PaymentsPage)));

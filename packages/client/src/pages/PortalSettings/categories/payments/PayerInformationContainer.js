@@ -4,7 +4,6 @@ import Text from "@docspace/components/text";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { HelpButton, Link } from "@docspace/components";
-import toastr from "client/toastr";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -44,24 +43,14 @@ const PayerInformationContainer = ({
   style,
   theme,
   rights,
-  getPaymentAccount,
+
+  accountLink,
 }) => {
   const { t } = useTranslation("Payments");
 
   const payerName = `${"Test Name" + " (" + t("Payer") + ")"}`;
 
   const email = "example email";
-
-  const onClick = async () => {
-    try {
-      const accountLink = await getPaymentAccount();
-      if (accountLink) {
-        window.open(accountLink, "_self");
-      }
-    } catch (e) {
-      toastr.error(e);
-    }
-  };
 
   const isLinkAvailable = rights === "3" ? false : true;
 
@@ -95,16 +84,16 @@ const PayerInformationContainer = ({
           </Text>
           {renderTooltip()}
         </div>
-        {isLinkAvailable ? (
-          <Text
-            fontWeight={600}
+        {isLinkAvailable && accountLink ? (
+          <Link
             noSelect
-            onClick={onClick}
+            fontWeight={600}
+            href={accountLink}
             className="payer-info_account-link"
             color={theme.client.payments.linkColor}
           >
             {t("StripeCustomerPortal")}
-          </Text>
+          </Link>
         ) : (
           <Link
             fontWeight={600}
@@ -121,7 +110,7 @@ const PayerInformationContainer = ({
 
 export default inject(({ auth, payments }) => {
   const { quota, portalQuota } = auth;
-  const { getPaymentAccount } = payments;
+  const { accountLink } = payments;
 
   //const rights = "2";
   //const rights = "3";
@@ -132,6 +121,7 @@ export default inject(({ auth, payments }) => {
     portalQuota,
     theme: auth.settingsStore.theme,
     rights,
-    getPaymentAccount,
+
+    accountLink,
   };
 })(observer(PayerInformationContainer));
