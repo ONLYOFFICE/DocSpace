@@ -36,7 +36,7 @@ public interface IProviderInfo : IDisposable
     DateTime CreateOn { get; }
     string CustomerTitle { get; }
     string RootFolderId { get; }
-    string FolderId { get; }
+    string FolderId { get; set; }
     bool Private { get; }
 
     Task<bool> CheckAccessAsync();

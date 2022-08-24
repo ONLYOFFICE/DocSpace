@@ -37,6 +37,9 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     config.AddJsonFile("notify.json")
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
           .AddJsonFile("backup.json");
+}, (ctx, ser, di) =>
+{
+    ser.AddBaseDbContextPool<BackupsContext>();
 });
 
 builder.WebHost.ConfigureDefaultKestrel();
@@ -60,7 +63,7 @@ eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequestedIntegrationEven
 eventBus.Subscribe<BackupRestoreRequestIntegrationEvent, BackupRestoreRequestedIntegrationEventHandler>();
 eventBus.Subscribe<IntegrationEvent, BackupDeleteScheldureRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 
 public partial class Program

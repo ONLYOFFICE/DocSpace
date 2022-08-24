@@ -34,7 +34,7 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
     public BaseIndexerFile(
         Client client,
         ILogger<BaseIndexerFile> log,
-        DbContextManager<WebstudioDbContext> dbContextManager,
+        IDbContextFactory<WebstudioDbContext> dbContextManager,
         TenantManager tenantManager,
         BaseIndexerHelper baseIndexerHelper,
         Settings settings,
@@ -78,7 +78,7 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
 [Scope(Additional = typeof(FactoryIndexerFileExtension))]
 public class FactoryIndexerFile : FactoryIndexer<DbFile>
 {
-    private readonly IDaoFactory _daoFactory;
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     private readonly Settings _settings;
 
     public FactoryIndexerFile(
@@ -88,36 +88,35 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         FactoryIndexer factoryIndexer,
         BaseIndexerFile baseIndexer,
         IServiceProvider serviceProvider,
-        IDaoFactory daoFactory,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         ICache cache,
         Settings settings)
         : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
     {
-        _daoFactory = daoFactory;
+        _dbContextFactory = dbContextFactory;
         _settings = settings;
     }
 
     public override void IndexAll()
     {
-        var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
-
         (int, int, int) getCount(DateTime lastIndexed)
         {
-            var dataQuery = GetBaseQuery(lastIndexed)
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            var dataQuery = GetBaseQuery(filesDbContext, lastIndexed)
                 .Where(r => r.Version == 1)
                 .OrderBy(r => r.Id)
                 .Select(r => r.Id);
 
             var minid = dataQuery.FirstOrDefault();
 
-            dataQuery = GetBaseQuery(lastIndexed)
+            dataQuery = GetBaseQuery(filesDbContext, lastIndexed)
                 .Where(r => r.Version == 1)
                 .OrderByDescending(r => r.Id)
                 .Select(r => r.Id);
 
             var maxid = dataQuery.FirstOrDefault();
 
-            var count = GetBaseQuery(lastIndexed)
+            var count = GetBaseQuery(filesDbContext, lastIndexed)
                 .Where(r => r.Version == 1)
                 .Count();
 
@@ -126,9 +125,10 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
 
         List<DbFile> getData(long start, long stop, DateTime lastIndexed)
         {
-            return GetBaseQuery(lastIndexed)
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            return GetBaseQuery(filesDbContext, lastIndexed)
                 .Where(r => r.Id >= start && r.Id <= stop && r.CurrentVersion)
-                .Select(file => new { file = file, folders = fileDao.FilesDbContext.Tree.Where(b => b.FolderId == file.ParentId).ToList() })
+                .Select(file => new { file = file, folders = filesDbContext.Tree.Where(b => b.FolderId == file.ParentId).ToList() })
                 .AsEnumerable()
                 .Select(r =>
                 {
@@ -144,9 +144,12 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         {
             var start = 0;
             var result = new List<int>();
+
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+
             while (true)
             {
-                var dataQuery = GetBaseQuery(lastIndexed)
+                var dataQuery = GetBaseQuery(filesDbContext, lastIndexed)
                     .Where(r => r.Id >= start)
                     .Where(r => r.Version == 1)
                     .OrderBy(r => r.Id)
@@ -168,10 +171,9 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
             return result;
         }
 
-        IQueryable<DbFile> GetBaseQuery(DateTime lastIndexed) => fileDao.FilesDbContext.Files
-            .AsQueryable()
+        IQueryable<DbFile> GetBaseQuery(FilesDbContext filesDbContext, DateTime lastIndexed) => filesDbContext.Files
             .Where(r => r.ModifiedOn >= lastIndexed)
-            .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+            .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
             .Where(r => r.DbTenant.Status == TenantStatus.Active)
             .Select(r => r.DbFile);
 

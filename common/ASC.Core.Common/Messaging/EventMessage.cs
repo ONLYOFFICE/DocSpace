@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
-namespace ASC.MessagingSystem.Models;
+namespace ASC.MessagingSystem.EF.Model;
 
 public class EventMessage
 {

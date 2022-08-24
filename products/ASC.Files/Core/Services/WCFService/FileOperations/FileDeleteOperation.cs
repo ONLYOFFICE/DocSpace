@@ -170,7 +170,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                     var immediately = _immediately || FolderDao.UseTrashForRemoveAsync(folder);
                     if (immediately && FolderDao.UseRecursiveOperation(folder.Id, default(T)))
                     {
-                        var files = await FileDao.GetFilesAsync(folder.Id);
+                        var files = await FileDao.GetFilesAsync(folder.Id).ToListAsync();
                         await DeleteFilesAsync(files, scope);
 
                         var folders = await FolderDao.GetFoldersAsync(folder.Id).ToListAsync();
@@ -191,7 +191,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                                 {
                                     await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT, false);
                                 }
-                                
+
                                 filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
                             }
                             else

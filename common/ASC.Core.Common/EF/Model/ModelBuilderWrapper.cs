@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace ASC.Core.Common.EF.Model;
 
 public class ModelBuilderWrapper
@@ -35,6 +37,22 @@ public class ModelBuilderWrapper
     {
         ModelBuilder = modelBuilder;
         Provider = provider;
+    }
+
+    public static ModelBuilderWrapper From(ModelBuilder modelBuilder, DatabaseFacade database)
+    {
+        var provider = Provider.MySql;
+
+        if (database.IsMySql())
+        {
+            provider = Provider.MySql;
+        }
+        else if (database.IsNpgsql())
+        {
+            provider = Provider.PostgreSql;
+        }
+
+        return new ModelBuilderWrapper(modelBuilder, provider);
     }
 
     public static ModelBuilderWrapper From(ModelBuilder modelBuilder, Provider provider)
@@ -57,6 +75,11 @@ public class ModelBuilderWrapper
         ModelBuilder.Entity<T>().HasData(data);
 
         return this;
+    }
+
+    public EntityTypeBuilder<T> Entity<T>() where T : class
+    {
+        return ModelBuilder.Entity<T>();
     }
 
     public void AddDbFunction()

@@ -55,7 +55,8 @@ public static class DbFilesBunchObjectsExtension
             entity.HasKey(e => new { e.TenantId, e.RightNode })
                 .HasName("PRIMARY");
 
-            entity.ToTable("files_bunch_objects");
+            entity.ToTable("files_bunch_objects")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.LeftNode)
                 .HasDatabaseName("left_node");

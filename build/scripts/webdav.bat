@@ -1,1 +1,7 @@
-yarn install --cwd %~dp0../../common/ASC.WebDav/ --frozen-lockfile
+PUSHD %~dp0..
+
+cd %~dp0../../common/ASC.WebDav/
+
+call yarn install --immutable
+
+POPD

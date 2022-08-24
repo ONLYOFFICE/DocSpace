@@ -74,7 +74,7 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpGet("security")]
-    public IEnumerable<SecurityDto> GetWebItemSecurityInfo([FromQuery] IEnumerable<string> ids)
+    public async IAsyncEnumerable<SecurityDto> GetWebItemSecurityInfo([FromQuery] IEnumerable<string> ids)
     {
         if (ids == null || !ids.Any())
         {
@@ -83,15 +83,28 @@ public class SecurityController : BaseSettingsController
 
         var subItemList = WebItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
 
-        return ids.Select(r => _webItemSecurity.GetSecurityInfo(r))
-                    .Select(i => new SecurityDto
-                    {
-                        WebItemId = i.WebItemId,
-                        Enabled = i.Enabled,
-                        Users = i.Users.Select(_employeeHelperDto.Get),
-                        Groups = i.Groups.Select(g => new GroupSummaryDto(g, _userManager)),
-                        IsSubItem = subItemList.Contains(i.WebItemId),
-                    }).ToList();
+        foreach (var r in ids)
+        {
+            var i = _webItemSecurity.GetSecurityInfo(r);
+
+            var s = new SecurityDto
+            {
+                WebItemId = i.WebItemId,
+                Enabled = i.Enabled,
+                Groups = i.Groups.Select(g => new GroupSummaryDto(g, _userManager)),
+                IsSubItem = subItemList.Contains(i.WebItemId),
+            };
+
+            s.Users = new List<EmployeeDto>();
+
+            foreach (var e in i.Users)
+            {
+                s.Users.Add(await _employeeHelperDto.Get(e));
+            }
+
+            yield return s;
+
+        }
     }
 
     [HttpGet("security/{id}")]
@@ -145,12 +158,12 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpPut("security")]
-    public IEnumerable<SecurityDto> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
+    public async Task<IEnumerable<SecurityDto>> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         _webItemSecurity.SetSecurity(inDto.Id, inDto.Enabled, inDto.Subjects?.ToArray());
-        var securityInfo = GetWebItemSecurityInfo(new List<string> { inDto.Id });
+        var securityInfo = await GetWebItemSecurityInfo(new List<string> { inDto.Id }).ToListAsync();
 
         if (inDto.Subjects == null)
         {
@@ -182,7 +195,7 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpPut("security/access")]
-    public IEnumerable<SecurityDto> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
+    public async Task<IEnumerable<SecurityDto>> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -227,15 +240,18 @@ public class SecurityController : BaseSettingsController
 
         _messageService.Send(MessageAction.ProductsListUpdated);
 
-        return GetWebItemSecurityInfo(itemList.Keys.ToList());
+        return await GetWebItemSecurityInfo(itemList.Keys.ToList()).ToListAsync();
     }
 
     [HttpGet("security/administrator/{productid}")]
-    public IEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
+    public async IAsyncEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
     {
-        return _webItemSecurity.GetProductAdministrators(productid)
-                                .Select(_employeeHelperDto.Get)
-                                .ToList();
+        var admins = _webItemSecurity.GetProductAdministrators(productid);
+
+        foreach (var a in admins)
+        {
+            yield return await _employeeHelperDto.Get(a);
+        }
     }
 
     [HttpGet("security/administrator")]

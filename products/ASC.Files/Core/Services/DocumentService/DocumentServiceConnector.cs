@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
-
 namespace ASC.Web.Files.Services.DocumentService;
 
 [Scope]
@@ -68,7 +66,7 @@ public class DocumentServiceConnector
 
     public static string GenerateRevisionId(string expectedKey)
     {
-        return Web.Core.Files.DocumentService.GenerateRevisionId(expectedKey);
+        return ASC.Files.Core.Helpers.DocumentService.GenerateRevisionId(expectedKey);
     }
 
     public Task<(int ResultPercent, string ConvertedDocumentUri)> GetConvertedUriAsync(string documentUri,
@@ -84,7 +82,7 @@ public class DocumentServiceConnector
         _logger.DebugDocServiceConvert(fromExtension, toExtension, documentUri, _filesLinkUtility.DocServiceConverterUrl);
         try
         {
-            return Web.Core.Files.DocumentService.GetConvertedUriAsync(
+            return ASC.Files.Core.Helpers.DocumentService.GetConvertedUriAsync(
                 _fileUtility,
                 _filesLinkUtility.DocServiceConverterUrl,
                 documentUri,
@@ -164,7 +162,7 @@ public class DocumentServiceConnector
         _logger.DebugDocServiceBuilderRequestKey(requestKey, isAsync);
         try
         {
-            return await Web.Core.Files.DocumentService.DocbuilderRequestAsync(
+            return await ASC.Files.Core.Helpers.DocumentService.DocbuilderRequestAsync(
                 _fileUtility,
                 _filesLinkUtility.DocServiceDocbuilderUrl,
                 GenerateRevisionId(requestKey),
@@ -247,7 +245,7 @@ public class DocumentServiceConnector
                 var fileUri = ReplaceCommunityAdress(url);
 
                 var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                var uriTuple = await Web.Core.Files.DocumentService.GetConvertedUriAsync(_fileUtility, _filesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, null, false, _fileUtility.SignatureSecret, _clientFactory);
+                var uriTuple = await ASC.Files.Core.Helpers.DocumentService.GetConvertedUriAsync(_fileUtility, _filesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, null, false, _fileUtility.SignatureSecret, _clientFactory);
                 convertedFileUri = uriTuple.ConvertedDocumentUri;
             }
             catch (Exception ex)
@@ -304,7 +302,7 @@ public class DocumentServiceConnector
                 var scriptUrl = _baseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
                 scriptUrl = ReplaceCommunityAdress(scriptUrl);
 
-                await Web.Core.Files.DocumentService.DocbuilderRequestAsync(_fileUtility, _filesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, _fileUtility.SignatureSecret, _clientFactory);
+                await ASC.Files.Core.Helpers.DocumentService.DocbuilderRequestAsync(_fileUtility, _filesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, _fileUtility.SignatureSecret, _clientFactory);
             }
             catch (Exception ex)
             {

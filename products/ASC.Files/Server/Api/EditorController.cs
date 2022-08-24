@@ -36,14 +36,17 @@ public class EditorControllerInternal : EditorController<int>
 {
     public EditorControllerInternal(
         FileStorageService<int> fileStorageService,
-        FileDtoHelper fileDtoHelper,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
         EntryManager entryManager,
         IHttpContextAccessor httpContextAccessor,
-        IDaoFactory daoFactory)
-        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, daoFactory)
+        IMapper mapper,
+        CommonLinkUtility commonLinkUtility,
+        FilesLinkUtility filesLinkUtility,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -51,23 +54,23 @@ public class EditorControllerInternal : EditorController<int>
 public class EditorControllerThirdparty : EditorController<string>
 {
     private readonly ThirdPartySelector _thirdPartySelector;
-    private readonly FilesControllerHelper<string> _filesControllerHelper;
 
     public EditorControllerThirdparty(
         FileStorageService<string> fileStorageService,
-        FileDtoHelper fileDtoHelper,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
         EntryManager entryManager,
         IHttpContextAccessor httpContextAccessor,
         ThirdPartySelector thirdPartySelector,
-        FilesControllerHelper<string> filesControllerHelper,
-        IDaoFactory daoFactory)
-        : base(fileStorageService, fileDtoHelper, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, daoFactory)
+        IMapper mapper,
+        CommonLinkUtility commonLinkUtility,
+        FilesLinkUtility filesLinkUtility,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper)
     {
         _thirdPartySelector = thirdPartySelector;
-        _filesControllerHelper = filesControllerHelper;
     }
 
     [AllowAnonymous]
@@ -113,32 +116,37 @@ public class EditorControllerThirdparty : EditorController<string>
 public abstract class EditorController<T> : ApiControllerBase
 {
     protected readonly FileStorageService<T> _fileStorageService;
-    protected readonly IDaoFactory _daoFactory;
-    protected readonly FileDtoHelper _fileDtoHelper;
     protected readonly DocumentServiceHelper _documentServiceHelper;
     protected readonly EncryptionKeyPairDtoHelper _encryptionKeyPairDtoHelper;
     protected readonly SettingsManager _settingsManager;
     protected readonly EntryManager _entryManager;
     protected readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly FilesLinkUtility _filesLinkUtility;
 
     public EditorController(
         FileStorageService<T> fileStorageService,
-        FileDtoHelper fileDtoHelper,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
         EntryManager entryManager,
         IHttpContextAccessor httpContextAccessor,
-        IDaoFactory daoFactory)
+        IMapper mapper,
+        CommonLinkUtility commonLinkUtility,
+        FilesLinkUtility filesLinkUtility,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
-        _fileDtoHelper = fileDtoHelper;
         _documentServiceHelper = documentServiceHelper;
         _encryptionKeyPairDtoHelper = encryptionKeyPairDtoHelper;
         _settingsManager = settingsManager;
         _entryManager = entryManager;
         _httpContextAccessor = httpContextAccessor;
-        _daoFactory = daoFactory;
+        _mapper = mapper;
+        _commonLinkUtility = commonLinkUtility;
+        _filesLinkUtility = filesLinkUtility;
     }
 
     /// <summary>
@@ -208,7 +216,7 @@ public abstract class EditorController<T> : ApiControllerBase
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("file/{fileId}/openedit")]
-    public async Task<Configuration<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
+    public async Task<ConfigurationDto<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
     {
         var docParams = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, true, !view, true);
         var configuration = docParams.Configuration;
@@ -235,13 +243,22 @@ public abstract class EditorController<T> : ApiControllerBase
 
         configuration.Token = _documentServiceHelper.GetSignature(configuration);
 
-        return configuration;
+        var result = _mapper.Map<Configuration<T>, ConfigurationDto<T>>(configuration);
+        result.EditorUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceApiUrl);
+        result.File = await _fileDtoHelper.GetAsync(file);
+        return result;
     }
 
     [HttpGet("file/{fileId}/presigned")]
     public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
     {
         return _fileStorageService.GetPresignedUriAsync(fileId);
+    }
+
+    [HttpGet("file/{fileId}/sharedusers")]
+    public Task<List<MentionWrapper>> SharedUsers(T fileId)
+    {
+        return _fileStorageService.SharedUsersAsync(fileId);
     }
 }
 
@@ -256,7 +273,9 @@ public class EditorController : ApiControllerBase
         FilesLinkUtility filesLinkUtility,
         MessageService messageService,
         DocumentServiceConnector documentServiceConnector,
-        CommonLinkUtility commonLinkUtility)
+        CommonLinkUtility commonLinkUtility,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _filesLinkUtility = filesLinkUtility;
         _messageService = messageService;

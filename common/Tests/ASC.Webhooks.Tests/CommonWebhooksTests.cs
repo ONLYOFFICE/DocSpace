@@ -38,7 +38,7 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Web.Webhooks;
 using ASC.Webhooks.Core;
-using ASC.Webhooks.Core.Dao.Models;
+using ASC.Webhooks.Core.EF.Model;
 using ASC.Webhooks.Service;
 
 using Microsoft.AspNetCore.Builder;

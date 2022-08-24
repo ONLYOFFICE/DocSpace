@@ -64,7 +64,7 @@ public interface IFolder
 
 [DebuggerDisplay("{Title} ({Id})")]
 [Transient]
-public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
+public class Folder<T> : FileEntry<T>, IFolder
 {
     public FolderType FolderType { get; set; }
     public int FilesCount { get; set; }
@@ -101,16 +101,4 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
     }
 
     public override string UniqID => $"folder_{Id}";
-
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<DbFolder, Folder<int>>();
-
-        profile.CreateMap<DbFolderQuery, Folder<int>>()
-            .IncludeMembers(r => r.Folder)
-            .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.CreateOn))
-            .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.ModifiedOn))
-            .AfterMap<FolderMappingAction>()
-            .ConstructUsingServiceLocator();
-    }
 }

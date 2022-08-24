@@ -122,7 +122,7 @@ public class FilesModule : FeedModule
             }
         }
 
-        var canRead = _fileSecurity.CanReadAsync(files, userId).Result.Where(r => r.Item2).ToList();
+        var canRead = _fileSecurity.CanReadAsync(files.ToAsyncEnumerable(), userId).ToListAsync().Result.Where(r => r.Item2).ToList();
 
         foreach (var f in feed1)
         {
@@ -135,9 +135,9 @@ public class FilesModule : FeedModule
 
     public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
     {
-        var files = _fileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To).Result
+        var files = _fileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To)
             .Where(f => f.File.RootFolderType != FolderType.TRASH && f.File.RootFolderType != FolderType.BUNCH)
-            .ToList();
+            .ToListAsync().Result;
 
         var folderIDs = files.Select(r => r.File.ParentId).ToList();
         var folders = _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
@@ -147,7 +147,7 @@ public class FilesModule : FeedModule
 
     public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return _fileDao.GetTenantsWithFeedsAsync(fromTime).Result;
+        return _fileDao.GetTenantsWithFeedsAsync(fromTime).ToListAsync().Result;
     }
 
     private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> rootFolder)

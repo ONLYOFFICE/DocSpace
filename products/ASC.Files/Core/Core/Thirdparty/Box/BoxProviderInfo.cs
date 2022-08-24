@@ -187,7 +187,7 @@ internal class BoxStorageDisposableWrapper : IDisposable
     private async Task<BoxStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
     {
         var boxStorage = new BoxStorage(_tempStream);
-        await CheckTokenAsync(token, id).ConfigureAwait(false);
+        await CheckTokenAsync(token, id);
 
         boxStorage.Open(token);
 
@@ -211,7 +211,7 @@ internal class BoxStorageDisposableWrapper : IDisposable
             token = _oAuth20TokenHelper.RefreshToken<BoxLoginProvider>(_consumerFactory, token);
 
             var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
-            await dbDao.UpdateProviderInfoAsync(id, new AuthData(token: token.ToJson())).ConfigureAwait(false);
+            await dbDao.UpdateProviderInfoAsync(id, new AuthData(token: token.ToJson()));
         }
     }
 
@@ -274,7 +274,7 @@ public class BoxProviderInfoHelper
         var folder = _cacheFolder.Get<BoxFolder>("boxd-" + id + "-" + boxFolderId);
         if (folder == null)
         {
-            folder = await storage.GetFolderAsync(boxFolderId).ConfigureAwait(false);
+            folder = await storage.GetFolderAsync(boxFolderId);
             if (folder != null)
             {
                 _cacheFolder.Insert("boxd-" + id + "-" + boxFolderId, folder, DateTime.UtcNow.Add(_cacheExpiration));
@@ -289,7 +289,7 @@ public class BoxProviderInfoHelper
         var file = _cacheFile.Get<BoxFile>("boxf-" + id + "-" + boxFileId);
         if (file == null)
         {
-            file = await storage.GetFileAsync(boxFileId).ConfigureAwait(false);
+            file = await storage.GetFileAsync(boxFileId);
             if (file != null)
             {
                 _cacheFile.Insert("boxf-" + id + "-" + boxFileId, file, DateTime.UtcNow.Add(_cacheExpiration));
@@ -305,7 +305,7 @@ public class BoxProviderInfoHelper
 
         if (items == null)
         {
-            items = await storage.GetItemsAsync(boxFolderId).ConfigureAwait(false);
+            items = await storage.GetItemsAsync(boxFolderId);
             _cacheChildItems.Insert("box-" + id + "-" + boxFolderId, items, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
@@ -316,7 +316,7 @@ public class BoxProviderInfoHelper
     {
         if (boxItem != null)
         {
-            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, CacheNotifyAction.Remove);
         }
     }
 
@@ -325,7 +325,7 @@ public class BoxProviderInfoHelper
         var key = id + "-";
         if (boxId == null)
         {
-            await _cacheNotify.PublishAsync(new BoxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new BoxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
         }
         else
         {
@@ -336,12 +336,12 @@ public class BoxProviderInfoHelper
 
             key += boxId;
 
-            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
         }
     }
 
     internal async Task<Stream> GetThumbnailAsync(BoxStorage storage, string boxFileId, int width, int height)
     {
-        return await storage.GetThumbnailAsync(boxFileId, width, height).ConfigureAwait(false);
+        return await storage.GetThumbnailAsync(boxFileId, width, height);
     }
 }

@@ -37,10 +37,10 @@ public class DbipLocation
     public string District { get; set; }
     public string City { get; set; }
     public string ZipCode { get; set; }
-    public long Latitude { get; set; }
-    public long Longitude { get; set; }
-    public int GeonameId { get; set; }
-    public double TimezoneOffset { get; set; }
+    public long? Latitude { get; set; }
+    public long? Longitude { get; set; }
+    public int? GeonameId { get; set; }
+    public double? TimezoneOffset { get; set; }
     public string TimezoneName { get; set; }
     public int Processed { get; set; }
 }
@@ -60,7 +60,8 @@ public static class DbipLocationExtension
     {
         modelBuilder.Entity<DbipLocation>(entity =>
         {
-            entity.ToTable("dbip_location");
+            entity.ToTable("dbip_location")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.IPStart)
                 .HasDatabaseName("ip_start");
@@ -94,7 +95,10 @@ public static class DbipLocationExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.GeonameId).HasColumnName("geoname_id");
+            entity.Property(e => e.GeonameId)
+                .HasColumnName("geoname_id")
+                .IsRequired(false)
+                .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.IPEnd)
                 .IsRequired()
@@ -110,9 +114,17 @@ public static class DbipLocationExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Latitude).HasColumnName("latitude");
+            entity.Property(e => e.Latitude)
+                .HasColumnName("latitude")
+                .HasColumnType("float")
+                .IsRequired(false)
+                .HasDefaultValueSql("NULL");
 
-            entity.Property(e => e.Longitude).HasColumnName("longitude");
+            entity.Property(e => e.Longitude)
+                .HasColumnName("longitude")
+                .HasColumnType("float")
+                .IsRequired(false)
+                .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.Processed)
                 .HasColumnName("processed")
@@ -131,7 +143,11 @@ public static class DbipLocationExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.TimezoneOffset).HasColumnName("timezone_offset");
+            entity.Property(e => e.TimezoneOffset)
+                .HasColumnType("int")
+                .HasColumnName("timezone_offset")
+                .IsRequired(false)
+                .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.ZipCode)
                 .HasColumnName("zipcode")

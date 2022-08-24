@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
-
 namespace ASC.Web.Files.Services.DocumentService;
 
 public class DocumentServiceTracker
@@ -194,7 +192,7 @@ public class DocumentServiceTrackerHelper
         _fileTracker = fileTracker;
         _logger = logger;
         _clientFactory = clientFactory;
-            _thirdPartySelector = thirdPartySelector;
+        _thirdPartySelector = thirdPartySelector;
     }
 
     public string GetCallbackUrl<T>(T fileId)
@@ -244,7 +242,7 @@ public class DocumentServiceTrackerHelper
 
     private async Task ProcessEditAsync<T>(T fileId, TrackerData fileData)
     {
-            if (_thirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
+        if (_thirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
         {
             return;
         }
@@ -253,7 +251,7 @@ public class DocumentServiceTrackerHelper
         var usersDrop = new List<string>();
 
         string docKey;
-            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
+        var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app == null)
         {
             File<T> fileStable;
@@ -277,18 +275,18 @@ public class DocumentServiceTrackerHelper
             {
                 if (!Guid.TryParse(user, out var userId))
                 {
-                        if (!string.IsNullOrEmpty(user) && user.StartsWith("uid-"))
-                        {
-                            userId = Guid.Empty;
-                        }
-                        else
-                        {
-                            _logger.InformationDocServiceUserIdIsNotGuid(user);
-                            continue;
-                        }
-
+                    if (!string.IsNullOrEmpty(user) && user.StartsWith("uid-"))
+                    {
+                        userId = Guid.Empty;
                     }
-                    users.Remove(userId);
+                    else
+                    {
+                        _logger.InformationDocServiceUserIdIsNotGuid(user);
+                        continue;
+                    }
+
+                }
+                users.Remove(userId);
 
                 try
                 {
@@ -335,7 +333,7 @@ public class DocumentServiceTrackerHelper
             userId = Guid.Empty;
         }
 
-            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
+        var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app == null)
         {
             File<T> fileStable;

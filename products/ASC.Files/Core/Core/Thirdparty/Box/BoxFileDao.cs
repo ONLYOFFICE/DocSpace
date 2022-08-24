@@ -40,7 +40,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger<BoxFileDao> monitor,
         FileUtility fileUtility,
@@ -58,14 +58,14 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
     public async Task InvalidateCacheAsync(string fileId)
     {
         var boxFileId = MakeBoxId(fileId);
-        await ProviderInfo.CacheResetAsync(boxFileId, true).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(boxFileId, true);
 
-        var boxFile = await GetBoxFileAsync(fileId).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(fileId);
         var parentPath = GetParentFolderId(boxFile);
 
         if (parentPath != null)
         {
-            await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentPath);
         }
     }
 
@@ -76,36 +76,38 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
     {
-        return ToFile(await GetBoxFileAsync(fileId).ConfigureAwait(false));
+        return ToFile(await GetBoxFileAsync(fileId));
     }
 
     public async Task<File<string>> GetFileAsync(string parentId, string title)
     {
-        var items = await GetBoxItemsAsync(parentId, false).ConfigureAwait(false);
+        var items = await GetBoxItemsAsync(parentId, false);
 
         return ToFile(items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFile);
     }
 
     public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
     {
-        return ToFile(await GetBoxFileAsync(fileId).ConfigureAwait(false));
+        return ToFile(await GetBoxFileAsync(fileId));
     }
 
-    public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
+    public async IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
     {
-        return GetFileAsync(fileId).ToAsyncEnumerable();
+        var file = await GetFileAsync(fileId);
+        yield return file;
     }
 
-    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
     {
         if (fileIds == null || !fileIds.Any())
         {
-            return AsyncEnumerable.Empty<File<string>>();
+            yield break;
         }
 
-        var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetBoxFileAsync(e).ConfigureAwait(false)));
-
-        return result;
+        foreach (var fileId in fileIds)
+        {
+            yield return ToFile(await GetBoxFileAsync(fileId));
+        }
     }
 
     public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
@@ -169,11 +171,14 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         return files;
     }
 
-    public async Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
-        var items = await GetBoxItemsAsync(parentId, false).ConfigureAwait(false);
+        var items = await GetBoxItemsAsync(parentId, false);
 
-        return items.Select(entry => MakeId(entry.Id)).ToList();
+        foreach (var entry in items)
+        {
+            yield return MakeId(entry.Id);
+        }
     }
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -184,7 +189,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         }
 
         //Get only files
-        var filesWait = await GetBoxItemsAsync(parentId, false).ConfigureAwait(false);
+        var filesWait = await GetBoxItemsAsync(parentId, false);
         var files = filesWait.Select(item => ToFile(item as BoxFile));
 
         //Filter
@@ -264,9 +269,9 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
         var boxFileId = MakeBoxId(file.Id);
-        await ProviderInfo.CacheResetAsync(boxFileId, true).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(boxFileId, true);
 
-        var boxFile = await GetBoxFileAsync(file.Id).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(file.Id);
         if (boxFile == null)
         {
             throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -278,7 +283,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         }
 
         var storage = await ProviderInfo.StorageAsync;
-        var fileStream = await storage.DownloadStreamAsync(boxFile, (int)offset).ConfigureAwait(false);
+        var fileStream = await storage.DownloadStreamAsync(boxFile, (int)offset);
 
         return fileStream;
     }
@@ -309,27 +314,27 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         if (file.Id != null)
         {
             var fileId = MakeBoxId(file.Id);
-            newBoxFile = await storage.SaveStreamAsync(fileId, fileStream).ConfigureAwait(false);
+            newBoxFile = await storage.SaveStreamAsync(fileId, fileStream);
 
             if (!newBoxFile.Name.Equals(file.Title))
             {
-                var folderId = GetParentFolderId(await GetBoxFileAsync(fileId).ConfigureAwait(false));
-                file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
-                newBoxFile = await storage.RenameFileAsync(fileId, file.Title).ConfigureAwait(false);
+                var folderId = GetParentFolderId(await GetBoxFileAsync(fileId));
+                file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
+                newBoxFile = await storage.RenameFileAsync(fileId, file.Title);
             }
         }
         else if (file.ParentId != null)
         {
             var folderId = MakeBoxId(file.ParentId);
-            file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
-            newBoxFile = await storage.CreateFileAsync(fileStream, file.Title, folderId).ConfigureAwait(false);
+            file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
+            newBoxFile = await storage.CreateFileAsync(fileStream, file.Title, folderId);
         }
 
-        await ProviderInfo.CacheResetAsync(newBoxFile).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(newBoxFile);
         var parentId = GetParentFolderId(newBoxFile);
         if (parentId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentId);
         }
 
         return ToFile(newBoxFile);
@@ -342,7 +347,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public async Task DeleteFileAsync(string fileId)
     {
-        var boxFile = await GetBoxFileAsync(fileId).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(fileId);
         if (boxFile == null)
         {
             return;
@@ -350,43 +355,45 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
         var id = MakeId(boxFile.Id);
 
-        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
-                var hashIDs = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.Id.StartsWith(id))
-                    .Select(r => r.HashId);
+                var hashIDs = Query(filesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.Id.StartsWith(id))
+                .Select(r => r.HashId);
 
-                var link = await Query(FilesDbContext.TagLink)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToListAsync();
+                var link = await Query(filesDbContext.TagLink)
+                .Where(r => hashIDs.Any(h => h == r.EntryId))
+                .ToListAsync();
 
-                FilesDbContext.TagLink.RemoveRange(link);
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                filesDbContext.TagLink.RemoveRange(link);
+                await filesDbContext.SaveChangesAsync();
 
-                var tagsToRemove = from ft in FilesDbContext.Tag
-                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                var tagsToRemove = from ft in filesDbContext.Tag
+                                   join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
                                    where ftl == null
                                    select ft;
 
-                FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
-                var securityToDelete = Query(FilesDbContext.Security)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId));
+                var securityToDelete = Query(filesDbContext.Security)
+                .Where(r => hashIDs.Any(h => h == r.EntryId));
 
-                FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                await filesDbContext.SaveChangesAsync();
 
-                var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => hashIDs.Any(h => h == r.HashId));
+                var mappingToDelete = Query(filesDbContext.ThirdpartyIdMapping)
+                .Where(r => hashIDs.Any(h => h == r.HashId));
 
-                FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                await filesDbContext.SaveChangesAsync();
 
-                await tx.CommitAsync().ConfigureAwait(false);
+                await tx.CommitAsync();
             }
         });
 
@@ -396,17 +403,17 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             await storage.DeleteItemAsync(boxFile);
         }
 
-        await ProviderInfo.CacheResetAsync(boxFile.Id, true).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(boxFile.Id, true);
         var parentFolderId = GetParentFolderId(boxFile);
         if (parentFolderId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentFolderId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentFolderId);
         }
     }
 
     public async Task<bool> IsExistAsync(string title, object folderId)
     {
-        var item = await GetBoxItemsAsync(folderId.ToString(), false).ConfigureAwait(false);
+        var item = await GetBoxItemsAsync(folderId.ToString(), false);
 
         return item.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
     }
@@ -415,12 +422,12 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
     {
         if (toFolderId is int tId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
         }
 
         if (toFolderId is string tsId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
         }
 
         throw new NotImplementedException();
@@ -432,20 +439,20 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             fileId, this, _boxDaoSelector.ConvertId,
             toFolderId, _fileDao, r => r,
             true)
-            .ConfigureAwait(false);
+            ;
 
         return moved.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
     {
-        var boxFile = await GetBoxFileAsync(fileId).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(fileId);
         if (boxFile is ErrorFile errorFile)
         {
             throw new Exception(errorFile.Error);
         }
 
-        var toBoxFolder = await GetBoxFolderAsync(toFolderId).ConfigureAwait(false);
+        var toBoxFolder = await GetBoxFolderAsync(toFolderId);
         if (toBoxFolder is ErrorFolder errorFolder)
         {
             throw new Exception(errorFolder.Error);
@@ -453,13 +460,13 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
         var fromFolderId = GetParentFolderId(boxFile);
 
-        var newTitle = await GetAvailableTitleAsync(boxFile.Name, toBoxFolder.Id, IsExistAsync).ConfigureAwait(false);
+        var newTitle = await GetAvailableTitleAsync(boxFile.Name, toBoxFolder.Id, IsExistAsync);
         var storage = await ProviderInfo.StorageAsync;
-        boxFile = await storage.MoveFileAsync(boxFile.Id, newTitle, toBoxFolder.Id).ConfigureAwait(false);
+        boxFile = await storage.MoveFileAsync(boxFile.Id, newTitle, toBoxFolder.Id);
 
-        await ProviderInfo.CacheResetAsync(boxFile.Id, true).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(fromFolderId).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(toBoxFolder.Id).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(boxFile.Id, true);
+        await ProviderInfo.CacheResetAsync(fromFolderId);
+        await ProviderInfo.CacheResetAsync(toBoxFolder.Id);
 
         return MakeId(boxFile.Id);
     }
@@ -468,12 +475,12 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
     {
         if (toFolderId is int tId)
         {
-            return await CopyFileAsync(fileId, tId).ConfigureAwait(false) as File<TTo>;
+            return await CopyFileAsync(fileId, tId) as File<TTo>;
         }
 
         if (toFolderId is string tsId)
         {
-            return await CopyFileAsync(fileId, tsId).ConfigureAwait(false) as File<TTo>;
+            return await CopyFileAsync(fileId, tsId) as File<TTo>;
         }
 
         throw new NotImplementedException();
@@ -481,24 +488,24 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
     {
-        var boxFile = await GetBoxFileAsync(fileId).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(fileId);
         if (boxFile is ErrorFile errorFile)
         {
             throw new Exception(errorFile.Error);
         }
 
-        var toBoxFolder = await GetBoxFolderAsync(toFolderId).ConfigureAwait(false);
+        var toBoxFolder = await GetBoxFolderAsync(toFolderId);
         if (toBoxFolder is ErrorFolder errorFolder)
         {
             throw new Exception(errorFolder.Error);
         }
 
-        var newTitle = await GetAvailableTitleAsync(boxFile.Name, toBoxFolder.Id, IsExistAsync).ConfigureAwait(false);
+        var newTitle = await GetAvailableTitleAsync(boxFile.Name, toBoxFolder.Id, IsExistAsync);
         var storage = await ProviderInfo.StorageAsync;
         var newBoxFile = await storage.CopyFileAsync(boxFile.Id, newTitle, toBoxFolder.Id);
 
-        await ProviderInfo.CacheResetAsync(newBoxFile).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(toBoxFolder.Id).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(newBoxFile);
+        await ProviderInfo.CacheResetAsync(toBoxFolder.Id);
 
         return ToFile(newBoxFile);
     }
@@ -515,17 +522,17 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var boxFile = await GetBoxFileAsync(file.Id).ConfigureAwait(false);
-        newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(boxFile), IsExistAsync).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(file.Id);
+        newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(boxFile), IsExistAsync);
 
         var storage = await ProviderInfo.StorageAsync;
-        boxFile = await storage.RenameFileAsync(boxFile.Id, newTitle).ConfigureAwait(false);
+        boxFile = await storage.RenameFileAsync(boxFile.Id, newTitle);
 
-        await ProviderInfo.CacheResetAsync(boxFile).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(boxFile);
         var parentId = GetParentFolderId(boxFile);
         if (parentId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentId);
         }
 
         return MakeId(boxFile.Id);
@@ -604,7 +611,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
                 uploadSession.BytesTotal = chunkLength;
             }
 
-            uploadSession.File = await SaveFileAsync(uploadSession.File, stream).ConfigureAwait(false);
+            uploadSession.File = await SaveFileAsync(uploadSession.File, stream);
             uploadSession.BytesUploaded = chunkLength;
 
             return uploadSession.File;
@@ -613,7 +620,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
         using (var fs = new FileStream(tempPath, FileMode.Append))
         {
-            await stream.CopyToAsync(fs).ConfigureAwait(false);
+            await stream.CopyToAsync(fs);
         }
 
         uploadSession.BytesUploaded += chunkLength;
@@ -622,7 +629,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         {
             using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
                                            FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
-            uploadSession.File = await SaveFileAsync(uploadSession.File, fs).ConfigureAwait(false);
+            uploadSession.File = await SaveFileAsync(uploadSession.File, fs);
         }
         else
         {

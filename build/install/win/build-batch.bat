@@ -86,6 +86,6 @@ copy "build\install\win\publish\Apache Kafka.msi" "build\install\win\Apache Kafk
 REM echo ######## Build MySQL Server Installer ########
 iscc /Qp /S"byparam="signtool" sign /a /n "%publisher%" /t http://timestamp.digicert.com $f" "build\install\win\MySQL Server Installer Runner.iss"
 
-REM echo ######## Build AppServer package ########
-%AdvancedInstaller% /edit build\install\win\AppServer.aip /SetVersion %BUILD_VERSION%.%BUILD_NUMBER%
-%AdvancedInstaller% /rebuild build\install\win\AppServer.aip
+REM echo ######## Build DocSpace package ########
+%AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetVersion %BUILD_VERSION%.%BUILD_NUMBER%
+%AdvancedInstaller% /rebuild build\install\win\DocSpace.aip

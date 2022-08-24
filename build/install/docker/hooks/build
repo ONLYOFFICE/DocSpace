@@ -7,5 +7,5 @@ docker-compose -f build.yml build \
     --build-arg BUILD_NUMBER=$BUILD_NUMBER \
     --build-arg BUILD_ARGS=$BUILD_ARGS \
     --build-arg DEPLOY_ARGS=$DEPLOY_ARGS \
-    --build-arg REPO_SDK_TAG=$REPO_SDK_TAG \
-    --build-arg REPO_RUN_TAG=$REPO_RUN_TAG
+    --build-arg DOTNET_SDK=$DOTNET_SDK \
+    --build-arg DOTNET_RUN=$DOTNET_RUN

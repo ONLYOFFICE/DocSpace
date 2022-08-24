@@ -122,6 +122,7 @@
   "PasswordMinimumLength": "Minimale Länge",
   "People": "Personen",
   "Phone": "Telefon",
+  "PreparationPortalTitle": "Wiederherstellung des Portals ist im Gange",
   "Previous": "Zurück",
   "Profile": "Profil",
   "ProjectsProduct": "Projekte",
@@ -168,5 +169,10 @@
   "View": "Anzeigen",
   "ViewWeb": "Web-Version öffnen",
   "Warning": "Warnung",
-  "Hotkeys": "Tastenkombinationen"
+  "Hotkeys": "Tastenkombinationen",
+  "PaymentsTitle": "Zahlungen",
+  "AboutCompanyTitle": "Über diese Software",
+  "LogoutButton": "Ausloggen",
+  "HelpCenter": "Hilfe-Center",
+  "SelectFile": "Datei auswählen"
 }

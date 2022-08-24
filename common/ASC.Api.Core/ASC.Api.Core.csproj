@@ -16,11 +16,12 @@
     <PackageReference Include="AspNetCore.HealthChecks.Kafka" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="6.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.4" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="8.0.4" />
     <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="8.0.4" />
 	<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
@@ -31,6 +32,7 @@
     <ProjectReference Include="..\ASC.EventBus.Extensions.Logger\ASC.EventBus.Extensions.Logger.csproj" />
     <ProjectReference Include="..\ASC.EventBus.RabbitMQ\ASC.EventBus.RabbitMQ.csproj" />
     <ProjectReference Include="..\ASC.Webhooks.Core\ASC.Webhooks.Core.csproj" />
+    <ProjectReference Include="..\services\ASC.AuditTrail\ASC.AuditTrail.csproj" />
   </ItemGroup>
 
 </Project>

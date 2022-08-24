@@ -50,7 +50,8 @@ public static class DbTariffExtension
     {
         modelBuilder.Entity<DbTariff>(entity =>
         {
-            entity.ToTable("tenants_tariff");
+            entity.ToTable("tenants_tariff")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => e.Tenant)
                 .HasDatabaseName("tenant");
@@ -65,13 +66,12 @@ public static class DbTariffExtension
 
             entity.Property(e => e.CreateOn)
                 .HasColumnName("create_on")
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .ValueGeneratedOnAddOrUpdate();
+                .HasColumnType("timestamp");
 
             entity.Property(e => e.Quantity)
                 .HasColumnName("quantity")
-                .HasColumnType("int");
+                .HasColumnType("int")
+                .HasDefaultValueSql("'1'");
 
             entity.Property(e => e.Stamp)
                 .HasColumnName("stamp")

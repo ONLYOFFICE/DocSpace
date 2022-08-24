@@ -29,9 +29,6 @@ namespace ASC.Files.Core.Data;
 public class AbstractDao
 {
     protected readonly ICache _cache;
-
-    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
-    public FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
     private int _tenantID;
     protected internal int TenantID
     {
@@ -45,6 +42,8 @@ public class AbstractDao
             return _tenantID;
         }
     }
+
+    protected readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     protected readonly UserManager _userManager;
     protected readonly TenantManager _tenantManager;
     protected readonly TenantUtil _tenantUtil;
@@ -58,7 +57,7 @@ public class AbstractDao
     protected readonly IServiceProvider _serviceProvider;
 
     protected AbstractDao(
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
@@ -73,7 +72,7 @@ public class AbstractDao
         ICache cache)
     {
         _cache = cache;
-        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+        _dbContextFactory = dbContextFactory;
         _userManager = userManager;
         _tenantManager = tenantManager;
         _tenantUtil = tenantUtil;
@@ -92,29 +91,28 @@ public class AbstractDao
     {
         var tenantId = TenantID;
 
-        return set.AsQueryable().Where(r => r.TenantId == tenantId);
+        return set.Where(r => r.TenantId == tenantId);
     }
 
-    protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
+    protected internal IQueryable<DbFile> GetFileQuery(FilesDbContext filesDbContext, Expression<Func<DbFile, bool>> where)
     {
-        return Query(FilesDbContext.Files)
+        return Query(filesDbContext.Files)
             .Where(where);
     }
 
     protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
     {
-        var folders = await FilesDbContext.Folders
-            .AsQueryable()
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var folders = await filesDbContext.Folders
             .Where(r => r.TenantId == TenantID)
-            .Where(r => FilesDbContext.Tree.AsQueryable().Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
+            .Where(r => filesDbContext.Tree.Where(r => r.FolderId == folderId).Any(a => r.ParentId == r.Id))
             .ToListAsync();
 
         foreach (var f in folders)
         {
             f.FilesCount = await
-                FilesDbContext.Files
-                .AsQueryable()
-                .Join(FilesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
+                filesDbContext.Files
+                .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Where(r => r.file.TenantId == f.TenantId)
                 .Where(r => r.tree.ParentId == f.Id)
                 .Select(r => r.file.Id)
@@ -122,7 +120,7 @@ public class AbstractDao
                 .CountAsync();
         }
 
-        await FilesDbContext.SaveChangesAsync();
+        await filesDbContext.SaveChangesAsync();
     }
 
     protected ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
@@ -157,7 +155,9 @@ public class AbstractDao
         }
         else
         {
-            result = await Query(FilesDbContext.ThirdpartyIdMapping)
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            result = await Query(filesDbContext.ThirdpartyIdMapping)
+                .AsNoTracking()
                 .Where(r => r.HashId == id.ToString())
                 .Select(r => r.Id)
                 .FirstOrDefaultAsync();
@@ -172,7 +172,9 @@ public class AbstractDao
                 TenantId = TenantID
             };
 
-            await FilesDbContext.AddOrUpdateAsync(r => r.ThirdpartyIdMapping, newItem);
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await filesDbContext.AddOrUpdateAsync(r => r.ThirdpartyIdMapping, newItem);
+            await filesDbContext.SaveChangesAsync();
         }
 
         return result;

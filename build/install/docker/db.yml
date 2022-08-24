@@ -1,9 +1,7 @@
 version: "3.8"
 
 services:
-  
   onlyoffice-mysql-server:
-    
     image: mysql:${MYSQL_VERSION}
     command: --default-authentication-plugin=mysql_native_password
     cap_add:

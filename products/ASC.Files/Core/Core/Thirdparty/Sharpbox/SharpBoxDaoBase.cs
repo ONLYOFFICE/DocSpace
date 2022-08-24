@@ -35,7 +35,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        DbContextManager<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
         ILogger monitor,
         FileUtility fileUtility,
@@ -145,15 +145,17 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             return;
         }
 
-        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var tx = await FilesDbContext.Database.BeginTransactionAsync();
-            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.Id.StartsWith(oldValue))
-                .Select(r => r.Id)
-                .ToListAsync();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            var oldIDs = await Query(filesDbContext.ThirdpartyIdMapping)
+            .Where(r => r.Id.StartsWith(oldValue))
+            .Select(r => r.Id)
+            .ToListAsync();
 
             foreach (var oldID in oldIDs)
             {
@@ -161,39 +163,54 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
                 var newID = oldID.Replace(oldValue, newValue);
                 var newHashID = await MappingIDAsync(newID);
 
-                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == oldHashID)
-                    .ToListAsync();
+                var mappingForDelete = await Query(filesDbContext.ThirdpartyIdMapping)
+                    .Where(r => r.HashId == oldHashID).ToListAsync();
 
-                foreach (var m in mappingForUpdate)
+                var mappingForInsert = mappingForDelete.Select(m => new DbFilesThirdpartyIdMapping
                 {
-                    m.Id = newID;
-                    m.HashId = newHashID;
-                }
+                    TenantId = m.TenantId,
+                    Id = newID,
+                    HashId = newHashID
+                });
 
-                await FilesDbContext.SaveChangesAsync();
+                filesDbContext.RemoveRange(mappingForDelete);
+                await filesDbContext.AddRangeAsync(mappingForInsert);
 
-                var securityForUpdate = await Query(FilesDbContext.Security)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToListAsync();
+                var securityForDelete = await Query(filesDbContext.Security)
+                    .Where(r => r.EntryId == oldHashID).ToListAsync();
 
-                foreach (var s in securityForUpdate)
+                var securityForInsert = securityForDelete.Select(s => new DbFilesSecurity
                 {
-                    s.EntryId = newHashID;
-                }
+                    TenantId = s.TenantId,
+                    TimeStamp = DateTime.Now,
+                    EntryId = newHashID,
+                    Share = s.Share,
+                    Subject = s.Subject,
+                    EntryType = s.EntryType,
+                    Owner = s.Owner
+                });
 
-                await FilesDbContext.SaveChangesAsync();
+                filesDbContext.RemoveRange(securityForDelete);
+                await filesDbContext.AddRangeAsync(securityForInsert);
 
-                var linkForUpdate = await Query(FilesDbContext.TagLink)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToListAsync();
+                var linkForDelete = await Query(filesDbContext.TagLink)
+                    .Where(r => r.EntryId == oldHashID).ToListAsync();
 
-                foreach (var l in linkForUpdate)
+                var linkForInsert = linkForDelete.Select(l => new DbFilesTagLink
                 {
-                    l.EntryId = newHashID;
-                }
+                    EntryId = newHashID,
+                    Count = l.Count,
+                    CreateBy = l.CreateBy,
+                    CreateOn = l.CreateOn,
+                    EntryType = l.EntryType,
+                    TagId = l.TagId,
+                    TenantId = l.TenantId
+                });
 
-                await FilesDbContext.SaveChangesAsync();
+                filesDbContext.RemoveRange(linkForDelete);
+                await filesDbContext.AddRangeAsync(linkForInsert);
+
+                await filesDbContext.SaveChangesAsync();
             }
 
             await tx.CommitAsync();

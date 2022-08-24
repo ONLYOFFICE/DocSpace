@@ -34,7 +34,7 @@ public class DocuSignHandler
 
     public async Task Invoke(HttpContext context, DocuSignHandlerService docuSignHandlerService)
     {
-        await docuSignHandlerService.Invoke(context).ConfigureAwait(false);
+        await docuSignHandlerService.Invoke(context);
     }
 }
 

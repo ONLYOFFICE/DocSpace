@@ -36,8 +36,10 @@ global using System.Net.Mime;
 global using System.Reflection;
 global using System.Runtime.Serialization;
 global using System.Security;
+global using System.Security.Cryptography;
 global using System.Security.Principal;
 global using System.Text;
+global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
@@ -52,6 +54,9 @@ global using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
 global using ASC.Api.Utils;
+global using ASC.AuditTrail;
+global using ASC.AuditTrail.Models;
+global using ASC.AuditTrail.Models.Mappings;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
@@ -109,7 +114,7 @@ global using ASC.Files.Thirdparty.SharePoint;
 global using ASC.Files.Thirdparty.Sharpbox;
 global using ASC.Files.ThumbnailBuilder;
 global using ASC.MessagingSystem.Core;
-global using ASC.MessagingSystem.Models;
+global using ASC.MessagingSystem.EF.Model;
 global using ASC.Notify.Model;
 global using ASC.Notify.Patterns;
 global using ASC.Notify.Recipients;
@@ -151,12 +156,17 @@ global using Box.V2.Auth;
 global using Box.V2.Config;
 global using Box.V2.Models;
 
+global using CsvHelper;
+global using CsvHelper.Configuration;
+
 global using DocuSign.eSign.Api;
 global using DocuSign.eSign.Client;
 global using DocuSign.eSign.Model;
 
 global using Dropbox.Api;
 global using Dropbox.Api.Files;
+
+global using Flurl;
 
 global using Google;
 global using Google.Apis.Auth.OAuth2;
@@ -169,9 +179,11 @@ global using ICSharpCode.SharpZipLib.GZip;
 global using ICSharpCode.SharpZipLib.Tar;
 global using ICSharpCode.SharpZipLib.Zip;
 
+global using JWT;
 global using JWT.Algorithms;
 global using JWT.Builder;
 global using JWT.Exceptions;
+global using JWT.Serializers;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
@@ -181,7 +193,6 @@ global using Microsoft.AspNetCore.Mvc.ModelBinding;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Infrastructure;
 global using Microsoft.EntityFrameworkCore.Metadata;
-global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.EntityFrameworkCore.Storage;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Configuration;
@@ -208,7 +219,8 @@ global using SixLabors.ImageSharp;
 global using StackExchange.Redis;
 
 global using static ASC.Files.Core.Data.AbstractDao;
-global using static ASC.Web.Core.Files.DocumentService;
+global using static ASC.Files.Core.Helpers.DocumentService;
+global using static ASC.Files.Core.Helpers.DocumentService.CommandResponse;
 global using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracker;
 global using static ASC.Web.Files.Utils.FileTracker;
 
@@ -217,8 +229,7 @@ global using SecurityContext = ASC.Core.SecurityContext;
 global using Constants = ASC.Core.Users.Constants;
 global using UserInfo = ASC.Core.Users.UserInfo;
 global using FilesDbContext = ASC.Files.Core.EF.FilesDbContext;
-global using MySqlFilesDbContext = ASC.Files.Core.EF.MySqlFilesDbContext;
-global using PostgreSqlFilesDbContext = ASC.Files.Core.EF.PostgreSqlFilesDbContext;
+global using CommandMethod = ASC.Files.Core.Helpers.DocumentService.CommandMethod;
 global using FileShare = ASC.Files.Core.Security.FileShare;
 global using Tag = ASC.Files.Core.Tag;
 global using Thumbnail = ASC.Files.Core.Thumbnail;
@@ -226,7 +237,6 @@ global using FileType = ASC.Web.Core.Files.FileType;
 global using Token = ASC.Web.Files.ThirdPartyApp.Token;
 global using FileShareLink = ASC.Web.Files.Utils.FileShareLink;
 global using SocketManager = ASC.Web.Files.Utils.SocketManager;
-global using ModelSnapshot = Microsoft.EntityFrameworkCore.Infrastructure.ModelSnapshot;
 global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 global using ContentType = System.Net.Mime.ContentType;
 global using EnumMemberAttribute = System.Runtime.Serialization.EnumMemberAttribute;

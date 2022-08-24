@@ -56,7 +56,8 @@ public static class DbFilesLinkExtension
             entity.HasKey(e => new { e.TenantId, e.SourceId, e.LinkedId })
                 .HasName("PRIMARY");
 
-            entity.ToTable("files_link");
+            entity.ToTable("files_link")
+                .HasCharSet("utf8");
 
             entity.HasIndex(e => new { e.TenantId, e.SourceId, e.LinkedId, e.LinkedFor })
                 .HasDatabaseName("linked_for");

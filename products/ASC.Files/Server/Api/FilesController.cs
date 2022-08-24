@@ -24,10 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Web.Files.ThirdPartyApp;
-
-using AutoMapper;
-
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Files.Api;
@@ -38,8 +34,11 @@ public class FilesControllerInternal : FilesController<int>
     public FilesControllerInternal(
         FilesControllerHelper<int> filesControllerHelper,
         FileStorageService<int> fileStorageService,
-        IMapper mapper)
-        : base(filesControllerHelper, fileStorageService, mapper)
+        IMapper mapper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(filesControllerHelper, fileStorageService, mapper, fileOperationDtoHelper, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -54,8 +53,11 @@ public class FilesControllerThirdparty : FilesController<string>
         FileStorageService<string> fileStorageService,
         ThirdPartySelector thirdPartySelector,
         DocumentServiceHelper documentServiceHelper,
-        IMapper mapper)
-        : base(filesControllerHelper, fileStorageService, mapper)
+        IMapper mapper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper)
+        : base(filesControllerHelper, fileStorageService, mapper, fileOperationDtoHelper, folderDtoHelper, fileDtoHelper)
     {
         _thirdPartySelector = thirdPartySelector;
         _documentServiceHelper = documentServiceHelper;
@@ -68,7 +70,7 @@ public class FilesControllerThirdparty : FilesController<string>
         var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
         var file = app.GetFile(fileId?.ToString(), out var editable);
         var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
-        return await _filesControllerHelper.GetFileEntryWrapperAsync(docParams.File);
+        return await GetFileEntryWrapperAsync(docParams.File);
     }
 }
 
@@ -77,12 +79,20 @@ public abstract class FilesController<T> : ApiControllerBase
     protected readonly FilesControllerHelper<T> _filesControllerHelper;
     private readonly FileStorageService<T> _fileStorageService;
     private readonly IMapper _mapper;
+    private readonly FileOperationDtoHelper _fileOperationDtoHelper;
 
-    public FilesController(FilesControllerHelper<T> filesControllerHelper, FileStorageService<T> fileStorageService, IMapper mapper)
+    public FilesController(
+        FilesControllerHelper<T> filesControllerHelper,
+        FileStorageService<T> fileStorageService,
+        IMapper mapper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _filesControllerHelper = filesControllerHelper;
         _fileStorageService = fileStorageService;
         _mapper = mapper;
+        _fileOperationDtoHelper = fileOperationDtoHelper;
     }
 
     /// <summary>
@@ -94,7 +104,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [HttpPut("file/{fileId}/history")]
-    public Task<IEnumerable<FileDto<T>>> ChangeHistoryAsync(T fileId, ChangeHistoryRequestDto inDto)
+    public IAsyncEnumerable<FileDto<T>> ChangeHistoryAsync(T fileId, ChangeHistoryRequestDto inDto)
     {
         return _filesControllerHelper.ChangeHistoryAsync(fileId, inDto.Version, inDto.ContinueVersion);
     }
@@ -193,9 +203,12 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="immediately">Don't move to the Recycle Bin</param>
     /// <returns>Operation result</returns>
     [HttpDelete("file/{fileId}")]
-    public Task<IEnumerable<FileOperationDto>> DeleteFile(T fileId, [FromBody] DeleteRequestDto inDto)
+    public async IAsyncEnumerable<FileOperationDto> DeleteFile(T fileId, [FromBody] DeleteRequestDto inDto)
     {
-        return _filesControllerHelper.DeleteFileAsync(fileId, inDto.DeleteAfter, inDto.Immediately);
+        foreach (var e in _fileStorageService.DeleteFile("delete", fileId, false, inDto.DeleteAfter, inDto.Immediately))
+        {
+            yield return await _fileOperationDtoHelper.GetAsync(e);
+        }
     }
 
     [AllowAnonymous]
@@ -207,7 +220,7 @@ public abstract class FilesController<T> : ApiControllerBase
 
     [AllowAnonymous]
     [HttpGet("file/{fileId}/edit/history")]
-    public Task<List<EditHistoryDto>> GetEditHistoryAsync(T fileId, string doc = null)
+    public IAsyncEnumerable<EditHistoryDto> GetEditHistoryAsync(T fileId, string doc = null)
     {
         return _filesControllerHelper.GetEditHistoryAsync(fileId, doc);
     }
@@ -233,7 +246,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="fileId">File ID</param>
     /// <returns>File information</returns>
     [HttpGet("file/{fileId}/history")]
-    public Task<IEnumerable<FileDto<T>>> GetFileVersionInfoAsync(T fileId)
+    public IAsyncEnumerable<FileDto<T>> GetFileVersionInfoAsync(T fileId)
     {
         return _filesControllerHelper.GetFileVersionInfoAsync(fileId);
     }
@@ -246,7 +259,7 @@ public abstract class FilesController<T> : ApiControllerBase
 
     [AllowAnonymous]
     [HttpGet("file/{fileId}/restoreversion")]
-    public Task<List<EditHistoryDto>> RestoreVersionAsync(T fileId, int version = 0, string url = null, string doc = null)
+    public IAsyncEnumerable<EditHistoryDto> RestoreVersionAsync(T fileId, int version = 0, string url = null, string doc = null)
     {
         return _filesControllerHelper.RestoreVersionAsync(fileId, version, url, doc);
     }
@@ -332,7 +345,9 @@ public class FilesControllerCommon : ApiControllerBase
         IServiceScopeFactory serviceScopeFactory,
         GlobalFolderHelper globalFolderHelper,
         FileStorageService<string> fileStorageServiceThirdparty,
-        FilesControllerHelper<int> filesControllerHelperInternal)
+        FilesControllerHelper<int> filesControllerHelperInternal,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _mapper = mapper;
         _serviceScopeFactory = serviceScopeFactory;
@@ -425,7 +440,6 @@ public class FilesControllerCommon : ApiControllerBase
 
         foreach (var fileId in batchEntryPropertiesRequestDto.FilesId)
         {
-
             if (fileId.ValueKind == JsonValueKind.String)
             {
                 await AddProps(fileId.GetString());
