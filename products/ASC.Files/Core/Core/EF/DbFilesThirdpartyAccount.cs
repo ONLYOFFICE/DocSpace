@@ -136,8 +136,7 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Private)
-                .HasColumnName("private");
+            entity.Property(e => e.Private).HasColumnName("private");
         });
     }
     public static void PgSqlAddDbFilesThirdpartyAccount(this ModelBuilder modelBuilder)
@@ -186,6 +185,10 @@ public static class DbFilesThirdpartyAccountExtension
                 .IsRequired()
                 .HasColumnName("user_name")
                 .HasMaxLength(100);
+
+            entity.Property(e => e.FolderId).HasColumnName("folder_id");
+
+            entity.Property(e => e.Private).HasColumnName("private");
         });
     }
 }

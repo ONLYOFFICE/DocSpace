@@ -129,8 +129,7 @@ public static class DbFolderExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Private)
-                .HasColumnType("private");
+            entity.Property(e => e.Private).HasColumnName("private");
         });
     }
     public static void PgSqlAddDbFolder(this ModelBuilder modelBuilder)
@@ -177,6 +176,8 @@ public static class DbFolderExtension
                 .IsRequired()
                 .HasColumnName("title")
                 .HasMaxLength(400);
+
+            entity.Property(e => e.Private).HasColumnName("private");
         });
     }
 }
