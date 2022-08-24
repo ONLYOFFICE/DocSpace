@@ -21,10 +21,13 @@ import PayerInformationContainer from "./PayerInformationContainer";
 const StyledBody = styled.div`
   max-width: 660px;
 
-  .payment-info_suggestion {
+  .payment-info_suggestion,
+  .payment-info_grace-period {
     margin-bottom: 12px;
   }
-
+  .payment-info_grace-period {
+    color: ${(props) => props.theme.client.payments.delayColor};
+  }
   .payment-info {
     display: grid;
     grid-template-columns: repeat(2, minmax(100px, 320px));
@@ -60,6 +63,7 @@ const PaymentsPage = ({
   portalQuota,
   isFreeTariff,
   isGracePeriod,
+  theme,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -71,7 +75,7 @@ const PaymentsPage = ({
 
   useEffect(() => {
     moment.locale(language);
-    
+
     if (portalTariff) {
       dueDate = moment(
         isGracePeriod ? portalTariff.delayDueDate : portalTariff.dueDate
@@ -129,26 +133,36 @@ const PaymentsPage = ({
   return isInitialLoading ? (
     <Loaders.PaymentsLoader />
   ) : (
-    <StyledBody>
+    <StyledBody theme={theme}>
       <Text noSelect fontSize="16px" isBold>
         {isFreeTariff ? t("StartupTitle") : t("BusinessTitle")}
       </Text>
       {!isFreeTariff && <PayerInformationContainer />}
       <CurrentTariffContainer />
-      <Text noSelect fontSize="16px" isBold className="payment-info_suggestion">
-        {isFreeTariff ? (
-          t("StartupSuggestion")
-        ) : isGracePeriod ? (
+      {isGracePeriod ? (
+        <Text
+          noSelect
+          fontSize="16px"
+          isBold
+          className="payment-info_grace-period"
+        >
           <Trans t={t} i18nKey="DelayedPayment" ns="Payments">
             {{ date: dueDate }}
           </Trans>
-        ) : (
-          t("BusinessSuggestion")
-        )}
-      </Text>
+        </Text>
+      ) : (
+        <Text
+          noSelect
+          fontSize="16px"
+          isBold
+          className="payment-info_suggestion "
+        >
+          {isFreeTariff ? t("StartupSuggestion") : t("BusinessSuggestion")}
+        </Text>
+      )}
 
       {isGracePeriod && (
-        <Text noSelect fontSize={"14"} className="payment-info_managers-price">
+        <Text noSelect fontSize={"14"}>
           <Trans t={t} i18nKey="GracePeriodActivatedDescription" ns="Payments">
             {{ fromDate, byDate }}
           </Trans>
@@ -161,7 +175,6 @@ const PaymentsPage = ({
           </Trans>
         </Text>
       )}
-
       <div className="payment-info_wrapper">
         <Text
           noSelect
@@ -176,12 +189,10 @@ const PaymentsPage = ({
 
         {renderTooltip()}
       </div>
-
       <div className="payment-info">
         <PriceCalculation t={t} />
         <BenefitsContainer t={t} />
       </div>
-
       <ContactContainer t={t} />
     </StyledBody>
   );
@@ -205,7 +216,7 @@ export default inject(({ auth, payments }) => {
     isGracePeriod,
   } = auth;
 
-  const { organizationName } = auth.settingsStore;
+  const { organizationName, theme } = auth.settingsStore;
   const { setTariffsInfo, tariffsInfo } = payments;
 
   return {
@@ -222,5 +233,6 @@ export default inject(({ auth, payments }) => {
     isGracePeriod,
     pricePerManager,
     portalQuota,
+    theme,
   };
 })(withRouter(observer(PaymentsPage)));

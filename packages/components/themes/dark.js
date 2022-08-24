@@ -2646,6 +2646,7 @@ const Dark = {
 
     payments: {
       linkColor: "#E06A1B",
+      delayColor: "#F21C0E",
     },
 
     paymentsEnterprise: {

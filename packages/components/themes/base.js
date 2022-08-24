@@ -2636,6 +2636,7 @@ const Base = {
 
     payments: {
       linkColor: link,
+      delayColor: "#F21C0E",
     },
 
     paymentsEnterprise: {
