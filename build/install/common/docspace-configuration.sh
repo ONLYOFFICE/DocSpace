@@ -554,11 +554,11 @@ setup_elasticsearch() {
 setup_redis() {
 	echo -n "Configuring redis... "
 
-	sed "s_\(\"Host\"\):.*_\1 \"${REDIS_HOST}\",_" -i $APP_DIR/redis.json
-	sed "s_\(\"Port\"\):.*_\1 \"${REDIS_PORT}\"_" -i $APP_DIR/redis.json
+	sed "s_\(\"Host\":\).*_\1 \"${REDIS_HOST}\",_" -i $APP_DIR/redis.json
+	sed "s_\(\"Port\":\).*_\1 \"${REDIS_PORT}\"_" -i $APP_DIR/redis.json
 
-	systemctl enable redis* >/dev/null 2>&1
-	systemctl restart redis*
+	systemctl enable $REDIS_PACKAGE >/dev/null 2>&1
+	systemctl restart $REDIS_PACKAGE
 
 	echo "OK"
 }
@@ -578,10 +578,12 @@ if command -v yum >/dev/null 2>&1; then
 	DIST="RedHat"
 	PACKAGE_MANAGER="rpm -q"
 	MYSQL_PACKAGE="mysqld"
+	REDIS_PACKAGE="redis"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
 	PACKAGE_MANAGER="dpkg -l"
 	MYSQL_PACKAGE="mysql"
+	REDIS_PACKAGE="redis-server"
 fi
 
 install_json
@@ -603,7 +605,7 @@ if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
     setup_elasticsearch
 fi
 
-if $PACKAGE_MANAGER redis >/dev/null 2>&1 || $PACKAGE_MANAGER redis-server >/dev/null 2>&1; then
+if $PACKAGE_MANAGER $REDIS_PACKAGE >/dev/null 2>&1 >/dev/null 2>&1; then
     setup_redis
 fi
 
