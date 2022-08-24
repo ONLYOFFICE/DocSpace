@@ -1,35 +1,30 @@
-export const getPlugins = async () => {
-  const plugins = await (
-    await fetch("http://localhost:8092/api/2.0/plugins")
-  ).json();
+import { request } from "../client";
 
-  return plugins;
+export const getPlugins = async () => {
+  return request({
+    method: "GET",
+    url: `/plugins`,
+  });
 };
 
 export const activatePlugin = async (id) => {
-  const plugin = await (
-    await fetch(`http://localhost:8092/api/2.0/plugins/activate/${id}`, {
-      method: "PUT",
-    })
-  ).json();
-
-  return plugin;
+  return request({
+    method: "PUT",
+    url: `/plugins/activate/${id}`,
+  });
 };
 
 export const uploadPlugin = async (formData) => {
-  const plugin = await (
-    await fetch("http://localhost:8092/api/2.0/plugins/upload", {
-      method: "POST",
-      body: formData,
-    })
-  ).json();
-
-  return plugin;
+  return request({
+    method: "POST",
+    url: `/plugins/upload`,
+    data: formData,
+  });
 };
 
 export const deletePlugin = async (id) => {
-  await fetch(`http://localhost:8092/api/2.0/plugins/delete/${id}`, {
+  request({
     method: "DELETE",
-    body: {},
+    url: `/plugins/delete/${id}`,
   });
 };
