@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { withTranslation } from "react-i18next";
 
 import { roomTypes } from "../data";
 import RoomTypeDropdown from "./RoomTypeDropdown";
@@ -10,6 +11,9 @@ import IconEditor from "./IconEditor";
 import PermanentSettings from "./PermanentSettings";
 import InputParam from "./Params/InputParam";
 import IsPrivateParam from "./IsPrivateParam";
+
+import withLoader from "@docspace/client/src/HOCs/withLoader";
+import Loaders from "@docspace/common/components/Loaders";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
@@ -163,4 +167,6 @@ const SetRoomParams = ({
   );
 };
 
-export default SetRoomParams;
+export default withTranslation(["CreateEditRoomDialog"])(
+  withLoader(SetRoomParams)(<Loaders.SetRoomParamsLoader />)
+);

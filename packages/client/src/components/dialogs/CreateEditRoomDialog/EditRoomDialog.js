@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import TagHandler from "./handlers/tagHandler";
 import SetRoomParams from "./sub-components/SetRoomParams";
+import DialogHeader from "./sub-components/DialogHeader";
 
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
@@ -58,7 +59,9 @@ const EditRoomDialog = ({
       isScrollLocked={isScrollLocked}
       withFooterBorder
     >
-      <ModalDialog.Header>{t("RoomEditing")}</ModalDialog.Header>
+      <ModalDialog.Header>
+        <DialogHeader isEdit />
+      </ModalDialog.Header>
 
       <ModalDialog.Body>
         <SetRoomParams

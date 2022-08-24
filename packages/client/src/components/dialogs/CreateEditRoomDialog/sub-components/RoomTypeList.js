@@ -1,8 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { roomTypes } from "../data";
+import { withTranslation } from "react-i18next";
 
 import RoomType from "./RoomType";
+
+import withLoader from "@docspace/client/src/HOCs/withLoader";
+import Loaders from "@docspace/common/components/Loaders";
 
 const StyledRoomTypeList = styled.div`
   width: 100%;
@@ -28,4 +32,6 @@ const RoomTypeList = ({ t, setRoomType }) => {
   );
 };
 
-export default RoomTypeList;
+export default withTranslation(["CreateEditRoomDialog"])(
+  withLoader(RoomTypeList)(<Loaders.RoomTypeListLoader />)
+);
