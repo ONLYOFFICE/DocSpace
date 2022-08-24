@@ -21,6 +21,8 @@ class ChangedName implements IPlugin {
   // here you can add event listeners and etc.
   // also here you must call activation methods for items of other plugins
   activate(): null {
+    window.alert("Plugin was activated");
+
     return null;
   }
 

@@ -8,6 +8,8 @@ import {
 
 import pack from "../package.json";
 
+import getItems from "./items";
+
 // class name can be anything
 // for connect more plugin type - add suitable interface at implements block
 class ChangedName implements IPlugin, IProfileMenuPlugin {
@@ -88,6 +90,10 @@ class ChangedName implements IPlugin, IProfileMenuPlugin {
 // instance name can be anything
 // the main thing is to pass it to window.Plugins
 const pluginInstance = new ChangedName();
+
+const items: Array<IProfileMenuItem | ISeparatorItem> = getItems();
+
+items.forEach((item) => pluginInstance.addProfileMenuItem(item));
 
 //!!!don't touch it!!!
 declare global {

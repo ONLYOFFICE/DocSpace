@@ -1,6 +1,6 @@
 {
   "name": "docspace-plugin",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Simple plugin system for onlyoffice docspace",
   "author": "ONLYOFFICE",
   "main": "dist/index.js",

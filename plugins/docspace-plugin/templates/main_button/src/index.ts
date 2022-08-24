@@ -8,6 +8,8 @@ import {
 
 import pack from "../package.json";
 
+import getItems from "./items";
+
 // class name can be anything
 // for connect more plugin type - add suitable interface at implements block
 class ChangedName implements IPlugin, IMainButtonPlugin {
@@ -88,6 +90,10 @@ class ChangedName implements IPlugin, IMainButtonPlugin {
 // instance name can be anything
 // the main thing is to pass it to window.Plugins
 const pluginInstance = new ChangedName();
+
+const items: Array<IMainButtonItem | ISeparatorItem> = getItems();
+
+items.forEach((item) => pluginInstance.addMainButtonItem(item));
 
 //!!!don't touch it!!!
 declare global {
