@@ -7,10 +7,12 @@ const StyledComponent = styled.div`
   width: 100%;
 
   .menu {
-    width: 251px;
+    width: ${(props) => (props.isViewTablet ? "61px" : "251px")};
     display: flex;
     flex-direction: column;
-    padding: 21px 0px 17px;
+    padding: ${(props) =>
+      props.isViewTablet ? "15px 0px 0px" : "21px 0px 17px"};
+
     height: 100%;
     background: ${(props) =>
       props.themePreview === "Light" ? "#f8f9f9" : "#292929"};
@@ -19,8 +21,55 @@ const StyledComponent = styled.div`
     border-radius: 16px 0px 0px 16px;
   }
 
+  .tablet-header {
+    padding: 0 15px 20px 15px;
+  }
+
+  .tablet-category {
+    padding: 0 20px;
+  }
+
+  .line {
+    width: 20px;
+    height: 1px;
+    background: #eceef1;
+    margin: 0 20px 31px 20px;
+  }
+
+  .tablet-category-notice {
+    padding: 20px 16px 20px 16px;
+
+    circle {
+      fill: ${(props) => props.colorPreview};
+      stroke: ${(props) => props.themePreview === "Dark" && "#292929"};
+    }
+  }
+
+  .bottom {
+    padding-bottom: 31px;
+  }
+
+  .tablet-half {
+    width: 20px;
+    height: 10px;
+    padding-top: 24px;
+  }
+
+  .section-flex-tablet {
+    display: ${(props) => props.isViewTablet && "flex"};
+    justify-content: ${(props) => props.isViewTablet && "space-between"};
+  }
+
+  .tile-half {
+    margin-left: 16px;
+    width: 44% !important;
+    border-right: none !important;
+    border-radius: 12px 0 0 12px !important;
+  }
+
   .section {
-    width: 56%;
+    position: relative;
+    width: ${(props) => (props.isViewTablet ? "89%" : "56%")};
     border-width: 1px;
     border-style: solid;
     border-left-style: none;
@@ -138,7 +187,7 @@ const StyledComponent = styled.div`
   }
 
   .section-tile {
-    padding: 0px 20px 0px;
+    padding: ${(props) => (props.isViewTablet ? "0 0 0 20px" : "0 20px 0")};
   }
 
   .border-color {
@@ -151,6 +200,7 @@ const StyledComponent = styled.div`
     border-style: solid;
     border-radius: 12px;
     margin-bottom: 16px;
+    width: ${(props) => props.isViewTablet && "64%"};
   }
 
   .background {
@@ -166,7 +216,15 @@ const StyledComponent = styled.div`
     height: 30px;
   }
 
+  .tablet-tile-name {
+    width: 33% !important;
+    margin-left: 16px;
+    border-right: none !important;
+    border-radius: 12px 0 16px 0 !important;
+  }
+
   .half {
+    width: ${(props) => props.isViewTablet && "51%"};
     border-top-width: 1px;
     border-right-width: 1px;
     border-left-width: 1px;
@@ -219,8 +277,41 @@ const StyledComponent = styled.div`
   .menu-button > div {
     cursor: auto;
   }
+
+  .main-button_text {
+    color: #ffffff !important;
+  }
+`;
+
+const StyledFloatingButton = styled.div`
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: ${(props) => props.colorPreview};
+  text-align: center;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
+`;
+
+StyledFloatingButton.defaultProps = { theme: Base };
+
+const IconBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    path {
+      fill: ${(props) => (props.themePreview === "Light" ? "#FFF" : "#292929")};
+    }
+  }
 `;
 
 StyledComponent.defaultProps = { theme: Base };
 
-export { StyledComponent };
+export { StyledComponent, StyledFloatingButton, IconBox };
