@@ -572,6 +572,8 @@ class FilesStore {
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
+    if (!this.withPaging) filter.pageCount = 100;
+
     this.setFilterUrl(filter, true);
     this.roomsFilter = filter;
 
@@ -847,6 +849,11 @@ class FilesStore {
       filterData.sortBy = splitFilter[0];
       filterData.pageCount = +splitFilter[1];
       filterData.sortOrder = splitFilter[2];
+    }
+
+    if (!this.withPaging) {
+      filterData.page = 0;
+      filterData.pageCount = 100;
     }
 
     if (folderId) setSelectedNode([folderId + ""]);
@@ -2525,12 +2532,21 @@ class FilesStore {
     this.trashIsEmpty = isEmpty;
   };
 
+  get roomsFilterTotal() {
+    return this.roomsFilter.total;
+  }
+
   get filterTotal() {
     return this.filter.total;
   }
 
   get hasMoreFiles() {
-    return this.filesList.length < this.filterTotal;
+    const { Shared, Archive } = CategoryType;
+    const isRoom = this.categoryType == Shared || this.categoryType == Archive;
+
+    const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
+
+    return this.filesList.length < filterTotal;
   }
 
   setFilesIsLoading = (filesIsLoading) => {
@@ -2540,13 +2556,20 @@ class FilesStore {
   fetchMoreFiles = async () => {
     if (!this.hasMoreFiles || this.filesIsLoading || this.isLoading) return;
 
-    this.setFilesIsLoading(true);
-    console.log("fetchMoreFiles");
+    const { Shared, Archive } = CategoryType;
+    const isRoom = this.categoryType == Shared || this.categoryType == Archive;
 
-    const newFilter = this.filter.clone();
+    this.setFilesIsLoading(true);
+    // console.log("fetchMoreFiles");
+
+    const newFilter = isRoom ? this.roomsFilter.clone() : this.filter.clone();
     newFilter.page += 1;
-    this.setFilter(newFilter);
-    const newFiles = await api.files.getFolder(newFilter.folder, newFilter);
+    if (isRoom) this.setRoomsFilter(newFilter);
+    else this.setFilter(newFilter);
+
+    const newFiles = isRoom
+      ? await api.rooms.getRooms(newFilter)
+      : await api.files.getFolder(newFilter.folder, newFilter);
 
     runInAction(() => {
       this.setFiles([...this.files, ...newFiles.files]);
