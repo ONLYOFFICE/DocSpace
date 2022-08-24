@@ -79,7 +79,21 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
 
 public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
 {
-    public VirtualRoomsThirdpartyController(FoldersControllerHelper<string> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<string> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomInvitationLinksService roomLinksService, CustomTagsService<string> customTagsService, RoomLogoManager roomLogoManager, StudioNotifyService studioNotifyService, FileStorageService<string> fileStorageService, FileSecurity fileSecurity, FileSecurityCommon fileSecurityCommon, EmailValidationKeyProvider emailValidationKeyProvider,
+    public VirtualRoomsThirdPartyController(
+        FoldersControllerHelper<string> foldersControllerHelper,
+        GlobalFolderHelper globalFolderHelper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        SecurityControllerHelper<string> securityControllerHelper,
+        CoreBaseSettings coreBaseSettings,
+        AuthContext authContext,
+        RoomInvitationLinksService roomLinksService,
+        CustomTagsService<string> customTagsService,
+        RoomLogoManager roomLogoManager,
+        StudioNotifyService studioNotifyService,
+        FileStorageService<string> fileStorageService,
+        FileSecurity fileSecurity,
+        FileSecurityCommon fileSecurityCommon,
+        EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(foldersControllerHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksService, customTagsService, roomLogoManager, studioNotifyService, fileStorageService, fileSecurity, fileSecurityCommon, emailValidationKeyProvider, folderDtoHelper, fileDtoHelper)
     {

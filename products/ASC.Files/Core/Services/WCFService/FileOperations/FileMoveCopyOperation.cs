@@ -737,7 +737,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
         else
         {
-            entryParentRoom = (await FolderDao.GetParentFoldersAsync(entry.ParentId)).FirstOrDefault(f => f.Private && DocSpaceHelper.IsRoom(f.FolderType));
+            entryParentRoom = await FolderDao.GetParentFoldersAsync(entry.ParentId).FirstOrDefaultAsync(f => f.Private && DocSpaceHelper.IsRoom(f.FolderType));
             _parentRooms.Add(entry.ParentId, entryParentRoom);
         }
 

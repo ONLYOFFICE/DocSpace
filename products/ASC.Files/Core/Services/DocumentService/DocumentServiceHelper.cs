@@ -148,7 +148,7 @@ public class DocumentServiceHelper
             && (linkRight == FileShare.ReadWrite
                 || await _fileSecurity.CanEditAsync(file));
 
-        rightToRename = rightToRename && rightToEdit && await fileSecurity.CanRenameAsync(file);
+        rightToRename = rightToRename && rightToEdit && await _fileSecurity.CanRenameAsync(file);
 
         rightToReview = rightToReview
                         && (linkRight == FileShare.Review || linkRight == FileShare.ReadWrite

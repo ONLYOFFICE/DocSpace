@@ -46,7 +46,7 @@ public static class DocSpaceHelper
 
     public static async Task<bool> LocatedInPrivateRoomAsync<T>(File<T> file, IFolderDao<T> folderDao)
     {
-        var parents = await folderDao.GetParentFoldersAsync(file.ParentId);
+        var parents = await folderDao.GetParentFoldersAsync(file.ParentId).ToListAsync();
         var room = parents.FirstOrDefault(f => IsRoom(f.FolderType));
 
         return room != null && room.Private;
