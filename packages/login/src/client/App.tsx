@@ -8,6 +8,8 @@ import store from "client/store";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import Login from "./components/Login";
+import toastr from "@docspace/components/toast/toastr";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
@@ -27,15 +29,21 @@ const App: React.FC<ILoginProps> = ({
 }) => {
   useSSR(initialI18nStoreASC, initialLanguage);
 
+  const onError = (errorInfo: any) => {
+    toastr.error(errorInfo);
+  };
+
   return (
-    <MobxProvider {...store}>
-      <I18nextProvider i18n={i18n}>
-        <ThemeProviderWrapper>
-          <GlobalStyle fonts={fonts} />
-          <Login {...rest} isDesktopEditor={isDesktopEditor} />
-        </ThemeProviderWrapper>
-      </I18nextProvider>
-    </MobxProvider>
+    <ErrorBoundary onError={onError}>
+      <MobxProvider {...store}>
+        <I18nextProvider i18n={i18n}>
+          <ThemeProviderWrapper>
+            <GlobalStyle fonts={fonts} />
+            <Login {...rest} isDesktopEditor={isDesktopEditor} />
+          </ThemeProviderWrapper>
+        </I18nextProvider>
+      </MobxProvider>
+    </ErrorBoundary>
   );
 };
 
