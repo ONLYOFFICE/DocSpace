@@ -74,7 +74,7 @@ const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
 const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
 const InvalidError = React.lazy(() => import("./pages/Errors/Invalid"));
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
-
+const PortalUnavailable = React.lazy(() => import("./pages/PortalUnavailable"));
 const FormGallery = React.lazy(() => import("./pages/FormGallery"));
 
 const PortalSettingsRoute = (props) => (
@@ -132,7 +132,13 @@ const PreparationPortalRoute = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
-
+const PortalUnavailableRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <PortalUnavailable {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
 const AboutRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -532,6 +538,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             <PrivateRoute
               path={"/preparation-portal"}
               component={PreparationPortalRoute}
+            />
+            <PrivateRoute
+              path={"/portal-unavailable"}
+              component={PortalUnavailableRoute}
             />
             <PrivateRoute path={"/error401"} component={Error401Route} />
             <PrivateRoute component={Error404Route} />
