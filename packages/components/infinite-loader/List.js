@@ -26,7 +26,7 @@ const ListComponent = ({
   }, [loaderRef, selectedFolderId, filesLength]);
 
   const renderRow = ({ key, index, style }) => {
-    const isLoaded = isItemLoaded({ index: index + 2 });
+    const isLoaded = isItemLoaded({ index });
     if (!isLoaded) return getLoader(style, key);
 
     return (
@@ -46,7 +46,7 @@ const ListComponent = ({
       ? localStorage.getItem(columnInfoPanelStorageName)
       : localStorage.getItem(columnStorageName);
 
-    const isLoaded = isItemLoaded({ index: index + 2 });
+    const isLoaded = isItemLoaded({ index });
     if (!isLoaded) return getLoader(style, key);
 
     return (
@@ -116,7 +116,7 @@ const ListComponent = ({
                 height={height}
                 onRowsRendered={onRowsRendered}
                 ref={registerChild}
-                rowCount={children.length}
+                rowCount={hasMoreFiles ? children.length + 2 : children.length}
                 rowHeight={itemSize}
                 rowRenderer={viewAs === "table" ? renderTable : renderRow}
                 width={width}
