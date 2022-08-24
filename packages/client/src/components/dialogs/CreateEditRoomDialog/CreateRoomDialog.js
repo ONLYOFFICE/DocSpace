@@ -10,6 +10,11 @@ import SetRoomParams from "./sub-components/SetRoomParams";
 import RoomTypeList from "./sub-components/RoomTypeList";
 import IconButton from "@docspace/components/icon-button";
 
+// import { withTranslation, Trans } from "react-i18next";
+// import { inject, observer } from "mobx-react";
+// import withLoader from "@docspace/client/src/HOCs/withLoader";
+// import Loaders from "@docspace/common/components/Loaders";
+
 const StyledModalDialog = styled(ModalDialog)`
   .header-with-button {
     display: flex;
@@ -175,3 +180,12 @@ const CreateRoomDialog = ({
 };
 
 export default CreateRoomDialog;
+
+// export default withTranslation([
+//   "CreateEditRoomDialog",
+//   "Common",
+//   "Files",
+//   "ToastHeaders",
+// ])(
+//   withLoader(observer(CreateRoomDialog))(<Loaders.DialogAsideLoader isPanel />)
+// );

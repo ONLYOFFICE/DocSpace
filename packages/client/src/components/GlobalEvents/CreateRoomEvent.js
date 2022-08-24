@@ -27,12 +27,12 @@ const CreateRoomEvent = ({
   currrentFolderId,
   updateCurrentFolder,
 }) => {
-  const { t } = useTranslation([
-    "CreateEditRoomDialog",
-    "Common",
-    "Files",
-    "ToastHeaders",
-  ]);
+  // const { t } = useTranslation([
+  //   "CreateEditRoomDialog",
+  //   "Common",
+  //   "Files",
+  //   "ToastHeaders",
+  // ]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -120,7 +120,6 @@ const CreateRoomEvent = ({
 
   return (
     <CreateRoomDialog
-      t={t}
       visible={visible && !connectDialogVisible}
       onClose={onClose}
       onCreate={onCreate}
