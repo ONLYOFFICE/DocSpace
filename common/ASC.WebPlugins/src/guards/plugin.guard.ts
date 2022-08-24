@@ -8,8 +8,6 @@ export class PluginGuard implements CanActivate {
   canActivate(
     context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log(config);
-
     return config?.plugins?.enabled === "true";
   }
 }

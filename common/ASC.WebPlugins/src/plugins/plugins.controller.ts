@@ -31,14 +31,15 @@ export class PluginsController {
   constructor(private pluginsService: PluginsService) {}
 
   @Get()
-  async findAll(): Promise<Plugin[]> {
+  async findAll(): Promise<{ response: Plugin[] }> {
     const plugins: Plugin[] = await this.pluginsService.findAll();
-    return plugins;
+    return { response: plugins };
   }
 
   @Put("activate/:id")
-  async activate(@Param("id") id: number): Promise<Plugin> {
-    return this.pluginsService.activate(id);
+  async activate(@Param("id") id: number): Promise<{ response: Plugin }> {
+    const plugin: Plugin = await this.pluginsService.activate(id);
+    return { response: plugin };
   }
 
   @Post("upload")
@@ -48,14 +49,20 @@ export class PluginsController {
       storage: storage,
     })
   )
-  upload(@UploadedFiles() files: Express.Multer.File[]) {
-    return this.pluginsService.upload(files[0].originalname, files[0].filename);
+  async upload(
+    @UploadedFiles() files: Express.Multer.File[]
+  ): Promise<{ response: Plugin }> {
+    const plugin = await this.pluginsService.upload(
+      files[0].originalname,
+      files[0].filename
+    );
+    return { response: plugin };
   }
 
   @Delete("delete/:id")
   @UseGuards(PluginDeleteGuard)
-  delete(@Param("id") id: number) {
-    this.pluginsService.delete(id);
+  async delete(@Param("id") id: number) {
+    await this.pluginsService.delete(id);
   }
 }
 

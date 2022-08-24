@@ -3,7 +3,7 @@ import * as path from "path";
 
 const storage = diskStorage({
   destination: function (req, file, cb) {
-    const dir = path.join(__dirname, "../../../../public/scripts");
+    const dir = path.join(__dirname, "../../../../../../../public/scripts");
 
     cb(null, dir);
   },

@@ -57,7 +57,7 @@ export class PluginsService {
 
     const dir = path.join(
       __dirname,
-      "../../../../public/scripts/",
+      "../../../../../../../public/scripts",
       `${fileName}`
     );
 
