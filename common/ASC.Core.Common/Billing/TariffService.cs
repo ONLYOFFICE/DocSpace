@@ -269,15 +269,7 @@ public class TariffService : ITariffService
             updatedQuota += quota;
         }
 
-        // check new values
-        if (updatedQuota.MaxTotalSize != long.MaxValue
-            && false) throw new Exception("The used storage size should not exceed " + updatedQuota.MaxTotalSize);
-        if (updatedQuota.ActiveUsers != int.MaxValue
-            && false) throw new Exception("The number of active users should not exceed " + updatedQuota.ActiveUsers);
-        if (updatedQuota.CountAdmin != int.MaxValue
-            && false) throw new Exception("The number of managers should not exceed " + updatedQuota.CountAdmin);
-        if (updatedQuota.CountRoom != int.MaxValue
-            && false) throw new Exception("The number of rooms should not exceed " + updatedQuota.CountRoom);
+        CheckQuota(updatedQuota);
 
         var productIds = newQuotas.Select(q => q.ProductId);
 
@@ -294,6 +286,21 @@ public class TariffService : ITariffService
         {
             _logger.ErrorWithException(error);
         }
+
+        return true;
+    }
+
+    // TODO: compare fields with current parameters
+    public bool CheckQuota(TenantQuota quota)
+    {
+        if (quota.MaxTotalSize != long.MaxValue
+            && false) throw new Exception("The used storage size should not exceed " + quota.MaxTotalSize);
+        if (quota.ActiveUsers != int.MaxValue
+            && false) throw new Exception("The number of active users should not exceed " + quota.ActiveUsers);
+        if (quota.CountAdmin != int.MaxValue
+            && false) throw new Exception("The number of managers should not exceed " + quota.CountAdmin);
+        if (quota.CountRoom != int.MaxValue
+            && false) throw new Exception("The number of rooms should not exceed " + quota.CountRoom);
 
         return true;
     }
@@ -392,6 +399,19 @@ public class TariffService : ITariffService
             {
                 var allQuotas = _quotaService.GetTenantQuotas().Where(q => !string.IsNullOrEmpty(q.ProductId) && q.Visible);
                 var newQuotas = quantity.Select(item => allQuotas.FirstOrDefault(q => q.Name == item.Key));
+
+                TenantQuota updatedQuota = null;
+                foreach (var addedQuota in newQuotas)
+                {
+                    var qty = quantity[addedQuota.Name];
+
+                    var quota = addedQuota;
+
+                    quota *= qty;
+                    updatedQuota += quota;
+                }
+
+                CheckQuota(updatedQuota);
 
                 var productIds = newQuotas.Select(q => q.ProductId);
 
