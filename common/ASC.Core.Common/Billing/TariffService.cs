@@ -245,7 +245,7 @@ public class TariffService : ITariffService
             var quotaId = tariffRow.Item1;
             var qty = tariffRow.Item2;
 
-            var quota = (TenantQuota)_quotaService.GetTenantQuota(quotaId).Clone();
+            var quota = _quotaService.GetTenantQuota(quotaId);
 
             var mustUpdateQuota = newQuotas.FirstOrDefault(q => q.Tenant == quota.Tenant);
             if (mustUpdateQuota != null)
@@ -263,7 +263,7 @@ public class TariffService : ITariffService
         {
             var qty = quantity[addedQuota.Name];
 
-            var quota = (TenantQuota)addedQuota.Clone();
+            var quota = addedQuota;
 
             quota *= qty;
             updatedQuota += quota;

@@ -278,8 +278,7 @@ public class TenantManager
             {
                 var qty = tariffRow.Item2;
 
-                var quota = (TenantQuota)QuotaService.GetTenantQuota(tariffRow.Item1).Clone();
-                quota.Price *= qty;
+                var quota = QuotaService.GetTenantQuota(tariffRow.Item1);
 
                 quota *= qty;
                 currentQuota += quota;

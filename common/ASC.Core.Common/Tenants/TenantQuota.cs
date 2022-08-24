@@ -292,29 +292,33 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         }
     }
 
-    public static TenantQuota operator *(TenantQuota quota, int qty)
+    public static TenantQuota operator *(TenantQuota quota, int quantity)
     {
-        if (quota.MaxTotalSize != long.MaxValue)
+        var newQuota = (TenantQuota)quota.Clone();
+
+        newQuota.Price *= quantity;
+
+        if (newQuota.MaxTotalSize != long.MaxValue)
         {
-            quota.MaxTotalSize *= qty;
+            newQuota.MaxTotalSize *= quantity;
         }
 
-        if (quota.ActiveUsers != int.MaxValue)
+        if (newQuota.ActiveUsers != int.MaxValue)
         {
-            quota.ActiveUsers *= qty;
+            newQuota.ActiveUsers *= quantity;
         }
 
-        if (quota.CountAdmin != int.MaxValue)
+        if (newQuota.CountAdmin != int.MaxValue)
         {
-            quota.CountAdmin *= qty;
+            newQuota.CountAdmin *= quantity;
         }
 
-        if (quota.CountRoom != int.MaxValue)
+        if (newQuota.CountRoom != int.MaxValue)
         {
-            quota.CountRoom *= qty;
+            newQuota.CountRoom *= quantity;
         }
 
-        return quota;
+        return newQuota;
     }
 
     public static TenantQuota operator +(TenantQuota old, TenantQuota quota)
