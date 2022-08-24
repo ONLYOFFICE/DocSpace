@@ -3,8 +3,6 @@ export const getPlugins = async () => {
     await fetch("http://localhost:8092/api/2.0/plugins")
   ).json();
 
-  console.log(plugins);
-
   return plugins;
 };
 

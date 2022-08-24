@@ -11,8 +11,6 @@ export const initPluginStore = async () => {
 
   const plugins = await api.plugins.getPlugins();
 
-  console.log(plugins);
-
   plugins.forEach((plugin) => initPlugin(plugin));
 };
 
