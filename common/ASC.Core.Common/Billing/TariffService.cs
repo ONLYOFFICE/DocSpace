@@ -233,7 +233,7 @@ public class TariffService : ITariffService
             || !_billingClient.Configured)
             return false;
 
-        var allQuotas = _quotaService.GetTenantQuotas();
+        var allQuotas = _quotaService.GetTenantQuotas().Where(q => !string.IsNullOrEmpty(q.ProductId));
         var newQuotas = quantity.Keys.Select(name => allQuotas.FirstOrDefault(q => q.Name == name));
 
         var tariff = GetTariff(tenantId);
@@ -390,15 +390,13 @@ public class TariffService : ITariffService
             url = string.Empty;
             if (_billingClient.Configured)
             {
+                var allQuotas = _quotaService.GetTenantQuotas().Where(q => !string.IsNullOrEmpty(q.ProductId) && q.Visible);
+                var newQuotas = quantity.Select(item => allQuotas.FirstOrDefault(q => q.Name == item.Key));
+
+                var productIds = newQuotas.Select(q => q.ProductId);
+
                 try
                 {
-                    var quotas = _quotaService.GetTenantQuotas()
-                                               .Where(q =>
-                                                    !string.IsNullOrEmpty(q.ProductId)
-                                                    && q.Visible);
-
-                    var productIds = quantity.Select(item => quotas.FirstOrDefault(q => q.Name == item.Key)?.ProductId);
-
                     var client = GetBillingClient();
                     url =
                         client.GetPaymentUrl(
