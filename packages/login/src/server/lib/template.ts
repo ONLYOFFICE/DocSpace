@@ -1,4 +1,8 @@
 import { getScripts } from "./helpers";
+import pkg from "../../../package.json";
+
+const { title } = pkg;
+const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
 
 type Template = (
   initLoginState: IInitialState,
@@ -6,7 +10,8 @@ type Template = (
   styleTags: string,
   initialI18nStoreASC: object,
   initialLanguage: string,
-  assets: assetsType
+  assets: assetsType,
+  t?: (str: string) => string
 ) => string;
 
 const template: Template = (
@@ -15,9 +20,12 @@ const template: Template = (
   styleTags,
   initialI18nStoreASC,
   initialLanguage,
-  assets
+  assets,
+  t
 ) => {
-  const title = "Login";
+  const documentTitle = t
+    ? `${t("Authorization")} – ${organizationName}`
+    : title;
 
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
@@ -54,7 +62,7 @@ const template: Template = (
     <html lang="en">
       <head>
         <meta charset="utf-8">
-        <title> ${title} </title>
+        <title> ${documentTitle} </title>
         <meta charset="utf-8" />
         <meta
           name="viewport"

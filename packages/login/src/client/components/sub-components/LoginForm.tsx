@@ -15,8 +15,6 @@ import { login } from "@docspace/common/utils/loginUtils";
 import { oAuthLogin } from "../../helpers/utils";
 import toastr from "@docspace/components/toast/toastr";
 
-const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
-
 interface ILoginFormProps {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
@@ -63,8 +61,6 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   }, []);
 
   useEffect(() => {
-    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
-
     error && setErrorText(error);
     confirmedEmail && setIdentifier(confirmedEmail);
 

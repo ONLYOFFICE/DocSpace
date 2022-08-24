@@ -21,6 +21,7 @@ interface IParsedConfig extends Object {
 }
 interface ILoginRequest extends Request {
   i18n?: I18next;
+  t?: (str: string) => string;
 }
 type timeoutType = ReturnType<typeof setTimeout>;
 interface IAcceptLanguage extends Object {
@@ -46,7 +47,8 @@ app.use(logger("dev", { stream: stream }));
 
 if (IS_DEVELOPMENT) {
   app.get("/login", async (req: ILoginRequest, res: Response) => {
-    const { i18n, cookies, headers, query } = req;
+    const { i18n, cookies, headers, query, t } = req;
+
     initSSR(headers);
 
     let currentLanguage = "en";
@@ -93,7 +95,8 @@ if (IS_DEVELOPMENT) {
         styleTags,
         initialI18nStore,
         currentLanguage,
-        assets
+        assets,
+        t
       );
 
       res.send(htmlString);
