@@ -108,6 +108,7 @@
     "i18next-fs-backend": "^1.1.4",
     "iconv-lite": "^0.6.3",
     "morgan": "^1.10.0",
+    "nconf": "^0.12.0",
     "utf-8-validate": "^5.0.9",
     "winston": "^3.8.1",
     "winston-daily-rotate-file": "^4.7.1"
