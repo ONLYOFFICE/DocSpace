@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
+import resizeImage from "resize-image";
 
 const StyledDropzone = styled.div`
   cursor: pointer;
@@ -51,14 +52,39 @@ const StyledDropzone = styled.div`
 const Dropzone = ({ setUploadedFile }) => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
-    maxSize: 1000000,
-    // accept: {
-    //   "image/*": [".jpeg", ".png"],
-    // },
+    // maxSize: 1000000,
+    accept: ["image/png", "image/jpeg"],
   });
 
   useEffect(() => {
-    if (acceptedFiles.length) setUploadedFile(acceptedFiles[0]);
+    if (acceptedFiles.length) {
+      const fr = new FileReader();
+      fr.readAsDataURL(acceptedFiles[0]);
+
+      fr.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = resizeImage.resize2Canvas(img, img.width, img.height);
+
+          const data = resizeImage.resize(
+            canvas,
+            img.width / 4,
+            img.height / 4,
+            resizeImage.JPEG
+          );
+
+          fetch(data)
+            .then((res) => res.blob())
+            .then((blob) => {
+              const file = new File([blob], "File name", {
+                type: "image/jpg",
+              });
+              setUploadedFile(file);
+            });
+        };
+        img.src = fr.result;
+      };
+    }
   }, [acceptedFiles]);
 
   return (
