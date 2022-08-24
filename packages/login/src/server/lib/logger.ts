@@ -2,19 +2,18 @@ import { createLogger, transports, format } from "winston";
 import "winston-daily-rotate-file";
 import path from "path";
 import fs from "fs";
+import config from "../config";
 
-let logpath = process.env.logpath || null;
+let logPath: string = config.get("logPath");
 
-if (logpath != null) {
-  if (!path.isAbsolute(logpath)) {
-    logpath = path.join(__dirname, "..", logpath);
+if (logPath != null) {
+  if (!path.isAbsolute(logPath)) {
+    logPath = path.join(__dirname, "..", logPath);
   }
 }
 
-const fileName = IS_DEVELOPMENT
-  ? path.join(__dirname, "..", "..", "..", "Logs", "login.%DATE%.log")
-  : logpath
-  ? path.join(logpath, "login.%DATE%.log")
+const fileName = logPath
+  ? path.join(logPath, "login.%DATE%.log")
   : path.join(__dirname, "..", "..", "..", "Logs", "login.%DATE%.log");
 const dirName = path.dirname(fileName);
 
