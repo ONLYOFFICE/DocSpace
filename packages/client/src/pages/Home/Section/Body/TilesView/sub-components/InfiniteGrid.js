@@ -17,16 +17,21 @@ const Card = ({ children, ...rest }) => {
   const getItemSize = (child) => {
     const isFile = child?.props?.className?.includes("file");
     const isFolder = child?.props?.className?.includes("folder");
+    const isRoom = child?.props?.className?.includes("room");
 
     const horizontalGap = 16;
     const verticalGap = 14;
     const headerMargin = 15;
 
     const folderHeight = 64 + verticalGap;
+    const roomHeight = 122 + verticalGap;
     const fileHeight = 220 + horizontalGap;
     const titleHeight = 20 + headerMargin;
 
-    return isFolder ? folderHeight : isFile ? fileHeight : titleHeight;
+    if (isRoom) return roomHeight;
+    if (isFolder) return folderHeight;
+    if (isFile) return fileHeight;
+    return titleHeight;
   };
 
   const cardHeight = getItemSize(children);
@@ -73,11 +78,20 @@ const InfiniteGrid = (props) => {
     if (clear) cards = [];
   };
 
-  const checkIsFolder = (useTempList = true) => {
+  const checkType = (useTempList = true) => {
+    const isFile = useTempList
+      ? cards.at(-1).props.children.props.className.includes("file")
+      : list.at(-1).props.className.includes("isFile");
+
+    if (isFile) return "isFile";
+
     const isFolder = useTempList
       ? cards.at(-1).props.children.props.className.includes("folder")
       : list.at(-1).props.className.includes("isFolder");
-    return isFolder;
+
+    if (isFolder) return "isFolder";
+
+    return "isRoom";
   };
 
   React.Children.map(children.props.children, (child) => {
@@ -85,13 +99,9 @@ const InfiniteGrid = (props) => {
       if (child.props.className === "tile-items-heading") {
         // If cards is not empty then put the cards into the list
         if (cards.length) {
-          const isFolder = checkIsFolder();
+          const type = checkType();
 
-          addItemToList(
-            `last-item-of_${isFolder ? "folders" : "files"}`,
-            isFolder ? "isFolder" : "isFile",
-            true
-          );
+          addItemToList(`last-item-of_${type}`, type, true);
         }
 
         list.push(
@@ -104,7 +114,8 @@ const InfiniteGrid = (props) => {
         );
       } else {
         const isFile = child?.props?.className?.includes("file");
-        const className = isFile ? "isFile" : "isFolder";
+        const isRoom = child?.props?.className?.includes("room");
+        const className = isFile ? "isFile" : isRoom ? "isRoom" : "isFolder";
 
         if (cards.length && cards.length === countTilesInRow) {
           const listKey = uniqueid("list-item_");
@@ -117,8 +128,8 @@ const InfiniteGrid = (props) => {
     }
   });
 
-  const isFolder = checkIsFolder(!!cards.length);
-  const otherClassName = isFolder ? "isFolder" : "isFile";
+  const type = checkType(!!cards.length);
+  const otherClassName = type;
 
   if (hasMoreFiles) {
     // If cards elements are full, it will add the full line of loaders
@@ -133,7 +144,7 @@ const InfiniteGrid = (props) => {
         <Loaders.Tile
           key={key}
           className={`tiles-loader ${otherClassName}`}
-          isFolder={isFolder}
+          isFolder={type === "isFolder"}
         />
       );
     }
