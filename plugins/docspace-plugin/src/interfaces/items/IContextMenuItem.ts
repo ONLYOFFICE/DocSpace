@@ -6,5 +6,5 @@ export interface IContextMenuItem {
   position: number;
   label: string;
   icon: string;
-  onClick: () => void;
+  onClick: (item: any | null) => void;
 }
