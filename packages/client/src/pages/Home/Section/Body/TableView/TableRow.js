@@ -302,7 +302,7 @@ const FilesTableRow = (props) => {
   const element = (
     <ItemIcon
       id={item.id}
-      icon={item.icon}
+      icon={item.isRoom && item.logo.big ? item.logo.big : item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
     />
