@@ -34,7 +34,7 @@ const Article = ({
   setIsMobileArticle,
   isLoadedPage,
   children,
-
+  isGracePeriod,
   isBannerVisible,
   hideProfileBlock,
   isFreeTariff,
@@ -136,7 +136,7 @@ const Article = ({
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
-          {isFreeTariff && showText && (
+          {(isFreeTariff || isGracePeriod) && showText && (
             <ArticlePaymentAlert isFreeTariff={isFreeTariff} />
           )}
         </SubArticleBody>
@@ -181,7 +181,7 @@ Article.Body = () => {
 Article.Body.displayName = "Body";
 
 export default inject(({ auth, bannerStore }) => {
-  const { settingsStore, isFreeTariff } = auth;
+  const { settingsStore, isFreeTariff, isGracePeriod } = auth;
 
   const { isBannerVisible } = bannerStore;
 
@@ -203,5 +203,6 @@ export default inject(({ auth, bannerStore }) => {
     toggleArticleOpen,
     isFreeTariff,
     isBannerVisible,
+    isGracePeriod,
   };
 })(observer(Article));

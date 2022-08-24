@@ -337,7 +337,11 @@ const StyledProfileWrapper = styled.div`
   `}
 `;
 const StyledArticlePaymentAlert = styled.div`
-  border: ${(props) => props.theme.catalog.paymentAlert.border};
+  border: ${(props) =>
+    props.isFreeTariff
+      ? props.theme.catalog.paymentAlert.border
+      : props.theme.catalog.paymentAlert.warningBorder};
+
   border-radius: 6px;
   margin: 32px 0px;
   padding: 12px;
@@ -347,7 +351,10 @@ const StyledArticlePaymentAlert = styled.div`
   grid-template-columns: 1fr 16px;
 
   .article-payment_border {
-    color: ${(props) => props.theme.catalog.paymentAlert.color};
+    color: ${(props) =>
+      props.isFreeTariff
+        ? props.theme.catalog.paymentAlert.color
+        : props.theme.catalog.paymentAlert.warningColor};
   }
 `;
 

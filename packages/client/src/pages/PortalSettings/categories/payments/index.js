@@ -48,7 +48,7 @@ const StyledBody = styled.div`
   }
 `;
 
-let dueDate;
+let dueDate, fromDate, byDate;
 const PaymentsPage = ({
   setQuota,
   getPaymentPrices,
@@ -59,6 +59,7 @@ const PaymentsPage = ({
   portalTariff,
   portalQuota,
   isFreeTariff,
+  isGracePeriod,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -69,18 +70,30 @@ const PaymentsPage = ({
   }, [ready]);
 
   useEffect(() => {
-    if (portalTariff) dueDate = moment(portalTariff.dueDate).format("LL");
+    moment.locale(language);
+    
+    if (portalTariff) {
+      dueDate = moment(
+        isGracePeriod ? portalTariff.delayDueDate : portalTariff.dueDate
+      ).format("LL");
+
+      if (isGracePeriod) {
+        fromDate = moment(portalTariff.dueDate).format("L");
+        byDate = moment(portalTariff.delayDueDate).format("L");
+        return;
+      }
+    }
   }, [portalTariff]);
   useEffect(() => {
     (async () => {
-      moment.locale(language);
-
       const requests = [];
 
-      requests.push(setPortalTariff(), setQuota());
+      requests.push(setQuota());
 
       if (Object.keys(portalQuota).length === 0) setPortalQuota();
       if (!pricePerManager) getPaymentPrices();
+
+      if (Object.keys(portalTariff).length === 0) setPortalTariff();
 
       try {
         await Promise.all(requests);
@@ -123,10 +136,25 @@ const PaymentsPage = ({
       {!isFreeTariff && <PayerInformationContainer />}
       <CurrentTariffContainer />
       <Text noSelect fontSize="16px" isBold className="payment-info_suggestion">
-        {isFreeTariff ? t("StartupSuggestion") : t("BusinessSuggestion")}
+        {isFreeTariff ? (
+          t("StartupSuggestion")
+        ) : isGracePeriod ? (
+          <Trans t={t} i18nKey="DelayedPayment" ns="Payments">
+            {{ date: dueDate }}
+          </Trans>
+        ) : (
+          t("BusinessSuggestion")
+        )}
       </Text>
 
-      {!isFreeTariff && (
+      {isGracePeriod && (
+        <Text noSelect fontSize={"14"} className="payment-info_managers-price">
+          <Trans t={t} i18nKey="GracePeriodActivatedDescription" ns="Payments">
+            {{ fromDate, byDate }}
+          </Trans>
+        </Text>
+      )}
+      {!isFreeTariff && !isGracePeriod && (
         <Text noSelect fontSize={"14"} className="payment-info_managers-price">
           <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
             {{ finalDate: dueDate }}
@@ -174,6 +202,7 @@ export default inject(({ auth, payments }) => {
     pricePerManager,
     portalQuota,
     isFreeTariff,
+    isGracePeriod,
   } = auth;
 
   const { organizationName } = auth.settingsStore;
@@ -190,7 +219,7 @@ export default inject(({ auth, payments }) => {
     organizationName,
     setTariffsInfo,
     tariffsInfo,
-
+    isGracePeriod,
     pricePerManager,
     portalQuota,
   };

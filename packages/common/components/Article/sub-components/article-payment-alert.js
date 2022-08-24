@@ -20,7 +20,12 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
 
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
 
-const ArticlePaymentAlert = ({ pricePerManager, isFreeTariff, theme }) => {
+const ArticlePaymentAlert = ({
+  pricePerManager,
+  isFreeTariff,
+  theme,
+  isGracePeriod,
+}) => {
   const { t, ready } = useTranslation("Payments");
 
   const onClick = () => {
@@ -40,12 +45,20 @@ const ArticlePaymentAlert = ({ pricePerManager, isFreeTariff, theme }) => {
       theme={theme}
     >
       <div>
-        <Text className="article-payment_border">{t("FreeStartupPlan")}</Text>
-        <Text fontWeight={600}>{t("ActivateBusinessPlan")}</Text>
+        <Text className="article-payment_border">
+          {isFreeTariff ? t("FreeStartupPlan") : t("LatePayment")}
+        </Text>
+        <Text fontWeight={600}>
+          {isFreeTariff ? t("ActivateBusinessPlan") : t("GracePeriodActivated")}
+        </Text>
         <Text noSelect fontSize={"12px"}>
-          <Trans t={t} i18nKey="StartPrice" ns="Payments">
-            {{ price: pricePerManager }}
-          </Trans>
+          {isFreeTariff ? (
+            <Trans t={t} i18nKey="StartPrice" ns="Payments">
+              {{ price: pricePerManager }}
+            </Trans>
+          ) : (
+            t("PayBeforeTheEndGracePeriod")
+          )}
         </Text>
       </div>
 

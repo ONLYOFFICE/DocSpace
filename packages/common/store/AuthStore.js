@@ -9,7 +9,12 @@ import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
-import { AppServerConfig, LANGUAGE, TenantStatus } from "../constants";
+import {
+  AppServerConfig,
+  LANGUAGE,
+  TariffState,
+  TenantStatus,
+} from "../constants";
 const { proxyURL } = AppServerConfig;
 
 class AuthStore {
@@ -54,6 +59,7 @@ class AuthStore {
     requests.push(
       this.settingsStore.init(),
       this.setPortalQuota(),
+      this.setPortalTariff(),
       this.getPaymentPrices()
     );
 
@@ -313,6 +319,10 @@ class AuthStore {
 
   get isFreeTariff() {
     return this.portalQuota.trial || this.portalQuota.free;
+  }
+
+  get isGracePeriod() {
+    return this.portalTariff.state === TariffState.Delay;
   }
 
   setPortalTariff = async () => {
