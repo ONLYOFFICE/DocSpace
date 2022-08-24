@@ -2,11 +2,7 @@
   "name": "plugin-system",
   "version": "1.0.0",
   "description": "Server for docspace-plugins",
-  "author": {
-    "name": "Ascensio System SIA"
-  },
   "private": true,
-  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",

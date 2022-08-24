@@ -2,14 +2,12 @@
   "name": "docspace-plugin",
   "version": "1.0.0",
   "description": "Simple plugin system for onlyoffice docspace",
-  "author": "ONLYOFFICE",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "bin": {
     "create-docspace-plugin": "./npx/index.js"
   },
-  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "prepublish": "tsc"
