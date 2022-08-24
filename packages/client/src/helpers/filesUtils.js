@@ -1,4 +1,4 @@
-import authStore from "SRC_DIR/store/AuthStore";
+import authStore from "@docspace/common/store/AuthStore";
 import { AppServerConfig, RoomsType } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl, toUrlParams } from "@docspace/common/utils";

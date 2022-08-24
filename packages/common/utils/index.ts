@@ -406,3 +406,23 @@ export function getLoginLink(token, code) {
 export function checkIsSSR() {
   return typeof window === "undefined";
 }
+
+export const frameCallbackData = (data) => {
+  window.parent.postMessage(
+    JSON.stringify({
+      type: "onMethodReturn",
+      methodReturnData: data,
+    }),
+    "*"
+  );
+};
+
+export const frameCallCommand = (command) => {
+  window.parent.postMessage(
+    JSON.stringify({
+      type: "onCallCommand",
+      commandName: command,
+    }),
+    "*"
+  );
+};

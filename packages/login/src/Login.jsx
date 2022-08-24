@@ -14,6 +14,8 @@ import SocialButton from "@docspace/components/social-button";
 import FacebookButton from "@docspace/components/facebook-button";
 import Section from "@docspace/common/components/Section";
 import ForgotPasswordModalDialog from "./client/components/sub-components/forgot-password-modal-dialog";
+import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dialog";
+import MoreLoginModal from "./sub-components/more-login";
 import Register from "./sub-components/register-container";
 import {
   getAuthProviders,
@@ -35,7 +37,6 @@ import {
   withTranslation,
 } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
-import MoreLoginModal from "./sub-components/more-login";
 import {
   ButtonsWrapper,
   LoginContainer,
@@ -44,6 +45,7 @@ import {
 import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
 import { ReactSVG } from "react-svg";
+import FormWrapper from "@docspace/components/form-wrapper";
 
 const settings = {
   minLength: 6,
@@ -75,6 +77,8 @@ const Form = (props) => {
 
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
 
+  const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
+
   const { t } = useTranslation("Login");
 
   const {
@@ -87,6 +91,7 @@ const Form = (props) => {
     history,
     thirdPartyLogin,
     providers,
+    setRoomsMode,
   } = props;
 
   const { error, confirmedEmail } = match.params;
@@ -221,9 +226,9 @@ const Form = (props) => {
     //errorText && setErrorText("");
     let hasError = false;
 
-    const user = identifier.trim();
+    const userName = identifier.trim();
 
-    if (!user) {
+    if (!userName) {
       hasError = true;
       setIdentifierValid(false);
       setIsEmailErrorShow(true);
@@ -245,18 +250,15 @@ const Form = (props) => {
 
     isDesktop && checkPwd();
     const session = !isChecked;
-    login(user, hash, session)
-      .then((url) => {
+    login(userName, hash, session)
+      .then((res) => {
+        const { url, user, hash } = res;
         const redirectPath = localStorage.getItem("redirectPath");
 
         if (redirectPath) {
           localStorage.removeItem("redirectPath");
           window.location.href = redirectPath;
-          return;
-        }
-
-        window.location.replace(url); //TODO: save { user, hash } for tfa
-        //history.push(url, { user, hash });
+        } else history.push(url, { user, hash });
       })
       .catch((error) => {
         setIsEmailErrorShow(true);
@@ -265,6 +267,10 @@ const Form = (props) => {
         setIsLoading(false);
         focusInput();
       });
+  };
+
+  const onLoginWithCodeClick = () => {
+    setRoomsMode(true);
   };
 
   const onSocialButtonClick = useCallback((e) => {
@@ -387,150 +393,179 @@ const Form = (props) => {
             {greetingTitle}
           </Text>
 
-          {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
+          <FormWrapper>
+            {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
 
-          {oauthDataExists() && (
-            <>
-              <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-              {providers && providers.length > 2 && (
-                <Link
-                  isHovered
-                  type="action"
-                  fontSize="13px"
-                  fontWeight="600"
-                  color="#3B72A7"
-                  className="more-label"
-                  onClick={moreAuthOpen}
-                >
-                  {t("Common:ShowMore")}
-                </Link>
-              )}
-            </>
-          )}
+            {oauthDataExists() && (
+              <>
+                <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+                {providers && providers.length > 2 && (
+                  <Link
+                    isHovered
+                    type="action"
+                    fontSize="13px"
+                    fontWeight="600"
+                    color="#3B72A7"
+                    className="more-label"
+                    onClick={moreAuthOpen}
+                  >
+                    {t("Common:ShowMore")}
+                  </Link>
+                )}
+              </>
+            )}
 
-          {(oauthDataExists() || ssoExists()) && (
-            <div className="line">
-              <Text color="#A3A9AE" className="or-label">
-                {t("Or")}
-              </Text>
-            </div>
-          )}
+            {(oauthDataExists() || ssoExists()) && (
+              <div className="line">
+                <Text color="#A3A9AE" className="or-label">
+                  {t("Or")}
+                </Text>
+              </div>
+            )}
 
-          <form className="auth-form-container">
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
-              hasError={isEmailErrorShow}
-              errorMessage={
-                errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
-              } //TODO: Add wrong login server error
-            >
-              <EmailInput
-                id="login"
-                name="login"
-                type="email"
+            <form className="auth-form-container">
+              <FieldContainer
+                isVertical={true}
+                labelVisible={false}
                 hasError={isEmailErrorShow}
-                value={identifier}
-                placeholder={t("RegistrationEmailWatermark")}
-                size="large"
-                scale={true}
-                isAutoFocussed={true}
-                tabIndex={1}
-                isDisabled={isLoading}
-                autoComplete="username"
-                onChange={onChangeLogin}
-                onBlur={onBlurEmail}
-                onValidateInput={onValidateEmail}
-                forwardedRef={inputRef}
-              />
-            </FieldContainer>
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
-              hasError={!passwordValid}
-              errorMessage={!password.trim() ? t("Common:RequiredField") : ""} //TODO: Add wrong password server error
-            >
-              <PasswordInput
-                simpleView={true}
-                passwordSettings={settings}
-                id="password"
-                inputName="password"
-                placeholder={t("Common:Password")}
-                type="password"
+                errorMessage={
+                  errorText
+                    ? t(`Common:${errorText}`)
+                    : t("Common:RequiredField")
+                } //TODO: Add wrong login server error
+              >
+                <EmailInput
+                  id="login"
+                  name="login"
+                  type="email"
+                  hasError={isEmailErrorShow}
+                  value={identifier}
+                  placeholder={t("RegistrationEmailWatermark")}
+                  size="large"
+                  scale={true}
+                  isAutoFocussed={true}
+                  tabIndex={1}
+                  isDisabled={isLoading}
+                  autoComplete="username"
+                  onChange={onChangeLogin}
+                  onBlur={onBlurEmail}
+                  onValidateInput={onValidateEmail}
+                  forwardedRef={inputRef}
+                />
+              </FieldContainer>
+              <FieldContainer
+                isVertical={true}
+                labelVisible={false}
                 hasError={!passwordValid}
-                inputValue={password}
-                size="large"
+                errorMessage={!password.trim() ? t("Common:RequiredField") : ""} //TODO: Add wrong password server error
+              >
+                <PasswordInput
+                  simpleView={true}
+                  passwordSettings={settings}
+                  id="password"
+                  inputName="password"
+                  placeholder={t("Common:Password")}
+                  type="password"
+                  hasError={!passwordValid}
+                  inputValue={password}
+                  size="large"
+                  scale={true}
+                  tabIndex={1}
+                  isDisabled={isLoading}
+                  autoComplete="current-password"
+                  onChange={onChangePassword}
+                  onKeyDown={onKeyDown}
+                />
+              </FieldContainer>
+
+              <div className="login-forgot-wrapper">
+                <div className="login-checkbox-wrapper">
+                  <div className="remember-wrapper">
+                    <Checkbox
+                      className="login-checkbox"
+                      isChecked={isChecked}
+                      onChange={onChangeCheckbox}
+                      label={t("Remember")}
+                      helpButton={
+                        <HelpButton
+                          helpButtonHeaderContent={t("CookieSettingsTitle")}
+                          tooltipContent={
+                            <Text fontSize="12px">{t("RememberHelper")}</Text>
+                          }
+                        />
+                      }
+                    />
+                  </div>
+
+                  <Link
+                    fontSize="13px"
+                    color="#316DAA"
+                    className="login-link"
+                    type="page"
+                    isHovered={false}
+                    onClick={onClick}
+                  >
+                    {t("ForgotPassword")}
+                  </Link>
+                </div>
+              </div>
+
+              {isDialogVisible && (
+                <ForgotPasswordModalDialog
+                  visible={isDialogVisible}
+                  email={identifier}
+                  onDialogClose={onDialogClose}
+                />
+              )}
+              <Button
+                id="submit"
+                className="login-button"
+                primary
+                size="medium"
                 scale={true}
+                label={
+                  isLoading
+                    ? t("Common:LoadingProcessing")
+                    : t("Common:LoginButton")
+                }
                 tabIndex={1}
                 isDisabled={isLoading}
-                autoComplete="current-password"
-                onChange={onChangePassword}
-                onKeyDown={onKeyDown}
+                isLoading={isLoading}
+                onClick={onSubmit}
               />
-            </FieldContainer>
 
-            <div className="login-forgot-wrapper">
-              <div className="login-checkbox-wrapper">
-                <div className="remember-wrapper">
-                  <Checkbox
-                    className="login-checkbox"
-                    isChecked={isChecked}
-                    onChange={onChangeCheckbox}
-                    label={t("Remember")}
-                    helpButton={
-                      <HelpButton
-                        helpButtonHeaderContent={t("CookieSettingsTitle")}
-                        tooltipContent={
-                          <Text fontSize="12px">{t("RememberHelper")}</Text>
-                        }
-                      />
-                    }
-                  />
-                </div>
-
-                <Link
+              {/*Uncomment when add api*/}
+              <div className="login-or-access">
+                {/*<Link
+                  fontWeight="600"
                   fontSize="13px"
                   color="#316DAA"
-                  className="login-link"
-                  type="page"
-                  isHovered={false}
-                  onClick={onClick}
+                  type="action"
+                  isHovered={true}
+                  onClick={onLoginWithCodeClick}
                 >
-                  {t("ForgotPassword")}
+                  {t("SignInWithCode")}
+                </Link>*/}
+
+                <Text color="#A3A9AE">{t("Or")}</Text>
+                <Link
+                  fontWeight="600"
+                  fontSize="13px"
+                  color="#316DAA"
+                  type="action"
+                  isHovered={true}
+                  onClick={() => setRecoverDialogVisible(true)}
+                >
+                  {t("RecoverAccess")}
                 </Link>
               </div>
-            </div>
-
-            {isDialogVisible && (
-              <ForgotPasswordModalDialog
-                visible={isDialogVisible}
-                email={identifier}
-                onDialogClose={onDialogClose}
-              />
-            )}
-            <Button
-              id="submit"
-              className="login-button"
-              primary
-              size="normal"
-              scale={true}
-              label={
-                isLoading
-                  ? t("Common:LoadingProcessing")
-                  : t("Common:LoginButton")
-              }
-              tabIndex={1}
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={onSubmit}
-            />
-
-            {confirmedEmail && (
-              <Text isBold={true} fontSize="16px">
-                {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-              </Text>
-            )}
-          </form>
+              {confirmedEmail && (
+                <Text isBold={true} fontSize="16px">
+                  {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+                </Text>
+              )}
+            </form>
+          </FormWrapper>
           <Toast />
 
           <MoreLoginModal
@@ -541,6 +576,12 @@ const Form = (props) => {
             onSocialLoginClick={onSocialButtonClick}
             ssoLabel={ssoLabel}
             ssoUrl={ssoUrl}
+          />
+
+          <RecoverAccessModalDialog
+            t={t}
+            visible={recoverDialogVisible}
+            onClose={() => setRecoverDialogVisible(false)}
           />
         </>
       )}
@@ -569,7 +610,11 @@ const LoginForm = (props) => {
   const { enabledJoin, isDesktop } = props;
 
   return (
-    <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
+    <LoginFormWrapper
+      enabledJoin={enabledJoin}
+      isDesktop={isDesktop}
+      className="with-background-pattern"
+    >
       <Section>
         <Section.SectionBody>
           <Form {...props} />
@@ -603,6 +648,7 @@ const Login = inject(({ auth }) => {
     enabledJoin,
     defaultPage,
     isDesktopClient: isDesktop,
+    setRoomsMode,
   } = settingsStore;
 
   return {
@@ -618,6 +664,7 @@ const Login = inject(({ auth }) => {
     thirdPartyLogin,
     setProviders,
     providers,
+    setRoomsMode,
   };
 })(withRouter(observer(withTranslation(["Login", "Common"])(LoginForm))));
 

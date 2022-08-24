@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 
 import Text from "../text";
+import Base from "../themes/base";
 
 const StyledTag = styled.div`
   width: fit-content;
@@ -17,7 +18,11 @@ const StyledTag = styled.div`
   margin-right: 4px;
 
   background: ${(props) =>
-    props.isDisabled ? "#F8F9F9" : props.isNewTag ? "#ECEEF1" : "#F3F4F4"};
+    props.isDisabled
+      ? props.theme.tag.disabledBackground
+      : props.isNewTag
+      ? props.theme.tag.newTagBackground
+      : props.theme.tag.background};
 
   border-radius: 6px;
 
@@ -38,10 +43,12 @@ const StyledTag = styled.div`
       cursor: pointer;
 
       &:hover {
-        background: #eceef1;
+        background: ${(props) => props.theme.tag.hoverBackground};
       }
     `}
 `;
+
+StyledTag.defaultProps = { theme: Base };
 
 const StyledDropdownIcon = styled(ReactSVG)`
   display: flex;

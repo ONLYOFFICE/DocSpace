@@ -15,7 +15,8 @@ import { combineUrl, updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 
-import store from "SRC_DIR/store";
+import store from "client/store";
+import filesStores from "./store/index.Files";
 
 import config from "PACKAGE_FILE";
 import { I18nextProvider, useTranslation } from "react-i18next";
@@ -416,7 +417,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
-  const isLogin = pathname.indexOf("login") !== -1;
 
   const loginRoutes = [];
 
@@ -462,7 +462,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       <Router history={history}>
         <Toast />
         <ReactSmartBanner t={t} ready={ready} />
-        {isEditor || isLogin || !isMobileOnly ? <></> : <NavMenu />}
+        {isEditor || !isMobileOnly ? <></> : <NavMenu />}
         <IndicatorLoader />
         <ScrollToTop />
         <DialogsWrapper t={t} />
@@ -599,7 +599,7 @@ const ThemeProviderWrapper = inject(({ auth }) => {
 })(observer(ThemeProvider));
 
 export default () => (
-  <MobxProvider {...store}>
+  <MobxProvider {...store} {...filesStores}>
     <I18nextProvider i18n={i18n}>
       <ThemeProviderWrapper>
         <ShellWrapper />

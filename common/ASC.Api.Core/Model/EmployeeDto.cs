@@ -55,7 +55,7 @@ public class EmployeeDtoHelper
     private readonly ApiContext _httpContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ConcurrentDictionary<Guid, EmployeeDto> _concurrentDictionary;
+    private readonly Dictionary<Guid, EmployeeDto> _dictionary;
 
     public EmployeeDtoHelper(
         ApiContext httpContext,
@@ -69,27 +69,34 @@ public class EmployeeDtoHelper
         _httpContext = httpContext;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _commonLinkUtility = commonLinkUtility;
-        _concurrentDictionary = new ConcurrentDictionary<Guid, EmployeeDto>();
+        _dictionary = new Dictionary<Guid, EmployeeDto>();
     }
 
-    public EmployeeDto Get(UserInfo userInfo)
+    public async Task<EmployeeDto> Get(UserInfo userInfo)
     {
-        return _concurrentDictionary.GetOrAdd(userInfo.Id, (id) => Init(new EmployeeDto(), userInfo));
+        if (_dictionary.ContainsKey(userInfo.Id))
+        {
+            return _dictionary[userInfo.Id];
+        }
+        var employee = await Init(new EmployeeDto(), userInfo);
+        _dictionary.Add(userInfo.Id, employee);
+
+        return employee;
     }
 
-    public EmployeeDto Get(Guid userId)
+    public async Task<EmployeeDto> Get(Guid userId)
     {
         try
         {
-            return Get(_userManager.GetUsers(userId));
+            return await Get(_userManager.GetUsers(userId));
         }
         catch (Exception)
         {
-            return Get(ASC.Core.Users.Constants.LostUser);
+            return await Get(ASC.Core.Users.Constants.LostUser);
         }
     }
 
-    protected EmployeeDto Init(EmployeeDto result, UserInfo userInfo)
+    protected async Task<EmployeeDto> Init(EmployeeDto result, UserInfo userInfo)
     {
         result.Id = userInfo.Id;
         result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);
@@ -103,8 +110,7 @@ public class EmployeeDtoHelper
 
         if (_httpContext.Check("avatarSmall"))
         {
-            result.AvatarSmall = _userPhotoManager.GetSmallPhotoURL(userInfo.Id, out var isdef)
-                + (isdef ? "" : $"?_={userInfoLM}");
+            result.AvatarSmall = (await _userPhotoManager.GetSmallPhotoURL(userInfo.Id)) + $"?_={userInfoLM}";
         }
 
         if (result.Id != Guid.Empty)

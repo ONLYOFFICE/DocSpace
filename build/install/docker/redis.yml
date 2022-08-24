@@ -1,0 +1,12 @@
+version: '3'
+services:       
+   onlyoffice-redis:
+    image: redis:7
+    container_name: onlyoffice-redis
+    restart: always
+    expose:
+      - "6379"
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}

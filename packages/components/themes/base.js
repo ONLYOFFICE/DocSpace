@@ -480,7 +480,7 @@ const Base = {
     textColor: black,
     textDisableColor: gray,
 
-    marginRight: "4px",
+    marginRight: "8px",
 
     background: white,
     disableBackground: grayLight,
@@ -971,8 +971,8 @@ const Base = {
       iconButton: {
         margin: "0",
         padding: "0px 8px",
-        width: "13px",
-        height: "13px",
+        width: "12px",
+        height: "12px",
       },
     },
 
@@ -2691,6 +2691,12 @@ const Base = {
       integration: {
         separatorBorder: `1px solid ${grayLightMid}`,
         linkColor: link,
+
+        sso: {
+          toggleContentBackground: grayLight,
+          iconButton: black,
+          iconButtonDisabled: gray,
+        },
       },
 
       backup: {
@@ -2738,6 +2744,13 @@ const Base = {
     key: {
       color: grayMain,
     },
+  },
+
+  tag: {
+    background: "#f3f4f4",
+    hoverBackground: "#eceef1",
+    disabledBackground: "#f8f9f9",
+    newTagBackground: "#eceef1",
   },
 };
 

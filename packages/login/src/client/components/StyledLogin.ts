@@ -1,5 +1,5 @@
-import { hugeMobile } from "@docspace/components/utils/device";
 import styled, { css } from "styled-components";
+import { tablet, hugeMobile } from "@docspace/components/utils/device";
 
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -7,7 +7,7 @@ export const ButtonsWrapper = styled.div`
   margin: 0 213px 0 213px;
   width: 320px;
 
-  @media (max-width: 768px) {
+  @media ${tablet} {
     width: 100%;
   }
 `;
@@ -31,12 +31,11 @@ export const LoginContainer = styled.div`
     width: 100%;
   }
 
-  @media (max-width: 768px) {
-    padding: 0 16px;
+  @media ${tablet} {
     max-width: 480px;
   }
 
-  @media (max-width: 414px) {
+  @media ${hugeMobile} {
     margin: 0 auto 0 auto;
     max-width: 311px;
   }
@@ -44,6 +43,10 @@ export const LoginContainer = styled.div`
   .greeting-title {
     width: 100%;
     padding-bottom: 32px;
+
+    @media ${hugeMobile} {
+      padding-top: 32px;
+    }
   }
 
   .more-label {
@@ -61,11 +64,11 @@ export const LoginContainer = styled.div`
     color: #eceef1;
     padding-top: 35px;
 
-    @media (max-width: 768px) {
+    @media ${tablet} {
       width: 480px;
     }
 
-    @media (max-width: 414px) {
+    @media ${hugeMobile} {
       width: 311px;
     }
   }
@@ -119,19 +122,17 @@ export const LoginContainer = styled.div`
     margin: 32px 213px 0 213px;
     width: 320px;
 
-    @media (max-width: 768px) {
+    @media ${tablet} {
       margin: 32px 0 0 0;
       width: 100%;
     }
-    @media (max-width: 375px) {
+    @media ${hugeMobile} {
       margin: 32px 0 0 0;
       width: 100%;
     }
 
     .login-forgot-wrapper {
-      height: 36px;
-      padding: 14px 0;
-
+      margin-bottom: 14px;
       .login-checkbox-wrapper {
         display: flex;
         //align-items: center;
@@ -158,7 +159,7 @@ export const LoginContainer = styled.div`
     }
 
     .login-button {
-      margin-bottom: 16px;
+      margin-top: 8px;
     }
 
     .login-button-dialog {
@@ -174,6 +175,14 @@ export const LoginContainer = styled.div`
     .login-bottom-text {
       margin: 0 8px;
     }
+
+    .login-or-access {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-top: 24px;
+    }
   }
 
   .logo-wrapper {
@@ -184,9 +193,8 @@ export const LoginContainer = styled.div`
     height: 46px;
     padding-bottom: 64px;
 
-    @media (${hugeMobile}) {
-      padding-bottom: 40px;
-      height: 39px;
+    @media ${hugeMobile} {
+      display: none;
     }
   }
 `;
@@ -202,7 +210,7 @@ export const LoginFormWrapper = styled.div`
     props.enabledJoin
       ? props.isDesktop
         ? css`1fr 10px`
-        : css`1fr 66px`
+        : css`1fr 68px`
       : css`1fr`};
   width: 100%;
   height: 100vh;

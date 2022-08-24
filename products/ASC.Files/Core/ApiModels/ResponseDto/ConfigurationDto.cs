@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
-public class ConfigurationDto<T> : IMapFrom<Configuration<T>>
+public class ConfigurationDto<T>
 {
     public DocumentConfig<T> Document { get; set; }
     public string DocumentType { get; set; }

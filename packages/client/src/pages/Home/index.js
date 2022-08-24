@@ -9,7 +9,12 @@ import {
 import axios from "axios";
 import toastr from "@docspace/components/toast/toastr";
 import Section from "@docspace/common/components/Section";
-import { showLoader, hideLoader } from "@docspace/common/utils";
+import {
+  showLoader,
+  hideLoader,
+  frameCallbackData,
+  frameCallCommand,
+} from "@docspace/common/utils";
 import FilesFilter from "@docspace/common/api/files/filter";
 import { getGroup } from "@docspace/common/api/groups";
 import { getUserById } from "@docspace/common/api/people";
@@ -242,6 +247,8 @@ class PureHome extends React.Component {
         setFirstLoad(false);
         setAlreadyFetchingRooms(false);
       });
+
+    window.addEventListener("message", this.handleMessage, false);
   }
 
   fetchDefaultFiles = () => {
@@ -355,6 +362,115 @@ class PureHome extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("message", this.handleMessage, false);
+  }
+
+  handleMessage = async (e) => {
+    const {
+      setFrameConfig,
+      user,
+      folders,
+      files,
+      selection,
+      filesList,
+      selectedFolderStore,
+      createFile,
+      createFolder,
+      createRoom,
+      refreshFiles,
+      setViewAs,
+    } = this.props;
+
+    const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+
+    if (eventData.data) {
+      const { data, methodName } = eventData.data;
+
+      let res;
+
+      switch (methodName) {
+        case "setConfig":
+          res = await setFrameConfig(data);
+          break;
+        case "getFolderInfo":
+          res = selectedFolderStore;
+          break;
+        case "getFolders":
+          res = folders;
+          break;
+        case "getFiles":
+          res = files;
+          break;
+        case "getList":
+          res = filesList;
+          break;
+        case "getSelection":
+          res = selection;
+          break;
+        case "getUserInfo":
+          res = user;
+          break;
+        case "openModal": {
+          const { type, options } = data;
+
+          if (type === "CreateFile" || type === "CreateFolder") {
+            const item = new Event(Events.CREATE);
+
+            const payload = {
+              extension: options,
+              id: -1,
+            };
+
+            item.payload = payload;
+
+            window.dispatchEvent(item);
+          }
+
+          if (type === "CreateRoom") {
+            const room = new Event(Events.ROOM_CREATE);
+
+            window.dispatchEvent(room);
+          }
+          break;
+        }
+        case "createFile":
+          {
+            const { folderId, title, templateId, formId } = data;
+            res = await createFile(folderId, title, templateId, formId);
+
+            refreshFiles();
+          }
+          break;
+        case "createFolder":
+          {
+            const { parentFolderId, title } = data;
+            res = await createFolder(parentFolderId, title);
+
+            refreshFiles();
+          }
+          break;
+        case "createRoom":
+          {
+            const { title, type } = data;
+            res = await createRoom(title, type);
+
+            refreshFiles();
+          }
+          break;
+        case "setListView":
+          {
+            setViewAs(data);
+          }
+          break;
+        default:
+          res = "Wrong method";
+      }
+
+      frameCallbackData(res);
+    }
+  };
+
   render() {
     //console.log("Home render");
     const {
@@ -382,7 +498,15 @@ class PureHome extends React.Component {
       checkedMaintenance,
       setMaintenanceExist,
       snackbarExist,
+      isFrame,
+      showTitle,
+      showFilter,
+      frameConfig,
     } = this.props;
+
+    if (window.parent && !frameConfig) {
+      frameCallCommand("setConfig");
+    }
 
     return (
       <>
@@ -414,7 +538,11 @@ class PureHome extends React.Component {
           firstLoad={firstLoad}
         >
           <Section.SectionHeader>
-            <SectionHeaderContent />
+            {isFrame ? (
+              showTitle && <SectionHeaderContent />
+            ) : (
+              <SectionHeaderContent />
+            )}
           </Section.SectionHeader>
 
           <Section.SectionBar>
@@ -428,7 +556,11 @@ class PureHome extends React.Component {
           </Section.SectionBar>
 
           <Section.SectionFilter>
-            <SectionFilterContent />
+            {isFrame ? (
+              showFilter && <SectionFilterContent />
+            ) : (
+              <SectionFilterContent />
+            )}
           </Section.SectionFilter>
 
           <Section.SectionBody>
@@ -492,6 +624,16 @@ export default inject(
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
+
+      folders,
+      files,
+      filesList,
+      selectedFolderStore,
+      createFile,
+      createFolder,
+      createRoom,
+      refreshFiles,
+      setViewAs,
     } = filesStore;
 
     const {
@@ -534,6 +676,19 @@ export default inject(
       : null;
 
     const { setToPreviewFile, playlist } = mediaViewerDataStore;
+
+    const {
+      checkedMaintenance,
+      setMaintenanceExist,
+      snackbarExist,
+      isHeaderVisible,
+      setHeaderVisible,
+      personal,
+      setFrameConfig,
+      frameConfig,
+      isFrame,
+    } = auth.settingsStore;
+
     if (!firstLoad) {
       if (isLoading) {
         showLoader();
@@ -552,9 +707,9 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
-      checkedMaintenance: auth.settingsStore.checkedMaintenance,
-      setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
-      snackbarExist: auth.settingsStore.snackbarExist,
+      checkedMaintenance,
+      setMaintenanceExist,
+      snackbarExist,
       expandedKeys,
 
       primaryProgressDataVisible,
@@ -589,15 +744,32 @@ export default inject(
       setSelections,
       startUpload,
       uploadEmptyFolders,
-      isHeaderVisible: auth.settingsStore.isHeaderVisible,
-      setHeaderVisible: auth.settingsStore.setHeaderVisible,
-      personal: auth.settingsStore.personal,
+      isHeaderVisible,
+      setHeaderVisible,
+      personal,
       setToPreviewFile,
       playlist,
       isMediaOrImage: settingsStore.isMediaOrImage,
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
+
+      setFrameConfig,
+      frameConfig,
+      isFrame,
+      showTitle: frameConfig?.showTitle,
+      showFilter: frameConfig?.showFilter,
+      user: auth.userStore.user,
+      folders,
+      files,
+      selection,
+      filesList,
+      selectedFolderStore,
+      createFile,
+      createFolder,
+      createRoom,
+      refreshFiles,
+      setViewAs,
     };
   }
 )(withRouter(observer(Home)));

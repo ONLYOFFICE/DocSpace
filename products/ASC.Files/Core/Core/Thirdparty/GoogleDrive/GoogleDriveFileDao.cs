@@ -60,13 +60,13 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
     public async Task InvalidateCacheAsync(string fileId)
     {
         var driveId = MakeDriveId(fileId);
-        await ProviderInfo.CacheResetAsync(driveId, true).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(driveId, true);
 
-        var driveFile = await GetDriveEntryAsync(fileId).ConfigureAwait(false);
+        var driveFile = await GetDriveEntryAsync(fileId);
         var parentDriveId = GetParentDriveId(driveFile);
         if (parentDriveId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentDriveId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentDriveId);
         }
     }
 
@@ -77,36 +77,38 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
     public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
     {
-        return ToFile(await GetDriveEntryAsync(fileId).ConfigureAwait(false));
+        return ToFile(await GetDriveEntryAsync(fileId));
     }
 
     public async Task<File<string>> GetFileAsync(string parentId, string title)
     {
-        var data = await GetDriveEntriesAsync(parentId, false).ConfigureAwait(false);
+        var data = await GetDriveEntriesAsync(parentId, false);
 
         return ToFile(data.FirstOrDefault(file => file.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
     }
 
     public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
     {
-        return ToFile(await GetDriveEntryAsync(fileId).ConfigureAwait(false));
+        return ToFile(await GetDriveEntryAsync(fileId));
     }
 
-    public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
+    public async IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
     {
-        return GetFileAsync(fileId).ToAsyncEnumerable();
+        var file = await GetFileAsync(fileId);
+        yield return file;
     }
 
-    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
     {
         if (fileIds == null || !fileIds.Any())
         {
-            return AsyncEnumerable.Empty<File<string>>();
+            yield break;
         }
 
-        var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetDriveEntryAsync(e).ConfigureAwait(false)));
-
-        return result;
+        foreach (var fileId in fileIds)
+        {
+            yield return ToFile(await GetDriveEntryAsync(fileId));
+        }
     }
 
     public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
@@ -170,11 +172,14 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         return files;
     }
 
-    public async Task<List<string>> GetFilesAsync(string parentId)
+    public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
-        var entries = await GetDriveEntriesAsync(parentId, false).ConfigureAwait(false);
+        var entries = await GetDriveEntriesAsync(parentId, false);
 
-        return entries.Select(entry => MakeId(entry.Id)).ToList();
+        foreach (var entry in entries)
+        {
+            yield return MakeId(entry.Id);
+        }
     }
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -185,7 +190,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         }
 
         //Get only files
-        var entries = await GetDriveEntriesAsync(parentId, false).ConfigureAwait(false);
+        var entries = await GetDriveEntriesAsync(parentId, false);
         var files = entries.Select(ToFile);
 
         //Filter
@@ -265,8 +270,8 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
         var driveId = MakeDriveId(file.Id);
-        await ProviderInfo.CacheResetAsync(driveId, true).ConfigureAwait(false);
-        var driveFile = await GetDriveEntryAsync(file.Id).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(driveId, true);
+        var driveFile = await GetDriveEntryAsync(file.Id);
         if (driveFile == null)
         {
             throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -278,7 +283,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         }
 
         var storage = await ProviderInfo.StorageAsync;
-        var fileStream = await storage.DownloadStreamAsync(driveFile, (int)offset).ConfigureAwait(false);
+        var fileStream = await storage.DownloadStreamAsync(driveFile, (int)offset);
 
         if (!driveFile.Size.HasValue && fileStream != null && fileStream.CanSeek)
         {
@@ -313,18 +318,18 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
         if (file.Id != null)
         {
-            newDriveFile = await storage.SaveStreamAsync(MakeDriveId(file.Id), fileStream, file.Title).ConfigureAwait(false);
+            newDriveFile = await storage.SaveStreamAsync(MakeDriveId(file.Id), fileStream, file.Title);
         }
         else if (file.ParentId != null)
         {
-            newDriveFile = await storage.InsertEntryAsync(fileStream, file.Title, MakeDriveId(file.ParentId)).ConfigureAwait(false);
+            newDriveFile = await storage.InsertEntryAsync(fileStream, file.Title, MakeDriveId(file.ParentId));
         }
 
-        await ProviderInfo.CacheResetAsync(newDriveFile).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(newDriveFile);
         var parentDriveId = GetParentDriveId(newDriveFile);
         if (parentDriveId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentDriveId, false).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentDriveId, false);
         }
 
         return ToFile(newDriveFile);
@@ -337,7 +342,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
     public async Task DeleteFileAsync(string fileId)
     {
-        var driveFile = await GetDriveEntryAsync(fileId).ConfigureAwait(false);
+        var driveFile = await GetDriveEntryAsync(fileId);
         if (driveFile == null)
         {
             return;
@@ -345,27 +350,27 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
         var id = MakeId(driveFile.Id);
 
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.Id.StartsWith(id))
-                    .Select(r => r.HashId)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                .Where(r => r.Id.StartsWith(id))
+                .Select(r => r.HashId)
+                .ToListAsync()
+                ;
 
                 var link = await Query(filesDbContext.TagLink)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                .Where(r => hashIDs.Any(h => h == r.EntryId))
+                .ToListAsync()
+                ;
 
                 filesDbContext.TagLink.RemoveRange(link);
-                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await filesDbContext.SaveChangesAsync();
 
                 var tagsToRemove = from ft in filesDbContext.Tag
                                    join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
@@ -375,38 +380,38 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
                 filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
                 var securityToDelete = Query(filesDbContext.Security)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId));
+                .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await filesDbContext.SaveChangesAsync();
 
                 var mappingToDelete = Query(filesDbContext.ThirdpartyIdMapping)
-                    .Where(r => hashIDs.Any(h => h == r.HashId));
+                .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
-                await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await filesDbContext.SaveChangesAsync();
 
-                await tx.CommitAsync().ConfigureAwait(false);
+                await tx.CommitAsync();
             }
         });
 
         if (driveFile is not ErrorDriveEntry)
         {
             var storage = await ProviderInfo.StorageAsync;
-            await storage.DeleteEntryAsync(driveFile.Id).ConfigureAwait(false);
+            await storage.DeleteEntryAsync(driveFile.Id);
         }
 
-        await ProviderInfo.CacheResetAsync(driveFile.Id).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(driveFile.Id);
         var parentDriveId = GetParentDriveId(driveFile);
         if (parentDriveId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentDriveId, false).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentDriveId, false);
         }
     }
 
     public async Task<bool> IsExistAsync(string title, object folderId)
     {
-        var entries = await GetDriveEntriesAsync(folderId, false).ConfigureAwait(false);
+        var entries = await GetDriveEntriesAsync(folderId, false);
 
         return entries.Any(file => file.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
     }
@@ -416,12 +421,12 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
     {
         if (toFolderId is int tId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
         }
 
         if (toFolderId is string tsId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId).ConfigureAwait(false), typeof(TTo));
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
         }
 
         throw new NotImplementedException();
@@ -433,20 +438,20 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
             fileId, this, _googleDriveDaoSelector.ConvertId,
             toFolderId, _fileDao, r => r,
             true)
-            .ConfigureAwait(false);
+            ;
 
         return moved.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
     {
-        var driveFile = await GetDriveEntryAsync(fileId).ConfigureAwait(false);
+        var driveFile = await GetDriveEntryAsync(fileId);
         if (driveFile is ErrorDriveEntry errorDriveEntry)
         {
             throw new Exception(errorDriveEntry.Error);
         }
 
-        var toDriveFolder = await GetDriveEntryAsync(toFolderId).ConfigureAwait(false);
+        var toDriveFolder = await GetDriveEntryAsync(toFolderId);
         if (toDriveFolder is ErrorDriveEntry errorDriveEntry1)
         {
             throw new Exception(errorDriveEntry1.Error);
@@ -455,15 +460,15 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         var fromFolderDriveId = GetParentDriveId(driveFile);
 
         var storage = await ProviderInfo.StorageAsync;
-        driveFile = await storage.InsertEntryIntoFolderAsync(driveFile, toDriveFolder.Id).ConfigureAwait(false);
+        driveFile = await storage.InsertEntryIntoFolderAsync(driveFile, toDriveFolder.Id);
         if (fromFolderDriveId != null)
         {
-            await storage.RemoveEntryFromFolderAsync(driveFile, fromFolderDriveId).ConfigureAwait(false);
+            await storage.RemoveEntryFromFolderAsync(driveFile, fromFolderDriveId);
         }
 
-        await ProviderInfo.CacheResetAsync(driveFile.Id).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(fromFolderDriveId, false).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(toDriveFolder.Id, false).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(driveFile.Id);
+        await ProviderInfo.CacheResetAsync(fromFolderDriveId, false);
+        await ProviderInfo.CacheResetAsync(toDriveFolder.Id, false);
 
         return MakeId(driveFile.Id);
     }
@@ -472,12 +477,12 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
     {
         if (toFolderId is int tId)
         {
-            return await CopyFileAsync(fileId, tId).ConfigureAwait(false) as File<TTo>;
+            return await CopyFileAsync(fileId, tId) as File<TTo>;
         }
 
         if (toFolderId is string tsId)
         {
-            return await CopyFileAsync(fileId, tsId).ConfigureAwait(false) as File<TTo>;
+            return await CopyFileAsync(fileId, tsId) as File<TTo>;
         }
 
         throw new NotImplementedException();
@@ -489,47 +494,47 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
             fileId, this, _googleDriveDaoSelector.ConvertId,
             toFolderId, _fileDao, r => r,
             false)
-            .ConfigureAwait(false);
+            ;
 
         return moved;
     }
 
     public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
     {
-        var driveFile = await GetDriveEntryAsync(fileId).ConfigureAwait(false);
+        var driveFile = await GetDriveEntryAsync(fileId);
         if (driveFile is ErrorDriveEntry errorDriveEntry)
         {
             throw new Exception(errorDriveEntry.Error);
         }
 
-        var toDriveFolder = await GetDriveEntryAsync(toFolderId).ConfigureAwait(false);
+        var toDriveFolder = await GetDriveEntryAsync(toFolderId);
         if (toDriveFolder is ErrorDriveEntry errorDriveEntry1)
         {
             throw new Exception(errorDriveEntry1.Error);
         }
 
         var storage = await ProviderInfo.StorageAsync;
-        var newDriveFile = await storage.CopyEntryAsync(toDriveFolder.Id, driveFile.Id).ConfigureAwait(false);
+        var newDriveFile = await storage.CopyEntryAsync(toDriveFolder.Id, driveFile.Id);
 
-        await ProviderInfo.CacheResetAsync(newDriveFile).ConfigureAwait(false);
-        await ProviderInfo.CacheResetAsync(toDriveFolder.Id, false).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(newDriveFile);
+        await ProviderInfo.CacheResetAsync(toDriveFolder.Id, false);
 
         return ToFile(newDriveFile);
     }
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var driveFile = await GetDriveEntryAsync(file.Id).ConfigureAwait(false);
+        var driveFile = await GetDriveEntryAsync(file.Id);
         driveFile.Name = newTitle;
 
         var storage = await ProviderInfo.StorageAsync;
-        driveFile = await storage.RenameEntryAsync(driveFile.Id, driveFile.Name).ConfigureAwait(false);
+        driveFile = await storage.RenameEntryAsync(driveFile.Id, driveFile.Name);
 
-        await ProviderInfo.CacheResetAsync(driveFile).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(driveFile);
         var parentDriveId = GetParentDriveId(driveFile);
         if (parentDriveId != null)
         {
-            await ProviderInfo.CacheResetAsync(parentDriveId, false).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(parentDriveId, false);
         }
 
         return MakeId(driveFile.Id);
@@ -604,17 +609,17 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
         if (file.Id != null)
         {
-            driveFile = await GetDriveEntryAsync(file.Id).ConfigureAwait(false);
+            driveFile = await GetDriveEntryAsync(file.Id);
         }
         else
         {
-            var folder = await GetDriveEntryAsync(file.ParentId).ConfigureAwait(false);
+            var folder = await GetDriveEntryAsync(file.ParentId);
             storage = await storageTask;
             driveFile = storage.FileConstructor(file.Title, null, folder.Id);
         }
 
         storage = await storageTask;
-        var googleDriveSession = await storage.CreateResumableSessionAsync(driveFile, contentLength).ConfigureAwait(false);
+        var googleDriveSession = await storage.CreateResumableSessionAsync(driveFile, contentLength);
         if (googleDriveSession != null)
         {
             uploadSession.Items["GoogleDriveSession"] = googleDriveSession;
@@ -638,7 +643,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
                 uploadSession.BytesTotal = chunkLength;
             }
 
-            uploadSession.File = await SaveFileAsync(uploadSession.File, stream).ConfigureAwait(false);
+            uploadSession.File = await SaveFileAsync(uploadSession.File, stream);
             uploadSession.BytesUploaded = chunkLength;
 
             return uploadSession.File;
@@ -649,20 +654,20 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
             var googleDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("GoogleDriveSession");
             var storage = await ProviderInfo.StorageAsync;
             storage = await ProviderInfo.StorageAsync;
-            await storage.TransferAsync(googleDriveSession, stream, chunkLength).ConfigureAwait(false);
+            await storage.TransferAsync(googleDriveSession, stream, chunkLength);
         }
         else
         {
             var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
             using var fs = new FileStream(tempPath, FileMode.Append);
-            await stream.CopyToAsync(fs).ConfigureAwait(false);
+            await stream.CopyToAsync(fs);
         }
 
         uploadSession.BytesUploaded += chunkLength;
 
         if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
         {
-            uploadSession.File = await FinalizeUploadSessionAsync(uploadSession).ConfigureAwait(false);
+            uploadSession.File = await FinalizeUploadSessionAsync(uploadSession);
         }
         else
         {
@@ -678,19 +683,19 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         {
             var googleDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("GoogleDriveSession");
 
-            await ProviderInfo.CacheResetAsync(googleDriveSession.FileId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(googleDriveSession.FileId);
             var parentDriveId = googleDriveSession.FolderId;
             if (parentDriveId != null)
             {
-                await ProviderInfo.CacheResetAsync(parentDriveId, false).ConfigureAwait(false);
+                await ProviderInfo.CacheResetAsync(parentDriveId, false);
             }
 
-            return ToFile(await GetDriveEntryAsync(googleDriveSession.FileId).ConfigureAwait(false));
+            return ToFile(await GetDriveEntryAsync(googleDriveSession.FileId));
         }
 
         using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
 
-        return await SaveFileAsync(uploadSession.File, fs).ConfigureAwait(false);
+        return await SaveFileAsync(uploadSession.File, fs);
     }
 
     public Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)

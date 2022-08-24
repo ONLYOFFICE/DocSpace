@@ -83,7 +83,7 @@ const PureConnectDialogContainer = (props) => {
     //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
 
     if (title.match(folderFormValidation)) {
-      toastr.warning(t("Files:ContainsSpecCharacter"));
+      toastr.warning(t("Home:ContainsSpecCharacter"));
     }
     title = title.replace(folderFormValidation, "_");
 

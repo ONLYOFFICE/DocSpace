@@ -6,7 +6,7 @@ import { tablet } from "@docspace/components/utils/device";
 const size = {
   header: "28px",
   menu: "23px",
-  content: "21px",
+  content: "18px",
 };
 
 const weight = {

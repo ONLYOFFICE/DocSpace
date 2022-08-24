@@ -4,6 +4,8 @@ import {
   EmployeeActivationStatus,
 } from "@docspace/common/constants";
 import { getUserStatus } from "../helpers/people-helpers";
+import store from "client/store";
+const { auth: authStore } = store;
 
 class SelectionStore {
   selection = [];
@@ -113,7 +115,7 @@ class SelectionStore {
         !x.isOwner &&
         x.isVisitor &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== authStore.userStore.user.id
       );
     });
     return !!users.length;
@@ -126,7 +128,7 @@ class SelectionStore {
         !x.isOwner &&
         x.isVisitor &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== authStore.userStore.user.id
       );
     });
     return users.map((u) => u.id);
@@ -139,7 +141,7 @@ class SelectionStore {
         !x.isOwner &&
         !x.isVisitor &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== authStore.userStore.user.id
       );
     });
     return !!users.length;
@@ -152,7 +154,7 @@ class SelectionStore {
         !x.isOwner &&
         !x.isVisitor &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== authStore.userStore.user.id
       );
     });
     return users.map((u) => u.id);
@@ -163,7 +165,7 @@ class SelectionStore {
       (x) =>
         !x.isOwner &&
         x.status !== EmployeeStatus.Active &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== authStore.userStore.user.id
     );
     return !!users.length;
   }
@@ -173,7 +175,7 @@ class SelectionStore {
       (x) =>
         !x.isOwner &&
         x.status !== EmployeeStatus.Active &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== authStore.userStore.user.id
     );
     return users.map((u) => u.id);
   }
@@ -183,7 +185,7 @@ class SelectionStore {
       (x) =>
         !x.isOwner &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== authStore.userStore.user.id
     );
     return !!users.length;
   }
@@ -193,7 +195,7 @@ class SelectionStore {
       (x) =>
         !x.isOwner &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== authStore.userStore.user.id
     );
     return users.map((u) => u.id);
   }

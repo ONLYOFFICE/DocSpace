@@ -85,7 +85,7 @@ public abstract class PeopleControllerBase : ApiControllerBase
         user.Contacts = string.Join('|', values);
     }
 
-    protected void UpdatePhotoUrl(string files, UserInfo user)
+    protected async Task UpdatePhotoUrl(string files, UserInfo user)
     {
         if (string.IsNullOrEmpty(files))
         {
@@ -110,6 +110,6 @@ public abstract class PeopleControllerBase : ApiControllerBase
         using var br = new BinaryReader(inputStream);
         var imageByteArray = br.ReadBytes((int)inputStream.Length);
 
-        _userPhotoManager.SaveOrUpdatePhoto(user.Id, imageByteArray);
+        await _userPhotoManager.SaveOrUpdatePhoto(user.Id, imageByteArray);
     }
 }

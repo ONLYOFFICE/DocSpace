@@ -173,5 +173,6 @@
   "PaymentsTitle": "Платежі",
   "AboutCompanyTitle": "Про цю програму",
   "LogoutButton": "Вихід",
-  "HelpCenter": "Центр довідки"
+  "HelpCenter": "Центр довідки",
+  "SelectFile": "Вибрати файл"
 }

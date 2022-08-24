@@ -37,7 +37,7 @@ public class Settings
     {
         var cfg = configuration.GetSetting<Settings>("webhooks");
         RepeatCount = cfg.RepeatCount ?? 5;
-        ThreadCount = cfg.ThreadCount ?? 1;
+        ThreadCount = cfg.ThreadCount ?? 10;
     }
     public int? RepeatCount { get; }
     public int? ThreadCount { get; }
