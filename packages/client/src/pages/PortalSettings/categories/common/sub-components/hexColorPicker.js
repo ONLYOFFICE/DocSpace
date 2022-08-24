@@ -99,7 +99,7 @@ const HexColorPickerComponent = (props) => {
   } = props;
 
   return (
-    <StyledComponent viewMobile={viewMobile} open={open}>
+    <StyledComponent viewMobile={viewMobile}>
       <div className="hex-color-picker">
         <div className="hex-value-container">
           {!viewMobile && <div className="hex-value-label">Hex code:</div>}
