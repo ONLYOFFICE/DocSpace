@@ -74,12 +74,11 @@ const CreateRoomEvent = ({
       await addTagsToRoom(room.id, addTagsData);
 
       if (roomParams.icon.uploadedFile)
-        await uploadRoomLogo(uploadLogoData).then((response) => {
+        await uploadRoomLogo(uploadLogoData)?.then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
-
-          img.onload = () => {
-            const tmpFile = response.data.split("?")[0];
+          img.onload = async () => {
+            const tmpFile = response.data;
             const { x, y, zoom } = roomParams.icon;
 
             const imgWidth = Math.min(1280, img.width);
@@ -90,17 +89,16 @@ const CreateRoomEvent = ({
             const croppedX = Math.round(x * imgWidth - dimensions / 2);
             const croppedY = Math.round(y * imgHeight - dimensions / 2);
 
-            addLogoToRoom(room.id, {
+            await addLogoToRoom(room.id, {
               tmpFile,
               x: croppedX,
               y: croppedY,
               width: dimensions,
               height: dimensions,
             });
-
+            await updateCurrentFolder(null, currrentFolderId);
             URL.revokeObjectURL(img.src);
           };
-
           img.src = url;
         });
 
