@@ -1,6 +1,6 @@
 import PluginStore from "./PluginStore";
 
-import api from "./api";
+import api from "@docspace/common/api";
 
 import { loadScript } from "@docspace/common/utils";
 import { PluginContextMenuItemType } from "./constants";
@@ -9,7 +9,9 @@ export const initPluginStore = async () => {
   window.Plugins = {};
   window.PluginStore = new PluginStore();
 
-  const plugins = await api.getPlugins();
+  const plugins = await api.plugins.getPlugins();
+
+  console.log(plugins);
 
   plugins.forEach((plugin) => initPlugin(plugin));
 };
@@ -39,14 +41,14 @@ export const activatePlugin = async (id, status) => {
     window.PluginStore.deactivatePlugin(id);
   }
 
-  const plugin = await api.activatePlugin(id);
+  const plugin = await api.plugins.activatePlugin(id);
 
   return plugin;
 };
 
 export const deletePlugin = async (id) => {
   window.PluginStore.uninstallPlugin(id);
-  await api.deletePlugin(id);
+  await api.plugins.deletePlugin(id);
 };
 
 export const getContextMenuKeysByType = (type) => {
