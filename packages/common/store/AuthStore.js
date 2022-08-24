@@ -56,14 +56,15 @@ class AuthStore {
     }
 
     const requests = [];
-    requests.push(
-      this.settingsStore.init(),
-      this.setPortalQuota(),
-      this.setPortalTariff(),
-      this.getPaymentPrices()
-    );
+    requests.push(this.settingsStore.init());
 
     if (this.isAuthenticated) {
+      requests.push(
+        this.setPortalQuota(),
+        this.setPortalTariff(),
+        this.getPaymentPrices()
+      );
+
       !this.settingsStore.passwordSettings &&
         requests.push(this.settingsStore.getPortalPasswordSettings());
     }
