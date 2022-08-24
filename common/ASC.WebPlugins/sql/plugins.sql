@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `plugins` (
+CREATE TABLE IF NOT EXISTS `plugin` (
   `id` varchar(200) NOT NULL,
   `name` text NOT NULL,
   `filename` text NOT NULL,
