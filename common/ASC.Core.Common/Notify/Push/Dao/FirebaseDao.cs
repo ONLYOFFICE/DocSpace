@@ -39,27 +39,29 @@ public class FirebaseDao
     public FireBaseUser RegisterUserDevice(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
-        var count = dbContext.Users
+        var user = dbContext.Users
             .AsNoTracking()
             .Where(r => r.UserId == userId)
             .Where(r => r.TenantId == tenantId)
             .Where(r => r.Application == application)
             .Where(r => r.FirebaseDeviceToken == fbDeviceToken)
-            .Count();
+            .FirstOrDefault();
 
-        var user = new FireBaseUser
-        {
-            UserId = userId,
-            TenantId = tenantId,
-            FirebaseDeviceToken = fbDeviceToken,
-            IsSubscribed = isSubscribed,
-            Application = application
-        };
 
-        if (count == 0)
+        if (user == null)
         {
-            dbContext.AddOrUpdate(r => r.Users, user);
+            var newUser = new FireBaseUser
+            {
+                UserId = userId,
+                TenantId = tenantId,
+                FirebaseDeviceToken = fbDeviceToken,
+                IsSubscribed = isSubscribed,
+                Application = application
+            };
+            dbContext.Add(newUser);
             dbContext.SaveChanges();
+
+            return newUser;
         }
 
         return user;
