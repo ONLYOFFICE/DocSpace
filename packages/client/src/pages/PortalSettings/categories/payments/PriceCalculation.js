@@ -57,6 +57,7 @@ const PriceCalculation = ({
   const [usersCount, setUsersCount] = useState(initialUsersCount);
 
   const setStartLink = async () => {
+    if (isAlreadyPaid) return;
     const link = await api.portal.getPaymentLink(initialUsersCount);
     setPaymentLink(link);
   };
