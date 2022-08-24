@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Text;
-
 namespace ASC.Api.Core.Middleware;
 
 [Scope]
@@ -34,12 +32,14 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
     private readonly MemoryStream _stream;
     private Stream _bodyStream;
     private readonly IWebhookPublisher _webhookPublisher;
+    private readonly ILogger<WebhooksGlobalFilterAttribute> _logger;
     private static readonly List<string> _methodList = new List<string> { "POST", "UPDATE", "DELETE" };
 
-    public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher)
+    public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher, ILogger<WebhooksGlobalFilterAttribute> logger)
     {
         _stream = new MemoryStream();
         _webhookPublisher = webhookPublisher;
+        _logger = logger;
     }
 
     public override void OnResultExecuting(ResultExecutingContext context)
@@ -68,11 +68,18 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
             await _stream.CopyToAsync(_bodyStream);
             context.HttpContext.Response.Body = _bodyStream;
 
-            var (method, routePattern) = GetData(context.HttpContext);
+            try
+            {
+                var (method, routePattern) = GetData(context.HttpContext);
 
-            var resultContent = Encoding.UTF8.GetString(_stream.ToArray());
-            var eventName = $"method: {method}, route: {routePattern}";
-            _webhookPublisher.Publish(eventName, resultContent);
+                var resultContent = Encoding.UTF8.GetString(_stream.ToArray());
+
+                await _webhookPublisher.PublishAsync(method, routePattern, resultContent);
+            }
+            catch (Exception e)
+            {
+                _logger.ErrorWithException(e);
+            }
         }
     }
 

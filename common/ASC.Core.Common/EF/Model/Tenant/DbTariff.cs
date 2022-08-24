@@ -74,7 +74,7 @@ public static class DbTariffExtension
 
             entity.Property(e => e.CustomerId)
                 .HasColumnName("customer_id")
-                .HasColumnType("varchar(38)")
+                .HasColumnType("varchar(36)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
@@ -107,7 +107,7 @@ public static class DbTariffExtension
 
             entity.Property(e => e.CustomerId)
                 .HasColumnName("customer_id")
-                .HasMaxLength(38)
+                .HasMaxLength(36)
                 .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.Tariff).HasColumnName("tariff");

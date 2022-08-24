@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbButton", b =>
@@ -52,18 +52,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("int")
                         .HasColumnName("tenant");
 
-                    b.Property<int>("ActiveUsers")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("active_users")
-                        .HasDefaultValueSql("'0'");
-
-                    b.Property<string>("AvangateId")
-                        .HasColumnType("varchar(128)")
-                        .HasColumnName("avangate_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
                     b.Property<string>("Description")
                         .HasColumnType("varchar(128)")
                         .HasColumnName("description")
@@ -80,12 +68,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("max_file_size")
                         .HasDefaultValueSql("'0'");
 
-                    b.Property<long>("MaxTotalSize")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("max_total_size")
-                        .HasDefaultValueSql("'0'");
-
                     b.Property<string>("Name")
                         .HasColumnType("varchar(128)")
                         .HasColumnName("name")
@@ -97,6 +79,12 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("decimal(10,2)")
                         .HasColumnName("price")
                         .HasDefaultValueSql("'0.00'");
+
+                    b.Property<string>("ProductId")
+                        .HasColumnType("varchar(128)")
+                        .HasColumnName("product_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Visible")
                         .ValueGeneratedOnAdd()
@@ -115,11 +103,8 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -1,
-                            ActiveUsers = 10000,
-                            AvangateId = "0",
-                            Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore",
-                            MaxFileSize = 102400L,
-                            MaxTotalSize = 10995116277760L,
+                            Features = "audit,ldap,sso,whitelabel,update,restore,admin:1,total_size:107374182400",
+                            MaxFileSize = 100L,
                             Name = "default",
                             Price = 0.00m,
                             Visible = false
@@ -182,11 +167,12 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("create_on");
 
-                    b.Property<int>("Quantity")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("quantity")
-                        .HasDefaultValueSql("'1'");
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("customer_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("Stamp")
                         .HasColumnType("datetime")
@@ -208,6 +194,35 @@ namespace ASC.Migrations.MySql.Migrations
                     b.ToTable("tenants_tariff", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbTariffRow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Key")
+                        .HasColumnType("int")
+                        .HasColumnName("key");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
+
+                    b.Property<int>("Quota")
+                        .HasColumnType("int")
+                        .HasColumnName("quota");
+
+                    b.Property<int>("Tenant")
+                        .HasColumnType("int")
+                        .HasColumnName("tenant");
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.ToTable("tenants_tariffrow", (string)null);
                 });
 #pragma warning restore 612, 618
         }

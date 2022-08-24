@@ -52,6 +52,9 @@ public static class DbTariffRowExtension
             entity.HasKey(e => e.Id)
                 .HasName("PRIMARY");
 
+            entity.Property(e => e.Id)
+                .HasColumnName("id");
+
             entity.Property(e => e.Key)
                 .HasColumnName("key")
                 .HasColumnType("int");

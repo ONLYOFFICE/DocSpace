@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbButton", b =>
@@ -49,17 +49,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
-                    b.Property<int>("ActiveUsers")
-                        .HasColumnType("integer")
-                        .HasColumnName("active_users");
-
-                    b.Property<string>("AvangateId")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("avangate_id")
-                        .HasDefaultValueSql("NULL");
-
                     b.Property<string>("Description")
                         .HasColumnType("character varying")
                         .HasColumnName("description");
@@ -74,12 +63,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("max_file_size")
                         .HasDefaultValueSql("'0'");
 
-                    b.Property<long>("MaxTotalSize")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("max_total_size")
-                        .HasDefaultValueSql("'0'");
-
                     b.Property<string>("Name")
                         .HasColumnType("character varying")
                         .HasColumnName("name");
@@ -89,6 +72,13 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("numeric(10,2)")
                         .HasColumnName("price")
                         .HasDefaultValueSql("0.00");
+
+                    b.Property<string>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("product_id")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<bool>("Visible")
                         .HasColumnType("boolean")
@@ -103,11 +93,8 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         new
                         {
                             Tenant = -1,
-                            ActiveUsers = 10000,
-                            AvangateId = "0",
-                            Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore",
-                            MaxFileSize = 102400L,
-                            MaxTotalSize = 10995116277760L,
+                            Features = "audit,ldap,sso,whitelabel,update,restore,admin:1,total_size:107374182400",
+                            MaxFileSize = 100L,
                             Name = "default",
                             Price = 0.00m,
                             Visible = false
@@ -174,9 +161,12 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("create_on")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer")
-                        .HasColumnName("quantity");
+                    b.Property<Guid>("CustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("uuid")
+                        .HasColumnName("customer_id")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<DateTime>("Stamp")
                         .HasColumnType("timestamp with time zone")
@@ -196,6 +186,30 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasDatabaseName("tenant_tenants_tariff");
 
                     b.ToTable("tenants_tariff", "onlyoffice");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbTariffRow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("Key")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quota")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tenant")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TariffRows");
                 });
 #pragma warning restore 612, 618
         }

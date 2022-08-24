@@ -34,16 +34,20 @@ internal class FileDataProvider
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly ICache _cache;
     private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
+    private readonly IDbContextFactory<CoreDbContext> _coreContextFactory;
     private readonly string _cacheKey;
 
     public FileDataProvider(
         ThumbnailSettings settings,
         ICache ascCache,
-        IDbContextFactory<FilesDbContext> dbContextFactory)
+        IDbContextFactory<FilesDbContext> dbContextFactory,
+        IDbContextFactory<CoreDbContext> coreContextFactory
+        )
     {
         _thumbnailSettings = settings;
         _cache = ascCache;
         _dbContextFactory = dbContextFactory;
+        _coreContextFactory = coreContextFactory;
         _cacheKey = "PremiumTenants";
     }
 
@@ -83,7 +87,7 @@ internal class FileDataProvider
         group by t.tenant
         */
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = _coreContextFactory.CreateDbContext();
         var search =
             filesDbContext.Tariffs
             .Join(filesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
