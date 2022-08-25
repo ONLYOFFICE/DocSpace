@@ -38,8 +38,6 @@ const CreateRoomEvent = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const onCreate = async (roomParams) => {
-    console.log(roomParams);
-
     const createRoomData = {
       roomType: roomParams.type,
       title: roomParams.title || t("Files:NewRoom"),

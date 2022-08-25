@@ -57,11 +57,7 @@ const EditRoomEvent = ({
     },
   };
 
-  console.log(item);
-
   const onSave = async (roomParams) => {
-    console.log(roomParams);
-
     const editRoomParams = {
       title: roomParams.title || t("Files:NewRoom"),
     };
