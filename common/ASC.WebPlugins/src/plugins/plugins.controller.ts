@@ -24,6 +24,7 @@ import {
 } from "src/guards/plugin.guard";
 
 import { PluginsService } from "./plugins.service";
+import fileFilter from "src/utils/file-filter";
 
 @Controller("/api/2.0/plugins")
 @UseGuards(PluginGuard)
@@ -47,16 +48,24 @@ export class PluginsController {
   @UseInterceptors(
     AnyFilesInterceptor({
       storage: storage,
+      fileFilter: fileFilter,
     })
   )
   async upload(
     @UploadedFiles() files: Express.Multer.File[]
   ): Promise<{ response: Plugin }> {
-    const plugin = await this.pluginsService.upload(
-      files[0].originalname,
-      files[0].filename
-    );
-    return { response: plugin };
+    try {
+      if (files[0]) {
+        const plugin = await this.pluginsService.upload(
+          files[0].originalname,
+          files[0].filename
+        );
+        return { response: plugin };
+      }
+    } catch (e) {
+      console.log(e);
+      return;
+    }
   }
 
   @Delete("delete/:id")
