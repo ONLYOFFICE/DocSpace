@@ -30,7 +30,7 @@ namespace ASC.People.Api;
 
 public class ThirdpartyController : ApiControllerBase
 {
-    private readonly IOptionsSnapshot<AccountLinker> _accountLinker;
+    private readonly AccountLinker _accountLinker;
     private readonly CookiesManager _cookiesManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
@@ -52,7 +52,7 @@ public class ThirdpartyController : ApiControllerBase
     private readonly StudioNotifyService _studioNotifyService;
 
     public ThirdpartyController(
-        IOptionsSnapshot<AccountLinker> accountLinker,
+        AccountLinker accountLinker,
         CookiesManager cookiesManager,
         CoreBaseSettings coreBaseSettings,
         DisplayUserSettingsHelper displayUserSettingsHelper,
@@ -104,7 +104,7 @@ public class ThirdpartyController : ApiControllerBase
 
         if (_authContext.IsAuthenticated)
         {
-            linkedAccounts = _accountLinker.Get("webstudio").GetLinkedProfiles(_authContext.CurrentAccount.ID.ToString());
+            linkedAccounts = _accountLinker.GetLinkedProfiles(_authContext.CurrentAccount.ID.ToString());
         }
 
         fromOnly = string.IsNullOrWhiteSpace(fromOnly) ? string.Empty : fromOnly.ToLower();
@@ -148,7 +148,7 @@ public class ThirdpartyController : ApiControllerBase
 
         if (string.IsNullOrEmpty(profile.AuthorizationError))
         {
-            GetLinker().AddLink(_securityContext.CurrentAccount.ID.ToString(), profile);
+            _accountLinker.AddLink(_securityContext.CurrentAccount.ID.ToString(), profile);
             _messageService.Send(MessageAction.UserLinkedSocialAccount, GetMeaningfulProviderName(profile.Provider));
         }
         else
@@ -204,7 +204,7 @@ public class ThirdpartyController : ApiControllerBase
                 SaveContactImage(userID, thirdPartyProfile.Avatar);
             }
 
-            GetLinker().AddLink(userID.ToString(), thirdPartyProfile);
+            _accountLinker.AddLink(userID.ToString(), thirdPartyProfile);
         }
         finally
         {
@@ -232,7 +232,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpDelete("thirdparty/unlinkaccount")]
     public void UnlinkAccount(string provider)
     {
-        GetLinker().RemoveProvider(_securityContext.CurrentAccount.ID.ToString(), provider);
+        _accountLinker.RemoveProvider(_securityContext.CurrentAccount.ID.ToString(), provider);
 
         _messageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
     }
@@ -260,11 +260,6 @@ public class ThirdpartyController : ApiControllerBase
         }
 
         return _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isVisitor, fromInviteLink);
-    }
-
-    private AccountLinker GetLinker()
-    {
-        return _accountLinker.Get("webstudio");
     }
 
     private void SaveContactImage(Guid userID, string url)
