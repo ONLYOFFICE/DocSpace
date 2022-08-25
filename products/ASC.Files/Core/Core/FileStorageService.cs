@@ -82,6 +82,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly EntryStatusManager _entryStatusManager;
     private readonly ILogger _logger;
     private readonly FileShareParamsHelper _fileShareParamsHelper;
+    private readonly EncryptionLoginProvider _encryptionLoginProvider;
 
     public FileStorageService(
         Global global,
@@ -132,7 +133,8 @@ public class FileStorageService<T> //: IFileStorageService
         IServiceScopeFactory serviceScopeFactory,
         ThirdPartySelector thirdPartySelector,
         ThumbnailSettings thumbnailSettings,
-        FileShareParamsHelper fileShareParamsHelper)
+        FileShareParamsHelper fileShareParamsHelper,
+        EncryptionLoginProvider encryptionLoginProvider)
     {
         _global = global;
         _globalStore = globalStore;
@@ -183,6 +185,7 @@ public class FileStorageService<T> //: IFileStorageService
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;
         _fileShareParamsHelper = fileShareParamsHelper;
+        _encryptionLoginProvider = encryptionLoginProvider;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -457,6 +460,22 @@ public class FileStorageService<T> //: IFileStorageService
         if (@private && (share == null || !share.Any()))
         {
             throw new ArgumentNullException(nameof(share));
+        }
+
+        if (@private)
+        {
+            var users = share.Select(s => s.ShareTo).ToList();
+            users.Add(_authContext.CurrentAccount.ID);
+            var keys = _encryptionLoginProvider.GetKeys(users);
+
+            foreach (var user in users)
+            {
+                if (!keys.ContainsKey(user))
+                {
+                    var userInfo = _userManager.GetUsers(user);
+                    throw new InvalidOperationException($"The user {userInfo.DisplayUserName(_displayUserSettingsHelper)} does not have an encryption key");
+                }
+            }
         }
 
         var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();

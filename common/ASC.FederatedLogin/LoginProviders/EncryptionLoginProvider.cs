@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using AutoMapper;
+
 namespace ASC.Web.Studio.Core;
 
 [Scope]
@@ -91,5 +93,31 @@ public class EncryptionLoginProvider
             _logger.ErrorWithException(message, ex);
             return null;
         }
+    }
+
+    public IDictionary<Guid, string> GetKeys(IEnumerable<Guid> usrsIds)
+    {
+        var linker = _snapshot.Get("webstudio");
+
+        var profiles = linker.GetLinkedProfiles(usrsIds.Select(id => id.ToString()), ProviderConstants.Encryption);
+        var keys = new Dictionary<Guid, string>(profiles.Count);
+
+        foreach (var profilePair in profiles)
+        {
+            var userId = new Guid(profilePair.Key);
+
+            try
+            {
+                var key = _instanceCrypto.Decrypt(profilePair.Value.Name);
+                keys.Add(new Guid(profilePair.Key), key);
+            }
+            catch (Exception ex)
+            {
+                var message = string.Format("Can not decrypt {0} keys for {1}", ProviderConstants.Encryption, userId);
+                _logger.ErrorWithException(message, ex);
+            }
+        }
+
+        return keys;
     }
 }
