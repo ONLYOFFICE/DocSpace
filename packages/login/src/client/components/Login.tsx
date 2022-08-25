@@ -20,6 +20,7 @@ import Toast from "@docspace/components/toast";
 import LoginForm from "./sub-components/LoginForm";
 import MoreLoginModal from "./sub-components/more-login";
 import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dialog";
+import FormWrapper from "@docspace/components/form-wrapper";
 
 const { proxyURL } = AppServerConfig;
 const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
@@ -153,7 +154,11 @@ const Login: React.FC<ILoginProps> = ({
   };
 
   return (
-    <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktopEditor}>
+    <LoginFormWrapper
+      enabledJoin={enabledJoin}
+      isDesktop={isDesktopEditor}
+      className="with-background-pattern"
+    >
       <LoginContainer>
         <Logo className="logo-wrapper" />
         <Text
@@ -164,40 +169,42 @@ const Login: React.FC<ILoginProps> = ({
         >
           {greetingTitle}
         </Text>
-        {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
-        {oauthDataExists() && (
-          <>
-            <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-            {providers && providers.length > 2 && (
-              <Link
-                isHovered
-                type="action"
-                fontSize="13px"
-                fontWeight="600"
-                color="#3B72A7"
-                className="more-label"
-                onClick={moreAuthOpen}
-              >
-                {t("Common:ShowMore")}
-              </Link>
-            )}
-          </>
-        )}
-        {(oauthDataExists() || ssoExists()) && (
-          <div className="line">
-            <Text color="#A3A9AE" className="or-label">
-              {t("Or")}
-            </Text>
-          </div>
-        )}
-        <LoginForm
-          isDesktop={isDesktopEditor}
-          isLoading={isLoading}
-          hashSettings={portalSettings.passwordHash}
-          setIsLoading={setIsLoading}
-          onRecoverDialogVisible={onRecoverDialogVisible}
-          match={match}
-        />
+        <FormWrapper>
+          {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
+          {oauthDataExists() && (
+            <>
+              <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+              {providers && providers.length > 2 && (
+                <Link
+                  isHovered
+                  type="action"
+                  fontSize="13px"
+                  fontWeight="600"
+                  color="#3B72A7"
+                  className="more-label"
+                  onClick={moreAuthOpen}
+                >
+                  {t("Common:ShowMore")}
+                </Link>
+              )}
+            </>
+          )}
+          {(oauthDataExists() || ssoExists()) && (
+            <div className="line">
+              <Text color="#A3A9AE" className="or-label">
+                {t("Or")}
+              </Text>
+            </div>
+          )}
+          <LoginForm
+            isDesktop={isDesktopEditor}
+            isLoading={isLoading}
+            hashSettings={portalSettings.passwordHash}
+            setIsLoading={setIsLoading}
+            onRecoverDialogVisible={onRecoverDialogVisible}
+            match={match}
+          />
+        </FormWrapper>
         <Toast />
         <MoreLoginModal
           visible={moreAuthVisible}
@@ -210,7 +217,7 @@ const Login: React.FC<ILoginProps> = ({
 
         <RecoverAccessModalDialog
           visible={recoverDialogVisible}
-          onClose={() => setRecoverDialogVisible(false)}
+          onClose={onRecoverDialogVisible}
         />
       </LoginContainer>
     </LoginFormWrapper>
