@@ -28,7 +28,7 @@ const HeaderContainer = styled.div`
   max-width: calc(100vw - 32px);
 
   h1 {
-    line-height: 53px;
+    line-height: 69px;
   }
 
   .action-wrapper {
@@ -212,6 +212,7 @@ class SectionHeaderContent extends React.Component {
   render() {
     const {
       t,
+      tReady,
       addUsers,
       isHeaderIndeterminate,
       isHeaderChecked,
@@ -247,7 +248,7 @@ class SectionHeaderContent extends React.Component {
       location.pathname.includes("common/customization") ||
       location.pathname === "/portal-settings";
 
-    const showLoader = commonSettings ? !isLoadedPage : false;
+    const showLoader = commonSettings ? !isLoadedPage : !tReady;
 
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>

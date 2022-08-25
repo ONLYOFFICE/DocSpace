@@ -478,7 +478,7 @@ const Dark = {
     testColor: grayMaxLight,
     textDisableColor: "#5c5c5c",
 
-    marginRight: "4px",
+    marginRight: "8px",
 
     background: "#292929",
     disableBackground: "#646464",
@@ -968,8 +968,8 @@ const Dark = {
       iconButton: {
         margin: "0",
         padding: "0px 8px",
-        width: "13px",
-        height: "13px",
+        width: "12px",
+        height: "12px",
       },
     },
 
@@ -2709,6 +2709,12 @@ const Dark = {
       integration: {
         separatorBorder: "1px solid #474747",
         linkColor: "#E06A1B",
+
+        sso: {
+          toggleContentBackground: "#474747",
+          iconButton: white,
+          iconButtonDisabled: "#333",
+        },
       },
 
       backup: {
@@ -2756,6 +2762,13 @@ const Dark = {
     key: {
       color: "#C4C4C4",
     },
+  },
+
+  tag: {
+    background: "#3D3D3D",
+    hoverBackground: "#333333",
+    disabledBackground: "#858585",
+    newTagBackground: "#333333",
   },
 };
 

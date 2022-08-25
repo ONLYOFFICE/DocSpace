@@ -35,6 +35,16 @@ public enum RoomType
     CustomRoom = 5
 }
 
+public enum RoomFilterType
+{
+    FillingFormsRoomOnly = 1,
+    EditingRoomOnly = 2,
+    ReviewRoomOnly = 3,
+    ReadOnlyRoomOnly = 4,
+    CustomRoomOnly = 5,
+    FoldersOnly = 6,
+}
+
 public class CreateRoomRequestDto
 {
     public string Title { get; set; }

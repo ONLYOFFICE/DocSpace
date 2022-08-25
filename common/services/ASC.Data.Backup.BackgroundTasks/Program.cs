@@ -63,7 +63,7 @@ eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequestedIntegrationEven
 eventBus.Subscribe<BackupRestoreRequestIntegrationEvent, BackupRestoreRequestedIntegrationEventHandler>();
 eventBus.Subscribe<IntegrationEvent, BackupDeleteScheldureRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 
 public partial class Program

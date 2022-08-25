@@ -29,7 +29,7 @@ namespace ASC.Web.Api.ApiModel.ResponseDto;
 public class SecurityDto
 {
     public string WebItemId { get; set; }
-    public IEnumerable<EmployeeDto> Users { get; set; }
+    public List<EmployeeDto> Users { get; set; }
     public IEnumerable<GroupSummaryDto> Groups { get; set; }
     public bool Enabled { get; set; }
     public bool IsSubItem { get; set; }

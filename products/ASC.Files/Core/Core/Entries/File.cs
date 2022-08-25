@@ -45,7 +45,7 @@ public enum FileStatus
 [Transient]
 [Serializable]
 [DebuggerDisplay("{Title} ({Id} v{Version})")]
-public class File<T> : FileEntry<T>, IFileEntry<T>, IMapFrom<DbFileQuery>
+public class File<T> : FileEntry<T>, IFileEntry<T>
 {
     private FileStatus _status;
 
@@ -222,17 +222,6 @@ public class File<T> : FileEntry<T>, IFileEntry<T>, IMapFrom<DbFileQuery>
     }
 
     public object NativeAccessor { get; set; }
-
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<DbFileQuery, File<int>>()
-            .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.CreateOn))
-            .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.ModifiedOn))
-            .IncludeMembers(r => r.File)
-            .ConstructUsingServiceLocator();
-
-        profile.CreateMap<DbFile, File<int>>();
-    }
 }
 
 

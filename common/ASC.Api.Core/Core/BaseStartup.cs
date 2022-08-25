@@ -24,6 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.IdentityModel.Tokens.Jwt;
+
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Net.Http.Headers;
+
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core;
@@ -65,6 +70,7 @@ public abstract class BaseStartup
         services.AddBaseDbContextPool<TenantDbContext>();
         services.AddBaseDbContextPool<UserDbContext>();
         services.AddBaseDbContextPool<TelegramDbContext>();
+        services.AddBaseDbContextPool<FirebaseDbContext>();
         services.AddBaseDbContextPool<CustomDbContext>();
         services.AddBaseDbContextPool<WebstudioDbContext>();
         services.AddBaseDbContextPool<InstanceRegistrationContext>();
@@ -102,13 +108,13 @@ public abstract class BaseStartup
         services.AddSingleton(jsonOptions);
 
         DIHelper.AddControllers();
-        DIHelper.TryAdd<DisposeMiddleware>();
         DIHelper.TryAdd<CultureMiddleware>();
         DIHelper.TryAdd<IpSecurityFilter>();
         DIHelper.TryAdd<PaymentFilter>();
         DIHelper.TryAdd<ProductSecurityFilter>();
         DIHelper.TryAdd<TenantStatusFilter>();
         DIHelper.TryAdd<ConfirmAuthHandler>();
+        DIHelper.TryAdd<BasicAuthHandler>();
         DIHelper.TryAdd<CookieAuthHandler>();
         DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
@@ -139,23 +145,90 @@ public abstract class BaseStartup
             config.Filters.Add(new TypeFilterAttribute(typeof(ProductSecurityFilter)));
             config.Filters.Add(new CustomResponseFilterAttribute());
             config.Filters.Add(new CustomExceptionFilterAttribute());
-            config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
             config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
+            config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
+
 
             config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
             config.OutputFormatters.Add(new XmlOutputFormatter());
         });
 
-
-        var authBuilder = services.AddAuthentication("cookie")
-            .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
-
-        if (ConfirmAddScheme)
+        var authBuilder = services.AddAuthentication(options =>
         {
-            authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
-        }
+            options.DefaultScheme = "MultiAuthSchemes";
+            options.DefaultChallengeScheme = "MultiAuthSchemes";
+        }).AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>(CookieAuthenticationDefaults.AuthenticationScheme, a => { })
+          .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("Basic", a => { })
+          .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { })
+          .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = _configuration["core:oidc:authority"];
+                options.IncludeErrorDetails = true;
 
-        services.AddAutoMapper(typeof(MappingProfile));
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = ctx =>
+                    {
+                        using var scope = ctx.HttpContext.RequestServices.CreateScope();
+
+                        var securityContext = scope.ServiceProvider.GetService<ASC.Core.SecurityContext>();
+
+                        var claimUserId = ctx.Principal.FindFirstValue("userId");
+
+                        if (String.IsNullOrEmpty(claimUserId))
+                        {
+                            throw new Exception("Claim 'UserId' is not present in claim list");
+                        }
+
+                        var userId = new Guid(claimUserId);
+
+                        securityContext.AuthenticateMeWithoutCookie(userId, ctx.Principal.Claims.ToList());
+
+                        return Task.CompletedTask;
+                    }
+                };
+            })
+          .AddPolicyScheme("MultiAuthSchemes", JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+
+                options.ForwardDefaultSelector = context =>
+                {
+                    var authorizationHeader = context.Request.Headers[HeaderNames.Authorization].FirstOrDefault();
+
+                    if (String.IsNullOrEmpty(authorizationHeader)) return CookieAuthenticationDefaults.AuthenticationScheme;
+
+                    if (authorizationHeader.StartsWith("Basic ")) return "Basic";
+
+                    if (authorizationHeader.StartsWith("Bearer "))
+                    {
+                        var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+                        var jwtHandler = new JwtSecurityTokenHandler();
+
+                        return (jwtHandler.CanReadToken(token) && jwtHandler.ReadJwtToken(token).Issuer.Equals(_configuration["core:oidc:authority"]))
+                            ? JwtBearerDefaults.AuthenticationScheme : CookieAuthenticationDefaults.AuthenticationScheme;
+                    }
+
+                    return CookieAuthenticationDefaults.AuthenticationScheme;
+                };
+            });
+
+        services.AddAutoMapper(GetAutoMapperProfileAssemblies());
+
+        if (!_hostEnvironment.IsDevelopment())
+        {
+            services.AddStartupTask<WarmupServicesStartupTask>()
+                    .TryAddSingleton(services);
+        }
+    }
+
+    private IEnumerable<Assembly> GetAutoMapperProfileAssemblies()
+    {
+        return AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name.StartsWith("ASC."));
     }
 
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -177,8 +250,6 @@ public abstract class BaseStartup
         app.UseAuthorization();
 
         app.UseCultureMiddleware();
-
-        app.UseDisposeMiddleware();
 
         app.UseEndpoints(endpoints =>
         {

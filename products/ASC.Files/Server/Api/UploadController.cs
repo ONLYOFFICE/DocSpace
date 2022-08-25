@@ -29,14 +29,22 @@ namespace ASC.Files.Api;
 [ConstraintRoute("int")]
 public class UploadControllerInternal : UploadController<int>
 {
-    public UploadControllerInternal(UploadControllerHelper<int> filesControllerHelper) : base(filesControllerHelper)
+    public UploadControllerInternal(
+        UploadControllerHelper<int> filesControllerHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(filesControllerHelper,
+        folderDtoHelper,
+        fileDtoHelper)
     {
     }
 }
 
 public class UploadControllerThirdparty : UploadController<string>
 {
-    public UploadControllerThirdparty(UploadControllerHelper<string> filesControllerHelper) : base(filesControllerHelper)
+    public UploadControllerThirdparty(
+        UploadControllerHelper<string> filesControllerHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(filesControllerHelper, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -45,7 +53,9 @@ public abstract class UploadController<T> : ApiControllerBase
 {
     private readonly UploadControllerHelper<T> _filesControllerHelper;
 
-    public UploadController(UploadControllerHelper<T> filesControllerHelper)
+    public UploadController(UploadControllerHelper<T> filesControllerHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _filesControllerHelper = filesControllerHelper;
     }
@@ -147,7 +157,9 @@ public class UploadControllerCommon : ApiControllerBase
 
     public UploadControllerCommon(
         GlobalFolderHelper globalFolderHelper,
-        UploadControllerHelper<int> filesControllerHelper)
+        UploadControllerHelper<int> filesControllerHelper,
+        FolderDtoHelper folderDtoHelper,
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _globalFolderHelper = globalFolderHelper;
         _filesControllerHelper = filesControllerHelper;

@@ -91,7 +91,7 @@ public class AbstractDao
     {
         var tenantId = TenantID;
 
-        return set.AsQueryable().Where(r => r.TenantId == tenantId);
+        return set.Where(r => r.TenantId == tenantId);
     }
 
     protected internal IQueryable<DbFile> GetFileQuery(FilesDbContext filesDbContext, Expression<Func<DbFile, bool>> where)
@@ -104,16 +104,14 @@ public class AbstractDao
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var folders = await filesDbContext.Folders
-            .AsQueryable()
             .Where(r => r.TenantId == TenantID)
-            .Where(r => filesDbContext.Tree.AsQueryable().Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
+            .Where(r => filesDbContext.Tree.Where(r => r.FolderId == folderId).Any(a => r.ParentId == r.Id))
             .ToListAsync();
 
         foreach (var f in folders)
         {
             f.FilesCount = await
                 filesDbContext.Files
-                .AsQueryable()
                 .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Where(r => r.file.TenantId == f.TenantId)
                 .Where(r => r.tree.ParentId == f.Id)
@@ -159,6 +157,7 @@ public class AbstractDao
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             result = await Query(filesDbContext.ThirdpartyIdMapping)
+                .AsNoTracking()
                 .Where(r => r.HashId == id.ToString())
                 .Select(r => r.Id)
                 .FirstOrDefaultAsync();
@@ -175,6 +174,7 @@ public class AbstractDao
 
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             await filesDbContext.AddOrUpdateAsync(r => r.ThirdpartyIdMapping, newItem);
+            await filesDbContext.SaveChangesAsync();
         }
 
         return result;

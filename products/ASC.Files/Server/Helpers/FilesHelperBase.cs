@@ -99,27 +99,4 @@ public abstract class FilesHelperBase<T>
 
         return await _fileDtoHelper.GetAsync(file);
     }
-
-    public async Task<FileEntryDto> GetFileEntryWrapperAsync(FileEntry r)
-    {
-        FileEntryDto wrapper = null;
-        if (r is Folder<int> fol1)
-        {
-            wrapper = await _folderDtoHelper.GetAsync(fol1);
-        }
-        else if (r is Folder<string> fol2)
-        {
-            wrapper = await _folderDtoHelper.GetAsync(fol2);
-        }
-        else if (r is File<int> file1)
-        {
-            wrapper = await _fileDtoHelper.GetAsync(file1);
-        }
-        else if (r is File<string> file2)
-        {
-            wrapper = await _fileDtoHelper.GetAsync(file2);
-        }
-
-        return wrapper;
-    }
 }
