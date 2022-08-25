@@ -77,12 +77,19 @@ const Login: React.FC<ILoginProps> = ({
   };
 
   const onSocialButtonClick = useCallback(
-    (e: React.SyntheticEvent<EventTarget>) => {
-      if (!(e.target instanceof HTMLButtonElement)) {
-        return;
+    (e: HTMLElementEvent<HTMLButtonElement | HTMLElement>) => {
+      const { target } = e;
+      let targetElement = target;
+
+      if (
+        !(targetElement instanceof HTMLButtonElement) &&
+        target.parentElement
+      ) {
+        targetElement = target.parentElement;
+        console.log(targetElement);
       }
-      const providerName = e.target.dataset.providername;
-      const url = e.target.dataset.url || "";
+      const providerName = targetElement.dataset.providername;
+      const url = targetElement.dataset.url || "";
 
       try {
         const tokenGetterWin = isDesktopEditor

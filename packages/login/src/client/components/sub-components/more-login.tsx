@@ -51,7 +51,9 @@ interface IMoreLoginNodalProps {
   visible: boolean;
   onClose: VoidFunction;
   providers: ProvidersType;
-  onSocialLoginClick: (e: React.SyntheticEvent<EventTarget>) => void;
+  onSocialLoginClick: (
+    e: HTMLElementEvent<HTMLButtonElement | HTMLElement>
+  ) => void;
   ssoLabel: string;
   ssoUrl: string;
 }

@@ -104,4 +104,8 @@ declare global {
       [Login: string]: { [key: any]: string };
     };
   }
+
+  type HTMLElementEvent<T extends HTMLElement> = Event & {
+    target: T;
+  };
 }
