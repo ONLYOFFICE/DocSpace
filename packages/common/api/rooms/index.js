@@ -176,7 +176,6 @@ export function uploadRoomLogo(data) {
   };
 
   return request(options).then((res) => {
-    console.log(res);
     return res;
   });
 }
