@@ -27,7 +27,6 @@ Depends: {{product}}-api (= {{package_header_tag_version}}),
          {{product}}-studio (= {{package_header_tag_version}}),
          {{product}}-studio-notify (= {{package_header_tag_version}}),
          {{product}}-telegram-service (= {{package_header_tag_version}}),
-         {{product}}-thumbnails (= {{package_header_tag_version}}),
          {{product}}-urlshortener (= {{package_header_tag_version}}),
          {{product}}-webhooks-service (= {{package_header_tag_version}})
 Description: Description
@@ -37,23 +36,7 @@ Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
-Package: {{product}}-api-system
-Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
 Package: {{product}}-backup
-Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: {{product}}-storage-encryption
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
@@ -70,14 +53,6 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
 Description: Description
 
 Package: {{product}}-files-services
-Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: {{product}}-storage-migration
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
@@ -121,14 +96,6 @@ Package: {{product}}-telegram-service
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: {{product}}-thumbnails
-Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=14),
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -214,6 +181,14 @@ Package: {{product}}-webhooks-service
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
+Package: {{product}}-doceditor
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ nodejs (>=14),
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
