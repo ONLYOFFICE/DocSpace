@@ -95,9 +95,7 @@ public class EncryptionLoginProvider
 
     public IDictionary<Guid, string> GetKeys(IEnumerable<Guid> usrsIds)
     {
-        var linker = _snapshot.Get("webstudio");
-
-        var profiles = linker.GetLinkedProfiles(usrsIds.Select(id => id.ToString()), ProviderConstants.Encryption);
+        var profiles = _accountLinker.GetLinkedProfiles(usrsIds.Select(id => id.ToString()), ProviderConstants.Encryption);
         var keys = new Dictionary<Guid, string>(profiles.Count);
 
         foreach (var profilePair in profiles)
