@@ -1,1 +1,1 @@
-src/var/www/services/ASC.Data.Backup/service/* var/www/{{product}}/services/ASC.Data.Backup
+../../../publish/services/ASC.Data.Backup/service/* var/www/{{product}}/services/ASC.Data.Backup

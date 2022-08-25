@@ -1,1 +1,1 @@
-src/var/www/services/ASC.UrlShortener/service/*         var/www/{{product}}/services/ASC.UrlShortener
+../../../publish/services/ASC.UrlShortener/service/*         var/www/{{product}}/services/ASC.UrlShortener

@@ -10,14 +10,12 @@ export DH_OPTIONS=-v
 
 PRODUCT=appserver
 CURRENT_PATH=${CURDIR}
-BUILD_PATH=var/www
 SRC_PATH=$(shell cd ../../../; pwd)
 SCRIPT_PATH=build/install/common
 
 override_dh_auto_clean:
 	@echo "RULES.$@"
 	dh_testdir 
-	rm -rf ${CURRENT_PATH}/src
 	rm -rf ${CURRENT_PATH}/debian/*.service
 	rm -rf ${SRC_PATH}/build/install/${PRODUCT}*
 
@@ -27,12 +25,11 @@ override_dh_auto_configure:
 	dh_auto_configure
 
 override_dh_auto_build:
-	mkdir -p ${CURRENT_PATH}/src/${BUILD_PATH}
 	cd ${SRC_PATH}/${SCRIPT_PATH} \
 	bash systemd/build.sh -bp "${CURRENT_PATH}/debian/"; \
 	bash build-frontend.sh -sp ${SRC_PATH}; \
 	bash build-backend.sh -sp ${SRC_PATH}; \
-	bash publish-backend.sh -sp ${SRC_PATH} -bp ${CURRENT_PATH}/src/${BUILD_PATH}
+	bash publish-backend.sh -sp ${SRC_PATH}
 
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/*.conf 
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/includes/*.conf

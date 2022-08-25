@@ -1,1 +1,1 @@
-src/var/www/services/ASC.Webhooks.Service/service/*         var/www/{{product}}/services/ASC.Webhooks.Service
+../../../publish/services/ASC.Webhooks.Service/service/*         var/www/{{product}}/services/ASC.Webhooks.Service

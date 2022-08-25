@@ -1,1 +1,1 @@
-src/var/www/services/ASC.Socket.IO/service/*        var/www/{{product}}/services/ASC.Socket.IO
+../../../publish/services/ASC.Socket.IO/service/*        var/www/{{product}}/services/ASC.Socket.IO
