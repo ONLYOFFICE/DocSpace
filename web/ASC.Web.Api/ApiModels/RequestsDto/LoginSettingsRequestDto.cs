@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
-public class LoginSettingsRequestDto : IMapFrom<LoginSettings>
+public class LoginSettingsRequestDto
 {
     public int AttemptCount { get; set; }
 

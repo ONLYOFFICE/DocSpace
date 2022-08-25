@@ -371,7 +371,7 @@ public class AuthenticationController : ControllerBase
                 var blockTime = loginSettings.BlockTime;
                 var checkPeriod = loginSettings.CheckPeriod;
 
-                var loginLog = _cache.Get<List<DateTime>>("loginsec/" + inDto.UserName + ip);
+                var loginLog = _cache.Get<List<DateTime>>("loginsec/" + inDto.UserName + ip) ?? new List<DateTime>();
                 LoginSettings.UpdateLogWithNew(loginLog, checkPeriod, DateTime.UtcNow);
 
                 if (loginLog.Count > attemptsCount && !SetupInfo.IsSecretEmail(inDto.UserName))

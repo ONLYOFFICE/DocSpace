@@ -300,6 +300,7 @@ public class SecurityController : BaseSettingsController
 
         var attemptsCount = loginSettingsRequestDto.AttemptCount;
         var checkPeriod = loginSettingsRequestDto.CheckPeriod;
+        var blockTime = loginSettingsRequestDto.BlockTime;
 
         if (attemptsCount < 1)
         {
@@ -310,7 +311,12 @@ public class SecurityController : BaseSettingsController
             throw new ArgumentException("CheckPeriod");
         }
 
-        var settings = _mapper.Map<LoginSettingsRequestDto, LoginSettings>(loginSettingsRequestDto);
+        var settings = new LoginSettings {
+            AttemptCount = attemptsCount, 
+            CheckPeriod = checkPeriod, 
+            BlockTime = blockTime 
+        };
+
         _settingsManager.Save(settings);
 
         return Resource.SuccessfullySaveSettingsMessage;
