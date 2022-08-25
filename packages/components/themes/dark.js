@@ -2757,9 +2757,11 @@ const Dark = {
   },
 
   tag: {
+    color: white,
     background: "#3D3D3D",
     hoverBackground: "#333333",
     disabledBackground: "#858585",
+    defaultTagColor: "#A3A9AE",
     newTagBackground: "#333333",
   },
 };

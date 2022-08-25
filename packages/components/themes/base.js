@@ -2747,9 +2747,11 @@ const Base = {
   },
 
   tag: {
+    color: black,
     background: "#f3f4f4",
     hoverBackground: "#eceef1",
     disabledBackground: "#f8f9f9",
+    defaultTagColor: "#A3A9AE",
     newTagBackground: "#eceef1",
   },
 };
