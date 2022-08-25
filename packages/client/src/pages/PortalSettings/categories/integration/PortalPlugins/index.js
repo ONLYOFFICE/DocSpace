@@ -8,6 +8,8 @@ import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
 import api from "@docspace/common/api";
 
+import toastr from "client/toastr";
+
 import EmptyFolderContainer from "SRC_DIR/components/EmptyContainer/EmptyContainer";
 import { initPlugin } from "SRC_DIR/helpers/plugins";
 
@@ -64,6 +66,8 @@ const PortalPlugins = ({
 
       try {
         const plugin = await api.plugins.uploadPlugin(formData);
+
+        if (plugin.error) return toastr.error(plugin.error);
 
         if (plugin) {
           initPlugin(plugin, addPlugin);
