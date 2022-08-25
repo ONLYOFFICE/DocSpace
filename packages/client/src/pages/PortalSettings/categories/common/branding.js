@@ -31,17 +31,18 @@ const StyledComponent = styled.div`
 
   .settings-block {
     max-width: 433px;
-    padding-bottom: 32px;
-  }
-
-  .save-cancel-buttons {
-    padding-bottom: 24px;
   }
 
   .section-description {
     color: #657077;
     line-height: 20px;
     padding-bottom: 20px;
+  }
+
+  hr {
+    margin: 24px 0;
+    border: none;
+    border-top: 1px solid #eceef1;
   }
 `;
 
@@ -51,6 +52,7 @@ const Branding = (props) => {
   return (
     <StyledComponent>
       <Whitelabel />
+      <hr />
       <div className="section-description">
         Specify your company information, add links to external resources, and
         email addresses displayed within the online office interface.

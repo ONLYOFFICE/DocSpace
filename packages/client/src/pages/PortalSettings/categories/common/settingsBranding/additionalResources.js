@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
@@ -7,13 +7,23 @@ import styled from "styled-components";
 import Checkbox from "@docspace/components/checkbox";
 
 const StyledComponent = styled.div`
-  .branding-checkbox {
-    padding-bottom: 16px;
+  margin-top: 40px;
+
+  .branding-checkboxs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
   }
 `;
 
 const AdditionalResources = (props) => {
   const { t } = props;
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [showSample, setShowSample] = useState(false);
+  const [showVideoGuides, setShowVideoGuides] = useState(false);
+  const [showHelpCenter, setShowHelpCenter] = useState(false);
+
   return (
     <StyledComponent>
       <div className="header">Additional resources</div>
@@ -21,24 +31,29 @@ const AdditionalResources = (props) => {
         Choose whether you want to display links to additional resources in
         Portal modules and sample files in Documents module.
       </div>
-      <div className="settings-block">
+      <div className="branding-checkboxs">
         <Checkbox
-          className="branding-checkbox"
-          label="Show Feedback & Support link"
-        />
-        <Checkbox className="branding-checkbox" label="Show sample documents" />
-        <Checkbox
-          className="branding-checkbox"
-          label="Show link to Video Guides"
+          label={t("ShowFeedbackAndSupport")}
+          isChecked={showFeedback}
+          onChange={() => setShowFeedback(!showFeedback)}
         />
         <Checkbox
-          className="branding-checkbox"
-          label="Show link to Help Center"
+          label={t("ShowSampleDocuments")}
+          isChecked={showSample}
+          onChange={() => setShowSample(!showSample)}
+        />
+        <Checkbox
+          label={t("ShowVideoGuides")}
+          isChecked={showVideoGuides}
+          onChange={() => setShowVideoGuides(!showVideoGuides)}
+        />
+        <Checkbox
+          label={t("ShowHelpCenter")}
+          isChecked={showHelpCenter}
+          onChange={() => setShowHelpCenter(!showHelpCenter)}
         />
       </div>
       <SaveCancelButtons
-        id="buttonsCompanyInfoSettings"
-        className="save-cancel-buttons"
         // onSaveClick={onSavePortalRename}
         // onCancelClick={onCancelPortalName}
         saveButtonLabel={t("Common:SaveButton")}
