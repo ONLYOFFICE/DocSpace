@@ -27,6 +27,7 @@ const InputParam = ({
   return (
     <StyledInputParam>
       <Label
+        title={title}
         className="input-label"
         display="display"
         htmlFor={id}
