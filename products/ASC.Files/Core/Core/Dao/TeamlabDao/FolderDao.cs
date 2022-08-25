@@ -176,7 +176,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var filter = GetRoomTypeFilter(filterType);
 
         var searchByTags = tags != null && tags.Any() && !withoutTags;
-        var searchByTypes = filterType != FilterType.None;
+        var searchByTypes = filterType != FilterType.None && filterType != FilterType.FoldersOnly;
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = GetFolderQuery(filesDbContext, r => r.ParentId == parentId).AsNoTracking();
@@ -206,7 +206,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var filter = GetRoomTypeFilter(filterType);
 
         var searchByTags = tags != null && tags.Any() && !withoutTags;
-        var searchByTypes = filterType != FilterType.None;
+        var searchByTypes = filterType != FilterType.None && filterType != FilterType.FoldersOnly;
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = GetFolderQuery(filesDbContext, f => roomsIds.Contains(f.Id)).AsNoTracking();

@@ -127,4 +127,25 @@ $Message</value>
   <data name="patterns" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>patterns.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Access granted to document: $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>All signers completed $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Sign status changed</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Mentioned in document</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Mailing is complete.</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Access granted to the encrypted document: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Access granted to folder: $DocumentTitle</value>
+  </data>
 </root>

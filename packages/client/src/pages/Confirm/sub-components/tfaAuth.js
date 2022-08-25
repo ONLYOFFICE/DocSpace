@@ -16,6 +16,8 @@ import {
   smallTablet,
   tablet,
 } from "@docspace/components/utils/device";
+import FormWrapper from "@docspace/components/form-wrapper";
+import DocspaceLogo from "../../../DocspaceLogo";
 
 const StyledForm = styled(Box)`
   margin: 63px auto;
@@ -34,19 +36,28 @@ const StyledForm = styled(Box)`
   }
 
   @media ${hugeMobile} {
-    margin: 72px 8px auto 8px;
-    padding: 16px;
+    margin: 32px 8px auto 8px;
+    padding-left: 8px;
     width: 100%;
   }
 
+  .docspace-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 64px;
+  }
+
   .app-code-wrapper {
-    @media ${tablet} {
-      flex-direction: column;
-    }
+    width: 100%;
   }
 
   .app-code-text {
-    margin-bottom: 14px;
+    margin-bottom: 8px;
+  }
+
+  .app-code-continue-btn {
+    margin-top: 8px;
   }
 `;
 
@@ -82,65 +93,66 @@ const TfaAuthForm = withLoader((props) => {
     if (target.code === "Enter" || target.code === "NumpadEnter") onSubmit();
   };
 
-  const width = window.innerWidth;
-
   return (
     <StyledForm className="app-code-container">
-      <Box className="app-code-description" marginProp="0 0 32px 0">
-        <Text isBold fontSize="14px" className="app-code-text">
-          {t("EnterAppCodeTitle")}
-        </Text>
-        <Text>{t("EnterAppCodeDescription")}</Text>
-      </Box>
-      <Box
-        displayProp="flex"
-        flexDirection="column"
-        className="app-code-wrapper"
-      >
-        <Box className="app-code-input">
-          <FieldContainer
-            labelVisible={false}
-            hasError={error ? true : false}
-            errorMessage={error}
-          >
-            <TextInput
-              id="code"
-              name="code"
-              type="text"
-              size="huge"
-              scale
-              isAutoFocussed
-              tabIndex={1}
-              placeholder={t("EnterCodePlaceholder")}
-              isDisabled={isLoading}
-              maxLength={6}
-              onChange={(e) => {
-                setCode(e.target.value);
-                setError("");
-              }}
-              value={code}
+      <DocspaceLogo className="docspace-logo" />
+      <FormWrapper>
+        <Box className="app-code-description" marginProp="0 0 32px 0">
+          <Text isBold fontSize="14px" className="app-code-text">
+            {t("EnterAppCodeTitle")}
+          </Text>
+          <Text>{t("EnterAppCodeDescription")}</Text>
+        </Box>
+        <Box
+          displayProp="flex"
+          flexDirection="column"
+          className="app-code-wrapper"
+        >
+          <Box className="app-code-input">
+            <FieldContainer
+              labelVisible={false}
               hasError={error ? true : false}
-              onKeyDown={onKeyPress}
+              errorMessage={error}
+            >
+              <TextInput
+                id="code"
+                name="code"
+                type="text"
+                size="huge"
+                scale
+                isAutoFocussed
+                tabIndex={1}
+                placeholder={t("EnterCodePlaceholder")}
+                isDisabled={isLoading}
+                maxLength={6}
+                onChange={(e) => {
+                  setCode(e.target.value);
+                  setError("");
+                }}
+                value={code}
+                hasError={error ? true : false}
+                onKeyDown={onKeyPress}
+              />
+            </FieldContainer>
+          </Box>
+          <Box className="app-code-continue-btn">
+            <Button
+              scale
+              primary
+              size="medium"
+              tabIndex={3}
+              label={
+                isLoading
+                  ? t("Common:LoadingProcessing")
+                  : t("Common:ContinueButton")
+              }
+              isDisabled={!code.length || isLoading}
+              isLoading={isLoading}
+              onClick={onSubmit}
             />
-          </FieldContainer>
+          </Box>
         </Box>
-        <Box className="app-code-continue-btn">
-          <Button
-            scale
-            primary
-            size="medium"
-            tabIndex={3}
-            label={
-              isLoading
-                ? t("Common:LoadingProcessing")
-                : t("Common:ContinueButton")
-            }
-            isDisabled={!code.length || isLoading}
-            isLoading={isLoading}
-            onClick={onSubmit}
-          />
-        </Box>
-      </Box>
+      </FormWrapper>
     </StyledForm>
   );
 });
