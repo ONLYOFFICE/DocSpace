@@ -1,9 +1,11 @@
 @echo off
 
-PUSHD %~dp0..\..
-setlocal EnableDelayedExpansion
+PUSHD %~dp0..
+call runasadmin.bat "%~dpnx0"
 
 if %errorlevel% == 0 (
+	PUSHD %~dp0..\..
+	setlocal EnableDelayedExpansion
 	for /R "build\run\" %%f in (*.bat) do (
 		call build\run\%%~nxf
 		echo service create "Onlyoffice%%~nf"

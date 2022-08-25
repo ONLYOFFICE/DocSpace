@@ -24,29 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Api.Core.Middleware;
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-public class DisposeMiddleware
+public class WebhooksConfigDto : IMapFrom<WebhooksConfig>
 {
-    private readonly RequestDelegate _next;
-
-    public DisposeMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
-    public async Task Invoke(HttpContext context)
-    {
-        context.Response.RegisterForDispose(new DisposableHttpContext(context));
-
-        await _next.Invoke(context);
-    }
-}
-
-public static class DisposeMiddlewareExtensions
-{
-    public static IApplicationBuilder UseDisposeMiddleware(this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<DisposeMiddleware>();
-    }
+    public string Uri { get; set; }
+    public string SecretKey { get; set; }
+    public bool Enabled { get; set; }
 }

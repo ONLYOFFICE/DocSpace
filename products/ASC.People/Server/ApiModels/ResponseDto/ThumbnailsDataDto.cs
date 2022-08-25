@@ -28,17 +28,20 @@ namespace ASC.People.ApiModels.ResponseDto;
 
 public class ThumbnailsDataDto
 {
-    public ThumbnailsDataDto(Guid userId, UserPhotoManager userPhotoManager)
-    {
-        Original = userPhotoManager.GetPhotoAbsoluteWebPath(userId);
-        Retina = userPhotoManager.GetRetinaPhotoURL(userId);
-        Max = userPhotoManager.GetMaxPhotoURL(userId);
-        Big = userPhotoManager.GetBigPhotoURL(userId);
-        Medium = userPhotoManager.GetMediumPhotoURL(userId);
-        Small = userPhotoManager.GetSmallPhotoURL(userId);
-    }
-
     private ThumbnailsDataDto() { }
+
+    public static async Task<ThumbnailsDataDto> Create(Guid userId, UserPhotoManager userPhotoManager)
+    {
+        return new ThumbnailsDataDto
+        {
+            Original = await userPhotoManager.GetPhotoAbsoluteWebPath(userId),
+            Retina = await userPhotoManager.GetRetinaPhotoURL(userId),
+            Max = await userPhotoManager.GetMaxPhotoURL(userId),
+            Big = await userPhotoManager.GetBigPhotoURL(userId),
+            Medium = await userPhotoManager.GetMediumPhotoURL(userId),
+            Small = await userPhotoManager.GetSmallPhotoURL(userId)
+        };
+    }
 
     public string Original { get; set; }
     public string Retina { get; set; }
