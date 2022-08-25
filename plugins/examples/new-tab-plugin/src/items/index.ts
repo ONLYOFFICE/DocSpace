@@ -13,7 +13,7 @@ const openFolderNewTab = (item: any) => {
 
   if (res) {
     open(
-      `http://localhost:8092/rooms/personal/filter?withSubfolders=true&folder=${id}&page=1&sortby=DateAndTime&sortorder=descending`
+      `rooms/personal/filter?withSubfolders=true&folder=${id}&page=1&sortby=DateAndTime&sortorder=descending`
     );
   }
 };
@@ -27,7 +27,7 @@ const openRoomNewTab = (item: any) => {
 
   if (res) {
     open(
-      `http://localhost:8092/rooms/shared/${id}/filter?withSubfolders=true&folder=11&page=1&sortby=DateAndTime&sortorder=descending`
+      `rooms/shared/${id}/filter?withSubfolders=true&folder=11&page=1&sortby=DateAndTime&sortorder=descending`
     );
   }
 };
