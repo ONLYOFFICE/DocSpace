@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,14 +24,48 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Notify.Push;
+namespace ASC.Core.Notify.Senders;
 
-public static class PushConstants
+[Singletone(Additional = typeof(FirebaseSenderExtension))]
+public class PushSender : INotifySender
 {
-    public const string PushItemTagName = "PushItem";
-    public const string PushParentItemTagName = "PushParentItem";
-    public const string PushModuleTagName = "PushModule";
-    public const string PushActionTagName = "PushAction";
+    private readonly ILogger _logger;
+    private readonly IServiceProvider _serviceProvider;
 
-    public const string PushDocAppName = "doc";
+    public PushSender(ILoggerProvider options, IServiceProvider serviceProvider)
+    {
+        _logger = options.CreateLogger("ASC.Notify");
+        _serviceProvider = serviceProvider;
+    }
+
+
+    public void Init(IDictionary<string, string> properties) { }
+
+    public NoticeSendResult Send(NotifyMessage m)
+    {
+        if (!string.IsNullOrEmpty(m.Content))
+        {
+            m.Content = m.Content.Replace("\r\n", "\n").Trim('\n', '\r', ' ');
+            m.Content = Regex.Replace(m.Content, "\n{3,}", "\n\n");
+        }
+        try
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var FirebaseHelper = scope.ServiceProvider.GetService<FirebaseHelper>();
+            FirebaseHelper.SendMessage(m);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorUnexpected(e);
+        }
+
+        return NoticeSendResult.OK;
+    }
+}
+public static class FirebaseSenderExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<FirebaseHelper>();
+    }
 }
