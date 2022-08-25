@@ -19,6 +19,7 @@ import Link from "@docspace/components/link";
 import Toast from "@docspace/components/toast";
 import LoginForm from "./sub-components/LoginForm";
 import MoreLoginModal from "./sub-components/more-login";
+import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dialog";
 
 const { proxyURL } = AppServerConfig;
 const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
@@ -37,6 +38,7 @@ const Login: React.FC<ILoginProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
+  const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
   const { enabledJoin } = portalSettings;
   const { ssoLabel, ssoUrl } = capabilities;
@@ -146,6 +148,10 @@ const Login: React.FC<ILoginProps> = ({
     setMoreAuthVisible(false);
   };
 
+  const onRecoverDialogVisible = () => {
+    setRecoverDialogVisible(!recoverDialogVisible);
+  };
+
   return (
     <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktopEditor}>
       <LoginContainer>
@@ -189,6 +195,7 @@ const Login: React.FC<ILoginProps> = ({
           isLoading={isLoading}
           hashSettings={portalSettings.passwordHash}
           setIsLoading={setIsLoading}
+          onRecoverDialogVisible={onRecoverDialogVisible}
           match={match}
         />
         <Toast />
@@ -199,6 +206,11 @@ const Login: React.FC<ILoginProps> = ({
           onSocialLoginClick={onSocialButtonClick}
           ssoLabel={ssoLabel}
           ssoUrl={ssoUrl}
+        />
+
+        <RecoverAccessModalDialog
+          visible={recoverDialogVisible}
+          onClose={() => setRecoverDialogVisible(false)}
         />
       </LoginContainer>
     </LoginFormWrapper>

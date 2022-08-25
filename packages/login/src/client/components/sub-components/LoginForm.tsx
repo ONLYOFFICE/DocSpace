@@ -21,6 +21,7 @@ interface ILoginFormProps {
   hashSettings: PasswordHashType;
   isDesktop: boolean;
   match: MatchType;
+  onRecoverDialogVisible: () => void;
 }
 
 const settings = {
@@ -36,6 +37,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   isDesktop,
   match,
   setIsLoading,
+  onRecoverDialogVisible,
 }) => {
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -287,7 +289,31 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         isLoading={isLoading}
         onClick={onSubmit}
       />
+      {/*Uncomment when add api*/}
+      <div className="login-or-access">
+        {/*<Link
+                  fontWeight="600"
+                  fontSize="13px"
+                  color="#316DAA"
+                  type="action"
+                  isHovered={true}
+                  onClick={onLoginWithCodeClick}
+                >
+                  {t("SignInWithCode")}
+                </Link>*/}
 
+        <Text color="#A3A9AE">{t("Or")}</Text>
+        <Link
+          fontWeight="600"
+          fontSize="13px"
+          color="#316DAA"
+          type="action"
+          isHovered={true}
+          onClick={onRecoverDialogVisible}
+        >
+          {t("RecoverAccess")}
+        </Link>
+      </div>
       {confirmedEmail && (
         <Text isBold={true} fontSize="16px">
           {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
