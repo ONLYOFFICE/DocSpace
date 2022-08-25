@@ -21,6 +21,8 @@ const StyledDropzone = styled.div`
     justify-content: center;
     gap: 4px;
 
+    user-select: none;
+
     &-link {
       display: flex;
       flex-direction: row;

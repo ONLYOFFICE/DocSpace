@@ -47,6 +47,7 @@ const StyledIconCropper = styled.div`
     margin-bottom: 12px;
 
     &-text {
+      user-select: none;
       font-weight: 600;
       line-height: 20px;
       color: #555f65;
@@ -140,7 +141,11 @@ const IconCropper = ({
         />
       </div>
 
-      <div className="icon_cropper-delete_button" onClick={handleDeleteImage}>
+      <div
+        className="icon_cropper-delete_button"
+        onClick={handleDeleteImage}
+        title={t("Common:Delete")}
+      >
         <ReactSVG src={"images/trash.react.svg"} />
         <div className="icon_cropper-delete_button-text">
           {t("Common:Delete")}

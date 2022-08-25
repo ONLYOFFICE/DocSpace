@@ -19,6 +19,8 @@ const StyledPermanentSetting = styled.div`
   background: #f8f9f9;
   border-radius: 6px;
 
+  user-select: none;
+
   .permanent_setting-main_info {
     display: flex;
     flex-direction: row;

@@ -67,6 +67,7 @@ const StyledRoomType = styled.div`
 `;
 
 const StyledDisplayItem = styled(StyledRoomType)`
+  cursor: default;
   background-color: #f8f8f8;
   border: 1px solid #f8f8f8;
   border-radius: 6px;
@@ -148,17 +149,23 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
   );
 
   return type === "listItem" ? (
-    <StyledListItem onClick={onClick}>{content}</StyledListItem>
+    <StyledListItem title={t(room.title)} onClick={onClick}>
+      {content}
+    </StyledListItem>
   ) : type === "dropdownButton" ? (
-    <StyledDropdownButton onClick={onClick} isOpen={isOpen}>
+    <StyledDropdownButton
+      title={t(room.title)}
+      onClick={onClick}
+      isOpen={isOpen}
+    >
       {content}
     </StyledDropdownButton>
   ) : type === "dropdownItem" ? (
-    <StyledDropdownItem onClick={onClick} isOpen={isOpen}>
+    <StyledDropdownItem title={t(room.title)} onClick={onClick} isOpen={isOpen}>
       {content}
     </StyledDropdownItem>
   ) : (
-    <StyledDisplayItem>{content}</StyledDisplayItem>
+    <StyledDisplayItem title={t(room.title)}>{content}</StyledDisplayItem>
   );
 };
 

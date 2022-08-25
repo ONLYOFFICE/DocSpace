@@ -8,6 +8,11 @@ import TextInput from "@docspace/components/text-input";
 const StyledInputParam = styled(StyledParam)`
   flex-direction: column;
   gap: 4px;
+
+  .input-label {
+    cursor: pointer;
+    user-select: none;
+  }
 `;
 
 const InputParam = ({
@@ -21,14 +26,12 @@ const InputParam = ({
 }) => {
   return (
     <StyledInputParam>
-      <div className="set_room_params-tag_input-label_wrapper">
-        <Label
-          className="set_room_params-tag_input-label_wrapper-label"
-          display="display"
-          htmlFor={id}
-          text={title}
-        />
-      </div>
+      <Label
+        className="input-label"
+        display="display"
+        htmlFor={id}
+        text={title}
+      />
       <TextInput
         id={id}
         value={value}

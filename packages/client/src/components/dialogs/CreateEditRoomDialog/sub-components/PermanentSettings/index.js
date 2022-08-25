@@ -32,7 +32,6 @@ const PermanentSettings = ({
   };
 
   const thirdpartyTitle = getProviderTypeTitle(storageLocation?.providerKey, t);
-  const thirdpartyIcon = getProviderTypeIcon(storageLocation?.providerKey);
   const thirdpartyFolderName = isThirdparty ? storageLocation?.title : "";
   const thirdpartyPath = isThirdparty ? createThirdpartyPath() : "";
 

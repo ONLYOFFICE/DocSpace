@@ -31,6 +31,7 @@ const StyledPreviewTile = styled.div`
       border: 1px solid #eceef1;
       border-radius: 6px;
       img {
+        user-select: none;
         height: 32px;
         width: ${(props) => (props.isGeneratedPreview ? "32px" : "auto")};
         border-radius: 6px;
@@ -43,6 +44,7 @@ const StyledPreviewTile = styled.div`
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      user-select: none;
     }
   }
   .tile-tags {
@@ -54,6 +56,7 @@ const StyledPreviewTile = styled.div`
     padding: 15px;
 
     .type_tag {
+      user-select: none;
       box-sizing: border-box;
       max-width: 100%;
       white-space: nowrap;
@@ -77,7 +80,7 @@ const PreviewTile = ({ t, title, previewIcon, tags, defaultTagLabel }) => {
           <Tags columnCount={3} tags={tags} />
         ) : (
           <Tag
-            className="set_room_params-tag_input-tag type_tag"
+            className="type_tag"
             tag="script"
             label={defaultTagLabel}
             isDisabled
