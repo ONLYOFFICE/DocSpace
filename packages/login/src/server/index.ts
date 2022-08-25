@@ -15,12 +15,12 @@ import { LANGUAGE } from "@docspace/common/constants";
 import parser from "accept-language-parser";
 import { getPortalCultures } from "@docspace/common/api/settings";
 import { initSSR } from "@docspace/common/api/client";
-
+import { I18nextProviderProps } from "react-i18next";
 interface IParsedConfig extends Object {
   PORT: number;
 }
 interface ILoginRequest extends Request {
-  i18n?: I18next;
+  i18n?: I18next | I18nextProviderProps;
   t?: (str: string) => string;
 }
 type timeoutType = ReturnType<typeof setTimeout>;
@@ -74,7 +74,7 @@ if (IS_DEVELOPMENT) {
         currentLanguage = detectedLanguage.code;
     }
 
-    await i18next.changeLanguage(currentLanguage);
+    if (i18n) await i18n.changeLanguage(currentLanguage);
 
     let initialI18nStore = {};
     if (i18n) initialI18nStore = i18n.services.resourceStore.data;
@@ -87,7 +87,7 @@ if (IS_DEVELOPMENT) {
 
       initialState.match = query;
 
-      const { component, styleTags } = renderApp(i18next, initialState);
+      const { component, styleTags } = renderApp(i18n, initialState);
 
       const htmlString = template(
         initialState,

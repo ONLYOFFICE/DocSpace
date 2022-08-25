@@ -36,7 +36,7 @@ newInstance
     defaultNS: "Login",
 
     react: {
-      useSuspense: true,
+      useSuspense: false,
     },
   });
 

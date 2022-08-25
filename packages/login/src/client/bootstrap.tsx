@@ -15,14 +15,12 @@ if (isDesktopEditor) typeof window["AscDesktopEditor"];
 initI18n(initialI18nStoreASC);
 
 hydrate(
-  <React.Suspense fallback={<div />}>
-    <App
-      initialLanguage={initialLanguage}
-      initialI18nStoreASC={initialI18nStoreASC}
-      isDesktopEditor={isDesktopEditor}
-      {...propsObj}
-    />
-  </React.Suspense>,
+  <App
+    initialLanguage={initialLanguage}
+    initialI18nStoreASC={initialI18nStoreASC}
+    isDesktopEditor={isDesktopEditor}
+    {...propsObj}
+  />,
   document.getElementById("root")
 );
 

@@ -3,11 +3,10 @@ import { ServerStyleSheet } from "styled-components";
 import GlobalStyle from "../../../client/components/GlobalStyle";
 import Login from "../../../client/components/Login";
 import { renderToString } from "react-dom/server";
-import { I18nextProvider } from "react-i18next";
-import i18next from "i18next";
+import { I18nextProvider, I18nextProviderProps } from "react-i18next";
 
 const renderApp = (
-  i18n: typeof i18next,
+  i18n: I18nextProviderProps,
   initialState: IInitialState
 ): { component: string; styleTags: string } => {
   const sheet = new ServerStyleSheet();
