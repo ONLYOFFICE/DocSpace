@@ -143,7 +143,7 @@ const PluginList = ({
             color={theme.connectedClouds.color}
             noSelect
           >
-            {t("People:UserStatus")}
+            {t("Common:Version")}
           </Text>
         </div>
 

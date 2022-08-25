@@ -3,8 +3,23 @@ import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
-import UploadButton from "./sub-components/upload-button";
+import Button from "@docspace/components/button";
+import Box from "@docspace/components/box";
+import Link from "@docspace/components/link";
+import api from "@docspace/common/api";
+
+import EmptyFolderContainer from "SRC_DIR/components/EmptyContainer/EmptyContainer";
+import { initPlugin } from "SRC_DIR/helpers/plugins";
+
 import PluginList from "./sub-components/plugin-list";
+
+const linkStyles = {
+  isHovered: true,
+  type: "action",
+  fontWeight: "600",
+  className: "empty-folder_link",
+  display: "flex",
+};
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -33,8 +48,46 @@ const PortalPlugins = ({
   withUpload,
 }) => {
   const [plugins, setPlugins] = React.useState(null);
+  const inputPluginElement = React.useRef(null);
 
   setDocumentTitle(`Portal plugins`);
+
+  const uploadPlugin = React.useCallback(
+    async (files) => {
+      if (!files) return;
+
+      let formData = new FormData();
+
+      for (let index in Object.keys(files)) {
+        formData.append(files[index].name, files[index]);
+      }
+
+      try {
+        const plugin = await api.plugins.uploadPlugin(formData);
+
+        if (plugin) {
+          initPlugin(plugin, addPlugin);
+        }
+
+        // addPlugin(plugin);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    [addPlugin]
+  );
+
+  const onInput = React.useCallback(
+    (e) => {
+      uploadPlugin(e.target.files);
+      e.target.value = null;
+    },
+    [uploadPlugin]
+  );
+
+  const onUploadPluginClick = React.useCallback(() => {
+    withUpload && inputPluginElement.current.click();
+  }, [inputPluginElement.current, withUpload]);
 
   const onActivate = React.useCallback(
     (id, status) => {
@@ -86,8 +139,16 @@ const PortalPlugins = ({
 
   return (
     <StyledContainer>
-      {withUpload && <UploadButton t={t} addPlugin={addPlugin} />}
-      {plugins && (
+      {withUpload && !!plugins?.length && (
+        <Button
+          className={"plugins__upload-button"}
+          size={"small"}
+          label={t("Article:Upload")}
+          primary
+          onClick={onUploadPluginClick}
+        />
+      )}
+      {!!plugins?.length ? (
         <PluginList
           plugins={plugins}
           onActivate={onActivate}
@@ -96,7 +157,42 @@ const PortalPlugins = ({
           t={t}
           withDelete={withDelete}
         />
+      ) : (
+        <EmptyFolderContainer
+          headerText={t("FilesSettings:ConnectEmpty")}
+          descriptionText={t("Upload plugins here")}
+          style={{ gridColumnGap: "39px" }}
+          buttonStyle={{ marginTop: "16px" }}
+          imageSrc="/static/images/empty_screen_alt.svg"
+          buttons={
+            <>
+              {withUpload && (
+                <div className="empty-folder_container-links empty-connect_container-links">
+                  <img
+                    className="empty-folder_container_plus-image"
+                    src="images/plus.svg"
+                    onClick={onUploadPluginClick}
+                    alt="plus_icon"
+                  />
+                  <Box className="flex-wrapper_container">
+                    <Link {...linkStyles} onClick={onUploadPluginClick}>
+                      {t("Article:Upload")}
+                    </Link>
+                  </Box>
+                </div>
+              )}
+            </>
+          }
+        />
       )}
+      <input
+        ref={inputPluginElement}
+        id="customPluginInput"
+        className="custom-plugin-input"
+        type="file"
+        accept=".js"
+        onInput={onInput}
+      />
     </StyledContainer>
   );
 };
@@ -121,5 +217,6 @@ export default inject(({ auth }) => {
     "PeopleTranslations",
     "People",
     "Article",
+    "FilesSettings",
   ])(observer(PortalPlugins))
 );
