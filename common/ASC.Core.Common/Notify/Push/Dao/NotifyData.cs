@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,14 +24,23 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Notify.Push;
+namespace ASC.Core.Common.Notify.Push.Dao;
 
-public static class PushConstants
+[Serializable]
+public class NotifyData
 {
-    public const string PushItemTagName = "PushItem";
-    public const string PushParentItemTagName = "PushParentItem";
-    public const string PushModuleTagName = "PushModule";
-    public const string PushActionTagName = "PushAction";
+    [JsonProperty("portal")]
+    public string Portal { get; set; }
 
-    public const string PushDocAppName = "doc";
+    [JsonProperty("email")]
+    public string Email { get; set; }
+
+    [JsonProperty("file")]
+    public NotifyFileData File { get; set; }
+
+    [JsonProperty("folder")]
+    public NotifyFolderData Folder { get; set; }
+
+    [JsonProperty("originalUrl")]
+    public string OriginalUrl { get; set; }
 }

@@ -680,20 +680,21 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// Virtual Rooms content
     /// </returns>
     [HttpGet("rooms")]
-    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? withoutMe)
+    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? withoutMe)
     {
         ErrorIfNotDocSpace();
 
         var parentId = searchArea != SearchArea.Archive ? await _globalFolderHelper.GetFolderVirtualRooms<int>()
             : await _globalFolderHelper.GetFolderArchive<int>();
 
-        var filterType = type switch
+        var filter = type switch
         {
-            RoomType.FillingFormsRoom => FilterType.FillingFormsRooms,
-            RoomType.ReadOnlyRoom => FilterType.ReadOnlyRooms,
-            RoomType.EditingRoom => FilterType.EditingRooms,
-            RoomType.ReviewRoom => FilterType.ReviewRooms,
-            RoomType.CustomRoom => FilterType.CustomRooms,
+            RoomFilterType.FillingFormsRoomOnly => FilterType.FillingFormsRooms,
+            RoomFilterType.ReadOnlyRoomOnly => FilterType.ReadOnlyRooms,
+            RoomFilterType.EditingRoomOnly => FilterType.EditingRooms,
+            RoomFilterType.ReviewRoomOnly => FilterType.ReviewRooms,
+            RoomFilterType.CustomRoomOnly => FilterType.CustomRooms,
+            RoomFilterType.FoldersOnly => FilterType.FoldersOnly,
             _ => FilterType.None
         };
 
@@ -709,7 +710,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var filterValue = _apiContext.FilterValue;
 
-        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filterType, false, subjectId, filterValue,
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
             searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, withoutMe ?? false);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);

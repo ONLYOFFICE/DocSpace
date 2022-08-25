@@ -126,6 +126,8 @@ global using Autofac;
 global using AutoMapper;
 global using AutoMapper.QueryableExtensions;
 
+global using Google.Apis.Auth.OAuth2;
+
 global using MailKit.Security;
 
 global using Microsoft.AspNetCore.Http;
@@ -162,3 +164,6 @@ global using Telegram.Bot;
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
+global using FirebaseAdminMessaging = FirebaseAdmin.Messaging;
+global using FirebaseApp = FirebaseAdmin.FirebaseApp;
+global using AppOptions = FirebaseAdmin.AppOptions;
