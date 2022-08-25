@@ -46,10 +46,20 @@ const StyledPreviewTile = styled.div`
     }
   }
   .tile-tags {
+    box-sizing: border-box;
+    max-width: 100%;
     display: flex;
     align-items: center;
     justify-content: start;
     padding: 15px;
+
+    .type_tag {
+      box-sizing: border-box;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 `;
 
@@ -67,7 +77,7 @@ const PreviewTile = ({ t, title, previewIcon, tags, defaultTagLabel }) => {
           <Tags columnCount={3} tags={tags} />
         ) : (
           <Tag
-            className="set_room_params-tag_input-tag"
+            className="set_room_params-tag_input-tag type_tag"
             tag="script"
             label={defaultTagLabel}
             isDisabled
