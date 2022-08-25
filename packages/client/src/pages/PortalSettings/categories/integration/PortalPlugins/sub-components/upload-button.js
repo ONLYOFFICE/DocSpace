@@ -56,6 +56,7 @@ const UploadButton = ({ t, addPlugin }) => {
         id="customPluginInput"
         className="custom-plugin-input"
         type="file"
+        accept=".js"
         onInput={onInput}
       />
     </>
