@@ -467,6 +467,7 @@ class Tile extends React.PureComponent {
       t,
       columnCount,
       selectTag,
+      selectType,
     } = this.props;
     const { isFolder, isRoom, id, fileExst } = item;
 
@@ -598,10 +599,9 @@ class Tile extends React.PureComponent {
                   />
                 ) : (
                   <Tag
-                    isDisabled
                     isDefault
                     label={t(RoomsTypeTranslations[item.roomType])}
-                    // onClick={selectTag}
+                    onClick={() => selectType(item.roomType)}
                   />
                 )}
               </div>
