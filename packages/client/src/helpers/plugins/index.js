@@ -26,7 +26,7 @@ export const initPlugin = (plugin, callback) => {
   };
 
   loadScript(
-    `/static/scripts/${plugin.filename}`,
+    `/static/plugins/${plugin.filename}`,
     `${plugin.name}-${plugin.id}`,
     onLoad
   );
