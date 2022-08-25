@@ -21,7 +21,10 @@ const UploadButton = ({ t, addPlugin }) => {
       try {
         const plugin = await api.plugins.uploadPlugin(formData);
 
-        initPlugin(plugin, addPlugin);
+        if (plugin) {
+          initPlugin(plugin, addPlugin);
+        }
+
         // addPlugin(plugin);
       } catch (e) {
         console.log(e);
