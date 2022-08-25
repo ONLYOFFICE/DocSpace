@@ -4,21 +4,25 @@ set -e
 
 . /usr/share/debconf/confmodule
 
-db_input medium appserver/environment || true
-db_input medium appserver/host || true
-db_input medium appserver/port || true
-db_input medium appserver/kafka-host || true
-db_input medium appserver/kafka-port || true
-db_input medium appserver/zookeeper-host || true
-db_input medium appserver/zookeeper-port || true
-db_input medium appserver/elasticsearch-sheme || true
-db_input medium appserver/elasticsearch-host || true
-db_input medium appserver/elasticsearch-port || true
+db_input low {{product}}/environment || true
+db_input low {{product}}/host || true
+db_input low {{product}}/port || true
 
-db_input medium appserver/db-host || true
-db_input medium appserver/db-name || true
-db_input medium appserver/db-user || true
+db_input medium {{product}}/elasticsearch-sheme || true
+db_input medium {{product}}/elasticsearch-host || true
+db_input medium {{product}}/elasticsearch-port || true
+
+db_input medium {{product}}/redis-host || true
+db_input medium {{product}}/redis-port || true
+
+db_input medium {{product}}/rabbitmq-host || true
+db_input medium {{product}}/rabbitmq-user || true
+db_input medium {{product}}/rabbitmq-password || true
+
+db_input high {{product}}/db-host || true
+db_input high {{product}}/db-name || true
+db_input high {{product}}/db-user || true
 db_go
 
-db_input critical appserver/db-pwd || true
+db_input critical {{product}}/db-pwd || true
 db_go

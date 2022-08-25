@@ -1,2 +1,0 @@
-src/var/www/services/ASC.SsoAuth/service/*         var/www/appserver/services/ASC.SsoAuth
-src/var/www/services/ASC.SsoAuth.Svc/service/*     var/www/appserver/services/ASC.SsoAuth.Svc

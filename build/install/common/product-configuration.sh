@@ -128,35 +128,35 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-redish | --redishost )
+		-rdh | --redishost )
 			if [ "$2" != "" ]; then
 				REDIS_HOST=$2
 				shift
 			fi
 		;;
 
-		-redisp | --redisport )
+		-rdp | --redisport )
 			if [ "$2" != "" ]; then
 				REDIS_PORT=$2
 				shift
 			fi
 		;;
 
-		-rabbith | --rabbitmqhost )
+		-rbh | --rabbitmqhost )
 			if [ "$2" != "" ]; then
 				RABBITMQ_HOST=$2
 				shift
 			fi
 		;;
 
-		-rabbitu | --rabbitmquser )
+		-rbu | --rabbitmquser )
 			if [ "$2" != "" ]; then
 				RABBITMQ_USER=$2
 				shift
 			fi
 		;;
 
-		-rabbitp | --rabbitmqpassword )
+		-rbp | --rabbitmqpassword )
 			if [ "$2" != "" ]; then
 				RABBITMQ_PASSWORD=$2
 				shift
@@ -173,6 +173,11 @@ while [ "$1" != "" ]; do
 			echo "      -dsp, --docsport                    document server port (default 8083)"
 			echo "      -esh, --elastichost                 elasticsearch ip"
 			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
+			echo "      -rdh, --redishost                 	redis ip"
+			echo "      -rdp, --redisport                 	redis port (default 6379)"
+			echo "      -rbh, --rabbitmqhost                rabbitmq ip"
+			echo "      -rbu, --rabbitmquser                rabbitmq user"
+			echo "      -rbp, --rabbitmqpassword            rabbitmq password"
 			echo "      -mysqlh, --mysqlhost                mysql server host"
 			echo "      -mysqld, --mysqldatabase            ${PRODUCT} database name"
 			echo "      -mysqlu, --mysqluser                ${PRODUCT} database user"
@@ -292,8 +297,6 @@ SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Si
 	#Enable database migration
 	$JSON_USERCONF "this.migration={'enabled': \"true\"}" >/dev/null 2>&1
 	systemctl start ${PRODUCT}-migration-runner || true
-	sleep 5
-	systemctl stop ${PRODUCT}-migration-runner 
 
 	echo "OK"
 }
@@ -472,7 +475,7 @@ setup_docs() {
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
 	'url': {'public': '/ds-vpath/','internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
-
+	
 	#Enable ds-example autostart
 	sed 's,autostart=false,autostart=true,' -i /etc/supervisord.d/ds-example.ini >/dev/null 2>&1 || sed 's,autostart=false,autostart=true,' -i /etc/supervisor/conf.d/ds-example.conf >/dev/null 2>&1
 	supervisorctl start ds:example >/dev/null 2>&1
