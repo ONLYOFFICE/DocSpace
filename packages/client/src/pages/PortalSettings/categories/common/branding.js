@@ -47,18 +47,20 @@ const StyledComponent = styled.div`
 `;
 
 const Branding = (props) => {
+  const [isPortalPaid, setIsPortalPaid] = useState(true);
+
   if (!isDesktop) return <ForbiddenPage />;
 
   return (
     <StyledComponent>
-      <Whitelabel />
+      <Whitelabel isPortalPaid={isPortalPaid} />
       <hr />
       <div className="section-description">
         Specify your company information, add links to external resources, and
         email addresses displayed within the online office interface.
       </div>
-      <CompanyInfoSettings />
-      <AdditionalResources />
+      <CompanyInfoSettings isPortalPaid={isPortalPaid} />
+      <AdditionalResources isPortalPaid={isPortalPaid} />
     </StyledComponent>
   );
 };

@@ -10,6 +10,7 @@ import Link from "@docspace/components/link";
 import TextInput from "@docspace/components/text-input";
 import HelpButton from "@docspace/components/help-button";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
+import Badge from "@docspace/components/badge";
 
 import { Base } from "@docspace/components/themes";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
@@ -18,6 +19,12 @@ const StyledComponent = styled.div`
   .subtitle {
     margin-top: 5px;
     margin-bottom: 20px;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .wl-subtitle {
@@ -117,6 +124,7 @@ StyledComponent.defaultProps = { theme: Base };
 
 const WhiteLabel = (props) => {
   const {
+    isPortalPaid,
     logoText,
     logoSizes,
     logoUrls,
@@ -140,7 +148,6 @@ const WhiteLabel = (props) => {
   );
 
   const [isLoadedData, setIsLoadedData] = useState(false);
-  const [isPortalPaid, setIsPortalPaid] = useState(true);
   const [isCanvasProcessing, setIsCanvasProcessing] = useState(false);
   const [isUseTextAsLogo, setIsUseTextAsLogo] = useState(false);
 
@@ -368,9 +375,13 @@ const WhiteLabel = (props) => {
         {t("BrandingSubtitle")}
       </Text>
 
-      <Text fontSize="16px" fontWeight="700">
-        {t("WhiteLabel")}
-      </Text>
+      <div className="header-container">
+        <Text fontSize="16px" fontWeight="700">
+          {t("WhiteLabel")}
+        </Text>
+        {!isPortalPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
+      </div>
+
       <Text className="wl-subtitle" fontSize="12px">
         {t("WhiteLabelSubtitle")}
       </Text>
@@ -400,16 +411,15 @@ const WhiteLabel = (props) => {
             isAutoFocussed={true}
             tabIndex={1}
           />
-          {isPortalPaid && (
-            <Button
-              id="btnUseAsLogo"
-              className="use-as-logo"
-              size="small"
-              label={t("UseAsLogoButton")}
-              onClick={onUseTextAsLogo}
-              tabIndex={2}
-            />
-          )}
+          <Button
+            id="btnUseAsLogo"
+            className="use-as-logo"
+            size="small"
+            label={t("UseAsLogoButton")}
+            onClick={onUseTextAsLogo}
+            tabIndex={2}
+            isDisabled={!isPortalPaid}
+          />
         </FieldContainer>
 
         <div className="logos-container">
@@ -445,19 +455,23 @@ const WhiteLabel = (props) => {
                 />
               )}
             </div>
-            {isPortalPaid && (
-              <label>
-                <input
-                  id="logoUploader_1"
-                  type="file"
-                  className="hidden"
-                  onChange={onChangeLogo}
-                />
-                <Link fontWeight="600" isHovered type="action">
-                  {t("ChangeLogoButton")}
-                </Link>
-              </label>
-            )}
+            <label>
+              <input
+                id="logoUploader_1"
+                type="file"
+                className="hidden"
+                onChange={onChangeLogo}
+                disabled={!isPortalPaid}
+              />
+              <Link
+                fontWeight="600"
+                isHovered
+                type="action"
+                color={!isPortalPaid && "#A3A9AE"}
+              >
+                {t("ChangeLogoButton")}
+              </Link>
+            </label>
           </div>
 
           <div className="logo-wrapper">
@@ -492,19 +506,23 @@ const WhiteLabel = (props) => {
                 />
               )}
             </div>
-            {isPortalPaid && (
-              <label>
-                <input
-                  id="logoUploader_6"
-                  type="file"
-                  className="hidden"
-                  onChange={onChangeLogo}
-                />
-                <Link fontWeight="600" isHovered type="action">
-                  {t("ChangeLogoButton")}
-                </Link>
-              </label>
-            )}
+            <label>
+              <input
+                id="logoUploader_6"
+                type="file"
+                className="hidden"
+                onChange={onChangeLogo}
+                disabled={!isPortalPaid}
+              />
+              <Link
+                fontWeight="600"
+                isHovered
+                type="action"
+                color={!isPortalPaid && "#A3A9AE"}
+              >
+                {t("ChangeLogoButton")}
+              </Link>
+            </label>
           </div>
 
           <div className="logo-wrapper">
@@ -539,19 +557,23 @@ const WhiteLabel = (props) => {
                 />
               )}
             </div>
-            {isPortalPaid && (
-              <label>
-                <input
-                  id="logoUploader_2"
-                  type="file"
-                  className="hidden"
-                  onChange={onChangeLogo}
-                />
-                <Link fontWeight="600" isHovered type="action">
-                  {t("ChangeLogoButton")}
-                </Link>
-              </label>
-            )}
+            <label>
+              <input
+                id="logoUploader_2"
+                type="file"
+                className="hidden"
+                onChange={onChangeLogo}
+                disabled={!isPortalPaid}
+              />
+              <Link
+                fontWeight="600"
+                isHovered
+                type="action"
+                color={!isPortalPaid && "#A3A9AE"}
+              >
+                {t("ChangeLogoButton")}
+              </Link>
+            </label>
           </div>
 
           <div className="logo-wrapper">
@@ -586,19 +608,23 @@ const WhiteLabel = (props) => {
                 />
               )}
             </div>
-            {isPortalPaid && (
-              <label>
-                <input
-                  id="logoUploader_7"
-                  type="file"
-                  className="hidden"
-                  onChange={onChangeLogo}
-                />
-                <Link fontWeight="600" isHovered type="action">
-                  {t("ChangeLogoButton")}
-                </Link>
-              </label>
-            )}
+            <label>
+              <input
+                id="logoUploader_7"
+                type="file"
+                className="hidden"
+                onChange={onChangeLogo}
+                disabled={!isPortalPaid}
+              />
+              <Link
+                fontWeight="600"
+                isHovered
+                type="action"
+                color={!isPortalPaid && "#A3A9AE"}
+              >
+                {t("ChangeLogoButton")}
+              </Link>
+            </label>
           </div>
 
           <div className="logo-wrapper">
@@ -634,19 +660,23 @@ const WhiteLabel = (props) => {
               )}
             </div>
 
-            {isPortalPaid && (
-              <label>
-                <input
-                  id="logoUploader_3"
-                  type="file"
-                  className="hidden"
-                  onChange={onChangeLogo}
-                />
-                <Link fontWeight="600" isHovered type="action">
-                  {t("ChangeLogoButton")}
-                </Link>
-              </label>
-            )}
+            <label>
+              <input
+                id="logoUploader_3"
+                type="file"
+                className="hidden"
+                onChange={onChangeLogo}
+                disabled={!isPortalPaid}
+              />
+              <Link
+                fontWeight="600"
+                isHovered
+                type="action"
+                color={!isPortalPaid && "#A3A9AE"}
+              >
+                {t("ChangeLogoButton")}
+              </Link>
+            </label>
           </div>
 
           <div className="logo-wrapper">
@@ -730,19 +760,23 @@ const WhiteLabel = (props) => {
               )}
             </div>
 
-            {isPortalPaid && (
-              <label>
-                <input
-                  id="logoUploader_4"
-                  type="file"
-                  className="hidden"
-                  onChange={onChangeLogo}
-                />
-                <Link fontWeight="600" isHovered type="action">
-                  {t("ChangeLogoButton")}
-                </Link>
-              </label>
-            )}
+            <label>
+              <input
+                id="logoUploader_4"
+                type="file"
+                className="hidden"
+                onChange={onChangeLogo}
+                disabled={!isPortalPaid}
+              />
+              <Link
+                fontWeight="600"
+                isHovered
+                type="action"
+                color={!isPortalPaid && "#A3A9AE"}
+              >
+                {t("ChangeLogoButton")}
+              </Link>
+            </label>
           </div>
 
           <div className="logo-wrapper">
@@ -778,19 +812,23 @@ const WhiteLabel = (props) => {
               )}
             </div>
 
-            {isPortalPaid && (
-              <label>
-                <input
-                  id="logoUploader_5"
-                  type="file"
-                  className="hidden"
-                  onChange={onChangeLogo}
-                />
-                <Link fontWeight="600" isHovered type="action">
-                  {t("ChangeLogoButton")}
-                </Link>
-              </label>
-            )}
+            <label>
+              <input
+                id="logoUploader_5"
+                type="file"
+                className="hidden"
+                onChange={onChangeLogo}
+                disabled={!isPortalPaid}
+              />
+              <Link
+                fontWeight="600"
+                isHovered
+                type="action"
+                color={!isPortalPaid && "#A3A9AE"}
+              >
+                {t("ChangeLogoButton")}
+              </Link>
+            </label>
           </div>
         </div>
 

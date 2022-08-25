@@ -16,7 +16,7 @@ const StyledComponent = styled.div`
 `;
 
 const CompanyInfoSettings = (props) => {
-  const { t } = props;
+  const { t, isPortalPaid } = props;
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -38,6 +38,7 @@ const CompanyInfoSettings = (props) => {
         >
           <TextInput
             id="textInputContainerCompanyName"
+            isDisabled={!isPortalPaid}
             scale={true}
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
@@ -45,12 +46,14 @@ const CompanyInfoSettings = (props) => {
         </FieldContainer>
         <FieldContainer
           id="fieldContainerEmail"
+          isDisabled={!isPortalPaid}
           className="field-container-width"
           labelText={t("Common:Email")}
           isVertical={true}
         >
           <TextInput
             id="textInputContainerEmail"
+            isDisabled={!isPortalPaid}
             scale={true}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -64,6 +67,7 @@ const CompanyInfoSettings = (props) => {
         >
           <TextInput
             id="textInputContainerPhone"
+            isDisabled={!isPortalPaid}
             scale={true}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -77,6 +81,7 @@ const CompanyInfoSettings = (props) => {
         >
           <TextInput
             id="textInputContainerWebsite"
+            isDisabled={!isPortalPaid}
             scale={true}
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
@@ -90,6 +95,7 @@ const CompanyInfoSettings = (props) => {
         >
           <TextInput
             id="textInputContainerAddress"
+            isDisabled={!isPortalPaid}
             scale={true}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -98,8 +104,8 @@ const CompanyInfoSettings = (props) => {
       </div>
       <SaveCancelButtons
         className="save-cancel-buttons"
-        // onSaveClick={onSavePortalRename}
-        // onCancelClick={onCancelPortalName}
+        onSaveClick={() => console.log("click")}
+        onCancelClick={() => console.log("click")}
         saveButtonLabel={t("Common:SaveButton")}
         cancelButtonLabel={t("Settings:RestoreDefaultButton")}
         displaySettings={true}

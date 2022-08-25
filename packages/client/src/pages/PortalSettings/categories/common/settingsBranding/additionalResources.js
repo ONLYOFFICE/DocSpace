@@ -18,7 +18,7 @@ const StyledComponent = styled.div`
 `;
 
 const AdditionalResources = (props) => {
-  const { t } = props;
+  const { t, isPortalPaid } = props;
   const [showFeedback, setShowFeedback] = useState(false);
   const [showSample, setShowSample] = useState(false);
   const [showVideoGuides, setShowVideoGuides] = useState(false);
@@ -33,33 +33,36 @@ const AdditionalResources = (props) => {
       </div>
       <div className="branding-checkboxs">
         <Checkbox
+          isDisabled={!isPortalPaid}
           label={t("ShowFeedbackAndSupport")}
           isChecked={showFeedback}
           onChange={() => setShowFeedback(!showFeedback)}
         />
         <Checkbox
+          isDisabled={!isPortalPaid}
           label={t("ShowSampleDocuments")}
           isChecked={showSample}
           onChange={() => setShowSample(!showSample)}
         />
         <Checkbox
+          isDisabled={!isPortalPaid}
           label={t("ShowVideoGuides")}
           isChecked={showVideoGuides}
           onChange={() => setShowVideoGuides(!showVideoGuides)}
         />
         <Checkbox
+          isDisabled={!isPortalPaid}
           label={t("ShowHelpCenter")}
           isChecked={showHelpCenter}
           onChange={() => setShowHelpCenter(!showHelpCenter)}
         />
       </div>
       <SaveCancelButtons
-        // onSaveClick={onSavePortalRename}
-        // onCancelClick={onCancelPortalName}
+        onSaveClick={() => console.log("click")}
+        onCancelClick={() => console.log("click")}
         saveButtonLabel={t("Common:SaveButton")}
         cancelButtonLabel={t("Settings:RestoreDefaultButton")}
         displaySettings={true}
-        // hasScroll={hasScroll}
       />
     </StyledComponent>
   );
