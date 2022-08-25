@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { EditRoomDialog } from "../dialogs";
+import { Encoder } from "@docspace/common/utils/encoder";
 
 const EditRoomEvent = ({
   visible,
@@ -17,23 +18,23 @@ const EditRoomEvent = ({
 
   getThirdPartyIcon,
 
+  calculateRoomLogoParams,
   uploadRoomLogo,
+  setFolder,
   removeLogoFromRoom,
   addLogoToRoom,
 
-  currrentFolderId,
+  currentFolderId,
   updateCurrentFolder,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
   const [fetchedTags, setFetchedTags] = useState([]);
+  const [fetchedImage, setFetchedImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const roomId = item.id;
   const startTags = Object.values(item.tags);
   const startObjTags = startTags.map((tag, i) => ({ id: i, name: tag }));
-
-  // const startuploadedFile =
 
   const fetchedRoomParams = {
     title: item.title,
@@ -52,12 +53,11 @@ const EditRoomEvent = ({
       tmpFile: "",
       x: 0.5,
       y: 0.5,
-      width: 216,
-      height: 216,
       zoom: 1,
     },
   };
-  // console.log(item);
+
+  console.log(item);
 
   const onSave = async (roomParams) => {
     console.log(roomParams);
@@ -76,53 +76,57 @@ const EditRoomEvent = ({
     try {
       setIsLoading(true);
 
-      await editRoom(roomId, editRoomParams);
+      const room = await editRoom(item.id, editRoomParams);
+
       for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
-      await addTagsToRoom(roomId, tags);
-      await removeTagsFromRoom(roomId, removedTags);
+      await addTagsToRoom(room.id, tags);
+      await removeTagsFromRoom(room.id, removedTags);
 
-      console.log(roomParams.icon.uploadedFile);
-      if (!roomParams.icon.uploadedFile) await removeLogoFromRoom(roomId);
+      if (!!item.logo.original && !roomParams.icon.uploadedFile)
+        await removeLogoFromRoom(room.id);
 
-      if (roomParams.icon.uploadedFile)
+      if (roomParams.icon.uploadedFile) {
+        await setFolder({
+          ...room,
+          logo: { big: item.logo.small },
+        });
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
-
           img.onload = async () => {
-            const tmpFile = response.data;
             const { x, y, zoom } = roomParams.icon;
-
-            const imgWidth = Math.min(1280, img.width);
-            const imgHeight = Math.round(img.height / (img.width / imgWidth));
-
-            const dimensions = Math.round(imgHeight / zoom);
-
-            const croppedX = Math.round(x * imgWidth - dimensions / 2);
-            const croppedY = Math.round(y * imgHeight - dimensions / 2);
-
-            await addLogoToRoom(roomId, {
-              tmpFile,
-              x: croppedX,
-              y: croppedY,
-              width: dimensions,
-              height: dimensions,
+            await addLogoToRoom(room.id, {
+              tmpFile: response.data,
+              ...calculateRoomLogoParams(img, x, y, zoom),
             });
-            await updateCurrentFolder(null, currrentFolderId);
-
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-
-      await updateCurrentFolder(null, currrentFolderId);
+      }
     } catch (err) {
       console.log(err);
     } finally {
+      await updateCurrentFolder(null, currentFolderId);
       setIsLoading(false);
       onClose();
     }
   };
+
+  useEffect(async () => {
+    const imgExst = item.logo.original.slice(".")[1];
+    if (item.logo.original) {
+      const file = await fetch(item.logo.original)
+        .then((res) => res.arrayBuffer())
+        .then(
+          (buf) =>
+            new File([buf], "fetchedFile", {
+              type: `image/${imgExst}`,
+            })
+        );
+      setFetchedImage(file);
+    }
+  }, []);
 
   useEffect(async () => {
     const tags = await fetchTags();
@@ -137,6 +141,7 @@ const EditRoomEvent = ({
       fetchedRoomParams={fetchedRoomParams}
       onSave={onSave}
       fetchedTags={fetchedTags}
+      fetchedImage={fetchedImage}
       isLoading={isLoading}
     />
   );
@@ -154,13 +159,15 @@ export default inject(
       editRoom,
       addTagsToRoom,
       removeTagsFromRoom,
+      calculateRoomLogoParams,
       uploadRoomLogo,
+      setFolder,
       addLogoToRoom,
       removeLogoFromRoom,
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
-    const { id: currrentFolderId } = selectedFolderStore;
+    const { id: currentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
     const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
 
@@ -174,11 +181,13 @@ export default inject(
 
       getThirdPartyIcon,
 
+      calculateRoomLogoParams,
+      setFolder,
       uploadRoomLogo,
       removeLogoFromRoom,
       addLogoToRoom,
 
-      currrentFolderId,
+      currentFolderId,
       updateCurrentFolder,
     };
   }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import TagHandler from "./handlers/tagHandler";
 import SetRoomParams from "./sub-components/SetRoomParams";
@@ -15,11 +15,14 @@ const EditRoomDialog = ({
   isLoading,
   fetchedRoomParams,
   fetchedTags,
+  fetchedImage,
   folderFormValidation,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
 
-  const [roomParams, setRoomParams] = useState({ ...fetchedRoomParams });
+  const [roomParams, setRoomParams] = useState({
+    ...fetchedRoomParams,
+  });
 
   const setRoomTags = (newTags) =>
     setRoomParams({ ...roomParams, tags: newTags });
@@ -34,21 +37,13 @@ const EditRoomDialog = ({
 
   const onEditRoom = () => onSave(roomParams);
 
-  // useEffect(async () => {
-  //   console.log(fetchedRoomParams.uploadedFileSrc);
-  //   if (fetchedRoomParams.uploadedFileSrc)
-  //     await fetch(
-  //       "http://192.168.0.100:8092/storage/room_logos/root/sbox9DOCSPACE%20CUSTOM%20ROOM%209_orig_887-339.jpeg"
-  //     ).then((res) => {
-  //       const buf = res.arrayBuffer();
-  //       const file = new File([buf], "fetchedImage", { type: "image/png" });
-  //       console.log(file);
-  //       setRoomParams({
-  //         ...roomParams,
-  //         icon: { ...roomParams.icon, uploadedFile: file },
-  //       });
-  //     });
-  // }, []);
+  useEffect(async () => {
+    if (fetchedImage)
+      setRoomParams({
+        ...roomParams,
+        icon: { ...roomParams.icon, uploadedFile: fetchedImage },
+      });
+  }, [fetchedImage]);
 
   return (
     <ModalDialog
