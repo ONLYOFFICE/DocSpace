@@ -283,6 +283,7 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
+        withPaging={withPaging}
       >
         {withScroll ? (
           !isMobileOnly ? (
