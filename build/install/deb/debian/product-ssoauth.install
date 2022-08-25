@@ -1,1 +1,1 @@
-../../../publish/services/ASC.SsoAuth/service/*         var/www/{{product}}/services/ASC.SsoAuth
+src/var/www/services/ASC.SsoAuth/service/*         var/www/{{product}}/services/ASC.SsoAuth

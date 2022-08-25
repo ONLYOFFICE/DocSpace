@@ -1,1 +1,1 @@
-../../../publish/services/ASC.Web.Api/service/* var/www/{{product}}/studio/ASC.Web.Api
+src/var/www/services/ASC.Web.Api/service/* var/www/{{product}}/studio/ASC.Web.Api

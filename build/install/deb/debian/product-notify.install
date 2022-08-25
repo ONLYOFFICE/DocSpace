@@ -1,1 +1,1 @@
-../../../publish/services/ASC.Notify/service/* var/www/{{product}}/services/ASC.Notify
+src/var/www/services/ASC.Notify/service/* var/www/{{product}}/services/ASC.Notify

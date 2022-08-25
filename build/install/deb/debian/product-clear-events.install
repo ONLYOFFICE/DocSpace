@@ -1,1 +1,1 @@
-../../../publish/services/ASC.ClearEvents/service/*         var/www/{{product}}/services/ASC.ClearEvents
+src/var/www/services/ASC.ClearEvents/service/*         var/www/{{product}}/services/ASC.ClearEvents
