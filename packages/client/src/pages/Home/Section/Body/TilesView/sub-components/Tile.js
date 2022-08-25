@@ -598,8 +598,10 @@ class Tile extends React.PureComponent {
                   />
                 ) : (
                   <Tag
+                    isDisabled
+                    isDefault
                     label={t(RoomsTypeTranslations[item.roomType])}
-                    onClick={selectTag}
+                    // onClick={selectTag}
                   />
                 )}
               </div>
