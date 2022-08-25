@@ -336,7 +336,6 @@ const PureConnectDialogContainer = (props) => {
           scale={isAccount}
           onClick={onClose}
           isDisabled={isLoading}
-          isLoading={isLoading}
         />
       </ModalDialog.Footer>
     </ModalDialog>
