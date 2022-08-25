@@ -97,9 +97,10 @@ public class SecurityContext
 
     public bool AuthenticateMe(string cookie)
     {
-        if (!string.IsNullOrEmpty(cookie))
-        {
+        if (string.IsNullOrEmpty(cookie)) return false;
 
+        if (!_cookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser, out var loginEventId))
+        {
             if (cookie.Equals("Bearer", StringComparison.InvariantCulture))
             {
                 var ipFrom = string.Empty;
@@ -114,54 +115,6 @@ public class SecurityContext
                     address = "for " + request.GetUrlRewriter();
                 }
                 _logger.InformationEmptyBearer(ipFrom, address);
-            }
-            else if (_cookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser, out var loginEventId))
-            {
-                if (tenant != _tenantManager.GetCurrentTenant().Id)
-                {
-                    return false;
-                }
-
-                var settingsTenant = _tenantCookieSettingsHelper.GetForTenant(tenant);
-                if (indexTenant != settingsTenant.Index)
-                {
-                    return false;
-                }
-
-                if (expire != DateTime.MaxValue && expire < DateTime.UtcNow)
-                {
-                    return false;
-                }
-
-                try
-                {
-                    var settingsUser = _tenantCookieSettingsHelper.GetForUser(userid);
-                    if (indexUser != settingsUser.Index)
-                    {
-                        return false;
-                    }
-
-                    var settingLoginEvents = _dbLoginEventsManager.GetLoginEventIds(tenant, userid).Result; // remove Result
-                    if (loginEventId != 0 && !settingLoginEvents.Contains(loginEventId))
-                    {
-                        return false;
-                    }
-
-                    AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));
-                    return true;
-                }
-                catch (InvalidCredentialException ice)
-                {
-                    _logger.AuthenticateDebug(cookie, tenant, userid, ice);
-                }
-                catch (SecurityException se)
-                {
-                    _logger.AuthenticateDebug(cookie, tenant, userid, se);
-                }
-                catch (Exception err)
-                {
-                    _logger.AuthenticateError(cookie, tenant, userid, err);
-                }
             }
             else
             {
@@ -179,7 +132,57 @@ public class SecurityContext
 
                 _logger.WarningCanNotDecrypt(cookie, ipFrom, address);
             }
+
+            return false;
         }
+        
+        if (tenant != _tenantManager.GetCurrentTenant().Id)
+        {
+            return false;
+        }
+
+        var settingsTenant = _tenantCookieSettingsHelper.GetForTenant(tenant);
+
+        if (indexTenant != settingsTenant.Index)
+        {
+            return false;
+        }
+
+        if (expire != DateTime.MaxValue && expire < DateTime.UtcNow)
+        {
+            return false;
+        }
+
+        try
+        {
+            var settingsUser = _tenantCookieSettingsHelper.GetForUser(userid);
+            if (indexUser != settingsUser.Index)
+            {
+                return false;
+            }
+
+            var settingLoginEvents = _dbLoginEventsManager.GetLoginEventIds(tenant, userid).Result; // remove Result
+            if (loginEventId != 0 && !settingLoginEvents.Contains(loginEventId))
+            {
+                return false;
+            }
+
+            AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));
+            return true;
+        }
+        catch (InvalidCredentialException ice)
+        {
+            _logger.AuthenticateDebug(cookie, tenant, userid, ice);
+        }
+        catch (SecurityException se)
+        {
+            _logger.AuthenticateDebug(cookie, tenant, userid, se);
+        }
+        catch (Exception err)
+        {
+            _logger.AuthenticateError(cookie, tenant, userid, err);
+        }
+
 
         return false;
     }

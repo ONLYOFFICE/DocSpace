@@ -66,38 +66,7 @@ public class CoreBaseSettings
     public bool DisableDocSpace => _disableDocSpace ?? (bool)(_disableDocSpace = string.Equals(Configuration["core:disableDocspace"], "true", StringComparison.OrdinalIgnoreCase));
 }
 
-class ConfigureCoreSettings : IConfigureNamedOptions<CoreSettings>
-{
-    private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
-    private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly IConfiguration _configuration;
-
-    public ConfigureCoreSettings(
-        IOptionsSnapshot<CachedTenantService> tenantService,
-        CoreBaseSettings coreBaseSettings,
-        IConfiguration configuration
-        )
-    {
-        _tenantService = tenantService;
-        _coreBaseSettings = coreBaseSettings;
-        _configuration = configuration;
-    }
-
-    public void Configure(string name, CoreSettings options)
-    {
-        Configure(options);
-        options.TenantService = _tenantService.Get(name);
-    }
-
-    public void Configure(CoreSettings options)
-    {
-        options.Configuration = _configuration;
-        options.CoreBaseSettings = _coreBaseSettings;
-        options.TenantService = _tenantService.Value;
-    }
-}
-
-[Scope(typeof(ConfigureCoreSettings))]
+[Scope]
 public class CoreSettings
 {
     public string BaseDomain

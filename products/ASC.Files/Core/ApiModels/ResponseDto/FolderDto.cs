@@ -109,7 +109,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
                 result.Tags = folder.Tags.Select(t => t.Name);
             }
 
-            result.Logo = await _roomLogoManager.GetLogo(folder.Id);
+            result.Logo = await _roomLogoManager.GetLogo(folder);
             result.RoomType = folder.FolderType switch
             {
                 FolderType.FillingFormsRoom => RoomType.FillingFormsRoom,

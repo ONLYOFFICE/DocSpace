@@ -24,33 +24,48 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Webhooks.Service.Services;
+namespace ASC.Core.Notify.Senders;
 
-[Singletone]
-public class BuildQueueService : BackgroundService
+[Singletone(Additional = typeof(FirebaseSenderExtension))]
+public class PushSender : INotifySender
 {
-    internal readonly ConcurrentQueue<WebhookRequest> Queue;
-    private readonly ICacheNotify<WebhookRequest> _webhookNotify;
+    private readonly ILogger _logger;
+    private readonly IServiceProvider _serviceProvider;
 
-    public BuildQueueService(ICacheNotify<WebhookRequest> webhookNotify)
+    public PushSender(ILoggerProvider options, IServiceProvider serviceProvider)
     {
-        _webhookNotify = webhookNotify;
-        Queue = new ConcurrentQueue<WebhookRequest>();
-    }
-    public void BuildWebhooksQueue(WebhookRequest request)
-    {
-        Queue.Enqueue(request);
+        _logger = options.CreateLogger("ASC.Notify");
+        _serviceProvider = serviceProvider;
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        _webhookNotify.Subscribe(BuildWebhooksQueue, CacheNotifyAction.Update);
 
-        stoppingToken.Register(() =>
+    public void Init(IDictionary<string, string> properties) { }
+
+    public NoticeSendResult Send(NotifyMessage m)
+    {
+        if (!string.IsNullOrEmpty(m.Content))
         {
-            _webhookNotify.Unsubscribe(CacheNotifyAction.Update);
-        });
+            m.Content = m.Content.Replace("\r\n", "\n").Trim('\n', '\r', ' ');
+            m.Content = Regex.Replace(m.Content, "\n{3,}", "\n\n");
+        }
+        try
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var FirebaseHelper = scope.ServiceProvider.GetService<FirebaseHelper>();
+            FirebaseHelper.SendMessage(m);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorUnexpected(e);
+        }
 
-        return Task.CompletedTask;
+        return NoticeSendResult.OK;
+    }
+}
+public static class FirebaseSenderExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<FirebaseHelper>();
     }
 }

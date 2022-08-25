@@ -9,6 +9,8 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Textarea from "@docspace/components/textarea";
 import FieldContainer from "@docspace/components/field-container";
 import { smallTablet } from "@docspace/components/utils/device";
+import { sendRecoverRequest } from "@docspace/common/api/settings";
+import toastr from "@docspace/components/toast/toastr";
 
 const ModalDialogContainer = styled(ModalDialog)`
   .modal-dialog-aside-footer {
@@ -32,27 +34,53 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 `;
 
-const RecoverAccessModalDialog = ({
-  visible,
-  loading,
-  email,
-  emailErr,
-  description,
-  descErr,
-  t,
-  onChangeEmail,
-  onChangeDescription,
-  onRecoverModalClose,
-  onSendRecoverRequest,
-}) => {
-  const [width, setWidth] = useState(window.innerWidth);
+const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
+  const [loading, setLoading] = useState(false);
 
-  React.useEffect(() => {
-    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  const [email, setEmail] = useState("");
+  const [emailErr, setEmailErr] = useState(false);
 
-    return () =>
-      window.removeEventListener("resize", () => setWidth(window.innerWidth));
-  }, []);
+  const [description, setDescription] = useState("");
+  const [descErr, setDescErr] = useState(false);
+
+  const onRecoverModalClose = () => {
+    setEmail("");
+    setEmailErr(false);
+    setDescription("");
+    setDescErr(false);
+    onClose && onClose();
+  };
+
+  const onChangeEmail = (e) => {
+    setEmail(e.currentTarget.value);
+    setEmailErr(false);
+  };
+
+  const onChangeDescription = (e) => {
+    setDescription(e.currentTarget.value);
+    setDescErr(false);
+  };
+
+  const onSendRecoverRequest = () => {
+    if (!email.trim()) {
+      setEmailErr(true);
+    }
+    if (!description.trim()) {
+      setDescErr(true);
+    } else {
+      setLoading(true);
+      sendRecoverRequest(email, description)
+        .then((res) => {
+          setLoading(false);
+          toastr.success(res);
+        })
+        .catch((error) => {
+          setLoading(false);
+          toastr.error(error);
+        })
+        .finally(onRecoverModalClose);
+    }
+  };
 
   return (
     <ModalDialogContainer
@@ -143,17 +171,9 @@ const RecoverAccessModalDialog = ({
 };
 
 RecoverAccessModalDialog.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
-  email: PropTypes.string,
-  emailErr: PropTypes.bool.isRequired,
-  description: PropTypes.string,
-  descErr: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
-  onChangeEmail: PropTypes.func.isRequired,
-  onChangeDescription: PropTypes.func.isRequired,
-  onRecoverModalClose: PropTypes.func.isRequired,
-  onSendRecoverRequest: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default RecoverAccessModalDialog;

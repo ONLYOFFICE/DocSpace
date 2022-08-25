@@ -30,51 +30,56 @@ namespace ASC.Webhooks.Core;
 public class WebhookPublisher : IWebhookPublisher
 {
     private readonly DbWorker _dbWorker;
-    private readonly TenantManager _tenantManager;
     private readonly ICacheNotify<WebhookRequest> _webhookNotify;
 
     public WebhookPublisher(
         DbWorker dbWorker,
-        TenantManager tenantManager,
         ICacheNotify<WebhookRequest> webhookNotify)
     {
         _dbWorker = dbWorker;
-        _tenantManager = tenantManager;
         _webhookNotify = webhookNotify;
     }
 
-    public void Publish(string eventName, string requestPayload)
+    public async Task PublishAsync(string method, string route, string requestPayload)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
-        var webhookConfigs = _dbWorker.GetWebhookConfigs(tenantId);
-
-        foreach (var config in webhookConfigs)
+        if (string.IsNullOrEmpty(requestPayload))
         {
-            var webhooksLog = new WebhooksLog
-            {
-                Uid = Guid.NewGuid().ToString(),
-                TenantId = tenantId,
-                Event = eventName,
-                CreationTime = DateTime.UtcNow,
-                RequestPayload = requestPayload,
-                Status = ProcessStatus.InProcess,
-                ConfigId = config.ConfigId
-            };
-            var DbId = _dbWorker.WriteToJournal(webhooksLog);
+            return;
+        }
 
-            var request = new WebhookRequest()
-            {
-                Id = DbId
-            };
+        var webhookConfigs = _dbWorker.GetWebhookConfigs();
 
-            _webhookNotify.Publish(request, CacheNotifyAction.Update);
+        await foreach (var config in webhookConfigs.Where(r => r.Enabled))
+        {
+            _ = await PublishAsync(method, route, requestPayload, config.Id);
         }
     }
-}
 
-public enum ProcessStatus
-{
-    InProcess,
-    Success,
-    Failed
+    public async Task<WebhooksLog> PublishAsync(string method, string route, string requestPayload, int configId)
+    {
+        if (string.IsNullOrEmpty(requestPayload))
+        {
+            return null;
+        }
+
+        var webhooksLog = new WebhooksLog
+        {
+            Method = method,
+            Route = route,
+            CreationTime = DateTime.UtcNow,
+            RequestPayload = requestPayload,
+            ConfigId = configId
+        };
+
+        var webhook = await _dbWorker.WriteToJournal(webhooksLog);
+
+        var request = new WebhookRequest
+        {
+            Id = webhook.Id
+        };
+
+        _webhookNotify.Publish(request, CacheNotifyAction.Update);
+
+        return webhook;
+    }
 }
