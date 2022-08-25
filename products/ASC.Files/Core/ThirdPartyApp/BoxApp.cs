@@ -57,7 +57,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     private readonly SettingsManager _settingsManager;
     private readonly PersonalSettingsHelper _personalSettingsHelper;
     private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
-    private readonly IOptionsSnapshot<AccountLinker> _snapshot;
+    private readonly AccountLinker _accountLinker;
     private readonly SetupInfo _setupInfo;
     private readonly TokenHelper _tokenHelper;
     private readonly DocumentServiceConnector _documentServiceConnector;
@@ -85,7 +85,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         SettingsManager settingsManager,
         PersonalSettingsHelper personalSettingsHelper,
         BaseCommonLinkUtility baseCommonLinkUtility,
-        IOptionsSnapshot<AccountLinker> snapshot,
+        AccountLinker accountLinker,
         SetupInfo setupInfo,
         TokenHelper tokenHelper,
         DocumentServiceConnector documentServiceConnector,
@@ -117,7 +117,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         _settingsManager = settingsManager;
         _personalSettingsHelper = personalSettingsHelper;
         _baseCommonLinkUtility = baseCommonLinkUtility;
-        _snapshot = snapshot;
+        _accountLinker = accountLinker;
         _setupInfo = setupInfo;
         _tokenHelper = tokenHelper;
         _documentServiceConnector = documentServiceConnector;
@@ -465,8 +465,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
     private bool CurrentUser(string boxUserId)
     {
-        var linkedProfiles = _snapshot.Get("webstudio")
-            .GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Box}/{boxUserId}"));
+        var linkedProfiles = _accountLinker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Box}/{boxUserId}"));
 
         return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == _authContext.CurrentAccount.ID);
     }
@@ -474,8 +473,8 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     private void AddLinker(string boxUserId)
     {
         _logger.DebugBoxAppAddLinker(boxUserId);
-        var linker = _snapshot.Get("webstudio");
-        linker.AddLink(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
+
+        _accountLinker.AddLink(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
     }
 
     private UserInfo GetUserInfo(Token token, out bool isNew)

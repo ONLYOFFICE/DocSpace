@@ -63,7 +63,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
     private readonly FileUtility _fileUtility;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly IOptionsSnapshot<AccountLinker> _snapshot;
+    private readonly AccountLinker _accountLinker;
     private readonly SetupInfo _setupInfo;
     private readonly GoogleLoginProvider _googleLoginProvider;
     private readonly TokenHelper _tokenHelper;
@@ -97,7 +97,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         ILogger<GoogleDriveApp> logger,
         FileUtility fileUtility,
         FilesSettingsHelper filesSettingsHelper,
-        IOptionsSnapshot<AccountLinker> snapshot,
+        AccountLinker accountLinker,
         SetupInfo setupInfo,
         GoogleLoginProvider googleLoginProvider,
         TokenHelper tokenHelper,
@@ -111,9 +111,9 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
         IHttpClientFactory clientFactory,
-            OAuth20TokenHelper oAuth20TokenHelper,
-            RequestHelper requestHelper,
-            ThirdPartySelector thirdPartySelector,
+        OAuth20TokenHelper oAuth20TokenHelper,
+        RequestHelper requestHelper,
+        ThirdPartySelector thirdPartySelector,
         string name, int order, Dictionary<string, string> additional)
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
     {
@@ -135,7 +135,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         _baseCommonLinkUtility = baseCommonLinkUtility;
         _fileUtility = fileUtility;
         _filesSettingsHelper = filesSettingsHelper;
-        _snapshot = snapshot;
+        _accountLinker = accountLinker;
         _setupInfo = setupInfo;
         _googleLoginProvider = googleLoginProvider;
         _tokenHelper = tokenHelper;
@@ -618,8 +618,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
     private bool CurrentUser(string googleId)
     {
-        var linker = _snapshot.Get("webstudio");
-        var linkedProfiles = linker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Google}/{googleId}"));
+        var linkedProfiles = _accountLinker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Google}/{googleId}"));
 
         return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == _authContext.CurrentAccount.ID);
     }
@@ -627,8 +626,8 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     private void AddLinker(string googleUserId)
     {
         _logger.DebugGoogleDriveApAddLinker(googleUserId);
-        var linker = _snapshot.Get("webstudio");
-        linker.AddLink(_authContext.CurrentAccount.ID.ToString(), googleUserId, ProviderConstants.Google);
+
+        _accountLinker.AddLink(_authContext.CurrentAccount.ID.ToString(), googleUserId, ProviderConstants.Google);
     }
 
     private UserInfo GetUserInfo(Token token, out bool isNew)
