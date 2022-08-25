@@ -6,7 +6,7 @@ import { inject, observer } from "mobx-react";
 import FieldContainer from "@docspace/components/field-container";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
-
+import Link from "@docspace/components/link";
 import TextInput from "@docspace/components/text-input";
 import HelpButton from "@docspace/components/help-button";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
@@ -37,16 +37,20 @@ const StyledComponent = styled.div`
     margin-bottom: 24px;
   }
 
-  .margin-top {
-    margin-top: 20px;
-  }
-
-  .margin-left {
-    margin-left: 20px;
-  }
-
   .input {
     max-width: 350px;
+  }
+
+  .logos-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .logo-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
   .border-img {
@@ -55,7 +59,7 @@ const StyledComponent = styled.div`
     box-sizing: content-box;
   }
 
-  .logo-light-small {
+  .logo-header {
     width: 142px;
     height: 23px;
     padding: 10px;
@@ -63,15 +67,20 @@ const StyledComponent = styled.div`
       props.theme.client.settings.common.whiteLabel.backgroundColor};
   }
 
-  .logo-dark {
+  .logo-compact {
+    width: 56px;
+    height: 56px;
+  }
+
+  .logo-big {
     max-width: 216px;
     max-height: 35px;
     padding: 10px;
   }
 
   .logo-favicon {
-    width: 16px;
-    height: 16px;
+    width: 32px;
+    height: 32px;
   }
 
   .logo-docs-editor {
@@ -95,8 +104,12 @@ const StyledComponent = styled.div`
       props.theme.client.settings.common.whiteLabel.orangeBackgroundColor};
   }
 
-  .display {
+  .hidden {
     display: none;
+  }
+
+  .save-cancel-buttons {
+    margin-top: 24px;
   }
 `;
 
@@ -121,6 +134,7 @@ const WhiteLabel = (props) => {
       return { height: size.height, width: size.width };
     });
   };
+
   const [logoSizesWhiteLabel, setLogoSizes] = useState(
     mapSizesToArray(logoSizes)
   );
@@ -136,9 +150,12 @@ const WhiteLabel = (props) => {
   const [logoUrlsChange, setLogoUrlsChange] = useState([]);
 
   const [portalHeaderLabel, setPortalHeaderLabel] = useState();
+  const [logoCompactLabel, setLogoCompactLabel] = useState();
   const [loginPageLabel, setLoginPageLabel] = useState();
+  const [logoAboutLabel, setLogoAboutLabel] = useState();
   const [faviconLabel, setFaviconLabel] = useState();
   const [editorsHeaderLabel, setEditorsHeaderLabel] = useState();
+  const [logoEditorsEmbeddedLabel, setLogoEditorsEmbeddedLabel] = useState();
 
   useEffect(() => {
     if (
@@ -165,9 +182,21 @@ const WhiteLabel = (props) => {
         }):`
       : "";
 
+    const logoCompactLabel = isSizesExist
+      ? `${t("LogoCompact")} (${logoSizesWhiteLabel[5].width}x${
+          logoSizesWhiteLabel[5].height
+        }):`
+      : "";
+
     const loginPageLabel = isSizesExist
-      ? `${t("LogoDark")} (${logoSizesWhiteLabel[1].width}x${
+      ? `${t("LogoLogin")} (${logoSizesWhiteLabel[1].width}x${
           logoSizesWhiteLabel[1].height
+        }):`
+      : "";
+
+    const logoAboutLabel = isSizesExist
+      ? `${t("LogoAbout")} (${logoSizesWhiteLabel[6].width}x${
+          logoSizesWhiteLabel[6].height
         }):`
       : "";
 
@@ -183,10 +212,19 @@ const WhiteLabel = (props) => {
         }):`
       : "";
 
+    const editorsEmbeddedLabel = isSizesExist
+      ? `${t("LogoDocsEditorEmbedded")} (${logoSizesWhiteLabel[4].width}x${
+          logoSizesWhiteLabel[4].height
+        }):`
+      : "";
+
     setPortalHeaderLabel(portalHeaderLabel);
+    setLogoCompactLabel(logoCompactLabel);
     setLoginPageLabel(loginPageLabel);
+    setLogoAboutLabel(logoAboutLabel);
     setFaviconLabel(faviconLabel);
     setEditorsHeaderLabel(editorsHeaderLabel);
+    setLogoEditorsEmbeddedLabel(editorsEmbeddedLabel);
   }, [logoSizesWhiteLabel, t]);
 
   useEffect(() => {
@@ -349,7 +387,7 @@ const WhiteLabel = (props) => {
       <div className="settings-block">
         <FieldContainer
           id="fieldContainerCompanyName"
-          labelText={`${t("CompanyNameForCanvasLogo")}:`}
+          labelText={t("CompanyNameForCanvasLogo")}
           isVertical={true}
         >
           <TextInput
@@ -374,254 +412,389 @@ const WhiteLabel = (props) => {
           )}
         </FieldContainer>
 
-        <FieldContainer
-          id="fieldContainerLogoLightSmall"
-          className="field-container"
-          labelText={portalHeaderLabel}
-          isVertical={true}
-        >
-          <div>
-            {isCanvasProcessing &&
-            !logoUrlsChange.some((obj) => obj.id === "1") ? (
-              <canvas
-                id="canvas_logo_1"
-                className="border-img logo-light-small"
-                width="284"
-                height="46"
-                data-fontsize="36"
-                data-fontcolor={
-                  theme.client.settings.common.whiteLabel.dataFontColor
-                }
-              >
-                {t("BrowserNoCanvasSupport")}
-              </canvas>
-            ) : (
-              <img
-                className="border-img logo-light-small"
-                src={
-                  logoUrlsChange && logoUrlsChange.some((obj) => obj.id === "1")
-                    ? logoUrlsChange.find((obj) => obj.id === "1").src
-                    : logoUrlsWhiteLabel[0]
-                }
-                alt={t("LogoLightSmall")}
-              />
+        <div className="logos-container">
+          <div className="logo-wrapper">
+            <Text fontSize="15px" fontWeight="600">
+              {portalHeaderLabel}
+            </Text>
+            <div>
+              {isCanvasProcessing &&
+              !logoUrlsChange.some((obj) => obj.id === "1") ? (
+                <canvas
+                  id="canvas_logo_1"
+                  className="border-img logo-header"
+                  width="251"
+                  height="48"
+                  data-fontsize="36"
+                  data-fontcolor={
+                    theme.client.settings.common.whiteLabel.dataFontColor
+                  }
+                >
+                  {t("BrowserNoCanvasSupport")}
+                </canvas>
+              ) : (
+                <img
+                  className="border-img logo-header"
+                  src={
+                    logoUrlsChange &&
+                    logoUrlsChange.some((obj) => obj.id === "1")
+                      ? logoUrlsChange.find((obj) => obj.id === "1").src
+                      : logoUrlsWhiteLabel[0]
+                  }
+                  alt={t("LogoLightSmall")}
+                />
+              )}
+            </div>
+            {isPortalPaid && (
+              <label>
+                <input
+                  id="logoUploader_1"
+                  type="file"
+                  className="hidden"
+                  onChange={onChangeLogo}
+                />
+                <Link fontWeight="600" isHovered type="action">
+                  {t("ChangeLogoButton")}
+                </Link>
+              </label>
             )}
           </div>
-          {isPortalPaid && (
-            <label>
-              <input
-                id="logoUploader_1"
-                type="file"
-                className="display"
-                onChange={onChangeLogo}
-              />
-              <a>{t("ChangeLogoButton")}</a>
-            </label>
-          )}
-        </FieldContainer>
 
-        <FieldContainer
-          id="fieldContainerLogoDark"
-          className="field-container"
-          labelText={loginPageLabel}
-          isVertical={true}
-        >
-          <div>
-            {isCanvasProcessing &&
-            !logoUrlsChange.some((obj) => obj.id === "2") ? (
-              <canvas
-                id="canvas_logo_2"
-                className="border-img logo-dark"
-                width="432"
-                height="70"
-                data-fontsize="54"
-                data-fontcolor={
-                  theme.client.settings.common.whiteLabel.dataFontColorBlack
-                }
-              >
-                {t("BrowserNoCanvasSupport")}
-              </canvas>
-            ) : (
-              // <img
-              //   className="border-img logo-dark"
-              //   src={
-              //     logoUrlsChange && logoUrlsChange.some((obj) => obj.id === "2")
-              //       ? logoUrlsChange.find((obj) => obj.id === "2").src
-              //       : logoUrlsWhiteLabel[1]
-              //   }
-              //   alt={t("LogoDark")}
-              // />
+          <div className="logo-wrapper">
+            <Text fontSize="15px" fontWeight="600">
+              {logoCompactLabel}
+            </Text>
+            <div>
+              {isCanvasProcessing &&
+              !logoUrlsChange.some((obj) => obj.id === "6") ? (
+                <canvas
+                  id="canvas_logo_6"
+                  className="border-img logo-compact"
+                  width="56"
+                  height="56"
+                  data-fontsize="36"
+                  data-fontcolor={
+                    theme.client.settings.common.whiteLabel.dataFontColor
+                  }
+                >
+                  {t("BrowserNoCanvasSupport")}
+                </canvas>
+              ) : (
+                <img
+                  className="border-img logo-compact"
+                  src={
+                    logoUrlsChange &&
+                    logoUrlsChange.some((obj) => obj.id === "6")
+                      ? logoUrlsChange.find((obj) => obj.id === "6").src
+                      : logoUrlsWhiteLabel[5]
+                  }
+                  alt={t("LogoLightSmall")}
+                />
+              )}
+            </div>
+            {isPortalPaid && (
+              <label>
+                <input
+                  id="logoUploader_6"
+                  type="file"
+                  className="hidden"
+                  onChange={onChangeLogo}
+                />
+                <Link fontWeight="600" isHovered type="action">
+                  {t("ChangeLogoButton")}
+                </Link>
+              </label>
+            )}
+          </div>
 
-              <div className="border-img logo-dark">
-                <object
-                  type="image/svg+xml"
-                  data={
+          <div className="logo-wrapper">
+            <Text fontSize="15px" fontWeight="600">
+              {loginPageLabel}
+            </Text>
+            <div>
+              {isCanvasProcessing &&
+              !logoUrlsChange.some((obj) => obj.id === "2") ? (
+                <canvas
+                  id="canvas_logo_2"
+                  className="border-img logo-big"
+                  width="429"
+                  height="70"
+                  data-fontsize="54"
+                  data-fontcolor={
+                    theme.client.settings.common.whiteLabel.dataFontColorBlack
+                  }
+                >
+                  {t("BrowserNoCanvasSupport")}
+                </canvas>
+              ) : (
+                <img
+                  className="border-img logo-big"
+                  src={
                     logoUrlsChange &&
                     logoUrlsChange.some((obj) => obj.id === "2")
                       ? logoUrlsChange.find((obj) => obj.id === "2").src
                       : logoUrlsWhiteLabel[1]
                   }
-                ></object>
-              </div>
+                  alt={t("LogoLogin")}
+                />
+              )}
+            </div>
+            {isPortalPaid && (
+              <label>
+                <input
+                  id="logoUploader_2"
+                  type="file"
+                  className="hidden"
+                  onChange={onChangeLogo}
+                />
+                <Link fontWeight="600" isHovered type="action">
+                  {t("ChangeLogoButton")}
+                </Link>
+              </label>
             )}
           </div>
-          {isPortalPaid && (
-            <label>
-              <input
-                id="logoUploader_2"
-                type="file"
-                className="display"
-                onChange={onChangeLogo}
-              />
-              <a>{t("ChangeLogoButton")}</a>
-            </label>
-          )}
-        </FieldContainer>
 
-        <FieldContainer
-          id="fieldContainerLogoFavicon"
-          className="field-container"
-          labelText={faviconLabel}
-          isVertical={true}
-        >
-          <div>
-            {isCanvasProcessing &&
-            !logoUrlsChange.some((obj) => obj.id === "3") ? (
-              <canvas
-                id="canvas_logo_3"
-                className="border-img logo-favicon"
-                width="32"
-                height="32"
-                data-fontsize="28"
-                data-fontcolor={
-                  theme.client.settings.common.whiteLabel.dataFontColorBlack
-                }
-              >
-                {t("BrowserNoCanvasSupport")}
-              </canvas>
-            ) : (
-              <img
-                className="border-img logo-favicon"
-                src={
-                  logoUrlsChange && logoUrlsChange.some((obj) => obj.id === "3")
-                    ? logoUrlsChange.find((obj) => obj.id === "3").src
-                    : logoUrlsWhiteLabel[2]
-                }
-                alt={t("LogoFavicon")}
-              />
-            )}
-          </div>
-          {isPortalPaid && (
-            <label>
-              <input
-                id="logoUploader_3"
-                type="file"
-                className="display"
-                onChange={onChangeLogo}
-              />
-              <a>{t("ChangeLogoButton")}</a>
-            </label>
-          )}
-        </FieldContainer>
-
-        <FieldContainer
-          id="fieldContainerEditorHeaderLogo"
-          className="field-container"
-          labelText={editorsHeaderLabel}
-          isVertical={true}
-        >
-          <div>
-            {isCanvasProcessing &&
-            !logoUrlsChange.some((obj) => obj.id === "4") ? (
-              <>
+          <div className="logo-wrapper">
+            <Text fontSize="15px" fontWeight="600">
+              {logoAboutLabel}
+            </Text>
+            <div>
+              {isCanvasProcessing &&
+              !logoUrlsChange.some((obj) => obj.id === "7") ? (
                 <canvas
-                  id="canvas_logo_4_1"
-                  className="border-img logo-docs-editor background-green"
-                  width="172"
-                  height="40"
-                  data-fontsize="22"
+                  id="canvas_logo_7"
+                  className="border-img logo-big"
+                  width="429"
+                  height="70"
+                  data-fontsize="54"
                   data-fontcolor={
-                    theme.client.settings.common.whiteLabel.dataFontColor
+                    theme.client.settings.common.whiteLabel.dataFontColorBlack
                   }
                 >
                   {t("BrowserNoCanvasSupport")}
                 </canvas>
-                <canvas
-                  id="canvas_logo_4_2"
-                  className="border-img logo-docs-editor background-blue"
-                  width="172"
-                  height="40"
-                  data-fontsize="22"
-                  data-fontcolor={
-                    theme.client.settings.common.whiteLabel.dataFontColor
-                  }
-                >
-                  {t("BrowserNoCanvasSupport")}
-                </canvas>
-                <canvas
-                  id="canvas_logo_4_3"
-                  className="border-img logo-docs-editor background-orange"
-                  width="172"
-                  height="40"
-                  data-fontsize="22"
-                  data-fontcolor={
-                    theme.client.settings.common.whiteLabel.dataFontColor
-                  }
-                >
-                  {t("BrowserNoCanvasSupport")}
-                </canvas>
-              </>
-            ) : (
-              <>
+              ) : (
                 <img
-                  className="border-img logo-docs-editor background-green"
+                  className="border-img logo-big"
                   src={
                     logoUrlsChange &&
-                    logoUrlsChange.some((obj) => obj.id === "4")
-                      ? logoUrlsChange.find((obj) => obj.id === "4").src
-                      : logoUrlsWhiteLabel[3]
+                    logoUrlsChange.some((obj) => obj.id === "7")
+                      ? logoUrlsChange.find((obj) => obj.id === "7").src
+                      : logoUrlsWhiteLabel[6]
                   }
-                  alt={t("LogoDocsEditor")}
+                  alt={t("LogoAbout")}
                 />
-                <img
-                  className="border-img logo-docs-editor background-blue"
-                  src={
-                    logoUrlsChange &&
-                    logoUrlsChange.some((obj) => obj.id === "4")
-                      ? logoUrlsChange.find((obj) => obj.id === "4").src
-                      : logoUrlsWhiteLabel[3]
-                  }
-                  alt={t("LogoDocsEditor")}
+              )}
+            </div>
+            {isPortalPaid && (
+              <label>
+                <input
+                  id="logoUploader_7"
+                  type="file"
+                  className="hidden"
+                  onChange={onChangeLogo}
                 />
-                <img
-                  className="border-img logo-docs-editor background-orange"
-                  src={
-                    logoUrlsChange &&
-                    logoUrlsChange.some((obj) => obj.id === "4")
-                      ? logoUrlsChange.find((obj) => obj.id === "4").src
-                      : logoUrlsWhiteLabel[3]
-                  }
-                  alt={t("LogoDocsEditor")}
-                />
-              </>
+                <Link fontWeight="600" isHovered type="action">
+                  {t("ChangeLogoButton")}
+                </Link>
+              </label>
             )}
           </div>
 
-          {isPortalPaid && (
-            <label>
-              <input
-                id="logoUploader_4"
-                type="file"
-                className="display"
-                onChange={onChangeLogo}
-              />
-              <a>{t("ChangeLogoButton")}</a>
-            </label>
-          )}
-        </FieldContainer>
+          <div className="logo-wrapper">
+            <Text fontSize="15px" fontWeight="600">
+              {faviconLabel}
+            </Text>
+            <div>
+              {isCanvasProcessing &&
+              !logoUrlsChange.some((obj) => obj.id === "3") ? (
+                <canvas
+                  id="canvas_logo_3"
+                  className="border-img logo-favicon"
+                  width="32"
+                  height="32"
+                  data-fontsize="28"
+                  data-fontcolor={
+                    theme.client.settings.common.whiteLabel.dataFontColorBlack
+                  }
+                >
+                  {t("BrowserNoCanvasSupport")}
+                </canvas>
+              ) : (
+                <img
+                  className="border-img logo-favicon"
+                  src={
+                    logoUrlsChange &&
+                    logoUrlsChange.some((obj) => obj.id === "3")
+                      ? logoUrlsChange.find((obj) => obj.id === "3").src
+                      : logoUrlsWhiteLabel[2]
+                  }
+                  alt={t("LogoFavicon")}
+                />
+              )}
+            </div>
+
+            {isPortalPaid && (
+              <label>
+                <input
+                  id="logoUploader_3"
+                  type="file"
+                  className="hidden"
+                  onChange={onChangeLogo}
+                />
+                <Link fontWeight="600" isHovered type="action">
+                  {t("ChangeLogoButton")}
+                </Link>
+              </label>
+            )}
+          </div>
+
+          <div className="logo-wrapper">
+            <Text fontSize="15px" fontWeight="600">
+              {editorsHeaderLabel}
+            </Text>
+            <div>
+              {isCanvasProcessing &&
+              !logoUrlsChange.some((obj) => obj.id === "4") ? (
+                <>
+                  <canvas
+                    id="canvas_logo_4_1"
+                    className="border-img logo-docs-editor background-green"
+                    width="172"
+                    height="40"
+                    data-fontsize="22"
+                    data-fontcolor={
+                      theme.client.settings.common.whiteLabel.dataFontColor
+                    }
+                  >
+                    {t("BrowserNoCanvasSupport")}
+                  </canvas>
+                  <canvas
+                    id="canvas_logo_4_2"
+                    className="border-img logo-docs-editor background-blue"
+                    width="172"
+                    height="40"
+                    data-fontsize="22"
+                    data-fontcolor={
+                      theme.client.settings.common.whiteLabel.dataFontColor
+                    }
+                  >
+                    {t("BrowserNoCanvasSupport")}
+                  </canvas>
+                  <canvas
+                    id="canvas_logo_4_3"
+                    className="border-img logo-docs-editor background-orange"
+                    width="172"
+                    height="40"
+                    data-fontsize="22"
+                    data-fontcolor={
+                      theme.client.settings.common.whiteLabel.dataFontColor
+                    }
+                  >
+                    {t("BrowserNoCanvasSupport")}
+                  </canvas>
+                </>
+              ) : (
+                <>
+                  <img
+                    className="border-img logo-docs-editor background-green"
+                    src={
+                      logoUrlsChange &&
+                      logoUrlsChange.some((obj) => obj.id === "4")
+                        ? logoUrlsChange.find((obj) => obj.id === "4").src
+                        : logoUrlsWhiteLabel[3]
+                    }
+                    alt={t("LogoDocsEditor")}
+                  />
+                  <img
+                    className="border-img logo-docs-editor background-blue"
+                    src={
+                      logoUrlsChange &&
+                      logoUrlsChange.some((obj) => obj.id === "4")
+                        ? logoUrlsChange.find((obj) => obj.id === "4").src
+                        : logoUrlsWhiteLabel[3]
+                    }
+                    alt={t("LogoDocsEditor")}
+                  />
+                  <img
+                    className="border-img logo-docs-editor background-orange"
+                    src={
+                      logoUrlsChange &&
+                      logoUrlsChange.some((obj) => obj.id === "4")
+                        ? logoUrlsChange.find((obj) => obj.id === "4").src
+                        : logoUrlsWhiteLabel[3]
+                    }
+                    alt={t("LogoDocsEditor")}
+                  />
+                </>
+              )}
+            </div>
+
+            {isPortalPaid && (
+              <label>
+                <input
+                  id="logoUploader_4"
+                  type="file"
+                  className="hidden"
+                  onChange={onChangeLogo}
+                />
+                <Link fontWeight="600" isHovered type="action">
+                  {t("ChangeLogoButton")}
+                </Link>
+              </label>
+            )}
+          </div>
+
+          <div className="logo-wrapper">
+            <Text fontSize="15px" fontWeight="600">
+              {logoEditorsEmbeddedLabel}
+            </Text>
+            <div>
+              {isCanvasProcessing &&
+              !logoUrlsChange.some((obj) => obj.id === "5") ? (
+                <canvas
+                  id="canvas_logo_5"
+                  className="border-img logo-docs-editor"
+                  width="172"
+                  height="40"
+                  data-fontsize="28"
+                  data-fontcolor={
+                    theme.client.settings.common.whiteLabel.dataFontColorBlack
+                  }
+                >
+                  {t("BrowserNoCanvasSupport")}
+                </canvas>
+              ) : (
+                <img
+                  className="border-img logo-docs-editor"
+                  src={
+                    logoUrlsChange &&
+                    logoUrlsChange.some((obj) => obj.id === "5")
+                      ? logoUrlsChange.find((obj) => obj.id === "5").src
+                      : logoUrlsWhiteLabel[4]
+                  }
+                  alt={t("LogoDocsEditorEmbedded")}
+                />
+              )}
+            </div>
+
+            {isPortalPaid && (
+              <label>
+                <input
+                  id="logoUploader_5"
+                  type="file"
+                  className="hidden"
+                  onChange={onChangeLogo}
+                />
+                <Link fontWeight="600" isHovered type="action">
+                  {t("ChangeLogoButton")}
+                </Link>
+              </label>
+            )}
+          </div>
+        </div>
 
         <SaveCancelButtons
-          id="buttonsCompanyInfoSettings"
           className="save-cancel-buttons"
           onSaveClick={onSave}
           onCancelClick={onRestoreLogo}
