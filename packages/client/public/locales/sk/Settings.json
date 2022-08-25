@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0> jazyka a časového pásma je spôsob, ako zmeniť jazyk celého portálu pre všetkých používateľov portálu a nakonfigurovať časové pásmo tak, aby sa všetky udalosti portálu ONLYOFFICE zobrazili so správnym dátumom a časom.",
   "LanguageTimeSettingsTooltipDescription": "Aby sa nastavili parametre, ktoré ste nastavili, kliknite na tlačidlo <1>{{save}}</1> v dolnej časti sekcie.<3>{{learnMore}}</3>",
   "LocalFile": "Miestny súbor",
-  "LogoDark": "Logo pre stránky O nás/Prihlásenie ",
   "LogoDocsEditor": "Logo pre hlavičku editora",
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Logo pre hlavičku portálu",

@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0> je način, kako jezik celotnega portala spremeniti za vse uporabnike in za spreminjanje časovnega pasu tako, da so vsi dogodki na ONLYOFFICE portalu prikazani s pravilnim datumom in časom.",
   "LanguageTimeSettingsTooltipDescription": "Za pričetek delovanja izbranih parametrov pritisnite gumb <1>{{save}}</1> na dnu oddelka.<3>{{learnMore}}</3>",
   "LocalFile": "Lokalna datoteka",
-  "LogoDark": "Logo za stran O nas/Prijava",
   "LogoDocsEditor": "Logotip za glavo urednika",
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Logotip za glavo portala",

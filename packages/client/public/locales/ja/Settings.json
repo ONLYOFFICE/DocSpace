@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0>は、ONLYOFFICEポータルのすべてのイベントが正しい日付と時刻で表示されるように、ポータル全体の言語を全員のユーザーに変更、タイムゾーンを設定する方法です。",
   "LanguageTimeSettingsTooltipDescription": "設定されたパラメータを有効にするため、セクションの下にある<1>{{save}}</1>ボタンをクリックしてください。<3>{{learnMore}}</3>",
   "LocalFile": "ローカルファイル",
-  "LogoDark": "会社概要/ログインページのロゴ",
   "LogoDocsEditor": "エディターズヘッダーのロゴ",
   "LogoFavicon": "ファビコン",
   "LogoLightSmall": "ポータルサイトのヘッダーのロゴ",

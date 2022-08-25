@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "0>{{text}}</0> cho phép thay đổi ngôn ngữ của toàn bộ cổng thông tin cho tất cả người dùng cổng và cấu hình múi giờ để tất cả các sự kiện trong cổng thông tin sẽ được hiển thị dưới dạng ngày và giờ chính xác.",
   "LanguageTimeSettingsTooltipDescription": "Để các thông số bạn thiết lập có hiệu lực, bấm vào nút <1>{{save}}</1> ở dưới cuối phần này.<3>{{learnMore}}</3>",
   "LocalFile": "Tập tin cục bộ",
-  "LogoDark": "Logo cho trang Giới thiệu/Đăng nhập",
   "LogoDocsEditor": "Logo cho tiêu đề trình chỉnh sửa",
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Logo cho tiêu đề cổng thông tin",

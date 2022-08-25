@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0> to sposób, żeby zmienić język całego portalu dla wszystkich użytkowników i skonfigurować strefę czasową, żeby wszystkie wydarzenia na portalu ONLYOFFICE były wyświetlane z prawidłową datą i godziną.",
   "LanguageTimeSettingsTooltipDescription": "By zapisać wybrane ustawienia, kliknij na przycisku <1>{{save}}</1> znajdującym się na dole sekcji.<3>{{learnMore}}</3>",
   "LocalFile": "Plik lokalny",
-  "LogoDark": "Logo dla strony O/Logowania",
   "LogoDocsEditor": "Logo dla nagłówka edytorów",
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Logo dla nagłówka portalu",

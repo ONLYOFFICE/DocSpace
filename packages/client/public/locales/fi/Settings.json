@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0> voidaan vaihtaa koko sivuston kieli kaikille käyttäjille ja määrittää aikavyöhyke siten, että kaikki ONLYOFFICE tapahtumat näytetään oikealla päivämäärällä ja ajalla.",
   "LanguageTimeSettingsTooltipDescription": "Avaa alasvetovalikko määrittääksesi tarpeelliset parametrit. Ota tekemäsi asetukset käyttöön klikkaamalla <1>{{save}}</1> painiketta.<3>{{learnMore}}</3>",
   "LocalFile": "Paikallinen tiedosto",
-  "LogoDark": "Tietoja/kirjautumissivun logo",
   "LogoDocsEditor": "Toimittajan otsikon logo",
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Portaalin otsikon logo",

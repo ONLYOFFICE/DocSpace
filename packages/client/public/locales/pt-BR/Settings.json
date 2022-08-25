@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0> é uma maneira de mudar o idioma do portal inteiro para todos os usuários do portal e para configurar o fuso horário de modo que todos os eventos do portal ONLYOFFICE sejam mostrados com a data e hora correta.",
   "LanguageTimeSettingsTooltipDescription": "Para fazer com que os parâmetros definidos tenham efeito, clique no botão <1>{{save}}</1> na parte inferior da seção.<3>{{learnMore}}</3>",
   "LocalFile": "Arquivo local",
-  "LogoDark": "Logo para a página Sobre/Login",
   "LogoDocsEditor": "Logo para o título dos editores",
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Logo para o cabeçalho do portal",

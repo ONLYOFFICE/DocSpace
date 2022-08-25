@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0> 可更改所有门户网站用户的整个门户的语言并可配置时区，以便在ONLYOFFICE门户的所有活动中显示正确的日期和时间。",
   "LanguageTimeSettingsTooltipDescription": "若想使您设置的参数生效，请点击该部分底部的 <1>{{save}}</1>按钮。<3>{{learnMore}}</3>",
   "LocalFile": "本地文件",
-  "LogoDark": "关于/登录页面Logo",
   "LogoDocsEditor": "编辑器标头Logo",
   "LogoFavicon": "网站图标",
   "LogoLightSmall": "门户标头Logo",

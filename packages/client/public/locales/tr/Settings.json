@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0> tüm kullanıcılar için tüm portalın dilini değiştirmeye ve saat kuşağının ayarlanarak ONLYOFFICE portalının etkinliklerinin doğru tarih ve zamanda gösterilmesini sağlar.",
   "LanguageTimeSettingsTooltipDescription": "Girdiğiniz parametrelerin çalışmaya başlaması için bölümün sonundaki <1>{{save}}</1> tuşuna tıklayın.<3>{{learnMore}}</3>",
   "LocalFile": "Yerel dosya",
-  "LogoDark": "Hakkında/Giriş sayfası için Logo",
   "LogoDocsEditor": "Editörler başlığı için logo",
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Portal başlığı için logo",

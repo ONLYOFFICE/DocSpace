@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0>은 모든 포털 사용자에 대해 전체 포털의 언어를 변경하고 ONLYOFFICE 포털의 모든 이벤트가 올바른 날짜 및 시각으로 표시되도록 시간대를 구성하는 방법입니다.",
   "LanguageTimeSettingsTooltipDescription": "설정한 매개변수를 적용하려면, 섹션 하단의 <1>{{save}}</1> 버큰을 클릭하세요.<3>{{learnMore}}</3>",
   "LocalFile": "로컬 파일",
-  "LogoDark": "소개/로그인 페이지 로고",
   "LogoDocsEditor": "편집기 헤더 로고",
   "LogoFavicon": "파비콘",
   "LogoLightSmall": "포털 헤더 로고",

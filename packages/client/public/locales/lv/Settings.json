@@ -72,7 +72,6 @@
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0> ir veids, kā mainīt portāla valodu visiem portāla lietotājiem un konfigurētu laika joslu, lai ONLYOFFICE portāla notikumi tiks rādīti ar pareizu datumu un laiku.",
   "LanguageTimeSettingsTooltipDescription": "Atveriet atbilstošo nolaižamos sarakstu, lai iestatītu nepieciešamos parametrus. Lai lietotu tos izmaiņas izmantojiet pogu <1>{{save}}</1> sadaļas apakšējā daļā.<3>{{learnMore}}</3>",
   "LocalFile": "Vietējais fails",
-  "LogoDark": "Lapas Par/pieteikšanās logotips",
   "LogoDocsEditor": "Redaktora galvenes logotips",
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Logotips portāla galvenei",
