@@ -66,8 +66,6 @@ const CreateRoomDialog = ({
       tmpFile: "",
       x: 0.5,
       y: 0.5,
-      width: 216,
-      height: 216,
       zoom: 1,
     },
   });
@@ -78,8 +76,6 @@ const CreateRoomDialog = ({
   const tagHandler = new TagHandler(roomParams.tags, setRoomTags, fetchedTags);
 
   const setRoomType = (newRoomType) => {
-    // const [roomByType] = roomTypes.filter((room) => room.type === newRoomType);
-    // tagHandler.refreshDefaultTag(t(roomByType.defaultTag));
     setRoomParams((prev) => ({
       ...prev,
       type: newRoomType,
