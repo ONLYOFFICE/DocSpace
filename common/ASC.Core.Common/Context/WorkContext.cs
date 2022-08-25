@@ -41,6 +41,7 @@ public class WorkContext
     private readonly SmtpSender _smtpSender;
     private readonly NotifyServiceSender _notifyServiceSender;
     private readonly TelegramSender _telegramSender;
+    private readonly PushSender _pushSender;
     private static bool _notifyStarted;
     private static bool? _isMono;
     private static string _monoVersion;
@@ -87,7 +88,8 @@ public class WorkContext
         AWSSender awsSender,
         SmtpSender smtpSender,
         NotifyServiceSender notifyServiceSender,
-        TelegramSender telegramSender
+        TelegramSender telegramSender,
+        PushSender pushSender
         )
     {
         _serviceProvider = serviceProvider;
@@ -100,6 +102,7 @@ public class WorkContext
         _smtpSender = smtpSender;
         _notifyServiceSender = notifyServiceSender;
         _telegramSender = telegramSender;
+        _pushSender = pushSender;
     }
 
     public void NotifyStartUp()
@@ -119,6 +122,8 @@ public class WorkContext
             INotifySender jabberSender = _notifyServiceSender;
             INotifySender emailSender = _notifyServiceSender;
             INotifySender telegramSender = _telegramSender;
+            INotifySender pushSender = _pushSender;
+            
 
             var postman = _configuration["core:notify:postman"];
 
@@ -148,6 +153,7 @@ public class WorkContext
             NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, _serviceProvider));
             NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, _serviceProvider));
             NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, _serviceProvider));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyPushSenderSysName, new PushSenderSink(pushSender, _serviceProvider));
 
             NotifyEngine.AddAction<NotifyTransferRequest>();
 
@@ -199,6 +205,7 @@ public static class WorkContextExtension
         dIHelper.TryAdd<TelegramHelper>();
         dIHelper.TryAdd<TelegramSenderSinkMessageCreator>();
         dIHelper.TryAdd<JabberSenderSinkMessageCreator>();
+        dIHelper.TryAdd<PushSenderSinkMessageCreator>();
         dIHelper.TryAdd<EmailSenderSinkMessageCreator>();
     }
 }
