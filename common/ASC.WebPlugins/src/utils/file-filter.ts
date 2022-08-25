@@ -4,12 +4,17 @@ import * as path from "path";
 const fileFilter = (req, file, cb) => {
   const pluginsDir = path.join(
     __dirname,
-    "../../../../../../../public/scripts"
+    "../../../../../../../public/plugins"
   );
 
-  var files = fs.readdirSync(pluginsDir);
+  let files = null;
+  let isUniqName = true;
 
-  const isUniqName = !files.includes(file.originalname);
+  if (fs.existsSync(pluginsDir)) {
+    files = fs.readdirSync(pluginsDir);
+
+    isUniqName = !files?.includes(file.originalname);
+  }
 
   if (file.mimetype === "text/javascript" && isUniqName) return cb(null, true);
 
