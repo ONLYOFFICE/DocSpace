@@ -11,6 +11,7 @@ const CreateRoomEvent = ({
   createRoomInThirdpary,
   createTag,
   addTagsToRoom,
+  calculateRoomLogoParams,
   uploadRoomLogo,
   addLogoToRoom,
   fetchTags,
@@ -74,38 +75,23 @@ const CreateRoomEvent = ({
       await addTagsToRoom(room.id, addTagsData);
 
       if (roomParams.icon.uploadedFile)
-        await uploadRoomLogo(uploadLogoData)?.then((response) => {
+        await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
           img.onload = async () => {
-            const tmpFile = response.data;
             const { x, y, zoom } = roomParams.icon;
-
-            const imgWidth = Math.min(1280, img.width);
-            const imgHeight = Math.round(img.height / (img.width / imgWidth));
-
-            const dimensions = Math.round(imgHeight / zoom);
-
-            const croppedX = Math.round(x * imgWidth - dimensions / 2);
-            const croppedY = Math.round(y * imgHeight - dimensions / 2);
-
             await addLogoToRoom(room.id, {
-              tmpFile,
-              x: croppedX,
-              y: croppedY,
-              width: dimensions,
-              height: dimensions,
+              tmpFile: response.data,
+              ...calculateRoomLogoParams(img, x, y, zoom),
             });
-            await updateCurrentFolder(null, currrentFolderId);
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-
-      await updateCurrentFolder(null, currrentFolderId);
     } catch (err) {
       console.log(err);
     } finally {
+      await updateCurrentFolder(null, currrentFolderId);
       setIsLoading(false);
       onClose();
     }
@@ -150,6 +136,7 @@ export default inject(
       createRoom,
       createRoomInThirdpary,
       addTagsToRoom,
+      calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
     } = filesStore;
@@ -202,6 +189,7 @@ export default inject(
       createTag,
       fetchTags,
       addTagsToRoom,
+      calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
 
