@@ -77,7 +77,7 @@ const PreviewTile = ({ t, title, previewIcon, tags, defaultTagLabel }) => {
       </div>
       <div className="tile-tags">
         {tags.length ? (
-          <Tags columnCount={3} tags={tags} />
+          <Tags columnCount={2} tags={tags} />
         ) : (
           <Tag
             className="type_tag"
