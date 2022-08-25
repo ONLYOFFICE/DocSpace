@@ -53,7 +53,7 @@ export class PluginsController {
   )
   async upload(
     @UploadedFiles() files: Express.Multer.File[]
-  ): Promise<{ response: Plugin }> {
+  ): Promise<{ response: Plugin } | { response: { error: string } }> {
     try {
       if (files[0]) {
         const plugin = await this.pluginsService.upload(
@@ -61,10 +61,16 @@ export class PluginsController {
           files[0].filename
         );
         return { response: plugin };
+      } else {
+        return {
+          response: { error: "Invalid file format or file already exists" },
+        };
       }
     } catch (e) {
       console.log(e);
-      return;
+      return {
+        response: { error: "Invalid file format or file already exists" },
+      };
     }
   }
 
