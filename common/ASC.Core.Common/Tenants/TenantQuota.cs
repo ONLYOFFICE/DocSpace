@@ -41,8 +41,10 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
 
     public int Tenant { get; set; }
     public string Name { get; set; }
-
-    private List<string> _featuresList;
+    public decimal Price { get; set; }
+    public string ProductId { get; set; }
+    public bool Visible { get; set; }
+    public long MaxFileSize { get; set; }
 
     public string Features
     {
@@ -62,14 +64,10 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
             }
         }
     }
-    public decimal Price { get; set; }
-    public string ProductId { get; set; }
-    public bool Visible { get; set; }
-    public long MaxFileSize { get; set; }
     public long MaxTotalSize
     {
         get => ByteConverter.GetInBytes(GetFeature("total_size", () => Default.MaxTotalSize));
-        set => SetFeature("users", ByteConverter.GetInMBytes(value));
+        set => SetFeature("total_size", ByteConverter.GetInMBytes(value));
     }
 
     public int ActiveUsers
@@ -198,6 +196,7 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("thirdparty", value);
     }
 
+    private List<string> _featuresList;
     public TenantQuota()
     {
         _featuresList = new List<string>();
@@ -206,6 +205,17 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
     public TenantQuota(int tenant) : this()
     {
         Tenant = tenant;
+    }
+
+    public TenantQuota(TenantQuota quota)
+    {
+        Tenant = quota.Tenant;
+        Name = quota.Name;
+        Price = quota.Price;
+        ProductId = quota.ProductId;
+        Visible = quota.Visible;
+        MaxFileSize = quota.MaxFileSize;
+        Features = quota.Features;
     }
 
     public override int GetHashCode()
@@ -294,7 +304,7 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
 
     public static TenantQuota operator *(TenantQuota quota, int quantity)
     {
-        var newQuota = (TenantQuota)quota.Clone();
+        var newQuota = new TenantQuota(quota);
 
         newQuota.Price *= quantity;
 
@@ -328,8 +338,8 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
             return quota;
         }
 
-        var newQuota = (TenantQuota)old.Clone();
-        newQuota.Name = "";
+        var newQuota = new TenantQuota(quota);
+
         newQuota.MaxFileSize = Math.Max(newQuota.MaxFileSize, quota.MaxFileSize);
         newQuota.Price += quota.Price;
         newQuota.Visible &= quota.Visible;
