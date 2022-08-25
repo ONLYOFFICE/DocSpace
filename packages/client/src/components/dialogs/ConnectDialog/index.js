@@ -385,8 +385,6 @@ export default inject(
       setSaveThirdpartyResponse,
     } = dialogsStore;
 
-    console.log(roomCreation);
-
     return {
       selectedFolderId: id,
       selectedFolderFolders: folders,
