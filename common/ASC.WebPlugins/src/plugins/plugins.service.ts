@@ -4,6 +4,10 @@ import { Repository } from "typeorm";
 import * as path from "path";
 import * as fs from "fs";
 
+import * as plugins from "../../../../config/plugins.json";
+
+const pathToPlugins = plugins.plugins.path;
+
 import { Plugin } from "src/entities/plugin.entity";
 
 @Injectable()
@@ -55,11 +59,7 @@ export class PluginsService {
 
     const fileName = plugin.filename;
 
-    const dir = path.join(
-      __dirname,
-      "../../../../../../../public/plugins",
-      `${fileName}`
-    );
+    const dir = path.join(__dirname, pathToPlugins, `${fileName}`);
 
     fs.unlink(dir, (err) => {
       err && console.log(err);

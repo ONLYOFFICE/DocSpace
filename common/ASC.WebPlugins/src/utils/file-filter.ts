@@ -1,11 +1,12 @@
 import * as fs from "fs";
 import * as path from "path";
 
+import * as plugins from "../../../../config/plugins.json";
+
+const pathToPlugins = plugins.plugins.path;
+
 const fileFilter = (req, file, cb) => {
-  const pluginsDir = path.join(
-    __dirname,
-    "../../../../../../../public/plugins"
-  );
+  const pluginsDir = path.join(__dirname, pathToPlugins);
 
   let files = null;
   let isUniqName = true;

@@ -2,9 +2,13 @@ import { diskStorage } from "multer";
 import * as path from "path";
 import * as fs from "fs";
 
+import * as plugins from "../../../../config/plugins.json";
+
+const pathToPlugins = plugins.plugins.path;
+
 const storage = diskStorage({
   destination: function (req, file, cb) {
-    const dir = path.join(__dirname, "../../../../../../../public/plugins");
+    const dir = path.join(__dirname, pathToPlugins);
 
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
