@@ -205,7 +205,7 @@ Description: Description
 Package: {{product}}-radicale
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- python3 >= 3.6,
+ python3-pip,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
