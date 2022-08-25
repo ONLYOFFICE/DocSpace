@@ -109,7 +109,12 @@ const IconCropper = ({
     }
   }, 300);
 
-  useEffect(() => handleImageChange(), [icon]);
+  useEffect(() => {
+    handleImageChange();
+    return () => {
+      setPreviewIcon("");
+    };
+  }, [icon]);
 
   return (
     <StyledIconCropper className="icon_cropper">
