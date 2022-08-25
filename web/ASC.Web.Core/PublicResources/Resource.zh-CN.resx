@@ -91,9 +91,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Email地址不正确</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>促销码有误</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>很抱歉，您没有权限执行这项操作</value>
   </data>

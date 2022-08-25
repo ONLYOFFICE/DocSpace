@@ -85,8 +85,8 @@ public sealed class BackupSchedulerService : BackgroundService
     {
         using var serviceScope = _scopeFactory.CreateScope();
 
-        var paymentManager = serviceScope.ServiceProvider.GetRequiredService<PaymentManager>();
-        var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>(); ;
+        var tariffService = serviceScope.ServiceProvider.GetRequiredService<ITariffService>();
+        var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>();
         var backupSchedule = serviceScope.ServiceProvider.GetRequiredService<Schedule>();
         var tenantManager = serviceScope.ServiceProvider.GetRequiredService<TenantManager>();
 
@@ -107,7 +107,7 @@ public sealed class BackupSchedulerService : BackgroundService
             {
                 if (_coreBaseSettings.Standalone || tenantManager.GetTenantQuota(schedule.TenantId).AutoBackup)
                 {
-                    var tariff = paymentManager.GetTariff(schedule.TenantId);
+                    var tariff = tariffService.GetTariff(schedule.TenantId);
 
                     if (tariff.State < TariffState.Delay)
                     {

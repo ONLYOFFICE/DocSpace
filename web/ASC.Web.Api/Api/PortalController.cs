@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Geolocation;
-
 namespace ASC.Web.Api.Controllers;
 
 [Scope]
@@ -33,17 +31,17 @@ namespace ASC.Web.Api.Controllers;
 [ApiController]
 public class PortalController : ControllerBase
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    protected Tenant Tenant { get { return _apiContext.Tenant; } }
 
     private readonly ApiContext _apiContext;
-    private readonly UserManager _userManager;
-    private readonly TenantManager _tenantManager;
-    private readonly PaymentManager _paymentManager;
+    protected readonly UserManager _userManager;
+    protected readonly TenantManager _tenantManager;
+    protected readonly ITariffService _tariffService;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly UrlShortener _urlShortener;
     private readonly AuthContext _authContext;
     private readonly WebItemSecurity _webItemSecurity;
-    private readonly SecurityContext _securityContext;
+    protected readonly SecurityContext _securityContext;
     private readonly SettingsManager _settingsManager;
     private readonly IMobileAppInstallRegistrator _mobileAppInstallRegistrator;
     private readonly IConfiguration _configuration;
@@ -58,18 +56,16 @@ public class PortalController : ControllerBase
     private readonly CoreSettings _coreSettings;
     private readonly PermissionContext _permissionContext;
     private readonly StudioNotifyService _studioNotifyService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MessageService _messageService;
     private readonly MessageTarget _messageTarget;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
-    private readonly GeolocationHelper _geolocationHelper;
 
     public PortalController(
         ILogger<PortalController> logger,
         ApiContext apiContext,
         UserManager userManager,
         TenantManager tenantManager,
-        PaymentManager paymentManager,
+        ITariffService tariffService,
         CommonLinkUtility commonLinkUtility,
         UrlShortener urlShortener,
         AuthContext authContext,
@@ -88,18 +84,16 @@ public class PortalController : ControllerBase
         CoreSettings coreSettings,
         PermissionContext permissionContext,
         StudioNotifyService studioNotifyService,
-        IHttpContextAccessor httpContextAccessor,
         MessageService messageService,
         MessageTarget messageTarget,
-        DisplayUserSettingsHelper displayUserSettingsHelper,
-        GeolocationHelper geolocationHelper
+        DisplayUserSettingsHelper displayUserSettingsHelper
         )
     {
         _log = logger;
         _apiContext = apiContext;
         _userManager = userManager;
         _tenantManager = tenantManager;
-        _paymentManager = paymentManager;
+        _tariffService = tariffService;
         _commonLinkUtility = commonLinkUtility;
         _urlShortener = urlShortener;
         _authContext = authContext;
@@ -118,11 +112,9 @@ public class PortalController : ControllerBase
         _coreSettings = coreSettings;
         _permissionContext = permissionContext;
         _studioNotifyService = studioNotifyService;
-        _httpContextAccessor = httpContextAccessor;
         _messageService = messageService;
         _messageTarget = messageTarget;
         _displayUserSettingsHelper = displayUserSettingsHelper;
-        _geolocationHelper = geolocationHelper;
     }
 
     [HttpGet("")]
@@ -201,78 +193,10 @@ public class PortalController : ControllerBase
         return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
     }
 
-    [HttpPut("payment/url")]
-    public Uri GetPaymentUrl(PaymentUrlRequestsDto inDto)
-    {
-        if (_paymentManager.GetTariffPayments(Tenant.Id).Any()
-            || !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
-        {
-            return null;
-        }
-
-        var currency = GetCurrencyFromRequest();
-
-        return _paymentManager.GetShoppingUri(currency,
-            Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
-            _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email,
-            inDto.Quantity,
-            inDto.BackUrl);
-    }
-    
-    [HttpPut("payment/update")]
-    public bool PaymentUpdate(PaymentUrlRequestsDto inDto)
-    {
-        if (!_paymentManager.GetTariffPayments(Tenant.Id).Any()
-            || !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
-        {
-            return false;
-        }
-
-        return _paymentManager.ChangePayment(inDto.Quantity);
-    }
-
-    [HttpGet("payment/account")]
-    public Uri GetPaymentAccount(string backUrl)
-    { 
-        var payerId = _paymentManager.GetTariff(Tenant.Id).CustomerId;
-
-        if (_securityContext.CurrentAccount.ID != payerId
-            && _securityContext.CurrentAccount.ID != Tenant.OwnerId)
-            return null;
-
-        return _paymentManager.GetAccountLink(Tenant.Id, backUrl);
-    }
-
-    [HttpGet("payment/prices")]
-    public object GetPrices()
-    {
-        var currency = GetCurrencyFromRequest();
-        var result = _tenantManager.GetProductPriceInfo()
-            .ToDictionary(pr => pr.Key, pr => pr.Value.ContainsKey(currency) ? pr.Value[currency] : 0);
-        return result;
-    }
-
-    private string GetCurrencyFromRequest()
-    {
-        var regionInfo = new RegionInfo("US");
-        var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext(_httpContextAccessor.HttpContext);
-        if (!string.IsNullOrEmpty(geoinfo.Key))
-        {
-            try
-            {
-                regionInfo = new RegionInfo(geoinfo.Key);
-            }
-            catch (Exception)
-            {
-            }
-        }
-        return regionInfo.ISOCurrencySymbol;
-    }
-
     [HttpGet("tariff")]
     public Tariff GetTariff()
     {
-        return _paymentManager.GetTariff(Tenant.Id);
+        return _tariffService.GetTariff(Tenant.Id);
     }
 
     [HttpGet("quota")]
@@ -492,7 +416,7 @@ public class PortalController : ControllerBase
         var owner = _userManager.GetUsers(Tenant.OwnerId);
 
         var showAutoRenewText = !_coreBaseSettings.Standalone &&
-                        _paymentManager.GetTariffPayments(Tenant.Id).Any() &&
+                        _tariffService.GetPayments(Tenant.Id).Any() &&
                         !_tenantExtra.GetTenantQuota().Trial;
 
         _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);

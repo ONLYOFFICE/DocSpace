@@ -609,9 +609,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Incorrect email address</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Incorrect promo code</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>No permissions to perform this action</value>
   </data>

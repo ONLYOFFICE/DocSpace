@@ -34,14 +34,13 @@ public class StudioPeriodicNotify
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly StudioNotifyHelper _studioNotifyHelper;
-    private readonly PaymentManager _paymentManager;
+    private readonly ITariffService _tariffService;
     private readonly TenantExtra _tenantExtra;
     private readonly AuthContext _authContext;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly ApiSystemHelper _apiSystemHelper;
     private readonly SetupInfo _setupInfo;
     private readonly IDbContextFactory<FeedDbContext> _dbContextFactory;
-    private readonly IConfiguration _configuration;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
@@ -56,14 +55,13 @@ public class StudioPeriodicNotify
         TenantManager tenantManager,
         UserManager userManager,
         StudioNotifyHelper studioNotifyHelper,
-        PaymentManager paymentManager,
+        ITariffService tariffService,
         TenantExtra tenantExtra,
         AuthContext authContext,
         CommonLinkUtility commonLinkUtility,
         ApiSystemHelper apiSystemHelper,
         SetupInfo setupInfo,
         IDbContextFactory<FeedDbContext> dbContextFactory,
-        IConfiguration configuration,
         SettingsManager settingsManager,
         CoreBaseSettings coreBaseSettings,
         DisplayUserSettingsHelper displayUserSettingsHelper,
@@ -75,14 +73,13 @@ public class StudioPeriodicNotify
         _tenantManager = tenantManager;
         _userManager = userManager;
         _studioNotifyHelper = studioNotifyHelper;
-        _paymentManager = paymentManager;
+        _tariffService = tariffService;
         _tenantExtra = tenantExtra;
         _authContext = authContext;
         _commonLinkUtility = commonLinkUtility;
         _apiSystemHelper = apiSystemHelper;
         _setupInfo = setupInfo;
         _dbContextFactory = dbContextFactory;
-        _configuration = configuration;
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
         _displayUserSettingsHelper = displayUserSettingsHelper;
@@ -117,7 +114,7 @@ public class StudioPeriodicNotify
                 _tenantManager.SetCurrentTenant(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-                var tariff = _paymentManager.GetTariff(tenant.Id);
+                var tariff = _tariffService.GetTariff(tenant.Id);
                 var quota = _tenantManager.GetTenantQuota(tenant.Id);
                 var createdDate = tenant.CreationDateTime.Date;
 
@@ -483,7 +480,7 @@ public class StudioPeriodicNotify
                 _tenantManager.SetCurrentTenant(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-                var tariff = _paymentManager.GetTariff(tenant.Id);
+                var tariff = _tariffService.GetTariff(tenant.Id);
                 var quota = _tenantManager.GetTenantQuota(tenant.Id);
                 var createdDate = tenant.CreationDateTime.Date;
 

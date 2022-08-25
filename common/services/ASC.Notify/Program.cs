@@ -41,7 +41,6 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 (hostContext, services, diHelper) =>
 {
     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-
     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
 
     diHelper.TryAdd<NotifySenderService>();

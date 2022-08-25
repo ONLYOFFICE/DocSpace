@@ -21,33 +21,6 @@ namespace ASC.Migrations.MySql.Migrations
                 .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("ASC.Core.Common.EF.DbButton", b =>
-                {
-                    b.Property<int>("TariffId")
-                        .HasColumnType("int")
-                        .HasColumnName("tariff_id");
-
-                    b.Property<string>("PartnerId")
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("partner_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("ButtonUrl")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("button_url")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.HasKey("TariffId", "PartnerId")
-                        .HasName("PRIMARY");
-
-                    b.ToTable("tenants_buttons", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
-                });
-
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
                 {
                     b.Property<int>("Tenant")

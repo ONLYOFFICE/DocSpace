@@ -76,12 +76,10 @@ public class TariffService : ITariffService
     private TimeSpan _cacheExpiration;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CoreSettings _coreSettings;
-    private readonly IConfiguration _configuration;
     private readonly IDbContextFactory<CoreDbContext> _dbContextFactory;
     private readonly TariffServiceStorage _tariffServiceStorage;
     private readonly BillingClient _billingClient;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly int _activeUsersMin;
+    //private readonly int _activeUsersMin;
     //private readonly int _activeUsersMax;
 
     public TariffService()
@@ -99,8 +97,7 @@ public class TariffService : ITariffService
         IDbContextFactory<CoreDbContext> coreDbContextManager,
         TariffServiceStorage tariffServiceStorage,
         ILogger<TariffService> logger,
-        BillingClient billingClient,
-        IHttpClientFactory httpClientFactory)
+        BillingClient billingClient)
         : this()
 
     {
@@ -109,23 +106,19 @@ public class TariffService : ITariffService
         _tenantService = tenantService;
         _userService = userService;
         _coreSettings = coreSettings;
-        _configuration = configuration;
         _tariffServiceStorage = tariffServiceStorage;
         _billingClient = billingClient;
-        _httpClientFactory = httpClientFactory;
         _coreBaseSettings = coreBaseSettings;
-        int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
-
-        _paymentDelay = paymentDelay;
+        _paymentDelay = configuration.GetSection("core:payment").Get<PaymentConfiguration>().Delay;
 
         _cache = _tariffServiceStorage.Cache;
         _notify = _tariffServiceStorage.Notify;
         _dbContextFactory = coreDbContextManager;
-        var range = (_configuration["core.payment-user-range"] ?? "").Split('-');
-        if (!int.TryParse(range[0], out _activeUsersMin))
-        {
-            _activeUsersMin = 0;
-        }
+        //var range = (_configuration["core.payment-user-range"] ?? "").Split('-');
+        //if (!int.TryParse(range[0], out _activeUsersMin))
+        //{
+        //    _activeUsersMin = 0;
+        //}
         //if (range.Length < 2 || !int.TryParse(range[1], out _activeUsersMax))
         //{
         //    _activeUsersMax = constants.MaxEveryoneCount;
@@ -154,8 +147,7 @@ public class TariffService : ITariffService
                 //  {
                 try
                 {
-                    var client = GetBillingClient();
-                    var currentPayments = client.GetCurrentPayments(GetPortalId(tenantId));
+                    var currentPayments = _billingClient.GetCurrentPayments(GetPortalId(tenantId));
                     if (currentPayments.Length == 0) throw new BillingNotFoundException("Empty PaymentLast");
 
                     var asynctariff = Tariff.CreateDefault(true);
@@ -275,8 +267,7 @@ public class TariffService : ITariffService
 
         try
         {
-            var client = GetBillingClient();
-            var changed = client.ChangePayment(GetPortalId(tenantId), productIds.ToArray(), quantity.Values.ToArray());
+            var changed = _billingClient.ChangePayment(GetPortalId(tenantId), productIds.ToArray(), quantity.Values.ToArray());
 
             if (!changed) return false;
 
@@ -364,8 +355,7 @@ public class TariffService : ITariffService
                 try
                 {
                     var quotas = _quotaService.GetTenantQuotas();
-                    var client = GetBillingClient();
-                    foreach (var pi in client.GetPayments(GetPortalId(tenantId)))
+                    foreach (var pi in _billingClient.GetPayments(GetPortalId(tenantId)))
                     {
                         var quota = quotas.SingleOrDefault(q => q.ProductId == pi.ProductRef.ToString());
                         if (quota != null)
@@ -417,9 +407,8 @@ public class TariffService : ITariffService
 
                 try
                 {
-                    var client = GetBillingClient();
                     url =
-                        client.GetPaymentUrl(
+                        _billingClient.GetPaymentUrl(
                             "__Tenant__",
                             productIds.ToArray(),
                             null,
@@ -480,9 +469,8 @@ public class TariffService : ITariffService
                                                .Select(q => q.ProductId)
                                                .ToArray();
 
-                    var client = GetBillingClient();
                     urls =
-                        client.GetPaymentUrls(
+                        _billingClient.GetPaymentUrls(
                             tenant.HasValue ? GetPortalId(tenant.Value) : null,
                             products,
                             tenant.HasValue ? GetAffiliateId(tenant.Value) : affiliateId,
@@ -531,9 +519,8 @@ public class TariffService : ITariffService
             {
                 try
                 {
-                    var client = GetBillingClient();
                     url =
-                        client.GetPaymentUrl(
+                        _billingClient.GetPaymentUrl(
                             null,
                             productIds,
                             affiliateId,
@@ -577,8 +564,7 @@ public class TariffService : ITariffService
             var result = _cache.Get<IDictionary<string, Dictionary<string, decimal>>>(key);
             if (result == null)
             {
-                var client = GetBillingClient();
-                result = client.GetProductPriceInfo(productIds);
+                result = _billingClient.GetProductPriceInfo(productIds);
                 _cache.Insert(key, result, DateTime.Now.AddHours(1));
             }
 
@@ -604,8 +590,7 @@ public class TariffService : ITariffService
             {
                 try
                 {
-                    var client = GetBillingClient();
-                    url = client.GetAccountLink(GetPortalId(tenant), backUrl);
+                    url = _billingClient.GetAccountLink(GetPortalId(tenant), backUrl);
                 }
                 catch (Exception error)
                 {
@@ -620,30 +605,6 @@ public class TariffService : ITariffService
         }
 
         return null;
-    }
-
-    public string GetButton(int tariffId, string partnerId)
-    {
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
-
-        return coreDbContext.Buttons
-            .Where(r => r.TariffId == tariffId && r.PartnerId == partnerId)
-            .Select(r => r.ButtonUrl)
-            .SingleOrDefault();
-    }
-
-    public void SaveButton(int tariffId, string partnerId, string buttonUrl)
-    {
-        var efButton = new DbButton()
-        {
-            TariffId = tariffId,
-            PartnerId = partnerId,
-            ButtonUrl = buttonUrl
-        };
-
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
-        coreDbContext.AddOrUpdate(r => r.Buttons, efButton);
-        coreDbContext.SaveChanges();
     }
 
 
@@ -809,23 +770,6 @@ public class TariffService : ITariffService
         var settings = _tenantService.GetTenantSettings(Tenant.DefaultTenant, key);
 
         return settings != null ? Convert.ToInt32(Encoding.UTF8.GetString(settings)) : defaultValue;
-    }
-
-    private BillingClient GetBillingClient()
-    {
-        try
-        {
-            return new BillingClient(_configuration, _httpClientFactory);
-        }
-        catch (InvalidOperationException ioe)
-        {
-            throw new BillingNotConfiguredException(ioe.Message, ioe);
-        }
-        catch (ReflectionTypeLoadException rtle)
-        {
-            _logger.ErrorLoaderExceptions(string.Join(Environment.NewLine, rtle.LoaderExceptions.Select(e => e.ToString())), rtle);
-            throw;
-        }
     }
 
     private string GetPortalId(int tenant)

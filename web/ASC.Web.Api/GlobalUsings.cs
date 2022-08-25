@@ -89,6 +89,7 @@ global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Helpers;
+global using ASC.Geolocation;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.EF.Model;

@@ -24,26 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.EF.Context;
+namespace ASC.Core.Billing;
 
-public class TenantDbContext : DbContext
+internal class PaymentConfiguration
 {
-    public DbSet<DbTenant> Tenants { get; set; }
-    public DbSet<DbTenantVersion> TenantVersion { get; set; }
-    public DbSet<DbTenantForbiden> TenantForbiden { get; set; }
-    public DbSet<TenantIpRestrictions> TenantIpRestrictions { get; set; }
-    public DbSet<DbCoreSettings> CoreSettings { get; set; }
-
-    public TenantDbContext(DbContextOptions<TenantDbContext> options) : base(options) { }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        ModelBuilderWrapper
-            .From(modelBuilder, Database)
-            .AddDbTenant()
-            .AddCoreSettings()
-            .AddDbTenantForbiden()
-            .AddTenantIpRestrictions()
-            .AddDbTenantVersion();
-    }
+    public bool Test { get; set; }
+    public string Url { get; set; }
+    public string Key { get; set; }
+    public string Secret { get; set; }
+    public int Delay { get; set; }
 }

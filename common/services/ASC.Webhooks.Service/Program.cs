@@ -37,8 +37,6 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     config.AddJsonFile($"appsettings.services.json", true);
 }, (hostContext, services, diHelper) =>
 {
-    services.AddHttpClient();
-
     diHelper.TryAdd<DbWorker>();
 
     services.AddHostedService<WorkerService>();

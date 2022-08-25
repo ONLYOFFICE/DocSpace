@@ -62,7 +62,7 @@ public class TenantExtra
     private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
-    private readonly PaymentManager _paymentManager;
+    private readonly ITariffService _tariffService;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly LicenseReader _licenseReader;
     private readonly SetupInfo _setupInfo;
@@ -73,7 +73,7 @@ public class TenantExtra
         TenantStatisticsProvider tenantStatisticsProvider,
         AuthContext authContext,
         TenantManager tenantManager,
-        PaymentManager paymentManager,
+        ITariffService tariffService,
         CoreBaseSettings coreBaseSettings,
         LicenseReader licenseReader,
         SetupInfo setupInfo,
@@ -84,7 +84,7 @@ public class TenantExtra
         _tenantStatisticsProvider = tenantStatisticsProvider;
         _authContext = authContext;
         _tenantManager = tenantManager;
-        _paymentManager = paymentManager;
+        _tariffService = tariffService;
         _coreBaseSettings = coreBaseSettings;
         _licenseReader = licenseReader;
         _setupInfo = setupInfo;
@@ -151,7 +151,7 @@ public class TenantExtra
 
     public Tariff GetCurrentTariff()
     {
-        return _paymentManager.GetTariff(_tenantManager.GetCurrentTenant().Id);
+        return _tariffService.GetTariff(_tenantManager.GetCurrentTenant().Id);
     }
 
     public TenantQuota GetTenantQuota()

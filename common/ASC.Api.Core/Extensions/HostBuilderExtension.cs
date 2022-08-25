@@ -86,7 +86,7 @@ public static class HostBuilderExtension
         hostBuilder.ConfigureServices((hostContext, services) =>
         {
             services.AddMemoryCache();
-
+            services.AddHttpClient();
             services.AddDistributedCache(hostContext.Configuration);
             services.AddEventBus(hostContext.Configuration);
             services.AddDistributedTaskQueue();

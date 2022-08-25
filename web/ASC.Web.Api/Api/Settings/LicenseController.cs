@@ -40,7 +40,7 @@ public class LicenseController : BaseSettingsController
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly ILogger _log;
-    private readonly PaymentManager _paymentManager;
+    private readonly ITariffService _tariffService;
 
     public LicenseController(
         ILoggerProvider option,
@@ -56,7 +56,7 @@ public class LicenseController : BaseSettingsController
         CoreBaseSettings coreBaseSettings,
         IMemoryCache memoryCache,
         FirstTimeTenantSettings firstTimeTenantSettings,
-        PaymentManager paymentManager,
+        ITariffService tariffService,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -69,7 +69,7 @@ public class LicenseController : BaseSettingsController
         _licenseReader = licenseReader;
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
-        _paymentManager = paymentManager;
+        _tariffService = tariffService;
     }
 
     [HttpGet("license/refresh")]
@@ -172,7 +172,7 @@ public class LicenseController : BaseSettingsController
             DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
         };
 
-        _paymentManager.SetTariff(-1, tariff);
+        _tariffService.SetTariff(-1, tariff);
 
         _messageService.Send(MessageAction.LicenseKeyUploaded);
 

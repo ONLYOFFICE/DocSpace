@@ -23,28 +23,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
                 .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("ASC.Core.Common.EF.DbButton", b =>
-                {
-                    b.Property<int>("TariffId")
-                        .HasColumnType("integer")
-                        .HasColumnName("tariff_id");
-
-                    b.Property<string>("PartnerId")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("partner_id");
-
-                    b.Property<string>("ButtonUrl")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("button_url");
-
-                    b.HasKey("TariffId", "PartnerId")
-                        .HasName("tenants_buttons_pkey");
-
-                    b.ToTable("tenants_buttons", "onlyoffice");
-                });
-
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
                 {
                     b.Property<int>("Tenant")

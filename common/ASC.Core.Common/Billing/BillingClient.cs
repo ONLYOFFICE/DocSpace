@@ -32,27 +32,20 @@ namespace ASC.Core.Billing;
 public class BillingClient
 {
     public readonly bool Configured;
-    private readonly string _billingDomain;
-    private readonly string _billingKey;
-    private readonly string _billingSecret;
-    private readonly bool _test;
+    private readonly PaymentConfiguration _configuration;
     private readonly IHttpClientFactory _httpClientFactory;
     private const int StripePaymentSystemId = 9;
 
 
     public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
     {
-        _test = Convert.ToBoolean(configuration["core:payment:test"] ?? "false");
+        _configuration = configuration.GetSection("core:payment").Get<PaymentConfiguration>();
         _httpClientFactory = httpClientFactory;
-        var billingDomain = configuration["core:payment:url"];
 
-        _billingDomain = (billingDomain ?? "").Trim().TrimEnd('/');
-        if (!string.IsNullOrEmpty(_billingDomain))
+        _configuration.Url = (_configuration.Url ?? "").Trim().TrimEnd('/');
+        if (!string.IsNullOrEmpty(_configuration.Url))
         {
-            _billingDomain += "/billing/";
-
-            _billingKey = configuration["core:payment:key"];
-            _billingSecret = configuration["core:payment:secret"];
+            _configuration.Url += "/billing/";
 
             Configured = true;
         }
@@ -70,7 +63,7 @@ public class BillingClient
         var result = Request("GetActiveResources", portalId);
         var payments = JsonSerializer.Deserialize<PaymentLast[]>(result);
 
-        if (!_test)
+        if (!_configuration.Test)
         {
             payments = payments.Where(payment => payment.PaymentStatus != 4).ToArray();
         }
@@ -237,16 +230,16 @@ public class BillingClient
 
     private string Request(string method, string portalId, params Tuple<string, string>[] parameters)
     {
-        var url = _billingDomain + method;
+        var url = _configuration.Url + method;
 
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(url),
             Method = HttpMethod.Post
         };
-        if (!string.IsNullOrEmpty(_billingKey))
+        if (!string.IsNullOrEmpty(_configuration.Key))
         {
-            request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
+            request.Headers.Add("Authorization", CreateAuthToken(_configuration.Key, _configuration.Secret));
         }
 
         var httpClient = _httpClientFactory.CreateClient();
@@ -313,7 +306,7 @@ public class BillingClient
             return string.Empty;
         }
 
-        if (_test && !s.Contains("&DOTEST = 1"))
+        if (_configuration.Test && !s.Contains("&DOTEST = 1"))
         {
             s += "&DOTEST=1";
         }

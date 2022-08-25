@@ -40,8 +40,6 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 },
 (hostContext, services, diHelper) =>
 {
-    services.AddHttpClient();
-
     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
     services.AddHostedService<ServiceLauncher>();
     diHelper.TryAdd<ServiceLauncher>();
