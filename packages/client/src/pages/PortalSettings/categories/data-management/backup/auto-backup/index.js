@@ -427,7 +427,7 @@ class AutomaticBackup extends React.PureComponent {
       onClick: this.onClickShowStorage,
     };
 
-    const roomName = rootFoldersTitles[FolderType.Rooms];
+    const roomName = rootFoldersTitles[FolderType.USER]?.title;
 
     return isEmptyContentBeforeLoader && !isInitialLoading ? (
       <></>
@@ -472,7 +472,7 @@ class AutomaticBackup extends React.PureComponent {
                 isDisabled={isLoadingData}
               />
               <Text className="backup-description">
-                <Trans t={t} i18nKey="DocumentsModuleDescription" ns="Settings">
+                <Trans t={t} i18nKey="RoomsModuleDescription" ns="Settings">
                   {{ roomName }}
                 </Trans>
               </Text>

@@ -239,7 +239,7 @@ class ManualBackup extends React.Component {
       buttonSize,
     };
 
-    const roomName = rootFoldersTitles[FolderType.Rooms]?.title;
+    const roomName = rootFoldersTitles[FolderType.USER]?.title;
 
     return isEmptyContentBeforeLoader && !isInitialLoading ? (
       <></>
@@ -311,7 +311,7 @@ class ManualBackup extends React.Component {
             {...commonRadioButtonProps}
           />
           <Text className="backup-description module-documents">
-            <Trans t={t} i18nKey="DocumentsModuleDescription" ns="Settings">
+            <Trans t={t} i18nKey="RoomsModuleDescription" ns="Settings">
               {{ roomName }}
             </Trans>
           </Text>
