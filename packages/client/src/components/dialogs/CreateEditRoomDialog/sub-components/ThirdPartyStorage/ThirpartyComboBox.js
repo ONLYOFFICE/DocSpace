@@ -11,6 +11,7 @@ import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import DropDownItem from "@docspace/components/drop-down-item";
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
+import { Base } from "@docspace/components/themes";
 
 const StyledStorageLocation = styled.div`
   display: flex;
@@ -21,19 +22,34 @@ const StyledStorageLocation = styled.div`
     flex-direction: row;
     gap: 8px;
     &-combobox {
+      cursor: pointer;
       width: 100%;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       padding: 5px 7px;
-      background: #ffffff;
+      background: ${(props) =>
+        props.theme.createEditRoomDialog.thirdpartyStorage.combobox.background};
       border-radius: 3px;
       max-height: 32px;
 
-      border: ${(props) => `1px solid ${props.isOpen ? "#2DA7DB" : "#d0d5da"}`};
+      border: ${(props) =>
+        `1px solid ${
+          props.isOpen
+            ? props.theme.createEditRoomDialog.thirdpartyStorage.combobox
+                .isOpenDropdownBorderColor
+            : props.theme.createEditRoomDialog.thirdpartyStorage.combobox
+                .dropdownBorderColor
+        }`};
       &:hover {
         border: ${(props) =>
-          `1px solid ${props.isOpen ? "#2DA7DB" : "#a3a9ae"}`};
+          `1px solid ${
+            props.isOpen
+              ? props.theme.createEditRoomDialog.thirdpartyStorage.combobox
+                  .isOpenDropdownBorderColor
+              : props.theme.createEditRoomDialog.thirdpartyStorage.combobox
+                  .hoverDropdownBorderColor
+          }`};
       }
 
       &-text {
@@ -53,7 +69,9 @@ const StyledStorageLocation = styled.div`
           width: 6.35px;
           height: auto;
           path {
-            fill: #a3a9ae;
+            fill: ${(props) =>
+              props.theme.createEditRoomDialog.thirdpartyStorage.combobox
+                .arrowFill};
           }
         }
       }
@@ -72,6 +90,8 @@ const StyledStorageLocation = styled.div`
     }
   }
 `;
+
+StyledStorageLocation.defaultProps = { theme: Base };
 
 const ThirpartyComboBox = ({
   t,
@@ -209,7 +229,7 @@ const ThirpartyComboBox = ({
         </div>
 
         <Button
-          isDisabled={!storageLocation.provider}
+          isDisabled={!storageLocation?.provider}
           className="set_room_params-thirdparty-connect"
           size="small"
           label={t("Common:Connect")}
