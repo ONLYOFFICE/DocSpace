@@ -209,6 +209,7 @@ const ThirpartyComboBox = ({
         </div>
 
         <Button
+          isDisabled={!storageLocation.provider}
           className="set_room_params-thirdparty-connect"
           size="small"
           label={t("Common:Connect")}
