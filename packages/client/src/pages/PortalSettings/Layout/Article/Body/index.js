@@ -216,6 +216,18 @@ class ArticleBodyContent extends React.Component {
       );
     });
 
+    const settingsHeader = (
+      <CatalogItem
+        key={"settings-header"}
+        isHeader={true}
+        isFirstHeader={true}
+        showText={showText}
+        text={"Settings"}
+      />
+    );
+
+    items.unshift(settingsHeader);
+
     return items;
   };
 
