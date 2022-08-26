@@ -9,6 +9,7 @@ import FieldContainer from "@docspace/components/field-container";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { runInAction } from "mobx";
+import { saveSettingsThirdParty } from "@docspace/common/api/files";
 
 const PureConnectDialogContainer = (props) => {
   const {
@@ -30,6 +31,8 @@ const PureConnectDialogContainer = (props) => {
     personal,
     getSubfolders,
     folderFormValidation,
+    updateInfo,
+    isConnectionViaBackupModule,
     roomCreation,
     setSaveThirdpartyResponse,
   } = props;
@@ -124,6 +127,32 @@ const PureConnectDialogContainer = (props) => {
     }
 
     setIsLoading(true);
+
+    if (isConnectionViaBackupModule) {
+      saveSettingsThirdParty(
+        urlValue,
+        loginValue,
+        passwordValue,
+        oAuthToken,
+        false,
+        customerTitle,
+        provider_key,
+        provider_id
+      )
+        .catch((err) => {
+          setIsLoading(false);
+          onClose();
+          toastr.error(err);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          updateInfo && updateInfo();
+          onClose();
+        });
+
+      return;
+    }
+
     saveThirdParty(
       urlValue,
       loginValue,
@@ -290,8 +319,7 @@ const PureConnectDialogContainer = (props) => {
             </FieldContainer>
           </>
         )}
-
-        {!roomCreation && (
+        {!(isConnectionViaBackupModule || roomCreation) && (
           <FieldContainer
             labelText={t("ConnectFolderTitle")}
             isRequired
@@ -309,7 +337,8 @@ const PureConnectDialogContainer = (props) => {
             />
           </FieldContainer>
         )}
-        {!personal && !roomCreation && (
+
+        {!personal && !(isConnectionViaBackupModule || roomCreation) && (
           <Checkbox
             label={t("ConnectMakeShared")}
             isChecked={isCorporate}
@@ -350,14 +379,17 @@ const ConnectDialog = withTranslation([
 ])(PureConnectDialogContainer);
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    settingsStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-  }) => {
+  (
+    {
+      auth,
+      filesStore,
+      settingsStore,
+      treeFoldersStore,
+      selectedFolderStore,
+      dialogsStore,
+    },
+    { passedItem, isConnectionViaBackupModule }
+  ) => {
     const {
       providers,
       saveThirdParty,
@@ -380,10 +412,11 @@ export default inject(
     const {
       connectDialogVisible: visible,
       setConnectDialogVisible,
-      connectItem: item,
       roomCreation,
       setSaveThirdpartyResponse,
     } = dialogsStore;
+
+    const item = isConnectionViaBackupModule ? passedItem : connectItem;
 
     return {
       selectedFolderId: id,

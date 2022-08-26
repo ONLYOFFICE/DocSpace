@@ -26,6 +26,9 @@ import {
   getCategoryTypeByFolderType,
 } from "SRC_DIR/helpers/utils";
 
+import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
+import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
+
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
 
@@ -1038,6 +1041,8 @@ class FilesStore {
       canFormFillingDocs,
     } = this.filesSettingsStore;
 
+    const { enablePlugins } = this.settingsStore;
+
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
@@ -1046,6 +1051,9 @@ class FilesStore {
 
     const { personal } = this.settingsStore;
     const { isDesktopClient } = this.authStore.settingsStore;
+
+    const pluginAllKeys =
+      enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
@@ -1231,6 +1239,17 @@ class FilesStore {
         ]);
       } else {
         fileOptions = this.removeOptions(fileOptions, ["restore"]);
+
+        if (enablePlugins) {
+          const pluginFilesKeys = getContextMenuKeysByType(
+            PluginContextMenuItemType.Files
+          );
+
+          pluginAllKeys &&
+            pluginAllKeys.forEach((key) => fileOptions.push(key));
+          pluginFilesKeys &&
+            pluginFilesKeys.forEach((key) => fileOptions.push(key));
+        }
       }
 
       if (!isFullAccess) {
@@ -1384,6 +1403,17 @@ class FilesStore {
           "delete",
           "unarchive-room",
         ]);
+
+        if (enablePlugins) {
+          const pluginRoomsKeys = getContextMenuKeysByType(
+            PluginContextMenuItemType.Rooms
+          );
+
+          pluginAllKeys &&
+            pluginAllKeys.forEach((key) => roomOptions.push(key));
+          pluginRoomsKeys &&
+            pluginRoomsKeys.forEach((key) => roomOptions.push(key));
+        }
       }
 
       return roomOptions;
@@ -1460,6 +1490,17 @@ class FilesStore {
         ]);
       } else {
         folderOptions = this.removeOptions(folderOptions, ["restore"]);
+
+        if (enablePlugins) {
+          const pluginFoldersKeys = getContextMenuKeysByType(
+            PluginContextMenuItemType.Folders
+          );
+
+          pluginAllKeys &&
+            pluginAllKeys.forEach((key) => folderOptions.push(key));
+          pluginFoldersKeys &&
+            pluginFoldersKeys.forEach((key) => folderOptions.push(key));
+        }
       }
 
       if (!isFullAccess) {

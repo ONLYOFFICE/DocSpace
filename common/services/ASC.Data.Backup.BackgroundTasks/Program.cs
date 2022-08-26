@@ -40,6 +40,7 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 }, (ctx, ser, di) =>
 {
     ser.AddBaseDbContextPool<BackupsContext>();
+    ser.AddBaseDbContextPool<FilesDbContext>();
 });
 
 builder.WebHost.ConfigureDefaultKestrel();

@@ -136,6 +136,12 @@ const IconWrapper = styled.div`
       height: 100%;
     }
   }
+  img {
+    width: 100%;
+    max-width: 16px;
+    height: 100%;
+    max-height: 16px;
+  }
 `;
 IconWrapper.defaultProps = { theme: Base };
 

@@ -31,6 +31,9 @@ import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
 import RoomTypeListLoader from "./CreateEditRoomLoader/RoomTypeListLoader";
 import SetRoomParamsLoader from "./CreateEditRoomLoader/SetRoomParamsLoader";
 import CreateEditRoomDilogHeaderLoader from "./CreateEditRoomLoader/CreateEditRoomDilogHeaderLoader";
+import DataBackupLoader from "./DataBackupLoader";
+import AutoBackupLoader from "./AutoBackupLoader";
+import RestoreBackupLoader from "./RestoreBackupLoader";
 
 export default {
   Rectangle,
@@ -66,4 +69,7 @@ export default {
   RoomTypeListLoader,
   SetRoomParamsLoader,
   CreateEditRoomDilogHeaderLoader,
+  DataBackupLoader,
+  AutoBackupLoader,
+  RestoreBackupLoader,
 };

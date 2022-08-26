@@ -2712,6 +2712,7 @@ const Dark = {
       backup: {
         rectangleBackgroundColor: "#292929",
         separatorBorder: "1px solid #474747",
+        contextBorder: "1px solid #D0D5DA",
       },
     },
 
