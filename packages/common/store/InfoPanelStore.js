@@ -6,12 +6,13 @@ import { CategoryType } from "SRC_DIR/helpers/constants";
 class InfoPanelStore {
   isVisible = false;
   roomState = "members";
+  isRoom = false;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  isRoom = (selectedItem) => {
+  calculateisRoom = (selectedItem) => {
     const categoryType = getCategoryType(location);
     const isRoomCategory =
       categoryType == CategoryType.Shared ||
@@ -19,7 +20,12 @@ class InfoPanelStore {
       categoryType == CategoryType.Archive ||
       categoryType == CategoryType.ArchivedRoom;
     const isRoomItem = selectedItem.isRoom;
-    return isRoomCategory && isRoomItem;
+
+    this.isRoom = isRoomCategory && isRoomItem;
+  };
+
+  setIsRoom = (isRoom) => {
+    this.isRoom = isRoom;
   };
 
   toggleIsVisible = () => {
