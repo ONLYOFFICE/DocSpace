@@ -4,6 +4,7 @@ import styled from "styled-components";
 import RoomType from "../RoomType";
 
 import { Scrollbar } from "@docspace/components";
+import { Base } from "@docspace/components/themes";
 
 const StyledDropdownMobile = styled.div`
   visibility: ${(props) => (props.isOpen ? "visible" : "hidden")};
@@ -22,7 +23,6 @@ const StyledDropdownMobile = styled.div`
       padding: 6px 0;
       box-shadow: 0px -4px 60px rgba(4, 15, 27, 0.12);
       position: fixed;
-      background: #ffffff;
       width: 100%;
       height: calc(100vh - 254px);
 
@@ -46,7 +46,8 @@ const StyledDropdownMobile = styled.div`
       }
 
       .dropdown-mobile-content {
-        background: #ffffff;
+        background: ${(props) =>
+          props.theme.createEditRoomDialog.roomTypeDropdown.mobile.background};
         box-sizing: border-box;
         width: 100%;
         display: flex;
@@ -55,6 +56,8 @@ const StyledDropdownMobile = styled.div`
     }
   }
 `;
+
+StyledDropdownMobile.defaultProps = { theme: Base };
 
 const DropdownMobile = ({ t, open, onClose, roomTypes, chooseRoomType }) => {
   return (

@@ -3,15 +3,21 @@ import styled from "styled-components";
 
 import RoomType from "../RoomType";
 
+import { Base } from "@docspace/components/themes";
+
 const StyledDropdownDesktop = styled.div`
   max-width: 100%;
   position: relative;
-  background: #ffffff;
+
   ${(props) => !props.isOpen && "display: none"};
 
   .dropdown-content {
+    background: ${(props) =>
+      props.theme.createEditRoomDialog.roomTypeDropdown.desktop.background};
+    border: 1px solid
+      ${(props) =>
+        props.theme.createEditRoomDialog.roomTypeDropdown.desktop.borderColor};
     margin-top: 4px;
-    background: #ffffff;
     overflow: visible;
     z-index: 400;
     top: 0;
@@ -22,11 +28,12 @@ const StyledDropdownDesktop = styled.div`
     display: flex;
     flex-direction: column;
     padding: 6px 0;
-    border: 1px solid #d0d5da;
     box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
     border-radius: 6px;
   }
 `;
+
+StyledDropdownDesktop.defaultProps = { theme: Base };
 
 const DropdownDesktop = ({ t, open, roomTypes, chooseRoomType }) => {
   return (
