@@ -136,10 +136,17 @@ export const settingsTree = [
         isCategory: true,
       },
       {
-        key: "3-1",
+        key: "3-2",
         icon: "",
         link: "portal-integration",
         tKey: "PortalIntegration",
+        isCategory: true,
+      },
+      {
+        key: "3-3",
+        icon: "",
+        link: "plugins",
+        tKey: "Plugins",
         isCategory: true,
       },
     ],
@@ -263,6 +270,12 @@ export const settingsTreeFull = [
         key: "3-0",
         icon: "",
         link: "third-party-services",
+      },
+      {
+        key: "3-1",
+        icon: "",
+        link: "plugins",
+        tKey: "Plugins",
       },
       {
         title: "SMTP Settings",
