@@ -8,7 +8,7 @@ import RadioButton from "@docspace/components/radio-button";
 import toastr from "@docspace/components/toast/toastr";
 import { BackupStorageType, FolderType } from "@docspace/common/constants";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
-import DocumentsModule from "./sub-components/DocumentsModule";
+import RoomsModule from "./sub-components/RoomsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
 import { getFromLocalStorage } from "../../../../utils";
@@ -316,7 +316,7 @@ class ManualBackup extends React.Component {
             </Trans>
           </Text>
           {isCheckedDocuments && (
-            <DocumentsModule
+            <RoomsModule
               {...commonModulesProps}
               isCheckedDocuments={isCheckedDocuments}
             />

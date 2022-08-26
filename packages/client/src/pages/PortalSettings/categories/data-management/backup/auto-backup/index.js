@@ -23,7 +23,7 @@ import {
 } from "@docspace/common/api/settings";
 import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
-import DocumentsModule from "./sub-components/DocumentsModule";
+import RoomsModule from "./sub-components/RoomsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 //import { getThirdPartyCommonFolderTree } from "@docspace/common/api/files";
 import ButtonContainer from "./sub-components/ButtonContainer";
@@ -477,7 +477,7 @@ class AutomaticBackup extends React.PureComponent {
                 </Trans>
               </Text>
               {isCheckedDocuments && (
-                <DocumentsModule {...commonProps} isError={isError} />
+                <RoomsModule {...commonProps} isError={isError} />
               )}
             </StyledModules>
 

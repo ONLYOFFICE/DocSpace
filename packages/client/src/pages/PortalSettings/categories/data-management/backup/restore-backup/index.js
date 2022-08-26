@@ -12,7 +12,7 @@ import { AppServerConfig, BackupStorageType } from "@docspace/common/constants";
 import { request } from "@docspace/common/api/client";
 import { StyledRestoreBackup } from "./../StyledBackup";
 import BackupListModalDialog from "./sub-components/backup-list";
-import Documents from "./sub-components/DocumentsModule";
+import RoomsModule from "./sub-components/RoomsModule";
 import ThirdPartyResources from "./sub-components/ThirdPartyResourcesModule";
 import ThirdPartyStorages from "./sub-components/ThirdPartyStoragesModule";
 import LocalFile from "./sub-components/LocalFileModule";
@@ -369,7 +369,7 @@ class RestoreBackup extends React.Component {
 
         <div className="restore-backup_modules">
           {isCheckedDocuments && (
-            <Documents
+            <RoomsModule
               isDisabled={!isEnableRestore}
               t={t}
               isPanelVisible={isPanelVisible}

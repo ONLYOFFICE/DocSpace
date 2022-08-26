@@ -8,7 +8,7 @@ import { BackupStorageType } from "@docspace/common/constants";
 let folder = "";
 const Documents = "Documents";
 
-class DocumentsModule extends React.Component {
+class RoomsModule extends React.Component {
   constructor(props) {
     super(props);
 
@@ -89,4 +89,4 @@ class DocumentsModule extends React.Component {
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(DocumentsModule);
+export default withTranslation(["Settings", "Common"])(RoomsModule);

@@ -4,7 +4,7 @@ import { BackupStorageType } from "@docspace/common/constants";
 import SelectFolderInput from "client/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
 
-class DocumentsModule extends React.PureComponent {
+class RoomsModule extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -88,4 +88,4 @@ export default inject(({ backup }) => {
     isResetProcess,
     isDocumentsDefault,
   };
-})(observer(DocumentsModule));
+})(observer(RoomsModule));

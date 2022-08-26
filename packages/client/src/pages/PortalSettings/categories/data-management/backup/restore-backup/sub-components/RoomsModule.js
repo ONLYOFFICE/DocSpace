@@ -1,7 +1,7 @@
 import React from "react";
 
 import SelectFileInputWrapper from "client/SelectFileInput";
-class Documents extends React.Component {
+class RoomsModule extends React.Component {
   render() {
     const { t } = this.props;
     return (
@@ -20,4 +20,4 @@ class Documents extends React.Component {
     );
   }
 }
-export default Documents;
+export default RoomsModule;
