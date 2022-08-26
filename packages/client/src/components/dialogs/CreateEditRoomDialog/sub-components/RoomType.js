@@ -5,8 +5,7 @@ import styled from "styled-components";
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import RoomLogo from "@docspace/components/room-logo";
-import HelpButton from "@docspace/components/help-button";
-import SecondaryInfoButton from "./SecondaryInfoButton";
+import { Base } from "@docspace/components/themes";
 
 const StyledRoomType = styled.div`
   cursor: pointer;
@@ -40,20 +39,11 @@ const StyledRoomType = styled.div`
         font-size: 14px;
         line-height: 16px;
       }
-      .choose_room-title-info_button {
-        border-radius: 50%;
-        background-color: #a3a9ae;
-        circle,
-        rect {
-          fill: #ffffff;
-        }
-      }
     }
     .choose_room-description {
       font-weight: 400;
       font-size: 12px;
       line-height: 16px;
-      color: #a3a9ae;
     }
   }
 
@@ -66,27 +56,34 @@ const StyledRoomType = styled.div`
   }
 `;
 
-const StyledDisplayItem = styled(StyledRoomType)`
-  cursor: default;
-  background-color: #f8f8f8;
-  border: 1px solid #f8f8f8;
+const StyledListItem = styled(StyledRoomType)`
+  background-color: ${(props) =>
+    props.theme.createEditRoomDialog.roomType.listItem.background};
+  border: 1px solid
+    ${(props) => props.theme.createEditRoomDialog.roomType.listItem.borderColor};
   border-radius: 6px;
 
-  .choose_room-forward_btn {
-    display: none;
+  .choose_room-description {
+    color: ${(props) =>
+      props.theme.createEditRoomDialog.roomType.listItem.descriptionText};
   }
 `;
 
-const StyledListItem = styled(StyledRoomType)`
-  background-color: #ffffff;
-  border: 1px solid ${(props) => (props.isOpen ? "#2DA7DB" : "#ECEEF1")};
-  border-radius: 6px;
-`;
-
 const StyledDropdownButton = styled(StyledRoomType)`
-  background-color: #ffffff;
   border-radius: 6px;
-  border: 1px solid ${(props) => (props.isOpen ? "#2DA7DB" : "#ECEEF1")};
+  background-color: ${(props) =>
+    props.theme.createEditRoomDialog.roomType.dropdownButton.background};
+  border: 1px solid
+    ${(props) =>
+      props.isOpen
+        ? props.theme.createEditRoomDialog.roomType.dropdownButton
+            .isOpenBorderColor
+        : props.theme.createEditRoomDialog.roomType.dropdownButton.borderColor};
+
+  .choose_room-description {
+    color: ${(props) =>
+      props.theme.createEditRoomDialog.roomType.dropdownButton.descriptionText};
+  }
 
   .choose_room-forward_btn {
     &.dropdown-button {
@@ -97,9 +94,38 @@ const StyledDropdownButton = styled(StyledRoomType)`
 `;
 
 const StyledDropdownItem = styled(StyledRoomType)`
+  background-color: ${(props) =>
+    props.theme.createEditRoomDialog.roomType.dropdownItem.background};
+
   &:hover {
-    background-color: #f3f4f4;
+    background-color: ${(props) =>
+      props.theme.createEditRoomDialog.roomType.dropdownItem.hoverBackground};
   }
+
+  .choose_room-description {
+    color: ${(props) =>
+      props.theme.createEditRoomDialog.roomType.dropdownItem.descriptionText};
+  }
+
+  .choose_room-forward_btn {
+    display: none;
+  }
+`;
+
+const StyledDisplayItem = styled(StyledRoomType)`
+  cursor: default;
+  background-color: ${(props) =>
+    props.theme.createEditRoomDialog.roomType.displayItem.background};
+  border: 1px solid
+    ${(props) =>
+      props.theme.createEditRoomDialog.roomType.displayItem.borderColor};
+  border-radius: 6px;
+
+  .choose_room-description {
+    color: ${(props) =>
+      props.theme.createEditRoomDialog.roomType.displayItem.descriptionText};
+  }
+
   .choose_room-forward_btn {
     display: none;
   }
@@ -168,6 +194,11 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
     <StyledDisplayItem title={t(room.title)}>{content}</StyledDisplayItem>
   );
 };
+
+StyledListItem.defaultProps = { theme: Base };
+StyledDropdownButton.defaultProps = { theme: Base };
+StyledDropdownItem.defaultProps = { theme: Base };
+StyledDisplayItem.defaultProps = { theme: Base };
 
 RoomType.propTypes = {
   room: PropTypes.object,
