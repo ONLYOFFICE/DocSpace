@@ -200,7 +200,7 @@ class SelectFolderDialog extends React.Component {
       isRecycleBin,
       currentFolderId,
       selectionFiles,
-      selectionButtonPrimary,
+      sharedRoomId,
     } = this.props;
     const {
       displayType,
@@ -216,8 +216,12 @@ class SelectFolderDialog extends React.Component {
 
     //console.log("Render Folder Component?", this.state);
 
+    const folderSelectionDisabled =
+      folderId === sharedRoomId || folderId === sharedRoomId.toString();
+
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
+        folderSelectionDisabled={folderSelectionDisabled}
         selectionFiles={selectionFiles}
         theme={theme}
         t={t}
@@ -246,6 +250,7 @@ class SelectFolderDialog extends React.Component {
       />
     ) : (
       <SelectionPanel
+        folderSelectionDisabled={folderSelectionDisabled}
         selectionFiles={selectionFiles}
         t={t}
         theme={theme}
@@ -312,7 +317,11 @@ export default inject(
     },
     { selectedId }
   ) => {
-    const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
+    const {
+      treeFolders,
+      setExpandedPanelKeys,
+      sharedRoomId,
+    } = treeFoldersStore;
 
     const { filter } = filesStore;
     const { setSelectedItems } = filesActionsStore;
@@ -344,6 +353,7 @@ export default inject(
       treeFolders,
       filter,
       setSelectedItems,
+      sharedRoomId,
     };
   }
 )(

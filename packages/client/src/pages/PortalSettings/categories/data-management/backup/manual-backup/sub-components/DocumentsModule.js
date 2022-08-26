@@ -66,7 +66,7 @@ class DocumentsModule extends React.Component {
             onClickInput={this.onClickInput}
             isPanelVisible={isPanelVisible}
             isDisabled={isModuleDisabled}
-            foldersType="rooms"
+            foldersType="exceptSortedByTags"
             withoutBasicSelection
           />
         </div>

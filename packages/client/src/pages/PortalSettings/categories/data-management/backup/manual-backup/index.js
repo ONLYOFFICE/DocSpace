@@ -233,7 +233,7 @@ class ManualBackup extends React.Component {
       buttonSize,
     };
 
-    const roomName = rootFoldersTitles[FolderType.Rooms];
+    const roomName = rootFoldersTitles[FolderType.Rooms]?.title;
 
     return isEmptyContentBeforeLoader && !isInitialLoading ? (
       <></>

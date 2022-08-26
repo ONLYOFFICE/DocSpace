@@ -48,6 +48,7 @@ const SelectionPanelBody = ({
   isDisableButton,
   parentId,
   selectionFiles,
+  folderSelectionDisabled,
 }) => {
   return (
     <StyledModalDialog
@@ -132,6 +133,7 @@ const SelectionPanelBody = ({
           label={primaryButtonName}
           onClick={onButtonClick}
           isDisabled={
+            folderSelectionDisabled ||
             isDisableButton ||
             isDisableTree ||
             isLoadingData ||
@@ -201,16 +203,10 @@ class SelectionPanel extends React.Component {
             console.error(err);
           }
           break;
-        case "rooms":
-          try {
-            return getSharedRoomsTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
+
         default:
           try {
-            return getSharedRoomsTree();
+            return getFoldersTree();
           } catch (err) {
             console.error(err);
           }

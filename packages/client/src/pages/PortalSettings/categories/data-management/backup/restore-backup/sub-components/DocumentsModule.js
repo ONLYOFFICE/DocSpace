@@ -1,6 +1,6 @@
 import React from "react";
 
-import SelectFileInputWrapper from "client/SelectFolderInput";
+import SelectFileInputWrapper from "client/SelectFileInput";
 class Documents extends React.Component {
   render() {
     const { t } = this.props;
