@@ -13,6 +13,7 @@ import {
   combineUrl,
   getOAuthToken,
   getLoginLink,
+  checkIsSSR,
 } from "@docspace/common/utils";
 import { providersData, AppServerConfig } from "@docspace/common/constants";
 import Link from "@docspace/components/link";
@@ -21,6 +22,7 @@ import LoginForm from "./sub-components/LoginForm";
 import MoreLoginModal from "./sub-components/more-login";
 import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dialog";
 import FormWrapper from "@docspace/components/form-wrapper";
+import Register from "./sub-components/register-container";
 
 const { proxyURL } = AppServerConfig;
 const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
@@ -227,6 +229,7 @@ const Login: React.FC<ILoginProps> = ({
           onClose={onRecoverDialogVisible}
         />
       </LoginContainer>
+      {!checkIsSSR() && enabledJoin && <Register enabledJoin={enabledJoin} />}
     </LoginFormWrapper>
   );
 };
