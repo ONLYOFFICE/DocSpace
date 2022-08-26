@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -290,20 +290,6 @@ const WhiteLabel = (props) => {
     setIsCanvasProcessing(false);
   };
 
-  const onSaveImageBase64 = (url) => {
-    let img = document.createElement("img");
-    img.src = url;
-
-    let key = encodeURIComponent(url),
-      canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    let ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-
-    return canvas.toDataURL("image/png");
-  };
-
   const onSave = () => {
     if (logoUrlsChange) {
       let fd = new FormData();
@@ -357,13 +343,6 @@ const WhiteLabel = (props) => {
       };
 
       setLogoUrlsChange([...logoUrlsChange, changeImg]);
-
-      let fd = new FormData();
-      fd.append("logoText", "asas");
-      fd.append(`logo[${0}][key]`, 1);
-      fd.append(`logo[${0}][value]`, e.target.result);
-
-      const data = new URLSearchParams(fd);
     };
   };
 
