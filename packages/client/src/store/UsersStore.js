@@ -162,8 +162,6 @@ class UsersStore {
   ) => {
     const options = [];
 
-    console.log(isOwner && isMySelf);
-
     switch (statusType) {
       case "normal":
       case "unknown":
