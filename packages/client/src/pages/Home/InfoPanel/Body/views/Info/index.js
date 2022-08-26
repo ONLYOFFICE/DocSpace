@@ -20,6 +20,8 @@ const Info = ({
   personal,
   culture,
 
+  isRoom,
+
   isRootFolder,
   isRecycleBinFolder,
   isRecentFolder,
@@ -38,6 +40,7 @@ const Info = ({
     return (
       <SingleItem
         t={t}
+        isRoom={isRoom}
         selectedItem={item}
         onSelectItem={onSelectItem}
         setSharingPanelVisible={setSharingPanelVisible}
@@ -59,7 +62,7 @@ const Info = ({
   return (
     <>
       {selectedItems.length === 0 ? (
-        // Can get future changes, currently only "My documents" displays its info
+        // Can    its info
         isRootFolder &&
         (isRecycleBinFolder || isRecentFolder || isFavoritesFolder) ? (
           <EmptyScreen />
