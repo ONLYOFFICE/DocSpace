@@ -15,12 +15,12 @@ import { LANGUAGE } from "@docspace/common/constants";
 import parser from "accept-language-parser";
 import { getPortalCultures } from "@docspace/common/api/settings";
 import { initSSR } from "@docspace/common/api/client";
-import { I18nextProviderProps } from "react-i18next";
+
 interface IParsedConfig extends Object {
   PORT: number;
 }
 interface ILoginRequest extends Request {
-  i18n?: I18next | I18nextProviderProps;
+  i18n?: I18next;
   t?: TFuncType;
 }
 type timeoutType = ReturnType<typeof setTimeout>;
@@ -81,11 +81,11 @@ if (IS_DEVELOPMENT) {
 
     let assets: assetsType;
     let initialState: IInitialState;
+
     try {
       assets = await getAssets();
-      initialState = await getInitialState();
 
-      initialState.match = query;
+      initialState = await getInitialState(query);
 
       const { component, styleTags } = renderApp(i18n, initialState);
 

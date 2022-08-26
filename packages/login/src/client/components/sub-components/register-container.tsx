@@ -10,12 +10,12 @@ import { inject, observer } from "mobx-react";
 import { Base } from "@docspace/components/themes";
 
 interface IRegisterProps {
-  language: string;
-  isAuthenticated: boolean;
+  language?: string;
+  isAuthenticated?: boolean;
   enabledJoin: boolean;
-  trustedDomainsType: number;
-  trustedDomains: string[];
-  theme: any;
+  trustedDomainsType?: number;
+  trustedDomains?: string[];
+  theme?: any;
 }
 
 const StyledRegister = styled(Box)`
@@ -119,7 +119,6 @@ const Register: React.FC<IRegisterProps> = (props) => {
           emailErr={emailErr}
           trustedDomainsType={trustedDomainsType}
           trustedDomains={trustedDomains}
-          t={t}
           onChangeEmail={onChangeEmail}
           onValidateEmail={onValidateEmail}
           onBlurEmail={onBlurEmail}

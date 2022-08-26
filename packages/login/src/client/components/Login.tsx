@@ -10,12 +10,11 @@ import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
 import {
   getProviderTranslation,
-  combineUrl,
   getOAuthToken,
   getLoginLink,
   checkIsSSR,
 } from "@docspace/common/utils";
-import { providersData, AppServerConfig } from "@docspace/common/constants";
+import { providersData } from "@docspace/common/constants";
 import Link from "@docspace/components/link";
 import Toast from "@docspace/components/toast";
 import LoginForm from "./sub-components/LoginForm";
@@ -24,11 +23,10 @@ import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dial
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 
-const { proxyURL } = AppServerConfig;
 const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
 
 interface ILoginProps extends IInitialState {
-  isDesktopEditor: boolean;
+  isDesktopEditor?: boolean;
 }
 const Login: React.FC<ILoginProps> = ({
   portalSettings,
@@ -37,7 +35,6 @@ const Login: React.FC<ILoginProps> = ({
   capabilities,
   isDesktopEditor,
   match,
-  ...rest
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
@@ -102,7 +99,7 @@ const Login: React.FC<ILoginProps> = ({
               "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
             );
 
-        getOAuthToken(tokenGetterWin).then((code) => {
+        getOAuthToken(tokenGetterWin).then((code: string) => {
           const token = window.btoa(
             JSON.stringify({
               auth: providerName,
@@ -110,8 +107,10 @@ const Login: React.FC<ILoginProps> = ({
               callback: "authCallback",
             })
           );
+          if (tokenGetterWin && typeof tokenGetterWin !== "string")
+            tokenGetterWin.location.href = getLoginLink(token, code);
 
-          tokenGetterWin.location.href = getLoginLink(token, code);
+          console.log(tokenGetterWin);
         });
       } catch (err) {
         console.log(err);
@@ -206,7 +205,7 @@ const Login: React.FC<ILoginProps> = ({
             </div>
           )}
           <LoginForm
-            isDesktop={isDesktopEditor}
+            isDesktop={!!isDesktopEditor}
             isLoading={isLoading}
             hashSettings={portalSettings.passwordHash}
             setIsLoading={setIsLoading}

@@ -375,21 +375,24 @@ export function assign(obj, keyPath, value) {
   obj[keyPath[lastKeyIndex]] = value;
 }
 
-export function getOAuthToken(tokenGetterWin) {
+export function getOAuthToken(
+  tokenGetterWin: Window | string | null
+): Promise<string> {
   return new Promise((resolve, reject) => {
     localStorage.removeItem("code");
-    let interval = null;
+    let interval: ReturnType<typeof setInterval>;
     interval = setInterval(() => {
       try {
         const code = localStorage.getItem("code");
-
-        if (code) {
-          localStorage.removeItem("code");
-          clearInterval(interval);
-          resolve(code);
-        } else if (tokenGetterWin && tokenGetterWin.closed) {
-          clearInterval(interval);
-          reject();
+        if (typeof tokenGetterWin !== "string") {
+          if (code) {
+            localStorage.removeItem("code");
+            clearInterval(interval);
+            resolve(code);
+          } else if (tokenGetterWin && tokenGetterWin.closed) {
+            clearInterval(interval);
+            reject();
+          }
         }
       } catch (e) {
         clearInterval(interval);
@@ -399,7 +402,7 @@ export function getOAuthToken(tokenGetterWin) {
   });
 }
 
-export function getLoginLink(token, code) {
+export function getLoginLink(token: string, code: string) {
   return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
 }
 

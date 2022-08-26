@@ -47,7 +47,9 @@ export const loadPath = (language: string, nameSpace: string): string => {
   return resourcePath;
 };
 
-export const getInitialState = async (): Promise<IInitialState> => {
+export const getInitialState = async (
+  query: MatchType
+): Promise<IInitialState> => {
   let portalSettings: IPortalSettings,
     buildInfo: IBuildInfo,
     providers: ProvidersType,
@@ -65,6 +67,7 @@ export const getInitialState = async (): Promise<IInitialState> => {
     buildInfo,
     providers,
     capabilities,
+    match: query,
   };
 
   return initialState;
