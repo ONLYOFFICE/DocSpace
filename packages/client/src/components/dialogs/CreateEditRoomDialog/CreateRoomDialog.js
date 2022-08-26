@@ -48,7 +48,7 @@ const CreateRoomDialog = ({
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
 
-  const [roomParams, setRoomParams] = useState({
+  const startRoomParams = {
     title: "",
     type: undefined,
     tags: [],
@@ -68,7 +68,9 @@ const CreateRoomDialog = ({
       y: 0.5,
       zoom: 1,
     },
-  });
+  };
+
+  const [roomParams, setRoomParams] = useState({ ...startRoomParams });
 
   const setRoomTags = (newTags) =>
     setRoomParams({ ...roomParams, tags: newTags });
@@ -86,15 +88,7 @@ const CreateRoomDialog = ({
 
   const isChooseRoomType = roomParams.type === undefined;
   const goBack = () => {
-    setRoomParams({
-      title: "",
-      type: undefined,
-      tags: [],
-      isPrivate: false,
-      isThirdparty: false,
-      storageLocation: undefined,
-      icon: "",
-    });
+    setRoomParams({ ...startRoomParams });
   };
 
   return (
