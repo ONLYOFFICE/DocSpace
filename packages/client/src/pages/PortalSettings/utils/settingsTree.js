@@ -5,7 +5,7 @@
 export const settingsTree = [
   {
     key: "0",
-    icon: "/static/images/settings.react.svg",
+    icon: "/static/images/common-settings.svg",
     link: "common",
     tKey: "Common:Common",
     isHeader: true,
@@ -47,7 +47,7 @@ export const settingsTree = [
   },
   {
     key: "1",
-    icon: "/images/security.react.svg",
+    icon: "/images/security-settings.svg",
     link: "security",
     tKey: "ManagementCategorySecurity",
     isHeader: true,
@@ -116,7 +116,7 @@ export const settingsTree = [
   },
   {
     key: "3",
-    icon: "/images/integration.react.svg",
+    icon: "/images/integration-settings.svg",
     link: "integration",
     tKey: "ManagementCategoryIntegration",
     isHeader: true,
@@ -146,9 +146,9 @@ export const settingsTree = [
   },
   {
     key: "4",
-    icon: "/images/data-management.react.svg",
+    icon: "/images/backup-settings.svg",
     link: "datamanagement",
-    tKey: "ManagementCategoryDataManagement",
+    tKey: "Backup",
     isHeader: true,
     children: [
       {
