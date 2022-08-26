@@ -2,19 +2,24 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectFolderInput from "client/SelectFolderInput";
 import Button from "@docspace/components/button";
-import { getFromSessionStorage } from "../../../../../utils";
+import { getFromLocalStorage } from "../../../../../utils";
 import { BackupStorageType } from "@docspace/common/constants";
 
 let folder = "";
-class DocumentsModule extends React.Component {
+const Documents = "Documents";
+
+class RoomsModule extends React.Component {
   constructor(props) {
     super(props);
 
-    folder = getFromSessionStorage("LocalCopyFolder");
+    folder = getFromLocalStorage("LocalCopyFolder");
+    const moduleType = getFromLocalStorage("LocalCopyStorageType");
+
+    const selectedFolder = moduleType === Documents ? folder : "";
 
     this.state = {
       isStartCopy: false,
-      selectedFolder: folder || "",
+      selectedFolder: selectedFolder,
       isPanelVisible: false,
     };
   }
@@ -46,36 +51,29 @@ class DocumentsModule extends React.Component {
       isStartCopy: true,
     });
 
-    await onMakeCopy(
-      selectedFolder,
-      "Documents",
-      `${DocumentModuleType}`,
-      "folderId"
-    );
+    await onMakeCopy(selectedFolder, Documents, `${DocumentModuleType}`);
 
     this.setState({
       isStartCopy: false,
     });
   };
-
   render() {
     const { isMaxProgress, t, buttonSize } = this.props;
     const { isPanelVisible, isStartCopy, selectedFolder } = this.state;
 
-    const isModuleDisabled = !isMaxProgress || isStartCopy || !selectedFolder;
+    const isModuleDisabled = !isMaxProgress || isStartCopy;
     return (
       <>
         <div className="manual-backup_folder-input">
           <SelectFolderInput
             onSelectFolder={this.onSelectFolder}
-            name={"common"}
             onClose={this.onClose}
             onClickInput={this.onClickInput}
             isPanelVisible={isPanelVisible}
             isDisabled={isModuleDisabled}
-            foldersType="common"
-            withoutProvider
-            ignoreSelectedFolderTree
+            foldersType="exceptSortedByTags"
+            {...(selectedFolder && { id: selectedFolder })}
+            withoutBasicSelection={selectedFolder ? false : true}
           />
         </div>
         <div className="manual-backup_buttons">
@@ -83,19 +81,12 @@ class DocumentsModule extends React.Component {
             label={t("Common:Duplicate")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={isModuleDisabled}
+            isDisabled={isModuleDisabled || !selectedFolder}
             size={buttonSize}
           />
-          {!isMaxProgress && (
-            <Button
-              label={t("Common:CopyOperation") + "..."}
-              isDisabled={true}
-              size={buttonSize}
-            />
-          )}
         </div>
       </>
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(DocumentsModule);
+export default withTranslation(["Settings", "Common"])(RoomsModule);

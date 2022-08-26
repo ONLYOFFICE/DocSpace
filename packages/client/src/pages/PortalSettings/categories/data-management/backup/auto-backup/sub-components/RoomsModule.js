@@ -4,21 +4,18 @@ import { BackupStorageType } from "@docspace/common/constants";
 import SelectFolderInput from "client/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
 
-class DocumentsModule extends React.PureComponent {
+class RoomsModule extends React.PureComponent {
   constructor(props) {
     super(props);
-
     this.state = {
       isPanelVisible: false,
     };
   }
-
   onClickInput = () => {
     this.setState({
       isPanelVisible: true,
     });
   };
-
   onClose = () => {
     this.setState({
       isPanelVisible: false,
@@ -27,6 +24,7 @@ class DocumentsModule extends React.PureComponent {
 
   onSelectFolder = (id) => {
     const { setSelectedFolder } = this.props;
+
     setSelectedFolder(`${id}`);
   };
 
@@ -35,9 +33,11 @@ class DocumentsModule extends React.PureComponent {
     const {
       isError,
       isLoadingData,
-      isReset,
-      isSuccessSave,
+      savingProcess,
       passedId,
+      isSavingProcess,
+      isResetProcess,
+      isDocumentsDefault,
       ...rest
     } = this.props;
 
@@ -50,12 +50,13 @@ class DocumentsModule extends React.PureComponent {
             onClickInput={this.onClickInput}
             isPanelVisible={isPanelVisible}
             isError={isError}
-            foldersType="common"
+            foldersType="exceptSortedByTags"
             withoutProvider
             isDisabled={isLoadingData}
             id={passedId}
-            isReset={isReset}
-            isSuccessSave={isSuccessSave}
+            isReset={isResetProcess}
+            isSuccessSave={isSavingProcess}
+            withoutBasicSelection={isDocumentsDefault ? false : true}
           />
         </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
@@ -63,13 +64,14 @@ class DocumentsModule extends React.PureComponent {
     );
   }
 }
-
 export default inject(({ backup }) => {
   const {
     setSelectedFolder,
     selectedFolderId,
     defaultStorageType,
     defaultFolderId,
+    isSavingProcess,
+    isResetProcess,
   } = backup;
 
   const isDocumentsDefault =
@@ -78,7 +80,12 @@ export default inject(({ backup }) => {
   const passedId = isDocumentsDefault ? defaultFolderId : "";
 
   return {
+    defaultFolderId,
+    selectedFolderId,
     setSelectedFolder,
     passedId,
+    isSavingProcess,
+    isResetProcess,
+    isDocumentsDefault,
   };
-})(observer(DocumentsModule));
+})(observer(RoomsModule));
