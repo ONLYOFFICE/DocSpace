@@ -329,9 +329,6 @@ const DirectThirdPartyConnection = (props) => {
           isNeedBorder
         />
       </div>
-      <Text className="backup_third-party-text" fontWeight={"600"}>
-        {isFileSelection ? t("FileName") + ":" : t("FolderName") + ":"}
-      </Text>
 
       {isFileSelection ? (
         <SelectFileInput

@@ -331,15 +331,13 @@ const StyledBackup = styled.div`
   ${commonSettingsStyles}
   .backup_connection {
     display: flex;
+    margin-bottom: 12px;
   }
   .backup_third-party-combo {
-    max-width: 234px;
+    max-width: 310px;
     margin-right: 8px;
   }
-  .backup_third-party-text {
-    margin-top: 16px;
-    max-width: 350px;
-  }
+
   .backup_modules-separation {
     margin-bottom: 28px;
     border-bottom: ${(props) =>
