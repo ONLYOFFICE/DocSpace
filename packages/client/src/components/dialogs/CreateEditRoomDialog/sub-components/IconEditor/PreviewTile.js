@@ -5,11 +5,14 @@ import { smallTablet } from "@docspace/components/utils/device";
 
 import Tags from "@docspace/common/components/Tags";
 import Tag from "@docspace/components/tag";
+import { Base } from "@docspace/components/themes";
 
 const StyledPreviewTile = styled.div`
-  background: #ffffff;
+  background: ${(props) =>
+    props.theme.createEditRoomDialog.previewTile.background};
   width: 214px;
-  border: 1px solid #d0d5da;
+  border: 1px solid
+    ${(props) => props.theme.createEditRoomDialog.previewTile.borderColor};
   height: 120px;
   border-radius: 12px;
 
@@ -23,12 +26,15 @@ const StyledPreviewTile = styled.div`
     align-items: center;
     gap: 12px;
     padding: 15px;
-    border-bottom: 1px solid #d0d5da;
+    border-bottom: 1px solid
+      ${(props) => props.theme.createEditRoomDialog.previewTile.borderColor};
 
     &-icon {
       width: 32px;
       height: 32px;
-      border: 1px solid #eceef1;
+      border: 1px solid
+        ${(props) =>
+          props.theme.createEditRoomDialog.previewTile.iconBorderColor};
       border-radius: 6px;
       img {
         user-select: none;
@@ -65,6 +71,7 @@ const StyledPreviewTile = styled.div`
     }
   }
 `;
+StyledPreviewTile.defaultProps = { theme: Base };
 
 const PreviewTile = ({ t, title, previewIcon, tags, defaultTagLabel }) => {
   return (
