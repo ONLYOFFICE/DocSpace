@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 
@@ -7,6 +8,81 @@ import RowContainer from "@docspace/components/row-container";
 import EmptyScreen from "../EmptyScreen";
 
 import SimpleUserRow from "./SimpleUserRow";
+
+const marginStyles = css`
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  ${isMobile &&
+  css`
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  `}
+
+  @media (max-width: 1024px) {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  @media (max-width: 375px) {
+    margin-left: -16px;
+    margin-right: -8px;
+    padding-left: 16px;
+    padding-right: 8px;
+  }
+`;
+
+const StyledRowContainer = styled(RowContainer)`
+  .row-selected + .row-wrapper:not(.row-selected) {
+    .user-row {
+      border-top: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      margin-top: -3px;
+      ${marginStyles}
+    }
+  }
+
+  .row-wrapper:not(.row-selected) + .row-selected {
+    .user-row {
+      border-top: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      margin-top: -3px;
+      ${marginStyles}
+    }
+  }
+
+  .row-hotkey-border + .row-selected {
+    .user-row {
+      border-top: 1px solid #2da7db !important;
+    }
+  }
+
+  .row-selected:last-child {
+    .user-row {
+      border-bottom: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      padding-bottom: 1px;
+      ${marginStyles}
+    }
+    .user-row::after {
+      height: 0px;
+    }
+  }
+  .row-selected:first-child {
+    .user-row {
+      border-top: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      margin-top: -3px;
+      ${marginStyles}
+    }
+  }
+`;
 
 const PeopleRowContainer = ({
   peopleList,
@@ -32,7 +108,7 @@ const PeopleRowContainer = ({
   }, [sectionWidth]);
 
   return peopleList.length > 0 ? (
-    <RowContainer className="people-row-container" useReactWindow={false}>
+    <StyledRowContainer className="people-row-container" useReactWindow={false}>
       {peopleList.map((item) => (
         <SimpleUserRow
           theme={theme}
@@ -41,7 +117,7 @@ const PeopleRowContainer = ({
           sectionWidth={sectionWidth}
         />
       ))}
-    </RowContainer>
+    </StyledRowContainer>
   ) : (
     <EmptyScreen />
   );
