@@ -72,7 +72,7 @@ const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
 const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
 // const MyProfile = React.lazy(() => import("./pages/My"));
 const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
-const InvalidError = React.lazy(() => import("./pages/Errors/Invalid"));
+//const InvalidError = React.lazy(() => import("./pages/Errors/Invalid"));
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
 
 const FormGallery = React.lazy(() => import("./pages/FormGallery"));
@@ -167,13 +167,13 @@ const EnterCodeRoute =
     </React.Suspense>
   ));
 
-const InvalidRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <InvalidError {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+// const InvalidRoute = (props) => (
+//   <React.Suspense fallback={<AppLoader />}>
+//     <ErrorBoundary>
+//       <InvalidError {...props} />
+//     </ErrorBoundary>
+//   </React.Suspense>
+// );
 
 const FormGalleryRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -521,7 +521,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             {loginRoutes}
             <Route path={"/code"} component={EnterCodeRoute} />
             <Route path={"/confirm"} component={ConfirmRoute} />
-            <Route path={"/login/error=:error"} component={InvalidRoute} />
+            {/* <Route path={"/login/error=:error"} component={InvalidRoute} /> */}
             <PrivateRoute path={"/payments"} component={PaymentsRoute} />
             <PrivateRoute
               restricted
