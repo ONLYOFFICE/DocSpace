@@ -23,7 +23,7 @@ const History = ({ t, personal, culture }) => {
   return (
     <>
       <StyledTitle withBottomBorder>
-        <img className="icon" src={data.icon} alt="thumbnail-icon" />
+        <img className="icon is-room" src={data.icon} alt="thumbnail-icon" />
         <Text className="text">{data.title}</Text>
         <ContextMenuButton getData={() => {}} className="context-menu-button" />
       </StyledTitle>
