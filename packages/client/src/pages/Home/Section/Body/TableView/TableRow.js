@@ -296,6 +296,7 @@ const FilesTableRow = (props) => {
     id,
     tagRef,
     isRooms,
+    onSelectType,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
