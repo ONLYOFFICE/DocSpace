@@ -53,13 +53,14 @@ export class PluginsController {
   )
   async upload(
     @UploadedFiles() files: Express.Multer.File[]
-  ): Promise<{ response: Plugin } | { response: { error: string } }> {
+  ): Promise<{ response: Plugin | { error: string } }> {
     try {
       if (files[0]) {
         const plugin = await this.pluginsService.upload(
           files[0].originalname,
           files[0].filename
         );
+
         return { response: plugin };
       } else {
         return {

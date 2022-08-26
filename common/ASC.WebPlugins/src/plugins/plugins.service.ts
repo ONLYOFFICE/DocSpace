@@ -39,10 +39,35 @@ export class PluginsService {
     return plugin;
   }
 
-  async upload(originalname: string, filename: string): Promise<Plugin> {
+  async upload(
+    originalname: string,
+    filename: string
+  ): Promise<Plugin | { error: string }> {
     const plugin: Plugin = new Plugin();
 
+    const dir = path.join(__dirname, pathToPlugins, `${filename}`);
+
     const name = originalname.split(".")[0];
+
+    const contents = fs.readFileSync(dir, "utf8");
+
+    let isPlugin = true;
+
+    isPlugin = contents.includes(`"dependencies":{"docspace-plugin"`);
+
+    const splitName = name.split("");
+
+    splitName[0].toUpperCase();
+
+    isPlugin = contents.includes(`window.Plugins.${splitName.join("")}`);
+
+    isPlugin = contents.includes(".prototype.getPluginName=function()");
+
+    isPlugin = contents.includes(".prototype.getPluginVersion=function()");
+
+    isPlugin = contents.includes(".prototype.activate=function()");
+
+    isPlugin = contents.includes(".prototype.deactivate=function()");
 
     plugin.name = name;
     plugin.filename = filename;
@@ -50,6 +75,11 @@ export class PluginsService {
     plugin.isActive = true;
 
     await this.pluginsRepository.save(plugin);
+
+    if (!isPlugin) {
+      this.delete(plugin.id);
+      return { error: "It is not a plugin" };
+    }
 
     return plugin;
   }
