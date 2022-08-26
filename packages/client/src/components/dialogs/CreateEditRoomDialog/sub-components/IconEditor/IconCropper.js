@@ -6,6 +6,7 @@ import AvatarEditor from "react-avatar-editor";
 
 import Slider from "@docspace/components/slider";
 import IconButton from "@docspace/components/icon-button";
+import { Base } from "@docspace/components/themes";
 
 const StyledIconCropper = styled.div`
   max-width: 216px;
@@ -27,7 +28,8 @@ const StyledIconCropper = styled.div`
       svg {
         opacity: 0.2;
         path {
-          fill: #333333;
+          fill: ${(props) =>
+            props.theme.createEditRoomDialog.iconCropper.gridColor};
         }
       }
     }
@@ -42,7 +44,8 @@ const StyledIconCropper = styled.div`
     gap: 8px;
     width: 100%;
     padding: 6px 0;
-    background: #f8f9f9;
+    background: ${(props) =>
+      props.theme.createEditRoomDialog.iconCropper.deleteButton.background};
     border-radius: 3px;
     margin-bottom: 12px;
 
@@ -50,12 +53,14 @@ const StyledIconCropper = styled.div`
       user-select: none;
       font-weight: 600;
       line-height: 20px;
-      color: #555f65;
+      color: ${(props) =>
+        props.theme.createEditRoomDialog.iconCropper.deleteButton.color};
     }
 
     svg {
       path {
-        fill: #657077;
+        fill: ${(props) =>
+          props.theme.createEditRoomDialog.iconCropper.deleteButton.iconColor};
       }
     }
   }
@@ -77,6 +82,8 @@ const StyledIconCropper = styled.div`
     }
   }
 `;
+
+StyledIconCropper.defaultProps = { theme: Base };
 
 const IconCropper = ({
   t,
