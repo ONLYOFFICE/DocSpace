@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { Base } from "@docspace/components/themes";
 
 const StyledParam = styled.div`
   box-sizing: border-box;
@@ -39,7 +40,8 @@ const StyledParam = styled.div`
       font-weight: 400;
       font-size: 12px;
       line-height: 16px;
-      color: #a3a9ae;
+      color: ${(props) =>
+        props.theme.createEditRoomDialog.commonParam.descriptionColor};
     }
   }
 
@@ -49,5 +51,7 @@ const StyledParam = styled.div`
     margin: 2px 0;
   }
 `;
+
+StyledParam.defaultProps = { theme: Base };
 
 export { StyledParam };
