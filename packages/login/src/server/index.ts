@@ -21,7 +21,7 @@ interface IParsedConfig extends Object {
 }
 interface ILoginRequest extends Request {
   i18n?: I18next | I18nextProviderProps;
-  t?: (str: string) => string;
+  t?: TFuncType;
 }
 type timeoutType = ReturnType<typeof setTimeout>;
 interface IAcceptLanguage extends Object {

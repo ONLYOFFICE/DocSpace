@@ -108,4 +108,6 @@ declare global {
   type HTMLElementEvent<T extends HTMLElement> = Event & {
     target: T;
   };
+
+  type TFuncType = (key: string) => string;
 }

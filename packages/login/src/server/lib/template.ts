@@ -11,7 +11,7 @@ type Template = (
   initialI18nStoreASC: object,
   initialLanguage: string,
   assets: assetsType,
-  t?: (str: string) => string
+  t?: TFuncType
 ) => string;
 
 const template: Template = (
