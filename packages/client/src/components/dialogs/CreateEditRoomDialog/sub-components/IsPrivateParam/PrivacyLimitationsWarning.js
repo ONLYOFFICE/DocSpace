@@ -2,13 +2,16 @@ import React from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 
+import { Base } from "@docspace/components/themes";
+
 const StyledPrivacyLimitationsWarning = styled.div`
   box-sizing: border-box;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  background: #f8f9f9;
+  background: ${(props) =>
+    props.theme.createEditRoomDialog.isPrivate.limitations.background};
   border-radius: 6px;
   padding: 12px 8px;
 
@@ -23,7 +26,8 @@ const StyledPrivacyLimitationsWarning = styled.div`
         width: 16px;
         height: 14px;
         path {
-          fill: #ed7309;
+          fill: ${(props) =>
+            props.theme.createEditRoomDialog.isPrivate.limitations.iconColor};
         }
       }
     }
@@ -32,7 +36,8 @@ const StyledPrivacyLimitationsWarning = styled.div`
       font-weight: 600;
       font-size: 13px;
       line-height: 20px;
-      color: #ed7309;
+      color: ${(props) =>
+        props.theme.createEditRoomDialog.isPrivate.limitations.titleColor};
     }
   }
 
@@ -40,7 +45,8 @@ const StyledPrivacyLimitationsWarning = styled.div`
     font-weight: 400;
     font-size: 12px;
     line-height: 16px;
-    color: #555f65;
+    color: ${(props) =>
+      props.theme.createEditRoomDialog.isPrivate.limitations.descriptionColor};
   }
 
   .warning-link {
@@ -49,11 +55,14 @@ const StyledPrivacyLimitationsWarning = styled.div`
     font-weight: 600;
     font-size: 13px;
     line-height: 15px;
-    color: #555f65;
+    color: ${(props) =>
+      props.theme.createEditRoomDialog.isPrivate.limitations.linkColor};
     text-decoration: underline;
     text-underline-offset: 1px;
   }
 `;
+
+StyledPrivacyLimitationsWarning.defaultProps = { theme: Base };
 
 const PrivacyLimitationsWarning = ({ t }) => {
   return (
