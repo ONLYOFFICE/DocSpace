@@ -5,6 +5,7 @@ export const exceptSortedByTagsFolders = [
   FolderType.TRASH,
   FolderType.Favorites,
   FolderType.Privacy,
+  FolderType.Archive,
 ];
 
 export const exceptPrivacyTrashFolders = [FolderType.Privacy, FolderType.TRASH];
