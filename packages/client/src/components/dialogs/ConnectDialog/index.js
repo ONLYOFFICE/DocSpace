@@ -412,6 +412,7 @@ export default inject(
     const {
       connectDialogVisible: visible,
       setConnectDialogVisible,
+      connectItem,
       roomCreation,
       setSaveThirdpartyResponse,
     } = dialogsStore;
