@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { smallTablet } from "@docspace/components/utils/device";
 
 import DropDown from "@docspace/components/drop-down";
+import { Base } from "@docspace/components/themes";
 
 const StyledDropDownWrapper = styled.div`
   width: 100%;
@@ -12,8 +13,10 @@ const StyledDropDownWrapper = styled.div`
 const StyledDropDown = styled(DropDown)`
   margin-top: ${(props) => (props.marginTop ? props.marginTop : "4px")};
   padding: 6px 0;
-  background: #ffffff;
-  border: 1px solid #d0d5da;
+  background: ${(props) =>
+    props.theme.createEditRoomDialog.dropdown.background};
+  border: 1px solid
+    ${(props) => props.theme.createEditRoomDialog.dropdown.borderColor};
   box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
   border-radius: 3px;
   overflow: hidden;
@@ -42,9 +45,9 @@ const StyledDropDown = styled(DropDown)`
     font-weight: 400;
     font-size: 13px;
     line-height: 20px;
-    color: #333333;
     &:hover {
-      background: #f3f4f4;
+      background: ${(props) =>
+        props.theme.createEditRoomDialog.dropdown.item.hoverBackground};
     }
 
     &-separator {
@@ -53,5 +56,7 @@ const StyledDropDown = styled(DropDown)`
     }
   }
 `;
+
+StyledDropDown.defaultProps = { theme: Base };
 
 export { StyledDropDownWrapper, StyledDropDown };
