@@ -9,7 +9,7 @@ import Link from "@docspace/components/link";
 import { useTranslation } from "react-i18next";
 import ForgotPasswordModalDialog from "./forgot-password-modal-dialog";
 import Button from "@docspace/components/button";
-import { createPasswordHash } from "@docspace/common/utils";
+import { checkIsSSR, createPasswordHash } from "@docspace/common/utils";
 import { checkPwd } from "@docspace/common/desktop";
 import { login } from "@docspace/common/utils/loginUtils";
 import { oAuthLogin } from "../../helpers/utils";
@@ -245,12 +245,14 @@ const LoginForm: React.FC<ILoginFormProps> = ({
               onChange={onChangeCheckbox}
               label={t("Remember")}
               helpButton={
-                <HelpButton
-                  helpButtonHeaderContent={t("CookieSettingsTitle")}
-                  tooltipContent={
-                    <Text fontSize="12px">{t("RememberHelper")}</Text>
-                  }
-                />
+                !checkIsSSR() && (
+                  <HelpButton
+                    helpButtonHeaderContent={t("CookieSettingsTitle")}
+                    tooltipContent={
+                      <Text fontSize="12px">{t("RememberHelper")}</Text>
+                    }
+                  />
+                )
               }
             />
           </div>
