@@ -17,12 +17,22 @@ const Members = ({ t, selfId, selectedItem, getShareUsers }) => {
     );
     setMembers(fetchedMembers);
     console.log("members", fetchedMembers);
+
+    console.log(selectedItem.logo);
   }, []);
 
   return (
     <>
       <StyledTitle withBottomBorder>
-        <img className="icon" src={selectedItem.icon} alt="thumbnail-icon" />
+        <img
+          className="icon is-room"
+          src={
+            selectedItem.logo && selectedItem.logo.big
+              ? selectedItem.logo.big
+              : selectedItem.icon
+          }
+          alt="thumbnail-icon"
+        />
         <Text className="text">{selectedItem.title}</Text>
         <ContextMenuButton getData={() => {}} className="context-menu-button" />
       </StyledTitle>
