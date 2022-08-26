@@ -67,7 +67,7 @@ public class FileShareDtoHelper
         _employeeWraperFullHelper = employeeWraperFullHelper;
     }
 
-    public FileShareDto Get(AceWrapper aceWrapper)
+    public async Task<FileShareDto> Get(AceWrapper aceWrapper)
     {
         var result = new FileShareDto
         {
@@ -93,7 +93,7 @@ public class FileShareDtoHelper
         }
         else
         {
-            result.SharedTo = _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.SubjectId));
+            result.SharedTo = await _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.SubjectId));
         }
 
         result.Access = aceWrapper.Share;

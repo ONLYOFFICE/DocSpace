@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
-import TextInput from "@docspace/components/text-input";
 import Link from "@docspace/components/link";
 import Toast from "@docspace/components/toast";
 import FieldContainer from "@docspace/components/field-container";
@@ -14,11 +13,7 @@ import {
   getAuthProviders,
   getCapabilities,
 } from "@docspace/common/api/settings";
-import { checkPwd } from "@docspace/common/desktop";
-import {
-  createPasswordHash,
-  getProviderTranslation,
-} from "@docspace/common/utils";
+import { getProviderTranslation } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
@@ -29,7 +24,6 @@ import {
 } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import MoreLoginModal from "./sub-components/more-login";
-import { Trans } from "react-i18next";
 import {
   ButtonsWrapper,
   LoginContainer,
@@ -37,6 +31,8 @@ import {
 } from "./StyledLogin";
 import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
+import FormWrapper from "@docspace/components/form-wrapper";
+import { ReactSVG } from "react-svg";
 
 const Form = (props) => {
   const inputRef = React.useRef(null);
@@ -180,7 +176,7 @@ const Form = (props) => {
   };
 
   const onSubmit = () => {
-    errorText && setErrorText("");
+    //errorText && setErrorText("");
     let hasError = false;
 
     const userName = identifier.trim();
@@ -190,12 +186,14 @@ const Form = (props) => {
       setIdentifierValid(false);
     }
 
+    if (!identifierValid) hasError = true;
+
     if (hasError) return false;
 
     history.push("/code"); //TODO: confirm link?
   };
 
-  const onManuallyLogin = () => {
+  const onLoginWithPasswordClick = () => {
     setRoomsMode(false);
   };
 
@@ -308,6 +306,10 @@ const Form = (props) => {
         <AppLoader />
       ) : (
         <>
+          <ReactSVG
+            src="/static/images/docspace.big.react.svg"
+            className="logo-wrapper"
+          />
           <Text
             fontSize="23px"
             fontWeight={700}
@@ -317,101 +319,105 @@ const Form = (props) => {
             {greetingTitle}
           </Text>
 
-          {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
+          <FormWrapper>
+            {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
 
-          {oauthDataExists() && (
-            <>
-              <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-              {providers && providers.length > 2 && (
-                <Link
-                  isHovered
-                  type="action"
-                  fontSize="13px"
-                  fontWeight="600"
-                  color="#3B72A7"
-                  className="more-label"
-                  onClick={moreAuthOpen}
-                >
-                  {t("Common:ShowMore")}
-                </Link>
-              )}
-            </>
-          )}
-
-          {(oauthDataExists() || ssoExists()) && (
-            <div className="line">
-              <Text color="#A3A9AE" className="or-label">
-                {t("Or")}
-              </Text>
-            </div>
-          )}
-
-          <form className="auth-form-container">
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
-              hasError={isEmailErrorShow && !identifierValid}
-              errorMessage={
-                errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
-              } //TODO: Add wrong login server error
-            >
-              <EmailInput
-                id="login"
-                name="login"
-                type="email"
-                hasError={isEmailErrorShow && !identifierValid}
-                value={identifier}
-                placeholder={t("RegistrationEmailWatermark")}
-                size="large"
-                scale={true}
-                isAutoFocussed={true}
-                tabIndex={1}
-                isDisabled={isLoading || !identifierValid}
-                autoComplete="username"
-                onChange={onChangeLogin}
-                onBlur={onBlurEmail}
-                onValidateInput={onValidateEmail}
-                forwardedRef={inputRef}
-              />
-            </FieldContainer>
-
-            <Button
-              id="submit"
-              className="login-button"
-              primary
-              size="normal"
-              scale={true}
-              label={
-                isLoading
-                  ? t("Common:LoadingProcessing")
-                  : t("Common:LoginButton")
-              }
-              tabIndex={1}
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={onSubmit}
-            />
-
-            <Text color="#A3A9AE" fontSize="12px">
-              <Trans t={t} i18nKey="LoginDescription" ns="Login">
-                We'll email you a magic code to sign in without a password. Or
-                you can
-                <Link
-                  color="#2DA7DB;"
-                  fontSize="12px"
-                  onClick={onManuallyLogin}
-                >
-                  log in manually.
-                </Link>
-              </Trans>
-            </Text>
-
-            {confirmedEmail && (
-              <Text isBold={true} fontSize="16px">
-                {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-              </Text>
+            {oauthDataExists() && (
+              <>
+                <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+                {providers && providers.length > 2 && (
+                  <Link
+                    isHovered
+                    type="action"
+                    fontSize="13px"
+                    fontWeight="600"
+                    color="#3B72A7"
+                    className="more-label"
+                    onClick={moreAuthOpen}
+                  >
+                    {t("Common:ShowMore")}
+                  </Link>
+                )}
+              </>
             )}
-          </form>
+
+            {(oauthDataExists() || ssoExists()) && (
+              <div className="line">
+                <Text color="#A3A9AE" className="or-label">
+                  {t("Or")}
+                </Text>
+              </div>
+            )}
+
+            <form className="auth-form-container">
+              <FieldContainer
+                isVertical={true}
+                labelVisible={false}
+                hasError={isEmailErrorShow && !identifierValid}
+                errorMessage={
+                  errorText
+                    ? t(`Common:${errorText}`)
+                    : t("Common:RequiredField")
+                } //TODO: Add wrong login server error
+              >
+                <EmailInput
+                  id="login"
+                  name="login"
+                  type="email"
+                  hasError={isEmailErrorShow && !identifierValid}
+                  value={identifier}
+                  placeholder={t("RegistrationEmailWatermark")}
+                  size="large"
+                  scale={true}
+                  isAutoFocussed={true}
+                  tabIndex={1}
+                  isDisabled={isLoading}
+                  autoComplete="username"
+                  onChange={onChangeLogin}
+                  onBlur={onBlurEmail}
+                  onValidateInput={onValidateEmail}
+                  onKeyDown={onKeyDown}
+                  forwardedRef={inputRef}
+                />
+              </FieldContainer>
+
+              <Button
+                id="submit"
+                className="login-button"
+                primary
+                size="medium"
+                scale={true}
+                label={
+                  isLoading
+                    ? t("Common:LoadingProcessing")
+                    : t("Common:LoginButton")
+                }
+                tabIndex={1}
+                isDisabled={isLoading}
+                isLoading={isLoading}
+                onClick={onSubmit}
+              />
+
+              <div className="login-link">
+                <Link
+                  fontWeight="600"
+                  fontSize="13px"
+                  color="#316DAA"
+                  type="action"
+                  isHovered={true}
+                  onClick={onLoginWithPasswordClick}
+                >
+                  {t("SignInWithPassword")}
+                </Link>
+              </div>
+
+              {confirmedEmail && (
+                <Text isBold={true} fontSize="16px">
+                  {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+                </Text>
+              )}
+            </form>
+          </FormWrapper>
           <Toast />
 
           <MoreLoginModal
@@ -449,7 +455,11 @@ const LoginForm = (props) => {
   const { enabledJoin, isDesktop } = props;
 
   return (
-    <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
+    <LoginFormWrapper
+      enabledJoin={enabledJoin}
+      isDesktop={isDesktop}
+      className="with-background-pattern"
+    >
       <Section>
         <Section.SectionBody>
           <Form {...props} />
