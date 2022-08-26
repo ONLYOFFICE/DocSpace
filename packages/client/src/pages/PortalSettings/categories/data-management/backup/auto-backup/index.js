@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButton from "@docspace/components/radio-button";
 import Text from "@docspace/components/text";
@@ -14,6 +14,7 @@ import toastr from "@docspace/components/toast/toastr";
 import {
   BackupStorageType,
   AutoBackupPeriod,
+  FolderType,
 } from "@docspace/common/constants";
 import ToggleButton from "@docspace/components/toggle-button";
 import {
@@ -128,11 +129,15 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   componentDidMount() {
+    const { fetchTreeFolders, rootFoldersTitles } = this.props;
+
     this.getWeekdays();
 
     this.timerId = setTimeout(() => {
       this.setState({ isInitialLoading: true });
     }, 200);
+
+    if (Object.keys(rootFoldersTitles).length === 0) fetchTreeFolders();
 
     this.setBasicSettings();
   }
@@ -390,6 +395,7 @@ class AutomaticBackup extends React.PureComponent {
       renderTooltip,
       selectedEnableSchedule,
       organizationName,
+      rootFoldersTitles,
     } = this.props;
 
     const {
@@ -420,6 +426,8 @@ class AutomaticBackup extends React.PureComponent {
       className: "backup_radio-button",
       onClick: this.onClickShowStorage,
     };
+
+    const roomName = rootFoldersTitles[FolderType.Rooms];
 
     return isEmptyContentBeforeLoader && !isInitialLoading ? (
       <></>
@@ -464,7 +472,9 @@ class AutomaticBackup extends React.PureComponent {
                 isDisabled={isLoadingData}
               />
               <Text className="backup-description">
-                {t("DocumentsModuleDescription")}
+                <Trans t={t} i18nKey="DocumentsModuleDescription" ns="Settings">
+                  {{ roomName }}
+                </Trans>
               </Text>
               {isCheckedDocuments && (
                 <DocumentsModule {...commonProps} isError={isError} />
@@ -535,7 +545,7 @@ class AutomaticBackup extends React.PureComponent {
     );
   }
 }
-export default inject(({ auth, backup }) => {
+export default inject(({ auth, backup, treeFoldersStore }) => {
   const { language, settingsStore } = auth;
   const { organizationName, theme } = settingsStore;
   const {
@@ -575,7 +585,11 @@ export default inject(({ auth, backup }) => {
   const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
     selectedStorageType === `${StorageModuleType}`;
+
+  const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
   return {
+    fetchTreeFolders,
+    rootFoldersTitles,
     downloadingProgress,
     theme,
     language,

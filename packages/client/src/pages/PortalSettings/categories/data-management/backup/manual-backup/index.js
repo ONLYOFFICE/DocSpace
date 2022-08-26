@@ -1,12 +1,12 @@
 import React from "react";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import { startBackup } from "@docspace/common/api/portal";
 import RadioButton from "@docspace/components/radio-button";
 import toastr from "@docspace/components/toast/toastr";
-import { BackupStorageType } from "@docspace/common/constants";
+import { BackupStorageType, FolderType } from "@docspace/common/constants";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
@@ -97,10 +97,12 @@ class ManualBackup extends React.Component {
   };
 
   componentDidMount() {
+    const { fetchTreeFolders, rootFoldersTitles } = this.props;
     this.timerId = setTimeout(() => {
       this.setState({ isInitialLoading: true });
     }, 200);
 
+    if (Object.keys(rootFoldersTitles).length === 0) fetchTreeFolders();
     this.setBasicSettings();
   }
 
@@ -201,6 +203,7 @@ class ManualBackup extends React.Component {
       organizationName,
       renderTooltip,
       //isDocSpace,
+      rootFoldersTitles,
     } = this.props;
     const {
       isInitialLoading,
@@ -229,6 +232,8 @@ class ManualBackup extends React.Component {
       onMakeCopy: this.onMakeCopy,
       buttonSize,
     };
+
+    const roomName = rootFoldersTitles[FolderType.Rooms];
 
     return isEmptyContentBeforeLoader && !isInitialLoading ? (
       <></>
@@ -300,7 +305,9 @@ class ManualBackup extends React.Component {
             {...commonRadioButtonProps}
           />
           <Text className="backup-description module-documents">
-            {t("DocumentsModuleDescription")}
+            <Trans t={t} i18nKey="DocumentsModuleDescription" ns="Settings">
+              {{ roomName }}
+            </Trans>
           </Text>
           {isCheckedDocuments && (
             <DocumentsModule
@@ -354,7 +361,7 @@ class ManualBackup extends React.Component {
   }
 }
 
-export default inject(({ auth, backup }) => {
+export default inject(({ auth, backup, treeFoldersStore }) => {
   const {
     clearProgressInterval,
     clearSessionStorage,
@@ -371,6 +378,7 @@ export default inject(({ auth, backup }) => {
     setStorageRegions,
   } = backup;
   const { organizationName } = auth.settingsStore;
+  const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
 
   return {
     organizationName,
@@ -387,5 +395,7 @@ export default inject(({ auth, backup }) => {
     // setCommonThirdPartyList,
     temporaryLink,
     getStorageParams,
+    rootFoldersTitles,
+    fetchTreeFolders,
   };
 })(withTranslation(["Settings", "Common"])(observer(ManualBackup)));

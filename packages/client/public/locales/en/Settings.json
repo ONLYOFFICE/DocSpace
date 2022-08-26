@@ -63,7 +63,7 @@
   "Disabled": "Disabled",
   "DocumentsAdministratorsCan": "Documents administrators can link Dropbox, Box, and other accounts to Common Documents and set up access rights in this section",
   "DocumentsModule": "Documents module",
-  "DocumentsModuleDescription": "Backup will be saved in the Common documents folder.",
+  "DocumentsModuleDescription": "Backup will be saved in the {{roomName}} room.",
   "DownloadCopy": "Download the copy",
   "Employees": "users",
   "EmptyBackupList": "No backups have been created yet. Create one or more backups for them to appear in this list.",
