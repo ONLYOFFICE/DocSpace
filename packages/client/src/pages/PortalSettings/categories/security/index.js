@@ -10,8 +10,10 @@ import config from "PACKAGE_FILE";
 import AccessRights from "./access-rights/index.js";
 import AccessPortal from "./access-portal/index.js";
 import SecurityLoader from "./sub-components/loaders/security-loader";
+import LoginHistory from "./login-history/index.js";
 import MobileSecurityLoader from "./sub-components/loaders/mobile-security-loader";
 import AccessLoader from "./sub-components/loaders/access-loader";
+import AuditTrail from "./audit-trail/index.js";
 
 import { isMobile } from "react-device-detect";
 
@@ -30,6 +32,16 @@ const SecurityWrapper = (props) => {
       id: "access-rights",
       name: t("Common:AccessRights"),
       content: <AccessRights />,
+    },
+    {
+      id: "login-history",
+      name: t("LoginHistoryTitle"),
+      content: <LoginHistory />,
+    },
+    {
+      id: "audit-trail",
+      name: t("AuditTrailNav"),
+      content: <AuditTrail />,
     },
   ];
 
