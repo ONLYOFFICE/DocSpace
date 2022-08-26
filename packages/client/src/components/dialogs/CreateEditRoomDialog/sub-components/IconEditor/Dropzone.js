@@ -2,13 +2,15 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import resizeImage from "resize-image";
+import { Base } from "@docspace/components/themes";
 
 const StyledDropzone = styled.div`
   cursor: pointer;
   box-sizing: border-box;
   width: 100%;
   height: 150px;
-  border: 2px dashed #eceef1;
+  border: 2px dashed
+    ${(props) => props.theme.createEditRoomDialog.dropzone.borderColor};
   border-radius: 6px;
 
   .dropzone {
@@ -31,7 +33,8 @@ const StyledDropzone = styled.div`
       font-size: 13px;
       line-height: 20px;
       &-main {
-        color: #316daa;
+        color: ${(props) =>
+          props.theme.createEditRoomDialog.dropzone.linkMainColor};
         font-weight: 600;
         text-decoration: underline;
         text-decoration-style: dashed;
@@ -39,6 +42,8 @@ const StyledDropzone = styled.div`
       }
       &-secondary {
         font-weight: 400;
+        color: ${(props) =>
+          props.theme.createEditRoomDialog.dropzone.linkSecondaryColor};
       }
     }
 
@@ -46,10 +51,12 @@ const StyledDropzone = styled.div`
       font-weight: 600;
       font-size: 12px;
       line-height: 16px;
-      color: #a3a9ae;
+      color: ${(props) => props.theme.createEditRoomDialog.dropzone.exstsColor};
     }
   }
 `;
+
+StyledDropzone.defaultProps = { theme: Base };
 
 const Dropzone = ({ setUploadedFile }) => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
