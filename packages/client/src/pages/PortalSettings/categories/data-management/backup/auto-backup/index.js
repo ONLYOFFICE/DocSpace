@@ -465,7 +465,7 @@ class AutomaticBackup extends React.PureComponent {
             <StyledModules>
               <RadioButton
                 {...commonRadioButtonProps}
-                label={organizationName}
+                label={t("RoomsModule")}
                 name={`${DocumentModuleType}`}
                 key={0}
                 isChecked={isCheckedDocuments}

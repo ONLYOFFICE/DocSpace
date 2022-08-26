@@ -332,7 +332,7 @@ class RestoreBackup extends React.Component {
           </Text>
         </div>
         <RadioButton
-          label={organizationName}
+          label={t("RoomsModule")}
           name={"isCheckedDocuments"}
           key={1}
           isChecked={isCheckedDocuments}

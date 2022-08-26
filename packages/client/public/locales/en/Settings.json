@@ -134,6 +134,7 @@
   "RestoreBackupResetInfoWarningText": "All current passwords will be reset. Portal users will get an email with the access restoration link.",
   "RestoreBackupWarningText": "The portal will become unavailable during the restore process. After the restore is complete all the changes made after the date of the selected restore point will be lost.",
   "RestoreDefaultButton": "Restore to Default",
+  "RoomsModule": "Backup room",
   "RoomsModuleDescription": "You may create a new room specifically for the backup, choose one of the existing rooms, or save the copy in their {{roomName}} room.",
   "SelectFileInGZFormat": "Select the file in .GZ format",
   "SendNotificationAboutRestoring": "Send notification about portal restoring to users",
