@@ -7,7 +7,7 @@ class RoomsModule extends React.Component {
     return (
       <SelectFileInputWrapper
         {...this.props}
-        foldersType="rooms"
+        foldersType="exceptSortedByTags"
         withoutProvider
         isArchiveOnly
         searchParam=".gz"

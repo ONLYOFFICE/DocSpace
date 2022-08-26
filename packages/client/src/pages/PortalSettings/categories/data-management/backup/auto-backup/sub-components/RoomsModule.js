@@ -50,7 +50,7 @@ class RoomsModule extends React.PureComponent {
             onClickInput={this.onClickInput}
             isPanelVisible={isPanelVisible}
             isError={isError}
-            foldersType="rooms"
+            foldersType="exceptSortedByTags"
             withoutProvider
             isDisabled={isLoadingData}
             id={passedId}
