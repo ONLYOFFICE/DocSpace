@@ -2,9 +2,9 @@ import { diskStorage } from "multer";
 import * as path from "path";
 import * as fs from "fs";
 
-import * as plugins from "../../../../config/plugins.json";
+import * as config from "../../config";
 
-const pathToPlugins = plugins.plugins.path;
+const { path: pathToPlugins } = config.default.get("pluginsConf");
 
 const storage = diskStorage({
   destination: function (req, file, cb) {

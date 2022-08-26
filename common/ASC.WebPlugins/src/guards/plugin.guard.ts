@@ -1,14 +1,16 @@
 import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { Observable } from "rxjs";
 
-import * as config from "../../../../config/appsettings.json";
+import * as config from "../../config";
+
+const { enabled, allow } = config.default.get("plugins");
 
 @Injectable()
 export class PluginGuard implements CanActivate {
   canActivate(
     context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
-    return config?.plugins?.enabled === "true";
+    return enabled === "true";
   }
 }
 
@@ -17,10 +19,7 @@ export class PluginUploadGuard implements CanActivate {
   canActivate(
     context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
-    return (
-      config?.plugins?.enabled === "true" &&
-      config?.plugins?.allow.includes("upload")
-    );
+    return enabled === "true" && allow.includes("upload");
   }
 }
 
@@ -29,9 +28,6 @@ export class PluginDeleteGuard implements CanActivate {
   canActivate(
     context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
-    return (
-      config?.plugins?.enabled === "true" &&
-      config?.plugins?.allow.includes("delete")
-    );
+    return enabled === "true" && allow.includes("delete");
   }
 }
