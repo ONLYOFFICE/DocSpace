@@ -43,6 +43,7 @@ const DirectThirdPartyConnection = (props) => {
     setDeleteThirdPartyDialogVisible,
     deleteThirdPartyDialogVisible,
     tReady,
+    clearLocalStorage,
   } = props;
 
   useEffect(() => {
@@ -172,6 +173,7 @@ const DirectThirdPartyConnection = (props) => {
   };
 
   const onConnect = () => {
+    clearLocalStorage();
     const { provider_link, provider_key } = state.selectedAccount;
 
     const directConnection = provider_link;
@@ -240,6 +242,8 @@ const DirectThirdPartyConnection = (props) => {
   };
 
   const onReconnect = () => {
+    clearLocalStorage();
+
     const { provider_link } = state.selectedAccount;
 
     const directConnection = provider_link;
@@ -262,6 +266,7 @@ const DirectThirdPartyConnection = (props) => {
   };
 
   const onDisconnect = () => {
+    clearLocalStorage();
     setDeleteThirdPartyDialogVisible(true);
   };
   const getContextOptions = () => {
@@ -394,7 +399,7 @@ const DirectThirdPartyConnection = (props) => {
 };
 
 export default inject(({ auth, backup, dialogsStore, settingsStore }) => {
-  const { commonThirdPartyList } = backup;
+  const { commonThirdPartyList, clearLocalStorage } = backup;
   const { openConnectWindow } = settingsStore.thirdPartyStore;
   const { getOAuthToken } = auth.settingsStore;
   const {
@@ -405,6 +410,7 @@ export default inject(({ auth, backup, dialogsStore, settingsStore }) => {
   } = dialogsStore;
 
   return {
+    clearLocalStorage,
     commonThirdPartyList,
     openConnectWindow,
     getOAuthToken,

@@ -3,13 +3,26 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import RackspaceSettings from "../../../consumer-storage-settings/RackspaceSettings";
+import { ThirdPartyStorages } from "@docspace/common/constants";
+import { getFromLocalStorage } from "../../../../../../utils";
 
 class RackspaceStorage extends React.Component {
   constructor(props) {
     super(props);
     const { selectedStorage, setCompletedFormFields } = this.props;
 
-    setCompletedFormFields(RackspaceSettings.formNames());
+    const basicValues = RackspaceSettings.formNames();
+
+    const moduleValues = getFromLocalStorage(
+      "LocalCopyThirdPartyStorageValues"
+    );
+    const moduleType =
+      getFromLocalStorage("LocalCopyStorage") ===
+      ThirdPartyStorages.RackspaceId;
+
+    setCompletedFormFields(
+      moduleType && moduleValues ? moduleValues : basicValues
+    );
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }

@@ -10,23 +10,23 @@ import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import { getOptions } from "../../common-container/GetThirdPartyStoragesOptions";
-import { getFromSessionStorage } from "../../../../../utils";
+import { getFromLocalStorage } from "../../../../../utils";
 import { StyledManualBackup } from "../../StyledBackup";
 
-let storage = "";
+let storageTitle = "";
 let storageId = "";
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    // storage = getFromSessionStorage("LocalCopyThirdPartyStorageType");
-    // storageId = getFromSessionStorage("LocalCopyStorage");
-
+    storageTitle = getFromLocalStorage("LocalCopyThirdPartyStorageType");
+    storageId = getFromLocalStorage("LocalCopyStorage");
+    console.log("storageId", storageId);
     this.state = {
       comboBoxOptions: [],
       storagesInfo: {},
-      selectedStorageTitle: "",
-      selectedId: "",
+      selectedStorageTitle: storageTitle || "",
+      selectedId: storageId || "",
       isStartCopy: false,
     };
 
@@ -48,7 +48,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       this.setState({
         comboBoxOptions,
         storagesInfo,
-        selectedStorageTitle: storage || selectedStorageTitle,
+        selectedStorageTitle: storageTitle || selectedStorageTitle,
         selectedId: storageId || selectedStorageId,
       });
     }

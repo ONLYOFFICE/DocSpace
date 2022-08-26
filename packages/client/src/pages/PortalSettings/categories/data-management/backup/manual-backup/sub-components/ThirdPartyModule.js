@@ -2,21 +2,26 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import Button from "@docspace/components/button";
-import { getFromSessionStorage } from "../../../../../utils";
+import { getFromLocalStorage } from "../../../../../utils";
 import { BackupStorageType } from "@docspace/common/constants";
 import DirectThirdPartyConnection from "../../common-container/DirectThirdPartyConnection";
 
 let folder = "";
+const ThirdPartyResource = "ThirdPartyResource";
+
 class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
 
-    //folder = getFromSessionStorage("LocalCopyFolder");
+    folder = getFromLocalStorage("LocalCopyFolder");
+    const moduleType = getFromLocalStorage("LocalCopyStorageType");
+
+    const selectedFolder = moduleType === ThirdPartyResource ? folder : "";
 
     this.state = {
       isStartCopy: false,
       isLoadingData: false,
-      selectedFolder: folder || "",
+      selectedFolder: selectedFolder,
       isPanelVisible: false,
       isError: false,
       isLoading: false,
@@ -77,7 +82,7 @@ class ThirdPartyModule extends React.Component {
 
     await onMakeCopy(
       selectedFolder,
-      "ThirdPartyResource",
+      ThirdPartyResource,
       `${ResourcesModuleType}`
     );
 
@@ -152,7 +157,8 @@ class ThirdPartyModule extends React.Component {
           onSetLoadingData={this.onSetLoadingData}
           isDisabled={isModuleDisabled}
           isPanelVisible={isPanelVisible}
-          withoutBasicSelection={true}
+          {...(selectedFolder && { id: selectedFolder })}
+          withoutBasicSelection={selectedFolder ? false : true}
           isError={isError}
         />
 

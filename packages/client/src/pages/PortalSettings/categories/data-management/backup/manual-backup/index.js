@@ -11,7 +11,7 @@ import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
-import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
+import { getFromLocalStorage } from "../../../../utils";
 //import { getThirdPartyCommonFolderTree } from "@docspace/common/api/files";
 import DataBackupLoader from "@docspace/common/components/Loaders/DataBackupLoader";
 import {
@@ -25,7 +25,7 @@ let selectedStorageType = "";
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
-    selectedStorageType = getFromSessionStorage("LocalCopyStorageType");
+    selectedStorageType = getFromLocalStorage("LocalCopyStorageType");
     const checkedDocuments = selectedStorageType
       ? selectedStorageType === "Documents"
       : false;
@@ -84,7 +84,7 @@ class ManualBackup extends React.Component {
       //   }
     } catch (error) {
       toastr.error(error);
-      this.clearSessionStorage();
+      //this.clearLocalStorage();
     }
 
     clearTimeout(this.timerId);
@@ -115,9 +115,17 @@ class ManualBackup extends React.Component {
   }
 
   onMakeTemporaryBackup = async () => {
-    const { getIntervalProgress, setDownloadingProgress, t } = this.props;
+    const {
+      getIntervalProgress,
+      setDownloadingProgress,
+      t,
+      clearLocalStorage,
+    } = this.props;
     const { TemporaryModuleType } = BackupStorageType;
-    //saveToSessionStorage("LocalCopyStorageType", "TemporaryStorage");
+
+    clearLocalStorage();
+    saveToLocalStorage("LocalCopyStorageType", "TemporaryStorage");
+
     try {
       await startBackup(`${TemporaryModuleType}`, null);
       setDownloadingProgress(1);
@@ -148,21 +156,20 @@ class ManualBackup extends React.Component {
     moduleName,
     moduleType,
     selectedStorageId,
-    selectedStorage
+    selectedStorageTitle
   ) => {
-    const {
-      isCheckedDocuments,
-      isCheckedThirdParty,
-      isCheckedThirdPartyStorage,
-    } = this.state;
+    const { isCheckedThirdPartyStorage } = this.state;
     const {
       t,
       getIntervalProgress,
       setDownloadingProgress,
-      clearSessionStorage,
+      clearLocalStorage,
       setTemporaryLink,
       getStorageParams,
+      saveToLocalStorage,
     } = this.props;
+
+    clearLocalStorage();
 
     const storageParams = getStorageParams(
       isCheckedThirdPartyStorage,
@@ -170,17 +177,16 @@ class ManualBackup extends React.Component {
       selectedStorageId
     );
 
-    //saveToSessionStorage("LocalCopyStorageType", moduleName);
+    const folderId = isCheckedThirdPartyStorage
+      ? selectedStorageId
+      : selectedFolder;
 
-    if (isCheckedDocuments || isCheckedThirdParty) {
-      //saveToSessionStorage("LocalCopyFolder", `${selectedFolder}`);
-    } else {
-      //saveToSessionStorage("LocalCopyStorage", `${selectedStorageId}`);
-      //  saveToSessionStorage(
-      //    "LocalCopyThirdPartyStorageType",
-      //    `${selectedStorage}`
-      //  );
-    }
+    saveToLocalStorage(
+      isCheckedThirdPartyStorage,
+      moduleName,
+      folderId,
+      selectedStorageTitle
+    );
 
     try {
       await startBackup(moduleType, storageParams);
@@ -190,7 +196,7 @@ class ManualBackup extends React.Component {
     } catch (err) {
       toastr.error(t("BackupCreatedError"));
       console.error(err);
-      clearSessionStorage();
+      //clearLocalStorage();
     }
   };
   render() {
@@ -364,7 +370,7 @@ class ManualBackup extends React.Component {
 export default inject(({ auth, backup, treeFoldersStore }) => {
   const {
     clearProgressInterval,
-    clearSessionStorage,
+    clearLocalStorage,
     // commonThirdPartyList,
     downloadingProgress,
     getProgress,
@@ -376,6 +382,7 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     getStorageParams,
     setThirdPartyStorage,
     setStorageRegions,
+    saveToLocalStorage,
   } = backup;
   const { organizationName } = auth.settingsStore;
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
@@ -384,7 +391,7 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     organizationName,
     setThirdPartyStorage,
     clearProgressInterval,
-    clearSessionStorage,
+    clearLocalStorage,
     // commonThirdPartyList,
     downloadingProgress,
     getProgress,
@@ -397,5 +404,6 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     getStorageParams,
     rootFoldersTitles,
     fetchTreeFolders,
+    saveToLocalStorage,
   };
 })(withTranslation(["Settings", "Common"])(observer(ManualBackup)));

@@ -3,6 +3,8 @@ import { withTranslation } from "react-i18next";
 import Button from "@docspace/components/button";
 import AmazonSettings from "../../../consumer-storage-settings/AmazonSettings";
 import { inject, observer } from "mobx-react";
+import { getFromLocalStorage } from "../../../../../../utils";
+import { ThirdPartyStorages } from "@docspace/common/constants";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
@@ -12,8 +14,16 @@ class AmazonStorage extends React.Component {
       storageRegions,
     } = this.props;
 
+    const basicValues = AmazonSettings.formNames(storageRegions[0].systemName);
+
+    const moduleValues = getFromLocalStorage(
+      "LocalCopyThirdPartyStorageValues"
+    );
+    const moduleType =
+      getFromLocalStorage("LocalCopyStorage") === ThirdPartyStorages.AmazonId;
+
     setCompletedFormFields(
-      AmazonSettings.formNames(storageRegions[0].systemName)
+      moduleType && moduleValues ? moduleValues : basicValues
     );
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
@@ -27,6 +37,7 @@ class AmazonStorage extends React.Component {
       selectedStorage,
       buttonSize,
       onMakeCopyIntoStorage,
+      isValidForm,
     } = this.props;
 
     return (
@@ -42,7 +53,7 @@ class AmazonStorage extends React.Component {
             label={t("Common:Duplicate")}
             onClick={onMakeCopyIntoStorage}
             primary
-            isDisabled={!isMaxProgress || this.isDisabled}
+            isDisabled={!isValidForm || !isMaxProgress || this.isDisabled}
             size={buttonSize}
           />
           {!isMaxProgress && (
@@ -59,10 +70,11 @@ class AmazonStorage extends React.Component {
   }
 }
 export default inject(({ backup }) => {
-  const { setCompletedFormFields, storageRegions } = backup;
+  const { setCompletedFormFields, storageRegions, isValidForm } = backup;
 
   return {
     setCompletedFormFields,
     storageRegions,
+    isValidForm,
   };
 })(observer(withTranslation(["Settings", "Common"])(AmazonStorage)));

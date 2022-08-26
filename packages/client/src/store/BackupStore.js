@@ -1,8 +1,9 @@
 import { getBackupProgress } from "@docspace/common/api/portal";
 import { makeAutoObservable } from "mobx";
 import {
-  saveToSessionStorage,
-  getFromSessionStorage,
+  saveToLocalStorage,
+  getFromLocalStorage,
+  removeLocalStorage,
 } from "../pages/PortalSettings/utils";
 import toastr from "../helpers/toastr";
 import { AutoBackupPeriod } from "@docspace/common/constants";
@@ -321,20 +322,40 @@ class BackupStore {
     this.selectedStorageId = selectedStorage;
   };
 
-  clearSessionStorage = () => {
-    saveToSessionStorage("LocalCopyStorageType", "");
+  clearLocalStorage = () => {
+    removeLocalStorage("LocalCopyStorageType");
 
-    getFromSessionStorage("LocalCopyPath") &&
-      saveToSessionStorage("LocalCopyPath", "");
+    getFromLocalStorage("LocalCopyFolder") &&
+      removeLocalStorage("LocalCopyFolder");
 
-    getFromSessionStorage("LocalCopyFolder") &&
-      saveToSessionStorage("LocalCopyFolder", "");
+    getFromLocalStorage("LocalCopyStorage") &&
+      removeLocalStorage("LocalCopyStorage");
 
-    getFromSessionStorage("LocalCopyStorage") &&
-      saveToSessionStorage("LocalCopyStorage", "");
+    getFromLocalStorage("LocalCopyThirdPartyStorageType") &&
+      removeLocalStorage("LocalCopyThirdPartyStorageType");
 
-    getFromSessionStorage("LocalCopyThirdPartyStorageType") &&
-      saveToSessionStorage("LocalCopyThirdPartyStorageType", "");
+    getFromLocalStorage("LocalCopyThirdPartyStorageValues") &&
+      removeLocalStorage("LocalCopyThirdPartyStorageValues");
+  };
+
+  saveToLocalStorage = (
+    isStorage,
+    moduleName,
+    selectedId,
+    selectedStorageTitle
+  ) => {
+    saveToLocalStorage("LocalCopyStorageType", moduleName);
+
+    if (isStorage) {
+      saveToLocalStorage("LocalCopyStorage", `${selectedId}`);
+      saveToLocalStorage(
+        "LocalCopyThirdPartyStorageType",
+        selectedStorageTitle
+      );
+      saveToLocalStorage("LocalCopyThirdPartyStorageValues", this.formSettings);
+    } else {
+      saveToLocalStorage("LocalCopyFolder", `${selectedId}`);
+    }
   };
 
   getProgress = async (t) => {
@@ -353,17 +374,17 @@ class BackupStore {
           if (progress !== 100) {
             this.getIntervalProgress(t);
           } else {
-            this.clearSessionStorage();
+            //this.clearLocalStorage();
           }
         } else {
           this.downloadingProgress = 100;
           clearInterval(this.timerId);
-          this.clearSessionStorage();
+          //this.clearLocalStorage();
         }
       }
     } catch (e) {
       toastr.error(t("BackupCreatedError"));
-      this.clearSessionStorage();
+      // this.clearLocalStorage();
     }
   };
   getIntervalProgress = (t) => {
@@ -389,7 +410,7 @@ class BackupStore {
             clearInterval(timerId);
             this.timerId && toastr.error(t("BackupCreatedError"));
             this.timerId = null;
-            this.clearSessionStorage();
+            //this.clearLocalStorage();
             this.downloadingProgress = 100;
             return;
           }
@@ -400,7 +421,7 @@ class BackupStore {
 
           if (progress === 100) {
             clearInterval(this.timerId);
-            this.clearSessionStorage();
+            //this.clearLocalStorage();
 
             if (link && link.slice(0, 1) === "/") {
               this.temporaryLink = link;
@@ -415,7 +436,7 @@ class BackupStore {
           this.timerId && toastr.error(t("BackupCreatedError"));
           this.downloadingProgress = 100;
           clearInterval(this.timerId);
-          this.clearSessionStorage();
+          // this.clearLocalStorage();
           this.timerId = null;
           return;
         }
@@ -423,7 +444,7 @@ class BackupStore {
         isWaitRequest = false;
       } catch (e) {
         clearInterval(this.timerId);
-        this.clearSessionStorage();
+        // this.clearLocalStorage();
         this.downloadingProgress = 100;
         this.timerId && toastr.error(t("BackupCreatedError"));
         this.timerId = null;

@@ -2,19 +2,24 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectFolderInput from "client/SelectFolderInput";
 import Button from "@docspace/components/button";
-import { getFromSessionStorage } from "../../../../../utils";
+import { getFromLocalStorage } from "../../../../../utils";
 import { BackupStorageType } from "@docspace/common/constants";
 
 let folder = "";
+const Documents = "Documents";
+
 class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
 
-    //folder = getFromSessionStorage("LocalCopyFolder");
+    folder = getFromLocalStorage("LocalCopyFolder");
+    const moduleType = getFromLocalStorage("LocalCopyStorageType");
+
+    const selectedFolder = moduleType === Documents ? folder : "";
 
     this.state = {
       isStartCopy: false,
-      selectedFolder: folder || "",
+      selectedFolder: selectedFolder,
       isPanelVisible: false,
     };
   }
@@ -46,7 +51,7 @@ class DocumentsModule extends React.Component {
       isStartCopy: true,
     });
 
-    await onMakeCopy(selectedFolder, "Documents", `${DocumentModuleType}`);
+    await onMakeCopy(selectedFolder, Documents, `${DocumentModuleType}`);
 
     this.setState({
       isStartCopy: false,
@@ -67,7 +72,8 @@ class DocumentsModule extends React.Component {
             isPanelVisible={isPanelVisible}
             isDisabled={isModuleDisabled}
             foldersType="exceptSortedByTags"
-            withoutBasicSelection
+            {...(selectedFolder && { id: selectedFolder })}
+            withoutBasicSelection={selectedFolder ? false : true}
           />
         </div>
         <div className="manual-backup_buttons">

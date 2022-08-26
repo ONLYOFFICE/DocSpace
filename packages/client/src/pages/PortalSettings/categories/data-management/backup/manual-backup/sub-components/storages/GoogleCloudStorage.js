@@ -3,13 +3,26 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import GoogleCloudSettings from "../../../consumer-storage-settings/GoogleCloudSettings";
+import { ThirdPartyStorages } from "@docspace/common/constants";
+import { getFromLocalStorage } from "../../../../../../utils";
 
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);
     const { selectedStorage, setCompletedFormFields } = this.props;
 
-    setCompletedFormFields(GoogleCloudSettings.formNames());
+    const basicValues = GoogleCloudSettings.formNames();
+
+    const moduleValues = getFromLocalStorage(
+      "LocalCopyThirdPartyStorageValues"
+    );
+    
+    const moduleType =
+      getFromLocalStorage("LocalCopyStorage") === ThirdPartyStorages.GoogleId;
+
+    setCompletedFormFields(
+      moduleType && moduleValues ? moduleValues : basicValues
+    );
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }

@@ -276,6 +276,7 @@ SelectFolderInput.propTypes = {
 SelectFolderInput.defaultProps = {
   hasError: false,
   isDisabled: false,
+  isWaitingUpdate: false,
   placeholder: "",
   foldersType: "",
 };
