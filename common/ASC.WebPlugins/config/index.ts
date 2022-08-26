@@ -29,26 +29,5 @@ function getAndSaveAppsettings() {
     nconf.file("appsettings", path.join(appsettings, "appsettings.json"));
   }
 
-  nconf.file(
-    "appsettingsServices",
-    path.join(appsettings, "appsettings.services.json")
-  );
-
   nconf.file("pluginsConf", path.join(appsettings, "plugins.json"));
-
-  var redisWithEnv = path.join(appsettings, "redis." + valueEnv + ".json");
-  if (fs.existsSync(fileWithEnv)) {
-    nconf.file("redis", redisWithEnv);
-  } else {
-    nconf.file("redis", path.join(__dirname, appsettings, "redis.json"));
-  }
-
-  var redis = nconf.get("Redis");
-  if (redis != null) {
-    redis.host = redis.Hosts[0].Host;
-    redis.port = redis.Hosts[0].Port;
-    redis.connect_timeout = redis.ConnectTimeout;
-    redis.db = redis.Database;
-    nconf.set("Redis", redis);
-  }
 }
