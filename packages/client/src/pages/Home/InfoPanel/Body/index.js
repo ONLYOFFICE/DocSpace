@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -15,7 +15,7 @@ import Info from "./views/Info";
 
 const InfoPanelBodyContent = ({
   t,
-  isRooms,
+  isRoom,
   selfId,
   selectedFolder,
   selectedItems,
@@ -35,6 +35,7 @@ const InfoPanelBodyContent = ({
   createThumbnail,
   culture,
   roomState,
+  calculateisRoom,
 }) => {
   const defaultProps = {
     t,
@@ -82,9 +83,14 @@ const InfoPanelBodyContent = ({
 
   const getInfoPanelBodyContent = () => {
     if (isGallery) return <Gallery {...galleryProps} />;
-    else if (isRooms) return <Room {...roomProps} />;
+    else if (isRoom) return <Room {...roomProps} />;
     else return <Info {...defaultProps} {...detailsProps} />;
   };
+
+  useEffect(() => {
+    if (selectedItems.length === 1) calculateisRoom(selectedItems[0]);
+    else if (selectedItems.length === 0) calculateisRoom(selectedFolder);
+  }, [selectedItems, selectedFolder]);
 
   return <StyledInfoPanelBody>{getInfoPanelBodyContent()}</StyledInfoPanelBody>;
 };
@@ -102,7 +108,7 @@ export default inject(
     selectedFolderStore,
   }) => {
     const { personal, culture } = auth.settingsStore;
-    const { roomState } = auth.infoPanelStore;
+    const { roomState, isRoom, calculateisRoom } = auth.infoPanelStore;
     const selfId = auth.userStore.user.id;
 
     const {
@@ -132,12 +138,21 @@ export default inject(
         ? [bufferSelection]
         : [];
 
-    console.log(selectedItems);
-    console.log({ ...selectedFolderStore });
+    const selectedFolder = {
+      ...selectedFolderStore,
+      isRoom: !!selectedFolderStore.roomType,
+    };
+
+    console.log(
+      "Selected items: ",
+      selectedItems,
+      "\nSelected folder: ",
+      selectedFolder
+    );
 
     return {
       selfId,
-      selectedFolder: { ...selectedFolderStore },
+      selectedFolder: selectedFolder,
       selectedItems: selectedItems,
 
       getFolderInfo,
@@ -156,7 +171,9 @@ export default inject(
       personal,
       createThumbnail,
       culture,
+      isRoom,
       roomState,
+      calculateisRoom,
     };
   }
 )(
