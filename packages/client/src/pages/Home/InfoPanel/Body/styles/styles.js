@@ -25,6 +25,9 @@ const StyledInfoPanelBody = styled.div`
       height: 96px;
       width: 96px;
     }
+    .is-room {
+      border-radius: 16px;
+    }
   }
 
   .current-folder-loader-wrapper {
@@ -61,12 +64,17 @@ const StyledTitle = styled.div`
       }
     `}
 
-  .icon {
-    display: flex;
-    align-items: center;
-    svg {
-      height: 32px;
-      width: 32px;
+  img {
+    &.icon {
+      display: flex;
+      align-items: center;
+      svg {
+        height: 32px;
+        width: 32px;
+      }
+    }
+    &.is-room {
+      border-radius: 6px;
     }
   }
 
