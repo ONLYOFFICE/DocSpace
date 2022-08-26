@@ -1,4 +1,4 @@
-{
+﻿{
   "AccessRightsAccessToProduct": "{{product}} modülüne erişim şu kişilere verildi:",
   "AccessRightsAllUsers": "Tüm {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Değişiklikler e-posta yolu ile onaylandıktan sonra uygulanacaktır.",
@@ -7,6 +7,8 @@
   "AccessRightsSubTitle": "Bu bölüm portal sahibi haklarını aktarmanıza ve yönetici erişim haklarını yönetmenizi sağlar.",
   "AccessRightsUsersFromList": "{{users}} listeden",
   "AccessSettings": "Erişim ayarları",
+  "AuditTrailNav": "Denetim İzleme",
+  "AutoBackup": "Otomatik yedekleme",
   "AddAdmins": "Yönetici ekle",
   "AddName": "İsim Ekle",
   "AddTrustedDomain": "Güvenilen alan adı ekle",
@@ -48,6 +50,7 @@
   "CustomizationDescription": "Bu alt bölüm, portalınızın görünümünü ve tasarımını değiştirmenizi sağlar. Kuruluşunuzun markasına uygun kendi şirket logonuzu, adınızı ve metninizi kullanabilirsiniz.",
   "DeactivateOrDeletePortal": "Portalı devre dışı bırak veya sil.",
   "Disabled": "Devre dışı bırakıldı",
+  "DownloadReportBtn": "Raporu yükle ve aç",
   "DocumentsAdministratorsCan": "Belge yöneticileri Dropbox, Box ve diğer hesapları Ortak Belgelere bağlayabilir ve bu bölümde erişim haklarını düzenleyebilir.",
   "DocumentsModule": "Belge modülü",
   "DocumentsModuleDescription": "Yedekleme, Ortak belgeler klasörüne kaydedilecektir.",
@@ -75,6 +78,7 @@
   "LogoDark": "Hakkında/Giriş sayfası için Logo",
   "LogoDocsEditor": "Editörler başlığı için logo",
   "LogoFavicon": "Favicon",
+  "LoginHistoryTitle": "Giriş Geçmişi",
   "LogoLightSmall": "Portal başlığı için logo",
   "LogoSettings": "Portal Logo Ayarları",
   "LogoUploadRecommendation": "<1>PNG</1> formatında ve arka planı saydam olan görseller kullanmanızı öneririz.",
