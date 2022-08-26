@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 
 import SecondaryInfoButton from "../SecondaryInfoButton";
+import { Base } from "@docspace/components/themes";
 
 const StyledPermanentSetting = styled.div`
   box-sizing: border-box;
@@ -16,7 +17,8 @@ const StyledPermanentSetting = styled.div`
   max-width: 100%;
   padding: 12px 16px;
 
-  background: #f8f9f9;
+  background: ${(props) =>
+    props.theme.createEditRoomDialog.permanentSettings.background};
   border-radius: 6px;
 
   user-select: none;
@@ -44,7 +46,9 @@ const StyledPermanentSetting = styled.div`
           props.type === "privacy" &&
           css`
             path {
-              fill: #35ad17;
+              fill: ${(props) =>
+                props.theme.createEditRoomDialog.permanentSettings
+                  .isPrivateIcon};
             }
           `}
       }
@@ -66,10 +70,13 @@ const StyledPermanentSetting = styled.div`
     font-weight: 400;
     font-size: 12px;
     line-height: 16px;
-    color: #555f65;
+    color: ${(props) =>
+      props.theme.createEditRoomDialog.permanentSettings.descriptionColor};
     white-space: pre-line;
   }
 `;
+
+StyledPermanentSetting.defaultProps = { theme: Base };
 
 const PermanentSetting = ({ isFull, type, icon, title, content }) => {
   return (
