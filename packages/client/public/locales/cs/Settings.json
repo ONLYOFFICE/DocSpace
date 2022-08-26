@@ -1,4 +1,4 @@
-{
+﻿{
   "AccessRightsAccessToProduct": "Přístup k modulu {{product}} je udělen",
   "AccessRightsAllUsers": "Všichni {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Změny budou uplatněny po potvrzení e-mailem.",
@@ -10,6 +10,7 @@
   "AddAdmins": "Přidávat administrátory",
   "AddName": "Přidat jméno",
   "AddTrustedDomain": "Přidat důvěryhodné domény",
+  "AuditTrailNav": "Audit Trail",
   "AdminInModules": "Administrátoři v modulech",
   "AdministratorsAddedSuccessfully": "Administrátoři úspěšně přidáni",
   "AdministratorsRemovedSuccessfully": "Administrátoři úspěšně odebráni",
@@ -46,6 +47,9 @@
   "CustomTitlesWelcome": "Nastavení úvodní stránky",
   "Customization": "Přizpůsobení",
   "CustomizationDescription": "Tato podsekce umožňuje změnit vzhled portálu. Můžete použít vlastní logo společnosti, název a text, aby odpovídaly značce vaší organizace.",
+  "DownloadReportBtn": "Stáhnout a otevřít zprávu",
+  "CustomTitles": "Vlastní názvy",
+  "CustomTitlesSettingsDescription": "Zobrazí se na vaší uvítací stránce a použijí se pro e-mailová oznámení (pole Od). Vlastní název domény je způsob, jak nastavit alternativní adresu URL pro váš portál. Vlastní název portálu se zobrazí vedle adresy onlyoffice.com/onlyoffice.eu.",
   "DeactivateOrDeletePortal": "Deaktivovat nebo odstranit portál.",
   "Disabled": "Deaktivováno",
   "DocumentsAdministratorsCan": "Správci dokumentů mohou propojit účty Dropbox, Box a další účty se společnými dokumenty a nastavit přístupová práva v této sekci",
@@ -75,6 +79,7 @@
   "LogoDark": "Logo pro stránku O portálu/Přihlášení",
   "LogoDocsEditor": "Logo pro záhlaví editorů",
   "LogoFavicon": "Favicon",
+  "LoginHistoryTitle": "Historie přihlášení",
   "LogoLightSmall": "Logo pro záhlaví portálu",
   "LogoSettings": "Nastavení loga portálu",
   "LogoUploadRecommendation": "Doporučujeme používat obrázky ve formátu <1>PNG</1> s průhledným pozadím",
