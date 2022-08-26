@@ -111,7 +111,14 @@ public class FileShareLink
         }
 
         var fileId = Parse<T>(doc);
-        var file = await fileDao.GetFileAsync(fileId);
+
+        File<T> file = null;
+
+        if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
+        {
+            file = await fileDao.GetFileAsync(fileId);
+        }
+
         if (file == null)
         {
             return (FileShare.Restrict, file);
