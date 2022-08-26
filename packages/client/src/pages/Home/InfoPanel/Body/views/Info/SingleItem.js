@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { FileType } from "@docspace/common/constants";
-import { LANGUAGE } from "@docspace/common/constants";
 
-import getCorrectDate from "@docspace/components/utils/getCorrectDate";
-
-import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Tooltip from "@docspace/components/tooltip";
 
@@ -19,194 +15,125 @@ import {
   StyledTitle,
 } from "../../styles/styles.js";
 
-const SingleItem = (props) => {
-  const {
-    t,
-    selectedItem,
-    onSelectItem,
-    setSharingPanelVisible,
-    getIcon,
-    getFolderIcon,
-    getShareUsers,
-    dontShowSize,
-    dontShowLocation,
-    dontShowAccess,
-    dontShowOwner,
-    personal,
-    createThumbnail,
-    culture,
-  } = props;
+import InfoHelper from "./helpers/InfoHelper.js";
+
+const SingleItem = ({
+  t,
+  selectedItem,
+  onSelectItem,
+  setSharingPanelVisible,
+  getIcon,
+  getFolderIcon,
+  getShareUsers,
+  dontShowSize,
+  dontShowLocation,
+  dontShowAccess,
+  personal,
+  createThumbnail,
+  culture,
+}) => {
+  let infoHelper;
 
   const [item, setItem] = useState({
-    id: "",
-    isFolder: false,
-    title: "",
-    iconUrl: "",
-    thumbnailUrl: "",
-    properties: [],
-    access: {
+      title: "",
+      iconUrl: "",
+      thumbnailUrl: "",
+    }),
+    [itemProperties, setItemProperties] = useState([]),
+    [itemAccess, setItemAccess] = useState({
       owner: {
         img: "",
         link: "",
       },
       others: [],
-    },
-  });
+    });
 
   const updateItemsInfo = async (selectedItem) => {
-    const getItemIcon = (item, size) => {
-      return item.isFolder
-        ? getFolderIcon(item.providerKey, size)
-        : getIcon(size, item.fileExst || ".file");
-    };
+    setItem({
+      ...selectedItem,
+      iconUrl: infoHelper.getItemIcon(32),
+      thumbnailUrl: selectedItem.thumbnailUrl || infoHelper.getItemIcon(96),
+    });
 
-    const getSingleItemProperties = (item) => {
-      const styledLink = (text, href) => (
-        <Link
-          isTextOverflow
-          className="property-content"
-          href={href}
-          isHovered={true}
-        >
-          {text}
-        </Link>
-      );
-
-      const styledText = (text) => (
-        <Text truncate className="property-content">
-          {text}
-        </Text>
-      );
-
-      const replaceUnicode = (str) => {
-        const regex = /&#([0-9]{1,4});/gi;
-        return str
-          ? str.replace(regex, (match, numStr) => String.fromCharCode(+numStr))
-          : "...";
-      };
-
-      const parseAndFormatDate = (date) => {
-        const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
-        const correctDate = getCorrectDate(locale, date);
-        return correctDate;
-      };
-
-      const getItemType = (fileType) => {
-        switch (fileType) {
-          case FileType.Unknown:
-            return t("Common:Unknown");
-          case FileType.Archive:
-            return t("Common:Archive");
-          case FileType.Video:
-            return t("Common:Video");
-          case FileType.Audio:
-            return t("Common:Audio");
-          case FileType.Image:
-            return t("Common:Image");
-          case FileType.Spreadsheet:
-            return t("Home:Spreadsheet");
-          case FileType.Presentation:
-            return t("Home:Presentation");
-          case FileType.Document:
-            return t("Home:Document");
-          default:
-            return t("Home:Folder");
-        }
-      };
-
-      const itemSize = item.isFolder
-        ? `${t("Translations:Folders")}: ${item.foldersCount} | ${t(
-            "Translations:Files"
-          )}: ${item.filesCount}`
-        : item.contentLength;
-
-      const itemType = getItemType(item.fileType);
-
-      let result = [
-        {
+    const neededItemProperties = infoHelper.getNeededProperties();
+    setItemProperties(
+      [
+        neededItemProperties.includes("Owner") && {
           id: "Owner",
           title: t("Common:Owner"),
           content: personal
-            ? styledText(replaceUnicode(item.createdBy?.displayName))
-            : styledLink(
-                replaceUnicode(item.createdBy?.displayName),
-                item.createdBy?.profileUrl
+            ? infoHelper.styledText(
+                infoHelper.infoHelper.decodeString(
+                  selectedItem.createdBy?.displayName
+                )
+              )
+            : infoHelper.styledLink(
+                infoHelper.decodeString(selectedItem.createdBy?.displayName),
+                selectedItem.createdBy?.profileUrl
               ),
         },
-        // {
-        //   id: "Location",
-        //   title: t("InfoPanel:Location"),
-        //   content: styledText("..."),
-        // },
-        {
+        neededItemProperties.includes("Location") && {
+          id: "Location",
+          title: t("InfoPanel:Location"),
+          content: infoHelper.styledText("..."),
+        },
+        neededItemProperties.includes("Type") && {
           id: "Type",
           title: t("Common:Type"),
-          content: styledText(itemType),
+          content: infoHelper.styledText(infoHelper.getItemType(selectedItem)),
         },
-        {
+        neededItemProperties.includes("Size") && {
           id: "Size",
-          title: item.fileType ? t("Common:Size") : t("Common:Content"),
-          content: styledText(itemSize),
+          title: selectedItem.fileType ? t("Common:Size") : t("Common:Content"),
+          content: infoHelper.styledText(
+            infoHelper.getItemSize(t, selectedItem)
+          ),
         },
-        {
+        neededItemProperties.includes("Date modified") && {
           id: "ByLastModifiedDate",
           title: t("Home:ByLastModifiedDate"),
-          content: styledText(parseAndFormatDate(item.updated)),
+          content: infoHelper.styledText(
+            infoHelper.parseAndFormatDate(selectedItem.updated)
+          ),
         },
-        {
+        neededItemProperties.includes("Last modified by") && {
           id: "LastModifiedBy",
           title: t("LastModifiedBy"),
           content: personal
-            ? styledText(replaceUnicode(item.updatedBy?.displayName))
-            : styledLink(
-                replaceUnicode(item.updatedBy?.displayName),
-                item.updatedBy?.profileUrl
+            ? infoHelper.styledText(
+                infoHelper.decodeString(selectedItem.updatedBy?.displayName)
+              )
+            : infoHelper.styledLink(
+                infoHelper.decodeString(selectedItem.updatedBy?.displayName),
+                selectedItem.updatedBy?.profileUrl
               ),
         },
-        {
+        neededItemProperties.includes("Creation date") && {
           id: "ByCreationDate",
           title: t("Home:ByCreationDate"),
-          content: styledText(parseAndFormatDate(item.created)),
+          content: infoHelper.styledText(
+            infoHelper.parseAndFormatDate(selectedItem.created)
+          ),
         },
-      ];
-
-      if (item.providerKey && item.isFolder)
-        result = result.filter((x) => x.id !== "Size");
-
-      if (dontShowOwner) result.shift();
-      if (item.isFolder) return result;
-
-      result.splice(3, 0, {
-        id: "FileExtension",
-        title: t("FileExtension"),
-        content: styledText(
-          item.fileExst ? item.fileExst.split(".")[1].toUpperCase() : "-"
-        ),
-      });
-
-      result.push(
-        {
+        neededItemProperties.includes("Versions") && {
           id: "Versions",
           title: t("Versions"),
-          content: styledText(item.version),
+          content: infoHelper.styledText(selectedItem.version),
         },
-        {
+        neededItemProperties.includes("Comments") && {
           id: "Comments",
           title: t("Common:Comments"),
-          content: styledText(item.comment),
-        }
-      );
+          content: infoHelper.styledText(selectedItem.comment),
+        },
+        neededItemProperties.includes("Tags") && {
+          id: "Tags",
+          title: t("Files:Tags"),
+          content: <></>,
+        },
+      ].filter((item) => !!item)
+    );
 
-      return result;
-    };
-
-    const displayedItem = {
-      id: selectedItem.id,
-      isFolder: selectedItem.isFolder,
-      title: selectedItem.title,
-      iconUrl: getItemIcon(selectedItem, 32),
-      thumbnailUrl: selectedItem.thumbnailUrl || getItemIcon(selectedItem, 96),
-      properties: getSingleItemProperties(selectedItem),
+    setItemAccess({
       access: {
         owner: {
           img: selectedItem.createdBy?.avatarSmall,
@@ -214,13 +141,12 @@ const SingleItem = (props) => {
         },
         others: [],
       },
-    };
+    });
 
-    setItem(displayedItem);
-    await loadAsyncData(displayedItem, selectedItem);
+    await loadAsyncData();
   };
 
-  const loadAsyncData = async (displayedItem, selectedItem) => {
+  const loadAsyncData = async () => {
     if (
       !selectedItem.thumbnailUrl &&
       !selectedItem.isFolder &&
@@ -312,38 +238,50 @@ const SingleItem = (props) => {
     //   selectedItem
     // );
 
-    if (dontShowAccess) {
-      setItem({
-        ...displayedItem,
-        //properties: properties,
-      });
-      return;
-    }
+    // if (dontShowAccess) {
+    //   setItem({
+    //     // ...displayedItem,
+    //     //properties: properties,
+    //   });
+    //   return;
+    // }
 
-    if (!personal) {
-      const access = await updateLoadedItemAccess(selectedItem);
-      setItem({
-        ...displayedItem,
-        // properties: properties,
-        access: access,
-      });
-    }
+    // if (!personal) {
+    //   const access = await updateLoadedItemAccess(selectedItem);
+    //   setItem({
+    //     // ...displayedItem,
+    //     // properties: properties,
+    //     access: access,
+    //   });
+    // }
   };
 
   const openSharingPanel = () => {
-    const { id, isFolder } = item;
+    const { id, isFolder } = selectedItem;
     onSelectItem({ id, isFolder });
     setSharingPanelVisible(true);
   };
 
   useEffect(() => {
+    infoHelper = new InfoHelper(
+      t,
+      selectedItem,
+      personal,
+      culture,
+      getFolderIcon,
+      getIcon
+    );
     updateItemsInfo(selectedItem);
   }, [selectedItem]);
 
   return (
     <>
       <StyledTitle>
-        <img className="icon" src={item.iconUrl} alt="thumbnail-icon" />
+        <img
+          className={`icon ${selectedItem.isRoom && "is-room"}`}
+          src={item.iconUrl}
+          alt="thumbnail-icon"
+        />
         <Text className="text">{item.title}</Text>
       </StyledTitle>
 
@@ -359,7 +297,7 @@ const SingleItem = (props) => {
       ) : (
         <div className="no-thumbnail-img-wrapper">
           <img
-            className="no-thumbnail-img"
+            className={`no-thumbnail-img ${selectedItem.isRoom && "is-room"}`}
             src={item.thumbnailUrl}
             alt="thumbnail-icon-big"
           />
@@ -373,7 +311,7 @@ const SingleItem = (props) => {
       </StyledSubtitle>
 
       <StyledProperties>
-        {item.properties.map((p) => {
+        {itemProperties.map((p) => {
           if (dontShowSize && p.id === "Size") return;
           if (dontShowLocation && p.id === "Location") return;
           return (
@@ -385,7 +323,7 @@ const SingleItem = (props) => {
         })}
       </StyledProperties>
 
-      {!dontShowAccess && item.access && !personal && (
+      {!dontShowAccess && itemAccess && !personal && (
         <>
           <StyledSubtitle>
             <Text fontWeight="600" fontSize="14px">
@@ -405,19 +343,19 @@ const SingleItem = (props) => {
               <div
                 data-for="access-item-tooltip"
                 className="access-item-tooltip"
-                data-tip={item.access.owner.name}
+                data-tip={itemAccess.owner.name}
               >
                 <div className="item-user">
-                  <a href={item.access.owner.link}>
-                    <img src={item.access.owner.img} />
+                  <a href={itemAccess.owner.link}>
+                    <img src={itemAccess.owner.img} />
                   </a>
                 </div>
               </div>
             </StyledAccessItem>
 
-            {item.access.others.length > 0 && <div className="divider"></div>}
+            {itemAccess.others.length > 0 && <div className="divider"></div>}
 
-            {item.access.others.map((item, i) => {
+            {itemAccess.others.map((item, i) => {
               if (i < 3)
                 return (
                   <div key={item.key}>
@@ -444,9 +382,9 @@ const SingleItem = (props) => {
                 );
             })}
 
-            {item.access.others.length > 3 && (
+            {itemAccess.others.length > 3 && (
               <div className="show-more-users" onClick={openSharingPanel}>
-                {`+ ${item.access.others.length - 3} ${t("Members")}`}
+                {`+ ${itemAccess.others.length - 3} ${t("Members")}`}
               </div>
             )}
           </StyledAccess>
