@@ -15,11 +15,37 @@ import withContextOptions from "SRC_DIR/HOCs/withPeopleContextOptions";
 import withContent from "SRC_DIR/HOCs/withPeopleContent";
 
 import Badges from "../Badges";
+import { Base } from "@docspace/components/themes";
+
+const StyledWrapper = styled.div`
+  display: contents;
+`;
 
 const StyledPeopleRow = styled(TableRow)`
+  :hover {
+    .table-container_cell {
+      cursor: pointer;
+      background: ${(props) =>
+        `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+    }
+
+    .table-container_user-name-cell {
+      margin-left: -24px;
+      padding-left: 24px;
+    }
+    .table-container_row-context-menu-wrapper {
+      margin-right: -20px;
+      padding-right: 18px;
+    }
+  }
+
   .table-container_cell {
     height: 46px;
     max-height: 46px;
+
+    background: ${(props) =>
+      (props.checked || props.isActive) &&
+      `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
   }
 
   .table-container_row-checkbox-wrapper {
@@ -80,6 +106,8 @@ const StyledPeopleRow = styled(TableRow)`
   }
 `;
 
+StyledPeopleRow.defaultProps = { theme: Base };
+
 const fakeRooms = [
   {
     name: "Room 1",
@@ -106,7 +134,10 @@ const PeopleTableRow = (props) => {
     theme,
     changeUserType,
     userId,
+    setSelection,
   } = props;
+
+  const [isActive, setIsActive] = React.useState(false);
 
   const {
     displayName,
@@ -200,127 +231,149 @@ const PeopleTableRow = (props) => {
 
   const typeLabel = getRoomTypeLabel(role);
 
-  return (
-    <StyledPeopleRow
-      key={item.id}
-      sideInfoColor={sideInfoColor}
-      {...contextOptionsProps}
-    >
-      <TableCell>
-        <TableCell
-          hasAccess={isAdmin}
-          className="table-container_row-checkbox-wrapper"
-          checked={checkedProps.checked}
-        >
-          <div className="table-container_element">{element}</div>
-          <Checkbox
-            className="table-container_row-checkbox"
-            onChange={onChange}
-            isChecked={checkedProps.checked}
-          />
-        </TableCell>
+  const isChecked = checkedProps.checked;
 
-        <Link
-          type="page"
-          title={displayName}
-          fontWeight="600"
-          fontSize="15px"
-          color={nameColor}
-          isTextOverflow
-          href={`/accounts/view/${userName}`}
-          onClick={onUserNameClick}
-          className="table-cell_username"
-        >
-          {statusType === "pending" ? email : displayName}
-        </Link>
-        <Badges statusType={statusType} />
-      </TableCell>
-      <TableCell className={"table-cell_type"}>
-        {((isOwner && role !== "owner") ||
-          (isAdmin && !isOwner && role !== "admin")) &&
-        statusType !== "disabled" &&
-        userId !== item.id ? (
-          <ComboBox
-            className="type-combobox"
-            selectedOption={getTypesOptions().find(
-              (option) => option.key === role
-            )}
-            options={getTypesOptions()}
-            onSelect={onTypeChange}
-            scaled={false}
-            size="content"
-            displaySelectedOption
-            modernView
-          />
-        ) : (
-          <Text
+  const userContextClick = React.useCallback(() => {
+    setIsActive(true);
+    !isChecked && setSelection([]);
+  }, [isChecked, setSelection]);
+
+  const onHideContextMenu = React.useCallback(() => {
+    setIsActive(false);
+  }, []);
+
+  return (
+    <StyledWrapper
+      className={`user-item ${
+        isChecked || isActive ? "table-row-selected" : ""
+      }`}
+    >
+      <StyledPeopleRow
+        key={item.id}
+        className="table-row"
+        sideInfoColor={sideInfoColor}
+        checked={isChecked}
+        fileContextClick={userContextClick}
+        onHideContextMenu={onHideContextMenu}
+        isActive={isActive}
+        {...contextOptionsProps}
+      >
+        <TableCell className={"table-container_user-name-cell"}>
+          <TableCell
+            hasAccess={isAdmin}
+            className="table-container_row-checkbox-wrapper"
+            checked={isChecked}
+          >
+            <div className="table-container_element">{element}</div>
+            <Checkbox
+              className="table-container_row-checkbox"
+              onChange={onChange}
+              isChecked={isChecked}
+            />
+          </TableCell>
+
+          <Link
             type="page"
-            title={position}
+            title={displayName}
+            fontWeight="600"
+            fontSize="15px"
+            color={nameColor}
+            isTextOverflow
+            href={`/accounts/view/${userName}`}
+            onClick={onUserNameClick}
+            className="table-cell_username"
+          >
+            {statusType === "pending" ? email : displayName}
+          </Link>
+          <Badges statusType={statusType} />
+        </TableCell>
+        <TableCell className={"table-cell_type"}>
+          {((isOwner && role !== "owner") ||
+            (isAdmin && !isOwner && role !== "admin")) &&
+          statusType !== "disabled" &&
+          userId !== item.id ? (
+            <ComboBox
+              className="type-combobox"
+              selectedOption={getTypesOptions().find(
+                (option) => option.key === role
+              )}
+              options={getTypesOptions()}
+              onSelect={onTypeChange}
+              scaled={false}
+              size="content"
+              displaySelectedOption
+              modernView
+            />
+          ) : (
+            <Text
+              type="page"
+              title={position}
+              fontSize="12px"
+              fontWeight={400}
+              color={sideInfoColor}
+              truncate
+              noSelect
+              style={{ paddingLeft: "8px" }}
+            >
+              {typeLabel}
+            </Text>
+          )}
+        </TableCell>
+        <TableCell className="table-cell_room">
+          {!rooms?.length ? (
+            <Text
+              type="page"
+              title={position}
+              fontSize="12px"
+              fontWeight={400}
+              color={sideInfoColor}
+              truncate
+              noSelect
+              style={{ paddingLeft: "8px" }}
+            >
+              —
+            </Text>
+          ) : rooms?.length === 1 ? (
+            <Text
+              type="page"
+              title={position}
+              fontSize="12px"
+              fontWeight={400}
+              color={sideInfoColor}
+              truncate
+              style={{ paddingLeft: "8px" }}
+            >
+              {rooms[0].name} ({rooms[0].role})
+            </Text>
+          ) : (
+            <ComboBox
+              className="room-combobox"
+              selectedOption={{ key: "length", label: `${fakeRooms.length}` }}
+              options={[]}
+              onSelect={onTypeChange}
+              advancedOptions={getRoomsOptions()}
+              scaled={false}
+              size="content"
+              displaySelectedOption
+              modernView
+            />
+          )}
+        </TableCell>
+        <TableCell>
+          <Link
+            type="page"
+            title={email}
             fontSize="12px"
             fontWeight={400}
             color={sideInfoColor}
-            truncate
-            noSelect
-            style={{ paddingLeft: "8px" }}
+            onClick={onEmailClick}
+            isTextOverflow
           >
-            {typeLabel}
-          </Text>
-        )}
-      </TableCell>
-      <TableCell className="table-cell_room">
-        {!rooms?.length ? (
-          <Text
-            type="page"
-            title={position}
-            fontSize="12px"
-            fontWeight={400}
-            color={sideInfoColor}
-            truncate
-            noSelect
-            style={{ paddingLeft: "8px" }}
-          >
-            —
-          </Text>
-        ) : rooms?.length === 1 ? (
-          <Text
-            type="page"
-            title={position}
-            fontSize="12px"
-            fontWeight={400}
-            color={sideInfoColor}
-            truncate
-            style={{ paddingLeft: "8px" }}
-          >
-            {rooms[0].name} ({rooms[0].role})
-          </Text>
-        ) : (
-          <ComboBox
-            className="room-combobox"
-            selectedOption={{ key: "length", label: `${fakeRooms.length}` }}
-            options={[]}
-            onSelect={onTypeChange}
-            advancedOptions={getRoomsOptions()}
-            scaled={false}
-            size="content"
-            displaySelectedOption
-            modernView
-          />
-        )}
-      </TableCell>
-      <TableCell>
-        <Link
-          type="page"
-          title={email}
-          fontSize="12px"
-          fontWeight={400}
-          color={sideInfoColor}
-          onClick={onEmailClick}
-          isTextOverflow
-        >
-          {email}
-        </Link>
-      </TableCell>
-    </StyledPeopleRow>
+            {email}
+          </Link>
+        </TableCell>
+      </StyledPeopleRow>
+    </StyledWrapper>
   );
 };
 

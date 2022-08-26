@@ -143,7 +143,12 @@ export default function withContent(WrappedContent) {
     const { getTargetUser } = peopleStore.targetUserStore;
     const { selectionStore } = peopleStore;
 
-    const { selection, selectUser, deselectUser } = selectionStore;
+    const {
+      selection,
+      setSelection,
+      selectUser,
+      deselectUser,
+    } = selectionStore;
 
     return {
       theme: auth.settingsStore.theme,
@@ -154,6 +159,7 @@ export default function withContent(WrappedContent) {
       checked: selection.some((el) => el.id === item.id),
       selectUser,
       deselectUser,
+      setSelection,
     };
   })(observer(WithContent));
 }
