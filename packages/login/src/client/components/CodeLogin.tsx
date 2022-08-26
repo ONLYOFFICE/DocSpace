@@ -11,11 +11,24 @@ import Link from "@docspace/components/link";
 import CodeInput from "@docspace/components/code-input";
 import { Trans } from "react-i18next";
 import { ReactSVG } from "react-svg";
-
-import i18n from "./i18n";
+import { RouteComponentProps } from "react-router-dom";
+import i18n from "../i18n";
 import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
+import { I18next } from "i18next-express-middleware";
 
-const Bar = (props) => {
+interface IBarProp {
+  t: TFuncType;
+  expired: boolean;
+}
+
+interface ICodeProps extends RouteComponentProps<any> {
+  i18n: I18next;
+  t: TFuncType;
+  tReady: boolean;
+  staticContext: any;
+}
+
+const Bar: React.FC<IBarProp> = (props) => {
   const { t, expired } = props;
   const type = expired ? "warning" : "error";
   const text = expired ? t("ExpiredCode") : t("InvalidCode");
@@ -28,7 +41,7 @@ const Bar = (props) => {
   );
 };
 
-const Form = () => {
+const Form: React.FC<ICodeProps> = () => {
   const { t } = useTranslation("Login");
   const [invalidCode, setInvalidCode] = useState(false);
   const [expiredCode, setExpiredCode] = useState(false);
@@ -37,7 +50,7 @@ const Form = () => {
   const email = "test@onlyoffice.com"; //TODO: get email from form
   const validCode = "123456"; //TODO: get from api
 
-  const onSubmit = (code) => {
+  const onSubmit = (code: number | string) => {
     if (code !== validCode) {
       setInvalidCode(true);
     } else {
@@ -107,7 +120,8 @@ const Form = () => {
   );
 };
 
-const CodeLoginForm = (props) => {
+const CodeLoginForm: React.FC<ICodeProps> = (props) => {
+  console.log(props);
   return (
     <LoginFormWrapper>
       <Section>
@@ -121,8 +135,10 @@ const CodeLoginForm = (props) => {
 
 const CodeLogin = withRouter(withTranslation("Login")(CodeLoginForm));
 
-export default (props) => (
+const CodeLoginWrapper: React.FC<ICodeProps> = (props) => (
   <I18nextProvider i18n={i18n}>
     <CodeLogin {...props} />
   </I18nextProvider>
 );
+
+export default CodeLoginWrapper;

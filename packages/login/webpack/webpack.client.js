@@ -82,7 +82,7 @@ const clientConfig = {
       exposes: {
         "./login": "./src/client/components/Login.tsx",
         // "./roomsLogin": "../src/RoomsLogin.tsx",
-        // "./codeLogin": "../src/CodeLogin.tsx",
+        "./codeLogin": "./src/client/components/CodeLogin.tsx",
         // "./moreLogin": "../src/sub-components/more-login.tsx",
       },
       shared: { ...sharedDeps, ...deps },
