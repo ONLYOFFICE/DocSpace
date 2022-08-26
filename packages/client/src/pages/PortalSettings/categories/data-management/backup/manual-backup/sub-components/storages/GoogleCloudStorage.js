@@ -16,7 +16,7 @@ class GoogleCloudStorage extends React.Component {
     const moduleValues = getFromLocalStorage(
       "LocalCopyThirdPartyStorageValues"
     );
-    
+
     const moduleType =
       getFromLocalStorage("LocalCopyStorage") === ThirdPartyStorages.GoogleId;
 
@@ -53,14 +53,6 @@ class GoogleCloudStorage extends React.Component {
             isDisabled={!isValidForm || !isMaxProgress || this.isDisabled}
             size={buttonSize}
           />
-          {!isMaxProgress && (
-            <Button
-              label={t("Common:CopyOperation") + "..."}
-              isDisabled
-              size={buttonSize}
-              style={{ marginLeft: "8px" }}
-            />
-          )}
         </div>
       </>
     );

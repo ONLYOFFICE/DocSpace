@@ -56,14 +56,6 @@ class AmazonStorage extends React.Component {
             isDisabled={!isValidForm || !isMaxProgress || this.isDisabled}
             size={buttonSize}
           />
-          {!isMaxProgress && (
-            <Button
-              label={t("Common:CopyOperation") + "..."}
-              isDisabled={true}
-              size={buttonSize}
-              style={{ marginLeft: "8px" }}
-            />
-          )}
         </div>
       </>
     );

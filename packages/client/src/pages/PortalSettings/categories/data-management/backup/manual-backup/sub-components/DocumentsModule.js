@@ -84,13 +84,6 @@ class DocumentsModule extends React.Component {
             isDisabled={isModuleDisabled || !selectedFolder}
             size={buttonSize}
           />
-          {!isMaxProgress && (
-            <Button
-              label={t("Common:CopyOperation") + "..."}
-              isDisabled={true}
-              size={buttonSize}
-            />
-          )}
         </div>
       </>
     );

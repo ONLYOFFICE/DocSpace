@@ -169,14 +169,6 @@ class ThirdPartyModule extends React.Component {
           isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
           size={buttonSize}
         />
-        {!isMaxProgress && (
-          <Button
-            label={t("Common:CopyOperation") + "..."}
-            isDisabled={true}
-            size={buttonSize}
-            style={{ marginLeft: "8px" }}
-          />
-        )}
       </div>
     );
   }
