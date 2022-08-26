@@ -12,6 +12,8 @@ const StyledOuter = styled.div`
     css`
       border: ${(props) => props.theme.client.settings.backup.contextBorder};
       width: 32px;
+      box-sizing: border-box;
+      border-radius: 3px;
 
       svg {
         padding: 7px 13px 7px 2px;
