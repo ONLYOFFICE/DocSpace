@@ -110,4 +110,17 @@ declare global {
   };
 
   type TFuncType = (key: string) => string;
+
+  interface IParsedConfig extends Object {
+    PORT: number;
+  }
+  interface ILoginRequest extends Request {
+    i18n?: I18next;
+    t?: TFuncType;
+  }
+  type timeoutType = ReturnType<typeof setTimeout>;
+  interface IAcceptLanguage {
+    code?: string;
+    quality?: number;
+  }
 }
