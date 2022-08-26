@@ -1878,7 +1878,7 @@ const Base = {
       tablet: {
         marginLeft: "12px",
         lineHeight: "16px",
-        fontSize: "14px",
+        fontSize: "15px",
         fontWeight: "bold",
       },
     },
