@@ -337,7 +337,6 @@ const DirectThirdPartyConnection = (props) => {
           onSelectFile={onSelectFile}
           onClickInput={onClickInput}
           isPanelVisible={isPanelVisible}
-          foldersType="third-party"
           searchParam=".gz"
           filesListTitle={t("SelectFileInGZFormat")}
           withoutResetFolderTree
@@ -366,11 +365,11 @@ const DirectThirdPartyConnection = (props) => {
           }
           isPanelVisible={isPanelVisible}
           isError={isError}
-          foldersType={isInitialLoading || isUpdatingInfo ? "" : "third-party"}
           foldersList={[folderList]}
           withoutBasicSelection={withoutBasicSelection}
           isReset={isReset}
           isSuccessSave={isSuccessSave}
+          isWaitingUpdate={isInitialLoading || isUpdatingInfo ? true : false}
         />
       )}
 

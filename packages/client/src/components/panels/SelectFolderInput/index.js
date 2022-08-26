@@ -28,7 +28,6 @@ class SelectFolderInput extends React.PureComponent {
 
   setBaseInfo = async () => {
     const {
-      treeFolders,
       foldersType,
       id,
       onSelectFolder,
@@ -43,7 +42,7 @@ class SelectFolderInput extends React.PureComponent {
         resultingFolderTree,
         resultingId,
       ] = await SelectionPanel.getBasicFolderInfo(
-        treeFolders,
+        null,
         foldersType,
         id,
         this.onSetBaseFolderPath,
@@ -72,14 +71,20 @@ class SelectFolderInput extends React.PureComponent {
   componentDidMount() {
     this._isMount = true;
 
-    const { setFirstLoad, foldersType } = this.props;
+    const { setFirstLoad, isWaitingUpdate } = this.props;
 
     setFirstLoad(false);
-    foldersType && this.setBaseInfo();
+    !isWaitingUpdate && this.setBaseInfo();
   }
 
   componentDidUpdate(prevProps) {
-    const { isSuccessSave, isReset, id, foldersType } = this.props;
+    const {
+      isSuccessSave,
+      isReset,
+      id,
+
+      isWaitingUpdate,
+    } = this.props;
     const { newFolderPath, baseFolderPath } = this.state;
 
     if (!isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
@@ -101,7 +106,7 @@ class SelectFolderInput extends React.PureComponent {
       });
     }
 
-    if (foldersType !== "" && foldersType !== prevProps.foldersType) {
+    if (!isWaitingUpdate && isWaitingUpdate !== prevProps.isWaitingUpdate) {
       this.setBaseInfo();
     }
   }
@@ -256,6 +261,7 @@ SelectFolderInput.propTypes = {
   onClickInput: PropTypes.func,
   hasError: PropTypes.bool,
   isDisabled: PropTypes.bool,
+  isUpdateInfo: PropTypes.bool,
   placeholder: PropTypes.string,
   foldersType: PropTypes.oneOf([
     "common",
@@ -282,12 +288,12 @@ export default inject(
     selectedFolderStore,
   }) => {
     const { setFirstLoad } = filesStore;
-    const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
+    const { setExpandedPanelKeys } = treeFoldersStore;
     const { setFolderId } = selectFolderDialogStore;
     const { setParentId } = selectedFolderStore;
     return {
       setFirstLoad,
-      treeFolders,
+
       setFolderId,
       setExpandedPanelKeys,
       setParentId,

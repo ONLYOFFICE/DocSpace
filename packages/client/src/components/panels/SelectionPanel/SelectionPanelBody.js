@@ -208,6 +208,12 @@ class SelectionPanel extends React.Component {
             console.error(err);
           }
           break;
+        default:
+          try {
+            return getSharedRoomsTree();
+          } catch (err) {
+            console.error(err);
+          }
       }
     };
 
@@ -236,7 +242,7 @@ class SelectionPanel extends React.Component {
 
     const treeFoldersLength = treeFolders?.length;
 
-    if (treeFoldersLength === 0) {
+    if (treeFoldersLength === 0 || !treeFoldersLength) {
       try {
         requestedTreeFolders = foldersList
           ? foldersList
