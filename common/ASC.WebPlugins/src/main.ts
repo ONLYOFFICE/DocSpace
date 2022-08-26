@@ -11,9 +11,7 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule, { cors: false });
     // app.enableCors();
-    await app.listen(port, () => {
-      winston.info(`Plugins service start at port: ${port}`);
-    });
+    await app.listen(port);
   } catch (e) {
     winston.error(e);
   }
