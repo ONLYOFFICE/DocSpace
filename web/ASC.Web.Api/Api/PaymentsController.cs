@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
 namespace ASC.Web.Api.Controllers;
 
 [Scope]
@@ -38,7 +37,8 @@ public class PaymentController : ControllerBase
     private readonly TenantManager _tenantManager;
     private readonly ITariffService _tariffService;
     private readonly SecurityContext _securityContext;
-    private readonly GeolocationHelper _geolocationHelper;
+    private readonly RegionHelper _regionHelper;
+
     protected Tenant Tenant { get { return _apiContext.Tenant; } }
 
     public PaymentController(
@@ -47,7 +47,7 @@ public class PaymentController : ControllerBase
         TenantManager tenantManager,
         ITariffService tariffService,
         SecurityContext securityContext,
-        GeolocationHelper geolocationHelper
+        RegionHelper regionHelper
         )
     {
         _apiContext = apiContext;
@@ -55,19 +55,19 @@ public class PaymentController : ControllerBase
         _tenantManager = tenantManager;
         _tariffService = tariffService;
         _securityContext = securityContext;
-        _geolocationHelper = geolocationHelper;
+        _regionHelper = regionHelper;
     }
 
     [HttpPut("payment/url")]
     public Uri GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
-        if (_tariffService.GetPayments(Tenant.Id).Any()
-            || !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
+        if (_tariffService.GetPayments(Tenant.Id).Any() ||
+            !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
         {
             return null;
         }
 
-        var currency = GetCurrencyFromRequest();
+        var currency = _regionHelper.GetCurrencyFromRequest();
 
         return _tariffService.GetShoppingUri(Tenant.Id, currency,
             Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
@@ -79,8 +79,8 @@ public class PaymentController : ControllerBase
     [HttpPut("payment/update")]
     public bool PaymentUpdate(PaymentUrlRequestsDto inDto)
     {
-        if (!_tariffService.GetPayments(Tenant.Id).Any()
-            || !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
+        if (!_tariffService.GetPayments(Tenant.Id).Any() ||
+            !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
         {
             return false;
         }
@@ -93,9 +93,11 @@ public class PaymentController : ControllerBase
     {
         var payerId = _tariffService.GetTariff(Tenant.Id).CustomerId;
 
-        if (_securityContext.CurrentAccount.ID != payerId
-            && _securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        if (_securityContext.CurrentAccount.ID != payerId &&
+            _securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
             return null;
+        }
 
         return _tariffService.GetAccountLink(Tenant.Id, backUrl);
     }
@@ -103,25 +105,23 @@ public class PaymentController : ControllerBase
     [HttpGet("payment/prices")]
     public object GetPrices()
     {
-        var currency = GetCurrencyFromRequest();
+        var currency = _regionHelper.GetCurrencyFromRequest();
         var result = _tenantManager.GetProductPriceInfo()
             .ToDictionary(pr => pr.Key, pr => pr.Value.ContainsKey(currency) ? pr.Value[currency] : 0);
         return result;
     }
-    private string GetCurrencyFromRequest()
+
+    [HttpGet("payment/currencies")]
+    public IEnumerable<CurrenciesDto> GetCurrencies()
     {
-        var regionInfo = new RegionInfo("US");
-        var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext();
-        if (!string.IsNullOrEmpty(geoinfo.Key))
+        var defaultRegion = _regionHelper.GetDefaultRegionInfo();
+        var currentRegion = _regionHelper.GetCurrentRegionInfo();
+
+        yield return new CurrenciesDto(defaultRegion);
+
+        if (!currentRegion.Name.Equals(defaultRegion.Name))
         {
-            try
-            {
-                regionInfo = new RegionInfo(geoinfo.Key);
-            }
-            catch (Exception)
-            {
-            }
+            yield return new CurrenciesDto(currentRegion);
         }
-        return regionInfo.ISOCurrencySymbol;
     }
 }
