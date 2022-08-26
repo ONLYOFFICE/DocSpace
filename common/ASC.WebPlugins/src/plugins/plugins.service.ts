@@ -74,10 +74,10 @@ export class PluginsService {
 
     plugin.isActive = true;
 
-    await this.pluginsRepository.save(plugin);
-
     if (!isPlugin) {
-      this.delete(plugin.id);
+      fs.unlink(dir, (err) => {
+        err && console.log(err);
+      });
       return { error: "It is not a plugin" };
     }
 
