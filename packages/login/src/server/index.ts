@@ -15,19 +15,8 @@ import { LANGUAGE } from "@docspace/common/constants";
 import parser from "accept-language-parser";
 import { getPortalCultures } from "@docspace/common/api/settings";
 import { initSSR } from "@docspace/common/api/client";
-
-interface IParsedConfig extends Object {
-  PORT: number;
-}
-interface ILoginRequest extends Request {
-  i18n?: I18next;
-  t?: TFuncType;
-}
-type timeoutType = ReturnType<typeof setTimeout>;
-interface IAcceptLanguage extends Object {
-  code?: string;
-  quality?: number;
-}
+import Login from "../client/components/Login";
+import InvalidError from "../client/components/Invalid";
 let port = PORT;
 
 const config = fs.readFileSync(path.join(__dirname, "config.json"), "utf-8");
@@ -87,7 +76,74 @@ if (IS_DEVELOPMENT) {
 
       initialState = await getInitialState(query);
 
-      const { component, styleTags } = renderApp(i18n, initialState);
+      const { component, styleTags } = renderApp(i18n, initialState, Login);
+
+      const htmlString = template(
+        initialState,
+        component,
+        styleTags,
+        initialI18nStore,
+        currentLanguage,
+        assets,
+        t
+      );
+
+      res.send(htmlString);
+    } catch (e) {
+      let message: string | unknown = e;
+      if (e instanceof Error) {
+        message = e.message;
+      }
+      winston.error(message);
+    }
+  });
+
+  app.get("/login/error=:error", async (req: ILoginRequest, res: Response) => {
+    const { i18n, cookies, headers, query, t } = req;
+
+    //initSSR(headers);
+
+    let currentLanguage = "en";
+
+    if (cookies && cookies[LANGUAGE]) {
+      currentLanguage = cookies[LANGUAGE];
+    } else {
+      const availableLanguages: string[] = await getPortalCultures();
+      const parsedAcceptLanguages: object[] = parser.parse(
+        headers["accept-language"]
+      );
+
+      const detectedLanguage:
+        | IAcceptLanguage
+        | any = parsedAcceptLanguages.find(
+        (acceptLang: IAcceptLanguage) =>
+          typeof acceptLang === "object" &&
+          acceptLang?.code &&
+          availableLanguages.includes(acceptLang.code)
+      );
+
+      if (typeof detectedLanguage === "object")
+        currentLanguage = detectedLanguage.code;
+    }
+
+    if (i18n) await i18n.changeLanguage(currentLanguage);
+
+    let initialI18nStore = {};
+    if (i18n) initialI18nStore = i18n.services.resourceStore.data;
+
+    let assets: assetsType;
+    let initialState: IInitialState;
+
+    try {
+      assets = await getAssets();
+
+      initialState = await getInitialState(query);
+
+      const { component, styleTags } = renderApp(
+        i18n,
+        initialState,
+        InvalidError
+      );
 
       const htmlString = template(
         initialState,
