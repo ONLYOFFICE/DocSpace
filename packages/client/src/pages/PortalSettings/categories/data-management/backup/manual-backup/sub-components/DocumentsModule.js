@@ -10,7 +10,7 @@ class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
 
-    folder = getFromSessionStorage("LocalCopyFolder");
+    //folder = getFromSessionStorage("LocalCopyFolder");
 
     this.state = {
       isStartCopy: false,

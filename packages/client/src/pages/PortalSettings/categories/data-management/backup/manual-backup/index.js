@@ -18,6 +18,7 @@ import {
   getBackupStorage,
   getStorageRegions,
 } from "@docspace/common/api/settings";
+import FloatingButton from "@docspace/common/components/FloatingButton";
 
 let selectedStorageType = "";
 
@@ -114,7 +115,7 @@ class ManualBackup extends React.Component {
   onMakeTemporaryBackup = async () => {
     const { getIntervalProgress, setDownloadingProgress, t } = this.props;
     const { TemporaryModuleType } = BackupStorageType;
-    saveToSessionStorage("LocalCopyStorageType", "TemporaryStorage");
+    //saveToSessionStorage("LocalCopyStorageType", "TemporaryStorage");
     try {
       await startBackup(`${TemporaryModuleType}`, null);
       setDownloadingProgress(1);
@@ -167,16 +168,16 @@ class ManualBackup extends React.Component {
       selectedStorageId
     );
 
-    saveToSessionStorage("LocalCopyStorageType", moduleName);
+    //saveToSessionStorage("LocalCopyStorageType", moduleName);
 
     if (isCheckedDocuments || isCheckedThirdParty) {
-      saveToSessionStorage("LocalCopyFolder", `${selectedFolder}`);
+      //saveToSessionStorage("LocalCopyFolder", `${selectedFolder}`);
     } else {
-      saveToSessionStorage("LocalCopyStorage", `${selectedStorageId}`);
-      saveToSessionStorage(
-        "LocalCopyThirdPartyStorageType",
-        `${selectedStorage}`
-      );
+      //saveToSessionStorage("LocalCopyStorage", `${selectedStorageId}`);
+      //  saveToSessionStorage(
+      //    "LocalCopyThirdPartyStorageType",
+      //    `${selectedStorage}`
+      //  );
     }
 
     try {
@@ -339,6 +340,15 @@ class ManualBackup extends React.Component {
             <ThirdPartyStorageModule {...commonModulesProps} />
           )}
         </StyledModules>
+
+        {downloadingProgress > 0 && downloadingProgress !== 100 && (
+          <FloatingButton
+            className="layout-progress-bar"
+            icon="file"
+            alert={false}
+            percent={downloadingProgress}
+          />
+        )}
       </StyledManualBackup>
     );
   }

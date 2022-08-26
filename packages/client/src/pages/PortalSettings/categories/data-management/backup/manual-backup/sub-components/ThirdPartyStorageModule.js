@@ -19,8 +19,8 @@ class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    storage = getFromSessionStorage("LocalCopyThirdPartyStorageType");
-    storageId = getFromSessionStorage("LocalCopyStorage");
+    // storage = getFromSessionStorage("LocalCopyThirdPartyStorageType");
+    // storageId = getFromSessionStorage("LocalCopyStorage");
 
     this.state = {
       comboBoxOptions: [],

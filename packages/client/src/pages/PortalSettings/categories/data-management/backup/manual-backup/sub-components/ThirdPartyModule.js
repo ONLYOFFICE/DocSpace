@@ -11,7 +11,7 @@ class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
 
-    folder = getFromSessionStorage("LocalCopyFolder");
+    //folder = getFromSessionStorage("LocalCopyFolder");
 
     this.state = {
       isStartCopy: false,
@@ -163,6 +163,14 @@ class ThirdPartyModule extends React.Component {
           isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
           size={buttonSize}
         />
+        {!isMaxProgress && (
+          <Button
+            label={t("Common:CopyOperation") + "..."}
+            isDisabled={true}
+            size={buttonSize}
+            style={{ marginLeft: "8px" }}
+          />
+        )}
       </div>
     );
   }

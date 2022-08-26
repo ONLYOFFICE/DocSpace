@@ -355,6 +355,10 @@ class BackupStore {
           } else {
             this.clearSessionStorage();
           }
+        } else {
+          this.downloadingProgress = 100;
+          clearInterval(this.timerId);
+          this.clearSessionStorage();
         }
       }
     } catch (e) {

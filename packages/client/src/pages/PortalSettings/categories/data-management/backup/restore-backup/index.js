@@ -23,6 +23,7 @@ import {
 } from "@docspace/common/api/settings";
 import { enableRestore } from "@docspace/common/api/portal";
 import RestoreBackupLoader from "@docspace/common/components/Loaders/RestoreBackupLoader";
+import FloatingButton from "@docspace/common/components/FloatingButton";
 
 const {
   DocumentModuleType,
@@ -463,6 +464,15 @@ class RestoreBackup extends React.Component {
           size={buttonSize}
           tabIndex={10}
         />
+
+        {downloadingProgress > 0 && downloadingProgress !== 100 && (
+          <FloatingButton
+            className="layout-progress-bar"
+            icon="file"
+            alert={false}
+            percent={downloadingProgress}
+          />
+        )}
       </StyledRestoreBackup>
     );
   }

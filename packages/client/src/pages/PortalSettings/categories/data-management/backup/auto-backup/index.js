@@ -27,6 +27,7 @@ import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 //import { getThirdPartyCommonFolderTree } from "@docspace/common/api/files";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import AutoBackupLoader from "@docspace/common/components/Loaders/AutoBackupLoader";
+import FloatingButton from "@docspace/common/components/FloatingButton";
 
 const {
   DocumentModuleType,
@@ -384,7 +385,7 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedDocuments,
       //commonThirdPartyList,
       buttonSize,
-
+      downloadingProgress,
       theme,
       renderTooltip,
       selectedEnableSchedule,
@@ -521,6 +522,15 @@ class AutomaticBackup extends React.PureComponent {
           onSaveModuleSettings={this.onSaveModuleSettings}
           onCancelModuleSettings={this.onCancelModuleSettings}
         />
+
+        {downloadingProgress > 0 && downloadingProgress !== 100 && (
+          <FloatingButton
+            className="layout-progress-bar"
+            icon="file"
+            alert={false}
+            percent={downloadingProgress}
+          />
+        )}
       </StyledAutoBackup>
     );
   }
@@ -529,6 +539,7 @@ export default inject(({ auth, backup }) => {
   const { language, settingsStore } = auth;
   const { organizationName, theme } = settingsStore;
   const {
+    downloadingProgress,
     backupSchedule,
     //commonThirdPartyList,
     clearProgressInterval,
@@ -565,6 +576,7 @@ export default inject(({ auth, backup }) => {
   const isCheckedThirdPartyStorage =
     selectedStorageType === `${StorageModuleType}`;
   return {
+    downloadingProgress,
     theme,
     language,
     isFormReady,
