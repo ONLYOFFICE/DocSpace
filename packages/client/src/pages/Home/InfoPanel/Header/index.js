@@ -23,7 +23,7 @@ const InfoPanelHeaderContent = ({
   roomState,
   setRoomState,
   isGallery,
-  isRooms,
+  isRoom,
 }) => {
   const closeInfoPanel = () => setIsVisible(false);
 
@@ -53,10 +53,10 @@ const InfoPanelHeaderContent = ({
   );
 
   return (
-    <StyledInfoPanelHeader isRooms={isRooms}>
+    <StyledInfoPanelHeader isRoom={isRoom}>
       <div className="main">
         <Text className="header-text" fontSize="21px" fontWeight="700">
-          {isRooms
+          {isRoom
             ? t("Room")
             : isGallery
             ? t("FormGallery:FormTemplateInfo")
@@ -80,7 +80,7 @@ const InfoPanelHeaderContent = ({
         </StyledInfoPanelToggleWrapper>
       </div>
 
-      {isRooms && (
+      {isRoom && (
         <div className="submenu">
           <Submenu
             style={{ width: "100%" }}
@@ -94,8 +94,8 @@ const InfoPanelHeaderContent = ({
 };
 
 export default inject(({ auth }) => {
-  const { setIsVisible, roomState, setRoomState } = auth.infoPanelStore;
-  return { setIsVisible, roomState, setRoomState };
+  const { setIsVisible, roomState, setRoomState, isRoom } = auth.infoPanelStore;
+  return { setIsVisible, roomState, setRoomState, isRoom };
 })(
   withTranslation(["Common", "FormGallery"])(
     withLoader(observer(InfoPanelHeaderContent))(
