@@ -58,7 +58,6 @@ const WhiteLabel = lazy(() =>
 );
 
 const Branding = lazy(() => import("./categories/common/branding"));
-
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
 
 const COMMON_URLS = [
@@ -133,6 +132,7 @@ const INTEGRATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/integration/third-party-services"),
   combineUrl(PROXY_BASE_URL, "/integration/single-sign-on"),
   combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
+  combineUrl(PROXY_BASE_URL, "/integration/plugins"),
 ];
 
 const THIRD_PARTY_URL = combineUrl(
@@ -198,6 +198,7 @@ const Settings = (props) => {
           />
 
           <Route exact path={INTEGRATION_URLS} component={Integration} />
+
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
           <Route exact path={BACKUP_URLS} component={Backup} />
