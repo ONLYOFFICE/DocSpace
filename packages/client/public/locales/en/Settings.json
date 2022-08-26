@@ -167,7 +167,7 @@
   "ThirdPartyTitle": "Third-party services",
   "ThirdPartyTitleDescription": "With Authorization keys, you can connect third-party services to your portal. Sign in easily with Facebook, Twitter, or LinkedIn; add Dropbox, OneDrive, etc. to work with files stored there from the Documents module.",
   "ThirdPartyResource": "Third-party resource",
-  "ThirdPartyResourceDescription": "Backup can be saved to your third-party account (Dropbox, Box.com, OneDrive or Google Drive). You need to connect your third-party account (Dropbox, Box.com, OneDrive or Google Drive) to the Common documents folder before you will be able to save your backup there.",
+  "ThirdPartyResourceDescription": "Backup can be saved to your third-party account (Dropbox, Box.com, OneDrive or Google Drive). You need to connect your third-party account (Dropbox, Box.com, OneDrive or Google Drive) before you will be able to save your backup there.",
   "ThirdPartyStorage": "Third-party storage",
   "ThirdPartyStorageDescription": "Backup can be saved to a third-party storage. Before, you need to connect the corresponding service in the 'Integration' section. Otherwise, the following settings will be inactive.",
   "ThirdPartyTitleDescription": "With Authorization keys, you can connect third-party services to your portal. Sign in easily with Facebook, Twitter, or LinkedIn; add Dropbox, OneDrive, etc. to work with files stored there from the Documents module.",
