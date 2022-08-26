@@ -24,26 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Services.OFormService;
+namespace ASC.Web.Api.ApiModels.RequestsDto;
 
-[Singletone]
-public sealed class OFormService : BackgroundService
+public class WebhooksConfigRequestsDto
 {
-    private readonly TimeSpan _formPeriod;
-    private readonly OFormRequestManager _oFormRequestManager;
-
-    public OFormService(OFormRequestManager oFormRequestManager, ConfigurationExtension configurationExtension)
-    {
-        _oFormRequestManager = oFormRequestManager;
-        _formPeriod = TimeSpan.FromSeconds(configurationExtension.GetSetting<OFormSettings>("files:oform").Period);
-    }
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await _oFormRequestManager.Init(stoppingToken);
-            await Task.Delay(_formPeriod, stoppingToken);
-        }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Uri { get; set; }
+    public string SecretKey { get; set; }
+    public bool? Enabled { get; set; }
 }

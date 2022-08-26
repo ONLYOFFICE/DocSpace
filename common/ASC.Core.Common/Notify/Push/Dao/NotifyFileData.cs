@@ -24,30 +24,16 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Webhooks.Core.EF.Model;
+namespace ASC.Core.Common.Notify.Push.Dao;
 
-public class WebhookEntry
+[Serializable]
+public class NotifyFileData
 {
-    public int Id { get; set; }
-    public string Payload { get; set; }
-    public string SecretKey { get; set; }
-    public string Uri { get; set; }
-    public override bool Equals(object other)
-    {
-        var toCompareWith = other as WebhookEntry;
-        if (toCompareWith == null)
-        {
-            return false;
-        }
+    [JsonProperty("id")]
+    public string Id { get; set; }
+    [JsonProperty("title")]
+    public string Title { get; set; }
+    [JsonProperty("extension")]
+    public string Extension { get; set; }
 
-        return Id == toCompareWith.Id &&
-            Payload == toCompareWith.Payload &&
-            Uri == toCompareWith.Uri &&
-            SecretKey == toCompareWith.SecretKey;
-    }
-
-    public override int GetHashCode()
-    {
-        return Id.GetHashCode();
-    }
 }

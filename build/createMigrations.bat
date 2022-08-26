@@ -1,5 +1,6 @@
 @echo "MIGRATIONS"
 @echo off
 
-PUSHD %~dp0..\common\Tools\Migration.Creator
-dotnet run --project Migration.Creator.csproj
+PUSHD %~dp0..\common\Tools\ASC.Migration.Creator
+dotnet run --project ASC.Migration.Creator.csproj
+pause

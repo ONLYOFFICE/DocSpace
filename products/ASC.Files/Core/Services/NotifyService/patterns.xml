@@ -51,6 +51,10 @@ $Message
     <subject resource="|subject_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
   </pattern>
+  <pattern id="ShareDocument" sender="push.sender">
+    <subject></subject>
+    <body styler="ASC.Notify.Textile.PushStyler, ASC.Notify.Textile" resource="|subject_ShareDocument_push|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core"/>
+  </pattern>
   <pattern id="ShareDocument" sender="messanger.sender">
     <subject resource="|subject_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName
@@ -77,6 +81,12 @@ $DocumentURL
     <subject resource="|subject_ShareFolder|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareFolder|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
   </pattern>
+
+  <pattern id="ShareFolder" sender="push.sender">
+    <subject resource="|subject_ShareFolder|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <body styler="ASC.Notify.Textile.PushStyler, ASC.Notify.Textile" resource="|subject_ShareFolder_push|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+  </pattern>
+
   <pattern id="ShareFolder" sender="messanger.sender">
     <subject resource="|subject_ShareFolder|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName
@@ -102,6 +112,12 @@ $Message
     <subject resource="|subject_EditorMentions|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_EditorMentions|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
   </pattern>
+
+  <pattern id="EditorMentions" sender="push.sender">
+    <subject resource="|subject_EditorMentions|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <body styler="ASC.Notify.Textile.PushStyler, ASC.Notify.Textile" resource="|subject_EditorMentions_push|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+  </pattern>
+
   <pattern id="EditorMentions" sender="messanger.sender">
     <subject resource="|subject_EditorMentions|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName

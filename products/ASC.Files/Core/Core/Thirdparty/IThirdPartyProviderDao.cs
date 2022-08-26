@@ -428,7 +428,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected IAsyncEnumerable<Folder<string>> FilterByRoomType(IAsyncEnumerable<Folder<string>> rooms, FilterType filterType)
     {
-        if (filterType == FilterType.None)
+        if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
         {
             return rooms;
         }

@@ -25,12 +25,20 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Webhooks.Core.EF.Model;
-public partial class WebhooksConfig
+
+public class WebhooksConfig : BaseEntity
 {
-    public int ConfigId { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
     public string SecretKey { get; set; }
     public int TenantId { get; set; }
     public string Uri { get; set; }
+    public bool Enabled { get; set; }
+
+    public override object[] GetKeys()
+    {
+        return new object[] { Id };
+    }
 }
 
 public static class WebhooksConfigExtension
@@ -46,15 +54,18 @@ public static class WebhooksConfigExtension
     {
         modelBuilder.Entity<WebhooksConfig>(entity =>
         {
-            entity.HasKey(e => new { e.ConfigId })
+            entity.HasKey(e => new { e.Id })
                 .HasName("PRIMARY");
+
+            entity.HasIndex(e => e.TenantId)
+                .HasDatabaseName("tenant_id");
 
             entity.ToTable("webhooks_config")
                 .HasCharSet("utf8");
 
-            entity.Property(e => e.ConfigId)
+            entity.Property(e => e.Id)
                 .HasColumnType("int")
-                .HasColumnName("config_id");
+                .HasColumnName("id");
 
             entity.Property(e => e.TenantId)
                 .HasColumnName("tenant_id")
@@ -69,6 +80,16 @@ public static class WebhooksConfigExtension
                 .HasMaxLength(50)
                 .HasColumnName("secret_key")
                 .HasDefaultValueSql("''");
+
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name")
+                .IsRequired();
+
+            entity.Property(e => e.Enabled)
+                .HasColumnName("enabled")
+                .HasDefaultValueSql("'1'")
+                .HasColumnType("tinyint(1)");
         });
     }
 
@@ -76,14 +97,17 @@ public static class WebhooksConfigExtension
     {
         modelBuilder.Entity<WebhooksConfig>(entity =>
         {
-            entity.HasKey(e => new { e.ConfigId })
+            entity.HasKey(e => new { e.Id })
                 .HasName("PRIMARY");
 
             entity.ToTable("webhooks_config");
 
-            entity.Property(e => e.ConfigId)
+            entity.HasIndex(e => e.TenantId)
+                    .HasDatabaseName("tenant_id");
+
+            entity.Property(e => e.Id)
                 .HasColumnType("int")
-                .HasColumnName("config_id");
+                .HasColumnName("id");
 
             entity.Property(e => e.TenantId)
                 .HasColumnName("tenant_id")
@@ -98,6 +122,15 @@ public static class WebhooksConfigExtension
                 .HasMaxLength(50)
                 .HasColumnName("secret_key")
                 .HasDefaultValueSql("''");
+
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name")
+                .IsRequired();
+
+            entity.Property(e => e.Enabled)
+                .HasColumnName("enabled")
+                .HasDefaultValueSql("true");
         });
     }
 }

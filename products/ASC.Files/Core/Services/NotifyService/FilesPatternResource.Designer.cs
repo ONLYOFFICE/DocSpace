@@ -160,6 +160,15 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All signers completed $DocumentTitle.
+        /// </summary>
+        public static string subject_DocuSignComplete_push {
+            get {
+                return ResourceManager.GetString("subject_DocuSignComplete_push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Documents. All signers completed [$DocumentTitle]($DocumentURL).
         /// </summary>
         public static string subject_DocuSignComplete_tg {
@@ -178,6 +187,15 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sign status changed.
+        /// </summary>
+        public static string subject_DocuSignStatus_push {
+            get {
+                return ResourceManager.GetString("subject_DocuSignStatus_push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Documents. Mentioned in document.
         /// </summary>
         public static string subject_EditorMentions {
@@ -187,11 +205,29 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mentioned in document.
+        /// </summary>
+        public static string subject_EditorMentions_push {
+            get {
+                return ResourceManager.GetString("subject_EditorMentions_push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Documents. Mailing is complete..
         /// </summary>
         public static string subject_MailMergeEnd {
             get {
                 return ResourceManager.GetString("subject_MailMergeEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mailing is complete..
+        /// </summary>
+        public static string subject_MailMergeEnd_push {
+            get {
+                return ResourceManager.GetString("subject_MailMergeEnd_push", resourceCulture);
             }
         }
         
@@ -207,9 +243,27 @@ namespace ASC.Files.Core.Services.NotifyService {
         /// <summary>
         ///   Looks up a localized string similar to Documents. Access granted to document: [$DocumentTitle]($DocumentURL).
         /// </summary>
+        public static string subject_ShareDocument_push {
+            get {
+                return ResourceManager.GetString("subject_ShareDocument_push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documents. Access granted to document: [$DocumentTitle]($DocumentURL).
+        /// </summary>
         public static string subject_ShareDocument_tg {
             get {
                 return ResourceManager.GetString("subject_ShareDocument_tg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access granted to the encrypted document: $DocumentTitle.
+        /// </summary>
+        public static string subject_ShareEncryptedDocument_push {
+            get {
+                return ResourceManager.GetString("subject_ShareEncryptedDocument_push", resourceCulture);
             }
         }
         
@@ -219,6 +273,15 @@ namespace ASC.Files.Core.Services.NotifyService {
         public static string subject_ShareFolder {
             get {
                 return ResourceManager.GetString("subject_ShareFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access granted to folder: $DocumentTitle.
+        /// </summary>
+        public static string subject_ShareFolder_push {
+            get {
+                return ResourceManager.GetString("subject_ShareFolder_push", resourceCulture);
             }
         }
         
