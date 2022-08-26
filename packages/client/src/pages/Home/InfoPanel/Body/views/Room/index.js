@@ -1,5 +1,5 @@
 import React from "react";
-import Details from "./Details";
+import Info from "../Info";
 import History from "./History";
 import Members from "./Members";
 
@@ -7,6 +7,7 @@ const Room = ({
   selectedItems,
   selectedFolder,
   roomState,
+
   defaultProps,
   membersProps,
   historyProps,
@@ -19,11 +20,13 @@ const Room = ({
       ? selectedItems[0]
       : selectedItems;
 
-  return <></>;
-
-  // if (selectedItems.length === 0)
-  //   return <Details {...defaultProps} {...detailsProps} />;
-  // else return <Details {...defaultProps} {...detailsProps} />;
+  return roomState === "members" ? (
+    <Members selectedItem={selectedItem} {...defaultProps} {...membersProps} />
+  ) : roomState === "history" ? (
+    <History selectedItem={selectedItem} {...defaultProps} {...historyProps} />
+  ) : (
+    <Info selectedItem={selectedItem} {...defaultProps} {...detailsProps} />
+  );
 };
 
 export default Room;
