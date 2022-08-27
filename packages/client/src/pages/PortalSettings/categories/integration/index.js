@@ -11,12 +11,13 @@ import PortalIntegration from "./portalIntegration";
 
 import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
+import PortalPlugins from "./PortalPlugins";
 
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, history, loadBaseInfo } = props;
+  const { t, tReady, history, loadBaseInfo, enablePlugins } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,6 +25,12 @@ const IntegrationWrapper = (props) => {
     id: "portal-integration",
     name: "Portal Integration",
     content: <PortalIntegration />,
+  };
+
+  const pluginData = {
+    id: "plugins",
+    name: "Plugins",
+    content: <PortalPlugins />,
   };
 
   const data = [
@@ -39,7 +46,10 @@ const IntegrationWrapper = (props) => {
     },
   ];
 
-  if (!isMobile) data.push(integrationData);
+  if (!isMobile) {
+    data.push(integrationData);
+    enablePlugins && data.push(pluginData);
+  }
 
   const load = async () => {
     await loadBaseInfo();
@@ -69,13 +79,16 @@ const IntegrationWrapper = (props) => {
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
-export default inject(({ setup }) => {
+export default inject(({ setup, auth }) => {
   const { initSettings } = setup;
+
+  const { enablePlugins } = auth.settingsStore;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
+    enablePlugins,
   };
 })(
   withTranslation(["Settings", "SingleSignOn"])(

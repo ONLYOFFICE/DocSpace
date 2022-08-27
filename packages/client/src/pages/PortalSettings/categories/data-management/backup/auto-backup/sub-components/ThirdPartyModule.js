@@ -2,16 +2,20 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { BackupStorageType } from "@docspace/common/constants";
-import SelectFolderInput from "client/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
+
+import DirectThirdPartyConnection from "../../common-container/DirectThirdPartyConnection";
 
 class ThirdPartyModule extends React.PureComponent {
   constructor(props) {
     super(props);
+    const { setSelectedFolder, isResourcesDefault } = props;
 
     this.state = {
       isPanelVisible: false,
     };
+
+    !isResourcesDefault && setSelectedFolder("");
   }
 
   onClickInput = () => {
@@ -19,16 +23,30 @@ class ThirdPartyModule extends React.PureComponent {
       isPanelVisible: true,
     });
   };
-
   onClose = () => {
     this.setState({
       isPanelVisible: false,
     });
   };
-
   onSelectFolder = (id) => {
     const { setSelectedFolder } = this.props;
+
     setSelectedFolder(`${id}`);
+  };
+
+  onConnect = () => {
+    const { isConnected } = this.state;
+
+    this.setState({ isConnected: !isConnected });
+  };
+
+  onSelectAccount = (options) => {
+    const key = options.key;
+    const label = options.label;
+
+    this.setState({
+      selectedAccount: { key, label },
+    });
   };
 
   render() {
@@ -39,25 +57,50 @@ class ThirdPartyModule extends React.PureComponent {
       isReset,
       isSuccessSave,
       passedId,
-      commonThirdPartyList,
+      //commonThirdPartyList,
+      isResourcesDefault,
+      isResetProcess,
+      isSavingProcess,
+      t,
       ...rest
     } = this.props;
 
     return (
       <>
-        <div className="auto-backup_folder-input">
-          <SelectFolderInput
+        {/* {!isDocSpace ? (
+          <div className="auto-backup_folder-input">
+            <SelectFolderInput
+              onSelectFolder={this.onSelectFolder}
+              onClose={this.onClose}
+              onClickInput={this.onClickInput}
+              isPanelVisible={isPanelVisible}
+              isError={isError}
+              foldersType="third-party"
+              isDisabled={commonThirdPartyList.length === 0 || isLoadingData}
+              id={passedId}
+              isReset={isResetProcess}
+              isSuccessSave={isSavingProcess}
+              foldersList={commonThirdPartyList}
+              withoutBasicSelection={isResourcesDefault ? false : true}
+            />
+          </div>
+        ) : ( */}
+
+        {/* )} */}
+
+        <div className="auto-backup_third-party-module">
+          <DirectThirdPartyConnection
+            t={t}
             onSelectFolder={this.onSelectFolder}
             onClose={this.onClose}
             onClickInput={this.onClickInput}
-            isPanelVisible={isPanelVisible}
-            isError={isError}
-            foldersType="third-party"
             isDisabled={isLoadingData}
+            isPanelVisible={isPanelVisible}
+            withoutBasicSelection={isResourcesDefault ? false : true}
+            isError={isError}
+            isReset={isResetProcess}
+            isSuccessSave={isSavingProcess}
             id={passedId}
-            isReset={isReset}
-            isSuccessSave={isSuccessSave}
-            foldersList={commonThirdPartyList}
           />
         </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
@@ -65,24 +108,27 @@ class ThirdPartyModule extends React.PureComponent {
     );
   }
 }
-
 export default inject(({ backup }) => {
   const {
     setSelectedFolder,
-    selectedFolderId,
+
     defaultStorageType,
     commonThirdPartyList,
     defaultFolderId,
+    isResetProcess,
+    isSavingProcess,
   } = backup;
 
   const isResourcesDefault =
     defaultStorageType === `${BackupStorageType.ResourcesModuleType}`;
-
   const passedId = isResourcesDefault ? defaultFolderId : "";
 
   return {
+    isResetProcess,
+    isSavingProcess,
     setSelectedFolder,
     passedId,
     commonThirdPartyList,
+    isResourcesDefault,
   };
-})(withTranslation("Settings")(observer(ThirdPartyModule)));
+})(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));

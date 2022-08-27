@@ -1,72 +1,71 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import ComboBox from "@docspace/components/combobox";
-import { ThirdPartyStorages } from "@docspace/common/constants";
 import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
-import { getOptions } from "../../GetOptions";
+import { getOptions } from "../../common-container/GetThirdPartyStoragesOptions";
+import { ThirdPartyStorages } from "@docspace/common/constants";
+import { ComboBox } from "@docspace/components";
+
 class ThirdPartyStoragesModule extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      availableOptions: [],
-      availableStorage: "",
+      comboBoxOptions: [],
+      storagesInfo: {},
 
-      selectedStorage: "",
-      selectedId: "",
+      selectedStorageTitle: "",
+      selectedStorageId: "",
     };
   }
   componentDidMount() {
     const { onSetStorageId, thirdPartyStorage } = this.props;
-
     if (thirdPartyStorage) {
       const parameters = getOptions(thirdPartyStorage);
 
       const {
-        options,
-        availableStorage,
-        selectedStorage,
-        selectedId,
+        comboBoxOptions,
+        storagesInfo,
+        selectedStorageTitle,
+        selectedStorageId,
       } = parameters;
 
-      onSetStorageId && onSetStorageId(selectedId);
+      onSetStorageId && onSetStorageId(selectedStorageId);
 
       this.setState({
-        availableOptions: options,
-        availableStorage,
+        comboBoxOptions,
+        storagesInfo,
 
-        selectedStorage,
-        selectedId,
+        selectedStorageTitle,
+        selectedStorageId,
       });
     }
   }
   onSelect = (option) => {
     const selectedStorageId = option.key;
-    const { availableStorage } = this.state;
+    const { storagesInfo } = this.state;
     const { onSetStorageId } = this.props;
-    const storage = availableStorage[selectedStorageId];
+    const storage = storagesInfo[selectedStorageId];
 
     onSetStorageId && onSetStorageId(storage.id);
 
     this.setState({
-      selectedStorage: storage.title,
-      selectedId: storage.id,
+      selectedStorageTitle: storage.title,
+      selectedStorageId: storage.id,
     });
   };
   render() {
     const {
-      availableOptions,
-      selectedStorage,
-      selectedId,
-      availableStorage,
+      comboBoxOptions,
+      selectedStorageTitle,
+      selectedStorageId,
+      storagesInfo,
     } = this.state;
     const { thirdPartyStorage } = this.props;
 
     const commonProps = {
-      availableStorage,
-      selectedId,
+      selectedStorage: storagesInfo[selectedStorageId],
     };
 
     const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
@@ -74,8 +73,8 @@ class ThirdPartyStoragesModule extends React.PureComponent {
     return (
       <>
         <ComboBox
-          options={availableOptions}
-          selectedOption={{ key: 0, label: selectedStorage }}
+          options={comboBoxOptions}
+          selectedOption={{ key: 0, label: selectedStorageTitle }}
           onSelect={this.onSelect}
           isDisabled={!!!thirdPartyStorage}
           noBorder={false}
@@ -85,26 +84,24 @@ class ThirdPartyStoragesModule extends React.PureComponent {
           className="backup_combo"
         />
 
-        {selectedId === GoogleId && (
+        {selectedStorageId === GoogleId && (
           <GoogleCloudStorage {...commonProps} {...this.props} />
         )}
-        {selectedId === RackspaceId && (
+        {selectedStorageId === RackspaceId && (
           <RackspaceStorage {...commonProps} {...this.props} />
         )}
-        {selectedId === SelectelId && (
+        {selectedStorageId === SelectelId && (
           <SelectelStorage {...commonProps} {...this.props} />
         )}
-        {selectedId === AmazonId && (
+        {selectedStorageId === AmazonId && (
           <AmazonStorage {...commonProps} {...this.props} />
         )}
       </>
     );
   }
 }
-
 export default inject(({ backup }) => {
   const { thirdPartyStorage } = backup;
-
   return {
     thirdPartyStorage,
   };

@@ -9,6 +9,7 @@ import * as portal from "./portal";
 import * as groups from "./groups";
 import * as files from "./files";
 import * as rooms from "./rooms";
+import * as plugins from "./plugins";
 
 export default {
   Filter,
@@ -22,4 +23,5 @@ export default {
   groups,
   files,
   rooms,
+  plugins,
 };

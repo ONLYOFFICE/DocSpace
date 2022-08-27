@@ -53,6 +53,7 @@ global using ASC.Files.Core.ApiModels.RequestDto;
 global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Helpers;
+global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Core.Services.OFormService;
 global using ASC.Files.Core.VirtualRooms;

@@ -45,6 +45,7 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
     services.AddBaseDbContext<TenantDbContext>();
     services.AddBaseDbContext<UserDbContext>();
     services.AddBaseDbContext<TelegramDbContext>();
+    services.AddBaseDbContext<FirebaseDbContext>();
     services.AddBaseDbContext<CustomDbContext>();
     services.AddBaseDbContext<WebstudioDbContext>();
     services.AddBaseDbContext<InstanceRegistrationContext>();

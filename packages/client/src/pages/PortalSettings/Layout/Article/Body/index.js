@@ -192,6 +192,8 @@ class ArticleBodyContent extends React.Component {
         return t("Backup");
       case "ManagementCategoryDataManagement":
         return t("ManagementCategoryDataManagement");
+      case "RestoreBackup":
+        return t("RestoreBackup");
       case "PortalDeletion":
         return t("PortalDeletion");
       default:

@@ -273,7 +273,7 @@ public class FilesLinkUtility
 
     public string FileWebViewerUrlString
     {
-        get { return FileWebEditorUrlString + "&" + Action + "=view"; }
+        get { return $"{FileWebEditorUrlString}&{Action}=view"; }
     }
 
     public string GetFileWebViewerUrlForMobile(object fileId, int fileVersion)
@@ -296,10 +296,10 @@ public class FilesLinkUtility
 
     public string FileWebEditorUrlString
     {
-        get { return FilesBaseAbsolutePath + EditorPage + "?" + FileId + "={0}"; }
+        get { return $"/{EditorPage}?{FileId}={{0}}"; }
     }
 
-    public string GetFileWebEditorUrl(object fileId, int fileVersion = 0)
+    public string GetFileWebEditorUrl<T>(T fileId, int fileVersion = 0)
     {
         return string.Format(FileWebEditorUrlString, HttpUtility.UrlEncode(fileId.ToString()))
             + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty);
