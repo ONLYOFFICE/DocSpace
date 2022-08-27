@@ -77,6 +77,7 @@ const Appearance = (props) => {
     currentColorScheme.accentColor
   );
   const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
+  const [changeColorTheme, setChangeColorTheme] = useState(false);
 
   const checkImg = (
     <img className="check-img" src="/static/images/check.white.svg" />
@@ -120,6 +121,13 @@ const Appearance = (props) => {
   }, []);
 
   useEffect(() => {
+    // Set the Save button to disabled
+    if (selectAccentColor !== currentColorScheme.accentColor) {
+      setChangeColorTheme(true);
+    } else {
+      setChangeColorTheme(false);
+    }
+
     if (
       changeCurrentColorAccent &&
       changeCurrentColorButtons &&
@@ -139,6 +147,7 @@ const Appearance = (props) => {
     changeCurrentColorButtons,
     isAddThemeDialog,
     isEditDialog,
+    selectAccentColor,
   ]);
 
   const onCheckView = () => {
@@ -167,6 +176,7 @@ const Appearance = (props) => {
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
         getAppearanceTheme();
+        setChangeColorTheme(false);
       })
       .catch((error) => {
         toastr.error(error);
@@ -399,6 +409,7 @@ const Appearance = (props) => {
           onClick={onSaveSelectedColor}
           primary
           size="small"
+          isDisabled={!changeColorTheme}
         />
       </div>
     </StyledComponent>
