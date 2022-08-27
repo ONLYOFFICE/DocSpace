@@ -8,6 +8,7 @@ import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 
 import { Dark, Base } from "@docspace/components/themes";
+import { initPluginStore } from "../../client/src/helpers/plugins";
 
 const { proxyURL } = AppServerConfig;
 
@@ -129,9 +130,14 @@ class SettingsStore {
   hotkeyPanelVisible = false;
   frameConfig = null;
 
+
   appearanceTheme = [];
   selectedThemeId = null;
   currentColorScheme = null;
+
+  enablePlugins = false;
+  pluginOptions = [];
+
 
   constructor() {
     makeAutoObservable(this);
@@ -236,6 +242,13 @@ class SettingsStore {
 
   getPortalSettings = async () => {
     const origSettings = await this.getSettings();
+
+    if (origSettings.plugins.enabled) {
+      initPluginStore();
+
+      this.enablePlugins = origSettings.plugins.enabled;
+      this.pluginOptions = origSettings.plugins.allow;
+    }
 
     if (
       origSettings.nameSchemaId &&

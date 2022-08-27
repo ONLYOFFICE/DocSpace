@@ -1,10 +1,12 @@
 import { request } from "../client";
 import axios from "axios";
 import FilesFilter from "./filter";
-import { FolderType } from "../../constants";
+import { FolderType, RoomSearchArea } from "../../constants";
 import find from "lodash/find";
 import { getFolderOptions, decodeDisplayName } from "../../utils";
 import { Encoder } from "../../utils/encoder";
+import { getRooms } from "../rooms";
+import RoomsFilter from "../rooms/filter";
 
 export function openEdit(fileId, version, doc, view) {
   const params = []; // doc ? `?doc=${doc}` : "";
@@ -209,7 +211,25 @@ export function getCommonFoldersTree() {
     }
   );
 }
+export function getSharedRoomsTree(filter) {
+  const index = 1;
+  const filterData = !!filter ? filter.clone() : RoomsFilter.getDefault();
 
+  const searchArea = RoomSearchArea.Active;
+
+  filterData.searchArea = searchArea;
+
+  return getRooms(filterData).then((sharedRooms) => {
+    let result = [];
+
+    sharedRooms?.folders.map((currentValue, index) => {
+      currentValue.key = `0-${index}`;
+      result.push(currentValue);
+    });
+
+    return result;
+  });
+}
 export function getThirdPartyCommonFolderTree() {
   return request({ method: "get", url: "/files/thirdparty/common" }).then(
     (commonThirdPartyArray) => {
@@ -692,6 +712,33 @@ export function saveThirdParty(
     providerId,
   };
   return request({ method: "post", url: "files/thirdparty", data });
+}
+
+export function saveSettingsThirdParty(
+  url,
+  login,
+  password,
+  token,
+  isCorporate,
+  customerTitle,
+  providerKey,
+  providerId
+) {
+  const data = {
+    url,
+    login,
+    password,
+    token,
+    isCorporate,
+    customerTitle,
+    providerKey,
+    providerId,
+  };
+  return request({ method: "post", url: "files/thirdparty/backup", data });
+}
+
+export function getSettingsThirdParty() {
+  return request({ method: "get", url: "files/thirdparty/backup" });
 }
 
 export function deleteThirdParty(providerId) {

@@ -547,3 +547,11 @@ export function getMetadata() {
 export function getOforms(url) {
   return axios.get(url);
 }
+
+export function getStorageRegions() {
+  const options = {
+    method: "get",
+    url: "/settings/storage/s3/regions",
+  };
+  return request(options);
+}

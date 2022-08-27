@@ -1,31 +1,24 @@
 import React from "react";
-import { Provider as MobxProvider, inject, observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import stores from "../../../store/index.Files";
 import SelectFileDialog from "../SelectFileDialog";
 import StyledComponent from "./StyledSelectFileInput";
 import SimpleFileInput from "../../SimpleFileInput";
 
-class SelectFileInputBody extends React.PureComponent {
+class SelectFileInput extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      fileName: "",
-      folderId: "",
-    };
+    const { setExpandedPanelKeys, setFolderId, setFile } = props;
+
+    setExpandedPanelKeys(null);
+    setFolderId(null);
+    setFile(null);
   }
 
   componentDidMount() {
     this.props.setFirstLoad(false);
   }
-
-  onSetFileNameAndLocation = (fileName, id) => {
-    this.setState({
-      fileName: fileName,
-      folderId: id,
-    });
-  };
 
   render() {
     const {
@@ -38,10 +31,10 @@ class SelectFileInputBody extends React.PureComponent {
       isPanelVisible,
       isDisabled,
       isError,
+      fileName,
+      folderId,
       ...rest
     } = this.props;
-
-    const { fileName, folderId } = this.state;
 
     return (
       <StyledComponent maxInputWidth={maxInputWidth}>
@@ -67,32 +60,31 @@ class SelectFileInputBody extends React.PureComponent {
   }
 }
 
-SelectFileInputBody.propTypes = {
+SelectFileInput.propTypes = {
   onClickInput: PropTypes.func.isRequired,
   hasError: PropTypes.bool,
   placeholder: PropTypes.string,
 };
 
-SelectFileInputBody.defaultProps = {
+SelectFileInput.defaultProps = {
   hasError: false,
   placeholder: "",
 };
 
-const SelectFileInputBodyWrapper = inject(({ filesStore }) => {
-  const { setFirstLoad } = filesStore;
-  return {
-    setFirstLoad,
-  };
-})(observer(SelectFileInputBody));
-
-class SelectFileInput extends React.Component {
-  render() {
-    return (
-      <MobxProvider {...stores}>
-        <SelectFileInputBodyWrapper {...this.props} />
-      </MobxProvider>
-    );
+export default inject(
+  ({ filesStore, treeFoldersStore, selectFileDialogStore }) => {
+    const { setFirstLoad } = filesStore;
+    const { folderId, setFolderId, setFile, fileInfo } = selectFileDialogStore;
+    const fileName = fileInfo?.title;
+    const { setExpandedPanelKeys } = treeFoldersStore;
+    return {
+      setFirstLoad,
+      setFolderId,
+      setFile,
+      fileInfo,
+      folderId,
+      fileName,
+      setExpandedPanelKeys,
+    };
   }
-}
-
-export default SelectFileInput;
+)(observer(SelectFileInput));

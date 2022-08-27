@@ -428,7 +428,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected IAsyncEnumerable<Folder<string>> FilterByRoomType(IAsyncEnumerable<Folder<string>> rooms, FilterType filterType)
     {
-        if (filterType == FilterType.None)
+        if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
         {
             return rooms;
         }
@@ -440,10 +440,10 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             FilterType.ReviewRooms => FolderType.ReviewRoom,
             FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
             FilterType.CustomRooms => FolderType.CustomRoom,
-            _ => FolderType.CustomRoom,
+            _ => FolderType.DEFAULT,
         };
 
-        return rooms.Where(f => f.FolderType == filter);
+        return rooms.Where(f => f.FolderType == filter || filter == FolderType.DEFAULT);
     }
 
     protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)

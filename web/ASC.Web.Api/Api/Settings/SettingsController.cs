@@ -58,6 +58,7 @@ public class SettingsController : BaseSettingsController
     private readonly PasswordHasher _passwordHasher;
     private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
+    private readonly FirebaseHelper _firebaseHelper;
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
@@ -91,6 +92,7 @@ public class SettingsController : BaseSettingsController
         ProviderManager providerManager,
         FirstTimeTenantSettings firstTimeTenantSettings,
         TelegramHelper telegramHelper,
+        FirebaseHelper firebaseHelper,
         UrlShortener urlShortener,
         PasswordHasher passwordHasher,
         Constants constants,
@@ -126,6 +128,7 @@ public class SettingsController : BaseSettingsController
         _passwordHasher = passwordHasher;
         _urlShortener = urlShortener;
         _telegramHelper = telegramHelper;
+        _firebaseHelper = firebaseHelper;
         _constants = constants;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
@@ -181,6 +184,16 @@ public class SettingsController : BaseSettingsController
             {
                 settings.DebugInfo = debugInfo;
             }
+
+            settings.Plugins = new PluginsDto();
+
+            bool pluginsEnabled;
+            if (bool.TryParse(_configuration["plugins:enabled"], out pluginsEnabled))
+            {
+                settings.Plugins.Enabled = pluginsEnabled;
+            }
+
+            settings.Plugins.Allow = _configuration.GetSection("plugins:allow").Get<List<string>>() ?? new List<string>();
         }
         else
         {
@@ -776,5 +789,4 @@ public class SettingsController : BaseSettingsController
     {
         _telegramHelper.Disconnect(_authContext.CurrentAccount.ID, Tenant.Id);
     }
-
 }
