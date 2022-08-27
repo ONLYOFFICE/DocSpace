@@ -49,8 +49,6 @@
   "DeactivateOrDeletePortal": "Portalı devre dışı bırak veya sil.",
   "Disabled": "Devre dışı bırakıldı",
   "DocumentsAdministratorsCan": "Belge yöneticileri Dropbox, Box ve diğer hesapları Ortak Belgelere bağlayabilir ve bu bölümde erişim haklarını düzenleyebilir.",
-  "DocumentsModule": "Belge modülü",
-  "DocumentsModuleDescription": "Yedekleme, Ortak belgeler klasörüne kaydedilecektir.",
   "DownloadCopy": "Kopyayı indir",
   "Employees": "kullanıcılar",
   "EmptyBackupList": "Henüz hiçbir yedekleme yapılmadı. Listede yer alması için bir veya daha fazla yedekleme yapın.",

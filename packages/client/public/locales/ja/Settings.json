@@ -49,8 +49,6 @@
   "DeactivateOrDeletePortal": "ポータルを無効にする、または削除する。",
   "Disabled": "無効",
   "DocumentsAdministratorsCan": "ドキュメントの管理者は、DropboxやBoxなどのアカウントをコモン・ドキュメントにリンクし、このセクションでアクセス権を設定することができます。",
-  "DocumentsModule": "「ドキュメント」モジュール",
-  "DocumentsModuleDescription": "バックアップは「共通ドキュメント」フォルダに保存されます。",
   "DownloadCopy": "コピーを保存",
   "Employees": "ユーザー",
   "EmptyBackupList": "バックアップはまだ作成されていません。バックアップを作成すると、このリストに表示されるようになります。",

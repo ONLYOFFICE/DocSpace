@@ -49,8 +49,6 @@
   "DeactivateOrDeletePortal": "Deaktivieren oder entfernen Sie das Portal.",
   "Disabled": "Deaktiviert",
   "DocumentsAdministratorsCan": "Administratoren von Dokumenten können Dropbox, Box und andere Konten mit gemeinsamen Dokumenten verbinden und Zugriffsrechte in dieser Sektion einstellen",
-  "DocumentsModule": "Dokumentemodul",
-  "DocumentsModuleDescription": "Die Sicherungskopie wird im Ordner 'Allgemeine Dokumente' gespeichert.",
   "DownloadCopy": "Die Sicherungskopie herunterladen",
   "Employees": "Benutzer",
   "EmptyBackupList": "Keine Sicherungskopien wurden noch erstellt. Erstellen Sie eine oder mehrere Sicherungskopien, damit sie in dieser Liste erscheint.",

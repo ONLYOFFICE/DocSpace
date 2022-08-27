@@ -171,6 +171,7 @@ class ContextMenuButton extends React.Component {
       usePortal,
       dropDownClassName,
       iconClassName,
+      isNeedBorder,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
@@ -182,6 +183,7 @@ class ContextMenuButton extends React.Component {
         id={id}
         style={style}
         onClick={this.callNewMenu}
+        isNeedBorder={isNeedBorder}
       >
         <IconButton
           className={iconClassName}
@@ -329,6 +331,7 @@ ContextMenuButton.propTypes = {
   usePortal: PropTypes.bool,
   dropDownClassName: PropTypes.string,
   iconClassName: PropTypes.string,
+  isNeedBorder: PropTypes.bool,
 };
 
 ContextMenuButton.defaultProps = {

@@ -49,8 +49,6 @@
   "DeactivateOrDeletePortal": "Desativar ou eliminar portal.",
   "Disabled": "Desativado",
   "DocumentsAdministratorsCan": "Os administradores dos documentos podem ligar a Dropbox, Box, e outras contas a Documentos Comuns e configurar os direitos de acesso nesta secção",
-  "DocumentsModule": "Módulo dos documentos",
-  "DocumentsModuleDescription": "A cópia de segurança será guardada na pasta de Documentos comuns.",
   "DownloadCopy": "Fazer download da cópia",
   "Employees": "utilizadores",
   "EmptyBackupList": "Ainda não foi criada nenhuma cópia de segurança. Crie uma ou mais cópias de segurança para que elas apareçam na lista.",

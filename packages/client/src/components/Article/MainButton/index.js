@@ -15,6 +15,7 @@ import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -39,6 +40,7 @@ const ArticleMainButtonContent = (props) => {
     currentFolderId,
     isRoomsFolder,
     isArchiveFolder,
+    enablePlugins,
   } = props;
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -238,6 +240,18 @@ const ArticleMainButtonContent = (props) => {
       menuModel.push(...uploadActions);
       setUploadActions(uploadActions);
     }
+    if (enablePlugins) {
+      const pluginOptions = getMainButtonItems();
+
+      if (pluginOptions) {
+        pluginOptions.forEach((option) => {
+          menuModel.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+          });
+        });
+      }
+    }
 
     setModel(menuModel);
     setActions(actions);
@@ -246,6 +260,7 @@ const ArticleMainButtonContent = (props) => {
     isPrivacy,
     currentFolderId,
     isRoomsFolder,
+    enablePlugins,
     onCreate,
     onCreateRoom,
     onShowSelectFileDialog,
@@ -334,6 +349,8 @@ export default inject(
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
+    const { enablePlugins } = auth.settingsStore;
+
     const currentFolderId = selectedFolderStore.id;
 
     return {
@@ -360,6 +377,8 @@ export default inject(
       isLoaded,
       firstLoad,
       currentFolderId,
+
+      enablePlugins,
     };
   }
 )(

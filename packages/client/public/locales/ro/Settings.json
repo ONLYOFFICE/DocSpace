@@ -49,8 +49,6 @@
   "DeactivateOrDeletePortal": "Dezactivarea sau ștergerea portalului.",
   "Disabled": "Dezactivat",
   "DocumentsAdministratorsCan": "Administratorii modulului Documente pot conecta Dropbox, Box și alte conturile la Documente comune și seta drepturile de acces din acestă secțiune.",
-  "DocumentsModule": "Modulul Documente",
-  "DocumentsModuleDescription": "Copia de rezervă va fi salvată în folderul Comun din modul Documente.",
   "DownloadCopy": "Descărcare copie",
   "Employees": "utilizatori",
   "EmptyBackupList": "Nu există nicio copie de rezervă salvată. Creați una sau mai multe copii de rezervă pentru ca acestea să apară în lista.",
