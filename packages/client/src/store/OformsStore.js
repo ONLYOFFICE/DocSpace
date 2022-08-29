@@ -52,7 +52,7 @@ class OformsStore {
   loadMoreForms = async () => {
     if (!this.hasMoreForms || this.oformsIsLoading) return;
 
-    console.log("loadMoreForms");
+    // console.log("loadMoreForms");
 
     this.setOformsIsLoading(true);
 
@@ -61,7 +61,7 @@ class OformsStore {
     newOformsFilter.page += 1;
     this.setOformsFilter(newOformsFilter);
 
-    const oformData = await this.getOforms(newOformsFilter);
+    const oformData = await this.authStore.getOforms(newOformsFilter);
     const newForms = oformData?.data?.data ?? [];
 
     runInAction(() => {
