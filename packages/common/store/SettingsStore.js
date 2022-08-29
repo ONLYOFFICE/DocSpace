@@ -128,6 +128,7 @@ class SettingsStore {
   helpLink = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
+  invitePanelVisible = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -548,6 +549,10 @@ class SettingsStore {
   get isFrame() {
     return this.frameConfig?.name === window.name;
   }
+
+  setInvitePanelVisible = (invitePanelVisible) => {
+    this.invitePanelVisible = invitePanelVisible;
+  };
 }
 
 export default SettingsStore;

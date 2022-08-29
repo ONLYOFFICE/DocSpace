@@ -345,8 +345,8 @@ class ContextOptionsStore {
     console.log("edit room");
   };
 
-  onClickInviteUsers = () => {
-    console.log("invite users");
+  onClickInviteUsers = (e) => {
+    this.authStore.settingsStore.setInvitePanelVisible(true);
   };
 
   onClickPin = (e, id, t) => {
@@ -538,7 +538,7 @@ class ContextOptionsStore {
         key: "invite-users-to-room",
         label: "Invite users",
         icon: "/static/images/person.react.svg",
-        onClick: () => this.onClickInviteUsers(),
+        onClick: (e) => this.onClickInviteUsers(e),
         disabled: false,
       },
       {

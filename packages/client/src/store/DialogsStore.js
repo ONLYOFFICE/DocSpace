@@ -248,6 +248,7 @@ class DialogsStore {
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
+      this.authStore.settingsStore.invitePanelVisible ||
       this.versionHistoryStore.isVisible
     );
   }
