@@ -210,7 +210,6 @@ const SimpleFilesTileContent = styled(TileContent)`
 
 const paddingCss = css`
   @media ${desktop} {
-    margin-left: 1px;
     padding-right: 3px;
   }
 
@@ -236,6 +235,7 @@ const StyledGridWrapper = styled.div`
 
 const StyledTileContainer = styled.div`
   position: relative;
+  height: 100%;
 
   .tile-item-wrapper {
     position: relative;
@@ -386,6 +386,25 @@ const MainContainer = styled.div`
   }
 `;
 
+const StyledCard = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+  height: ${({ cardHeight }) => `${cardHeight}px`};
+`;
+
+const StyledItem = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+  gap: 14px 16px;
+  width: 100%;
+
+  @media ${tablet} {
+    gap: 14px;
+  }
+
+  ${paddingCss};
+`;
+
 export {
   StyledTile,
   StyledFileTileTop,
@@ -399,4 +418,6 @@ export {
   StyledTileContent,
   MainContainerWrapper,
   MainContainer,
+  StyledCard,
+  StyledItem,
 };

@@ -252,6 +252,7 @@ export default inject(
     treeFoldersStore,
     uploadDataStore,
     dialogsStore,
+    oformsStore,
   }) => {
     const {
       setIsLoading,
@@ -260,9 +261,10 @@ export default inject(
       addActiveItems,
       openDocEditor,
       setIsUpdatingRowItem,
-      gallerySelected,
       setCreatedItem,
     } = filesStore;
+
+    const { gallerySelected } = oformsStore;
 
     const { editCompleteAction } = filesActionsStore;
 
