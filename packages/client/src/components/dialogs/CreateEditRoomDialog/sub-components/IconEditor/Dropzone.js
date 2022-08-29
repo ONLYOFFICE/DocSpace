@@ -58,7 +58,7 @@ const StyledDropzone = styled.div`
 
 StyledDropzone.defaultProps = { theme: Base };
 
-const Dropzone = ({ setUploadedFile }) => {
+const Dropzone = ({ t, setUploadedFile }) => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     // maxSize: 1000000,
@@ -101,10 +101,12 @@ const Dropzone = ({ setUploadedFile }) => {
       <div {...getRootProps({ className: "dropzone" })}>
         <input {...getInputProps()} />
         <div className="dropzone-link">
-          <span className="dropzone-link-main">Select new image</span>
-          <span className="dropzone-link-secondary">or drop file here</span>
+          <span className="dropzone-link-main">{t("DropzoneTitleLink")}</span>
+          <span className="dropzone-link-secondary">
+            {t("DropzoneTitleSecondary")}
+          </span>
         </div>
-        <div className="dropzone-exsts">(JPG or PNG, max 1 MB)</div>
+        <div className="dropzone-exsts">{t("DropzoneTitleExsts")}</div>
       </div>
     </StyledDropzone>
   );

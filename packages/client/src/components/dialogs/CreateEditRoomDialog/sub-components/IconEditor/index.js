@@ -52,7 +52,7 @@ const IconEditor = ({
           />
         </div>
       )}
-      <Dropzone setUploadedFile={setUploadedFile} />
+      <Dropzone t={t} setUploadedFile={setUploadedFile} />
     </StyledIconEditor>
   );
 };
