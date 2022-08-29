@@ -6,7 +6,7 @@ import { useTranslation, Trans } from "react-i18next";
 import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 
-const homepage = "/";
+const homepage = "/login";
 const InvalidError = () => {
   const [proxyHomepageUrl, setProxyHomepageUrl] = React.useState("");
   const { t } = useTranslation("Login");

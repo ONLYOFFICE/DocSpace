@@ -1,9 +1,9 @@
 import React from "react";
 import { hydrate } from "react-dom";
-import App from "./App";
 import { registerSW } from "@docspace/common/sw/helper";
 import pkg from "../../package.json";
 import { initI18n } from "./helpers/utils";
+import ClientApp from "./components/ClientApp";
 
 const propsObj: IInitialState = window.__ASC_INITIAL_LOGIN_STATE__;
 const initialI18nStoreASC: IInitialI18nStoreASC = window.initialI18nStoreASC;
@@ -15,7 +15,7 @@ if (isDesktopEditor) typeof window["AscDesktopEditor"];
 initI18n(initialI18nStoreASC);
 
 hydrate(
-  <App
+  <ClientApp
     initialLanguage={initialLanguage}
     initialI18nStoreASC={initialI18nStoreASC}
     isDesktopEditor={isDesktopEditor}

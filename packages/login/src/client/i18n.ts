@@ -7,7 +7,7 @@ import { loadLanguagePath, getCookie } from "@docspace/common/utils";
 
 const newInstance = i18n.createInstance();
 
-const lng = getCookie(LANGUAGE) || "en";
+const lng = getCookie(LANGUAGE) || window.initialLanguage || "en";
 
 newInstance
   .use(Backend)
