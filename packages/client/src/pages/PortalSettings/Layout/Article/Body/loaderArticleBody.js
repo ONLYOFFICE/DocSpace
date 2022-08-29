@@ -27,7 +27,7 @@ const StyledLoader = styled.div`
 
   @media (min-width: 1024px) {
     padding-left: 10px;
-    padding-top: 20px;
+    padding-top: 7px;
     display: flex;
     flex-direction: column;
 
