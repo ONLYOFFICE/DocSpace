@@ -45,7 +45,11 @@ public class ProtobufSerializer : IIntegrationEventSerializer
 
     private void BuildTypeModelFromAssembly(Assembly assembly)
     {
-        if (!assembly.GetName().Name.StartsWith("ASC.")) return;
+        var name = assembly.GetName().Name;
+        if (name == null || !name.StartsWith("ASC."))
+        {
+            return;
+        }
 
         var types = assembly.GetExportedTypes()
                   .Where(t => t.GetCustomAttributes<ProtoContractAttribute>().Any());
@@ -64,7 +68,7 @@ public class ProtobufSerializer : IIntegrationEventSerializer
         {
             return Array.Empty<byte>();
         }
-             
+
         using var ms = new MemoryStream();
 
         Serializer.Serialize(ms, item);
@@ -74,7 +78,7 @@ public class ProtobufSerializer : IIntegrationEventSerializer
 
     /// <inheritdoc/>
     public T Deserialize<T>(byte[] serializedObject)
-    {     
+    {
         using var ms = new MemoryStream(serializedObject);
 
         return Serializer.Deserialize<T>(ms);
@@ -107,7 +111,7 @@ public class ProtobufSerializer : IIntegrationEventSerializer
         if (!baseType.GetSubtypes().Any(s => s.DerivedType == itemType))
         {
             baseType.AddSubType(_baseFieldNumber, protoType);
-            
+
             _baseFieldNumber++;
 
             _processedProtoTypes.Add(protoType.FullName);

@@ -199,6 +199,18 @@ class FilesActionStore {
     setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
   };
 
+  updateFilesAfterDelete = () => {
+    const { setSelected } = this.filesStore;
+    const {
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    setSelected("close");
+
+    this.dialogsStore.setIsFolderActions(false);
+    setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+  };
+
   deleteAction = async (
     translations,
     newSelection = null,
@@ -268,7 +280,28 @@ class FilesActionStore {
               label: translations.deleteOperation,
             };
             await this.uploadDataStore.loopFilesOperations(data, pbData);
-            this.updateCurrentFolder(fileIds, folderIds, false);
+
+            const showToast = () => {
+              if (isRecycleBinFolder) {
+                return toastr.success(translations.deleteFromTrash);
+              }
+
+              if (selection.length > 1 || isThirdPartyFile) {
+                return toastr.success(translations.deleteSelectedElem);
+              }
+              if (selection[0].fileExst) {
+                return toastr.success(translations.FileRemoved);
+              }
+              return toastr.success(translations.FolderRemoved);
+            };
+
+            if (this.filesStore.withPaging) {
+              this.updateCurrentFolder(fileIds, folderIds, false);
+              showToast();
+            } else {
+              this.updateFilesAfterDelete(folderIds);
+              this.filesStore.removeFiles(fileIds, folderIds, showToast);
+            }
 
             if (currentFolderId) {
               const { socketHelper } = this.authStore.settingsStore;
@@ -278,18 +311,6 @@ class FilesActionStore {
                 data: currentFolderId,
               });
             }
-
-            if (isRecycleBinFolder) {
-              return toastr.success(translations.deleteFromTrash);
-            }
-
-            if (selection.length > 1 || isThirdPartyFile) {
-              return toastr.success(translations.deleteSelectedElem);
-            }
-            if (selection[0].fileExst) {
-              return toastr.success(translations.FileRemoved);
-            }
-            return toastr.success(translations.FolderRemoved);
           })
           .finally(() => {
             clearActiveOperations(fileIds, folderIds);
@@ -469,35 +490,12 @@ class FilesActionStore {
     return this.downloadFiles(fileIds, folderIds, label);
   };
 
-  editCompleteAction = async (id, selectedItem, isCancelled = false, type) => {
-    const {
-      filter,
-      folders,
-      files,
+  editCompleteAction = async (selectedItem, type, isFolder = false) => {
+    if (type === FileAction.Create) {
+      this.filesStore.addFile(selectedItem, isFolder);
+    }
 
-      fetchFiles,
-      setIsLoading,
-    } = this.filesStore;
-
-    const { treeFolders, setTreeFolders } = this.treeFoldersStore;
-
-    const items = [...folders, ...files];
-    const item = items.find((o) => o.id === id && !o.fileExst); //TODO: maybe need files find and folders find, not at one function?
     if (type === FileAction.Create || type === FileAction.Rename) {
-      setIsLoading(true);
-
-      if (!isCancelled) {
-        const data = await fetchFiles(this.selectedFolderStore.id, filter);
-        const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
-        if (!selectedItem.fileExst && !selectedItem.contentLength) {
-          const path = data.selectedFolder.pathParts;
-          const folders = await getSubfolders(this.selectedFolderStore.id);
-          loopTreeFolders(path, treeFolders, folders, null, newItem);
-          setTreeFolders(treeFolders);
-        }
-      }
-
-      setIsLoading(false);
       type === FileAction.Rename &&
         this.onSelectItem(
           {
@@ -619,14 +617,21 @@ class FilesActionStore {
     if (isFile) {
       addActiveItems([itemId]);
       this.isMediaOpen();
-      return deleteFile(itemId)
-        .then(async (res) => {
-          if (res[0]?.error) return Promise.reject(res[0].error);
-          const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(data, pbData);
+      return deleteFile(itemId).then(async (res) => {
+        if (res[0]?.error) return Promise.reject(res[0].error);
+        const data = res[0] ? res[0] : null;
+        await this.uploadDataStore.loopFilesOperations(data, pbData);
+
+        if (this.filesStore.withPaging) {
           this.updateCurrentFolder([itemId]);
-        })
-        .then(() => toastr.success(translations.successRemoveFile));
+          toastr.success(translations.successRemoveFile);
+        } else {
+          this.updateFilesAfterDelete();
+          this.filesStore.removeFiles([itemId], null, () =>
+            toastr.success(translations.successRemoveFile)
+          );
+        }
+      });
     } else if (isRoom) {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
@@ -643,15 +648,23 @@ class FilesActionStore {
         .then(() => toastr.success(translations?.successRemoveRoom));
     } else {
       addActiveItems(null, [itemId]);
-      return deleteFolder(itemId)
-        .then(async (res) => {
-          if (res[0]?.error) return Promise.reject(res[0].error);
-          const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(data, pbData);
+      return deleteFolder(itemId).then(async (res) => {
+        if (res[0]?.error) return Promise.reject(res[0].error);
+        const data = res[0] ? res[0] : null;
+        await this.uploadDataStore.loopFilesOperations(data, pbData);
+
+        if (this.filesStore.withPaging) {
           this.updateCurrentFolder(null, [itemId]);
-          getIsEmptyTrash();
-        })
-        .then(() => toastr.success(translations.successRemoveFolder));
+          toastr.success(translations.successRemoveFolder);
+        } else {
+          this.updateFilesAfterDelete([itemId]);
+          this.filesStore.removeFiles([itemId], null, () =>
+            toastr.success(translations.successRemoveFolder)
+          );
+        }
+
+        getIsEmptyTrash();
+      });
     }
   };
 
