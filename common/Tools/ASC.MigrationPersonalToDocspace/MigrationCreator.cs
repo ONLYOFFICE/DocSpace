@@ -85,7 +85,7 @@ public class MigrationCreator
             var path = Path.Combine(_hostEnvironment.ContentRootPath, _configuration[Data.Storage.Constants.StorageRootParam]);
             if (!Directory.Exists(path))
             {
-                throw new Exception("wrong $STORAGE_ROOT, change storage.json or $STORAGE_ROOT");
+                throw new Exception("Wrong $STORAGE_ROOT, change $STORAGE_ROOT in appsettings.json");
             }
         }
     }

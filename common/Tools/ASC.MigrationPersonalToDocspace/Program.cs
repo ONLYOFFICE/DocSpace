@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Common.Utils;
+
 using Autofac.Extensions.DependencyInjection;
 
 var options = new WebApplicationOptions
@@ -38,9 +40,26 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
 {
-    config.AddJsonFile($"appsettings.json", true)
-        .AddJsonFile($"storage.json", true)
+    config.AddJsonFile($"appsettings.json", true);
+    var buildedConfig = config.Build();
+
+    var path = buildedConfig["pathToConf"];
+    try
+    {
+        if (!Path.IsPathRooted(path))
+        {
+            path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+        }
+
+        config.SetBasePath(path);
+
+        config.AddJsonFile($"storage.json", false)
         .AddCommandLine(args);
+    }
+    catch (Exception ex)
+    {
+        throw new Exception("Wrong pathToConf, change pathToConf in appsettings.json");
+    }
 });
 
 var config = builder.Configuration;
@@ -91,3 +110,4 @@ var migrationRunner = new MigrationRunner(app.Services, args[1] + ".tar.gz");
 migrationRunner.Run();
 
 Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Contains(".tar")).ToList().ForEach(File.Delete);
+Directory.Delete(AppContext.BaseDirectory + "\\temp");
