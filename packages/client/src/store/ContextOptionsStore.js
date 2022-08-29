@@ -11,6 +11,7 @@ import {
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 
 class ContextOptionsStore {
   authStore;
@@ -367,6 +368,9 @@ class ContextOptionsStore {
 
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
+
+    const { enablePlugins } = this.authStore.settingsStore;
+
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
 
@@ -531,7 +535,7 @@ class ContextOptionsStore {
         key: "edit-room",
         label: "Edit room",
         icon: "images/settings.react.svg",
-        onClick: () => this.onClickEditRoom(),
+        onClick: () => this.onClickEditRoom(item),
         disabled: false,
       },
       {
@@ -720,6 +724,30 @@ class ContextOptionsStore {
 
     const options = this.filterModel(optionsModel, contextOptions);
 
+    if (enablePlugins) {
+      const pluginOptions = getContextMenuItems();
+
+      if (pluginOptions) {
+        pluginOptions.forEach((option) => {
+          if (contextOptions.includes(option.key)) {
+            const value = option.value;
+            if (!value.onClick) {
+              options.splice(value.position, 0, {
+                key: option.key,
+                ...value,
+              });
+            } else {
+              options.splice(value.position, 0, {
+                key: option.key,
+                label: value.label,
+                icon: value.icon,
+                onClick: () => value.onClick(item),
+              });
+            }
+          }
+        });
+      }
+    }
     return options;
   };
 
