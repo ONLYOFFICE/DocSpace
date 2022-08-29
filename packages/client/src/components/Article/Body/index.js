@@ -46,6 +46,7 @@ const ArticleBodyContent = (props) => {
     toggleArticleOpen,
     categoryType,
     isAdmin,
+    filesIsLoading,
   } = props;
 
   const campaigns = (localStorage.getItem("campaigns") || "")
@@ -68,6 +69,7 @@ const ArticleBodyContent = (props) => {
         archiveFolderId,
       } = props;
 
+      if (filesIsLoading) return;
       const filesSection = window.location.pathname.indexOf("/filter") > 0;
 
       if (filesSection) {
@@ -192,6 +194,7 @@ export default inject(
       isLoading,
       isLoaded,
       categoryType,
+      filesIsLoading,
     } = filesStore;
 
     const {
@@ -255,6 +258,7 @@ export default inject(
       archiveFolderId,
 
       categoryType,
+      filesIsLoading,
     };
   }
 )(

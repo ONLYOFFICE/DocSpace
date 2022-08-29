@@ -4,6 +4,16 @@ import { mobile, tablet, hugeMobile } from "../utils/device";
 import Scrollbar from "../scrollbar";
 import { isMobile, isMobileOnly } from "react-device-detect";
 
+const reactWindowContainerStyles = css`
+  height: 100%;
+  display: block;
+`;
+
+const reactWindowBodyStyles = css`
+  display: block;
+  height: 100%;
+`;
+
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
 
@@ -75,6 +85,8 @@ const StyledTableContainer = styled.div`
       width: 22px;
     }
   }
+
+  ${({ useReactWindow }) => useReactWindow && reactWindowContainerStyles}
 `;
 
 StyledTableContainer.defaultProps = { theme: Base };
@@ -301,6 +313,8 @@ StyledTableHeaderCell.defaultProps = { theme: Base };
 
 const StyledTableBody = styled.div`
   display: contents;
+
+  ${({ useReactWindow }) => useReactWindow && reactWindowBodyStyles}
 `;
 
 const StyledTableRow = styled.div`

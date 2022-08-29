@@ -64,7 +64,12 @@ const FilesRowContainer = ({
   viewAs,
   setViewAs,
   infoPanelVisible,
+  filterTotal,
+  fetchMoreFiles,
+  hasMoreFiles,
   isRooms,
+  selectedFolderId,
+  withPaging,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -84,8 +89,14 @@ const FilesRowContainer = ({
   return (
     <StyledRowContainer
       className="files-row-container"
+      filesLength={filesList.length}
+      itemCount={filterTotal}
+      fetchMoreFiles={fetchMoreFiles}
+      hasMoreFiles={hasMoreFiles}
       draggable
-      useReactWindow={false}
+      useReactWindow={!withPaging}
+      selectedFolderId={selectedFolderId}
+      itemHeight={58}
     >
       {filesList.map((item, index) => (
         <SimpleFilesRow
@@ -100,18 +111,34 @@ const FilesRowContainer = ({
   );
 };
 
-export default inject(({ filesStore, auth, treeFoldersStore }) => {
-  const { filesList, viewAs, setViewAs } = filesStore;
-  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+export default inject(
+  ({ filesStore, auth, treeFoldersStore, selectedFolderStore }) => {
+    const {
+      filesList,
+      viewAs,
+      setViewAs,
+      filterTotal,
+      fetchMoreFiles,
+      hasMoreFiles,
+      withPaging,
+      roomsFilterTotal,
+    } = filesStore;
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+    const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-  const isRooms = isRoomsFolder || isArchiveFolder;
+    const isRooms = isRoomsFolder || isArchiveFolder;
 
-  return {
-    filesList,
-    viewAs,
-    setViewAs,
-    infoPanelVisible,
-    isRooms,
-  };
-})(observer(FilesRowContainer));
+    return {
+      filesList,
+      viewAs,
+      setViewAs,
+      infoPanelVisible,
+      filterTotal: isRooms ? roomsFilterTotal : filterTotal,
+      fetchMoreFiles,
+      hasMoreFiles,
+      isRooms,
+      selectedFolderId: selectedFolderStore.id,
+      withPaging,
+    };
+  }
+)(observer(FilesRowContainer));

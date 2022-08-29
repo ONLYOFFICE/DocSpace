@@ -159,6 +159,7 @@ class ComboBox extends React.Component {
         />
         {displayType !== "toggle" && (
           <DropDown
+            id={this.props.dropDownId}
             className="dropdown-container not-selectable"
             directionX={directionX}
             directionY={directionY}
@@ -223,6 +224,8 @@ ComboBox.propTypes = {
   showDisabledItems: PropTypes.bool,
   /** Accepts id */
   id: PropTypes.string,
+  /** Accepts id for dropdown container */
+  dropDownId: PropTypes.string,
   /** Indicates that component is disabled */
   isDisabled: PropTypes.bool,
   /** Indicates that component is displayed without borders */

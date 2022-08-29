@@ -43,7 +43,7 @@ const SectionBodyContent = ({
       descriptionText={t("EmptyScreenDescription")}
     />
   ) : (
-    <TileContainer useReactWindow={false} className="tile-container">
+    <TileContainer className="tile-container">
       {oformFiles.map((item, index) => (
         <FileTile key={`${item.id}_${index}`} item={item} />
       ))}
