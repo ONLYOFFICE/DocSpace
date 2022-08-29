@@ -40,7 +40,7 @@ class ResetApplicationDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            key="SendBtn"
+            key="ResetSendBtn"
             label={t("Common:ResetApplication")}
             size="normal"
             scale

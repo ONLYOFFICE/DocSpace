@@ -7,7 +7,6 @@ import TableHeader from "./TableHeader";
 import TableBody from "@docspace/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
-import { isTablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
 const marginCss = css`
@@ -119,7 +118,12 @@ const Table = ({
   theme,
   infoPanelVisible,
   userId,
+  fetchMoreFiles,
+  hasMoreFiles,
+  filterTotal,
   isRooms,
+  selectedFolderId,
+  withPaging,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
 
@@ -181,7 +185,7 @@ const Table = ({
     : `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
 
   return (
-    <StyledTableContainer forwardedRef={ref}>
+    <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
       <TableHeader
         sectionWidth={sectionWidth}
         containerRef={ref}
@@ -194,7 +198,19 @@ const Table = ({
         roomsColumnInfoPanelStorageName={`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`}
         isRooms={isRooms}
       />
-      <TableBody>
+
+      <TableBody
+        fetchMoreFiles={fetchMoreFiles}
+        columnStorageName={columnStorageName}
+        filesLength={filesList.length}
+        hasMoreFiles={hasMoreFiles}
+        itemCount={filterTotal}
+        useReactWindow={!withPaging}
+        infoPanelVisible={infoPanelVisible}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
+        selectedFolderId={selectedFolderId}
+        itemHeight={isRooms ? 49 : 41}
+      >
         {filesList.map((item, index) => {
           return index === 0 && item.isRoom ? (
             <TableRow
@@ -234,34 +250,45 @@ const Table = ({
   );
 };
 
-export default inject(({ filesStore, treeFoldersStore, auth }) => {
-  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+export default inject(
+  ({ filesStore, treeFoldersStore, auth, selectedFolderStore }) => {
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+    const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-  const isRooms =
-    isRoomsFolder ||
-    isArchiveFolder ||
-    window.location.href.includes("/rooms?");
+    const isRooms =
+      isRoomsFolder ||
+      isArchiveFolder ||
+      window.location.href.includes("/rooms?");
 
-  const {
-    filesList,
-    viewAs,
-    setViewAs,
-    setFirsElemChecked,
-    setHeaderBorder,
-  } = filesStore;
+    const {
+      filesList,
+      viewAs,
+      setViewAs,
+      setFirsElemChecked,
+      setHeaderBorder,
+      fetchMoreFiles,
+      hasMoreFiles,
+      filterTotal,
+      withPaging,
+      roomsFilterTotal,
+    } = filesStore;
 
-  return {
-    filesList,
-    viewAs,
-    setViewAs,
-    setFirsElemChecked,
-    setHeaderBorder,
-    theme: auth.settingsStore.theme,
-    userId: auth.userStore.user.id,
-    infoPanelVisible,
-
-    isRooms,
-  };
-})(observer(Table));
+    return {
+      filesList,
+      viewAs,
+      setViewAs,
+      setFirsElemChecked,
+      setHeaderBorder,
+      theme: auth.settingsStore.theme,
+      userId: auth.userStore.user.id,
+      infoPanelVisible,
+      fetchMoreFiles,
+      hasMoreFiles,
+      filterTotal: isRooms ? roomsFilterTotal : filterTotal,
+      isRooms,
+      selectedFolderId: selectedFolderStore.id,
+      withPaging,
+    };
+  }
+)(observer(Table));
