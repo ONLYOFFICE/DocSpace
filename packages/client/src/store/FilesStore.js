@@ -2585,7 +2585,7 @@ class FilesStore {
     const { Shared, Archive } = CategoryType;
     const isRoom = this.categoryType == Shared || this.categoryType == Archive;
 
-    const filterTotal = isRoom ? this.roomsFilterTotal : this.filter.total;
+    const filterTotal = isRoom ? this.roomsFilter.total : this.filter.total;
 
     console.log("hasMoreFiles isRoom", isRoom);
     console.log("hasMoreFiles filesList", this.filesList.length);
