@@ -50,25 +50,16 @@ const SingleSignOn = lazy(() =>
   import("./categories/integration/SingleSignOn")
 );
 
-const DataManagementSettings = lazy(() =>
-  import("./categories/data-management/backup")
-);
-const AutomaticBackup = lazy(() =>
-  import("./categories/data-management/backup/auto-backup")
-);
-const ManualBackup = lazy(() =>
-  import("./categories/data-management/backup/manual-backup")
-);
-const RestoreBackup = lazy(() =>
-  import("./categories/data-management/backup/restore-backup")
-);
+const Backup = lazy(() => import("./categories/data-management/backup"));
 
+const RestoreBackup = lazy(() =>
+  import("./categories/data-management/backup/restore-backup/index")
+);
 const WhiteLabel = lazy(() =>
   import("./categories/common/settingsBranding/whitelabel")
 );
 
 const Branding = lazy(() => import("./categories/common/branding"));
-
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
 
 const COMMON_URLS = [
@@ -84,6 +75,16 @@ const CUSTOMIZATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/common"),
   PROXY_BASE_URL,
 ];
+
+const BACKUP_URLS = [
+  PROXY_BASE_URL,
+  combineUrl(PROXY_BASE_URL, "/backup"),
+  combineUrl(PROXY_BASE_URL, "/backup/data-backup"),
+  combineUrl(PROXY_BASE_URL, "/backup/auto-backup"),
+];
+
+const RESTORE_DATA_URL = combineUrl(PROXY_BASE_URL, "/restore");
+
 const LTZ_URL = combineUrl(
   PROXY_BASE_URL,
   "/common/customization/language-and-time-zone"
@@ -133,6 +134,7 @@ const INTEGRATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/integration/third-party-services"),
   combineUrl(PROXY_BASE_URL, "/integration/single-sign-on"),
   combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
+  combineUrl(PROXY_BASE_URL, "/integration/plugins"),
 ];
 
 const PAYMENTS_URL = combineUrl(PROXY_BASE_URL, "/payments/portal-payments");
@@ -143,10 +145,6 @@ const THIRD_PARTY_URL = combineUrl(
 );
 
 const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
-const DATA_MANAGEMENT_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/datamanagement/backup"
-);
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
@@ -207,12 +205,8 @@ const Settings = (props) => {
           <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
-          <Route
-            exact
-            path={DATA_MANAGEMENT_URL}
-            component={DataManagementSettings}
-          />
-
+          <Route exact path={BACKUP_URLS} component={Backup} />
+          <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
           <Redirect
             to={{
               pathname: ERROR_404_URL,

@@ -49,8 +49,6 @@
   "DeactivateOrDeletePortal": "Dezaktywuj lub usuń portal.",
   "Disabled": "Wyłączono",
   "DocumentsAdministratorsCan": "Administratorzy dokumentów mogą podłączyć Dropbox, Box oraz inne konta do Wspólnych Dokumentów i skonfigurować prawa dostępu w tej sekcji",
-  "DocumentsModule": "Moduł Dokumenty",
-  "DocumentsModuleDescription": "Kopia zapasowa zostanie zapisana w katalogu Wspólne dokumenty.",
   "DownloadCopy": "Pobierz kopię",
   "Employees": "użytkownicy",
   "EmptyBackupList": "Nie utworzono jeszcze kopii zapasowych. Utwórz jedną lub więcej kopii zapasowych, aby je wyświetlić na tej liście.",

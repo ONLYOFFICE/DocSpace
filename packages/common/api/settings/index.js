@@ -533,6 +533,14 @@ export function getOforms(url) {
   return axios.get(url);
 }
 
+export function getStorageRegions() {
+  const options = {
+    method: "get",
+    url: "/settings/storage/s3/regions",
+  };
+  return request(options);
+}
+
 export function getPortalQuota() {
   return request({
     method: "get",

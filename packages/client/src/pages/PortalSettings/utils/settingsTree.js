@@ -136,10 +136,17 @@ export const settingsTree = [
         isCategory: true,
       },
       {
-        key: "3-1",
+        key: "3-2",
         icon: "",
         link: "portal-integration",
         tKey: "PortalIntegration",
+        isCategory: true,
+      },
+      {
+        key: "3-3",
+        icon: "",
+        link: "plugins",
+        tKey: "Plugins",
         isCategory: true,
       },
     ],
@@ -163,15 +170,39 @@ export const settingsTree = [
   {
     key: "5",
     icon: "/images/data-management.react.svg",
-    link: "datamanagement",
-    tKey: "ManagementCategoryDataManagement",
+    link: "backup",
+    tKey: "Backup",
     isHeader: true,
     children: [
       {
         key: "5-0",
         icon: "",
-        link: "backup",
+        link: "data-backup",
         tKey: "Backup",
+        isCategory: true,
+      },
+      {
+        key: "4-1",
+        icon: "",
+        link: "auto-backup",
+        tKey: "AutoBackup",
+        isCategory: true,
+      },
+    ],
+  },
+
+  {
+    key: "5",
+    icon: "/images/restore.react.svg",
+    link: "restore",
+    tKey: "RestoreBackup",
+    isHeader: true,
+    children: [
+      {
+        key: "5-0",
+        icon: "",
+        link: "restore-backup",
+        tKey: "RestoreBackup",
         isCategory: true,
       },
     ],
@@ -279,6 +310,12 @@ export const settingsTreeFull = [
         key: "3-0",
         icon: "",
         link: "third-party-services",
+      },
+      {
+        key: "3-1",
+        icon: "",
+        link: "plugins",
+        tKey: "Plugins",
       },
       {
         title: "SMTP Settings",
