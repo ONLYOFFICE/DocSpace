@@ -2,14 +2,19 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { StyledGridWrapper, StyledTileContainer } from "../StyledTileView";
+import InfiniteGrid from "./InfiniteGrid";
 
 class TileContainer extends React.PureComponent {
   render() {
-    const { children, id, className, style } = this.props;
+    const { children, useReactWindow, ...rest } = this.props;
 
     return (
-      <StyledTileContainer id={id} className={className} style={style}>
-        <StyledGridWrapper>{children}</StyledGridWrapper>
+      <StyledTileContainer {...rest}>
+        {useReactWindow ? (
+          <InfiniteGrid>{children}</InfiniteGrid>
+        ) : (
+          <StyledGridWrapper>{children}</StyledGridWrapper>
+        )}
       </StyledTileContainer>
     );
   }
@@ -20,6 +25,11 @@ TileContainer.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};
+
+TileContainer.defaultProps = {
+  useReactWindow: true,
+  id: "tileContainer",
 };
 
 export default withTranslation(["Files", "Common"])(TileContainer);
