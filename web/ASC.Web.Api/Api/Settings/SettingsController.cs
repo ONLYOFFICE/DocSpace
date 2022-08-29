@@ -254,6 +254,16 @@ public class SettingsController : BaseSettingsController
         return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, WebItemManager, _constants);
     }
 
+    [HttpPost("userquotasettings")]
+    public object SaveUserQuotaSettings(UserQuotaSettingsRequestsDto inDto)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        _settingsManager.Save(new UserQuotaSettings { EnableUserQuota = inDto.EnableUserQuota, DefaultUserQuota = inDto.DefaultUserQuota });
+
+        return Resource.SuccessfullySaveSettingsMessage;
+    }
+
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("cultures")]
