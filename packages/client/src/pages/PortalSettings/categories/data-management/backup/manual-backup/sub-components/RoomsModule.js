@@ -22,12 +22,21 @@ class RoomsModule extends React.Component {
       selectedFolder: selectedFolder,
       isPanelVisible: false,
     };
+
+    this._isMount = false;
   }
 
+  componentDidMount() {
+    this._isMount = true;
+  }
+  componentWillUnmount() {
+    this._isMount = false;
+  }
   onSelectFolder = (folderId) => {
-    this.setState({
-      selectedFolder: folderId,
-    });
+    this._isMount &&
+      this.setState({
+        selectedFolder: folderId,
+      });
   };
 
   onClickInput = () => {
