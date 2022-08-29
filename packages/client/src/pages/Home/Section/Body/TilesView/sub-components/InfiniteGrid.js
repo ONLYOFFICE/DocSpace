@@ -182,14 +182,19 @@ export default inject(({ filesStore, selectedFolderStore }) => {
     filterTotal,
     fetchMoreFiles,
     getCountTilesInRow,
+    roomsFilterTotal,
   } = filesStore;
 
   const filesLength = filesList.length;
+  const isRooms =
+    isRoomsFolder ||
+    isArchiveFolder ||
+    window.location.href.includes("/rooms?");
 
   return {
     filesList,
     hasMoreFiles,
-    filterTotal,
+    filterTotal: isRooms ? roomsFilterTotal : filterTotal,
     fetchMoreFiles,
     filesLength,
     getCountTilesInRow,
