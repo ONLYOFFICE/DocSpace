@@ -192,7 +192,7 @@ export const settingsTree = [
   },
 
   {
-    key: "5",
+    key: "6",
     icon: "/images/restore.react.svg",
     link: "restore",
     tKey: "RestoreBackup",
