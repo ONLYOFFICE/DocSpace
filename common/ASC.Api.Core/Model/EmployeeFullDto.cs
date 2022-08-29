@@ -56,7 +56,7 @@ public class EmployeeFullDto : EmployeeDto
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
     public bool IsSSO { get; set; }
     public DarkThemeSettingsEnum? Theme { get; set; }
-
+    public string QuotaLimit { get; set; }
     public static new EmployeeFullDto GetSample()
     {
         return new EmployeeFullDto
@@ -186,7 +186,9 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             IsAdmin = userInfo.IsAdmin(_userManager),
             IsOwner = userInfo.IsOwner(_context.Tenant),
             IsLDAP = userInfo.IsLDAP(),
-            IsSSO = userInfo.IsSSO()
+            IsSSO = userInfo.IsSSO(),
+            QuotaLimit = userInfo.QuotaLimit
+
         };
 
         await Init(result, userInfo);
