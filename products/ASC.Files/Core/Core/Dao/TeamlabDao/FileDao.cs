@@ -413,11 +413,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
-        var quotaLimit = ByteConverter.ConvertSizeToBytes(user.QuotaLimit);
-
-        if (quotaLimit - await _globalSpace.GetUserUsedSpaceAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+       
+        if(user.QuotaLimit != Constants.UserNoQuota)
         {
-            throw FileSizeComment.GetPersonalFreeSpaceException(quotaLimit);
+            var quotaLimit = ByteConverter.ConvertSizeToBytes(user.QuotaLimit);
+            if (quotaLimit - await _globalSpace.GetUserUsedSpaceAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+            {
+                throw FileSizeComment.GetPersonalFreeSpaceException(quotaLimit);
+            }
         }
 
         var isNew = false;

@@ -73,6 +73,7 @@ public sealed class Constants
 
     private readonly IConfiguration _configuration;
 
+    public static readonly string UserNoQuota = "NoQuota";
 
     #region system group and category groups
 
