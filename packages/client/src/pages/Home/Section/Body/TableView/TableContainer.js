@@ -256,10 +256,7 @@ export default inject(
 
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-    const isRooms =
-      isRoomsFolder ||
-      isArchiveFolder ||
-      window.location.href.includes("/rooms?");
+    const isRooms = isRoomsFolder || isArchiveFolder;
 
     const {
       filesList,
