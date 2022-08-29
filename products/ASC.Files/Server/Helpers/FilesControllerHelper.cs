@@ -235,17 +235,20 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
 
     public async Task<FileDto<T>> UpdateFileAsync(T fileId, string title, int lastVersion)
     {
+        File<T> file = null;
+
         if (!string.IsNullOrEmpty(title))
         {
-            await _fileStorageService.FileRenameAsync(fileId, title);
+            file = await _fileStorageService.FileRenameAsync(fileId, title);
         }
 
         if (lastVersion > 0)
         {
-            await _fileStorageService.UpdateToVersionAsync(fileId, lastVersion);
+            var result = await _fileStorageService.UpdateToVersionAsync(fileId, lastVersion);
+            file = result.Key;
         }
 
-        return await GetFileInfoAsync(fileId);
+        return await GetFileInfoAsync(file.Id);
     }
 
     public async Task<FileDto<T>> UpdateFileStreamAsync(Stream file, T fileId, string fileExtension, bool encrypted = false, bool forcesave = false)
