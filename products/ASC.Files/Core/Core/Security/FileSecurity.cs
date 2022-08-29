@@ -493,7 +493,8 @@ public class FileSecurity : IFileSecurity
             e.RootFolderType == FolderType.Privacy ||
             e.RootFolderType == FolderType.Projects ||
             e.RootFolderType == FolderType.VirtualRooms ||
-            e.RootFolderType == FolderType.Archive)
+            e.RootFolderType == FolderType.Archive ||
+            e.RootFolderType == FolderType.ThirdpartyBackup)
         {
             if (!isAuthenticated && userId != FileConstant.ShareLinkId)
             {
@@ -653,6 +654,11 @@ public class FileSecurity : IFileSecurity
                 return true;
             }
 
+            if (e.RootFolderType == FolderType.ThirdpartyBackup && isAdmin)
+            {
+                return true;
+            }
+
             if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && isAdmin)
             {
                 return true;
@@ -663,8 +669,8 @@ public class FileSecurity : IFileSecurity
             {
                 subjects = GetUserSubjects(userId);
                 shares = (await GetSharesAsync(e))
-                    .Join(subjects, r => r.Subject, s => s, (r, s) => r)
-                    .ToList();
+                        .Join(subjects, r => r.Subject, s => s, (r, s) => r)
+                        .ToList();
                 // shares ordered by level
             }
 
@@ -702,6 +708,8 @@ public class FileSecurity : IFileSecurity
                     : DefaultCommonShare;
 
             e.Access = ace != null ? ace.Share : defaultShare;
+
+            e.Access = e.RootFolderType == FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
 
             if (action == FilesSecurityActions.Read && e.Access != FileShare.Restrict)
             {

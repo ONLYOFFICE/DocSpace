@@ -1,69 +1,46 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import GoogleCloudSettings from "../../../consumer-storage-settings/GoogleCloudSettings";
+import { ThirdPartyStorages } from "@docspace/common/constants";
+import { getFromLocalStorage } from "../../../../../../utils";
 
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { selectedStorage } = this.props;
-    const formSettings = {};
-    this.namesArray = GoogleCloudSettings.formNames();
-    this.namesArray.forEach((elem) => (formSettings[elem] = ""));
+    const { selectedStorage, setCompletedFormFields } = this.props;
 
-    this.state = {
-      formSettings,
-      formErrors: {},
-    };
+    const basicValues = GoogleCloudSettings.formNames();
+
+    const moduleValues = getFromLocalStorage(
+      "LocalCopyThirdPartyStorageValues"
+    );
+
+    const moduleType =
+      getFromLocalStorage("LocalCopyStorage") === ThirdPartyStorages.GoogleId;
+
+    setCompletedFormFields(
+      moduleType && moduleValues ? moduleValues : basicValues
+    );
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }
 
-  onChange = (event) => {
-    const { formSettings } = this.state;
-    const { target } = event;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({ formSettings: { ...formSettings, [name]: value } });
-  };
-
-  onMakeCopy = () => {
-    const { formSettings } = this.state;
-
-    const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
-
-    const isInvalid = isInvalidForm(formSettings);
-
-    const hasError = isInvalid[0];
-    const errors = isInvalid[1];
-
-    if (hasError) {
-      this.setState({ formErrors: errors });
-      return;
-    }
-
-    const arraySettings = Object.entries(formSettings);
-    onMakeCopyIntoStorage(arraySettings);
-
-    this.setState({ formErrors: {} });
-  };
   render() {
-    const { formSettings, formErrors } = this.state;
     const {
       t,
       isLoadingData,
       isMaxProgress,
       selectedStorage,
       buttonSize,
+      onMakeCopyIntoStorage,
+      isValidForm,
     } = this.props;
 
     return (
       <>
         <GoogleCloudSettings
-          formSettings={formSettings}
-          onChange={this.onChange}
-          isError={formErrors}
           selectedStorage={selectedStorage}
           isLoadingData={isLoadingData}
         />
@@ -71,22 +48,22 @@ class GoogleCloudStorage extends React.Component {
         <div className="manual-backup_buttons">
           <Button
             label={t("Common:Duplicate")}
-            onClick={this.onMakeCopy}
+            onClick={onMakeCopyIntoStorage}
             primary
-            isDisabled={!isMaxProgress || this.isDisabled}
+            isDisabled={!isValidForm || !isMaxProgress || this.isDisabled}
             size={buttonSize}
           />
-          {!isMaxProgress && (
-            <Button
-              label={t("Common:CopyOperation") + "..."}
-              isDisabled
-              size={buttonSize}
-              style={{ marginLeft: "8px" }}
-            />
-          )}
         </div>
       </>
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(GoogleCloudStorage);
+
+export default inject(({ backup }) => {
+  const { setCompletedFormFields, isValidForm } = backup;
+
+  return {
+    isValidForm,
+    setCompletedFormFields,
+  };
+})(observer(withTranslation(["Settings", "Common"])(GoogleCloudStorage)));

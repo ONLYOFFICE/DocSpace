@@ -28,7 +28,7 @@ const getThumbSize = (width) => {
   return `${imgWidth}x300`;
 };
 
-const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
+const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
   const firstRef = useRef();
   const [thumbSize, setThumbSize] = useState("");
   const [columnCount, setColumnCount] = useState(null);
@@ -77,7 +77,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
     <TileContainer
       className="tile-container"
       draggable
-      useReactWindow={false}
+      useReactWindow={!withPaging}
       headingFolders={t("Folders")}
       headingFiles={t("Files")}
     >
@@ -108,9 +108,10 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
 };
 
 export default inject(({ filesStore }) => {
-  const { filesList } = filesStore;
+  const { filesList, withPaging } = filesStore;
 
   return {
     filesList,
+    withPaging,
   };
 })(observer(FilesTileContainer));

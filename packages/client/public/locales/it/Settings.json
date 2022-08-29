@@ -49,8 +49,6 @@
   "DeactivateOrDeletePortal": "Disattivare o cancellare il portale",
   "Disabled": "Disattivato",
   "DocumentsAdministratorsCan": "Gli amministratori dei documenti possono collegare Dropbox, Box e altri account ai Documenti Comuni ed impostare i diritti di accesso alla sezione",
-  "DocumentsModule": "Modulo Documenti",
-  "DocumentsModuleDescription": "Il backup verrà salvato nella cartella Documenti comuni.",
   "DownloadCopy": "Scaricare la copia",
   "Employees": "utenti",
   "EmptyBackupList": "Nessun backup creato. Crea almeno una copia di backup per visualizzarla in questo elenco.",

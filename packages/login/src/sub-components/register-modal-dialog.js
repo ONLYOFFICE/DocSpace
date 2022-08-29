@@ -99,7 +99,7 @@ const RegisterModalDialog = ({
       <ModalDialog.Footer>
         <Button
           className="modal-dialog-button"
-          key="SendBtn"
+          key="RegisterSendBtn"
           label={loading ? t("Common:Sending") : t("RegisterSendButton")}
           size="normal"
           scale={false}
