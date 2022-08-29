@@ -4,6 +4,7 @@ import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import authStore from "@docspace/common/store/AuthStore";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
+import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 
 const { proxyURL } = AppServerConfig;
 
@@ -89,6 +90,7 @@ class ProfileActionsStore {
   };
 
   getActions = (t) => {
+    const { enablePlugins } = this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
@@ -192,6 +194,19 @@ class ProfileActionsStore {
         label: "Debug Info",
         onClick: this.onDebugClick,
       });
+    }
+
+    if (enablePlugins) {
+      const pluginActions = getProfileMenuItems();
+
+      if (pluginActions) {
+        pluginActions.forEach((option) => {
+          actions.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+          });
+        });
+      }
     }
 
     return actions;
