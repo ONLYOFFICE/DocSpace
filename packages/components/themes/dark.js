@@ -2269,73 +2269,74 @@ const Dark = {
     roomType: {
       listItem: {
         background: "none",
-        borderColor: "#ECEEF1",
+        borderColor: "#474747",
         descriptionText: "#A3A9AE",
       },
       dropdownButton: {
         background: "none",
-        borderColor: "#ECEEF1",
-        isOpenBorderColor: "#2DA7DB",
+        borderColor: "#474747",
+        isOpenBorderColor: "#F97A0B",
         descriptionText: "#A3A9AE",
       },
       dropdownItem: {
-        background: "#ffffff",
-        hoverBackground: "#f3f4f4",
+        background: "#333333",
+        hoverBackground: "#474747",
         descriptionText: "#A3A9AE",
       },
       displayItem: {
-        background: "#f8f8f8",
-        borderColor: "#f8f8f8",
-        descriptionText: "#555F65",
+        background: "#474747",
+        borderColor: "#474747",
+        descriptionText: "#a3a9ae",
       },
     },
 
     roomTypeDropdown: {
       desktop: {
-        background: "#ffffff",
-        borderColor: "#d0d5da",
+        background: "#333333",
+        borderColor: "#474747",
       },
       mobile: {
-        background: "#ffffff",
+        background: "#333333",
       },
     },
 
     permanentSettings: {
-      background: "#f8f9f9",
+      background: "#474747",
       isPrivateIcon: "#35ad17",
-      descriptionColor: "#555f65",
+      descriptionColor: "#a3a9ae",
     },
 
     dropdown: {
-      background: "#ffffff",
-      borderColor: "#d0d5da",
+      background: "#333333",
+      borderColor: "#474747",
       item: {
-        hoverBackground: "#f3f4f4",
+        hoverBackground: "#474747",
       },
     },
 
     isPrivate: {
       limitations: {
-        background: "#f8f9f9",
+        background: "#474747",
         iconColor: "#ed7309",
         titleColor: "#ed7309",
-        descriptionColor: "#555f65",
-        linkColor: "#555f65",
+        descriptionColor: "#a3a9ae",
+        linkColor: "#e8e8e9",
       },
     },
 
     thirdpartyStorage: {
       combobox: {
-        background: "#ffffff",
-        dropdownBorderColor: "#d0d5da",
-        hoverDropdownBorderColor: "#a3a9ae",
-        isOpenDropdownBorderColor: "#2DA7DB",
-        arrowFill: "#a3a9ae",
+        background: "#292929",
+        dropdownBorderColor: "#474747",
+        hoverDropdownBorderColor: "#858585",
+        isOpenDropdownBorderColor: "#e8e8e9",
+        arrowFill: "#474747",
       },
       folderInput: {
-        borderColor: "#d0d5da",
-        hoverBorderColor: "#a3a9ae",
-        focusBorderColor: "#35abd8",
+        background: "#292929",
+        borderColor: "#474747",
+        hoverBorderColor: "#858585",
+        focusBorderColor: "#e8e8e9",
         rootLabelColor: "#a3a9ae",
         iconFill: "#657177",
       },
@@ -2344,22 +2345,22 @@ const Dark = {
     iconCropper: {
       gridColor: "#333333",
       deleteButton: {
-        background: "#f8f9f9",
-        color: "#555f65",
-        iconColor: "#657077",
+        background: "#292929",
+        color: "#858585",
+        iconColor: "#e8e8e9",
       },
     },
 
     previewTile: {
-      background: "#ffffff",
-      borderColor: "#d0d5da",
+      background: "#292929",
+      borderColor: "#474747",
       iconBorderColor: "#eceef1",
     },
 
     dropzone: {
-      borderColor: "#eceef1",
-      linkMainColor: "#316daa",
-      linkSecondaryColor: "#333333",
+      borderColor: "#474747",
+      linkMainColor: "#F97A0B",
+      linkSecondaryColor: "#ffffff",
       exstsColor: "#a3a9ae",
     },
   },
@@ -2865,7 +2866,7 @@ const Dark = {
     background: "#3D3D3D",
     hoverBackground: "#333333",
     disabledBackground: "#858585",
-    defaultTagColor: "#A3A9AE",
+    defaultTagColor: "#858585",
     newTagBackground: "#333333",
   },
 };

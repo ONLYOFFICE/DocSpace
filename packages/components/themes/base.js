@@ -2325,6 +2325,7 @@ const Base = {
         arrowFill: "#a3a9ae",
       },
       folderInput: {
+        background: "#ffffff",
         borderColor: "#d0d5da",
         hoverBorderColor: "#a3a9ae",
         focusBorderColor: "#35abd8",
