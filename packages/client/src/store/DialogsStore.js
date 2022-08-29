@@ -27,6 +27,7 @@ class DialogsStore {
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   isFolderActions = false;
+  roomCreation = false;
 
   removeItem = null;
   connectItem = null;
@@ -39,6 +40,7 @@ class DialogsStore {
   unsubscribe = null;
   convertItem = null;
   formCreationInfo = null;
+  saveThirdpartyResponse = null;
 
   constructor(
     authStore,
@@ -78,10 +80,18 @@ class DialogsStore {
     this.copyPanelVisible = copyPanelVisible;
   };
 
+  setRoomCreation = (roomCreation) => {
+    this.roomCreation = roomCreation;
+  };
+
+  setSaveThirdpartyResponse = (saveThirdpartyResponse) => {
+    this.saveThirdpartyResponse = saveThirdpartyResponse;
+  };
+
   setConnectDialogVisible = (connectDialogVisible) => {
     if (!connectDialogVisible) this.setConnectItem(null);
-
     this.connectDialogVisible = connectDialogVisible;
+    if (!this.connectDialogVisible) this.setRoomCreation(false);
   };
 
   setRemoveItem = (removeItem) => {

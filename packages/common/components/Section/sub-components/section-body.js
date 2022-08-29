@@ -10,33 +10,49 @@ import Scrollbar from "@docspace/components/scrollbar";
 import DragAndDrop from "@docspace/components/drag-and-drop";
 import {
   tablet,
-  mobile,
   desktop,
   smallTablet,
 } from "@docspace/components/utils/device";
 
+const settingsStudioStyles = css`
+  ${({ settingsStudio }) =>
+    settingsStudio
+      ? css`
+          padding: 0 7px 16px 20px;
+          
+          @media ${tablet} {
+            padding: 0 0 16px 24px;
+          }
+
+          @media ${smallTablet} {
+            padding: 8px 0 16px 24px;
+          }
+          
+          @media ${mobile} {
+            padding: 0 0 16px 24px;
+          }
+        `
+      : css`
+          @media ${tablet} {
+            padding: ${({ viewAs, withPaging }) =>
+              viewAs === "tile"
+                ? "19px 0 16px 24px"
+                : withPaging
+                ? "19px 0 16px 24px"
+                : "19px 0 16px 8px"};
+          }
+        `}
+`;
+
 const paddingStyles = css`
-  padding: ${(props) =>
-    props.settingsStudio
-      ? "0 7px 16px 20px"
-      : props.viewAs === "row"
-      ? "19px 3px 16px 16px"
+  padding: ${({ viewAs, withPaging }) =>
+    viewAs === "row"
+      ? withPaging
+        ? "19px 3px 16px 16px"
+        : "19px 3px 16px 0px"
       : "19px 3px 16px 20px"};
 
-  @media ${tablet} {
-    padding: ${(props) =>
-      props.settingsStudio ? "0 0 16px 24px" : "19px 0 16px 24px"};
-  }
-
-  @media ${smallTablet} {
-    padding: ${(props) =>
-      props.settingsStudio ? "8px 0 16px 24px" : "19px 0 16px 24px"};
-  }
-
-  @media ${mobile} {
-    padding: ${(props) =>
-      props.settingsStudio ? "0px 0 16px 24px" : "19px 0 16px 24px"};
-  }
+  ${settingsStudioStyles};
 
   ${isMobile &&
   css`
@@ -60,6 +76,7 @@ const commonStyles = css`
   border-top: none;
 
   .section-wrapper {
+    height: 100%;
     ${(props) =>
       !props.withScroll &&
       `display: flex; flex-direction: column; height: 100%; box-sizing:border-box`};
@@ -134,6 +151,7 @@ const StyledSectionBody = styled.div`
 
 const StyledDropZoneBody = styled(DragAndDrop)`
   max-width: 100vw !important;
+
   ${commonStyles} .drag-and-drop {
     user-select: none;
     height: 100%;
@@ -188,6 +206,12 @@ class SectionBody extends React.Component {
     this.focusRef = null;
   }
 
+  onScroll = (e) => {
+    this.props.selectoRef.current &&
+      this.props.selectoRef.current.checkScroll();
+    return e;
+  };
+
   render() {
     //console.log(" SectionBody render" );
     const {
@@ -202,6 +226,7 @@ class SectionBody extends React.Component {
       isDesktop,
       isHomepage,
       settingsStudio,
+      withPaging,
     } = this.props;
 
     const focusProps = autoFocus
@@ -221,11 +246,17 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
+        withPaging={withPaging}
         className="section-body"
       >
         {withScroll ? (
           !isMobileOnly ? (
-            <Scrollbar scrollclass="section-scroll" stype="mediumBlack">
+            <Scrollbar
+              id="sectionScroll"
+              scrollclass="section-scroll"
+              stype="mediumBlack"
+              onScroll={this.onScroll}
+            >
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
@@ -256,10 +287,11 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
+        withPaging={withPaging}
       >
         {withScroll ? (
           !isMobileOnly ? (
-            <Scrollbar stype="mediumBlack">
+            <Scrollbar id="sectionScroll" stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
