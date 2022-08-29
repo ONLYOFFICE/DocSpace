@@ -928,6 +928,19 @@ class FilesActionStore {
     fetchRooms(id, newFilter).finally(() => setIsLoading(false));
   };
 
+  selectType = (type) => {
+    const { roomsFilter, fetchRooms, setIsLoading } = this.filesStore;
+    const { id } = this.selectedFolderStore;
+
+    const newFilter = roomsFilter.clone();
+    const tags = newFilter.tags ? [...newFilter.tags] : [];
+    newFilter.tags = [...tags];
+    newFilter.type = type;
+
+    setIsLoading(true);
+    fetchRooms(id, newFilter).finally(() => setIsLoading(false));
+  };
+
   selectRowAction = (checked, file) => {
     const {
       selected,

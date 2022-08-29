@@ -29,6 +29,7 @@ const ArticleMainButtonContent = (props) => {
     encrypted,
     startUpload,
     setAction,
+    setCreateRoomDialogVisible,
     setSelectFileDialogVisible,
     isArticleLoading,
     isFavoritesFolder,
@@ -68,7 +69,6 @@ const ArticleMainButtonContent = (props) => {
 
   const onCreateRoom = React.useCallback(() => {
     const event = new Event(Events.ROOM_CREATE);
-
     window.dispatchEvent(event);
   }, []);
 
@@ -172,7 +172,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_new-room",
             className: "main-button_drop-down",
             icon: "images/folder.locked.react.svg",
-            label: t("Home:NewRoom"),
+            label: t("Files:NewRoom"),
             onClick: onCreateRoom,
             action: "room",
             key: "room",
@@ -345,7 +345,10 @@ export default inject(
       isArchiveFolder,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-    const { setSelectFileDialogVisible } = dialogsStore;
+    const {
+      setCreateRoomDialogVisible,
+      setSelectFileDialogVisible,
+    } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
@@ -371,6 +374,7 @@ export default inject(
 
       startUpload,
 
+      setCreateRoomDialogVisible,
       setSelectFileDialogVisible,
 
       isLoading,

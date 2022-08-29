@@ -1611,8 +1611,60 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  createRoom(title, type) {
-    return api.rooms.createRoom({ title, roomType: type });
+  createRoom(roomParams) {
+    return api.rooms.createRoom(roomParams);
+  }
+
+  createRoomInThirdpary(thirpartyFolderId, roomParams) {
+    console.log(thirpartyFolderId, roomParams);
+    return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
+  }
+
+  editRoom(id, roomParams) {
+    return api.rooms.editRoom(id, roomParams);
+  }
+
+  addTagsToRoom(id, tagArray) {
+    return api.rooms.addTagsToRoom(id, tagArray);
+  }
+
+  removeTagsFromRoom(id, tagArray) {
+    return api.rooms.removeTagsFromRoom(id, tagArray);
+  }
+
+  calculateRoomLogoParams(img, x, y, zoom) {
+    let imgWidth, imgHeight, dimensions;
+    if (img.width > img.height) {
+      imgWidth = Math.min(1280, img.width);
+      imgHeight = Math.round(img.height / (img.width / imgWidth));
+      dimensions = Math.round(imgHeight / zoom);
+    } else {
+      imgHeight = Math.min(1280, img.height);
+      imgWidth = Math.round(img.width / (img.height / imgHeight));
+      dimensions = Math.round(imgWidth / zoom);
+    }
+
+    const croppedX = Math.round(x * imgWidth - dimensions / 2);
+    const croppedY = Math.round(y * imgHeight - dimensions / 2);
+
+    return {
+      x: croppedX,
+      y: croppedY,
+      width: dimensions,
+      height: dimensions,
+    };
+  }
+
+  uploadRoomLogo(formData) {
+    return api.rooms.uploadRoomLogo(formData);
+  }
+
+  addLogoToRoom(id, icon) {
+    return api.rooms.addLogoToRoom(id, icon);
+  }
+
+  removeLogoFromRoom(id) {
+    return api.rooms.removeLogoFromRoom(id);
   }
 
   setFile = (file) => {
@@ -1912,6 +1964,7 @@ class FilesStore {
         folderId,
         foldersCount,
         id,
+        logo,
         locked,
         parentId,
         pureContentLength,
@@ -2015,6 +2068,7 @@ class FilesStore {
         icon,
         id,
         isFolder,
+        logo,
         locked,
         new: item.new,
         parentId,
