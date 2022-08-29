@@ -44,7 +44,7 @@ const TagList = ({ defaultTagLabel, tagHandler }) => {
           className="set_room_params-tag_input-tag"
           tag="script"
           label={defaultTagLabel}
-          isDisabled
+          isDefault
         />
       )}
     </StyledTagList>
