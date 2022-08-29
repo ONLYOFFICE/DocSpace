@@ -24,9 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Amazon.S3.Internal;
 using Amazon.Extensions.S3.Encryption;
 using Amazon.Extensions.S3.Encryption.Primitives;
+using Amazon.S3.Internal;
 
 namespace ASC.Data.Storage.S3;
 
@@ -47,7 +47,7 @@ public class S3Storage : BaseStorage
     private string _serviceurl;
     private bool _forcepathstyle;
     private string _secretAccessKeyId = string.Empty;
-    private ServerSideEncryptionMethod _sse = ServerSideEncryptionMethod.AES256;
+    private readonly ServerSideEncryptionMethod _sse = ServerSideEncryptionMethod.AES256;
     private bool _useHttp = true;
     private bool _lowerCasing = true;
     private bool _revalidateCloudFront;
@@ -55,7 +55,7 @@ public class S3Storage : BaseStorage
     private string _subDir = "";
 
     private EncryptionMethod _encryptionMethod = EncryptionMethod.None;
-    private string _encryptionKey = null;
+    private string _encryptionKey;
 
     public S3Storage(
         TempStream tempStream,
@@ -184,17 +184,17 @@ public class S3Storage : BaseStorage
         return SaveAsync(domain, path, stream, contentType, contentDisposition, ACL.Auto);
     }
 
-        private bool EnableQuotaCheck(string domain)
-        {
-            return (QuotaController != null) && !domain.EndsWith("_temp");
-        }
+    private bool EnableQuotaCheck(string domain)
+    {
+        return (QuotaController != null) && !domain.EndsWith("_temp");
+    }
 
     public async Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
                          string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
     {
         var buffered = _tempStream.GetBuffered(stream);
 
-            if (EnableQuotaCheck(domain))
+        if (EnableQuotaCheck(domain))
         {
             QuotaController.QuotaUsedCheck(buffered.Length);
         }

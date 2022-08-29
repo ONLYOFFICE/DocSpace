@@ -2566,7 +2566,15 @@ class FilesStore {
     const { Shared, Archive } = CategoryType;
     const isRoom = this.categoryType == Shared || this.categoryType == Archive;
 
-    const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
+    const filterTotal = isRoom ? this.roomsFilter.total : this.filter.total;
+
+    console.log("hasMoreFiles isRoom", isRoom);
+    console.log("hasMoreFiles filesList", this.filesList.length);
+    console.log("hasMoreFiles this.filter.total", this.filter.total);
+    console.log("hasMoreFiles this.roomsFilter.total", this.roomsFilter.total);
+    console.log("hasMoreFiles filterTotal", filterTotal);
+    console.log("hasMoreFiles", this.filesList.length < filterTotal);
+    console.log("----------------------------");
 
     return this.filesList.length < filterTotal;
   }

@@ -271,6 +271,7 @@ export default inject(
       hasMoreFiles,
       filterTotal,
       withPaging,
+      roomsFilterTotal,
     } = filesStore;
 
     return {
@@ -284,7 +285,7 @@ export default inject(
       infoPanelVisible,
       fetchMoreFiles,
       hasMoreFiles,
-      filterTotal,
+      filterTotal: isRooms ? roomsFilterTotal : filterTotal,
       isRooms,
       selectedFolderId: selectedFolderStore.id,
       withPaging,

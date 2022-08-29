@@ -237,7 +237,7 @@ class SettingsStore {
   getPortalSettings = async () => {
     const origSettings = await this.getSettings();
 
-    if (origSettings.plugins.enabled) {
+    if (origSettings?.plugins?.enabled) {
       initPluginStore();
 
       this.enablePlugins = origSettings.plugins.enabled;
