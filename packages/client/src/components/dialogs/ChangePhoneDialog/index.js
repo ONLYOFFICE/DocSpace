@@ -37,7 +37,7 @@ class ChangePhoneDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            key="SendBtn"
+            key="ChangePhoneSendBtn"
             label={t("Common:SendButton")}
             size="normal"
             scale

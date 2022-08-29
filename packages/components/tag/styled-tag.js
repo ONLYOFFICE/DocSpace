@@ -27,8 +27,11 @@ const StyledTag = styled.div`
   border-radius: 6px;
 
   .tag-text {
+    color: ${(props) =>
+      props.isDefault
+        ? props.theme.tag.defaultTagColor
+        : props.theme.tag.color};
     line-height: 20px;
-
     pointer-events: none;
   }
 

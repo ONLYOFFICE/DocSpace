@@ -26,6 +26,15 @@ class ThirdPartyModule extends React.Component {
       isError: false,
       isLoading: false,
     };
+
+    this._isMount = false;
+  }
+
+  componentDidMount() {
+    this._isMount = true;
+  }
+  componentWillUnmount() {
+    this._isMount = false;
   }
 
   onSetLoadingData = (isLoading) => {
@@ -37,9 +46,10 @@ class ThirdPartyModule extends React.Component {
   };
 
   onSelectFolder = (folderId) => {
-    this.setState({
-      selectedFolder: folderId,
-    });
+    this._isMount &&
+      this.setState({
+        selectedFolder: folderId,
+      });
   };
 
   onClickInput = () => {

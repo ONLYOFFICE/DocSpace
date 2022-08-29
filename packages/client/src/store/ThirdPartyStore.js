@@ -32,7 +32,8 @@ class ThirdPartyStore {
     isCorporate,
     customerTitle,
     providerKey,
-    providerId
+    providerId,
+    isRoomsStorage
   ) => {
     return api.files.saveThirdParty(
       url,
@@ -42,7 +43,8 @@ class ThirdPartyStore {
       isCorporate,
       customerTitle,
       providerKey,
-      providerId
+      providerId,
+      isRoomsStorage
     );
   };
 
