@@ -42,6 +42,9 @@ const StyledFolderInput = styled.div`
     font-weight: 400;
     font-size: 13px;
     line-height: 20px;
+    background-color: ${(props) =>
+      props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
+        .background};
     color: ${(props) =>
       props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
         .rootLabelColor};
@@ -58,6 +61,9 @@ const StyledFolderInput = styled.div`
 
   .icon-wrapper {
     cursor: pointer;
+    background-color: ${(props) =>
+      props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
+        .background};
     height: 100%;
     box-sizing: border-box;
     width: 31px;
