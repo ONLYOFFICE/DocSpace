@@ -23,4 +23,6 @@ export const ThemeType = {
   FloatingButton: "floatingButton",
   InfoPanelToggle: "infoPanelToggle",
   Link: "link",
+  Slider: "slider",
+  IndicatorLoader: "indicatorLoader",
 };

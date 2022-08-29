@@ -26,6 +26,8 @@ import {
   FloatingButtonTheme,
   InfoPanelToggleTheme,
   LinkTheme,
+  SliderTheme,
+  IndicatorLoaderTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -243,6 +245,24 @@ const ColorTheme = forwardRef(
       case ThemeType.Link: {
         return (
           <LinkTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
+      case ThemeType.Slider: {
+        return (
+          <SliderTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
+      case ThemeType.IndicatorLoader: {
+        return (
+          <IndicatorLoaderTheme
             {...props}
             $currentColorScheme={currentColorScheme}
             ref={ref}

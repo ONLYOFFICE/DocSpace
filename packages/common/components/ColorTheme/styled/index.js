@@ -45,3 +45,7 @@ export { default as FloatingButtonTheme } from "./floatingButton";
 export { default as InfoPanelToggleTheme } from "./infoPanelToggle";
 
 export { default as LinkTheme } from "./link";
+
+export { default as SliderTheme } from "./slider";
+
+export { default as IndicatorLoaderTheme } from "./indicatorLoader";
