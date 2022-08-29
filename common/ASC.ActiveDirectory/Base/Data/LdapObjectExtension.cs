@@ -145,7 +145,7 @@ public class LdapObjectExtension
         var emails = GetContacts(ldapUser, Mapping.AdditionalMail, settings);
         var skype = GetContacts(ldapUser, Mapping.Skype, settings);
 
-        var quota = settings.LdapMapping.ContainsKey(Mapping.UserQuotaLimit) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.UserQuotaLimit]) : "1000";
+        var quota = settings.LdapMapping.ContainsKey(Mapping.UserQuotaLimit) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.UserQuotaLimit]) : "10Mb";
 
         if (string.IsNullOrEmpty(userName))
         {
@@ -170,7 +170,7 @@ public class LdapObjectExtension
             Location = !string.IsNullOrEmpty(location) ? location : string.Empty,
             WorkFromDate = _tenantUtil.DateTimeNow(),
             ContactsList = contacts,
-            QuotaLimit = Int32.Parse(quota)
+            QuotaLimit = quota
         };
 
         if (!string.IsNullOrEmpty(firstName))
