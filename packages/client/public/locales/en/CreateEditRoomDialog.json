@@ -22,7 +22,7 @@
 
   "MakeRoomPrivateTitle": "Make the Room Private",
   "MakeRoomPrivateDescription": "All files in this room will be encrypted",
-  "PrivacyLimitationsWarningDescription": "With this feature, you can invite only existing users on the portal. After creating a room, you will not be able to change the list of users.",
+  "MakeRoomPrivateLimitationsWarningDescription": "With this feature, you can invite only existing users on the portal. After creating a room, you will not be able to change the list of users.",
 
   "ThirdPartyStorageTitle": "Third party storage",
   "ThirdPartyStorageDescription": "Use third-party services as data storage for this room. A new folder for storing this room’s data will be created in the connected storage",
