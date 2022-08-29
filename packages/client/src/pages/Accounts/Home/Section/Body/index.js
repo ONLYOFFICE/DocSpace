@@ -12,6 +12,31 @@ import PeopleRowContainer from "./RowView/PeopleRowContainer";
 import TableView from "./TableView/TableContainer";
 
 class SectionBodyContent extends React.Component {
+  componentDidMount() {
+    window.addEventListener("mousedown", this.onMouseDown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("mousedown", this.onMouseDown);
+  }
+
+  onMouseDown = (e) => {
+    const { setSelection, setBufferSelection } = this.props;
+    if (
+      (e.target.closest(".scroll-body") &&
+        !e.target.closest(".user-item") &&
+        !e.target.closest(".not-selectable") &&
+        !e.target.closest(".info-panel") &&
+        !e.target.closest(".table-container_group-menu")) ||
+      e.target.closest(".files-main-button") ||
+      e.target.closest(".add-button") ||
+      e.target.closest(".search-input-block")
+    ) {
+      setSelection([]);
+      setBufferSelection(null);
+    }
+  };
+
   render() {
     const { tReady, viewAs } = this.props;
 
@@ -39,7 +64,9 @@ class SectionBodyContent extends React.Component {
 export default inject(({ peopleStore }) => {
   const { viewAs } = peopleStore;
 
-  return { viewAs };
+  const { setSelection, setBufferSelection } = peopleStore.selectionStore;
+
+  return { viewAs, setSelection, setBufferSelection };
 })(
   withTranslation(["People", "Common", "PeopleTranslations"])(
     withPeopleLoader(observer(SectionBodyContent))(
