@@ -197,7 +197,7 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText } = this.props;
+    const { showText, t } = this.props;
 
     const items = [];
 
@@ -222,7 +222,7 @@ class ArticleBodyContent extends React.Component {
         isHeader={true}
         isFirstHeader={true}
         showText={showText}
-        text={"Settings"}
+        text={`${t("Common:Settings")}`}
       />
     );
 
