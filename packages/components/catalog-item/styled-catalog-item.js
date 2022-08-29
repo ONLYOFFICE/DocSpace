@@ -49,7 +49,7 @@ const StyledCatalogItemHeaderContainer = styled.div`
   }
 
   @media ${tablet} {
-    padding: ${(props) => (props.showText ? "0px 12px 12px" : "4px 12px 19px")};
+    padding: ${(props) => (props.showText ? "0px 9px 12px" : "4px 12px 19px")};
 
     margin-top: ${(props) => (props.isFirstHeader ? "0" : "16px")};
 

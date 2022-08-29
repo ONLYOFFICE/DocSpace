@@ -1879,7 +1879,7 @@ const Base = {
         marginLeft: "12px",
         lineHeight: "16px",
         fontSize: "15px",
-        fontWeight: "bold",
+        fontWeight: "600",
       },
     },
     initialText: {

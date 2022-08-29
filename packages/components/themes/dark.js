@@ -1879,7 +1879,7 @@ const Dark = {
         marginLeft: "12px",
         lineHeight: "16px",
         fontSize: "14px",
-        fontWeight: "bold",
+        fontWeight: "600",
       },
     },
     initialText: {
