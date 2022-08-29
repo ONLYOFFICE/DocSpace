@@ -84,8 +84,6 @@ class FilesStore {
   headerBorder = false;
 
   enabledHotkeys = true;
-  oformFiles = null;
-  gallerySelected = null;
 
   createdItem = null;
   scrollToItem = null;
@@ -390,26 +388,9 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
-    requests.push(this.getOforms());
     requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => (this.isInit = true));
-  };
-
-  getOforms = async () => {
-    const oformData = await this.authStore.getOforms();
-
-    runInAction(() => {
-      this.oformFiles = oformData?.data?.data ? oformData.data.data : [];
-    });
-  };
-
-  get hasGalleryFiles() {
-    return this.oformFiles && !!this.oformFiles.length;
-  }
-
-  setGallerySelected = (gallerySelected) => {
-    this.gallerySelected = gallerySelected;
   };
 
   setFirstLoad = (firstLoad) => {
