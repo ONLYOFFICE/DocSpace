@@ -2702,6 +2702,7 @@ const Base = {
       backup: {
         rectangleBackgroundColor: "#f8f9f9",
         separatorBorder: "1px solid #eceef1",
+        contextBorder: "1px solid #D0D5DA",
       },
     },
 

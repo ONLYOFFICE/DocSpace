@@ -135,42 +135,6 @@ public class UserServiceCache
 }
 
 [Scope]
-class ConfigureCachedUserService : IConfigureNamedOptions<CachedUserService>
-{
-    internal readonly IOptionsSnapshot<EFUserService> Service;
-    internal readonly UserServiceCache UserServiceCache;
-    internal readonly CoreBaseSettings CoreBaseSettings;
-
-    public ConfigureCachedUserService(
-        IOptionsSnapshot<EFUserService> service,
-        UserServiceCache userServiceCache,
-        CoreBaseSettings coreBaseSettings)
-    {
-        Service = service;
-        UserServiceCache = userServiceCache;
-        CoreBaseSettings = coreBaseSettings;
-    }
-
-    public void Configure(string name, CachedUserService options)
-    {
-        Configure(options);
-        options.Service = Service.Get(name);
-    }
-
-    public void Configure(CachedUserService options)
-    {
-        options.Service = Service.Value;
-        options.CoreBaseSettings = CoreBaseSettings;
-        options.UserServiceCache = UserServiceCache;
-        options.Cache = UserServiceCache.Cache;
-        options.CacheUserInfoItem = UserServiceCache.CacheUserInfoItem;
-        options.CacheUserPhotoItem = UserServiceCache.CacheUserPhotoItem;
-        options.CacheGroupCacheItem = UserServiceCache.CacheGroupCacheItem;
-        options.CacheUserGroupRefItem = UserServiceCache.CacheUserGroupRefItem;
-    }
-}
-
-[Scope]
 public class CachedUserService : IUserService, ICachedService
 {
     internal IUserService Service { get; set; }
