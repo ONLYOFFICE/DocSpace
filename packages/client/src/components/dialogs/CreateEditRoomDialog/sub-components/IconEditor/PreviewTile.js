@@ -77,9 +77,7 @@ const PreviewTile = ({ t, title, previewIcon, tags, defaultTagLabel }) => {
   return (
     <StyledPreviewTile>
       <div className="tile-header">
-        <div className="tile-header-icon">
-          <img src={previewIcon} alt={title} />
-        </div>
+        <img className="tile-header-icon" src={previewIcon} alt={title} />
         <div className="tile-header-title">{title}</div>
       </div>
       <div className="tile-tags">
@@ -90,7 +88,7 @@ const PreviewTile = ({ t, title, previewIcon, tags, defaultTagLabel }) => {
             className="type_tag"
             tag="script"
             label={defaultTagLabel}
-            isDisabled
+            isDefault
           />
         )}
       </div>
