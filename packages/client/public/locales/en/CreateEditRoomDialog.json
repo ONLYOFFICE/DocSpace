@@ -33,5 +33,9 @@
   "ThirdPartyStoragePermanentSettingDescription": "Files are stored in a third-party {{thirdpartyTitle}} storage in the \"{{thirdpartyFolderName}}\" folder.\n<strong>{{thirdpartyPath}}</strong>",
 
   "FolderNameTitle": "Folder Name",
-  "FolderNameDescription": "A new folder for storing this room’s data will be created in the connected storage"
+  "FolderNameDescription": "A new folder for storing this room’s data will be created in the connected storage",
+
+  "DropzoneTitleLink": "Select new image",
+  "DropzoneTitleSecondary": "or drop file here",
+  "DropzoneTitleExsts": "(JPG or PNG, max 1 MB)"
 }

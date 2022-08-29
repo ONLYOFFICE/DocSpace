@@ -33,5 +33,9 @@
   "ThirdPartyStoragePermanentSettingDescription": "Файлы хранятся в стороннем хранилище {{thirdpartyTitle}} в папке \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
 
   "FolderNameTitle": "Имя папки",
-  "FolderNameDescription": "В подключенном хранилище будет создана новая папка для хранения данных этой комнаты"
+  "FolderNameDescription": "В подключенном хранилище будет создана новая папка для хранения данных этой комнаты",
+
+  "DropzoneTitleLink": "Выберите новое изображение",
+  "DropzoneTitleSecondary": "или перетащите сюда файл",
+  "DropzoneTitleExsts": "(JPG или PNG, не более 1 МБ)"
 }
