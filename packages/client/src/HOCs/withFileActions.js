@@ -331,7 +331,8 @@ export default function withFileActions(WrappedFileItem) {
       )
         isActive = true;
 
-      const showHotkeyBorder = hotkeyCaret?.id === item.id;
+      const showHotkeyBorder =
+        hotkeyCaret?.id === item.id && hotkeyCaret?.isFolder === item.isFolder;
 
       return {
         t,

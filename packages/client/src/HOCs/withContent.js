@@ -120,7 +120,6 @@ export default function withContent(WrappedContent) {
       },
       { item }
     ) => {
-      const { editCompleteAction } = filesActionsStore;
       const {
         createFile,
         createFolder,
@@ -164,7 +163,6 @@ export default function withContent(WrappedContent) {
         createFile,
         createFolder,
         culture,
-        editCompleteAction,
 
         folderFormValidation,
         homepage: config.homepage,

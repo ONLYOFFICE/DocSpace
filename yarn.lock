@@ -2067,7 +2067,7 @@ __metadata:
     react-resize-detector: ^6.7.6
     react-router: ^5.2.1
     react-router-dom: ^5.3.0
-    react-selecto: ^1.12.0
+    react-selecto: ^1.18.2
     react-tooltip: ^4.2.21
     react-viewer: ^3.2.2
     react-virtualized-auto-sizer: ^1.0.6
@@ -2155,6 +2155,7 @@ __metadata:
     react-tooltip: ^4.2.21
     react-transition-group: ^4.4.1
     react-values: ^0.3.3
+    react-virtualized: ^9.22.3
     react-window: ^1.8.6
     resize-image: ^0.1.0
     styled-components: ^5.3.1
@@ -3591,13 +3592,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scena/dragscroll@npm:^1.1.1":
-  version: 1.2.0
-  resolution: "@scena/dragscroll@npm:1.2.0"
+"@scena/dragscroll@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "@scena/dragscroll@npm:1.2.1"
   dependencies:
     "@daybrush/utils": 1.6.0
     "@scena/event-emitter": ^1.0.2
-  checksum: cac9db269d865a0acacf836327d26966d8acf10764bdeb52c4be5953797a805169dbcd6df15d090864046c6a2ed6bc49a0e22309b20e36dda8e73844e6833fa1
+  checksum: 217b0612b0b5d2e721cd41b7534cc1b831aca236a4256b30bdeb965b3b0b7cf9f3934801a7158cb38483242e2568f8b734eeccfaee43b5df4e5df9ead7653dd5
   languageName: node
   linkType: hard
 
@@ -8899,7 +8900,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^1.1.1":
+"clsx@npm:^1.0.4, clsx@npm:^1.1.1":
   version: 1.2.1
   resolution: "clsx@npm:1.2.1"
   checksum: 30befca8019b2eb7dbad38cff6266cf543091dae2825c856a62a8ccf2c3ab9c2907c4d12b288b73101196767f66812365400a227581484a05f968b0307cfaf12
@@ -10551,7 +10552,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-helpers@npm:^5.0.1":
+"dom-helpers@npm:^5.0.1, dom-helpers@npm:^5.1.3":
   version: 5.2.1
   resolution: "dom-helpers@npm:5.2.1"
   dependencies:
@@ -12727,13 +12728,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gesto@npm:^1.9.0":
-  version: 1.11.1
-  resolution: "gesto@npm:1.11.1"
+"gesto@npm:^1.11.1":
+  version: 1.12.1
+  resolution: "gesto@npm:1.12.1"
   dependencies:
     "@daybrush/utils": ^1.7.1
     "@scena/event-emitter": ^1.0.2
-  checksum: cfd0c17bc84865f062b8ae03a99fe21373239a5e0a593d185a0d0713d3dc0ebf21738859b7473c7949ae9b79f40e02188d5c384656bab6932e439c380ed04a91
+  checksum: e9b3f461e3ac05cc77187052660dbd0efa0aa7922bc650ced2d1d24ee77633046a92b8093eb584475bed1e3e82236999c86aef7007f949d55b4cce45c1d2bc5b
   languageName: node
   linkType: hard
 
@@ -20537,12 +20538,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-selecto@npm:^1.12.0":
-  version: 1.17.0
-  resolution: "react-selecto@npm:1.17.0"
+"react-selecto@npm:^1.18.2":
+  version: 1.18.2
+  resolution: "react-selecto@npm:1.18.2"
   dependencies:
-    selecto: ~1.17.0
-  checksum: 135bc3f9100a6631232b408ecb4ce008219ccce5b106ccc1cf03c7a0aba62cbe8bdf0427d88db5323988f181affc1635adb448f149eed93b7aa72d24c1a41e35
+    selecto: ~1.18.2
+  checksum: f1207f66b0a806e0129e9e611b720c160f5362a28cc9c381f8428fca0c4dc1df92a0a03c31f3b61a6c3de02f615eabbcf43cb785d908103548cc5ef3d1acda27
   languageName: node
   linkType: hard
 
@@ -20752,6 +20753,23 @@ __metadata:
     react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0
     react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0
   checksum: 81270e9d328e9b779515f42b6aa8dea2f21097f69fc776906d6b7d31ada03706d34408a6318baf59531f180402fbf74fdb9928ab65d53442a134b7ee5ba01265
+  languageName: node
+  linkType: hard
+
+"react-virtualized@npm:^9.22.3":
+  version: 9.22.3
+  resolution: "react-virtualized@npm:9.22.3"
+  dependencies:
+    "@babel/runtime": ^7.7.2
+    clsx: ^1.0.4
+    dom-helpers: ^5.1.3
+    loose-envify: ^1.4.0
+    prop-types: ^15.7.2
+    react-lifecycles-compat: ^3.0.4
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0-alpha
+    react-dom: ^15.3.0 || ^16.0.0-alpha
+  checksum: 5e3b566592293bc0057bc6be4f6ee29c58c8931421d2882a3ef45ca9b24c6f3ea78bbc5a182c2916af6520845e5a90f569b3a63c9b5e89428720913e6d6239cc
   languageName: node
   linkType: hard
 
@@ -21894,21 +21912,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selecto@npm:~1.17.0":
-  version: 1.17.0
-  resolution: "selecto@npm:1.17.0"
+"selecto@npm:~1.18.2":
+  version: 1.18.2
+  resolution: "selecto@npm:1.18.2"
   dependencies:
     "@daybrush/utils": ^1.7.1
     "@egjs/children-differ": ^1.0.1
-    "@scena/dragscroll": ^1.1.1
+    "@scena/dragscroll": ^1.2.1
     "@scena/event-emitter": ^1.0.5
     css-styled: ^1.0.0
     css-to-mat: ^1.0.3
     framework-utils: ^1.1.0
-    gesto: ^1.9.0
+    gesto: ^1.11.1
     keycon: ^1.2.0
     overlap-area: ^1.1.0
-  checksum: ad288ee4be3bc2610925010a5a215370e0664f2075d7157ef2c020d08ac7244e9d6818fccb67998dbd655be8c5b9f2912cac329b8a9961787c9e86873adba47d
+  checksum: 192221746c8688c11e20ea1fc5918de8674e5eeba2b6d3a15324fb6befec3005abfaa42625eda36095f79df5bc76036576e8aa9a29a0a05476e1528666809b1e
   languageName: node
   linkType: hard
 

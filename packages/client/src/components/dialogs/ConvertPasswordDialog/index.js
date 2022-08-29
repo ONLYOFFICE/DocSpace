@@ -114,7 +114,7 @@ const ConvertPasswordDialogComponent = (props) => {
             open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => {
-            editCompleteAction(actionId, fileInfo, false);
+            editCompleteAction(fileInfo);
           })
           .catch((err) => {
             if (err.indexOf("password") == -1) {
