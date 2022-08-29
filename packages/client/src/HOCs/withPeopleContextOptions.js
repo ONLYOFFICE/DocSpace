@@ -7,6 +7,12 @@ import config from "PACKAGE_FILE";
 import { Trans, useTranslation } from "react-i18next";
 import toastr from "client/toastr";
 
+const { proxyURL } = AppServerConfig;
+
+const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
+
+const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
+
 export default function withContextOptions(WrappedComponent) {
   const WithContextOptions = (props) => {
     const {
@@ -34,7 +40,13 @@ export default function withContextOptions(WrappedComponent) {
 
     const isRefetchPeople = true; //TODO: why always true?
 
-    const { t } = useTranslation(["People", "Common", "PeopleTranslations"]);
+    const { t } = useTranslation([
+      "People",
+      "Common",
+      "PeopleTranslations",
+      "DeleteProfileEverDialog",
+      "Translations",
+    ]);
 
     const onEmailSentClick = () => {
       window.open("mailto:" + email);
@@ -161,12 +173,33 @@ export default function withContextOptions(WrappedComponent) {
       //.finally(() => onLoading(false));
     };
 
+    const onDetailsClick = (e) => {
+      console.log(id);
+    };
+
+    const onResetAuth = (e) => {
+      console.log(id);
+    };
+
+    const toggleChangeNameDialog = (e) => {
+      console.log(id);
+    };
+
+    const toggleChangeOwnerDialog = (e) => {
+      console.log(id);
+    };
+
+    const onProfileClick = () => {
+      history.push(PROFILE_SELF_URL);
+    };
+
     const getUserContextOptions = () => {
       const contextMenu = options.map((option) => {
         switch (option) {
           case "send-email":
             return {
               key: option,
+              icon: "images/mail.svg",
               label: t("LblSendEmail"),
               "data-id": id,
               onClick: onEmailSentClick,
@@ -178,7 +211,9 @@ export default function withContextOptions(WrappedComponent) {
               "data-id": id,
               onClick: onSendMessageClick,
             };
-          case "separator":
+          case "separator-1":
+            return { key: option, isSeparator: true };
+          case "separator-2":
             return { key: option, isSeparator: true };
           case "edit":
             return {
@@ -187,20 +222,49 @@ export default function withContextOptions(WrappedComponent) {
               "data-id": id,
               onClick: onEditClick,
             };
-          case "change-password":
+
+          case "profile":
             return {
               key: option,
-              label: t("PeopleTranslations:PasswordChangeButton"),
+              icon: "/static/images/profile.react.svg",
+              label: t("Common:Profile"),
+              onClick: onProfileClick,
+              url: PROFILE_SELF_URL,
+            };
+
+          case "change-name":
+            return {
+              key: option,
+              icon: "images/pencil.react.svg",
+              label: t("PeopleTranslations:NameChangeButton"),
               "data-id": id,
-              onClick: toggleChangePasswordDialog,
+              onClick: toggleChangeNameDialog,
             };
           case "change-email":
             return {
               key: option,
+              icon: "images/change.mail.react.svg",
               label: t("PeopleTranslations:EmailChangeButton"),
               "data-id": id,
               onClick: toggleChangeEmailDialog,
             };
+          case "change-password":
+            return {
+              key: option,
+              icon: "images/change.security.react.svg",
+              label: t("PeopleTranslations:PasswordChangeButton"),
+              "data-id": id,
+              onClick: toggleChangePasswordDialog,
+            };
+          case "change-owner":
+            return {
+              key: option,
+              icon: "/static/images/refresh.react.svg",
+              label: t("Translations:OwnerChange"),
+              "data-id": id,
+              onClick: toggleChangeOwnerDialog,
+            };
+
           case "delete-self-profile":
             return {
               key: option,
@@ -211,6 +275,7 @@ export default function withContextOptions(WrappedComponent) {
           case "disable":
             return {
               key: option,
+              icon: "images/remove.react.svg",
               label: t("PeopleTranslations:DisableUserButton"),
               "data-id": id,
               onClick: onDisableClick,
@@ -218,6 +283,7 @@ export default function withContextOptions(WrappedComponent) {
           case "enable":
             return {
               key: option,
+              icon: "images/enable.react.svg",
               label: t("PeopleTranslations:EnableUserButton"),
               "data-id": id,
               onClick: onEnableClick,
@@ -225,6 +291,7 @@ export default function withContextOptions(WrappedComponent) {
           case "reassign-data":
             return {
               key: option,
+              icon: "images/ressing_data.react.svg",
               label: t("PeopleTranslations:ReassignData"),
               "data-id": id,
               onClick: onReassignDataClick,
@@ -232,23 +299,42 @@ export default function withContextOptions(WrappedComponent) {
           case "delete-personal-data":
             return {
               key: option,
+              icon: "images/del_data.react.svg",
               label: t("PeopleTranslations:RemoveData"),
               "data-id": id,
               onClick: onDeletePersonalDataClick,
             };
-          case "delete-profile":
+          case "delete-user":
             return {
               key: option,
-              label: t("PeopleTranslations:DeleteSelfProfile"),
+              icon: "images/trash.react.svg",
+              label: t("DeleteProfileEverDialog:DeleteUser"),
               "data-id": id,
               onClick: toggleDeleteProfileEverDialog,
+            };
+          case "details":
+            return {
+              key: option,
+              icon: "images/info.react.svg",
+              label: t("PeopleTranslations:Details"),
+              "data-id": id,
+              onClick: onDetailsClick,
             };
           case "invite-again":
             return {
               key: option,
+              icon: "/static/images/invite.again.react.svg",
               label: t("LblInviteAgain"),
               "data-id": id,
               onClick: onInviteAgainClick,
+            };
+          case "reset-auth":
+            return {
+              key: option,
+              icon: "images/restore.auth.react.svg",
+              label: t("PeopleTranslations:ResetAuth"),
+              "data-id": id,
+              onClick: onResetAuth,
             };
           default:
             break;

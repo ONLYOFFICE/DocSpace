@@ -195,11 +195,12 @@ class UsersStore {
         break;
       case "disabled":
         options.push("enable");
+        options.push("details");
         options.push("separator-1");
         options.push("reassign-data");
         options.push("delete-personal-data");
         options.push("separator-2");
-        options.push("delete-profile");
+        options.push("delete-user");
         break;
       case "pending":
         // options.push("edit");
