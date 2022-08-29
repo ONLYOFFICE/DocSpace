@@ -1,7 +1,6 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
-import stores from "../../../store/index.Files";
 import store from "client/store";
 import SelectFolderInput from "./index";
 import i18n from "./i18n";
@@ -16,7 +15,7 @@ class SelectFolderInputWrapper extends React.Component {
 
   render() {
     return (
-      <MobxProvider auth={authStore} {...stores}>
+      <MobxProvider {...store}>
         <I18nextProvider i18n={i18n}>
           <SelectFolderModalWrapper {...this.props} />
         </I18nextProvider>

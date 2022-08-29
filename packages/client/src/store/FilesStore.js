@@ -357,11 +357,11 @@ class FilesStore {
       getPortalCultures,
       getIsEncryptionSupport,
       getEncryptionKeys,
-      setModuleInfo,
+      //setModuleInfo,
     } = this.settingsStore;
     const { isDesktopClient } = settingsStore;
 
-    setModuleInfo(config.homepage, config.id);
+    //setModuleInfo(config.homepage, config.id);
 
     const requests = [];
 
@@ -387,6 +387,22 @@ class FilesStore {
     requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => (this.isInit = true));
+  };
+
+  reset = () => {
+    this.isInit = false;
+    this.isLoaded = false;
+    this.isLoading = false;
+    this.firstLoad = true;
+
+    this.alreadyFetchingRooms = false;
+
+    this.files = [];
+    this.folders = [];
+
+    this.selection = [];
+    this.bufferSelection = null;
+    this.selected = "close";
   };
 
   getOforms = async () => {
