@@ -291,40 +291,22 @@ const WhiteLabel = (props) => {
   };
 
   const onSave = () => {
-    if (logoUrlsChange) {
-      let fd = new FormData();
-      fd.append("logoText", logoTextWhiteLabel);
+    let fd = new FormData();
+    fd.append("logoText", logoTextWhiteLabel);
 
-      fd.append(`logo[${0}][key]`, 1);
-      fd.append(`logo[${0}][value]`, logoUrlsChange[0].src);
-
-      const data = new URLSearchParams(fd);
-
-      setWhiteLabelSettings(data).finally(() => {
-        getWhiteLabelLogoText();
-        getWhiteLabelLogoSizes();
-        getWhiteLabelLogoUrls();
-      });
+    for (let i = 0; i < 7; i++) {
+      fd.append(`logo[${i}][key]`, i + 1);
+      fd.append(`logo[${i}][value]`, logoUrlsWhiteLabel[i]);
     }
 
-    let elem = document.getElementById("canvas_logo_1");
+    const data = new URLSearchParams(fd);
+    console.log(data);
 
-    if (elem) {
-      let dataURL = elem.toDataURL();
-
-      let fd = new FormData();
-      fd.append("logoText", logoTextWhiteLabel);
-      fd.append(`logo[${0}][key]`, 1);
-      fd.append(`logo[${0}][value]`, dataURL);
-
-      const data = new URLSearchParams(fd);
-
-      setWhiteLabelSettings(data).finally(() => {
-        getWhiteLabelLogoText();
-        getWhiteLabelLogoSizes();
-        getWhiteLabelLogoUrls();
-      });
-    }
+    setWhiteLabelSettings(data).finally(() => {
+      getWhiteLabelLogoText();
+      getWhiteLabelLogoSizes();
+      getWhiteLabelLogoUrls();
+    });
   };
 
   const onChangeLogo = (e) => {
@@ -341,6 +323,10 @@ const WhiteLabel = (props) => {
         id,
         src: imgsrc,
       };
+
+      const newArr = logoUrlsWhiteLabel;
+      newArr[id - 1] = imgsrc;
+      setLogoUrlsWhiteLabel(newArr);
 
       setLogoUrlsChange([...logoUrlsChange, changeImg]);
     };
@@ -818,6 +804,7 @@ const WhiteLabel = (props) => {
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("RestoreDefaultButton")}
           displaySettings={true}
+          showReminder={true}
         />
       </div>
     </StyledComponent>
