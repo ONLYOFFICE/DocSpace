@@ -22,6 +22,10 @@ class PaymentStore {
   accountLink = null;
   isLoading = false;
   totalPrice = null;
+  managersCount = 1;
+  maxManagersCount = 1000;
+  maxSliderManagersNumber = 999;
+  minManagersCount = 1;
 
   constructor() {
     makeAutoObservable(this);
@@ -87,18 +91,14 @@ class PaymentStore {
 
   setPaymentLink = async (link) => {
     this.paymentLink = link;
-    // try {
-    //   const res = await api.portal.getPaymentLink(adminCount, currency);
-    //   console.log("getPaymentLink", res);
-    //   if (res) this.paymentLink = res;
-    // } catch (e) {
-    //   toastr.error(e);
-    // }
   };
   updatePayment = async (adminCount) => {
     try {
       const res = await api.portal.updatePayment(adminCount);
       console.log("updatePayment", res);
+      if (res !== true) {
+        toastr.error("error");
+      }
     } catch (e) {
       toastr.error(e);
     }
@@ -111,6 +111,18 @@ class PaymentStore {
   setTotalPrice = (price) => {
     if (price > 0 && price !== this.totalPrice) this.totalPrice = price;
   };
+
+  setManagersCount = (managers) => {
+    this.managersCount = managers;
+  };
+
+  setMaxManagersCount = (managers) => {
+    this.maxManagersCount = managers;
+  };
+
+  get isNeedRequest() {
+    return this.managersCount >= this.maxManagersCount;
+  }
 }
 
 export default PaymentStore;

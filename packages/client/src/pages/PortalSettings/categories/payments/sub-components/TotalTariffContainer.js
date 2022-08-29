@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
-import Button from "@docspace/components/button";
 import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledBody = styled.div`
@@ -34,8 +33,10 @@ const StyledBody = styled.div`
     min-height: 65px;
     margin-top: 16px;
     margin-bottom: 16px;
+
     .payment_price_description,
-    .payment_price_price-text {
+    .payment_price_price-text,
+    .total-tariff_description {
       margin-bottom: 0px;
     }
     .payment_price_description {
@@ -55,22 +56,14 @@ const StyledBody = styled.div`
 
 const TotalTariffContainer = ({
   t,
-  usersCount,
-  maxUsersCount,
-  maxSliderNumber,
+  maxSliderManagersNumber,
   pricePerManager,
   isDisabled,
   theme,
-  onClick,
-  isLoading,
-  isAlreadyPaid,
-  countAdmin,
   totalPrice,
+  isNeedRequest,
 }) => {
-  useEffect(() => {}, []);
-
   const color = isDisabled ? { color: theme.text.disableColor } : {};
-  const isNeedRequest = usersCount >= maxUsersCount;
 
   return (
     <StyledBody>
@@ -98,7 +91,7 @@ const TotalTariffContainer = ({
             className="total-tariff_description"
           >
             <Trans t={t} i18nKey="BusinessRequestDescription" ns="Payments">
-              {{ peopleNumber: maxSliderNumber }}
+              {{ peopleNumber: maxSliderManagersNumber }}
             </Trans>
           </Text>
         ) : (
@@ -126,18 +119,6 @@ const TotalTariffContainer = ({
           </>
         )}
       </div>
-      <Button
-        label={isNeedRequest ? t("SendRequest") : t("UpgradeNow")}
-        size={"medium"}
-        primary
-        isDisabled={
-          (!isNeedRequest && isAlreadyPaid && usersCount === countAdmin) ||
-          isLoading ||
-          isDisabled
-        }
-        onClick={onClick}
-        isLoading={isLoading}
-      />
     </StyledBody>
   );
 };
@@ -145,6 +126,18 @@ const TotalTariffContainer = ({
 export default inject(({ auth, payments }) => {
   const { pricePerManager } = auth;
   const { theme } = auth.settingsStore;
-  const { isLoading, totalPrice } = payments;
-  return { theme, pricePerManager, totalPrice, isLoading };
+  const {
+    isLoading,
+    totalPrice,
+    isNeedRequest,
+    maxSliderManagersNumber,
+  } = payments;
+  return {
+    theme,
+    pricePerManager,
+    totalPrice,
+    isLoading,
+    isNeedRequest,
+    maxSliderManagersNumber,
+  };
 })(observer(TotalTariffContainer));

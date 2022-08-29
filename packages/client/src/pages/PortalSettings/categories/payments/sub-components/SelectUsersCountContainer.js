@@ -97,23 +97,89 @@ const StyledBody = styled.div`
 `;
 
 const min = 0;
+const step = 1;
+
 const SelectUsersCountContainer = ({
-  maxUsersCount,
-  step,
-  maxSliderNumber,
-  usersCount,
-  onSliderChange,
-  onClickOperations,
-  onChangeNumber,
+  maxManagersCount,
+  managersCount,
+  setShoppingLink,
   theme,
   isDisabled,
-  isAlreadyPaid,
   isLoading,
+  minManagersCount,
+  isAlreadyPaid,
+  maxSliderManagersNumber,
+  setManagersCount,
+  setTotalPrice,
+  pricePerManager,
 }) => {
   const { t } = useTranslation("Payments");
 
+  const onSliderChange = (e) => {
+    const count = parseFloat(e.target.value);
+    if (count > minManagersCount) {
+      setShoppingLink(count);
+      setManagersCount(count);
+      setTotalPrice(count * pricePerManager);
+    } else {
+      setShoppingLink(minManagersCount);
+      setManagersCount(minManagersCount);
+      setTotalPrice(minManagersCount * pricePerManager);
+    }
+  };
+
+  const onClickOperations = (e) => {
+    const operation = e.currentTarget.dataset.operation;
+
+    let value = +managersCount;
+
+    if (operation === "plus") {
+      if (managersCount < maxManagersCount) {
+        value += step;
+      }
+    }
+    if (operation === "minus") {
+      if (managersCount >= maxManagersCount) {
+        value = maxSliderManagersNumber;
+      } else {
+        if (managersCount > minManagersCount) {
+          value -= step;
+        }
+      }
+    }
+
+    if (value !== +managersCount) {
+      setShoppingLink(value);
+      setManagersCount(value);
+      setTotalPrice(value * pricePerManager);
+    }
+  };
+  const onChangeNumber = (e) => {
+    const { target } = e;
+    let value = target.value;
+
+    if (managersCount >= maxManagersCount) {
+      value = value.slice(0, -1);
+    }
+
+    const numberValue = +value;
+
+    if (isNaN(numberValue)) return;
+
+    if (numberValue === 0) {
+      setManagersCount(minManagersCount);
+      return;
+    }
+
+    setShoppingLink(numberValue);
+    setManagersCount(numberValue);
+    setTotalPrice(numberValue * pricePerManager);
+  };
+
   const value =
-    usersCount >= maxUsersCount ? maxSliderNumber + "+" : usersCount + "";
+    managersCount >= maxManagersCount
+      ? maxSliderManagersNumber + "+"
+      : managersCount + "";
 
   const isUpdatingTariff = isLoading && isAlreadyPaid;
 
@@ -153,22 +219,44 @@ const SelectUsersCountContainer = ({
         isReadOnly={isDisabled || isUpdatingTariff}
         type="range"
         min={min}
-        max={maxUsersCount.toString()}
+        max={maxManagersCount.toString()}
         step={step}
         withPouring
-        value={usersCount}
+        value={managersCount}
         {...onChangeSlideProp}
       />
       <div className="slider-track">
         <Text className="slider-track-value_min">{min}</Text>
-        <Text className="slider-track-value_max">{maxSliderNumber + "+"}</Text>
+        <Text className="slider-track-value_max">
+          {maxSliderManagersNumber + "+"}
+        </Text>
       </div>
     </StyledBody>
   );
 };
 
 export default inject(({ auth, payments }) => {
+  const { pricePerManager } = auth;
   const { theme } = auth.settingsStore;
-  const { isLoading } = payments;
-  return { theme, isLoading };
+  const {
+    isLoading,
+    minManagersCount,
+    managersCount,
+    maxManagersCount,
+    maxSliderManagersNumber,
+    setManagersCount,
+    setTotalPrice,
+  } = payments;
+
+  return {
+    theme,
+    isLoading,
+    minManagersCount,
+    managersCount,
+    maxManagersCount,
+    maxSliderManagersNumber,
+    setManagersCount,
+    setTotalPrice,
+    pricePerManager,
+  };
 })(observer(SelectUsersCountContainer));
