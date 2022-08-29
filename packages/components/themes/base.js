@@ -2338,6 +2338,9 @@ const Base = {
       gridColor: "#333333",
       deleteButton: {
         background: "#f8f9f9",
+        hoverBackground: "#f3f4f4",
+        borderColor: "#f8f9f9",
+        hoverBorderColor: "#f3f4f4",
         color: "#555f65",
         iconColor: "#657077",
       },

@@ -2346,6 +2346,9 @@ const Dark = {
       gridColor: "#333333",
       deleteButton: {
         background: "#292929",
+        hoverBackground: "#333333",
+        borderColor: "#292929",
+        hoverBorderColor: "#fafafa",
         color: "#858585",
         iconColor: "#e8e8e9",
       },
