@@ -145,10 +145,13 @@ export default function withContent(WrappedContent) {
 
     const {
       selection,
-      setSelection,
+      bufferSelection,
+      setBufferSelection,
       selectUser,
       deselectUser,
     } = selectionStore;
+
+    console.log(selection);
 
     return {
       theme: auth.settingsStore.theme,
@@ -157,9 +160,10 @@ export default function withContent(WrappedContent) {
       selectGroup,
       fetchProfile: getTargetUser,
       checked: selection.some((el) => el.id === item.id),
+      isActive: bufferSelection?.id === item?.id,
+      setBufferSelection,
       selectUser,
       deselectUser,
-      setSelection,
     };
   })(observer(WithContent));
 }

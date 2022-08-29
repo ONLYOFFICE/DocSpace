@@ -95,21 +95,15 @@ const SimpleUserRow = (props) => {
     checkedProps,
     onContentRowSelect,
     element,
-    setSelection,
+    setBufferSelection,
+    isActive,
   } = props;
-
-  const [isActive, setIsActive] = React.useState(false);
 
   const isChecked = checkedProps.checked;
 
   const userContextClick = React.useCallback(() => {
-    setIsActive(true);
-    !isChecked && setSelection([]);
-  }, [isChecked, setSelection]);
-
-  const onHideContextMenu = React.useCallback(() => {
-    setIsActive(false);
-  }, []);
+    setBufferSelection(item);
+  }, [item, setBufferSelection]);
 
   return (
     <StyledWrapper
@@ -127,7 +121,6 @@ const SimpleUserRow = (props) => {
           sectionWidth={sectionWidth}
           mode={"modern"}
           className={"user-row"}
-          rowContextClose={onHideContextMenu}
           rowContextClick={userContextClick}
         >
           <UserContent {...props} />

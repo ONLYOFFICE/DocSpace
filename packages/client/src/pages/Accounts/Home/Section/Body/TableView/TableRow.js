@@ -134,10 +134,9 @@ const PeopleTableRow = (props) => {
     theme,
     changeUserType,
     userId,
-    setSelection,
+    setBufferSelection,
+    isActive,
   } = props;
-
-  const [isActive, setIsActive] = React.useState(false);
 
   const {
     displayName,
@@ -234,13 +233,8 @@ const PeopleTableRow = (props) => {
   const isChecked = checkedProps.checked;
 
   const userContextClick = React.useCallback(() => {
-    setIsActive(true);
-    !isChecked && setSelection([]);
-  }, [isChecked, setSelection]);
-
-  const onHideContextMenu = React.useCallback(() => {
-    setIsActive(false);
-  }, []);
+    setBufferSelection(item);
+  }, [item, setBufferSelection]);
 
   return (
     <StyledWrapper
@@ -254,7 +248,6 @@ const PeopleTableRow = (props) => {
         sideInfoColor={sideInfoColor}
         checked={isChecked}
         fileContextClick={userContextClick}
-        onHideContextMenu={onHideContextMenu}
         isActive={isActive}
         {...contextOptionsProps}
       >

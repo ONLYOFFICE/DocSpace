@@ -9,14 +9,17 @@ const { auth: authStore } = store;
 
 class SelectionStore {
   selection = [];
+  bufferSelection = null;
   selected = "none";
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
     makeObservable(this, {
       selection: observable,
+      bufferSelection: observable,
       selected: observable,
       selectUser: action,
+      setBufferSelection: action,
       deselectUser: action,
       selectAll: action,
       setSelection: action,
@@ -41,10 +44,21 @@ class SelectionStore {
 
   setSelection = (selection) => {
     this.selection = selection;
+    if (selection?.length && !this.selection.length) {
+      this.bufferSelection = null;
+    }
+  };
+
+  setBufferSelection = (bufferSelection) => {
+    this.bufferSelection = bufferSelection;
+    this.setSelection([]);
   };
 
   selectUser = (user) => {
-    return this.selection.push(user);
+    if (!this.selection.length) {
+      this.bufferSelection = null;
+    }
+    this.selection.push(user);
   };
 
   deselectUser = (user) => {
@@ -53,6 +67,7 @@ class SelectionStore {
   };
 
   selectAll = () => {
+    this.bufferSelection = null;
     const list = this.peopleStore.usersStore.peopleList;
     this.setSelection(list);
   };
@@ -62,6 +77,7 @@ class SelectionStore {
   };
 
   selectByStatus = (status) => {
+    this.bufferSelection = null;
     const list = this.peopleStore.usersStore.peopleList.filter(
       (u) => u.status === status
     );
@@ -98,6 +114,7 @@ class SelectionStore {
   };
 
   setSelected = (selected) => {
+    this.bufferSelection = null;
     this.selected = selected;
     const list = this.peopleStore.usersStore.peopleList;
     this.setSelection(this.getUsersBySelected(list, selected));
