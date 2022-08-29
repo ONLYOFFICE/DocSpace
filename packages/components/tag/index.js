@@ -17,6 +17,7 @@ const Tag = ({
   label,
   isNewTag,
   isDisabled,
+  isDefault,
   onDelete,
   onClick,
   advancedOptions,
@@ -65,6 +66,7 @@ const Tag = ({
           ref={tagRef}
           onClick={toggleDropdown}
           isDisabled={isDisabled}
+          isDefault={isDefault}
         >
           <Text className={"tag-text"} font-size={"13px"} noSelect>
             ...
@@ -104,6 +106,7 @@ const Tag = ({
           onClick={onClickAction}
           isNewTag={isNewTag}
           isDisabled={isDisabled}
+          isDefault={isDefault}
           tagMaxWidth={tagMaxWidth}
           data-tag={label}
           id={id}
