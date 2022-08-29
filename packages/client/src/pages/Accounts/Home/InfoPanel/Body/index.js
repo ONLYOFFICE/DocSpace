@@ -19,6 +19,7 @@ const InfoPanelBodyContent = ({
   changeUserType,
   userId,
 }) => {
+  console.log(selection);
   return (
     <StyledInfoBody>
       {selection.length === 0 ? (
@@ -42,12 +43,18 @@ const InfoPanelBodyContent = ({
 InfoPanelBodyContent.defaultProps = { theme: Base };
 
 export default inject(({ auth, peopleStore }) => {
-  const { selection } = peopleStore.selectionStore;
+  const { selection, bufferSelection } = peopleStore.selectionStore;
   const { changeType: changeUserType } = peopleStore;
 
   const { isOwner, isAdmin, id: userId } = auth.userStore.user;
 
-  return { selection, isOwner, isAdmin, changeUserType, userId };
+  const selectedUsers = selection.length
+    ? [...selection]
+    : bufferSelection
+    ? [bufferSelection]
+    : [];
+
+  return { selection: selectedUsers, isOwner, isAdmin, changeUserType, userId };
 })(
   withRouter(
     withTranslation([
