@@ -2,76 +2,48 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import Button from "@docspace/components/button";
 import AmazonSettings from "../../../consumer-storage-settings/AmazonSettings";
+import { inject, observer } from "mobx-react";
+import { getFromLocalStorage } from "../../../../../../utils";
+import { ThirdPartyStorages } from "@docspace/common/constants";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { selectedStorage } = this.props;
+    const {
+      selectedStorage,
+      setCompletedFormFields,
+      storageRegions,
+    } = this.props;
 
-    const formSettings = {};
+    const basicValues = AmazonSettings.formNames(storageRegions[0].systemName);
 
-    this.namesArray = AmazonSettings.formNames();
-    this.namesArray.forEach((elem) => (formSettings[elem] = ""));
+    const moduleValues = getFromLocalStorage(
+      "LocalCopyThirdPartyStorageValues"
+    );
+    const moduleType =
+      getFromLocalStorage("LocalCopyStorage") === ThirdPartyStorages.AmazonId;
 
-    this.requiredFields = AmazonSettings.requiredFormsName();
-
-    this.state = {
-      formSettings,
-      formErrors: {},
-    };
+    setCompletedFormFields(
+      moduleType && moduleValues ? moduleValues : basicValues
+    );
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }
 
-  onChange = (event) => {
-    const { formSettings } = this.state;
-    const { target } = event;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({ formSettings: { ...formSettings, [name]: value } });
-  };
-
-  onMakeCopy = () => {
-    const { formSettings } = this.state;
-    const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
-
-    const requiredSettings = {};
-    this.requiredFields.forEach(
-      (el) => (requiredSettings[el] = formSettings[el])
-    );
-
-    const isInvalid = isInvalidForm(requiredSettings);
-
-    const hasError = isInvalid[0];
-    const errors = isInvalid[1];
-
-    if (hasError) {
-      this.setState({ formErrors: errors });
-      return;
-    }
-
-    const arraySettings = Object.entries(formSettings);
-
-    onMakeCopyIntoStorage(arraySettings);
-    this.setState({ formErrors: {} });
-  };
   render() {
-    const { formSettings, formErrors } = this.state;
     const {
       t,
       isLoadingData,
       isMaxProgress,
       selectedStorage,
       buttonSize,
+      onMakeCopyIntoStorage,
+      isValidForm,
     } = this.props;
 
     return (
       <>
         <AmazonSettings
-          formSettings={formSettings}
-          onChange={this.onChange}
           isLoadingData={isLoadingData}
-          isError={formErrors}
           selectedStorage={selectedStorage}
           t={t}
         />
@@ -79,22 +51,22 @@ class AmazonStorage extends React.Component {
         <div className="manual-backup_buttons">
           <Button
             label={t("Common:Duplicate")}
-            onClick={this.onMakeCopy}
+            onClick={onMakeCopyIntoStorage}
             primary
-            isDisabled={!isMaxProgress || this.isDisabled}
+            isDisabled={!isValidForm || !isMaxProgress || this.isDisabled}
             size={buttonSize}
           />
-          {!isMaxProgress && (
-            <Button
-              label={t("Common:CopyOperation") + "..."}
-              isDisabled={true}
-              size={buttonSize}
-              style={{ marginLeft: "8px" }}
-            />
-          )}
         </div>
       </>
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(AmazonStorage);
+export default inject(({ backup }) => {
+  const { setCompletedFormFields, storageRegions, isValidForm } = backup;
+
+  return {
+    setCompletedFormFields,
+    storageRegions,
+    isValidForm,
+  };
+})(observer(withTranslation(["Settings", "Common"])(AmazonStorage)));
