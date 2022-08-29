@@ -201,3 +201,7 @@ export function updatePayment(adminCount) {
     },
   });
 }
+
+export function getCurrencies() {
+  return request({ method: "get", url: "/portal/payment/currencies" });
+}

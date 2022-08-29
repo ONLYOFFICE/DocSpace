@@ -34,6 +34,7 @@ class AuthStore {
   portalQuota = {};
   portalTariff = {};
   pricePerManager = null;
+  currencies = [];
 
   constructor() {
     this.userStore = new UserStore();
@@ -62,7 +63,8 @@ class AuthStore {
       requests.push(
         this.setPortalQuota(),
         this.setPortalTariff(),
-        this.getPaymentPrices()
+        this.getPaymentPrices(),
+        this.setCurrencies()
       );
 
       !this.settingsStore.passwordSettings &&
@@ -329,6 +331,11 @@ class AuthStore {
   setPortalTariff = async () => {
     const res = await api.portal.getPortalTariff();
     if (res) this.portalTariff = res;
+  };
+
+  setCurrencies = async () => {
+    const res = await api.portal.getCurrencies();
+    if (res) this.currencies = res;
   };
 }
 

@@ -62,6 +62,7 @@ const TotalTariffContainer = ({
   theme,
   totalPrice,
   isNeedRequest,
+  isoCurrencySymbol,
 }) => {
   const color = isDisabled ? { color: theme.text.disableColor } : {};
 
@@ -69,7 +70,7 @@ const TotalTariffContainer = ({
     <StyledBody>
       <div className="payment_price_user">
         <Text fontSize="16px" textAlign="center" isBold noSelect {...color}>
-          {pricePerManager}
+          {`${isoCurrencySymbol}${pricePerManager}`}
         </Text>
         <Text
           fontSize="11px"
@@ -104,7 +105,7 @@ const TotalTariffContainer = ({
               noSelect
               {...color}
             >
-              {totalPrice}
+              {`${isoCurrencySymbol}${totalPrice}`}
             </Text>
             <Text
               fontSize="16px"
@@ -124,7 +125,7 @@ const TotalTariffContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { pricePerManager } = auth;
+  const { pricePerManager, currencies } = auth;
   const { theme } = auth.settingsStore;
   const {
     isLoading,
@@ -132,6 +133,7 @@ export default inject(({ auth, payments }) => {
     isNeedRequest,
     maxSliderManagersNumber,
   } = payments;
+
   return {
     theme,
     pricePerManager,
@@ -139,5 +141,6 @@ export default inject(({ auth, payments }) => {
     isLoading,
     isNeedRequest,
     maxSliderManagersNumber,
+    isoCurrencySymbol: currencies[0]?.isoCurrencySymbol,
   };
 })(observer(TotalTariffContainer));

@@ -25,6 +25,7 @@ const ArticlePaymentAlert = ({
   isFreeTariff,
   theme,
   isGracePeriod,
+  isoCurrencySymbol,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -35,6 +36,8 @@ const ArticlePaymentAlert = ({
     );
     history.push(paymentPageUrl);
   };
+
+  const convertedPrice = `${isoCurrencySymbol}${pricePerManager}`;
 
   return !ready ? (
     <Loaders.Rectangle width="210px" height="88px" />
@@ -54,7 +57,7 @@ const ArticlePaymentAlert = ({
         <Text noSelect fontSize={"12px"}>
           {isFreeTariff ? (
             <Trans t={t} i18nKey="StartPrice" ns="Payments">
-              {{ price: pricePerManager }}
+              {{ price: convertedPrice }}
             </Trans>
           ) : (
             t("PayBeforeTheEndGracePeriod")
@@ -69,9 +72,13 @@ const ArticlePaymentAlert = ({
 
 export default withRouter(
   inject(({ auth }) => {
-    const { pricePerManager } = auth;
+    const { pricePerManager, currencies } = auth;
     const { theme } = auth.settingsStore;
 
-    return { pricePerManager, theme };
+    return {
+      pricePerManager,
+      theme,
+      isoCurrencySymbol: currencies[0]?.isoCurrencySymbol,
+    };
   })(observer(ArticlePaymentAlert))
 );

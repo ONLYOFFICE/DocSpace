@@ -66,6 +66,9 @@ const PaymentsPage = ({
   isGracePeriod,
   theme,
   setPaymentAccount,
+  currencies,
+  setCurrencies,
+  isoCurrencySymbol,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -98,6 +101,7 @@ const PaymentsPage = ({
 
       if (Object.keys(portalQuota).length === 0)
         requests.push(setPortalQuota());
+
       if (!pricePerManager) requests.push(getPaymentPrices());
 
       if (Object.keys(portalTariff).length === 0) {
@@ -106,6 +110,10 @@ const PaymentsPage = ({
 
       if (portalTariff && portalTariff.state !== TariffState.Trial)
         requests.push(setPaymentAccount());
+
+      if (currencies.length === 0) {
+        requests.push(setCurrencies());
+      }
 
       try {
         await Promise.all(requests);
@@ -137,6 +145,8 @@ const PaymentsPage = ({
       </>
     );
   };
+
+  const convertedPrice = `${isoCurrencySymbol}${pricePerManager}`;
 
   return isInitialLoading ? (
     <Loaders.PaymentsLoader />
@@ -191,7 +201,7 @@ const PaymentsPage = ({
           className="payment-info_managers-price"
         >
           <Trans t={t} i18nKey="StartPrice" ns="Payments">
-            {{ price: pricePerManager }}
+            {{ price: convertedPrice }}
           </Trans>
         </Text>
 
@@ -222,6 +232,8 @@ export default inject(({ auth, payments }) => {
     portalQuota,
     isFreeTariff,
     isGracePeriod,
+    currencies,
+    setCurrencies,
   } = auth;
 
   const { organizationName, theme } = auth.settingsStore;
@@ -243,5 +255,8 @@ export default inject(({ auth, payments }) => {
     portalQuota,
     theme,
     setPaymentAccount,
+    currencies,
+    setCurrencies,
+    isoCurrencySymbol: currencies[0]?.isoCurrencySymbol,
   };
 })(withRouter(observer(PaymentsPage)));
