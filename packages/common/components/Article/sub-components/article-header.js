@@ -14,10 +14,6 @@ import {
   StyledMenuIcon,
 } from "../styled-article";
 
-const StyledLoader = styled.div`
-  padding-top: 6px;
-`;
-
 const ArticleHeader = ({
   showText,
   children,
@@ -63,9 +59,7 @@ const ArticleHeader = ({
       )}
 
       {!isTabletView && showLoader ? (
-        <StyledLoader>
-          <Loaders.ArticleHeader height="24px" width="211px" />
-        </StyledLoader>
+        <Loaders.ArticleHeader height="24px" width="211px" />
       ) : (
         <StyledHeading showText={showText} size="large">
           <img
