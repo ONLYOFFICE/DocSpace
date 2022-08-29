@@ -266,18 +266,29 @@ class AuthStore {
     this.providers = providers;
   };
 
-  getOforms = () => {
+  getOforms = (filter) => {
     const culture =
       this.userStore.user.cultureName || this.settingsStore.culture;
 
+    const formName = "&fields[0]=name_form";
+    const updatedAt = "&fields[1]=updatedAt";
+    const size = "&fields[2]=file_size";
+    const filePages = "&fields[3]=file_pages";
+    const cardPrewiew = "&populate[card_prewiew][fields][4]=url";
+    const templateImage = "&populate[template_image][fields][5]=formats";
+
+    const fields = `${formName}${updatedAt}${size}${filePages}${cardPrewiew}${templateImage}`;
+
+    const params = `?${filter.toUrlParams()}${fields}`;
+
     const promise = new Promise(async (resolve, reject) => {
       let oforms = await api.settings.getOforms(
-        `${this.settingsStore.urlOforms}${culture}`
+        `${this.settingsStore.urlOforms}${params}&locale=${culture}`
       );
 
       if (!oforms?.data?.data.length) {
         oforms = await api.settings.getOforms(
-          `${this.settingsStore.urlOforms}en`
+          `${this.settingsStore.urlOforms}${params}&locale=en`
         );
       }
 

@@ -24,6 +24,8 @@ class SelectFolderInput extends React.PureComponent {
       resultingFolderTree: [],
       baseId: "",
     };
+
+    this._isMount = false;
   }
 
   setBaseInfo = async () => {
@@ -52,20 +54,22 @@ class SelectFolderInput extends React.PureComponent {
       );
     } catch (e) {
       toastr.error(e);
-      this.setState({
-        isLoading: false,
-      });
+      this._isMount &&
+        this.setState({
+          isLoading: false,
+        });
       return;
     }
 
-    this.setState({
-      isPathError: false,
-      resultingFolderTree,
-      baseId: resultingId,
-      baseFolderPath: "",
-      newFolderPath: "",
-      ...(withoutBasicSelection && { isLoading: false }),
-    });
+    this._isMount &&
+      this.setState({
+        isPathError: false,
+        resultingFolderTree,
+        baseId: resultingId,
+        baseFolderPath: "",
+        newFolderPath: "",
+        ...(withoutBasicSelection && { isLoading: false }),
+      });
   };
 
   componentDidMount() {
@@ -140,7 +144,7 @@ class SelectFolderInput extends React.PureComponent {
   };
   onSetNewFolderPath = async (folderId) => {
     let timerId = setTimeout(() => {
-      this.setState({ isLoading: true });
+      this._isMount && this.setState({ isLoading: true });
     }, 500);
     try {
       const convertFoldersArray = await this.setFolderPath(folderId);
@@ -157,10 +161,11 @@ class SelectFolderInput extends React.PureComponent {
       toastr.error(e);
       clearTimeout(timerId);
       timerId = null;
-      this.setState({
-        isLoading: false,
-        isPathError: true,
-      });
+      this._isMount &&
+        this.setState({
+          isLoading: false,
+          isPathError: true,
+        });
     }
   };
   onSetBaseFolderPath = async (folderId) => {
@@ -175,14 +180,16 @@ class SelectFolderInput extends React.PureComponent {
         });
     } catch (e) {
       toastr.error(e);
-      this.setState({
-        isLoading: false,
-        isPathError: true,
-      });
+      this._isMount &&
+        this.setState({
+          isLoading: false,
+          isPathError: true,
+        });
     }
   };
   onSelectFolder = (folderId) => {
     const { onSelectFolder: onSelect } = this.props;
+    if (!this._isMount) return;
     this.onSetFolderInfo(folderId);
     onSelect && onSelect(folderId);
   };

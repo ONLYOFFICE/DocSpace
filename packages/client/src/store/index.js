@@ -29,6 +29,9 @@ import HotkeyStore from "./HotkeyStore";
 import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
+import OformsStore from "./OformsStore";
+
+const oformsStore = new OformsStore(authStore);
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();
@@ -148,6 +151,7 @@ const store = {
   contextOptionsStore,
   hotkeyStore,
   selectFileDialogStore,
+  oformsStore,
 
   tagsStore,
 

@@ -158,6 +158,8 @@
   "SpacesInLocalPart": "Имя почтового ящика содержит пробелы",
   "SwitchToThumbnails": "Переключиться на режим миниатюр",
   "SwitchViewToCompact": "Переключиться на компактный вид",
+  "Tags": "Тэги",
+  "NoTags": "Нет тэгов",
   "Title": "Заголовок",
   "TitleSelectFile": "Выделить",
   "Type": "Тип",
