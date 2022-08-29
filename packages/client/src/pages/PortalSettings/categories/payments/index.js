@@ -182,7 +182,7 @@ const PaymentsPage = ({
       {isGracePeriod && (
         <Text noSelect fontSize={"14"}>
           <Trans t={t} i18nKey="GracePeriodActivatedDescription" ns="Payments">
-            {{ fromDate, byDate }}
+            {{ date: { fromDate, byDate } }}
           </Trans>
         </Text>
       )}
