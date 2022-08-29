@@ -53,8 +53,6 @@
   "DeactivateOrDeletePortal": "Deaktivovat nebo odstranit portál.",
   "Disabled": "Deaktivováno",
   "DocumentsAdministratorsCan": "Správci dokumentů mohou propojit účty Dropbox, Box a další účty se společnými dokumenty a nastavit přístupová práva v této sekci",
-  "DocumentsModule": "Modul Dokumenty",
-  "DocumentsModuleDescription": "Záloha bude uložena ve složce Společné dokumenty.",
   "DownloadCopy": "Stáhnout kopii",
   "Employees": "uživatelé",
   "EmptyBackupList": "Zatím nebyly vytvořeny žádné zálohy. Vytvořte jednu nebo více záloh, aby byly zobrazeny v seznamu.",

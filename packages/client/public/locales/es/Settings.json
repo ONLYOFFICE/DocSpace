@@ -56,8 +56,6 @@
   "Disabled": "Deshabilitado",
   "DownloadReportBtn": "Descargar y abrir informe",
   "DocumentsAdministratorsCan": "Los administradores de Documentos pueden conectar Dropbox, Box y otras cuentas a los Documentos Comunes y configurar los derechos de acceso en esta sección",
-  "DocumentsModule": "Documentos del módulo",
-  "DocumentsModuleDescription": "La copia de seguridad se guardará en la carpeta Documentos comunes.",
   "DownloadCopy": "Descargar la copia",
   "Employees": "usuarios",
   "EmptyBackupList": "No hay ningunas copias de seguridad creadas todavía. Cree por lo menos una copia para que se muestre en esta lista.",

@@ -157,6 +157,7 @@ public class AbstractDao
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             result = await Query(filesDbContext.ThirdpartyIdMapping)
+                .AsNoTracking()
                 .Where(r => r.HashId == id.ToString())
                 .Select(r => r.Id)
                 .FirstOrDefaultAsync();
@@ -173,6 +174,7 @@ public class AbstractDao
 
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             await filesDbContext.AddOrUpdateAsync(r => r.ThirdpartyIdMapping, newItem);
+            await filesDbContext.SaveChangesAsync();
         }
 
         return result;

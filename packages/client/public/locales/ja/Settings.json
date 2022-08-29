@@ -51,8 +51,6 @@
   "Disabled": "無効",
   "DownloadReportBtn": "レポートをダウンロードして、表示します。",
   "DocumentsAdministratorsCan": "ドキュメントの管理者は、DropboxやBoxなどのアカウントをコモン・ドキュメントにリンクし、このセクションでアクセス権を設定することができます。",
-  "DocumentsModule": "「ドキュメント」モジュール",
-  "DocumentsModuleDescription": "バックアップは「共通ドキュメント」フォルダに保存されます。",
   "DownloadCopy": "コピーを保存",
   "Employees": "ユーザー",
   "EmptyBackupList": "バックアップはまだ作成されていません。バックアップを作成すると、このリストに表示されるようになります。",

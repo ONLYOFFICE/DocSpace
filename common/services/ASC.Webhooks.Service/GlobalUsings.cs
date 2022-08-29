@@ -37,9 +37,13 @@ global using ASC.Common.Log;
 global using ASC.Common.Utils;
 global using ASC.Web.Webhooks;
 global using ASC.Webhooks.Core;
+global using ASC.Webhooks.Service;
 global using ASC.Webhooks.Service.Log;
 global using ASC.Webhooks.Service.Services;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;
+
+global using Polly;
+global using Polly.Extensions.Http;

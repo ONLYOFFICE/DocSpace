@@ -52,8 +52,6 @@
   "Disabled": "Desabilitado",
   "DownloadReportBtn": "Baixar e abrir relatório",
   "DocumentsAdministratorsCan": "Os administradores de documentos podem vincular Dropbox, Box e outras contas a Documentos Comuns e configurar direitos de acesso nesta seção",
-  "DocumentsModule": "Módulo Documentos",
-  "DocumentsModuleDescription": "O backup será salvo na pasta de Documentos comuns.",
   "DownloadCopy": "Baixe a cópia",
   "Employees": "Usuários",
   "EmptyBackupList": "Nenhum backup foi criado ainda, crie um ou mais backups para eles aparecerem nesta lista.",

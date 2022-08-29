@@ -54,8 +54,6 @@
   "Disabled": "Đã vô hiệu hóa",
   "DownloadReportBtn": "Tải về và mở báo cáo",
   "DocumentsAdministratorsCan": "Người quản trị tài liệu có thể liên kết Dropbox, Box và các tài khoản khác với Tài liệu chung và thiết lập quyền truy cập trong phần này",
-  "DocumentsModule": "Mô-đun tài liệu",
-  "DocumentsModuleDescription": "Bản sao lưu sẽ được lưu trong thư mục Common documents - các tài liệu chung.",
   "DownloadCopy": "Tải xuống bản sao",
   "Employees": "người dùng",
   "EmptyBackupList": "Chưa có bản sao lưu nào được tạo. Tạo một hoặc nhiều bản sao lưu để chúng xuất hiện trong danh sách này.",

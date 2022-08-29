@@ -52,8 +52,6 @@
   "Disabled": "Désactivé",
   "DownloadReportBtn": "Télécharger et ouvrir le rapport",
   "DocumentsAdministratorsCan": "Les administrateurs de documents peuvent connecter Dropbox, Box et d'autres comptes aux documents communs et définir les droits d'accès dans cette section.",
-  "DocumentsModule": "Module Documents",
-  "DocumentsModuleDescription": "La sauvegarde sera enregistrée dans le dossier des documents communs.",
   "DownloadCopy": "Télécharger la copie",
   "Employees": "Utilisateurs",
   "EmptyBackupList": "Aucune sauvegarde n'a encore été créée. Créez une ou plusieurs sauvegardes pour qu'elles apparaissent dans cette liste.",

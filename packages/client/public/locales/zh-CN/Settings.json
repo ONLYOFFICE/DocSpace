@@ -52,8 +52,6 @@
   "Disabled": "已禁用",
   "DownloadReportBtn": "下载并打开报告",
   "DocumentsAdministratorsCan": "文档管理员可将Dropbox、Box和其他账户链接至常用文档，并在其中设置访问权限",
-  "DocumentsModule": "文件模块",
-  "DocumentsModuleDescription": "备份将在常用文档文件夹中保存。",
   "DownloadCopy": "下载副本",
   "Employees": "用户",
   "EmptyBackupList": "尚未创建任何备份。请创建一个或多个备份，使其显示在此列表中。",

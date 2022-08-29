@@ -51,6 +51,7 @@ global using ASC.EventBus.Events;
 global using ASC.EventBus.Exceptions;
 global using ASC.EventBus.Log;
 global using ASC.Files.Core;
+global using ASC.Files.Core.EF;
 global using ASC.Web.Studio.Core.Notify;
 
 global using Autofac;

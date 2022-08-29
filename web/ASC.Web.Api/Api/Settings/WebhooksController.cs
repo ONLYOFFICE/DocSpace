@@ -28,81 +28,135 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class WebhooksController : BaseSettingsController
 {
+    private readonly ApiContext _context;
+    private readonly PermissionContext _permissionContext;
     private readonly DbWorker _webhookDbWorker;
+    private readonly IMapper _mapper;
+    private readonly WebhookPublisher _webhookPublisher;
 
     public WebhooksController(
+        ApiContext context,
+        PermissionContext permissionContext,
         ApiContext apiContext,
         WebItemManager webItemManager,
         IMemoryCache memoryCache,
         DbWorker dbWorker,
-        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper,
+        WebhookPublisher webhookPublisher)
+        : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
+        _context = context;
+        _permissionContext = permissionContext;
         _webhookDbWorker = dbWorker;
+        _mapper = mapper;
+        _webhookPublisher = webhookPublisher;
     }
 
-    /// <summary>
-    /// Add new config for webhooks
-    /// </summary>
+    [HttpGet("webhook")]
+    public async IAsyncEnumerable<WebhooksConfigDto> GetTenantWebhooks()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        await foreach (var w in _webhookDbWorker.GetTenantWebhooks())
+        {
+            yield return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(w);
+        }
+    }
+
     [HttpPost("webhook")]
-    public void CreateWebhook(WebhooksConfig model)
+    public async Task<WebhooksConfigDto> CreateWebhook(WebhooksConfigRequestsDto model)
     {
-        if (model.Uri == null)
-        {
-            throw new ArgumentNullException("Uri");
-        }
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (model.SecretKey == null)
-        {
-            throw new ArgumentNullException("SecretKey");
-        }
+        ArgumentNullException.ThrowIfNull(model.Uri);
+        ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        _webhookDbWorker.AddWebhookConfig(model);
+        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Name, model.Uri, model.SecretKey);
+
+        return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
-    /// <summary>
-    /// Update config for webhooks
-    /// </summary>
     [HttpPut("webhook")]
-    public void UpdateWebhook(WebhooksConfig model)
+    public async Task<WebhooksConfigDto> UpdateWebhook(WebhooksConfigRequestsDto model)
     {
-        if (model.Uri == null)
-        {
-            throw new ArgumentNullException("Uri");
-        }
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (model.SecretKey == null)
-        {
-            throw new ArgumentNullException("SecretKey");
-        }
+        ArgumentNullException.ThrowIfNull(model.Uri);
+        ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        _webhookDbWorker.UpdateWebhookConfig(model);
+        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Name, model.Uri, model.SecretKey, model.Enabled);
+
+        return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
-    /// <summary>
-    /// Remove config for webhooks
-    /// </summary>
     [HttpDelete("webhook")]
-    public void RemoveWebhook(WebhooksConfig model)
+    public async Task<WebhooksConfigDto> RemoveWebhook(int id)
     {
-        if (model.Uri == null)
-        {
-            throw new ArgumentNullException("Uri");
-        }
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (model.SecretKey == null)
-        {
-            throw new ArgumentNullException("SecretKey");
-        }
+        var webhook = await _webhookDbWorker.RemoveWebhookConfig(id);
 
-        _webhookDbWorker.RemoveWebhookConfig(model);
+        return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
-    /// <summary>
-    /// Read Webhooks history for actual tenant
-    /// </summary>
-    [HttpGet("webhooks")]
-    public List<WebhooksLog> TenantWebhooks()
+    [HttpGet("webhooks/log")]
+    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(DateTime? delivery, string hookname, string route)
     {
-        return _webhookDbWorker.GetTenantWebhooks();
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        var startIndex = Convert.ToInt32(_context.StartIndex);
+        var count = Convert.ToInt32(_context.Count);
+
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, delivery, hookname, route))
+        {
+            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
+        }
+    }
+
+    [HttpPut("webhook/{id}/retry")]
+    public async Task<WebhooksLogDto> RetryWebhook(int id)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (id == 0)
+        {
+            throw new ArgumentException(nameof(id));
+        }
+
+        var item = await _webhookDbWorker.ReadJournal(id);
+
+        if (item == null)
+        {
+            throw new ItemNotFoundException();
+        }
+
+        if (item.Status >= 200 && item.Status <= 299 || item.Status == 0)
+        {
+            throw new HttpException(HttpStatusCode.Forbidden);
+        }
+
+        var result = await _webhookPublisher.PublishAsync(item.Method, item.Route, item.RequestPayload, item.ConfigId);
+
+        return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
+    }
+
+    [HttpPut("webhook/retry")]
+    public async IAsyncEnumerable<WebhooksLogDto> RetryWebhooks(WebhookRetryRequestsDto model)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        foreach (var id in model.Ids)
+        {
+            var item = await _webhookDbWorker.ReadJournal(id);
+
+            if (item == null || item.Status >= 200 && item.Status <= 299 || item.Status == 0)
+            {
+                continue;
+            }
+
+            var result = await _webhookPublisher.PublishAsync(item.Method, item.Route, item.RequestPayload, item.ConfigId);
+
+            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
+        }
     }
 }

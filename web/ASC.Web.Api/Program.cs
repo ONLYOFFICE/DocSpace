@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -39,6 +37,7 @@ builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, d
     services.AddHostedService<LdapNotifyService>();
     diHelper.TryAdd<LdapNotifyService>();
     services.AddBaseDbContextPool<FilesDbContext>();
+    services.AddBaseDbContextPool<BackupsContext>();
 });
 
 builder.WebHost.ConfigureDefaultKestrel();
