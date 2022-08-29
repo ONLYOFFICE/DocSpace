@@ -221,14 +221,12 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
     {
         var id = Convert.ToString(entryId, CultureInfo.InvariantCulture);
 
-        if (string.IsNullOrEmpty(id))
+        if (!string.IsNullOrEmpty(id))
         {
-            return $"/{id}";
+            id = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(id)).Trim('/');
         }
-        else
-        {
-            return Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(id));
-        }
+
+        return $"/{id}";
     }
 
     protected override string MakeId(string path = null)
