@@ -1092,6 +1092,28 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    [HttpPut("quota")]
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuota(UpdateMembersQuotaRequestDto inDto)
+    {
+        var users = inDto.UserIds
+            .Where(userId => !_userManager.IsSystemUser(userId))
+            .Select(userId => _userManager.GetUsers(userId))
+            .ToList();
+
+        foreach (var user in users)
+        {
+
+            user.QuotaLimit = inDto.Quota;
+            _userManager.SaveUserInfo(user, syncCardDav: true);
+        }
+        
+        foreach (var user in users)
+        {
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
+    }
+
+
     private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
     {
         if (!_permissionContext.CheckPermissions(Constants.Action_EditGroups))
