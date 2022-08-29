@@ -47,9 +47,16 @@ const checkedStyle = css`
 
 const StyledWrapper = styled.div`
   .user-item {
+    border: 1px solid transparent;
     border-left: none;
     border-right: none;
     margin-left: 0;
+    height: 100%;
+    user-select: none;
+
+    position: relative;
+    outline: none;
+    background: none !important;
   }
 `;
 
@@ -72,6 +79,12 @@ const StyledSimpleUserRow = styled(Row)`
 
   position: unset;
   margin-top: -2px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  .styled-element {
+    height: 32px;
+    margin-right: 7px;
+  }
 `;
 
 const SimpleUserRow = (props) => {
@@ -100,9 +113,7 @@ const SimpleUserRow = (props) => {
 
   return (
     <StyledWrapper
-      className={`row-wrapper ${
-        checkedProps || isActive ? "row-selected" : ""
-      }`}
+      className={`row-wrapper ${isChecked || isActive ? "row-selected" : ""}`}
     >
       <div className="user-item">
         <StyledSimpleUserRow
