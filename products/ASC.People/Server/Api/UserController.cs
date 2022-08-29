@@ -37,6 +37,7 @@ public class UserController : PeopleControllerBase
 
     private readonly ICache _cache;
     private readonly TenantManager _tenantManager;
+    private readonly GlobalSpace _globalSpace;
     private readonly Constants _constants;
     private readonly CookiesManager _cookiesManager;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -71,6 +72,7 @@ public class UserController : PeopleControllerBase
     public UserController(
         ICache cache,
         TenantManager tenantManager,
+        GlobalSpace globalSpace,
         Constants constants,
         CookiesManager cookiesManager,
         CoreBaseSettings coreBaseSettings,
@@ -111,6 +113,7 @@ public class UserController : PeopleControllerBase
     {
         _cache = cache;
         _tenantManager = tenantManager;
+        _globalSpace = globalSpace;
         _constants = constants;
         _cookiesManager = cookiesManager;
         _coreBaseSettings = coreBaseSettings;
@@ -1102,6 +1105,25 @@ public class UserController : PeopleControllerBase
 
         foreach (var user in users)
         {
+            if (inDto.Quota != Constants.UserNoQuota)
+            {
+                var usedSpace = await _globalSpace.GetUserUsedSpaceAsync(user.Id);
+                var quotaBytes = ByteConverter.ConvertSizeToBytes(inDto.Quota);
+                var tenanSpaceQuota = _tenantExtra.GetTenantQuota().MaxTotalSize;
+
+                if (tenanSpaceQuota < quotaBytes)
+                {
+                    throw new Exception(Resource.QuotaGreaterPortalError);
+                }
+                if (usedSpace > quotaBytes)
+                {
+                    if (users.Count > 1)
+                    {
+                        throw new Exception(Resource.QuotaGroupError);
+                    }
+                    throw new Exception(Resource.QuotaLessUsedMemoryError); 
+                }
+            }
 
             user.QuotaLimit = inDto.Quota;
             _userManager.SaveUserInfo(user, syncCardDav: true);

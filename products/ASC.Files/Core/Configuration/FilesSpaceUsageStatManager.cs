@@ -140,7 +140,7 @@ public class FilesUserSpaceUsage : IUserSpaceUsage
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         return await filesDbContext.Files
-            .Where(r => r.TenantId == tenantId && (r.ParentId == my || r.ParentId == trash))
+            .Where(r => r.TenantId == tenantId && r.CreateBy == userId && (r.ParentId == my || r.ParentId == trash))
             .SumAsync(r => r.ContentLength);
     }
 }
