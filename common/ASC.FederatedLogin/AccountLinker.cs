@@ -108,11 +108,6 @@ public class AccountLinker
         return _accountLinkerStorage.GetFromCache(obj, GetLinkedProfilesFromDB);
     }
 
-    public IDictionary<string, LoginProfile> GetLinkedProfiles(IEnumerable<object> objects)
-    {
-        return GetLinkedProfilesFromDb(objects);
-    }
-
     public void AddLink(string obj, LoginProfile profile)
     {
         var accountLink = new AccountLinks
@@ -193,14 +188,12 @@ public class AccountLinker
                 .ConvertAll(x => LoginProfile.CreateFromSerializedString(_signature, _instanceCrypto, x));
     }
 
-    private Dictionary<string, LoginProfile> GetLinkedProfilesFromDb(IEnumerable<object> objects)
+    private IDictionary<string, LoginProfile> GetLinkedProfiles(IEnumerable<string> objects)
     {
         using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
 
         return accountLinkContext.AccountLinks.Where(r => objects.Contains(r.Id))
-            .Select(r => r.Profile)
-            .ToList()
-            .ConvertAll(x => LoginProfile.CreateFromSerializedString(_signature, _instanceCrypto, x))
-            .ToDictionary(k => k.Id);
+            .Select(r => new { r.Id, r.Profile })
+            .ToDictionary(k => k.Id, v => LoginProfile.CreateFromSerializedString(_signature, _instanceCrypto, v.Profile));
     }
 }
