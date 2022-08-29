@@ -41,6 +41,8 @@ const StyledStorageLocation = styled.div`
             : props.theme.createEditRoomDialog.thirdpartyStorage.combobox
                 .dropdownBorderColor
         }`};
+
+      transition: all 0.2s ease;
       &:hover {
         border: ${(props) =>
           `1px solid ${
