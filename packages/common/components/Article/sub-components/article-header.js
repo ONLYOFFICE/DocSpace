@@ -6,12 +6,17 @@ import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
+import styled, { css } from "styled-components";
 import {
   StyledArticleHeader,
   StyledHeading,
   StyledIconBox,
   StyledMenuIcon,
 } from "../styled-article";
+
+const StyledLoader = styled.div`
+  padding-top: 6px;
+`;
 
 const ArticleHeader = ({
   showText,
@@ -50,23 +55,25 @@ const ArticleHeader = ({
   return (
     <StyledArticleHeader showText={showText} {...rest}>
       {isTabletView && (isBurgerLoading || showLoader) ? (
-        <Loaders.ArticleHeader
-          height="20px"
-          width="20px"
-          style={{ height: "20px" }}
-        />
+        <Loaders.ArticleHeader height="28px" width="28px" />
       ) : (
         <StyledIconBox name="article-burger" showText={showText}>
           <img src="/static/images/logo.icon.react.svg" onClick={onClick} />
         </StyledIconBox>
       )}
 
-      <StyledHeading showText={showText} size="large">
-        <img
-          src="/static/images/logo.docspace.react.svg"
-          onClick={onLogoClick}
-        />
-      </StyledHeading>
+      {!isTabletView && showLoader ? (
+        <StyledLoader>
+          <Loaders.ArticleHeader height="24px" width="211px" />
+        </StyledLoader>
+      ) : (
+        <StyledHeading showText={showText} size="large">
+          <img
+            src="/static/images/logo.docspace.react.svg"
+            onClick={onLogoClick}
+          />
+        </StyledHeading>
+      )}
     </StyledArticleHeader>
   );
 };
