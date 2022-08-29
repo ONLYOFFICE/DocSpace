@@ -151,8 +151,6 @@ export default function withContent(WrappedContent) {
       deselectUser,
     } = selectionStore;
 
-    console.log(selection);
-
     return {
       theme: auth.settingsStore.theme,
       isAdmin,

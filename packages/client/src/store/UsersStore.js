@@ -243,6 +243,8 @@ class UsersStore {
         status,
         groups,
         title,
+        firstName,
+        lastName,
       } = user;
       const statusType = this.getStatusType(user);
       const role = this.getUserRole(user);
@@ -276,6 +278,8 @@ class UsersStore {
         options,
         groups,
         position: title,
+        firstName,
+        lastName,
       };
     });
 

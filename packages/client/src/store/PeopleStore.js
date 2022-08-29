@@ -12,6 +12,7 @@ import InviteLinksStore from "./InviteLinksStore";
 import store from "client/store";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
+import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
 import { isMobile } from "react-device-detect";
 import toastr from "client/toastr";
 const { auth: authStore } = store;
@@ -19,6 +20,7 @@ const { auth: authStore } = store;
 const fullAccessId = "00000000-0000-0000-0000-000000000000";
 
 class PeopleStore {
+  contextOptionsStore = null;
   groupsStore = null;
   usersStore = null;
   targetUserStore = null;
@@ -51,6 +53,15 @@ class PeopleStore {
     this.loadingStore = new LoadingStore();
     this.infoPanelStore = infoPanelStore;
     this.setupStore = setupStore;
+
+    this.contextOptionsStore = new AccountsContextOptionsStore(
+      authStore,
+      this.dialogStore,
+      this.targetUserStore,
+      this.usersStore,
+      this.selectionStore,
+      this.infoPanelStore
+    );
 
     makeAutoObservable(this);
   }
