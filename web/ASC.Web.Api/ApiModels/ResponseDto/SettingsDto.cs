@@ -53,6 +53,8 @@ public class SettingsDto
     public string TenantAlias { get; set; }
     public string HelpLink { get; set; }
 
+    public PluginsDto Plugins { get; set; }
+
     public static SettingsDto GetSample()
     {
         return new SettingsDto

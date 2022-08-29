@@ -1,24 +1,30 @@
 import React from "react";
-import SelectFileInput from "client/SelectFileInput";
 import { inject, observer } from "mobx-react";
+import DirectThirdPartyConnection from "../../common-container/DirectThirdPartyConnection";
 
-class ThirdPartyResources extends React.Component {
-  render() {
-    const { t } = this.props;
-    return (
-      <SelectFileInput
-        {...this.props}
-        foldersType="third-party"
-        searchParam=".gz"
-        filesListTitle={t("SelectFileInGZFormat")}
-        withoutResetFolderTree
-        ignoreSelectedFolderTree
-        isArchiveOnly
-        maxFolderInputWidth="446px"
+const ThirdPartyResources = (props) => {
+  return (
+    // return !isDocSpace ? (
+    //   <SelectFileInput
+    //     {...props}
+    //     foldersType="third-party"
+    //     searchParam=".gz"
+    //     filesListTitle={t("SelectFileInGZFormat")}
+    //     withoutResetFolderTree
+    //     ignoreSelectedFolderTree
+    //     isArchiveOnly
+    //     maxFolderInputWidth="446px"
+    //   />
+    // ) : (
+    <div className={"restore-backup_third-party-module"}>
+      <DirectThirdPartyConnection
+        {...props}
+        withoutBasicSelection
+        isFileSelection
       />
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default inject(({ backup }) => {
   const { commonThirdPartyList } = backup;

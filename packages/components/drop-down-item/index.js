@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
 import { StyledDropdownItem, IconWrapper } from "./styled-drop-down-item";
+import { isNull } from "lodash";
 
 const DropDownItem = (props) => {
   //console.log("DropDownItem render");
@@ -37,12 +38,16 @@ const DropDownItem = (props) => {
     >
       {icon && (
         <IconWrapper>
-          {!withoutIcon && (
-            <ReactSVG
-              src={icon}
-              className={fillIcon ? "drop-down-item_icon" : ""}
-            />
-          )}
+          {!withoutIcon ? (
+            icon.includes("https://") || icon.includes("http://") ? (
+              <img src={icon} />
+            ) : (
+              <ReactSVG
+                src={icon}
+                className={fillIcon ? "drop-down-item_icon" : ""}
+              />
+            )
+          ) : null}
         </IconWrapper>
       )}
 
