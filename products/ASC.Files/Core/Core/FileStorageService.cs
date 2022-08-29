@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core.ApiModels;
 
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
@@ -462,20 +461,11 @@ public class FileStorageService<T> //: IFileStorageService
             throw new ArgumentNullException(nameof(share));
         }
 
+        var aces = GetFullAceWrappers(share);
+
         if (@private)
         {
-            var users = share.Select(s => s.ShareTo).ToList();
-            users.Add(_authContext.CurrentAccount.ID);
-            var keys = _encryptionLoginProvider.GetKeys(users);
-
-            foreach (var user in users)
-            {
-                if (!keys.ContainsKey(user))
-                {
-                    var userInfo = _userManager.GetUsers(user);
-                    throw new InvalidOperationException($"The user {userInfo.DisplayUserName(_displayUserSettingsHelper)} does not have an encryption key");
-                }
-            }
+            CheckEncryptionKeys(aces);
         }
 
         var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
@@ -492,7 +482,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (@private)
         {
-            await SetAcesForPrivateRoomAsync(room, share, notify, sharingMessage);
+            await SetAcesForPrivateRoomAsync(room, aces, notify, sharingMessage);
         }
 
         return room;
@@ -502,6 +492,11 @@ public class FileStorageService<T> //: IFileStorageService
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
         ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
+
+        if (@private && (share == null || !share.Any()))
+        {
+            throw new ArgumentNullException(nameof(share));
+        }
 
         var folderDao = GetFolderDao();
         var providerDao = GetProviderDao();
@@ -519,6 +514,13 @@ public class FileStorageService<T> //: IFileStorageService
             throw new InvalidOperationException("This provider already corresponds to the virtual room");
         }
 
+        var aces = GetFullAceWrappers(share);
+
+        if (@private)
+        {
+            CheckEncryptionKeys(aces);
+        }
+
         var result = roomType switch
         {
             RoomType.CustomRoom => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
@@ -531,7 +533,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (@private)
         {
-            await SetAcesForPrivateRoomAsync(result.Item1, share, notify, sharingMessage);
+            await SetAcesForPrivateRoomAsync(result.Item1, aces, notify, sharingMessage);
         }
 
         await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, @private);
@@ -3140,7 +3142,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
     }
 
-    private async Task SetAcesForPrivateRoomAsync(Folder<T> room, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    private List<AceWrapper> GetFullAceWrappers(IEnumerable<FileShareParams> share)
     {
         var dict = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject)).ToDictionary(k => k.SubjectId, v => v);
 
@@ -3158,6 +3160,26 @@ public class FileStorageService<T> //: IFileStorageService
             };
         }
 
+        return dict.Values.ToList();
+    }
+
+    private void CheckEncryptionKeys(IEnumerable<AceWrapper> aceWrappers)
+    {
+        var users = aceWrappers.Select(s => s.SubjectId).ToList();
+        var keys = _encryptionLoginProvider.GetKeys(users);
+
+        foreach (var user in users)
+        {
+            if (!keys.ContainsKey(user))
+            {
+                var userInfo = _userManager.GetUsers(user);
+                throw new InvalidOperationException($"The user {userInfo.DisplayUserName(_displayUserSettingsHelper)} does not have an encryption key");
+            }
+        }
+    }
+
+    private async Task SetAcesForPrivateRoomAsync(Folder<T> room, List<AceWrapper> aces, bool notify, string sharingMessage)
+    {
         var advancedSettings = new AceAdvancedSettingsWrapper
         {
             AllowSharingPrivateRoom = true
@@ -3167,7 +3189,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             Folders = new[] { room.Id },
             Files = Array.Empty<T>(),
-            Aces = dict.Values.ToList(),
+            Aces = aces,
             Message = sharingMessage,
             AdvancedSettings = advancedSettings
         };
