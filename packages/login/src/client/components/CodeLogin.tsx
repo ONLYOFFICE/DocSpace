@@ -1,31 +1,17 @@
 import React, { useState } from "react";
-import Section from "@docspace/common/components/Section";
-import { withRouter } from "react-router";
-import {
-  I18nextProvider,
-  useTranslation,
-  withTranslation,
-} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import CodeInput from "@docspace/components/code-input";
 import { Trans } from "react-i18next";
-import { ReactSVG } from "react-svg";
 import { RouteComponentProps } from "react-router-dom";
-import i18n from "../i18n";
 import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
 import { I18next } from "i18next-express-middleware";
-
+import BarLogo from "../../../../../public/images/danger.alert.react.svg";
+import DocspaceLogo from "../../../../../public/images/docspace.big.react.svg";
 interface IBarProp {
   t: TFuncType;
   expired: boolean;
-}
-
-interface ICodeProps extends RouteComponentProps<any> {
-  i18n: I18next;
-  t: TFuncType;
-  tReady: boolean;
-  staticContext: any;
 }
 
 const Bar: React.FC<IBarProp> = (props) => {
@@ -35,13 +21,13 @@ const Bar: React.FC<IBarProp> = (props) => {
 
   return (
     <div className={`code-input-bar ${type}`}>
-      <ReactSVG src="/static/images/danger.alert.react.svg" />
+      <BarLogo />
       {text}
     </div>
   );
 };
 
-const Form: React.FC<ICodeProps> = () => {
+const Form: React.FC = () => {
   const { t } = useTranslation("Login");
   const [invalidCode, setInvalidCode] = useState(false);
   const [expiredCode, setExpiredCode] = useState(false);
@@ -66,10 +52,7 @@ const Form: React.FC<ICodeProps> = () => {
 
   return (
     <LoginContainer>
-      <ReactSVG
-        src="/static/images/docspace.big.react.svg"
-        className="logo-wrapper"
-      />
+      <DocspaceLogo className="logo-wrapper" />
 
       <Text
         fontSize="23px"
@@ -120,25 +103,12 @@ const Form: React.FC<ICodeProps> = () => {
   );
 };
 
-const CodeLoginForm: React.FC<ICodeProps> = (props) => {
-  console.log(props);
+const CodeLogin: React.FC<ICodeProps> = (props) => {
   return (
     <LoginFormWrapper>
-      <Section>
-        <Section.SectionBody>
-          <Form {...props} />
-        </Section.SectionBody>
-      </Section>
+      <Form {...props} />
     </LoginFormWrapper>
   );
 };
 
-const CodeLogin = withRouter(withTranslation("Login")(CodeLoginForm));
-
-const CodeLoginWrapper: React.FC<ICodeProps> = (props) => (
-  <I18nextProvider i18n={i18n}>
-    <CodeLogin {...props} />
-  </I18nextProvider>
-);
-
-export default CodeLoginWrapper;
+export default CodeLogin;
