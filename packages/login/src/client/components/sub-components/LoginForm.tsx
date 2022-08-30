@@ -15,6 +15,7 @@ import { login } from "@docspace/common/utils/loginUtils";
 import { oAuthLogin } from "../../helpers/utils";
 import toastr from "@docspace/components/toast/toastr";
 
+const IS_ROOMS_MODE = true;
 interface ILoginFormProps {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
@@ -48,6 +49,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] = useState(
+    IS_ROOMS_MODE
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -84,12 +88,18 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const onChangeLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
     //console.log("onChangeLogin", e.target.value);
     setIdentifier(e.target.value);
-    setIsEmailErrorShow(false);
+    if (!IS_ROOMS_MODE) setIsEmailErrorShow(false);
     onClearErrors();
   };
 
   const onClearErrors = () => {
-    !passwordValid && setPasswordValid(true);
+    if (IS_ROOMS_MODE) {
+      !identifierValid && setIdentifierValid(true);
+      errorText && setErrorText("");
+      setIsEmailErrorShow(false);
+    } else {
+      !passwordValid && setPasswordValid(true);
+    }
   };
 
   const onSubmit = () => {
@@ -104,6 +114,11 @@ const LoginForm: React.FC<ILoginFormProps> = ({
       setIsEmailErrorShow(true);
     }
 
+    if (IS_ROOMS_MODE && identifierValid) {
+      window.location.replace("/login/code"); //TODO: confirm link?
+      return;
+    }
+
     const pass = password.trim();
 
     if (!pass) {
@@ -113,7 +128,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
     if (!identifierValid) hasError = true;
 
-    if (hasError) return false;
+    if (hasError) return;
 
     setIsLoading(true);
     const hash = createPasswordHash(pass, hashSettings);
@@ -139,6 +154,10 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         setIsLoading(false);
         focusInput();
       });
+  };
+
+  const onLoginWithPasswordClick = () => {
+    setIsWithoutPasswordLogin(false);
   };
 
   const onBlurEmail = () => {
@@ -211,72 +230,77 @@ const LoginForm: React.FC<ILoginFormProps> = ({
           forwardedRef={inputRef}
         />
       </FieldContainer>
-      <FieldContainer
-        isVertical={true}
-        labelVisible={false}
-        hasError={!passwordValid}
-        errorMessage={!password.trim() ? t("Common:RequiredField") : ""} //TODO: Add wrong password server error
-      >
-        <PasswordInput
-          simpleView={true}
-          passwordSettings={settings}
-          id="password"
-          inputName="password"
-          placeholder={t("Common:Password")}
-          type="password"
-          hasError={!passwordValid}
-          inputValue={password}
-          size="large"
-          scale={true}
-          tabIndex={1}
-          isDisabled={isLoading}
-          autoComplete="current-password"
-          onChange={onChangePassword}
-          onKeyDown={onKeyDown}
-        />
-      </FieldContainer>
-
-      <div className="login-forgot-wrapper">
-        <div className="login-checkbox-wrapper">
-          <div className="remember-wrapper">
-            <Checkbox
-              className="login-checkbox"
-              isChecked={isChecked}
-              onChange={onChangeCheckbox}
-              label={t("Remember")}
-              helpButton={
-                !checkIsSSR() && (
-                  <HelpButton
-                    helpButtonHeaderContent={t("CookieSettingsTitle")}
-                    tooltipContent={
-                      <Text fontSize="12px">{t("RememberHelper")}</Text>
-                    }
-                  />
-                )
-              }
+      {(!IS_ROOMS_MODE || !isWithoutPasswordLogin) && (
+        <>
+          <FieldContainer
+            isVertical={true}
+            labelVisible={false}
+            hasError={!passwordValid}
+            errorMessage={!password.trim() ? t("Common:RequiredField") : ""} //TODO: Add wrong password server error
+          >
+            <PasswordInput
+              simpleView={true}
+              passwordSettings={settings}
+              id="password"
+              inputName="password"
+              placeholder={t("Common:Password")}
+              type="password"
+              hasError={!passwordValid}
+              inputValue={password}
+              size="large"
+              scale={true}
+              tabIndex={1}
+              isDisabled={isLoading}
+              autoComplete="current-password"
+              onChange={onChangePassword}
+              onKeyDown={onKeyDown}
             />
+          </FieldContainer>
+
+          <div className="login-forgot-wrapper">
+            <div className="login-checkbox-wrapper">
+              <div className="remember-wrapper">
+                <Checkbox
+                  className="login-checkbox"
+                  isChecked={isChecked}
+                  onChange={onChangeCheckbox}
+                  label={t("Remember")}
+                  helpButton={
+                    !checkIsSSR() && (
+                      <HelpButton
+                        helpButtonHeaderContent={t("CookieSettingsTitle")}
+                        tooltipContent={
+                          <Text fontSize="12px">{t("RememberHelper")}</Text>
+                        }
+                      />
+                    )
+                  }
+                />
+              </div>
+
+              <Link
+                fontSize="13px"
+                color="#316DAA"
+                className="login-link"
+                type="page"
+                isHovered={false}
+                onClick={onClick}
+              >
+                {t("ForgotPassword")}
+              </Link>
+            </div>
           </div>
 
-          <Link
-            fontSize="13px"
-            color="#316DAA"
-            className="login-link"
-            type="page"
-            isHovered={false}
-            onClick={onClick}
-          >
-            {t("ForgotPassword")}
-          </Link>
-        </div>
-      </div>
-
-      {isDialogVisible && (
-        <ForgotPasswordModalDialog
-          isVisible={isDialogVisible}
-          userEmail={identifier}
-          onDialogClose={onDialogClose}
-        />
+          {isDialogVisible && (
+            <ForgotPasswordModalDialog
+              isVisible={isDialogVisible}
+              userEmail={identifier}
+              onDialogClose={onDialogClose}
+            />
+          )}
+        </>
       )}
+
       <Button
         id="submit"
         className="login-button"
@@ -292,8 +316,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         onClick={onSubmit}
       />
       {/*Uncomment when add api*/}
-      <div className="login-or-access">
-        {/*<Link
+      {(!IS_ROOMS_MODE || !isWithoutPasswordLogin) && (
+        <div className="login-or-access">
+          {/*<Link
                   fontWeight="600"
                   fontSize="13px"
                   color="#316DAA"
@@ -304,18 +329,34 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                   {t("SignInWithCode")}
                 </Link>*/}
 
-        <Text color="#A3A9AE">{t("Or")}</Text>
-        <Link
-          fontWeight="600"
-          fontSize="13px"
-          color="#316DAA"
-          type="action"
-          isHovered={true}
-          onClick={onRecoverDialogVisible}
-        >
-          {t("RecoverAccess")}
-        </Link>
-      </div>
+          <Text color="#A3A9AE">{t("Or")}</Text>
+          <Link
+            fontWeight="600"
+            fontSize="13px"
+            color="#316DAA"
+            type="action"
+            isHovered={true}
+            onClick={onRecoverDialogVisible}
+          >
+            {t("RecoverAccess")}
+          </Link>
+        </div>
+      )}
+
+      {IS_ROOMS_MODE && isWithoutPasswordLogin && (
+        <div className="login-link">
+          <Link
+            fontWeight="600"
+            fontSize="13px"
+            color="#316DAA"
+            type="action"
+            isHovered={true}
+            onClick={onLoginWithPasswordClick}
+          >
+            {t("SignInWithPassword")}
+          </Link>
+        </div>
+      )}
       {confirmedEmail && (
         <Text isBold={true} fontSize="16px">
           {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
