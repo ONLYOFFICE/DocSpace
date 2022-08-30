@@ -52,6 +52,7 @@ public class UserManager
     private readonly IHttpContextAccessor _accessor;
     private readonly IUserService _userService;
     private readonly TenantManager _tenantManager;
+    private readonly SettingsManager _settingsManager;
     private readonly PermissionContext _permissionContext;
     private readonly UserManagerConstants _userManagerConstants;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -74,6 +75,7 @@ public class UserManager
     public UserManager(
         IUserService service,
         TenantManager tenantManager,
+        SettingsManager settingsManager,
         PermissionContext permissionContext,
         UserManagerConstants userManagerConstants,
         CoreBaseSettings coreBaseSettings,
@@ -86,6 +88,7 @@ public class UserManager
     {
         _userService = service;
         _tenantManager = tenantManager;
+        _settingsManager = settingsManager;
         _permissionContext = permissionContext;
         _userManagerConstants = userManagerConstants;
         _coreBaseSettings = coreBaseSettings;
@@ -101,6 +104,7 @@ public class UserManager
     public UserManager(
         IUserService service,
         TenantManager tenantManager,
+        SettingsManager settingsManager,
         PermissionContext permissionContext,
         UserManagerConstants userManagerConstants,
         CoreBaseSettings coreBaseSettings,
@@ -111,7 +115,7 @@ public class UserManager
         ILogger<UserManager> log,
         ICache cache,
         IHttpContextAccessor httpContextAccessor)
-        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache)
+        : this(service, tenantManager, settingsManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache)
     {
         _accessor = httpContextAccessor;
     }
@@ -354,6 +358,15 @@ public class UserManager
         }
 
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+        if (oldUserData == null) //new user
+        {
+            var quotaSettings = _settingsManager.LoadForTenant<UserQuotaSettings>(_tenantManager.GetCurrentTenant().Id);
+
+            if (quotaSettings.EnableUserQuota)
+            {
+                u.QuotaLimit = quotaSettings.DefaultUserQuota;
+            }
+        }
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
 
         if (syncCardDav)
