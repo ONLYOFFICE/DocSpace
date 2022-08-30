@@ -1,5 +1,5 @@
 export const LANGUAGE = "asc_language";
-export const COOKIE_EXPIRATION_YEAR = 31536000;
+export const COOKIE_EXPIRATION_YEAR = 31536000000;
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
 
 /**

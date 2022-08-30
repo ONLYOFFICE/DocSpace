@@ -11,7 +11,7 @@ import renderApp from "./lib/helpers/render-app";
 import i18nextMiddleware, { I18next } from "i18next-express-middleware";
 import i18next from "./i18n";
 import cookieParser from "cookie-parser";
-import { LANGUAGE } from "@docspace/common/constants";
+import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { initSSR } from "@docspace/common/api/client";
 
 let port = PORT;
@@ -46,6 +46,10 @@ if (IS_DEVELOPMENT) {
 
       if (cookies && cookies[LANGUAGE]) {
         currentLanguage = cookies[LANGUAGE];
+      } else {
+        res.cookie(LANGUAGE, currentLanguage, {
+          maxAge: COOKIE_EXPIRATION_YEAR,
+        });
       }
 
       if (i18n) await i18n.changeLanguage(currentLanguage);
