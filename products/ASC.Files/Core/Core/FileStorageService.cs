@@ -461,10 +461,11 @@ public class FileStorageService<T> //: IFileStorageService
             throw new ArgumentNullException(nameof(share));
         }
 
-        var aces = GetFullAceWrappers(share);
+        List<AceWrapper> aces = null;
 
         if (@private)
         {
+            aces = GetFullAceWrappers(share);
             CheckEncryptionKeys(aces);
         }
 
@@ -514,10 +515,11 @@ public class FileStorageService<T> //: IFileStorageService
             throw new InvalidOperationException("This provider already corresponds to the virtual room");
         }
 
-        var aces = GetFullAceWrappers(share);
+        List<AceWrapper> aces = null;
 
         if (@private)
         {
+            aces = GetFullAceWrappers(share);
             CheckEncryptionKeys(aces);
         }
 
