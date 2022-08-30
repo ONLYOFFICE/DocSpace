@@ -71,7 +71,7 @@ const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
 
 const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
 // const MyProfile = React.lazy(() => import("./pages/My"));
-const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
+//const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
 //const InvalidError = React.lazy(() => import("./pages/Errors/Invalid"));
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
 
@@ -157,15 +157,15 @@ const WizardRoute = (props) => (
 //   </React.Suspense>
 // );
 
-const EnterCodeRoute =
-  !IS_PERSONAL &&
-  ((props) => (
-    <React.Suspense fallback={<AppLoader />}>
-      <ErrorBoundary>
-        <EnterCode {...props} />
-      </ErrorBoundary>
-    </React.Suspense>
-  ));
+// const EnterCodeRoute =
+//   !IS_PERSONAL &&
+//   ((props) => (
+//     <React.Suspense fallback={<AppLoader />}>
+//       <ErrorBoundary>
+//         <EnterCode {...props} />
+//       </ErrorBoundary>
+//     </React.Suspense>
+//   ));
 
 // const InvalidRoute = (props) => (
 //   <React.Suspense fallback={<AppLoader />}>
@@ -437,7 +437,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   //     <PublicRoute
   //       key={loginSystem.scope}
   //       exact
-  //       path={["/login", "/login/confirmed-email=:confirmedEmail"]}
+  //       path={["/login", "/login?confirmedEmail=:confirmedEmail"]}
   //       component={System}
   //       system={loginSystem}
   //     />
@@ -510,18 +510,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               ]}
               component={FilesRoute}
             />
-
             <PrivateRoute
               path={"/form-gallery/:folderId"}
               component={FormGalleryRoute}
             />
-
             <PublicRoute exact path={"/wizard"} component={WizardRoute} />
             <PrivateRoute path={"/about"} component={AboutRoute} />
-            {loginRoutes}
-            <Route path={"/code"} component={EnterCodeRoute} />
             <Route path={"/confirm"} component={ConfirmRoute} />
-            {/* <Route path={"/login/error=:error"} component={InvalidRoute} /> */}
             <PrivateRoute path={"/payments"} component={PaymentsRoute} />
             <PrivateRoute
               restricted

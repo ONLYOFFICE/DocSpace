@@ -10,14 +10,14 @@ interface ILoginProps extends IInitialState {
 const App: React.FC<ILoginProps> = (props) => {
   return (
     <Switch>
-      <Route path="/login" exact>
-        <Login {...props} />
-      </Route>
-      <Route path="/login/error=:error">
+      <Route path="/login/error">
         <InvalidRoute />
       </Route>
       <Route path="/login/code">
         <CodeLogin />
+      </Route>
+      <Route path="/login">
+        <Login {...props} />
       </Route>
     </Switch>
   );

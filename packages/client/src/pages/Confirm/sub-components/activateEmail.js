@@ -20,16 +20,13 @@ class ActivateEmail extends React.PureComponent {
     changeEmail(uid, email, key)
       .then((res) => {
         tryRedirectTo(
-          combineUrl(
-            AppServerConfig.proxyURL,
-            `/login/confirmed-email=${email}`
-          )
+          combineUrl(AppServerConfig.proxyURL, `/login?confirmedEmail=${email}`)
         );
       })
       .catch((e) => {
         // console.log('activate email error', e);
         tryRedirectTo(
-          combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`)
+          combineUrl(AppServerConfig.proxyURL, `/login/error?error=${e}`)
         );
       });
   }

@@ -34,7 +34,10 @@ export default function withLoader(WrappedComponent) {
           .catch((error) => {
             console.error(error);
             history.push(
-              combineUrl(AppServerConfig.proxyURL, `/login/error=${error}`)
+              combineUrl(
+                AppServerConfig.proxyURL,
+                `/login/error?error=${error}`
+              )
             );
           });
       }
