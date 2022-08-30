@@ -21,11 +21,8 @@ const StyledComponent = styled.div`
     max-width: 100%;
   }
 
-  .settings-block {
-    margin-bottom: 24px;
-  }
-
   .category-description {
+    margin-top: 5px;
     line-height: 20px;
     color: #657077;
     margin-bottom: 20px;
@@ -55,6 +52,10 @@ const StyledComponent = styled.div`
     font-size: 16px;
     line-height: 22px;
     margin-right: 4px;
+  }
+
+  .settings-block {
+    margin-bottom: 24px;
   }
 
   @media (min-width: 600px) {

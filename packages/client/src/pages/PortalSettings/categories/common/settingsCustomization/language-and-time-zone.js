@@ -71,6 +71,7 @@ class LanguageAndTimeZone extends React.Component {
       hasChanged: false,
       showReminder: false,
       hasScroll: false,
+      isCustomizationView: false,
     };
   }
 
@@ -94,7 +95,7 @@ class LanguageAndTimeZone extends React.Component {
     if (isLoadedSetting) {
       setIsLoadedLngTZSettings(isLoadedSetting);
     }
-
+    this.checkInnerWidth();
     window.addEventListener("resize", this.checkInnerWidth);
 
     if (
@@ -261,11 +262,7 @@ class LanguageAndTimeZone extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener(
-      "resize",
-      this.checkInnerWidth,
-      checkScrollSettingsBlock
-    );
+    window.removeEventListener("resize", this.checkInnerWidth);
   }
 
   onLanguageSelect = (language) => {
@@ -372,6 +369,10 @@ class LanguageAndTimeZone extends React.Component {
 
   checkInnerWidth = () => {
     if (!isSmallTablet()) {
+      this.setState({
+        isCustomizationView: true,
+      });
+
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -379,7 +380,10 @@ class LanguageAndTimeZone extends React.Component {
           "/portal-settings/common/customization"
         )
       );
-      return true;
+    } else {
+      this.setState({
+        isCustomizationView: false,
+      });
     }
   };
 
@@ -406,6 +410,7 @@ class LanguageAndTimeZone extends React.Component {
       timezone,
       showReminder,
       hasScroll,
+      isCustomizationView,
     } = this.state;
 
     const timezones = mapTimezonesToArray(rawTimezones);
@@ -415,7 +420,7 @@ class LanguageAndTimeZone extends React.Component {
       <LanguageTimeSettingsTooltip theme={theme} t={t} helpLink={helpLink} />
     );
 
-    const settingsBlock = (
+    const settingsBlock = !(language && timezone) ? null : (
       <div className="settings-block">
         <FieldContainer
           id="fieldContainerLanguage"
@@ -463,7 +468,7 @@ class LanguageAndTimeZone extends React.Component {
         hasScroll={hasScroll}
         className="category-item-wrapper"
       >
-        {this.checkInnerWidth() && !isMobileView && (
+        {isCustomizationView && !isMobileView && (
           <div className="category-item-heading">
             <div className="category-item-title">
               {t("StudioTimeLanguageSettings")}

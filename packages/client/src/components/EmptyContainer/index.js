@@ -15,7 +15,12 @@ const linkStyles = {
   display: "flex",
 };
 
-const EmptyContainer = ({ isFiltered, parentId, theme }) => {
+const EmptyContainer = ({
+  isFiltered,
+  parentId,
+  theme,
+  setCreateRoomDialogVisible,
+}) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
   const onCreate = (e) => {
@@ -32,11 +37,10 @@ const EmptyContainer = ({ isFiltered, parentId, theme }) => {
     window.dispatchEvent(event);
   };
 
-  const onCreateRoom = React.useCallback(() => {
+  const onCreateRoom = (e) => {
     const event = new Event(Events.ROOM_CREATE);
-
     window.dispatchEvent(event);
-  }, []);
+  };
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
@@ -52,7 +56,13 @@ const EmptyContainer = ({ isFiltered, parentId, theme }) => {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    dialogsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const {
       authorType,
       search,
@@ -61,6 +71,8 @@ export default inject(
     } = filesStore.filter;
     const { isPrivacyFolder } = treeFoldersStore;
 
+    const { setCreateRoomDialogVisible } = dialogsStore;
+
     const isFiltered =
       (authorType || search || !withSubfolders || filterType) &&
       !(isPrivacyFolder && isMobile);
@@ -68,6 +80,7 @@ export default inject(
     return {
       theme: auth.settingsStore.theme,
       isFiltered,
+      setCreateRoomDialogVisible,
 
       parentId: selectedFolderStore.parentId,
     };

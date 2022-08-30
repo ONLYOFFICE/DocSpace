@@ -18,6 +18,9 @@ import store from "client/store";
 import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
+import OformsStore from "./OformsStore";
+
+const oformsStore = new OformsStore(store.auth);
 
 const peopleStore = new PeopleStore();
 
@@ -33,9 +36,7 @@ const filesStore = new FilesStore(
   store.auth.userStore,
   selectedFolderStore,
   treeFoldersStore,
-  settingsStore,
-  selectFolderDialogStore,
-  selectFileDialogStore
+  settingsStore
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(
@@ -109,6 +110,7 @@ const stores = {
   contextOptionsStore,
   hotkeyStore,
   selectFileDialogStore,
+  oformsStore,
 
   tagsStore,
 

@@ -8,3 +8,6 @@ export { checkPropertyByLink } from "./checkPropertyByLink";
 export { getFromSessionStorage } from "./getFromSessionStorage";
 export { saveToSessionStorage } from "./saveToSessionStorage";
 export { getSettingsIndex } from "./getSettingsIndex";
+export { getFromLocalStorage } from "./getFromLocalStorage.js";
+export { saveToLocalStorage } from "./saveToLocalStorage.js";
+export { removeLocalStorage } from "./removeLocalStorage.js";

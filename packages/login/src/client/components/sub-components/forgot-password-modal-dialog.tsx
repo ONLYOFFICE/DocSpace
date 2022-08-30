@@ -123,7 +123,7 @@ const ForgotPasswordModalDialog: React.FC<IForgotPasswordDialogProps> = ({
       <ModalDialog.Footer>
         <Button
           className="modal-dialog-button"
-          key="SendBtn-forgot"
+          key="ForgotSendBtn"
           label={
             isLoading ? t("Common:LoadingProcessing") : t("Common:SendButton")
           }

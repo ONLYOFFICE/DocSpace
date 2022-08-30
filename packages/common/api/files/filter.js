@@ -135,6 +135,7 @@ class FilesFilter {
       sortBy,
       sortOrder,
       withSubfolders,
+      startIndex,
     } = this;
 
     const isFilterSet =
@@ -148,7 +149,7 @@ class FilesFilter {
 
     const dtoFilter = {
       count: pageCount,
-      startIndex: this.getStartIndex(),
+      startIndex: startIndex ? startIndex : this.getStartIndex(),
       page: page,
       sortby: sortBy,
       sortOrder: sortOrder,

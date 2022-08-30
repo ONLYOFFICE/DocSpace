@@ -370,13 +370,13 @@ const SectionFilterContent = ({
         });
       }
 
-      if (roomsFilter.withoutTags) {
-        filterValues.push({
-          key: [t("NoTag")],
-          group: FilterGroups.roomFilterTags,
-          isMultiSelect: true,
-        });
-      }
+      // if (roomsFilter.withoutTags) {
+      //   filterValues.push({
+      //     key: [t("NoTag")],
+      //     group: FilterGroups.roomFilterTags,
+      //     isMultiSelect: true,
+      //   });
+      // }
 
       if (roomsFilter?.tags?.length > 0) {
         filterValues.push({
@@ -654,12 +654,12 @@ const SectionFilterContent = ({
           isMultiSelect: true,
         }));
 
-        tagsOptions.push({
-          key: t("NoTag"),
-          group: FilterGroups.roomFilterTags,
-          label: t("NoTag"),
-          isMultiSelect: true,
-        });
+        // tagsOptions.push({
+        //   key: t("NoTag"),
+        //   group: FilterGroups.roomFilterTags,
+        //   label: t("NoTag"),
+        //   isMultiSelect: true,
+        // });
 
         filterOptions.push({
           key: FilterGroups.roomFilterTags,

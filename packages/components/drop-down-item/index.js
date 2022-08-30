@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
 import { StyledDropdownItem, IconWrapper } from "./styled-drop-down-item";
+import { isNull } from "lodash";
 
 const DropDownItem = (props) => {
   //console.log("DropDownItem render");
@@ -20,6 +21,7 @@ const DropDownItem = (props) => {
     isActive,
     withoutIcon,
     noHover,
+    height,
   } = props;
 
   const onClickAction = (e) => {
@@ -37,12 +39,16 @@ const DropDownItem = (props) => {
     >
       {icon && (
         <IconWrapper>
-          {!withoutIcon && (
-            <ReactSVG
-              src={icon}
-              className={fillIcon ? "drop-down-item_icon" : ""}
-            />
-          )}
+          {!withoutIcon ? (
+            icon.includes("https://") || icon.includes("http://") ? (
+              <img src={icon} />
+            ) : (
+              <ReactSVG
+                src={icon}
+                className={fillIcon ? "drop-down-item_icon" : ""}
+              />
+            )
+          ) : null}
         </IconWrapper>
       )}
 
@@ -86,6 +92,8 @@ DropDownItem.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Accepts css text-overflow */
+  customHeight: PropTypes.number,
+  customHeightTablet: PropTypes.number,
   textOverflow: PropTypes.bool,
   fillIcon: PropTypes.bool,
   isSubMenu: PropTypes.bool,
@@ -105,6 +113,8 @@ DropDownItem.defaultProps = {
   isSubMenu: false,
   isActive: false,
   withoutIcon: false,
+  height: 32,
+  heightTablet: 36,
 };
 
 export default DropDownItem;

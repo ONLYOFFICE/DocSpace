@@ -155,7 +155,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
       <ModalDialog.Footer>
         <Button
           className="recover-button-dialog"
-          key="SendBtn-recover"
+          key="RecoverySendBtn"
           label={loading ? t("Common:Sending") : t("Common:SendButton")}
           size="normal"
           primary={true}
