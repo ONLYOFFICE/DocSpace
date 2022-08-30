@@ -91,6 +91,8 @@ declare global {
   }
   var IS_DEVELOPMENT: boolean;
   var PORT: number;
+  var IS_PERSONAL: boolean;
+  var IS_ROOMS_MODE: boolean;
 
   type assetsType = { [key: string]: string } | undefined;
 
