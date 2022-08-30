@@ -84,9 +84,6 @@ const StyledHeader = styled.div`
     `1px solid ${props.theme.modalDialog.headerBorderColor}`};
   margin-bottom: 16px;
   height: 52px;
-
-  display: flex;
-  align-items: center;
   padding: 0 16px 0;
 
   .heading {
@@ -104,12 +101,20 @@ const StyledBody = styled(Box)`
   padding-bottom: ${(props) =>
     props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
 
+  #modal-scroll > .scroll-body {
+    ${isMobile && "margin-right: 0 !important"}
+    padding-right: 16px !important;
+    ${(props) =>
+      props.isScrollLocked &&
+      css`
+        margin-right: 0 !important;
+        overflow: hidden !important;
+      `}
+  }
+
   ${(props) =>
     props.currentDisplayType === "aside" &&
     css`
-      .body_content-with_scroll {
-        ${isMobile && "margin-right: 8px;"}
-      }
       margin-right: ${props.withBodyScroll ? "-16px" : "0"};
       padding-bottom: 8px;
       height: 100%;

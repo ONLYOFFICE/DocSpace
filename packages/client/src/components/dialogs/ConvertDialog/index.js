@@ -35,8 +35,8 @@ const ConvertDialogComponent = (props) => {
 
   if (convertSingleFile && sortedFolder) {
     rootFolderTitle = isShareFolder
-      ? rootFoldersTitles[FolderType.USER]
-      : rootFoldersTitles[convertItem.rootFolderType];
+      ? rootFoldersTitles[FolderType.USER]?.title
+      : rootFoldersTitles[convertItem.rootFolderType]?.title;
   }
 
   const [hideMessage, setHideMessage] = useState(false);

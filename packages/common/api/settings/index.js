@@ -157,6 +157,21 @@ export function restoreGreetingSettings() {
   });
 }
 
+export function getAppearanceTheme() {
+  return request({
+    method: "get",
+    url: "/settings/colortheme.json",
+  });
+}
+
+export function sendAppearanceTheme(data) {
+  return request({
+    method: "put",
+    url: "/settings/colortheme.json",
+    data,
+  });
+}
+
 export function getLogoText() {
   return request({
     method: "get",
@@ -531,4 +546,12 @@ export function getMetadata() {
 
 export function getOforms(url) {
   return axios.get(url);
+}
+
+export function getStorageRegions() {
+  const options = {
+    method: "get",
+    url: "/settings/storage/s3/regions",
+  };
+  return request(options);
 }

@@ -3,12 +3,13 @@ import PropTypes from "prop-types";
 import Loader from "../loader";
 import StyledButton from "./styled-button";
 import Base from "../themes/base";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 const Button = React.forwardRef((props, ref) => {
   const { primary, size, isLoading, icon, label } = props;
   return (
-    <StyledButton innerRef={ref} {...props}>
+    <ColorTheme {...props} innerRef={ref} type={ThemeType.Button}>
       <div className="button-content">
         {(isLoading || icon) &&
           (isLoading ? (
@@ -25,7 +26,7 @@ const Button = React.forwardRef((props, ref) => {
           ))}
         {label}
       </div>
-    </StyledButton>
+    </ColorTheme>
   );
 });
 

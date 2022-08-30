@@ -3,10 +3,7 @@ import Text from "@docspace/components/text";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import {
-  StyledInfoPanelHeader,
-  StyledInfoPanelToggleWrapper,
-} from "./styles/styles";
+import { StyledInfoPanelHeader } from "./styles/styles";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
 import Submenu from "@docspace/components/submenu";
@@ -17,14 +14,10 @@ import {
   isTablet,
 } from "@docspace/components/utils/device";
 
-const InfoPanelHeaderContent = ({
-  t,
-  setIsVisible,
-  roomState,
-  setRoomState,
-  isGallery,
-  isRoom,
-}) => {
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
+const InfoPanelHeaderContent = (props) => {
+  const { t, setIsVisible, roomState, setRoomState, isGallery, isRoom } = props;
   const closeInfoPanel = () => setIsVisible(false);
 
   const submenuData = [
@@ -62,7 +55,10 @@ const InfoPanelHeaderContent = ({
             ? t("FormGallery:FormTemplateInfo")
             : t("Common:Info")}
         </Text>
-        <StyledInfoPanelToggleWrapper
+
+        <ColorTheme
+          {...props}
+          type={ThemeType.InfoPanelToggle}
           isRootFolder={true}
           isInfoPanelVisible={true}
         >
@@ -77,7 +73,7 @@ const InfoPanelHeaderContent = ({
               />
             </div>
           )}
-        </StyledInfoPanelToggleWrapper>
+        </ColorTheme>
       </div>
 
       {isRoom && (

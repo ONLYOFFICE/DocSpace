@@ -955,6 +955,7 @@ public class EntryManager
             var folders = entries.Where(r => r.FileEntryType == FileEntryType.Folder).Except(pinnedRooms).Except(rooms);
             var files = entries.Where(r => r.FileEntryType == FileEntryType.File);
             pinnedRooms = pinnedRooms.OrderBy(r => r, comparer);
+            rooms = rooms.OrderBy(r => r, comparer);
             folders = folders.OrderBy(r => r, comparer);
             files = files.OrderBy(r => r, comparer);
 

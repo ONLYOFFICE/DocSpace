@@ -106,6 +106,7 @@ export default inject(
     dialogsStore,
     treeFoldersStore,
     selectedFolderStore,
+    oformsStore,
   }) => {
     const { personal, culture } = auth.settingsStore;
     const { roomState, isRoom, calculateisRoom } = auth.infoPanelStore;
@@ -116,9 +117,9 @@ export default inject(
       bufferSelection,
       getFolderInfo,
       getShareUsers,
-      gallerySelected,
       createThumbnail,
     } = filesStore;
+    const { gallerySelected } = oformsStore;
 
     const {
       isRecycleBinFolder,

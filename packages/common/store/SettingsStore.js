@@ -8,6 +8,7 @@ import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 
 import { Dark, Base } from "@docspace/components/themes";
+import { initPluginStore } from "../../client/src/helpers/plugins";
 
 const { proxyURL } = AppServerConfig;
 
@@ -60,7 +61,7 @@ class SettingsStore {
   enabledJoin = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
-  urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms?populate=*&locale=";
+  urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms";
 
   logoUrl = combineUrl(proxyURL, "/static/images/logo.docspace.react.svg");
   customNames = {
@@ -128,6 +129,15 @@ class SettingsStore {
   helpLink = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
+
+
+  appearanceTheme = [];
+  selectedThemeId = null;
+  currentColorScheme = null;
+
+  enablePlugins = false;
+  pluginOptions = [];
+
 
   constructor() {
     makeAutoObservable(this);
@@ -233,6 +243,13 @@ class SettingsStore {
   getPortalSettings = async () => {
     const origSettings = await this.getSettings();
 
+    if (origSettings?.plugins?.enabled) {
+      initPluginStore();
+
+      this.enablePlugins = origSettings.plugins.enabled;
+      this.pluginOptions = origSettings.plugins.allow;
+    }
+
     if (
       origSettings.nameSchemaId &&
       this.tenantStatus !== TenantStatus.PortalRestore
@@ -249,7 +266,7 @@ class SettingsStore {
     this.setIsLoading(true);
     const requests = [];
 
-    requests.push(this.getPortalSettings());
+    requests.push(this.getPortalSettings(), this.getAppearanceTheme());
 
     this.tenantStatus !== TenantStatus.PortalRestore &&
       requests.push(this.getBuildVersionInfo());
@@ -548,6 +565,34 @@ class SettingsStore {
   get isFrame() {
     return this.frameConfig?.name === window.name;
   }
+
+  setAppearanceTheme = (theme) => {
+    this.appearanceTheme = theme;
+  };
+
+  setSelectThemeId = (selected) => {
+    this.selectedThemeId = selected;
+  };
+
+  setCurrentColorScheme = (currentColorScheme) => {
+    this.currentColorScheme = currentColorScheme;
+  };
+
+  getAppearanceTheme = async () => {
+    const res = await api.settings.getAppearanceTheme();
+
+    const currentColorScheme = res.themes.find((theme) => {
+      return res.selected === theme.id;
+    });
+
+    this.setAppearanceTheme(res.themes);
+    this.setSelectThemeId(res.selected);
+    this.setCurrentColorScheme(currentColorScheme);
+  };
+
+  sendAppearanceTheme = async (data) => {
+    const res = await api.settings.sendAppearanceTheme(data);
+  };
 }
 
 export default SettingsStore;

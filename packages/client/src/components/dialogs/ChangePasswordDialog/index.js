@@ -82,7 +82,7 @@ class ChangePasswordDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            key="SendBtn"
+            key="ChangePasswordSendBtn"
             label={t("Common:SendButton")}
             size="normal"
             scale
