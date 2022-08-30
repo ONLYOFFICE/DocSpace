@@ -185,19 +185,12 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                             await FolderDao.DeleteFolderAsync(folder.Id);
 
-                            if (isRoom)
+                            if (isRoom && folder.ProviderEntry)
                             {
-                                if (folder.ProviderEntry)
-                                {
-                                    await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT, false);
-                                }
+                                await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
+                            }
 
-                                filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
-                            }
-                            else
-                            {
-                                filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
-                            }
+                            filesMessageService.Send(folder, _headers, isRoom ? MessageAction.RoomDeleted : MessageAction.FolderDeleted, folder.Title);
 
                             ProcessedFolder(folderId);
                         }
@@ -214,11 +207,16 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         {
                             if (immediately)
                             {
-                                await FolderDao.DeleteFolderAsync(folder.Id);
-
                                 if (isRoom)
                                 {
                                     await roomLogoManager.DeleteAsync(folder.Id);
+                                }
+
+                                await FolderDao.DeleteFolderAsync(folder.Id);
+
+                                if (isRoom && folder.ProviderEntry)
+                                {
+                                    await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
                                 }
 
                                 if (isNeedSendActions)
