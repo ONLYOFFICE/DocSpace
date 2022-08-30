@@ -42,7 +42,9 @@ const EmptyScreen = ({ t }) => {
         />
       </div>
 
-      <div className="empty-screen-text">{t("AccountsEmptyScreenText")}</div>
+      <div className="empty-screen-text">
+        {t("InfoPanel:AccountsEmptyScreenText")}
+      </div>
     </EmptyScreenContainer>
   );
 };

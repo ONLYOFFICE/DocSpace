@@ -18,8 +18,8 @@ const InfoPanelBodyContent = ({
   isAdmin,
   changeUserType,
   userId,
+  getUserContextOptions,
 }) => {
-  console.log(selection);
   return (
     <StyledInfoBody>
       {selection.length === 0 ? (
@@ -32,6 +32,7 @@ const InfoPanelBodyContent = ({
           isAdmin={isAdmin}
           changeUserType={changeUserType}
           userId={userId}
+          getUserContextOptions={getUserContextOptions}
         />
       ) : (
         <SeveralItems count={selection.length} />
@@ -44,6 +45,7 @@ InfoPanelBodyContent.defaultProps = { theme: Base };
 
 export default inject(({ auth, peopleStore }) => {
   const { selection, bufferSelection } = peopleStore.selectionStore;
+  const { getUserContextOptions } = peopleStore.contextOptionsStore;
   const { changeType: changeUserType } = peopleStore;
 
   const { isOwner, isAdmin, id: userId } = auth.userStore.user;
@@ -54,17 +56,26 @@ export default inject(({ auth, peopleStore }) => {
     ? [bufferSelection]
     : [];
 
-  return { selection: selectedUsers, isOwner, isAdmin, changeUserType, userId };
+  return {
+    selection: selectedUsers,
+    getUserContextOptions,
+    isOwner,
+    isAdmin,
+    changeUserType,
+    userId,
+  };
 })(
   withRouter(
     withTranslation([
+      "People",
       "InfoPanel",
       "ConnectDialog",
       "Common",
-      "People",
       "PeopleTranslations",
       "Settings",
       "SmartBanner",
+      "DeleteProfileEverDialog",
+      "Translations",
     ])(
       withLoader(observer(InfoPanelBodyContent))(
         <Loaders.InfoPanelBodyLoader />

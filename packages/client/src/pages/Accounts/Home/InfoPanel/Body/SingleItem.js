@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import Text from "@docspace/components/text";
 import ComboBox from "@docspace/components/combobox";
+import ContextMenuButton from "@docspace/components/context-menu-button";
 
 import {
   StyledInfoHeaderContainer,
@@ -18,11 +19,14 @@ const SingleItem = ({
   isAdmin,
   changeUserType,
   userId,
+  getUserContextOptions,
 }) => {
   const [statusLabel, setStatusLabel] = React.useState("");
 
   const user = selection[0];
-  const { role, statusType } = user;
+  const { role, statusType, options } = user;
+
+  console.log(user);
 
   React.useEffect(() => {
     getStatusLabel();
@@ -96,6 +100,12 @@ const SingleItem = ({
 
   const typeLabel = getRoomTypeLabel(role);
 
+  const getData = () => {
+    const newOptions = options.filter((option) => option !== "details");
+
+    return getUserContextOptions(t, newOptions, user);
+  };
+
   return (
     <>
       <StyledInfoHeaderContainer isPending={isPending}>
@@ -116,11 +126,12 @@ const SingleItem = ({
           )}
           {isPending && <Badges statusType={user.statusType} />}
         </div>
+        <ContextMenuButton className="context-button" getData={getData} />
       </StyledInfoHeaderContainer>
       <StyledInfoDataContainer>
         <div className="data__header">
           <Text className={"header__text"} noSelect title={t("Data")}>
-            {t("Data")}
+            {t("InfoPanel:Data")}
           </Text>
         </div>
         <div className="data__body">
@@ -167,12 +178,8 @@ const SingleItem = ({
               {typeLabel}
             </Text>
           )}
-          <Text
-            className={"info_field"}
-            noSelect
-            title={t("People:UserStatus")}
-          >
-            {t("People:UserStatus")}
+          <Text className={"info_field"} noSelect title={t("UserStatus")}>
+            {t("UserStatus")}
           </Text>
           <Text
             className={"info_data first-row"}

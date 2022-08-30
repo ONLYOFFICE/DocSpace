@@ -12,7 +12,7 @@ const SeveralItems = ({ t, count }) => {
       <StyledTitle>
         <Avatar size={"min"} role={"user"} />
         <Text className="text" fontWeight={600} fontSize="16px">
-          {`${t("SelectedUsers")}: ${count}`}
+          {`${t("InfoPanel:SelectedUsers")}: ${count}`}
         </Text>
       </StyledTitle>
 

@@ -68,6 +68,12 @@ const StyledInfoHeaderContainer = styled.div`
       color: ${(props) => props.theme.text.disableColor};
     }
   }
+
+  .context-button {
+    padding-top: 24px;
+
+    margin-left: auto;
+  }
 `;
 
 StyledInfoHeaderContainer.defaultProps = { theme: Base };
