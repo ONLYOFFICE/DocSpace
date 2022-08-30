@@ -18,9 +18,9 @@ const InfiniteLoaderComponent = (props) => {
   }
 
   return viewAs === "tile" ? (
-    <GridComponent scroll={scroll} {...props} />
+    <GridComponent scroll={scroll ?? window} {...props} />
   ) : (
-    <ListComponent scroll={scroll} {...props} />
+    <ListComponent scroll={scroll ?? window} {...props} />
   );
 };
 InfiniteLoaderComponent.propTypes = {
