@@ -26,6 +26,7 @@ class PaymentStore {
   maxManagersCount = 1000;
   maxSliderManagersNumber = 999;
   minManagersCount = 1;
+  paymentTariff = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -125,6 +126,13 @@ class PaymentStore {
   get isNeedRequest() {
     return this.managersCount >= this.maxManagersCount;
   }
+
+  setPaymentTariff = async () => {
+    try {
+      const res = await api.portal.getPaymentTariff();
+      if (res) this.paymentTariff = res;
+    } catch (e) {}
+  };
 }
 
 export default PaymentStore;

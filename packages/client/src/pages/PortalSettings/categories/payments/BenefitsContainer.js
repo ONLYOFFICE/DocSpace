@@ -26,14 +26,21 @@ const StyledBody = styled.div`
   .payment-benefits {
     display: flex;
     margin-bottom: 16px;
-    align-items: baseline;
+    align-items: flex-start;
     p {
       margin-left: 8px;
+      margin-bottom: 0;
+    }
+
+    svg {
+      path {
+        //fill: red !important;
+      }
     }
   }
 `;
 
-const BenefitsContainer = ({ t, availableTariffs }) => {
+const BenefitsContainer = ({ t, features }) => {
   return (
     <StyledBody>
       <Text
@@ -44,11 +51,14 @@ const BenefitsContainer = ({ t, availableTariffs }) => {
       >
         {t("Benefits")}
       </Text>
-      {availableTariffs.map((item, index) => {
-        return (
+      {features.map((item, index) => {
+        return item.title ? (
           <div className="payment-benefits" key={index}>
-            <Text noSelect>{"*" + item}</Text>
+            <div dangerouslySetInnerHTML={{ __html: item.image }} />
+            <Text noSelect>{item.title}</Text>
           </div>
+        ) : (
+          <></>
         );
       })}
     </StyledBody>
@@ -56,8 +66,9 @@ const BenefitsContainer = ({ t, availableTariffs }) => {
 };
 
 export default inject(({ payments }) => {
-  const { tariffsInfo } = payments;
+  const { paymentTariff } = payments;
 
-  const availableTariffs = ["first", "second", "third", "forth", "five"];
-  return { tariffsInfo, availableTariffs };
+  return {
+    features: paymentTariff[0]?.features,
+  };
 })(observer(BenefitsContainer));

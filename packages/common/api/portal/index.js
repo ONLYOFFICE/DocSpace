@@ -205,3 +205,7 @@ export function updatePayment(adminCount) {
 export function getCurrencies() {
   return request({ method: "get", url: "/portal/payment/currencies" });
 }
+
+export function getPaymentTariff() {
+  return request({ method: "get", url: "/portal/payment/tariff" });
+}

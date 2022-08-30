@@ -54,7 +54,7 @@ const StyledBody = styled.div`
 
 let dueDate, fromDate, byDate;
 const PaymentsPage = ({
-  setQuota,
+  setPaymentTariff,
   getPaymentPrices,
   pricePerManager,
   setPortalQuota,
@@ -97,7 +97,7 @@ const PaymentsPage = ({
     (async () => {
       const requests = [];
 
-      requests.push(setQuota());
+      requests.push(setPaymentTariff());
 
       if (Object.keys(portalQuota).length === 0)
         requests.push(setPortalQuota());
@@ -222,7 +222,6 @@ PaymentsPage.propTypes = {
 
 export default inject(({ auth, payments }) => {
   const {
-    setQuota,
     setPortalQuota,
     setPortalTariff,
     language,
@@ -237,10 +236,15 @@ export default inject(({ auth, payments }) => {
   } = auth;
 
   const { organizationName, theme } = auth.settingsStore;
-  const { setTariffsInfo, tariffsInfo, setPaymentAccount } = payments;
+  const {
+    setTariffsInfo,
+    tariffsInfo,
+    setPaymentAccount,
+    setPaymentTariff,
+  } = payments;
 
   return {
-    setQuota,
+    setPaymentTariff,
     isFreeTariff,
     setPortalQuota,
     setPortalTariff,
