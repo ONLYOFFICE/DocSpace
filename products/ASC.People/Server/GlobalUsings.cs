@@ -63,6 +63,7 @@ global using ASC.Web.Core;
 global using ASC.Web.Core.Mobile;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Users;
+global using ASC.Web.Core.Utility;
 global using ASC.Web.Files.Classes;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
