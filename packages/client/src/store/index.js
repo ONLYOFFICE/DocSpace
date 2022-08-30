@@ -54,8 +54,6 @@ const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
 
 const filesStore = new FilesStore(
   authStore,
-  authStore.settingsStore,
-  authStore.userStore,
   selectedFolderStore,
   treeFoldersStore,
   settingsStore,
