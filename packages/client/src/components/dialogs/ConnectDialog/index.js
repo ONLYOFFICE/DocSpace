@@ -33,6 +33,8 @@ const PureConnectDialogContainer = (props) => {
     folderFormValidation,
     updateInfo,
     isConnectionViaBackupModule,
+    roomCreation,
+    setSaveThirdpartyResponse,
   } = props;
   const {
     corporate,
@@ -159,9 +161,12 @@ const PureConnectDialogContainer = (props) => {
       isCorporate,
       customerTitle,
       provider_key || key,
-      provider_id
+      provider_id,
+      roomCreation
     )
-      .then(async () => {
+      .then(async (res) => {
+        setSaveThirdpartyResponse(res);
+
         const folderId = isCorporate ? commonFolderId : myFolderId;
         const subfolders = await getSubfolders(folderId);
         const node = treeFolders.find((x) => x.id === folderId);
@@ -240,7 +245,12 @@ const PureConnectDialogContainer = (props) => {
       </ModalDialog.Header>
       <ModalDialog.Body>
         {isAccount ? (
-          <FieldContainer labelVisible labelText={t("Account")} isVertical>
+          <FieldContainer
+            style={roomCreation ? { margin: "0" } : {}}
+            labelVisible
+            labelText={t("Account")}
+            isVertical
+          >
             <Button
               label={t("Reconnect")}
               size="normal"
@@ -295,6 +305,7 @@ const PureConnectDialogContainer = (props) => {
               isVertical
               hasError={!isPasswordValid}
               errorMessage={t("Common:RequiredField")}
+              style={roomCreation ? { margin: "0" } : {}}
             >
               <PasswordInput
                 hasError={!isPasswordValid}
@@ -308,7 +319,7 @@ const PureConnectDialogContainer = (props) => {
             </FieldContainer>
           </>
         )}
-        {!isConnectionViaBackupModule && (
+        {!(isConnectionViaBackupModule || roomCreation) && (
           <FieldContainer
             labelText={t("ConnectFolderTitle")}
             isRequired
@@ -327,7 +338,7 @@ const PureConnectDialogContainer = (props) => {
           </FieldContainer>
         )}
 
-        {!personal && !isConnectionViaBackupModule && (
+        {!personal && !(isConnectionViaBackupModule || roomCreation) && (
           <Checkbox
             label={t("ConnectMakeShared")}
             isChecked={isCorporate}
@@ -354,7 +365,6 @@ const PureConnectDialogContainer = (props) => {
           scale={isAccount}
           onClick={onClose}
           isDisabled={isLoading}
-          isLoading={isLoading}
         />
       </ModalDialog.Footer>
     </ModalDialog>
@@ -403,6 +413,8 @@ export default inject(
       connectDialogVisible: visible,
       setConnectDialogVisible,
       connectItem,
+      roomCreation,
+      setSaveThirdpartyResponse,
     } = dialogsStore;
 
     const item = isConnectionViaBackupModule ? passedItem : connectItem;
@@ -416,6 +428,8 @@ export default inject(
       providers,
       visible,
       item,
+      roomCreation,
+      setSaveThirdpartyResponse,
       folderFormValidation,
 
       getOAuthToken,

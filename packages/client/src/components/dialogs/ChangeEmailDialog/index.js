@@ -153,7 +153,7 @@ class ChangeEmailDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            key="SendBtn"
+            key="ChangeEmailSendBtn"
             label={t("Common:SendButton")}
             size="normal"
             scale
