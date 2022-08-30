@@ -575,6 +575,7 @@ public class SharePointProviderInfo : IProviderInfo
             result.FilesCount = 0;
             result.FoldersCount = 0;
             result.Error = errorFolder.Error;
+            result.Private = Private;
 
             return result;
         }
@@ -597,6 +598,7 @@ public class SharePointProviderInfo : IProviderInfo
         result.Title = isRoot ? CustomerTitle : MakeTitle(folder.Name);
         result.FilesCount = 0;
         result.FoldersCount = 0;
+        result.Private = Private;
 
         SetFolderType(result, isRoot);
 
