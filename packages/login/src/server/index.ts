@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Response } from "express";
 import template from "./lib/template";
 import path from "path";
 import compression from "compression";
@@ -12,8 +12,6 @@ import i18nextMiddleware, { I18next } from "i18next-express-middleware";
 import i18next from "./i18n";
 import cookieParser from "cookie-parser";
 import { LANGUAGE } from "@docspace/common/constants";
-import parser from "accept-language-parser";
-import { getPortalCultures } from "@docspace/common/api/settings";
 import { initSSR } from "@docspace/common/api/client";
 
 let port = PORT;
@@ -36,44 +34,26 @@ app.use(logger("dev", { stream: stream }));
 if (IS_DEVELOPMENT) {
   app.get("*", async (req: ILoginRequest, res: Response) => {
     const { i18n, cookies, headers, query, t, url } = req;
+    let initialState: IInitialState;
+    let assets: assetsType;
 
     initSSR(headers);
 
-    let currentLanguage = "en";
-
-    if (cookies && cookies[LANGUAGE]) {
-      currentLanguage = cookies[LANGUAGE];
-    } else {
-      const availableLanguages: string[] = await getPortalCultures();
-      const parsedAcceptLanguages: object[] = parser.parse(
-        headers["accept-language"]
-      );
-
-      const detectedLanguage:
-        | IAcceptLanguage
-        | any = parsedAcceptLanguages.find(
-        (acceptLang: IAcceptLanguage) =>
-          typeof acceptLang === "object" &&
-          acceptLang?.code &&
-          availableLanguages.includes(acceptLang.code)
-      );
-
-      if (typeof detectedLanguage === "object")
-        currentLanguage = detectedLanguage.code;
-    }
-
-    if (i18n) await i18n.changeLanguage(currentLanguage);
-
-    let initialI18nStore = {};
-    if (i18n) initialI18nStore = i18n.services.resourceStore.data;
-
-    let assets: assetsType;
-    let initialState: IInitialState;
-
     try {
-      assets = await getAssets();
-
       initialState = await getInitialState(query);
+
+      let currentLanguage = initialState.portalSettings.culture;
+
+      if (cookies && cookies[LANGUAGE]) {
+        currentLanguage = cookies[LANGUAGE];
+      }
+
+      if (i18n) await i18n.changeLanguage(currentLanguage);
+
+      let initialI18nStore = {};
+      if (i18n) initialI18nStore = i18n.services.resourceStore.data;
+
+      assets = await getAssets();
 
       const { component, styleTags } = renderApp(i18n, initialState, url);
 
