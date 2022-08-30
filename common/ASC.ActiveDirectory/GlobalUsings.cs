@@ -69,6 +69,7 @@ global using ASC.Security.Cryptography;
 global using ASC.Web.Core;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Users;
+global using ASC.Web.Core.Utility;
 global using ASC.Web.Studio.Utility;
 
 global using Microsoft.EntityFrameworkCore;

@@ -34,10 +34,14 @@ namespace ASC.ActiveDirectory.Base.Data;
 public class LdapObjectExtension
 {
     private readonly TenantUtil _tenantUtil;
+    private readonly SettingsManager _settingsManager;
+    private readonly TenantManager _tenantManager;
     private readonly ILogger<LdapObjectExtension> _logger;
-    public LdapObjectExtension(TenantUtil tenantUtil, ILogger<LdapObjectExtension> logger)
+    public LdapObjectExtension(TenantUtil tenantUtil, SettingsManager settingsManager, TenantManager tenantManager, ILogger<LdapObjectExtension> logger)
     {
         _tenantUtil = tenantUtil;
+        _settingsManager = settingsManager;
+        _tenantManager = tenantManager;
         _logger = logger;
     }
     public string GetAttribute(LdapObject ldapObject, string attribute)
@@ -145,7 +149,8 @@ public class LdapObjectExtension
         var emails = GetContacts(ldapUser, Mapping.AdditionalMail, settings);
         var skype = GetContacts(ldapUser, Mapping.Skype, settings);
 
-        var quota = settings.LdapMapping.ContainsKey(Mapping.UserQuotaLimit) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.UserQuotaLimit]) : "10Mb";
+        var quotaSettings = _settingsManager.LoadForTenant<UserQuotaSettings>(_tenantManager.GetCurrentTenant().Id);
+        var quota = settings.LdapMapping.ContainsKey(Mapping.UserQuotaLimit) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.UserQuotaLimit]) : quotaSettings.DefaultUserQuota;
 
         if (string.IsNullOrEmpty(userName))
         {
@@ -170,7 +175,7 @@ public class LdapObjectExtension
             Location = !string.IsNullOrEmpty(location) ? location : string.Empty,
             WorkFromDate = _tenantUtil.DateTimeNow(),
             ContactsList = contacts,
-            QuotaLimit = quota
+            QuotaLimit = quotaSettings.EnableUserQuota ? quota : ""
         };
 
         if (!string.IsNullOrEmpty(firstName))
