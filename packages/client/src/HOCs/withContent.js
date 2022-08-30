@@ -110,17 +110,9 @@ export default function withContent(WrappedContent) {
 
   return inject(
     (
-      {
-        filesActionsStore,
-        filesStore,
-        treeFoldersStore,
-        auth,
-        dialogsStore,
-        uploadDataStore,
-      },
+      { filesStore, treeFoldersStore, auth, dialogsStore, uploadDataStore },
       { item }
     ) => {
-      const { editCompleteAction } = filesActionsStore;
       const {
         createFile,
         createFolder,
@@ -133,9 +125,9 @@ export default function withContent(WrappedContent) {
         isUpdatingRowItem,
         passwordEntryProcess,
         addActiveItems,
-        gallerySelected,
         setCreatedItem,
       } = filesStore;
+
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const {
         isRecycleBinFolder,
@@ -164,7 +156,6 @@ export default function withContent(WrappedContent) {
         createFile,
         createFolder,
         culture,
-        editCompleteAction,
 
         folderFormValidation,
         homepage: config.homepage,
@@ -192,7 +183,6 @@ export default function withContent(WrappedContent) {
 
         titleWithoutExt,
 
-        gallerySelected,
         setCreatedItem,
         personal,
       };

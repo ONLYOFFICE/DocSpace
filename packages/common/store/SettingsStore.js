@@ -61,7 +61,7 @@ class SettingsStore {
   enabledJoin = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
-  urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms?populate=*&locale=";
+  urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms";
 
   logoUrl = combineUrl(proxyURL, "/static/images/logo.docspace.react.svg");
   customNames = {
@@ -238,7 +238,7 @@ class SettingsStore {
   getPortalSettings = async () => {
     const origSettings = await this.getSettings();
 
-    if (origSettings.plugins.enabled) {
+    if (origSettings?.plugins?.enabled) {
       initPluginStore();
 
       this.enablePlugins = origSettings.plugins.enabled;

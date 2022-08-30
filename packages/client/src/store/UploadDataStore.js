@@ -581,6 +581,7 @@ class UploadDataStore {
       filter,
       setFilter,
     } = this.filesStore;
+
     if (window.location.pathname.indexOf("/history") === -1) {
       const newFiles = files;
       const newFolders = folders;
@@ -617,7 +618,7 @@ class UploadDataStore {
             newFolders.unshift(folderInfo);
             setFolders(newFolders);
             const newFilter = filter;
-            newFilter.total = newFilter.total += 1;
+            newFilter.total += 1;
             setFilter(newFilter);
           }
         } else {
@@ -626,7 +627,7 @@ class UploadDataStore {
               newFiles.unshift(currentFile.fileInfo);
               setFiles(newFiles);
               const newFilter = filter;
-              newFilter.total = newFilter.total += 1;
+              newFilter.total += 1;
               setFilter(newFilter);
             } else if (!this.settingsStore.storeOriginalFiles) {
               newFiles[fileIndex] = currentFile.fileInfo;
@@ -640,7 +641,7 @@ class UploadDataStore {
         filter.filterType ||
         filter.authorType ||
         filter.search ||
-        filter.page !== 0;
+        (this.filesStore.withPaging && filter.page !== 0);
 
       if ((!currentFile && !folderInfo) || isFiltered) return;
       if (folderInfo && this.selectedFolderStore.id === folderInfo.id) return;
@@ -653,7 +654,7 @@ class UploadDataStore {
         }
       }
 
-      if (filter.total >= filter.pageCount) {
+      if (filter.total >= filter.pageCount && this.filesStore.withPaging) {
         if (files.length) {
           fileIndex === -1 && newFiles.pop();
           addNewFile();
@@ -926,7 +927,7 @@ class UploadDataStore {
   };
 
   finishUploadFiles = () => {
-    const { fetchFiles, filter } = this.filesStore;
+    const { fetchFiles, filter, withPaging } = this.filesStore;
 
     const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
 
@@ -947,7 +948,7 @@ class UploadDataStore {
 
     if (this.files.length > 0) {
       const toFolderId = this.files[0]?.toFolderId;
-      fetchFiles(toFolderId, filter);
+      withPaging && fetchFiles(toFolderId, filter);
 
       if (toFolderId) {
         const { socketHelper } = this.filesStore.settingsStore;

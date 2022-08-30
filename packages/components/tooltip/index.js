@@ -31,6 +31,7 @@ class Tooltip extends Component {
       style,
       color,
       maxWidth,
+      ...rest
     } = this.props;
 
     const renderTooltip = () => (
@@ -58,6 +59,7 @@ class Tooltip extends Component {
           afterShow={afterShow}
           afterHide={afterHide}
           isCapture={true}
+          {...rest}
         >
           {children}
         </ReactTooltip>
