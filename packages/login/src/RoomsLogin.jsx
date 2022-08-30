@@ -197,7 +197,7 @@ const Form = (props) => {
 
     if (hasError) return false;
 
-    history.push("/code"); //TODO: confirm link?
+    history.push("/login/code"); //TODO: confirm link?
   };
 
   const onLoginWithPasswordClick = () => {
