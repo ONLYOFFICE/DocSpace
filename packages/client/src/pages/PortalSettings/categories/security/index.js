@@ -7,7 +7,6 @@ import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
-import AccessRights from "./access-rights/index.js";
 import AccessPortal from "./access-portal/index.js";
 import SecurityLoader from "./sub-components/loaders/security-loader";
 import LoginHistory from "./login-history/index.js";
@@ -27,11 +26,6 @@ const SecurityWrapper = (props) => {
       id: "access-portal",
       name: t("PortalAccess"),
       content: <AccessPortal />,
-    },
-    {
-      id: "access-rights",
-      name: t("Common:AccessRights"),
-      content: <AccessRights />,
     },
     {
       id: "login-history",
