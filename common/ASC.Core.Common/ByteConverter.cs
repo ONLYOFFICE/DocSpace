@@ -45,36 +45,42 @@ public static class ByteConverter
     public static long ConvertSizeToBytes(string size)
     {
         long bytes = 0;
-        var regex = new Regex(@"\d+|\w+");
-        var matches = regex.Matches(size);
-        if (matches.Count > 0)
+        try
         {
-            var num = int.Parse(matches[0].Value);
-            var unit = matches[1].Value.ToLower();
-            switch (unit)
+            var regex = new Regex(@"\d+|\w+");
+            var matches = regex.Matches(size);
+            if (matches.Count > 0)
             {
-                case "bytes":
-                    bytes = num;
-                break;
-                case "kb":
-                    bytes = num * 1024;
-                break;
-                case "mb":
-                    bytes = Convert.ToInt64(num * Math.Pow(1024, 2)); 
-                break;
-                case "gb":
-                    bytes = Convert.ToInt64(num * Math.Pow(1024, 3));
-                break;
-                case "tb":
-                    bytes = Convert.ToInt64(num * Math.Pow(1024, 4));
-                break;
-                case "pb":
-                    bytes = Convert.ToInt64(num * Math.Pow(1024, 5));
-                break;
+                var num = int.Parse(matches[0].Value);
+                var unit = matches[1].Value.ToLower();
+                switch (unit)
+                {
+                    case "bytes":
+                        bytes = num;
+                        break;
+                    case "kb":
+                        bytes = num * 1024;
+                        break;
+                    case "mb":
+                        bytes = Convert.ToInt64(num * Math.Pow(1024, 2));
+                        break;
+                    case "gb":
+                        bytes = Convert.ToInt64(num * Math.Pow(1024, 3));
+                        break;
+                    case "tb":
+                        bytes = Convert.ToInt64(num * Math.Pow(1024, 4));
+                        break;
+                    case "pb":
+                        bytes = Convert.ToInt64(num * Math.Pow(1024, 5));
+                        break;
+                }
+                return bytes;
             }
-            return bytes;
         }
-
+        catch(Exception e)
+        {
+            return -1;
+        }
         return -1;
     }
 }
