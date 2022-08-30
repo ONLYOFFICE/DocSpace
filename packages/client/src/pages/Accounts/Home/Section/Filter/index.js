@@ -12,7 +12,7 @@ import { withLayoutSize } from "@docspace/common/utils";
 
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 
-const getEmployeeStatus = (filterValues) => {
+const getStatus = (filterValues) => {
   const employeeStatus = result(
     find(filterValues, (value) => {
       return value.group === "filter-status";
@@ -21,17 +21,6 @@ const getEmployeeStatus = (filterValues) => {
   );
 
   return employeeStatus ? +employeeStatus : null;
-};
-
-const getActivationStatus = (filterValues) => {
-  const activationStatus = result(
-    find(filterValues, (value) => {
-      return value.group === "filter-email";
-    }),
-    "key"
-  );
-
-  return activationStatus ? +activationStatus : null;
 };
 
 const getRole = (filterValues) => {
@@ -69,22 +58,30 @@ const SectionFilterContent = ({
 }) => {
   // TODO:
   const onFilter = (data) => {
-    const employeeStatus = getEmployeeStatus(data);
-    const activationStatus = getActivationStatus(data);
+    const status = getStatus(data);
+
     const role = getRole(data);
     const group = getGroup(data);
 
     const newFilter = filter.clone();
+
+    if (status === 3) {
+      newFilter.employeeStatus = 2;
+      newFilter.activationStatus = null;
+    } else {
+      newFilter.employeeStatus = null;
+      newFilter.activationStatus = status;
+    }
+
     newFilter.page = 0;
 
-    newFilter.employeeStatus = employeeStatus;
-    newFilter.activationStatus = activationStatus;
     newFilter.role = role;
     newFilter.group = group;
 
     setIsLoading(true);
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
+
   // TODO:
   const onSort = (sortId, sortDirection) => {
     const sortBy = sortId;
@@ -99,6 +96,7 @@ const SectionFilterContent = ({
 
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
+
   // TODO: change fetchPeople
   const onSearch = (data = "") => {
     const newFilter = filter.clone();
@@ -109,6 +107,7 @@ const SectionFilterContent = ({
 
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
+
   // TODO: change keys
   const getData = async () => {
     const { userCaption } = customNames;
@@ -121,17 +120,17 @@ const SectionFilterContent = ({
         isHeader: true,
       },
       {
-        key: "1",
+        key: 1,
         group: "filter-status",
         label: t("Common:Active"),
       },
       {
-        key: "3",
+        key: 2,
         group: "filter-status",
         label: t("PeopleTranslations:PendingTitle"),
       },
       {
-        key: "2",
+        key: 3,
         group: "filter-status",
         label: t("PeopleTranslations:DisabledEmployeeStatus"),
       },
@@ -143,13 +142,14 @@ const SectionFilterContent = ({
         group: "filter-type",
         label: t("Common:Type"),
         isHeader: true,
+        isLast: true,
       },
       { key: "admin", group: "filter-type", label: t("Administrator") },
-      {
-        key: "manager",
-        group: "filter-type",
-        label: "TODO:Manager",
-      },
+      // {
+      //   key: "manager",
+      //   group: "filter-type",
+      //   label: "TODO:Manager",
+      // },
       {
         key: "user",
         group: "filter-type",
@@ -202,14 +202,15 @@ const SectionFilterContent = ({
 
     const filterOptions = [];
 
-    filterOptions.push(statusItems);
-    filterOptions.push(typeItems);
-    filterOptions.push(roleItems);
-    filterOptions.push(accountItems);
-    filterOptions.push(roomItems);
+    filterOptions.push(...statusItems);
+    filterOptions.push(...typeItems);
+    // filterOptions.push(...roleItems);
+    // filterOptions.push(...accountItems);
+    // filterOptions.push(...roomItems);
 
     return filterOptions;
   };
+
   //TODO:
   const getSortData = React.useCallback(() => {
     return [
@@ -221,10 +222,12 @@ const SectionFilterContent = ({
       { key: "lastname", label: t("Common:ByLastNameSorting"), default: true },
     ];
   }, [t]);
+
   //TODO:
   const getSelectedInputValue = React.useCallback(() => {
     return filter.search;
   }, [filter.search]);
+
   //TODO:
   const getSelectedSortData = React.useCallback(() => {
     return {
@@ -232,30 +235,32 @@ const SectionFilterContent = ({
       sortId: filter.sortBy,
     };
   }, [filter.sortOrder, filter.sortBy]);
+
   //TODO:
   const getSelectedFilterData = async () => {
     const { guestCaption, userCaption, groupCaption } = customNames;
     const filterValues = [];
 
-    if (filter.employeeStatus) {
-      filterValues.push({
-        key: `${filter.employeeStatus}`,
-        label:
-          `${filter.employeeStatus}` === "1"
-            ? t("Common:Active")
-            : t("PeopleTranslations:DisabledEmployeeStatus"),
-        group: "filter-status",
-      });
-    }
+    if (filter.employeeStatus || filter.activationStatus) {
+      const key = filter.employeeStatus === 2 ? 3 : filter.activationStatus;
+      let label = "";
 
-    if (filter.activationStatus) {
+      switch (key) {
+        case 1:
+          label = t("Common:Active");
+          break;
+        case 2:
+          label = t("PeopleTranslations:PendingTitle");
+          break;
+        case 3:
+          label = t("PeopleTranslations:DisabledEmployeeStatus");
+          break;
+      }
+
       filterValues.push({
-        key: `${filter.activationStatus}`,
-        label:
-          `${filter.activationStatus}` === "1"
-            ? t("Common:Active")
-            : t("PeopleTranslations:PendingTitle"),
-        group: "filter-email",
+        key,
+        label,
+        group: "filter-status",
       });
     }
 
@@ -297,6 +302,7 @@ const SectionFilterContent = ({
 
     return filterValues;
   };
+
   //TODO:
   const removeSelectedItem = ({ key, group }) => {
     const newFilter = filter.clone();
@@ -304,14 +310,11 @@ const SectionFilterContent = ({
 
     if (group === "filter-status") {
       newFilter.employeeStatus = null;
+      newFilter.activationStatus = null;
     }
 
     if (group === "filter-type") {
       newFilter.role = null;
-    }
-
-    if (group === "filter-email") {
-      newFilter.activationStatus = null;
     }
 
     if (group === "filter-other") {
