@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from "react";
 import debounce from "lodash.debounce";
+import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import Avatar from "@docspace/components/avatar";
 
 import { parseAddresses } from "@docspace/components/utils/email";
+import { ShareAccessRights } from "@docspace/common/constants";
 
 import {
   StyledRow,
@@ -17,61 +19,65 @@ import {
   StyledDeleteIcon,
 } from "./StyledInvitePanel";
 
-const Item = ({ item, onSelectItemAccess }) => {
-  const { avatar, avatarSmall, displayName, email, id, errors } = item;
+const Item = ({ item, setInviteItems, inviteItems }) => {
+  const { avatarSmall, displayName, email, id, errors, access } = item;
 
-  const userAvatar = avatar || avatarSmall;
-  const name = !!userAvatar ? displayName : email;
-  const source = !!userAvatar ? avatarSmall : "/static/images/@.react.svg";
+  const name = !!avatarSmall ? displayName : email;
+  const source = !!avatarSmall ? avatarSmall : "/static/images/@.react.svg";
 
   const [edit, setEdit] = useState(false);
   const [inputValue, setInputValue] = useState(name);
   const [parseErrors, setParseErrors] = useState(errors);
 
-  const getAccesses = (id) => {
-    return [
-      {
-        key: "roomManager",
-        label: "Room manager",
-        id,
-      },
-      {
-        key: "editor",
-        label: "Editor",
-        id,
-      },
-      {
-        key: "formFiller",
-        label: "Form filler",
-        id,
-      },
-      {
-        key: "reviewer",
-        label: "Reviewer",
-        id,
-      },
-      {
-        key: "commentator",
-        label: "Commentator",
-        id,
-      },
-      {
-        key: "viewer",
-        label: "Viewer",
-        id,
-      },
-      {
-        key: "sep",
-        isSeparator: true,
-        id,
-      },
-      {
-        key: "delete",
-        label: "Delete",
-        id,
-      },
-    ];
-  };
+  const accesses = [
+    {
+      key: "roomManager",
+      label: "Room manager",
+      access: ShareAccessRights.FullAccess,
+      id,
+    },
+    {
+      key: "editor",
+      label: "Editor",
+      access: ShareAccessRights.FullAccess,
+      id,
+    },
+    {
+      key: "formFiller",
+      label: "Form filler",
+      access: ShareAccessRights.FormFilling,
+      id,
+    },
+    {
+      key: "reviewer",
+      label: "Reviewer",
+      access: ShareAccessRights.Review,
+      id,
+    },
+    {
+      key: "commentator",
+      label: "Commentator",
+      access: ShareAccessRights.Comment,
+      id,
+    },
+    {
+      key: "viewer",
+      label: "Viewer",
+      access: ShareAccessRights.ReadOnly,
+      id,
+    },
+    {
+      key: "sep",
+      isSeparator: true,
+    },
+    {
+      key: "delete",
+      label: "Delete",
+      id,
+    },
+  ];
+
+  const defaultAccess = accesses.find((option) => option.access === access);
 
   const onEdit = (e) => {
     if (e.detail === 2) {
@@ -79,12 +85,12 @@ const Item = ({ item, onSelectItemAccess }) => {
     }
   };
 
-  const onCancelEdit = (e) => {
+  const cancelEdit = (e) => {
     setInputValue(name);
     setEdit(false);
   };
 
-  const onSaveEdit = (e) => {
+  const saveEdit = (e) => {
     if (inputValue === "") {
       setInputValue(name);
     }
@@ -92,19 +98,14 @@ const Item = ({ item, onSelectItemAccess }) => {
     setEdit(false);
 
     debouncedValidate(inputValue);
-
-    console.log(parseErrors);
   };
 
   const validateValue = (value) => {
     const email = parseAddresses(value);
-    const errors = email[0].parseErrors;
+    const parseErrors = email[0].parseErrors;
+    const errors = !!parseErrors.length ? parseErrors : [];
 
-    if (!!errors.length) {
-      setParseErrors(errors);
-    } else {
-      setParseErrors([]);
-    }
+    setParseErrors(errors);
   };
 
   const debouncedValidate = useCallback(
@@ -112,28 +113,38 @@ const Item = ({ item, onSelectItemAccess }) => {
     []
   );
 
-  const onChangeValue = (e) => {
+  const changeValue = (e) => {
     const value = e.target.value.trim();
     setInputValue(value);
 
     debouncedValidate(value);
   };
 
-  const options = getAccesses(id);
+  const hasError = parseErrors && !!parseErrors.length;
 
-  const hasError = !!parseErrors.length;
-
-  const tooltipBody = parseErrors.map((error) => (
-    <div key={error.key}>{error.message}</div>
-  ));
+  const tooltipBody =
+    hasError &&
+    parseErrors.map((error) => <div key={error.key}>{error.message}</div>);
 
   const removeItem = (e) => {
     const id = e.target.dataset.id;
+    const newItems = inviteItems.filter((item) => item.id !== id);
 
-    onSelectItemAccess({
-      key: "delete",
-      id,
+    setInviteItems(newItems);
+  };
+
+  const selectItemAccess = (selected) => {
+    const newItems = inviteItems.map((item) => {
+      let temp = item;
+
+      if (temp.id === selected.id) {
+        temp.access = selected.access;
+      }
+
+      return temp;
     });
+
+    setInviteItems(newItems);
   };
 
   const displayBody = (
@@ -153,13 +164,13 @@ const Item = ({ item, onSelectItemAccess }) => {
         </>
       ) : (
         <StyledComboBox
-          onSelect={onSelectItemAccess}
+          onSelect={selectItemAccess}
           noBorder
-          options={options}
+          options={accesses}
           size="content"
           scaled={false}
           manualWidth="fit-content"
-          selectedOption={options[5]}
+          selectedOption={defaultAccess}
           showDisabledItems
         />
       )}
@@ -171,9 +182,9 @@ const Item = ({ item, onSelectItemAccess }) => {
 
   const editBody = (
     <>
-      <StyledEditInput hasError value={inputValue} onChange={onChangeValue} />
-      <StyledEditButton icon={okIcon} onClick={onSaveEdit} />
-      <StyledEditButton icon={cancelIcon} onClick={onCancelEdit} />
+      <StyledEditInput hasError value={inputValue} onChange={changeValue} />
+      <StyledEditButton icon={okIcon} onClick={saveEdit} />
+      <StyledEditButton icon={cancelIcon} onClick={cancelEdit} />
     </>
   );
 
@@ -185,11 +196,23 @@ const Item = ({ item, onSelectItemAccess }) => {
   );
 };
 
-const Items = ({ t, items, onSelectItemAccess }) => {
-  return items.map((item) => (
+const Items = ({ t, setInviteItems, inviteItems }) => {
+  return inviteItems.map((item) => (
     <StyledRow key={item.id}>
-      <Item item={item} onSelectItemAccess={onSelectItemAccess} />
+      <Item
+        item={item}
+        setInviteItems={setInviteItems}
+        inviteItems={inviteItems}
+      />
     </StyledRow>
   ));
 };
-export default Items;
+
+export default inject(({ dialogsStore }) => {
+  const { setInviteItems, inviteItems } = dialogsStore;
+
+  return {
+    setInviteItems,
+    inviteItems,
+  };
+})(observer(Items));

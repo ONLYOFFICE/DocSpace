@@ -129,7 +129,6 @@ class SettingsStore {
   helpLink = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
-  invitePanelOptions = { visible: false };
 
   enablePlugins = false;
   pluginOptions = [];
@@ -560,10 +559,6 @@ class SettingsStore {
   get isFrame() {
     return this.frameConfig?.name === window.name;
   }
-
-  setInvitePanelOptions = (invitePanelOptions) => {
-    this.invitePanelOptions = invitePanelOptions;
-  };
 }
 
 export default SettingsStore;

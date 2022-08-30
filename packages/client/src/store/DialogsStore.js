@@ -28,6 +28,7 @@ class DialogsStore {
   convertPasswordDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
+  invitePanelOptions = { visible: false };
 
   removeItem = null;
   connectItem = null;
@@ -41,6 +42,7 @@ class DialogsStore {
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
+  inviteItems = [];
 
   constructor(
     authStore,
@@ -240,6 +242,14 @@ class DialogsStore {
     window.dispatchEvent(event);
   };
 
+  setInvitePanelOptions = (invitePanelOptions) => {
+    this.invitePanelOptions = invitePanelOptions;
+  };
+
+  setInviteItems = (items) => {
+    this.inviteItems = items;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -258,7 +268,7 @@ class DialogsStore {
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
-      this.authStore.settingsStore.invitePanelOptions.visible ||
+      this.invitePanelOptions.visible ||
       this.versionHistoryStore.isVisible
     );
   }

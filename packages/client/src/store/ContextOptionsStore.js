@@ -352,7 +352,7 @@ class ContextOptionsStore {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
-    this.authStore.settingsStore.setInvitePanelOptions({
+    this.dialogsStore.setInvitePanelOptions({
       visible: true,
       id: action,
     });

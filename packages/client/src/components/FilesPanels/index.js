@@ -139,11 +139,12 @@ export default inject(
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
+      invitePanelOptions,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
     const { isVisible: versionHistoryPanelVisible } = versionHistoryStore;
-    const { hotkeyPanelVisible, invitePanelOptions } = auth.settingsStore;
+    const { hotkeyPanelVisible } = auth.settingsStore;
 
     return {
       sharingPanelVisible,

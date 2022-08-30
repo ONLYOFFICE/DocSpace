@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Heading from "@docspace/components/heading";
 import TextInput from "@docspace/components/text-input";
 import ComboBox from "@docspace/components/combobox";
@@ -15,7 +15,7 @@ import DeleteIcon from "PUBLIC_DIR/images/mobile.actions.remove.react.svg";
 
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
-import { Base } from "@docspace/components/themes";
+import Base from "@docspace/components/themes/base";
 
 const StyledInvitePanel = styled.div``;
 
@@ -26,7 +26,7 @@ const StyledBlock = styled.div`
 
 StyledBlock.defaultProps = { theme: Base };
 
-const fillAvailableWidth = `
+const fillAvailableWidth = css`
   width: 100%;
   width: -moz-available;
   width: -webkit-fill-available;
@@ -106,13 +106,13 @@ const SearchItemText = styled(Text)`
   font-weight: ${(props) => (props.primary || props.info ? "600" : "400")};
 
   color: ${(props) =>
-    props.primary || props.info
+    (props.primary && !props.disabled) || props.info
       ? props.theme.text.color
       : props.theme.text.disableColor};
   ${(props) => props.info && `margin-left: auto`}
 `;
 
-StyledBlock.defaultProps = { theme: Base };
+SearchItemText.defaultProps = { theme: Base };
 
 const StyledEditButton = styled(Button)`
   width: 32px;
@@ -120,7 +120,7 @@ const StyledEditButton = styled(Button)`
   padding: 0px;
 `;
 
-const StyledCheckIcon = styled(CheckIcon)`
+const iconStyles = css`
   ${commonIconsStyles}
   path {
     fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
@@ -128,32 +128,44 @@ const StyledCheckIcon = styled(CheckIcon)`
   :hover {
     fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
+`;
+
+const StyledCheckIcon = styled(CheckIcon)`
+  ${iconStyles}
 `;
 
 StyledCheckIcon.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
-  }
-  :hover {
-    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
-  }
+  ${iconStyles}
 `;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 const StyledDeleteIcon = styled(DeleteIcon)`
   margin-left: auto;
-  ${commonIconsStyles}
-  path {
-    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
-  }
-  :hover {
-    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
-  }
+
+  ${iconStyles}
 `;
 
+StyledDeleteIcon.defaultProps = { theme: Base };
+
 const StyledHelpButton = styled(HelpButton)``;
+
+const StyledButtons = styled(Box)`
+  padding: 16px 16px 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+
+  border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
+`;
+
+StyledButtons.defaultProps = { theme: Base };
 
 export {
   StyledBlock,
@@ -173,4 +185,5 @@ export {
   StyledCrossIcon,
   StyledHelpButton,
   StyledDeleteIcon,
+  StyledButtons,
 };

@@ -5,14 +5,14 @@ import { withTranslation } from "react-i18next";
 
 import Backdrop from "@docspace/components/backdrop";
 import Aside from "@docspace/components/aside";
-import Base from "@docspace/components/themes/base";
+import Button from "@docspace/components/button";
 
 import {
   StyledBlock,
   StyledHeading,
   StyledInvitePanel,
   StyledSubHeader,
-  StyledInviteInput,
+  StyledButtons,
 } from "./StyledInvitePanel";
 
 import Items from "./items.js";
@@ -28,9 +28,12 @@ const InvitePanel = ({
   getUsersByQuery,
   getFolderInfo,
   folders,
+  getShareUsers,
+  setInviteItems,
+  inviteItems,
 }) => {
-  const [items, setItems] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [hasErrors, setHasErrors] = useState(false);
 
   useEffect(() => {
     const { id } = invitePanelOptions;
@@ -46,10 +49,6 @@ const InvitePanel = ({
 
   const onClose = () => setInvitePanelOptions({ visible: false });
 
-  const onAddUser = (user) => {
-    setItems([...items, user]);
-  };
-
   const onKeyPress = (e) =>
     (e.key === "Esc" || e.key === "Escape") && onClose();
 
@@ -60,45 +59,83 @@ const InvitePanel = ({
 
   const onSelectItemAccess = (selectedItem) => {
     if (selectedItem.key === "delete") {
-      const newItems = items.filter((item) => item.id !== selectedItem.id);
-      return setItems(newItems);
+      const newItems = inviteItems.filter(
+        (item) => item.id !== selectedItem.id
+      );
+      return setInviteItems(newItems);
     }
+  };
+
+  const onClickSend = (e) => {
+    const toSend = inviteItems.map((item) => {
+      let newItem = { access: item.access };
+
+      item.avatar ? (newItem.id = item.id) : (newItem.email = item.email);
+
+      return newItem;
+    });
+
+    console.log("send", toSend);
   };
 
   return (
     <StyledInvitePanel>
-      <Backdrop onClick={onClose} visible isAside={true} zIndex={210} />
-      <Aside className="invite_panel" visible onClose={onClose}>
+      <Backdrop
+        onClick={onClose}
+        visible={visible}
+        isAside={true}
+        zIndex={210}
+      />
+      <Aside className="invite_panel" visible={visible} onClose={onClose}>
         <StyledBlock>
-          <StyledHeading>Invite users to the room</StyledHeading>
+          <StyledHeading>{t("InviteUsersToRoom")}</StyledHeading>
         </StyledBlock>
 
         <StyledBlock noPadding>
-          <StyledSubHeader>External link</StyledSubHeader>
+          <StyledSubHeader>{t("SharingPanel:ExternalLink")}</StyledSubHeader>
         </StyledBlock>
 
-        <StyledSubHeader>Individual invitation</StyledSubHeader>
-        <InviteInput getUsersByQuery={getUsersByQuery} onAddUser={onAddUser} />
-        {!!items.length && (
-          <Items items={items} onSelectItemAccess={onSelectItemAccess} />
+        <StyledSubHeader>{t("IndividualInvitation")}</StyledSubHeader>
+        <InviteInput t={t} />
+        {!!inviteItems.length && (
+          <>
+            <Items t={t} />
+            <StyledButtons>
+              <Button
+                scale={true}
+                size={"normal"}
+                isDisabled={hasErrors}
+                primary
+                onClick={onClickSend}
+                label={t("SendInvitation")}
+              />
+              <Button
+                scale={true}
+                size={"normal"}
+                onClick={onClose}
+                label={t("Common:CancelButton")}
+              />
+            </StyledButtons>
+          </>
         )}
       </Aside>
     </StyledInvitePanel>
   );
 };
 
-InvitePanel.defaultProps = { theme: Base };
-
-export default inject(({ auth, peopleStore, filesStore }) => {
-  const {
-    invitePanelOptions,
-    setInvitePanelOptions,
-    theme,
-  } = auth.settingsStore;
+export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
+  const { theme } = auth.settingsStore;
 
   const { getUsersByQuery } = peopleStore.usersStore;
 
-  const { getFolderInfo, folders } = filesStore;
+  const {
+    invitePanelOptions,
+    setInvitePanelOptions,
+    setInviteItems,
+    inviteItems,
+  } = dialogsStore;
+
+  const { getFolderInfo, folders, getShareUsers } = filesStore;
 
   return {
     invitePanelOptions,
@@ -108,7 +145,12 @@ export default inject(({ auth, peopleStore, filesStore }) => {
     getUsersByQuery,
     getFolderInfo,
     folders,
+    getShareUsers,
+    setInviteItems,
+    inviteItems,
   };
 })(
-  withTranslation(["HotkeysPanel", "Article", "Common"])(observer(InvitePanel))
+  withTranslation(["InviteDialog", "SharingPanel", "Common"])(
+    observer(InvitePanel)
+  )
 );
