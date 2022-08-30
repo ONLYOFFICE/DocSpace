@@ -18,27 +18,14 @@ const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
 
 class AccountsContextOptionsStore {
   authStore = null;
-  dialogStore = null;
-  targetUserStore = null;
-  usersStore = null;
-  selectionStore = null;
-  infoPanelStore = null;
 
-  constructor(
-    authStore,
-    dialogStore,
-    targetUserStore,
-    usersStore,
-    selectionStore,
-    infoPanelStore
-  ) {
+  peopleStore = null;
+
+  constructor(authStore, peopleStore) {
     makeAutoObservable(this);
     this.authStore = authStore;
-    this.dialogStore = dialogStore;
-    this.targetUserStore = targetUserStore;
-    this.usersStore = usersStore;
-    this.selectionStore = selectionStore;
-    this.infoPanelStore = infoPanelStore;
+
+    this.peopleStore = peopleStore;
   }
 
   getUserContextOptions = (t, options, item) => {
@@ -155,12 +142,135 @@ class AccountsContextOptionsStore {
     return contextMenu;
   };
 
+  getUserGroupContextOptions = (t) => {
+    const { onChangeType } = this.peopleStore;
+
+    const {
+      hasUsersToMakeEmployees,
+      hasUsersToActivate,
+      hasUsersToDisable,
+      hasUsersToInvite,
+      hasUsersToRemove,
+    } = this.peopleStore.selectionStore;
+    const {
+      setActiveDialogVisible,
+      setDisableDialogVisible,
+      setSendInviteDialogVisible,
+      setDeleteDialogVisible,
+    } = this.peopleStore.dialogStore;
+
+    const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    const { setVisible, isVisible } = this.peopleStore.infoPanelStore;
+
+    const options = [];
+
+    const adminOption = {
+      id: "context-menu_administrator",
+      className: "context-menu_drop-down",
+      label: t("Administrator"),
+      title: t("Administrator"),
+      onClick: (e) => onChangeType(e, t),
+      action: "admin",
+      key: "cm-administrator",
+    };
+    const managerOption = {
+      id: "context-menu_manager",
+      className: "context-menu_drop-down",
+      label: t("Manager"),
+      title: t("Manager"),
+      onClick: (e) => onChangeType(e, t),
+      action: "manager",
+      key: "cm-manager",
+    };
+    const userOption = {
+      id: "context-menu_user",
+      className: "context-menu_drop-down",
+      label: t("Common:User"),
+      title: t("Common:User"),
+      onClick: (e) => onChangeType(e, t),
+      action: "user",
+      key: "cm-user",
+    };
+
+    isOwner && options.push(adminOption);
+
+    isAdmin && options.push(managerOption);
+
+    options.push(userOption);
+
+    const headerMenu = [
+      {
+        key: "cm-change-type",
+        label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
+        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
+        icon: "/static/images/change.to.employee.react.svg",
+        items: options,
+      },
+      {
+        key: "cm-info",
+        label: t("PeopleTranslations:Details"),
+        disabled: isVisible,
+        onClick: setVisible,
+        icon: "images/info.react.svg",
+      },
+      {
+        key: "cm-invite",
+        label: t("Common:Invite"),
+        disabled: !hasUsersToInvite,
+        onClick: () => setSendInviteDialogVisible(true),
+        icon: "/static/images/invite.again.react.svg",
+      },
+      {
+        key: "cm-enable",
+        label: t("Common:Enable"),
+        disabled: !hasUsersToActivate,
+        onClick: () => setActiveDialogVisible(true),
+        icon: "images/enable.react.svg",
+      },
+      {
+        key: "cm-disable",
+        label: t("PeopleTranslations:DisableUserButton"),
+        disabled: !hasUsersToDisable,
+        onClick: () => setDisableDialogVisible(true),
+        icon: "images/disable.react.svg",
+      },
+      {
+        key: "cm-delete",
+        label: t("Common:Delete"),
+        disabled: !hasUsersToRemove,
+        onClick: () => setDeleteDialogVisible(true),
+        icon: "/static/images/delete.react.svg",
+      },
+    ];
+
+    return headerMenu;
+  };
+
+  getModel = (item, t) => {
+    const { selection } = this.peopleStore.selectionStore;
+
+    const { options } = item;
+
+    const contextOptionsProps =
+      options && options.length > 0
+        ? selection.length > 1
+          ? this.getUserGroupContextOptions(t)
+          : this.getUserContextOptions(t, options, item)
+        : [];
+
+    return contextOptionsProps;
+  };
+
   onProfileClick = () => {
     history.push(PROFILE_SELF_URL);
   };
 
   toggleChangeNameDialog = (item) => {
-    const { setDialogData, setChangeNameDialogVisible } = this.dialogStore;
+    const {
+      setDialogData,
+      setChangeNameDialogVisible,
+    } = this.peopleStore.dialogStore;
     const { id, firstName, lastName } = item;
 
     setDialogData({ id, firstName, lastName });
@@ -169,7 +279,10 @@ class AccountsContextOptionsStore {
   };
 
   toggleChangeEmailDialog = (item) => {
-    const { setDialogData, setChangeEmailDialogVisible } = this.dialogStore;
+    const {
+      setDialogData,
+      setChangeEmailDialogVisible,
+    } = this.peopleStore.dialogStore;
     const { id, email } = item;
 
     setDialogData({
@@ -181,7 +294,10 @@ class AccountsContextOptionsStore {
   };
 
   toggleChangePasswordDialog = (item) => {
-    const { setDialogData, setChangePasswordDialogVisible } = this.dialogStore;
+    const {
+      setDialogData,
+      setChangePasswordDialogVisible,
+    } = this.peopleStore.dialogStore;
     const { email } = item;
     setDialogData({
       email,
@@ -191,14 +307,14 @@ class AccountsContextOptionsStore {
   };
 
   toggleChangeOwnerDialog = () => {
-    const { setChangeOwnerDialogVisible } = this.dialogStore;
+    const { setChangeOwnerDialogVisible } = this.peopleStore.dialogStore;
 
     setChangeOwnerDialogVisible(true);
   };
 
   onEnableClick = (t, item) => {
     const { id } = item;
-    const { updateUserStatus } = this.usersStore;
+    const { updateUserStatus } = this.peopleStore.usersStore;
 
     updateUserStatus(EmployeeStatus.Active, [id], true)
       .then(() =>
@@ -209,7 +325,7 @@ class AccountsContextOptionsStore {
 
   onDisableClick = (t, item) => {
     const { id } = item;
-    const { updateUserStatus } = this.usersStore;
+    const { updateUserStatus } = this.peopleStore.usersStore;
 
     updateUserStatus(EmployeeStatus.Disabled, [id], true)
       .then(() =>
@@ -235,7 +351,10 @@ class AccountsContextOptionsStore {
   };
 
   toggleDeleteProfileEverDialog = (item) => {
-    const { setDialogData, setDeleteProfileDialogVisible } = this.dialogStore;
+    const {
+      setDialogData,
+      setDeleteProfileDialogVisible,
+    } = this.peopleStore.dialogStore;
     const { id, displayName, userName } = item;
 
     closeDialogs();
@@ -250,7 +369,7 @@ class AccountsContextOptionsStore {
   };
 
   onDetailsClick = () => {
-    const { setVisible } = this.infoPanelStore;
+    const { setVisible } = this.peopleStore.infoPanelStore;
 
     setVisible();
   };
@@ -272,10 +391,10 @@ class AccountsContextOptionsStore {
       )
       .catch((error) => toastr.error(error));
   };
-}
 
-const onResetAuth = (item) => {
-  console.log(item);
-};
+  onResetAuth = (item) => {
+    console.log(item);
+  };
+}
 
 export default AccountsContextOptionsStore;

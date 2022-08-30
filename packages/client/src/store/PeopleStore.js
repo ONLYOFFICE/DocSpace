@@ -54,14 +54,7 @@ class PeopleStore {
     this.infoPanelStore = infoPanelStore;
     this.setupStore = setupStore;
 
-    this.contextOptionsStore = new AccountsContextOptionsStore(
-      authStore,
-      this.dialogStore,
-      this.targetUserStore,
-      this.usersStore,
-      this.selectionStore,
-      this.infoPanelStore
-    );
+    this.contextOptionsStore = new AccountsContextOptionsStore(authStore, this);
 
     makeAutoObservable(this);
   }
@@ -96,12 +89,12 @@ class PeopleStore {
     return getUsersList(newFilter);
   };
 
-  onChangeType = (e) => {
-    const action = e.target.dataset.action;
+  onChangeType = (e, t) => {
+    const action = e?.action ? e.action : e?.target?.dataset?.action;
 
     const { getUsersToMakeEmployeesIds } = this.selectionStore;
 
-    this.changeType(action, getUsersToMakeEmployeesIds);
+    this.changeType(action, getUsersToMakeEmployeesIds, t);
   };
 
   changeType = (type, users, t, needClearSelection = true) => {
@@ -159,7 +152,7 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Administrator"),
       title: t("Administrator"),
-      onClick: this.onChangeType,
+      onClick: (e) => this.onChangeType(e, t),
       "data-action": "admin",
       key: "administrator",
     };
@@ -168,7 +161,7 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Manager"),
       title: t("Manager"),
-      onClick: this.onChangeType,
+      onClick: (e) => this.onChangeType(e, t),
       "data-action": "manager",
       key: "manager",
     };
@@ -177,7 +170,7 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Common:User"),
       title: t("Common:User"),
-      onClick: this.onChangeType,
+      onClick: (e) => this.onChangeType(e, t),
       "data-action": "user",
       key: "user",
     };
@@ -190,6 +183,7 @@ class PeopleStore {
 
     const headerMenu = [
       {
+        key: "change-user",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
         disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
         iconUrl: "/static/images/change.to.employee.react.svg",
@@ -197,30 +191,35 @@ class PeopleStore {
         options: options,
       },
       {
+        key: "info",
         label: t("PeopleTranslations:Details"),
         disabled: isVisible,
         onClick: setVisible,
         iconUrl: "images/info.react.svg",
       },
       {
+        key: "invite",
         label: t("Common:Invite"),
         disabled: !hasUsersToInvite,
         onClick: () => setSendInviteDialogVisible(true),
         iconUrl: "/static/images/invite.again.react.svg",
       },
       {
+        key: "enable",
         label: t("Common:Enable"),
         disabled: !hasUsersToActivate,
         onClick: () => setActiveDialogVisible(true),
         iconUrl: "images/enable.react.svg",
       },
       {
+        key: "disable",
         label: t("PeopleTranslations:DisableUserButton"),
         disabled: !hasUsersToDisable,
         onClick: () => setDisableDialogVisible(true),
         iconUrl: "images/disable.react.svg",
       },
       {
+        key: "delete",
         label: t("Common:Delete"),
         disabled: !hasUsersToRemove,
         onClick: () => setDeleteDialogVisible(true),

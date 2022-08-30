@@ -11,7 +11,6 @@ import Checkbox from "@docspace/components/checkbox";
 import ComboBox from "@docspace/components/combobox";
 import DropDownItem from "@docspace/components/drop-down-item";
 
-import withContextOptions from "SRC_DIR/HOCs/withPeopleContextOptions";
 import withContent from "SRC_DIR/HOCs/withPeopleContent";
 
 import Badges from "../Badges";
@@ -136,6 +135,7 @@ const PeopleTableRow = (props) => {
     userId,
     setBufferSelection,
     isActive,
+    isSeveralSelection,
   } = props;
 
   const {
@@ -233,8 +233,12 @@ const PeopleTableRow = (props) => {
   const isChecked = checkedProps.checked;
 
   const userContextClick = React.useCallback(() => {
+    if (isSeveralSelection && isChecked) {
+      return;
+    }
+
     setBufferSelection(item);
-  }, [item, setBufferSelection]);
+  }, [isSeveralSelection, isChecked, item, setBufferSelection]);
 
   return (
     <StyledWrapper
@@ -371,5 +375,5 @@ const PeopleTableRow = (props) => {
 };
 
 export default withTranslation(["People", "Common", "Settings"])(
-  withRouter(withContextOptions(withContent(PeopleTableRow)))
+  withRouter(withContent(PeopleTableRow))
 );

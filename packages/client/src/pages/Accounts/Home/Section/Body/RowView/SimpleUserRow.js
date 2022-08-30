@@ -6,7 +6,6 @@ import { isMobile } from "react-device-detect";
 import Row from "@docspace/components/row";
 import { Base } from "@docspace/components/themes";
 
-import withContextOptions from "SRC_DIR/HOCs/withPeopleContextOptions";
 import withContent from "SRC_DIR/HOCs/withPeopleContent";
 
 import UserContent from "./userContent";
@@ -97,13 +96,17 @@ const SimpleUserRow = (props) => {
     element,
     setBufferSelection,
     isActive,
+    isSeveralSelection,
   } = props;
 
   const isChecked = checkedProps.checked;
 
   const userContextClick = React.useCallback(() => {
+    if (isSeveralSelection && isChecked) {
+      return;
+    }
     setBufferSelection(item);
-  }, [item, setBufferSelection]);
+  }, [isChecked, isSeveralSelection, item, setBufferSelection]);
 
   return (
     <StyledWrapper
@@ -130,4 +133,4 @@ const SimpleUserRow = (props) => {
   );
 };
 
-export default withRouter(withContextOptions(withContent(SimpleUserRow)));
+export default withRouter(withContent(SimpleUserRow));
