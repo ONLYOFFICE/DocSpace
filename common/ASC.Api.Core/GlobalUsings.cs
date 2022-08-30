@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using Microsoft.Extensions.DependencyInjection.Extensions;
-global using System.Collections.Concurrent;
 global using System.ComponentModel;
 global using System.Globalization;
 global using System.Linq.Expressions;
@@ -36,6 +34,7 @@ global using System.Runtime.Serialization;
 global using System.Security;
 global using System.Security.Authentication;
 global using System.Security.Claims;
+global using System.Text;
 global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
@@ -56,8 +55,8 @@ global using ASC.AuditTrail.Types;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
+global using ASC.Common.Log;
 global using ASC.Common.Logging;
-global using ASC.Common.Mapping;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Threading;
 global using ASC.Common.Utils;
@@ -119,6 +118,7 @@ global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Diagnostics.HealthChecks;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;

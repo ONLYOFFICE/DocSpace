@@ -28,5 +28,5 @@ namespace ASC.Files.Core.Services.OFormService;
 
 public class OFromRequestData
 {
-    public IEnumerable<OFromData> Data { get; set; }
+    public OFromData Data { get; set; }
 }

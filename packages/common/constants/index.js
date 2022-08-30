@@ -70,6 +70,15 @@ export const RoomsType = Object.freeze({
   ReadOnlyRoom: 4,
   CustomRoom: 5,
 });
+
+export const RoomsTypeTranslations = Object.freeze({
+  1: "Files:FillingFormRooms",
+  2: "Files:CollaborationRooms",
+  3: "Files:ReviewRooms",
+  4: "Files:ViewOnlyRooms",
+  5: "Files:CustomRooms",
+});
+
 /**
  * Enum for room search area.
  * @readonly

@@ -2261,6 +2261,113 @@ const Dark = {
     connectBtnIconBorder: "#474747",
   },
 
+  createEditRoomDialog: {
+    commonParam: {
+      descriptionColor: "#a3a9ae",
+    },
+
+    roomType: {
+      listItem: {
+        background: "none",
+        borderColor: "#474747",
+        descriptionText: "#A3A9AE",
+      },
+      dropdownButton: {
+        background: "none",
+        borderColor: "#474747",
+        isOpenBorderColor: "#F97A0B",
+        descriptionText: "#A3A9AE",
+      },
+      dropdownItem: {
+        background: "#333333",
+        hoverBackground: "#474747",
+        descriptionText: "#A3A9AE",
+      },
+      displayItem: {
+        background: "#474747",
+        borderColor: "#474747",
+        descriptionText: "#a3a9ae",
+      },
+    },
+
+    roomTypeDropdown: {
+      desktop: {
+        background: "#333333",
+        borderColor: "#474747",
+      },
+      mobile: {
+        background: "#333333",
+      },
+    },
+
+    permanentSettings: {
+      background: "#474747",
+      isPrivateIcon: "#35ad17",
+      descriptionColor: "#a3a9ae",
+    },
+
+    dropdown: {
+      background: "#333333",
+      borderColor: "#474747",
+      item: {
+        hoverBackground: "#474747",
+      },
+    },
+
+    isPrivate: {
+      limitations: {
+        background: "#474747",
+        iconColor: "#ed7309",
+        titleColor: "#ed7309",
+        descriptionColor: "#a3a9ae",
+        linkColor: "#e8e8e9",
+      },
+    },
+
+    thirdpartyStorage: {
+      combobox: {
+        background: "#292929",
+        dropdownBorderColor: "#474747",
+        hoverDropdownBorderColor: "#858585",
+        isOpenDropdownBorderColor: "#e8e8e9",
+        arrowFill: "#474747",
+      },
+      folderInput: {
+        background: "#292929",
+        borderColor: "#474747",
+        hoverBorderColor: "#858585",
+        focusBorderColor: "#e8e8e9",
+        rootLabelColor: "#a3a9ae",
+        iconFill: "#657177",
+      },
+    },
+
+    iconCropper: {
+      gridColor: "#333333",
+      deleteButton: {
+        background: "#292929",
+        hoverBackground: "#333333",
+        borderColor: "#292929",
+        hoverBorderColor: "#fafafa",
+        color: "#858585",
+        iconColor: "#e8e8e9",
+      },
+    },
+
+    previewTile: {
+      background: "#292929",
+      borderColor: "#474747",
+      iconBorderColor: "#eceef1",
+    },
+
+    dropzone: {
+      borderColor: "#474747",
+      linkMainColor: "#F97A0B",
+      linkSecondaryColor: "#ffffff",
+      exstsColor: "#a3a9ae",
+    },
+  },
+
   filesThirdPartyDialog: {
     border: "1px solid #474747",
   },
@@ -2712,6 +2819,7 @@ const Dark = {
       backup: {
         rectangleBackgroundColor: "#292929",
         separatorBorder: "1px solid #474747",
+        contextBorder: "1px solid #D0D5DA",
       },
     },
 
@@ -2757,9 +2865,11 @@ const Dark = {
   },
 
   tag: {
+    color: white,
     background: "#3D3D3D",
     hoverBackground: "#333333",
     disabledBackground: "#858585",
+    defaultTagColor: "#858585",
     newTagBackground: "#333333",
   },
 };

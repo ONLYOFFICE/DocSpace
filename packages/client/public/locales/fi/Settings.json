@@ -49,8 +49,6 @@
   "DeactivateOrDeletePortal": "Ota portaali pois käytöstä tai poista se.",
   "Disabled": "Poistettu käytöstä",
   "DocumentsAdministratorsCan": "Tässä osiossa asiakirjojen järjestelmänvalvojat voivat linkittää Dropbox-, Box- ja muut tilit yhteisiin asiakirjoihin ja määrittää käyttöoikeudet",
-  "DocumentsModule": "Asiakirjamoduuli",
-  "DocumentsModuleDescription": "Varmuuskopio tallennetaan Yleiset tiedostot -kansioon.",
   "DownloadCopy": "Lataa kopio",
   "Employees": "Käyttäjät",
   "EmptyBackupList": "Ei varmuuskopioita. Luo yksi tai useampi varmuuskopio ja ne näkyvät tässä listassa.",
