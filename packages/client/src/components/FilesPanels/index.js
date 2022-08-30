@@ -139,7 +139,7 @@ export default inject(
 
     const { uploadPanelVisible } = uploadDataStore;
     const { isVisible: versionHistoryPanelVisible } = versionHistoryStore;
-    const { hotkeyPanelVisible, invitePanelVisible } = auth.settingsStore;
+    const { hotkeyPanelVisible, invitePanelOptions } = auth.settingsStore;
 
     return {
       sharingPanelVisible,
@@ -163,7 +163,7 @@ export default inject(
       createMasterForm,
       setSelectFileDialogVisible,
       hotkeyPanelVisible,
-      invitePanelVisible,
+      invitePanelVisible: invitePanelOptions.visible,
     };
   }
 )(observer(Panels));

@@ -19,43 +19,32 @@ import Items from "./items.js";
 import InviteInput from "./InviteInput";
 
 const InvitePanel = ({
-  invitePanelVisible,
-  setInvitePanelVisible,
+  invitePanelOptions,
+  setInvitePanelOptions,
+  visible,
   t,
   theme,
   tReady,
-  getUsersList,
+  getUsersByQuery,
+  getFolderInfo,
+  folders,
 }) => {
-  const testItems = [
-    {
-      email: "test1@gmail.com",
-      id: "1",
-      displayName: "Administrator Test1",
-      avatarSmall:
-        "/storage/userPhotos/root/66faa6e4-f133-11ea-b126-00ffeec8b4ef_orig_46-46.jpeg?_=1380485370",
-    },
-    {
-      email: "test2@gmail.com",
-      id: "2",
-      displayName: "Administrator Test2",
-      avatarSmall:
-        "/storage/userPhotos/root/66faa6e4-f133-11ea-b126-00ffeec8b4ef_orig_46-46.jpeg?_=1380485370",
-    },
-    {
-      email: "test3@gmail.com",
-      id: "3",
-      displayName: "Administrator Test3",
-    },
-    {
-      email: "test4@gmail.com",
-      id: "4",
-      displayName: "Administrator Test4",
-    },
-  ];
+  const [items, setItems] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState(null);
 
-  const [items, setItems] = useState(testItems);
+  useEffect(() => {
+    const { id } = invitePanelOptions;
+    const room = folders.find((folder) => folder.id === id);
+    if (room) {
+      setSelectedRoom(room);
+    } else {
+      getFolderInfo(id).then((info) => {
+        setSelectedRoom(info);
+      });
+    }
+  }, [invitePanelOptions]);
 
-  const onClose = () => setInvitePanelVisible(false);
+  const onClose = () => setInvitePanelOptions({ visible: false });
 
   const onAddUser = (user) => {
     setItems([...items, user]);
@@ -78,17 +67,8 @@ const InvitePanel = ({
 
   return (
     <StyledInvitePanel>
-      <Backdrop
-        onClick={onClose}
-        visible={invitePanelVisible}
-        isAside={true}
-        zIndex={210}
-      />
-      <Aside
-        className="invite_panel"
-        visible={invitePanelVisible}
-        onClose={onClose}
-      >
+      <Backdrop onClick={onClose} visible isAside={true} zIndex={210} />
+      <Aside className="invite_panel" visible onClose={onClose}>
         <StyledBlock>
           <StyledHeading>Invite users to the room</StyledHeading>
         </StyledBlock>
@@ -98,8 +78,10 @@ const InvitePanel = ({
         </StyledBlock>
 
         <StyledSubHeader>Individual invitation</StyledSubHeader>
-        <InviteInput getUsersList={getUsersList} onAddUser={onAddUser} />
-        <Items items={items} onSelectItemAccess={onSelectItemAccess} />
+        <InviteInput getUsersByQuery={getUsersByQuery} onAddUser={onAddUser} />
+        {!!items.length && (
+          <Items items={items} onSelectItemAccess={onSelectItemAccess} />
+        )}
       </Aside>
     </StyledInvitePanel>
   );
@@ -107,20 +89,25 @@ const InvitePanel = ({
 
 InvitePanel.defaultProps = { theme: Base };
 
-export default inject(({ auth, peopleStore }) => {
+export default inject(({ auth, peopleStore, filesStore }) => {
   const {
-    invitePanelVisible,
-    setInvitePanelVisible,
+    invitePanelOptions,
+    setInvitePanelOptions,
     theme,
   } = auth.settingsStore;
 
-  const { getUsersList } = peopleStore.usersStore;
+  const { getUsersByQuery } = peopleStore.usersStore;
+
+  const { getFolderInfo, folders } = filesStore;
 
   return {
-    invitePanelVisible,
-    setInvitePanelVisible,
+    invitePanelOptions,
+    setInvitePanelOptions,
+    visible: invitePanelOptions.visible,
     theme,
-    getUsersList,
+    getUsersByQuery,
+    getFolderInfo,
+    folders,
   };
 })(
   withTranslation(["HotkeysPanel", "Article", "Common"])(observer(InvitePanel))

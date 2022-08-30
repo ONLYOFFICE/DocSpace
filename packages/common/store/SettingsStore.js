@@ -129,7 +129,7 @@ class SettingsStore {
   helpLink = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
-  invitePanelVisible = false;
+  invitePanelOptions = { visible: false };
 
   enablePlugins = false;
   pluginOptions = [];
@@ -561,8 +561,8 @@ class SettingsStore {
     return this.frameConfig?.name === window.name;
   }
 
-  setInvitePanelVisible = (invitePanelVisible) => {
-    this.invitePanelVisible = invitePanelVisible;
+  setInvitePanelOptions = (invitePanelOptions) => {
+    this.invitePanelOptions = invitePanelOptions;
   };
 }
 

@@ -1,10 +1,33 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
+import debounce from "lodash.debounce";
+
 import Text from "@docspace/components/text";
 import Avatar from "@docspace/components/avatar";
 
-import { StyledRow, StyledComboBox } from "./StyledInvitePanel";
+import { parseAddresses } from "@docspace/components/utils/email";
 
-const Items = ({ t, items, onSelectItemAccess }) => {
+import {
+  StyledRow,
+  StyledComboBox,
+  StyledEditInput,
+  StyledEditButton,
+  StyledCheckIcon,
+  StyledCrossIcon,
+  StyledHelpButton,
+  StyledDeleteIcon,
+} from "./StyledInvitePanel";
+
+const Item = ({ item, onSelectItemAccess }) => {
+  const { avatar, avatarSmall, displayName, email, id, errors } = item;
+
+  const userAvatar = avatar || avatarSmall;
+  const name = !!userAvatar ? displayName : email;
+  const source = !!userAvatar ? avatarSmall : "/static/images/@.react.svg";
+
+  const [edit, setEdit] = useState(false);
+  const [inputValue, setInputValue] = useState(name);
+  const [parseErrors, setParseErrors] = useState(errors);
+
   const getAccesses = (id) => {
     return [
       {
@@ -50,17 +73,85 @@ const Items = ({ t, items, onSelectItemAccess }) => {
     ];
   };
 
-  return items.map((item) => {
-    const { avatarSmall, displayName, email, id } = item;
+  const onEdit = (e) => {
+    if (e.detail === 2) {
+      setEdit(true);
+    }
+  };
 
-    const name = !!avatarSmall ? displayName : email;
-    const source = !!avatarSmall ? avatarSmall : "/static/images/@.react.svg";
-    const options = getAccesses(id);
+  const onCancelEdit = (e) => {
+    setInputValue(name);
+    setEdit(false);
+  };
 
-    return (
-      <StyledRow key={id}>
-        <Avatar size="min" role="user" source={source} />
-        <Text>{name}</Text>
+  const onSaveEdit = (e) => {
+    if (inputValue === "") {
+      setInputValue(name);
+    }
+
+    setEdit(false);
+
+    debouncedValidate(inputValue);
+
+    console.log(parseErrors);
+  };
+
+  const validateValue = (value) => {
+    const email = parseAddresses(value);
+    const errors = email[0].parseErrors;
+
+    if (!!errors.length) {
+      setParseErrors(errors);
+    } else {
+      setParseErrors([]);
+    }
+  };
+
+  const debouncedValidate = useCallback(
+    debounce((value) => validateValue(value), 500),
+    []
+  );
+
+  const onChangeValue = (e) => {
+    const value = e.target.value.trim();
+    setInputValue(value);
+
+    debouncedValidate(value);
+  };
+
+  const options = getAccesses(id);
+
+  const hasError = !!parseErrors.length;
+
+  const tooltipBody = parseErrors.map((error) => (
+    <div key={error.key}>{error.message}</div>
+  ));
+
+  const removeItem = (e) => {
+    const id = e.target.dataset.id;
+
+    onSelectItemAccess({
+      key: "delete",
+      id,
+    });
+  };
+
+  const displayBody = (
+    <>
+      <Text onClick={onEdit}>{inputValue}</Text>
+      {hasError ? (
+        <>
+          <StyledHelpButton
+            iconName="/static/images/info.edit.react.svg"
+            displayType="auto"
+            offsetRight={0}
+            tooltipContent={tooltipBody}
+            size={16}
+            color="#F21C0E"
+          />
+          <StyledDeleteIcon size="medium" onClick={removeItem} data-id={id} />
+        </>
+      ) : (
         <StyledComboBox
           onSelect={onSelectItemAccess}
           noBorder
@@ -71,8 +162,34 @@ const Items = ({ t, items, onSelectItemAccess }) => {
           selectedOption={options[5]}
           showDisabledItems
         />
-      </StyledRow>
-    );
-  });
+      )}
+    </>
+  );
+
+  const okIcon = <StyledCheckIcon size="scale" />;
+  const cancelIcon = <StyledCrossIcon size="scale" />;
+
+  const editBody = (
+    <>
+      <StyledEditInput hasError value={inputValue} onChange={onChangeValue} />
+      <StyledEditButton icon={okIcon} onClick={onSaveEdit} />
+      <StyledEditButton icon={cancelIcon} onClick={onCancelEdit} />
+    </>
+  );
+
+  return (
+    <>
+      <Avatar size="min" role="user" source={source} />
+      {edit ? editBody : displayBody}
+    </>
+  );
+};
+
+const Items = ({ t, items, onSelectItemAccess }) => {
+  return items.map((item) => (
+    <StyledRow key={item.id}>
+      <Item item={item} onSelectItemAccess={onSelectItemAccess} />
+    </StyledRow>
+  ));
 };
 export default Items;

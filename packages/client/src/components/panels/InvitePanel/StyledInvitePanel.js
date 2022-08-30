@@ -6,6 +6,14 @@ import Box from "@docspace/components/box";
 import DropDown from "@docspace/components/drop-down";
 import DropDownItem from "@docspace/components/drop-down-item";
 import Text from "@docspace/components/text";
+import Button from "@docspace/components/button";
+import HelpButton from "@docspace/components/help-button";
+
+import CheckIcon from "PUBLIC_DIR/images/check.edit.react.svg";
+import CrossIcon from "PUBLIC_DIR/images/cross.edit.react.svg";
+import DeleteIcon from "PUBLIC_DIR/images/mobile.actions.remove.react.svg";
+
+import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
 import { Base } from "@docspace/components/themes";
 
@@ -63,6 +71,10 @@ const StyledInviteInput = styled(TextInput)`
   margin-bottom: 20px;
 `;
 
+const StyledEditInput = styled(TextInput)`
+  ${fillAvailableWidth}
+`;
+
 const StyledComboBox = styled(ComboBox)`
   margin-left: auto;
 
@@ -102,6 +114,47 @@ const SearchItemText = styled(Text)`
 
 StyledBlock.defaultProps = { theme: Base };
 
+const StyledEditButton = styled(Button)`
+  width: 32px;
+  height: 32px;
+  padding: 0px;
+`;
+
+const StyledCheckIcon = styled(CheckIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
+  }
+  :hover {
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
+  }
+`;
+
+StyledCheckIcon.defaultProps = { theme: Base };
+
+const StyledCrossIcon = styled(CrossIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
+  }
+  :hover {
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
+  }
+`;
+
+const StyledDeleteIcon = styled(DeleteIcon)`
+  margin-left: auto;
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
+  }
+  :hover {
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
+  }
+`;
+
+const StyledHelpButton = styled(HelpButton)``;
+
 export {
   StyledBlock,
   StyledHeading,
@@ -114,4 +167,10 @@ export {
   StyledDropDown,
   StyledDropDownItem,
   SearchItemText,
+  StyledEditInput,
+  StyledEditButton,
+  StyledCheckIcon,
+  StyledCrossIcon,
+  StyledHelpButton,
+  StyledDeleteIcon,
 };

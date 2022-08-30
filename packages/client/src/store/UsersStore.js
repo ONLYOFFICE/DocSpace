@@ -219,6 +219,12 @@ class UsersStore {
     return this.peopleStore.selectionStore.selection.some((el) => el.id === id);
   };
 
+  getUsersByQuery = async (query) => {
+    const users = await api.people.getUsersByQuery(query);
+
+    return users;
+  };
+
   get peopleList() {
     const list = this.users.map((user) => {
       const {

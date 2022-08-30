@@ -347,7 +347,13 @@ class ContextOptionsStore {
   };
 
   onClickInviteUsers = (e) => {
-    this.authStore.settingsStore.setInvitePanelVisible(true);
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
+    this.authStore.settingsStore.setInvitePanelOptions({
+      visible: true,
+      id: action,
+    });
   };
 
   onClickPin = (e, id, t) => {
@@ -544,6 +550,7 @@ class ContextOptionsStore {
         icon: "/static/images/person.react.svg",
         onClick: (e) => this.onClickInviteUsers(e),
         disabled: false,
+        action: item.id,
       },
       {
         key: "room-info",
