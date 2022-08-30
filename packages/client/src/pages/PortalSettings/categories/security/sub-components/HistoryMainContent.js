@@ -6,7 +6,7 @@ import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
 
-import { hugeMobile } from "@docspace/components/utils/device";
+import { hugeMobile, tablet } from "@docspace/components/utils/device";
 
 const StyledTextInput = styled(TextInput)`
   margin-top: 4px;
@@ -51,6 +51,26 @@ const MainContainer = styled.div`
     .table-container_header {
       position: absolute;
       z-index: 1 !important;
+    }
+  }
+
+  .download-button {
+    width: auto;
+    height: auto;
+    font-size: 13px;
+    line-height: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    @media ${tablet} {
+      font-size: 14px;
+      line-height: 16px;
+      padding-top: 11px;
+      padding-bottom: 11px;
+    }
+
+    @media ${hugeMobile} {
+      width: 100%;
     }
   }
 `;
@@ -134,10 +154,11 @@ const HistoryMainContent = (props) => {
       </div>
       {content}
       <Button
+        className="download-button"
         primary
-        isHovered
         label={downloadReport}
         size="normal"
+        minwidth="auto"
         onClick={() => getReport()}
       />
     </MainContainer>
