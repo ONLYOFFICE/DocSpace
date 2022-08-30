@@ -157,6 +157,21 @@ export function restoreGreetingSettings() {
   });
 }
 
+export function getAppearanceTheme() {
+  return request({
+    method: "get",
+    url: "/settings/colortheme.json",
+  });
+}
+
+export function sendAppearanceTheme(data) {
+  return request({
+    method: "put",
+    url: "/settings/colortheme.json",
+    data,
+  });
+}
+
 export function getLogoText() {
   return request({
     method: "get",
