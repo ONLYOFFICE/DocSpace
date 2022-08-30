@@ -1,57 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
-import Text from "@docspace/components/text";
 import { inject } from "mobx-react";
-import styled from "styled-components";
-import TextInput from "@docspace/components/text-input";
-import Button from "@docspace/components/button";
 import { Consumer } from "@docspace/components/utils/context";
-import StyledSaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { Table } from "./TableView/TableView";
 import AuditRowContainer from "./RowView/AuditRowContainer";
+import HistoryMainContent from "../sub-components/HistoryMainContent";
 
-const MainContainer = styled.div`
-  width: 100%;
-
-  .audit-content {
-    max-width: 700px;
-  }
-
-  .save-cancel {
-    padding: 0;
-    position: static;
-    display: block;
-  }
-
-  .login-subheader {
-    font-size: 13px;
-    color: #657077;
-  }
-
-  .latest-text {
-    font-size: 13px;
-    padding: 20px 0;
-  }
-
-  .storage-label {
-    font-weight: 600;
-  }
-
-  .audit-wrapper {
-    margin-top: 16px;
-    margin-bottom: 24px;
-    .table-container_header {
-      position: absolute;
-    }
-  }
-`;
-
-const StyledTextInput = styled(TextInput)`
-  margin-top: 4px;
-  margin-bottom: 24px;
-`;
 const AuditTrail = (props) => {
   const {
     t,
@@ -62,13 +18,8 @@ const AuditTrail = (props) => {
     setLifetimeAuditSettings,
     getLifetimeAuditSettings,
     getAuditTrailReport,
+    securityLifetime,
   } = props;
-
-  const [value, setValue] = useState("180");
-
-  const inputHandler = (e) => {
-    setValue(e.target.value);
-  };
 
   useEffect(() => {
     setDocumentTitle(t("AuditTrailNav"));
@@ -77,34 +28,10 @@ const AuditTrail = (props) => {
 
     getLifetimeAuditSettings();
   }, []);
-  return (
-    <MainContainer>
-      <div className="audit-content">
-        <Text fontSize="13px" color="#657077">
-          {t("AuditSubheader")}
-        </Text>
-        <Text className="latest-text">{t("LoginLatestText")} </Text>
-        <label className="storage-label" htmlFor="storage-period">
-          {t("StoragePeriod")}
-        </label>
-        <StyledTextInput
-          onChange={inputHandler}
-          value={value}
-          size="big"
-          id="storage-period"
-          type="text"
-        />
-        <div>
-          <StyledSaveCancelButtons
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("Common:CancelButton")}
-            className="save-cancel"
-            showReminder={true}
-          />
-        </div>
-        <Text className="latest-text">{t("AuditDownloadText")}</Text>
-      </div>
-      <div className="audit-wrapper">
+
+  const getContent = () => {
+    return (
+      <div className="content-wrapper">
         <Consumer>
           {(context) =>
             viewAs === "table" ? (
@@ -123,14 +50,27 @@ const AuditTrail = (props) => {
           }
         </Consumer>
       </div>
-      <Button
-        primary
-        isHovered
-        label="DownloadReport"
-        size="normal"
-        onClick={() => getAuditTrailReport()}
-      />
-    </MainContainer>
+    );
+  };
+  return (
+    <>
+      {securityLifetime && securityLifetime.auditTrailLifeTime && (
+        <HistoryMainContent
+          subHeader={t("AuditSubheader")}
+          latestText={t("LoginLatestText")}
+          storagePeriod={t("StoragePeriod")}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("Common:CancelButton")}
+          downloadText={t("AuditDownloadText")}
+          securityLifetime={securityLifetime}
+          lifetime={securityLifetime.auditTrailLifeTime}
+          setLifetimeAuditSettings={setLifetimeAuditSettings}
+          content={getContent()}
+          downloadReport={t("DownloadReportBtn")}
+          getReport={getAuditTrailReport}
+        />
+      )}
+    </>
   );
 };
 
@@ -142,6 +82,7 @@ export default inject(({ setup, auth }) => {
     getLifetimeAuditSettings,
     setLifetimeAuditSettings,
     getAuditTrailReport,
+    securityLifetime,
   } = setup;
   const { theme } = auth.settingsStore;
 
@@ -153,5 +94,6 @@ export default inject(({ setup, auth }) => {
     getLifetimeAuditSettings,
     setLifetimeAuditSettings,
     getAuditTrailReport,
+    securityLifetime,
   };
 })(withTranslation("Settings")(withRouter(AuditTrail)));
