@@ -45,6 +45,8 @@ module.exports = (env, argv) => {
     new DefinePlugin({
       IS_DEVELOPMENT: argv.mode !== "production",
       PORT: process.env.PORT || 5011,
+      IS_PERSONAL: env.personal || false,
+      IS_ROOMS_MODE: env.rooms || false,
     }),
   ];
 
