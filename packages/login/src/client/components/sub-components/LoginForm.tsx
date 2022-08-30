@@ -15,7 +15,6 @@ import { login } from "@docspace/common/utils/loginUtils";
 import { oAuthLogin } from "../../helpers/utils";
 import toastr from "@docspace/components/toast/toastr";
 
-const IS_ROOMS_MODE = true;
 interface ILoginFormProps {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;

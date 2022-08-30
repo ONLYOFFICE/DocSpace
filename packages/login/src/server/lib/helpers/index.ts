@@ -6,9 +6,6 @@ import {
   getAuthProviders,
   getCapabilities,
 } from "@docspace/common/api/settings";
-import { LANGUAGE } from "@docspace/common/constants";
-import parser from "accept-language-parser";
-import { getPortalCultures } from "@docspace/common/api/settings";
 
 export const getAssets = (): assetsType => {
   const manifest = fs.readFileSync(
@@ -74,29 +71,4 @@ export const getInitialState = async (
   };
 
   return initialState;
-};
-
-export const getCurrentLanguage = async (cookies, headers) => {
-  let currentLanguage = "en";
-
-  if (cookies && cookies[LANGUAGE]) {
-    currentLanguage = cookies[LANGUAGE];
-  } else {
-    const availableLanguages: string[] = await getPortalCultures();
-    const parsedAcceptLanguages: object[] = parser.parse(
-      headers["accept-language"]
-    );
-
-    const detectedLanguage: IAcceptLanguage | any = parsedAcceptLanguages.find(
-      (acceptLang: IAcceptLanguage) =>
-        typeof acceptLang === "object" &&
-        acceptLang?.code &&
-        availableLanguages.includes(acceptLang.code)
-    );
-
-    if (typeof detectedLanguage === "object")
-      currentLanguage = detectedLanguage.code;
-  }
-
-  return currentLanguage;
 };
