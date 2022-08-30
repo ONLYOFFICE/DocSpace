@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Text from "@docspace/components/text";
 
 import TextInput from "@docspace/components/text-input";
-import StyledSaveCancelButtons from "@docspace/components/save-cancel-buttons";
+import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
 
@@ -120,16 +120,16 @@ const HistoryMainContent = (props) => {
           id="storage-period"
           type="text"
         />
-        <div>
-          <StyledSaveCancelButtons
-            onSaveClick={setLifeTimeSettings}
-            onCancelClick={() => setLifeTime(lifetime)}
-            saveButtonLabel={saveButtonLabel}
-            cancelButtonLabel={cancelButtonLabel}
-            className="save-cancel"
-            showReminder={true}
-          />
-        </div>
+        <SaveCancelButtons
+          className="save-cancel"
+          onSaveClick={setLifeTimeSettings}
+          onCancelClick={() => setLifeTime(lifetime)}
+          saveButtonLabel={saveButtonLabel}
+          cancelButtonLabel={cancelButtonLabel}
+          showReminder={true}
+          displaySettings={true}
+          hasScroll={false}
+        />
         <Text className="latest-text">{downloadText}</Text>
       </div>
       {content}
