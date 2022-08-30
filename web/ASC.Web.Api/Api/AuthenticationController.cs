@@ -278,6 +278,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
     public async Task Logout()

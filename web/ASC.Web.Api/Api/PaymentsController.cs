@@ -61,6 +61,7 @@ public class PaymentController : ControllerBase
         _tariffHelper = tariffHelper;
     }
 
+    [AllowNotPayment]
     [HttpPut("payment/url")]
     public Uri GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
@@ -79,6 +80,7 @@ public class PaymentController : ControllerBase
             inDto.BackUrl);
     }
 
+    [AllowNotPayment]
     [HttpPut("payment/update")]
     public bool PaymentUpdate(PaymentUrlRequestsDto inDto)
     {
@@ -91,6 +93,7 @@ public class PaymentController : ControllerBase
         return _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
     }
 
+    [AllowNotPayment]
     [HttpGet("payment/account")]
     public Uri GetPaymentAccount(string backUrl)
     {
@@ -105,6 +108,7 @@ public class PaymentController : ControllerBase
         return _tariffService.GetAccountLink(Tenant.Id, backUrl);
     }
 
+    [AllowNotPayment]
     [HttpGet("payment/prices")]
     public object GetPrices()
     {
@@ -114,6 +118,7 @@ public class PaymentController : ControllerBase
         return result;
     }
 
+    [AllowNotPayment]
     [HttpGet("payment/currencies")]
     public IEnumerable<CurrenciesDto> GetCurrencies()
     {
@@ -128,6 +133,7 @@ public class PaymentController : ControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpGet("payment/tariff")]
     public IEnumerable<TariffDto> GetTariffs()
     {
