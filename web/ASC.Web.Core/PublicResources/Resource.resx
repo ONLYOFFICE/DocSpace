@@ -825,4 +825,31 @@
   <data name="MessageRoomInvitationsSentOnEmail" xml:space="preserve">
     <value>Virtual room {0} invitations sent successfully.</value>
   </data>
+  <data name="TariffsFeature_admin_price_count" xml:space="preserve">
+    <value>Number of managers</value>
+  </data>
+  <data name="TariffsFeature_admin_price_per" xml:space="preserve">
+    <value>{0} per manager/month</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Tracking user logins &amp; action</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automatic backup &amp; recovery</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Unlimited number of active users</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} storage space</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Unlimited number of users</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Branding &amp; customization</value>
+  </data>
 </root>

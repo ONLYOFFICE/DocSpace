@@ -2140,6 +2140,87 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number of managers.
+        /// </summary>
+        public static string TariffsFeature_admin_price_count {
+            get {
+                return ResourceManager.GetString("TariffsFeature_admin_price_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} per manager/month.
+        /// </summary>
+        public static string TariffsFeature_admin_price_per {
+            get {
+                return ResourceManager.GetString("TariffsFeature_admin_price_per", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tracking user logins &amp; action.
+        /// </summary>
+        public static string TariffsFeature_audit {
+            get {
+                return ResourceManager.GetString("TariffsFeature_audit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic backup &amp; recovery.
+        /// </summary>
+        public static string TariffsFeature_restore {
+            get {
+                return ResourceManager.GetString("TariffsFeature_restore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlimited number of active users.
+        /// </summary>
+        public static string TariffsFeature_room {
+            get {
+                return ResourceManager.GetString("TariffsFeature_room", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SSO.
+        /// </summary>
+        public static string TariffsFeature_sso {
+            get {
+                return ResourceManager.GetString("TariffsFeature_sso", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} storage space.
+        /// </summary>
+        public static string TariffsFeature_total_size {
+            get {
+                return ResourceManager.GetString("TariffsFeature_total_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlimited number of users.
+        /// </summary>
+        public static string TariffsFeature_users {
+            get {
+                return ResourceManager.GetString("TariffsFeature_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Branding &amp; customization.
+        /// </summary>
+        public static string TariffsFeature_whitelabel {
+            get {
+                return ResourceManager.GetString("TariffsFeature_whitelabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incorrect code.
         /// </summary>
         public static string TfaAppAuthMessageError {
