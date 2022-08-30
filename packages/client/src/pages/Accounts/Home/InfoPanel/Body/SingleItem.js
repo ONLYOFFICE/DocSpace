@@ -193,7 +193,7 @@ const SingleItem = ({
           {/* <Text className={"info_field"} noSelect title={t("Common:Room")}>
             {t("Common:Room")}
           </Text>
-          <div>123</div> */}
+          <div>Rooms list</div> */}
         </div>
       </StyledInfoDataContainer>
     </>

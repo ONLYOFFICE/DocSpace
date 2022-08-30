@@ -101,6 +101,12 @@ const StyledInfoDataContainer = styled.div`
 
     .type-combobox {
       margin-left: -8px;
+
+      .backdrop-active {
+        height: 100%;
+        width: 100%;
+        z-index: 1000;
+      }
     }
   }
 `;
