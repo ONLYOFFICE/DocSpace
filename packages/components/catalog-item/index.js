@@ -78,7 +78,7 @@ const CatalogItem = (props) => {
         showText={showText}
         isEndOfBlock={isEndOfBlock}
         isActive={isActive}
-        type={ThemeType.CatalogItem}
+        elementType={ThemeType.CatalogItem}
       >
         <StyledCatalogItemSibling
           isActive={isActive}

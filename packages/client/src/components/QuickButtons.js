@@ -71,7 +71,7 @@ const QuickButtons = (props) => {
     <div className="badges additional-badges">
       {item.canShare && showShare && displayBadges && (
         <ColorTheme
-          type={ThemeType.IconButton}
+          elementType={ThemeType.IconButton}
           shared={shared}
           iconName={iconShare}
           className="badge share-button-icon"
@@ -87,7 +87,7 @@ const QuickButtons = (props) => {
         displayBadges &&
         isCanWebEdit && (
           <ColorTheme
-            type={ThemeType.IconButton}
+            elementType={ThemeType.IconButton}
             iconName={iconLock}
             locked={locked}
             className="badge lock-file icons-group"
@@ -102,7 +102,7 @@ const QuickButtons = (props) => {
         )}
       {fileExst && !isTrashFolder && displayBadges && (
         <ColorTheme
-          type={ThemeType.IconButton}
+          elementType={ThemeType.IconButton}
           iconName={iconFavorite}
           isFavorite={isFavorite}
           className="favorite badge icons-group"

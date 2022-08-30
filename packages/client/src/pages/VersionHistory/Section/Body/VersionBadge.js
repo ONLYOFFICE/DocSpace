@@ -5,8 +5,6 @@ import Box from "@docspace/components/box";
 import VersionSvg from "@docspace/client/public/images/versionrevision_active.react.svg";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-
-
 const VersionBadge = ({
   className,
   isVersion,
@@ -18,7 +16,7 @@ const VersionBadge = ({
 }) => (
   <Box className={className} marginProp="0 8px" displayProp="flex" {...rest}>
     <ColorTheme
-      type={ThemeType.VersionBadge}
+      elementType={ThemeType.VersionBadge}
       isVersion={isVersion}
       theme={theme}
       index={index}

@@ -65,7 +65,7 @@ const MainButton = (props) => {
       <ColorTheme
         {...props}
         onClick={onMainButtonClick}
-        type={ThemeType.MainButton}
+        elementType={ThemeType.MainButton}
       >
         <Text className="main-button_text">{text}</Text>
         <img

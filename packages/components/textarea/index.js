@@ -36,7 +36,7 @@ const Textarea = ({
 
   return (
     <ColorTheme
-      type={ThemeType.Textarea}
+      elementType={ThemeType.Textarea}
       className={className}
       style={style}
       stype="preMediumBlack"

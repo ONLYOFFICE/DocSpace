@@ -98,7 +98,7 @@ const Submenu = (props) => {
                     <StyledSubmenuItemText isActive={isActive}>
                       <ColorTheme
                         {...props}
-                        type={ThemeType.SubmenuText}
+                        elementType={ThemeType.SubmenuText}
                         className="item-text"
                         fontSize="13px"
                         fontWeight="600"
@@ -111,7 +111,7 @@ const Submenu = (props) => {
 
                     <ColorTheme
                       {...props}
-                      type={ThemeType.SubmenuItemLabel}
+                      elementType={ThemeType.SubmenuItemLabel}
                       isActive={isActive}
                     />
                   </StyledSubmenuItem>

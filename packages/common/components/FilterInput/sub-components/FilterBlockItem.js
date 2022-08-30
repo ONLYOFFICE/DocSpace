@@ -97,7 +97,7 @@ const FilterBlockItem = ({
             clearSelectorRef.current
           )
         }
-        type={ThemeType.FilterBlockItemTag}
+        elementType={ThemeType.FilterBlockItemTag}
       >
         <StyledFilterBlockItemTagText
           noSelect={true}
@@ -174,7 +174,7 @@ const FilterBlockItem = ({
         onClick={() =>
           changeFilterValueAction(item.key, item.isSelected, item.isMultiSelect)
         }
-        type={ThemeType.FilterBlockItemTag}
+        elementType={ThemeType.FilterBlockItemTag}
       >
         <StyledFilterBlockItemTagText
           noSelect={true}

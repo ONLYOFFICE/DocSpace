@@ -33,7 +33,7 @@ import { ThemeType } from "./constants";
 
 const ColorTheme = forwardRef(
   ({ currentColorScheme, isVersion, ...props }, ref) => {
-    switch (props.type) {
+    switch (props.elementType) {
       case ThemeType.Button: {
         return (
           <ButtonTheme
@@ -189,6 +189,7 @@ const ColorTheme = forwardRef(
         );
       }
       case ThemeType.TextInput: {
+        console.log(props);
         return (
           <TextInputTheme
             {...props}
@@ -274,10 +275,13 @@ const ColorTheme = forwardRef(
 );
 
 export default inject(({ auth }) => {
-  const { settingsStore } = auth;
-  const { currentColorScheme } = settingsStore;
+  console.log({ auth }, "here");
+  if (auth) {
+    const { settingsStore } = auth;
+    const { currentColorScheme } = settingsStore;
 
-  return {
-    currentColorScheme,
-  };
+    return {
+      currentColorScheme,
+    };
+  }
 })(observer(ColorTheme));

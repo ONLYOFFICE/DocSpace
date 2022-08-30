@@ -81,7 +81,7 @@ class InputBlock extends React.Component {
           break;
       }
     }
-
+    console.log({ type });
     return (
       <ColorTheme
         hasError={hasError}
@@ -92,7 +92,7 @@ class InputBlock extends React.Component {
         className={className}
         style={style}
         color={iconColor}
-        type={ThemeType.InputBlock}
+        elementType={ThemeType.InputBlock}
       >
         <div className="prepend">
           <StyledChildrenBlock className="prepend-children">

@@ -500,7 +500,11 @@ class Calendar extends Component {
         style={style}
         size={size}
       >
-        <ColorTheme size={size} color={themeColor} type={ThemeType.Calendar}>
+        <ColorTheme
+          size={size}
+          color={themeColor}
+          elementType={ThemeType.Calendar}
+        >
           <ComboBoxStyle>
             <ComboBoxMonthStyle size={size}>
               <ComboBox

@@ -29,7 +29,7 @@ const FilterButton = ({
       <StyledButton onClick={changeShowFilterBlock}>
         <IconButton iconName="/static/images/filter.react.svg" size={16} />
         {selectedFilterValue && selectedFilterValue.length > 0 && (
-          <ColorTheme type={ThemeType.IndicatorFilterButton} />
+          <ColorTheme elementType={ThemeType.IndicatorFilterButton} />
         )}
       </StyledButton>
 
