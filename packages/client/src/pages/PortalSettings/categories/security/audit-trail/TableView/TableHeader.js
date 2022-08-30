@@ -113,6 +113,7 @@ class PeopleTableHeader extends React.Component {
         columnStorageName={`${COLUMNS_SIZE}=${userId}`}
         sectionWidth={sectionWidth}
         checkboxMargin="12px"
+        showSettings={false}
       />
     );
   }
