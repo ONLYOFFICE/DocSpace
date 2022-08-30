@@ -190,8 +190,12 @@ class TableHeader extends React.Component {
       this.moveToRight(widths, newWidth);
     }
 
-    containerRef.current.style.gridTemplateColumns = widths.join(" ");
-    this.headerRef.current.style.gridTemplateColumns = widths.join(" ");
+    const str = widths.join(" ");
+
+    containerRef.current.style.gridTemplateColumns = str;
+    this.headerRef.current.style.gridTemplateColumns = str;
+
+    this.updateTableRows(str);
   };
 
   onMouseUp = () => {
@@ -544,6 +548,9 @@ class TableHeader extends React.Component {
 
     if (str) {
       container.style.gridTemplateColumns = str;
+
+      this.updateTableRows(str);
+
       if (this.headerRef.current) {
         this.headerRef.current.style.gridTemplateColumns = str;
         this.headerRef.current.style.width = containerWidth + "px";
@@ -555,6 +562,18 @@ class TableHeader extends React.Component {
 
       if (!infoPanelVisible) {
         localStorage.removeItem(columnInfoPanelStorageName);
+      }
+    }
+  };
+
+  updateTableRows = (str) => {
+    if (!this.props.useReactWindow) return;
+
+    const rows = document.querySelectorAll(".table-row, .table-list-item");
+
+    if (rows?.length) {
+      for (let i = 0; i < rows.length; i++) {
+        rows[i].style.gridTemplateColumns = str;
       }
     }
   };
@@ -695,6 +714,7 @@ class TableHeader extends React.Component {
 TableHeader.defaultProps = {
   sortingVisible: true,
   infoPanelVisible: false,
+  useReactWindow: false,
 };
 
 TableHeader.propTypes = {
@@ -709,6 +729,7 @@ TableHeader.propTypes = {
   isLengthenHeader: PropTypes.bool,
   sortingVisible: PropTypes.bool,
   infoPanelVisible: PropTypes.bool,
+  useReactWindow: PropTypes.bool,
 };
 
 export default TableHeader;

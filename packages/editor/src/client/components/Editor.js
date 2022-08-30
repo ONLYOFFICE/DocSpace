@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { isMobile, isIOS, deviceType } from "react-device-detect";
-import FilesFilter from "@docspace/common/api/files/filter";
 import combineUrl from "@docspace/common/utils/combineUrl";
-import { AppServerConfig } from "@docspace/common/constants";
+import { AppServerConfig, FolderType } from "@docspace/common/constants";
 import throttle from "lodash/throttle";
 import Toast from "@docspace/components/toast";
 import { toast } from "react-toastify";
@@ -440,15 +439,21 @@ function Editor({
       const url = window.location.href;
 
       if (fileInfo) {
-        const filterObj = FilesFilter.getDefault();
-        filterObj.folder = fileInfo.folderId;
-        const urlFilter = filterObj.toUrlParams();
-        const filesUrl = url.substring(0, url.indexOf("/doceditor"));
+        let backUrl = "";
+
+        if (fileInfo.rootFolderType === FolderType.Rooms) {
+          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+        } else {
+          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+        }
+
+        const origin = url.substring(0, url.indexOf("/doceditor"));
+
         goBack = {
           blank: true,
           requestClose: false,
           text: t("FileLocation"),
-          url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`, //TODO: Change url by category
+          url: `${combineUrl(origin, backUrl)}`,
         };
       }
 

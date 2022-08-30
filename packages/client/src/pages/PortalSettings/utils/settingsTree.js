@@ -38,10 +38,46 @@ export const settingsTree = [
         ],
       },
       {
+        key: "0-1",
+        icon: "",
+        link: "branding",
+        tKey: "Branding",
+        isCategory: true,
+        children: [
+          {
+            key: "0-1-0",
+            icon: "",
+            link: "white-label",
+            tKey: "WhiteLabel",
+          },
+          {
+            key: "0-1-1",
+            icon: "",
+            link: "company-info-settings",
+            tKey: "CompanyInfoSettings",
+          },
+          {
+            key: "0-1-2",
+            icon: "",
+            link: "additional-resources",
+            tKey: "AdditionalResources",
+          },
+        ],
+      },
+      {
         key: "0-2",
         icon: "",
-        link: "whitelabel",
-        tKey: "WhiteLabel",
+        link: "appearance",
+        tKey: "Appearance",
+        isCategory: true,
+        children: [
+          {
+            key: "0-2-0",
+            icon: "",
+            link: "appearance",
+            tKey: "Appearance",
+          },
+        ],
       },
     ],
   },

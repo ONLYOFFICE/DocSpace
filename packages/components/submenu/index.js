@@ -13,7 +13,10 @@ import {
 } from "./styled-submenu";
 import LoaderSubmenu from "./loader";
 
-const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
+const Submenu = (props) => {
+  const { data, startSelect = 0, onSelect, isLoading, ...rest } = props;
   if (!data) return null;
 
   const [currentItem, setCurrentItem] = useState(
@@ -93,16 +96,24 @@ const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
                     }}
                   >
                     <StyledSubmenuItemText isActive={isActive}>
-                      <Text
+                      <ColorTheme
+                        {...props}
+                        type={ThemeType.SubmenuText}
                         className="item-text"
                         fontSize="13px"
                         fontWeight="600"
                         truncate={false}
+                        isActive={isActive}
                       >
                         {d.name}
-                      </Text>
+                      </ColorTheme>
                     </StyledSubmenuItemText>
-                    <StyledSubmenuItemLabel isActive={isActive} />
+
+                    <ColorTheme
+                      {...props}
+                      type={ThemeType.SubmenuItemLabel}
+                      isActive={isActive}
+                    />
                   </StyledSubmenuItem>
                 );
               })}
