@@ -1,3 +1,4 @@
+import React from "react";
 import { makeAutoObservable } from "mobx";
 import { Trans } from "react-i18next";
 
@@ -123,14 +124,14 @@ class AccountsContextOptionsStore {
             key: option,
             icon: "/static/images/invite.again.react.svg",
             label: t("LblInviteAgain"),
-            onClick: () => onInviteAgainClick(t, item),
+            onClick: () => this.onInviteAgainClick(t, item),
           };
         case "reset-auth":
           return {
             key: option,
             icon: "images/restore.auth.react.svg",
             label: t("PeopleTranslations:ResetAuth"),
-            onClick: () => onResetAuth(item),
+            onClick: () => this.onResetAuth(item),
           };
         default:
           break;
