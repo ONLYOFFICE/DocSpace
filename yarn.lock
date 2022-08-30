@@ -2040,6 +2040,7 @@ __metadata:
     json-loader: ^0.5.7
     playwright: ^1.18.1
     react-avatar-editor: ^13.0.0
+    react-colorful: ^5.5.1
     react-hotkeys-hook: ^3.4.4
     react-markdown: ^7.0.1
     react-smartbanner: ^5.1.4
@@ -20094,6 +20095,16 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
   checksum: e60811781716e57f0990379eff20d6f22d4d35b9e858c47ecf857c1dc1c1a2274c924ded7248bad5f1e2fbf2aab06e59b12852910c8dee5e6850f8e4df293670
+  languageName: node
+  linkType: hard
+
+"react-colorful@npm:^5.5.1":
+  version: 5.6.0
+  resolution: "react-colorful@npm:5.6.0"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 7b97b1aefa4f180e23a8f821e56fb00ced09541c18d13c9e16c2595c588ea2f762b8850abf1a2b68be1e614dd7674e59f1c700a0aacdfe5e44f67b291953e1e0
   languageName: node
   linkType: hard
 

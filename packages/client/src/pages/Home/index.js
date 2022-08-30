@@ -605,6 +605,7 @@ export default inject(
     mediaViewerDataStore,
     settingsStore,
     filesActionsStore,
+    oformsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -626,7 +627,6 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
-      gallerySelected,
       setIsUpdatingRowItem,
 
       folders,
@@ -640,6 +640,8 @@ export default inject(
       setViewAs,
       withPaging,
     } = filesStore;
+
+    const { gallerySelected } = oformsStore;
 
     const {
       isRecycleBinFolder,

@@ -10,14 +10,14 @@ import Text from "@docspace/components/text";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import {
-  StyledInfoPanelHeader,
-  StyledInfoPanelToggleWrapper,
-} from "./styles/styles";
+import { StyledInfoPanelHeader } from "./styles/styles";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
 
-const InfoPanelHeaderContent = ({ t, setIsVisible, isGallery }) => {
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
+const InfoPanelHeaderContent = (props) => {
+  const { t, setIsVisible, isGallery } = props;
   const closeInfoPanel = () => setIsVisible(false);
 
   return (
@@ -25,7 +25,10 @@ const InfoPanelHeaderContent = ({ t, setIsVisible, isGallery }) => {
       <Text className="header-text" fontSize="21px" fontWeight="700">
         {t("Common:Info")}
       </Text>
-      <StyledInfoPanelToggleWrapper
+
+      <ColorTheme
+        {...props}
+        type={ThemeType.InfoPanelToggle}
         isRootFolder={true}
         isInfoPanelVisible={true}
       >
@@ -40,7 +43,7 @@ const InfoPanelHeaderContent = ({ t, setIsVisible, isGallery }) => {
             />
           </div>
         )}
-      </StyledInfoPanelToggleWrapper>
+      </ColorTheme>
     </StyledInfoPanelHeader>
   );
 };

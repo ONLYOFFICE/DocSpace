@@ -51,8 +51,8 @@ const SectionBodyContent = ({
   );
 };
 
-export default inject(({ filesStore }) => ({
-  oformFiles: filesStore.oformFiles,
-  hasGalleryFiles: filesStore.hasGalleryFiles,
-  setGallerySelected: filesStore.setGallerySelected,
+export default inject(({ oformsStore }) => ({
+  oformFiles: oformsStore.oformFiles,
+  hasGalleryFiles: oformsStore.hasGalleryFiles,
+  setGallerySelected: oformsStore.setGallerySelected,
 }))(withTranslation("FormGallery")(observer(SectionBodyContent)));
