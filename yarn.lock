@@ -2039,8 +2039,8 @@ __metadata:
     html-webpack-plugin: 5.3.2
     json-loader: ^0.5.7
     playwright: ^1.18.1
+    react-avatar-editor: ^13.0.0
     react-colorful: ^5.5.1
-    react-avatar-editor: ^13.0.
     react-hotkeys-hook: ^3.4.4
     react-markdown: ^7.0.1
     react-smartbanner: ^5.1.4
