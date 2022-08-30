@@ -119,9 +119,9 @@ public class TenantExtra
         get => _tenantExtraConfig.Opensource;
     }
 
-    public bool EnterprisePaid
+    public bool EnterprisePaid(bool withRequestToPaymentSystem = true)
     {
-        get { return Enterprise && GetCurrentTariff().State < TariffState.NotPaid; }
+        return Enterprise && GetCurrentTariff(withRequestToPaymentSystem).State < TariffState.NotPaid;
     }
 
     public bool EnableControlPanel
@@ -149,9 +149,9 @@ public class TenantExtra
         return VirtualPathUtility.ToAbsolute("~/Tariffs.aspx");
     }
 
-    public Tariff GetCurrentTariff()
+    public Tariff GetCurrentTariff(bool withRequestToPaymentSystem = true)
     {
-        return _tariffService.GetTariff(_tenantManager.GetCurrentTenant().Id);
+        return _tariffService.GetTariff(_tenantManager.GetCurrentTenant().Id, withRequestToPaymentSystem);
     }
 
     public TenantQuota GetTenantQuota()
@@ -228,12 +228,12 @@ public class TenantExtra
         }
     }
 
-    public bool IsNotPaid()
+    public bool IsNotPaid(bool withRequestToPaymentSystem = true)
     {
         Tariff tariff;
         return EnableTariffSettings
-               && ((tariff = GetCurrentTariff()).State >= TariffState.NotPaid
-                   || Enterprise && !EnterprisePaid && tariff.LicenseDate == DateTime.MaxValue);
+               && ((tariff = GetCurrentTariff(withRequestToPaymentSystem)).State >= TariffState.NotPaid
+                   || Enterprise && !EnterprisePaid(withRequestToPaymentSystem) && tariff.LicenseDate == DateTime.MaxValue);
     }
 
     /// <summary>

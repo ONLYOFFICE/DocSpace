@@ -76,9 +76,28 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -1,
-                            Features = "audit,ldap,sso,whitelabel,update,restore,admin:1,total_size:107374182400",
+                            Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1",
                             MaxFileSize = 100L,
-                            Name = "default",
+                            Name = "trial",
+                            Price = 0.00m,
+                            Visible = false
+                        },
+                        new
+                        {
+                            Tenant = -2,
+                            Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1",
+                            MaxFileSize = 1024L,
+                            Name = "admin",
+                            Price = 30.00m,
+                            ProductId = "1002",
+                            Visible = true
+                        },
+                        new
+                        {
+                            Tenant = -3,
+                            Features = "free,audit,ldap,sso,restore,total_size:2147483648,admin:5,rooms:3",
+                            MaxFileSize = 100L,
+                            Name = "startup",
                             Price = 0.00m,
                             Visible = false
                         });
@@ -151,10 +170,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("stamp");
 
-                    b.Property<int>("Tariff")
-                        .HasColumnType("int")
-                        .HasColumnName("tariff");
-
                     b.Property<int>("Tenant")
                         .HasColumnType("int")
                         .HasColumnName("tenant");
@@ -176,10 +191,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("Key")
-                        .HasColumnType("int")
-                        .HasColumnName("key");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
                         .HasColumnName("quantity");
@@ -187,6 +198,10 @@ namespace ASC.Migrations.MySql.Migrations
                     b.Property<int>("Quota")
                         .HasColumnType("int")
                         .HasColumnName("quota");
+
+                    b.Property<int>("TariffId")
+                        .HasColumnType("int")
+                        .HasColumnName("tariff_id");
 
                     b.Property<int>("Tenant")
                         .HasColumnType("int")

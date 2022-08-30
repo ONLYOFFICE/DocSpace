@@ -71,9 +71,28 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         new
                         {
                             Tenant = -1,
-                            Features = "audit,ldap,sso,whitelabel,update,restore,admin:1,total_size:107374182400",
+                            Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1",
                             MaxFileSize = 100L,
-                            Name = "default",
+                            Name = "trial",
+                            Price = 0.00m,
+                            Visible = false
+                        },
+                        new
+                        {
+                            Tenant = -2,
+                            Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1",
+                            MaxFileSize = 1024L,
+                            Name = "admin",
+                            Price = 30.00m,
+                            ProductId = "1002",
+                            Visible = true
+                        },
+                        new
+                        {
+                            Tenant = -3,
+                            Features = "free,audit,ldap,sso,restore,total_size:2147483648,admin:5,rooms:3",
+                            MaxFileSize = 100L,
+                            Name = "startup",
                             Price = 0.00m,
                             Visible = false
                         });
@@ -150,10 +169,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("stamp");
 
-                    b.Property<int>("Tariff")
-                        .HasColumnType("integer")
-                        .HasColumnName("tariff");
-
                     b.Property<int>("Tenant")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
@@ -173,13 +188,13 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("Key")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
                     b.Property<int>("Quota")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TariffId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Tenant")

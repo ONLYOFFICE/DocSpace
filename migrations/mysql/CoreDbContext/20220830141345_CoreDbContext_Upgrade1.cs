@@ -14,6 +14,10 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                 table: "tenants_tariff");
 
             migrationBuilder.DropColumn(
+                name: "tariff",
+                table: "tenants_tariff");
+
+            migrationBuilder.DropColumn(
                 name: "active_users",
                 table: "tenants_quota");
 
@@ -41,7 +45,7 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    key = table.Column<int>(type: "int", nullable: false),
+                    tariff_id = table.Column<int>(type: "int", nullable: false),
                     quota = table.Column<int>(type: "int", nullable: false),
                     quantity = table.Column<int>(type: "int", nullable: false),
                     tenant = table.Column<int>(type: "int", nullable: false)
@@ -56,14 +60,34 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                 table: "tenants_quota",
                 keyColumn: "tenant",
                 keyValue: -1,
-                columns: new[] { "features", "max_file_size", "product_id" },
-                values: new object[] { "audit,ldap,sso,whitelabel,update,restore,admin:1,total_size:107374182400", 100L, null });
+                columns: new[] { "features", "max_file_size", "name", "product_id" },
+                values: new object[] { "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1", 100L, "trial", null });
+
+            migrationBuilder.InsertData(
+                table: "tenants_quota",
+                columns: new[] { "tenant", "description", "features", "max_file_size", "name", "product_id" },
+                values: new object[] { -3, null, "free,audit,ldap,sso,restore,total_size:2147483648,admin:5,rooms:3", 100L, "startup", null });
+
+            migrationBuilder.InsertData(
+                table: "tenants_quota",
+                columns: new[] { "tenant", "description", "features", "max_file_size", "name", "price", "product_id", "visible" },
+                values: new object[] { -2, null, "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1", 1024L, "admin", 30.00m, "1002", true });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "tenants_tariffrow");
+
+            migrationBuilder.DeleteData(
+                table: "tenants_quota",
+                keyColumn: "tenant",
+                keyValue: -3);
+
+            migrationBuilder.DeleteData(
+                table: "tenants_quota",
+                keyColumn: "tenant",
+                keyValue: -2);
 
             migrationBuilder.DropColumn(
                 name: "customer_id",
@@ -80,6 +104,13 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                 type: "int",
                 nullable: false,
                 defaultValueSql: "'1'");
+
+            migrationBuilder.AddColumn<int>(
+                name: "tariff",
+                table: "tenants_tariff",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
                 name: "active_users",
@@ -99,8 +130,8 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                 table: "tenants_quota",
                 keyColumn: "tenant",
                 keyValue: -1,
-                columns: new[] { "active_users", "avangate_id", "features", "max_file_size", "max_total_size" },
-                values: new object[] { 10000, "0", "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore", 102400L, 10995116277760L });
+                columns: new[] { "active_users", "avangate_id", "features", "max_file_size", "max_total_size", "name" },
+                values: new object[] { 10000, "0", "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore", 102400L, 10995116277760L, "default" });
         }
     }
 }

@@ -29,7 +29,7 @@ namespace ASC.Core.Common.EF;
 public class DbTariffRow
 {
     public int Id { get; set; }
-    public int Key { get; set; }
+    public int TariffId { get; set; }
     public int Quota { get; set; }
     public int Quantity { get; set; }
     public int Tenant { get; set; }
@@ -55,8 +55,8 @@ public static class DbTariffRowExtension
             entity.Property(e => e.Id)
                 .HasColumnName("id");
 
-            entity.Property(e => e.Key)
-                .HasColumnName("key")
+            entity.Property(e => e.TariffId)
+                .HasColumnName("tariff_id")
                 .HasColumnType("int");
 
             entity.Property(e => e.Quota)

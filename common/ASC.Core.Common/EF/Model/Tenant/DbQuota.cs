@@ -59,14 +59,37 @@ public static class DbQuotaExtension
                 new DbQuota
                 {
                     Tenant = -1,
-                    Name = "default",
+                    Name = "trial",
                     Description = null,
                     MaxFileSize = 100,
-                    Features = "audit,ldap,sso,whitelabel,update,restore,admin:1,total_size:107374182400",
+                    Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1",
                     Price = decimal.Parse("0,00"),
                     ProductId = null,
                     Visible = false
-                }); ;
+                },
+                new DbQuota
+                {
+                    Tenant = -2,
+                    Name = "admin",
+                    Description = null,
+                    MaxFileSize = 1024,
+                    Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1",
+                    Price = decimal.Parse("30,00"),
+                    ProductId = "1002",
+                    Visible = true
+                },
+                new DbQuota
+                {
+                    Tenant = -3,
+                    Name = "startup",
+                    Description = null,
+                    MaxFileSize = 100,
+                    Features = "free,audit,ldap,sso,restore,total_size:2147483648,admin:5,rooms:3",
+                    Price = decimal.Parse("0,00"),
+                    ProductId = null,
+                    Visible = false
+                }
+                );
 
         return modelBuilder;
     }
